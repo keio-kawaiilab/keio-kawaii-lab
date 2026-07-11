@@ -611,3 +611,81 @@ summary:focus-visible {
 /* スマホのみ改行 */
 .sp-only { display: none; }
 @media (max-width: 560px) { .sp-only { display: inline; } }
+.home-sns {
+  max-width: 900px;
+  margin: 60px auto;
+  padding: 40px 24px;
+  text-align: center;
+  background: #fff8f3;
+  border-radius: 24px;
+}
+
+.home-sns h2 {
+  margin-bottom: 12px;
+  font-size: 32px;
+}
+
+.home-sns p {
+  margin-bottom: 28px;
+  line-height: 1.8;
+}
+
+.home-sns-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.home-sns-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 280px;
+  padding: 18px 22px;
+  color: #222;
+  text-decoration: none;
+  background: #ffffff;
+  border: 2px solid #f2d8c8;
+  border-radius: 18px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.home-sns-btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+.home-sns-btn span:not(.sns-icon) {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.home-sns-btn small {
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: normal;
+}
+
+.sns-icon {
+  font-size: 30px;
+}
+
+@media (max-width: 600px) {
+  .home-sns {
+    margin: 40px 16px;
+    padding: 32px 18px;
+  }
+
+  .home-sns h2 {
+    font-size: 26px;
+  }
+
+  .home-sns-btn {
+    width: 100%;
+  }
+}
