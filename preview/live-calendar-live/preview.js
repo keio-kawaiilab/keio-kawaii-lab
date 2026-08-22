@@ -26,7 +26,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   const participants = (e) => Array.isArray(e.participants)?e.participants:[];
   const matches = (e,g) => g==="all"||e.group===g||participants(e).includes(g);
   const urls = (e) => { const a=Array.isArray(e.urls)?[...e.urls.filter(Boolean)]:[]; if(e.url&&!a.includes(e.url))a.unshift(e.url); return a; };
-  const status = (e) => { const s=parse(e.applyStart),x=parse(e.applyEnd),n=new Date(); if(s&&n<s)return"受付前"; if(s&&x&&n>=s&&n<=x)return"受付中"; if(x&&n>x)return"受付終了"; return"日程確認中"; };
+  const noCurrentSale = (e) => e.applicationStatus==="none" || e.ticketType==="現在受付なし";
+  const status = (e) => { if(noCurrentSale(e))return"現在受付なし"; const s=parse(e.applyStart),x=parse(e.applyEnd),n=new Date(); if(s&&n<s)return"受付前"; if(s&&x&&n>=s&&n<=x)return"受付中"; if(x&&n>x)return"受付終了"; return"日程確認中"; };
+  const neutralTitle=(v)=>{const t=String(v||"").replace(/^20\d{2}[./-]\d{1,2}[./-]\d{1,2}\s+/,"").trim();const q=t.match(/「([^」]+)」/);if(q)return q[1].trim();return t.split(/開催決定|FC\s*先行|ファンクラブ|OFFICIAL FANCLUB|先行受付|チケット受付/)[0].replace(/[!！\-–—｜|　]+$/g,"").trim()||t;};
 
   const collapseSameWindow = (items) => {
     const buckets = new Map();
@@ -62,14 +64,42 @@ document.addEventListener("DOMContentLoaded", async () => {
     return out;
   };
 
+  const scheduleIdentity=(e)=>{
+    const s=Array.isArray(e.schedule)&&e.schedule.length?e.schedule.map(x=>`${String(x.date||"").slice(0,10)}@${String(x.venue||"").replace(/\s+/g,"")}`).join("|"):(Array.isArray(e.eventDates)&&e.eventDates.length?e.eventDates.join("|"):`${String(e.eventDate||"").slice(0,10)}@${String(e.venue||"").replace(/\s+/g,"")}`);
+    return [e.group,participants(e).join("|"),s].join("\u001f");
+  };
+  const collapseExpired=(items,today)=>{
+    const buckets=new Map();
+    items.forEach(e=>{const k=scheduleIdentity(e);if(!buckets.has(k))buckets.set(k,[]);buckets.get(k).push(e);});
+    const out=[];
+    for(const group of buckets.values()){
+      const current=[],expired=[],scheduleOnly=[];
+      for(const e of group){
+        if(noCurrentSale(e)||(!e.applyStart&&!e.applyEnd)){scheduleOnly.push(e);continue;}
+        const dates=[e.applyEnd,e.resultDate,e.paymentEnd].map(day).filter(Boolean).sort((a,b)=>a-b);
+        const last=dates.length?dates.at(-1):null;
+        (last&&last>=today?current:expired).push(e);
+      }
+      if(current.length){out.push(...current);continue;}
+      if(scheduleOnly.length){out.push(scheduleOnly.sort((a,b)=>String(b.sourcePublishedAt||"").localeCompare(String(a.sourcePublishedAt||"")))[0]);continue;}
+      if(!expired.length)continue;
+      const latest=[...expired].sort((a,b)=>String(b.applyEnd||"").localeCompare(String(a.applyEnd||""))||String(b.sourcePublishedAt||"").localeCompare(String(a.sourcePublishedAt||"")))[0];
+      const e={...latest,title:neutralTitle(latest.title),ticketType:"現在受付なし",applicationStatus:"none",applyStart:null,applyEnd:null,resultDate:null,paymentEnd:null};
+      e.urls=[...new Set(expired.flatMap(urls))];if(e.urls.length)e.url=e.urls[0];out.push(e);
+    }
+    return out;
+  };
+
   let events=[];
   try {
     const r=await fetch(DATA_URL+"?t="+Date.now(),{cache:"no-store"});
     if(!r.ok) throw new Error();
     const data=await r.json();
     const today=day(new Date());
-    const raw=(Array.isArray(data.events)?data.events:[]).filter(e=>{const last=day(e.eventEndDate)||day(e.eventDate);return !last||last>=today;});
-    events=collapseSameWindow(raw);
+    const raw=(Array.isArray(data.events)?data.events:[])
+      .filter(e=>!/(?:チケット.*まとめ|まとめ.*チケット)/.test(String(e.title||"")))
+      .filter(e=>{const last=day(e.eventEndDate)||day(e.eventDate);return !last||last>=today;});
+    events=collapseExpired(collapseSameWindow(raw),today);
     sourceNote.innerHTML=`<strong>公式公開情報から自動取得</strong>　${esc(data.updatedAt||"")} 更新 / ${events.length}件`;
   } catch (_) { sourceNote.textContent="データを読み込めませんでした。"; }
 
@@ -123,7 +153,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function renderList(){
     const F=filtered(); summary.textContent=`${F.length}件掲載中・うち受付中 ${F.filter(e=>status(e)==="受付中").length}件`;
-    list.innerHTML=F.sort((a,b)=>(parse(a.applyEnd)||parse(a.eventDate))-(parse(b.applyEnd)||parse(b.eventDate))).map(e=>{const u=urls(e),p=participants(e);return `<article class="card ${cls[e.group]||""}"><div class="card-top"><div><div class="event-date">🎤 ${esc(eventLabel(e))}</div><div class="group">${esc(e.group||"")}</div><h3>${esc(e.title||"")}</h3></div><span class="status">${esc(status(e))}</span></div><dl class="meta"><div><dt>受付種別</dt><dd>${esc(e.ticketType||"未定")}</dd></div><div><dt>申込期間</dt><dd>${esc(fmt(e.applyStart))} 〜 ${esc(fmt(e.applyEnd))}</dd></div><div><dt>公演</dt><dd>${esc(eventLabel(e))}</dd></div><div><dt>会場</dt><dd>${esc(e.venue||"未定")}</dd></div>${p.length?`<div><dt>参加グループ</dt><dd>${esc(p.join(" / "))}</dd></div>`:""}</dl>${u.length?`<a class="source-link" href="${esc(u[0])}" target="_blank" rel="noopener">公式情報を確認する →</a>`:""}</article>`;}).join("");
+    list.innerHTML=F.sort((a,b)=>(parse(a.applyEnd)||parse(a.eventDate))-(parse(b.applyEnd)||parse(b.eventDate))).map(e=>{const u=urls(e),p=participants(e),application=noCurrentSale(e)?"現在受付なし":`${fmt(e.applyStart)} 〜 ${fmt(e.applyEnd)}`;return `<article class="card ${cls[e.group]||""}"><div class="card-top"><div><div class="event-date">🎤 ${esc(eventLabel(e))}</div><div class="group">${esc(e.group||"")}</div><h3>${esc(e.title||"")}</h3></div><span class="status">${esc(status(e))}</span></div><dl class="meta"><div><dt>受付種別</dt><dd>${esc(e.ticketType||"未定")}</dd></div><div><dt>申込期間</dt><dd>${esc(application)}</dd></div><div><dt>公演</dt><dd>${esc(eventLabel(e))}</dd></div><div><dt>会場</dt><dd>${esc(e.venue||"未定")}</dd></div>${p.length?`<div><dt>参加グループ</dt><dd>${esc(p.join(" / "))}</dd></div>`:""}</dl>${u.length?`<a class="source-link" href="${esc(u[0])}" target="_blank" rel="noopener">公式情報を確認する →</a>`:""}</article>`;}).join("");
   }
 
   const render=()=>{renderCalendar();renderList();};
