@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       calendar.querySelectorAll(`${barSelector} span`).forEach((span) => {
         let text = span.textContent;
         for (const group of groupNames) text = text.replace(`${group}｜`, "");
-        span.textContent = text;
+        if (text !== span.textContent) span.textContent = text;
       });
 
       const weeks = [...calendar.querySelectorAll(weekSelector)];
@@ -159,7 +159,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const calendarObserver = new MutationObserver((mutations) => {
     const hasExternalChange = mutations.some((mutation) => {
       const nodes = [...mutation.addedNodes, ...mutation.removedNodes];
-      return nodes.some((node) => !(node.nodeType === 1 && node.classList.contains("performance-date-marker")));
+      return nodes.some((node) => node.nodeType === 1 && !node.classList.contains("performance-date-marker"));
     });
     if (hasExternalChange) queueEnhance();
   });
