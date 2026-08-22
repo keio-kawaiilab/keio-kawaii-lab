@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!calendar || !list) return;
 
   const normalize = (value) => String(value || "")
-    .replace(/^[⏰🎫💳🎤]\s*/u, "")
+    .replace(/^[⏰🎫💳🎤📱]\s*/u, "")
     .replace(/^(FRUITS ZIPPER|CANDY TUNE|SWEET STEADY|CUTIE STREET|MORE STAR|KAWAII LAB\.合同|KAWAII LAB\.)\s*[｜|:\-]?\s*/i, "")
     .replace(/\s*@.+$/u, "")
     .replace(/(?:アップグレード抽選受付|一般(?:発売|販売|先行)|FC\s*(?:会員)?先行|ファンクラブ|OFFICIAL FANCLUB|先行受付|チケット受付|受付のお知らせ).*$/iu, "")
@@ -13,11 +13,11 @@ document.addEventListener("DOMContentLoaded", () => {
     .toLowerCase();
 
   const targetTitle = (button) => {
-    const titled = String(button.title || "").replace(/^[⏰🎫💳🎤]\s*/u, "").split("｜")[0].trim();
+    const titled = String(button.title || "").replace(/^[⏰🎫💳🎤📱]\s*/u, "").split("｜")[0].trim();
     if (titled) return titled;
     const strong = button.querySelector("strong");
     if (strong?.textContent) return strong.textContent.trim();
-    return button.textContent.replace(/^[⏰🎫💳🎤]\s*/u, "").split("｜")[0].trim();
+    return button.textContent.replace(/^[⏰🎫💳🎤📱]\s*/u, "").split("｜")[0].trim();
   };
 
   const findCard = (title) => {
