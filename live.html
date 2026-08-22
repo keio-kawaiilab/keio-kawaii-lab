@@ -38,7 +38,7 @@
   <section class="page-head live-page-head">
     <span class="tricolor-dots" aria-hidden="true"><i></i><i></i><i></i></span>
     <h1><span class="en">LIVE & TICKET</span>ライブ・チケット情報</h1>
-    <p class="live-lead">今日から5週間の申込状況と、ツアーを含む各公演日をまとめて確認できます。</p>
+    <p class="live-lead">今日から5週間の申込状況と各公演日を、色でグループ・文字で公演名が分かる形で確認できます。</p>
   </section>
   <div class="scallop" aria-hidden="true"></div>
 
@@ -68,7 +68,7 @@
         <button id="calendar-prev" class="calendar-nav" type="button" aria-label="前の5週間を表示">‹</button>
         <div>
           <div id="calendar-month" class="calendar-month" aria-live="polite"></div>
-          <p class="calendar-help">横帯＝申込期間　／　色＝グループ　／　🎤＝各公演日</p>
+          <p class="calendar-help">色＝グループ　／　横帯＝申込期間　／　🎤＝各公演日　／　文字＝短い公演名</p>
         </div>
         <button id="calendar-next" class="calendar-nav" type="button" aria-label="次の5週間を表示">›</button>
       </div>
@@ -92,7 +92,7 @@
 
       <div id="calendar-detail" class="calendar-detail" aria-live="polite">
         <strong>カレンダーの項目を押すと詳細を表示</strong>
-        <span>公演名・販売区分・受付名・対象・会場・期限をここで確認できます。</span>
+        <span>正式公演名・販売区分・受付名・対象・会場・期限をここで確認できます。</span>
       </div>
 
       <div class="section-title live-section-title live-list-title">
@@ -135,5 +135,6 @@
 <script src="./script.js"></script>
 <script src="./live.js"></script>
 <script src="./calendar-performance-dates.js"></script>
+<script src="./calendar-readable-labels.js?v=202608230250"></script>
 </body>
 </html>
