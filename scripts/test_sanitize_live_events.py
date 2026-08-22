@@ -97,6 +97,45 @@ class SanitizerTests(unittest.TestCase):
         self.assertEqual(result[0]["eventDate"], "2026-12-12")
         self.assertEqual(result[0]["eventEndDate"], "2026-12-13")
 
+    def test_tour_dates_with_same_application_window_become_one_item(self):
+        base = {
+            "group": "CANDY TUNE",
+            "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN - FC先行",
+            "ticketType": "FC先行",
+            "applyStart": "2026-06-24T18:00",
+            "applyEnd": "2026-06-29T23:59",
+            "sourceType": "auto",
+            "url": "https://example.test/tour",
+        }
+        payload = {"events": [
+            {**base, "id": "t1", "eventDate": "2026-08-29", "venue": "戸田市文化会館"},
+            {**base, "id": "t2", "eventDate": "2026-09-04", "venue": "カルッツかわさき"},
+            {**base, "id": "t3", "eventDate": "2026-09-09", "venue": "グランキューブ大阪"},
+        ]}
+        result = s.sanitize_payload(payload)["events"]
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["eventDate"], "2026-08-29")
+        self.assertEqual(result[0]["eventEndDate"], "2026-09-09")
+        self.assertEqual(result[0]["eventCount"], 3)
+        self.assertEqual(result[0]["venue"], "複数会場（全3公演）")
+        self.assertEqual(len(result[0]["schedule"]), 3)
+
+    def test_tour_with_different_application_windows_stays_separate(self):
+        common = {
+            "group": "CUTIE STREET",
+            "title": "CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-",
+            "ticketType": "FC先行",
+            "eventDate": "2026-09-23",
+            "venue": "横浜アリーナ",
+            "sourceType": "auto",
+        }
+        payload = {"events": [
+            {**common, "id": "w1", "applyStart": "2026-06-01T12:00", "applyEnd": "2026-06-17T23:59", "url": "https://example.test/1"},
+            {**common, "id": "w2", "applyStart": "2026-07-01T12:00", "applyEnd": "2026-07-10T23:59", "url": "https://example.test/2"},
+        ]}
+        result = s.sanitize_payload(payload)["events"]
+        self.assertEqual(len(result), 2)
+
 
 if __name__ == "__main__":
     unittest.main()
