@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const processMilestone = (node) => {
     if (node.dataset.readableLabel === "1") return;
     const original = node.textContent.trim();
-    const match = original.match(/^([⏰🎫💳🎤])\s*(.+)$/u);
+    const match = original.match(/^([⏰🎫💳🎤📱])\s*(.+)$/u);
     if (!match) return;
 
     const icon = match[1];
