@@ -39,7 +39,12 @@ jobs:
         working-directory: scripts
         run: python -m unittest -v test_update_live_events.py
 
-      - name: Test official-site crawl and generate calendar data
+      - name: Check official public sources on pull requests
+        if: github.event_name == 'pull_request'
+        run: python scripts/update_live_events.py --check
+
+      - name: Update calendar data from official public sources
+        if: github.event_name != 'pull_request'
         run: python scripts/update_live_events.py
 
       - name: Commit when data changed
