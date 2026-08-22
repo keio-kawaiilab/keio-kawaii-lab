@@ -1,3 +1,4 @@
+from datetime import date
 import unittest
 
 import sanitize_live_events as s
@@ -77,18 +78,18 @@ class SanitizerTests(unittest.TestCase):
 
     def test_joint_two_day_event_becomes_one_range(self):
         events = []
-        for date in ("2026-12-12", "2026-12-13"):
+        for day in ("2026-12-12", "2026-12-13"):
             for group in ("FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY"):
                 events.append({
-                    "id": f"{group}-{date}",
+                    "id": f"{group}-{day}",
                     "group": group,
                     "title": "KAWAII LAB. Christmas SESSION 2026",
                     "ticketType": "アップグレード抽選",
                     "applyStart": "2026-08-22T12:00",
                     "applyEnd": "2026-08-30T23:59",
-                    "eventDate": date,
+                    "eventDate": day,
                     "venue": "有明アリーナ",
-                    "url": f"https://example.test/{group}/{date}",
+                    "url": f"https://example.test/{group}/{day}",
                     "sourceType": "auto",
                 })
         result = s.sanitize_payload({"events": events})["events"]
@@ -120,26 +121,19 @@ class SanitizerTests(unittest.TestCase):
         self.assertEqual(result[0]["venue"], "複数会場（全3公演）")
         self.assertEqual(len(result[0]["schedule"]), 3)
 
-    def test_summary_page_same_application_window_becomes_one_item(self):
-        base = {
+    def test_aggregate_ticket_summary_is_not_published_automatically(self):
+        payload = {"events": [{
+            "id": "s1",
             "group": "CUTIE STREET",
             "title": "★CUTIE STREET チケット先行まとめ情報★",
             "ticketType": "KAWAII LAB. FC先行",
             "applyStart": "2026-07-26T12:00",
             "applyEnd": "2026-08-02T23:59",
-            "sourceType": "auto",
+            "eventDate": "2026-09-23",
+            "venue": "横浜アリーナ",
             "url": "https://example.test/summary",
-        }
-        payload = {"events": [
-            {**base, "id": "s1", "eventDate": "2026-08-25", "venue": "A"},
-            {**base, "id": "s2", "eventDate": "2026-09-14", "venue": "B"},
-            {**base, "id": "s3", "eventDate": "2026-09-23", "venue": "C"},
-        ]}
-        result = s.sanitize_payload(payload)["events"]
-        self.assertEqual(len(result), 1)
-        self.assertEqual(result[0]["eventCount"], 3)
-        self.assertEqual(result[0]["eventDate"], "2026-08-25")
-        self.assertEqual(result[0]["eventEndDate"], "2026-09-23")
+        }]}
+        self.assertEqual(s.sanitize_payload(payload)["events"], [])
 
     def test_tour_with_different_application_windows_stays_separate(self):
         common = {
@@ -156,6 +150,46 @@ class SanitizerTests(unittest.TestCase):
         ]}
         result = s.sanitize_payload(payload)["events"]
         self.assertEqual(len(result), 2)
+
+    def test_expired_ticket_rounds_become_one_schedule_only_item(self):
+        common = {
+            "group": "CUTIE STREET",
+            "title": "「CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-」FC先行開始！",
+            "eventDate": "2026-09-23",
+            "eventEndDate": "2026-11-29",
+            "eventDates": ["2026-09-23", "2026-11-29"],
+            "schedule": [
+                {"date": "2026-09-23", "venue": "横浜アリーナ"},
+                {"date": "2026-11-29", "venue": "IGアリーナ"},
+            ],
+            "venue": "複数会場（全2公演）",
+        }
+        payload = {"events": [
+            {**common, "id": "old1", "ticketType": "年会費コース会員先行", "applyStart": "2026-06-01T12:00", "applyEnd": "2026-06-17T23:59", "url": "https://example.test/1"},
+            {**common, "id": "old2", "ticketType": "FC先行", "applyStart": "2026-06-28T12:00", "applyEnd": "2026-07-12T23:59", "url": "https://example.test/2"},
+        ]}
+        result = s.sanitize_payload(payload, today=date(2026, 8, 23))["events"]
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["ticketType"], "現在受付なし")
+        self.assertIsNone(result[0]["applyStart"])
+        self.assertIsNone(result[0]["applyEnd"])
+        self.assertEqual(result[0]["title"], "CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-")
+
+    def test_current_ticket_round_hides_older_round_for_same_event(self):
+        common = {
+            "group": "CUTIE STREET",
+            "title": "「CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-」FC先行",
+            "eventDate": "2026-09-23",
+            "venue": "横浜アリーナ",
+        }
+        payload = {"events": [
+            {**common, "id": "old", "ticketType": "FC先行", "applyStart": "2026-06-28T12:00", "applyEnd": "2026-07-12T23:59", "url": "https://example.test/old"},
+            {**common, "id": "new", "ticketType": "一般先行", "applyStart": "2026-08-20T12:00", "applyEnd": "2026-08-30T23:59", "url": "https://example.test/new"},
+        ]}
+        result = s.sanitize_payload(payload, today=date(2026, 8, 23))["events"]
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["id"], "new")
+        self.assertEqual(result[0]["ticketType"], "一般先行")
 
 
 if __name__ == "__main__":
