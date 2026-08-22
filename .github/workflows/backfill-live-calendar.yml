@@ -6,6 +6,13 @@ on:
       - "scripts/update_live_events_deep.py"
       - "scripts/test_update_live_events_deep.py"
       - ".github/workflows/backfill-live-calendar.yml"
+  push:
+    branches:
+      - "feature/live-ticket-calendar"
+    paths:
+      - "scripts/update_live_events_deep.py"
+      - "scripts/test_update_live_events_deep.py"
+      - ".github/workflows/backfill-live-calendar.yml"
   schedule:
     - cron: "41 18 * * 0"
   workflow_dispatch:
