@@ -29,6 +29,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
   };
   const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+  const participants = (event) => Array.isArray(event.participants) ? event.participants : [];
+  const selectedGroup = () => document.querySelector(".live-filter.is-active")?.dataset.group || "all";
+  const matchesSelectedGroup = (event) => {
+    const selected = selectedGroup();
+    return selected === "all" || event.group === selected || participants(event).includes(selected);
+  };
   const cleanTitle = (event) => {
     let title = String(event.title || "ライブ情報").replace(/^20\d{2}[./-]\d{1,2}[./-]\d{1,2}\s+/, "").trim();
     const quoted = title.match(/「([^」]+)」/);
@@ -106,6 +112,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (text !== span.textContent) span.textContent = text;
       });
 
+      const visiblePerformances = uniquePerformances.filter((item) => matchesSelectedGroup(item.event));
       const weeks = [...calendar.querySelectorAll(weekSelector)];
       weeks.forEach((week, weekIndex) => {
         const weekStart = addDays(windowInfo.gridStart, weekIndex * 7);
@@ -119,7 +126,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         const rows = Array(7).fill(0);
-        uniquePerformances.forEach((item) => {
+        visiblePerformances.forEach((item) => {
           const d = parseDay(item.date);
           if (!d || d < windowInfo.visibleStart || d < weekStart || d > weekEnd) return;
           const dayIndex = Math.round((d - weekStart) / 86400000);
