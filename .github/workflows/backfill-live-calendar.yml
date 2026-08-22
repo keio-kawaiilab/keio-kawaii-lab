@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - "scripts/update_live_events_deep.py"
+      - "scripts/update_sukisuki_events.py"
       - "scripts/test_update_live_events_deep.py"
       - ".github/workflows/backfill-live-calendar.yml"
   push:
@@ -11,6 +12,7 @@ on:
       - "feature/live-ticket-calendar"
     paths:
       - "scripts/update_live_events_deep.py"
+      - "scripts/update_sukisuki_events.py"
       - "scripts/test_update_live_events_deep.py"
       - ".github/workflows/backfill-live-calendar.yml"
   schedule:
@@ -46,14 +48,17 @@ jobs:
         working-directory: scripts
         run: python -m unittest -v test_update_live_events_deep.py test_update_live_events_v2.py test_sanitize_live_events.py
 
-      - name: Verify deep official-source scan on pull requests
+      - name: Verify deep official and SUKISUKI source scan on pull requests
         if: github.event_name == 'pull_request'
-        run: python scripts/update_live_events_deep.py --check
+        run: |
+          python scripts/update_live_events_deep.py --check
+          python scripts/update_sukisuki_events.py --check
 
       - name: Deep backfill calendar data
         if: github.event_name != 'pull_request'
         run: |
           python scripts/update_live_events_deep.py
+          python scripts/update_sukisuki_events.py
           python scripts/sanitize_live_events.py
 
       - name: Commit when data changed
