@@ -1,6 +1,11 @@
 name: Update live ticket calendar
 
 on:
+  pull_request:
+    paths:
+      - "scripts/**"
+      - ".github/workflows/update-live-calendar.yml"
+      - "data/live-events.json"
   schedule:
     - cron: "23 */6 * * *"
   workflow_dispatch:
@@ -9,7 +14,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: update-live-ticket-calendar
+  group: update-live-ticket-calendar-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -34,10 +39,11 @@ jobs:
         working-directory: scripts
         run: python -m unittest -v test_update_live_events.py
 
-      - name: Update calendar data from official public pages
+      - name: Test official-site crawl and generate calendar data
         run: python scripts/update_live_events.py
 
       - name: Commit when data changed
+        if: github.event_name != 'pull_request'
         shell: bash
         run: |
           if git diff --quiet -- data/live-events.json; then
