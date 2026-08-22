@@ -15,7 +15,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     "CANDY TUNE": "group-candy",
     "SWEET STEADY": "group-sweet",
     "CUTIE STREET": "group-cutie",
-    "MORE STAR": "group-more"
+    "MORE STAR": "group-more",
+    "KAWAII LAB.合同": "group-lab"
   };
 
   const esc = (value = "") => String(value)
@@ -60,6 +61,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     return `${d.getMonth() + 1}/${d.getDate()}`;
   };
 
+  const fmtShortEventRange = (event) => {
+    const start = parseDate(event.eventDate);
+    const end = parseDate(event.eventEndDate);
+    if (!start) return "日程未定";
+    if (!end || start.getTime() === end.getTime()) return `${start.getMonth() + 1}/${start.getDate()}`;
+    if (start.getFullYear() === end.getFullYear() && start.getMonth() === end.getMonth()) {
+      return `${start.getMonth() + 1}/${start.getDate()}–${end.getDate()}`;
+    }
+    return `${start.getMonth() + 1}/${start.getDate()}–${end.getMonth() + 1}/${end.getDate()}`;
+  };
+
+  const fmtEventRange = (event) => {
+    if (!event.eventEndDate) return fmt(event.eventDate);
+    return `${fmt(event.eventDate)} 〜 ${fmt(event.eventEndDate)}`;
+  };
+
+  const participants = (event) => Array.isArray(event.participants) ? event.participants : [];
+  const eventMatchesGroup = (event, group) => {
+    if (group === "all") return true;
+    return event.group === group || participants(event).includes(group);
+  };
+
   const getStatus = (event) => {
     const now = new Date();
     const start = parseDate(event.applyStart);
@@ -73,11 +96,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     return { label: "日程確認中", cls: "" };
   };
 
+  const sourceUrls = (event) => {
+    const urls = Array.isArray(event.urls) ? event.urls.filter(Boolean) : [];
+    if (event.url && !urls.includes(event.url)) urls.unshift(event.url);
+    return urls;
+  };
+
   const detailHtml = (event, focus = "") => {
-    const eventDate = fmtShortDate(event.eventDate);
+    const eventDate = fmtShortEventRange(event);
     const ticketType = event.ticketType || "チケット受付";
-    const focusText = focus ? `<br><span>${esc(focus)}</span>` : "";
-    return `<strong>${esc(eventDate)}開催｜${esc(event.title || "ライブ情報")}</strong><span>${esc(event.group || "KAWAII LAB.")}｜${esc(ticketType)}</span>${focusText}`;
+    const participantText = participants(event).length
+      ? `<span>参加: ${esc(participants(event).join(" / "))}</span>`
+      : "";
+    const focusText = focus ? `<span>${esc(focus)}</span>` : "";
+    const urls = sourceUrls(event);
+    const source = urls.length
+      ? `<a href="${esc(urls[0])}" target="_blank" rel="noopener noreferrer">公式情報を確認する →</a>`
+      : "";
+    return `<strong>${esc(eventDate)}開催｜${esc(event.title || "ライブ情報")}</strong><span>${esc(event.group || "KAWAII LAB.")}｜${esc(ticketType)}</span>${participantText}${focusText}${source}`;
   };
 
   let events = [];
@@ -96,11 +132,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   let shownYear = today.getFullYear();
   let shownMonth = today.getMonth();
 
-  const filteredEvents = () => selected === "all" ? events : events.filter((e) => e.group === selected);
+  const filteredEvents = () => events.filter((event) => eventMatchesGroup(event, selected));
 
   const renderList = () => {
     const filtered = filteredEvents();
-    const openCount = filtered.filter((e) => ["open", "soon"].includes(getStatus(e).cls)).length;
+    const openCount = filtered.filter((event) => ["open", "soon"].includes(getStatus(event).cls)).length;
     summary.textContent = filtered.length
       ? `${filtered.length}件掲載中・うち受付中 ${openCount}件`
       : "現在、掲載中のライブ・チケット受付情報はありません。";
@@ -119,14 +155,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     list.innerHTML = sorted.map((event) => {
       const status = getStatus(event);
       const cls = groupClass[event.group] || "";
-      const source = event.url
-        ? `<a class="live-link" href="${esc(event.url)}" target="_blank" rel="noopener noreferrer">公式情報を確認する →</a>`
+      const urls = sourceUrls(event);
+      const source = urls.length
+        ? `<a class="live-link" href="${esc(urls[0])}" target="_blank" rel="noopener noreferrer">公式情報を確認する${urls.length > 1 ? `（代表1件 / 計${urls.length}件）` : ""} →</a>`
+        : "";
+      const participantMeta = participants(event).length
+        ? `<div><dt>参加グループ</dt><dd>${esc(participants(event).join(" / "))}</dd></div>`
         : "";
       return `
         <article class="live-card ${cls}">
           <div class="live-card-top">
             <div>
-              <div class="live-event-date">🎤 ${esc(fmtShortDate(event.eventDate))}開催</div>
+              <div class="live-event-date">🎤 ${esc(fmtShortEventRange(event))}開催</div>
               <div class="live-group">${esc(event.group || "KAWAII LAB.")}</div>
               <h3>${esc(event.title || "ライブ情報")}</h3>
             </div>
@@ -134,11 +174,12 @@ document.addEventListener("DOMContentLoaded", async () => {
           </div>
           <dl class="live-meta">
             <div><dt>受付種別</dt><dd>${esc(event.ticketType || "未定")}</dd></div>
-            <div><dt>公演日</dt><dd>${fmt(event.eventDate)}</dd></div>
-            <div><dt>申込開始</dt><dd>${fmt(event.applyStart)}</dd></div>
-            <div><dt>申込締切</dt><dd>${fmt(event.applyEnd)}</dd></div>
-            <div><dt>当落発表</dt><dd>${fmt(event.resultDate)}</dd></div>
-            <div><dt>入金期限</dt><dd>${fmt(event.paymentEnd)}</dd></div>
+            <div><dt>公演日</dt><dd>${esc(fmtEventRange(event))}</dd></div>
+            ${participantMeta}
+            <div><dt>申込開始</dt><dd>${esc(fmt(event.applyStart))}</dd></div>
+            <div><dt>申込締切</dt><dd>${esc(fmt(event.applyEnd))}</dd></div>
+            <div><dt>当落発表</dt><dd>${esc(fmt(event.resultDate))}</dd></div>
+            <div><dt>入金期限</dt><dd>${esc(fmt(event.paymentEnd))}</dd></div>
             <div><dt>会場</dt><dd>${esc(event.venue || "未定")}</dd></div>
           </dl>
           ${source}
@@ -201,7 +242,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         laneEnds[lane] = endIndex;
 
         const event = item.event;
-        const dateLabel = `${fmtShortDate(event.eventDate)}開催`;
+        const dateLabel = `${fmtShortEventRange(event)}開催`;
         const barHtml = `<strong>${esc(dateLabel)}</strong><span>${esc(event.group || "KAWAII LAB.")}｜${esc(event.title || "ライブ")}｜${esc(event.ticketType || "受付")}</span>`;
         const bar = makeButton("calendar-event-bar", barHtml, event, `${fmt(event.applyStart)} 〜 ${fmt(event.applyEnd)}`);
         bar.style.left = `calc(${(startIndex / 7) * 100}% + 4px)`;
@@ -230,7 +271,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       milestones.sort((a, b) => a.date - b.date).forEach((item) => {
         const dayIndex = Math.round((item.date - weekStart) / 86400000);
         const row = perDayCount[dayIndex]++;
-        const text = `${item.icon} ${fmtShortDate(item.event.eventDate)}公演 ${item.label}`;
+        const text = `${item.icon} ${fmtShortEventRange(item.event)}公演 ${item.label}`;
         const button = makeButton("calendar-milestone", esc(text), item.event, `${item.label}: ${fmt(item.value)}`);
         button.title = `${item.event.title || "ライブ"}｜${item.label}`;
         button.style.left = `calc(${(dayIndex / 7) * 100}% + 4px)`;
