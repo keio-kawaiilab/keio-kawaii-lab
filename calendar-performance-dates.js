@@ -156,7 +156,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     clearTimeout(timer);
     timer = setTimeout(enhance, 60);
   };
-  new MutationObserver(queueEnhance).observe(calendar, { childList: true, subtree: true });
+  const calendarObserver = new MutationObserver((mutations) => {
+    const hasExternalChange = mutations.some((mutation) => {
+      const nodes = [...mutation.addedNodes, ...mutation.removedNodes];
+      return nodes.some((node) => !(node.nodeType === 1 && node.classList.contains("performance-date-marker")));
+    });
+    if (hasExternalChange) queueEnhance();
+  });
+  calendarObserver.observe(calendar, { childList: true, subtree: true });
   new MutationObserver(queueEnhance).observe(periodLabel, { childList: true, characterData: true, subtree: true });
   document.querySelectorAll(".live-filter, #calendar-prev, #calendar-next").forEach((button) => button.addEventListener("click", queueEnhance));
   queueEnhance();
