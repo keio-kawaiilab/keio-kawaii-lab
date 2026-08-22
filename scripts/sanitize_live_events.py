@@ -10,6 +10,7 @@ from pathlib import Path
 DATA_PATH = Path("data/live-events.json")
 TITLE_PREFIX_RE = re.compile(r"^20\d{2}[./-]\d{1,2}[./-]\d{1,2}\s+")
 TITLE_DATE_RE = re.compile(r"(?:(?:20\d{2})年\s*)?\d{1,2}月\s*\d{1,2}日(?:\s*[（(][^）)]*[）)])?")
+TOUR_RE = re.compile(r"(?:\bTOUR\b|ツアー)", re.IGNORECASE)
 GROUP_ORDER = {
     "FRUITS ZIPPER": 0,
     "CANDY TUNE": 1,
@@ -53,6 +54,39 @@ def parse_day(value: str | None):
         return datetime.strptime(str(value)[:10], "%Y-%m-%d").date()
     except ValueError:
         return None
+
+
+def event_dates(event: dict) -> list[str]:
+    values = []
+    raw_dates = event.get("eventDates")
+    if isinstance(raw_dates, list):
+        values.extend(str(x)[:10] for x in raw_dates if parse_day(x))
+    elif parse_day(event.get("eventDate")):
+        values.append(str(event.get("eventDate"))[:10])
+    return sorted(distinct(values))
+
+
+def event_schedule(event: dict) -> list[dict]:
+    raw = event.get("schedule")
+    if isinstance(raw, list) and raw:
+        result = []
+        seen = set()
+        for item in raw:
+            if not isinstance(item, dict):
+                continue
+            date = str(item.get("date") or "")[:10]
+            venue = str(item.get("venue") or "").strip() or None
+            if not parse_day(date):
+                continue
+            key = (date, venue)
+            if key in seen:
+                continue
+            seen.add(key)
+            result.append({"date": date, "venue": venue})
+        return sorted(result, key=lambda x: x["date"])
+
+    venue = str(event.get("venue") or "").strip() or None
+    return [{"date": date, "venue": venue} for date in event_dates(event)]
 
 
 def base_cleanup(payload: dict) -> list[dict]:
@@ -170,6 +204,10 @@ def merge_consecutive_days(events: list[dict]) -> list[dict]:
             merged["eventDate"] = dates[0].isoformat()
             merged["eventEndDate"] = dates[-1].isoformat()
             merged["eventDates"] = [d.isoformat() for d in dates]
+            merged["schedule"] = [
+                {"date": day.isoformat(), "venue": item.get("venue")}
+                for day, item in run
+            ]
             merged["urls"] = all_urls
             merged["url"] = all_urls[0] if all_urls else merged.get("url")
             merged["id"] = stable_id("range", *key, dates[0], dates[-1])
@@ -192,11 +230,76 @@ def merge_consecutive_days(events: list[dict]) -> list[dict]:
     return result
 
 
+def merge_tour_same_window(events: list[dict]) -> list[dict]:
+    """同じツアーで申込期間が同じ全日程を、カレンダー上は1件に圧縮する。"""
+    buckets: dict[tuple, list[dict]] = {}
+    passthrough: list[dict] = []
+
+    for event in events:
+        if not TOUR_RE.search(str(event.get("title") or "")):
+            passthrough.append(event)
+            continue
+        participants = tuple(event.get("participants") or [])
+        key = (
+            event.get("group"),
+            participants,
+            title_merge_key(event.get("title", "")),
+            event.get("ticketType"),
+            event.get("applyStart"),
+            event.get("applyEnd"),
+            event.get("resultDate"),
+            event.get("paymentEnd"),
+        )
+        buckets.setdefault(key, []).append(event)
+
+    merged_result = list(passthrough)
+    for key, items in buckets.items():
+        schedules = []
+        for item in items:
+            schedules.extend(event_schedule(item))
+        schedule_seen = set()
+        schedule = []
+        for item in sorted(schedules, key=lambda x: (x["date"], x.get("venue") or "")):
+            marker = (item["date"], item.get("venue"))
+            if marker in schedule_seen:
+                continue
+            schedule_seen.add(marker)
+            schedule.append(item)
+
+        dates = sorted(distinct(item["date"] for item in schedule))
+        if len(dates) <= 1:
+            merged_result.extend(items)
+            continue
+
+        first = dict(items[0])
+        urls = distinct(
+            url
+            for item in items
+            for url in (item.get("urls") or ([item.get("url")] if item.get("url") else []))
+        )
+        venues = distinct(item.get("venue") for item in schedule)
+        first["eventDate"] = dates[0]
+        first["eventEndDate"] = dates[-1]
+        first["eventDates"] = dates
+        first["eventCount"] = len(dates)
+        first["schedule"] = schedule
+        first["venues"] = venues
+        first["venue"] = venues[0] if len(venues) == 1 else f"複数会場（全{len(dates)}公演）"
+        first["urls"] = urls
+        first["url"] = urls[0] if urls else first.get("url")
+        first["id"] = stable_id("tour-window", *key, dates[0], dates[-1], len(dates))
+        first["sourceType"] = "derived"
+        merged_result.append(first)
+
+    return merged_result
+
+
 def sanitize_payload(payload: dict) -> dict:
     cleaned = dict(payload)
     events = base_cleanup(payload)
     events = merge_joint_events(events)
     events = merge_consecutive_days(events)
+    events = merge_tour_same_window(events)
     events.sort(key=lambda e: (
         str(e.get("applyEnd") or "9999"),
         str(e.get("eventDate") or "9999"),
