@@ -103,7 +103,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       calendar.querySelectorAll(".performance-date-marker").forEach((node) => node.remove());
       calendar.querySelectorAll(milestoneSelector).forEach((node) => {
-        if (node.textContent.trim().startsWith("🎤")) node.style.display = "none";
+        const text = node.textContent.trim();
+        if (text.startsWith("🎤") || text.startsWith("📱")) node.style.display = "none";
       });
 
       calendar.querySelectorAll(`${barSelector} span`).forEach((span) => {
@@ -132,16 +133,19 @@ document.addEventListener("DOMContentLoaded", async () => {
           const dayIndex = Math.round((d - weekStart) / 86400000);
           const row = rows[dayIndex]++;
           const button = document.createElement("button");
+          const isOnline = item.event.eventCategory === "online-benefit";
+          const icon = isOnline ? "📱" : "🎤";
           button.type = "button";
           button.className = `${milestoneClass} performance-date-marker ${groupClass[item.event.group] || ""}`;
-          button.textContent = `🎤 ${cleanTitle(item.event)}`;
+          button.textContent = `${icon} ${cleanTitle(item.event)}`;
           button.style.left = `calc(${dayIndex / 7 * 100}% + 4px)`;
           button.style.width = `calc(${100 / 7}% - 8px)`;
           button.style.top = `${baseTop + row * 29}px`;
           button.addEventListener("click", () => {
             if (!detail) return;
             const dText = `${d.getMonth() + 1}/${d.getDate()}`;
-            detail.innerHTML = `<strong>${esc(cleanTitle(item.event))}</strong><span>公演日: ${esc(dText)}</span><span>会場: ${esc(item.venue || item.event.venue || "未定")}</span><span>グループ: ${esc(item.event.group || "KAWAII LAB.")}</span>`;
+            const dateLabel = isOnline ? "配信予定日" : "公演日";
+            detail.innerHTML = `<strong>${esc(cleanTitle(item.event))}</strong><span>${dateLabel}: ${esc(dText)}</span><span>会場: ${esc(item.venue || item.event.venue || "未定")}</span><span>グループ: ${esc(item.event.group || "KAWAII LAB.")}</span>`;
           });
           week.appendChild(button);
         });
