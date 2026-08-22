@@ -16,6 +16,7 @@ import update_live_events_v2 as retention
 
 DEEP_NEWS_PAGES = 15
 REQUEST_PAUSE = 0.10
+COLLAPSE_RATIO = 0.35
 
 
 def candidate_links_deep(session: requests.Session, group: str, base: str, max_pages: int = DEEP_NEWS_PAGES):
@@ -53,12 +54,30 @@ def candidate_links_deep(session: requests.Session, group: str, base: str, max_p
     return list(found.values()), scanned_pages
 
 
-def collect_deep(session: requests.Session):
+def known_urls(existing: dict) -> set[str]:
+    urls: set[str] = set()
+    for event in existing.get("events", []):
+        if not isinstance(event, dict):
+            continue
+        if event.get("url"):
+            urls.add(str(event["url"]))
+        for url in event.get("urls") or []:
+            if url:
+                urls.add(str(url))
+    for item in existing.get("pendingReview", []):
+        if isinstance(item, dict) and item.get("url"):
+            urls.add(str(item["url"]))
+    return urls
+
+
+def collect_deep(session: requests.Session, skip_urls: set[str] | None = None):
+    skip_urls = skip_urls or set()
     all_events: dict[str, dict] = {}
     pending: list[dict] = []
     failures: list[dict] = []
     candidates_by_group: dict[str, int] = {}
     pages_by_group: dict[str, int] = {}
+    skipped_by_group: dict[str, int] = {}
 
     for group, base in parser_v1.GROUPS.items():
         try:
@@ -68,10 +87,17 @@ def collect_deep(session: requests.Session):
         except Exception as exc:
             candidates_by_group[group] = 0
             pages_by_group[group] = 0
+            skipped_by_group[group] = 0
             failures.append({"group": group, "stage": "deep-news-list", "error": str(exc)})
             continue
 
+        skipped = 0
         for candidate in candidates:
+            # Old known articles are retained from existing data. The normal six-hour
+            # crawler is responsible for re-reading recent articles for updates.
+            if candidate.url in skip_urls:
+                skipped += 1
+                continue
             try:
                 events, review = parser_v1.parse_candidate(session, candidate)
                 for event in events:
@@ -81,8 +107,40 @@ def collect_deep(session: requests.Session):
             except Exception as exc:
                 failures.append({"group": group, "url": candidate.url, "stage": "deep-article", "error": str(exc)})
             time.sleep(0.12)
+        skipped_by_group[group] = skipped
 
-    return all_events, pending, failures, candidates_by_group, pages_by_group
+    return all_events, pending, failures, candidates_by_group, pages_by_group, skipped_by_group
+
+
+def detect_candidate_collapse(previous: dict, current: dict) -> list[dict]:
+    """Flag a large listing-count drop, which usually means the official HTML changed."""
+    issues = []
+    for group, old_value in previous.items():
+        try:
+            old = int(old_value)
+            new = int(current.get(group, 0))
+        except (TypeError, ValueError):
+            continue
+        if old < 10:
+            continue
+        threshold = max(3, int(old * COLLAPSE_RATIO))
+        if new < threshold:
+            issues.append({"group": group, "previous": old, "current": new, "threshold": threshold})
+    return issues
+
+
+def merge_pending(existing: dict, new_pending: list[dict]) -> list[dict]:
+    result = []
+    seen = set()
+    for item in list(existing.get("pendingReview", [])) + list(new_pending):
+        if not isinstance(item, dict):
+            continue
+        key = (item.get("url"), item.get("reason"))
+        if key in seen:
+            continue
+        seen.add(key)
+        result.append(item)
+    return result
 
 
 def main() -> int:
@@ -90,48 +148,61 @@ def main() -> int:
     cli.add_argument("--check", action="store_true", help="Parse official pages without writing data.")
     args = cli.parse_args()
 
+    existing = parser_v1.read_existing()
+    already_known = known_urls(existing)
+
     session = requests.Session()
     session.headers.update({
-        "User-Agent": "KeioKawaiiLabCalendarBot/1.3 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"
+        "User-Agent": "KeioKawaiiLabCalendarBot/1.4 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"
     })
 
-    fresh_by_id, pending, failures, counts, pages = collect_deep(session)
+    fresh_by_id, pending, failures, counts, pages, skipped = collect_deep(session, already_known)
     reachable_groups = sum(1 for count in counts.values() if count > 0)
+
+    previous_counts = ((existing.get("deepDiagnostics") or {}).get("candidateCounts") or {})
+    collapse = detect_candidate_collapse(previous_counts, counts)
     diagnostics = {
         "mode": "weekly-deep-backfill",
         "scannedPages": pages,
         "candidateCounts": counts,
-        "parsedEvents": len(fresh_by_id),
-        "pendingReview": len(pending),
+        "skippedKnownCandidates": skipped,
+        "newParsedEvents": len(fresh_by_id),
+        "newPendingReview": len(pending),
         "failures": failures,
+        "collapseWarnings": collapse,
     }
     print(json.dumps(diagnostics, ensure_ascii=False, indent=2))
 
     if reachable_groups < 4:
         print("Fewer than four group news feeds were reachable during deep backfill.", file=sys.stderr)
         return 2
-    if not fresh_by_id:
-        print("No events parsed during deep backfill; existing data left untouched.", file=sys.stderr)
+    if collapse:
+        print("Candidate counts collapsed; existing data left untouched for safety.", file=sys.stderr)
         return 2
     if args.check:
         print("Deep live source check passed; no files were modified.")
         return 0
 
-    existing = parser_v1.read_existing()
     payload = retention.build_payload(
         existing,
         fresh_by_id,
-        pending,
+        merge_pending(existing, pending),
         failures,
         datetime.now(parser_v1.JST).date(),
     )
     payload["source"] = "KAWAII LAB.各グループ公式サイトの公開INFORMATION（通常巡回＋週次深掘り）"
+    payload["deepDiagnostics"] = {
+        "updatedAt": datetime.now(parser_v1.JST).isoformat(timespec="seconds"),
+        "scannedPages": pages,
+        "candidateCounts": counts,
+        "skippedKnownCandidates": skipped,
+    }
     parser_v1.OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     parser_v1.OUTPUT_PATH.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
-    print(f"Deep backfill wrote {len(payload['events'])} retained/future events.")
+    print(f"Deep backfill wrote {len(payload['events'])} retained/future events; {len(fresh_by_id)} newly parsed.")
     return 0
 
 
