@@ -4,12 +4,14 @@ from __future__ import annotations
 import hashlib
 import json
 import re
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 DATA_PATH = Path("data/live-events.json")
 TITLE_PREFIX_RE = re.compile(r"^20\d{2}[./-]\d{1,2}[./-]\d{1,2}\s+")
 TITLE_DATE_RE = re.compile(r"(?:(?:20\d{2})年\s*)?\d{1,2}月\s*\d{1,2}日(?:\s*[（(][^）)]*[）)])?")
+AGGREGATE_TICKET_RE = re.compile(r"(?:チケット.*まとめ|まとめ.*チケット)")
 GROUP_ORDER = {
     "FRUITS ZIPPER": 0,
     "CANDY TUNE": 1,
@@ -21,6 +23,16 @@ GROUP_ORDER = {
 
 def clean_title(value: str) -> str:
     return TITLE_PREFIX_RE.sub("", str(value or "")).strip()
+
+
+def neutral_title(value: str) -> str:
+    """受付終了後に表示する公演予定用の、受付文言を含まないタイトルを作る。"""
+    title = clean_title(value)
+    quoted = re.search(r"「([^」]+)」", title)
+    if quoted:
+        return quoted.group(1).strip()
+    title = re.split(r"(?:開催決定|FC\s*先行|ファンクラブ|OFFICIAL FANCLUB|先行受付|チケット受付)", title, maxsplit=1)[0]
+    return title.strip(" !！-–—｜|　") or clean_title(value)
 
 
 def title_merge_key(value: str) -> str:
@@ -73,19 +85,19 @@ def event_schedule(event: dict) -> list[dict]:
         for item in raw:
             if not isinstance(item, dict):
                 continue
-            date = str(item.get("date") or "")[:10]
+            day = str(item.get("date") or "")[:10]
             venue = str(item.get("venue") or "").strip() or None
-            if not parse_day(date):
+            if not parse_day(day):
                 continue
-            key = (date, venue)
+            key = (day, venue)
             if key in seen:
                 continue
             seen.add(key)
-            result.append({"date": date, "venue": venue})
+            result.append({"date": day, "venue": venue})
         return sorted(result, key=lambda x: x["date"])
 
     venue = str(event.get("venue") or "").strip() or None
-    return [{"date": date, "venue": venue} for date in event_dates(event)]
+    return [{"date": day, "venue": venue} for day in event_dates(event)]
 
 
 def base_cleanup(payload: dict) -> list[dict]:
@@ -96,6 +108,11 @@ def base_cleanup(payload: dict) -> list[dict]:
             continue
         event = dict(original)
         event["title"] = clean_title(event.get("title", ""))
+
+        # 「チケット先行まとめ情報」のような集約記事は、1つの受付期間と
+        # 複数の別公演の対応関係を安全に特定できないため自動掲載に使わない。
+        if AGGREGATE_TICKET_RE.search(event["title"]):
+            continue
 
         event_date = str(event.get("eventDate") or "")[:10]
         result_date = str(event.get("resultDate") or "")[:10]
@@ -225,7 +242,7 @@ def merge_consecutive_days(events: list[dict]) -> list[dict]:
 
 
 def merge_same_window(events: list[dict]) -> list[dict]:
-    """同じ告知・受付種別・申込期間の複数公演は、タイトルにTOUR表記がなくても1件に圧縮する。"""
+    """同じ公演告知・受付種別・申込期間の複数日程を1件に圧縮する。"""
     buckets: dict[tuple, list[dict]] = {}
     for event in events:
         participants = tuple(event.get("participants") or [])
@@ -284,12 +301,91 @@ def merge_same_window(events: list[dict]) -> list[dict]:
     return result
 
 
-def sanitize_payload(payload: dict) -> dict:
+def event_identity(event: dict) -> tuple:
+    schedule = tuple(
+        (item.get("date"), re.sub(r"\s+", "", str(item.get("venue") or "")))
+        for item in event_schedule(event)
+    )
+    return (
+        event.get("group"),
+        tuple(event.get("participants") or []),
+        schedule,
+    )
+
+
+def latest_relevant_ticket_day(event: dict):
+    days = [parse_day(event.get(key)) for key in ("applyEnd", "resultDate", "paymentEnd")]
+    days = [d for d in days if d]
+    return max(days) if days else None
+
+
+def collapse_expired_application_windows(events: list[dict], today: date) -> list[dict]:
+    """終了済み受付を古い締切のまま残さず、未来公演は「現在受付なし」1件にする。"""
+    buckets: dict[tuple, list[dict]] = {}
+    for event in events:
+        buckets.setdefault(event_identity(event), []).append(event)
+
+    result: list[dict] = []
+    for identity, items in buckets.items():
+        current = []
+        expired = []
+        schedule_only = []
+        for item in items:
+            if item.get("ticketType") == "現在受付なし" or (not item.get("applyStart") and not item.get("applyEnd")):
+                schedule_only.append(item)
+                continue
+            last_relevant = latest_relevant_ticket_day(item)
+            if last_relevant and last_relevant >= today:
+                current.append(item)
+            else:
+                expired.append(item)
+
+        if current:
+            result.extend(current)
+            continue
+        if schedule_only:
+            result.append(max(schedule_only, key=lambda x: str(x.get("sourcePublishedAt") or "")))
+            continue
+        if not expired:
+            continue
+
+        latest = max(
+            expired,
+            key=lambda x: (
+                str(x.get("applyEnd") or ""),
+                str(x.get("sourcePublishedAt") or ""),
+            ),
+        )
+        placeholder = dict(latest)
+        all_urls = distinct(
+            url
+            for item in expired
+            for url in (item.get("urls") or ([item.get("url")] if item.get("url") else []))
+        )
+        placeholder["id"] = stable_id("schedule-only", identity)
+        placeholder["title"] = neutral_title(latest.get("title", ""))
+        placeholder["ticketType"] = "現在受付なし"
+        placeholder["applicationStatus"] = "none"
+        placeholder["applyStart"] = None
+        placeholder["applyEnd"] = None
+        placeholder["resultDate"] = None
+        placeholder["paymentEnd"] = None
+        placeholder["urls"] = all_urls
+        placeholder["url"] = all_urls[0] if all_urls else latest.get("url")
+        placeholder["sourceType"] = "derived"
+        result.append(placeholder)
+
+    return result
+
+
+def sanitize_payload(payload: dict, today: date | None = None) -> dict:
     cleaned = dict(payload)
     events = base_cleanup(payload)
     events = merge_joint_events(events)
     events = merge_consecutive_days(events)
     events = merge_same_window(events)
+    if today is not None:
+        events = collapse_expired_application_windows(events, today)
     events.sort(key=lambda e: (
         str(e.get("applyEnd") or "9999"),
         str(e.get("eventDate") or "9999"),
@@ -303,7 +399,8 @@ def main() -> int:
     if not DATA_PATH.exists():
         return 0
     payload = json.loads(DATA_PATH.read_text(encoding="utf-8"))
-    cleaned = sanitize_payload(payload)
+    today = datetime.now(ZoneInfo("Asia/Tokyo")).date()
+    cleaned = sanitize_payload(payload, today=today)
     DATA_PATH.write_text(json.dumps(cleaned, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Sanitized live calendar data: {len(payload.get('events', []))} -> {len(cleaned.get('events', []))} events")
     return 0
