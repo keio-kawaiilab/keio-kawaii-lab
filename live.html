@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIVE & TICKET | 慶應KAWAII LAB.同好会</title>
+<meta name="description" content="KAWAII LAB.各グループのライブ・チケット申込期間、当落発表、入金期限、公演日をまとめたカレンダーです。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-name">KAWAII LAB.同好会</span>
+      <span class="brand-sub">慶應義塾大学登録学生団体</span>
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="global-nav" aria-label="メニューを開閉">☰</button>
+    <nav class="global-nav" id="global-nav" aria-label="サイト内メニュー">
+      <ul>
+        <li><a href="index.html">トップ</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="activities.html">活動内容</a></li>
+        <li><a href="join.html">入会案内</a></li>
+        <li><a href="live.html" aria-current="page">LIVE情報</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-head live-page-head">
+    <span class="tricolor-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+    <h1><span class="en">LIVE & TICKET</span>ライブ・チケット情報</h1>
+    <p class="live-lead">申込期間を中心に、当落発表・入金期限・公演日をまとめて確認できます。</p>
+  </section>
+  <div class="scallop" aria-hidden="true"></div>
+
+  <section class="section">
+    <div class="container reveal">
+      <div class="section-title">
+        <span class="tricolor-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <h2>受付状況</h2>
+        <span class="en">Ticket Status</span>
+      </div>
+
+      <div class="live-filters" role="group" aria-label="グループで絞り込み">
+        <button class="live-filter is-active" type="button" data-group="all">すべて</button>
+        <button class="live-filter" type="button" data-group="FRUITS ZIPPER">FRUITS ZIPPER</button>
+        <button class="live-filter" type="button" data-group="CANDY TUNE">CANDY TUNE</button>
+        <button class="live-filter" type="button" data-group="SWEET STEADY">SWEET STEADY</button>
+        <button class="live-filter" type="button" data-group="CUTIE STREET">CUTIE STREET</button>
+        <button class="live-filter" type="button" data-group="MORE STAR">MORE STAR</button>
+      </div>
+
+      <div class="live-summary" id="live-summary" aria-live="polite"></div>
+      <div class="live-list" id="live-list"></div>
+
+      <p class="note live-note"><strong>掲載方針:</strong> 公開されている公式情報をもとに掲載します。内容は変更される場合があるため、申込前に必ずリンク先の公式情報をご確認ください。</p>
+    </div>
+  </section>
+</main>
+
+<div class="footer-stripe" aria-hidden="true"></div>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="brand-name">KAWAII LAB.同好会</span>
+      <p>慶應義塾大学登録学生団体<br>当会は特定の企業・事務所とは関係のない非公式ファンサークルです。</p>
+    </div>
+    <nav class="footer-nav" aria-label="フッターメニュー">
+      <ul>
+        <li><a href="index.html">トップ</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="activities.html">活動内容</a></li>
+        <li><a href="join.html">入会案内</a></li>
+        <li><a href="live.html">LIVE情報</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+      </ul>
+    </nav>
+  </div>
+  <p class="copyright">© <span id="year">2026</span> KAWAII LAB.同好会(慶應義塾大学登録学生団体)</p>
+</footer>
+
+<script src="./script.js"></script>
+<script src="./live.js"></script>
+</body>
+</html>
