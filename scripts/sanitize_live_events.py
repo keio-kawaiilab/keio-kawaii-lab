@@ -10,7 +10,6 @@ from pathlib import Path
 DATA_PATH = Path("data/live-events.json")
 TITLE_PREFIX_RE = re.compile(r"^20\d{2}[./-]\d{1,2}[./-]\d{1,2}\s+")
 TITLE_DATE_RE = re.compile(r"(?:(?:20\d{2})年\s*)?\d{1,2}月\s*\d{1,2}日(?:\s*[（(][^）)]*[）)])?")
-TOUR_RE = re.compile(r"(?:\bTOUR\b|ツアー)", re.IGNORECASE)
 GROUP_ORDER = {
     "FRUITS ZIPPER": 0,
     "CANDY TUNE": 1,
@@ -100,7 +99,6 @@ def base_cleanup(payload: dict) -> list[dict]:
 
         event_date = str(event.get("eventDate") or "")[:10]
         result_date = str(event.get("resultDate") or "")[:10]
-        # 当落発表日時を公演日時と誤認したデータは表示しない。
         if event_date and result_date and event_date == result_date:
             continue
 
@@ -116,7 +114,6 @@ def base_cleanup(payload: dict) -> list[dict]:
 
 
 def merge_joint_events(events: list[dict]) -> list[dict]:
-    """同一公演を複数グループの公式記事が告知している場合、1件にまとめる。"""
     buckets: dict[tuple, list[dict]] = {}
     for event in events:
         key = (
@@ -159,7 +156,6 @@ def merge_joint_events(events: list[dict]) -> list[dict]:
 
 
 def merge_consecutive_days(events: list[dict]) -> list[dict]:
-    """同会場・同受付条件で連日開催される公演は、日付範囲1件にまとめる。"""
     buckets: dict[tuple, list[dict]] = {}
     for event in events:
         participants = tuple(event.get("participants") or [])
@@ -182,7 +178,6 @@ def merge_consecutive_days(events: list[dict]) -> list[dict]:
         dated = [(d, item) for d, item in dated if d]
         undated = [item for item in items if not parse_day(item.get("eventDate"))]
         dated.sort(key=lambda pair: pair[0])
-
         run: list[tuple] = []
 
         def flush():
@@ -193,7 +188,6 @@ def merge_consecutive_days(events: list[dict]) -> list[dict]:
                 result.append(run[0][1])
                 run = []
                 return
-
             merged = dict(run[0][1])
             dates = [pair[0] for pair in run]
             all_urls = distinct(
@@ -230,15 +224,10 @@ def merge_consecutive_days(events: list[dict]) -> list[dict]:
     return result
 
 
-def merge_tour_same_window(events: list[dict]) -> list[dict]:
-    """同じツアーで申込期間が同じ全日程を、カレンダー上は1件に圧縮する。"""
+def merge_same_window(events: list[dict]) -> list[dict]:
+    """同じ告知・受付種別・申込期間の複数公演は、タイトルにTOUR表記がなくても1件に圧縮する。"""
     buckets: dict[tuple, list[dict]] = {}
-    passthrough: list[dict] = []
-
     for event in events:
-        if not TOUR_RE.search(str(event.get("title") or "")):
-            passthrough.append(event)
-            continue
         participants = tuple(event.get("participants") or [])
         key = (
             event.get("group"),
@@ -252,11 +241,12 @@ def merge_tour_same_window(events: list[dict]) -> list[dict]:
         )
         buckets.setdefault(key, []).append(event)
 
-    merged_result = list(passthrough)
+    result: list[dict] = []
     for key, items in buckets.items():
         schedules = []
         for item in items:
             schedules.extend(event_schedule(item))
+
         schedule_seen = set()
         schedule = []
         for item in sorted(schedules, key=lambda x: (x["date"], x.get("venue") or "")):
@@ -268,7 +258,7 @@ def merge_tour_same_window(events: list[dict]) -> list[dict]:
 
         dates = sorted(distinct(item["date"] for item in schedule))
         if len(dates) <= 1:
-            merged_result.extend(items)
+            result.extend(items)
             continue
 
         first = dict(items[0])
@@ -287,11 +277,11 @@ def merge_tour_same_window(events: list[dict]) -> list[dict]:
         first["venue"] = venues[0] if len(venues) == 1 else f"複数会場（全{len(dates)}公演）"
         first["urls"] = urls
         first["url"] = urls[0] if urls else first.get("url")
-        first["id"] = stable_id("tour-window", *key, dates[0], dates[-1], len(dates))
+        first["id"] = stable_id("same-window", *key, dates[0], dates[-1], len(dates))
         first["sourceType"] = "derived"
-        merged_result.append(first)
+        result.append(first)
 
-    return merged_result
+    return result
 
 
 def sanitize_payload(payload: dict) -> dict:
@@ -299,7 +289,7 @@ def sanitize_payload(payload: dict) -> dict:
     events = base_cleanup(payload)
     events = merge_joint_events(events)
     events = merge_consecutive_days(events)
-    events = merge_tour_same_window(events)
+    events = merge_same_window(events)
     events.sort(key=lambda e: (
         str(e.get("applyEnd") or "9999"),
         str(e.get("eventDate") or "9999"),
