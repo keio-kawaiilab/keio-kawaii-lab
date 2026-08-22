@@ -120,6 +120,27 @@ class SanitizerTests(unittest.TestCase):
         self.assertEqual(result[0]["venue"], "複数会場（全3公演）")
         self.assertEqual(len(result[0]["schedule"]), 3)
 
+    def test_summary_page_same_application_window_becomes_one_item(self):
+        base = {
+            "group": "CUTIE STREET",
+            "title": "★CUTIE STREET チケット先行まとめ情報★",
+            "ticketType": "KAWAII LAB. FC先行",
+            "applyStart": "2026-07-26T12:00",
+            "applyEnd": "2026-08-02T23:59",
+            "sourceType": "auto",
+            "url": "https://example.test/summary",
+        }
+        payload = {"events": [
+            {**base, "id": "s1", "eventDate": "2026-08-25", "venue": "A"},
+            {**base, "id": "s2", "eventDate": "2026-09-14", "venue": "B"},
+            {**base, "id": "s3", "eventDate": "2026-09-23", "venue": "C"},
+        ]}
+        result = s.sanitize_payload(payload)["events"]
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["eventCount"], 3)
+        self.assertEqual(result[0]["eventDate"], "2026-08-25")
+        self.assertEqual(result[0]["eventEndDate"], "2026-09-23")
+
     def test_tour_with_different_application_windows_stays_separate(self):
         common = {
             "group": "CUTIE STREET",
