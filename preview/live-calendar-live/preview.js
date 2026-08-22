@@ -28,13 +28,48 @@ document.addEventListener("DOMContentLoaded", async () => {
   const urls = (e) => { const a=Array.isArray(e.urls)?[...e.urls.filter(Boolean)]:[]; if(e.url&&!a.includes(e.url))a.unshift(e.url); return a; };
   const status = (e) => { const s=parse(e.applyStart),x=parse(e.applyEnd),n=new Date(); if(s&&n<s)return"受付前"; if(s&&x&&n>=s&&n<=x)return"受付中"; if(x&&n>x)return"受付終了"; return"日程確認中"; };
 
+  const collapseSameWindow = (items) => {
+    const buckets = new Map();
+    const titleKey = (v) => String(v||"").replace(/^20\d{2}[./-]\d{1,2}[./-]\d{1,2}\s+/,"").replace(/\s+/g," ").trim();
+    for (const e of items) {
+      const key = [e.group, participants(e).join("|"), titleKey(e.title), e.ticketType, e.applyStart, e.applyEnd, e.resultDate, e.paymentEnd].join("\u001f");
+      if (!buckets.has(key)) buckets.set(key, []);
+      buckets.get(key).push(e);
+    }
+    const out=[];
+    for (const group of buckets.values()) {
+      const schedule=[];
+      for (const e of group) {
+        if (Array.isArray(e.schedule) && e.schedule.length) {
+          e.schedule.forEach(x=>schedule.push({date:String(x.date||"").slice(0,10),venue:x.venue||null}));
+        } else if (Array.isArray(e.eventDates) && e.eventDates.length) {
+          e.eventDates.forEach(x=>schedule.push({date:String(x).slice(0,10),venue:e.venue||null}));
+        } else if (e.eventDate) {
+          schedule.push({date:String(e.eventDate).slice(0,10),venue:e.venue||null});
+        }
+      }
+      const seen=new Set(),uniq=[];
+      schedule.sort((a,b)=>a.date.localeCompare(b.date)).forEach(x=>{const k=`${x.date}|${x.venue||""}`;if(!seen.has(k)&&parse(x.date)){seen.add(k);uniq.push(x);}});
+      const dates=[...new Set(uniq.map(x=>x.date))].sort();
+      if (dates.length<=1) { out.push(...group); continue; }
+      const first={...group[0]};
+      const venueList=[...new Set(uniq.map(x=>x.venue).filter(Boolean))];
+      first.eventDate=dates[0]; first.eventEndDate=dates.at(-1); first.eventDates=dates; first.eventCount=dates.length; first.schedule=uniq;
+      first.venue=venueList.length===1?venueList[0]:`複数会場（全${dates.length}公演）`;
+      first.urls=[...new Set(group.flatMap(urls))]; if(first.urls.length) first.url=first.urls[0];
+      out.push(first);
+    }
+    return out;
+  };
+
   let events=[];
   try {
     const r=await fetch(DATA_URL+"?t="+Date.now(),{cache:"no-store"});
     if(!r.ok) throw new Error();
     const data=await r.json();
     const today=day(new Date());
-    events=(Array.isArray(data.events)?data.events:[]).filter(e=>{const last=day(e.eventEndDate)||day(e.eventDate);return !last||last>=today;});
+    const raw=(Array.isArray(data.events)?data.events:[]).filter(e=>{const last=day(e.eventEndDate)||day(e.eventDate);return !last||last>=today;});
+    events=collapseSameWindow(raw);
     sourceNote.innerHTML=`<strong>公式公開情報から自動取得</strong>　${esc(data.updatedAt||"")} 更新 / ${events.length}件`;
   } catch (_) { sourceNote.textContent="データを読み込めませんでした。"; }
 
