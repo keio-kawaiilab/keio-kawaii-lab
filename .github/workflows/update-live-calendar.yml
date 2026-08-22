@@ -41,18 +41,18 @@ jobs:
       - name: Install dependencies
         run: pip install -r scripts/requirements.txt
 
-      - name: Run parser and sanitizer tests
+      - name: Run parser, retention and sanitizer tests
         working-directory: scripts
-        run: python -m unittest -v test_update_live_events.py test_sanitize_live_events.py
+        run: python -m unittest -v test_update_live_events.py test_update_live_events_v2.py test_sanitize_live_events.py
 
       - name: Check official public sources on pull requests
         if: github.event_name == 'pull_request'
-        run: python scripts/update_live_events.py --check
+        run: python scripts/update_live_events_v2.py --check
 
       - name: Update calendar data from official public sources
         if: github.event_name != 'pull_request'
         run: |
-          python scripts/update_live_events.py
+          python scripts/update_live_events_v2.py
           python scripts/sanitize_live_events.py
 
       - name: Commit when data changed
