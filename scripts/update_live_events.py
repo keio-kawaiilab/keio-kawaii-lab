@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import re
@@ -32,11 +33,13 @@ TICKET_HINTS = (
 )
 IGNORE_TITLE_HINTS = (
     "物販", "通販", "グッズ", "特典会", "抽選会", "リリースイベント",
-    "オンライン個別", "会員証", "PHOTOBOOK",
+    "オンライン個別", "会員証", "PHOTOBOOK", "チケット情報まとめ", "チケットまとめ",
 )
 
+# 2026年8月22日 / 2026/8/22 / 8月22日 / 8/22 を同じ形で扱う。
 DATE_ANY_RE = re.compile(
-    r"(?:(20\d{2})年\s*)?(\d{1,2})月\s*(\d{1,2})日"
+    r"(?:(20\d{2})(?:年|[./-]))?\s*"
+    r"(\d{1,2})(?:月|[./-])\s*(\d{1,2})日?"
     r"(?:\s*[（(][月火水木金土日・祝]+[）)])?"
     r"(?:\s*(\d{1,2})[:：](\d{2}))?"
 )
@@ -70,21 +73,44 @@ def date_match_to_iso(match: re.Match, default_year: int | None = None) -> str |
     year = int(year) if year else default_year
     if not year:
         return None
+    try:
+        datetime(int(year), int(month), int(day), int(hour or 0), int(minute or 0))
+    except ValueError:
+        return None
     return to_iso(year, month, day, hour, minute)
 
 
-def extract_window(text: str, default_year: int | None = None) -> tuple[str, str] | None:
+def _iso_datetime(value: str) -> datetime:
+    return datetime.strptime(value, "%Y-%m-%dT%H:%M" if "T" in value else "%Y-%m-%d")
+
+
+def extract_windows(text: str, default_year: int | None = None) -> list[tuple[str, str]]:
+    windows: list[tuple[str, str]] = []
     for label in WINDOW_LABEL_RE.finditer(text):
-        segment = text[label.end():label.end() + 260]
+        segment = text[label.end():label.end() + 300]
         matches = list(DATE_ANY_RE.finditer(segment))
         if len(matches) < 2:
             continue
         start = date_match_to_iso(matches[0], default_year)
         start_year = int(start[:4]) if start else default_year
         end = date_match_to_iso(matches[1], start_year)
-        if start and end:
-            return start, end
-    return None
+        if not start or not end:
+            continue
+
+        # 「12/28〜1/3」のように終了側だけ年が省略される年跨ぎを補正。
+        if matches[1].group(1) is None and _iso_datetime(end) < _iso_datetime(start):
+            end_dt = _iso_datetime(end)
+            end = end_dt.replace(year=end_dt.year + 1).strftime("%Y-%m-%dT%H:%M" if "T" in end else "%Y-%m-%d")
+
+        pair = (start, end)
+        if pair not in windows:
+            windows.append(pair)
+    return windows
+
+
+def extract_window(text: str, default_year: int | None = None) -> tuple[str, str] | None:
+    windows = extract_windows(text, default_year)
+    return windows[0] if windows else None
 
 
 def extract_labeled_date(text: str, labels: Iterable[str], default_year: int | None = None) -> str | None:
@@ -92,20 +118,21 @@ def extract_labeled_date(text: str, labels: Iterable[str], default_year: int | N
         pos = text.find(label)
         if pos < 0:
             continue
-        m = DATE_ANY_RE.search(text[pos:pos + 160])
+        m = DATE_ANY_RE.search(text[pos:pos + 180])
         if m:
             return date_match_to_iso(m, default_year)
     return None
 
 
 def extract_ticket_type(title: str, text: str) -> str:
-    corpus = f"{title}\n{text[:2600]}"
+    corpus = f"{title}\n{text[:3000]}"
     patterns = (
         ("年会費コース会員先行", "年会費コース会員先行"),
         ("KAWAII LAB. OFFICIAL FANCLUB 会員先行", "KAWAII LAB. FC先行"),
         ("KAWAII LAB.OFFICIAL FANCLUB 会員先行", "KAWAII LAB. FC先行"),
         ("OFFICIAL FANCLUB 先行", "FC先行"),
         ("ファンクラブ先行", "FC先行"),
+        ("FC2次先行", "FC2次先行"),
         ("FC先行", "FC先行"),
         ("最速プレイガイド先行", "最速プレイガイド先行"),
         ("いち早プレリザーブ", "いち早プレリザーブ"),
@@ -145,7 +172,7 @@ def extract_event_occurrences(lines: list[str], title: str, article_date: str | 
                 break
         occurrences.append((event_date, venue))
 
-    if not occurrences and ("開催" in title or "生誕祭" in title or "ライブ" in title or "TOUR" in title):
+    if not occurrences and ("開催" in title or "生誕祭" in title or "ライブ" in title or "LIVE" in title or "TOUR" in title):
         for m in DATE_ANY_RE.finditer(title):
             d = date_match_to_iso(m, article_year)
             if not d:
@@ -165,23 +192,9 @@ def extract_event_occurrences(lines: list[str], title: str, article_date: str | 
     return result
 
 
-def article_title(soup: BeautifulSoup) -> str:
-    if soup.title:
-        title = normalize_space(soup.title.get_text(" ", strip=True).split("｜")[0])
-        if len(title) >= 8 and title not in {"INFORMATION", "SCHEDULE"}:
-            return title
-    candidates = []
-    for tag_name in ("h1", "h2"):
-        for node in soup.find_all(tag_name):
-            text = normalize_space(node.get_text(" ", strip=True))
-            if len(text) >= 8 and text not in {"INFORMATION", "SCHEDULE"}:
-                candidates.append(text)
-    return max(candidates, key=len) if candidates else "ライブ・チケット情報"
-
-
 def article_date_from_text(text: str) -> str | None:
-    for line in text.splitlines()[:50]:
-        m = re.fullmatch(r"\s*(20\d{2})[./](\d{1,2})[./](\d{1,2})\s*", line)
+    for line in text.splitlines()[:60]:
+        m = re.fullmatch(r"\s*(20\d{2})[./-](\d{1,2})[./-](\d{1,2})\s*", line)
         if m:
             return f"{int(m.group(1)):04d}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
     return None
@@ -189,7 +202,7 @@ def article_date_from_text(text: str) -> str | None:
 
 def candidate_links(session: requests.Session, group: str, base: str) -> list[Candidate]:
     found: dict[str, Candidate] = {}
-    for page in range(1, 4):
+    for page in range(1, 6):
         url = f"{base}/news/1/?page={page}"
         r = session.get(url, timeout=20)
         r.raise_for_status()
@@ -207,7 +220,7 @@ def candidate_links(session: requests.Session, group: str, base: str) -> list[Ca
                 continue
             full = urljoin(base, href)
             found[full] = Candidate(group=group, title=title, url=full)
-        time.sleep(0.2)
+        time.sleep(0.15)
     return list(found.values())
 
 
@@ -220,18 +233,28 @@ def parse_candidate(session: requests.Session, candidate: Candidate) -> tuple[li
     r = session.get(candidate.url, timeout=20)
     r.raise_for_status()
     soup = BeautifulSoup(r.text, "html.parser")
-    title = article_title(soup) or candidate.title
     text = soup.get_text("\n", strip=True)
     lines = [normalize_space(x) for x in text.splitlines() if normalize_space(x)]
 
     article_date = article_date_from_text(text)
     default_year = int(article_date[:4]) if article_date else datetime.now(JST).year
-    window = extract_window(text, default_year)
-    if not window:
+    windows = extract_windows(text, default_year)
+    if not windows:
         return [], None
 
-    occurrences = extract_event_occurrences(lines, title, article_date)
-    ticket_type = extract_ticket_type(title, text)
+    # 1記事に異なる受付期間が複数ある場合、どの期間がどの券種かを誤結合しないため自動掲載しない。
+    if len(windows) > 1:
+        return [], {
+            "group": candidate.group,
+            "title": candidate.title,
+            "url": candidate.url,
+            "reason": "異なる申込期間が複数あるため、自動で1件に結び付けず確認待ちにしました。",
+            "windows": [{"applyStart": start, "applyEnd": end} for start, end in windows],
+        }
+
+    window = windows[0]
+    occurrences = extract_event_occurrences(lines, candidate.title, article_date)
+    ticket_type = extract_ticket_type(candidate.title, text)
     apply_year = int(window[0][:4])
     result_date = extract_labeled_date(text, RESULT_LABELS, apply_year)
     payment_end = extract_labeled_date(text, PAYMENT_LABELS, apply_year)
@@ -239,7 +262,7 @@ def parse_candidate(session: requests.Session, candidate: Candidate) -> tuple[li
     if not occurrences:
         return [], {
             "group": candidate.group,
-            "title": title,
+            "title": candidate.title,
             "url": candidate.url,
             "reason": "申込期間は取得できましたが、公演日を安全に特定できませんでした。",
             "applyStart": window[0],
@@ -251,7 +274,7 @@ def parse_candidate(session: requests.Session, candidate: Candidate) -> tuple[li
         events.append({
             "id": event_id(candidate.group, candidate.url, event_date, window[0], ticket_type),
             "group": candidate.group,
-            "title": title,
+            "title": candidate.title,
             "ticketType": ticket_type,
             "applyStart": window[0],
             "applyEnd": window[1],
@@ -275,20 +298,18 @@ def read_existing() -> dict:
         return {}
 
 
-def main() -> int:
-    session = requests.Session()
-    session.headers.update({
-        "User-Agent": "KeioKawaiiLabCalendarBot/1.0 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"
-    })
-
+def collect(session: requests.Session) -> tuple[dict[str, dict], list[dict], list[dict], dict[str, int]]:
     all_events: dict[str, dict] = {}
     pending: list[dict] = []
     failures: list[dict] = []
+    candidates_by_group: dict[str, int] = {}
 
     for group, base in GROUPS.items():
         try:
             candidates = candidate_links(session, group, base)
+            candidates_by_group[group] = len(candidates)
         except Exception as exc:
+            candidates_by_group[group] = 0
             failures.append({"group": group, "stage": "news-list", "error": str(exc)})
             continue
 
@@ -301,7 +322,42 @@ def main() -> int:
                     pending.append(review)
             except Exception as exc:
                 failures.append({"group": group, "url": candidate.url, "stage": "article", "error": str(exc)})
-            time.sleep(0.3)
+            time.sleep(0.2)
+
+    return all_events, pending, failures, candidates_by_group
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Update the LIVE & TICKET calendar from official public pages.")
+    parser.add_argument("--check", action="store_true", help="Fetch and parse official pages, but do not modify data/live-events.json.")
+    args = parser.parse_args()
+
+    session = requests.Session()
+    session.headers.update({
+        "User-Agent": "KeioKawaiiLabCalendarBot/1.1 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"
+    })
+
+    all_events, pending, failures, candidates_by_group = collect(session)
+    reachable_groups = sum(1 for count in candidates_by_group.values() if count > 0)
+
+    diagnostics = {
+        "candidateCounts": candidates_by_group,
+        "parsedEvents": len(all_events),
+        "pendingReview": len(pending),
+        "failures": failures,
+    }
+    print(json.dumps(diagnostics, ensure_ascii=False, indent=2))
+
+    if reachable_groups < 4:
+        print("Fewer than four group news feeds were reachable with ticket candidates.", file=sys.stderr)
+        return 2
+    if not all_events:
+        print("No automatically parsed events were found; existing data left untouched.", file=sys.stderr)
+        return 2
+
+    if args.check:
+        print("Live source check passed; no files were modified.")
+        return 0
 
     existing = read_existing()
     existing_events = [e for e in existing.get("events", []) if isinstance(e, dict)]
@@ -320,13 +376,19 @@ def main() -> int:
         if end_date >= keep_after:
             retained_auto.append(e)
 
-    if not all_events:
-        print("No automatically parsed events were found; existing data left untouched.", file=sys.stderr)
-        print(json.dumps({"failures": failures, "pendingReview": pending}, ensure_ascii=False, indent=2))
-        return 2
+    # 申込終了から7日以上経った情報は通常表示データから外す。
+    fresh_auto = []
+    for e in all_events.values():
+        end = str(e.get("applyEnd") or "")[:10]
+        try:
+            end_date = datetime.strptime(end, "%Y-%m-%d").date()
+        except ValueError:
+            continue
+        if end_date >= keep_after:
+            fresh_auto.append(e)
 
     merged = manual_events + retained_auto + sorted(
-        all_events.values(),
+        fresh_auto,
         key=lambda e: (e.get("applyEnd") or "9999", e.get("eventDate") or "9999", e.get("group") or "")
     )
 
@@ -341,7 +403,7 @@ def main() -> int:
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"Wrote {len(merged)} events; {len(pending)} pending review; {len(failures)} failures.")
+    print(f"Wrote {len(merged)} current/recent events; {len(pending)} pending review; {len(failures)} failures.")
     return 0
 
 
