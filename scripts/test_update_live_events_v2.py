@@ -12,21 +12,18 @@ class RetentionPolicyTests(unittest.TestCase):
         }
         self.assertTrue(v2.should_show(event, date(2026, 11, 30)))
 
-    def test_show_stays_until_one_calendar_month_after(self):
+    def test_show_is_visible_on_the_day_and_hidden_after(self):
         event = {"eventDate": "2026-08-31"}
-        self.assertTrue(v2.should_show(event, date(2026, 9, 30)))
-        self.assertFalse(v2.should_show(event, date(2026, 10, 1)))
+        self.assertTrue(v2.should_show(event, date(2026, 8, 31)))
+        self.assertFalse(v2.should_show(event, date(2026, 9, 1)))
 
-    def test_consecutive_event_uses_end_date(self):
+    def test_consecutive_event_uses_final_date(self):
         event = {
             "eventDate": "2026-12-12",
             "eventEndDate": "2026-12-13",
         }
-        self.assertTrue(v2.should_show(event, date(2027, 1, 13)))
-        self.assertFalse(v2.should_show(event, date(2027, 1, 14)))
-
-    def test_month_end_clamps_safely(self):
-        self.assertEqual(v2.add_one_calendar_month(date(2027, 1, 31)), date(2027, 2, 28))
+        self.assertTrue(v2.should_show(event, date(2026, 12, 13)))
+        self.assertFalse(v2.should_show(event, date(2026, 12, 14)))
 
     def test_old_article_future_event_is_retained(self):
         existing = {
@@ -40,6 +37,18 @@ class RetentionPolicyTests(unittest.TestCase):
         }
         payload = v2.build_payload(existing, {}, [], [], date(2026, 8, 23))
         self.assertEqual([e["id"] for e in payload["events"]], ["old-future"])
+
+    def test_past_existing_event_is_removed(self):
+        existing = {
+            "events": [{
+                "id": "past",
+                "sourceType": "auto",
+                "eventDate": "2026-08-22",
+                "url": "https://example.test/past",
+            }]
+        }
+        payload = v2.build_payload(existing, {}, [], [], date(2026, 8, 23))
+        self.assertEqual(payload["events"], [])
 
 
 if __name__ == "__main__":
