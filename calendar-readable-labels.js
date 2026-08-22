@@ -101,4 +101,5 @@ document.addEventListener("DOMContentLoaded", () => {
   const observer = new MutationObserver(() => processAll());
   observer.observe(calendar, { childList: true, subtree: true });
   processAll();
+  import("./online-event-details.js?v=202608230415").catch(() => {});
 });
