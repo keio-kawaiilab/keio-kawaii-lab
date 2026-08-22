@@ -3,12 +3,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   const summary = document.getElementById("live-summary");
   const filters = [...document.querySelectorAll(".live-filter")];
   const calendar = document.getElementById("live-calendar");
-  const calendarMonth = document.getElementById("calendar-month");
+  const periodLabel = document.getElementById("calendar-month");
   const calendarDetail = document.getElementById("calendar-detail");
   const prevButton = document.getElementById("calendar-prev");
   const nextButton = document.getElementById("calendar-next");
   const demoBanner = document.getElementById("live-demo-banner");
-  if (!list || !summary || !calendar || !calendarMonth) return;
+  if (!list || !summary || !calendar || !periodLabel) return;
 
   const groupClass = {
     "FRUITS ZIPPER": "group-fruits",
@@ -47,16 +47,24 @@ document.addEventListener("DOMContentLoaded", async () => {
       minute: hasTime ? "2-digit" : undefined
     }).format(d);
   };
+  const shortDay = (d) => `${d.getMonth() + 1}/${d.getDate()}`;
+
+  const displayTitle = (event) => {
+    let title = String(event.title || "ライブ情報").replace(/^20\d{2}[./-]\d{1,2}[./-]\d{1,2}\s+/, "").trim();
+    const quoted = title.match(/「([^」]+)」/);
+    if (quoted) return quoted[1].trim();
+    title = title.replace(/^(?:20\d{2}年)?\d{1,2}月\d{1,2}日(?:\([^)]*\)|（[^）]*）)?\s*/, "");
+    title = title.split(/\s*@|開催決定|出演決定|アップグレード抽選受付|一般(?:発売|販売|先行)|FC\s*(?:会員)?先行|ファンクラブ|OFFICIAL FANCLUB|先行受付|チケット受付|受付のお知らせ/)[0];
+    return title.replace(/[!！\s\-–—｜|]+$/g, "").trim() || String(event.title || "ライブ情報");
+  };
 
   const shortRange = (event) => {
     const a = parseDate(event.eventDate);
     const b = parseDate(event.eventEndDate);
     if (!a) return "日程未定";
-    if (!b || sameDay(a, b)) return `${a.getMonth() + 1}/${a.getDate()}`;
-    if (a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth()) {
-      return `${a.getMonth() + 1}/${a.getDate()}–${b.getDate()}`;
-    }
-    return `${a.getMonth() + 1}/${a.getDate()}–${b.getMonth() + 1}/${b.getDate()}`;
+    if (!b || sameDay(a, b)) return shortDay(a);
+    if (a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth()) return `${shortDay(a)}–${b.getDate()}`;
+    return `${shortDay(a)}–${shortDay(b)}`;
   };
   const eventLabel = (event) => {
     const count = Number(event.eventCount || 0);
@@ -68,6 +76,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const base = event.eventEndDate ? `${fmt(event.eventDate)} 〜 ${fmt(event.eventEndDate)}` : fmt(event.eventDate);
     return count > 1 ? `${base}（全${count}公演）` : base;
   };
+
   const participants = (event) => Array.isArray(event.participants) ? event.participants : [];
   const matchesGroup = (event, group) => group === "all" || event.group === group || participants(event).includes(group);
   const sourceUrls = (event) => {
@@ -76,6 +85,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     return urls;
   };
   const noCurrentSale = (event) => event.applicationStatus === "none" || event.ticketType === "現在受付なし";
+
+  const saleCategory = (event) => {
+    if (noCurrentSale(event)) return "現在受付なし";
+    const text = `${event.ticketType || ""} ${event.title || ""}`;
+    if (/アップグレード/.test(text)) return "アップグレード抽選";
+    if (/一般(?:発売|販売|先着)/.test(text)) return "一般販売";
+    if (/年会費コース/.test(text)) return "FC年会費コース会員先行";
+    if (/(?:KAWAII LAB\.\s*FC|OFFICIAL FANCLUB|ファンクラブ|\bFC\b|FC会員)/i.test(text)) return "ファンクラブ先行";
+    if (/プレリク|プレイガイド/.test(text)) return "プレイガイド先行";
+    if (/先行/.test(text)) return "先行受付";
+    return "チケット受付";
+  };
+  const audienceLabel = (event) => {
+    if (noCurrentSale(event)) return "—";
+    const text = `${event.ticketType || ""} ${event.title || ""}`;
+    if (/年会費コース/.test(text)) return "FC年会費コース会員";
+    if (/(?:KAWAII LAB\.\s*FC|OFFICIAL FANCLUB|ファンクラブ|\bFC\b|FC会員)/i.test(text)) return "FC会員";
+    if (/一般(?:発売|販売|先着)/.test(text)) return "一般";
+    if (/アップグレード/.test(text)) return "対象チケット保有者向け（公式条件を確認）";
+    return "公式条件を確認";
+  };
+
   const status = (event) => {
     if (noCurrentSale(event)) return { label: "現在受付なし", cls: "" };
     const now = new Date();
@@ -83,9 +114,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const end = parseDate(event.applyEnd);
     if (start && now < start) return { label: "受付前", cls: "" };
     if (start && end && now >= start && now <= end) {
-      return (end - now) / 36e5 <= 24
-        ? { label: "24時間以内に締切", cls: "soon" }
-        : { label: "受付中", cls: "open" };
+      return (end - now) / 36e5 <= 24 ? { label: "24時間以内に締切", cls: "soon" } : { label: "受付中", cls: "open" };
     }
     if (end && now > end) return { label: "受付終了", cls: "" };
     return { label: "日程確認中", cls: "" };
@@ -101,10 +130,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     const p = participants(event);
     const urls = sourceUrls(event);
     const schedule = scheduleText(event);
-    return `<strong>${esc(eventLabel(event))}｜${esc(event.title || "ライブ情報")}</strong>
-      <span>${esc(event.group || "KAWAII LAB.")}｜${esc(event.ticketType || "チケット受付")}</span>
+    return `<strong>${esc(eventLabel(event))}｜${esc(displayTitle(event))}</strong>
+      <span>販売区分: ${esc(saleCategory(event))}</span>
+      <span>受付名: ${esc(event.ticketType || "未定")}</span>
+      <span>対象: ${esc(audienceLabel(event))}</span>
+      <span>会場: ${esc(event.venue || "未定")}</span>
       ${p.length ? `<span>参加: ${esc(p.join(" / "))}</span>` : ""}
-      ${schedule ? `<span>日程: ${esc(schedule)}</span>` : ""}
+      ${schedule ? `<span>全日程: ${esc(schedule)}</span>` : ""}
       ${focus ? `<span>${esc(focus)}</span>` : ""}
       ${urls.length ? `<a href="${esc(urls[0])}" target="_blank" rel="noopener noreferrer">公式情報を確認する →</a>` : ""}`;
   };
@@ -125,15 +157,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   const today = dayOnly(new Date());
+  const initialGridStart = addDays(today, -today.getDay());
+  let windowStart = today;
   let selected = "all";
-  let shownYear = today.getFullYear();
-  let shownMonth = today.getMonth();
   const filteredEvents = () => events.filter((event) => matchesGroup(event, selected));
 
   const renderList = () => {
     const filtered = filteredEvents();
     const openCount = filtered.filter((event) => ["open", "soon"].includes(status(event).cls)).length;
-    summary.textContent = filtered.length ? `${filtered.length}件掲載中・うち受付中 ${openCount}件` : "現在、掲載中のライブ・チケット受付情報はありません。";
+    summary.textContent = filtered.length ? `${filtered.length}件掲載中・うち受付中 ${openCount}件` : "現在、掲載中のライブ・チケット情報はありません。";
     if (!filtered.length) {
       list.innerHTML = '<div class="live-empty">現在、掲載中の未来公演はありません。</div>';
       return;
@@ -148,10 +180,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div class="live-card-top"><div>
           <div class="live-event-date">🎤 ${esc(eventLabel(event))}</div>
           <div class="live-group">${esc(event.group || "KAWAII LAB.")}</div>
-          <h3>${esc(event.title || "ライブ情報")}</h3>
+          <h3>${esc(displayTitle(event))}</h3>
         </div><span class="live-status ${st.cls}">${esc(st.label)}</span></div>
         <dl class="live-meta">
-          <div><dt>受付種別</dt><dd>${esc(event.ticketType || "未定")}</dd></div>
+          <div><dt>販売区分</dt><dd>${esc(saleCategory(event))}</dd></div>
+          <div><dt>受付名</dt><dd>${esc(event.ticketType || "未定")}</dd></div>
+          <div><dt>対象</dt><dd>${esc(audienceLabel(event))}</dd></div>
           <div><dt>公演日</dt><dd>${esc(longRange(event))}</dd></div>
           ${p.length ? `<div><dt>参加グループ</dt><dd>${esc(p.join(" / "))}</dd></div>` : ""}
           <div><dt>申込開始</dt><dd>${esc(noSale ? "現在受付なし" : fmt(event.applyStart))}</dd></div>
@@ -177,22 +211,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   };
 
   const renderCalendar = () => {
-    calendarMonth.textContent = `${shownYear}年${shownMonth + 1}月`;
     calendar.innerHTML = "";
-
-    const monthStart = new Date(shownYear, shownMonth, 1);
-    const monthEnd = new Date(shownYear, shownMonth + 1, 0);
-    const isCurrentMonth = shownYear === today.getFullYear() && shownMonth === today.getMonth();
-    const visibleStart = isCurrentMonth ? today : monthStart;
-    const gridStart = addDays(visibleStart, -visibleStart.getDay());
-    const gridEnd = addDays(monthEnd, 6 - monthEnd.getDay());
-    const weekCount = Math.floor((gridEnd - gridStart) / 604800000) + 1;
+    const gridStart = addDays(windowStart, -windowStart.getDay());
+    const gridEnd = addDays(gridStart, 34);
+    const visibleStart = windowStart;
+    periodLabel.textContent = `${shortDay(visibleStart)} 〜 ${shortDay(gridEnd)}（5週間）`;
     const filtered = filteredEvents();
 
-    for (let w = 0; w < weekCount; w += 1) {
+    for (let w = 0; w < 5; w += 1) {
       const weekStart = addDays(gridStart, w * 7);
       const weekEnd = addDays(weekStart, 6);
-      if (weekEnd < visibleStart) continue;
       const week = document.createElement("div");
       week.className = "calendar-week";
 
@@ -202,8 +230,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         cell.className = "calendar-day";
         if (d === 0) cell.classList.add("is-sun");
         if (d === 6) cell.classList.add("is-sat");
-        const hidden = date < visibleStart || date.getMonth() !== shownMonth;
-        if (hidden) {
+        if (date < visibleStart) {
           cell.classList.add("is-other");
           cell.innerHTML = "";
         } else {
@@ -215,12 +242,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       const ranges = filtered.map((event) => ({ event, start: dayOnly(event.applyStart), end: dayOnly(event.applyEnd) }))
-        .filter((x) => x.start && x.end && x.end >= maxDate(weekStart, visibleStart) && x.start <= minDate(weekEnd, monthEnd))
+        .filter((x) => x.start && x.end && x.end >= maxDate(weekStart, visibleStart) && x.start <= weekEnd && x.start <= gridEnd)
         .sort((a, b) => a.start - b.start || a.end - b.end);
       const laneEnds = [];
       ranges.forEach((item) => {
         const start = maxDate(item.start, maxDate(weekStart, visibleStart));
-        const end = minDate(item.end, minDate(weekEnd, monthEnd));
+        const end = minDate(item.end, minDate(weekEnd, gridEnd));
         if (start > end) return;
         const startIndex = Math.round((start - weekStart) / 86400000);
         const endIndex = Math.round((end - weekStart) / 86400000);
@@ -230,9 +257,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         const label = eventLabel(item.event);
         const bar = makeButton(
           "calendar-event-bar",
-          `<strong>${esc(label)}</strong><span>${esc(item.event.group || "KAWAII LAB.")}｜${esc(item.event.title || "ライブ")}｜${esc(item.event.ticketType || "受付")}</span>`,
+          `<strong>${esc(label)}</strong><span>${esc(displayTitle(item.event))}｜${esc(saleCategory(item.event))}</span>`,
           item.event,
-          `${fmt(item.event.applyStart)} 〜 ${fmt(item.event.applyEnd)}`
+          `申込期間: ${fmt(item.event.applyStart)} 〜 ${fmt(item.event.applyEnd)}`
         );
         bar.style.left = `calc(${startIndex / 7 * 100}% + 4px)`;
         bar.style.width = `calc(${(endIndex - startIndex + 1) / 7 * 100}% - 8px)`;
@@ -250,9 +277,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         ];
         defs.forEach(([value, icon, label]) => {
           const date = dayOnly(value);
-          if (date && date >= visibleStart && date >= weekStart && date <= weekEnd && date <= monthEnd) {
-            milestones.push({ event, date, icon, label, value });
-          }
+          if (date && date >= visibleStart && date >= weekStart && date <= weekEnd && date <= gridEnd) milestones.push({ event, date, icon, label, value });
         });
       });
       const perDay = Array(7).fill(0);
@@ -262,7 +287,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const row = perDay[index]++;
         const button = makeButton(
           "calendar-milestone",
-          esc(`${item.icon} ${eventLabel(item.event)} ${item.label}`),
+          esc(`${item.icon} ${displayTitle(item.event)}｜${item.label}`),
           item.event,
           `${item.label}: ${fmt(item.value)}`
         );
@@ -275,6 +300,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       week.style.minHeight = `${Math.max(132, baseTop + maxRows * 29 + 8)}px`;
       calendar.appendChild(week);
     }
+    if (prevButton) prevButton.disabled = gridStart.getTime() === initialGridStart.getTime();
   };
 
   const renderAll = () => { renderCalendar(); renderList(); };
@@ -284,16 +310,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderAll();
   }));
   prevButton?.addEventListener("click", () => {
-    shownMonth -= 1;
-    if (shownMonth < 0) { shownMonth = 11; shownYear -= 1; }
-    if (shownYear < today.getFullYear() || (shownYear === today.getFullYear() && shownMonth < today.getMonth())) {
-      shownYear = today.getFullYear(); shownMonth = today.getMonth();
+    const currentGridStart = addDays(windowStart, -windowStart.getDay());
+    const previousGridStart = addDays(currentGridStart, -35);
+    if (previousGridStart < initialGridStart) {
+      windowStart = today;
+    } else {
+      windowStart = previousGridStart;
     }
     renderCalendar();
   });
   nextButton?.addEventListener("click", () => {
-    shownMonth += 1;
-    if (shownMonth > 11) { shownMonth = 0; shownYear += 1; }
+    const currentGridStart = addDays(windowStart, -windowStart.getDay());
+    windowStart = addDays(currentGridStart, 35);
     renderCalendar();
   });
   renderAll();
