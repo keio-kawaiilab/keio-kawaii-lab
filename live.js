@@ -75,7 +75,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (event.url && !urls.includes(event.url)) urls.unshift(event.url);
     return urls;
   };
+  const noCurrentSale = (event) => event.applicationStatus === "none" || event.ticketType === "現在受付なし";
   const status = (event) => {
+    if (noCurrentSale(event)) return { label: "現在受付なし", cls: "" };
     const now = new Date();
     const start = parseDate(event.applyStart);
     const end = parseDate(event.applyEnd);
@@ -141,6 +143,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const st = status(event);
       const urls = sourceUrls(event);
       const p = participants(event);
+      const noSale = noCurrentSale(event);
       return `<article class="live-card ${groupClass[event.group] || ""}">
         <div class="live-card-top"><div>
           <div class="live-event-date">🎤 ${esc(eventLabel(event))}</div>
@@ -151,10 +154,10 @@ document.addEventListener("DOMContentLoaded", async () => {
           <div><dt>受付種別</dt><dd>${esc(event.ticketType || "未定")}</dd></div>
           <div><dt>公演日</dt><dd>${esc(longRange(event))}</dd></div>
           ${p.length ? `<div><dt>参加グループ</dt><dd>${esc(p.join(" / "))}</dd></div>` : ""}
-          <div><dt>申込開始</dt><dd>${esc(fmt(event.applyStart))}</dd></div>
-          <div><dt>申込締切</dt><dd>${esc(fmt(event.applyEnd))}</dd></div>
-          <div><dt>当落発表</dt><dd>${esc(fmt(event.resultDate))}</dd></div>
-          <div><dt>入金期限</dt><dd>${esc(fmt(event.paymentEnd))}</dd></div>
+          <div><dt>申込開始</dt><dd>${esc(noSale ? "現在受付なし" : fmt(event.applyStart))}</dd></div>
+          <div><dt>申込締切</dt><dd>${esc(noSale ? "現在受付なし" : fmt(event.applyEnd))}</dd></div>
+          <div><dt>当落発表</dt><dd>${esc(noSale ? "—" : fmt(event.resultDate))}</dd></div>
+          <div><dt>入金期限</dt><dd>${esc(noSale ? "—" : fmt(event.paymentEnd))}</dd></div>
           <div><dt>会場</dt><dd>${esc(event.venue || "未定")}</dd></div>
         </dl>
         ${urls.length ? `<a class="live-link" href="${esc(urls[0])}" target="_blank" rel="noopener noreferrer">公式情報を確認する →</a>` : ""}
