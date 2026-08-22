@@ -166,14 +166,17 @@ def extract_event_occurrences(lines: list[str], title: str, article_date: str | 
 
 
 def article_title(soup: BeautifulSoup) -> str:
+    if soup.title:
+        title = normalize_space(soup.title.get_text(" ", strip=True).split("｜")[0])
+        if len(title) >= 8 and title not in {"INFORMATION", "SCHEDULE"}:
+            return title
+    candidates = []
     for tag_name in ("h1", "h2"):
         for node in soup.find_all(tag_name):
             text = normalize_space(node.get_text(" ", strip=True))
             if len(text) >= 8 and text not in {"INFORMATION", "SCHEDULE"}:
-                return text
-    if soup.title:
-        return normalize_space(soup.title.get_text(" ", strip=True).split("｜")[0])
-    return "ライブ・チケット情報"
+                candidates.append(text)
+    return max(candidates, key=len) if candidates else "ライブ・チケット情報"
 
 
 def article_date_from_text(text: str) -> str | None:
