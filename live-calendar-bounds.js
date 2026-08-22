@@ -9,6 +9,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     return m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : null;
   };
   const ym = (date) => date.getFullYear() * 12 + date.getMonth();
+  const today = new Date();
+  const todayDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const minMonth = ym(todayDay);
 
   let events = [];
   try {
@@ -20,20 +23,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  const allRelevantDates = [];
-  const showEndDates = [];
-  events.forEach((event) => {
-    [event.applyStart, event.applyEnd, event.resultDate, event.paymentEnd, event.eventDate, event.eventEndDate]
-      .map(parseDate)
-      .filter(Boolean)
-      .forEach((date) => allRelevantDates.push(date));
-    const showEnd = parseDate(event.eventEndDate) || parseDate(event.eventDate);
-    if (showEnd) showEndDates.push(showEnd);
-  });
-  if (!allRelevantDates.length || !showEndDates.length) return;
+  const showEndDates = events
+    .map((event) => parseDate(event.eventEndDate) || parseDate(event.eventDate))
+    .filter((date) => date && date >= todayDay);
 
-  const minMonth = Math.min(...allRelevantDates.map(ym));
-  const maxMonth = Math.max(...showEndDates.map(ym));
+  const maxMonth = showEndDates.length ? Math.max(minMonth, ...showEndDates.map(ym)) : minMonth;
 
   const refresh = () => {
     const m = monthLabel.textContent.match(/(\d{4})年(\d{1,2})月/);
@@ -41,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const current = Number(m[1]) * 12 + Number(m[2]) - 1;
     prev.disabled = current <= minMonth;
     next.disabled = current >= maxMonth;
-    prev.title = prev.disabled ? "これより前に表示する情報はありません" : "前の月を表示";
+    prev.title = prev.disabled ? "過去の月は表示しません" : "前の月を表示";
     next.title = next.disabled ? "現在発表済みの最も先の公演月です" : "次の月を表示";
   };
 
