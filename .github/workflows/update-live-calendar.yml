@@ -6,6 +6,12 @@ on:
       - "scripts/**"
       - ".github/workflows/update-live-calendar.yml"
       - "data/live-events.json"
+  push:
+    branches:
+      - "feature/live-ticket-calendar"
+    paths:
+      - "scripts/**"
+      - ".github/workflows/update-live-calendar.yml"
   schedule:
     - cron: "23 */6 * * *"
   workflow_dispatch:
