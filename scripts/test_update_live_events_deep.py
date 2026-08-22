@@ -55,6 +55,42 @@ class DeepDiscoveryTests(unittest.TestCase):
         )
         self.assertEqual(candidates, [])
 
+    def test_known_urls_include_joint_sources_and_pending_review(self):
+        existing = {
+            "events": [
+                {
+                    "url": "https://example.test/a",
+                    "urls": ["https://example.test/a", "https://example.test/b"],
+                }
+            ],
+            "pendingReview": [{"url": "https://example.test/c"}],
+        }
+        self.assertEqual(
+            deep.known_urls(existing),
+            {
+                "https://example.test/a",
+                "https://example.test/b",
+                "https://example.test/c",
+            },
+        )
+
+    def test_large_candidate_drop_is_blocked(self):
+        issues = deep.detect_candidate_collapse(
+            {"FRUITS ZIPPER": 40, "CANDY TUNE": 30},
+            {"FRUITS ZIPPER": 5, "CANDY TUNE": 29},
+        )
+        self.assertEqual(len(issues), 1)
+        self.assertEqual(issues[0]["group"], "FRUITS ZIPPER")
+
+    def test_normal_candidate_variation_is_allowed(self):
+        self.assertEqual(
+            deep.detect_candidate_collapse(
+                {"FRUITS ZIPPER": 40},
+                {"FRUITS ZIPPER": 32},
+            ),
+            [],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
