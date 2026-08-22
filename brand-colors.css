@@ -1,0 +1,54 @@
+/* KAWAII LAB. group brand-inspired palettes.
+   These are accessibility-adjusted approximations of the public logo palettes,
+   not official brand guideline color values. */
+
+.group-fruits {
+  --group-color: #e94f98;
+  --group-soft: #fff0f7;
+  --group-gradient: linear-gradient(90deg,#f45aa7 0%,#f59b4a 19%,#f2d34c 37%,#63c97c 56%,#58bfe4 76%,#a06fd3 100%);
+}
+.group-candy {
+  --group-color: #4eaed5;
+  --group-soft: #eefaff;
+  --group-gradient: linear-gradient(90deg,#59bfe5 0%,#f58fbe 26%,#f7cc55 51%,#82c98a 74%,#9a7ed1 100%);
+}
+.group-sweet {
+  --group-color: #55aa8a;
+  --group-soft: #effaf6;
+  --group-gradient: linear-gradient(90deg,#65bca4 0%,#81d2c1 30%,#efa5c3 67%,#b399d7 100%);
+}
+.group-cutie {
+  --group-color: #e65d99;
+  --group-soft: #fff0f7;
+  --group-gradient: linear-gradient(90deg,#ed5c9a 0%,#f58c55 29%,#f2cf52 55%,#69bcd5 79%,#9d7dd1 100%);
+}
+.group-more {
+  --group-color: #8a65d2;
+  --group-soft: #f5f0ff;
+  --group-gradient: linear-gradient(90deg,#7668d9 0%,#9b62d9 28%,#e46eae 58%,#61bddd 100%);
+}
+
+.calendar-event-bar {
+  background: var(--group-gradient,var(--group-color,var(--navy)));
+  text-shadow: 0 1px 2px rgba(20,20,35,.34);
+}
+.calendar-milestone[class*="group-"] {
+  box-shadow: inset 4px 0 0 var(--group-color),0 1px 5px rgba(29,37,71,.08);
+}
+.live-card[class*="group-"] {
+  border-left-color: var(--group-color);
+}
+.live-card[class*="group-"] .live-event-date {
+  background: var(--group-soft);
+  color: var(--group-color);
+}
+
+.live-filter[data-group="FRUITS ZIPPER"].is-active { background: linear-gradient(90deg,#f45aa7,#58bfe4,#a06fd3); border-color: transparent; color:#fff; }
+.live-filter[data-group="CANDY TUNE"].is-active { background: linear-gradient(90deg,#59bfe5,#f58fbe,#9a7ed1); border-color: transparent; color:#fff; }
+.live-filter[data-group="SWEET STEADY"].is-active { background: linear-gradient(90deg,#65bca4,#efa5c3,#b399d7); border-color: transparent; color:#fff; }
+.live-filter[data-group="CUTIE STREET"].is-active { background: linear-gradient(90deg,#ed5c9a,#f58c55,#69bcd5); border-color: transparent; color:#fff; }
+.live-filter[data-group="MORE STAR"].is-active { background: linear-gradient(90deg,#7668d9,#e46eae,#61bddd); border-color: transparent; color:#fff; }
+
+@media (prefers-contrast: more) {
+  .calendar-event-bar { background: var(--group-color,var(--navy)); }
+}
