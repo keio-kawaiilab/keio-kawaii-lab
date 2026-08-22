@@ -37,16 +37,15 @@
   <section class="page-head live-page-head">
     <span class="tricolor-dots" aria-hidden="true"><i></i><i></i><i></i></span>
     <h1><span class="en">LIVE & TICKET</span>ライブ・チケット情報</h1>
-    <p class="live-lead">申込期間を中心に、当落発表・入金期限・公演日をまとめて確認できます。</p>
+    <p class="live-lead">「何日のライブの申込か」を最優先に、受付期間・締切・当落・入金期限までまとめて確認できます。</p>
   </section>
   <div class="scallop" aria-hidden="true"></div>
 
   <section class="section">
     <div class="container reveal">
-      <div class="section-title">
-        <span class="tricolor-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-        <h2>受付状況</h2>
-        <span class="en">Ticket Status</span>
+      <div class="live-demo-banner" id="live-demo-banner" hidden>
+        <strong>デザイン確認用サンプル</strong>
+        <span>現在は試作データを表示しています。公演名・日程は実際の情報ではありません。</span>
       </div>
 
       <div class="live-filters" role="group" aria-label="グループで絞り込み">
@@ -56,6 +55,49 @@
         <button class="live-filter" type="button" data-group="SWEET STEADY">SWEET STEADY</button>
         <button class="live-filter" type="button" data-group="CUTIE STREET">CUTIE STREET</button>
         <button class="live-filter" type="button" data-group="MORE STAR">MORE STAR</button>
+      </div>
+
+      <div class="section-title live-section-title">
+        <span class="tricolor-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <h2>月間カレンダー</h2>
+        <span class="en">Monthly Calendar</span>
+      </div>
+
+      <div class="calendar-toolbar">
+        <button id="calendar-prev" class="calendar-nav" type="button" aria-label="前の月を表示">‹</button>
+        <div>
+          <div id="calendar-month" class="calendar-month" aria-live="polite"></div>
+          <p class="calendar-help">横帯＝申込期間　／　太字＝ライブ開催日</p>
+        </div>
+        <button id="calendar-next" class="calendar-nav" type="button" aria-label="次の月を表示">›</button>
+      </div>
+
+      <div class="live-calendar-scroll" tabindex="0" aria-label="チケット申込月間カレンダー。スマートフォンでは横にスクロールできます。">
+        <div class="live-calendar-shell">
+          <div class="calendar-weekdays" aria-hidden="true">
+            <div class="sun">日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div class="sat">土</div>
+          </div>
+          <div id="live-calendar" class="live-calendar"></div>
+        </div>
+      </div>
+
+      <div class="calendar-legend" aria-label="カレンダーの見方">
+        <span>帯＝申込期間</span>
+        <span>⏰ 申込締切</span>
+        <span>🎫 当落発表</span>
+        <span>💳 入金期限</span>
+        <span>🎤 公演日</span>
+      </div>
+
+      <div id="calendar-detail" class="calendar-detail" aria-live="polite">
+        <strong>カレンダーの項目を押すと詳細を表示</strong>
+        <span>開催日・公演名・受付種別・期限をここで確認できます。</span>
+      </div>
+
+      <div class="section-title live-section-title live-list-title">
+        <span class="tricolor-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <h2>詳しい受付情報</h2>
+        <span class="en">Ticket Details</span>
       </div>
 
       <div class="live-summary" id="live-summary" aria-live="polite"></div>
