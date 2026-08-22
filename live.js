@@ -41,7 +41,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   };
 
   const addDays = (date, amount) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + amount);
-  const sameDay = (a, b) => a && b && a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
   const clampDate = (date, min, max) => date < min ? min : date > max ? max : date;
 
   const fmt = (value) => {
@@ -82,14 +81,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   };
 
   let events = [];
-  let isDemo = false;
   try {
     const response = await fetch("./data/live-events.json", { cache: "no-store" });
     if (!response.ok) throw new Error("failed");
     const data = await response.json();
     events = Array.isArray(data.events) ? data.events : [];
-    isDemo = Boolean(data.demo);
-    if (demoBanner) demoBanner.hidden = !isDemo;
+    if (demoBanner) demoBanner.hidden = !Boolean(data.demo);
   } catch (_) {
     summary.textContent = "ライブ情報を読み込めませんでした。時間をおいて再度お試しください。";
   }
@@ -149,11 +146,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     }).join("");
   };
 
-  const makeButton = (className, text, event, focus) => {
+  const makeButton = (className, html, event, focus) => {
     const button = document.createElement("button");
     button.type = "button";
     button.className = `${className} ${groupClass[event.group] || ""}`;
-    button.innerHTML = text;
+    button.innerHTML = html;
     button.addEventListener("click", () => {
       if (calendarDetail) calendarDetail.innerHTML = detailHtml(event, focus);
     });
@@ -205,8 +202,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const event = item.event;
         const dateLabel = `${fmtShortDate(event.eventDate)}開催`;
-        const title = `${esc(dateLabel)}<span>${esc(event.group || "KAWAII LAB.")}｜${esc(event.title || "ライブ")}｜${esc(event.ticketType || "受付")}</span>`;
-        const bar = makeButton("calendar-event-bar", `<strong>${title}</strong>`, event, `${fmt(event.applyStart)} 〜 ${fmt(event.applyEnd)}`);
+        const barHtml = `<strong>${esc(dateLabel)}</strong><span>${esc(event.group || "KAWAII LAB.")}｜${esc(event.title || "ライブ")}｜${esc(event.ticketType || "受付")}</span>`;
+        const bar = makeButton("calendar-event-bar", barHtml, event, `${fmt(event.applyStart)} 〜 ${fmt(event.applyEnd)}`);
         bar.style.left = `calc(${(startIndex / 7) * 100}% + 4px)`;
         bar.style.width = `calc(${((endIndex - startIndex + 1) / 7) * 100}% - 8px)`;
         bar.style.top = `${31 + lane * 55}px`;
@@ -233,10 +230,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       milestones.sort((a, b) => a.date - b.date).forEach((item) => {
         const dayIndex = Math.round((item.date - weekStart) / 86400000);
         const row = perDayCount[dayIndex]++;
-        const compactName = item.event.title || "ライブ";
         const text = `${item.icon} ${fmtShortDate(item.event.eventDate)}公演 ${item.label}`;
         const button = makeButton("calendar-milestone", esc(text), item.event, `${item.label}: ${fmt(item.value)}`);
-        button.title = `${compactName}｜${item.label}`;
+        button.title = `${item.event.title || "ライブ"}｜${item.label}`;
         button.style.left = `calc(${(dayIndex / 7) * 100}% + 4px)`;
         button.style.width = `calc(${100 / 7}% - 8px)`;
         button.style.top = `${milestoneBase + row * 29}px`;
