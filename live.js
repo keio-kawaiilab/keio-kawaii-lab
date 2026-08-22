@@ -55,12 +55,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }).format(d);
   };
 
-  const fmtShortDate = (value) => {
-    const d = parseDate(value);
-    if (!d) return "日程未定";
-    return `${d.getMonth() + 1}/${d.getDate()}`;
-  };
-
   const fmtShortEventRange = (event) => {
     const start = parseDate(event.eventDate);
     const end = parseDate(event.eventEndDate);
@@ -72,9 +66,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     return `${start.getMonth() + 1}/${start.getDate()}–${end.getMonth() + 1}/${end.getDate()}`;
   };
 
+  const eventDateLabel = (event) => {
+    const base = fmtShortEventRange(event);
+    const count = Number(event.eventCount || 0);
+    return count > 1 ? `${base}・全${count}公演` : base;
+  };
+
   const fmtEventRange = (event) => {
+    const count = Number(event.eventCount || 0);
     if (!event.eventEndDate) return fmt(event.eventDate);
-    return `${fmt(event.eventDate)} 〜 ${fmt(event.eventEndDate)}`;
+    const base = `${fmt(event.eventDate)} 〜 ${fmt(event.eventEndDate)}`;
+    return count > 1 ? `${base}（全${count}公演）` : base;
   };
 
   const participants = (event) => Array.isArray(event.participants) ? event.participants : [];
@@ -103,7 +105,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   };
 
   const detailHtml = (event, focus = "") => {
-    const eventDate = fmtShortEventRange(event);
+    const eventDate = eventDateLabel(event);
     const ticketType = event.ticketType || "チケット受付";
     const participantText = participants(event).length
       ? `<span>参加: ${esc(participants(event).join(" / "))}</span>`
@@ -113,7 +115,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const source = urls.length
       ? `<a href="${esc(urls[0])}" target="_blank" rel="noopener noreferrer">公式情報を確認する →</a>`
       : "";
-    return `<strong>${esc(eventDate)}開催｜${esc(event.title || "ライブ情報")}</strong><span>${esc(event.group || "KAWAII LAB.")}｜${esc(ticketType)}</span>${participantText}${focusText}${source}`;
+    return `<strong>${esc(eventDate)}｜${esc(event.title || "ライブ情報")}</strong><span>${esc(event.group || "KAWAII LAB.")}｜${esc(ticketType)}</span>${participantText}${focusText}${source}`;
   };
 
   let events = [];
@@ -122,6 +124,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!response.ok) throw new Error("failed");
     const data = await response.json();
     events = Array.isArray(data.events) ? data.events : [];
+    const todayDay = dayOnly(new Date());
+    events = events.filter((event) => {
+      const lastDay = dayOnly(event.eventEndDate) || dayOnly(event.eventDate);
+      return !lastDay || !todayDay || lastDay >= todayDay;
+    });
     if (demoBanner) demoBanner.hidden = !Boolean(data.demo);
   } catch (_) {
     summary.textContent = "ライブ情報を読み込めませんでした。時間をおいて再度お試しください。";
@@ -142,7 +149,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       : "現在、掲載中のライブ・チケット受付情報はありません。";
 
     if (!filtered.length) {
-      list.innerHTML = '<div class="live-empty">新しい公式情報を取得すると、ここに自動で追加される予定です。</div>';
+      list.innerHTML = '<div class="live-empty">現在、掲載中の未来公演はありません。</div>';
       return;
     }
 
@@ -166,7 +173,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         <article class="live-card ${cls}">
           <div class="live-card-top">
             <div>
-              <div class="live-event-date">🎤 ${esc(fmtShortEventRange(event))}開催</div>
+              <div class="live-event-date">🎤 ${esc(eventDateLabel(event))}</div>
               <div class="live-group">${esc(event.group || "KAWAII LAB.")}</div>
               <h3>${esc(event.title || "ライブ情報")}</h3>
             </div>
@@ -242,7 +249,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         laneEnds[lane] = endIndex;
 
         const event = item.event;
-        const dateLabel = `${fmtShortEventRange(event)}開催`;
+        const dateLabel = eventDateLabel(event);
         const barHtml = `<strong>${esc(dateLabel)}</strong><span>${esc(event.group || "KAWAII LAB.")}｜${esc(event.title || "ライブ")}｜${esc(event.ticketType || "受付")}</span>`;
         const bar = makeButton("calendar-event-bar", barHtml, event, `${fmt(event.applyStart)} 〜 ${fmt(event.applyEnd)}`);
         bar.style.left = `calc(${(startIndex / 7) * 100}% + 4px)`;
@@ -254,11 +261,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const milestones = [];
       filtered.forEach((event) => {
+        const showLabel = Number(event.eventCount || 0) > 1 ? "ツアー初日" : "公演日";
         const defs = [
           [event.applyEnd, "⏰", "申込締切"],
           [event.resultDate, "🎫", "当落発表"],
           [event.paymentEnd, "💳", "入金期限"],
-          [event.eventDate, "🎤", "公演日"]
+          [event.eventDate, "🎤", showLabel]
         ];
         defs.forEach(([value, icon, label]) => {
           const date = dayOnly(value);
@@ -271,7 +279,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       milestones.sort((a, b) => a.date - b.date).forEach((item) => {
         const dayIndex = Math.round((item.date - weekStart) / 86400000);
         const row = perDayCount[dayIndex]++;
-        const text = `${item.icon} ${fmtShortEventRange(item.event)}公演 ${item.label}`;
+        const text = `${item.icon} ${eventDateLabel(item.event)} ${item.label}`;
         const button = makeButton("calendar-milestone", esc(text), item.event, `${item.label}: ${fmt(item.value)}`);
         button.title = `${item.event.title || "ライブ"}｜${item.label}`;
         button.style.left = `calc(${(dayIndex / 7) * 100}% + 4px)`;
