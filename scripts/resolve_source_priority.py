@@ -38,7 +38,11 @@ def sale_family(event: dict) -> str:
         return "online-benefit"
     if "アップグレード" in text:
         return "upgrade"
-    if re.search(r"(?:年会費コース|OFFICIAL FANCLUB|ファンクラブ|\bFC\b|FC会員)", text, re.I):
+    if re.search(
+        r"(?:年会費コース|OFFICIAL FANCLUB|ファンクラブ|(?:^|\s)FC(?:\s*(?:会員|先行|限定|2次先行|2次|年会費コース))?)",
+        text,
+        re.I,
+    ):
         return "fc"
     if re.search(r"(?:一般発売|一般販売|一般先着|一般先行)", text):
         return "general"
