@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIVE & TICKET | 慶應KAWAII LAB.同好会</title>
+<meta name="description" content="KAWAII LAB.各グループのライブ・チケット申込期間、当落発表、入金期限、公演日をまとめたカレンダーです。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./style.css">
+<link rel="stylesheet" href="./live.css">
+<link rel="stylesheet" href="./brand-colors.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-name">KAWAII LAB.同好会</span>
+      <span class="brand-sub">慶應義塾大学登録学生団体</span>
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="global-nav" aria-label="メニューを開閉">☰</button>
+    <nav class="global-nav" id="global-nav" aria-label="サイト内メニュー">
+      <ul>
+        <li><a href="index.html">トップ</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="activities.html">活動内容</a></li>
+        <li><a href="join.html">入会案内</a></li>
+        <li><a href="live.html" aria-current="page">LIVE情報</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-head live-page-head">
+    <span class="tricolor-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+    <h1><span class="en">LIVE & TICKET</span>ライブ・チケット情報</h1>
+    <p class="live-lead">今日から5週間の申込状況と各公演日を、色でグループ・文字で公演名が分かる形で確認できます。</p>
+  </section>
+  <div class="scallop" aria-hidden="true"></div>
+
+  <section class="section">
+    <div class="container reveal">
+      <div class="live-demo-banner" id="live-demo-banner" hidden>
+        <strong>デザイン確認用サンプル</strong>
+        <span>現在は試作データを表示しています。公演名・日程は実際の情報ではありません。</span>
+      </div>
+
+      <div class="live-filters" role="group" aria-label="グループで絞り込み">
+        <button class="live-filter is-active" type="button" data-group="all">すべて</button>
+        <button class="live-filter" type="button" data-group="FRUITS ZIPPER">FRUITS ZIPPER</button>
+        <button class="live-filter" type="button" data-group="CANDY TUNE">CANDY TUNE</button>
+        <button class="live-filter" type="button" data-group="SWEET STEADY">SWEET STEADY</button>
+        <button class="live-filter" type="button" data-group="CUTIE STREET">CUTIE STREET</button>
+        <button class="live-filter" type="button" data-group="MORE STAR">MORE STAR</button>
+      </div>
+
+      <div class="section-title live-section-title">
+        <span class="tricolor-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <h2>今後5週間</h2>
+        <span class="en">Next 5 Weeks</span>
+      </div>
+
+      <div class="calendar-toolbar">
+        <button id="calendar-prev" class="calendar-nav" type="button" aria-label="前の5週間を表示">‹</button>
+        <div>
+          <div id="calendar-month" class="calendar-month" aria-live="polite"></div>
+          <p class="calendar-help">色＝グループ　／　横帯＝申込期間　／　🎤＝ライブ　／　📱＝オンライン特典会</p>
+        </div>
+        <button id="calendar-next" class="calendar-nav" type="button" aria-label="次の5週間を表示">›</button>
+      </div>
+
+      <div class="live-calendar-scroll" tabindex="0" aria-label="今日から5週間のチケット申込カレンダー。スマートフォンでは横にスクロールできます。">
+        <div class="live-calendar-shell">
+          <div class="calendar-weekdays" aria-hidden="true">
+            <div class="sun">日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div class="sat">土</div>
+          </div>
+          <div id="live-calendar" class="live-calendar"></div>
+        </div>
+      </div>
+
+      <div class="calendar-legend" aria-label="カレンダーの見方">
+        <span>帯＝申込期間</span>
+        <span>⏰ 申込締切</span>
+        <span>🎫 当落発表</span>
+        <span>💳 入金期限</span>
+        <span>🎤 ライブ公演日</span>
+        <span>📱 オンライン特典会</span>
+      </div>
+
+      <div id="calendar-detail" class="calendar-detail" aria-live="polite">
+        <strong>カレンダーの項目を押すと詳細を表示</strong>
+        <span>正式公演名・販売区分・受付名・対象・会場・期限をここで確認できます。</span>
+      </div>
+
+      <div class="section-title live-section-title live-list-title">
+        <span class="tricolor-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <h2>詳しい受付情報</h2>
+        <span class="en">Ticket Details</span>
+      </div>
+
+      <div class="live-summary" id="live-summary" aria-live="polite"></div>
+      <div class="live-list" id="live-list"></div>
+
+      <p class="note live-note"><strong>掲載方針:</strong> 過去公演は表示せず、未来の公演は公式発表済みなら保持します。受付終了後は古い締切を残さず「現在受付なし」として公演予定だけを表示します。内容は変更される場合があるため、申込前に必ずリンク先の公式情報をご確認ください。</p>
+    </div>
+  </section>
+</main>
+
+<div class="footer-stripe" aria-hidden="true"></div>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="brand-name">KAWAII LAB.同好会</span>
+      <p>慶應義塾大学登録学生団体<br>当会は特定の企業・事務所とは関係のない非公式ファンサークルです。</p>
+    </div>
+    <nav class="footer-nav" aria-label="フッターメニュー">
+      <ul>
+        <li><a href="index.html">トップ</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="activities.html">活動内容</a></li>
+        <li><a href="join.html">入会案内</a></li>
+        <li><a href="live.html">LIVE情報</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+      </ul>
+    </nav>
+  </div>
+  <p class="copyright">© <span id="year">2026</span> KAWAII LAB.同好会(慶應義塾大学登録学生団体)</p>
+</footer>
+
+<script src="./script.js"></script>
+<script src="./live.js"></script>
+<script src="./calendar-performance-dates.js?v=202608230413"></script>
+<script src="./calendar-readable-labels.js?v=202608230413"></script>
+<script src="./calendar-scroll-detail.js?v=202608230414"></script>
+</body>
+</html>
