@@ -48,6 +48,7 @@ jobs:
           node --check calendar-readable-labels.js
           node --check calendar-scroll-detail.js
           python scripts/fix_schedule_shell.py
+          python scripts/strip_schedule_explanations.py
           node --check /tmp/schedule-inline.js
 
       - name: Publish schedule shell changes immediately
@@ -87,6 +88,7 @@ jobs:
           python scripts/harden_pia_events.py --check
           python scripts/build_schedule_snapshot.py
           python scripts/fix_schedule_shell.py
+          python scripts/strip_schedule_explanations.py
           node --check /tmp/schedule-inline.js
           git diff --exit-code -- schedule.html || true
 
@@ -113,6 +115,7 @@ jobs:
           # Build the static fallback and validate its inline JavaScript.
           python scripts/build_schedule_snapshot.py
           python scripts/fix_schedule_shell.py
+          python scripts/strip_schedule_explanations.py
           node --check /tmp/schedule-inline.js
 
       - name: Commit when data or static schedule changed
