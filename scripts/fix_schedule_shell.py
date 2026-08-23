@@ -28,6 +28,14 @@ TITLE_JS = (
     "return t.trim()||fb}"
 )
 
+DISCLAIMER_HTML = (
+    '<aside class="schedule-disclaimer" aria-label="ご利用上の注意">'
+    '<strong>⚠️ ご利用前にご確認ください</strong>'
+    '<p>本ページは、各グループ公式サイト・チケットぴあ・SUKISUKI等で一般公開されている情報をもとに、慶應義塾大学KAWAII LAB.同好会が独自に整理した<strong>非公式の情報ページ</strong>です。'</n    '<br>当会から所属事務所・運営会社・出演者・会場・プレイガイド等へ、掲載内容の確認・監修依頼は行っておらず、これらの関係先による確認・承認を受けたものではありません。<strong>本ページに関するお問い合わせを各関係先へ行わないでください。</strong>'
+    '<br>自動取得・整理を含むため、誤記・欠落・反映遅延・内容変更が生じる場合があります。申込・決済・来場前には、必ずリンク先の公式情報をご確認ください。法令上認められる範囲で、掲載内容の利用により生じた損害について当会は責任を負いかねます。</p>'
+    '</aside>'
+)
+
 
 def main() -> int:
     page = PAGE.read_text(encoding="utf-8")
@@ -44,6 +52,18 @@ def main() -> int:
             '<header class="head"><div class="schedule-head-inner"><div><b>KAWAII LAB.同好会</b><small>慶應義塾大学登録学生団体｜LIVE & TICKET</small></div><a class="schedule-home-link" href="index.html">← 同好会公式サイト</a></div></header>',
             1,
         )
+
+    # Explain clearly that this is an unofficial aggregation of public data.
+    if "schedule-disclaimer" not in page:
+        page = page.replace(
+            ".lead,.policy,.status{color:var(--muted);font-size:13px}",
+            ".lead,.policy,.status{color:var(--muted);font-size:13px}.schedule-disclaimer{margin:12px 0 16px;padding:14px 16px;border:1px solid #ead79b;border-left:5px solid #c49d36;border-radius:12px;background:#fff8e6;color:#4f482f;font-size:12px;line-height:1.75}.schedule-disclaimer strong{color:#5a4715}.schedule-disclaimer>strong{display:block;font-size:13px;margin-bottom:4px}.schedule-disclaimer p{margin:0}",
+            1,
+        )
+        lead = '<p class="lead">チケットぴあ掲載の受付は、<strong>FC先行・アップグレードを除いて原則すべて採用</strong>します。開始日時が未取得でも、締切が分かる受付は<strong>今日〜締切を申込帯</strong>で表示します。📱シマシマ＝オンライン特典会。</p>'
+        if lead not in page:
+            raise RuntimeError("could not locate schedule lead for disclaimer")
+        page = page.replace(lead, lead + DISCLAIMER_HTML, 1)
 
     page = page.replace(
         "チケットぴあ掲載の受付は、<strong>FC先行・アップグレードを除いて原則すべて採用</strong>します。開始日時が取れない場合も、締切が分かれば<strong>今日〜締切を申込帯</strong>として表示します。📱シマシマ＝オンライン特典会。",
@@ -175,6 +195,9 @@ def main() -> int:
         'id="snapshot-data"',
         "schedule-home-link",
         'href="index.html"',
+        "schedule-disclaimer",
+        "非公式の情報ページ",
+        "本ページに関するお問い合わせを各関係先へ行わないでください",
         "function effectiveBand(e)",
         "function lane(items)",
         "function prepare(raw)",
