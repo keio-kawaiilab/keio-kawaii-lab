@@ -11,6 +11,7 @@ from zoneinfo import ZoneInfo
 DATA_PATH = Path("data/live-events.json")
 PAGE_PATH = Path("schedule.html")
 JST = ZoneInfo("Asia/Tokyo")
+SHORT_SCHEDULE_VENUE_LIMIT = 6
 
 GROUP_VAR = {
     "FRUITS ZIPPER": "--fruits",
@@ -43,6 +44,13 @@ def fmt(value: object) -> str:
     if match.group(4):
         text += f" {match.group(4)}:{match.group(5)}"
     return text
+
+
+def fmt_md(value: object) -> str:
+    match = re.match(r"^\d{4}-(\d{2})-(\d{2})", str(value or ""))
+    if not match:
+        return "?/?"
+    return f"{int(match.group(1))}/{int(match.group(2))}"
 
 
 def urls(event: dict) -> list[str]:
@@ -87,6 +95,36 @@ def event_dates(event: dict) -> list[str]:
     return list(dict.fromkeys(result))
 
 
+def schedule_rows(event: dict) -> list[tuple[str, str]]:
+    rows: list[tuple[str, str]] = []
+    seen = set()
+    if isinstance(event.get("schedule"), list):
+        for item in event["schedule"]:
+            if not isinstance(item, dict) or not item.get("date"):
+                continue
+            day = str(item.get("date"))[:10]
+            venue = str(item.get("venue") or "").strip()
+            marker = (day, venue)
+            if marker in seen:
+                continue
+            seen.add(marker)
+            rows.append(marker)
+    return rows
+
+
+def venue_text(event: dict, online: bool = False) -> str:
+    if online:
+        return str(event.get("venue") or "オンライン（SUKISUKI）")
+    rows = schedule_rows(event)
+    if len(rows) == 1:
+        return rows[0][1] or str(event.get("venue") or "未定")
+    if 2 <= len(rows) <= SHORT_SCHEDULE_VENUE_LIMIT:
+        return " ／ ".join(f"{fmt_md(day)} {venue or '会場未定'}" for day, venue in rows)
+    if len(rows) > SHORT_SCHEDULE_VENUE_LIMIT:
+        return str(event.get("venue") or f"複数会場（全{len(rows)}公演）")
+    return str(event.get("venue") or "未定")
+
+
 def display_title(event: dict) -> str:
     text = str(event.get("eventTitle") or event.get("title") or "").strip()
     if not text or BAD_UI_TITLE_RE.search(text):
@@ -128,7 +166,7 @@ def build_card(event: dict) -> str:
     color = GROUP_VAR.get(group, "--lab")
     url = source_url(event)
     synthetic = pia and bool(event.get("applyEnd")) and not event.get("applyStart")
-    start_text = "本日から帯表示（開始日時未取得）" if synthetic else fmt(event.get("applyStart"))
+    start_text = "開始日時未取得" if synthetic else fmt(event.get("applyStart"))
     icon = "📱" if online else "🎤"
     css = "card online-card" if online else "card"
     parts = [
@@ -137,14 +175,14 @@ def build_card(event: dict) -> str:
         '<div class="meta">',
         f'<div><b>グループ</b>{esc(group)}</div>',
         f'<div><b>{"配信日" if online else "公演日"}</b>{esc(date_text)}</div>',
-        f'<div><b>会場</b>{esc(event.get("venue") or ("オンライン（SUKISUKI）" if online else "未定"))}</div>',
+        f'<div><b>会場</b>{esc(venue_text(event, online))}</div>',
         f'<div><b>受付</b>{esc(event.get("ticketType") or "未定")}</div>',
         f'<div><b>申込開始</b>{esc(start_text)}</div>',
         f'<div><b>申込締切</b>{esc(fmt(event.get("applyEnd")))}</div>',
         '</div>',
     ]
     if synthetic:
-        parts.append('<div class="deadline-note">開始日時は未取得のため、カレンダー上の帯は「今日〜締切」で表示しています。</div>')
+        parts.append('<div class="deadline-note">開始日時は未取得です。カレンダーの帯は今日から締切まで表示しています。</div>')
     if url:
         label = "チケットぴあを確認 →" if pia else ("SUKISUKIを確認 →" if "sukisuki-shop.com" in url else "情報源を確認 →")
         parts.append(f'<a class="src" href="{esc(url)}" target="_blank" rel="noopener">{label}</a>')
@@ -156,7 +194,6 @@ def main() -> int:
     payload = json.loads(DATA_PATH.read_text(encoding="utf-8"))
     page = PAGE_PATH.read_text(encoding="utf-8")
 
-    # Backward-compatible no-op while an older schedule shell is still deployed.
     if 'id="snapshot-data"' not in page:
         print("schedule.html has no snapshot-data block yet; leaving page untouched")
         return 0
