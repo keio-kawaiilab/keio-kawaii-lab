@@ -191,7 +191,7 @@ def sale_window(context: str) -> tuple[str | None, str | None]:
 
 def detail_sale_window(session: requests.Session, detail_url: str) -> tuple[str | None, str | None]:
     try:
-        response = session.get(detail_url, timeout=20)
+        response = session.get(detail_url, timeout=8)
         response.raise_for_status()
     except Exception:
         return None, None
@@ -302,7 +302,9 @@ def parse_event_page(
         href = canonical_url(urljoin(event_url, str(anchor.get("href") or "")))
         apply_start, apply_end = sale_window(context)
 
-        detail_start, detail_end = detail_sale_window(session, href) if href else (None, None)
+        detail_start, detail_end = (None, None)
+        if href and (apply_start is None and apply_end is None):
+            detail_start, detail_end = detail_sale_window(session, href)
         apply_start = detail_start or apply_start
         apply_end = detail_end or apply_end
 
