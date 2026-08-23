@@ -15,8 +15,9 @@ from bs4 import BeautifulSoup
 JST = timezone(timedelta(hours=9))
 DATA_PATH = Path("data/live-events.json")
 LIST_URLS = (
-    "https://sukisuki-shop.com/goods",
     "https://api.sukisuki-shop.com/goods",
+    "https://sukisuki-shop.com/goods",
+    "https://sukisuki-shop.com/",
 )
 GROUPS = (
     "FRUITS ZIPPER",
@@ -27,6 +28,7 @@ GROUPS = (
 )
 ONLINE_HINTS = ("オンライン特典会", "オンラインサイン会")
 YEARLESS_MAX_DAYS = 60
+MAX_DISCOVERED_GOODS = 120
 YEAR_HINT_LABELS = (
     "抽選申込期間", "申込期間", "販売期間",
     "当落発表日", "当落発表", "当選発表",
@@ -37,6 +39,7 @@ DATE_RE = re.compile(
     r"(?:\s*[（(][^）)]*[）)])?"
     r"(?:\s*(\d{1,2})[:：](\d{2}))?"
 )
+GOODS_ID_RE = re.compile(r"/goods/(\d+)")
 
 
 def normalize_space(value: str) -> str:
@@ -45,7 +48,17 @@ def normalize_space(value: str) -> str:
 
 def canonical_goods_url(url: str) -> str:
     parts = urlsplit(url)
-    return urlunsplit((parts.scheme, parts.netloc, parts.path, "", ""))
+    netloc = parts.netloc
+    # The API catalogue can expose relative /goods/... links. Detail pages are
+    # served by the normal shop host, so normalize them before fetching.
+    if netloc == "api.sukisuki-shop.com" and GOODS_ID_RE.search(parts.path):
+        netloc = "sukisuki-shop.com"
+    return urlunsplit((parts.scheme or "https", netloc, parts.path, "", ""))
+
+
+def goods_rank(url: str) -> int:
+    match = GOODS_ID_RE.search(urlsplit(url).path)
+    return int(match.group(1)) if match else 0
 
 
 def to_iso(match: re.Match, default_year: int | None = None) -> str | None:
@@ -103,7 +116,6 @@ def resolve_event_date(match: re.Match, today, year_hint: int | None = None) -> 
     if year_hint is not None:
         month = int(match.group(2))
         inferred_year = year_hint
-        # 年末販売→翌年1〜2月開催だけは自然な年跨ぎとして許容。
         if year_hint == today.year and today.month >= 11 and month <= 2:
             inferred_year += 1
         return to_iso(match, inferred_year)
@@ -171,6 +183,13 @@ def stable_id(*parts: object) -> str:
 
 
 def discover(session: requests.Session) -> tuple[list[str], list[str]]:
+    """Discover from every public SUKISUKI catalogue, including API-only rows.
+
+    Last-minute first-come goods can appear on api.sukisuki-shop.com before or
+    without appearing on the normal catalogue. Never stop after the first list.
+    Newer numeric goods IDs are parsed first so same-day additions are not lost
+    behind the request cap.
+    """
     urls: set[str] = set()
     failures: list[str] = []
     for list_url in LIST_URLS:
@@ -194,9 +213,9 @@ def discover(session: requests.Session) -> tuple[list[str], list[str]]:
             if not any(hint in context for hint in ONLINE_HINTS):
                 continue
             urls.add(canonical_goods_url(urljoin(list_url, href)))
-        if urls:
-            break
-    return sorted(urls)[:80], failures
+
+    ordered = sorted(urls, key=lambda url: (goods_rank(url), url), reverse=True)
+    return ordered[:MAX_DISCOVERED_GOODS], failures
 
 
 def parse_goods(session: requests.Session, url: str, today) -> dict | None:
@@ -269,7 +288,7 @@ def main() -> int:
 
     session = requests.Session()
     session.headers.update({
-        "User-Agent": "KeioKawaiiLabCalendarBot/1.7 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"
+        "User-Agent": "KeioKawaiiLabCalendarBot/1.8 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"
     })
     urls, discovery_failures = discover(session)
     today = datetime.now(JST).date()
@@ -290,7 +309,7 @@ def main() -> int:
     }, ensure_ascii=False, indent=2))
 
     if not urls and discovery_failures:
-        print("SUKISUKI listing could not be read; existing calendar left untouched.")
+        print("SUKISUKI listings could not be read; existing calendar left untouched.")
         return 0
     if args.check:
         return 0
@@ -315,7 +334,7 @@ def main() -> int:
     ))
     payload["events"] = existing
     payload["updatedAt"] = datetime.now(JST).isoformat(timespec="seconds")
-    payload["source"] = "KAWAII LAB.各グループ公式公開情報 + SUKISUKI公開オンライン特典会情報"
+    payload["source"] = "KAWAII LAB.各グループ公式公開情報 + チケットぴあ公開情報 + SUKISUKI公開オンライン特典会情報"
     DATA_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Merged {len(parsed)} future SUKISUKI online events.")
     return 0
