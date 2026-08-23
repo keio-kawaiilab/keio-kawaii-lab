@@ -11,6 +11,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   const filters = [...document.querySelectorAll(".live-filter")];
   if (!calendar || !periodLabel || !list || !summary || !sourceNote) return;
 
+  const style = document.createElement("style");
+  style.textContent = `
+    .event-bar.online-benefit{background:repeating-linear-gradient(135deg,rgba(255,255,255,0) 0 9px,rgba(255,255,255,.48) 9px 13px),var(--group)!important}
+    .milestone.online-benefit{background:repeating-linear-gradient(135deg,#fff 0 8px,#eef1f5 8px 12px)!important}
+    .card.online-benefit{background:repeating-linear-gradient(135deg,#fff 0 14px,#f5f7fa 14px 21px)!important}
+  `;
+  document.head.appendChild(style);
+
   const cls = {
     "FRUITS ZIPPER":"group-fruits","CANDY TUNE":"group-candy","SWEET STEADY":"group-sweet",
     "CUTIE STREET":"group-cutie","MORE STAR":"group-more","KAWAII LAB.合同":"group-lab"
@@ -40,11 +48,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   const title=(e)=>{
     let t=String(e.title||"ライブ情報").replace(/^20\d{2}[./-]\d{1,2}[./-]\d{1,2}\s+/,"").trim();
     const q=t.match(/「([^」]+)」/);if(q)t=q[1];
-    t=t.replace(/^(FRUITS ZIPPER|CANDY TUNE|SWEET STEADY|CUTIE STREET|MORE STAR|KAWAII LAB\.)\s*/i,"");
+    t=t.replace(/^(?:\d{1,2}月\d{1,2}日\s*)?(FRUITS ZIPPER|CANDY TUNE|SWEET STEADY|CUTIE STREET|MORE STAR|KAWAII LAB\.)\s*/i,"");
     if(/JAPAN ARENA TOUR/i.test(t))return"ARENA TOUR";
     if(/JAPAN TOUR/i.test(t))return"JAPAN TOUR";
     if(/Christmas SESSION/i.test(t))return"Christmas SESSION";
     if(/2nd ANNIVERSARY LIVE/i.test(t))return"2nd ANNIVERSARY";
+    if(online(e))return"オンライン特典会";
     return t.split(/\s*@|開催決定|出演決定|アップグレード抽選受付|一般(?:発売|販売|先行)|FC\s*(?:会員)?先行|受付のお知らせ/)[0].replace(/\s*2026\s*$/i,"").trim()||"ライブ";
   };
   const fullTitle=(e)=>String(e.title||"ライブ情報").replace(/^20\d{2}[./-]\d{1,2}[./-]\d{1,2}\s+/,"").trim();
@@ -59,6 +68,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   const status=(e)=>{if(e.applicationStatus==="none"||e.ticketType==="現在受付なし")return"現在受付なし";const s=parse(e.applyStart),x=parse(e.applyEnd),n=new Date();if(s&&n<s)return"受付前";if(x&&n>x)return"受付終了";if(s&&x&&n>=s&&n<=x)return"受付中";return"日程確認中"};
   const sale=(e)=>{if(online(e))return /抽選/.test(e.ticketType||"")?"オンライン特典会（抽選販売）":/先着/.test(e.ticketType||"")?"オンライン特典会（先着販売）":"オンライン特典会";const t=`${e.ticketType||""} ${e.title||""}`;if(/アップグレード/.test(t))return"アップグレード抽選";if(/一般/.test(t))return"一般販売";if(/年会費コース/.test(t))return"FC年会費コース会員先行";if(/FC|ファンクラブ/i.test(t))return"ファンクラブ先行";if(/先行/.test(t))return"先行受付";return e.ticketType||"チケット受付"};
   const eventLabel=(e)=>{const occ=occurrences(e),a=occ[0]?.date?parse(occ[0].date):parse(e.eventDate),b=occ.length>1?parse(occ[occ.length-1].date):parse(e.eventEndDate);if(!a)return"日程未定";if(!b||same(a,b))return short(a);return `${short(a)}–${short(b)}${Number(e.eventCount||0)>1?`・全${e.eventCount}公演`:""}`};
+  const staleYearlessOnline=(e,today)=>{
+    if(!online(e)||e.sourceType!=="sukisuki")return false;
+    if(/20\d{2}年/.test(String(e.title||"")))return false;
+    const d=day(e.eventDate);if(!d)return true;
+    return (d-today)/86400000>60;
+  };
 
   async function loadData(){
     const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),5000);
@@ -73,11 +88,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   sourceNote.innerHTML="<strong>データを初期化しています…</strong>";
   const loaded=await loadData();
-  let events=loaded.events.filter(e=>{const occ=occurrences(e);const last=occ.length?day(occ[occ.length-1].date):(day(e.eventEndDate)||day(e.eventDate));return !last||last>=day(new Date())});
+  const today=day(new Date());
+  let events=loaded.events.filter(e=>{
+    if(staleYearlessOnline(e,today))return false;
+    const occ=occurrences(e);const last=occ.length?day(occ[occ.length-1].date):(day(e.eventEndDate)||day(e.eventDate));
+    return !last||last>=today;
+  });
   window.__LIVE_EVENTS__=events;
   sourceNote.innerHTML=loaded.fallback?`<strong>表示用バックアップデータで起動しました</strong>　通信が回復すると最新データに戻ります。`:`<strong>公式公開情報 + SUKISUKIから取得</strong>　${esc(loaded.updatedAt)} 更新 / ${events.length}件`;
 
-  const today=day(new Date());
   const initialGridStart=add(today,-today.getDay());
   let windowStart=today,selected="all";
   const filtered=()=>events.filter(e=>matches(e,selected));
@@ -86,7 +105,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const occ=occurrences(e);const schedule=occ.length>1?occ.map(x=>`${String(x.date).slice(5).replace("-","/")} ${x.venue||"会場未定"}`).join(" / "):"";
     detail.innerHTML=`<strong>${esc(fullTitle(e))}</strong><span>販売区分: ${esc(sale(e))}</span><span>受付名: ${esc(e.ticketType||"未定")}</span><span>${online(e)?"配信予定日":"公演日"}: ${esc(eventLabel(e))}</span><span>会場: ${esc(e.venue||"未定")}</span>${participants(e).length?`<span>参加: ${esc(participants(e).join(" / "))}</span>`:""}${schedule?`<span>全日程: ${esc(schedule)}</span>`:""}${focus?`<span>${esc(focus)}</span>`:""}${e.url?`<a href="${esc(e.url)}" target="_blank" rel="noopener">情報元を確認する →</a>`:""}`;
   };
-  const make=(className,text,e,focus)=>{const b=document.createElement("button");b.type="button";b.className=`${className} ${cls[e.group]||""}`;b.innerHTML=text;b.onclick=()=>showDetail(e,focus);return b};
+  const make=(className,text,e,focus)=>{const b=document.createElement("button");b.type="button";b.className=`${className} ${cls[e.group]||""}${online(e)?" online-benefit":""}`;b.innerHTML=text;b.onclick=()=>showDetail(e,focus);return b};
 
   function renderCalendar(){
     calendar.innerHTML="";const gridStart=add(windowStart,-windowStart.getDay()),gridEnd=add(gridStart,34),visibleStart=windowStart,F=filtered();periodLabel.textContent=`${short(visibleStart)} 〜 ${short(gridEnd)}（5週間）`;
@@ -103,7 +122,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function renderList(){
     const F=filtered();summary.textContent=`${F.length}件掲載中・うち受付中 ${F.filter(e=>status(e)==="受付中").length}件`;
-    list.innerHTML=F.slice().sort((a,b)=>(parse(a.applyEnd)||parse(a.eventDate)||new Date(2999,0,1))-(parse(b.applyEnd)||parse(b.eventDate)||new Date(2999,0,1))).map(e=>`<article class="card ${cls[e.group]||""}"><div class="card-top"><div><div class="event-date">${online(e)?"📱":"🎤"} ${esc(eventLabel(e))}</div><div class="group">${esc(e.group||"")}</div><h3>${esc(fullTitle(e))}</h3></div><span class="status">${esc(status(e))}</span></div><dl class="meta"><div><dt>販売区分</dt><dd>${esc(sale(e))}</dd></div><div><dt>受付名</dt><dd>${esc(e.ticketType||"未定")}</dd></div><div><dt>申込期間</dt><dd>${e.applyStart||e.applyEnd?`${esc(fmt(e.applyStart))} 〜 ${esc(fmt(e.applyEnd))}`:"現在受付なし"}</dd></div><div><dt>${online(e)?"配信予定日":"公演"}</dt><dd>${esc(eventLabel(e))}</dd></div><div><dt>会場</dt><dd>${esc(e.venue||"未定")}</dd></div></dl>${e.url?`<a class="source-link" href="${esc(e.url)}" target="_blank" rel="noopener">情報元を確認する →</a>`:""}</article>`).join("");
+    list.innerHTML=F.slice().sort((a,b)=>(parse(a.applyEnd)||parse(a.eventDate)||new Date(2999,0,1))-(parse(b.applyEnd)||parse(b.eventDate)||new Date(2999,0,1))).map(e=>`<article class="card ${cls[e.group]||""}${online(e)?" online-benefit":""}"><div class="card-top"><div><div class="event-date">${online(e)?"📱":"🎤"} ${esc(eventLabel(e))}</div><div class="group">${esc(e.group||"")}</div><h3>${esc(fullTitle(e))}</h3></div><span class="status">${esc(status(e))}</span></div><dl class="meta"><div><dt>販売区分</dt><dd>${esc(sale(e))}</dd></div><div><dt>受付名</dt><dd>${esc(e.ticketType||"未定")}</dd></div><div><dt>申込期間</dt><dd>${e.applyStart||e.applyEnd?`${esc(fmt(e.applyStart))} 〜 ${esc(fmt(e.applyEnd))}`:"現在受付なし"}</dd></div><div><dt>${online(e)?"配信予定日":"公演"}</dt><dd>${esc(eventLabel(e))}</dd></div><div><dt>会場</dt><dd>${esc(e.venue||"未定")}</dd></div></dl>${e.url?`<a class="source-link" href="${esc(e.url)}" target="_blank" rel="noopener">情報元を確認する →</a>`:""}</article>`).join("");
   }
 
   const render=()=>{renderCalendar();renderList()};
