@@ -36,9 +36,18 @@
 <div id="live-summary" class="summary">読み込み中…</div><div id="live-list" class="cards"></div>
 </div></section>
 </main>
-<script src="./preview.js?v=202608230219"></script>
-<script src="./calendar-performance-dates.js?v=202608230413"></script>
-<script src="./calendar-readable-labels.js?v=202608230413"></script>
-<script src="./calendar-scroll-detail.js?v=202608230414"></script>
+<script src="./preview.js?v=202608231145"></script>
+<script src="./calendar-performance-dates.js?v=202608231145"></script>
+<script src="./calendar-readable-labels.js?v=202608231145"></script>
+<script src="./calendar-scroll-detail.js?v=202608231145"></script>
+<script src="./online-event-details.js?v=202608231145"></script>
+<script>
+setTimeout(() => {
+  const note = document.getElementById('source-note');
+  if (note && note.textContent.includes('読み込み中')) {
+    note.innerHTML = '<strong>読み込みが止まりました。</strong> ページを再読み込みしてください。改善しない場合はデータ取得経路を切り替えます。';
+  }
+}, 10000);
+</script>
 </body>
 </html>
