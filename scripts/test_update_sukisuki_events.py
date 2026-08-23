@@ -44,6 +44,26 @@ class SukisukiParserTests(unittest.TestCase):
             "2027-01-10",
         )
 
+    def test_old_ticket_year_hint_keeps_old_christmas_event_old(self):
+        text = "当落発表日：2025年12月18日 入金期限：12月19日"
+        hint = s.explicit_year_hint(text)
+        self.assertEqual(hint, 2025)
+        match = s.DATE_RE.search("12月21日FRUITS ZIPPERオンライン特典会")
+        self.assertEqual(
+            s.resolve_event_date(match, date(2026, 8, 23), hint),
+            "2025-12-21",
+        )
+
+    def test_year_end_ticket_hint_can_roll_event_into_next_january(self):
+        text = "抽選申込期間：2026年12月20日～12月25日"
+        hint = s.explicit_year_hint(text)
+        self.assertEqual(hint, 2026)
+        match = s.DATE_RE.search("1月10日オンライン特典会")
+        self.assertEqual(
+            s.resolve_event_date(match, date(2026, 12, 20), hint),
+            "2027-01-10",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
