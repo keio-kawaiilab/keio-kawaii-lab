@@ -11,18 +11,39 @@ GROUP_NAMES = (
     "FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR",
     "KAWAII LAB.合同", "KAWAII LAB.",
 )
+LOT_RE = re.compile(r"[?&]lotRlsCd=([A-Za-z0-9_-]+)")
 
 
 def normalize_text(value: object) -> str:
     return unicodedata.normalize("NFKC", str(value or "")).strip()
 
 
+def source_urls(event: dict) -> list[str]:
+    values = []
+    if event.get("url"):
+        values.append(str(event["url"]))
+    for url in event.get("urls") or []:
+        if url and str(url) not in values:
+            values.append(str(url))
+    return values
+
+
+def pia_lots(event: dict) -> tuple[str, ...]:
+    values = []
+    for url in source_urls(event):
+        match = LOT_RE.search(url)
+        if match and match.group(1) not in values:
+            values.append(match.group(1))
+    return tuple(values)
+
+
 def source_kind(event: dict) -> str:
     source = normalize_text(event.get("sourceType")).lower()
-    url = normalize_text(event.get("url")).lower()
-    if source == "sukisuki" or "sukisuki-shop.com" in url:
+    urls = " ".join(source_urls(event)).lower()
+    primary = normalize_text(event.get("primarySource")).lower()
+    if source == "sukisuki" or primary == "sukisuki" or "sukisuki-shop.com" in urls:
         return "sukisuki"
-    if source == "pia" or "t.pia.jp" in url:
+    if source == "pia" or primary == "pia" or "t.pia.jp" in urls:
         return "pia"
     return "official"
 
@@ -102,6 +123,14 @@ def same_event_and_sale(a: dict, b: dict) -> bool:
         return False
     if sale_family(a) != sale_family(b):
         return False
+
+    # A Ticket Pia lotRlsCd is an actual application page. Never collapse two
+    # different application pages into one record, even if dates/windows match.
+    if source_kind(a) == "pia" and source_kind(b) == "pia":
+        lots_a, lots_b = pia_lots(a), pia_lots(b)
+        if lots_a and lots_b and lots_a != lots_b:
+            return False
+
     if event_days(a) != event_days(b) or not event_days(a):
         return False
     title_a, title_b = canonical_title(a), canonical_title(b)
@@ -118,16 +147,6 @@ def priority(event: dict) -> int:
     if family in {"fc", "upgrade"}:
         return {"official": 500, "pia": 100, "sukisuki": 50}.get(source, 0)
     return {"pia": 500, "official": 350, "sukisuki": 100}.get(source, 0)
-
-
-def source_urls(event: dict) -> list[str]:
-    values = []
-    if event.get("url"):
-        values.append(str(event["url"]))
-    for url in event.get("urls") or []:
-        if url and str(url) not in values:
-            values.append(str(url))
-    return values
 
 
 def with_source_metadata(event: dict) -> dict:
