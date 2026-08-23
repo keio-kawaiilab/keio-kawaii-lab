@@ -6,6 +6,12 @@ from pathlib import Path
 
 PAGE = Path("schedule.html")
 
+PREFECTURE_JS = (
+    "function prefecture(v){var s=String(v||''),m=s.match(/北海道|東京都|京都府|大阪府|青森県|岩手県|宮城県|秋田県|山形県|福島県|茨城県|栃木県|群馬県|埼玉県|千葉県|神奈川県|新潟県|富山県|石川県|福井県|山梨県|長野県|岐阜県|静岡県|愛知県|三重県|滋賀県|兵庫県|奈良県|和歌山県|鳥取県|島根県|岡山県|広島県|山口県|徳島県|香川県|愛媛県|高知県|福岡県|佐賀県|長崎県|熊本県|大分県|宮崎県|鹿児島県|沖縄県/);"
+    "if(m)return m[0];var a=[[/SGCホール有明|有明アリーナ|東京ガーデンシアター|日本武道館|ベルサール(?:汐留|渋谷)|LINE CUBE SHIBUYA|Zepp Haneda|Spotify O-/,'東京都'],[/ぴあアリーナMM|横浜アリーナ|パシフィコ横浜|カルッツかわさき|KT Zepp Yokohama/,'神奈川県'],[/幕張メッセ|幕張新都心|森のホール21/,'千葉県'],[/戸田市文化会館|大宮ソニックシティ/,'埼玉県']];"
+    "for(var i=0;i<a.length;i++)if(a[i][0].test(s))return a[i][1];return''}"
+)
+
 
 def main() -> int:
     page = PAGE.read_text(encoding="utf-8")
@@ -75,6 +81,14 @@ def main() -> int:
         "esc(venueText(e))",
     )
 
+    # Add a prefecture label to each physical live marker. Use the occurrence
+    # venue so each date in a nationwide tour gets its own prefecture.
+    if "function prefecture(v)" not in page:
+        needle = "function online(e){return e.eventCategory==='online-benefit'||/オンライン(?:特典会|サイン会)/.test(String(e.title||''))}"
+        if needle not in page:
+            raise RuntimeError("could not locate online() insertion point")
+        page = page.replace(needle, needle + PREFECTURE_JS, 1)
+
     # A group has at most one live performance marker per date. Ticket rows and
     # schedule-only rows can describe the same performance; collapse them here.
     page = page.replace("var perf=[],bands=[],miles=[];", "var perf=[],bands=[],miles=[],perfSeen={};")
@@ -82,11 +96,24 @@ def main() -> int:
     dedup_push = (
         "var pk=String(e.group||'')+'|'+String(o.date||'').slice(0,10)+'|'+(online(e)?'online':'live'),"
         "ps=(family(e)==='ticket'?2:0)+(pia(e)?1:0),oldp=perfSeen[pk];"
+        "if(!oldp){var pe={event:e,s:i,end:i,score:ps,prefecture:online(e)?'':prefecture(o.venue||e.venue||'')};perfSeen[pk]=pe;perf.push(pe)}"
+        "else if(ps>oldp.score){oldp.event=e;oldp.score=ps;oldp.prefecture=online(e)?'':(prefecture(o.venue||e.venue||'')||oldp.prefecture)}"
+    )
+    legacy_dedup = (
+        "var pk=String(e.group||'')+'|'+String(o.date||'').slice(0,10)+'|'+(online(e)?'online':'live'),"
+        "ps=(family(e)==='ticket'?2:0)+(pia(e)?1:0),oldp=perfSeen[pk];"
         "if(!oldp){var pe={event:e,s:i,end:i,score:ps};perfSeen[pk]=pe;perf.push(pe)}"
         "else if(ps>oldp.score){oldp.event=e;oldp.score=ps}"
     )
-    if dedup_push not in page:
+    if legacy_dedup in page:
+        page = page.replace(legacy_dedup, dedup_push)
+    elif dedup_push not in page:
         page = page.replace(plain_push, dedup_push)
+
+    page = page.replace(
+        "if(kind==='performance')b.textContent=(online(e)?'📱 ':'🎤 ')+shortTitle(e);",
+        "if(kind==='performance')b.textContent=(online(e)?'📱 ':'🎤 ')+(item.prefecture?item.prefecture+'｜':'')+shortTitle(e);",
+    )
 
     required = (
         'id="snapshot-data"',
@@ -94,7 +121,9 @@ def main() -> int:
         "function lane(items)",
         "function prepare(raw)",
         "function venueText(e)",
+        "function prefecture(v)",
         "perfSeen[pk]",
+        "item.prefecture?item.prefecture+'｜':''",
         "FC先行・アップグレードを除いて原則すべて採用",
         "var e=item.event,b=document.createElement('button')",
         "ends[n]=x.end",
