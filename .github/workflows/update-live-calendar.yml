@@ -6,10 +6,10 @@ on:
       - "scripts/**"
       - ".github/workflows/update-live-calendar.yml"
       - "data/live-events.json"
+      - "schedule.html"
       - "live*.js"
       - "calendar-*.js"
       - "live.html"
-      - "schedule.html"
   push:
     branches:
       - "main"
@@ -27,6 +27,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 concurrency:
   group: update-live-ticket-calendar-${{ github.ref }}
@@ -35,7 +36,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -75,13 +76,30 @@ jobs:
       - name: Install dependencies
         run: pip install -r scripts/requirements.txt
 
-      - name: Run parser, refresh, retention, deadline, sanitizer, metadata, schedule and source priority tests
+      - name: Run parser and release-gate tests
         working-directory: scripts
-        run: python -m unittest -v test_update_live_events.py test_update_live_events_v2.py test_update_pia_events.py test_clean_pia_refresh.py test_reconcile_pia_retention.py test_harden_pia_events.py test_sanitize_live_events.py test_update_sukisuki_events.py test_enrich_event_metadata.py test_build_schedule_snapshot.py test_resolve_source_priority.py
+        run: >-
+          python -m unittest -v
+          test_update_live_events.py
+          test_update_live_events_v2.py
+          test_update_pia_events.py
+          test_clean_pia_refresh.py
+          test_reconcile_pia_retention.py
+          test_harden_pia_events.py
+          test_sanitize_live_events.py
+          test_update_sukisuki_events.py
+          test_enrich_event_metadata.py
+          test_build_schedule_snapshot.py
+          test_resolve_source_priority.py
+          test_audit_schedule_release.py
 
-      - name: Check public sources on pull requests
+      - name: Validate current release on pull requests
         if: github.event_name == 'pull_request'
         run: |
+          python scripts/audit_schedule_release.py \
+            --previous data/live-events.json \
+            --candidate data/live-events.json \
+            --report /tmp/schedule-health.json
           python scripts/update_live_events_v2.py --check
           python scripts/update_pia_events.py --check
           python scripts/update_sukisuki_events.py --check
@@ -92,18 +110,20 @@ jobs:
           node --check /tmp/schedule-inline.js
           git diff --exit-code -- schedule.html || true
 
-      - name: Update calendar data from public sources
+      - name: Refresh candidate data from public sources
         if: github.event_name != 'pull_request'
         run: |
-          # Refresh and sanitize official schedule data first.
+          # This file is the last known-good public release. It is never modified.
+          cp data/live-events.json /tmp/live-events-last-good.json
+
+          # Refresh and sanitize the official schedule first.
           python scripts/update_live_events_v2.py
           cp data/live-events.json /tmp/live-events-before-pia.json
           python scripts/clean_pia_refresh.py --drop-all
           python scripts/sanitize_live_events.py
           python scripts/enrich_event_metadata.py
 
-          # Rebuild Ticket Pia from clean source rows. A Pia lot is never passed
-          # through the multi-event sanitizer after this point.
+          # Rebuild Ticket Pia from clean rows, then add SUKISUKI.
           python scripts/update_pia_events.py
           python scripts/reconcile_pia_retention.py --previous /tmp/live-events-before-pia.json
           python scripts/update_sukisuki_events.py
@@ -112,22 +132,81 @@ jobs:
           python scripts/enrich_event_metadata.py
           python scripts/harden_pia_events.py --check
 
-          # Build the static fallback and validate its inline JavaScript.
+      - name: Fail-closed release audit
+        if: github.event_name != 'pull_request'
+        run: |
+          python scripts/audit_schedule_release.py \
+            --previous /tmp/live-events-last-good.json \
+            --candidate data/live-events.json \
+            --report data/schedule-health.json
+
+      - name: Build public schedule only after audit passes
+        if: github.event_name != 'pull_request'
+        run: |
           python scripts/build_schedule_snapshot.py
           python scripts/fix_schedule_shell.py
           python scripts/strip_schedule_explanations.py
           node --check /tmp/schedule-inline.js
 
-      - name: Commit when data or static schedule changed
+      - name: Add release audit to workflow summary
+        if: always() && github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          if [ -f data/schedule-health.json ]; then
+            echo "### Schedule release audit" >> "$GITHUB_STEP_SUMMARY"
+            echo '```json' >> "$GITHUB_STEP_SUMMARY"
+            cat data/schedule-health.json >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Open incident when release audit blocks publication
+        if: failure() && github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          if [ ! -f data/schedule-health.json ] || ! grep -q '"status": "blocked"' data/schedule-health.json; then
+            exit 0
+          fi
+          title="🚨 Schedule release blocked"
+          existing="$(gh issue list --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
+          if [ -n "$existing" ]; then
+            echo "Incident issue #$existing is already open."
+            exit 0
+          fi
+          {
+            echo "自動更新のリリース監査が異常を検出したため、**本番公開を停止して前回正常版を維持しています**。"
+            echo
+            echo '```json'
+            cat data/schedule-health.json
+            echo '```'
+            echo
+            echo "Actions run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          } > /tmp/schedule-incident.md
+          gh issue create --title "$title" --body-file /tmp/schedule-incident.md
+
+      - name: Close resolved release incident
+        if: success() && github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          title="🚨 Schedule release blocked"
+          existing="$(gh issue list --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
+          if [ -n "$existing" ]; then
+            gh issue close "$existing" --comment "リリース監査が正常に通過したため、自動更新を再開しました。"
+          fi
+
+      - name: Commit only audited data and schedule
         if: github.event_name != 'pull_request'
         shell: bash
         run: |
-          if git diff --quiet -- data/live-events.json schedule.html; then
-            echo "No calendar changes."
+          if [ -z "$(git status --porcelain -- data/live-events.json data/schedule-health.json schedule.html)" ]; then
+            echo "No audited calendar changes."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/live-events.json schedule.html
-          git commit -m "chore: update live ticket calendar"
+          git add data/live-events.json data/schedule-health.json schedule.html
+          git commit -m "chore: publish audited live ticket calendar"
           git push
