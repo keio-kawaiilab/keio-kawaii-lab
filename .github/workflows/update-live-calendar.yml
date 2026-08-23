@@ -9,6 +9,7 @@ on:
       - "live*.js"
       - "calendar-*.js"
       - "live.html"
+      - "schedule.html"
   push:
     branches:
       - "main"
@@ -19,6 +20,7 @@ on:
       - "live*.js"
       - "calendar-*.js"
       - "live.html"
+      - "schedule.html"
   schedule:
     - cron: "23 */6 * * *"
   workflow_dispatch:
@@ -66,6 +68,8 @@ jobs:
           python scripts/update_live_events_v2.py --check
           python scripts/update_pia_events.py --check
           python scripts/update_sukisuki_events.py --check
+          python scripts/build_schedule_snapshot.py
+          git diff --exit-code -- schedule.html || true
 
       - name: Update calendar data from public sources
         if: github.event_name != 'pull_request'
@@ -76,17 +80,18 @@ jobs:
           python scripts/resolve_source_priority.py
           python scripts/sanitize_live_events.py
           python scripts/enrich_event_metadata.py
+          python scripts/build_schedule_snapshot.py
 
-      - name: Commit when data changed
+      - name: Commit when data or static schedule changed
         if: github.event_name != 'pull_request'
         shell: bash
         run: |
-          if git diff --quiet -- data/live-events.json; then
-            echo "No calendar data changes."
+          if git diff --quiet -- data/live-events.json schedule.html; then
+            echo "No calendar changes."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/live-events.json
+          git add data/live-events.json schedule.html
           git commit -m "chore: update live ticket calendar"
           git push
