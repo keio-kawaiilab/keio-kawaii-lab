@@ -9,6 +9,17 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./style.css">
+<style>
+.nav-schedule-link{background:var(--red)!important;color:#fff!important;font-weight:800!important;box-shadow:0 3px 12px rgba(169,59,79,.2)}
+.schedule-spotlight{background:linear-gradient(125deg,var(--navy) 0%,#35457c 48%,var(--red) 100%);color:#fff;padding:20px;box-shadow:0 10px 30px rgba(38,48,92,.18);position:relative;overflow:hidden}
+.schedule-spotlight::after{content:"";position:absolute;width:230px;height:230px;border:45px solid rgba(255,255,255,.06);border-radius:50%;right:-65px;top:-105px;pointer-events:none}
+.schedule-spotlight-inner{max-width:var(--maxw);margin:auto;display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;position:relative;z-index:1}
+.schedule-spotlight-icon{width:66px;height:66px;border-radius:20px;background:#fff;color:var(--navy);display:grid;place-items:center;font-size:2rem;box-shadow:0 5px 18px rgba(0,0,0,.18)}
+.schedule-spotlight-copy{line-height:1.5}.schedule-spotlight-kicker{display:inline-block;background:var(--gold);color:#fff;border-radius:999px;padding:2px 10px;font-size:.72rem;font-weight:900;letter-spacing:.08em;margin-bottom:5px}.schedule-spotlight h2{font-family:"Zen Maru Gothic",sans-serif;font-size:clamp(1.25rem,3.5vw,1.75rem);letter-spacing:.03em;margin:0}.schedule-spotlight p{font-size:.88rem;margin-top:3px;color:rgba(255,255,255,.9)}
+.schedule-spotlight-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:#fff;color:var(--navy);text-decoration:none;border-radius:999px;padding:13px 22px;font-family:"Zen Maru Gothic",sans-serif;font-weight:900;white-space:nowrap;box-shadow:0 5px 18px rgba(0,0,0,.17);transition:transform .15s,box-shadow .15s}.schedule-spotlight-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.22)}
+.hero-actions .schedule-hero-btn{background:var(--navy);color:#fff;border-color:var(--navy);box-shadow:0 5px 16px rgba(38,48,92,.17)}
+@media(max-width:700px){.schedule-spotlight{padding:16px 14px}.schedule-spotlight-inner{grid-template-columns:52px 1fr;gap:12px}.schedule-spotlight-icon{width:52px;height:52px;border-radius:16px;font-size:1.55rem}.schedule-spotlight-btn{grid-column:1/-1;width:100%;padding:12px 18px}.schedule-spotlight p{font-size:.8rem}}
+</style>
 </head>
 <body>
 
@@ -25,13 +36,25 @@
         <li><a href="about.html">About</a></li>
         <li><a href="activities.html">活動内容</a></li>
         <li><a href="join.html">入会案内</a></li>
-        <li><a href="live.html">LIVE情報</a></li>
+        <li><a class="nav-schedule-link" href="schedule.html">🎫 LIVE・チケット</a></li>
         <li><a href="faq.html">FAQ</a></li>
         <li><a href="contact.html">Contact</a></li>
       </ul>
     </nav>
   </div>
 </header>
+
+<section class="schedule-spotlight" aria-label="LIVE・チケット申込カレンダー">
+  <div class="schedule-spotlight-inner">
+    <div class="schedule-spotlight-icon" aria-hidden="true">🎫</div>
+    <div class="schedule-spotlight-copy">
+      <span class="schedule-spotlight-kicker">自動更新</span>
+      <h2>LIVE・チケット申込カレンダー</h2>
+      <p>公演日・申込期間・締切・当落・入金期限をまとめて確認できます。</p>
+    </div>
+    <a class="schedule-spotlight-btn" href="schedule.html">最新スケジュールを見る <span aria-hidden="true">→</span></a>
+  </div>
+</section>
 
 <section class="home-sns">
   <h2>公式SNS</h2>
@@ -82,9 +105,9 @@
     <h1>「KAWAII」を、<br class="sp-only"><span class="accent">まじめに</span>たのしむ。</h1>
     <p class="lead">慶應義塾大学登録学生団体KAWAII LAB.同好会は、KAWAII LAB.発のアイドルグループを応援する慶應生のためのファンサークルです。鑑賞会・ゼミ会・現場遠征・学園祭企画など、仲間と一緒に推し活を楽しんでいます。</p>
     <div class="hero-actions">
+      <a class="btn schedule-hero-btn" href="schedule.html">🎫 LIVE・チケット予定を見る</a>
       <a class="btn btn-primary" href="join.html">入会案内を見る</a>
       <a class="btn btn-secondary" href="activities.html">活動内容を見る</a>
-      <a class="btn btn-secondary" href="live.html">LIVE・チケット情報</a>
     </div>
   </section>
   <div class="scallop" aria-hidden="true"></div>
@@ -149,7 +172,7 @@
         <li><a href="about.html">About</a></li>
         <li><a href="activities.html">活動内容</a></li>
         <li><a href="join.html">入会案内</a></li>
-        <li><a href="live.html">LIVE情報</a></li>
+        <li><a href="schedule.html">LIVE・チケット</a></li>
         <li><a href="faq.html">FAQ</a></li>
         <li><a href="contact.html">Contact</a></li>
         <li><a href="privacy.html">Privacy</a></li>
