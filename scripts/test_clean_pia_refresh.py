@@ -22,6 +22,16 @@ class CleanPiaRefreshTests(unittest.TestCase):
         self.assertEqual([x["id"] for x in kept], ["old"])
         self.assertEqual(removed, [])
 
+    def test_drop_all_removes_every_pia_origin_before_fresh_scrape(self):
+        events = [
+            {"id": "official", "group": "CANDY TUNE", "sourceType": "auto", "url": "https://candytune.asobisystem.com/news/1"},
+            {"id": "direct", "group": "CANDY TUNE", "sourceType": "pia", "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=A"},
+            {"id": "derived", "group": "CANDY TUNE", "sourceType": "derived", "urls": ["https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=B"]},
+        ]
+        kept, removed = c.clean(events, drop_all=True)
+        self.assertEqual([x["id"] for x in kept], ["official"])
+        self.assertEqual(set(removed), {"direct", "derived"})
+
 
 if __name__ == "__main__":
     unittest.main()
