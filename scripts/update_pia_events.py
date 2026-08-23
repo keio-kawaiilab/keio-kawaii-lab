@@ -95,18 +95,33 @@ def ticket_type(text: str) -> str:
 
 
 def extract_live_title(page_text: str, fallback: str) -> str:
-    head = page_text[:2400]
+    fallback = norm(fallback)
+    head = page_text[:3600]
     quoted = re.findall(r"「([^」]{3,140})」", head)
+    bad_ui = re.compile(r"行きたい|アラート|お気に入り|通知|入場券|特典|チケット|メール")
+
+    if any(word.lower() in fallback.lower() for word in ("live", "tour", "session", "fest")) or any(
+        word in fallback for word in ("フェス", "生誕", "祭")
+    ):
+        preferred_fallback = fallback
+    else:
+        preferred_fallback = ""
+
     for value in quoted:
         value = norm(value)
-        if re.search(r"入場券|特典|チケット", value):
+        if bad_ui.search(value):
             continue
-        if any(word in value for word in ("LIVE", "TOUR", "SESSION", "FEST", "フェス", "祭", "公演")):
+        if any(word.lower() in value.lower() for word in ("live", "tour", "session", "fest")) or any(
+            word in value for word in ("フェス", "祭", "生誕", "公演")
+        ):
             return value
+    if preferred_fallback:
+        return preferred_fallback
     for value in quoted:
-        if not re.search(r"入場券|特典|チケット", value):
-            return norm(value)
-    return norm(fallback)
+        value = norm(value)
+        if not bad_ui.search(value):
+            return value
+    return fallback
 
 
 def context_for_detail(anchor) -> str:
@@ -368,7 +383,11 @@ def discover_event_pages(session: requests.Session, group: str, artist_url: str)
             if heading
             else anchor.get_text(" ", strip=True)
         )
-        found[url] = fallback or found.get(url) or group
+        seeded_fallback = found.get(url)
+        if seeded_fallback and len(seeded_fallback) > len(fallback):
+            found[url] = seeded_fallback
+        else:
+            found[url] = fallback or seeded_fallback or group
     return list(found.items())
 
 
