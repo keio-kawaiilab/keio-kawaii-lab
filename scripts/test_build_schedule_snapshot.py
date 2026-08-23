@@ -31,6 +31,26 @@ class ScheduleSnapshotTests(unittest.TestCase):
         event = {"schedule": [{"date": "2026-10-01", "venue": "SGCホール有明"}]}
         self.assertEqual(b.venue_text(event), "SGCホール有明")
 
+    def test_quoted_announcement_uses_only_performance_name(self):
+        event = {
+            "group": "KAWAII LAB.合同",
+            "title": "「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード抽選受付のお知らせ",
+        }
+        self.assertEqual(
+            b.display_title(event),
+            "KAWAII LAB. Christmas SESSION 2026",
+        )
+
+    def test_quoted_fc_announcement_drops_ticket_wording(self):
+        event = {
+            "group": "SWEET STEADY",
+            "title": "2027年3月4日(木)「SWEET STEADY 3rd ANNIVERSARY LIVE 2027」@日本武道館 開催決定！FC先行スタート！",
+        }
+        self.assertEqual(
+            b.display_title(event),
+            "SWEET STEADY 3rd ANNIVERSARY LIVE 2027",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
