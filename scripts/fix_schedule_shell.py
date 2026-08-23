@@ -31,7 +31,8 @@ TITLE_JS = (
 DISCLAIMER_HTML = (
     '<aside class="schedule-disclaimer" aria-label="ご利用上の注意">'
     '<strong>⚠️ ご利用前にご確認ください</strong>'
-    '<p>本ページは、各グループ公式サイト・チケットぴあ・SUKISUKI等で一般公開されている情報をもとに、慶應義塾大学KAWAII LAB.同好会が独自に整理した<strong>非公式の情報ページ</strong>です。'</n    '<br>当会から所属事務所・運営会社・出演者・会場・プレイガイド等へ、掲載内容の確認・監修依頼は行っておらず、これらの関係先による確認・承認を受けたものではありません。<strong>本ページに関するお問い合わせを各関係先へ行わないでください。</strong>'
+    '<p>本ページは、各グループ公式サイト・チケットぴあ・SUKISUKI等で一般公開されている情報をもとに、慶應義塾大学KAWAII LAB.同好会が独自に整理した<strong>非公式の情報ページ</strong>です。'
+    '<br>当会から所属事務所・運営会社・出演者・会場・プレイガイド等へ、掲載内容の確認・監修依頼は行っておらず、これらの関係先による確認・承認を受けたものではありません。<strong>本ページに関するお問い合わせを各関係先へ行わないでください。</strong>'
     '<br>自動取得・整理を含むため、誤記・欠落・反映遅延・内容変更が生じる場合があります。申込・決済・来場前には、必ずリンク先の公式情報をご確認ください。法令上認められる範囲で、掲載内容の利用により生じた損害について当会は責任を負いかねます。</p>'
     '</aside>'
 )
@@ -40,7 +41,6 @@ DISCLAIMER_HTML = (
 def main() -> int:
     page = PAGE.read_text(encoding="utf-8")
 
-    # Make the standalone schedule page clearly navigable back to the club site.
     if "schedule-home-link" not in page:
         page = page.replace(
             ".head small{display:block;margin-top:3px;color:var(--muted)}",
@@ -53,7 +53,6 @@ def main() -> int:
             1,
         )
 
-    # Explain clearly that this is an unofficial aggregation of public data.
     if "schedule-disclaimer" not in page:
         page = page.replace(
             ".lead,.policy,.status{color:var(--muted);font-size:13px}",
@@ -79,7 +78,6 @@ def main() -> int:
         "mbase=bbase+bl*44+10;height=mbase+ml*30+12;",
         "mbase=bbase+bl*44+10;var height=mbase+ml*30+12;",
     )
-
     page = page.replace("perf.push({e:e,s:i,e:i})", "perf.push({event:e,s:i,end:i})")
     page = page.replace(
         "bands.push({e:e,s:Math.round((aa-ws)/86400000),e:Math.round((zz-ws)/86400000),band:r})",
@@ -97,7 +95,6 @@ def main() -> int:
     page = re.sub(r"ends\[n\]=x\.e(?!nd)", "ends[n]=x.end", page)
     page = page.replace("var e=item.e,b=document.createElement('button')", "var e=item.event,b=document.createElement('button')")
     page = page.replace("((item.e-item.s+1)/7*100)", "((item.end-item.s+1)/7*100)")
-
     page = page.replace("e.eventTitle||e.title||'ライブ情報'", "e.eventTitle||e.title||'公演'")
     page = page.replace("+(r.synthetic?'今日から表示｜':'')+", "+")
     page = page.replace(
@@ -123,11 +120,7 @@ def main() -> int:
         if needle not in page:
             raise RuntimeError("could not locate days() insertion point")
         page = page.replace(needle, venue_js + needle, 1)
-
-    page = page.replace(
-        "esc(e.venue||(on?'オンライン（SUKISUKI）':'未定'))",
-        "esc(venueText(e))",
-    )
+    page = page.replace("esc(e.venue||(on?'オンライン（SUKISUKI）':'未定'))", "esc(venueText(e))")
 
     if "function prefecture(v)" not in page:
         needle = "function online(e){return e.eventCategory==='online-benefit'||/オンライン(?:特典会|サイン会)/.test(String(e.title||''))}"
