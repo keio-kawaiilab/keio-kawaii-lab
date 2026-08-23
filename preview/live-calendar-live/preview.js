@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  const DATA_URL = "https://raw.githubusercontent.com/keio-kawaiilab/keio-kawaii-lab/feature/live-ticket-calendar/data/live-events.json";
+  const RAW_URL = "https://raw.githubusercontent.com/keio-kawaiilab/keio-kawaii-lab/feature/live-ticket-calendar/data/live-events.json";
   const calendar = document.getElementById("live-calendar");
   const periodLabel = document.getElementById("calendar-month");
   const detail = document.getElementById("calendar-detail");
@@ -9,78 +9,106 @@ document.addEventListener("DOMContentLoaded", async () => {
   const prev = document.getElementById("calendar-prev");
   const next = document.getElementById("calendar-next");
   const filters = [...document.querySelectorAll(".live-filter")];
+  if (!calendar || !periodLabel || !list || !summary || !sourceNote) return;
 
   const cls = {
     "FRUITS ZIPPER":"group-fruits","CANDY TUNE":"group-candy","SWEET STEADY":"group-sweet",
     "CUTIE STREET":"group-cutie","MORE STAR":"group-more","KAWAII LAB.合同":"group-lab"
   };
-  const esc = (v="") => String(v).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
-  const parse = (v) => { const m=String(v||"").match(/^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}))?/); return m?new Date(+m[1],+m[2]-1,+m[3],+(m[4]||0),+(m[5]||0)):null; };
-  const day = (v) => { const d=v instanceof Date?v:parse(v); return d?new Date(d.getFullYear(),d.getMonth(),d.getDate()):null; };
-  const add = (d,n) => new Date(d.getFullYear(),d.getMonth(),d.getDate()+n);
-  const sameDay = (a,b) => a&&b&&a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();
-  const maxDate = (a,b) => a>b?a:b, minDate=(a,b)=>a<b?a:b;
-  const fmt = (v) => { const d=parse(v); if(!d)return"未定"; const t=String(v).includes("T"); return new Intl.DateTimeFormat("ja-JP",{year:"numeric",month:"numeric",day:"numeric",hour:t?"2-digit":undefined,minute:t?"2-digit":undefined}).format(d); };
-  const shortDay=(d)=>`${d.getMonth()+1}/${d.getDate()}`;
+  const FALLBACK = [
+    {group:"SWEET STEADY",title:"STAEDY→REVOLUTION",ticketType:"現在受付なし",eventDate:"2026-08-23",venue:"ぴあアリーナMM",url:"https://sweetsteady.asobisystem.com/news/detail/79979",applicationStatus:"none"},
+    {group:"CANDY TUNE",title:"CANDY TUNE オンライン特典会",ticketType:"現在受付なし",eventDate:"2026-08-24",venue:"オンライン（SUKISUKI）",url:"https://sukisuki-shop.com/goods/6500000003995",applicationStatus:"none",eventCategory:"online-benefit"},
+    {group:"CUTIE STREET",title:"CUTIE STREET 2nd ANNIVERSARY LIVE 2026",ticketType:"現在受付なし",eventDate:"2026-08-25",eventEndDate:"2026-08-26",eventDates:["2026-08-25","2026-08-26"],schedule:[{date:"2026-08-25",venue:"日本武道館"},{date:"2026-08-26",venue:"日本武道館"}],eventCount:2,venue:"日本武道館",url:"https://cutiestreet.asobisystem.com/news/detail/84129",applicationStatus:"none"},
+    {group:"CANDY TUNE",title:"CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",ticketType:"現在受付なし",eventDate:"2026-08-29",eventEndDate:"2026-12-09",eventDates:["2026-08-29","2026-08-30","2026-09-04","2026-09-09","2026-09-10","2026-09-19"],schedule:[{date:"2026-08-29",venue:"戸田市文化会館"},{date:"2026-08-30",venue:"戸田市文化会館"},{date:"2026-09-04",venue:"カルッツかわさき 大ホール"},{date:"2026-09-09",venue:"グランキューブ大阪 メインホール"},{date:"2026-09-10",venue:"グランキューブ大阪 メインホール"},{date:"2026-09-19",venue:"松戸・森のホール21 大ホール"}],eventCount:23,venue:"複数会場（全23公演）",url:"https://candytune.asobisystem.com/news/detail/82537",applicationStatus:"none"},
+    {group:"FRUITS ZIPPER",title:"FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN -",ticketType:"現在受付なし",eventDate:"2026-09-03",eventEndDate:"2026-11-22",eventDates:["2026-09-03","2026-09-16","2026-09-18","2026-09-21"],schedule:[{date:"2026-09-03",venue:"よこすか芸術劇場"},{date:"2026-09-16",venue:"大宮ソニックシティ 大ホール"},{date:"2026-09-18",venue:"松戸・森のホール21 大ホール"},{date:"2026-09-21",venue:"三重県文化会館 大ホール"}],eventCount:23,venue:"複数会場（全23公演）",url:"https://fruitszipper.asobisystem.com/news/detail/85854",applicationStatus:"none"},
+    {group:"FRUITS ZIPPER",title:"CDTVライブ！ライブ！秋の大感謝祭2026",ticketType:"現在受付なし",eventDate:"2026-09-11",venue:"東京ガーデンシアター",url:"https://fruitszipper.asobisystem.com/news/detail/84998",applicationStatus:"none"},
+    {group:"CUTIE STREET",title:"CUTIE STREET 梅田みゆ 生誕祭 2026",ticketType:"現在受付なし",eventDate:"2026-09-14",venue:"SGCホール有明",url:"https://cutiestreet.asobisystem.com/news/detail/86338",applicationStatus:"none"},
+    {group:"CUTIE STREET",title:"CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-",ticketType:"現在受付なし",eventDate:"2026-09-23",eventEndDate:"2026-11-29",eventDates:["2026-09-23","2026-09-29","2026-09-30"],schedule:[{date:"2026-09-23",venue:"横浜アリーナ"},{date:"2026-09-29",venue:"有明アリーナ"},{date:"2026-09-30",venue:"有明アリーナ"}],eventCount:13,venue:"複数会場（全13公演）",url:"https://cutiestreet.asobisystem.com/news/detail/80640",applicationStatus:"none"},
+    {group:"CUTIE STREET",title:"STARフェス",ticketType:"FC先行",applyStart:"2026-08-12T13:00",applyEnd:"2026-08-23T23:59",resultDate:"2026-08-29",eventDate:"2026-10-11",venue:"ぴあアリーナ MM",url:"https://cutiestreet.asobisystem.com/news/detail/86976"},
+    {group:"KAWAII LAB.合同",participants:["FRUITS ZIPPER","CANDY TUNE","SWEET STEADY","CUTIE STREET","MORE STAR"],title:"KAWAII LAB. Christmas SESSION 2026",ticketType:"アップグレード抽選",applyStart:"2026-08-22T12:00",applyEnd:"2026-08-30T23:59",eventDate:"2026-12-12",eventEndDate:"2026-12-13",eventDates:["2026-12-12","2026-12-13"],schedule:[{date:"2026-12-12",venue:"有明アリーナ"},{date:"2026-12-13",venue:"有明アリーナ"}],eventCount:2,venue:"有明アリーナ",url:"https://candytune.asobisystem.com/news/detail/87780"}
+  ];
 
-  const displayTitle=(e)=>{
+  const esc=(v="")=>String(v).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+  const parse=(v)=>{const m=String(v||"").match(/^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}))?/);return m?new Date(+m[1],+m[2]-1,+m[3],+(m[4]||0),+(m[5]||0)):null};
+  const day=(v)=>{const d=v instanceof Date?v:parse(v);return d?new Date(d.getFullYear(),d.getMonth(),d.getDate()):null};
+  const add=(d,n)=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+n);
+  const same=(a,b)=>a&&b&&a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();
+  const short=(d)=>`${d.getMonth()+1}/${d.getDate()}`;
+  const participants=(e)=>Array.isArray(e.participants)?e.participants:[];
+  const matches=(e,g)=>g==="all"||e.group===g||participants(e).includes(g);
+  const online=(e)=>e.eventCategory==="online-benefit"||/オンライン(?:特典会|サイン会)/.test(String(e.title||""));
+  const title=(e)=>{
     let t=String(e.title||"ライブ情報").replace(/^20\d{2}[./-]\d{1,2}[./-]\d{1,2}\s+/,"").trim();
-    const q=t.match(/「([^」]+)」/);if(q)return q[1].trim();
-    t=t.replace(/^(?:20\d{2}年)?\d{1,2}月\d{1,2}日(?:\([^)]*\)|（[^）]*）)?\s*/,"");
-    t=t.split(/\s*@|開催決定|出演決定|アップグレード抽選受付|一般(?:発売|販売|先行)|FC\s*(?:会員)?先行|ファンクラブ|OFFICIAL FANCLUB|先行受付|チケット受付|受付のお知らせ/)[0];
-    return t.replace(/[!！\s\-–—｜|]+$/g,"").trim()||String(e.title||"ライブ情報");
+    const q=t.match(/「([^」]+)」/);if(q)t=q[1];
+    t=t.replace(/^(FRUITS ZIPPER|CANDY TUNE|SWEET STEADY|CUTIE STREET|MORE STAR|KAWAII LAB\.)\s*/i,"");
+    if(/JAPAN ARENA TOUR/i.test(t))return"ARENA TOUR";
+    if(/JAPAN TOUR/i.test(t))return"JAPAN TOUR";
+    if(/Christmas SESSION/i.test(t))return"Christmas SESSION";
+    if(/2nd ANNIVERSARY LIVE/i.test(t))return"2nd ANNIVERSARY";
+    return t.split(/\s*@|開催決定|出演決定|アップグレード抽選受付|一般(?:発売|販売|先行)|FC\s*(?:会員)?先行|受付のお知らせ/)[0].replace(/\s*2026\s*$/i,"").trim()||"ライブ";
   };
-  const range = (e) => { const a=parse(e.eventDate),b=parse(e.eventEndDate); if(!a)return"日程未定"; if(!b||sameDay(a,b))return shortDay(a); return a.getMonth()===b.getMonth()?`${shortDay(a)}–${b.getDate()}`:`${shortDay(a)}–${shortDay(b)}`; };
-  const eventLabel = (e) => Number(e.eventCount||0)>1?`${range(e)}・全${e.eventCount}公演`:range(e);
-  const participants = (e) => Array.isArray(e.participants)?e.participants:[];
-  const matches = (e,g) => g==="all"||e.group===g||participants(e).includes(g);
-  const urls = (e) => { const a=Array.isArray(e.urls)?[...e.urls.filter(Boolean)]:[]; if(e.url&&!a.includes(e.url))a.unshift(e.url); return a; };
-  const noCurrentSale = (e) => e.applicationStatus==="none" || e.ticketType==="現在受付なし";
-  const status = (e) => { if(noCurrentSale(e))return"現在受付なし"; const s=parse(e.applyStart),x=parse(e.applyEnd),n=new Date(); if(s&&n<s)return"受付前"; if(s&&x&&n>=s&&n<=x)return"受付中"; if(x&&n>x)return"受付終了"; return"日程確認中"; };
-  const saleCategory=(e)=>{if(noCurrentSale(e))return"現在受付なし";const t=`${e.ticketType||""} ${e.title||""}`;if(/アップグレード/.test(t))return"アップグレード抽選";if(/一般(?:発売|販売|先着)/.test(t))return"一般販売";if(/年会費コース/.test(t))return"FC年会費コース会員先行";if(/(?:KAWAII LAB\.\s*FC|OFFICIAL FANCLUB|ファンクラブ|\bFC\b|FC会員)/i.test(t))return"ファンクラブ先行";if(/プレリク|プレイガイド/.test(t))return"プレイガイド先行";if(/先行/.test(t))return"先行受付";return"チケット受付";};
-  const audience=(e)=>{if(noCurrentSale(e))return"—";const t=`${e.ticketType||""} ${e.title||""}`;if(/年会費コース/.test(t))return"FC年会費コース会員";if(/(?:KAWAII LAB\.\s*FC|OFFICIAL FANCLUB|ファンクラブ|\bFC\b|FC会員)/i.test(t))return"FC会員";if(/一般(?:発売|販売|先着)/.test(t))return"一般";if(/アップグレード/.test(t))return"対象チケット保有者向け（公式条件を確認）";return"公式条件を確認";};
-  const neutralTitle=(v)=>{const t=String(v||"").replace(/^20\d{2}[./-]\d{1,2}[./-]\d{1,2}\s+/,"").trim();const q=t.match(/「([^」]+)」/);if(q)return q[1].trim();return t.split(/開催決定|FC\s*先行|ファンクラブ|OFFICIAL FANCLUB|先行受付|チケット受付/)[0].replace(/[!！\-–—｜|　]+$/g,"").trim()||t;};
-
-  const collapseSameWindow = (items) => {
-    const buckets = new Map();
-    const titleKey = (v) => String(v||"").replace(/^20\d{2}[./-]\d{1,2}[./-]\d{1,2}\s+/,"").replace(/\s+/g," ").trim();
-    for (const e of items) { const key=[e.group,participants(e).join("|"),titleKey(e.title),e.ticketType,e.applyStart,e.applyEnd,e.resultDate,e.paymentEnd].join("\u001f"); if(!buckets.has(key))buckets.set(key,[]); buckets.get(key).push(e); }
-    const out=[];
-    for (const group of buckets.values()) {
-      const schedule=[]; for(const e of group){if(Array.isArray(e.schedule)&&e.schedule.length)e.schedule.forEach(x=>schedule.push({date:String(x.date||"").slice(0,10),venue:x.venue||null}));else if(Array.isArray(e.eventDates)&&e.eventDates.length)e.eventDates.forEach(x=>schedule.push({date:String(x).slice(0,10),venue:e.venue||null}));else if(e.eventDate)schedule.push({date:String(e.eventDate).slice(0,10),venue:e.venue||null});}
-      const seen=new Set(),uniq=[];schedule.sort((a,b)=>a.date.localeCompare(b.date)).forEach(x=>{const k=`${x.date}|${x.venue||""}`;if(!seen.has(k)&&parse(x.date)){seen.add(k);uniq.push(x);}});
-      const dates=[...new Set(uniq.map(x=>x.date))].sort();if(dates.length<=1){out.push(...group);continue;}
-      const first={...group[0]},venueList=[...new Set(uniq.map(x=>x.venue).filter(Boolean))];first.eventDate=dates[0];first.eventEndDate=dates.at(-1);first.eventDates=dates;first.eventCount=dates.length;first.schedule=uniq;first.venue=venueList.length===1?venueList[0]:`複数会場（全${dates.length}公演）`;first.urls=[...new Set(group.flatMap(urls))];if(first.urls.length)first.url=first.urls[0];out.push(first);
-    } return out;
+  const fullTitle=(e)=>String(e.title||"ライブ情報").replace(/^20\d{2}[./-]\d{1,2}[./-]\d{1,2}\s+/,"").trim();
+  const occurrences=(e)=>{
+    const rows=[];
+    if(Array.isArray(e.schedule)&&e.schedule.length)e.schedule.forEach(x=>rows.push({date:String(x.date||"").slice(0,10),venue:x.venue||e.venue||null}));
+    else if(Array.isArray(e.eventDates)&&e.eventDates.length)e.eventDates.forEach(x=>rows.push({date:String(x).slice(0,10),venue:e.venue||null}));
+    else if(e.eventDate)rows.push({date:String(e.eventDate).slice(0,10),venue:e.venue||null});
+    const seen=new Set();return rows.filter(x=>parse(x.date)&&!seen.has(x.date)&&seen.add(x.date));
   };
-  const scheduleIdentity=(e)=>{const s=Array.isArray(e.schedule)&&e.schedule.length?e.schedule.map(x=>`${String(x.date||"").slice(0,10)}@${String(x.venue||"").replace(/\s+/g,"")}`).join("|"):(Array.isArray(e.eventDates)&&e.eventDates.length?e.eventDates.join("|"):`${String(e.eventDate||"").slice(0,10)}@${String(e.venue||"").replace(/\s+/g,"")}`);return[e.group,participants(e).join("|"),s].join("\u001f");};
-  const collapseExpired=(items,today)=>{const buckets=new Map();items.forEach(e=>{const k=scheduleIdentity(e);if(!buckets.has(k))buckets.set(k,[]);buckets.get(k).push(e);});const out=[];for(const group of buckets.values()){const current=[],expired=[],scheduleOnly=[];for(const e of group){if(noCurrentSale(e)||(!e.applyStart&&!e.applyEnd)){scheduleOnly.push(e);continue;}const dates=[e.applyEnd,e.resultDate,e.paymentEnd].map(day).filter(Boolean).sort((a,b)=>a-b),last=dates.length?dates.at(-1):null;(last&&last>=today?current:expired).push(e);}if(current.length){out.push(...current);continue;}if(scheduleOnly.length){out.push(scheduleOnly.sort((a,b)=>String(b.sourcePublishedAt||"").localeCompare(String(a.sourcePublishedAt||"")))[0]);continue;}if(!expired.length)continue;const latest=[...expired].sort((a,b)=>String(b.applyEnd||"").localeCompare(String(a.applyEnd||""))||String(b.sourcePublishedAt||"").localeCompare(String(a.sourcePublishedAt||"")))[0];const e={...latest,title:neutralTitle(latest.title),ticketType:"現在受付なし",applicationStatus:"none",applyStart:null,applyEnd:null,resultDate:null,paymentEnd:null};e.urls=[...new Set(expired.flatMap(urls))];if(e.urls.length)e.url=e.urls[0];out.push(e);}return out;};
+  const fmt=(v)=>{const d=parse(v);if(!d)return"未定";return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}${String(v).includes("T")?` ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`:""}`};
+  const status=(e)=>{if(e.applicationStatus==="none"||e.ticketType==="現在受付なし")return"現在受付なし";const s=parse(e.applyStart),x=parse(e.applyEnd),n=new Date();if(s&&n<s)return"受付前";if(x&&n>x)return"受付終了";if(s&&x&&n>=s&&n<=x)return"受付中";return"日程確認中"};
+  const sale=(e)=>{if(online(e))return /抽選/.test(e.ticketType||"")?"オンライン特典会（抽選販売）":/先着/.test(e.ticketType||"")?"オンライン特典会（先着販売）":"オンライン特典会";const t=`${e.ticketType||""} ${e.title||""}`;if(/アップグレード/.test(t))return"アップグレード抽選";if(/一般/.test(t))return"一般販売";if(/年会費コース/.test(t))return"FC年会費コース会員先行";if(/FC|ファンクラブ/i.test(t))return"ファンクラブ先行";if(/先行/.test(t))return"先行受付";return e.ticketType||"チケット受付"};
+  const eventLabel=(e)=>{const occ=occurrences(e),a=occ[0]?.date?parse(occ[0].date):parse(e.eventDate),b=occ.length>1?parse(occ[occ.length-1].date):parse(e.eventEndDate);if(!a)return"日程未定";if(!b||same(a,b))return short(a);return `${short(a)}–${short(b)}${Number(e.eventCount||0)>1?`・全${e.eventCount}公演`:""}`};
 
-  let events=[];
-  try {
-    const r=await fetch(DATA_URL+"?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw new Error();const data=await r.json();const today=day(new Date());
-    const raw=(Array.isArray(data.events)?data.events:[]).filter(e=>!/(?:チケット.*まとめ|まとめ.*チケット)/.test(String(e.title||""))).filter(e=>{const last=day(e.eventEndDate)||day(e.eventDate);return !last||last>=today;});
-    events=collapseExpired(collapseSameWindow(raw),today);sourceNote.innerHTML=`<strong>公式公開情報から自動取得</strong>　${esc(data.updatedAt||"")} 更新 / ${events.length}件`;
-  } catch (_) { sourceNote.textContent="データを読み込めませんでした。"; }
-
-  const today=day(new Date()),initialGridStart=add(today,-today.getDay());let windowStart=today,selected="all";const filtered=()=>events.filter(e=>matches(e,selected));
-
-  const showDetail=(e,focus="")=>{const p=participants(e),u=urls(e),schedule=Array.isArray(e.schedule)?e.schedule:[],scheduleText=schedule.length>1?schedule.map(x=>`${String(x.date||"").slice(5).replace("-","/")} ${x.venue||"会場未定"}`).join(" / "):"";detail.innerHTML=`<strong>${esc(eventLabel(e))}｜${esc(displayTitle(e))}</strong><span>販売区分: ${esc(saleCategory(e))}</span><span>受付名: ${esc(e.ticketType||"未定")}</span><span>対象: ${esc(audience(e))}</span><span>会場: ${esc(e.venue||"未定")}</span>${p.length?`<span>参加: ${esc(p.join(" / "))}</span>`:""}${scheduleText?`<span>全日程: ${esc(scheduleText)}</span>`:""}${focus?`<span>${esc(focus)}</span>`:""}${u.length?`<a href="${esc(u[0])}" target="_blank" rel="noopener">公式情報を確認する →</a>`:""}`;};
-  const makeButton=(className,html,e,focus)=>{const b=document.createElement("button");b.type="button";b.className=`${className} ${cls[e.group]||""}`;b.innerHTML=html;b.onclick=()=>showDetail(e,focus);return b;};
-
-  function renderCalendar(){
-    calendar.innerHTML="";const gridStart=add(windowStart,-windowStart.getDay()),gridEnd=add(gridStart,34),visibleStart=windowStart,F=filtered();periodLabel.textContent=`${shortDay(visibleStart)} 〜 ${shortDay(gridEnd)}（5週間）`;
-    for(let w=0;w<5;w++){
-      const ws=add(gridStart,w*7),we=add(ws,6),week=document.createElement("div");week.className="week";
-      for(let i=0;i<7;i++){const d=add(ws,i),cell=document.createElement("div");cell.className="day";if(d<visibleStart){cell.classList.add("other");cell.innerHTML="";}else{if(sameDay(d,today))cell.classList.add("today");const label=d.getDate()===1?`${d.getMonth()+1}/1`:`${d.getDate()}`;cell.innerHTML=`<span class="num">${label}</span>`;}week.appendChild(cell);}
-      const ranges=F.map(e=>({e,s:day(e.applyStart),x:day(e.applyEnd)})).filter(z=>z.s&&z.x&&z.x>=maxDate(ws,visibleStart)&&z.s<=we&&z.s<=gridEnd).sort((a,b)=>a.s-b.s||a.x-b.x),lanes=[];
-      ranges.forEach(z=>{const s=maxDate(z.s,maxDate(ws,visibleStart)),x=minDate(z.x,minDate(we,gridEnd));if(s>x)return;const si=Math.round((s-ws)/86400000),xi=Math.round((x-ws)/86400000);let lane=lanes.findIndex(v=>v<si);if(lane<0)lane=lanes.length;lanes[lane]=xi;const b=makeButton("event-bar",`<strong>${esc(eventLabel(z.e))}</strong><span>${esc(displayTitle(z.e))}｜${esc(saleCategory(z.e))}</span>`,z.e,`申込期間: ${fmt(z.e.applyStart)} 〜 ${fmt(z.e.applyEnd)}`);b.style.left=`calc(${si/7*100}% + 4px)`;b.style.width=`calc(${(xi-si+1)/7*100}% - 8px)`;b.style.top=`${31+lane*55}px`;week.appendChild(b);});
-      const milestones=[];F.forEach(e=>[[e.applyEnd,"⏰","申込締切"],[e.resultDate,"🎫","当落"],[e.paymentEnd,"💳","入金期限"],[e.eventDate,"🎤",Number(e.eventCount||0)>1?"公演初日":"公演日"]].forEach(([v,icon,label])=>{const d=day(v);if(d&&d>=visibleStart&&d>=ws&&d<=we&&d<=gridEnd)milestones.push({e,d,v,icon,label});}));
-      const counts=Array(7).fill(0),base=31+lanes.length*55;milestones.sort((a,b)=>a.d-b.d).forEach(item=>{const idx=Math.round((item.d-ws)/86400000),row=counts[idx]++;const b=makeButton("milestone",esc(`${item.icon} ${displayTitle(item.e)}｜${item.label}`),item.e,`${item.label}: ${fmt(item.v)}`);b.style.left=`calc(${idx/7*100}% + 4px)`;b.style.width=`calc(${100/7}% - 8px)`;b.style.top=`${base+row*29}px`;week.appendChild(b);});week.style.minHeight=`${Math.max(132,base+Math.max(0,...counts)*29+8)}px`;calendar.appendChild(week);
-    } prev.disabled=gridStart.getTime()===initialGridStart.getTime();
+  async function loadData(){
+    const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),5000);
+    try{
+      const r=await fetch(RAW_URL+"?t="+Date.now(),{cache:"no-store",signal:controller.signal});
+      if(!r.ok)throw new Error(`HTTP ${r.status}`);const data=await r.json();
+      if(!Array.isArray(data.events)||!data.events.length)throw new Error("empty");
+      return {events:data.events,updatedAt:data.updatedAt||"",fallback:false};
+    }catch(err){return {events:FALLBACK,updatedAt:"2026-08-23 11:43",fallback:true};}
+    finally{clearTimeout(timer);}
   }
 
-  function renderList(){const F=filtered();summary.textContent=`${F.length}件掲載中・うち受付中 ${F.filter(e=>status(e)==="受付中").length}件`;list.innerHTML=F.sort((a,b)=>(parse(a.applyEnd)||parse(a.eventDate))-(parse(b.applyEnd)||parse(b.eventDate))).map(e=>{const u=urls(e),p=participants(e),application=noCurrentSale(e)?"現在受付なし":`${fmt(e.applyStart)} 〜 ${fmt(e.applyEnd)}`;return `<article class="card ${cls[e.group]||""}"><div class="card-top"><div><div class="event-date">🎤 ${esc(eventLabel(e))}</div><div class="group">${esc(e.group||"")}</div><h3>${esc(displayTitle(e))}</h3></div><span class="status">${esc(status(e))}</span></div><dl class="meta"><div><dt>販売区分</dt><dd>${esc(saleCategory(e))}</dd></div><div><dt>受付名</dt><dd>${esc(e.ticketType||"未定")}</dd></div><div><dt>対象</dt><dd>${esc(audience(e))}</dd></div><div><dt>申込期間</dt><dd>${esc(application)}</dd></div><div><dt>公演</dt><dd>${esc(eventLabel(e))}</dd></div><div><dt>会場</dt><dd>${esc(e.venue||"未定")}</dd></div>${p.length?`<div><dt>参加グループ</dt><dd>${esc(p.join(" / "))}</dd></div>`:""}</dl>${u.length?`<a class="source-link" href="${esc(u[0])}" target="_blank" rel="noopener">公式情報を確認する →</a>`:""}</article>`;}).join("");}
+  sourceNote.innerHTML="<strong>データを初期化しています…</strong>";
+  const loaded=await loadData();
+  let events=loaded.events.filter(e=>{const occ=occurrences(e);const last=occ.length?day(occ[occ.length-1].date):(day(e.eventEndDate)||day(e.eventDate));return !last||last>=day(new Date())});
+  window.__LIVE_EVENTS__=events;
+  sourceNote.innerHTML=loaded.fallback?`<strong>表示用バックアップデータで起動しました</strong>　通信が回復すると最新データに戻ります。`:`<strong>公式公開情報 + SUKISUKIから取得</strong>　${esc(loaded.updatedAt)} 更新 / ${events.length}件`;
 
-  const render=()=>{renderCalendar();renderList();};filters.forEach(b=>b.onclick=()=>{selected=b.dataset.group||"all";filters.forEach(x=>x.classList.toggle("is-active",x===b));render();});prev.onclick=()=>{const gs=add(windowStart,-windowStart.getDay()),prevStart=add(gs,-35);windowStart=prevStart<initialGridStart?today:prevStart;renderCalendar();};next.onclick=()=>{const gs=add(windowStart,-windowStart.getDay());windowStart=add(gs,35);renderCalendar();};render();
+  const today=day(new Date());
+  const initialGridStart=add(today,-today.getDay());
+  let windowStart=today,selected="all";
+  const filtered=()=>events.filter(e=>matches(e,selected));
+
+  const showDetail=(e,focus="")=>{
+    const occ=occurrences(e);const schedule=occ.length>1?occ.map(x=>`${String(x.date).slice(5).replace("-","/")} ${x.venue||"会場未定"}`).join(" / "):"";
+    detail.innerHTML=`<strong>${esc(fullTitle(e))}</strong><span>販売区分: ${esc(sale(e))}</span><span>受付名: ${esc(e.ticketType||"未定")}</span><span>${online(e)?"配信予定日":"公演日"}: ${esc(eventLabel(e))}</span><span>会場: ${esc(e.venue||"未定")}</span>${participants(e).length?`<span>参加: ${esc(participants(e).join(" / "))}</span>`:""}${schedule?`<span>全日程: ${esc(schedule)}</span>`:""}${focus?`<span>${esc(focus)}</span>`:""}${e.url?`<a href="${esc(e.url)}" target="_blank" rel="noopener">情報元を確認する →</a>`:""}`;
+  };
+  const make=(className,text,e,focus)=>{const b=document.createElement("button");b.type="button";b.className=`${className} ${cls[e.group]||""}`;b.innerHTML=text;b.onclick=()=>showDetail(e,focus);return b};
+
+  function renderCalendar(){
+    calendar.innerHTML="";const gridStart=add(windowStart,-windowStart.getDay()),gridEnd=add(gridStart,34),visibleStart=windowStart,F=filtered();periodLabel.textContent=`${short(visibleStart)} 〜 ${short(gridEnd)}（5週間）`;
+    for(let w=0;w<5;w++){
+      const ws=add(gridStart,w*7),we=add(ws,6),week=document.createElement("div");week.className="week";
+      for(let i=0;i<7;i++){const d=add(ws,i),cell=document.createElement("div");cell.className="day";if(d<visibleStart){cell.classList.add("other");cell.innerHTML=""}else{if(same(d,today))cell.classList.add("today");cell.innerHTML=`<span class="num">${d.getDate()===1?`${d.getMonth()+1}/1`:d.getDate()}</span>`}week.appendChild(cell)}
+      const ranges=F.map(e=>({e,s:day(e.applyStart),x:day(e.applyEnd)})).filter(z=>z.s&&z.x&&z.x>=ws&&z.s<=we&&z.x>=visibleStart),lanes=[];
+      ranges.forEach(z=>{const s=z.s<visibleStart?visibleStart:z.s<ws?ws:z.s,x=z.x>we?we:z.x;if(s>x)return;const si=Math.round((s-ws)/86400000),xi=Math.round((x-ws)/86400000);let lane=lanes.findIndex(v=>v<si);if(lane<0)lane=lanes.length;lanes[lane]=xi;const b=make("event-bar",`<strong>${esc(title(z.e))}</strong><span>${esc(sale(z.e))}</span>`,z.e,`申込期間: ${fmt(z.e.applyStart)} 〜 ${fmt(z.e.applyEnd)}`);b.style.left=`calc(${si/7*100}% + 4px)`;b.style.width=`calc(${(xi-si+1)/7*100}% - 8px)`;b.style.top=`${31+lane*55}px`;week.appendChild(b)});
+      const marks=[];F.forEach(e=>{[[e.applyEnd,"⏰","申込締切"],[e.resultDate,"🎫","当落"],[e.paymentEnd,"💳","入金期限"]].forEach(([v,icon,label])=>{const d=day(v);if(d&&d>=visibleStart&&d>=ws&&d<=we&&d<=gridEnd)marks.push({e,d,v,icon,label})});occurrences(e).forEach(o=>{const d=day(o.date);if(d&&d>=visibleStart&&d>=ws&&d<=we&&d<=gridEnd)marks.push({e,d,v:o.date,icon:online(e)?"📱":"🎤",label:online(e)?"オンライン特典会":"公演日",venue:o.venue})})});
+      const counts=Array(7).fill(0),base=31+lanes.length*55;marks.sort((a,b)=>a.d-b.d).forEach(m=>{const idx=Math.round((m.d-ws)/86400000),row=counts[idx]++;const b=make("milestone",esc(`${m.icon} ${title(m.e)}`),m.e,`${m.label}: ${fmt(m.v)}${m.venue?` / ${m.venue}`:""}`);b.style.left=`calc(${idx/7*100}% + 4px)`;b.style.width=`calc(${100/7}% - 8px)`;b.style.top=`${base+row*29}px`;week.appendChild(b)});week.style.minHeight=`${Math.max(145,base+Math.max(0,...counts)*29+8)}px`;calendar.appendChild(week)
+    }
+    if(prev)prev.disabled=gridStart.getTime()===initialGridStart.getTime();
+  }
+
+  function renderList(){
+    const F=filtered();summary.textContent=`${F.length}件掲載中・うち受付中 ${F.filter(e=>status(e)==="受付中").length}件`;
+    list.innerHTML=F.slice().sort((a,b)=>(parse(a.applyEnd)||parse(a.eventDate)||new Date(2999,0,1))-(parse(b.applyEnd)||parse(b.eventDate)||new Date(2999,0,1))).map(e=>`<article class="card ${cls[e.group]||""}"><div class="card-top"><div><div class="event-date">${online(e)?"📱":"🎤"} ${esc(eventLabel(e))}</div><div class="group">${esc(e.group||"")}</div><h3>${esc(fullTitle(e))}</h3></div><span class="status">${esc(status(e))}</span></div><dl class="meta"><div><dt>販売区分</dt><dd>${esc(sale(e))}</dd></div><div><dt>受付名</dt><dd>${esc(e.ticketType||"未定")}</dd></div><div><dt>申込期間</dt><dd>${e.applyStart||e.applyEnd?`${esc(fmt(e.applyStart))} 〜 ${esc(fmt(e.applyEnd))}`:"現在受付なし"}</dd></div><div><dt>${online(e)?"配信予定日":"公演"}</dt><dd>${esc(eventLabel(e))}</dd></div><div><dt>会場</dt><dd>${esc(e.venue||"未定")}</dd></div></dl>${e.url?`<a class="source-link" href="${esc(e.url)}" target="_blank" rel="noopener">情報元を確認する →</a>`:""}</article>`).join("");
+  }
+
+  const render=()=>{renderCalendar();renderList()};
+  filters.forEach(b=>b.onclick=()=>{selected=b.dataset.group||"all";filters.forEach(x=>x.classList.toggle("is-active",x===b));render()});
+  if(prev)prev.onclick=()=>{const gs=add(windowStart,-windowStart.getDay()),p=add(gs,-35);windowStart=p<initialGridStart?today:p;renderCalendar()};
+  if(next)next.onclick=()=>{const gs=add(windowStart,-windowStart.getDay());windowStart=add(gs,35);renderCalendar()};
+  render();
 });
