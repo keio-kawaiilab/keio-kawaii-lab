@@ -45,6 +45,15 @@ document.addEventListener("DOMContentLoaded", () => {
     targets.forEach((el) => observer.observe(el));
   }
 
+  // ---- ホームのお知らせ：プレスリリースPDFへの導線を明示 ----
+  const pressLink = document.querySelector('a[href*="press/20260824-live-ticket-calendar.pdf"]');
+  if (pressLink) {
+    pressLink.href = "https://keio-kawaiilab.github.io/keio-kawaii-lab/press/20260824-live-ticket-calendar.pdf";
+    pressLink.target = "_blank";
+    pressLink.rel = "noopener";
+    pressLink.textContent = "【プレスリリースPDF】ファン向け情報インフラ第1弾「LIVE & TICKET カレンダー」を公開しました。";
+  }
+
   // ---- フッターの年を自動更新 ----
   const yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
