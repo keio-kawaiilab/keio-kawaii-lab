@@ -11,6 +11,7 @@ on:
       - "scripts/test_audit_schedule_release.py"
       - "scripts/resolve_source_priority.py"
       - "scripts/test_resolve_source_priority.py"
+      - "data/schedule-control.json"
       - ".github/workflows/update-sukisuki-fast.yml"
   schedule:
     - cron: "7,22,37,52 * * * *"
@@ -32,6 +33,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Read emergency freeze control
+        id: control
+        shell: bash
+        run: |
+          frozen="$(python - <<'PY'
+          import json
+          with open('data/schedule-control.json', encoding='utf-8') as f:
+              print(str(bool(json.load(f).get('freeze'))).lower())
+          PY
+          )"
+          echo "frozen=$frozen" >> "$GITHUB_OUTPUT"
+          if [ "$frozen" = "true" ]; then
+            echo "Fast SUKISUKI auto-publication is FROZEN."
+          fi
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -47,12 +63,14 @@ jobs:
         run: python -m unittest -v test_update_sukisuki_events.py test_resolve_source_priority.py test_audit_schedule_release.py
 
       - name: Refresh SUKISUKI candidate data
+        if: steps.control.outputs.frozen != 'true'
         run: |
           cp data/live-events.json /tmp/live-events-last-good.json
           python scripts/update_sukisuki_events.py
           python scripts/resolve_source_priority.py
 
       - name: Fail-closed release audit
+        if: steps.control.outputs.frozen != 'true'
         run: |
           python scripts/audit_schedule_release.py \
             --previous /tmp/live-events-last-good.json \
@@ -60,6 +78,7 @@ jobs:
             --report data/schedule-health.json
 
       - name: Build public schedule only after audit passes
+        if: steps.control.outputs.frozen != 'true'
         run: |
           python scripts/build_schedule_snapshot.py
           python scripts/fix_schedule_shell.py
@@ -67,7 +86,7 @@ jobs:
           node --check /tmp/schedule-inline.js
 
       - name: Open incident when release audit blocks publication
-        if: failure()
+        if: failure() && steps.control.outputs.frozen != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
@@ -93,6 +112,7 @@ jobs:
           gh issue create --title "$title" --body-file /tmp/schedule-incident.md
 
       - name: Commit only audited SUKISUKI changes
+        if: steps.control.outputs.frozen != 'true'
         shell: bash
         run: |
           if [ -z "$(git status --porcelain -- data/live-events.json data/schedule-health.json schedule.html)" ]; then
