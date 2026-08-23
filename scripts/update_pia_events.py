@@ -22,12 +22,31 @@ ARTIST_URLS = {
     "CUTIE STREET": "https://t.pia.jp/pia/artist/artists.do?artistsCd=O7260002",
     "MORE STAR": "https://t.pia.jp/pia/artist/artists.do?artistsCd=PC180040",
 }
+
+# Artist pages occasionally omit or defer individual bundle links. Keep high-confidence
+# public event bundles as seeds, then merge them with the normal discovery result.
+SEEDED_EVENT_PAGES = {
+    "CANDY TUNE": [
+        ("https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827", "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -"),
+    ],
+    "FRUITS ZIPPER": [
+        ("https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209", "FRUITS ZIPPER"),
+    ],
+}
+
 SALE_HINTS = (
     "一般発売", "一般販売", "プレリザーブ", "プレイガイド", "プリセール",
     "先行", "発売前", "販売期間中", "抽選受付中", "ぴあNICOS",
+    "まもなく抽選受付", "まもなく受付", "まもなく発売", "本日発売初日",
 )
-ACTIVE_HINTS = ("抽選受付中", "販売期間中", "発売前", "受付中")
-ENDED_HINTS = ("抽選受付終了", "販売終了", "予定枚数終了")
+ACTIVE_HINTS = ("抽選受付中", "販売期間中", "受付中", "本日発売初日")
+UPCOMING_HINTS = ("発売前", "まもなく抽選受付", "まもなく受付", "まもなく発売")
+ENDED_HINTS = (
+    "抽選受付終了", "販売終了", "予定枚数終了",
+    "抽選結果発表前", "抽選結果発表中", "抽選結果発表済",
+)
+STATUS_HINTS = (*ACTIVE_HINTS, *UPCOMING_HINTS, *ENDED_HINTS)
+
 DATE_RE = re.compile(
     r"(20\d{2})/(\d{1,2})/(\d{1,2})"
     r"(?:\([^)]*\))?"
@@ -76,8 +95,14 @@ def ticket_type(text: str) -> str:
 
 
 def extract_live_title(page_text: str, fallback: str) -> str:
-    head = page_text[:1800]
-    quoted = re.findall(r"「([^」]{3,120})」", head)
+    head = page_text[:2400]
+    quoted = re.findall(r"「([^」]{3,140})」", head)
+    for value in quoted:
+        value = norm(value)
+        if re.search(r"入場券|特典|チケット", value):
+            continue
+        if any(word in value for word in ("LIVE", "TOUR", "SESSION", "FEST", "フェス", "祭", "公演")):
+            return value
     for value in quoted:
         if not re.search(r"入場券|特典|チケット", value):
             return norm(value)
@@ -85,8 +110,12 @@ def extract_live_title(page_text: str, fallback: str) -> str:
 
 
 def context_for_detail(anchor) -> str:
+    own = norm(anchor.get_text(" ", strip=True))
+    if any(hint in own for hint in SALE_HINTS) and DATE_RE.search(own):
+        return own
+
     node = anchor
-    best = norm(anchor.get_text(" ", strip=True))
+    best = own
     for _ in range(8):
         node = getattr(node, "parent", None)
         if node is None:
@@ -94,13 +123,23 @@ def context_for_detail(anchor) -> str:
         text = norm(node.get_text(" ", strip=True))
         if any(hint in text for hint in SALE_HINTS) and DATE_RE.search(text):
             best = text
-            if len(text) <= 900:
+            if len(text) <= 1200:
                 return text
     return best
 
 
+def availability_status(context: str) -> str | None:
+    if any(hint in context for hint in ACTIVE_HINTS):
+        return "open"
+    if any(hint in context for hint in UPCOMING_HINTS):
+        return "upcoming"
+    if any(hint in context for hint in ENDED_HINTS):
+        return None
+    return None
+
+
 def event_window(context: str) -> tuple[str | None, str | None]:
-    status_positions = [context.find(h) for h in (*ACTIVE_HINTS, *ENDED_HINTS) if context.find(h) >= 0]
+    status_positions = [context.find(h) for h in STATUS_HINTS if context.find(h) >= 0]
     before_status = context[:min(status_positions)] if status_positions else context
     matches = list(DATE_RE.finditer(before_status))
     if not matches:
@@ -114,19 +153,57 @@ def event_window(context: str) -> tuple[str | None, str | None]:
     return start, end
 
 
+def _range_from_tail(tail: str) -> tuple[str | None, str | None]:
+    matches = list(DATE_RE.finditer(tail))
+    if not matches:
+        return None, None
+    first = to_iso(matches[0])
+    if len(matches) >= 2:
+        between = tail[matches[0].end():matches[1].start()]
+        if re.search(r"[～〜~-]", between):
+            return first, to_iso(matches[1])
+    return first, None
+
+
 def sale_window(context: str) -> tuple[str | None, str | None]:
+    for token in ("まもなく抽選受付", "まもなく受付", "まもなく発売"):
+        pos = context.find(token)
+        if pos >= 0:
+            start, end = _range_from_tail(context[pos:pos + 320])
+            return start, end
+
     if "発売前" in context:
         pos = context.find("発売前")
-        match = DATE_RE.search(context[pos:pos + 180])
+        match = DATE_RE.search(context[pos:pos + 220])
         return (to_iso(match) if match else None), None
-    for token in ("抽選受付中", "販売期間中", "受付中"):
+
+    for token in ("抽選受付中", "販売期間中", "受付中", "本日発売初日"):
         pos = context.find(token)
         if pos < 0:
             continue
-        tail = context[pos:pos + 220]
+        tail = context[pos:pos + 280]
         matches = list(DATE_RE.finditer(tail))
         if matches:
             return None, to_iso(matches[-1])
+
+    return None, None
+
+
+def detail_sale_window(session: requests.Session, detail_url: str) -> tuple[str | None, str | None]:
+    try:
+        response = session.get(detail_url, timeout=20)
+        response.raise_for_status()
+    except Exception:
+        return None, None
+
+    text = norm(BeautifulSoup(response.text, "html.parser").get_text(" ", strip=True))
+    for token in ("受付期間", "申込期間", "販売期間", "発売期間", "抽選受付期間"):
+        pos = text.find(token)
+        if pos < 0:
+            continue
+        start, end = _range_from_tail(text[pos:pos + 520])
+        if start or end:
+            return start, end
     return None, None
 
 
@@ -143,7 +220,9 @@ def official_schedule(existing: list[dict], group: str, title: str, start: str, 
         if event.get("group") != group or event.get("sourceType") == "pia":
             continue
         candidate_title = canonical_title(event)
-        if not candidate_title or not (candidate_title == wanted or candidate_title in wanted or wanted in candidate_title):
+        if not candidate_title or not (
+            candidate_title == wanted or candidate_title in wanted or wanted in candidate_title
+        ):
             continue
         schedule = event.get("schedule")
         if isinstance(schedule, list):
@@ -157,6 +236,7 @@ def official_schedule(existing: list[dict], group: str, title: str, start: str, 
             day = str(event.get("eventDate"))[:10]
             if start <= day <= finish:
                 candidates.append({"date": day, "venue": event.get("venue")})
+
     seen = set()
     result = []
     for item in sorted(candidates, key=lambda x: x["date"]):
@@ -167,7 +247,34 @@ def official_schedule(existing: list[dict], group: str, title: str, start: str, 
     return result
 
 
-def parse_event_page(session: requests.Session, group: str, event_url: str, fallback_title: str, existing: list[dict], today) -> list[dict]:
+def candidate_anchors(soup: BeautifulSoup):
+    result = []
+    seen = set()
+    for anchor in soup.find_all("a", href=True):
+        text = norm(anchor.get_text(" ", strip=True))
+        context = context_for_detail(anchor)
+        if not DATE_RE.search(context):
+            continue
+        if not any(hint in context for hint in SALE_HINTS):
+            continue
+        if "詳細" not in text and "ticketInformation.do" not in str(anchor.get("href") or ""):
+            continue
+        marker = (str(anchor.get("href") or ""), context[:500])
+        if marker in seen:
+            continue
+        seen.add(marker)
+        result.append(anchor)
+    return result
+
+
+def parse_event_page(
+    session: requests.Session,
+    group: str,
+    event_url: str,
+    fallback_title: str,
+    existing: list[dict],
+    today,
+) -> list[dict]:
     response = session.get(event_url, timeout=25)
     response.raise_for_status()
     soup = BeautifulSoup(response.text, "html.parser")
@@ -176,13 +283,12 @@ def parse_event_page(session: requests.Session, group: str, event_url: str, fall
     out: list[dict] = []
     seen = set()
 
-    detail_anchors = [a for a in soup.find_all("a", href=True) if "詳細" in norm(a.get_text(" ", strip=True))]
-    for anchor in detail_anchors:
+    for anchor in candidate_anchors(soup):
         context = context_for_detail(anchor)
-        if not any(hint in context for hint in SALE_HINTS):
+        application_status = availability_status(context)
+        if application_status is None:
             continue
-        if any(hint in context for hint in ENDED_HINTS) and not any(hint in context for hint in ACTIVE_HINTS):
-            continue
+
         start, end = event_window(context)
         if not start:
             continue
@@ -191,18 +297,29 @@ def parse_event_page(session: requests.Session, group: str, event_url: str, fall
                 continue
         except ValueError:
             continue
-        apply_start, apply_end = sale_window(context)
+
         kind = ticket_type(context)
         href = canonical_url(urljoin(event_url, str(anchor.get("href") or "")))
+        apply_start, apply_end = sale_window(context)
+
+        detail_start, detail_end = detail_sale_window(session, href) if href else (None, None)
+        apply_start = detail_start or apply_start
+        apply_end = detail_end or apply_end
+
         schedule = official_schedule(existing, group, live_title, start, end)
         if not schedule:
             schedule = [{"date": start, "venue": None}]
             if end and end != start:
-                # 連続日程と断定せず、期間終端だけ保持する。公式日程がある場合は上で正確に補完される。
                 schedule.append({"date": end, "venue": None})
+
         event_dates = [x["date"] for x in schedule]
         venues = [x.get("venue") for x in schedule if x.get("venue")]
-        venue = venues[0] if len(set(venues)) == 1 and venues else (f"複数会場（全{len(event_dates)}公演）" if len(event_dates) > 1 else None)
+        venue = (
+            venues[0]
+            if len(set(venues)) == 1 and venues
+            else (f"複数会場（全{len(event_dates)}公演）" if len(event_dates) > 1 else None)
+        )
+
         key = (kind, tuple(event_dates), apply_start, apply_end, href)
         if key in seen:
             continue
@@ -226,23 +343,30 @@ def parse_event_page(session: requests.Session, group: str, event_url: str, fall
             "urls": [href or event_url, event_url] if href and href != event_url else [event_url],
             "sourceType": "pia",
             "sourcePublishedAt": None,
+            "applicationStatus": application_status,
         })
     return out
 
 
-def discover_event_pages(session: requests.Session, artist_url: str) -> list[tuple[str, str]]:
+def discover_event_pages(session: requests.Session, group: str, artist_url: str) -> list[tuple[str, str]]:
+    found: dict[str, str] = {
+        canonical_url(url): fallback for url, fallback in SEEDED_EVENT_PAGES.get(group, [])
+    }
     response = session.get(artist_url, timeout=25)
     response.raise_for_status()
     soup = BeautifulSoup(response.text, "html.parser")
-    found: dict[str, str] = {}
     for anchor in soup.find_all("a", href=True):
         href = str(anchor.get("href") or "")
         if "/pia/event/event.do" not in href:
             continue
         url = canonical_url(urljoin(artist_url, href))
         heading = anchor.find_previous(["h2", "h3", "h4"])
-        fallback = norm(heading.get_text(" ", strip=True) if heading else anchor.get_text(" ", strip=True))
-        found[url] = fallback
+        fallback = norm(
+            heading.get_text(" ", strip=True)
+            if heading
+            else anchor.get_text(" ", strip=True)
+        )
+        found[url] = fallback or found.get(url) or group
     return list(found.items())
 
 
@@ -251,33 +375,63 @@ def main() -> int:
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
 
-    existing_payload = json.loads(DATA_PATH.read_text(encoding="utf-8")) if DATA_PATH.exists() else {"events": []}
+    existing_payload = (
+        json.loads(DATA_PATH.read_text(encoding="utf-8"))
+        if DATA_PATH.exists()
+        else {"events": []}
+    )
     existing = [x for x in existing_payload.get("events", []) if isinstance(x, dict)]
     today = datetime.now().date()
     session = requests.Session()
-    session.headers.update({"User-Agent": "KeioKawaiiLabCalendarBot/1.7 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"})
+    session.headers.update({
+        "User-Agent": "KeioKawaiiLabCalendarBot/1.8 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"
+    })
 
     parsed: list[dict] = []
     succeeded: set[str] = set()
     failures: list[str] = []
     discovered = 0
+
     for group, artist_url in ARTIST_URLS.items():
+        pages: list[tuple[str, str]] = list(SEEDED_EVENT_PAGES.get(group, []))
+        artist_ok = False
         try:
-            pages = discover_event_pages(session, artist_url)
-            succeeded.add(group)
-            discovered += len(pages)
-            for event_url, fallback in pages[:30]:
-                try:
-                    parsed.extend(parse_event_page(session, group, event_url, fallback or group, existing, today))
-                except Exception as exc:
-                    failures.append(f"{group} {event_url}: {exc}")
+            pages = discover_event_pages(session, group, artist_url)
+            artist_ok = True
         except Exception as exc:
             failures.append(f"{group} artist page: {exc}")
+
+        if pages:
+            succeeded.add(group)
+        elif artist_ok:
+            succeeded.add(group)
+
+        unique_pages = []
+        page_seen = set()
+        for event_url, fallback in pages:
+            event_url = canonical_url(event_url)
+            if event_url in page_seen:
+                continue
+            page_seen.add(event_url)
+            unique_pages.append((event_url, fallback))
+        discovered += len(unique_pages)
+
+        for event_url, fallback in unique_pages[:40]:
+            try:
+                parsed.extend(
+                    parse_event_page(session, group, event_url, fallback or group, existing, today)
+                )
+            except Exception as exc:
+                failures.append(f"{group} {event_url}: {exc}")
 
     print(json.dumps({
         "groupsRead": sorted(succeeded),
         "eventPagesDiscovered": discovered,
         "activePiaSales": len(parsed),
+        "activePiaSalesByGroup": {
+            group: sum(1 for event in parsed if event.get("group") == group)
+            for group in ARTIST_URLS
+        },
         "failures": failures,
     }, ensure_ascii=False, indent=2))
 
@@ -296,8 +450,12 @@ def main() -> int:
         if event["id"] not in ids:
             kept.append(event)
             ids.add(event["id"])
+
     existing_payload["events"] = kept
-    DATA_PATH.write_text(json.dumps(existing_payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    DATA_PATH.write_text(
+        json.dumps(existing_payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
     print(f"Merged {len(parsed)} active Ticket Pia sale(s).")
     return 0
 
