@@ -27,6 +27,11 @@ GROUPS = (
 )
 ONLINE_HINTS = ("オンライン特典会", "オンラインサイン会")
 YEARLESS_MAX_DAYS = 60
+YEAR_HINT_LABELS = (
+    "抽選申込期間", "申込期間", "販売期間",
+    "当落発表日", "当落発表", "当選発表",
+    "入金期限", "支払期限", "お支払い期限",
+)
 DATE_RE = re.compile(
     r"(?:(20\d{2})年\s*)?(\d{1,2})月\s*(\d{1,2})日"
     r"(?:\s*[（(][^）)]*[）)])?"
@@ -78,6 +83,31 @@ def resolve_yearless_date(match: re.Match, today) -> str | None:
         return None
     candidate = min(candidates, key=lambda x: x[0])[1]
     return candidate.strftime("%Y-%m-%d") if match.group(4) is None else candidate.strftime("%Y-%m-%dT%H:%M")
+
+
+def explicit_year_hint(text: str) -> int | None:
+    """販売・当落・入金周辺に明記された年を、年なし開催日の手掛かりにする。"""
+    for label in YEAR_HINT_LABELS:
+        pos = text.find(label)
+        if pos < 0:
+            continue
+        for match in DATE_RE.finditer(text[pos:pos + 420]):
+            if match.group(1):
+                return int(match.group(1))
+    return None
+
+
+def resolve_event_date(match: re.Match, today, year_hint: int | None = None) -> str | None:
+    if match.group(1):
+        return to_iso(match)
+    if year_hint is not None:
+        month = int(match.group(2))
+        inferred_year = year_hint
+        # 年末販売→翌年1〜2月開催だけは自然な年跨ぎとして許容。
+        if year_hint == today.year and today.month >= 11 and month <= 2:
+            inferred_year += 1
+        return to_iso(match, inferred_year)
+    return resolve_yearless_date(match, today)
 
 
 def first_date_after(text: str, labels: tuple[str, ...], default_year: int | None = None) -> str | None:
@@ -181,8 +211,9 @@ def parse_goods(session: requests.Session, url: str, today) -> dict | None:
     if not group or not any(hint in corpus for hint in ONLINE_HINTS):
         return None
 
+    year_hint = explicit_year_hint(text)
     title_match = DATE_RE.search(title)
-    event_date = resolve_yearless_date(title_match, today) if title_match else None
+    event_date = resolve_event_date(title_match, today, year_hint) if title_match else None
     if not event_date:
         for label in ("配信予定日", "開催日時", "開催日"):
             pos = text.find(label)
@@ -191,7 +222,7 @@ def parse_goods(session: requests.Session, url: str, today) -> dict | None:
             match = DATE_RE.search(text[pos:pos + 260])
             if not match:
                 continue
-            event_date = resolve_yearless_date(match, today)
+            event_date = resolve_event_date(match, today, year_hint)
             if event_date:
                 break
     event_date = event_date[:10] if event_date else None
@@ -238,7 +269,7 @@ def main() -> int:
 
     session = requests.Session()
     session.headers.update({
-        "User-Agent": "KeioKawaiiLabCalendarBot/1.6 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"
+        "User-Agent": "KeioKawaiiLabCalendarBot/1.7 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"
     })
     urls, discovery_failures = discover(session)
     today = datetime.now(JST).date()
