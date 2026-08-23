@@ -27,9 +27,7 @@ def main() -> int:
         "mbase=bbase+bl*44+10;var height=mbase+ml*30+12;",
     )
 
-    # Critical collision bug: the old object literal used `e` for both the event
-    # object and the numeric end column. JavaScript kept only the latter, which
-    # caused gray fallback styling and the title `ライブ情報`.
+    # Critical collision bug: event data and numeric end-column used the same key.
     page = page.replace("perf.push({e:e,s:i,e:i})", "perf.push({event:e,s:i,end:i})")
     page = page.replace(
         "bands.push({e:e,s:Math.round((aa-ws)/86400000),e:Math.round((zz-ws)/86400000),band:r})",
@@ -43,19 +41,18 @@ def main() -> int:
         "items.sort(function(a,b){return a.s-b.s||a.e-b.e})",
         "items.sort(function(a,b){return a.s-b.s||a.end-b.end})",
     )
-    page = page.replace("ends[n]=x.e", "ends[n]=x.end")
+    # Recover from the previous non-idempotent replacement as well as the legacy form.
+    page = page.replace("ends[n]=x.endnd", "ends[n]=x.end")
+    page = re.sub(r"ends\[n\]=x\.e(?!nd)", "ends[n]=x.end", page)
     page = page.replace("var e=item.e,b=document.createElement('button')", "var e=item.event,b=document.createElement('button')")
     page = page.replace("((item.e-item.s+1)/7*100)", "((item.end-item.s+1)/7*100)")
 
     # No generic internal-looking label on the public calendar.
     page = page.replace("e.eventTitle||e.title||'ライブ情報'", "e.eventTitle||e.title||'公演'")
 
-    # The band already starts from today visually when the source start is unknown;
-    # do not clutter the band itself with implementation wording.
-    page = page.replace(
-        "esc(e.ticketType||'申込')+'｜'+(r.synthetic?'今日から表示｜':'')+esc(fmt(e.applyEnd))+'まで'",
-        "esc(e.ticketType||'申込')+'｜'+esc(fmt(e.applyEnd))+'まで'",
-    )
+    # The band itself only needs the ticket type and deadline. The fact that a
+    # missing start is drawn from today is explained above the calendar/details.
+    page = page.replace("+(r.synthetic?'今日から表示｜':'')+", "+")
     page = page.replace(
         "return r&&r.synthetic?'本日から帯表示（開始日時未取得）':fmt(e.applyStart)",
         "return r&&r.synthetic?'開始日時未取得':fmt(e.applyStart)",
@@ -77,12 +74,22 @@ def main() -> int:
         "FC先行・アップグレードを除いて原則すべて採用",
         "perf.push({event:e,s:i,end:i})",
         "var e=item.event,b=document.createElement('button')",
+        "ends[n]=x.end",
     )
     missing = [token for token in required if token not in page]
     if missing:
         raise RuntimeError(f"schedule shell invariant missing: {missing}")
-    if "perf.push({e:e,s:i,e:i})" in page or "var e=item.e,b=" in page:
-        raise RuntimeError("legacy duplicate-key calendar item bug is still present")
+
+    forbidden = (
+        "perf.push({e:e,s:i,e:i})",
+        "var e=item.e,b=",
+        "x.endnd",
+        "今日から表示｜",
+        "ライブ情報",
+    )
+    present = [token for token in forbidden if token in page]
+    if present:
+        raise RuntimeError(f"legacy/broken schedule shell tokens remain: {present}")
 
     # Extract the executable inline script for node --check in CI.
     scripts = re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>", page, re.S)
