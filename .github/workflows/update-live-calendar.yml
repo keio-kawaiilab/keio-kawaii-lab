@@ -58,9 +58,9 @@ jobs:
       - name: Install dependencies
         run: pip install -r scripts/requirements.txt
 
-      - name: Run parser, deadline, sanitizer, metadata and source priority tests
+      - name: Run parser, retention, deadline, sanitizer, metadata and source priority tests
         working-directory: scripts
-        run: python -m unittest -v test_update_live_events.py test_update_live_events_v2.py test_update_pia_events.py test_harden_pia_events.py test_sanitize_live_events.py test_update_sukisuki_events.py test_enrich_event_metadata.py test_resolve_source_priority.py
+        run: python -m unittest -v test_update_live_events.py test_update_live_events_v2.py test_update_pia_events.py test_reconcile_pia_retention.py test_harden_pia_events.py test_sanitize_live_events.py test_update_sukisuki_events.py test_enrich_event_metadata.py test_resolve_source_priority.py
 
       - name: Check public sources on pull requests
         if: github.event_name == 'pull_request'
@@ -76,7 +76,9 @@ jobs:
         if: github.event_name != 'pull_request'
         run: |
           python scripts/update_live_events_v2.py
+          cp data/live-events.json /tmp/live-events-before-pia.json
           python scripts/update_pia_events.py
+          python scripts/reconcile_pia_retention.py --previous /tmp/live-events-before-pia.json
           python scripts/update_sukisuki_events.py
           python scripts/harden_pia_events.py
           python scripts/resolve_source_priority.py
