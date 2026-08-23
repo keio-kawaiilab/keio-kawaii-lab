@@ -6,12 +6,19 @@ on:
       - "scripts/**"
       - ".github/workflows/update-live-calendar.yml"
       - "data/live-events.json"
+      - "live*.js"
+      - "calendar-*.js"
+      - "live.html"
   push:
     branches:
+      - "main"
       - "feature/live-ticket-calendar"
     paths:
       - "scripts/**"
       - ".github/workflows/update-live-calendar.yml"
+      - "live*.js"
+      - "calendar-*.js"
+      - "live.html"
   schedule:
     - cron: "23 */6 * * *"
   workflow_dispatch:
@@ -30,6 +37,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Check frontend JavaScript syntax
+        run: |
+          node --check live.js
+          node --check live-runtime-fallback.js
+          node --check calendar-performance-dates.js
+          node --check calendar-readable-labels.js
+          node --check calendar-scroll-detail.js
 
       - name: Set up Python
         uses: actions/setup-python@v5
