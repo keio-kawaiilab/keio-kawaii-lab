@@ -4,6 +4,7 @@ from __future__ import annotations
 import html
 import json
 import re
+from urllib.parse import quote
 from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -30,8 +31,16 @@ SCHEDULE_NAV_STYLE = """
 .schedule-home-link{display:inline-flex;align-items:center;gap:7px;margin:0 0 10px;padding:8px 13px;border-radius:999px;background:#22335f;color:#fff;text-decoration:none;font-weight:800;font-size:12px;box-shadow:0 3px 10px rgba(34,51,95,.18)}
 .schedule-home-link:hover{filter:brightness(1.08)}
 .schedule-home-link:focus-visible{outline:3px solid #c19b46;outline-offset:3px}
+.schedule-head-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.schedule-home-link.schedule-venue-link{background:#a93b4f}
+.venue-link{display:inline;font-weight:800;color:var(--navy);text-decoration:underline;text-decoration-color:#a93b4f66;text-decoration-thickness:2px;text-underline-offset:3px}
+.venue-link:hover{color:#a93b4f}
+.venue-schedule summary{cursor:pointer;color:var(--navy);font-weight:800}
+.venue-schedule ul{display:grid;gap:6px;margin:8px 0 0;padding:0;list-style:none}
+.venue-schedule li{display:grid;grid-template-columns:4.5em 1fr;gap:7px}
+.venue-schedule time{color:var(--muted);font-size:12px;font-weight:700}
 """
-SCHEDULE_NAV_HTML = '<a class="schedule-home-link" href="./index.html" aria-label="慶應KAWAII LAB.同好会公式サイトへ戻る">← 同好会公式サイトへ戻る</a>'
+SCHEDULE_NAV_HTML = '<div class="schedule-head-actions"><a class="schedule-home-link schedule-venue-link" href="./venues.html">📍 会場ガイド</a><a class="schedule-home-link" href="./index.html" aria-label="慶應KAWAII LAB.同好会公式サイトへ戻る">← 同好会公式サイトへ戻る</a></div>'
 
 
 def esc(value: object) -> str:
@@ -134,6 +143,30 @@ def venue_text(event: dict, online: bool = False) -> str:
     return str(event.get("venue") or "未定")
 
 
+def venue_link(name: str, label: str | None = None) -> str:
+    text = label or name or "未定"
+    if not name or re.search(r"オンライン|会場未定|未定", name):
+        return esc(text)
+    return f'<a class="venue-link" href="venue.html?name={quote(name, safe="")}">{esc(text)}</a>'
+
+
+def venue_html(event: dict, online: bool = False) -> str:
+    if online:
+        return esc(event.get("venue") or "オンライン（SUKISUKI）")
+    rows = schedule_rows(event)
+    if len(rows) == 1:
+        return venue_link(rows[0][1] or str(event.get("venue") or "未定"))
+    if 2 <= len(rows) <= SHORT_SCHEDULE_VENUE_LIMIT:
+        return " ／ ".join(f'{esc(fmt_md(day) + " ")}{venue_link(venue or "会場未定")}' for day, venue in rows)
+    if len(rows) > SHORT_SCHEDULE_VENUE_LIMIT:
+        items = "".join(
+            f'<li><time datetime="{esc(day)}">{esc(fmt_md(day))}</time><span>{venue_link(venue or "会場未定")}</span></li>'
+            for day, venue in rows
+        )
+        return f'<details class="venue-schedule"><summary>複数会場（全{len(rows)}公演）を表示</summary><ul>{items}</ul></details>'
+    return venue_link(str(event.get("venue") or "未定"))
+
+
 def display_title(event: dict) -> str:
     text = str(event.get("eventTitle") or event.get("title") or "").strip()
     if not text or BAD_UI_TITLE_RE.search(text):
@@ -184,7 +217,7 @@ def build_card(event: dict) -> str:
         '<div class="meta">',
         f'<div><b>グループ</b>{esc(group)}</div>',
         f'<div><b>{"配信日" if online else "公演日"}</b>{esc(date_text)}</div>',
-        f'<div><b>会場</b>{esc(venue_text(event, online))}</div>',
+        f'<div><b>会場</b>{venue_html(event, online)}</div>',
         f'<div><b>受付</b>{esc(event.get("ticketType") or "未定")}</div>',
         f'<div><b>申込開始</b>{esc(start_text)}</div>',
         f'<div><b>申込締切</b>{esc(fmt(event.get("applyEnd")))}</div>',

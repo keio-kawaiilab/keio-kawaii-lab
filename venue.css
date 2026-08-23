@@ -1,0 +1,43 @@
+.venue-page-head{background:linear-gradient(135deg,var(--navy-pale),var(--gold-pale));padding-bottom:52px}
+.venue-lead{max-width:46rem;margin:14px auto 0;color:var(--muted);font-size:.95rem;line-height:1.9}
+.venue-toolbar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;margin-bottom:24px}
+.venue-search{width:100%;min-height:48px;border:1.5px solid var(--line);border-radius:999px;background:#fff;padding:0 18px;font:inherit;color:var(--navy-ink);box-shadow:var(--shadow)}
+.venue-search:focus{outline:3px solid rgba(193,155,70,.28);border-color:var(--gold)}
+.venue-filter{min-height:48px;border:1.5px solid var(--line);border-radius:999px;background:#fff;padding:0 16px;font:inherit;font-weight:700;color:var(--navy)}
+.venue-count{margin:-8px 0 22px;color:var(--muted);font-size:.84rem}
+.venue-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:18px}
+.venue-card{display:flex;flex-direction:column;min-height:255px;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);transition:transform .16s ease,box-shadow .16s ease}
+.venue-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(38,48,92,.13)}
+.venue-card.is-scheduled{border-top:5px solid var(--red)}
+.venue-card-badges{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.venue-badge{display:inline-flex;align-items:center;min-height:27px;padding:4px 9px;border-radius:999px;background:var(--navy-pale);color:var(--navy);font-size:.7rem;font-weight:800}
+.venue-badge.schedule{background:var(--red-pale);color:var(--red)}
+.venue-card h2{font-family:"Zen Maru Gothic",sans-serif;color:var(--navy);font-size:1.15rem;line-height:1.5;margin:0 0 8px}
+.venue-card-area{color:var(--muted);font-size:.84rem;margin-bottom:14px}
+.venue-card-meta{display:grid;gap:8px;margin:0 0 18px}
+.venue-card-meta div{display:grid;grid-template-columns:4.8em 1fr;gap:8px;padding-top:8px;border-top:1px dashed var(--line);font-size:.8rem}
+.venue-card-meta dt{color:var(--muted);font-weight:700}.venue-card-meta dd{font-weight:600}
+.venue-card-link{margin-top:auto;display:inline-flex;align-items:center;justify-content:space-between;gap:10px;color:var(--red);font-weight:800;text-decoration:none}
+.venue-card-link::after{content:"→"}
+.venue-empty{grid-column:1/-1;padding:38px 20px;text-align:center;border-radius:var(--radius);background:var(--navy-pale);color:var(--muted)}
+.venue-notice{margin-top:34px;padding:18px 20px;background:#fff8e6;border:1px solid #ead79b;border-radius:var(--radius-sm);color:#5b5134;font-size:.82rem;line-height:1.8}
+.venue-notice strong{color:#584818}
+.venue-breadcrumb{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:24px;color:var(--muted);font-size:.82rem}
+.venue-breadcrumb a{color:var(--navy);font-weight:700}
+.venue-detail-shell{max-width:880px;margin:0 auto}
+.venue-detail-hero{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--navy) 0%,#35457c 58%,var(--red) 100%);border-radius:var(--radius);padding:34px;color:#fff;box-shadow:0 14px 35px rgba(38,48,92,.18)}
+.venue-detail-hero::after{content:"";position:absolute;width:230px;height:230px;border:42px solid rgba(255,255,255,.06);border-radius:50%;right:-70px;top:-100px}
+.venue-detail-kicker{position:relative;z-index:1;font-size:.78rem;font-weight:800;letter-spacing:.12em;color:rgba(255,255,255,.78)}
+.venue-detail-hero h1{position:relative;z-index:1;margin:8px 0 7px;font-family:"Zen Maru Gothic",sans-serif;font-size:clamp(1.7rem,5vw,2.6rem);line-height:1.35}
+.venue-detail-sub{position:relative;z-index:1;color:rgba(255,255,255,.86)}
+.venue-detail-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;margin-top:20px}
+.venue-info-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+.venue-info-card.wide{grid-column:1/-1}
+.venue-info-card h2{display:flex;align-items:center;gap:9px;margin:0 0 16px;font-family:"Zen Maru Gothic",sans-serif;font-size:1.12rem;color:var(--navy)}
+.venue-facts{display:grid;gap:0;margin:0}.venue-facts div{padding:12px 0;border-top:1px dashed var(--line)}.venue-facts div:first-child{border-top:0;padding-top:0}.venue-facts dt{font-size:.72rem;color:var(--muted);font-weight:700;margin-bottom:3px}.venue-facts dd{font-size:.92rem;font-weight:600;line-height:1.7}
+.venue-access-list,.venue-tip-list{display:grid;gap:10px;margin:0;padding:0;list-style:none}.venue-access-list li,.venue-tip-list li{position:relative;padding-left:1.5em;line-height:1.75;font-size:.9rem}.venue-access-list li::before{content:"🚉";position:absolute;left:0}.venue-tip-list li::before{content:"✓";position:absolute;left:2px;color:var(--red);font-weight:900}
+.venue-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.venue-action{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;padding:10px 16px;border-radius:999px;background:var(--navy);color:#fff;text-decoration:none;font-weight:800;font-size:.84rem}.venue-action.secondary{background:#fff;color:var(--navy);border:1.5px solid var(--navy)}
+.venue-provisional{margin-top:16px;padding:12px 14px;border-radius:var(--radius-sm);background:#fff8e6;border:1px solid #ead79b;color:#5b5134;font-size:.8rem;line-height:1.7}
+.venue-upcoming{display:grid;gap:10px}.venue-upcoming-item{display:grid;grid-template-columns:6.5em 1fr;gap:12px;padding:12px 0;border-top:1px dashed var(--line)}.venue-upcoming-item:first-child{border-top:0;padding-top:0}.venue-upcoming-item time{font-family:"Zen Maru Gothic",sans-serif;font-weight:800;color:var(--red)}.venue-upcoming-item a{font-weight:700;color:var(--navy);text-decoration:none}.venue-upcoming-empty{color:var(--muted);font-size:.88rem}
+@media(max-width:720px){.venue-toolbar{grid-template-columns:1fr}.venue-filter{width:100%}.venue-detail-grid{grid-template-columns:1fr}.venue-info-card.wide{grid-column:auto}.venue-detail-hero{padding:27px 22px}.venue-upcoming-item{grid-template-columns:1fr;gap:3px}}
+

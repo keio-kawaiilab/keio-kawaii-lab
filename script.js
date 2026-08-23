@@ -3,6 +3,22 @@
 // =========================================
 
 document.addEventListener("DOMContentLoaded", () => {
+  // ---- LIVE・チケット／会場ガイドを全ページの共通メニューに表示 ----
+  [document.querySelector(".global-nav ul"), document.querySelector(".footer-nav ul")].forEach((list) => {
+    if (!list) return;
+    const faqItem = list.querySelector('a[href="faq.html"]')?.closest("li");
+    if (!list.querySelector('a[href="schedule.html"]')) {
+      const item = document.createElement("li");
+      item.innerHTML = '<a href="schedule.html">LIVE・チケット</a>';
+      list.insertBefore(item, faqItem || null);
+    }
+    if (!list.querySelector('a[href="venues.html"]')) {
+      const item = document.createElement("li");
+      item.innerHTML = '<a href="venues.html">会場ガイド</a>';
+      list.insertBefore(item, faqItem || null);
+    }
+  });
+
   // ---- モバイルナビ開閉 ----
   const toggle = document.querySelector(".nav-toggle");
   const nav = document.querySelector(".global-nav");
