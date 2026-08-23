@@ -1,109 +1,51 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>スケジュール | KAWAII LAB.同好会</title>
-<meta name="description" content="KAWAII LAB.同好会の活動スケジュール。定例会・イベントの予定一覧。">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>LIVE & TICKET | KAWAII LAB.同好会</title>
+<style>
+:root{--navy:#22335f;--ink:#24304e;--muted:#68708b;--line:#e6e0d5;--bg:#fffdf8;--card:#fff;--gold:#c5a34b;--fruits:#7b7f86;--candy:#68c9ee;--sweet:#ef9fbe;--cutie:#f3d44f;--more:#ee9741;--lab:#343944}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif}a{color:inherit}.head{padding:20px 16px 14px;border-bottom:1px solid var(--line);background:#fff}.head b{font-size:22px;letter-spacing:.08em;color:var(--navy)}.head small{display:block;margin-top:3px;color:var(--muted)}main{max-width:980px;margin:auto;padding:18px 14px 64px}.lead{margin:0 0 16px;color:var(--muted);font-size:14px}.filters{display:flex;gap:8px;overflow:auto;padding:2px 0 12px}.filter{flex:0 0 auto;border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 12px;font-weight:700;color:var(--navy)}.filter.active{background:var(--navy);color:#fff}.toolbar{display:grid;grid-template-columns:46px 1fr 46px;gap:8px;align-items:center;margin:8px 0}.navbtn{height:44px;border:1px solid var(--line);border-radius:50%;background:#fff;font-size:26px;color:var(--navy)}#range{text-align:center;font-weight:800;color:var(--navy)}.legend{font-size:12px;color:var(--muted);text-align:center;margin-bottom:10px}.calwrap{overflow:auto;border:1px solid var(--line);border-radius:16px;background:#fff}.cal{min-width:840px}.weekdays,.week{display:grid;grid-template-columns:repeat(7,1fr)}.weekdays{background:#f1f3fa;border-bottom:1px solid var(--line)}.weekdays div{text-align:center;padding:9px;font-weight:800;color:var(--muted)}.week{position:relative;min-height:150px;border-bottom:1px solid var(--line)}.day{border-right:1px solid var(--line);padding:7px;font-size:12px;color:var(--muted)}.day:last-child{border-right:0}.day.out{background:#faf8f4}.mark{position:absolute;height:26px;border:0;border-radius:6px;padding:3px 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:800;font-size:11px;cursor:pointer;box-shadow:0 1px 5px #0001}.bar{height:42px;color:#fff;text-align:left}.bar strong,.bar span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bar span{font-size:10px;font-weight:600}.g-FRUITS{background:var(--fruits)!important;color:#fff}.g-CANDY{background:var(--candy)!important;color:#fff}.g-SWEET{background:var(--sweet)!important;color:#fff}.g-CUTIE{background:var(--cutie)!important;color:#493f11}.g-MORE{background:var(--more)!important;color:#fff}.g-LAB{background:var(--lab)!important;color:#fff}.online{background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.05) 0 7px,rgba(255,255,255,.6) 7px 12px)!important}.details-title{margin:34px 0 12px;text-align:center;color:var(--navy)}.summary{padding:12px 14px;border-radius:14px;background:#fbf1d8;text-align:center;margin-bottom:14px}.cards{display:grid;gap:14px}.card{background:#fff;border:1px solid var(--line);border-left:6px solid var(--gc,#22335f);border-radius:16px;padding:16px;scroll-margin-top:14px}.card.online-card{background-image:repeating-linear-gradient(135deg,#fff 0 16px,#eef1f5 16px 23px)}.card h3{margin:2px 0 10px;color:var(--navy);font-size:17px}.meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px;font-size:13px}.meta div{border-top:1px dashed var(--line);padding-top:7px}.meta b{display:block;color:var(--muted);font-size:11px}.src{display:inline-block;margin-top:12px;font-weight:800;color:var(--navy)}.fallback-note{font-size:12px;color:var(--muted);margin:8px 0 16px}.hidden{display:none!important}@media(max-width:620px){.meta{grid-template-columns:1fr}.card{padding:14px}.filter{font-size:12px}}
+</style>
 </head>
 <body>
-
-<header class="site-header">
-  <div class="header-inner">
-    <a class="brand" href="index.html">
-      <span class="brand-name">KAWAII LAB.同好会</span>
-      <span class="brand-sub">慶應義塾大学登録学生団体</span>
-    </a>
-    <button class="nav-toggle" aria-expanded="false" aria-controls="global-nav" aria-label="メニューを開閉">☰</button>
-    <nav class="global-nav" id="global-nav" aria-label="サイト内メニュー">
-      <ul>
-        <li><a href="index.html">トップ</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="activities.html">活動内容</a></li>
-        <li><a href="join.html">入会案内</a></li>
-        <li><a href="schedule.html" aria-current="page">スケジュール</a></li>
-        <li><a href="faq.html">FAQ</a></li>
-        <li><a href="contact.html">Contact</a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
-
+<header class="head"><b>KAWAII LAB.同好会</b><small>慶應義塾大学登録学生団体｜LIVE & TICKET</small></header>
 <main>
-  <section class="page-head">
-    <span class="tricolor-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-    <h1><span class="en">Schedule</span>スケジュール</h1>
-  </section>
-  <div class="scallop" aria-hidden="true"></div>
-  <section class="section">
-    <div class="container reveal">
-      <div class="section-title">
-        <span class="tricolor-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-        <h2>今後の予定</h2>
-        <span class="en">Upcoming</span>
-      </div>
-      <div class="schedule-list">
-        <div class="schedule-item">
-          <div class="schedule-date"><span class="month">JUL</span><span class="day">18</span></div>
-          <div class="schedule-body">
-            <h3>7月定例鑑賞会 <span class="tag tag-navy">定例会</span></h3>
-            <p>土曜 14:00〜16:00 / 日吉キャンパス教室(詳細は会内で連絡)。新曲MVの感想会をします。</p>
-          </div>
-        </div>
-        <div class="schedule-item">
-          <div class="schedule-date"><span class="month">AUG</span><span class="day">08</span></div>
-          <div class="schedule-body">
-            <h3>夏フェス遠征(有志) <span class="tag tag-red">遠征</span></h3>
-            <p>参加希望者で現地集合。チケットは各自でご用意ください。</p>
-          </div>
-        </div>
-        <div class="schedule-item">
-          <div class="schedule-date"><span class="month">SEP</span><span class="day">下旬</span></div>
-          <div class="schedule-body">
-            <h3>秋学期キックオフ交流会 <span class="tag tag-gold">交流</span></h3>
-            <p>秋からの新メンバーも歓迎のごはん会。日程は決まり次第お知らせします。</p>
-          </div>
-        </div>
-        <div class="schedule-item">
-          <div class="schedule-date"><span class="month">NOV</span><span class="day">中旬</span></div>
-          <div class="schedule-body">
-            <h3>三田祭企画 <span class="tag tag-gold">学園祭</span></h3>
-            <p>展示・企画を準備中。詳細は決まり次第、本ページとSNSでお知らせします。</p>
-          </div>
-        </div>
-      </div>
-      <p class="note"><strong>最新情報について:</strong> 日程・場所は変更になる場合があります。最新の予定は公式SNSをご確認ください。掲載内容はサンプルです。<!-- TODO: 実際の予定に更新 --></p>
-    </div>
-  </section>
+<p class="lead">ライブ・チケット申込・オンライン特典会をまとめています。📱シマシマ＝オンライン特典会。</p>
+<div class="filters" id="filters">
+<button class="filter active" data-group="all">すべて</button><button class="filter" data-group="FRUITS ZIPPER">FRUITS ZIPPER</button><button class="filter" data-group="CANDY TUNE">CANDY TUNE</button><button class="filter" data-group="SWEET STEADY">SWEET STEADY</button><button class="filter" data-group="CUTIE STREET">CUTIE STREET</button><button class="filter" data-group="MORE STAR">MORE STAR</button>
+</div>
+<div class="toolbar"><button class="navbtn" id="prev">‹</button><div id="range">8/23〜9/26（5週間）</div><button class="navbtn" id="next">›</button></div>
+<div class="legend">色＝グループ　／　帯＝申込期間　／　🎤ライブ　／　📱オンライン特典会</div>
+<div class="calwrap"><div class="cal"><div class="weekdays"><div>日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div>土</div></div><div id="calendar"></div></div></div>
+<h2 class="details-title">詳しい受付情報</h2>
+<div class="summary" id="summary">予定を表示しています</div>
+<p class="fallback-note" id="fallback-note">※下の予定はHTMLに直接入っているため、JavaScriptが動かない環境でも表示されます。</p>
+<div class="cards" id="cards">
+<article class="card" data-group="SWEET STEADY"><h3>🎤 STAEDY→REVOLUTION</h3><div class="meta"><div><b>公演日</b>2026/8/23</div><div><b>会場</b>ぴあアリーナMM</div><div><b>受付</b>現在受付なし</div></div></article>
+<article class="card online-card" data-group="CANDY TUNE"><h3>📱 CANDY TUNE オンライン特典会</h3><div class="meta"><div><b>配信予定日</b>2026/8/24</div><div><b>会場</b>オンライン（SUKISUKI）</div><div><b>受付</b>現在受付なし</div></div><a class="src" href="https://sukisuki-shop.com/goods/6500000003995">SUKISUKIを確認 →</a></article>
+<article class="card" data-group="CUTIE STREET"><h3>🎤 CUTIE STREET 2nd ANNIVERSARY LIVE 2026</h3><div class="meta"><div><b>公演日</b>2026/8/25・8/26</div><div><b>会場</b>日本武道館</div><div><b>受付</b>現在受付なし</div></div><a class="src" href="https://cutiestreet.asobisystem.com/news/detail/84129">公式情報 →</a></article>
+<article class="card" data-group="CANDY TUNE"><h3>🎤 CANDY TUNE JAPAN TOUR 2026 - AUTUMN -</h3><div class="meta"><div><b>直近公演</b>8/29・8/30・9/4・9/9・9/10・9/19</div><div><b>会場</b>複数会場（全23公演）</div><div><b>受付</b>現在受付なし</div></div><a class="src" href="https://candytune.asobisystem.com/news/detail/82537">公式情報 →</a></article>
+<article class="card" data-group="FRUITS ZIPPER"><h3>🎤 FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN -</h3><div class="meta"><div><b>直近公演</b>9/3・9/16・9/18・9/21</div><div><b>会場</b>複数会場</div><div><b>受付</b>現在受付なし</div></div></article>
+<article class="card" data-group="CUTIE STREET"><h3>🎤 CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-</h3><div class="meta"><div><b>直近公演</b>9/23・9/29・9/30</div><div><b>会場</b>横浜アリーナ / 有明アリーナほか</div><div><b>受付</b>現在受付なし</div></div></article>
+<article class="card" data-group="CANDY TUNE"><h3>🎤 小川奈々子 生誕祭 2026</h3><div class="meta"><div><b>公演日</b>2026/10/1</div><div><b>会場</b>SGCホール有明</div><div><b>受付</b>現在受付なし</div></div></article>
+<article class="card" data-group="CUTIE STREET"><h3>🎤 STARフェス</h3><div class="meta"><div><b>公演日</b>2026/10/11</div><div><b>会場</b>ぴあアリーナ MM</div><div><b>受付</b>FC先行</div><div><b>申込締切</b>2026/8/23 23:59</div></div><a class="src" href="https://cutiestreet.asobisystem.com/news/detail/86976">公式情報 →</a></article>
+<article class="card" data-group="KAWAII LAB.合同"><h3>🎤 KAWAII LAB. Christmas SESSION 2026</h3><div class="meta"><div><b>公演日</b>2026/12/12・12/13</div><div><b>会場</b>有明アリーナ</div><div><b>受付</b>アップグレード抽選</div><div><b>申込期間</b>8/22 12:00〜8/30 23:59</div></div><a class="src" href="https://candytune.asobisystem.com/news/detail/87780">公式情報 →</a></article>
+</div>
 </main>
-
-<div class="footer-stripe" aria-hidden="true"></div>
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-brand">
-      <span class="brand-name">KAWAII LAB.同好会</span>
-      <p>慶應義塾大学登録学生団体<br>当会は特定の企業・事務所とは関係のない非公式ファンサークルです。</p>
-    </div>
-    <nav class="footer-nav" aria-label="フッターメニュー">
-      <ul>
-        <li><a href="index.html">トップ</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="activities.html">活動内容</a></li>
-        <li><a href="join.html">入会案内</a></li>
-        <li><a href="schedule.html">スケジュール</a></li>
-        <li><a href="faq.html">FAQ</a></li>
-        <li><a href="contact.html">Contact</a></li>
-        <li><a href="privacy.html">Privacy</a></li>
-      </ul>
-    </nav>
-  </div>
-  <p class="copyright">© <span id="year">2026</span> KAWAII LAB.同好会(慶應義塾大学登録学生団体)</p>
-</footer>
-
-<script src="./script.js"></script>
+<script>
+(function(){
+var G={'FRUITS ZIPPER':'FRUITS','CANDY TUNE':'CANDY','SWEET STEADY':'SWEET','CUTIE STREET':'CUTIE','MORE STAR':'MORE','KAWAII LAB.合同':'LAB'};
+function p(s){var m=String(s||'').match(/^(\d{4})-(\d{2})-(\d{2})/);return m?new Date(+m[1],+m[2]-1,+m[3]):null}function d(x,n){return new Date(x.getFullYear(),x.getMonth(),x.getDate()+n)}function sd(x){return (x.getMonth()+1)+'/'+x.getDate()}function esc(v){return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function online(e){return e.eventCategory==='online-benefit'||/オンライン(?:特典会|サイン会)/.test(String(e.title||''))}function parts(e){return Array.isArray(e.participants)?e.participants:[]}function match(e,g){return g==='all'||e.group===g||parts(e).indexOf(g)>=0}function occ(e){var r=[];(Array.isArray(e.schedule)&&e.schedule.length?e.schedule:(Array.isArray(e.eventDates)?e.eventDates.map(function(x){return{date:x,venue:e.venue}}):[{date:e.eventDate,venue:e.venue}])).forEach(function(x){if(x&&x.date)r.push({date:String(x.date).slice(0,10),venue:x.venue||e.venue||''})});return r}
+function title(e){var t=String(e.eventTitle||e.title||'ライブ');var q=t.match(/「([^」]+)」/);if(q)t=q[1];t=t.replace(/^(FRUITS ZIPPER|CANDY TUNE|SWEET STEADY|CUTIE STREET|MORE STAR|KAWAII LAB\.)\s*/i,'');if(/Christmas SESSION/i.test(t))return'Christmas SESSION';if(/JAPAN ARENA TOUR/i.test(t))return'ARENA TOUR';if(/JAPAN TOUR/i.test(t))return'JAPAN TOUR';if(/2nd ANNIVERSARY/i.test(t))return'2nd ANNIVERSARY';if(online(e))return'オンライン特典会';return t.split(/開催決定|出演決定|受付のお知らせ|FC会員先行/)[0].trim()}
+var events=[],selected='all',today=new Date();today=new Date(today.getFullYear(),today.getMonth(),today.getDate());var base=today,start=base;
+function groupClass(e){return'g-'+(G[e.group]||'LAB')}
+function render(){var cal=document.getElementById('calendar');cal.innerHTML='';var gs=d(start,-start.getDay()),ge=d(gs,34);document.getElementById('range').textContent=sd(start)+'〜'+sd(ge)+'（5週間）';var vis=events.filter(function(e){return match(e,selected)});for(var w=0;w<5;w++){var ws=d(gs,w*7),we=d(ws,6),week=document.createElement('div');week.className='week';for(var j=0;j<7;j++){var dt=d(ws,j),cell=document.createElement('div');cell.className='day'+(dt<start?' out':'');cell.textContent=dt<start?'':(dt.getDate()==1?sd(dt):dt.getDate());week.appendChild(cell)}var row=0;vis.forEach(function(e){occ(e).forEach(function(o){var dt=p(o.date);if(dt&&dt>=start&&dt>=ws&&dt<=we&&dt<=ge){var idx=Math.round((dt-ws)/86400000),b=document.createElement('button');b.className='mark '+groupClass(e)+(online(e)?' online':'');b.textContent=(online(e)?'📱 ':'🎤 ')+title(e);b.style.left='calc('+(idx/7*100)+'% + 4px)';b.style.width='calc('+(100/7)+'% - 8px)';b.style.top=(31+row*29)+'px';b.onclick=function(){var card=document.querySelector('[data-event-id="'+String(e.id||'')+'"]');if(card)card.scrollIntoView({behavior:'smooth',block:'start'})};week.appendChild(b);row=(row+1)%3}});if(e.applyStart&&e.applyEnd){var a=p(e.applyStart),z=p(e.applyEnd);if(a&&z&&z>=ws&&a<=we&&z>=start){var aa=a<ws?ws:a,zz=z>we?we:z,si=Math.round((aa-ws)/86400000),ei=Math.round((zz-ws)/86400000),bar=document.createElement('button');bar.className='mark bar '+groupClass(e)+(online(e)?' online':'');bar.innerHTML='<strong>'+esc(title(e))+'</strong><span>'+esc(e.ticketType||'申込')+'</span>';bar.style.left='calc('+(si/7*100)+'% + 4px)';bar.style.width='calc('+((ei-si+1)/7*100)+'% - 8px)';bar.style.top='92px';bar.onclick=function(){var card=document.querySelector('[data-event-id="'+String(e.id||'')+'"]');if(card)card.scrollIntoView({behavior:'smooth',block:'start'})};week.appendChild(bar)}}});cal.appendChild(week)}renderCards(vis)}
+function renderCards(vis){var wrap=document.getElementById('cards');if(!events.length)return;wrap.innerHTML=vis.map(function(e){var os=occ(e),when=os.map(function(o){return String(o.date).replace(/^(\d{4})-(\d{2})-(\d{2})$/,'$1/$2/$3')}).join('・')||'未定';var url=e.url||((e.urls||[])[0]||'');var color=e.group==='FRUITS ZIPPER'?'var(--fruits)':e.group==='CANDY TUNE'?'var(--candy)':e.group==='SWEET STEADY'?'var(--sweet)':e.group==='CUTIE STREET'?'var(--cutie)':e.group==='MORE STAR'?'var(--more)':'var(--lab)';return '<article class="card '+(online(e)?'online-card':'')+'" data-event-id="'+esc(e.id||'')+'" style="--gc:'+color+'"><h3>'+(online(e)?'📱 ':'🎤 ')+esc(title(e))+'</h3><div class="meta"><div><b>グループ</b>'+esc(e.group||'KAWAII LAB.')+'</div><div><b>公演・配信日</b>'+esc(when)+'</div><div><b>会場</b>'+esc(e.venue||'未定')+'</div><div><b>受付</b>'+esc(e.ticketType||'未定')+'</div><div><b>申込開始</b>'+esc(e.applyStart||'—')+'</div><div><b>申込締切</b>'+esc(e.applyEnd||'—')+'</div></div>'+(url?'<a class="src" href="'+esc(url)+'" target="_blank" rel="noopener">情報源を確認 →</a>':'')+'</article>'}).join('');document.getElementById('summary').textContent=vis.length+'件掲載中'}
+[].slice.call(document.querySelectorAll('.filter')).forEach(function(b){b.onclick=function(){selected=b.getAttribute('data-group')||'all';[].slice.call(document.querySelectorAll('.filter')).forEach(function(x){x.classList.toggle('active',x===b)});render()}});document.getElementById('next').onclick=function(){var gs=d(start,-start.getDay());start=d(gs,35);render()};document.getElementById('prev').onclick=function(){var gs=d(start,-start.getDay()),pr=d(gs,-35);start=pr<d(base,-base.getDay())?base:pr;render()};
+fetch('./data/live-events.json?ts='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(data){events=(data.events||[]).filter(function(e){var o=occ(e),last=o.length?p(o[o.length-1].date):p(e.eventEndDate||e.eventDate);return !last||last>=today});document.getElementById('fallback-note').textContent='最新データに更新済み：'+(data.updatedAt||'');render()}).catch(function(){document.getElementById('summary').textContent='静的バックアップ予定を表示中';});
+})();
+</script>
 </body>
 </html>
