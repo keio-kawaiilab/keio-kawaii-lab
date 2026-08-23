@@ -95,6 +95,7 @@ def main() -> int:
     page = re.sub(r"ends\[n\]=x\.e(?!nd)", "ends[n]=x.end", page)
     page = page.replace("var e=item.e,b=document.createElement('button')", "var e=item.event,b=document.createElement('button')")
     page = page.replace("((item.e-item.s+1)/7*100)", "((item.end-item.s+1)/7*100)")
+
     page = page.replace("e.eventTitle||e.title||'ライブ情報'", "e.eventTitle||e.title||'公演'")
     page = page.replace("+(r.synthetic?'今日から表示｜':'')+", "+")
     page = page.replace(
@@ -120,6 +121,7 @@ def main() -> int:
         if needle not in page:
             raise RuntimeError("could not locate days() insertion point")
         page = page.replace(needle, venue_js + needle, 1)
+
     page = page.replace("esc(e.venue||(on?'オンライン（SUKISUKI）':'未定'))", "esc(venueText(e))")
 
     if "function prefecture(v)" not in page:
@@ -189,8 +191,7 @@ def main() -> int:
         "schedule-home-link",
         'href="index.html"',
         "schedule-disclaimer",
-        "非公式の情報ページ",
-        "本ページに関するお問い合わせを各関係先へ行わないでください",
+        "本ページに関するお問い合わせを各関係先へ行わないでください。",
         "function effectiveBand(e)",
         "function lane(items)",
         "function prepare(raw)",
@@ -231,7 +232,7 @@ def main() -> int:
     Path("/tmp/schedule-inline.js").write_text(executable[0], encoding="utf-8")
 
     PAGE.write_text(page, encoding="utf-8")
-    print("Schedule shell checked and normalized")
+    print("Schedule shell checked and normalized with navigation and disclaimer")
     return 0
 
 
