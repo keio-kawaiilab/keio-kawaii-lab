@@ -6,11 +6,11 @@ import hashlib
 import json
 import re
 import sys
-from datetime import date, datetime, time, timezone
+from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 from typing import Iterable
 
-JST = timezone.utc
+JST = timezone(timedelta(hours=9))
 BAD_UI_TITLE_RE = re.compile(
     r"行きたい\s*[!！]?\s*公演アラート|お気に入り(?:登録)?|メールで通知|通信中|通信エラー|登録完了",
     re.I,
@@ -38,11 +38,11 @@ def parse_dt(value: object) -> datetime | None:
         return None
     try:
         if re.fullmatch(r"\d{4}-\d{2}-\d{2}", text):
-            return datetime.combine(date.fromisoformat(text), time(23, 59, 59), tzinfo=timezone.utc)
+            return datetime.combine(date.fromisoformat(text), time(23, 59, 59), tzinfo=JST)
         parsed = datetime.fromisoformat(text.replace("Z", "+00:00"))
         if parsed.tzinfo is None:
-            parsed = parsed.replace(tzinfo=timezone.utc)
-        return parsed.astimezone(timezone.utc)
+            parsed = parsed.replace(tzinfo=JST)
+        return parsed.astimezone(JST)
     except ValueError:
         return None
 
@@ -162,6 +162,7 @@ def audit(previous: dict, candidate: dict, now: datetime) -> tuple[list[str], li
     warnings: list[str] = []
     prev_events = [event for event in previous.get("events", []) if isinstance(event, dict)]
     cand_events = [event for event in candidate.get("events", []) if isinstance(event, dict)]
+    now = now.astimezone(JST)
     today = now.date()
 
     prev_updated = parse_dt(previous.get("updatedAt"))
@@ -316,7 +317,7 @@ def main() -> int:
     parser.add_argument("--now", help="ISO-8601 time used by tests")
     args = parser.parse_args()
 
-    now = parse_dt(args.now) if args.now else datetime.now(timezone.utc)
+    now = parse_dt(args.now) if args.now else datetime.now(JST)
     if now is None:
         raise SystemExit("invalid --now")
 
