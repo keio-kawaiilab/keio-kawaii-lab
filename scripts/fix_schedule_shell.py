@@ -32,6 +32,19 @@ TITLE_JS = (
 def main() -> int:
     page = PAGE.read_text(encoding="utf-8")
 
+    # Make the standalone schedule page clearly navigable back to the club site.
+    if "schedule-home-link" not in page:
+        page = page.replace(
+            ".head small{display:block;margin-top:3px;color:var(--muted)}",
+            ".head small{display:block;margin-top:3px;color:var(--muted)}.schedule-head-inner{max-width:980px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:14px}.schedule-home-link{flex:0 0 auto;text-decoration:none;background:var(--navy);color:#fff;border-radius:999px;padding:10px 14px;font-weight:800;font-size:13px;box-shadow:0 4px 14px #22335f2b}.schedule-home-link:hover{opacity:.9}@media(max-width:620px){.schedule-head-inner{align-items:flex-start}.schedule-home-link{padding:9px 11px;font-size:12px}}",
+            1,
+        )
+        page = page.replace(
+            '<header class="head"><b>KAWAII LAB.同好会</b><small>慶應義塾大学登録学生団体｜LIVE & TICKET</small></header>',
+            '<header class="head"><div class="schedule-head-inner"><div><b>KAWAII LAB.同好会</b><small>慶應義塾大学登録学生団体｜LIVE & TICKET</small></div><a class="schedule-home-link" href="index.html">← 同好会公式サイト</a></div></header>',
+            1,
+        )
+
     page = page.replace(
         "チケットぴあ掲載の受付は、<strong>FC先行・アップグレードを除いて原則すべて採用</strong>します。開始日時が取れない場合も、締切が分かれば<strong>今日〜締切を申込帯</strong>として表示します。📱シマシマ＝オンライン特典会。",
         "チケットぴあ掲載の受付は、<strong>FC先行・アップグレードを除いて原則すべて採用</strong>します。開始日時が未取得でも、締切が分かる受付は<strong>今日〜締切を申込帯</strong>で表示します。📱シマシマ＝オンライン特典会。",
@@ -77,7 +90,6 @@ def main() -> int:
     )
     page = page.replace("+' ／ ぴあ非FC・非アップグレードは全件採用'", "")
 
-    # Display short multi-date venue schedules explicitly. Long tours stay summarized.
     if "function venueText(e)" not in page:
         needle = "function days(e){return occ(e).map(function(x){return x.date})}"
         venue_js = (
@@ -97,8 +109,6 @@ def main() -> int:
         "esc(venueText(e))",
     )
 
-    # Physical live labels use compact prefecture names: 東京 / 神奈川 / 大阪.
-    # 北海道 stays 北海道 because shortening it to 北海 would be unnatural.
     if "function prefecture(v)" not in page:
         needle = "function online(e){return e.eventCategory==='online-benefit'||/オンライン(?:特典会|サイン会)/.test(String(e.title||''))}"
         if needle not in page:
@@ -112,17 +122,12 @@ def main() -> int:
             count=1,
         )
 
-    # Ticket application bands get the same compact location prefix. For a
-    # Pia lot covering two prefectures this becomes e.g. 鳥取・広島｜JAPAN TOUR.
     if "function bandLocation(e)" not in page:
         needle = "function days(e){return occ(e).map(function(x){return x.date})}"
         if needle not in page:
             raise RuntimeError("could not locate days() for bandLocation")
         page = page.replace(needle, BAND_LOCATION_JS + needle, 1)
 
-    # Normalize announcement headlines to the actual performance name.
-    # Example: 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ ...
-    # becomes KAWAII LAB. Christmas SESSION 2026 everywhere in the UI.
     page = re.sub(
         r"function title\(e\)\{return String\(e\.eventTitle\|\|e\.title\|\|'公演'\)\.trim\(\)\}",
         lambda _m: TITLE_JS,
@@ -138,8 +143,6 @@ def main() -> int:
             flags=re.S,
         )
 
-    # A group has at most one live performance marker per date. Ticket rows and
-    # schedule-only rows can describe the same performance; collapse them here.
     page = page.replace("var perf=[],bands=[],miles=[];", "var perf=[],bands=[],miles=[],perfSeen={};")
     plain_push = "perf.push({event:e,s:i,end:i})"
     dedup_push = (
@@ -170,6 +173,8 @@ def main() -> int:
 
     required = (
         'id="snapshot-data"',
+        "schedule-home-link",
+        'href="index.html"',
         "function effectiveBand(e)",
         "function lane(items)",
         "function prepare(raw)",
