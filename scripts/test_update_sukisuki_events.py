@@ -72,6 +72,21 @@ class SukisukiParserTests(unittest.TestCase):
             "https://sukisuki-shop.com/goods/6500000004999",
         )
 
+    def test_stale_derived_sukisuki_row_is_still_recognized(self):
+        event = {
+            "sourceType": "derived",
+            "primarySource": "sukisuki",
+            "url": "https://sukisuki-shop.com/goods/6500000003995",
+        }
+        self.assertTrue(s.is_sukisuki_event(event))
+
+    def test_sukisuki_url_is_enough_to_identify_source(self):
+        event = {
+            "sourceType": "derived",
+            "url": "https://sukisuki-shop.com/goods/6500000003995",
+        }
+        self.assertTrue(s.is_sukisuki_event(event))
+
     def test_yearless_near_event_uses_upcoming_year(self):
         match = s.DATE_RE.search("9月10日オンライン特典会")
         self.assertEqual(
