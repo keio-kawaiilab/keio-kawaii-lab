@@ -126,16 +126,31 @@ def venue_text(event: dict, online: bool = False) -> str:
 
 
 def display_title(event: dict) -> str:
+    """Return the actual performance name, not the announcement headline."""
     text = str(event.get("eventTitle") or event.get("title") or "").strip()
+    fallback = f"{event.get('group') or 'KAWAII LAB.'} 公演"
     if not text or BAD_UI_TITLE_RE.search(text):
-        return f"{event.get('group') or 'KAWAII LAB.'} 公演"
+        return fallback
+
+    # Official announcements commonly wrap the real performance name in 「」.
+    # Keep that content verbatim (including KAWAII LAB. / group prefixes) and
+    # discard venue / ticket-announcement wording after the closing quote.
     quoted = re.search(r"「([^」]+)」", text)
     if quoted:
-        text = quoted.group(1).strip()
+        return quoted.group(1).strip() or fallback
+
     text = re.sub(r"^(?:20\d{2}年)?\d{1,2}月\d{1,2}日(?:\([^)]*\)|（[^）]*）)?\s*", "", text)
-    for group in ("FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR", "KAWAII LAB.合同", "KAWAII LAB."):
+    text = re.split(
+        r"\s*@|開催決定|出演決定|アップグレード抽選受付|一般(?:発売|販売|先行)|"
+        r"FC\s*(?:会員)?先行|ファンクラブ|OFFICIAL FANCLUB|プレリザーブ|プレイガイド|"
+        r"先行受付|チケット受付|受付のお知らせ",
+        text,
+        maxsplit=1,
+        flags=re.I,
+    )[0]
+    for group in ("FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR", "KAWAII LAB.合同"):
         text = re.sub(rf"^{re.escape(group)}\s*", "", text, flags=re.I)
-    return text.strip(" !！-|｜–—") or f"{event.get('group') or 'KAWAII LAB.'} 公演"
+    return text.strip(" !！-|｜–—") or fallback
 
 
 def source_url(event: dict) -> str:
