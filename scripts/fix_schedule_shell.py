@@ -8,8 +8,24 @@ PAGE = Path("schedule.html")
 
 PREFECTURE_JS = (
     "function prefecture(v){var s=String(v||''),m=s.match(/北海道|東京都|京都府|大阪府|青森県|岩手県|宮城県|秋田県|山形県|福島県|茨城県|栃木県|群馬県|埼玉県|千葉県|神奈川県|新潟県|富山県|石川県|福井県|山梨県|長野県|岐阜県|静岡県|愛知県|三重県|滋賀県|兵庫県|奈良県|和歌山県|鳥取県|島根県|岡山県|広島県|山口県|徳島県|香川県|愛媛県|高知県|福岡県|佐賀県|長崎県|熊本県|大分県|宮崎県|鹿児島県|沖縄県/);"
-    "if(m)return m[0];var a=[[/SGCホール有明|有明アリーナ|東京ガーデンシアター|日本武道館|ベルサール(?:汐留|渋谷)|LINE CUBE SHIBUYA|Zepp Haneda|Spotify O-/,'東京都'],[/ぴあアリーナMM|横浜アリーナ|パシフィコ横浜|カルッツかわさき|KT Zepp Yokohama/,'神奈川県'],[/幕張メッセ|幕張新都心|森のホール21/,'千葉県'],[/戸田市文化会館|大宮ソニックシティ/,'埼玉県']];"
+    "if(m){var x=m[0];return x==='北海道'?x:x.replace(/[都府県]$/,'')}"
+    "var a=[[/SGCホール有明|SGC HALL ARIAKE|有明アリーナ|東京ガーデンシアター|日本武道館|ベルサール(?:汐留|渋谷)|LINE CUBE SHIBUYA|Zepp Haneda|Spotify O-/,'東京'],[/ぴあアリーナ\\s*MM|横浜アリーナ|パシフィコ横浜|カルッツかわさき|KT Zepp Yokohama/,'神奈川'],[/幕張メッセ|幕張新都心|森のホール21/,'千葉'],[/戸田市文化会館|大宮ソニックシティ/,'埼玉']];"
     "for(var i=0;i<a.length;i++)if(a[i][0].test(s))return a[i][1];return''}"
+)
+
+BAND_LOCATION_JS = (
+    "function bandLocation(e){if(online(e))return'';var seen={},a=[];"
+    "occ(e).forEach(function(o){var x=prefecture(o.venue||e.venue||'');if(x&&!seen[x]){seen[x]=1;a.push(x)}});"
+    "if(!a.length){var x=prefecture(e.venue||'');if(x)a.push(x)}"
+    "return a.length<=4?a.join('・'):(a[0]+'ほか'+(a.length-1)+'地域')}"
+)
+
+TITLE_JS = (
+    "function title(e){var t=String(e.eventTitle||e.title||'').trim(),fb=(e.group||'KAWAII LAB.')+' 公演';"
+    "if(!t||badTitle.test(t))return fb;var q=t.match(/「([^」]+)」/);if(q)return q[1].trim()||fb;"
+    "t=t.replace(/^(?:20\\d{2}年)?\\d{1,2}月\\d{1,2}日(?:\\([^)]*\\)|（[^）]*）)?\\s*/,'');"
+    "t=t.split(/\\s*@|開催決定|出演決定|アップグレード抽選受付|一般(?:発売|販売|先行)|FC\\s*(?:会員)?先行|ファンクラブ|OFFICIAL FANCLUB|プレリザーブ|プレイガイド|先行受付|チケット受付|受付のお知らせ/i)[0];"
+    "return t.trim()||fb}"
 )
 
 
@@ -81,13 +97,46 @@ def main() -> int:
         "esc(venueText(e))",
     )
 
-    # Add a prefecture label to each physical live marker. Use the occurrence
-    # venue so each date in a nationwide tour gets its own prefecture.
+    # Physical live labels use compact prefecture names: 東京 / 神奈川 / 大阪.
+    # 北海道 stays 北海道 because shortening it to 北海 would be unnatural.
     if "function prefecture(v)" not in page:
         needle = "function online(e){return e.eventCategory==='online-benefit'||/オンライン(?:特典会|サイン会)/.test(String(e.title||''))}"
         if needle not in page:
             raise RuntimeError("could not locate online() insertion point")
         page = page.replace(needle, needle + PREFECTURE_JS, 1)
+    else:
+        page = re.sub(
+            r"function prefecture\(v\)\{var s=String\(v\|\|''\).*?return''\}",
+            lambda _m: PREFECTURE_JS,
+            page,
+            count=1,
+        )
+
+    # Ticket application bands get the same compact location prefix. For a
+    # Pia lot covering two prefectures this becomes e.g. 鳥取・広島｜JAPAN TOUR.
+    if "function bandLocation(e)" not in page:
+        needle = "function days(e){return occ(e).map(function(x){return x.date})}"
+        if needle not in page:
+            raise RuntimeError("could not locate days() for bandLocation")
+        page = page.replace(needle, BAND_LOCATION_JS + needle, 1)
+
+    # Normalize announcement headlines to the actual performance name.
+    # Example: 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ ...
+    # becomes KAWAII LAB. Christmas SESSION 2026 everywhere in the UI.
+    page = re.sub(
+        r"function title\(e\)\{return String\(e\.eventTitle\|\|e\.title\|\|'公演'\)\.trim\(\)\}",
+        lambda _m: TITLE_JS,
+        page,
+        count=1,
+    )
+    if TITLE_JS not in page and "function title(e)" in page:
+        page = re.sub(
+            r"function title\(e\)\{.*?\}(?=function shortTitle)",
+            lambda _m: TITLE_JS,
+            page,
+            count=1,
+            flags=re.S,
+        )
 
     # A group has at most one live performance marker per date. Ticket rows and
     # schedule-only rows can describe the same performance; collapse them here.
@@ -114,6 +163,10 @@ def main() -> int:
         "if(kind==='performance')b.textContent=(online(e)?'📱 ':'🎤 ')+shortTitle(e);",
         "if(kind==='performance')b.textContent=(online(e)?'📱 ':'🎤 ')+(item.prefecture?item.prefecture+'｜':'')+shortTitle(e);",
     )
+    page = page.replace(
+        "else if(kind==='band'){var r=item.band;b.innerHTML='<strong>'+esc(shortTitle(e))+'</strong><span>'+esc(e.ticketType||'申込')+'｜'+esc(fmt(e.applyEnd))+'まで</span>'}",
+        "else if(kind==='band'){var r=item.band,loc=bandLocation(e);b.innerHTML='<strong>'+esc((loc?loc+'｜':'')+shortTitle(e))+'</strong><span>'+esc(e.ticketType||'申込')+'｜'+esc(fmt(e.applyEnd))+'まで</span>'}",
+    )
 
     required = (
         'id="snapshot-data"',
@@ -122,8 +175,11 @@ def main() -> int:
         "function prepare(raw)",
         "function venueText(e)",
         "function prefecture(v)",
+        "function bandLocation(e)",
         "perfSeen[pk]",
         "item.prefecture?item.prefecture+'｜':''",
+        "loc?loc+'｜':''",
+        "KAWAII LAB. Christmas SESSION 2026",
         "FC先行・アップグレードを除いて原則すべて採用",
         "var e=item.event,b=document.createElement('button')",
         "ends[n]=x.end",
@@ -139,6 +195,9 @@ def main() -> int:
         "x.endnd",
         "今日から表示｜",
         "ライブ情報",
+        "東京都｜",
+        "神奈川県｜",
+        "大阪府｜",
     )
     present = [token for token in forbidden if token in page]
     if present:
