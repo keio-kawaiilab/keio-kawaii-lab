@@ -26,6 +26,7 @@ GROUPS = (
     "MORE STAR",
 )
 ONLINE_HINTS = ("オンライン特典会", "オンラインサイン会")
+YEARLESS_MAX_DAYS = 60
 DATE_RE = re.compile(
     r"(?:(20\d{2})年\s*)?(\d{1,2})月\s*(\d{1,2})日"
     r"(?:\s*[（(][^）)]*[）)])?"
@@ -53,6 +54,30 @@ def to_iso(match: re.Match, default_year: int | None = None) -> str | None:
         return None
     base = dt.strftime("%Y-%m-%d")
     return base if hour is None else dt.strftime("%Y-%m-%dT%H:%M")
+
+
+def resolve_yearless_date(match: re.Match, today) -> str | None:
+    """年なし日付は直近開催だけ採用する。古い商品を今年の未来日として復活させない。"""
+    if match.group(1):
+        return to_iso(match)
+
+    month = int(match.group(2))
+    day = int(match.group(3))
+    hour = int(match.group(4) or 0)
+    minute = int(match.group(5) or 0)
+    candidates = []
+    for year in (today.year, today.year + 1):
+        try:
+            candidate = datetime(year, month, day, hour, minute)
+        except ValueError:
+            continue
+        delta = (candidate.date() - today).days
+        if 0 <= delta <= YEARLESS_MAX_DAYS:
+            candidates.append((delta, candidate))
+    if not candidates:
+        return None
+    candidate = min(candidates, key=lambda x: x[0])[1]
+    return candidate.strftime("%Y-%m-%d") if match.group(4) is None else candidate.strftime("%Y-%m-%dT%H:%M")
 
 
 def first_date_after(text: str, labels: tuple[str, ...], default_year: int | None = None) -> str | None:
@@ -157,12 +182,22 @@ def parse_goods(session: requests.Session, url: str, today) -> dict | None:
         return None
 
     title_match = DATE_RE.search(title)
-    event_date = to_iso(title_match, datetime.now(JST).year)[:10] if title_match and to_iso(title_match, datetime.now(JST).year) else None
+    event_date = resolve_yearless_date(title_match, today) if title_match else None
     if not event_date:
-        event_date = first_date_after(text, ("配信予定日", "開催日時", "開催日"), datetime.now(JST).year)
-        event_date = event_date[:10] if event_date else None
+        for label in ("配信予定日", "開催日時", "開催日"):
+            pos = text.find(label)
+            if pos < 0:
+                continue
+            match = DATE_RE.search(text[pos:pos + 260])
+            if not match:
+                continue
+            event_date = resolve_yearless_date(match, today)
+            if event_date:
+                break
+    event_date = event_date[:10] if event_date else None
     if not event_date:
         return None
+
     try:
         event_day = datetime.strptime(event_date, "%Y-%m-%d").date()
     except ValueError:
@@ -203,7 +238,7 @@ def main() -> int:
 
     session = requests.Session()
     session.headers.update({
-        "User-Agent": "KeioKawaiiLabCalendarBot/1.5 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"
+        "User-Agent": "KeioKawaiiLabCalendarBot/1.6 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"
     })
     urls, discovery_failures = discover(session)
     today = datetime.now(JST).date()
