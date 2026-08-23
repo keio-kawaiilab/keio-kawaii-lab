@@ -24,6 +24,15 @@ GROUP_VAR = {
 BAD_UI_TITLE_RE = re.compile(r"行きたい\s*[!！]?\s*公演アラート|お気に入り(?:登録)?|メールで通知", re.I)
 OFFICIAL_ONLY_RE = re.compile(r"アップグレード|(?:^|\s)FC(?:\s|$)|ファンクラブ|年会費コース", re.I)
 
+SCHEDULE_NAV_STYLE = """
+/* schedule-site-nav-style */
+.head{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);box-shadow:0 5px 18px rgba(34,51,95,.08)}
+.schedule-home-link{display:inline-flex;align-items:center;gap:7px;margin:0 0 10px;padding:8px 13px;border-radius:999px;background:#22335f;color:#fff;text-decoration:none;font-weight:800;font-size:12px;box-shadow:0 3px 10px rgba(34,51,95,.18)}
+.schedule-home-link:hover{filter:brightness(1.08)}
+.schedule-home-link:focus-visible{outline:3px solid #c19b46;outline-offset:3px}
+"""
+SCHEDULE_NAV_HTML = '<a class="schedule-home-link" href="./index.html" aria-label="慶應KAWAII LAB.同好会公式サイトへ戻る">← 同好会公式サイトへ戻る</a>'
+
 
 def esc(value: object) -> str:
     return html.escape(str(value or ""), quote=True)
@@ -126,31 +135,16 @@ def venue_text(event: dict, online: bool = False) -> str:
 
 
 def display_title(event: dict) -> str:
-    """Return the actual performance name, not the announcement headline."""
     text = str(event.get("eventTitle") or event.get("title") or "").strip()
-    fallback = f"{event.get('group') or 'KAWAII LAB.'} 公演"
     if not text or BAD_UI_TITLE_RE.search(text):
-        return fallback
-
-    # Official announcements commonly wrap the real performance name in 「」.
-    # Keep that content verbatim (including KAWAII LAB. / group prefixes) and
-    # discard venue / ticket-announcement wording after the closing quote.
+        return f"{event.get('group') or 'KAWAII LAB.'} 公演"
     quoted = re.search(r"「([^」]+)」", text)
     if quoted:
-        return quoted.group(1).strip() or fallback
-
+        text = quoted.group(1).strip()
     text = re.sub(r"^(?:20\d{2}年)?\d{1,2}月\d{1,2}日(?:\([^)]*\)|（[^）]*）)?\s*", "", text)
-    text = re.split(
-        r"\s*@|開催決定|出演決定|アップグレード抽選受付|一般(?:発売|販売|先行)|"
-        r"FC\s*(?:会員)?先行|ファンクラブ|OFFICIAL FANCLUB|プレリザーブ|プレイガイド|"
-        r"先行受付|チケット受付|受付のお知らせ",
-        text,
-        maxsplit=1,
-        flags=re.I,
-    )[0]
-    for group in ("FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR", "KAWAII LAB.合同"):
+    for group in ("FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR", "KAWAII LAB.合同", "KAWAII LAB."):
         text = re.sub(rf"^{re.escape(group)}\s*", "", text, flags=re.I)
-    return text.strip(" !！-|｜–—") or fallback
+    return text.strip(" !！-|｜–—") or f"{event.get('group') or 'KAWAII LAB.'} 公演"
 
 
 def source_url(event: dict) -> str:
@@ -205,6 +199,14 @@ def build_card(event: dict) -> str:
     return "".join(parts)
 
 
+def ensure_site_navigation(page: str) -> str:
+    if "schedule-site-nav-style" not in page:
+        page = page.replace("</style>", SCHEDULE_NAV_STYLE + "\n</style>", 1)
+    if 'class="schedule-home-link"' not in page:
+        page = page.replace('<header class="head">', '<header class="head">' + SCHEDULE_NAV_HTML, 1)
+    return page
+
+
 def main() -> int:
     payload = json.loads(DATA_PATH.read_text(encoding="utf-8"))
     page = PAGE_PATH.read_text(encoding="utf-8")
@@ -212,6 +214,8 @@ def main() -> int:
     if 'id="snapshot-data"' not in page:
         print("schedule.html has no snapshot-data block yet; leaving page untouched")
         return 0
+
+    page = ensure_site_navigation(page)
 
     today = datetime.now(JST).date()
     events = [dict(x) for x in payload.get("events", []) if isinstance(x, dict)]
