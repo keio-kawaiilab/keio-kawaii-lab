@@ -183,10 +183,13 @@ jobs:
           title="🚨 Schedule release blocked"
           existing="$(gh issue list --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
           if [ -n "$existing" ]; then
+            gh issue edit "$existing" --add-assignee "keio-kawaiilab" || true
             echo "Incident issue #$existing is already open."
             exit 0
           fi
           {
+            echo "@keio-kawaiilab"
+            echo
             echo "自動更新のリリース監査が異常を検出したため、**本番公開を停止して前回正常版を維持しています**。"
             echo
             echo '```json'
@@ -195,7 +198,7 @@ jobs:
             echo
             echo "Actions run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
           } > /tmp/schedule-incident.md
-          gh issue create --title "$title" --body-file /tmp/schedule-incident.md
+          gh issue create --title "$title" --body-file /tmp/schedule-incident.md --assignee "keio-kawaiilab"
 
       - name: Close resolved release incident
         if: success() && github.event_name != 'pull_request' && steps.control.outputs.frozen != 'true'
