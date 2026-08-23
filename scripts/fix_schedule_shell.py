@@ -19,6 +19,7 @@ def main() -> int:
         "色＝グループ ／ 横帯＝申込期間（開始不明時は今日から） ／ 🎫＝当落 ／ 💳＝入金期限 ／ 🎤＝ライブ ／ 📱＝オンライン特典会",
         "色＝グループ ／ 横帯＝申込期間 ／ 🎫＝当落 ／ 💳＝入金期限 ／ 🎤＝ライブ ／ 📱＝オンライン特典会",
     )
+    page = page.replace("本日から帯表示（開始日時未取得）", "開始日時未取得")
 
     # Strict-mode JavaScript must declare the computed week height.
     page = page.replace(
@@ -47,7 +48,6 @@ def main() -> int:
     page = page.replace("((item.e-item.s+1)/7*100)", "((item.end-item.s+1)/7*100)")
 
     # No generic internal-looking label on the public calendar.
-    page = page.replace("eventTitle||e.title||'ライブ情報'", "eventTitle||e.title||'公演'")
     page = page.replace("e.eventTitle||e.title||'ライブ情報'", "e.eventTitle||e.title||'公演'")
 
     # The band already starts from today visually when the source start is unknown;
