@@ -100,13 +100,55 @@ class SourcePriorityTests(unittest.TestCase):
             eventDate="2026-08-24",
             eventCategory="online-benefit",
             sourceType="sukisuki",
-            url="https://sukisuki-shop.com/goods/example",
+            url="https://sukisuki-shop.com/goods/6500000004000",
             applyEnd="2026-08-23T23:59",
         )
         out = r.resolve([official, suki])
         self.assertEqual(len(out), 1)
         self.assertEqual(out[0]["primarySource"], "sukisuki")
         self.assertEqual(out[0]["applyEnd"], "2026-08-23T23:59")
+
+    def test_sukisuki_lottery_and_late_first_come_are_both_kept(self):
+        lottery = self.base(
+            group="CANDY TUNE",
+            title="CANDY TUNE オンライン特典会",
+            ticketType="オンライン特典会・抽選販売",
+            eventDate="2026-08-24",
+            eventCategory="online-benefit",
+            sourceType="sukisuki",
+            url="https://sukisuki-shop.com/goods/6500000004000",
+            applyStart="2026-08-20T18:00",
+            applyEnd="2026-08-22T23:59",
+        )
+        first_come = dict(lottery)
+        first_come.update({
+            "ticketType": "オンライン特典会・先着販売",
+            "url": "https://sukisuki-shop.com/goods/6500000004999",
+            "applyStart": "2026-08-24T12:00",
+            "applyEnd": "2026-08-24T17:00",
+        })
+        out = r.resolve([lottery, first_come])
+        self.assertEqual(len(out), 2)
+        self.assertEqual({x["ticketType"] for x in out}, {
+            "オンライン特典会・抽選販売",
+            "オンライン特典会・先着販売",
+        })
+
+    def test_distinct_sukisuki_goods_pages_are_never_collapsed(self):
+        first = self.base(
+            group="SWEET STEADY",
+            title="SWEET STEADY オンライン特典会",
+            ticketType="オンライン特典会・先着販売",
+            eventDate="2026-08-24",
+            eventCategory="online-benefit",
+            sourceType="sukisuki",
+            url="https://sukisuki-shop.com/goods/6500000005001",
+        )
+        second = dict(first)
+        second["url"] = "https://sukisuki-shop.com/goods/6500000005002"
+        out = r.resolve([first, second])
+        self.assertEqual(len(out), 2)
+        self.assertEqual({r.sukisuki_goods(x)[0] for x in out}, {"6500000005001", "6500000005002"})
 
     def test_pia_subset_is_not_merged_into_whole_tour(self):
         official = self.base(
