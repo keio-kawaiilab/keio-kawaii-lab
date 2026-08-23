@@ -49,8 +49,6 @@ def normalize_space(value: str) -> str:
 def canonical_goods_url(url: str) -> str:
     parts = urlsplit(url)
     netloc = parts.netloc
-    # The API catalogue can expose relative /goods/... links. Detail pages are
-    # served by the normal shop host, so normalize them before fetching.
     if netloc == "api.sukisuki-shop.com" and GOODS_ID_RE.search(parts.path):
         netloc = "sukisuki-shop.com"
     return urlunsplit((parts.scheme or "https", netloc, parts.path, "", ""))
@@ -59,6 +57,24 @@ def canonical_goods_url(url: str) -> str:
 def goods_rank(url: str) -> int:
     match = GOODS_ID_RE.search(urlsplit(url).path)
     return int(match.group(1)) if match else 0
+
+
+def event_urls(event: dict) -> list[str]:
+    values: list[str] = []
+    if event.get("url"):
+        values.append(str(event["url"]))
+    for url in event.get("urls") or []:
+        if url and str(url) not in values:
+            values.append(str(url))
+    return values
+
+
+def is_sukisuki_event(event: dict) -> bool:
+    source = str(event.get("sourceType") or "").lower()
+    primary = str(event.get("primarySource") or "").lower()
+    return source == "sukisuki" or primary == "sukisuki" or any(
+        "sukisuki-shop.com" in url.lower() for url in event_urls(event)
+    )
 
 
 def to_iso(match: re.Match, default_year: int | None = None) -> str | None:
@@ -75,7 +91,6 @@ def to_iso(match: re.Match, default_year: int | None = None) -> str | None:
 
 
 def resolve_yearless_date(match: re.Match, today) -> str | None:
-    """年なし日付は直近開催だけ採用する。古い商品を今年の未来日として復活させない。"""
     if match.group(1):
         return to_iso(match)
 
@@ -99,7 +114,6 @@ def resolve_yearless_date(match: re.Match, today) -> str | None:
 
 
 def explicit_year_hint(text: str) -> int | None:
-    """販売・当落・入金周辺に明記された年を、年なし開催日の手掛かりにする。"""
     for label in YEAR_HINT_LABELS:
         pos = text.find(label)
         if pos < 0:
@@ -183,13 +197,6 @@ def stable_id(*parts: object) -> str:
 
 
 def discover(session: requests.Session) -> tuple[list[str], list[str]]:
-    """Discover from every public SUKISUKI catalogue, including API-only rows.
-
-    Last-minute first-come goods can appear on api.sukisuki-shop.com before or
-    without appearing on the normal catalogue. Never stop after the first list.
-    Newer numeric goods IDs are parsed first so same-day additions are not lost
-    behind the request cap.
-    """
     urls: set[str] = set()
     failures: list[str] = []
     for list_url in LIST_URLS:
@@ -288,7 +295,7 @@ def main() -> int:
 
     session = requests.Session()
     session.headers.update({
-        "User-Agent": "KeioKawaiiLabCalendarBot/1.8 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"
+        "User-Agent": "KeioKawaiiLabCalendarBot/1.9 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"
     })
     urls, discovery_failures = discover(session)
     today = datetime.now(JST).date()
@@ -318,9 +325,12 @@ def main() -> int:
         return 0
 
     payload = json.loads(DATA_PATH.read_text(encoding="utf-8"))
+    # Replace every prior SUKISUKI-derived row, even if a sanitizer changed
+    # sourceType to derived. This prevents stale schedule-only duplicates from
+    # surviving next to the current lottery/first-come sale rows.
     existing = [
         event for event in payload.get("events", [])
-        if isinstance(event, dict) and event.get("sourceType") != "sukisuki"
+        if isinstance(event, dict) and not is_sukisuki_event(event)
     ]
     seen = {str(event.get("id") or "") for event in existing}
     for event in parsed:
