@@ -31,6 +31,22 @@ class SourcePriorityTests(unittest.TestCase):
         self.assertEqual(out[0]["applyStart"], "2026-08-22T10:00")
         self.assertEqual(len(out[0]["urls"]), 2)
 
+    def test_distinct_pia_lots_are_never_collapsed(self):
+        first = self.base(
+            group="CANDY TUNE",
+            title="CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
+            ticketType="プレリザーブ",
+            eventDate="2026-11-24",
+            eventDates=["2026-11-24", "2026-11-26"],
+            sourceType="pia",
+            url="https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=AAA",
+        )
+        second = dict(first)
+        second["url"] = "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=BBB"
+        out = r.resolve([first, second])
+        self.assertEqual(len(out), 2)
+        self.assertEqual({r.pia_lots(x)[0] for x in out}, {"AAA", "BBB"})
+
     def test_fc_and_pia_playguide_are_both_kept(self):
         official_fc = self.base(ticketType="FC先行")
         pia = self.base(
