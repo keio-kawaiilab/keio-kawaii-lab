@@ -1,6 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
   const calendar = document.getElementById("live-calendar");
+  const list = document.getElementById("live-list");
   if (!calendar) return;
+
+  const style = document.createElement("style");
+  style.textContent = `
+    .calendar-event-bar.online-benefit{background:repeating-linear-gradient(135deg,rgba(255,255,255,0) 0 9px,rgba(255,255,255,.48) 9px 13px),var(--group)!important}
+    .calendar-milestone.online-benefit{background:repeating-linear-gradient(135deg,#fff 0 8px,#eef1f5 8px 12px)!important}
+    .live-card.online-benefit{background:repeating-linear-gradient(135deg,#fff 0 14px,#f5f7fa 14px 21px)!important}
+  `;
+  document.head.appendChild(style);
 
   const groupNames = [
     "FRUITS ZIPPER",
@@ -29,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const quoted = text.match(/「([^」]+)」/);
     if (quoted && quoted[1].length >= 3) text = quoted[1].trim();
 
+    if (/オンライン(?:特典会|サイン会)/.test(text)) return "オンライン特典会";
     if (/KAWAII LAB\.\s*Christmas SESSION\s*2026/i.test(text)) return "Christmas SESSION";
     if (/JAPAN ARENA TOUR\s*2026\s*-?\s*AUTUMN\s*-/i.test(text)) return "ARENA TOUR";
     if (/JAPAN TOUR\s*2026\s*-?\s*AUTUMN\s*-/i.test(text)) return "JAPAN TOUR";
@@ -53,6 +63,8 @@ document.addEventListener("DOMContentLoaded", () => {
     return chars.length > 18 ? `${chars.slice(0, 18).join("")}…` : text;
   };
 
+  const isOnlineText = (value) => /オンライン(?:特典会|サイン会)|📱/.test(String(value || ""));
+
   const processBar = (bar) => {
     if (bar.dataset.readableLabel === "1") return;
     const strong = bar.querySelector("strong");
@@ -64,6 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const parts = line.split("｜").map((x) => x.trim()).filter(Boolean);
     const fullTitle = parts[0] || "ライブ";
     const ticketLabel = parts.slice(1).join("｜");
+    if (isOnlineText(`${fullTitle} ${ticketLabel}`)) bar.classList.add("online-benefit");
 
     strong.textContent = shortTitle(fullTitle);
     span.textContent = [ticketLabel, performanceLabel ? `公演 ${performanceLabel}` : ""].filter(Boolean).join("｜");
@@ -85,6 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
       suffix = body.slice(separator + 1).trim();
       body = body.slice(0, separator).trim();
     }
+    if (icon === "📱" || isOnlineText(body)) node.classList.add("online-benefit");
 
     const fullTitle = body;
     const compact = shortTitle(body);
@@ -93,13 +107,22 @@ document.addEventListener("DOMContentLoaded", () => {
     node.dataset.readableLabel = "1";
   };
 
+  const processCards = () => {
+    if (!list) return;
+    list.querySelectorAll(".live-card").forEach((card) => {
+      if (isOnlineText(card.textContent)) card.classList.add("online-benefit");
+    });
+  };
+
   const processAll = () => {
     calendar.querySelectorAll(".event-bar, .calendar-event-bar").forEach(processBar);
     calendar.querySelectorAll(".milestone, .calendar-milestone").forEach(processMilestone);
+    processCards();
   };
 
   const observer = new MutationObserver(() => processAll());
   observer.observe(calendar, { childList: true, subtree: true });
+  if (list) new MutationObserver(processCards).observe(list, { childList: true, subtree: true });
   processAll();
-  import("./online-event-details.js?v=202608230415").catch(() => {});
+  import("./online-event-details.js?v=202608231200").catch(() => {});
 });
