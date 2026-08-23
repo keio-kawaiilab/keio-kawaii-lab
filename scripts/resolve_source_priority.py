@@ -126,6 +126,14 @@ def source_urls(event: dict) -> list[str]:
     return values
 
 
+def with_source_metadata(event: dict) -> dict:
+    out = dict(event)
+    source = source_kind(out)
+    out["primarySource"] = source
+    out["sourceCandidates"] = [source]
+    return out
+
+
 def merge_duplicate(items: list[dict]) -> dict:
     ranked = sorted(items, key=priority, reverse=True)
     winner = dict(ranked[0])
@@ -156,7 +164,7 @@ def resolve(events: list[dict]) -> list[dict]:
             if same_event_and_sale(event, events[other_index]):
                 bucket.append(events[other_index])
                 used.add(other_index)
-        result.append(merge_duplicate(bucket) if len(bucket) > 1 else dict(event))
+        result.append(merge_duplicate(bucket) if len(bucket) > 1 else with_source_metadata(event))
     return result
 
 
@@ -164,6 +172,7 @@ def resolve_payload(payload: dict) -> dict:
     out = dict(payload)
     events = [dict(x) for x in payload.get("events", []) if isinstance(x, dict)]
     out["events"] = resolve(events)
+    out["source"] = "KAWAII LAB.各グループ公式公開情報 + チケットぴあ公開情報 + SUKISUKI公開オンライン特典会情報"
     return out
 
 
