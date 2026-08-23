@@ -41,6 +41,24 @@ class SourcePriorityTests(unittest.TestCase):
         out = r.resolve([official_fc, pia])
         self.assertEqual(len(out), 2)
 
+    def test_official_beats_pia_for_same_fc_sale(self):
+        official_fc = self.base(
+            ticketType="FC先行",
+            applyStart="2026-08-01T12:00",
+            applyEnd="2026-08-10T23:59",
+        )
+        pia_fc = self.base(
+            ticketType="FC先行",
+            sourceType="pia",
+            url="https://t.pia.jp/pia/event/event.do?eventCd=example",
+            applyStart="2026-08-02T12:00",
+            applyEnd="2026-08-10T23:59",
+        )
+        out = r.resolve([pia_fc, official_fc])
+        self.assertEqual(len(out), 1)
+        self.assertEqual(out[0]["primarySource"], "official")
+        self.assertEqual(out[0]["applyStart"], "2026-08-01T12:00")
+
     def test_upgrade_and_pia_general_are_both_kept(self):
         official_upgrade = self.base(ticketType="アップグレード抽選")
         pia = self.base(
