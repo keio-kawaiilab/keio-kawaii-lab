@@ -50,6 +50,20 @@ jobs:
           python scripts/fix_schedule_shell.py
           node --check /tmp/schedule-inline.js
 
+      - name: Publish schedule shell changes immediately
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          if git diff --quiet -- schedule.html; then
+            echo "No schedule shell changes."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add schedule.html
+            git commit -m "chore: refresh schedule shell"
+            git push
+          fi
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
