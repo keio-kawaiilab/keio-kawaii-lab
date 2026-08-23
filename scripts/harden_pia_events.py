@@ -6,7 +6,6 @@ import json
 import re
 import unicodedata
 from pathlib import Path
-from urllib.parse import urlsplit
 
 import requests
 from bs4 import BeautifulSoup
@@ -18,7 +17,6 @@ BAD_TITLE_RE = re.compile(
     r"チケットぴあ|通信中|通信エラー|登録完了|詳細はこちら)$",
     re.I,
 )
-
 DATE_RE = re.compile(
     r"(20\d{2})\s*(?:/|\.|-|年)\s*(\d{1,2})\s*(?:/|\.|-|月)\s*(\d{1,2})\s*(?:日)?"
     r"(?:\s*[（(][^）)]*[）)])?\s*(?:午前|午後|昼)?\s*(\d{1,2})?\s*(?::|時)?\s*(\d{2})?\s*(?:分)?"
@@ -40,9 +38,7 @@ def norm(value: object) -> str:
 def to_iso(match: re.Match) -> str:
     year, month, day, hour, minute = match.groups()
     base = f"{int(year):04d}-{int(month):02d}-{int(day):02d}"
-    if hour is None:
-        return base
-    return f"{base}T{int(hour):02d}:{int(minute or 0):02d}"
+    return base if hour is None else f"{base}T{int(hour):02d}:{int(minute or 0):02d}"
 
 
 def exact_period_from_text(text: str) -> tuple[str | None, str | None]:
@@ -55,7 +51,6 @@ def exact_period_from_text(text: str) -> tuple[str | None, str | None]:
         matches = list(DATE_RE.finditer(tail))
         if len(matches) < 2:
             continue
-        # 受付期間ラベルの直後に現れる最初の「2日時」を期間としてのみ採用する。
         first, second = matches[0], matches[1]
         between = tail[first.end():second.start()]
         if not re.search(r"[～〜~\-–—]|から|より", between):
@@ -74,23 +69,19 @@ def deadline_from_text(text: str) -> str | None:
             continue
         tail = text[pos:pos + 500]
         matches = list(DATE_RE.finditer(tail))
-        if not matches:
-            continue
-        # 「受付中 ～日時」のような表示では最後の日時が締切。
-        return to_iso(matches[-1])
+        if matches:
+            return to_iso(matches[-1])
     return None
 
 
 def event_days(event: dict) -> list[str]:
     days: list[str] = []
-    schedule = event.get("schedule")
-    if isinstance(schedule, list):
-        for item in schedule:
+    if isinstance(event.get("schedule"), list):
+        for item in event["schedule"]:
             if isinstance(item, dict) and item.get("date"):
                 days.append(str(item["date"])[:10])
-    dates = event.get("eventDates")
-    if isinstance(dates, list):
-        days.extend(str(value)[:10] for value in dates if value)
+    if isinstance(event.get("eventDates"), list):
+        days.extend(str(value)[:10] for value in event["eventDates"] if value)
     if not days and event.get("eventDate"):
         days.append(str(event["eventDate"])[:10])
     return list(dict.fromkeys(days))
@@ -105,6 +96,20 @@ def is_pia(event: dict) -> bool:
     )
 
 
+def official_only_family(event: dict) -> bool:
+    text = norm(f"{event.get('ticketType', '')} {event.get('title', '')}")
+    upper = text.upper()
+    return (
+        "アップグレード" in text
+        or "ファンクラブ" in text
+        or "年会費コース" in text
+        or "OFFICIAL FANCLUB" in upper
+        or "FC先行" in upper
+        or "FC会員" in upper
+        or "FC限定" in upper
+    )
+
+
 def is_bad_title(value: object) -> bool:
     text = norm(value)
     return not text or bool(BAD_TITLE_RE.search(text))
@@ -114,11 +119,7 @@ def pia_detail_urls(event: dict) -> list[str]:
     values = [str(event.get("url") or "")] + [str(x) for x in (event.get("urls") or [])]
     result = []
     for value in values:
-        if not value or "t.pia.jp" not in value:
-            continue
-        if "ticketInformation.do" not in value:
-            continue
-        if value not in result:
+        if value and "t.pia.jp" in value and "ticketInformation.do" in value and value not in result:
             result.append(value)
     return result
 
@@ -130,9 +131,7 @@ def official_candidates(all_events: list[dict], target: dict) -> list[dict]:
         return []
     result: list[tuple[int, dict]] = []
     for event in all_events:
-        if event is target or is_pia(event):
-            continue
-        if str(event.get("group") or "") != group:
+        if event is target or is_pia(event) or str(event.get("group") or "") != group:
             continue
         candidate_days = set(event_days(event))
         overlap = target_days & candidate_days
@@ -152,11 +151,10 @@ def official_candidates(all_events: list[dict], target: dict) -> list[dict]:
 
 def subset_schedule(source: dict, wanted_days: list[str]) -> list[dict]:
     wanted = set(wanted_days)
-    schedule = source.get("schedule")
-    if isinstance(schedule, list):
+    if isinstance(source.get("schedule"), list):
         rows = [
             {"date": str(item.get("date"))[:10], "venue": item.get("venue")}
-            for item in schedule
+            for item in source["schedule"]
             if isinstance(item, dict) and str(item.get("date") or "")[:10] in wanted
         ]
         if rows:
@@ -168,32 +166,31 @@ def subset_schedule(source: dict, wanted_days: list[str]) -> list[dict]:
 def repair_title_and_schedule(event: dict, all_events: list[dict]) -> dict:
     out = dict(event)
     candidates = official_candidates(all_events, event)
-    if not candidates:
-        return out
-    source = candidates[0]
-    if is_bad_title(out.get("title")) or not norm(out.get("title")):
-        out["title"] = source.get("eventTitle") or source.get("title")
-        out["eventTitle"] = source.get("eventTitle") or source.get("title")
-        out["titleSource"] = "official-schedule-match"
-    wanted_days = event_days(out)
-    schedule = subset_schedule(source, wanted_days)
-    if schedule:
-        out["schedule"] = schedule if len(schedule) > 1 else None
-        venues = [str(item.get("venue") or "").strip() for item in schedule if item.get("venue")]
-        unique_venues = list(dict.fromkeys(venues))
-        if len(unique_venues) == 1:
-            out["venue"] = unique_venues[0]
-        elif len(unique_venues) > 1:
-            out["venue"] = f"複数会場（全{len(schedule)}公演）"
-            out["venues"] = unique_venues
+    if candidates:
+        source = candidates[0]
+        if is_bad_title(out.get("title")):
+            out["title"] = source.get("eventTitle") or source.get("title")
+            out["eventTitle"] = source.get("eventTitle") or source.get("title")
+            out["titleSource"] = "official-schedule-match"
+        wanted_days = event_days(out)
+        schedule = subset_schedule(source, wanted_days)
+        if schedule:
+            out["schedule"] = schedule if len(schedule) > 1 else None
+            venues = [str(item.get("venue") or "").strip() for item in schedule if item.get("venue")]
+            unique = list(dict.fromkeys(venues))
+            if len(unique) == 1:
+                out["venue"] = unique[0]
+            elif len(unique) > 1:
+                out["venue"] = f"複数会場（全{len(schedule)}公演）"
+                out["venues"] = unique
+    if is_bad_title(out.get("title")):
+        out["title"] = f"{out.get('group') or 'KAWAII LAB.'} 公演"
+        out["eventTitle"] = out["title"]
+        out["titleSource"] = "safe-pia-fallback"
     return out
 
 
-def fetch_detail_evidence(
-    session: requests.Session,
-    event: dict,
-) -> tuple[str | None, str | None, str | None, str | None]:
-    """Return (start, end, verified_deadline, source_url)."""
+def fetch_detail_evidence(session: requests.Session, event: dict) -> tuple[str | None, str | None, str | None, str | None]:
     for url in pia_detail_urls(event):
         try:
             response = session.get(url, timeout=12)
@@ -224,11 +221,12 @@ def harden(events: list[dict], session: requests.Session) -> tuple[list[dict], l
             kept.append(event)
             continue
 
-        event = repair_title_and_schedule(event, events)
-        reasons = []
-        if is_bad_title(event.get("title")):
-            reasons.append("generic-or-ui-title")
+        # FC/upgrade information remains official-only by product policy.
+        if official_only_family(event):
+            rejected.append({"id": event.get("id"), "reason": "official-only-fc-or-upgrade"})
+            continue
 
+        event = repair_title_and_schedule(event, events)
         detail_start, detail_end, detail_deadline, evidence_url = fetch_detail_evidence(session, event)
 
         if detail_start and detail_end:
@@ -240,36 +238,24 @@ def harden(events: list[dict], session: requests.Session) -> tuple[list[dict], l
             event["applicationWindowSource"] = evidence_url
             event["deadlineSource"] = evidence_url
         else:
-            # Listing pages often expose an exact closing time even when the opening time
-            # is not present in the row. Keep that deadline, but never invent a start date.
             deadline = detail_deadline
             if not deadline and valid_isoish(event.get("applyEnd")):
                 deadline = str(event.get("applyEnd"))
             if deadline:
+                # Keep the source start unknown, but the UI intentionally draws the band
+                # from today through this known deadline.
                 event["applyStart"] = None
                 event["applyEnd"] = deadline
                 event["applicationWindowVerified"] = False
                 event["deadlineVerified"] = True
-                event["applicationDisplayMode"] = "deadline-only"
+                event["applicationDisplayMode"] = "band-from-today"
                 event["deadlineSource"] = evidence_url or event.get("url")
             else:
-                reasons.append("no-verified-deadline")
-
-        if event.get("applicationWindowVerified"):
-            start, end = str(event.get("applyStart") or ""), str(event.get("applyEnd") or "")
-            if not start or not end or start > end:
-                reasons.append("invalid-application-window")
-
-        if reasons:
-            rejected.append({
-                "id": event.get("id"),
-                "group": event.get("group"),
-                "title": event.get("title"),
-                "ticketType": event.get("ticketType"),
-                "reasons": reasons,
-                "urls": event.get("urls") or [event.get("url")],
-            })
-            continue
+                # Pia is the ticketing authority for non-FC/non-upgrade sales. Keep the
+                # listing even when timing fields cannot be extracted in this run.
+                event["applicationWindowVerified"] = False
+                event["deadlineVerified"] = False
+                event["applicationDisplayMode"] = "pia-listing"
 
         kept.append(event)
 
@@ -281,48 +267,40 @@ def validate_public_pia(events: list[dict]) -> list[str]:
     for event in events:
         if not is_pia(event) or event.get("ticketType") == "現在受付なし":
             continue
-        if is_bad_title(event.get("title")):
-            problems.append(f"generic title: {event.get('id')} {event.get('title')}")
+        if official_only_family(event):
+            problems.append(f"Pia FC/upgrade should not publish: {event.get('id')}")
             continue
-
+        if is_bad_title(event.get("title")):
+            problems.append(f"generic title remains: {event.get('id')} {event.get('title')}")
+            continue
         if event.get("applicationWindowVerified") is True:
             start, end = event.get("applyStart"), event.get("applyEnd")
-            if not start or not end:
-                problems.append(f"verified band missing bound: {event.get('id')} {start} -> {end}")
-            elif str(start) > str(end):
-                problems.append(f"reversed window: {event.get('id')} {start} -> {end}")
-        elif event.get("deadlineVerified") is True:
-            if not event.get("applyEnd"):
-                problems.append(f"verified deadline missing: {event.get('id')}")
-            if event.get("applyStart"):
-                problems.append(f"deadline-only event unexpectedly has start: {event.get('id')}")
-        else:
-            problems.append(f"unverified Pia sale: {event.get('id')}")
+            if not start or not end or str(start) > str(end):
+                problems.append(f"invalid verified band: {event.get('id')} {start} -> {end}")
+        elif event.get("deadlineVerified") is True and not event.get("applyEnd"):
+            problems.append(f"verified deadline missing: {event.get('id')}")
     return problems
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="Verify Ticket Pia titles and application timing before publication."
-    )
+    parser = argparse.ArgumentParser(description="Normalize Ticket Pia listings before publication.")
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
 
     payload = json.loads(DATA_PATH.read_text(encoding="utf-8"))
     events = [dict(x) for x in payload.get("events", []) if isinstance(x, dict)]
     session = requests.Session()
-    session.headers.update({
-        "User-Agent": "KeioKawaiiLabCalendarBot/2.1 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"
-    })
+    session.headers.update({"User-Agent": "KeioKawaiiLabCalendarBot/2.2 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"})
 
     hardened, rejected = harden(events, session)
     problems = validate_public_pia(hardened)
     print(json.dumps({
         "piaBefore": sum(1 for x in events if is_pia(x)),
         "piaAfter": sum(1 for x in hardened if is_pia(x)),
-        "bands": sum(1 for x in hardened if is_pia(x) and x.get("applicationWindowVerified") is True),
-        "deadlineOnly": sum(1 for x in hardened if is_pia(x) and x.get("deadlineVerified") is True and x.get("applicationWindowVerified") is not True),
-        "rejected": rejected,
+        "fullBands": sum(1 for x in hardened if is_pia(x) and x.get("applicationDisplayMode") == "band"),
+        "todayBands": sum(1 for x in hardened if is_pia(x) and x.get("applicationDisplayMode") == "band-from-today"),
+        "piaListingsWithoutTiming": sum(1 for x in hardened if is_pia(x) and x.get("applicationDisplayMode") == "pia-listing"),
+        "rejectedOfficialOnly": rejected,
         "validationProblems": problems,
     }, ensure_ascii=False, indent=2))
 
