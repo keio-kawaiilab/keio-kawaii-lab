@@ -41,9 +41,9 @@ jobs:
       - name: Install dependencies
         run: pip install -r scripts/requirements.txt
 
-      - name: Run parser, retention and sanitizer tests
+      - name: Run parser, retention, sanitizer and metadata tests
         working-directory: scripts
-        run: python -m unittest -v test_update_live_events.py test_update_live_events_v2.py test_sanitize_live_events.py test_update_sukisuki_events.py
+        run: python -m unittest -v test_update_live_events.py test_update_live_events_v2.py test_sanitize_live_events.py test_update_sukisuki_events.py test_enrich_event_metadata.py
 
       - name: Check official and SUKISUKI public sources on pull requests
         if: github.event_name == 'pull_request'
@@ -57,6 +57,7 @@ jobs:
           python scripts/update_live_events_v2.py
           python scripts/update_sukisuki_events.py
           python scripts/sanitize_live_events.py
+          python scripts/enrich_event_metadata.py
 
       - name: Commit when data changed
         if: github.event_name != 'pull_request'
