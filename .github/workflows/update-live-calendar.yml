@@ -43,18 +43,20 @@ jobs:
 
       - name: Run parser, retention, sanitizer, metadata and source priority tests
         working-directory: scripts
-        run: python -m unittest -v test_update_live_events.py test_update_live_events_v2.py test_sanitize_live_events.py test_update_sukisuki_events.py test_enrich_event_metadata.py test_resolve_source_priority.py
+        run: python -m unittest -v test_update_live_events.py test_update_live_events_v2.py test_update_pia_events.py test_sanitize_live_events.py test_update_sukisuki_events.py test_enrich_event_metadata.py test_resolve_source_priority.py
 
-      - name: Check official and SUKISUKI public sources on pull requests
+      - name: Check public sources on pull requests
         if: github.event_name == 'pull_request'
         run: |
           python scripts/update_live_events_v2.py --check
+          python scripts/update_pia_events.py --check
           python scripts/update_sukisuki_events.py --check
 
       - name: Update calendar data from public sources
         if: github.event_name != 'pull_request'
         run: |
           python scripts/update_live_events_v2.py
+          python scripts/update_pia_events.py
           python scripts/update_sukisuki_events.py
           python scripts/resolve_source_priority.py
           python scripts/sanitize_live_events.py
