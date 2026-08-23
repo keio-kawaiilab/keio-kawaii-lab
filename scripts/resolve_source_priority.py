@@ -12,6 +12,7 @@ GROUP_NAMES = (
     "KAWAII LAB.合同", "KAWAII LAB.",
 )
 LOT_RE = re.compile(r"[?&]lotRlsCd=([A-Za-z0-9_-]+)")
+SUKISUKI_GOODS_RE = re.compile(r"https?://(?:api\.)?sukisuki-shop\.com/goods/(\d+)", re.I)
 
 
 def normalize_text(value: object) -> str:
@@ -32,6 +33,15 @@ def pia_lots(event: dict) -> tuple[str, ...]:
     values = []
     for url in source_urls(event):
         match = LOT_RE.search(url)
+        if match and match.group(1) not in values:
+            values.append(match.group(1))
+    return tuple(values)
+
+
+def sukisuki_goods(event: dict) -> tuple[str, ...]:
+    values = []
+    for url in source_urls(event):
+        match = SUKISUKI_GOODS_RE.search(url)
         if match and match.group(1) not in values:
             values.append(match.group(1))
     return tuple(values)
@@ -129,6 +139,16 @@ def same_event_and_sale(a: dict, b: dict) -> bool:
     if source_kind(a) == "pia" and source_kind(b) == "pia":
         lots_a, lots_b = pia_lots(a), pia_lots(b)
         if lots_a and lots_b and lots_a != lots_b:
+            return False
+
+    # SUKISUKI often adds a separate first-come / bingo-first-come goods page
+    # immediately before the stream. Keep each goods page as a distinct sale
+    # round, and never collapse lottery and first-come ticket types together.
+    if source_kind(a) == "sukisuki" and source_kind(b) == "sukisuki":
+        if normalize_text(a.get("ticketType")) != normalize_text(b.get("ticketType")):
+            return False
+        goods_a, goods_b = sukisuki_goods(a), sukisuki_goods(b)
+        if goods_a and goods_b and goods_a != goods_b:
             return False
 
     if event_days(a) != event_days(b) or not event_days(a):
