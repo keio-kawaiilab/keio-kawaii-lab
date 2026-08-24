@@ -41,6 +41,11 @@ DISCLAIMER_HTML = (
 def main() -> int:
     page = PAGE.read_text(encoding="utf-8")
 
+    if 'href="./train-status.css"' not in page:
+        page = page.replace("<style>", '<link rel="stylesheet" href="./train-status.css">\n<style>', 1)
+    if 'src="./train-status.js"' not in page:
+        page = page.replace("</body>", '<script src="./train-status.js"></script>\n</body>', 1)
+
     if "schedule-home-link" not in page:
         page = page.replace(
             ".head small{display:block;margin-top:3px;color:var(--muted)}",
@@ -205,7 +210,7 @@ def main() -> int:
         "FC先行・アップグレードを除いて原則すべて採用",
         "var e=item.event,b=document.createElement('button')",
         "ends[n]=x.end",
-        "esc(venueText(e))",
+        "venueTextHtml(e)",
     )
     missing = [token for token in required if token not in page]
     if missing:
