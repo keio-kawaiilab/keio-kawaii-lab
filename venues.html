@@ -4,7 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ライブ会場ガイド｜慶應カワラボ同好会</title>
-<meta name="description" content="KAWAII LAB.のライブで利用される主要会場のアクセス、住所、規模、来場時のポイントをまとめた会場ガイドです。">
+<meta name="description" content="KAWAII LAB.のライブ会場を、今後の公演予定・地域・会場タイプから探せるガイド。アクセス、住所、規模、来場時のポイントをまとめています。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ライブ会場ガイド｜慶應カワラボ同好会">
+<meta property="og:description" content="KAWAII LAB.の掲載公演と連動した、ファン向けライブ会場ガイドです。">
+<meta property="og:url" content="https://keio-kawaiilab.github.io/keio-kawaii-lab/venues.html">
+<meta name="twitter:card" content="summary">
 <link rel="canonical" href="https://keio-kawaiilab.github.io/keio-kawaii-lab/venues.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,11 +18,143 @@
 <link rel="stylesheet" href="./venue.css">
 </head>
 <body>
-<header class="site-header"><div class="header-inner"><a class="brand" href="index.html"><span class="brand-name">KAWAII LAB.同好会</span><span class="brand-sub">慶應義塾大学登録学生団体</span></a><button class="nav-toggle" aria-expanded="false" aria-controls="global-nav" aria-label="メニューを開閉">☰</button><nav class="global-nav" id="global-nav" aria-label="サイト内メニュー"><ul><li><a href="index.html">トップ</a></li><li><a href="about.html">About</a></li><li><a href="activities.html">活動内容</a></li><li><a href="join.html">入会案内</a></li><li><a href="schedule.html">LIVE・チケット</a></li><li><a href="venues.html" aria-current="page">会場ガイド</a></li><li><a href="faq.html">FAQ</a></li><li><a href="contact.html">Contact</a></li></ul></nav></div></header>
-<section class="page-head venue-page-head"><span class="tricolor-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="en">Venue Guide</span><h1>ライブ会場ガイド</h1><p class="venue-lead">よく使われるライブ会場のアクセスや規模感、はじめて行くときに知っておきたいポイントをまとめています。</p></section>
-<main><section class="section"><div class="container"><div class="venue-toolbar"><label><span class="sr-only">会場名やエリアで検索</span><input class="venue-search" id="venue-search" type="search" placeholder="会場名・駅・エリアで検索" autocomplete="off"></label><label><span class="sr-only">地域で絞り込む</span><select class="venue-filter" id="venue-filter"><option value="all">すべての主要会場</option><option value="scheduled">スケジュール掲載中</option><option value="tokyo">東京都</option><option value="kanagawa">神奈川県</option><option value="other">その他</option></select></label></div><p class="venue-count" id="venue-count">会場情報を読み込んでいます…</p><div class="venue-grid" id="venue-list" aria-live="polite"></div><aside class="venue-notice"><strong>ご利用前に：</strong>アクセス・収容人数・入場方法等は公演や会場運営の都合で変更される場合があります。来場前には、必ず主催者と会場公式サイトの最新情報をご確認ください。本ページは当会が公開情報を整理した非公式ガイドです。</aside></div></section></main>
-<div class="footer-stripe" aria-hidden="true"></div><footer class="site-footer"><div class="footer-inner"><div class="footer-brand"><span class="brand-name">KAWAII LAB.同好会</span><p>慶應義塾大学登録学生団体<br>当会は特定の企業・事務所とは関係のない非公式ファンサークルです。</p></div><nav class="footer-nav" aria-label="フッターメニュー"><ul><li><a href="index.html">トップ</a></li><li><a href="about.html">About</a></li><li><a href="activities.html">活動内容</a></li><li><a href="join.html">入会案内</a></li><li><a href="schedule.html">LIVE・チケット</a></li><li><a href="venues.html">会場ガイド</a></li><li><a href="faq.html">FAQ</a></li><li><a href="contact.html">Contact</a></li><li><a href="privacy.html">Privacy</a></li></ul></nav></div><p class="copyright">© <span id="year">2026</span> 慶應義塾大学登録学生団体KAWAII LAB.同好会</p></footer>
-<script src="./script.js"></script><script src="./venues.js"></script>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-name">KAWAII LAB.同好会</span>
+      <span class="brand-sub">慶應義塾大学登録学生団体</span>
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="global-nav" aria-label="メニューを開閉">☰</button>
+    <nav class="global-nav" id="global-nav" aria-label="サイト内メニュー">
+      <ul>
+        <li><a href="index.html">トップ</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="activities.html">活動内容</a></li>
+        <li><a href="join.html">入会案内</a></li>
+        <li><a href="schedule.html">LIVE・チケット</a></li>
+        <li><a href="venues.html" aria-current="page">会場ガイド</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="venue-guide-hero">
+    <div class="container venue-guide-hero-inner">
+      <div class="venue-guide-copy">
+        <span class="venue-guide-kicker">📍 LIVE SCHEDULE 連動</span>
+        <h1>行く会場を、<br><span>迷わず見つける。</span></h1>
+        <p>KAWAII LAB.の掲載公演から会場を自動で集め、アクセス・規模・次の公演をひとつにまとめたファン向けガイドです。</p>
+        <div class="venue-guide-actions">
+          <a class="venue-guide-primary" href="#venue-search-panel">会場を探す</a>
+          <a class="venue-guide-secondary" href="schedule.html">LIVE・チケット予定を見る →</a>
+        </div>
+      </div>
+      <div class="venue-guide-stats" aria-label="会場ガイド掲載状況">
+        <div><strong id="venue-stat-scheduled">—</strong><span>掲載公演の会場</span></div>
+        <div><strong id="venue-stat-detailed">—</strong><span>詳細ガイド</span></div>
+        <div><strong id="venue-stat-events">—</strong><span>今後の公演</span></div>
+        <div><strong id="venue-stat-regions">—</strong><span>都道府県</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="venue-guide-how">
+    <div class="container">
+      <div class="venue-guide-how-grid">
+        <div><span>1</span><strong>公演から探す</strong><p>「掲載公演あり」で、これから使われる会場だけを表示。</p></div>
+        <div><span>2</span><strong>場所を確認</strong><p>地域・最寄り駅・会場タイプから、行きたい会場を絞り込み。</p></div>
+        <div><span>3</span><strong>当日に備える</strong><p>アクセス、規模、公式情報、帰りの注意点をまとめて確認。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section venue-search-section" id="venue-search-panel">
+    <div class="container">
+      <div class="venue-section-heading">
+        <span class="tricolor-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <p class="venue-section-kicker">SEARCH VENUES</p>
+        <h2>ライブ会場を探す</h2>
+        <p>スケジュールに追加された新しい会場も、自動で一覧へ反映されます。</p>
+      </div>
+
+      <div class="venue-control-panel">
+        <div class="venue-search-row">
+          <label class="venue-search-label">
+            <span class="sr-only">会場名や駅、地域で検索</span>
+            <span class="venue-search-icon" aria-hidden="true">⌕</span>
+            <input class="venue-search" id="venue-search" type="search" placeholder="会場名・駅・地域で検索" autocomplete="off">
+          </label>
+          <button class="venue-reset" id="venue-reset" type="button" hidden>条件をクリア</button>
+        </div>
+
+        <div class="venue-type-filters" aria-label="会場タイプで絞り込む">
+          <button type="button" class="venue-type-filter is-active" data-venue-type="all" aria-pressed="true">すべて</button>
+          <button type="button" class="venue-type-filter" data-venue-type="arena" aria-pressed="false">アリーナ</button>
+          <button type="button" class="venue-type-filter" data-venue-type="hall" aria-pressed="false">ホール</button>
+          <button type="button" class="venue-type-filter" data-venue-type="livehouse" aria-pressed="false">ライブハウス</button>
+          <button type="button" class="venue-type-filter" data-venue-type="other" aria-pressed="false">その他</button>
+        </div>
+
+        <div class="venue-select-row">
+          <label><span>掲載状況</span><select class="venue-filter" id="venue-status-filter"><option value="all">すべての会場</option><option value="scheduled">掲載公演あり</option><option value="detailed">詳細ガイドあり</option></select></label>
+          <label><span>地域</span><select class="venue-filter" id="venue-region-filter"><option value="all">全国</option></select></label>
+          <label><span>並び順</span><select class="venue-filter" id="venue-sort"><option value="recommended">次の公演が近い順</option><option value="name">会場名順</option><option value="region">地域順</option></select></label>
+        </div>
+      </div>
+
+      <div class="venue-result-head">
+        <p class="venue-count" id="venue-count">会場情報を読み込んでいます…</p>
+        <div class="venue-guide-legend"><span><i class="detailed"></i>詳細ガイド</span><span><i class="basic"></i>基本情報</span></div>
+      </div>
+      <div class="venue-grid" id="venue-list" aria-live="polite"></div>
+      <noscript><p class="venue-empty">会場ガイドの検索にはJavaScriptを使用します。ブラウザの設定をご確認ください。</p></noscript>
+
+      <aside class="venue-notice">
+        <strong>ご利用前にご確認ください</strong>
+        <p>アクセス・収容人数・入場方法等は、公演や会場運営の都合で変更される場合があります。来場前には必ず主催者と会場公式サイトの最新情報をご確認ください。本ページは当会が公開情報を整理した非公式ガイドです。</p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="venue-guide-cta">
+    <div class="container">
+      <div>
+        <span>LIVE &amp; TICKET</span>
+        <h2>次の現場も、まとめて確認。</h2>
+        <p>公演日・チケット受付・当落・入金期限をカレンダーで見られます。</p>
+      </div>
+      <a href="schedule.html">最新スケジュールを見る →</a>
+    </div>
+  </section>
+</main>
+
+<div class="footer-stripe" aria-hidden="true"></div>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="brand-name">KAWAII LAB.同好会</span>
+      <p>慶應義塾大学登録学生団体<br>当会は特定の企業・事務所とは関係のない非公式ファンサークルです。</p>
+    </div>
+    <nav class="footer-nav" aria-label="フッターメニュー">
+      <ul>
+        <li><a href="index.html">トップ</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="activities.html">活動内容</a></li>
+        <li><a href="join.html">入会案内</a></li>
+        <li><a href="schedule.html">LIVE・チケット</a></li>
+        <li><a href="venues.html">会場ガイド</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+      </ul>
+    </nav>
+  </div>
+  <p class="copyright">© <span id="year">2026</span> 慶應義塾大学登録学生団体KAWAII LAB.同好会</p>
+</footer>
+<script src="./script.js"></script>
+<script src="./venues.js"></script>
 </body>
 </html>
-
