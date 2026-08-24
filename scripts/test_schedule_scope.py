@@ -1,9 +1,13 @@
 import unittest
 
-from schedule_scope import EXTERNAL, HOSTED, infer_event_scope
+from schedule_scope import EXTERNAL, HOSTED, infer_event_scope, special_event_category
 
 
 class ScheduleScopeTests(unittest.TestCase):
+    def test_official_special_title_category(self):
+        self.assertEqual("large-benefit", special_event_category("発売記念リリースイベント 大特典会"))
+        self.assertEqual("release-event", special_event_category("CD発売記念リリースイベント"))
+
     def test_hosted_events(self):
         for title in (
             "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",

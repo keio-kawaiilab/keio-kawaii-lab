@@ -51,6 +51,59 @@ class SpecialEventTests(unittest.TestCase):
         self.assertEqual(event["parts"][0]["receptionStart"], "09:45")
         self.assertIn("参加権", event["purchaseMethod"])
 
+    def test_large_benefit_extracts_plain_reservation_period(self):
+        html = """
+        <html><head><title>FRUITS ZIPPER大特典会</title></head><body>
+        <h1>9/6(日)FRUITS ZIPPER大特典会をベルサール汐留にて開催決定！</h1>
+        <p>2026.08.24</p><p>■開催日程</p><p>2026年9月6日(日)</p>
+        <p>■開催会場</p><p>ベルサール汐留</p>
+        <p>&lt;第2部&gt; プリントチェキお渡し会(先着) 11:20〜12:20 (受付開始11:00／受付終了12:00)</p>
+        <p>対象商品予約期間：8月25日(火)21:00～8月27日(木)11:59まで</p>
+        <p>■イベント参加対象商品</p><p>2026年7月15日(水)発売</p>
+        <p>通常盤(KLF-10026)／¥1,200 (税込)</p>
+        <a href="https://www.hmv.co.jp/example">HMV</a>
+        </body></html>
+        """
+        events = s.parse_page("FRUITS ZIPPER", "https://fruitszipper.asobisystem.com/news/detail/88153", html, datetime(2026, 8, 24, tzinfo=JST))
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0]["applyStart"], "2026-08-25T21:00")
+        self.assertEqual(events[0]["applyEnd"], "2026-08-27T11:59")
+        self.assertEqual(events[0]["ticketProvider"], "hmv")
+
+    def test_fresh_detail_replaces_schedule_placeholder_without_changing_id(self):
+        placeholder = {
+            "id": "official-row", "group": "FRUITS ZIPPER",
+            "title": "FRUITS ZIPPER 5thシングルCD発売記念イベント 大特典会@ベルサール汐留",
+            "eventDate": "2026-09-06", "sourceType": "official-schedule",
+            "url": "https://fruitszipper.asobisystem.com/live_information/detail/42630",
+        }
+        fresh = {
+            "id": "fresh", "group": "FRUITS ZIPPER", "title": "FRUITS ZIPPER大特典会",
+            "eventDate": "2026-09-06", "eventCategory": "large-benefit",
+            "sourceType": "official-special", "url": "https://fruitszipper.asobisystem.com/news/detail/88153",
+            "urls": ["https://fruitszipper.asobisystem.com/news/detail/88153"],
+        }
+        merged = s.merge_payload({"events": [placeholder]}, [fresh], today=datetime(2026, 8, 24).date())
+        self.assertEqual(len(merged["events"]), 1)
+        self.assertEqual(merged["events"][0]["id"], "official-row")
+        self.assertEqual(merged["events"][0]["sourceType"], "official-special")
+        self.assertIn(placeholder["url"], merged["events"][0]["urls"])
+
+    def test_followup_refresh_keeps_upgraded_placeholder_id(self):
+        current = {
+            "id": "official-row", "group": "FRUITS ZIPPER", "title": "FRUITS ZIPPER大特典会",
+            "eventDate": "2026-09-06", "eventCategory": "large-benefit",
+            "sourceType": "official-special", "applyStart": "2026-08-25T21:00",
+            "applyEnd": "2026-08-27T11:59",
+            "url": "https://fruitszipper.asobisystem.com/news/detail/88153",
+            "officialScheduleUrl": "https://fruitszipper.asobisystem.com/live_information/detail/42630",
+        }
+        refreshed = dict(current, id="generated-id", ticketType="更新済み")
+        merged = s.merge_payload({"events": [current]}, [refreshed], today=datetime(2026, 8, 24).date())
+        self.assertEqual(len(merged["events"]), 1)
+        self.assertEqual(merged["events"][0]["id"], "official-row")
+        self.assertEqual(merged["events"][0]["ticketType"], "更新済み")
+
     def test_merge_replaces_same_official_special_source(self):
         old = {"id": "old", "sourceType": "official-special", "url": "https://example.test/a", "eventDate": "2026-09-01"}
         normal = {"id": "normal", "sourceType": "official", "eventDate": "2026-10-01"}

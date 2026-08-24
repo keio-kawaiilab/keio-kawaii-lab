@@ -273,6 +273,8 @@ def build_card(event: dict) -> str:
         if event.get("ticketName"):
             detail.append(f'<div><b>必要な整理券・参加券</b>{esc(event["ticketName"])}</div>')
         detail.append('</div>')
+        if event.get("specialDetailsStatus") == "awaiting-details":
+            detail.append('<p class="special-method"><b>受付情報：</b>公式の詳細発表待ちです。開催日と会場のみ確認済みです。</p>')
         if event.get("purchaseMethod"):
             detail.append(f'<p class="special-method"><b>参加方法：</b>{esc(event["purchaseMethod"])}</p>')
         if event.get("ticketIssueMethod"):

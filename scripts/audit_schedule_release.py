@@ -307,33 +307,40 @@ def audit(previous: dict, candidate: dict, now: datetime) -> tuple[list[str], li
         if category in {"large-benefit", "release-event"}:
             if not any("asobisystem.com" in value for value in urls(event)):
                 errors.append(f"special event has no official source URL: {label(event)}")
-            if event.get("sourceType") != "official-special":
-                errors.append(f"special event is not marked as official-source data: {label(event)}")
-            if not event.get("purchaseMethod") or not event.get("ticketIssueMethod"):
-                errors.append(f"special event has no participation method: {label(event)}")
-            product = str(event.get("product") or "").strip()
-            if not product or PLACEHOLDER_RE.fullmatch(product):
-                errors.append(f"special event has no target product: {label(event)}")
             venue = str(event.get("venue") or "").strip()
             if not venue or PLACEHOLDER_RE.fullmatch(venue):
                 errors.append(f"special event has no verified venue: {label(event)}")
-            if not (
-                start and end
-                and event.get("applicationWindowVerified") is True
-                and event.get("deadlineVerified") is True
-            ):
-                errors.append(f"special event has no verified purchase/ticket window: {label(event)}")
-            for field in ("applicationWindowSource", "deadlineSource"):
-                source = str(event.get(field) or "")
-                if "asobisystem.com" not in source:
-                    errors.append(f"special event {field} is not backed by an official page: {label(event)}")
-            for row in event.get("numberedCallTimes") or []:
-                if not isinstance(row, dict) or not str(row.get("numbers") or "").strip():
-                    errors.append(f"special event has an invalid numbered-call row: {label(event)}")
-                    continue
-                if clock_minutes(row.get("time")) is None:
-                    errors.append(f"special event has an invalid numbered-call time: {label(event)}")
-        if category == "release-event":
+            schedule_only = (
+                event.get("sourceType") == "official-schedule"
+                and event.get("specialDetailsStatus") == "awaiting-details"
+                and event.get("applicationDisplayMode") == "schedule-only"
+                and not (event.get("applyStart") or event.get("applyEnd"))
+            )
+            if not schedule_only:
+                if event.get("sourceType") != "official-special":
+                    errors.append(f"special event is not marked as official-source data: {label(event)}")
+                if not event.get("purchaseMethod") or not event.get("ticketIssueMethod"):
+                    errors.append(f"special event has no participation method: {label(event)}")
+                product = str(event.get("product") or "").strip()
+                if not product or PLACEHOLDER_RE.fullmatch(product):
+                    errors.append(f"special event has no target product: {label(event)}")
+                if not (
+                    start and end
+                    and event.get("applicationWindowVerified") is True
+                    and event.get("deadlineVerified") is True
+                ):
+                    errors.append(f"special event has no verified purchase/ticket window: {label(event)}")
+                for field in ("applicationWindowSource", "deadlineSource"):
+                    source = str(event.get(field) or "")
+                    if "asobisystem.com" not in source:
+                        errors.append(f"special event {field} is not backed by an official page: {label(event)}")
+                for row in event.get("numberedCallTimes") or []:
+                    if not isinstance(row, dict) or not str(row.get("numbers") or "").strip():
+                        errors.append(f"special event has an invalid numbered-call row: {label(event)}")
+                        continue
+                    if clock_minutes(row.get("time")) is None:
+                        errors.append(f"special event has an invalid numbered-call time: {label(event)}")
+        if category == "release-event" and event.get("specialDetailsStatus") != "awaiting-details":
             if not any("kawaiilab.goods-order.com" in value for value in urls(event)):
                 errors.append(f"release event has no KAWAII LAB. STORE URL: {label(event)}")
             release_times = [clock_minutes(event.get(field)) for field in ("salesStartTime", "gatheringTime", "startTime")]
@@ -341,7 +348,7 @@ def audit(previous: dict, candidate: dict, now: datetime) -> tuple[list[str], li
                 errors.append(f"release event is missing a verified sales/gathering/start time: {label(event)}")
             elif not (release_times[0] <= release_times[1] <= release_times[2]):
                 errors.append(f"release event sales/gathering/start times are out of order: {label(event)}")
-        if category == "large-benefit":
+        if category == "large-benefit" and event.get("specialDetailsStatus") != "awaiting-details":
             parts = event.get("parts")
             if not isinstance(parts, list) or not parts:
                 errors.append(f"large benefit event has no part schedule: {label(event)}")

@@ -113,7 +113,7 @@ def date_after(lines: list[str], labels: tuple[str, ...], default_year: int) -> 
 def window_rows(lines: list[str], default_year: int) -> list[tuple[str, str, str]]:
     rows: list[tuple[str, str, str]] = []
     for index, line in enumerate(lines):
-        if not re.search(r"受付(?:時間|期間)|\d次受付", line):
+        if not re.search(r"受付(?:時間|期間)|予約期間|\d次受付", line):
             continue
         segment = " ".join(lines[index:index + 3])
         matches = list(DATE_RE.finditer(segment))
@@ -125,7 +125,7 @@ def window_rows(lines: list[str], default_year: int) -> list[tuple[str, str, str
         if not start or not end or "T" not in start or "T" not in end:
             continue
         label_match = re.search(r"(?:イベント参加対象商品\s*)?((?:\d次)?受付)", line)
-        label = label_match.group(1) if label_match else "商品購入整理券"
+        label = label_match.group(1) if label_match else "予約受付"
         row = (label, start, end)
         if row not in rows:
             rows.append(row)
@@ -420,8 +420,104 @@ def merge_payload(payload: dict, fresh: list[dict], today=None) -> dict:
     today = today or datetime.now(JST).date()
     kept = []
     fresh_urls = {event.get("url") for event in fresh}
-    for event in payload.get("events", []):
+    replacements: dict[int, dict] = {}
+    consumed_fresh: set[int] = set()
+
+    # The official schedule often announces only a date and venue first.  When
+    # the later news article adds the purchase window, replace that placeholder
+    # in place.  Keeping its id preserves official-schedule audit references and
+    # prevents the public page from showing the same event twice.
+    for fresh_index, fresh_event in enumerate(fresh):
+        fresh_category = str(fresh_event.get("eventCategory") or "")
+        # Once a schedule placeholder has been upgraded, retain its id on every
+        # later refresh as well; the official coverage index points to that id.
+        for index, event in enumerate(payload.get("events", [])):
+            if not isinstance(event, dict) or event.get("sourceType") != "official-special":
+                continue
+            if not (
+                event.get("url") == fresh_event.get("url")
+                and event.get("group") == fresh_event.get("group")
+                and str(event.get("eventDate") or "")[:10] == str(fresh_event.get("eventDate") or "")[:10]
+                and event.get("applyStart") == fresh_event.get("applyStart")
+                and event.get("applyEnd") == fresh_event.get("applyEnd")
+            ):
+                continue
+            merged = dict(fresh_event)
+            merged["id"] = event.get("id") or fresh_event.get("id")
+            official_url = str(event.get("officialScheduleUrl") or "").strip()
+            links = list(dict.fromkeys([
+                *(fresh_event.get("urls") or []), str(fresh_event.get("url") or ""),
+                *(event.get("urls") or []), official_url,
+            ]))
+            merged["urls"] = [value for value in links if value]
+            if official_url:
+                merged["officialScheduleUrl"] = official_url
+            replacements[index] = merged
+            consumed_fresh.add(fresh_index)
+            break
+        if fresh_index in consumed_fresh:
+            continue
+        for index, event in enumerate(payload.get("events", [])):
+            if index in replacements or not isinstance(event, dict):
+                continue
+            if not (
+                event.get("sourceType") == "official-special"
+                and event.get("officialScheduleUrl")
+                and event.get("url") == fresh_event.get("url")
+                and event.get("group") == fresh_event.get("group")
+                and str(event.get("eventDate") or "")[:10] == str(fresh_event.get("eventDate") or "")[:10]
+            ):
+                continue
+            merged = dict(fresh_event)
+            merged["id"] = event.get("id") or fresh_event.get("id")
+            official_url = str(event.get("officialScheduleUrl") or "").strip()
+            links = list(dict.fromkeys([
+                *(fresh_event.get("urls") or []), str(fresh_event.get("url") or ""),
+                *(event.get("urls") or []), official_url,
+            ]))
+            merged["urls"] = [value for value in links if value]
+            merged["officialScheduleUrl"] = official_url
+            replacements[index] = merged
+            consumed_fresh.add(fresh_index)
+            break
+        if fresh_index in consumed_fresh:
+            continue
+        for index, event in enumerate(payload.get("events", [])):
+            if not isinstance(event, dict) or event.get("sourceType") != "official-schedule":
+                continue
+            text = f"{event.get('eventTitle', '')} {event.get('title', '')}"
+            schedule_category = (
+                "large-benefit" if "大特典会" in text
+                else "release-event" if re.search(r"リリースイベント|発売記念イベント", text)
+                else ""
+            )
+            if not (
+                schedule_category == fresh_category
+                and event.get("group") == fresh_event.get("group")
+                and str(event.get("eventDate") or "")[:10] == str(fresh_event.get("eventDate") or "")[:10]
+            ):
+                continue
+            merged = dict(fresh_event)
+            merged["id"] = event.get("id") or fresh_event.get("id")
+            official_url = str(event.get("officialScheduleUrl") or event.get("url") or "").strip()
+            links = list(dict.fromkeys([
+                *(fresh_event.get("urls") or []),
+                str(fresh_event.get("url") or ""),
+                *(event.get("urls") or []),
+                official_url,
+            ]))
+            merged["urls"] = [value for value in links if value]
+            if official_url:
+                merged["officialScheduleUrl"] = official_url
+            replacements[index] = merged
+            consumed_fresh.add(fresh_index)
+            break
+
+    for original_index, event in enumerate(payload.get("events", [])):
         if not isinstance(event, dict):
+            continue
+        if original_index in replacements:
+            kept.append(replacements[original_index])
             continue
         if event.get("sourceType") == "official-special" and event.get("url") in fresh_urls:
             continue
@@ -432,7 +528,7 @@ def merge_payload(payload: dict, fresh: list[dict], today=None) -> dict:
             except ValueError:
                 pass
         kept.append(event)
-    result = kept + fresh
+    result = kept + [event for index, event in enumerate(fresh) if index not in consumed_fresh]
     result.sort(key=lambda event: (str(event.get("eventDate") or "9999"), str(event.get("group") or "")))
     out = dict(payload)
     out["events"] = result

@@ -6,7 +6,7 @@ import argparse
 import json
 from pathlib import Path
 
-from schedule_scope import VALID_SCOPES
+from schedule_scope import VALID_SCOPES, special_event_category
 from update_official_schedule import GROUPS, event_days, participants
 
 
@@ -37,6 +37,9 @@ def audit(data: dict, index: dict, previous_index: dict | None = None) -> list[s
         sources = [str(event.get("url") or ""), *(str(value) for value in event.get("urls") or [])]
         if str(entry.get("url") or "") not in sources:
             errors.append(f"represented event lacks its official URL: {label}")
+        expected_category = special_event_category(entry.get("title"))
+        if expected_category and event.get("eventCategory") != expected_category:
+            errors.append(f"official special-event row has the wrong category: {label}")
     for event in events:
         if event.get("eventScope") not in VALID_SCOPES:
             errors.append(f"event has invalid eventScope: {event.get('id') or event.get('title')}")

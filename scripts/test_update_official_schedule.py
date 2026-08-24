@@ -2,8 +2,8 @@ import unittest
 from datetime import date
 
 from update_official_schedule import (
-    OfficialRow, collapse_missing, event_key, parse_detail, parse_schedule_list,
-    propagate_ticket_scopes,
+    OfficialRow, build_event, collapse_missing, enrich_existing, event_key,
+    parse_detail, parse_schedule_list, propagate_ticket_scopes,
 )
 
 
@@ -52,6 +52,26 @@ class OfficialScheduleTests(unittest.TestCase):
         )
         self.assertEqual(1, propagate_ticket_scopes([event], [row]))
         self.assertEqual("kawaii-lab", event["eventScope"])
+
+    def test_schedule_only_large_benefit_is_never_rendered_as_a_live(self):
+        row = OfficialRow(
+            "FRUITS ZIPPER", "2026-09-06", "EVENT",
+            "FRUITS ZIPPER 5thシングルCD発売記念イベント 大特典会@ベルサール汐留",
+            "https://example.com/official", "kawaii-lab",
+        )
+        event = build_event([row], {"venue": "東京都 ベルサール汐留"})
+        self.assertEqual("large-benefit", event["eventCategory"])
+        self.assertEqual("awaiting-details", event["specialDetailsStatus"])
+
+    def test_existing_schedule_special_gets_category(self):
+        event = {"sourceType": "official-schedule", "title": "大特典会", "url": "https://example.com/old"}
+        row = OfficialRow(
+            "SWEET STEADY", "2026-09-06", "EVENT", "SWEET STEADY 大特典会",
+            "https://example.com/official", "kawaii-lab",
+        )
+        enrich_existing(event, row, {})
+        self.assertEqual("large-benefit", event["eventCategory"])
+        self.assertEqual("schedule-only", event["applicationDisplayMode"])
 
 
 if __name__ == "__main__":

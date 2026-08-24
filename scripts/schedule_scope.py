@@ -33,6 +33,18 @@ def normalized_text(event: dict) -> str:
     return unicodedata.normalize("NFKC", " ".join(str(value or "") for value in values))
 
 
+def special_event_category(title: object) -> str | None:
+    """Return the public special-event category encoded in an official title."""
+    text = unicodedata.normalize("NFKC", str(title or ""))
+    if "大特典会" in text:
+        return "large-benefit"
+    if re.search(r"リリースイベント|発売記念イベント", text):
+        return "release-event"
+    if re.search(r"オンライン(?:特典会|サイン会)", text):
+        return "online-benefit"
+    return None
+
+
 def infer_event_scope(event: dict) -> str:
     """Classify conservatively: unknown appearances stay out of the default view."""
     explicit = str(event.get("eventScope") or "").strip().lower()

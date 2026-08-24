@@ -158,6 +158,19 @@ class AuditScheduleReleaseTests(unittest.TestCase):
         errors, _, _ = audit(payload([event]), payload([copy.deepcopy(event)]), NOW)
         self.assertEqual([], errors)
 
+    def test_schedule_only_special_event_passes_while_details_are_unannounced(self):
+        event = {
+            "id": "schedule-benefit", "group": "SWEET STEADY", "eventScope": "kawaii-lab",
+            "title": "SWEET STEADY 大特典会", "ticketType": "現在受付なし",
+            "eventDate": "2026-09-06", "venue": "東京都 ベルサール汐留",
+            "url": "https://sweetsteady.asobisystem.com/live_information/detail/43898",
+            "sourceType": "official-schedule", "eventCategory": "large-benefit",
+            "specialDetailsStatus": "awaiting-details", "applicationDisplayMode": "schedule-only",
+            "applicationStatus": "none",
+        }
+        errors, _, _ = audit(payload([event]), payload([copy.deepcopy(event)]), NOW)
+        self.assertEqual([], errors)
+
     def test_release_event_missing_gathering_time_is_blocked(self):
         errors, _, _ = audit(payload([]), payload([base_release(gatheringTime=None)]), NOW)
         self.assertTrue(any("sales/gathering/start time" in error for error in errors))

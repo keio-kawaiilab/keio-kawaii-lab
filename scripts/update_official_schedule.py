@@ -19,7 +19,7 @@ from bs4 import BeautifulSoup
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-from schedule_scope import EXTERNAL, HOSTED, apply_event_scope, infer_event_scope
+from schedule_scope import EXTERNAL, HOSTED, apply_event_scope, infer_event_scope, special_event_category
 
 DATA_PATH = Path("data/live-events.json")
 INDEX_PATH = Path("data/official-schedule-index.json")
@@ -276,6 +276,12 @@ def enrich_existing(event: dict, row: OfficialRow, detail: dict) -> None:
     if source in PLAYGUIDE_SOURCES or GENERIC_TITLE_RE.fullmatch(current_title):
         event["title"] = detail.get("title") or row.title
         event["eventTitle"] = event["title"]
+    special_category = special_event_category(row.title)
+    if special_category:
+        event["eventCategory"] = special_category
+        if source == "official-schedule":
+            event["specialDetailsStatus"] = "awaiting-details"
+            event["applicationDisplayMode"] = "schedule-only"
     for field in ("venue", "openTime", "startTime"):
         if detail.get(field) and not event.get(field):
             event[field] = detail[field]
@@ -309,6 +315,11 @@ def build_event(rows: list[OfficialRow], detail: dict) -> dict:
         "primarySource": "official",
         "eventScope": first.event_scope,
     }
+    special_category = special_event_category(title)
+    if special_category:
+        event["eventCategory"] = special_category
+        event["specialDetailsStatus"] = "awaiting-details"
+        event["applicationDisplayMode"] = "schedule-only"
     return {key: value for key, value in event.items() if value is not None}
 
 
