@@ -6,14 +6,31 @@
 
   var search=document.getElementById("venue-search");
   var statusFilter=document.getElementById("venue-status-filter");
-  var regionFilter=document.getElementById("venue-region-filter");
   var sortSelect=document.getElementById("venue-sort");
   var resetButton=document.getElementById("venue-reset");
   var count=document.getElementById("venue-count");
+  var regionTabs=document.getElementById("venue-region-tabs");
+  var regionClear=document.getElementById("venue-region-clear");
+  var prefectureDrawer=document.getElementById("venue-prefecture-drawer");
+  var prefectureTabs=document.getElementById("venue-prefecture-tabs");
+  var prefectureLabel=document.getElementById("venue-prefecture-label");
   var typeButtons=[].slice.call(document.querySelectorAll("[data-venue-type]"));
   var allVenues=[];
   var activeType="all";
+  var activeRegion="all";
+  var activePrefecture="all";
   var today=localDate(new Date());
+  var regionOrder=["北海道","東北","関東","中部","近畿","中国","四国","九州・沖縄"];
+  var regionPrefectures={
+    "北海道":["北海道"],
+    "東北":["青森県","岩手県","宮城県","秋田県","山形県","福島県"],
+    "関東":["茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈川県"],
+    "中部":["新潟県","富山県","石川県","福井県","山梨県","長野県","岐阜県","静岡県","愛知県","三重県"],
+    "近畿":["滋賀県","京都府","大阪府","兵庫県","奈良県","和歌山県"],
+    "中国":["鳥取県","島根県","岡山県","広島県","山口県"],
+    "四国":["徳島県","香川県","愛媛県","高知県"],
+    "九州・沖縄":["福岡県","佐賀県","長崎県","熊本県","大分県","宮崎県","鹿児島県","沖縄県"]
+  };
 
   function esc(value){
     return String(value==null?"":value)
@@ -210,7 +227,7 @@
         matched[key]=true;
         return;
       }
-      result.push(fallbackVenue(entry));
+      /* 詳細データが揃うまでは、空の会場カードを一覧へ出さない。 */
     });
     return result;
   }
@@ -220,6 +237,10 @@
     if(venue.type==="ライブハウス")return"livehouse";
     if(venue.type==="ホール"||venue.type==="シアター")return"hall";
     return"other";
+  }
+
+  function regionOf(prefecture){
+    return regionOrder.find(function(region){return regionPrefectures[region].indexOf(prefecture)>=0;})||"その他";
   }
 
   function venueHref(venue){
@@ -284,15 +305,31 @@
     document.getElementById("venue-stat-regions").textContent=Object.keys(regions).length;
   }
 
-  function populateRegions(){
-    var regions={};
-    allVenues.forEach(function(venue){regions[venue.prefecture]=true;});
-    Object.keys(regions).sort(function(a,b){return a.localeCompare(b,"ja");}).forEach(function(region){
-      var option=document.createElement("option");
-      option.value=region;
-      option.textContent=region;
-      regionFilter.appendChild(option);
-    });
+  function renderRegionTabs(){
+    var available={};
+    allVenues.forEach(function(venue){available[venue.prefecture]=true;});
+    regionTabs.innerHTML=regionOrder.filter(function(region){
+      return regionPrefectures[region].some(function(prefecture){return available[prefecture];});
+    }).map(function(region){
+      var active=activeRegion===region;
+      var venueCount=allVenues.filter(function(venue){return regionOf(venue.prefecture)===region;}).length;
+      return '<button type="button" class="venue-region-tab'+(active?' is-active':'')+'" data-region="'+esc(region)+'" aria-controls="venue-prefecture-drawer" aria-expanded="'+String(active)+'"><span>'+esc(region)+'</span><small>'+venueCount+'</small><i aria-hidden="true">⌄</i></button>';
+    }).join("");
+
+    var prefectures=activeRegion==="all"?[]:regionPrefectures[activeRegion].filter(function(prefecture){return available[prefecture];});
+    prefectureDrawer.classList.toggle("is-open",activeRegion!=="all");
+    prefectureDrawer.setAttribute("aria-hidden",String(activeRegion==="all"));
+    regionClear.hidden=activeRegion==="all";
+    if(activeRegion!=="all"){
+      prefectureLabel.textContent=activeRegion+"の都道府県";
+      prefectureTabs.innerHTML=['<button type="button" class="venue-prefecture-tab'+(activePrefecture==='all'?' is-active':'')+'" data-prefecture="all">'+activeRegion+'すべて</button>'].concat(prefectures.map(function(prefecture){
+        var venueCount=allVenues.filter(function(venue){return venue.prefecture===prefecture;}).length;
+        return '<button type="button" class="venue-prefecture-tab'+(activePrefecture===prefecture?' is-active':'')+'" data-prefecture="'+esc(prefecture)+'">'+esc(prefecture)+' <small>'+venueCount+'</small></button>';
+      })).join("");
+    }else{
+      prefectureTabs.innerHTML="";
+      prefectureLabel.textContent="";
+    }
   }
 
   function readQuery(){
@@ -301,15 +338,18 @@
     statusFilter.value=params.get("status")||"all";
     sortSelect.value=params.get("sort")||"recommended";
     activeType=params.get("type")||"all";
-    var region=params.get("region");
-    if(region&&[].some.call(regionFilter.options,function(option){return option.value===region;}))regionFilter.value=region;
+    var region=params.get("region")||"all";
+    if(regionOrder.indexOf(region)>=0)activeRegion=region;
+    var prefecture=params.get("prefecture")||"all";
+    if(activeRegion!=="all"&&regionPrefectures[activeRegion].indexOf(prefecture)>=0)activePrefecture=prefecture;
   }
 
   function writeQuery(){
     var params=new URLSearchParams();
     if(search.value.trim())params.set("q",search.value.trim());
     if(statusFilter.value!=="all")params.set("status",statusFilter.value);
-    if(regionFilter.value!=="all")params.set("region",regionFilter.value);
+    if(activeRegion!=="all")params.set("region",activeRegion);
+    if(activePrefecture!=="all")params.set("prefecture",activePrefecture);
     if(activeType!=="all")params.set("type",activeType);
     if(sortSelect.value!=="recommended")params.set("sort",sortSelect.value);
     var query=params.toString();
@@ -319,7 +359,6 @@
   function render(){
     var q=search.value.trim().toLowerCase();
     var status=statusFilter.value;
-    var region=regionFilter.value;
     var shown=allVenues.filter(function(venue){
       var hay=[venue.name,venue.prefecture,venue.area,venue.type,venue.address]
         .concat(venue.aliases||[],venue.access||[])
@@ -328,7 +367,8 @@
       if(q&&hay.indexOf(q)<0)return false;
       if(status==="scheduled"&&!venue.scheduleInfo)return false;
       if(status==="detailed"&&!venue.detailed)return false;
-      if(region!=="all"&&venue.prefecture!==region)return false;
+      if(activeRegion!=="all"&&regionOf(venue.prefecture)!==activeRegion)return false;
+      if(activePrefecture!=="all"&&venue.prefecture!==activePrefecture)return false;
       if(activeType!=="all"&&typeKey(venue)!==activeType)return false;
       return true;
     });
@@ -340,7 +380,8 @@
       button.classList.toggle("is-active",active);
       button.setAttribute("aria-pressed",String(active));
     });
-    resetButton.hidden=!q&&status==="all"&&region==="all"&&activeType==="all"&&sortSelect.value==="recommended";
+    renderRegionTabs();
+    resetButton.hidden=!q&&status==="all"&&activeRegion==="all"&&activeType==="all"&&sortSelect.value==="recommended";
     writeQuery();
   }
 
@@ -356,7 +397,6 @@
   ]).then(function(values){
     allVenues=mergeVenues(values[0].venues||[],values[1].events||[]);
     updateStats();
-    populateRegions();
     readQuery();
     render();
   }).catch(function(){
@@ -366,8 +406,26 @@
 
   search.addEventListener("input",render);
   statusFilter.addEventListener("change",render);
-  regionFilter.addEventListener("change",render);
   sortSelect.addEventListener("change",render);
+  regionTabs.addEventListener("click",function(event){
+    var button=event.target.closest("[data-region]");
+    if(!button)return;
+    var region=button.getAttribute("data-region")||"all";
+    activeRegion=activeRegion===region?"all":region;
+    activePrefecture="all";
+    render();
+  });
+  prefectureTabs.addEventListener("click",function(event){
+    var button=event.target.closest("[data-prefecture]");
+    if(!button)return;
+    activePrefecture=button.getAttribute("data-prefecture")||"all";
+    render();
+  });
+  regionClear.addEventListener("click",function(){
+    activeRegion="all";
+    activePrefecture="all";
+    render();
+  });
   typeButtons.forEach(function(button){
     button.addEventListener("click",function(){
       activeType=button.getAttribute("data-venue-type")||"all";
@@ -377,9 +435,10 @@
   resetButton.addEventListener("click",function(){
     search.value="";
     statusFilter.value="all";
-    regionFilter.value="all";
     sortSelect.value="recommended";
     activeType="all";
+    activeRegion="all";
+    activePrefecture="all";
     render();
     search.focus();
   });
