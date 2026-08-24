@@ -210,7 +210,11 @@
     var groups={};
     upcoming.forEach(function(item){groups[item.group]=true;});
     var access=(venue.access||[]).map(function(item){return"<li>"+esc(item)+"</li>";}).join("");
-    var tips=(venue.tips||[]).map(function(item){return"<li>"+esc(item)+"</li>";}).join("");
+    var tipItems=venue.tips&&venue.tips.length?venue.tips:[
+      "駅から会場までの所要時間は混雑や信号待ちで延びることがあります。時間に余裕を持って向かうと安心です。",
+      "入場口や座席構成は公演ごとに異なるため、チケットと主催者の案内をあわせて確認してください。"
+    ];
+    var tips=tipItems.map(function(item){return"<li>"+esc(item)+"</li>";}).join("");
     var eventHtml=upcoming.length?upcoming.map(function(item){
       return '<div class="venue-upcoming-item">'+
         '<time datetime="'+esc(item.date)+'">'+esc(fmtDate(item.date,true))+'</time>'+
@@ -242,9 +246,9 @@
         '</div>'+
       '</section>'+
       '<div class="venue-detail-summary">'+
-        '<div><span>会場タイプ</span><strong>'+esc(venue.type||"ライブ会場")+'</strong></div>'+
+        '<div><span>収容人数の目安</span><strong>'+esc(venue.capacityNote||"公式案内を確認")+'</strong></div>'+
+        '<div><span>最寄り交通</span><strong>'+esc((venue.access||[])[0]||"公式案内を確認")+'</strong></div>'+
         '<div><span>今後の掲載公演</span><strong>'+upcoming.length+'公演・'+Object.keys(groups).length+'グループ</strong></div>'+
-        '<div><span>情報の確認日</span><strong>'+esc(updatedAt||"随時更新")+'</strong></div>'+
       '</div>'+
       '<div class="venue-detail-grid">'+
         '<section class="venue-info-card">'+
@@ -258,15 +262,6 @@
           (venue.provisional?'<p class="venue-provisional"><strong>情報を整理中です。</strong><br>公演公式ページと会場公式サイトの案内を優先してご確認ください。</p>':"")+
         '</section>'+
         '<section class="venue-info-card"><h2>🚉 アクセス</h2><ul class="venue-access-list">'+access+'</ul></section>'+
-        '<section class="venue-info-card wide">'+
-          '<h2>🧭 当日までの確認手順</h2>'+
-          '<div class="venue-day-plan">'+
-            '<div><strong>公式情報</strong><p>開場時刻・入場口・持込ルールを確認。</p></div>'+
-            '<div><strong>行きの経路</strong><p>利用駅と会場までの徒歩ルートを保存。</p></div>'+
-            '<div><strong>入場準備</strong><p>チケット・本人確認・ドリンク代を確認。</p></div>'+
-            '<div><strong>帰りの経路</strong><p>混雑と規制退場を見込み、終電も確認。</p></div>'+
-          '</div>'+
-        '</section>'+
         '<section class="venue-info-card wide"><h2>💡 はじめて行くときのメモ</h2><ul class="venue-tip-list">'+tips+'</ul></section>'+
         '<section class="venue-info-card wide" id="upcoming-events">'+
           '<div class="venue-info-card-head"><h2>🎤 この会場の今後の公演</h2><span class="venue-info-count">'+upcoming.length+'件</span></div>'+
