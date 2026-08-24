@@ -68,8 +68,9 @@ jobs:
         id: refresh
         shell: bash
         run: |
+          set -o pipefail
           cp data/live-events.json /tmp/live-events-last-good.json
-          python scripts/update_special_events.py
+          python scripts/update_special_events.py 2>&1 | tee /tmp/special-event-refresh.log
           python scripts/resolve_source_priority.py
           python scripts/apply_event_scopes.py
           if git diff --quiet -- data/live-events.json; then
@@ -120,6 +121,15 @@ jobs:
               echo '```json'
               cat data/schedule-health.json
               echo '```'
+            fi
+            if [ -f /tmp/special-event-refresh.log ]; then
+              echo
+              echo '<details><summary>取得診断ログ</summary>'
+              echo
+              echo '```text'
+              tail -n 120 /tmp/special-event-refresh.log
+              echo '```'
+              echo '</details>'
             fi
             echo
             echo "Actions run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"

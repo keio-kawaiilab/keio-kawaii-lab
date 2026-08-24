@@ -22,9 +22,13 @@ GROUPS = {
     "CUTIE STREET": "https://cutiestreet.asobisystem.com",
     "MORE STAR": "https://morestar.asobisystem.com",
 }
-SPECIAL_RE = re.compile(r"大特典会|リリースイベント|リリイベ")
+SPECIAL_RE = re.compile(r"大特典会|リリースイベント|リリイベ|発売記念イベント")
 DATE_RE = re.compile(
     r"(?:(20\d{2})年)?\s*(\d{1,2})月\s*(\d{1,2})日"
+    r"(?:\s*[（(][^）)]*[）)])?(?:\s*(\d{1,2})[：:](\d{2}))?"
+)
+SLASH_DATE_RE = re.compile(
+    r"(?:(20\d{2})[./-])?(\d{1,2})[/-](\d{1,2})"
     r"(?:\s*[（(][^）)]*[）)])?(?:\s*(\d{1,2})[：:](\d{2}))?"
 )
 TIME_RE = re.compile(r"(\d{1,2})[：:](\d{2})")
@@ -104,7 +108,8 @@ def date_after(lines: list[str], labels: tuple[str, ...], default_year: int) -> 
         if not any(label in line for label in labels):
             continue
         segment = " ".join(lines[index:index + 4])
-        match = DATE_RE.search(segment)
+        matches = [match for match in (DATE_RE.search(segment), SLASH_DATE_RE.search(segment)) if match]
+        match = min(matches, key=lambda value: value.start()) if matches else None
         if match:
             return iso(match, default_year)
     return None
@@ -113,7 +118,7 @@ def date_after(lines: list[str], labels: tuple[str, ...], default_year: int) -> 
 def window_rows(lines: list[str], default_year: int) -> list[tuple[str, str, str]]:
     rows: list[tuple[str, str, str]] = []
     for index, line in enumerate(lines):
-        if not re.search(r"受付(?:時間|期間)|予約期間|\d次受付", line):
+        if not re.search(r"受付(?:時間|期間)|予約期間|応募期間|エントリー受付|\d次受付", line):
             continue
         segment = " ".join(lines[index:index + 3])
         matches = list(DATE_RE.finditer(segment))
@@ -124,11 +129,22 @@ def window_rows(lines: list[str], default_year: int) -> list[tuple[str, str, str
         end = iso(matches[1], end_year)
         if not start or not end or "T" not in start or "T" not in end:
             continue
-        label_match = re.search(r"(?:イベント参加対象商品\s*)?((?:\d次)?受付)", line)
-        label = label_match.group(1) if label_match else "予約受付"
+        label_match = re.search(
+            r"((?:(?:第?\d+部)[、・／/]\s*)*(?:第?\d+部)\s*\d次エントリー受付|\d次エントリー受付|応募期間|(?:\d次)?受付)",
+            line,
+        )
+        label = label_match.group(1).replace("、", "・") if label_match else "予約受付"
+        if label == "応募期間":
+            label = "応募受付"
         row = (label, start, end)
-        if row not in rows:
+        duplicate_index = next(
+            (row_index for row_index, existing in enumerate(rows) if existing[1:] == row[1:]),
+            None,
+        )
+        if duplicate_index is None:
             rows.append(row)
+        elif "エントリー" in label and "エントリー" not in rows[duplicate_index][0]:
+            rows[duplicate_index] = row
     return rows
 
 
@@ -136,7 +152,7 @@ def source_links(soup: BeautifulSoup, page_url: str) -> list[str]:
     result: list[str] = [page_url]
     for anchor in soup.find_all("a", href=True):
         href = urljoin(page_url, anchor.get("href", ""))
-        if re.search(r"kawaiilab\.goods-order\.com|pages-kawaiilab\.goods-order\.com|r10\.to|rakuten|hmv\.co\.jp|tower\.jp", href, re.I):
+        if re.search(r"kawaiilab\.goods-order\.com|pages-kawaiilab\.goods-order\.com|sukisuki-shop\.com|r10\.to|rakuten|hmv\.co\.jp|tower\.jp", href, re.I):
             if href not in result:
                 result.append(href)
     return result
@@ -219,6 +235,8 @@ def provider(links: list[str], category: str) -> str:
         return "hmv"
     if "tower.jp" in joined:
         return "tower"
+    if "sukisuki-shop.com/goods/" in joined:
+        return "sukisuki"
     return "official"
 
 
@@ -264,6 +282,18 @@ def parse_page(group: str, url: str, html_text: str, now: datetime | None = None
     calls = call_times(lines)
     parts = benefit_parts(lines)
     tickets = ticket_details(lines)
+    full_text = " ".join(lines)
+    is_lottery = (
+        category == "large-benefit"
+        and any("sukisuki-shop.com/goods/" in link.lower() for link in links)
+        and bool(re.search(r"応募期間|エントリー受付", full_text))
+    )
+    is_fc_lottery = is_lottery and bool(re.search(r"ファンクラブ|FC限定|FC会員", full_text, re.I))
+    result_date = date_after(lines, ("当選発表日時", "当選発表"), default_year) if is_lottery else None
+    payment_end = date_after(lines, ("購入期間",), default_year) if is_lottery else None
+    ticket_issue_date = date_after(lines, ("電子チケットの発行",), default_year) if is_lottery else None
+    if is_lottery and "1部、5部" in full_text:
+        parts = [part for part in parts if part.get("part") in {"第1部", "第5部"}]
 
     events = []
     for round_label, apply_start, apply_end in windows:
@@ -274,12 +304,28 @@ def parse_page(group: str, url: str, html_text: str, now: datetime | None = None
             ticket_name = "商品購入整理券"
             issue_method = "KAWAII LAB. STOREアプリ（1人1回・先着順）"
         else:
-            ticket_type = f"対象商品予約（参加権付き・先着／{round_label}）"
-            purchase_method = "指定の参加権付き対象商品を予約・購入すると、選択した部／メンバーの参加券が付与"
-            ticket_name = "大特典会参加券"
-            issue_method = "対象商品の購入後に案内される電子チケットまたは参加券"
+            ticket_type = (
+                f"{'FC限定・' if is_fc_lottery else ''}対象商品応募（抽選／{round_label}）"
+                if is_lottery else f"対象商品予約（参加権付き・先着／{round_label}）"
+            )
+            purchase_method = (
+                f"SUKISUKIで対象商品{'3枚' if '対象商品3枚' in full_text else ''}1セットの抽選に応募し、当選後に購入すると選択した部／メンバーの参加券が付与"
+                if is_lottery else "指定の参加権付き対象商品を予約・購入すると、選択した部／メンバーの参加券が付与"
+            )
+            ticket_name = "メンバー個別2ショットチェキ撮影会参加券" if "2ショットチェキ" in full_text else "大特典会参加券"
+            issue_method = (
+                "SUKISUKIマイページへ電子チケットを付与"
+                + (
+                    f"（{int(ticket_issue_date[5:7])}月{int(ticket_issue_date[8:10])}日中予定）"
+                    if ticket_issue_date else ""
+                )
+                if provider_id == "sukisuki" else "対象商品の購入後に案内される電子チケットまたは参加券"
+            )
             if not tickets:
-                tickets = ["参加権付き対象商品1セットにつき、選択した部／メンバーの大特典会参加券1枚"]
+                tickets = [
+                    "対象商品3枚1セットで、選択した部／メンバーの個別2ショットチェキ撮影会へ1口応募"
+                    if is_lottery else "参加権付き対象商品1セットにつき、選択した部／メンバーの大特典会参加券1枚"
+                ]
         end_dt = datetime.fromisoformat(apply_end).replace(tzinfo=JST) if apply_end else None
         status = "open" if end_dt and end_dt >= current else "none"
         event = {
@@ -293,8 +339,8 @@ def parse_page(group: str, url: str, html_text: str, now: datetime | None = None
             "ticketProvider": provider_id,
             "applyStart": apply_start or None,
             "applyEnd": apply_end or None,
-            "resultDate": None,
-            "paymentEnd": None,
+            "resultDate": result_date,
+            "paymentEnd": payment_end,
             "eventDate": event_date,
             "venue": venue,
             "salesStartTime": time_value(sales_text),
@@ -311,7 +357,7 @@ def parse_page(group: str, url: str, html_text: str, now: datetime | None = None
             "urls": links,
             "sourceType": "official-special",
             "primarySource": "official",
-            "sourceCandidates": ["official"],
+            "sourceCandidates": list(dict.fromkeys(["official", provider_id])),
             "sourcePublishedAt": published,
             "applicationStatus": status,
             "applicationWindowVerified": bool(apply_start and apply_end),
@@ -356,18 +402,28 @@ def discover(
     group: str,
     base: str,
     seed_urls: list[str] | None = None,
+    today=None,
 ) -> tuple[list[dict], list[dict], bool]:
+    today = today or datetime.now(JST).date()
     pages: dict[str, str] = {}
+    page_origins: dict[str, set[str]] = {}
     for url in seed_urls or []:
         if url.startswith(base + "/news/detail/"):
             pages[url] = "article"
+            page_origins.setdefault(url, set()).add("seed")
         elif url.startswith(base + "/live_information/detail/"):
             pages[url] = "live"
+            page_origins.setdefault(url, set()).add("seed")
     live_parents: dict[str, str] = {}
     failures: list[dict] = []
     index_reachable = False
-    for page in range(1, 4):
-        index_url = f"{base}/news/1/?page={page}"
+    discovery_sources_reached: set[str] = set()
+    # Newly published articles can appear on the official home page before the
+    # paginated INFORMATION index cache is refreshed.  Scan both so a same-day
+    # application announcement cannot be missed during that cache window.
+    discovery_urls = [f"{base}/", *(f"{base}/news/1/?page={page}" for page in range(1, 4))]
+    for source_index, index_url in enumerate(discovery_urls):
+        origin = "home" if source_index == 0 else f"index-{source_index}"
         try:
             response = session.get(index_url, timeout=20)
             response.raise_for_status()
@@ -376,12 +432,28 @@ def discover(
             continue
         index_reachable = True
         soup = BeautifulSoup(response.text, "html.parser")
+        news_links_found = False
         for anchor in soup.find_all("a", href=True):
             label = normalize(anchor.get_text(" ", strip=True))
             href = urljoin(base, anchor.get("href", ""))
+            if "/news/detail/" in href:
+                news_links_found = True
             if "/news/detail/" in href and SPECIAL_RE.search(label):
                 pages[href] = "article"
+                page_origins.setdefault(href, set()).add(origin)
+        if news_links_found or origin not in {"home", "index-1"}:
+            discovery_sources_reached.add(origin)
         time.sleep(0.08)
+
+    missing_priority_sources = {"home", "index-1"} - discovery_sources_reached
+    if missing_priority_sources:
+        failures.append({
+            "group": group,
+            "url": base,
+            "stage": "discovery",
+            "critical": True,
+            "error": "priority announcement sources unreachable: " + ", ".join(sorted(missing_priority_sources)),
+        })
 
     events: list[dict] = []
     for url, page_type in list(pages.items()):
@@ -391,15 +463,43 @@ def discover(
             response = session.get(url, timeout=20)
             response.raise_for_status()
         except requests.RequestException as exc:
-            failures.append({"group": group, "url": url, "error": str(exc)})
+            failures.append({
+                "group": group,
+                "url": url,
+                "stage": "fetch",
+                "critical": bool(page_origins.get(url, set()).intersection({"home", "seed", "index-1"})),
+                "error": str(exc),
+            })
             continue
         soup = BeautifulSoup(response.text, "html.parser")
-        events.extend(add_discovery_source(event, url) for event in parse_page(group, url, response.text))
+        parsed = parse_page(group, url, response.text)
+        events.extend(add_discovery_source(event, url) for event in parsed)
+        linked_live: list[str] = []
         for anchor in soup.find_all("a", href=True):
             href = urljoin(base, anchor.get("href", ""))
             if "/live_information/detail/" in href:
                 pages.setdefault(href, "live")
                 live_parents.setdefault(href, url)
+                page_origins.setdefault(href, set()).update({"article", *page_origins.get(url, set())})
+                linked_live.append(href)
+        if not parsed and not linked_live:
+            lines = [normalize(x) for x in soup.get_text("\n", strip=True).splitlines() if normalize(x)]
+            published = article_date(lines)
+            recent = False
+            if published:
+                try:
+                    recent = datetime.fromisoformat(published).date() >= today - timedelta(days=2)
+                except ValueError:
+                    pass
+            origins = page_origins.get(url, set())
+            if recent or origins.intersection({"home", "seed", "index-1"}):
+                failures.append({
+                    "group": group,
+                    "url": url,
+                    "stage": "parse",
+                    "critical": True,
+                    "error": "recent special-event announcement could not be parsed",
+                })
         time.sleep(0.08)
 
     for url, page_type in list(pages.items()):
@@ -409,9 +509,24 @@ def discover(
             response = session.get(url, timeout=20)
             response.raise_for_status()
             parent = live_parents.get(url)
-            events.extend(add_discovery_source(event, parent) for event in parse_page(group, url, response.text))
+            parsed = parse_page(group, url, response.text)
+            events.extend(add_discovery_source(event, parent) for event in parsed)
+            if not parsed and page_origins.get(url, set()).intersection({"home", "seed", "index-1"}):
+                failures.append({
+                    "group": group,
+                    "url": url,
+                    "stage": "parse",
+                    "critical": True,
+                    "error": "linked special-event detail could not be parsed",
+                })
         except requests.RequestException as exc:
-            failures.append({"group": group, "url": url, "error": str(exc)})
+            failures.append({
+                "group": group,
+                "url": url,
+                "stage": "fetch",
+                "critical": bool(page_origins.get(url, set()).intersection({"home", "seed", "index-1"})),
+                "error": str(exc),
+            })
         time.sleep(0.08)
     return events, failures, index_reachable
 
@@ -432,7 +547,11 @@ def merge_payload(payload: dict, fresh: list[dict], today=None) -> dict:
         # Once a schedule placeholder has been upgraded, retain its id on every
         # later refresh as well; the official coverage index points to that id.
         for index, event in enumerate(payload.get("events", [])):
-            if not isinstance(event, dict) or event.get("sourceType") != "official-special":
+            if (
+                not isinstance(event, dict)
+                or event.get("sourceType") != "official-special"
+                or not event.get("officialScheduleUrl")
+            ):
                 continue
             if not (
                 event.get("url") == fresh_event.get("url")
@@ -567,13 +686,21 @@ def main() -> int:
         "specialEvents": len(fresh),
         "reachableGroups": reachable_groups,
         "totalGroups": len(GROUPS),
+        "criticalFailures": sum(1 for failure in failures if failure.get("critical")),
         "failures": failures,
     }
     print(json.dumps(diagnostics, ensure_ascii=False, indent=2))
     if args.check:
-        return 0 if reachable_groups >= len(GROUPS) - 1 else 2
+        healthy = (
+            reachable_groups >= len(GROUPS) - 1
+            and not any(failure.get("critical") for failure in failures)
+        )
+        return 0 if healthy else 2
     if reachable_groups < len(GROUPS) - 1:
         print("Too many official group sites were unreachable; existing special-event data left untouched.")
+        return 2
+    if any(failure.get("critical") for failure in failures):
+        print("A recent special-event announcement could not be verified; existing public data left untouched.")
         return 2
     if not fresh:
         print("No special events found; existing special-event data left untouched.")

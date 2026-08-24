@@ -8,6 +8,147 @@ JST = timezone(timedelta(hours=9))
 
 
 class SpecialEventTests(unittest.TestCase):
+    def test_discovery_scans_homepage_when_information_index_lags(self):
+        base = "https://sweetsteady.asobisystem.com"
+        article_url = f"{base}/news/detail/88152"
+        home = f'<a href="{article_url}">9/6(日)SWEET STEADY 大特典会を開催決定！</a>'
+        article = """
+        <html><head><title>SWEET STEADY 大特典会</title></head><body>
+        <h1>9/6(日)SWEET STEADY 大特典会をベルサール汐留にて開催決定！</h1>
+        <p>2026.08.24</p><p>■開催日程</p><p>2026年9月6日(日)</p>
+        <p>■開催会場</p><p>ベルサール汐留</p>
+        <p>対象商品予約期間：8月25日(火)21:00～8月27日(木)11:59まで</p>
+        <p>■イベント参加対象商品</p><p>2026年3月25日(水)発売</p>
+        <p>通常盤(KLS-10009)／¥1,200 (税込)</p>
+        <a href="https://www.hmv.co.jp/example">HMV</a>
+        </body></html>
+        """
+
+        class Response:
+            def __init__(self, text):
+                self.text = text
+
+            def raise_for_status(self):
+                return None
+
+        class Session:
+            def get(self, url, timeout=20):
+                if url == f"{base}/":
+                    return Response(home)
+                if url == article_url:
+                    return Response(article)
+                return Response('<a href="/news/detail/1">通常のお知らせ</a>')
+
+        events, failures, reachable = s.discover(
+            Session(), "SWEET STEADY", base, today=datetime(2026, 8, 24).date()
+        )
+        self.assertTrue(reachable)
+        self.assertEqual(failures, [])
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0]["url"], article_url)
+        self.assertEqual(events[0]["applyStart"], "2026-08-25T21:00")
+
+    def test_recent_homepage_announcement_parse_failure_is_critical(self):
+        base = "https://sweetsteady.asobisystem.com"
+        article_url = f"{base}/news/detail/99999"
+        home = f'<a href="{article_url}">SWEET STEADY 大特典会を開催決定！</a>'
+        article = """
+        <html><head><title>SWEET STEADY 大特典会</title></head><body>
+        <h1>SWEET STEADY 大特典会を開催決定！</h1>
+        <p>2026.08.24</p><p>詳細は後日発表します。</p>
+        </body></html>
+        """
+
+        class Response:
+            def __init__(self, text):
+                self.text = text
+
+            def raise_for_status(self):
+                return None
+
+        class Session:
+            def get(self, url, timeout=20):
+                if url == f"{base}/":
+                    return Response(home)
+                if url == article_url:
+                    return Response(article)
+                return Response('<a href="/news/detail/1">通常のお知らせ</a>')
+
+        events, failures, reachable = s.discover(
+            Session(), "SWEET STEADY", base, today=datetime(2026, 8, 24).date()
+        )
+        self.assertTrue(reachable)
+        self.assertEqual(events, [])
+        self.assertTrue(any(failure.get("critical") for failure in failures))
+
+    def test_homepage_master_article_can_delegate_to_linked_live_detail(self):
+        base = "https://morestar.asobisystem.com"
+        article_url = f"{base}/news/detail/12345"
+        detail_url = f"{base}/live_information/detail/67890"
+        home = f'<a href="{article_url}">1stシングル発売記念イベント</a>'
+        article = f"""
+        <html><head><title>発売記念イベントまとめ</title></head><body>
+        <p>2026.08.24</p><a href="{detail_url}">開催詳細</a>
+        </body></html>
+        """
+        detail = """
+        <html><head><title>MORE STAR 発売記念リリースイベント</title></head><body>
+        <h1>MORE STAR 発売記念リリースイベント</h1>
+        <p>■開催日時</p><p>2026年8月26日(水)</p><p>■場所</p><p>テスト会場</p>
+        <p>受付時間：2026年8月25日(火)21:00〜2026年8月26日(水)9:00</p>
+        </body></html>
+        """
+
+        class Response:
+            def __init__(self, text):
+                self.text = text
+
+            def raise_for_status(self):
+                return None
+
+        class Session:
+            def get(self, url, timeout=20):
+                return Response({
+                    f"{base}/": home,
+                    article_url: article,
+                    detail_url: detail,
+                }.get(url, '<a href="/news/detail/1">通常のお知らせ</a>'))
+
+        events, failures, _ = s.discover(
+            Session(), "MORE STAR", base, today=datetime(2026, 8, 24).date()
+        )
+        self.assertEqual(len(events), 1)
+        self.assertEqual(failures, [])
+        self.assertEqual(events[0]["url"], detail_url)
+        self.assertEqual(events[0]["discoverySourceUrl"], article_url)
+
+    def test_release_event_detection_includes_plain_release_commemoration_title(self):
+        self.assertRegex("3rdシングル発売記念イベント", s.SPECIAL_RE)
+
+    def test_priority_announcement_source_outage_is_critical(self):
+        base = "https://sweetsteady.asobisystem.com"
+
+        class Response:
+            text = '<a href="/news/detail/1">通常のお知らせ</a>'
+
+            def raise_for_status(self):
+                return None
+
+        class Session:
+            def get(self, url, timeout=20):
+                if url == f"{base}/":
+                    raise s.requests.RequestException("homepage unavailable")
+                return Response()
+
+        _, failures, reachable = s.discover(
+            Session(), "SWEET STEADY", base, today=datetime(2026, 8, 24).date()
+        )
+        self.assertTrue(reachable)
+        self.assertTrue(any(
+            failure.get("stage") == "discovery" and failure.get("critical")
+            for failure in failures
+        ))
+
     def test_release_event_extracts_ticket_window_and_call_times(self):
         html = """
         <html><head><title>MORE STAR 発売記念リリースイベント</title></head><body>
@@ -62,6 +203,7 @@ class SpecialEventTests(unittest.TestCase):
         <p>■イベント参加対象商品</p><p>2026年7月15日(水)発売</p>
         <p>通常盤(KLF-10026)／¥1,200 (税込)</p>
         <a href="https://www.hmv.co.jp/example">HMV</a>
+        <a href="https://sukisuki-shop.com/contact">電子チケット問い合わせ</a>
         </body></html>
         """
         events = s.parse_page("FRUITS ZIPPER", "https://fruitszipper.asobisystem.com/news/detail/88153", html, datetime(2026, 8, 24, tzinfo=JST))
@@ -69,6 +211,44 @@ class SpecialEventTests(unittest.TestCase):
         self.assertEqual(events[0]["applyStart"], "2026-08-25T21:00")
         self.assertEqual(events[0]["applyEnd"], "2026-08-27T11:59")
         self.assertEqual(events[0]["ticketProvider"], "hmv")
+
+    def test_fc_lottery_extracts_entry_result_and_payment_windows(self):
+        html = """
+        <html><head><title>FRUITS ZIPPER大特典会 ファンクラブ限定部 抽選</title></head><body>
+        <h1>9/6(日) FRUITS ZIPPER大特典会のファンクラブ限定部 抽選が決定！</h1>
+        <p>2026.08.24</p><p>■開催日程</p><p>2026年9月6日(日)</p>
+        <p>■開催会場</p><p>ベルサール汐留</p>
+        <p>&lt;第1部&gt; 2ショットチェキ撮影会 10:00〜11:00 (受付開始9:40／受付終了10:40)</p>
+        <p>&lt;第2部&gt; プリントチェキお渡し会 11:20〜12:20 (受付開始11:00／受付終了12:00)</p>
+        <p>&lt;第5部&gt; 2ショットチェキ撮影会 16:40〜17:40 (受付開始16:20／受付終了17:20)</p>
+        <p>第1部、第5部はファンクラブ限定抽選です。1部、5部のみ実施します。</p>
+        <p>イベント参加対象商品 応募期間：8月25日(火)21:00～8月26日(水)23:59</p>
+        <p>■当選発表日時</p><p>2026年8月28日(金) 中</p>
+        <p>購入期間：当選発表後 ~ 8月29日(土)23:59</p>
+        <p>1部、5部1次エントリー受付：8月25日(火)21:00～8月26日(水)23:59</p>
+        <p>電子チケットの発行は9/1（火）中を予定しております。</p>
+        <p>■イベント参加対象商品</p><p>2026年7月15日(水)発売</p>
+        <p>通常盤(KLF-10026)／¥1,200 (税込)</p>
+        <a href="https://sukisuki-shop.com/goods/6500000004022">SUKISUKI</a>
+        </body></html>
+        """
+        events = s.parse_page(
+            "FRUITS ZIPPER",
+            "https://fruitszipper.asobisystem.com/news/detail/88156",
+            html,
+            datetime(2026, 8, 24, tzinfo=JST),
+        )
+        self.assertEqual(len(events), 1)
+        event = events[0]
+        self.assertEqual(event["ticketProvider"], "sukisuki")
+        self.assertEqual(event["applyStart"], "2026-08-25T21:00")
+        self.assertEqual(event["applyEnd"], "2026-08-26T23:59")
+        self.assertEqual(event["resultDate"], "2026-08-28")
+        self.assertEqual(event["paymentEnd"], "2026-08-29T23:59")
+        self.assertIn("抽選", event["ticketType"])
+        self.assertIn("1部・5部1次エントリー受付", event["ticketType"])
+        self.assertEqual([part["part"] for part in event["parts"]], ["第1部", "第5部"])
+        self.assertIn("9月1日", event["ticketIssueMethod"])
 
     def test_fresh_detail_replaces_schedule_placeholder_without_changing_id(self):
         placeholder = {
