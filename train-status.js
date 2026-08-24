@@ -266,3 +266,9 @@
     document.body.appendChild(script);
   }
 })();
+
+(function(){
+  "use strict";
+  if(!document.getElementById("calendar")||!document.getElementById("cards"))return;
+  import("./special-venue-info.js?v=202608250046").catch(function(){});
+})();
