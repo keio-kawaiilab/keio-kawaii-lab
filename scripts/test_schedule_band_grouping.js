@@ -12,6 +12,9 @@ assert(source, 'schedule inline script not found');
 assert(source.includes("cell.textContent=dt<start?'':sd(dt)"), 'calendar dates must always include the month');
 assert(source.includes("dateAndTime=performanceDate(m.date)"), 'performance details must include the event date');
 assert(source.includes("'時刻未発表'"), 'missing times need an explicit time-only fallback');
+assert(source.includes('function initPullRefresh()'), 'touch pull-to-refresh must be initialized');
+assert(source.includes("'離して更新'"), 'pull-to-refresh needs a release affordance');
+assert(source.includes('window.location.reload()'), 'pull-to-refresh must reload the page');
 source = source.replace(
   /\}\)\(\);\s*$/,
   "globalThis.__scheduleTest={prepare:prepare,groupedApplicationBands:groupedApplicationBands};})();",
