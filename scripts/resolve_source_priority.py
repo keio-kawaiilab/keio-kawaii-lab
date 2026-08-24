@@ -55,6 +55,10 @@ def source_kind(event: dict) -> str:
         return "sukisuki"
     if source == "pia" or primary == "pia" or "t.pia.jp" in urls:
         return "pia"
+    if source == "lawson" or primary == "lawson" or "l-tike.com" in urls:
+        return "lawson"
+    if source == "eplus" or primary == "eplus" or "eplus.jp" in urls:
+        return "eplus"
     return "official"
 
 
@@ -134,6 +138,14 @@ def same_event_and_sale(a: dict, b: dict) -> bool:
     if sale_family(a) != sale_family(b):
         return False
 
+    # A performance can have simultaneous application windows at multiple
+    # playguides. They must remain independent rows so the calendar can draw
+    # one band and one outbound link for each provider.
+    playguides = {"pia", "lawson", "eplus"}
+    source_a, source_b = source_kind(a), source_kind(b)
+    if source_a in playguides and source_b in playguides and source_a != source_b:
+        return False
+
     # A Ticket Pia lotRlsCd is an actual application page. Never collapse two
     # different application pages into one record, even if dates/windows match.
     if source_kind(a) == "pia" and source_kind(b) == "pia":
@@ -166,7 +178,7 @@ def priority(event: dict) -> int:
         return {"sukisuki": 500, "official": 350, "pia": 250}.get(source, 0)
     if family in {"fc", "upgrade"}:
         return {"official": 500, "pia": 100, "sukisuki": 50}.get(source, 0)
-    return {"pia": 500, "official": 350, "sukisuki": 100}.get(source, 0)
+    return {"pia": 500, "lawson": 500, "eplus": 500, "official": 350, "sukisuki": 100}.get(source, 0)
 
 
 def with_source_metadata(event: dict) -> dict:
@@ -215,7 +227,7 @@ def resolve_payload(payload: dict) -> dict:
     out = dict(payload)
     events = [dict(x) for x in payload.get("events", []) if isinstance(x, dict)]
     out["events"] = resolve(events)
-    out["source"] = "KAWAII LAB.各グループ公式公開情報 + チケットぴあ公開情報 + SUKISUKI公開オンライン特典会情報"
+    out["source"] = "KAWAII LAB.各グループ公式公開情報 + チケットぴあ・ローチケ・イープラス公開情報 + SUKISUKI公開オンライン特典会情報"
     return out
 
 

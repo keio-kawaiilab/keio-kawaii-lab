@@ -47,6 +47,26 @@ class SourcePriorityTests(unittest.TestCase):
         self.assertEqual(len(out), 2)
         self.assertEqual({r.pia_lots(x)[0] for x in out}, {"AAA", "BBB"})
 
+    def test_same_performance_is_kept_once_per_playguide(self):
+        pia = self.base(
+            sourceType="pia",
+            ticketProvider="pia",
+            url="https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=AAA",
+        )
+        lawson = self.base(
+            sourceType="lawson",
+            ticketProvider="lawson",
+            url="https://l-tike.com/order/?gLcode=12345",
+        )
+        eplus = self.base(
+            sourceType="eplus",
+            ticketProvider="eplus",
+            url="https://eplus.jp/sf/detail/example",
+        )
+        out = r.resolve([pia, lawson, eplus])
+        self.assertEqual(len(out), 3)
+        self.assertEqual({r.source_kind(x) for x in out}, {"pia", "lawson", "eplus"})
+
     def test_fc_and_pia_playguide_are_both_kept(self):
         official_fc = self.base(ticketType="FC先行")
         pia = self.base(

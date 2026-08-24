@@ -21,6 +21,20 @@ GROUP_ORDER = {
 }
 
 
+def playguide_key(event: dict) -> str:
+    explicit = str(event.get("ticketProvider") or event.get("sourceType") or "").lower()
+    joined = " ".join(str(x) for x in [event.get("url"), *(event.get("urls") or [])] if x).lower()
+    if explicit in {"pia", "lawson", "eplus"}:
+        return explicit
+    if "t.pia.jp" in joined:
+        return "pia"
+    if "l-tike.com" in joined:
+        return "lawson"
+    if "eplus.jp" in joined:
+        return "eplus"
+    return ""
+
+
 def clean_title(value: str) -> str:
     return TITLE_PREFIX_RE.sub("", str(value or "")).strip()
 
@@ -180,6 +194,7 @@ def merge_consecutive_days(events: list[dict]) -> list[dict]:
             event.get("group"),
             participants,
             title_merge_key(event.get("title", "")),
+            playguide_key(event),
             event.get("ticketType"),
             event.get("applyStart"),
             event.get("applyEnd"),
@@ -222,7 +237,8 @@ def merge_consecutive_days(events: list[dict]) -> list[dict]:
             merged["urls"] = all_urls
             merged["url"] = all_urls[0] if all_urls else merged.get("url")
             merged["id"] = stable_id("range", *key, dates[0], dates[-1])
-            merged["sourceType"] = "derived"
+            if not playguide_key(merged):
+                merged["sourceType"] = "derived"
             result.append(merged)
             run = []
 
@@ -250,6 +266,7 @@ def merge_same_window(events: list[dict]) -> list[dict]:
             event.get("group"),
             participants,
             title_merge_key(event.get("title", "")),
+            playguide_key(event),
             event.get("ticketType"),
             event.get("applyStart"),
             event.get("applyEnd"),
@@ -295,7 +312,8 @@ def merge_same_window(events: list[dict]) -> list[dict]:
         first["urls"] = urls
         first["url"] = urls[0] if urls else first.get("url")
         first["id"] = stable_id("same-window", *key, dates[0], dates[-1], len(dates))
-        first["sourceType"] = "derived"
+        if not playguide_key(first):
+            first["sourceType"] = "derived"
         result.append(first)
 
     return result

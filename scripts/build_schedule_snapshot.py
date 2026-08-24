@@ -173,7 +173,7 @@ def display_title(event: dict) -> str:
         return f"{event.get('group') or 'KAWAII LAB.'} 公演"
     quoted = re.search(r"「([^」]+)」", text)
     if quoted:
-        text = quoted.group(1).strip()
+        return quoted.group(1).strip()
     text = re.sub(r"^(?:20\d{2}年)?\d{1,2}月\d{1,2}日(?:\([^)]*\)|（[^）]*）)?\s*", "", text)
     for group in ("FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR", "KAWAII LAB.合同", "KAWAII LAB."):
         text = re.sub(rf"^{re.escape(group)}\s*", "", text, flags=re.I)

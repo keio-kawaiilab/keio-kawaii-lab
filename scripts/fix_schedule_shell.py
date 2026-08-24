@@ -31,7 +31,7 @@ TITLE_JS = (
 DISCLAIMER_HTML = (
     '<aside class="schedule-disclaimer" aria-label="ご利用上の注意">'
     '<strong>⚠️ ご利用前にご確認ください</strong>'
-    '<p>本ページは、各グループ公式サイト・チケットぴあ・SUKISUKI等で一般公開されている情報をもとに、慶應義塾大学KAWAII LAB.同好会が独自に整理した<strong>非公式の情報ページ</strong>です。'
+    '<p>本ページは、各グループ公式サイト・チケットぴあ・ローチケ・イープラス・SUKISUKI等で一般公開されている情報をもとに、慶應義塾大学KAWAII LAB.同好会が独自に整理した<strong>非公式の情報ページ</strong>です。'
     '<br>当会から所属事務所・運営会社・出演者・会場・プレイガイド等へ、掲載内容の確認・監修依頼は行っておらず、これらの関係先による確認・承認を受けたものではありません。<strong>本ページに関するお問い合わせを各関係先へ行わないでください。</strong>'
     '<br>自動取得・整理を含むため、誤記・欠落・反映遅延・内容変更が生じる場合があります。申込・決済・来場前には、必ずリンク先の公式情報をご確認ください。法令上認められる範囲で、掲載内容の利用により生じた損害について当会は責任を負いかねます。</p>'
     '</aside>'
@@ -211,6 +211,12 @@ def main() -> int:
         "var e=item.event,b=document.createElement('button')",
         "ends[n]=x.end",
         "venueTextHtml(e)",
+        "function providerId(e)",
+        "function performanceModels(vis)",
+        "data-performance-key",
+        "providerName(e)+'｜'",
+        ".cal{width:100%;min-width:0}",
+        "ローチケ・イープラス",
     )
     missing = [token for token in required if token not in page]
     if missing:
