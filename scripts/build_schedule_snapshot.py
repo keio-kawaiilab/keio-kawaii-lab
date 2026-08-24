@@ -249,6 +249,10 @@ def main() -> int:
         return 0
 
     page = ensure_site_navigation(page)
+    if 'href="./train-status.css"' not in page:
+        page = page.replace("<style>", '<link rel="stylesheet" href="./train-status.css">\n<style>', 1)
+    if 'src="./train-status.js"' not in page:
+        page = page.replace("</body>", '<script src="./train-status.js"></script>\n</body>', 1)
 
     today = datetime.now(JST).date()
     events = [dict(x) for x in payload.get("events", []) if isinstance(x, dict)]
