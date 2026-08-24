@@ -3,13 +3,18 @@
 // =========================================
 
 document.addEventListener("DOMContentLoaded", () => {
-  // ---- LIVE・チケット／会場ガイドを全ページの共通メニューに表示 ----
+  // ---- LIVE・チケット／チケットガイド／会場ガイドを全ページの共通メニューに表示 ----
   [document.querySelector(".global-nav ul"), document.querySelector(".footer-nav ul")].forEach((list) => {
     if (!list) return;
     const faqItem = list.querySelector('a[href="faq.html"]')?.closest("li");
     if (!list.querySelector('a[href="schedule.html"]')) {
       const item = document.createElement("li");
       item.innerHTML = '<a href="schedule.html">LIVE・チケット</a>';
+      list.insertBefore(item, faqItem || null);
+    }
+    if (!list.querySelector('a[href="ticket-guide.html"]')) {
+      const item = document.createElement("li");
+      item.innerHTML = '<a href="ticket-guide.html">チケットガイド</a>';
       list.insertBefore(item, faqItem || null);
     }
     if (!list.querySelector('a[href="venues.html"]')) {
