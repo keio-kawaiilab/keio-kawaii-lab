@@ -111,6 +111,9 @@ jobs:
           test_resolve_source_priority.py
           test_audit_schedule_release.py
 
+      - name: Test schedule band grouping
+        run: node scripts/test_schedule_band_grouping.js
+
       - name: Validate current release on pull requests
         if: github.event_name == 'pull_request'
         run: |
