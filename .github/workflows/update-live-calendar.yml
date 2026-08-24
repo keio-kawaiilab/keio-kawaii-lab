@@ -98,6 +98,7 @@ jobs:
         run: >-
           python -m unittest -v
           test_update_live_events.py
+          test_enrich_official_performance_times.py
           test_update_live_events_v2.py
           test_update_pia_events.py
           test_update_playguide_events.py
@@ -140,6 +141,7 @@ jobs:
           cp data/live-events.json /tmp/live-events-before-pia.json
           python scripts/clean_pia_refresh.py --drop-all
           python scripts/sanitize_live_events.py
+          python scripts/enrich_official_performance_times.py
           python scripts/enrich_event_metadata.py
           python scripts/update_pia_events.py
           python scripts/reconcile_pia_retention.py --previous /tmp/live-events-before-pia.json

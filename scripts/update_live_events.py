@@ -46,6 +46,8 @@ DATE_ANY_RE = re.compile(
 WINDOW_LABEL_RE = re.compile(r"(?:受付期間|申込期間|お申込期間|お申し込み期間|販売期間)\s*[：:]?")
 EVENT_LABEL_RE = re.compile(r"(?:公演日時|日程|公演日|開催日|日時)\s*[：:]")
 VENUE_RE = re.compile(r"(?:会場|場所)\s*[：:]\s*(.+)")
+OPEN_TIME_RE = re.compile(r"(?:OPEN|開場)\s*[：:]?\s*(\d{1,2})[:：](\d{2})", re.I)
+START_TIME_RE = re.compile(r"(?:START|開演)\s*[：:]?\s*(\d{1,2})[:：](\d{2})", re.I)
 RESULT_LABELS = ("当落発表", "当選発表", "抽選結果", "結果発表")
 PAYMENT_LABELS = ("入金期限", "入金期間", "支払期限", "お支払い期限")
 
@@ -149,9 +151,27 @@ def extract_ticket_type(title: str, text: str) -> str:
     return "チケット受付"
 
 
-def extract_event_occurrences(lines: list[str], title: str, article_date: str | None) -> list[tuple[str, str | None]]:
+def extract_performance_time(lines: list[str]) -> tuple[str | None, str | None]:
+    text = "\n".join(lines)
+    open_match = OPEN_TIME_RE.search(text)
+    start_match = START_TIME_RE.search(text)
+
+    def value(match: re.Match | None) -> str | None:
+        if not match:
+            return None
+        hour, minute = int(match.group(1)), int(match.group(2))
+        if hour > 23 or minute > 59:
+            return None
+        return f"{hour:02d}:{minute:02d}"
+
+    return value(open_match), value(start_match)
+
+
+def extract_event_occurrences(
+    lines: list[str], title: str, article_date: str | None,
+) -> list[tuple[str, str | None, str | None, str | None]]:
     article_year = int(article_date[:4]) if article_date else datetime.now(JST).year
-    occurrences: list[tuple[str, str | None]] = []
+    occurrences: list[tuple[str, str | None, str | None, str | None]] = []
 
     for i, line in enumerate(lines):
         label = EVENT_LABEL_RE.search(line)
@@ -164,13 +184,19 @@ def extract_event_occurrences(lines: list[str], title: str, article_date: str | 
         if not event_date:
             continue
         event_date = event_date[:10]
+        next_event = next(
+            (j for j in range(i + 1, len(lines)) if EVENT_LABEL_RE.search(lines[j])),
+            min(len(lines), i + 10),
+        )
+        block = lines[i:next_event]
         venue = None
-        for near in lines[i:i + 8]:
+        for near in block:
             vm = VENUE_RE.search(near)
             if vm:
                 venue = normalize_space(vm.group(1))
                 break
-        occurrences.append((event_date, venue))
+        open_time, start_time = extract_performance_time(block)
+        occurrences.append((event_date, venue, open_time, start_time))
 
     if not occurrences and ("開催" in title or "生誕祭" in title or "ライブ" in title or "LIVE" in title or "TOUR" in title):
         for m in DATE_ANY_RE.finditer(title):
@@ -180,7 +206,7 @@ def extract_event_occurrences(lines: list[str], title: str, article_date: str | 
             d = d[:10]
             if article_date and d == article_date:
                 continue
-            occurrences.append((d, None))
+            occurrences.append((d, None, None, None))
 
     seen = set()
     result = []
@@ -270,7 +296,7 @@ def parse_candidate(session: requests.Session, candidate: Candidate) -> tuple[li
         }
 
     events = []
-    for event_date, venue in occurrences:
+    for event_date, venue, open_time, start_time in occurrences:
         events.append({
             "id": event_id(candidate.group, candidate.url, event_date, window[0], ticket_type),
             "group": candidate.group,
@@ -282,6 +308,8 @@ def parse_candidate(session: requests.Session, candidate: Candidate) -> tuple[li
             "paymentEnd": payment_end,
             "eventDate": event_date,
             "venue": venue,
+            "openTime": open_time,
+            "startTime": start_time,
             "url": candidate.url,
             "sourceType": "auto",
             "sourcePublishedAt": article_date,

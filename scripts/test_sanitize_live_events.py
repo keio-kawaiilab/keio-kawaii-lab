@@ -121,6 +121,24 @@ class SanitizerTests(unittest.TestCase):
         self.assertEqual(result[0]["venue"], "複数会場（全3公演）")
         self.assertEqual(len(result[0]["schedule"]), 3)
 
+    def test_grouped_schedule_keeps_each_performance_time(self):
+        base = {
+            "group": "CANDY TUNE",
+            "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
+            "ticketType": "FC先行",
+            "applyStart": "2026-06-24T18:00",
+            "applyEnd": "2026-06-29T23:59",
+            "sourceType": "auto",
+            "url": "https://example.test/tour",
+        }
+        payload = {"events": [
+            {**base, "id": "t1", "eventDate": "2026-08-29", "venue": "戸田市文化会館", "openTime": "16:00", "startTime": "17:00"},
+            {**base, "id": "t2", "eventDate": "2026-09-04", "venue": "カルッツかわさき", "openTime": "17:30", "startTime": "18:30"},
+        ]}
+        result = s.sanitize_payload(payload)["events"][0]["schedule"]
+        self.assertEqual((result[0]["openTime"], result[0]["startTime"]), ("16:00", "17:00"))
+        self.assertEqual((result[1]["openTime"], result[1]["startTime"]), ("17:30", "18:30"))
+
     def test_aggregate_ticket_summary_is_not_published_automatically(self):
         payload = {"events": [{
             "id": "s1",
