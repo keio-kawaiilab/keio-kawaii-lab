@@ -61,7 +61,7 @@ jobs:
 
       - name: Test special-event discovery and release gate
         working-directory: scripts
-        run: python -m unittest -v test_update_special_events.py test_resolve_source_priority.py test_audit_schedule_release.py
+        run: python -m unittest -v test_update_special_events.py test_resolve_source_priority.py test_audit_schedule_release.py test_schedule_scope.py test_audit_official_schedule_coverage.py
 
       - name: Refresh special-event candidate data
         if: steps.control.outputs.frozen != 'true'
@@ -71,6 +71,7 @@ jobs:
           cp data/live-events.json /tmp/live-events-last-good.json
           python scripts/update_special_events.py
           python scripts/resolve_source_priority.py
+          python scripts/apply_event_scopes.py
           if git diff --quiet -- data/live-events.json; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "No special-event changes."
@@ -85,6 +86,7 @@ jobs:
             --previous /tmp/live-events-last-good.json \
             --candidate data/live-events.json \
             --report data/schedule-health.json
+          python scripts/audit_official_schedule_coverage.py
 
       - name: Build public schedule only after audit passes
         if: steps.control.outputs.frozen != 'true' && steps.refresh.outputs.changed == 'true'
@@ -94,6 +96,7 @@ jobs:
           python scripts/strip_schedule_explanations.py
           node --check /tmp/schedule-inline.js
           node scripts/test_schedule_band_grouping.js
+          node scripts/test_schedule_scope_ui.js
 
       - name: Open incident when refresh or release audit fails
         if: failure() && steps.control.outputs.frozen != 'true'

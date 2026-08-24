@@ -18,7 +18,9 @@ def official_urls(event: dict) -> list[str]:
     for value in [event.get("url"), *(event.get("urls") or [])]:
         url = str(value or "")
         host = urlparse(url).netloc.lower()
-        if host.endswith(".asobisystem.com") and "/news/detail/" in url and url not in values:
+        if host.endswith(".asobisystem.com") and (
+            "/news/detail/" in url or "/live_information/detail/" in url
+        ) and url not in values:
             values.append(url)
     return values
 

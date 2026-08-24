@@ -9,6 +9,8 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+from schedule_scope import HOSTED, infer_event_scope
+
 DATA_PATH = Path("data/live-events.json")
 PAGE_PATH = Path("schedule.html")
 JST = ZoneInfo("Asia/Tokyo")
@@ -57,6 +59,19 @@ def parse_day(value: object):
     if not match:
         return None
     return datetime(int(match.group(1)), int(match.group(2)), int(match.group(3)), tzinfo=JST).date()
+
+
+def parse_moment(value: object, *, end_of_day: bool = False):
+    match = re.match(r"^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}))?", str(value or ""))
+    if not match:
+        return None
+    hour = int(match.group(4)) if match.group(4) is not None else (23 if end_of_day else 0)
+    minute = int(match.group(5)) if match.group(5) is not None else (59 if end_of_day else 0)
+    second = 59 if end_of_day and match.group(4) is None else 0
+    try:
+        return datetime(int(match.group(1)), int(match.group(2)), int(match.group(3)), hour, minute, second, tzinfo=JST)
+    except ValueError:
+        return None
 
 
 def fmt(value: object) -> str:
@@ -202,16 +217,19 @@ def source_url(event: dict) -> str:
     return values[0] if values else ""
 
 
-def visible_event(event: dict, today) -> bool:
+def visible_event(event: dict, today, now=None) -> bool:
     if is_pia(event) and official_only(event):
         return False
     dates = [parse_day(value) for value in event_dates(event)]
     dates = [value for value in dates if value]
     last = max(dates) if dates else parse_day(event.get("eventEndDate") or event.get("eventDate"))
     deadline = parse_day(event.get("applyEnd"))
+    deadline_moment = parse_moment(event.get("applyEnd"), end_of_day=True)
     if last and last < today and (not deadline or deadline < today):
         return False
-    if is_pia(event) and event.get("ticketType") != "現在受付なし" and deadline and deadline < today:
+    if is_pia(event) and event.get("ticketType") != "現在受付なし" and (
+        (deadline and deadline < today) or (now and deadline_moment and deadline_moment < now)
+    ):
         return False
     return True
 
@@ -230,7 +248,8 @@ def build_card(event: dict) -> str:
     icon = event_icon(event)
     css = "card online-card" if online else ("card release-card" if kind == "release" else ("card benefit-card" if kind == "benefit" else "card"))
     parts = [
-        f'<article class="{css}" data-group="{esc(group)}" data-event-id="{esc(event.get("id") or "")}" style="--gc:var({color})">',
+        f'<article class="{css}" data-group="{esc(group)}" data-scope="{esc(infer_event_scope(event))}" data-event-id="{esc(event.get("id") or "")}" style="--gc:var({color})">',
+        '<span class="scope-badge">外部出演</span>' if infer_event_scope(event) != HOSTED else '',
         f'<h3>{icon} {esc(display_title(event))}</h3>',
         '<div class="meta">',
         f'<div><b>グループ</b>{esc(group)}</div>',
@@ -291,10 +310,12 @@ def main() -> int:
     if 'src="./train-status.js"' not in page:
         page = page.replace("</body>", '<script src="./train-status.js"></script>\n</body>', 1)
 
-    today = datetime.now(JST).date()
+    now = datetime.now(JST)
+    today = now.date()
     events = [dict(x) for x in payload.get("events", []) if isinstance(x, dict)]
-    visible = [event for event in events if visible_event(event, today)]
+    visible = [event for event in events if visible_event(event, today, now)]
     visible.sort(key=lambda event: min([parse_day(x) for x in event_dates(event) if parse_day(x)] or [today]))
+    default_visible = [event for event in visible if infer_event_scope(event) == HOSTED]
 
     snapshot = json.dumps({"updatedAt": payload.get("updatedAt"), "events": visible}, ensure_ascii=False, separators=(",", ":"))
     snapshot = snapshot.replace("</", "<\\/")
@@ -306,7 +327,7 @@ def main() -> int:
         flags=re.S,
     )
 
-    cards = "\n".join(build_card(event) for event in visible)
+    cards = "\n".join(build_card(event) for event in default_visible)
     page = re.sub(
         r'(<div class="cards" id="cards">).*?(</div>\s*<script id="snapshot-data")',
         lambda m: m.group(1) + "\n" + cards + "\n" + m.group(2),
@@ -318,10 +339,10 @@ def main() -> int:
     days_since_sunday = (today.weekday() + 1) % 7
     grid_end = today - timedelta(days=days_since_sunday) + timedelta(days=34)
     page = re.sub(r'<div id="range">.*?</div>', f'<div id="range">{today.month}/{today.day}〜{grid_end.month}/{grid_end.day}（5週間）</div>', page, count=1)
-    page = re.sub(r'<div class="summary" id="summary">.*?</div>', f'<div class="summary" id="summary">{len(visible)}件掲載中</div>', page, count=1, flags=re.S)
+    page = re.sub(r'<div class="summary" id="summary">.*?</div>', f'<div class="summary" id="summary">{len(default_visible)}イベントを掲載中（KAWAII LAB.主催のみ）</div>', page, count=1, flags=re.S)
 
     PAGE_PATH.write_text(page, encoding="utf-8")
-    print(f"Built layout-safe schedule snapshot: {len(visible)} events ({payload.get('updatedAt') or ''})")
+    print(f"Built layout-safe schedule snapshot: {len(default_visible)} hosted / {len(visible)} total ({payload.get('updatedAt') or ''})")
     return 0
 
 

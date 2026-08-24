@@ -6,6 +6,7 @@ on:
       - "scripts/**"
       - ".github/workflows/update-live-calendar.yml"
       - "data/live-events.json"
+      - "data/official-schedule-index.json"
       - "data/schedule-control.json"
       - "schedule.html"
       - "live*.js"
@@ -112,9 +113,14 @@ jobs:
           test_build_schedule_snapshot.py
           test_resolve_source_priority.py
           test_audit_schedule_release.py
+          test_schedule_scope.py
+          test_update_official_schedule.py
+          test_audit_official_schedule_coverage.py
 
       - name: Test schedule band grouping
-        run: node scripts/test_schedule_band_grouping.js
+        run: |
+          node scripts/test_schedule_band_grouping.js
+          node scripts/test_schedule_scope_ui.js
 
       - name: Validate current release on pull requests
         if: github.event_name == 'pull_request'
@@ -128,17 +134,22 @@ jobs:
           python scripts/update_playguide_events.py --check
           python scripts/update_sukisuki_events.py --check
           python scripts/update_special_events.py --check
+          python scripts/update_official_schedule.py --check
+          python scripts/apply_event_scopes.py --check
+          python scripts/audit_official_schedule_coverage.py
           python scripts/harden_pia_events.py --check
           python scripts/build_schedule_snapshot.py
           python scripts/fix_schedule_shell.py
           python scripts/strip_schedule_explanations.py
           node --check /tmp/schedule-inline.js
+          node scripts/test_schedule_scope_ui.js
           git diff --exit-code -- schedule.html || true
 
       - name: Refresh candidate data from public sources
         if: github.event_name != 'pull_request' && steps.control.outputs.frozen != 'true'
         run: |
           cp data/live-events.json /tmp/live-events-last-good.json
+          if [ -f data/official-schedule-index.json ]; then cp data/official-schedule-index.json /tmp/official-schedule-index-last-good.json; fi
           python scripts/update_live_events_v2.py
           cp data/live-events.json /tmp/live-events-before-pia.json
           python scripts/clean_pia_refresh.py --drop-all
@@ -154,6 +165,8 @@ jobs:
           python scripts/resolve_source_priority.py
           python scripts/enrich_event_metadata.py
           python scripts/harden_pia_events.py --check
+          python scripts/update_official_schedule.py
+          python scripts/apply_event_scopes.py
 
       - name: Fail-closed release audit
         if: github.event_name != 'pull_request' && steps.control.outputs.frozen != 'true'
@@ -162,6 +175,8 @@ jobs:
             --previous /tmp/live-events-last-good.json \
             --candidate data/live-events.json \
             --report data/schedule-health.json
+          python scripts/audit_official_schedule_coverage.py \
+            --previous-index /tmp/official-schedule-index-last-good.json
 
       - name: Build public schedule only after audit passes
         if: github.event_name != 'pull_request' && steps.control.outputs.frozen != 'true'
@@ -170,6 +185,7 @@ jobs:
           python scripts/fix_schedule_shell.py
           python scripts/strip_schedule_explanations.py
           node --check /tmp/schedule-inline.js
+          node scripts/test_schedule_scope_ui.js
 
       - name: Add release audit to workflow summary
         if: always() && github.event_name != 'pull_request' && steps.control.outputs.frozen != 'true'
@@ -227,12 +243,12 @@ jobs:
         if: github.event_name != 'pull_request' && steps.control.outputs.frozen != 'true'
         shell: bash
         run: |
-          if [ -z "$(git status --porcelain -- data/live-events.json data/schedule-health.json schedule.html)" ]; then
+          if [ -z "$(git status --porcelain -- data/live-events.json data/official-schedule-index.json data/schedule-health.json schedule.html)" ]; then
             echo "No audited calendar changes."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/live-events.json data/schedule-health.json schedule.html
+          git add data/live-events.json data/official-schedule-index.json data/schedule-health.json schedule.html
           git commit -m "chore: publish audited live ticket calendar"
           git push

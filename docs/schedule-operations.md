@@ -5,6 +5,8 @@
 ## 基本原則
 
 - 本番データは `data/live-events.json`。
+- 公式SCHEDULE全件の照合台帳は `data/official-schedule-index.json`。5組・当月から12か月先の `LIVE` / `EVENT` を取得する。
+- `eventScope` は `kawaii-lab`（主催）/ `external`（外部出演）の2値。判定は `scripts/schedule_scope.py` だけで行う。未知の催事は安全側で `external` にする。
 - 毎時の全体更新と、15分ごとのSUKISUKI高速更新の両方が公開前監査を通る。
 - 監査に失敗した候補データは commit / publish しない。前回正常版を維持する（fail closed）。
 - FC限定・FC先行・アップグレードは公式情報を優先する。
@@ -14,6 +16,8 @@
 ## 公開前監査
 
 `scripts/audit_schedule_release.py` が前回正常版と更新候補を比較する。
+
+加えて `scripts/audit_official_schedule_coverage.py` が、公式SCHEDULEの全行に対応する公演・出演者・日付・公式URLが本番データに存在することを確認する。1行でも未対応なら公開しない。
 
 自動公開を止める主な条件:
 
@@ -28,6 +32,8 @@
 - 「行きたい!公演アラート」等のUI文字列が公演名に混入した
 - オンライン特典会の販売情報にSUKISUKI商品URLがない
 - イベント件数が異常増加した
+- 公式SCHEDULEの取得失敗、件数の急減、または未収録行がある
+- `eventScope` が欠落・不正、または公式照合台帳と一致しない
 
 締切延長は、確認済みソースがある場合のみ許可し、警告として記録する。
 

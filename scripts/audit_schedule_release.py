@@ -10,6 +10,8 @@ from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 from typing import Iterable
 
+from schedule_scope import VALID_SCOPES
+
 JST = timezone(timedelta(hours=9))
 BAD_UI_TITLE_RE = re.compile(
     r"行きたい\s*[!！]?\s*公演アラート|お気に入り(?:登録)?|メールで通知|通信中|通信エラー|登録完了",
@@ -194,6 +196,23 @@ def build_index(events: Iterable[dict]) -> dict[str, dict]:
     return index
 
 
+def replaced_by_joint_christmas(old: dict, candidates: Iterable[dict]) -> bool:
+    if "チケット先行情報" not in str(old.get("title") or ""):
+        return False
+    group = str(old.get("group") or "")
+    old_days = set(event_days(old))
+    for event in candidates:
+        title = str(event.get("eventTitle") or event.get("title") or "")
+        event_participants = {str(value) for value in event.get("participants") or []}
+        if (
+            "CHRISTMAS SESSION" in title.upper()
+            and group in event_participants
+            and old_days.intersection(event_days(event))
+        ):
+            return True
+    return False
+
+
 def audit(previous: dict, candidate: dict, now: datetime) -> tuple[list[str], list[str], dict]:
     errors: list[str] = []
     warnings: list[str] = []
@@ -214,6 +233,9 @@ def audit(previous: dict, candidate: dict, now: datetime) -> tuple[list[str], li
     seen_ids: set[str] = set()
     seen_lots: dict[str, dict] = {}
     for event in cand_events:
+        if event.get("eventScope") not in VALID_SCOPES:
+            errors.append(f"missing or invalid eventScope: {label(event)}")
+
         event_id = str(event.get("id") or "").strip()
         if event_id:
             if event_id in seen_ids:
@@ -352,6 +374,9 @@ def audit(previous: dict, candidate: dict, now: datetime) -> tuple[list[str], li
                 match_key = key
                 break
         if match is None:
+            if replaced_by_joint_christmas(old, cand_events):
+                warnings.append(f"redundant group row replaced by joint Christmas event: {label(old)}")
+                continue
             errors.append(f"protected future/active item disappeared: {label(old)}")
             continue
 

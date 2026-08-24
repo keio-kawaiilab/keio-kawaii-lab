@@ -14,6 +14,7 @@ def base_pia(**changes):
     event = {
         "id": "pia-1",
         "group": "CANDY TUNE",
+        "eventScope": "kawaii-lab",
         "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
         "ticketType": "プレリザーブ",
         "applyStart": "2026-08-20T10:00",
@@ -40,6 +41,7 @@ def base_release(**changes):
     event = {
         "id": "release-1",
         "group": "MORE STAR",
+        "eventScope": "kawaii-lab",
         "title": "MORE STAR 発売記念リリースイベント",
         "ticketType": "商品購入電子整理券（先着）",
         "applyStart": "2026-08-25T21:00",
@@ -83,6 +85,22 @@ class AuditScheduleReleaseTests(unittest.TestCase):
         errors, _, _ = audit(old, payload([]), NOW)
         self.assertTrue(any("disappeared" in error for error in errors))
 
+    def test_redundant_christmas_group_row_may_be_replaced_by_joint_event(self):
+        old = payload([{
+            "id": "more-summary", "group": "MORE STAR", "eventScope": "kawaii-lab",
+            "title": "★MORE STAR チケット先行情報★", "ticketType": "現在受付なし",
+            "eventDate": "2026-12-12", "url": "https://morestar.asobisystem.com/news/detail/1",
+        }])
+        joint = {
+            "id": "christmas", "group": "KAWAII LAB.合同", "participants": ["MORE STAR"],
+            "eventScope": "kawaii-lab", "title": "KAWAII LAB. Christmas SESSION 2026",
+            "ticketType": "現在受付なし", "eventDate": "2026-12-12",
+            "url": "https://morestar.asobisystem.com/live_information/detail/2",
+        }
+        errors, warnings, _ = audit(old, payload([joint]), NOW)
+        self.assertEqual([], errors)
+        self.assertTrue(any("replaced by joint" in warning for warning in warnings))
+
     def test_deadline_moving_earlier_is_blocked(self):
         old = payload([base_pia()])
         new = payload([base_pia(applyEnd="2026-08-24T11:00")])
@@ -116,6 +134,7 @@ class AuditScheduleReleaseTests(unittest.TestCase):
         event = {
             "id": "online-1",
             "group": "CANDY TUNE",
+            "eventScope": "kawaii-lab",
             "title": "CANDY TUNE オンライン特典会",
             "ticketType": "オンライン特典会・先着販売",
             "applyStart": "2026-08-23T20:00",

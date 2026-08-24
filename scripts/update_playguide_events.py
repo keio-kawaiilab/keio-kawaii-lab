@@ -34,6 +34,7 @@ WINDOW_RE = re.compile(
     r"(20\d{2})/(\d{1,2})/(\d{1,2})(?:\([^)]*\))?\s*(\d{1,2}):(\d{2})"
 )
 DAY_RE = re.compile(r"(20\d{2})/\s*(\d{1,2})/(\d{1,2})")
+EPLUS_ROOT_RE = re.compile(r"(https?://eplus\.jp)?(/sf/detail/\d+)")
 
 
 def norm(value: object) -> str:
@@ -121,23 +122,71 @@ def event_record(
     }
 
 
+def jsonld_performances(html: str) -> list[dict]:
+    soup = BeautifulSoup(html, "html.parser")
+    result = []
+    for script in soup.select('script[type="application/ld+json"]'):
+        try:
+            value = json.loads(script.string or script.get_text() or "null")
+        except (TypeError, json.JSONDecodeError):
+            continue
+        values = value if isinstance(value, list) else [value]
+        for item in values:
+            if not isinstance(item, dict) or item.get("@type") != "Event" or not item.get("url"):
+                continue
+            start = str(item.get("startDate") or "")
+            day = start[:10] if re.fullmatch(r"\d{4}-\d{2}-\d{2}.*", start) else None
+            location = item.get("location") if isinstance(item.get("location"), dict) else {}
+            result.append({
+                "url": str(item["url"]),
+                "day": day,
+                "venue": clean_venue(location.get("name")),
+                "startTime": start[11:16] if re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}.*", start) else None,
+            })
+    return result
+
+
+def eplus_performance_links(session: requests.Session, artist_html: str) -> list[dict]:
+    soup = BeautifulSoup(artist_html, "html.parser")
+    found: dict[str, dict] = {}
+    roots = set()
+    for anchor in soup.select("a.ticket-item--kouen[href]"):
+        detail_url = urljoin("https://eplus.jp", str(anchor.get("href") or ""))
+        day = iso_day(anchor.get_text(" ", strip=True))
+        venue_node = anchor.select_one(".ticket-item__venue")
+        time_node = anchor.select_one(".ticket-item__text")
+        time_text = time_node.get_text(" ", strip=True) if time_node else ""
+        found[detail_url] = {
+            "url": detail_url,
+            "day": day,
+            "venue": clean_venue(venue_node.get_text(" ", strip=True) if venue_node else ""),
+            "openTime": time_from_text(time_text, "開場"),
+            "startTime": time_from_text(time_text, "開演"),
+        }
+        root_match = EPLUS_ROOT_RE.search(detail_url)
+        if root_match:
+            roots.add("https://eplus.jp" + root_match.group(2))
+    for root_url in sorted(roots):
+        response = session.get(root_url, timeout=20)
+        response.raise_for_status()
+        for row in jsonld_performances(response.text):
+            found.setdefault(row["url"], row)
+    return list(found.values())
+
+
 def collect_eplus(session: requests.Session, group: str, today: date) -> list[dict]:
     response = session.get(EPLUS_ARTIST_URLS[group], timeout=25)
     response.raise_for_status()
-    soup = BeautifulSoup(response.text, "html.parser")
     results: list[dict] = []
 
-    for anchor in soup.select("a.ticket-item--kouen[href]"):
-        day = iso_day(anchor.get_text(" ", strip=True))
+    for performance in eplus_performance_links(session, response.text):
+        day = performance.get("day")
         if not day or date.fromisoformat(day) < today:
             continue
-        detail_url = urljoin("https://eplus.jp", str(anchor.get("href") or ""))
-        venue_node = anchor.select_one(".ticket-item__venue")
-        venue = clean_venue(venue_node.get_text(" ", strip=True) if venue_node else "")
-        time_node = anchor.select_one(".ticket-item__text")
-        time_text = time_node.get_text(" ", strip=True) if time_node else ""
-        open_time = time_from_text(time_text, "開場")
-        start_time = time_from_text(time_text, "開演")
+        detail_url = str(performance["url"])
+        venue = str(performance.get("venue") or "")
+        open_time = performance.get("openTime")
+        start_time = performance.get("startTime")
 
         detail = session.get(detail_url, timeout=20)
         detail.raise_for_status()

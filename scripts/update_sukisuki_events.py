@@ -238,6 +238,16 @@ def parse_goods(session: requests.Session, url: str, today) -> dict | None:
         return None
 
     year_hint = explicit_year_hint(text)
+    stream_time = None
+    for label in ("配信予定日", "開催日時"):
+        pos = text.find(label)
+        if pos < 0:
+            continue
+        stream_match = DATE_RE.search(text[pos:pos + 260])
+        stream_value = resolve_event_date(stream_match, today, year_hint) if stream_match else None
+        if stream_value and "T" in stream_value:
+            stream_time = stream_value.split("T", 1)[1]
+            break
     title_match = DATE_RE.search(title)
     event_date = resolve_event_date(title_match, today, year_hint) if title_match else None
     if not event_date:
@@ -279,6 +289,7 @@ def parse_goods(session: requests.Session, url: str, today) -> dict | None:
         "resultDate": result_date,
         "paymentEnd": payment_end,
         "eventDate": event_date,
+        "startTime": stream_time,
         "venue": "オンライン（SUKISUKI）",
         "url": url,
         "urls": [url],

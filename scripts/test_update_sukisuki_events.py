@@ -48,6 +48,14 @@ class SukisukiParserTests(unittest.TestCase):
             ("2026-08-20T18:00", "2026-08-22T23:59"),
         )
 
+    def test_stream_time_is_kept(self):
+        url = "https://sukisuki-shop.com/goods/6500000004999"
+        html = """<html><h1>2026年8月24日 CANDY TUNE オンライン特典会</h1>
+        <p>配信予定日：2026年8月24日 18:00</p>
+        <p>抽選申込期間：2026年8月19日 21:00～2026年8月20日 23:59</p></html>"""
+        event = s.parse_goods(FakeSession({url: html}), url, date(2026, 8, 19))
+        self.assertEqual("18:00", event["startTime"])
+
     def test_discovery_reads_api_even_when_normal_list_has_results(self):
         pages = {
             "https://api.sukisuki-shop.com/goods": (

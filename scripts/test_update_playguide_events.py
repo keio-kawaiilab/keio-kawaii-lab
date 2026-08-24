@@ -4,6 +4,18 @@ import update_playguide_events as playguides
 
 
 class PlayguideEventTests(unittest.TestCase):
+    def test_jsonld_discovers_hidden_eplus_performance(self):
+        html = '''<script type="application/ld+json">{
+          "@type":"Event",
+          "url":"https://eplus.jp/sf/detail/3923750001-P0030013P021001",
+          "startDate":"2026-12-01T18:30",
+          "location":{"@type":"Place","name":"大分・iichikoグランシアタ"}
+        }</script>'''
+        rows = playguides.jsonld_performances(html)
+        self.assertEqual("2026-12-01", rows[0]["day"])
+        self.assertEqual("18:30", rows[0]["startTime"])
+        self.assertIn("iichiko", rows[0]["venue"])
+
     def test_iso_window_accepts_japanese_weekday(self):
         start, end = playguides.iso_window(
             "受付期間:2026/8/21(金)12:00～2026/8/31(月)23:59"

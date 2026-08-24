@@ -60,17 +60,20 @@ jobs:
           python scripts/update_live_events_deep.py
           python scripts/update_sukisuki_events.py
           python scripts/sanitize_live_events.py
+          python scripts/update_official_schedule.py
+          python scripts/apply_event_scopes.py
+          python scripts/audit_official_schedule_coverage.py
 
       - name: Commit when data changed
         if: github.event_name != 'pull_request'
         shell: bash
         run: |
-          if git diff --quiet -- data/live-events.json; then
+          if git diff --quiet -- data/live-events.json data/official-schedule-index.json; then
             echo "No deep-backfill changes."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/live-events.json
+          git add data/live-events.json data/official-schedule-index.json
           git commit -m "chore: deep backfill live ticket calendar"
           git push
