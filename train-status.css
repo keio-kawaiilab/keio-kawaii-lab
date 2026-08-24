@@ -26,3 +26,19 @@
   .train-status-alert li{grid-template-columns:1fr;gap:5px}
   .train-status-alert li a{justify-self:start}
 }
+
+/* Schedule header: keep the site name on one line on phones. */
+@media(max-width:620px){
+  .head{padding:14px 10px 10px!important}
+  .schedule-head-inner{gap:8px!important;align-items:flex-start!important}
+  .schedule-head-inner>div:first-child{min-width:0;flex:1 1 auto}
+  .head b{display:block;white-space:nowrap;font-size:18px!important;letter-spacing:.035em!important;line-height:1.25}
+  .head small{font-size:10px;line-height:1.45}
+  .schedule-head-actions{flex:0 0 auto;max-width:132px;gap:4px!important}
+  .schedule-home-link{font-size:9px!important;padding:7px 8px!important;white-space:nowrap}
+}
+@media(max-width:360px){
+  .head b{font-size:16px!important;letter-spacing:.02em!important}
+  .schedule-head-actions{max-width:118px}
+  .schedule-home-link{font-size:8.5px!important;padding:6px 7px!important}
+}
