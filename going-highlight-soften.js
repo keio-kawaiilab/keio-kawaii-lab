@@ -29,7 +29,7 @@
   }
   if(!document.querySelector('script[data-ticket-sales-timeline]')){
     var timeline=document.createElement("script");
-    timeline.src="./ticket-sales-timeline.js?v=202608250332";
+    timeline.src="./ticket-sales-timeline.js?v=202608250342";
     timeline.setAttribute("data-ticket-sales-timeline","");
     document.body.appendChild(timeline);
   }
