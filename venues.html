@@ -44,48 +44,41 @@
   <section class="venue-guide-hero">
     <div class="container venue-guide-hero-inner">
       <div class="venue-guide-copy">
-        <span class="venue-guide-kicker">📍 LIVE SCHEDULE 連動</span>
-        <h1>行く会場を、<br><span>迷わず見つける。</span></h1>
-        <p>KAWAII LAB.の掲載公演から会場を自動で集め、アクセス・規模・次の公演をひとつにまとめたファン向けガイドです。</p>
-        <div class="venue-guide-actions">
-          <a class="venue-guide-primary" href="#venue-search-panel">会場を探す</a>
-          <a class="venue-guide-secondary" href="schedule.html">LIVE・チケット予定を見る →</a>
-        </div>
+        <span class="venue-guide-kicker">VENUE GUIDE</span>
+        <h1>ライブ会場ガイド</h1>
+        <p>会場までの行き方と収容人数を、公演スケジュールと一緒に確認できます。</p>
       </div>
       <div class="venue-guide-stats" aria-label="会場ガイド掲載状況">
-        <div><strong id="venue-stat-scheduled">—</strong><span>掲載公演の会場</span></div>
-        <div><strong id="venue-stat-detailed">—</strong><span>詳細ガイド</span></div>
-        <div><strong id="venue-stat-events">—</strong><span>今後の公演</span></div>
-        <div><strong id="venue-stat-regions">—</strong><span>都道府県</span></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="venue-guide-how">
-    <div class="container">
-      <div class="venue-guide-how-grid">
-        <div><span>1</span><strong>公演から探す</strong><p>「掲載公演あり」で、これから使われる会場だけを表示。</p></div>
-        <div><span>2</span><strong>場所を確認</strong><p>地域・最寄り駅・会場タイプから、行きたい会場を絞り込み。</p></div>
-        <div><span>3</span><strong>当日に備える</strong><p>アクセス、規模、公式情報、帰りの注意点をまとめて確認。</p></div>
+        <span><strong id="venue-stat-detailed">—</strong>会場</span>
+        <i aria-hidden="true"></i>
+        <span><strong id="venue-stat-events">—</strong>公演掲載</span>
+        <span class="sr-only"><strong id="venue-stat-scheduled">—</strong>掲載公演の会場</span>
+        <span class="sr-only"><strong id="venue-stat-regions">—</strong>都道府県</span>
       </div>
     </div>
   </section>
 
   <section class="section venue-search-section" id="venue-search-panel">
     <div class="container">
-      <div class="venue-section-heading">
-        <span class="tricolor-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-        <p class="venue-section-kicker">SEARCH VENUES</p>
-        <h2>ライブ会場を探す</h2>
-        <p>スケジュールに追加された新しい会場も、自動で一覧へ反映されます。</p>
-      </div>
-
       <div class="venue-control-panel">
+        <div class="venue-region-block">
+          <div class="venue-filter-heading">
+            <div><span>AREA</span><h2>地方から探す</h2></div>
+            <button class="venue-region-clear" id="venue-region-clear" type="button" hidden>全国に戻す</button>
+          </div>
+          <div class="venue-region-tabs" id="venue-region-tabs" aria-label="地方で絞り込む"></div>
+          <div class="venue-prefecture-drawer" id="venue-prefecture-drawer" role="region" aria-labelledby="venue-prefecture-label" aria-hidden="true">
+            <p id="venue-prefecture-label"></p>
+            <div class="venue-prefecture-tabs" id="venue-prefecture-tabs" aria-label="都道府県で絞り込む"></div>
+          </div>
+        </div>
+
+        <div class="venue-search-divider"><span>会場名から絞り込む</span></div>
         <div class="venue-search-row">
           <label class="venue-search-label">
             <span class="sr-only">会場名や駅、地域で検索</span>
             <span class="venue-search-icon" aria-hidden="true">⌕</span>
-            <input class="venue-search" id="venue-search" type="search" placeholder="会場名・駅・地域で検索" autocomplete="off">
+            <input class="venue-search" id="venue-search" type="search" placeholder="会場名・駅名で検索" autocomplete="off">
           </label>
           <button class="venue-reset" id="venue-reset" type="button" hidden>条件をクリア</button>
         </div>
@@ -99,15 +92,14 @@
         </div>
 
         <div class="venue-select-row">
-          <label><span>掲載状況</span><select class="venue-filter" id="venue-status-filter"><option value="all">すべての会場</option><option value="scheduled">掲載公演あり</option><option value="detailed">詳細ガイドあり</option></select></label>
-          <label><span>地域</span><select class="venue-filter" id="venue-region-filter"><option value="all">全国</option></select></label>
+          <label><span>掲載状況</span><select class="venue-filter" id="venue-status-filter"><option value="all">すべての会場</option><option value="scheduled">掲載公演あり</option></select></label>
           <label><span>並び順</span><select class="venue-filter" id="venue-sort"><option value="recommended">次の公演が近い順</option><option value="name">会場名順</option><option value="region">地域順</option></select></label>
         </div>
       </div>
 
       <div class="venue-result-head">
         <p class="venue-count" id="venue-count">会場情報を読み込んでいます…</p>
-        <div class="venue-guide-legend"><span><i class="detailed"></i>詳細ガイド</span><span><i class="basic"></i>基本情報</span></div>
+        <div class="venue-guide-legend"><span><i class="detailed"></i>アクセス・収容人数 掲載済み</span></div>
       </div>
       <div class="venue-grid" id="venue-list" aria-live="polite"></div>
       <noscript><p class="venue-empty">会場ガイドの検索にはJavaScriptを使用します。ブラウザの設定をご確認ください。</p></noscript>
