@@ -21,6 +21,7 @@ OFFICIAL_ONLY_RE = re.compile(
 )
 PIA_LOT_RE = re.compile(r"[?&]lotRlsCd=([A-Za-z0-9_-]+)")
 SUKISUKI_GOODS_RE = re.compile(r"sukisuki-shop\.com/goods/(\d+)")
+PLACEHOLDER_RE = re.compile(r"^(?:会場未定|未定|TBD|公式ページ記載(?:のイベント参加対象商品)?)$", re.I)
 
 
 def load(path: Path) -> dict:
@@ -53,6 +54,16 @@ def parse_day(value: object) -> date | None:
         return date.fromisoformat(text)
     except ValueError:
         return None
+
+
+def clock_minutes(value: object) -> int | None:
+    match = re.fullmatch(r"(\d{1,2}):(\d{2})", str(value or "").strip())
+    if not match:
+        return None
+    hour, minute = int(match.group(1)), int(match.group(2))
+    if hour > 23 or minute > 59:
+        return None
+    return hour * 60 + minute
 
 
 def urls(event: dict) -> list[str]:
@@ -269,6 +280,60 @@ def audit(previous: dict, candidate: dict, now: datetime) -> tuple[list[str], li
         if is_online(event) and is_ticket_listing(event):
             if not any("sukisuki-shop.com/goods/" in value for value in urls(event)):
                 errors.append(f"online benefit sale has no SUKISUKI product URL: {label(event)}")
+
+        category = str(event.get("eventCategory") or "")
+        if category in {"large-benefit", "release-event"}:
+            if not any("asobisystem.com" in value for value in urls(event)):
+                errors.append(f"special event has no official source URL: {label(event)}")
+            if event.get("sourceType") != "official-special":
+                errors.append(f"special event is not marked as official-source data: {label(event)}")
+            if not event.get("purchaseMethod") or not event.get("ticketIssueMethod"):
+                errors.append(f"special event has no participation method: {label(event)}")
+            product = str(event.get("product") or "").strip()
+            if not product or PLACEHOLDER_RE.fullmatch(product):
+                errors.append(f"special event has no target product: {label(event)}")
+            venue = str(event.get("venue") or "").strip()
+            if not venue or PLACEHOLDER_RE.fullmatch(venue):
+                errors.append(f"special event has no verified venue: {label(event)}")
+            if not (
+                start and end
+                and event.get("applicationWindowVerified") is True
+                and event.get("deadlineVerified") is True
+            ):
+                errors.append(f"special event has no verified purchase/ticket window: {label(event)}")
+            for field in ("applicationWindowSource", "deadlineSource"):
+                source = str(event.get(field) or "")
+                if "asobisystem.com" not in source:
+                    errors.append(f"special event {field} is not backed by an official page: {label(event)}")
+            for row in event.get("numberedCallTimes") or []:
+                if not isinstance(row, dict) or not str(row.get("numbers") or "").strip():
+                    errors.append(f"special event has an invalid numbered-call row: {label(event)}")
+                    continue
+                if clock_minutes(row.get("time")) is None:
+                    errors.append(f"special event has an invalid numbered-call time: {label(event)}")
+        if category == "release-event":
+            if not any("kawaiilab.goods-order.com" in value for value in urls(event)):
+                errors.append(f"release event has no KAWAII LAB. STORE URL: {label(event)}")
+            release_times = [clock_minutes(event.get(field)) for field in ("salesStartTime", "gatheringTime", "startTime")]
+            if any(value is None for value in release_times):
+                errors.append(f"release event is missing a verified sales/gathering/start time: {label(event)}")
+            elif not (release_times[0] <= release_times[1] <= release_times[2]):
+                errors.append(f"release event sales/gathering/start times are out of order: {label(event)}")
+        if category == "large-benefit":
+            parts = event.get("parts")
+            if not isinstance(parts, list) or not parts:
+                errors.append(f"large benefit event has no part schedule: {label(event)}")
+            else:
+                for row in parts:
+                    required = ("part", "content", "start", "end", "receptionStart", "receptionEnd")
+                    if not isinstance(row, dict) or any(not str(row.get(field) or "").strip() for field in required):
+                        errors.append(f"large benefit event has an incomplete part row: {label(event)}")
+                        continue
+                    clocks = [clock_minutes(row.get(field)) for field in ("start", "end", "receptionStart", "receptionEnd")]
+                    if any(value is None for value in clocks):
+                        errors.append(f"large benefit event has an invalid part time: {label(event)}")
+                    elif clocks[0] >= clocks[1] or clocks[2] > clocks[3] or clocks[3] > clocks[1]:
+                        errors.append(f"large benefit event part times are out of order: {label(event)}")
 
     if prev_events and len(cand_events) > len(prev_events) + max(25, len(prev_events)):
         errors.append(f"candidate event count spiked from {len(prev_events)} to {len(cand_events)}")

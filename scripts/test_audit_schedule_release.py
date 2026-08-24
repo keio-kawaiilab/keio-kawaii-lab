@@ -35,6 +35,38 @@ def base_pia(**changes):
     return event
 
 
+def base_release(**changes):
+    official = "https://morestar.asobisystem.com/live_information/detail/44001"
+    event = {
+        "id": "release-1",
+        "group": "MORE STAR",
+        "title": "MORE STAR 発売記念リリースイベント",
+        "ticketType": "商品購入電子整理券（先着）",
+        "applyStart": "2026-08-25T21:00",
+        "applyEnd": "2026-08-26T09:00",
+        "eventDate": "2026-08-26",
+        "venue": "ららぽーと立川立飛 2Fイベント広場",
+        "url": official,
+        "urls": [official, "https://kawaiilab.goods-order.com"],
+        "eventCategory": "release-event",
+        "purchaseMethod": "アプリで整理券を取得して会場購入",
+        "ticketIssueMethod": "KAWAII LAB. STOREアプリ",
+        "product": "1stシングル 通常盤 ¥1,200（税込）",
+        "salesStartTime": "10:00",
+        "gatheringTime": "13:20",
+        "startTime": "14:00",
+        "numberedCallTimes": [{"numbers": "1〜200番", "time": "09:50"}],
+        "sourceType": "official-special",
+        "applicationStatus": "open",
+        "applicationWindowVerified": True,
+        "deadlineVerified": True,
+        "applicationWindowSource": official,
+        "deadlineSource": official,
+    }
+    event.update(changes)
+    return event
+
+
 def payload(events):
     return {"updatedAt": "2026-08-23T22:30:00+09:00", "events": events}
 
@@ -101,6 +133,35 @@ class AuditScheduleReleaseTests(unittest.TestCase):
         new = payload([base_pia(eventDates=["2026-11-10"])])
         errors, _, _ = audit(old, new, NOW)
         self.assertTrue(any("performance dates disappeared" in error for error in errors))
+
+    def test_complete_release_event_passes(self):
+        event = base_release()
+        errors, _, _ = audit(payload([event]), payload([copy.deepcopy(event)]), NOW)
+        self.assertEqual([], errors)
+
+    def test_release_event_missing_gathering_time_is_blocked(self):
+        errors, _, _ = audit(payload([]), payload([base_release(gatheringTime=None)]), NOW)
+        self.assertTrue(any("sales/gathering/start time" in error for error in errors))
+
+    def test_release_event_invalid_call_time_is_blocked(self):
+        event = base_release(numberedCallTimes=[{"numbers": "1〜200番", "time": "25:10"}])
+        errors, _, _ = audit(payload([]), payload([event]), NOW)
+        self.assertTrue(any("invalid numbered-call time" in error for error in errors))
+
+    def test_large_benefit_event_missing_parts_is_blocked(self):
+        official = "https://candytune.asobisystem.com/news/detail/87439"
+        event = base_release(
+            id="benefit-1",
+            group="CANDY TUNE",
+            eventCategory="large-benefit",
+            url=official,
+            urls=[official, "https://r10.to/example"],
+            applicationWindowSource=official,
+            deadlineSource=official,
+            parts=[],
+        )
+        errors, _, _ = audit(payload([]), payload([event]), NOW)
+        self.assertTrue(any("no part schedule" in error for error in errors))
 
 
 if __name__ == "__main__":

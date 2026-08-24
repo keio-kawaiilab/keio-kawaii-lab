@@ -15,9 +15,12 @@ assert(source.includes("'時刻未発表'"), 'missing times need an explicit tim
 assert(source.includes('function initPullRefresh()'), 'touch pull-to-refresh must be initialized');
 assert(source.includes("'離して更新'"), 'pull-to-refresh needs a release affordance');
 assert(source.includes('window.location.reload()'), 'pull-to-refresh must reload the page');
+assert(page.includes('.special-event{background-image:radial-gradient'), 'special-event calendar items need a polka-dot background');
+assert(page.includes('.card.release-card,.card.benefit-card{'), 'special-event detail cards need a shared polka-dot treatment');
+assert(source.includes("?' special-event':''"), 'release and large-benefit items need the special-event class');
 source = source.replace(
   /\}\)\(\);\s*$/,
-  "globalThis.__scheduleTest={prepare:prepare,groupedApplicationBands:groupedApplicationBands};})();",
+  "globalThis.__scheduleTest={prepare:prepare,groupedApplicationBands:groupedApplicationBands,eventKind:eventKind,specialHtml:specialHtml};})();",
 );
 
 function element() {
@@ -83,4 +86,24 @@ assert(lawson, 'lawson windows were not grouped');
 assert.strictEqual(eplus.location, '新潟・福島');
 assert.strictEqual(lawson.location, '新潟・福島');
 assert.strictEqual(lawson.events.length, 2);
+
+const release = {
+  group: 'MORE STAR',
+  title: 'MORE STAR リリースイベント',
+  eventCategory: 'release-event',
+  purchaseMethod: 'アプリで整理券を取得して対象商品を購入',
+  ticketIssueMethod: 'KAWAII LAB. STOREアプリ',
+  ticketName: '商品購入整理券',
+  salesStartTime: '10:00',
+  gatheringTime: '13:20',
+  product: '通常盤 1,200円',
+  numberedCallTimes: [{ numbers: '1〜200番', time: '09:50' }],
+  ticketBenefits: ['通常盤1枚でお見送り会参加券1枚'],
+};
+assert.strictEqual(context.__scheduleTest.eventKind(release), 'release');
+const special = context.__scheduleTest.specialHtml(release);
+assert(special.includes('参加方法・整理券'));
+assert(special.includes('1〜200番'));
+assert(special.includes('09:50'));
+assert(special.includes('通常盤1枚でお見送り会参加券1枚'));
 console.log('Schedule band grouping tests passed');

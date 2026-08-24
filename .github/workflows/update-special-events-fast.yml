@@ -1,0 +1,150 @@
+name: Fast special-event refresh
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "scripts/update_special_events.py"
+      - "scripts/test_update_special_events.py"
+      - "scripts/audit_schedule_release.py"
+      - "scripts/test_audit_schedule_release.py"
+      - "scripts/resolve_source_priority.py"
+      - "scripts/test_resolve_source_priority.py"
+      - "scripts/build_schedule_snapshot.py"
+      - "data/schedule-control.json"
+      - ".github/workflows/update-special-events-fast.yml"
+  schedule:
+    - cron: "2,17,32,47 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: update-live-ticket-calendar-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  refresh-special-events:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Read emergency freeze control
+        id: control
+        shell: bash
+        run: |
+          frozen="$(python - <<'PY'
+          import json
+          with open('data/schedule-control.json', encoding='utf-8') as f:
+              print(str(bool(json.load(f).get('freeze'))).lower())
+          PY
+          )"
+          echo "frozen=$frozen" >> "$GITHUB_OUTPUT"
+          if [ "$frozen" = "true" ]; then
+            echo "Fast special-event auto-publication is FROZEN."
+          fi
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Test special-event discovery and release gate
+        working-directory: scripts
+        run: python -m unittest -v test_update_special_events.py test_resolve_source_priority.py test_audit_schedule_release.py
+
+      - name: Refresh special-event candidate data
+        if: steps.control.outputs.frozen != 'true'
+        id: refresh
+        shell: bash
+        run: |
+          cp data/live-events.json /tmp/live-events-last-good.json
+          python scripts/update_special_events.py
+          python scripts/resolve_source_priority.py
+          if git diff --quiet -- data/live-events.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No special-event changes."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Fail-closed release audit
+        if: steps.control.outputs.frozen != 'true' && steps.refresh.outputs.changed == 'true'
+        run: |
+          python scripts/audit_schedule_release.py \
+            --previous /tmp/live-events-last-good.json \
+            --candidate data/live-events.json \
+            --report data/schedule-health.json
+
+      - name: Build public schedule only after audit passes
+        if: steps.control.outputs.frozen != 'true' && steps.refresh.outputs.changed == 'true'
+        run: |
+          python scripts/build_schedule_snapshot.py
+          python scripts/fix_schedule_shell.py
+          python scripts/strip_schedule_explanations.py
+          node --check /tmp/schedule-inline.js
+          node scripts/test_schedule_band_grouping.js
+
+      - name: Open incident when refresh or release audit fails
+        if: failure() && steps.control.outputs.frozen != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          title="🚨 Special-event schedule refresh blocked"
+          existing="$(gh issue list --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
+          if [ -n "$existing" ]; then
+            gh issue edit "$existing" --add-assignee "keio-kawaiilab" || true
+            echo "Incident issue #$existing is already open."
+            exit 0
+          fi
+          {
+            echo "@keio-kawaiilab"
+            echo
+            echo "大特典会・リリースイベントの高速更新で取得失敗または監査エラーを検出したため、**本番公開を停止して前回正常版を維持しています**。"
+            if [ -f data/schedule-health.json ] && grep -q '"status": "blocked"' data/schedule-health.json; then
+              echo
+              echo '```json'
+              cat data/schedule-health.json
+              echo '```'
+            fi
+            echo
+            echo "Actions run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          } > /tmp/special-event-incident.md
+          gh issue create --title "$title" --body-file /tmp/special-event-incident.md --assignee "keio-kawaiilab"
+
+      - name: Close resolved special-event incident
+        if: success() && steps.control.outputs.frozen != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          title="🚨 Special-event schedule refresh blocked"
+          existing="$(gh issue list --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
+          if [ -n "$existing" ]; then
+            gh issue close "$existing" --comment "公式取得とリリース監査が正常に通過したため、高速更新を再開しました。"
+          fi
+
+      - name: Commit only audited special-event changes
+        if: steps.control.outputs.frozen != 'true' && steps.refresh.outputs.changed == 'true'
+        shell: bash
+        run: |
+          if [ -z "$(git status --porcelain -- data/live-events.json data/schedule-health.json schedule.html)" ]; then
+            echo "No audited special-event changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/live-events.json data/schedule-health.json schedule.html
+          git commit -m "chore: refresh special-event schedule"
+          git push

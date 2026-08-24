@@ -227,7 +227,7 @@ def resolve_payload(payload: dict) -> dict:
     out = dict(payload)
     events = [dict(x) for x in payload.get("events", []) if isinstance(x, dict)]
     out["events"] = resolve(events)
-    out["source"] = "KAWAII LAB.各グループ公式公開情報 + チケットぴあ・ローチケ・イープラス公開情報 + SUKISUKI公開オンライン特典会情報"
+    out["source"] = "KAWAII LAB.各グループ公式公開情報 + チケットぴあ・ローチケ・イープラス公開情報 + SUKISUKI公開オンライン特典会情報 + 公式大特典会・リリースイベント情報"
     return out
 
 

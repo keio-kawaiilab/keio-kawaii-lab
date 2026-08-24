@@ -39,6 +39,11 @@ SCHEDULE_NAV_STYLE = """
 .venue-schedule ul{display:grid;gap:6px;margin:8px 0 0;padding:0;list-style:none}
 .venue-schedule li{display:grid;grid-template-columns:4.5em 1fr;gap:7px}
 .venue-schedule time{color:var(--muted);font-size:12px;font-weight:700}
+/* special-event-polka-style */
+.special-event{background-image:radial-gradient(circle at 2px 2px,rgba(255,255,255,.88) 0 1.7px,transparent 1.9px)!important;background-size:9px 9px!important}
+.card.release-card,.card.benefit-card{background-color:#fffdf9;background-image:radial-gradient(circle at 2px 2px,rgba(34,51,95,.13) 0 1.7px,transparent 1.9px);background-size:12px 12px}
+.card.benefit-card{background-color:#fff9fc}
+.card.release-card .special-info,.card.benefit-card .special-info{background:rgba(246,247,251,.96)}
 """
 SCHEDULE_NAV_HTML = '<div class="schedule-head-actions"><a class="schedule-home-link schedule-venue-link" href="./venues.html">📍 会場ガイド</a><a class="schedule-home-link" href="./index.html" aria-label="慶應KAWAII LAB.同好会公式サイトへ戻る">← 同好会公式サイトへ戻る</a></div>'
 
@@ -93,6 +98,18 @@ def is_online(event: dict) -> bool:
     return event.get("eventCategory") == "online-benefit" or bool(
         re.search(r"オンライン(?:特典会|サイン会)", str(event.get("title") or ""))
     )
+
+
+def event_kind(event: dict) -> str:
+    if event.get("eventCategory") == "large-benefit":
+        return "benefit"
+    if event.get("eventCategory") == "release-event":
+        return "release"
+    return "online" if is_online(event) else "live"
+
+
+def event_icon(event: dict) -> str:
+    return {"benefit": "🎁", "release": "💿", "online": "📱", "live": "🎤"}[event_kind(event)]
 
 
 def official_only(event: dict) -> bool:
@@ -168,7 +185,7 @@ def venue_html(event: dict, online: bool = False) -> str:
 
 
 def display_title(event: dict) -> str:
-    text = str(event.get("eventTitle") or event.get("title") or "").strip()
+    text = str(event.get("displayTitle") or event.get("eventTitle") or event.get("title") or "").strip()
     if not text or BAD_UI_TITLE_RE.search(text):
         return f"{event.get('group') or 'KAWAII LAB.'} 公演"
     quoted = re.search(r"「([^」]+)」", text)
@@ -201,6 +218,7 @@ def visible_event(event: dict, today) -> bool:
 
 def build_card(event: dict) -> str:
     online = is_online(event)
+    kind = event_kind(event)
     pia = is_pia(event)
     dates = event_dates(event)
     date_text = "・".join(fmt(value) for value in dates) if dates else "未定"
@@ -209,14 +227,14 @@ def build_card(event: dict) -> str:
     url = source_url(event)
     synthetic = pia and bool(event.get("applyEnd")) and not event.get("applyStart")
     start_text = "開始日時未取得" if synthetic else fmt(event.get("applyStart"))
-    icon = "📱" if online else "🎤"
-    css = "card online-card" if online else "card"
+    icon = event_icon(event)
+    css = "card online-card" if online else ("card release-card" if kind == "release" else ("card benefit-card" if kind == "benefit" else "card"))
     parts = [
         f'<article class="{css}" data-group="{esc(group)}" data-event-id="{esc(event.get("id") or "")}" style="--gc:var({color})">',
         f'<h3>{icon} {esc(display_title(event))}</h3>',
         '<div class="meta">',
         f'<div><b>グループ</b>{esc(group)}</div>',
-        f'<div><b>{"配信日" if online else "公演日"}</b>{esc(date_text)}</div>',
+        f'<div><b>{"配信日" if online else "開催日"}</b>{esc(date_text)}</div>',
         f'<div><b>会場</b>{venue_html(event, online)}</div>',
         f'<div><b>受付</b>{esc(event.get("ticketType") or "未定")}</div>',
         f'<div><b>申込開始</b>{esc(start_text)}</div>',
@@ -225,6 +243,25 @@ def build_card(event: dict) -> str:
     ]
     if synthetic:
         parts.append('<div class="deadline-note">開始日時は未取得です。カレンダーの帯は今日から締切まで表示しています。</div>')
+    if kind in {"benefit", "release"}:
+        detail = [
+            '<section class="special-info"><h4>参加方法・整理券</h4><div class="special-grid">',
+        ]
+        if event.get("salesStartTime"):
+            detail.append(f'<div><b>会場販売開始</b>{esc(event["salesStartTime"])}</div>')
+        if event.get("gatheringTime"):
+            detail.append(f'<div><b>集合</b>{esc(event["gatheringTime"])}</div>')
+        if event.get("ticketName"):
+            detail.append(f'<div><b>必要な整理券・参加券</b>{esc(event["ticketName"])}</div>')
+        detail.append('</div>')
+        if event.get("purchaseMethod"):
+            detail.append(f'<p class="special-method"><b>参加方法：</b>{esc(event["purchaseMethod"])}</p>')
+        if event.get("ticketIssueMethod"):
+            detail.append(f'<p class="special-method"><b>発券・付与：</b>{esc(event["ticketIssueMethod"])}</p>')
+        if event.get("product"):
+            detail.append(f'<p class="special-method"><b>対象商品：</b>{esc(event["product"])}</p>')
+        detail.append('</section>')
+        parts.extend(detail)
     if url:
         label = "チケットぴあを確認 →" if pia else ("SUKISUKIを確認 →" if "sukisuki-shop.com" in url else "情報源を確認 →")
         parts.append(f'<a class="src" href="{esc(url)}" target="_blank" rel="noopener">{label}</a>')
