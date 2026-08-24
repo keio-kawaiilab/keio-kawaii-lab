@@ -1,0 +1,50 @@
+.personal-schedule-panel{margin:0 0 14px;padding:15px;border:1px solid #f0c8d8;border-radius:17px;background:linear-gradient(145deg,#fff 0%,#fff7fb 100%);box-shadow:0 5px 18px rgba(149,72,106,.08)}
+.personal-schedule-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.personal-schedule-head h2,.personal-modal-head h2{margin:2px 0 4px;color:var(--navy);font-size:18px}
+.personal-schedule-kicker{display:block;color:#b04c79;font-size:9px;font-weight:900;letter-spacing:.16em}
+.personal-schedule-status{margin:0;color:var(--muted);font-size:11px;line-height:1.55}
+.personal-primary{border:0!important;background:#b84e7d!important;color:#fff!important;box-shadow:0 4px 13px rgba(184,78,125,.24)}
+.personal-schedule-panel button,.personal-modal button{min-height:38px;border:1px solid #e2d8de;border-radius:10px;background:#fff;color:var(--navy);font-weight:900;cursor:pointer}
+.personal-schedule-panel button:disabled,.personal-modal button:disabled{cursor:default;opacity:.58}
+.personal-schedule-tools{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.personal-schedule-tools button{padding:8px 10px;font-size:11px}
+.personal-storage-note{margin:10px 0 0;padding:9px 10px;border-radius:10px;background:#fff;color:#6f6570;font-size:10px;line-height:1.55}
+.personal-upcoming{display:grid;gap:6px;margin-top:12px}
+.personal-upcoming-title{color:var(--navy);font-size:11px;font-weight:900}
+.personal-upcoming-row{display:grid!important;grid-template-columns:78px minmax(0,1fr) auto;gap:9px;align-items:center;width:100%;padding:8px 10px;text-align:left}
+.personal-upcoming-date{color:#b04c79;font-size:11px;font-weight:900}
+.personal-upcoming-main{min-width:0}
+.personal-upcoming-main strong,.personal-upcoming-main small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.personal-upcoming-main strong{font-size:12px}
+.personal-upcoming-main small{margin-top:2px;color:var(--muted);font-size:10px;font-weight:700}
+.personal-empty{padding:10px;border:1px dashed #e7ccd8;border-radius:11px;background:#fff;color:#8a7280;font-size:11px;text-align:center}
+.personal-calendar-mark{height:22px!important;border:1px solid rgba(122,45,82,.22)!important;background:linear-gradient(135deg,#c85789,#a84471)!important;color:#fff!important;box-shadow:0 2px 7px rgba(122,45,82,.18)!important;z-index:7!important}
+.personal-card-add{display:inline-flex;align-items:center;justify-content:center;margin-top:12px;padding:8px 11px;border:1px solid #e7c4d3;border-radius:10px;background:#fff7fb;color:#9c3f68;font-size:11px;font-weight:900;cursor:pointer}
+.personal-card-add:disabled{background:#f5f2f4;color:#91868c;cursor:default}
+.personal-modal{position:fixed;inset:0;z-index:500;display:grid;place-items:center;padding:16px;background:rgba(27,31,47,.42);backdrop-filter:blur(5px)}
+.personal-modal[hidden]{display:none!important}
+.personal-modal-card{width:min(560px,100%);max-height:min(760px,calc(100dvh - 32px));overflow:auto;padding:17px;border:1px solid #ead8e0;border-radius:19px;background:#fff;box-shadow:0 20px 60px rgba(22,28,47,.28)}
+.personal-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+.personal-close{width:40px;min-height:40px!important;border-radius:50%!important;font-size:24px!important;font-weight:500!important}
+.personal-form{display:grid;gap:11px}
+.personal-form label{display:grid;gap:5px;color:var(--navy);font-size:11px;font-weight:900}
+.personal-form input,.personal-form textarea{width:100%;border:1px solid #ddd7dc;border-radius:10px;background:#fff;padding:10px 11px;color:var(--ink);font:inherit;font-size:14px;outline:none}
+.personal-form input:focus,.personal-form textarea:focus{border-color:#c65b8a;box-shadow:0 0 0 3px rgba(198,91,138,.13)}
+.personal-form textarea{resize:vertical;line-height:1.55}
+.personal-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.personal-form-actions{display:grid;grid-template-columns:auto 1fr auto auto;gap:8px;align-items:center;margin-top:3px}
+.personal-form-actions button{padding:8px 12px}
+.personal-danger{border-color:#e5b7bd!important;background:#fff5f6!important;color:#aa3141!important}
+.personal-modal-open{overflow:hidden}
+@media(max-width:620px){
+  .personal-schedule-panel{padding:13px 11px}
+  .personal-schedule-head{align-items:stretch;flex-direction:column}
+  .personal-schedule-head>.personal-primary{width:100%}
+  .personal-upcoming-row{grid-template-columns:68px minmax(0,1fr) auto;padding:8px}
+  .personal-form-grid{grid-template-columns:1fr}
+  .personal-form-actions{grid-template-columns:1fr 1fr}
+  .personal-form-actions span{display:none}
+  .personal-form-actions .personal-danger{grid-column:1/-1}
+  .personal-form-actions .personal-primary{grid-column:2}
+  .personal-calendar-mark{font-size:7px!important;padding:2px!important}
+}
