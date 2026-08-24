@@ -3,17 +3,11 @@
 
   if(!document.getElementById("calendar")||!document.getElementById("cards"))return;
 
-  var STORAGE_KEY="kawaiiLabPersonalScheduleV1";
-  var BACKUP_KEY="kawaiiLabPersonalScheduleBackupV1";
-  var EXPORT_VERSION=1;
+  var STORAGE_KEY="kawaiiLabGoingEventsV1";
   var state={events:[],rangeStart:null};
   var calendar=document.getElementById("calendar");
   var cards=document.getElementById("cards");
   var panel=null;
-  var overlay=null;
-  var form=null;
-  var deleteButton=null;
-  var editingId="";
   var renderQueued=false;
 
   function esc(value){
@@ -23,11 +17,6 @@
       .replace(/>/g,"&gt;")
       .replace(/"/g,"&quot;")
       .replace(/'/g,"&#39;");
-  }
-
-  function uid(){
-    if(window.crypto&&typeof window.crypto.randomUUID==="function")return window.crypto.randomUUID();
-    return"ps-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,9);
   }
 
   function parseIsoDate(value){
@@ -46,8 +35,6 @@
     ].join("-");
   }
 
-  function monthDay(date){return(date.getMonth()+1)+"/"+date.getDate();}
-
   function normalizeEvent(raw){
     if(!raw||typeof raw!=="object")return null;
     var date=String(raw.date||"");
@@ -55,98 +42,33 @@
     var title=String(raw.title||"").trim();
     if(!title)return null;
     return{
-      id:String(raw.id||uid()),
-      title:title.slice(0,120),
+      key:String(raw.key||"").slice(0,1200),
+      title:title.slice(0,180),
       date:date,
       time:/^\d{2}:\d{2}$/.test(String(raw.time||""))?String(raw.time):"",
-      place:String(raw.place||"").trim().slice(0,180),
-      note:String(raw.note||"").trim().slice(0,1000),
-      sourceUrl:String(raw.sourceUrl||"").trim().slice(0,1000),
-      sourceType:String(raw.sourceType||"personal").slice(0,40),
-      createdAt:String(raw.createdAt||new Date().toISOString()),
-      updatedAt:String(raw.updatedAt||new Date().toISOString())
+      place:String(raw.place||"").trim().slice(0,220),
+      sourceUrl:String(raw.sourceUrl||"").trim().slice(0,1000)
     };
   }
 
-  function decodePayload(text){
-    try{
-      var parsed=JSON.parse(text||"null");
-      var rows=Array.isArray(parsed)?parsed:(parsed&&Array.isArray(parsed.events)?parsed.events:[]);
-      return rows.map(normalizeEvent).filter(Boolean);
-    }catch(_error){return null;}
+  function eventKey(event){
+    if(event.key)return event.key;
+    return[event.sourceUrl||"",event.date,event.title].join("|");
   }
 
   function readLocal(){
     try{
-      var primaryText=localStorage.getItem(STORAGE_KEY);
-      if(primaryText!==null){
-        var primary=decodePayload(primaryText);
-        if(primary!==null)return primary;
-      }
-      var backupText=localStorage.getItem(BACKUP_KEY);
-      if(backupText!==null){
-        var backup=decodePayload(backupText);
-        if(backup!==null)return backup;
-      }
-    }catch(_error){}
-    return null;
-  }
-
-  function payload(){
-    return JSON.stringify({
-      version:EXPORT_VERSION,
-      exportedAt:new Date().toISOString(),
-      events:state.events
-    });
-  }
-
-  function openDb(){
-    return new Promise(function(resolve,reject){
-      if(!window.indexedDB){reject(new Error("IndexedDB unavailable"));return;}
-      var request=indexedDB.open("kawaii-lab-personal-schedule",1);
-      request.onupgradeneeded=function(){
-        var db=request.result;
-        if(!db.objectStoreNames.contains("data"))db.createObjectStore("data");
-      };
-      request.onsuccess=function(){resolve(request.result);};
-      request.onerror=function(){reject(request.error||new Error("IndexedDB open failed"));};
-    });
-  }
-
-  function saveIdb(text){
-    openDb().then(function(db){
-      var tx=db.transaction("data","readwrite");
-      tx.objectStore("data").put(text,"events");
-      tx.oncomplete=function(){db.close();};
-      tx.onerror=function(){db.close();};
-    }).catch(function(){});
-  }
-
-  function loadIdb(){
-    return openDb().then(function(db){
-      return new Promise(function(resolve){
-        var tx=db.transaction("data","readonly");
-        var req=tx.objectStore("data").get("events");
-        req.onsuccess=function(){var value=req.result;db.close();resolve(typeof value==="string"?decodePayload(value):null);};
-        req.onerror=function(){db.close();resolve(null);};
-      });
-    }).catch(function(){return null;});
-  }
-
-  function requestPersistentStorage(){
-    if(!navigator.storage||typeof navigator.storage.persist!=="function")return;
-    navigator.storage.persist().catch(function(){});
+      var parsed=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");
+      if(!Array.isArray(parsed))return[];
+      return parsed.map(normalizeEvent).filter(Boolean);
+    }catch(_error){return[];}
   }
 
   function save(){
-    state.events.sort(function(a,b){return a.date.localeCompare(b.date)||a.time.localeCompare(b.time)||a.title.localeCompare(b.title);});
-    var text=payload();
-    try{
-      localStorage.setItem(STORAGE_KEY,text);
-      localStorage.setItem(BACKUP_KEY,text);
-    }catch(_error){}
-    saveIdb(text);
-    requestPersistentStorage();
+    state.events.sort(function(a,b){
+      return a.date.localeCompare(b.date)||a.time.localeCompare(b.time)||a.title.localeCompare(b.title);
+    });
+    try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state.events));}catch(_error){}
     refreshAll();
   }
 
@@ -158,13 +80,6 @@
     return(d.getMonth()+1)+"/"+d.getDate()+"（"+"日月火水木金土".charAt(d.getDay())+"）";
   }
 
-  function statusText(){
-    var total=state.events.length;
-    if(!total)return"まだ予定はありません。公式イベントから1タップで追加もできるよ。";
-    var upcoming=state.events.filter(function(event){return event.date>=todayIso();}).length;
-    return total+"件保存中"+(upcoming!==total?" ／ 今後 "+upcoming+"件":"")+"。この端末のブラウザに保存されています。";
-  }
-
   function mountPanel(){
     if(document.querySelector(".personal-schedule-panel")){
       panel=document.querySelector(".personal-schedule-panel");
@@ -172,179 +87,44 @@
     }
     panel=document.createElement("section");
     panel.className="personal-schedule-panel";
-    panel.setAttribute("aria-label","自分の予定");
+    panel.setAttribute("aria-label","行く予定");
     panel.innerHTML=
       '<div class="personal-schedule-head">'+
-        '<div><span class="personal-schedule-kicker">MY SCHEDULE</span><h2>🩷 自分の予定</h2><p class="personal-schedule-status" id="personal-schedule-status"></p></div>'+
-        '<button class="personal-primary" type="button" data-personal-action="add">＋ 予定を追加</button>'+
+        '<div><span class="personal-schedule-kicker">MY EVENTS</span><h2>🩷 行く予定</h2><p class="personal-schedule-status" id="personal-schedule-status"></p></div>'+
       '</div>'+
-      '<div class="personal-schedule-tools">'+
-        '<button type="button" data-personal-action="export">バックアップを書き出す</button>'+
-        '<button type="button" data-personal-action="import">バックアップを復元</button>'+
-        '<input class="personal-import-input" type="file" accept="application/json,.json" hidden>'+
-      '</div>'+
-      '<p class="personal-storage-note">会員登録なし・この端末だけに保存。別端末への自動同期はありません。ブラウザのサイトデータ削除に備えて、たまにバックアップしておくと安心です。</p>'+
+      '<p class="personal-storage-note">公式スケジュールのイベントだけを「行く予定」としてこの端末のブラウザに保存します。自由入力や個人的なメモは保存しません。</p>'+
       '<div class="personal-upcoming" id="personal-upcoming"></div>';
     var anchor=document.querySelector(".scope-picker")||document.querySelector(".schedule-disclaimer");
     if(anchor)anchor.insertAdjacentElement("afterend",panel);else document.querySelector("main").prepend(panel);
     panel.addEventListener("click",onPanelClick);
-    panel.querySelector(".personal-import-input").addEventListener("change",importFile);
   }
 
   function renderPanel(){
     if(!panel)return;
+    var upcoming=state.events.filter(function(event){return event.date>=todayIso();});
     var status=panel.querySelector("#personal-schedule-status");
-    if(status)status.textContent=statusText();
-    var upcoming=panel.querySelector("#personal-upcoming");
-    if(!upcoming)return;
-    var rows=state.events.filter(function(event){return event.date>=todayIso();}).slice(0,6);
-    if(!rows.length){
-      upcoming.innerHTML='<div class="personal-empty">カレンダーに自分だけの予定を重ねられるよ ✨</div>';
+    if(status)status.textContent=upcoming.length?"今後 "+upcoming.length+"件を行く予定にしています。":"まだ行く予定にしたイベントはありません。";
+    var container=panel.querySelector("#personal-upcoming");
+    if(!container)return;
+    if(!upcoming.length){
+      container.innerHTML='<div class="personal-empty">公式イベントの詳細にある「＋ 行く予定に追加」から登録できます ✨</div>';
       return;
     }
-    upcoming.innerHTML='<div class="personal-upcoming-title">これからの予定</div>'+rows.map(function(event){
-      return '<button class="personal-upcoming-row" type="button" data-personal-edit="'+esc(event.id)+'">'+
+    container.innerHTML='<div class="personal-upcoming-title">これから行く予定</div>'+upcoming.slice(0,8).map(function(event){
+      return '<div class="personal-upcoming-row">'+
         '<span class="personal-upcoming-date">'+esc(formatDate(event.date))+'</span>'+
-        '<span class="personal-upcoming-main"><strong>'+esc(event.title)+'</strong><small>'+esc((event.time?event.time:"時間未設定")+(event.place?" ／ "+event.place:""))+'</small></span>'+
-        '<span aria-hidden="true">›</span>'+
-      '</button>';
+        '<span class="personal-upcoming-main"><strong>'+esc(event.title)+'</strong><small>'+esc((event.time?event.time:"時間未発表")+(event.place?" ／ "+event.place:""))+'</small></span>'+
+        '<button type="button" class="personal-remove" data-personal-remove="'+esc(eventKey(event))+'" aria-label="行く予定から外す">×</button>'+
+      '</div>';
     }).join("");
   }
 
-  function mountModal(){
-    if(overlay)return;
-    overlay=document.createElement("div");
-    overlay.className="personal-modal";
-    overlay.hidden=true;
-    overlay.innerHTML=
-      '<div class="personal-modal-card" role="dialog" aria-modal="true" aria-labelledby="personal-modal-title">'+
-        '<div class="personal-modal-head"><div><span class="personal-schedule-kicker">MY SCHEDULE</span><h2 id="personal-modal-title">予定を追加</h2></div><button class="personal-close" type="button" aria-label="閉じる">×</button></div>'+
-        '<form class="personal-form">'+
-          '<label><span>予定名 *</span><input name="title" maxlength="120" required placeholder="例：ライブに行く"></label>'+
-          '<div class="personal-form-grid">'+
-            '<label><span>日付 *</span><input name="date" type="date" required></label>'+
-            '<label><span>開始時刻</span><input name="time" type="time"></label>'+
-          '</div>'+
-          '<label><span>場所</span><input name="place" maxlength="180" placeholder="例：有明アリーナ"></label>'+
-          '<label><span>メモ</span><textarea name="note" maxlength="1000" rows="4" placeholder="集合時間、持ち物、交通など"></textarea></label>'+
-          '<div class="personal-form-actions">'+
-            '<button class="personal-danger" type="button" data-personal-action="delete" hidden>削除</button>'+
-            '<span></span><button type="button" data-personal-action="cancel">キャンセル</button><button class="personal-primary" type="submit">保存</button>'+
-          '</div>'+
-        '</form>'+
-      '</div>';
-    document.body.appendChild(overlay);
-    form=overlay.querySelector("form");
-    deleteButton=overlay.querySelector('[data-personal-action="delete"]');
-    overlay.querySelector(".personal-close").addEventListener("click",closeModal);
-    overlay.querySelector('[data-personal-action="cancel"]').addEventListener("click",closeModal);
-    overlay.addEventListener("click",function(event){if(event.target===overlay)closeModal();});
-    deleteButton.addEventListener("click",deleteEditing);
-    form.addEventListener("submit",submitForm);
-    document.addEventListener("keydown",function(event){if(event.key==="Escape"&&!overlay.hidden)closeModal();});
-  }
-
-  function openModal(seed){
-    mountModal();
-    var event=seed||{};
-    editingId=String(event.id||"");
-    overlay.querySelector("#personal-modal-title").textContent=editingId?"予定を編集":"予定を追加";
-    form.elements.title.value=event.title||"";
-    form.elements.date.value=event.date||todayIso();
-    form.elements.time.value=event.time||"";
-    form.elements.place.value=event.place||"";
-    form.elements.note.value=event.note||"";
-    form.dataset.sourceUrl=event.sourceUrl||"";
-    form.dataset.sourceType=event.sourceType||"personal";
-    deleteButton.hidden=!editingId;
-    overlay.hidden=false;
-    document.documentElement.classList.add("personal-modal-open");
-    window.setTimeout(function(){form.elements.title.focus();},0);
-  }
-
-  function closeModal(){
-    if(!overlay)return;
-    overlay.hidden=true;
-    document.documentElement.classList.remove("personal-modal-open");
-    editingId="";
-  }
-
-  function submitForm(event){
-    event.preventDefault();
-    var current=state.events.find(function(item){return item.id===editingId;});
-    var next=normalizeEvent({
-      id:editingId||uid(),
-      title:form.elements.title.value,
-      date:form.elements.date.value,
-      time:form.elements.time.value,
-      place:form.elements.place.value,
-      note:form.elements.note.value,
-      sourceUrl:form.dataset.sourceUrl||"",
-      sourceType:form.dataset.sourceType||"personal",
-      createdAt:current?current.createdAt:new Date().toISOString(),
-      updatedAt:new Date().toISOString()
-    });
-    if(!next)return;
-    if(current)state.events=state.events.map(function(item){return item.id===editingId?next:item;});
-    else state.events.push(next);
-    save();
-    closeModal();
-  }
-
-  function deleteEditing(){
-    if(!editingId)return;
-    state.events=state.events.filter(function(item){return item.id!==editingId;});
-    save();
-    closeModal();
-  }
-
   function onPanelClick(event){
-    var action=event.target.closest("[data-personal-action]");
-    if(action){
-      var name=action.getAttribute("data-personal-action");
-      if(name==="add")openModal();
-      if(name==="export")exportBackup();
-      if(name==="import")panel.querySelector(".personal-import-input").click();
-      return;
-    }
-    var edit=event.target.closest("[data-personal-edit]");
-    if(edit){
-      var item=state.events.find(function(row){return row.id===edit.getAttribute("data-personal-edit");});
-      if(item)openModal(item);
-    }
-  }
-
-  function exportBackup(){
-    var blob=new Blob([payload()],{type:"application/json"});
-    var url=URL.createObjectURL(blob);
-    var link=document.createElement("a");
-    link.href=url;
-    link.download="kawaii-lab-my-schedule-"+todayIso()+".json";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    window.setTimeout(function(){URL.revokeObjectURL(url);},1000);
-  }
-
-  function importFile(event){
-    var input=event.target;
-    var file=input.files&&input.files[0];
-    if(!file)return;
-    var reader=new FileReader();
-    reader.onload=function(){
-      var rows=decodePayload(String(reader.result||""));
-      input.value="";
-      if(!rows){window.alert("このバックアップは読み込めませんでした。");return;}
-      var map={};
-      state.events.concat(rows).forEach(function(item){
-        var key=item.id||[item.date,item.time,item.title].join("|");
-        map[key]=item;
-      });
-      state.events=Object.keys(map).map(function(key){return map[key];});
-      save();
-      window.alert("バックアップを復元しました。");
-    };
-    reader.readAsText(file,"utf-8");
+    var button=event.target.closest("[data-personal-remove]");
+    if(!button)return;
+    var key=button.getAttribute("data-personal-remove");
+    state.events=state.events.filter(function(item){return eventKey(item)!==key;});
+    save();
   }
 
   function resolveRangeStart(){
@@ -378,10 +158,13 @@
       else week.style.minHeight=week.dataset.personalBaseMinHeight;
       [].slice.call(week.querySelectorAll(".personal-calendar-mark")).forEach(function(mark){mark.remove();});
     });
+
     var rangeStart=resolveRangeStart();
     var rangeEnd=new Date(rangeStart);rangeEnd.setDate(rangeEnd.getDate()+34);
     var gridStart=new Date(rangeStart);gridStart.setDate(gridStart.getDate()-gridStart.getDay());
-    var visible=state.events.filter(function(event){var d=parseIsoDate(event.date);return d&&d>=rangeStart&&d<=rangeEnd;});
+    var visible=state.events.filter(function(event){
+      var d=parseIsoDate(event.date);return d&&d>=rangeStart&&d<=rangeEnd;
+    });
     var byWeek={};
     visible.forEach(function(event){
       var date=parseIsoDate(event.date);
@@ -390,6 +173,7 @@
       if(weekIndex<0||weekIndex>=weeks.length)return;
       (byWeek[weekIndex]||(byWeek[weekIndex]=[])).push({event:event,col:date.getDay()});
     });
+
     Object.keys(byWeek).forEach(function(key){
       var week=weeks[+key];
       var base=31;
@@ -401,15 +185,13 @@
       var laneByCol={};
       byWeek[key].sort(function(a,b){return a.event.time.localeCompare(b.event.time)||a.event.title.localeCompare(b.event.title);}).forEach(function(item){
         var lane=laneByCol[item.col]||0;laneByCol[item.col]=lane+1;
-        var mark=document.createElement("button");
-        mark.type="button";
+        var mark=document.createElement("div");
         mark.className="mark personal-calendar-mark";
         mark.style.left="calc("+(item.col/7*100)+"% + 2px)";
         mark.style.width="calc("+(1/7*100)+"% - 4px)";
         mark.style.top=(base+lane*25)+"px";
         mark.textContent="♡ "+(item.event.time?item.event.time+" ":"")+item.event.title;
-        mark.title=(item.event.time?item.event.time+"｜":"")+item.event.title+(item.event.place?"｜"+item.event.place:"");
-        mark.addEventListener("click",function(){openModal(item.event);});
+        mark.title="行く予定｜"+(item.event.time?item.event.time+"｜":"")+item.event.title+(item.event.place?"｜"+item.event.place:"");
         week.appendChild(mark);
         var needed=base+lane*25+33;
         var current=parseFloat(week.style.minHeight||"0")||week.offsetHeight;
@@ -435,48 +217,47 @@
       }
     });
     var source=card.querySelector("a.src");
-    return normalizeEvent({
+    var seed=normalizeEvent({
       title:title||"KAWAII LAB. イベント",
       date:date,
       time:time,
       place:place,
-      note:"公式スケジュールから追加",
-      sourceUrl:source?source.href:"",
-      sourceType:"official"
+      sourceUrl:source?source.href:""
     });
+    if(!seed)return null;
+    seed.key=eventKey(seed);
+    return seed;
   }
 
-  function alreadyAdded(seed){
-    return state.events.some(function(item){
-      if(seed.sourceUrl&&item.sourceUrl)return item.sourceUrl===seed.sourceUrl&&item.date===seed.date;
-      return item.date===seed.date&&item.title===seed.title;
-    });
+  function isAdded(seed){
+    var key=eventKey(seed);
+    return state.events.some(function(item){return eventKey(item)===key;});
   }
 
   function bindCards(){
     [].slice.call(cards.querySelectorAll(".card")).forEach(function(card){
-      var existing=card.querySelector(".personal-card-add");
       var seed=extractCardSeed(card);
       if(!seed)return;
-      if(existing){
-        var added=alreadyAdded(seed);
-        existing.disabled=added;
-        existing.textContent=added?"✓ 自分の予定に追加済み":"＋ 自分の予定に追加";
-        return;
+      var button=card.querySelector(".personal-card-add");
+      if(!button){
+        button=document.createElement("button");
+        button.type="button";
+        button.className="personal-card-add";
+        button.addEventListener("click",function(){
+          var fresh=extractCardSeed(card);
+          if(!fresh)return;
+          if(isAdded(fresh)){
+            state.events=state.events.filter(function(item){return eventKey(item)!==eventKey(fresh);});
+          }else{
+            state.events.push(fresh);
+          }
+          save();
+        });
+        card.appendChild(button);
       }
-      var button=document.createElement("button");
-      button.type="button";
-      button.className="personal-card-add";
-      var isAdded=alreadyAdded(seed);
-      button.disabled=isAdded;
-      button.textContent=isAdded?"✓ 自分の予定に追加済み":"＋ 自分の予定に追加";
-      button.addEventListener("click",function(){
-        var fresh=extractCardSeed(card);
-        if(!fresh||alreadyAdded(fresh))return;
-        state.events.push(fresh);
-        save();
-      });
-      card.appendChild(button);
+      var added=isAdded(seed);
+      button.classList.toggle("is-added",added);
+      button.textContent=added?"✓ 行く予定に追加済み（外す）":"＋ 行く予定に追加";
     });
   }
 
@@ -489,33 +270,20 @@
   }
 
   function observeDynamicContent(){
-    var calendarObserver=new MutationObserver(queueRender);
-    calendarObserver.observe(calendar,{childList:true});
-    var cardsObserver=new MutationObserver(function(){window.setTimeout(bindCards,0);});
-    cardsObserver.observe(cards,{childList:true});
+    new MutationObserver(queueRender).observe(calendar,{childList:true});
+    new MutationObserver(function(){window.setTimeout(bindCards,0);}).observe(cards,{childList:true});
     var range=document.getElementById("range");
-    if(range){
-      new MutationObserver(function(){window.setTimeout(overlayCalendar,0);}).observe(range,{childList:true,characterData:true,subtree:true});
-    }
+    if(range)new MutationObserver(function(){window.setTimeout(overlayCalendar,0);}).observe(range,{childList:true,characterData:true,subtree:true});
   }
 
-  function boot(rows){
-    state.events=rows||[];
-    mountPanel();
-    mountModal();
-    refreshAll();
-    observeDynamicContent();
-  }
-
-  var local=readLocal();
-  if(local!==null){boot(local);}
-  else{
-    loadIdb().then(function(rows){boot(rows||[]);});
-  }
+  state.events=readLocal();
+  mountPanel();
+  refreshAll();
+  observeDynamicContent();
 
   window.addEventListener("storage",function(event){
     if(event.key!==STORAGE_KEY)return;
-    var rows=decodePayload(event.newValue||"");
-    if(rows){state.events=rows;refreshAll();}
+    state.events=readLocal();
+    refreshAll();
   });
 })();
