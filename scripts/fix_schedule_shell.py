@@ -203,6 +203,8 @@ def main() -> int:
         "function venueText(e)",
         "function prefecture(v)",
         "function bandLocation(e)",
+        "function groupedApplicationBands(vis)",
+        "location:item.location",
         "perfSeen[pk]",
         "item.prefecture?item.prefecture+'｜':''",
         "loc?loc+'｜':''",
