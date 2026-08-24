@@ -9,6 +9,9 @@ const page = fs.readFileSync('schedule.html', 'utf8');
 const scripts = [...page.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map((match) => match[1]);
 let source = scripts.find((script) => script.includes("(function(){'use strict';"));
 assert(source, 'schedule inline script not found');
+assert(source.includes("cell.textContent=dt<start?'':sd(dt)"), 'calendar dates must always include the month');
+assert(source.includes("dateAndTime=performanceDate(m.date)"), 'performance details must include the event date');
+assert(source.includes("'時刻未発表'"), 'missing times need an explicit time-only fallback');
 source = source.replace(
   /\}\)\(\);\s*$/,
   "globalThis.__scheduleTest={prepare:prepare,groupedApplicationBands:groupedApplicationBands};})();",
