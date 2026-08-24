@@ -246,3 +246,23 @@
     disruptionsForEvent:disruptionsForEvent
   };
 })();
+
+(function(){
+  "use strict";
+  if(!document.getElementById("calendar"))return;
+
+  if(!document.querySelector('link[data-personal-schedule]')){
+    var style=document.createElement("link");
+    style.rel="stylesheet";
+    style.href="./personal-schedule.css?v=1";
+    style.setAttribute("data-personal-schedule","");
+    document.head.appendChild(style);
+  }
+
+  if(!document.querySelector('script[data-personal-schedule]')){
+    var script=document.createElement("script");
+    script.src="./personal-schedule.js?v=1";
+    script.setAttribute("data-personal-schedule","");
+    document.body.appendChild(script);
+  }
+})();
