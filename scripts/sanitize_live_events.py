@@ -107,11 +107,24 @@ def event_schedule(event: dict) -> list[dict]:
             if key in seen:
                 continue
             seen.add(key)
-            result.append({"date": day, "venue": venue})
+            row = {"date": day, "venue": venue}
+            if item.get("openTime"):
+                row["openTime"] = item["openTime"]
+            if item.get("startTime"):
+                row["startTime"] = item["startTime"]
+            result.append(row)
         return sorted(result, key=lambda x: x["date"])
 
     venue = str(event.get("venue") or "").strip() or None
-    return [{"date": day, "venue": venue} for day in event_dates(event)]
+    return [
+        {
+            "date": day,
+            "venue": venue,
+            **({"openTime": event["openTime"]} if event.get("openTime") else {}),
+            **({"startTime": event["startTime"]} if event.get("startTime") else {}),
+        }
+        for day in event_dates(event)
+    ]
 
 
 def base_cleanup(payload: dict) -> list[dict]:
@@ -231,7 +244,12 @@ def merge_consecutive_days(events: list[dict]) -> list[dict]:
             merged["eventEndDate"] = dates[-1].isoformat()
             merged["eventDates"] = [d.isoformat() for d in dates]
             merged["schedule"] = [
-                {"date": day.isoformat(), "venue": item.get("venue")}
+                {
+                    "date": day.isoformat(),
+                    "venue": item.get("venue"),
+                    **({"openTime": item["openTime"]} if item.get("openTime") else {}),
+                    **({"startTime": item["startTime"]} if item.get("startTime") else {}),
+                }
                 for day, item in run
             ]
             merged["urls"] = all_urls

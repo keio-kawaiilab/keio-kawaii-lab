@@ -42,8 +42,8 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(
             u.extract_event_occurrences(lines, "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -", "2026-06-06"),
             [
-                ("2026-08-29", "戸田市文化会館"),
-                ("2026-09-04", "カルッツかわさき"),
+                ("2026-08-29", "戸田市文化会館", None, None),
+                ("2026-09-04", "カルッツかわさき", None, None),
             ],
         )
 
@@ -78,9 +78,15 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(
             u.extract_event_occurrences(lines, "FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN -", "2026-05-26"),
             [
-                ("2026-09-03", "神奈川県 よこすか芸術劇場（大劇場）"),
-                ("2026-09-16", "埼玉県 大宮ソニックシティ 大ホール"),
+                ("2026-09-03", "神奈川県 よこすか芸術劇場（大劇場）", "17:30", "18:30"),
+                ("2026-09-16", "埼玉県 大宮ソニックシティ 大ホール", None, None),
             ],
+        )
+
+    def test_japanese_open_and_start_labels(self):
+        self.assertEqual(
+            u.extract_performance_time(["開場：16:00／開演：17:00"]),
+            ("16:00", "17:00"),
         )
 
 
