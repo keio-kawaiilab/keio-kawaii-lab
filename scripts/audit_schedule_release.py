@@ -133,9 +133,17 @@ def stable_keys(event: dict) -> list[str]:
     for key in (lot_key(event), goods_key(event)):
         if key and key not in result:
             result.append(key)
+    provider = playguide_provider(event)
+    day_suffix = ",".join(event_days(event))
     for value in urls(event):
-        if value and value not in result:
-            result.append(f"url:{value}")
+        if not value:
+            continue
+        if provider in {"lawson", "eplus"}:
+            key = f"{provider}:{value}:days:{day_suffix}"
+        else:
+            key = f"url:{value}"
+        if key not in result:
+            result.append(key)
     if event.get("id"):
         result.append(f"id:{event['id']}")
     return result
