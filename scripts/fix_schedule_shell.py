@@ -205,6 +205,8 @@ def main() -> int:
         "function bandLocation(e)",
         "function groupedApplicationBands(vis)",
         "location:item.location",
+        "cell.textContent=dt<start?'':sd(dt)",
+        "dateAndTime=performanceDate(m.date)",
         "perfSeen[pk]",
         "item.prefecture?item.prefecture+'｜':''",
         "loc?loc+'｜':''",
