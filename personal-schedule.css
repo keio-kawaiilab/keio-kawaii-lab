@@ -1,0 +1,31 @@
+.personal-schedule-panel{margin:0 0 14px;padding:15px;border:1px solid #f0c8d8;border-radius:17px;background:linear-gradient(145deg,#fff 0%,#fff7fb 100%);box-shadow:0 5px 18px rgba(149,72,106,.08)}
+.personal-schedule-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.personal-schedule-head h2{margin:2px 0 4px;color:var(--navy);font-size:18px}
+.personal-schedule-kicker{display:block;color:#b04c79;font-size:9px;font-weight:900;letter-spacing:.16em}
+.personal-schedule-status{margin:0;color:var(--muted);font-size:11px;line-height:1.55}
+.personal-storage-note{margin:10px 0 0;padding:9px 10px;border-radius:10px;background:#fff;color:#6f6570;font-size:10px;line-height:1.55}
+.personal-upcoming{display:grid;gap:6px;margin-top:12px}
+.personal-upcoming-title{color:var(--navy);font-size:11px;font-weight:900}
+.personal-upcoming-row{display:grid;grid-template-columns:78px minmax(0,1fr) auto;gap:9px;align-items:center;width:100%;padding:8px 10px;border:1px solid #e8dde2;border-radius:10px;background:#fff}
+.personal-upcoming-date{color:#b04c79;font-size:11px;font-weight:900}
+.personal-upcoming-main{min-width:0}
+.personal-upcoming-main strong,.personal-upcoming-main small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.personal-upcoming-main strong{font-size:12px}
+.personal-upcoming-main small{margin-top:2px;color:var(--muted);font-size:10px;font-weight:700}
+.personal-remove{display:grid;place-items:center;width:32px;height:32px;border:1px solid #e4d9de;border-radius:50%;background:#fff;color:#8d6979;font-size:18px;cursor:pointer}
+.personal-empty{padding:10px;border:1px dashed #e7ccd8;border-radius:11px;background:#fff;color:#8a7280;font-size:11px;text-align:center}
+.personal-calendar-mark{height:22px!important;border:1px solid rgba(122,45,82,.22)!important;background:linear-gradient(135deg,#c85789,#a84471)!important;color:#fff!important;box-shadow:0 2px 7px rgba(122,45,82,.18)!important;z-index:7!important;animation:personal-going-pulse 3.2s ease-in-out infinite;transform-origin:center}
+@keyframes personal-going-pulse{
+  0%,100%{filter:brightness(1);box-shadow:0 2px 7px rgba(122,45,82,.18);transform:scale(1)}
+  50%{filter:brightness(1.07);box-shadow:0 3px 11px rgba(184,78,125,.34);transform:scale(1.012)}
+}
+.personal-card-add{display:inline-flex;align-items:center;justify-content:center;margin-top:12px;padding:8px 11px;border:1px solid #e7c4d3;border-radius:10px;background:#fff7fb;color:#9c3f68;font-size:11px;font-weight:900;cursor:pointer}
+.personal-card-add.is-added{background:#f5f2f4;color:#766b71;border-color:#ddd5d9}
+@media(prefers-reduced-motion:reduce){
+  .personal-calendar-mark{animation:none!important}
+}
+@media(max-width:620px){
+  .personal-schedule-panel{padding:13px 11px}
+  .personal-upcoming-row{grid-template-columns:68px minmax(0,1fr) auto;padding:8px}
+  .personal-calendar-mark{font-size:7px!important;padding:2px!important}
+}
