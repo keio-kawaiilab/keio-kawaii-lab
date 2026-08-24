@@ -100,6 +100,7 @@ jobs:
           test_update_live_events.py
           test_update_live_events_v2.py
           test_update_pia_events.py
+          test_update_playguide_events.py
           test_clean_pia_refresh.py
           test_reconcile_pia_retention.py
           test_harden_pia_events.py
@@ -119,6 +120,7 @@ jobs:
             --report /tmp/schedule-health.json
           python scripts/update_live_events_v2.py --check
           python scripts/update_pia_events.py --check
+          python scripts/update_playguide_events.py --check
           python scripts/update_sukisuki_events.py --check
           python scripts/harden_pia_events.py --check
           python scripts/build_schedule_snapshot.py
@@ -138,6 +140,7 @@ jobs:
           python scripts/enrich_event_metadata.py
           python scripts/update_pia_events.py
           python scripts/reconcile_pia_retention.py --previous /tmp/live-events-before-pia.json
+          python scripts/update_playguide_events.py
           python scripts/update_sukisuki_events.py
           python scripts/harden_pia_events.py
           python scripts/resolve_source_priority.py

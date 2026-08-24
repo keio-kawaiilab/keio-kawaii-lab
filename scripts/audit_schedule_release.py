@@ -85,6 +85,18 @@ def is_pia(event: dict) -> bool:
     )
 
 
+def playguide_provider(event: dict) -> str | None:
+    source = str(event.get("ticketProvider") or event.get("sourceType") or event.get("primarySource") or "").lower()
+    joined = " ".join(urls(event)).lower()
+    if source == "pia" or "t.pia.jp" in joined:
+        return "pia"
+    if source == "lawson" or "l-tike.com" in joined:
+        return "lawson"
+    if source == "eplus" or "eplus.jp" in joined:
+        return "eplus"
+    return None
+
+
 def is_online(event: dict) -> bool:
     return event.get("eventCategory") == "online-benefit" or bool(
         re.search(r"オンライン(?:特典会|サイン会)", str(event.get("title") or ""))
@@ -142,6 +154,12 @@ def source_evidence_for_deadline(event: dict) -> bool:
     if is_pia(event):
         source = str(event.get("deadlineSource") or event.get("applicationWindowSource") or "")
         return bool(event.get("deadlineVerified") is True and "t.pia.jp" in source and "ticketInformation.do" in source)
+    provider = playguide_provider(event)
+    source = str(event.get("deadlineSource") or event.get("applicationWindowSource") or "")
+    if provider == "lawson":
+        return event.get("deadlineVerified") is True and "l-tike.com" in source
+    if provider == "eplus":
+        return event.get("deadlineVerified") is True and "eplus.jp" in source
     return any("asobisystem.com" in value or "sukisuki-shop.com" in value for value in urls(event))
 
 
@@ -229,10 +247,10 @@ def audit(previous: dict, candidate: dict, now: datetime) -> tuple[list[str], li
                 else:
                     seen_lots[key] = event
             mode = str(event.get("applicationDisplayMode") or "")
-            if mode == "band":
+            if mode == "band" and is_ticket_listing(event):
                 if not (start and end and event.get("applicationWindowVerified") is True):
                     errors.append(f"verified Pia band is missing exact endpoints: {label(event)}")
-            elif mode == "band-from-today":
+            elif mode == "band-from-today" and is_ticket_listing(event):
                 if not (end and event.get("deadlineVerified") is True):
                     errors.append(f"Pia deadline band is not verified: {label(event)}")
             elif mode == "pia-listing" and is_ticket_listing(event):
