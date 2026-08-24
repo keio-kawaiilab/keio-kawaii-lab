@@ -35,18 +35,20 @@
     ].join("-");
   }
 
+  function cleanText(value){return String(value||"").replace(/\s+/g," ").trim();}
+
   function normalizeEvent(raw){
     if(!raw||typeof raw!=="object")return null;
     var date=String(raw.date||"");
-    if(!parseIsoDate(date))return null;
-    var title=String(raw.title||"").trim();
-    if(!title)return null;
+    var title=cleanText(raw.title);
+    if(!parseIsoDate(date)||!title)return null;
     return{
       key:String(raw.key||"").slice(0,1200),
+      performanceKey:String(raw.performanceKey||"").slice(0,1200),
       title:title.slice(0,180),
       date:date,
       time:/^\d{2}:\d{2}$/.test(String(raw.time||""))?String(raw.time):"",
-      place:String(raw.place||"").trim().slice(0,220),
+      place:cleanText(raw.place).slice(0,220),
       sourceUrl:String(raw.sourceUrl||"").trim().slice(0,1000)
     };
   }
@@ -150,52 +152,56 @@
     return state.rangeStart;
   }
 
-  function overlayCalendar(){
-    var weeks=[].slice.call(calendar.querySelectorAll(".week"));
-    if(!weeks.length)return;
-    weeks.forEach(function(week){
-      if(!week.dataset.personalBaseMinHeight)week.dataset.personalBaseMinHeight=week.style.minHeight||"";
-      else week.style.minHeight=week.dataset.personalBaseMinHeight;
-      [].slice.call(week.querySelectorAll(".personal-calendar-mark")).forEach(function(mark){mark.remove();});
+  function markColumn(mark){
+    var m=String(mark.style.left||"").match(/calc\(\s*([\d.]+)%/);
+    if(!m)return-1;
+    return Math.max(0,Math.min(6,Math.round((parseFloat(m[1])||0)*7/100)));
+  }
+
+  function markEventTitle(mark){
+    return cleanText(String(mark.getAttribute("title")||"").replace(/｜イベント詳細$/,""));
+  }
+
+  function highlightCalendarItems(){
+    [].slice.call(calendar.querySelectorAll(".personal-calendar-mark")).forEach(function(mark){mark.remove();});
+    [].slice.call(calendar.querySelectorAll(".personal-going-highlight")).forEach(function(mark){
+      mark.classList.remove("personal-going-highlight");
+      mark.removeAttribute("data-going-event");
     });
+
+    var weeks=[].slice.call(calendar.querySelectorAll(".week"));
+    if(!weeks.length||!state.events.length)return;
 
     var rangeStart=resolveRangeStart();
     var rangeEnd=new Date(rangeStart);rangeEnd.setDate(rangeEnd.getDate()+34);
     var gridStart=new Date(rangeStart);gridStart.setDate(gridStart.getDate()-gridStart.getDay());
-    var visible=state.events.filter(function(event){
-      var d=parseIsoDate(event.date);return d&&d>=rangeStart&&d<=rangeEnd;
-    });
-    var byWeek={};
-    visible.forEach(function(event){
+
+    state.events.forEach(function(event){
       var date=parseIsoDate(event.date);
+      if(!date||date<rangeStart||date>rangeEnd)return;
       var delta=Math.round((date-gridStart)/86400000);
       var weekIndex=Math.floor(delta/7);
       if(weekIndex<0||weekIndex>=weeks.length)return;
-      (byWeek[weekIndex]||(byWeek[weekIndex]=[])).push({event:event,col:date.getDay()});
-    });
+      var week=weeks[weekIndex];
+      var col=date.getDay();
+      var candidates=[].slice.call(week.querySelectorAll(".mark.performance"));
+      var matches=[];
 
-    Object.keys(byWeek).forEach(function(key){
-      var week=weeks[+key];
-      var base=31;
-      [].slice.call(week.querySelectorAll(".mark:not(.personal-calendar-mark)")).forEach(function(mark){
-        var top=parseFloat(mark.style.top||"0")||0;
-        var height=parseFloat(getComputedStyle(mark).height)||mark.offsetHeight||24;
-        base=Math.max(base,top+height+5);
-      });
-      var laneByCol={};
-      byWeek[key].sort(function(a,b){return a.event.time.localeCompare(b.event.time)||a.event.title.localeCompare(b.event.title);}).forEach(function(item){
-        var lane=laneByCol[item.col]||0;laneByCol[item.col]=lane+1;
-        var mark=document.createElement("div");
-        mark.className="mark personal-calendar-mark";
-        mark.style.left="calc("+(item.col/7*100)+"% + 2px)";
-        mark.style.width="calc("+(1/7*100)+"% - 4px)";
-        mark.style.top=(base+lane*25)+"px";
-        mark.textContent="♡ "+(item.event.time?item.event.time+" ":"")+item.event.title;
-        mark.title="行く予定｜"+(item.event.time?item.event.time+"｜":"")+item.event.title+(item.event.place?"｜"+item.event.place:"");
-        week.appendChild(mark);
-        var needed=base+lane*25+33;
-        var current=parseFloat(week.style.minHeight||"0")||week.offsetHeight;
-        if(needed>current)week.style.minHeight=needed+"px";
+      if(event.performanceKey){
+        matches=candidates.filter(function(mark){
+          return mark.getAttribute("data-performance-key")===event.performanceKey;
+        });
+      }
+
+      if(!matches.length){
+        matches=candidates.filter(function(mark){
+          return markColumn(mark)===col&&markEventTitle(mark)===cleanText(event.title);
+        });
+      }
+
+      matches.forEach(function(mark){
+        mark.classList.add("personal-going-highlight");
+        mark.setAttribute("data-going-event","true");
       });
     });
   }
@@ -205,11 +211,11 @@
     var dateMatch=dateEl&&String(dateEl.textContent||"").match(/(\d{4})\/(\d{1,2})\/(\d{1,2})/);
     if(!dateMatch)return null;
     var date=[dateMatch[1],String(dateMatch[2]).padStart(2,"0"),String(dateMatch[3]).padStart(2,"0")].join("-");
-    var title=String((card.querySelector("h3")||{}).textContent||"").replace(/^\s*[🎤📱🎁💿]\s*/,"").trim();
+    var title=cleanText((card.querySelector("h3")||{}).textContent||"").replace(/^\s*[🎤📱🎁💿]\s*/,"").trim();
     var place="",time="";
     [].slice.call(card.querySelectorAll(".meta > div")).forEach(function(row){
-      var label=String((row.querySelector("b")||{}).textContent||"").trim();
-      var value=String(row.textContent||"").replace(label,"").trim();
+      var label=cleanText((row.querySelector("b")||{}).textContent||"");
+      var value=cleanText(row.textContent||"").replace(label,"").trim();
       if(label==="会場")place=value;
       if(label==="開催日時"){
         var m=value.match(/(?:開演|開始)\s*(\d{1,2}:\d{2})/);
@@ -218,6 +224,7 @@
     });
     var source=card.querySelector("a.src");
     var seed=normalizeEvent({
+      performanceKey:card.getAttribute("data-performance-key")||"",
       title:title||"KAWAII LAB. イベント",
       date:date,
       time:time,
@@ -261,7 +268,7 @@
     });
   }
 
-  function refreshAll(){renderPanel();overlayCalendar();bindCards();}
+  function refreshAll(){renderPanel();highlightCalendarItems();bindCards();}
 
   function queueRender(){
     if(renderQueued)return;
@@ -271,9 +278,9 @@
 
   function observeDynamicContent(){
     new MutationObserver(queueRender).observe(calendar,{childList:true});
-    new MutationObserver(function(){window.setTimeout(bindCards,0);}).observe(cards,{childList:true});
+    new MutationObserver(function(){window.setTimeout(function(){bindCards();highlightCalendarItems();},0);}).observe(cards,{childList:true});
     var range=document.getElementById("range");
-    if(range)new MutationObserver(function(){window.setTimeout(overlayCalendar,0);}).observe(range,{childList:true,characterData:true,subtree:true});
+    if(range)new MutationObserver(function(){window.setTimeout(highlightCalendarItems,0);}).observe(range,{childList:true,characterData:true,subtree:true});
   }
 
   state.events=readLocal();
