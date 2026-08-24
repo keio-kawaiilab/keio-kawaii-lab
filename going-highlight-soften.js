@@ -11,3 +11,13 @@
     '@media(prefers-reduced-motion:reduce){.personal-going-highlight{animation:none!important;filter:brightness(1.10) saturate(1.05)!important;transform:none!important;box-shadow:0 0 0 2px var(--gc,var(--navy)),0 0 8px 2px var(--gc,var(--navy))!important}}';
   document.head.appendChild(style);
 })();
+
+(function(){
+  "use strict";
+  if(!document.getElementById("cards"))return;
+  if(document.querySelector('script[data-schedule-card-fixes]'))return;
+  var script=document.createElement("script");
+  script.src="./schedule-card-fixes.js?v=202608250127";
+  script.setAttribute("data-schedule-card-fixes","");
+  document.body.appendChild(script);
+})();
