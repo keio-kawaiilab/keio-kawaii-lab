@@ -254,16 +254,23 @@
   if(!document.querySelector('link[data-personal-schedule]')){
     var style=document.createElement("link");
     style.rel="stylesheet";
-    style.href="./personal-schedule.css?v=1";
+    style.href="./personal-schedule.css?v=202608250110";
     style.setAttribute("data-personal-schedule","");
     document.head.appendChild(style);
   }
 
   if(!document.querySelector('script[data-personal-schedule]')){
     var script=document.createElement("script");
-    script.src="./personal-schedule.js?v=1";
+    script.src="./personal-schedule.js?v=202608250110";
     script.setAttribute("data-personal-schedule","");
     document.body.appendChild(script);
+  }
+
+  if(!document.querySelector('script[data-going-highlight-fix]')){
+    var fix=document.createElement("script");
+    fix.src="./going-highlight-fix.js?v=202608250110";
+    fix.setAttribute("data-going-highlight-fix","");
+    document.body.appendChild(fix);
   }
 })();
 
