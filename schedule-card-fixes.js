@@ -5,6 +5,8 @@
   if(!cards)return;
 
   var loadedEvents=null;
+  var officialEntries=[];
+  var officialIndexLoaded=false;
   var queued=false;
 
   function clean(value){return String(value||"").replace(/\s+/g," ").trim();}
@@ -28,12 +30,52 @@
   }
   function urls(event){
     var raw=[];
-    if(event.officialScheduleUrl)raw.push(event.officialScheduleUrl);
     if(event.url)raw.push(event.url);
     if(Array.isArray(event.urls))raw=raw.concat(event.urls);
     return raw.filter(function(url,index,list){return url&&list.indexOf(url)===index;});
   }
   function isOfficial(url){return /https?:\/\/[^/]*asobisystem\.com\//i.test(String(url||""));}
+
+  function indexScore(card,entry){
+    var score=0;
+    var eventId=card.getAttribute("data-event-id")||"";
+    var title=canon((card.querySelector("h3")||{}).textContent||"");
+    var got=canon(entry.title||"");
+    if(eventId&&entry.representedBy===eventId)score+=1000;
+    if(title&&got){
+      if(title===got)score+=300;
+      else if(got.indexOf(title)>=0||title.indexOf(got)>=0)score+=180;
+      else{
+        var tourWords=["japantour","arenatour","anniversary","生誕祭","collection"];
+        if(tourWords.some(function(word){return title.indexOf(word)>=0&&got.indexOf(word)>=0;}))score+=90;
+      }
+    }
+    if(entry.category==="LIVE")score+=20;
+    if(/\/live_information\/detail\//.test(String(entry.url||"")))score+=40;
+    return score;
+  }
+
+  function bestIndexedOfficialUrl(card){
+    if(!officialIndexLoaded)return"";
+    var group=card.getAttribute("data-group")||"";
+    var date=cardDate(card);
+    if(!group||!date)return"";
+    var candidates=officialEntries.filter(function(entry){
+      return entry&&entry.group===group&&String(entry.date||"").slice(0,10)===date&&isOfficial(entry.url);
+    });
+    if(!candidates.length)return"";
+    var eventId=card.getAttribute("data-event-id")||"";
+    var represented=eventId?candidates.filter(function(entry){return entry.representedBy===eventId;}):[];
+    if(represented.length)candidates=represented;
+    if(candidates.length===1)return candidates[0].url||"";
+    var best="",bestScore=-Infinity;
+    candidates.forEach(function(entry){
+      var score=indexScore(card,entry);
+      if(score>bestScore){bestScore=score;best=entry.url||"";}
+    });
+    return bestScore>=80?best:"";
+  }
+
   function sourceScore(event,date,wantedTitle,url){
     var dates=eventDates(event);
     if(dates.indexOf(date)<0)return-Infinity;
@@ -47,14 +89,13 @@
     if(String(event.primarySource||"")==="official")score+=35;
     if(dates.length===1)score+=80;
     if(String(event.eventDate||"").slice(0,10)===date)score+=35;
-    if(event.officialScheduleUrl&&url===event.officialScheduleUrl)score+=50;
     if(/\/live_information\/detail\//.test(url))score+=140;
     else if(/\/feature\//.test(url))score+=85;
     else if(/\/news\/detail\//.test(url))score+=15;
     if(/アップグレード|FC\s*(?:会員)?先行|ファンクラブ|年会費コース|月会費コース/i.test(rawMeta))score-=260;
     return score;
   }
-  function bestOfficialUrl(card){
+  function legacyOfficialUrl(card){
     if(!loadedEvents)return"";
     var group=card.getAttribute("data-group")||"";
     var date=cardDate(card);
@@ -69,8 +110,18 @@
         if(score>bestScore){bestScore=score;best=url;}
       });
     });
-    return bestScore>=120?best:"";
+    return bestScore>=220?best:"";
   }
+  function bestOfficialUrl(card){
+    var indexed=bestIndexedOfficialUrl(card);
+    if(indexed)return indexed;
+    // Once the authoritative per-date index has loaded, fail closed rather than
+    // guessing from a tour-wide URL list. A missing correction is safer than
+    // sending a user to another performance's page.
+    if(officialIndexLoaded)return"";
+    return legacyOfficialUrl(card);
+  }
+
   function ticketIdentity(option){
     var provider=clean((option.querySelector(".provider")||{}).textContent||"");
     var copy=option.querySelector(".ticket-copy");
@@ -123,10 +174,16 @@
   loadedEvents=embedded;
   queue();
 
-  fetch("./data/live-events.json?cardfix="+Date.now(),{cache:"no-store"})
-    .then(function(response){if(!response.ok)throw new Error("events");return response.json();})
-    .then(function(data){loadedEvents=Array.isArray(data.events)?data.events:embedded;queue();})
-    .catch(function(){loadedEvents=embedded;queue();});
+  Promise.all([
+    fetch("./data/live-events.json?cardfix="+Date.now(),{cache:"no-store"})
+      .then(function(response){if(!response.ok)throw new Error("events");return response.json();})
+      .then(function(data){loadedEvents=Array.isArray(data.events)?data.events:embedded;})
+      .catch(function(){loadedEvents=embedded;}),
+    fetch("./data/official-schedule-index.json?cardfix="+Date.now(),{cache:"no-store"})
+      .then(function(response){if(!response.ok)throw new Error("official-index");return response.json();})
+      .then(function(data){officialEntries=Array.isArray(data.entries)?data.entries:[];officialIndexLoaded=true;})
+      .catch(function(){officialEntries=[];officialIndexLoaded=false;})
+  ]).then(queue);
 
   new MutationObserver(queue).observe(cards,{childList:true,subtree:true});
 })();

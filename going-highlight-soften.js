@@ -17,7 +17,7 @@
   if(!document.getElementById("cards"))return;
   if(!document.querySelector('script[data-schedule-card-fixes]')){
     var script=document.createElement("script");
-    script.src="./schedule-card-fixes.js?v=202608250220";
+    script.src="./schedule-card-fixes.js?v=202608250229";
     script.setAttribute("data-schedule-card-fixes","");
     document.body.appendChild(script);
   }
