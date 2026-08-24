@@ -27,4 +27,10 @@
     dedupe.setAttribute("data-schedule-card-dedupe-v2","");
     document.body.appendChild(dedupe);
   }
+  if(!document.querySelector('script[data-ticket-sales-timeline]')){
+    var timeline=document.createElement("script");
+    timeline.src="./ticket-sales-timeline.js?v=202608250323";
+    timeline.setAttribute("data-ticket-sales-timeline","");
+    document.body.appendChild(timeline);
+  }
 })();
