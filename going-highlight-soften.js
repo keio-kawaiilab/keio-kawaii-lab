@@ -27,10 +27,4 @@
     dedupe.setAttribute("data-schedule-card-dedupe-v2","");
     document.body.appendChild(dedupe);
   }
-  if(!document.querySelector('script[data-ticket-guide-entry]')){
-    var guide=document.createElement("script");
-    guide.src="./ticket-guide-entry.js?v=202608250303";
-    guide.setAttribute("data-ticket-guide-entry","");
-    document.body.appendChild(guide);
-  }
 })();
