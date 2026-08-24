@@ -5,6 +5,7 @@ import argparse
 import hashlib
 import json
 import re
+import sys
 import unicodedata
 from datetime import date, datetime
 from pathlib import Path
@@ -257,9 +258,14 @@ def main() -> int:
                 failures.append(f"{provider}/{group}: {type(exc).__name__}: {exc}")
 
     if args.check:
+        if not refreshed:
+            raise SystemExit("All playguide sources failed: " + "; ".join(failures))
         if failures:
-            raise SystemExit("; ".join(failures))
-        print(f"Playguide source check passed: {len(dedupe(fresh))} active windows")
+            print("Playguide source warnings: " + "; ".join(failures), file=sys.stderr)
+        print(
+            f"Playguide source check passed: {len(dedupe(fresh))} active windows "
+            f"({len(failures)} source failures; failed sources retain previous data)"
+        )
         return 0
 
     fresh = dedupe(fresh)
