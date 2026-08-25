@@ -28,3 +28,13 @@
     document.body.appendChild(dedupe);
   }
 })();
+
+(function(){
+  "use strict";
+  if(!document.getElementById("cards"))return;
+  if(document.querySelector('script[data-schedule-weather]'))return;
+  var weather=document.createElement("script");
+  weather.src="./schedule-weather.js?v=202608260300";
+  weather.setAttribute("data-schedule-weather","");
+  document.body.appendChild(weather);
+})();
