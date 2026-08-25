@@ -2,6 +2,10 @@ name: Update transit timetables
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/import_odpt_timetables.py'
+      - '.github/workflows/update-transit-timetables.yml'
   schedule:
     - cron: '20 18 * * 0'
 
