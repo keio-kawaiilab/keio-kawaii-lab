@@ -1,6 +1,33 @@
 (function(){
   "use strict";
 
+  var head=document.head;
+  if(head){
+    function ensureLink(rel,href,attrs){
+      if(head.querySelector('link[rel="'+rel+'"]'))return;
+      var link=document.createElement("link");
+      link.rel=rel;
+      link.href=href;
+      Object.keys(attrs||{}).forEach(function(key){link.setAttribute(key,attrs[key]);});
+      head.appendChild(link);
+    }
+    function ensureMeta(name,content){
+      if(head.querySelector('meta[name="'+name+'"]'))return;
+      var meta=document.createElement("meta");
+      meta.name=name;
+      meta.content=content;
+      head.appendChild(meta);
+    }
+    ensureLink("icon","./site-icon.svg",{type:"image/svg+xml",sizes:"any"});
+    ensureLink("apple-touch-icon","./site-icon.svg");
+    ensureLink("manifest","./site.webmanifest");
+    ensureMeta("theme-color","#26305c");
+    ensureMeta("application-name","慶應カワラボ同好会");
+    ensureMeta("apple-mobile-web-app-title","慶應カワラボ");
+    ensureMeta("apple-mobile-web-app-capable","yes");
+    ensureMeta("mobile-web-app-capable","yes");
+  }
+
   function localDate(date){
     return[
       date.getFullYear(),
