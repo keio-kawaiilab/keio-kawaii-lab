@@ -24,7 +24,7 @@
     head.appendChild(meta);
   };
 
-  ensureLink("icon", "./site-icon.svg", { type: "image/svg+xml", sizes: "any" });
+  ensureLink("icon", "./favicon-32.png", { type: "image/png", sizes: "32x32" });
   ensureLink("apple-touch-icon", "./apple-touch-icon.png", { sizes: "180x180" });
   ensureLink("manifest", "./site.webmanifest");
   ensureMeta("theme-color", "#14386f");
