@@ -84,7 +84,33 @@ def safe_geocode(session, venue_name: str, venue_record: dict | None, cache: dic
     return result
 
 
+def safe_choose_mesh_target(targets: list[dict], day: str, start_time: str):
+    start_minutes = core.parse_minutes(start_time)
+    desired = start_minutes if start_minutes is not None else 15 * 60
+    candidates = []
+
+    for item in targets:
+        if not isinstance(item, dict) or "wm" not in (item.get("elements") or []):
+            continue
+        try:
+            valid = core.utc_target_datetime(str(item.get("validtime") or ""))
+        except Exception:
+            continue
+        if valid.date().isoformat() != day:
+            continue
+
+        mins = valid.hour * 60 + valid.minute
+        # 開始時刻未発表なら、深夜・早朝のメッシュを「開催時の天気」のようには表示しない。
+        # 9〜21時の予報がまだ配信されていない場合は広域予報のまま待つ。
+        if start_minutes is None and not (9 * 60 <= mins <= 21 * 60):
+            continue
+        candidates.append((abs(mins - desired), item))
+
+    return sorted(candidates, key=lambda pair: pair[0])[0][1] if candidates else None
+
+
 core.geocode = safe_geocode
+core.choose_mesh_target = safe_choose_mesh_target
 
 if __name__ == "__main__":
     raise SystemExit(core.main())
