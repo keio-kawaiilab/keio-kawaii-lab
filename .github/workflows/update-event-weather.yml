@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - fix/event-weather-precompute
+      - feature/weather-timeline
     paths:
       - "scripts/refresh_event_weather.py"
       - "scripts/refresh_event_weather_safe.py"
