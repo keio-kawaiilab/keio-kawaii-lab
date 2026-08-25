@@ -1,0 +1,43 @@
+name: Ensure schedule weather loader
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "scripts/ensure_schedule_weather_loader.py"
+      - ".github/workflows/ensure-schedule-weather-loader.yml"
+      - "schedule-weather.js"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ensure-schedule-weather-loader
+  cancel-in-progress: true
+
+jobs:
+  inject:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Ensure direct loader
+        run: python scripts/ensure_schedule_weather_loader.py
+
+      - name: Commit schedule loader if changed
+        shell: bash
+        run: |
+          if git diff --quiet -- schedule.html; then
+            echo "Schedule weather loader already present."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add schedule.html
+          git commit -m "fix: load schedule weather directly"
+          git pull --rebase
+          git push
