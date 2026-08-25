@@ -33,4 +33,10 @@
     timeline.setAttribute("data-ticket-sales-timeline","");
     document.body.appendChild(timeline);
   }
+  if(!document.querySelector('script[data-ticket-history-timeline]')){
+    var history=document.createElement("script");
+    history.src="./ticket-history-timeline.js?v=202608251226";
+    history.setAttribute("data-ticket-history-timeline","");
+    document.body.appendChild(history);
+  }
 })();
