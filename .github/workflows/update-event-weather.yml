@@ -14,6 +14,8 @@ on:
   schedule:
     # 気象庁の5時・11時・17時発表後（JST）に更新。UTCでは20時・2時・8時。
     - cron: "35 2,8,20 * * *"
+    # 日付が変わった直後にも対象イベント範囲を1日進める（JST 00:10 = UTC 15:10）。
+    - cron: "10 15 * * *"
   workflow_dispatch:
 
 permissions:
@@ -57,12 +59,17 @@ jobs:
           print(json.dumps(stats, ensure_ascii=False, indent=2))
           if stats.get('uniqueVenueDates', 0) > 0 and stats.get('weatherEntries', 0) == 0:
               raise SystemExit('Upcoming events exist but no weather was generated')
+          today = data.get('date', '')
+          future = [x for x in data.get('entries', []) if x.get('date', '') > today]
+          print(f"Future weather entries: {len(future)}")
+          if stats.get('uniqueVenueDates', 0) > 1 and not future:
+              raise SystemExit('Only today weather was generated although future venue-dates exist')
           PY
 
       - name: Commit generated weather data
         shell: bash
         run: |
-          if git diff --quiet -- data/event-weather.json data/venue-coordinates.json; then
+          if [ -z "$(git status --porcelain -- data/event-weather.json data/venue-coordinates.json)" ]; then
             echo "No event weather change."
             exit 0
           fi
