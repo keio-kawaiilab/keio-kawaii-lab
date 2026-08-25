@@ -1,0 +1,26 @@
+name: Check venue detail JavaScript
+
+on:
+  pull_request:
+    paths:
+      - "venue-detail.js"
+      - ".github/workflows/check-venue-detail.yml"
+  push:
+    branches:
+      - "main"
+    paths:
+      - "venue-detail.js"
+      - ".github/workflows/check-venue-detail.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check venue detail JavaScript syntax
+        run: node --check venue-detail.js
