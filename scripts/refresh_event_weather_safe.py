@@ -52,6 +52,8 @@ def safe_geocode(session, venue_name: str, venue_record: dict | None, cache: dic
         and saved.get("lat") is not None
         and saved.get("lon") is not None
     ):
+        # 保存済み座標でも、その検索元が今回の確認済み住所と完全一致している時だけ再利用する。
+        saved["verifiedAddress"] = True
         return saved
 
     try:
