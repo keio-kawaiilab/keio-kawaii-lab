@@ -28,7 +28,68 @@
       "coordinates": {
         "lat": 35.714058,
         "lon": 139.411499
-      }
+      },
+      "meshTimeline": [
+        {
+          "time": "06:00",
+          "label": "くもり",
+          "tempBand": "25〜29℃",
+          "validAt": "2026-08-26T06:00+09:00"
+        },
+        {
+          "time": "09:00",
+          "label": "晴れ",
+          "tempBand": "30〜34℃",
+          "validAt": "2026-08-26T09:00+09:00"
+        },
+        {
+          "time": "12:00",
+          "label": "晴れ",
+          "tempBand": "35℃以上",
+          "validAt": "2026-08-26T12:00+09:00"
+        },
+        {
+          "time": "15:00",
+          "label": "晴れ",
+          "tempBand": "30〜34℃",
+          "validAt": "2026-08-26T15:00+09:00"
+        },
+        {
+          "time": "18:00",
+          "label": "くもり",
+          "tempBand": "30〜34℃",
+          "validAt": "2026-08-26T18:00+09:00"
+        },
+        {
+          "time": "21:00",
+          "label": "くもり",
+          "tempBand": "25〜29℃",
+          "validAt": "2026-08-26T21:00+09:00"
+        },
+        {
+          "time": "24:00",
+          "label": "くもり",
+          "tempBand": "25〜29℃",
+          "validAt": "2026-08-27T00:00+09:00"
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "13:00",
+          "rain": false,
+          "validAt": "2026-08-26T13:00+09:00"
+        },
+        {
+          "time": "14:00",
+          "rain": false,
+          "validAt": "2026-08-26T14:00+09:00"
+        },
+        {
+          "time": "15:00",
+          "rain": false,
+          "validAt": "2026-08-26T15:00+09:00"
+        }
+      ]
     },
     {
       "date": "2026-08-26",
@@ -162,7 +223,9 @@
     "uniqueVenueDates": 7,
     "weatherEntries": 7,
     "meshEntries": 3,
-    "failures": 0
+    "failures": 0,
+    "meshTimelineEntries": 1,
+    "hourlyRainEntries": 1
   },
   "failures": []
 }
