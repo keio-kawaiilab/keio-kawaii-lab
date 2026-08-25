@@ -2,6 +2,38 @@
 // KAWAII LAB.同好会 公式サイト 共通スクリプト
 // =========================================
 
+// ---- サイトアイコン／ホーム画面追加用メタデータ ----
+(function installSiteIdentity() {
+  const head = document.head;
+  if (!head) return;
+
+  const ensureLink = (rel, href, attrs = {}) => {
+    if (head.querySelector(`link[rel="${rel}"]`)) return;
+    const link = document.createElement("link");
+    link.rel = rel;
+    link.href = href;
+    Object.entries(attrs).forEach(([key, value]) => link.setAttribute(key, value));
+    head.appendChild(link);
+  };
+
+  const ensureMeta = (name, content) => {
+    if (head.querySelector(`meta[name="${name}"]`)) return;
+    const meta = document.createElement("meta");
+    meta.name = name;
+    meta.content = content;
+    head.appendChild(meta);
+  };
+
+  ensureLink("icon", "./site-icon.svg", { type: "image/svg+xml", sizes: "any" });
+  ensureLink("apple-touch-icon", "./site-icon.svg");
+  ensureLink("manifest", "./site.webmanifest");
+  ensureMeta("theme-color", "#26305c");
+  ensureMeta("application-name", "慶應カワラボ同好会");
+  ensureMeta("apple-mobile-web-app-title", "慶應カワラボ");
+  ensureMeta("apple-mobile-web-app-capable", "yes");
+  ensureMeta("mobile-web-app-capable", "yes");
+})();
+
 document.addEventListener("DOMContentLoaded", () => {
   // ---- LIVE・チケット／会場ガイドを全ページの共通メニューに表示 ----
   [document.querySelector(".global-nav ul"), document.querySelector(".footer-nav ul")].forEach((list) => {
