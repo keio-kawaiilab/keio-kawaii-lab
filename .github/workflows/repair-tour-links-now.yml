@@ -1,0 +1,45 @@
+name: Repair canonical tour links
+
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - ".github/workflows/repair-tour-links-now.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Normalize official tour links
+        working-directory: scripts
+        run: python enrich_event_metadata.py
+      - name: Rebuild schedule snapshot
+        run: python scripts/build_schedule_snapshot.py
+      - name: Validate generated schedule JavaScript
+        run: |
+          python scripts/fix_schedule_shell.py
+          python scripts/strip_schedule_explanations.py
+          node --check /tmp/schedule-inline.js
+      - name: Publish repaired links
+        shell: bash
+        run: |
+          if [ -z "$(git status --porcelain -- data/live-events.json schedule.html)" ]; then
+            echo "No link repairs required."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/live-events.json schedule.html
+          git commit -m "fix: publish canonical tour links"
+          git push
