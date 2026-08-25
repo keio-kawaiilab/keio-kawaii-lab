@@ -1,0 +1,74 @@
+name: Update upcoming event weather
+
+on:
+  push:
+    branches:
+      - main
+      - fix/event-weather-precompute
+    paths:
+      - "scripts/refresh_event_weather.py"
+      - "scripts/requirements.txt"
+      - "data/live-events.json"
+      - "data/venues.json"
+      - ".github/workflows/update-event-weather.yml"
+  schedule:
+    # 気象庁の5時・11時・17時発表後（JST）に更新。UTCでは20時・2時・8時。
+    - cron: "35 2,8,20 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-event-weather-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Refresh upcoming event weather
+        run: python scripts/refresh_event_weather.py
+
+      - name: Validate generated coverage
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path('data/event-weather.json').read_text(encoding='utf-8'))
+          stats = data.get('stats', {})
+          print(json.dumps(stats, ensure_ascii=False, indent=2))
+          if stats.get('uniqueVenueDates', 0) > 0 and stats.get('weatherEntries', 0) == 0:
+              raise SystemExit('Upcoming events exist but no weather was generated')
+          PY
+
+      - name: Commit generated weather data
+        shell: bash
+        run: |
+          if git diff --quiet -- data/event-weather.json data/venue-coordinates.json; then
+            echo "No event weather change."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/event-weather.json data/venue-coordinates.json
+          git commit -m "chore: refresh upcoming event weather"
+          git pull --rebase
+          git push
