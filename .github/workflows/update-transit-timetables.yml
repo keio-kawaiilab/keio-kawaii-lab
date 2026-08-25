@@ -1,0 +1,57 @@
+name: Update transit timetables
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '20 18 * * 0'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-transit-timetables
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    env:
+      ODPT_API_KEY: ${{ secrets.ODPT_API_KEY }}
+      # Keep JR East challenge data disabled by default. Enable only after
+      # confirming the intended use complies with the applicable specific terms.
+      ALLOW_JR_EAST_CHALLENGE_DATA: ${{ vars.ALLOW_JR_EAST_CHALLENGE_DATA }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install importer dependency
+        run: pip install requests==2.32.5
+
+      - name: Import ODPT timetables
+        id: import
+        shell: bash
+        run: |
+          if [ -z "$ODPT_API_KEY" ]; then
+            echo "ODPT_API_KEY is not configured; leaving timetable snapshot unchanged."
+            echo "ran=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          python scripts/import_odpt_timetables.py
+          echo "ran=true" >> "$GITHUB_OUTPUT"
+
+      - name: Commit refreshed transit data
+        if: steps.import.outputs.ran == 'true'
+        shell: bash
+        run: |
+          if git diff --quiet -- data/transit; then
+            echo "No transit data changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/transit
+          git commit -m "Update transit timetable snapshot"
+          git push
