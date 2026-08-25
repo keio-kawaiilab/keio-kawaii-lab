@@ -1,7 +1,7 @@
 {
   "date": "2026-08-26",
   "horizonDays": 7,
-  "generatedAt": "2026-08-26T04:43+09:00",
+  "generatedAt": "2026-08-26T05:59+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -24,18 +24,12 @@
       "popLabel": "12〜18時",
       "issuedAt": "2026-08-26T05:00:00+09:00",
       "meshTime": "15:00",
-      "meshTempBand": "30〜34℃",
+      "meshTempBand": "35℃以上",
       "coordinates": {
         "lat": 35.714058,
         "lon": 139.411499
       },
       "meshTimeline": [
-        {
-          "time": "06:00",
-          "label": "くもり",
-          "tempBand": "25〜29℃",
-          "validAt": "2026-08-26T06:00+09:00"
-        },
         {
           "time": "09:00",
           "label": "晴れ",
@@ -51,12 +45,12 @@
         {
           "time": "15:00",
           "label": "晴れ",
-          "tempBand": "30〜34℃",
+          "tempBand": "35℃以上",
           "validAt": "2026-08-26T15:00+09:00"
         },
         {
           "time": "18:00",
-          "label": "くもり",
+          "label": "晴れ",
           "tempBand": "30〜34℃",
           "validAt": "2026-08-26T18:00+09:00"
         },
@@ -115,12 +109,6 @@
       },
       "meshTimeline": [
         {
-          "time": "06:00",
-          "label": "くもり",
-          "tempBand": "25〜29℃",
-          "validAt": "2026-08-26T06:00+09:00"
-        },
-        {
           "time": "09:00",
           "label": "晴れ",
           "tempBand": "30〜34℃",
@@ -129,7 +117,7 @@
         {
           "time": "12:00",
           "label": "晴れ",
-          "tempBand": "35℃以上",
+          "tempBand": "30〜34℃",
           "validAt": "2026-08-26T12:00+09:00"
         },
         {
@@ -185,18 +173,62 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "mesh5km",
-      "label": "くもり",
+      "label": "雨",
       "max": 31.0,
       "min": 26.0,
       "pop": "50",
       "popLabel": "12〜18時",
       "issuedAt": "2026-08-26T05:00:00+09:00",
-      "meshTime": "00:00",
+      "meshTime": "18:00",
       "meshTempBand": "25〜29℃",
       "coordinates": {
         "lat": 35.731079,
         "lon": 139.715378
-      }
+      },
+      "meshTimeline": [
+        {
+          "time": "06:00",
+          "label": "くもり",
+          "tempBand": "25〜29℃",
+          "validAt": "2026-08-27T06:00+09:00"
+        },
+        {
+          "time": "09:00",
+          "label": "くもり",
+          "tempBand": "25〜29℃",
+          "validAt": "2026-08-27T09:00+09:00"
+        },
+        {
+          "time": "12:00",
+          "label": "雨",
+          "tempBand": "30〜34℃",
+          "validAt": "2026-08-27T12:00+09:00"
+        },
+        {
+          "time": "15:00",
+          "label": "雨",
+          "tempBand": "30〜34℃",
+          "validAt": "2026-08-27T15:00+09:00"
+        },
+        {
+          "time": "18:00",
+          "label": "雨",
+          "tempBand": "25〜29℃",
+          "validAt": "2026-08-27T18:00+09:00"
+        },
+        {
+          "time": "21:00",
+          "label": "くもり",
+          "tempBand": "25〜29℃",
+          "validAt": "2026-08-27T21:00+09:00"
+        },
+        {
+          "time": "24:00",
+          "label": "くもり",
+          "tempBand": "25〜29℃",
+          "validAt": "2026-08-28T00:00+09:00"
+        }
+      ]
     },
     {
       "date": "2026-08-28",
@@ -285,7 +317,7 @@
     "weatherEntries": 7,
     "meshEntries": 3,
     "failures": 0,
-    "meshTimelineEntries": 2,
+    "meshTimelineEntries": 3,
     "hourlyRainEntries": 2
   },
   "failures": []
