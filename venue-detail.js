@@ -94,9 +94,31 @@
 
   function matchesVenue(name,venue){
     var normalized=normalize(name);
+    if(!normalized)return false;
     return keysFor(venue).some(function(key){
-      return normalized===key||normalized.indexOf(key)>=0||key.indexOf(normalized)>=0;
+      return normalized===key;
     });
+  }
+
+  function tourOfficialUrl(event){
+    if(event.officialTourUrl)return event.officialTourUrl;
+    var group=String(event.group||"");
+    var title=String(event.eventTitle||event.displayTitle||event.title||"");
+    if(group==="FRUITS ZIPPER"&&/JAPAN\s*TOUR\s*2026.*AUTUMN/i.test(title))return"https://fruitszipper.asobisystem.com/feature/2026tour_autumn";
+    if(group==="CANDY TUNE"&&/JAPAN\s*TOUR\s*2026.*AUTUMN/i.test(title))return"https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026";
+    if(group==="SWEET STEADY"&&/(?:JAPAN\s*(?:HALL\s*)?TOUR\s*2026|JAPAN\s*TOUR\s*2026.*WINTER)/i.test(title))return"https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026";
+    if(group==="CUTIE STREET"&&/(?:ARENA\s*TOUR\s*2026|AUTUMN\s*TOUR)/i.test(title))return"https://cutiestreet.asobisystem.com/feature/autumntour";
+    return"";
+  }
+
+  function eventLink(event){
+    var tour=tourOfficialUrl(event);
+    if(tour)return{url:tour,label:"ツアー公式 ↗"};
+    if(event.officialScheduleUrl)return{url:event.officialScheduleUrl,label:"公演公式 ↗"};
+    var values=[event.url].concat(event.urls||[]).filter(Boolean);
+    var official=values.find(function(value){return /\.asobisystem\.com\/(?:live_information|news|feature)\//.test(String(value));});
+    if(official)return{url:official,label:"公演公式 ↗"};
+    return values.length?{url:values[0],label:"情報源 ↗"}:{url:"",label:""};
   }
 
   function upcomingAt(events,venue){
@@ -109,11 +131,13 @@
         var marker=[row.date,event.group,eventTitle(event)].join("|");
         if(seen[marker])return;
         seen[marker]=true;
+        var link=eventLink(event);
         result.push({
           date:row.date,
           group:event.group||"KAWAII LAB.",
           title:eventTitle(event),
-          url:event.url||""
+          url:link.url,
+          linkLabel:link.label
         });
       });
     });
@@ -219,7 +243,7 @@
       return '<div class="venue-upcoming-item">'+
         '<time datetime="'+esc(item.date)+'">'+esc(fmtDate(item.date,true))+'</time>'+
         '<div class="venue-upcoming-copy"><span class="venue-badge">'+esc(item.group)+'</span><strong>'+esc(item.title)+'</strong></div>'+
-        (item.url?'<a class="venue-upcoming-source" href="'+esc(item.url)+'" target="_blank" rel="noopener">公式情報 ↗</a>':"")+
+        (item.url?'<a class="venue-upcoming-source" href="'+esc(item.url)+'" target="_blank" rel="noopener">'+esc(item.linkLabel||"情報源 ↗")+'</a>':"")+
       '</div>';
     }).join(""):'<p class="venue-upcoming-empty">現在のスケジュールに、この会場の今後の公演は掲載されていません。</p>';
     var related=relatedVenues(allVenues,venue);
@@ -303,7 +327,7 @@
       var requestedKey=normalize(requested);
       return[candidate.name].concat(candidate.aliases||[]).some(function(name){
         var key=normalize(name);
-        return requestedKey===key||requestedKey.indexOf(key)>=0||key.indexOf(requestedKey)>=0;
+        return requestedKey===key;
       });
     });
     if(!venue&&!requested&&!id){
