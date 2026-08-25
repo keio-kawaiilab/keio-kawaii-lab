@@ -173,7 +173,7 @@
 
     var temps="";
     if(entry.max!=null)temps+='<span class="schedule-weather-high">最高 '+esc(cleanTemp(entry.max))+'℃</span>';
-    if(entry.min!=null)temps+='<span class="schedule-weather-low">最低 '+esc(cleanTemp(entry.min))+'℃</span>';
+    if(entry.min!=null&&(entry.max==null||Number(entry.min)!==Number(entry.max)))temps+='<span class="schedule-weather-low">最低 '+esc(cleanTemp(entry.min))+'℃</span>';
 
     var sub=[];
     if(!hasTimeline&&mesh&&entry.meshTempBand){
