@@ -63,10 +63,22 @@
 
     var count=root.querySelectorAll(".venue-upcoming-item").length;
     var countEl=root.querySelector(".venue-info-count");
-    if(countEl)countEl.textContent=count+"件";
+    var nextCount=count+"件";
+    if(countEl&&countEl.textContent!==nextCount)countEl.textContent=nextCount;
   }
 
-  var observer=new MutationObserver(function(){cleanDuplicates();});
+  var running=false;
+  var observer=new MutationObserver(function(){
+    if(running)return;
+    running=true;
+    observer.disconnect();
+    try{
+      cleanDuplicates();
+    }finally{
+      observer.observe(root,{childList:true,subtree:true});
+      running=false;
+    }
+  });
   observer.observe(root,{childList:true,subtree:true});
   cleanDuplicates();
 })();
