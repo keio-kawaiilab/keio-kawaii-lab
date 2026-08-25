@@ -46,6 +46,47 @@ class EnrichEventMetadataTests(unittest.TestCase):
         self.assertEqual(event["urls"][0], expected)
         self.assertIn("https://candytune.asobisystem.com/news/detail/82537", event["urls"])
 
+    def test_all_known_tours_use_their_feature_pages(self):
+        cases = [
+            (
+                "FRUITS ZIPPER",
+                "FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN -",
+                "https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
+            ),
+            (
+                "CANDY TUNE",
+                "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
+                "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
+            ),
+            (
+                "SWEET STEADY",
+                "SWEET STEADY JAPAN HALL TOUR 2026",
+                "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026",
+            ),
+            (
+                "CUTIE STREET",
+                "CUTIE STREET ARENA TOUR 2026",
+                "https://cutiestreet.asobisystem.com/feature/autumntour",
+            ),
+        ]
+        for group, title, expected in cases:
+            with self.subTest(group=group):
+                payload = {
+                    "events": [
+                        {
+                            "group": group,
+                            "title": title,
+                            "eventDate": "2026-10-10",
+                            "sourceType": "derived",
+                            "url": "https://example.invalid/old-source",
+                        }
+                    ]
+                }
+                result, changed = e.enrich_payload(payload)
+                self.assertEqual(changed, 1)
+                self.assertEqual(result["events"][0]["url"], expected)
+                self.assertEqual(result["events"][0]["officialTourUrl"], expected)
+
     def test_playguide_tour_link_is_not_overwritten(self):
         payload = {
             "events": [
