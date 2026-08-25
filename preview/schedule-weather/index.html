@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>天気機能プレビュー | KAWAII LAB.同好会</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:#fffdf8;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif}.preview-bar{height:44px;display:flex;align-items:center;justify-content:center;gap:8px;padding:0 12px;background:#22335f;color:#fff;font-size:12px;font-weight:800;letter-spacing:.02em}.preview-bar strong{color:#ffe88a}.preview-frame{display:block;width:100%;height:calc(100vh - 44px);border:0;background:#fffdf8}@media(max-width:620px){.preview-bar{height:40px;font-size:11px}.preview-frame{height:calc(100vh - 40px)}}
+</style>
+</head>
+<body>
+<div class="preview-bar">🧪 <strong>天気機能テスト版</strong>　本番ページには未反映</div>
+<iframe id="preview" class="preview-frame" src="../../schedule.html?weather-preview=1" title="天気機能プレビュー"></iframe>
+<script>
+(function(){
+  var frame=document.getElementById('preview');
+  frame.addEventListener('load',function(){
+    try{
+      var doc=frame.contentDocument;
+      if(!doc||!doc.head||!doc.body)return;
+      if(!doc.querySelector('link[data-schedule-weather]')){
+        var css=doc.createElement('link');
+        css.rel='stylesheet';
+        css.href='./preview/schedule-weather/schedule-weather.css?v=202608260315';
+        css.setAttribute('data-schedule-weather','preview');
+        doc.head.appendChild(css);
+      }
+      if(!doc.querySelector('script[data-schedule-weather-preview]')){
+        var js=doc.createElement('script');
+        js.src='./preview/schedule-weather/schedule-weather.js?v=202608260315';
+        js.setAttribute('data-schedule-weather-preview','');
+        doc.body.appendChild(js);
+      }
+    }catch(error){
+      console.error('weather preview injection failed',error);
+    }
+  });
+})();
+</script>
+</body>
+</html>
