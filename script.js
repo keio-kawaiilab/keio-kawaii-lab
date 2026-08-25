@@ -25,9 +25,9 @@
   };
 
   ensureLink("icon", "./site-icon.svg", { type: "image/svg+xml", sizes: "any" });
-  ensureLink("apple-touch-icon", "./site-icon.svg");
+  ensureLink("apple-touch-icon", "./apple-touch-icon.png", { sizes: "180x180" });
   ensureLink("manifest", "./site.webmanifest");
-  ensureMeta("theme-color", "#26305c");
+  ensureMeta("theme-color", "#14386f");
   ensureMeta("application-name", "慶應カワラボ同好会");
   ensureMeta("apple-mobile-web-app-title", "慶應カワラボ");
   ensureMeta("apple-mobile-web-app-capable", "yes");
