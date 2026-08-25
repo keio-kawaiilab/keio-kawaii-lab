@@ -11,7 +11,7 @@
   if(!document.querySelector('link[data-schedule-weather]')){
     var style=document.createElement("link");
     style.rel="stylesheet";
-    style.href="./schedule-weather.css?v=202608260500";
+    style.href="./schedule-weather.css?v=202608260700";
     style.setAttribute("data-schedule-weather","");
     document.head.appendChild(style);
   }
@@ -67,6 +67,13 @@
     return clone.textContent.trim();
   }
 
+  function parseCardStartTime(card){
+    var item=metaItem(card,"開催日時");
+    var text=String(item&&item.textContent||"");
+    var match=text.match(/(?:開演|開始)\s*(\d{1,2}:\d{2})/);
+    return match?match[1]:"";
+  }
+
   function iconFor(label){
     var text=String(label||"");
     if(/雷/.test(text))return"⛈️";
@@ -87,18 +94,89 @@
     return Number.isInteger(number)?String(number):number.toFixed(1).replace(/\.0$/,"");
   }
 
-  function weatherHtml(entry,source){
+  function timeMinutes(value){
+    var match=String(value||"").match(/^(\d{1,2}):(\d{2})$/);
+    if(!match)return null;
+    var hour=Number(match[1]);
+    var minute=Number(match[2]);
+    if(hour===24&&minute===0)return 1440;
+    return hour*60+minute;
+  }
+
+  function timelineHtml(entry,startTime){
+    var rows=Array.isArray(entry.meshTimeline)?entry.meshTimeline:[];
+    if(!rows.length)return"";
+    var start=timeMinutes(startTime);
+    var focus=-1;
+    if(start!=null){
+      var best=Infinity;
+      rows.forEach(function(row,index){
+        var mins=timeMinutes(row.time);
+        if(mins==null)return;
+        var diff=Math.abs(mins-start);
+        if(diff<best){best=diff;focus=index;}
+      });
+    }
+    return '<div class="schedule-weather-timeline-wrap">'+
+      '<div class="schedule-weather-timeline-title"><b>会場周辺 約5km</b><span>6〜24時・3時間ごと</span></div>'+
+      '<div class="schedule-weather-timeline" role="list" aria-label="3時間ごとの会場周辺天気">'+
+      rows.map(function(row,index){
+        return '<div class="schedule-weather-slot'+(index===focus?' is-focus':'')+'" role="listitem">'+
+          '<span class="schedule-weather-slot-time">'+esc(row.time)+'</span>'+
+          '<span class="schedule-weather-slot-icon" aria-hidden="true">'+iconFor(row.label)+'</span>'+
+          '<span class="schedule-weather-slot-label">'+esc(row.label||"")+'</span>'+
+          (row.tempBand?'<span class="schedule-weather-slot-temp">'+esc(row.tempBand)+'</span>':'')+
+          '</div>';
+      }).join('')+
+      '</div></div>';
+  }
+
+  function hourlyRainHtml(entry,day,startTime){
+    var rows=Array.isArray(entry.hourlyRain)?entry.hourlyRain:[];
+    if(!rows.length||!day||!startTime)return"";
+    var start=new Date(day+'T'+startTime+':00+09:00');
+    if(Number.isNaN(start.getTime()))return"";
+    var labels=[['1時間前',-60],['開演ごろ',0],['1時間後',60]];
+    var used={};
+    var picks=[];
+    labels.forEach(function(spec){
+      var desired=start.getTime()+spec[1]*60000;
+      var best=null,bestDiff=Infinity;
+      rows.forEach(function(row){
+        var actual=new Date(row.validAt||'');
+        if(Number.isNaN(actual.getTime()))return;
+        var diff=Math.abs(actual.getTime()-desired)/60000;
+        if(diff<bestDiff&&diff<=40){best=row;bestDiff=diff;}
+      });
+      if(best&&!used[best.validAt]){
+        used[best.validAt]=true;
+        picks.push({label:spec[0],row:best});
+      }
+    });
+    if(!picks.length)return"";
+    return '<div class="schedule-weather-hourly-rain">'+
+      '<div class="schedule-weather-hourly-rain-title"><b>開演前後の雨</b><span>1時間予報・15時間以内</span></div>'+
+      '<div class="schedule-weather-hourly-rain-row">'+
+      picks.map(function(item){
+        return '<span class="schedule-weather-rain-chip '+(item.row.rain?'has-rain':'no-rain')+'">'+
+          '<small>'+esc(item.label)+'</small><b>'+esc(item.row.time)+'</b><span>'+(item.row.rain?'☔ 雨予報':'降水なし')+'</span></span>';
+      }).join('')+
+      '</div></div>';
+  }
+
+  function weatherHtml(entry,source,day,startTime){
+    var hasTimeline=Array.isArray(entry.meshTimeline)&&entry.meshTimeline.length;
     var mesh=entry.precision==="mesh5km";
-    var precisionText=mesh
-      ?"会場周辺 約5km"+(entry.meshTime?"｜"+entry.meshTime+"ごろ":"")
-      :(entry.areaName?entry.areaName+"｜":"")+"気象庁予報";
+    var precisionText=hasTimeline
+      ?"会場周辺 約5km｜3時間ごとの公式予報"
+      :(mesh?"会場周辺 約5km"+(entry.meshTime?"｜"+entry.meshTime+"ごろ":""):(entry.areaName?entry.areaName+"｜":"")+"気象庁予報");
 
     var temps="";
     if(entry.max!=null)temps+='<span class="schedule-weather-high">最高 '+esc(cleanTemp(entry.max))+'℃</span>';
-    if(entry.min!=null)temps+='<span class="schedule-weather-low">最低 '+esc(cleanTemp(entry.min))+'℃</span>';
+    if(entry.min!=null&&(entry.max==null||Number(entry.min)!==Number(entry.max)))temps+='<span class="schedule-weather-low">最低 '+esc(cleanTemp(entry.min))+'℃</span>';
 
     var sub=[];
-    if(mesh&&entry.meshTempBand){
+    if(!hasTimeline&&mesh&&entry.meshTempBand){
       sub.push('<span class="schedule-weather-mesh-temp">🌡️ '+esc(entry.meshTime||"開演前後")+' '+esc(entry.meshTempBand)+'</span>');
     }
     if(entry.pop!=null&&entry.pop!==""){
@@ -109,8 +187,10 @@
     return '<section class="schedule-weather" aria-label="開催日の天気">'+
       '<div class="schedule-weather-head"><div><small>開催日の天気</small><strong>'+esc(precisionText)+'</strong></div></div>'+
       '<div class="schedule-weather-main"><span class="schedule-weather-icon" aria-hidden="true">'+iconFor(entry.label)+'</span><strong class="schedule-weather-condition">'+esc(entry.label||"天気予報")+'</strong><div class="schedule-weather-temps">'+temps+'</div></div>'+
+      timelineHtml(entry,startTime)+
+      hourlyRainHtml(entry,day,startTime)+
       (sub.length?'<div class="schedule-weather-sub">'+sub.join('')+'</div>':"")+
-      '<a class="schedule-weather-source" href="'+esc(source&&source.url||"https://www.jma.go.jp/bosai/forecast/")+'" target="_blank" rel="noopener">出典：'+esc(source&&source.name||"気象庁")+' ↗</a>'+
+      '<a class="schedule-weather-source" href="'+esc(source&&source.url||"https://www.jma.go.jp/bosai/forecast/")+'" target="_blank" rel="noopener">出典：'+esc(source&&source.name||"気象庁")+'（天気分布予報・今後の雨）↗</a>'+
       '</section>';
   }
 
@@ -135,7 +215,9 @@
     }
     var meta=card.querySelector(".meta");
     if(!meta)return;
-    var html=weatherHtml(entry,payload.source||{});
+    var day=parseCardDate(card);
+    var startTime=parseCardStartTime(card);
+    var html=weatherHtml(entry,payload.source||{},day,startTime);
     if(old){
       var holder=document.createElement("div");
       holder.innerHTML=html;
@@ -171,6 +253,7 @@
   window.KawaiiScheduleWeather={
     normalizeVenue:normalizeVenue,
     parseCardDate:parseCardDate,
-    parseCardVenue:parseCardVenue
+    parseCardVenue:parseCardVenue,
+    parseCardStartTime:parseCardStartTime
   };
 })();
