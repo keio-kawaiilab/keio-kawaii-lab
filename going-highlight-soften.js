@@ -27,16 +27,4 @@
     dedupe.setAttribute("data-schedule-card-dedupe-v2","");
     document.body.appendChild(dedupe);
   }
-  if(!document.querySelector('script[data-ticket-sales-timeline]')){
-    var timeline=document.createElement("script");
-    timeline.src="./ticket-sales-timeline-balanced.js?v=202608250353";
-    timeline.setAttribute("data-ticket-sales-timeline","");
-    document.body.appendChild(timeline);
-  }
-  if(!document.querySelector('script[data-ticket-history-timeline]')){
-    var history=document.createElement("script");
-    history.src="./ticket-history-timeline.js?v=202608251226";
-    history.setAttribute("data-ticket-history-timeline","");
-    document.body.appendChild(history);
-  }
 })();
