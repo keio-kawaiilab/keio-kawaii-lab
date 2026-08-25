@@ -1,14 +1,31 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
-<title id="title">慶應カワラボ同好会</title>
-<desc id="desc">紺・紅・金のKLモノグラム</desc>
-<rect width="1024" height="1024" rx="224" fill="#26305c"/>
-<rect x="78" y="78" width="868" height="868" rx="180" fill="none" stroke="#b9974a" stroke-width="24"/>
-<circle cx="205" cy="205" r="30" fill="#fdfcf8"/>
-<circle cx="280" cy="205" r="30" fill="#a93b4f"/>
-<circle cx="355" cy="205" r="30" fill="#b9974a"/>
-<rect x="245" y="314" width="92" height="420" rx="46" fill="#fdfcf8"/>
-<path d="M333 520 L535 314 H655 L425 535 L674 734 H542 L333 570 Z" fill="#fdfcf8"/>
-<rect x="617" y="314" width="92" height="420" rx="46" fill="#a93b4f"/>
-<rect x="617" y="642" width="184" height="92" rx="46" fill="#a93b4f"/>
-<circle cx="802" cy="314" r="30" fill="#b9974a"/>
+  <title id="title">慶應カワラボ同好会</title>
+  <desc id="desc">紺と金の円形クラブエンブレム</desc>
+  <defs>
+    <path id="topArc" d="M 214 512 A 298 298 0 0 1 810 512"/>
+    <path id="bottomArc" d="M 810 512 A 298 298 0 0 1 214 512"/>
+  </defs>
+
+  <rect width="1024" height="1024" fill="#fefbf6"/>
+
+  <circle cx="512" cy="512" r="430" fill="#14386f" stroke="#d6ad3d" stroke-width="18"/>
+  <circle cx="512" cy="512" r="318" fill="#fefbf6" stroke="#d6ad3d" stroke-width="12"/>
+
+  <g fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-weight="700" letter-spacing="12">
+    <text font-size="58">
+      <textPath href="#topArc" startOffset="50%" text-anchor="middle">KAWAII LAB. CLUB</textPath>
+    </text>
+    <text font-size="54">
+      <textPath href="#bottomArc" startOffset="50%" text-anchor="middle">KEIO</textPath>
+    </text>
+  </g>
+
+  <g fill="none" stroke="#14386f" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 390 350 L 390 680" stroke-width="92"/>
+    <path d="M 405 520 L 600 350" stroke-width="88"/>
+    <path d="M 405 520 L 620 688" stroke-width="88"/>
+  </g>
+
+  <circle cx="626" cy="382" r="22" fill="#d6ad3d"/>
+  <circle cx="624" cy="678" r="18" fill="#d6ad3d"/>
 </svg>
