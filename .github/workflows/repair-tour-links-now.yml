@@ -22,8 +22,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Normalize official tour links
-        working-directory: scripts
-        run: python enrich_event_metadata.py
+        run: python scripts/enrich_event_metadata.py
       - name: Rebuild schedule snapshot
         run: python scripts/build_schedule_snapshot.py
       - name: Validate generated schedule JavaScript
