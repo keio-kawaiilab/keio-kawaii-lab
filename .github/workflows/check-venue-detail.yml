@@ -4,12 +4,14 @@ on:
   pull_request:
     paths:
       - "venue-detail.js"
+      - "venue-detail-cleanup.js"
       - ".github/workflows/check-venue-detail.yml"
   push:
     branches:
       - "main"
     paths:
       - "venue-detail.js"
+      - "venue-detail-cleanup.js"
       - ".github/workflows/check-venue-detail.yml"
   workflow_dispatch:
 
@@ -23,4 +25,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Check venue detail JavaScript syntax
-        run: node --check venue-detail.js
+        run: |
+          node --check venue-detail.js
+          node --check venue-detail-cleanup.js
