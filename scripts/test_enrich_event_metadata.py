@@ -24,15 +24,53 @@ class EnrichEventMetadataTests(unittest.TestCase):
         self.assertEqual(changed, 1)
         self.assertEqual(result["events"][0]["venue"], "SGCホール有明")
 
+    def test_tour_news_link_is_replaced_by_official_feature(self):
+        payload = {
+            "events": [
+                {
+                    "group": "CANDY TUNE",
+                    "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
+                    "eventDate": "2026-08-29",
+                    "sourceType": "derived",
+                    "url": "https://candytune.asobisystem.com/news/detail/82537",
+                    "urls": ["https://candytune.asobisystem.com/news/detail/82537"],
+                }
+            ]
+        }
+        result, changed = e.enrich_payload(payload)
+        event = result["events"][0]
+        expected = "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026"
+        self.assertEqual(changed, 1)
+        self.assertEqual(event["url"], expected)
+        self.assertEqual(event["officialTourUrl"], expected)
+        self.assertEqual(event["urls"][0], expected)
+        self.assertIn("https://candytune.asobisystem.com/news/detail/82537", event["urls"])
+
+    def test_playguide_tour_link_is_not_overwritten(self):
+        payload = {
+            "events": [
+                {
+                    "group": "FRUITS ZIPPER",
+                    "title": "FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN -",
+                    "eventDate": "2026-09-03",
+                    "sourceType": "pia",
+                    "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=12345",
+                }
+            ]
+        }
+        result, changed = e.enrich_payload(payload)
+        self.assertEqual(changed, 0)
+        self.assertTrue(result["events"][0]["url"].startswith("https://t.pia.jp/"))
+
     def test_unrelated_event_is_not_changed(self):
         payload = {
             "events": [
                 {
                     "group": "CANDY TUNE",
-                    "title": "CANDY TUNE JAPAN TOUR 2026",
+                    "title": "CANDY TUNE 単独ライブ",
                     "eventDate": "2026-10-01",
                     "venue": None,
-                    "url": "https://candytune.asobisystem.com/news/detail/86518",
+                    "url": "https://candytune.asobisystem.com/news/detail/99999",
                 }
             ]
         }
