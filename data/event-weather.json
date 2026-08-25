@@ -1,7 +1,7 @@
 {
   "date": "2026-08-26",
   "horizonDays": 7,
-  "generatedAt": "2026-08-26T03:48+09:00",
+  "generatedAt": "2026-08-26T03:51+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -16,16 +16,19 @@
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
-      "precision": "area",
-      "label": "晴れ 夕方 から くもり 所により 雨 で 雷を伴い 激しく 降る",
+      "precision": "mesh5km",
+      "label": "晴れ",
       "max": 35.0,
       "min": 26.0,
       "pop": "20",
       "popLabel": "12〜18時",
       "issuedAt": "2026-08-25T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "meshTime": "15:00",
+      "meshTempBand": "30〜34℃",
+      "coordinates": {
+        "lat": 35.714058,
+        "lon": 139.411499
+      }
     },
     {
       "date": "2026-08-26",
@@ -59,16 +62,19 @@
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
-      "precision": "area",
-      "label": "くもり 一時 雨",
+      "precision": "mesh5km",
+      "label": "くもり",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
       "issuedAt": "2026-08-25T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "meshTime": "00:00",
+      "meshTempBand": "25〜29℃",
+      "coordinates": {
+        "lat": 35.731079,
+        "lon": 139.715378
+      }
     },
     {
       "date": "2026-08-28",
@@ -155,7 +161,7 @@
     "occurrencesInRange": 7,
     "uniqueVenueDates": 7,
     "weatherEntries": 7,
-    "meshEntries": 1,
+    "meshEntries": 3,
     "failures": 0
   },
   "failures": []
