@@ -8,6 +8,7 @@ on:
       - "scripts/update_special_events.py"
       - "scripts/update_official_x_special_events.py"
       - "scripts/test_update_special_events.py"
+      - "scripts/test_special_event_ancillary.py"
       - "scripts/test_update_official_x_special_events.py"
       - "scripts/audit_schedule_release.py"
       - "scripts/test_audit_schedule_release.py"
@@ -63,7 +64,7 @@ jobs:
 
       - name: Test special-event discovery and release gate
         working-directory: scripts
-        run: python -m unittest -v test_update_special_events.py test_update_official_x_special_events.py test_resolve_source_priority.py test_audit_schedule_release.py test_schedule_scope.py test_audit_official_schedule_coverage.py
+        run: python -m unittest -v test_update_special_events.py test_special_event_ancillary.py test_update_official_x_special_events.py test_resolve_source_priority.py test_audit_schedule_release.py test_schedule_scope.py test_audit_official_schedule_coverage.py
 
       - name: Refresh special-event candidate data
         if: steps.control.outputs.frozen != 'true'
