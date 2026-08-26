@@ -11,7 +11,7 @@
   if(!document.querySelector('link[data-schedule-weather]')){
     var style=document.createElement("link");
     style.rel="stylesheet";
-    style.href="./schedule-weather.css?v=202608261205";
+    style.href="./schedule-weather.css?v=202608261510";
     style.setAttribute("data-schedule-weather","");
     document.head.appendChild(style);
   }
