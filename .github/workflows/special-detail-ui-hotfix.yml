@@ -1,0 +1,59 @@
+name: Complete special-event detail display
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/special-detail-ui-hotfix.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Patch generic special-event card renderer
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/build_schedule_snapshot.py')
+          s = p.read_text(encoding='utf-8')
+
+          old = '''        if event.get("gatheringTime"):\n            detail.append(f'<div><b>集合</b>{esc(event["gatheringTime"])}</div>')\n        if event.get("ticketName"):\n            detail.append(f'<div><b>必要な整理券・参加券</b>{esc(event["ticketName"])}</div>')\n'''
+          new = '''        if event.get("gatheringTime"):\n            detail.append(f'<div><b>集合</b>{esc(event["gatheringTime"])}</div>')\n        if event.get("startTime"):\n            detail.append(f'<div><b>イベント開始</b>{esc(event["startTime"])}</div>')\n        if event.get("ticketName"):\n            detail.append(f'<div><b>必要な整理券・参加券</b>{esc(event["ticketName"])}</div>')\n'''
+          if old not in s:
+              raise SystemExit('timing insertion point not found')
+          s = s.replace(old, new, 1)
+
+          old = '''        if event.get("product"):\n            detail.append(f'<p class="special-method"><b>対象商品：</b>{esc(event["product"])}</p>')\n        detail.append('</section>')\n'''
+          new = '''        if event.get("product"):\n            detail.append(f'<p class="special-method"><b>対象商品：</b>{esc(event["product"])}</p>')\n        benefits = event.get("ticketBenefits") or []\n        if isinstance(benefits, list) and benefits:\n            detail.append('<h4>参加券・特典</h4><ul class="detail-list">')\n            detail.extend(f'<li>{esc(item)}</li>' for item in benefits if item)\n            detail.append('</ul>')\n        calls = event.get("numberedCallTimes") or []\n        if isinstance(calls, list) and calls:\n            detail.append('<h4>整理番号別の集合・呼び出し目安</h4><div class="call-times">')\n            for item in calls:\n                if not isinstance(item, dict):\n                    continue\n                numbers = item.get("numbers") or "整理番号"\n                time = item.get("time") or "時刻未定"\n                detail.append(f'<span class="time-chip">{esc(numbers)}｜{esc(time)}</span>')\n            detail.append('</div>')\n        event_parts = event.get("parts") or []\n        if isinstance(event_parts, list) and event_parts:\n            detail.append('<h4>各部の時間・受付</h4><div class="part-times">')\n            for item in event_parts:\n                if not isinstance(item, dict):\n                    continue\n                part = esc(item.get("part") or "部")\n                content = str(item.get("content") or "").strip()\n                start = str(item.get("start") or "—")\n                end = str(item.get("end") or "—")\n                reception_start = str(item.get("receptionStart") or "—")\n                reception_end = str(item.get("receptionEnd") or "—")\n                label = (content + "｜" if content else "") + f"{start}〜{end}（受付 {reception_start}〜{reception_end}）"\n                detail.append(f'<div class="part-row"><b>{part}</b><span>{esc(label)}</span></div>')\n            detail.append('</div>')\n        detail.append('</section>')\n'''
+          if old not in s:
+              raise SystemExit('detail insertion point not found')
+          s = s.replace(old, new, 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Rebuild and validate
+        run: |
+          python scripts/build_schedule_snapshot.py
+          python scripts/fix_schedule_shell.py
+          python scripts/strip_schedule_explanations.py
+          python scripts/test_build_schedule_snapshot.py
+          node --check /tmp/schedule-inline.js
+          grep -q 'イベント開始</b>14:00' schedule.html
+          grep -q '1〜200番｜10:00' schedule.html
+          grep -q 'お見送り会参加券' schedule.html
+
+      - name: Publish display fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/build_schedule_snapshot.py schedule.html
+          git commit -m "fix: render complete special-event details"
+          git push
