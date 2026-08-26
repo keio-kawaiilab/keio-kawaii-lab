@@ -38,6 +38,8 @@ def stable_id(*values: object) -> str:
 
 def special_category(value: object) -> str:
     text = str(value or "")
+    if text in {"large-benefit", "release-event"}:
+        return text
     return "large-benefit" if "大特典会" in text else "release-event" if SPECIAL_RE.search(text) else ""
 
 
