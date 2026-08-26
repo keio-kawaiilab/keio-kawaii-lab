@@ -23,6 +23,7 @@ GROUPS = {
     "MORE STAR": "https://morestar.asobisystem.com",
 }
 SPECIAL_RE = re.compile(r"大特典会|リリースイベント|リリイベ|発売記念イベント")
+ANCILLARY_SPECIAL_RE = re.compile(r"特別抽選会|抽選会開催決定|物販情報|グッズ(?:販売)?情報|会場物販|販売アイテム", re.I)
 DATE_RE = re.compile(
     r"(?:(20\d{2})年)?\s*(\d{1,2})月\s*(\d{1,2})日"
     r"(?:\s*[（(][^）)]*[）)])?(?:\s*(\d{1,2})[：:](\d{2}))?"
@@ -254,6 +255,8 @@ def parse_page(group: str, url: str, html_text: str, now: datetime | None = None
     title = next((value for value in title_candidates if SPECIAL_RE.search(value)), title_candidates[0] if title_candidates else "")
     if not SPECIAL_RE.search(title + " " + " ".join(lines[:80])):
         return []
+    if ANCILLARY_SPECIAL_RE.search(title):
+        return []
     category = "large-benefit" if "大特典会" in title else "release-event"
     display_title = re.split(r"\s*@|\s*＠", title, maxsplit=1)[0]
     display_title = re.sub(rf"^[【〖]?{re.escape(group)}[】〗]?\s*", "", display_title, flags=re.I)
@@ -464,7 +467,7 @@ def discover(
             href = urljoin(base, anchor.get("href", ""))
             if "/news/detail/" in href:
                 news_links_found = True
-            if "/news/detail/" in href and SPECIAL_RE.search(label):
+            if "/news/detail/" in href and SPECIAL_RE.search(label) and not ANCILLARY_SPECIAL_RE.search(label):
                 pages[href] = "article"
                 page_origins.setdefault(href, set()).add(origin)
         if news_links_found or origin not in {"home", "index-1"}:
@@ -510,6 +513,10 @@ def discover(
                 linked_live.append(href)
         if not parsed and not linked_live:
             lines = [normalize(x) for x in soup.get_text("\n", strip=True).splitlines() if normalize(x)]
+            page_title = normalize(soup.find("h1").get_text(" ", strip=True)) if soup.find("h1") else ""
+            if ANCILLARY_SPECIAL_RE.search(page_title):
+                time.sleep(0.08)
+                continue
             published = article_date(lines)
             recent = False
             if published:
