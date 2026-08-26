@@ -1,120 +1,12 @@
 {
-  "date": "2026-08-26",
+  "date": "2026-08-27",
   "horizonDays": 7,
-  "generatedAt": "2026-08-26T18:22+09:00",
+  "generatedAt": "2026-08-27T01:32+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
-    {
-      "date": "2026-08-26",
-      "venue": "ららぽーと立川立飛 2Fイベント広場",
-      "venueKey": "ららぽーと立川立飛2fイベント広場",
-      "eventIds": [
-        "5b44972d78071783"
-      ],
-      "areaCode": "130010",
-      "areaName": "東京地方",
-      "precision": "mesh5km",
-      "label": "くもり",
-      "max": null,
-      "min": null,
-      "pop": "20",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-08-26T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "25〜29℃",
-      "coordinates": {
-        "lat": 35.714058,
-        "lon": 139.411499
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "くもり",
-          "tempBand": "25〜29℃",
-          "validAt": "2026-08-26T21:00+09:00"
-        },
-        {
-          "time": "24:00",
-          "label": "くもり",
-          "tempBand": "25〜29℃",
-          "validAt": "2026-08-27T00:00+09:00"
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "13:00",
-          "rain": false,
-          "validAt": "2026-08-26T13:00+09:00"
-        },
-        {
-          "time": "14:00",
-          "rain": false,
-          "validAt": "2026-08-26T14:00+09:00"
-        },
-        {
-          "time": "15:00",
-          "rain": false,
-          "validAt": "2026-08-26T15:00+09:00"
-        }
-      ]
-    },
-    {
-      "date": "2026-08-26",
-      "venue": "日本武道館",
-      "venueKey": "日本武道館",
-      "eventIds": [
-        "9ea8133c3410e883"
-      ],
-      "areaCode": "130010",
-      "areaName": "東京地方",
-      "precision": "mesh5km",
-      "label": "くもり",
-      "max": null,
-      "min": null,
-      "pop": "20",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-08-26T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "25〜29℃",
-      "coordinates": {
-        "lat": 35.691772,
-        "lon": 139.753021
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "くもり",
-          "tempBand": "25〜29℃",
-          "validAt": "2026-08-26T21:00+09:00"
-        },
-        {
-          "time": "24:00",
-          "label": "くもり",
-          "tempBand": "25〜29℃",
-          "validAt": "2026-08-27T00:00+09:00"
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "16:00",
-          "rain": false,
-          "validAt": "2026-08-26T16:00+09:00"
-        },
-        {
-          "time": "17:00",
-          "rain": false,
-          "validAt": "2026-08-26T17:00+09:00"
-        },
-        {
-          "time": "18:00",
-          "rain": false,
-          "validAt": "2026-08-26T18:00+09:00"
-        }
-      ]
-    },
     {
       "date": "2026-08-27",
       "venue": "animate hall BLACK(アニメイト池袋本店 北館9F)",
@@ -180,6 +72,13 @@
           "tempBand": "25〜29℃",
           "validAt": "2026-08-28T00:00+09:00"
         }
+      ],
+      "hourlyRain": [
+        {
+          "time": "16:00",
+          "rain": false,
+          "validAt": "2026-08-27T16:00+09:00"
+        }
       ]
     },
     {
@@ -191,16 +90,19 @@
       ],
       "areaCode": "120010",
       "areaName": "北西部",
-      "precision": "area",
-      "label": "くもり 一時 雨",
+      "precision": "mesh5km",
+      "label": "くもり",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
-      "issuedAt": "2026-08-26T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "issuedAt": "2026-08-26T22:00:00+09:00",
+      "meshTime": "00:00",
+      "meshTempBand": "25〜29℃",
+      "coordinates": {
+        "lat": 35.817673,
+        "lon": 139.932816
+      }
     },
     {
       "date": "2026-08-29",
@@ -266,11 +168,22 @@
   "stats": {
     "occurrencesInRange": 7,
     "uniqueVenueDates": 7,
-    "weatherEntries": 7,
-    "meshEntries": 3,
-    "failures": 0,
-    "meshTimelineEntries": 3,
-    "hourlyRainEntries": 2
+    "weatherEntries": 5,
+    "meshEntries": 2,
+    "failures": 2,
+    "meshTimelineEntries": 1,
+    "hourlyRainEntries": 1
   },
-  "failures": []
+  "failures": [
+    {
+      "date": "2026-09-01",
+      "venue": "エミテラス所沢 2F TOKOROZAWA e-CUBE",
+      "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-09-03",
+      "venue": "神奈川県 よこすか芸術劇場（大劇場）",
+      "reason": "開催日の予報がまだありません"
+    }
+  ]
 }
