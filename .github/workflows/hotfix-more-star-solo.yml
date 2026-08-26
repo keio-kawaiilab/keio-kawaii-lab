@@ -1,0 +1,75 @@
+name: Hotfix MORE STAR solo live
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/hotfix-more-star-solo.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hotfix-more-star-solo
+  cancel-in-progress: false
+
+jobs:
+  hotfix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Verify solo-live parser
+        working-directory: scripts
+        run: python -m unittest -v test_update_official_x_special_events.py test_audit_schedule_release.py test_schedule_scope.py
+
+      - name: Refresh official X events
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp data/live-events.json /tmp/live-events-before-hotfix.json
+          python scripts/update_official_x_special_events.py
+          python scripts/resolve_source_priority.py
+          python scripts/apply_event_scopes.py
+          python scripts/audit_schedule_release.py \
+            --previous /tmp/live-events-before-hotfix.json \
+            --candidate data/live-events.json \
+            --report data/schedule-health.json
+          python scripts/audit_official_schedule_coverage.py
+
+      - name: Build public schedule
+        run: |
+          python scripts/build_schedule_snapshot.py
+          python scripts/fix_schedule_shell.py
+          python scripts/strip_schedule_explanations.py
+          node --check /tmp/schedule-inline.js
+          node scripts/test_schedule_band_grouping.js
+          node scripts/test_schedule_scope_ui.js
+
+      - name: Publish hotfix
+        shell: bash
+        run: |
+          if [ -z "$(git status --porcelain -- data/live-events.json data/schedule-health.json schedule.html)" ]; then
+            echo "No hotfix changes to publish."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/live-events.json data/schedule-health.json schedule.html
+          git commit -m "fix: publish MORE STAR solo live schedule"
+          git pull --rebase origin main
+          git push
