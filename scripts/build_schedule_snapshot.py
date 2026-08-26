@@ -270,6 +270,8 @@ def build_card(event: dict) -> str:
             detail.append(f'<div><b>会場販売開始</b>{esc(event["salesStartTime"])}</div>')
         if event.get("gatheringTime"):
             detail.append(f'<div><b>集合</b>{esc(event["gatheringTime"])}</div>')
+        if event.get("startTime"):
+            detail.append(f'<div><b>イベント開始</b>{esc(event["startTime"])}</div>')
         if event.get("ticketName"):
             detail.append(f'<div><b>必要な整理券・参加券</b>{esc(event["ticketName"])}</div>')
         detail.append('</div>')
@@ -281,6 +283,36 @@ def build_card(event: dict) -> str:
             detail.append(f'<p class="special-method"><b>発券・付与：</b>{esc(event["ticketIssueMethod"])}</p>')
         if event.get("product"):
             detail.append(f'<p class="special-method"><b>対象商品：</b>{esc(event["product"])}</p>')
+        benefits = event.get("ticketBenefits") or []
+        if isinstance(benefits, list) and benefits:
+            detail.append('<h4>参加券・特典</h4><ul class="detail-list">')
+            detail.extend(f'<li>{esc(item)}</li>' for item in benefits if item)
+            detail.append('</ul>')
+        calls = event.get("numberedCallTimes") or []
+        if isinstance(calls, list) and calls:
+            detail.append('<h4>整理番号別の集合・呼び出し目安</h4><div class="call-times">')
+            for item in calls:
+                if not isinstance(item, dict):
+                    continue
+                numbers = item.get("numbers") or "整理番号"
+                time = item.get("time") or "時刻未定"
+                detail.append(f'<span class="time-chip">{esc(numbers)}｜{esc(time)}</span>')
+            detail.append('</div>')
+        event_parts = event.get("parts") or []
+        if isinstance(event_parts, list) and event_parts:
+            detail.append('<h4>各部の時間・受付</h4><div class="part-times">')
+            for item in event_parts:
+                if not isinstance(item, dict):
+                    continue
+                part = esc(item.get("part") or "部")
+                content = str(item.get("content") or "").strip()
+                start = str(item.get("start") or "—")
+                end = str(item.get("end") or "—")
+                reception_start = str(item.get("receptionStart") or "—")
+                reception_end = str(item.get("receptionEnd") or "—")
+                label = (content + "｜" if content else "") + f"{start}〜{end}（受付 {reception_start}〜{reception_end}）"
+                detail.append(f'<div class="part-row"><b>{part}</b><span>{esc(label)}</span></div>')
+            detail.append('</div>')
         detail.append('</section>')
         parts.extend(detail)
     if url:
