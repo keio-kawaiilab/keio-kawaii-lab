@@ -162,7 +162,7 @@ var snap={updatedAt:'',events:[]};try{snap=JSON.parse(document.getElementById('s
 fetch('./data/live-events.json?ts='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('data');return r.json()}).then(function(data){events=prepare(data.events||[]);document.getElementById('status').textContent='最終データ更新: '+(data.updatedAt||'不明');render()}).catch(function(){document.getElementById('status').textContent='最新JSONの読込に失敗したため、自動生成済みバックアップを表示しています。'});
 })();
 </script>
-<script src="./schedule-weather.js?v=202608260700" data-schedule-weather-direct></script>
+<script src="./schedule-weather.js?v=202608261205" data-schedule-weather-direct></script>
 <script src="./train-status.js"></script>
 </body>
 </html>
