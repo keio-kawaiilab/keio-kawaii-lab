@@ -1,0 +1,94 @@
+name: Add SWEET STEADY Hokkaido release event
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/add-sweet-hokkaido-release.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-live-ticket-calendar-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  add:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Add verified schedule placeholder
+        run: |
+          cp data/live-events.json /tmp/live-events-before.json
+          python - <<'PY'
+          import hashlib, json
+          from datetime import datetime
+          from pathlib import Path
+          from zoneinfo import ZoneInfo
+
+          path = Path('data/live-events.json')
+          payload = json.loads(path.read_text(encoding='utf-8'))
+          events = payload.get('events', [])
+          exists = any(
+              isinstance(e, dict)
+              and e.get('group') == 'SWEET STEADY'
+              and str(e.get('eventDate') or '')[:10] == '2026-09-14'
+              and 'リリースイベント' in str(e.get('eventTitle') or e.get('title') or '')
+              for e in events
+          )
+          if not exists:
+              raw = 'official-social\x1fSWEET STEADY\x1f2026-09-14\x1fSWEET STEP\x1fサッポロファクトリー アトリウム'
+              event_id = hashlib.sha1(raw.encode('utf-8')).hexdigest()[:16]
+              events.append({
+                  'id': event_id,
+                  'group': 'SWEET STEADY',
+                  'title': '『3rdシングル SWEET STEP 発売記念リリースイベント』@サッポロファクトリー アトリウム',
+                  'eventTitle': '『3rdシングル SWEET STEP 発売記念リリースイベント』@サッポロファクトリー アトリウム',
+                  'displayTitle': '3rdシングル『SWEET STEP』発売記念リリースイベント',
+                  'eventCategory': 'release-event',
+                  'ticketType': '現在受付なし',
+                  'applicationStatus': 'none',
+                  'specialDetailsStatus': 'awaiting-details',
+                  'applicationDisplayMode': 'schedule-only',
+                  'eventDate': '2026-09-14',
+                  'venue': '北海道 サッポロファクトリー アトリウム',
+                  'url': 'https://x.com/SWEET_STEADY',
+                  'urls': ['https://x.com/SWEET_STEADY'],
+                  'sourceType': 'official-social',
+                  'primarySource': 'official',
+                  'sourceCandidates': ['official'],
+                  'sourcePublishedAt': '2026-08-26',
+                  'eventScope': 'kawaii-lab'
+              })
+              events.sort(key=lambda e: str(e.get('eventDate') or '9999-12-31'))
+              payload['events'] = events
+              payload['updatedAt'] = datetime.now(ZoneInfo('Asia/Tokyo')).replace(microsecond=0).isoformat()
+              path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          print('exists=', exists)
+          PY
+      - name: Audit and rebuild
+        run: |
+          python scripts/audit_schedule_release.py --previous /tmp/live-events-before.json --candidate data/live-events.json --report /tmp/hokkaido-release-health.json
+          python scripts/build_schedule_snapshot.py
+          python scripts/fix_schedule_shell.py
+          python scripts/strip_schedule_explanations.py
+          python scripts/test_build_schedule_snapshot.py
+          node --check /tmp/schedule-inline.js
+          grep -q 'サッポロファクトリー アトリウム' data/live-events.json
+          grep -q 'サッポロファクトリー' schedule.html
+      - name: Publish
+        run: |
+          if git diff --quiet -- data/live-events.json schedule.html; then
+            echo 'No changes.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/live-events.json schedule.html
+          git commit -m 'fix: publish SWEET STEADY Hokkaido release event'
+          git push
