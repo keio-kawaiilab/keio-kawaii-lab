@@ -1,0 +1,78 @@
+name: Fix ancillary special-event classification
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/fix-special-ancillary-classification.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+      - name: Patch parser
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/update_special_events.py')
+          s=p.read_text(encoding='utf-8')
+          anchor='SPECIAL_RE = re.compile(r"大特典会|リリースイベント|リリイベ|発売記念イベント")\n'
+          addition='ANCILLARY_SPECIAL_RE = re.compile(r"特別抽選会|抽選会開催決定|物販情報|グッズ(?:販売)?情報|会場物販|販売アイテム", re.I)\n'
+          if 'ANCILLARY_SPECIAL_RE' not in s:
+              if anchor not in s:
+                  raise SystemExit('SPECIAL_RE anchor missing')
+              s=s.replace(anchor, anchor+addition, 1)
+
+          old='''    title = next((value for value in title_candidates if SPECIAL_RE.search(value)), title_candidates[0] if title_candidates else "")\n    if not SPECIAL_RE.search(title + " " + " ".join(lines[:80])):\n        return []\n'''
+          new='''    title = next((value for value in title_candidates if SPECIAL_RE.search(value)), title_candidates[0] if title_candidates else "")\n    if not SPECIAL_RE.search(title + " " + " ".join(lines[:80])):\n        return []\n    if ANCILLARY_SPECIAL_RE.search(title):\n        return []\n'''
+          if old in s:
+              s=s.replace(old,new,1)
+          elif 'if ANCILLARY_SPECIAL_RE.search(title):' not in s:
+              raise SystemExit('parse_page title target missing')
+
+          old='''            if "/news/detail/" in href and SPECIAL_RE.search(label):\n                pages[href] = "article"\n                page_origins.setdefault(href, set()).add(origin)\n'''
+          new='''            if "/news/detail/" in href and SPECIAL_RE.search(label) and not ANCILLARY_SPECIAL_RE.search(label):\n                pages[href] = "article"\n                page_origins.setdefault(href, set()).add(origin)\n'''
+          if old in s:
+              s=s.replace(old,new,1)
+          elif 'and not ANCILLARY_SPECIAL_RE.search(label)' not in s:
+              raise SystemExit('discovery target missing')
+
+          old='''        if not parsed and not linked_live:\n            lines = [normalize(x) for x in soup.get_text("\\n", strip=True).splitlines() if normalize(x)]\n            published = article_date(lines)\n'''
+          new='''        if not parsed and not linked_live:\n            lines = [normalize(x) for x in soup.get_text("\\n", strip=True).splitlines() if normalize(x)]\n            page_title = normalize(soup.find("h1").get_text(" ", strip=True)) if soup.find("h1") else ""\n            if ANCILLARY_SPECIAL_RE.search(page_title):\n                time.sleep(0.08)\n                continue\n            published = article_date(lines)\n'''
+          if old in s:
+              s=s.replace(old,new,1)
+          elif 'page_title = normalize(soup.find("h1")' not in s:
+              raise SystemExit('parse failure target missing')
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Run focused tests and live health check
+        shell: bash
+        run: |
+          cd scripts
+          python -m unittest -v test_update_special_events.py test_special_event_ancillary.py test_update_official_x_special_events.py test_audit_schedule_release.py
+          cd ..
+          python scripts/update_special_events.py --check
+          python scripts/update_official_x_special_events.py --check
+      - name: Commit parser fix
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/update_special_events.py scripts/test_special_event_ancillary.py
+          if git diff --cached --quiet; then
+            echo 'No changes.'
+            exit 0
+          fi
+          git commit -m 'fix: ignore ancillary special-event articles'
+          git push
