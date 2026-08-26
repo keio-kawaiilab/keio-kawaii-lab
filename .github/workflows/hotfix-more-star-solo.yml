@@ -37,12 +37,76 @@ jobs:
         working-directory: scripts
         run: python -m unittest -v test_update_official_x_special_events.py test_audit_schedule_release.py test_schedule_scope.py
 
-      - name: Refresh official X events
+      - name: Refresh and complete announced solo lives
         shell: bash
         run: |
           set -euo pipefail
           cp data/live-events.json /tmp/live-events-before-hotfix.json
           python scripts/update_official_x_special_events.py
+          python - <<'PY'
+          import hashlib
+          import json
+          from datetime import datetime, timedelta, timezone
+          from pathlib import Path
+
+          path = Path("data/live-events.json")
+          payload = json.loads(path.read_text(encoding="utf-8"))
+          events = payload.get("events", [])
+          announcement = "https://x.com/MORE_STAR_/status/2092567739969966299"
+          announced = [
+              ("2026-10-21", "MORE STAR 単独ライブ 6th STAR", "Spotify O-WEST"),
+              ("2026-11-12", "MORE STAR 単独ライブ 7th STAR", "ヒューリックホール東京"),
+          ]
+
+          changed = False
+          for day, title, venue in announced:
+              if any(
+                  isinstance(event, dict)
+                  and event.get("group") == "MORE STAR"
+                  and str(event.get("eventDate") or "")[:10] == day
+                  and event.get("eventCategory") == "solo-live"
+                  for event in events
+              ):
+                  continue
+              raw = "\x1f".join(("official-x-event", "MORE STAR", day, "solo-live"))
+              events.append({
+                  "id": hashlib.sha1(raw.encode("utf-8")).hexdigest()[:16],
+                  "group": "MORE STAR",
+                  "title": title,
+                  "eventTitle": title,
+                  "displayTitle": title,
+                  "eventCategory": "solo-live",
+                  "ticketType": "現在受付なし",
+                  "applicationStatus": "none",
+                  "applyStart": None,
+                  "applyEnd": None,
+                  "resultDate": None,
+                  "paymentEnd": None,
+                  "specialDetailsStatus": "awaiting-details",
+                  "applicationDisplayMode": "schedule-only",
+                  "eventDate": day,
+                  "venue": venue,
+                  "url": announcement,
+                  "urls": [announcement],
+                  "sourceType": "official-social",
+                  "sourceChannel": "official-x",
+                  "primarySource": "official",
+                  "sourceCandidates": ["official"],
+                  "eventScope": "kawaii-lab",
+              })
+              changed = True
+
+          if changed:
+              JST = timezone(timedelta(hours=9))
+              payload["updatedAt"] = datetime.now(JST).isoformat(timespec="seconds")
+              events.sort(key=lambda event: (
+                  str(event.get("eventDate") or "9999-12-31")[:10],
+                  str(event.get("group") or ""),
+                  str(event.get("title") or ""),
+              ))
+              payload["events"] = events
+              path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          PY
           python scripts/resolve_source_priority.py
           python scripts/apply_event_scopes.py
           python scripts/audit_schedule_release.py \
@@ -70,6 +134,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/live-events.json data/schedule-health.json schedule.html
-          git commit -m "fix: publish MORE STAR solo live schedule"
+          git commit -m "fix: publish all MORE STAR solo live dates"
           git pull --rebase origin main
           git push
