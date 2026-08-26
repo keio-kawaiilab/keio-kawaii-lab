@@ -15,12 +15,14 @@ jobs:
         shell: bash
         run: |
           set +e
-          for url in \
-            'https://syndication.twitter.com/srv/timeline-profile/screen-name/SWEET_STEADY' \
-            'https://x.com/SWEET_STEADY'; do
-            echo "=== $url ==="
-            curl -L --max-time 20 -A 'Mozilla/5.0' -sS -D /tmp/headers "$url" -o /tmp/body
-            head -n 8 /tmp/headers
-            echo "bytes=$(wc -c </tmp/body)"
-            grep -Eo 'SWEET STEP|サッポロファクトリー|リリースイベント|timeline|tweet' /tmp/body | head -n 20 || true
-          done
+          url='https://x.com/SWEET_STEADY'
+          echo "=== $url ==="
+          curl -L --compressed --max-time 20 -A 'Mozilla/5.0' -sS -D /tmp/headers "$url" -o /tmp/body
+          head -n 10 /tmp/headers
+          echo "bytes=$(wc -c </tmp/body)"
+          echo '--- target terms ---'
+          grep -aoE '.{0,100}(SWEET STEP|サッポロファクトリー|リリースイベント).{0,180}' /tmp/body | head -n 30 || true
+          echo '--- status urls ---'
+          grep -aoE 'https://x.com/SWEET_STEADY/status/[0-9]+' /tmp/body | head -n 20 || true
+          echo '--- encoded status hints ---'
+          grep -aoE 'SWEET_STEADY.{0,120}status.{0,120}' /tmp/body | head -n 20 || true
