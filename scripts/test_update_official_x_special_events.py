@@ -1,7 +1,11 @@
 import unittest
-from datetime import date
+from datetime import date, datetime, timedelta, timezone
 
 import update_official_x_special_events as s
+import update_special_events as site_s
+
+
+JST = timezone(timedelta(hours=9))
 
 
 class OfficialXSpecialEventTests(unittest.TestCase):
@@ -90,6 +94,28 @@ class OfficialXSpecialEventTests(unittest.TestCase):
         merged = s.merge_payload(payload, social, date(2026, 8, 26))
         self.assertEqual(merged["events"][0]["id"], "keep-id")
         self.assertIn("/status/", merged["events"][0]["url"])
+
+    def test_official_site_release_announcement_without_window_is_kept_as_placeholder(self):
+        html = '''
+        <html><head><title>SWEET STEADY リリースイベント</title></head><body>
+          <h1>『3rdシングル SWEET STEP 発売記念リリースイベント』追加情報</h1>
+          <p>2026.08.26</p>
+          <p>■開催日時</p><p>2026年9月14日(月)</p>
+          <p>■場所</p><p>サッポロファクトリー アトリウム</p>
+          <p>詳細は追ってお知らせします。</p>
+        </body></html>
+        '''
+        events = site_s.parse_page(
+            "SWEET STEADY",
+            "https://sweetsteady.asobisystem.com/news/detail/99999",
+            html,
+            datetime(2026, 8, 26, 19, 0, tzinfo=JST),
+        )
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0]["eventDate"], "2026-09-14")
+        self.assertEqual(events[0]["applicationDisplayMode"], "schedule-only")
+        self.assertEqual(events[0]["specialDetailsStatus"], "awaiting-details")
+        self.assertEqual(events[0]["sourceType"], "official-special")
 
 
 if __name__ == "__main__":
