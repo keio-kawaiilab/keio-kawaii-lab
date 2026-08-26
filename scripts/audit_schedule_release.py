@@ -305,16 +305,27 @@ def audit(previous: dict, candidate: dict, now: datetime) -> tuple[list[str], li
 
         category = str(event.get("eventCategory") or "")
         if category in {"large-benefit", "release-event"}:
-            if not any("asobisystem.com" in value for value in urls(event)):
+            social_schedule_only = (
+                event.get("sourceType") == "official-social"
+                and event.get("primarySource") == "official"
+                and event.get("specialDetailsStatus") == "awaiting-details"
+                and event.get("applicationDisplayMode") == "schedule-only"
+                and not (event.get("applyStart") or event.get("applyEnd"))
+                and any("x.com/SWEET_STEADY" in value for value in urls(event))
+            )
+            if not any("asobisystem.com" in value for value in urls(event)) and not social_schedule_only:
                 errors.append(f"special event has no official source URL: {label(event)}")
             venue = str(event.get("venue") or "").strip()
             if not venue or PLACEHOLDER_RE.fullmatch(venue):
                 errors.append(f"special event has no verified venue: {label(event)}")
             schedule_only = (
-                event.get("sourceType") == "official-schedule"
-                and event.get("specialDetailsStatus") == "awaiting-details"
-                and event.get("applicationDisplayMode") == "schedule-only"
-                and not (event.get("applyStart") or event.get("applyEnd"))
+                (
+                    event.get("sourceType") == "official-schedule"
+                    and event.get("specialDetailsStatus") == "awaiting-details"
+                    and event.get("applicationDisplayMode") == "schedule-only"
+                    and not (event.get("applyStart") or event.get("applyEnd"))
+                )
+                or social_schedule_only
             )
             if not schedule_only:
                 if event.get("sourceType") != "official-special":
