@@ -1,0 +1,36 @@
+name: Probe SWEET STEADY release details
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/probe-sweet-release.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r scripts/requirements.txt
+      - name: Fetch and parse current official pages
+        run: |
+          python - <<'PY'
+          import json, requests
+          from scripts.update_special_events import parse_page
+          urls = [
+              "https://sweetsteady.asobisystem.com/live_information/detail/43897",
+              "https://sweetsteady.asobisystem.com/live_information/detail/43899",
+              "https://sweetsteady.asobisystem.com/live_information/detail/43900",
+          ]
+          for url in urls:
+              r = requests.get(url, timeout=20, headers={"User-Agent":"Mozilla/5.0"})
+              print("URL", url, "HTTP", r.status_code)
+              print(json.dumps(parse_page("SWEET STEADY", url, r.text), ensure_ascii=False, indent=2))
+          PY
