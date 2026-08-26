@@ -47,6 +47,22 @@ class OfficialXSpecialEventTests(unittest.TestCase):
             ("2026-09-14", "北海道 サッポロファクトリー アトリウム"),
         ])
 
+    def test_profile_parses_three_solo_lives_with_individual_titles(self):
+        html = '''
+        <html><body>
+        <article itemtype="https://schema.org/SocialMediaPosting" itemid="https://x.com/i/status/333">
+          <meta itemprop="url" content="https://x.com/MORE_STAR_/status/333">
+          <meta itemprop="description" content="✨🌟〖単独ライブ〗開催決定🎉✨\n#MORESTAR 3ヶ月連続🔥 単独ライブの開催が決定しました❕💫\n9/24(木) 『MORE STAR 単独ライブ 5th STAR』\n📍ヒューリックホール東京\n🕰️OPEN 17:00\n10/21(水) 『MORE STAR 単独ライブ 6th STAR』\n📍Spotify O-WEST\n11/12(木) 『MORE STAR 単独ライブ 7th STAR』\n📍ヒューリックホール東京">
+        </article>
+        </body></html>
+        '''
+        events = s.parse_profile("MORE STAR", "MORE_STAR_", html, date(2026, 8, 26))
+        self.assertEqual([(e["eventDate"], e["title"], e["venue"], e["eventCategory"]) for e in events], [
+            ("2026-09-24", "MORE STAR 単独ライブ 5th STAR", "ヒューリックホール東京", "solo-live"),
+            ("2026-10-21", "MORE STAR 単独ライブ 6th STAR", "Spotify O-WEST", "solo-live"),
+            ("2026-11-12", "MORE STAR 単独ライブ 7th STAR", "ヒューリックホール東京", "solo-live"),
+        ])
+
     def test_profile_ignores_past_special_event(self):
         html = '''
         <article itemtype="https://schema.org/SocialMediaPosting" itemid="https://x.com/i/status/1">
