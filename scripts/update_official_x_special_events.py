@@ -22,8 +22,11 @@ GROUP_X = {
     "MORE STAR": "MORE_STAR_",
 }
 SPECIAL_RE = re.compile(r"大特典会|リリースイベント|リリイベ|発売記念イベント")
+SOLO_LIVE_RE = re.compile(r"単独(?:ライブ|公演)|ワンマン(?:ライブ|公演)?", re.I)
+TRACKED_RE = re.compile(r"大特典会|リリースイベント|リリイベ|発売記念イベント|単独(?:ライブ|公演)|ワンマン(?:ライブ|公演)?", re.I)
 DATE_RE = re.compile(r"(?:(20\d{2})[./年-])?\s*(\d{1,2})\s*[./月-]\s*(\d{1,2})\s*日?")
 VENUE_RE = re.compile(r"^(?:📍|会場[：:]?|場所[：:]?|開催場所[：:]?)\s*(.+)$")
+INLINE_VENUE_RE = re.compile(r"(?:^|\s)(?:📍|会場[：:]?|場所[：:]?|開催場所[：:]?)\s*([^🕰🎫📅🗓\n]+)")
 PLACEHOLDER_VENUES = {"未定", "会場未定", "詳細は追ってお知らせします", "詳細は後日発表"}
 APPLICATION_WORDS = ("受付", "申込", "販売", "予約開始", "締切")
 
@@ -39,9 +42,15 @@ def stable_id(*values: object) -> str:
 
 def special_category(value: object) -> str:
     text = str(value or "")
-    if text in {"large-benefit", "release-event"}:
+    if text in {"large-benefit", "release-event", "solo-live"}:
         return text
-    return "large-benefit" if "大特典会" in text else "release-event" if SPECIAL_RE.search(text) else ""
+    if "大特典会" in text:
+        return "large-benefit"
+    if SPECIAL_RE.search(text):
+        return "release-event"
+    if SOLO_LIVE_RE.search(text):
+        return "solo-live"
+    return ""
 
 
 def event_day(event: dict) -> str:
@@ -95,13 +104,19 @@ def clean_venue(value: object) -> str | None:
     return venue
 
 
+def venue_in_line(line: str) -> str | None:
+    match = VENUE_RE.match(line.strip())
+    if match:
+        return clean_venue(match.group(1))
+    inline = INLINE_VENUE_RE.search(line)
+    return clean_venue(inline.group(1)) if inline else None
+
+
 def extract_venue(lines: list[str]) -> str | None:
     for line in lines:
-        match = VENUE_RE.match(line.strip())
-        if match:
-            venue = clean_venue(match.group(1))
-            if venue:
-                return venue
+        venue = venue_in_line(line)
+        if venue:
+            return venue
     for index, line in enumerate(lines):
         if normalize(line) not in {"会場", "場所", "開催会場", "開催場所"}:
             continue
@@ -113,30 +128,25 @@ def extract_venue(lines: list[str]) -> str | None:
 
 
 def extract_occurrences(lines: list[str], today: date) -> list[tuple[date, str]]:
-    """Pair each announced event date with the nearest following explicit venue.
-
-    This handles official X posts that announce several release-event dates in one post,
-    while deliberately refusing to guess venue text without an explicit venue marker.
-    """
+    """Pair each announced event date with the nearest following explicit venue."""
     paired: list[tuple[date, str]] = []
     for index, line in enumerate(lines):
         line_dates = dates_in_line(line, today)
         if not line_dates:
             continue
-        venue = None
-        for probe_index in range(index, min(len(lines), index + 5)):
-            probe = lines[probe_index]
-            if probe_index > index and dates_in_line(probe, today):
-                break
-            match = VENUE_RE.match(probe.strip())
-            if match:
-                venue = clean_venue(match.group(1))
+        venue = venue_in_line(line)
+        if not venue:
+            for probe_index in range(index + 1, min(len(lines), index + 6)):
+                probe = lines[probe_index]
+                if dates_in_line(probe, today):
+                    break
+                venue = venue_in_line(probe)
                 if venue:
                     break
-            if normalize(probe) in {"会場", "場所", "開催会場", "開催場所"} and probe_index + 1 < len(lines):
-                venue = clean_venue(lines[probe_index + 1])
-                if venue:
-                    break
+                if normalize(probe) in {"会場", "場所", "開催会場", "開催場所"} and probe_index + 1 < len(lines):
+                    venue = clean_venue(lines[probe_index + 1])
+                    if venue:
+                        break
         if not venue:
             continue
         for day in line_dates:
@@ -151,14 +161,66 @@ def extract_occurrences(lines: list[str], today: date) -> list[tuple[date, str]]
     return [(day, venue)] if day and venue else []
 
 
-def extract_title(group: str, text: str, lines: list[str], category: str) -> str:
-    quoted = re.search(r"『([^』]*(?:リリースイベント|発売記念イベント|大特典会)[^』]*)』", text)
+def quoted_title(value: str) -> str | None:
+    for match in re.finditer(r"[『「]([^』」]+)[』」]", value):
+        candidate = normalize(match.group(1))
+        if TRACKED_RE.search(candidate):
+            return candidate
+    return None
+
+
+def clean_title_line(value: str) -> str:
+    value = DATE_RE.sub("", value, count=1)
+    value = re.sub(r"^[\s()（）月火水木金土日祝・./-]+", "", value)
+    value = re.sub(r"(?:📍|🕰|🎫|📅|🗓).*$", "", value)
+    return normalize(value).strip("💐🎡🎠📣🎪🌸✨🎁💿🌟🔥🎉❕💫 ：:・-—|｜")
+
+
+def title_from_line(group: str, line: str, category: str) -> str | None:
+    quoted = quoted_title(line)
     if quoted:
-        return normalize(quoted.group(1))
+        return quoted
+    if not TRACKED_RE.search(line):
+        return None
+    candidate = clean_title_line(line)
+    if not candidate or len(candidate) > 180:
+        return None
+    if category == "solo-live" and not SOLO_LIVE_RE.search(candidate):
+        return None
+    if category != "solo-live" and not SPECIAL_RE.search(candidate):
+        return None
+    return candidate
+
+
+def extract_title(group: str, text: str, lines: list[str], category: str) -> str:
+    quoted = quoted_title(text)
+    if quoted:
+        return quoted
     for line in lines:
-        if SPECIAL_RE.search(line) and len(normalize(line)) <= 180:
-            return normalize(line).strip("💐🎡🎠📣🎪🌸✨🎁💿 ")
-    return f"{group} {'大特典会' if category == 'large-benefit' else 'リリースイベント'}"
+        candidate = title_from_line(group, line, category)
+        if candidate:
+            return candidate
+    if category == "large-benefit":
+        return f"{group} 大特典会"
+    if category == "release-event":
+        return f"{group} リリースイベント"
+    return f"{group} 単独ライブ"
+
+
+def extract_occurrence_title(group: str, lines: list[str], day: date, today: date, category: str, fallback: str) -> str:
+    matching_indexes = [index for index, line in enumerate(lines) if day in dates_in_line(line, today)]
+    for index in matching_indexes:
+        for probe_index in (index, index + 1, index - 1, index + 2):
+            if probe_index < 0 or probe_index >= len(lines):
+                continue
+            probe = lines[probe_index]
+            other_days = [value for value in dates_in_line(probe, today) if value != day]
+            if other_days:
+                continue
+            candidate = title_from_line(group, probe, category)
+            if candidate:
+                return candidate
+    return fallback
 
 
 def post_url(article, handle: str) -> str | None:
@@ -182,9 +244,9 @@ def article_text(article) -> str:
     candidates = [article.get_text("\n", strip=True)]
     for meta in article.find_all("meta"):
         value = str(meta.get("content") or "")
-        if SPECIAL_RE.search(value):
+        if TRACKED_RE.search(value):
             candidates.append(value)
-    relevant = [value for value in candidates if SPECIAL_RE.search(value)]
+    relevant = [value for value in candidates if TRACKED_RE.search(value)]
     return max(relevant or candidates, key=len, default="")
 
 
@@ -201,7 +263,7 @@ def parse_profile(group: str, handle: str, html: str, today: date | None = None)
         if "SocialMediaPosting" not in item_type:
             continue
         text = article_text(article)
-        if not SPECIAL_RE.search(text):
+        if not TRACKED_RE.search(text):
             continue
         url = post_url(article, handle)
         if not url:
@@ -210,15 +272,16 @@ def parse_profile(group: str, handle: str, html: str, today: date | None = None)
         category = special_category(text)
         if not category:
             continue
-        title = extract_title(group, text, lines, category)
+        fallback_title = extract_title(group, text, lines, category)
         for day, venue in extract_occurrences(lines, today):
             if day < today:
                 continue
             key = (group, day.isoformat(), category)
             if key in found:
                 continue
+            title = extract_occurrence_title(group, lines, day, today, category, fallback_title)
             found[key] = {
-                "id": stable_id("official-x-special", group, day.isoformat(), category),
+                "id": stable_id("official-x-event", group, day.isoformat(), category),
                 "group": group,
                 "title": title,
                 "eventTitle": title,
@@ -322,11 +385,11 @@ def main() -> int:
         except (requests.RequestException, RuntimeError) as exc:
             failures.append(f"{group} @{handle}: {exc}")
 
-    print(f"Official X special-event scan: {len(fresh)} future placeholders, accounts={len(GROUP_X) - len(failures)}/{len(GROUP_X)}")
+    print(f"Official X tracked-event scan: {len(fresh)} future placeholders, accounts={len(GROUP_X) - len(failures)}/{len(GROUP_X)}")
     for failure in failures:
         print(f"ERROR: official X scan failed: {failure}", file=sys.stderr)
     if failures:
-        print("Official X special-event scan is incomplete; refusing to publish partial discovery data.", file=sys.stderr)
+        print("Official X tracked-event scan is incomplete; refusing to publish partial discovery data.", file=sys.stderr)
         return 1
 
     candidate = merge_payload(payload, fresh, today)
