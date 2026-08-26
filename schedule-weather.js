@@ -250,6 +250,68 @@
       // 天気JSONを取得できない時は、誤った代替予報を出さず既存ページだけ表示する。
     });
 
+  function initCalendarReturnButton(){
+    var calendar=document.getElementById("calendar");
+    if(!calendar||document.querySelector(".calendar-return-btn"))return;
+
+    var savedY=null;
+    var savedFocus=null;
+    var button=document.createElement("button");
+    button.type="button";
+    button.className="calendar-return-btn";
+    button.setAttribute("aria-label","元の位置のカレンダーに戻る");
+    button.setAttribute("aria-hidden","true");
+    button.innerHTML='<span class="calendar-return-arrow" aria-hidden="true">←</span><span>カレンダーに戻る</span>';
+
+    var style=document.createElement("style");
+    style.setAttribute("data-calendar-return-style","");
+    style.textContent='\
+.calendar-return-btn{position:fixed;z-index:115;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translate(-50%,18px);opacity:0;pointer-events:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;max-width:calc(100vw - 28px);padding:11px 18px;border:1px solid rgba(255,255,255,.28);border-radius:999px;background:rgba(34,51,95,.96);color:#fff;box-shadow:0 8px 28px rgba(26,37,70,.28);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font:inherit;font-size:13px;font-weight:900;letter-spacing:.01em;cursor:pointer;transition:opacity .18s ease,transform .18s ease,box-shadow .18s ease}\
+.calendar-return-btn.is-visible{opacity:1;pointer-events:auto;transform:translate(-50%,0)}\
+.calendar-return-btn:hover{box-shadow:0 10px 32px rgba(26,37,70,.36)}\
+.calendar-return-btn:focus-visible{outline:3px solid #c19b46;outline-offset:3px}\
+.calendar-return-arrow{font-size:18px;line-height:1}\
+@media(max-width:620px){.calendar-return-btn{width:calc(100vw - 28px);font-size:14px}}\
+@media(prefers-reduced-motion:reduce){.calendar-return-btn{transition:none}}';
+    document.head.appendChild(style);
+    document.body.appendChild(button);
+
+    function show(origin){
+      savedY=Math.max(0,window.scrollY||window.pageYOffset||0);
+      savedFocus=origin||null;
+      button.classList.add("is-visible");
+      button.setAttribute("aria-hidden","false");
+    }
+
+    function hide(){
+      button.classList.remove("is-visible");
+      button.setAttribute("aria-hidden","true");
+    }
+
+    document.addEventListener("click",function(event){
+      var mark=event.target&&event.target.closest?event.target.closest(".mark"):null;
+      if(!mark||!calendar.contains(mark))return;
+      show(mark);
+    },true);
+
+    button.addEventListener("click",function(){
+      if(savedY==null)return;
+      var targetY=savedY;
+      var focusTarget=savedFocus;
+      hide();
+      savedY=null;
+      savedFocus=null;
+      window.scrollTo({top:targetY,behavior:"smooth"});
+      window.setTimeout(function(){
+        if(!focusTarget||typeof focusTarget.focus!=="function")return;
+        try{focusTarget.focus({preventScroll:true});}
+        catch(_error){focusTarget.focus();}
+      },480);
+    });
+  }
+
+  initCalendarReturnButton();
+
   window.KawaiiScheduleWeather={
     normalizeVenue:normalizeVenue,
     parseCardDate:parseCardDate,
