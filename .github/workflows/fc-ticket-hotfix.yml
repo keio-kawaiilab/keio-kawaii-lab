@@ -1,0 +1,62 @@
+name: Immediate official FC ticket refresh
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/fc-ticket-hotfix.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Refresh official and KAWAII LAB FC ticket data
+        run: |
+          cp data/live-events.json /tmp/live-events-before-fc.json
+          python scripts/update_live_events_v2.py
+          python scripts/apply_event_scopes.py
+
+      - name: Audit refreshed data
+        run: |
+          python scripts/audit_schedule_release.py \
+            --previous /tmp/live-events-before-fc.json \
+            --candidate data/live-events.json \
+            --report /tmp/fc-ticket-health.json
+
+      - name: Rebuild public schedule snapshot
+        run: |
+          python scripts/build_schedule_snapshot.py
+          python scripts/fix_schedule_shell.py
+          python scripts/strip_schedule_explanations.py
+          node --check /tmp/schedule-inline.js
+
+      - name: Publish FC refresh
+        shell: bash
+        run: |
+          if git diff --quiet -- data/live-events.json schedule.html; then
+            echo "No FC ticket changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/live-events.json schedule.html
+          git commit -m "fix: publish current KAWAII LAB FC ticket band"
+          git push
