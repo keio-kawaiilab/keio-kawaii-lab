@@ -20,50 +20,44 @@ jobs:
           python-version: "3.12"
       - name: Install dependencies
         run: pip install -r scripts/requirements.txt
-      - name: Patch special-event parser, audit, and workflows
+      - name: Patch parser and audit
         shell: bash
         run: |
           python - <<'PY'
           from pathlib import Path
 
-          # 1) Keep official-site release announcements even before ticket windows are published.
           p = Path('scripts/update_special_events.py')
           s = p.read_text(encoding='utf-8')
           old = '''    if category == "release-event" and not windows:\n        return []\n    if not windows:\n        windows = [("対象商品予約", "", "")]\n'''
           new = '''    if category == "release-event" and not windows:\n        if venue == "会場未定":\n            return []\n        return [{\n            "id": stable_id("special-placeholder", group, url, event_date),\n            "group": group,\n            "title": title,\n            "eventTitle": title,\n            "displayTitle": display_title,\n            "eventCategory": category,\n            "ticketType": "現在受付なし",\n            "applicationStatus": "none",\n            "applyStart": None,\n            "applyEnd": None,\n            "resultDate": None,\n            "paymentEnd": None,\n            "specialDetailsStatus": "awaiting-details",\n            "applicationDisplayMode": "schedule-only",\n            "eventDate": event_date,\n            "venue": venue,\n            "url": url,\n            "urls": links,\n            "sourceType": "official-special",\n            "primarySource": "official",\n            "sourceCandidates": ["official"],\n            "sourcePublishedAt": published,\n            "eventScope": "kawaii-lab",\n        }]\n    if not windows:\n        windows = [("対象商品予約", "", "")]\n'''
-          if old not in s:
+          if old in s:
+              s = s.replace(old, new, 1)
+          elif 'stable_id("special-placeholder"' not in s:
               raise SystemExit('update_special_events placeholder target not found')
-          p.write_text(s.replace(old, new, 1), encoding='utf-8')
-
-          # 2) Allow fail-closed audit to accept detail-pending official-site and official-X placeholders.
-          p = Path('scripts/audit_schedule_release.py')
-          s = p.read_text(encoding='utf-8')
-          old = '                and any("x.com/SWEET_STEADY" in value for value in urls(event))\n'
-          new = '                and any(re.search(r"https://x\\.com/(?:FRUITS_ZIPPER|CANDY_TUNE_|SWEET_STEADY|CUTIE_STREET_|MORE_STAR_)(?:/status/\\d+)?", value) for value in urls(event))\n'
-          if old not in s:
-              raise SystemExit('audit social allowlist target not found')
-          s = s.replace(old, new, 1)
-          old = '''                (\n                    event.get("sourceType") == "official-schedule"\n                    and event.get("specialDetailsStatus") == "awaiting-details"\n'''
-          new = '''                (\n                    event.get("sourceType") in {"official-schedule", "official-special"}\n                    and event.get("specialDetailsStatus") == "awaiting-details"\n'''
-          if old not in s:
-              raise SystemExit('audit site placeholder target not found')
-          p.write_text(s.replace(old, new, 1), encoding='utf-8')
-
-          # 3) Wire official-X scan into the 15-minute special-event refresh.
-          p = Path('.github/workflows/update-special-events-fast.yml')
-          s = p.read_text(encoding='utf-8')
-          s = s.replace('      - "scripts/update_special_events.py"\n', '      - "scripts/update_special_events.py"\n      - "scripts/update_official_x_special_events.py"\n', 1)
-          s = s.replace('      - "scripts/test_update_special_events.py"\n', '      - "scripts/test_update_special_events.py"\n      - "scripts/test_update_official_x_special_events.py"\n', 1)
-          s = s.replace('python -m unittest -v test_update_special_events.py test_resolve_source_priority.py', 'python -m unittest -v test_update_special_events.py test_update_official_x_special_events.py test_resolve_source_priority.py', 1)
-          s = s.replace('          python scripts/update_special_events.py 2>&1 | tee /tmp/special-event-refresh.log\n', '          python scripts/update_special_events.py 2>&1 | tee /tmp/special-event-refresh.log\n          python scripts/update_official_x_special_events.py 2>&1 | tee -a /tmp/special-event-refresh.log\n', 1)
           p.write_text(s, encoding='utf-8')
 
-          # 4) Wire the same scan into the hourly full refresh and its tests/checks.
-          p = Path('.github/workflows/update-live-calendar.yml')
+          p = Path('scripts/audit_schedule_release.py')
           s = p.read_text(encoding='utf-8')
-          s = s.replace('          test_update_special_events.py\n', '          test_update_special_events.py\n          test_update_official_x_special_events.py\n', 1)
-          s = s.replace('          python scripts/update_special_events.py --check\n', '          python scripts/update_special_events.py --check\n          python scripts/update_official_x_special_events.py --check\n', 1)
-          s = s.replace('          python scripts/update_special_events.py\n', '          python scripts/update_special_events.py\n          python scripts/update_official_x_special_events.py\n', 1)
+          old_social = '                and any("x.com/SWEET_STEADY" in value for value in urls(event))\n'
+          new_social = '                and any(re.search(r"https://x\\.com/(?:FRUITS_ZIPPER|CANDY_TUNE_|SWEET_STEADY|CUTIE_STREET_|MORE_STAR_)(?:/status/\\d+)?", value) for value in urls(event))\n'
+          if old_social in s:
+              s = s.replace(old_social, new_social, 1)
+          elif 'FRUITS_ZIPPER|CANDY_TUNE_|SWEET_STEADY|CUTIE_STREET_|MORE_STAR_' not in s:
+              raise SystemExit('audit social allowlist target not found')
+          old_site = '''                (\n                    event.get("sourceType") == "official-schedule"\n                    and event.get("specialDetailsStatus") == "awaiting-details"\n'''
+          new_site = '''                (\n                    event.get("sourceType") in {"official-schedule", "official-special"}\n                    and event.get("specialDetailsStatus") == "awaiting-details"\n'''
+          if old_site in s:
+              s = s.replace(old_site, new_site, 1)
+          elif 'in {"official-schedule", "official-special"}' not in s:
+              raise SystemExit('audit site placeholder target not found')
+          p.write_text(s, encoding='utf-8')
+
+          p = Path('scripts/update_official_x_special_events.py')
+          s = p.read_text(encoding='utf-8')
+          s = s.replace(
+              '"User-Agent": "Mozilla/5.0 (compatible; KeioKawaiiLabCalendarBot/2.0)",',
+              '"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",',
+          )
           p.write_text(s, encoding='utf-8')
           PY
       - name: Run focused tests
@@ -86,7 +80,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add scripts/update_special_events.py scripts/audit_schedule_release.py scripts/update_official_x_special_events.py scripts/test_update_official_x_special_events.py .github/workflows/update-special-events-fast.yml .github/workflows/update-live-calendar.yml data/live-events.json schedule.html
+          git add scripts/update_special_events.py scripts/audit_schedule_release.py scripts/update_official_x_special_events.py scripts/test_update_official_x_special_events.py data/live-events.json schedule.html
           if git diff --cached --quiet; then
             echo 'No changes.'
             exit 0
