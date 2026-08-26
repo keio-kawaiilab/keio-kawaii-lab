@@ -22,49 +22,51 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Allow verified official-social schedule placeholders
+      - name: Patch audit for official social placeholders
         run: |
           python - <<'PY'
           from pathlib import Path
           p = Path('scripts/audit_schedule_release.py')
           s = p.read_text(encoding='utf-8')
-          old = '''        if category in {"large-benefit", "release-event"}:
-            if not any("asobisystem.com" in value for value in urls(event)):
-                errors.append(f"special event has no official source URL: {label(event)}")
-            venue = str(event.get("venue") or "").strip()
-            if not venue or PLACEHOLDER_RE.fullmatch(venue):
-                errors.append(f"special event has no verified venue: {label(event)}")
-            schedule_only = (
-                event.get("sourceType") == "official-schedule"
-                and event.get("specialDetailsStatus") == "awaiting-details"
-                and event.get("applicationDisplayMode") == "schedule-only"
-                and not (event.get("applyStart") or event.get("applyEnd"))
-            )
-'''
-          new = '''        if category in {"large-benefit", "release-event"}:
-            social_schedule_only = (
-                event.get("sourceType") == "official-social"
-                and event.get("primarySource") == "official"
-                and event.get("specialDetailsStatus") == "awaiting-details"
-                and event.get("applicationDisplayMode") == "schedule-only"
-                and not (event.get("applyStart") or event.get("applyEnd"))
-                and any("x.com/SWEET_STEADY" in value for value in urls(event))
-            )
-            if not any("asobisystem.com" in value for value in urls(event)) and not social_schedule_only:
-                errors.append(f"special event has no official source URL: {label(event)}")
-            venue = str(event.get("venue") or "").strip()
-            if not venue or PLACEHOLDER_RE.fullmatch(venue):
-                errors.append(f"special event has no verified venue: {label(event)}")
-            schedule_only = (
-                (
-                    event.get("sourceType") == "official-schedule"
-                    and event.get("specialDetailsStatus") == "awaiting-details"
-                    and event.get("applicationDisplayMode") == "schedule-only"
-                    and not (event.get("applyStart") or event.get("applyEnd"))
-                )
-                or social_schedule_only
-            )
-'''
+          old = (
+              '        if category in {"large-benefit", "release-event"}:\n'
+              '            if not any("asobisystem.com" in value for value in urls(event)):\n'
+              '                errors.append(f"special event has no official source URL: {label(event)}")\n'
+              '            venue = str(event.get("venue") or "").strip()\n'
+              '            if not venue or PLACEHOLDER_RE.fullmatch(venue):\n'
+              '                errors.append(f"special event has no verified venue: {label(event)}")\n'
+              '            schedule_only = (\n'
+              '                event.get("sourceType") == "official-schedule"\n'
+              '                and event.get("specialDetailsStatus") == "awaiting-details"\n'
+              '                and event.get("applicationDisplayMode") == "schedule-only"\n'
+              '                and not (event.get("applyStart") or event.get("applyEnd"))\n'
+              '            )\n'
+          )
+          new = (
+              '        if category in {"large-benefit", "release-event"}:\n'
+              '            social_schedule_only = (\n'
+              '                event.get("sourceType") == "official-social"\n'
+              '                and event.get("primarySource") == "official"\n'
+              '                and event.get("specialDetailsStatus") == "awaiting-details"\n'
+              '                and event.get("applicationDisplayMode") == "schedule-only"\n'
+              '                and not (event.get("applyStart") or event.get("applyEnd"))\n'
+              '                and any("x.com/SWEET_STEADY" in value for value in urls(event))\n'
+              '            )\n'
+              '            if not any("asobisystem.com" in value for value in urls(event)) and not social_schedule_only:\n'
+              '                errors.append(f"special event has no official source URL: {label(event)}")\n'
+              '            venue = str(event.get("venue") or "").strip()\n'
+              '            if not venue or PLACEHOLDER_RE.fullmatch(venue):\n'
+              '                errors.append(f"special event has no verified venue: {label(event)}")\n'
+              '            schedule_only = (\n'
+              '                (\n'
+              '                    event.get("sourceType") == "official-schedule"\n'
+              '                    and event.get("specialDetailsStatus") == "awaiting-details"\n'
+              '                    and event.get("applicationDisplayMode") == "schedule-only"\n'
+              '                    and not (event.get("applyStart") or event.get("applyEnd"))\n'
+              '                )\n'
+              '                or social_schedule_only\n'
+              '            )\n'
+          )
           if old not in s:
               raise SystemExit('audit special-event block not found')
           p.write_text(s.replace(old, new, 1), encoding='utf-8')
@@ -77,7 +79,6 @@ jobs:
           from datetime import datetime
           from pathlib import Path
           from zoneinfo import ZoneInfo
-
           path = Path('data/live-events.json')
           payload = json.loads(path.read_text(encoding='utf-8'))
           events = payload.get('events', [])
@@ -90,9 +91,8 @@ jobs:
           )
           if not exists:
               raw = 'official-social\x1fSWEET STEADY\x1f2026-09-14\x1fSWEET STEP\x1fサッポロファクトリー アトリウム'
-              event_id = hashlib.sha1(raw.encode('utf-8')).hexdigest()[:16]
               events.append({
-                  'id': event_id,
+                  'id': hashlib.sha1(raw.encode('utf-8')).hexdigest()[:16],
                   'group': 'SWEET STEADY',
                   'title': '『3rdシングル SWEET STEP 発売記念リリースイベント』@サッポロファクトリー アトリウム',
                   'eventTitle': '『3rdシングル SWEET STEP 発売記念リリースイベント』@サッポロファクトリー アトリウム',
@@ -131,12 +131,12 @@ jobs:
           grep -q 'サッポロファクトリー' schedule.html
       - name: Publish
         run: |
-          if git diff --quiet -- data/live-events.json schedule.html scripts/audit_schedule_release.py; then
-            echo 'No changes.'
-            exit 0
-          fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add data/live-events.json schedule.html scripts/audit_schedule_release.py
+          if git diff --cached --quiet; then
+            echo 'No changes.'
+            exit 0
+          fi
           git commit -m 'fix: publish SWEET STEADY Hokkaido release event'
           git push
