@@ -308,6 +308,24 @@ def parse_profile(group: str, handle: str, html: str, today: date | None = None)
     return list(found.values())
 
 
+def normalize_large_benefit_parts(event: dict) -> dict:
+    """Keep release-gate-required part labels non-empty without inventing finer details."""
+    if event.get("eventCategory") != "large-benefit" or not isinstance(event.get("parts"), list):
+        return event
+    out = dict(event)
+    rows = []
+    for row in event["parts"]:
+        if not isinstance(row, dict):
+            rows.append(row)
+            continue
+        fixed = dict(row)
+        if not normalize(fixed.get("content")):
+            fixed["content"] = "特典会"
+        rows.append(fixed)
+    out["parts"] = rows
+    return out
+
+
 def fetch_profile(session: requests.Session, handle: str) -> str:
     response = session.get(f"https://x.com/{handle}", timeout=25)
     response.raise_for_status()
@@ -355,6 +373,7 @@ def merge_payload(payload: dict, social_events: list[dict], today: date | None =
             continue
         result.append(event)
 
+    result = [normalize_large_benefit_parts(event) for event in result]
     result.sort(key=lambda event: (event_day(event) or "9999-12-31", str(event.get("group") or ""), str(event.get("title") or "")))
     out = dict(payload)
     out["events"] = result
