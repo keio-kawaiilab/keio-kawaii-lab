@@ -1,0 +1,26 @@
+name: Probe official X public endpoints
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/probe-official-x.yml"
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Probe public endpoints
+        shell: bash
+        run: |
+          set +e
+          for url in \
+            'https://syndication.twitter.com/srv/timeline-profile/screen-name/SWEET_STEADY' \
+            'https://x.com/SWEET_STEADY'; do
+            echo "=== $url ==="
+            curl -L --max-time 20 -A 'Mozilla/5.0' -sS -D /tmp/headers "$url" -o /tmp/body
+            head -n 8 /tmp/headers
+            echo "bytes=$(wc -c </tmp/body)"
+            grep -Eo 'SWEET STEP|サッポロファクトリー|リリースイベント|timeline|tweet' /tmp/body | head -n 20 || true
+          done
