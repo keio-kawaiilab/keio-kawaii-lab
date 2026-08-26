@@ -19,18 +19,28 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r scripts/requirements.txt
-      - name: Fetch and parse current official pages
+      - name: Inspect current official information feed
         run: |
           python - <<'PY'
-          import json, requests
-          from scripts.update_special_events import parse_page
-          urls = [
-              "https://sweetsteady.asobisystem.com/live_information/detail/43897",
-              "https://sweetsteady.asobisystem.com/live_information/detail/43899",
-              "https://sweetsteady.asobisystem.com/live_information/detail/43900",
+          import requests
+          from bs4 import BeautifulSoup
+          from urllib.parse import urljoin
+          headers={"User-Agent":"Mozilla/5.0"}
+          urls=[
+            "https://sweetsteady.asobisystem.com/news/1/",
+            "https://sweetsteady.asobisystem.com/live_information/detail/43897",
+            "https://sweetsteady.asobisystem.com/live_information/detail/43899",
+            "https://sweetsteady.asobisystem.com/live_information/detail/43900",
           ]
           for url in urls:
-              r = requests.get(url, timeout=20, headers={"User-Agent":"Mozilla/5.0"})
-              print("URL", url, "HTTP", r.status_code)
-              print(json.dumps(parse_page("SWEET STEADY", url, r.text), ensure_ascii=False, indent=2))
+            r=requests.get(url,timeout=20,headers=headers)
+            print("\n===",url,"HTTP",r.status_code,"===")
+            soup=BeautifulSoup(r.text,"html.parser")
+            text=[" ".join(x.split()) for x in soup.get_text("\n",strip=True).splitlines() if " ".join(x.split())]
+            for line in text[:120]: print("TEXT",line)
+            for a in soup.find_all("a",href=True):
+              href=urljoin(url,a.get("href"))
+              label=" ".join(a.get_text(" ",strip=True).split())
+              if "/news/detail/" in href or "/live_information/detail/" in href:
+                print("LINK",href,"|",label)
           PY
