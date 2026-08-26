@@ -37,6 +37,7 @@
   line-height:1
 }
 .schedule-weather-condition{
+  min-width:0;
   color:var(--navy,#22335f);
   font-size:13px;
   line-height:1.45
@@ -44,6 +45,7 @@
 .schedule-weather-temps{
   display:grid;
   gap:2px;
+  justify-self:end;
   text-align:right;
   font-size:11px;
   font-weight:900;
@@ -190,13 +192,15 @@
     padding:11px 12px
   }
   .schedule-weather-main{
-    grid-template-columns:auto 1fr
+    grid-template-columns:auto minmax(0,1fr) auto;
+    gap:8px
   }
   .schedule-weather-temps{
-    grid-column:2;
-    display:flex;
-    gap:10px;
-    text-align:left
+    grid-column:auto;
+    display:grid;
+    gap:2px;
+    justify-self:end;
+    text-align:right
   }
   .schedule-weather-slot{
     flex-basis:67px
