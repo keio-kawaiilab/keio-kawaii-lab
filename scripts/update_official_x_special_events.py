@@ -25,6 +25,7 @@ SPECIAL_RE = re.compile(r"大特典会|リリースイベント|リリイベ|発
 DATE_RE = re.compile(r"(?:(20\d{2})[./年-])?\s*(\d{1,2})\s*[./月-]\s*(\d{1,2})\s*日?")
 VENUE_RE = re.compile(r"^(?:📍|会場[：:]?|場所[：:]?|開催場所[：:]?)\s*(.+)$")
 PLACEHOLDER_VENUES = {"未定", "会場未定", "詳細は追ってお知らせします", "詳細は後日発表"}
+APPLICATION_WORDS = ("受付", "申込", "販売", "予約開始", "締切")
 
 
 def normalize(value: object) -> str:
@@ -63,41 +64,91 @@ def infer_date(match: re.Match, today: date) -> date | None:
         return None
 
 
+def dates_in_line(line: str, today: date) -> list[date]:
+    if any(word in line for word in APPLICATION_WORDS):
+        return []
+    result = []
+    for match in DATE_RE.finditer(line):
+        parsed = infer_date(match, today)
+        if parsed and parsed >= today and parsed not in result:
+            result.append(parsed)
+    return result
+
+
 def extract_date(lines: list[str], today: date) -> date | None:
     preferred = []
     fallback = []
     for line in lines:
-        if "受付" in line or "申込" in line or "販売" in line:
+        parsed_values = dates_in_line(line, today)
+        if not parsed_values:
             continue
-        for match in DATE_RE.finditer(line):
-            parsed = infer_date(match, today)
-            if not parsed:
-                continue
-            target = preferred if any(token in line for token in ("開催", "🗓", "📅", "日程")) else fallback
-            target.append(parsed)
-    for parsed in [*preferred, *fallback]:
-        if parsed >= today:
-            return parsed
-    return None
+        target = preferred if any(token in line for token in ("開催", "🗓", "📅", "日程")) else fallback
+        target.extend(parsed_values)
+    values = [*preferred, *fallback]
+    return values[0] if values else None
+
+
+def clean_venue(value: object) -> str | None:
+    venue = normalize(value).strip("｜|・ ")
+    if not venue or venue in PLACEHOLDER_VENUES or "詳細" in venue:
+        return None
+    return venue
 
 
 def extract_venue(lines: list[str]) -> str | None:
     for line in lines:
-        clean = line.strip()
-        match = VENUE_RE.match(clean)
-        if not match:
-            continue
-        venue = normalize(match.group(1)).strip("｜|・ ")
-        if venue and venue not in PLACEHOLDER_VENUES and "詳細" not in venue:
-            return venue
+        match = VENUE_RE.match(line.strip())
+        if match:
+            venue = clean_venue(match.group(1))
+            if venue:
+                return venue
     for index, line in enumerate(lines):
         if normalize(line) not in {"会場", "場所", "開催会場", "開催場所"}:
             continue
         for value in lines[index + 1:index + 3]:
-            venue = normalize(value)
-            if venue and venue not in PLACEHOLDER_VENUES and "詳細" not in venue:
+            venue = clean_venue(value)
+            if venue:
                 return venue
     return None
+
+
+def extract_occurrences(lines: list[str], today: date) -> list[tuple[date, str]]:
+    """Pair each announced event date with the nearest following explicit venue.
+
+    This handles official X posts that announce several release-event dates in one post,
+    while deliberately refusing to guess venue text without an explicit venue marker.
+    """
+    paired: list[tuple[date, str]] = []
+    for index, line in enumerate(lines):
+        line_dates = dates_in_line(line, today)
+        if not line_dates:
+            continue
+        venue = None
+        for probe_index in range(index, min(len(lines), index + 5)):
+            probe = lines[probe_index]
+            if probe_index > index and dates_in_line(probe, today):
+                break
+            match = VENUE_RE.match(probe.strip())
+            if match:
+                venue = clean_venue(match.group(1))
+                if venue:
+                    break
+            if normalize(probe) in {"会場", "場所", "開催会場", "開催場所"} and probe_index + 1 < len(lines):
+                venue = clean_venue(lines[probe_index + 1])
+                if venue:
+                    break
+        if not venue:
+            continue
+        for day in line_dates:
+            item = (day, venue)
+            if item not in paired:
+                paired.append(item)
+
+    if paired:
+        return paired
+    day = extract_date(lines, today)
+    venue = extract_venue(lines)
+    return [(day, venue)] if day and venue else []
 
 
 def extract_title(group: str, text: str, lines: list[str], category: str) -> str:
@@ -137,6 +188,10 @@ def article_text(article) -> str:
     return max(relevant or candidates, key=len, default="")
 
 
+def profile_payload_loaded(html: str) -> bool:
+    return "SocialMediaPosting" in html and "/status/" in html
+
+
 def parse_profile(group: str, handle: str, html: str, today: date | None = None) -> list[dict]:
     today = today or datetime.now(JST).date()
     soup = BeautifulSoup(html, "html.parser")
@@ -152,42 +207,41 @@ def parse_profile(group: str, handle: str, html: str, today: date | None = None)
         if not url:
             continue
         lines = [normalize(value) for value in text.splitlines() if normalize(value)]
-        day = extract_date(lines, today)
-        venue = extract_venue(lines)
-        if not day or not venue or day < today:
-            continue
         category = special_category(text)
         if not category:
             continue
         title = extract_title(group, text, lines, category)
-        key = (group, day.isoformat(), category)
-        if key in found:
-            continue
-        found[key] = {
-            "id": stable_id("official-x-special", group, day.isoformat(), category),
-            "group": group,
-            "title": title,
-            "eventTitle": title,
-            "displayTitle": title,
-            "eventCategory": category,
-            "ticketType": "現在受付なし",
-            "applicationStatus": "none",
-            "applyStart": None,
-            "applyEnd": None,
-            "resultDate": None,
-            "paymentEnd": None,
-            "specialDetailsStatus": "awaiting-details",
-            "applicationDisplayMode": "schedule-only",
-            "eventDate": day.isoformat(),
-            "venue": venue,
-            "url": url,
-            "urls": [url],
-            "sourceType": "official-social",
-            "sourceChannel": "official-x",
-            "primarySource": "official",
-            "sourceCandidates": ["official"],
-            "eventScope": "kawaii-lab",
-        }
+        for day, venue in extract_occurrences(lines, today):
+            if day < today:
+                continue
+            key = (group, day.isoformat(), category)
+            if key in found:
+                continue
+            found[key] = {
+                "id": stable_id("official-x-special", group, day.isoformat(), category),
+                "group": group,
+                "title": title,
+                "eventTitle": title,
+                "displayTitle": title,
+                "eventCategory": category,
+                "ticketType": "現在受付なし",
+                "applicationStatus": "none",
+                "applyStart": None,
+                "applyEnd": None,
+                "resultDate": None,
+                "paymentEnd": None,
+                "specialDetailsStatus": "awaiting-details",
+                "applicationDisplayMode": "schedule-only",
+                "eventDate": day.isoformat(),
+                "venue": venue,
+                "url": url,
+                "urls": [url],
+                "sourceType": "official-social",
+                "sourceChannel": "official-x",
+                "primarySource": "official",
+                "sourceCandidates": ["official"],
+                "eventScope": "kawaii-lab",
+            }
     return list(found.values())
 
 
@@ -261,14 +315,23 @@ def main() -> int:
     failures = []
     for group, handle in GROUP_X.items():
         try:
-            fresh.extend(parse_profile(group, handle, fetch_profile(session, handle), today))
-        except requests.RequestException as exc:
+            html = fetch_profile(session, handle)
+            if not profile_payload_loaded(html):
+                raise RuntimeError("X returned HTML without a usable public timeline payload")
+            fresh.extend(parse_profile(group, handle, html, today))
+        except (requests.RequestException, RuntimeError) as exc:
             failures.append(f"{group} @{handle}: {exc}")
+
+    print(f"Official X special-event scan: {len(fresh)} future placeholders, accounts={len(GROUP_X) - len(failures)}/{len(GROUP_X)}")
+    for failure in failures:
+        print(f"ERROR: official X scan failed: {failure}", file=sys.stderr)
+    if failures:
+        print("Official X special-event scan is incomplete; refusing to publish partial discovery data.", file=sys.stderr)
+        return 1
+
     candidate = merge_payload(payload, fresh, today)
     changed = candidate.get("events", []) != payload.get("events", [])
-    print(f"Official X special-event scan: {len(fresh)} future placeholders, changed={changed}")
-    for failure in failures:
-        print(f"WARNING: official X scan failed: {failure}", file=sys.stderr)
+    print(f"Official X merge: changed={changed}")
     if args.check:
         return 0
     if changed:
