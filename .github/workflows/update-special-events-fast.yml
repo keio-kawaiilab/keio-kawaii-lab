@@ -6,7 +6,9 @@ on:
       - main
     paths:
       - "scripts/update_special_events.py"
+      - "scripts/update_official_x_special_events.py"
       - "scripts/test_update_special_events.py"
+      - "scripts/test_update_official_x_special_events.py"
       - "scripts/audit_schedule_release.py"
       - "scripts/test_audit_schedule_release.py"
       - "scripts/resolve_source_priority.py"
@@ -61,7 +63,7 @@ jobs:
 
       - name: Test special-event discovery and release gate
         working-directory: scripts
-        run: python -m unittest -v test_update_special_events.py test_resolve_source_priority.py test_audit_schedule_release.py test_schedule_scope.py test_audit_official_schedule_coverage.py
+        run: python -m unittest -v test_update_special_events.py test_update_official_x_special_events.py test_resolve_source_priority.py test_audit_schedule_release.py test_schedule_scope.py test_audit_official_schedule_coverage.py
 
       - name: Refresh special-event candidate data
         if: steps.control.outputs.frozen != 'true'
@@ -71,6 +73,7 @@ jobs:
           set -o pipefail
           cp data/live-events.json /tmp/live-events-last-good.json
           python scripts/update_special_events.py 2>&1 | tee /tmp/special-event-refresh.log
+          python scripts/update_official_x_special_events.py 2>&1 | tee -a /tmp/special-event-refresh.log
           python scripts/resolve_source_priority.py
           python scripts/apply_event_scopes.py
           if git diff --quiet -- data/live-events.json; then
