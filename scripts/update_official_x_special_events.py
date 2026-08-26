@@ -253,7 +253,7 @@ def main() -> int:
     payload = json.loads(DATA_PATH.read_text(encoding="utf-8"))
     session = requests.Session()
     session.headers.update({
-        "User-Agent": "Mozilla/5.0 (compatible; KeioKawaiiLabCalendarBot/2.0)",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
         "Accept-Language": "ja,en;q=0.8",
     })
     today = datetime.now(JST).date()

@@ -311,7 +311,7 @@ def audit(previous: dict, candidate: dict, now: datetime) -> tuple[list[str], li
                 and event.get("specialDetailsStatus") == "awaiting-details"
                 and event.get("applicationDisplayMode") == "schedule-only"
                 and not (event.get("applyStart") or event.get("applyEnd"))
-                and any("x.com/SWEET_STEADY" in value for value in urls(event))
+                and any(re.search(r"https://x\.com/(?:FRUITS_ZIPPER|CANDY_TUNE_|SWEET_STEADY|CUTIE_STREET_|MORE_STAR_)(?:/status/\d+)?", value) for value in urls(event))
             )
             if not any("asobisystem.com" in value for value in urls(event)) and not social_schedule_only:
                 errors.append(f"special event has no official source URL: {label(event)}")
@@ -320,7 +320,7 @@ def audit(previous: dict, candidate: dict, now: datetime) -> tuple[list[str], li
                 errors.append(f"special event has no verified venue: {label(event)}")
             schedule_only = (
                 (
-                    event.get("sourceType") == "official-schedule"
+                    event.get("sourceType") in {"official-schedule", "official-special"}
                     and event.get("specialDetailsStatus") == "awaiting-details"
                     and event.get("applicationDisplayMode") == "schedule-only"
                     and not (event.get("applyStart") or event.get("applyEnd"))

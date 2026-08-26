@@ -271,7 +271,33 @@ def parse_page(group: str, url: str, html_text: str, now: datetime | None = None
     windows = window_rows(lines, default_year)
     current = (now or datetime.now(JST)).astimezone(JST)
     if category == "release-event" and not windows:
-        return []
+        if venue == "会場未定":
+            return []
+        return [{
+            "id": stable_id("special-placeholder", group, url, event_date),
+            "group": group,
+            "title": title,
+            "eventTitle": title,
+            "displayTitle": display_title,
+            "eventCategory": category,
+            "ticketType": "現在受付なし",
+            "applicationStatus": "none",
+            "applyStart": None,
+            "applyEnd": None,
+            "resultDate": None,
+            "paymentEnd": None,
+            "specialDetailsStatus": "awaiting-details",
+            "applicationDisplayMode": "schedule-only",
+            "eventDate": event_date,
+            "venue": venue,
+            "url": url,
+            "urls": links,
+            "sourceType": "official-special",
+            "primarySource": "official",
+            "sourceCandidates": ["official"],
+            "sourcePublishedAt": published,
+            "eventScope": "kawaii-lab",
+        }]
     if not windows:
         windows = [("対象商品予約", "", "")]
 
