@@ -28,11 +28,10 @@ jobs:
       - name: Install dependencies
         run: pip install -r scripts/requirements.txt
 
-      - name: Refresh official and KAWAII LAB FC ticket data
+      - name: Merge current KAWAII LAB FC ticket bands
         run: |
           cp data/live-events.json /tmp/live-events-before-fc.json
-          python scripts/update_live_events_v2.py
-          python scripts/apply_event_scopes.py
+          python scripts/merge_current_central_fc.py
 
       - name: Audit refreshed data
         run: |
