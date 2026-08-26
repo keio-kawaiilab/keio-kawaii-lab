@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>チケット状況タイムライン プレビュー</title>
+<style>
+:root{
+  --navy:#22335f;
+  --ink:#24304e;
+  --muted:#68708b;
+  --line:#e6e0d5;
+  --bg:#fffdf8;
+  --sweet:#ef9fbe;
+  --gold:#c19b46;
+  --open:#23713a;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;
+}
+.preview-head{
+  position:sticky;top:0;z-index:20;
+  padding:14px 16px;
+  background:rgba(255,255,255,.96);
+  border-bottom:1px solid var(--line);
+  box-shadow:0 5px 18px rgba(34,51,95,.08);
+  backdrop-filter:blur(10px);
+}
+.preview-head-inner{max-width:760px;margin:auto}
+.preview-head b{display:block;color:var(--navy);font-size:17px}
+.preview-head small{display:block;margin-top:3px;color:var(--muted);font-size:11px}
+main{max-width:760px;margin:auto;padding:18px 10px 70px}
+.demo-label{
+  display:inline-flex;
+  margin-bottom:10px;
+  padding:5px 9px;
+  border-radius:999px;
+  background:#fff4d8;
+  color:#705a19;
+  font-size:10px;
+  font-weight:900;
+}
+.card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-left:6px solid var(--sweet);
+  border-radius:16px;
+  padding:16px;
+  box-shadow:0 5px 18px rgba(34,51,95,.04);
+}
+.performance-date{
+  display:inline-flex;
+  margin-bottom:7px;
+  padding:5px 10px;
+  border-radius:999px;
+  background:#f1f3fa;
+  color:var(--navy);
+  font-size:12px;
+  font-weight:900;
+}
+h3{margin:2px 0 12px;color:var(--navy);font-size:17px}
+.meta{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px 14px;
+  font-size:13px;
+}
+.meta div{border-top:1px dashed var(--line);padding-top:7px}
+.meta b{display:block;color:var(--muted);font-size:11px;margin-bottom:2px}
+.ticket-toggle{
+  width:100%;
+  margin-top:15px;
+  min-height:48px;
+  border:1px solid #dfe4f1;
+  border-radius:13px;
+  background:#f7f8fc;
+  color:var(--navy);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:11px 13px;
+  font:inherit;
+  cursor:pointer;
+  text-align:left;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+.ticket-toggle .left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.ticket-toggle .icon{
+  width:34px;height:34px;border-radius:10px;
+  display:grid;place-items:center;
+  background:#fff;
+  border:1px solid #e1e5f0;
+  font-size:17px;
+}
+.ticket-toggle strong{display:block;font-size:13px}
+.ticket-toggle small{display:block;margin-top:2px;color:var(--muted);font-size:10px}
+.chev{font-size:18px;transition:transform .2s ease}
+.ticket-toggle[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.ticket-panel{display:none}
+.ticket-panel.open{display:block}
+.ticket-summary{
+  margin:11px 0 2px;
+  padding:12px 13px;
+  border:1px solid #dce9df;
+  border-radius:12px;
+  background:#f4fbf6;
+}
+.ticket-summary .now{
+  display:flex;align-items:center;gap:8px;
+  color:var(--open);font-size:12px;font-weight:900;
+}
+.pulse{
+  width:8px;height:8px;border-radius:50%;
+  background:#2d9950;
+  box-shadow:0 0 0 4px rgba(45,153,80,.12);
+}
+.ticket-summary b{
+  display:block;
+  margin-top:5px;
+  color:var(--navy);
+  font-size:14px;
+}
+.ticket-summary small{
+  display:block;margin-top:3px;color:var(--muted);font-size:10px;
+}
+.timeline{position:relative;margin:16px 2px 2px 6px;padding-left:24px}
+.timeline:before{
+  content:"";
+  position:absolute;
+  left:6px;top:9px;bottom:14px;
+  width:2px;background:#dfe3ec;
+}
+.step{
+  position:relative;
+  margin:0 0 16px;
+  padding:0 0 0 7px;
+}
+.step:last-child{margin-bottom:4px}
+.dot{
+  position:absolute;
+  left:-24px;top:3px;
+  width:15px;height:15px;border-radius:50%;
+  background:#fff;border:3px solid #bcc3d1;
+  z-index:2;
+}
+.step.done .dot{
+  border-color:#98a0af;background:#98a0af;
+  box-shadow:inset 0 0 0 3px #fff;
+}
+.step.current .dot{
+  width:17px;height:17px;left:-25px;top:2px;
+  border-color:#2d9950;background:#2d9950;
+  box-shadow:0 0 0 5px rgba(45,153,80,.12),inset 0 0 0 3px #fff;
+}
+.step.future .dot{border-style:dashed}
+.step-head{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+}
+.step-title{font-size:13px;font-weight:900;color:var(--navy)}
+.state{
+  flex:0 0 auto;
+  display:inline-flex;
+  padding:3px 7px;
+  border-radius:999px;
+  background:#eef0f3;
+  color:#656b79;
+  font-size:9px;font-weight:900;
+}
+.current .state{background:#e8f6ec;color:#23713a}
+.future .state{background:#f5f3ee;color:#7a7467}
+.period{margin-top:3px;color:var(--muted);font-size:11px}
+.provider-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.provider{
+  display:inline-flex;align-items:center;
+  padding:4px 7px;
+  border-radius:999px;
+  color:#fff;
+  font-size:9px;font-weight:900;
+}
+.provider.fc{background:#8b67c4}
+.provider.official{background:#596078}
+.provider.pia{background:#e04646}
+.provider.lawson{background:#2776ca}
+.provider.eplus{background:#e95b88}
+.unannounced{
+  margin:13px 0 1px;
+  padding:11px 12px;
+  border:1px dashed #c9ceda;
+  border-radius:11px;
+  background:#faf9f6;
+}
+.unannounced strong{
+  display:block;color:#5f6474;font-size:12px
+}
+.unannounced small{
+  display:block;margin-top:4px;color:var(--muted);font-size:10px;line-height:1.55
+}
+.src{
+  display:inline-block;
+  margin-top:14px;
+  color:var(--navy);
+  font-size:12px;
+  font-weight:800;
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+.note{
+  margin-top:14px;
+  padding:11px 12px;
+  border-radius:11px;
+  background:#fff7dc;
+  color:#66531d;
+  font-size:11px;
+  line-height:1.65;
+}
+@media(max-width:620px){
+  main{padding-left:8px;padding-right:8px}
+  .card{padding:14px}
+  .meta{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<header class="preview-head">
+  <div class="preview-head-inner">
+    <b>公演詳細内「チケット状況」プレビュー</b>
+    <small>タブを押すと販売履歴・現在地が開きます</small>
+  </div>
+</header>
+
+<main>
+  <span class="demo-label">※ 内容・日付はすべて表示確認用のサンプル</span>
+
+  <article class="card">
+    <span class="performance-date">2026年10月18日（日）</span>
+    <h3>🎤 SWEET STEADY LIVE TOUR 2026 東京公演</h3>
+
+    <div class="meta">
+      <div><b>グループ</b>SWEET STEADY</div>
+      <div><b>開催日時</b>10月18日（日） ／ 開場 16:00・開演 17:00</div>
+      <div><b>会場</b>サンプルホール</div>
+    </div>
+
+    <button type="button" class="ticket-toggle" id="ticketToggle" aria-expanded="false" aria-controls="ticketPanel">
+      <span class="left">
+        <span class="icon">🎫</span>
+        <span>
+          <strong>チケット状況</strong>
+          <small>現在：プレイガイド先行受付中</small>
+        </span>
+      </span>
+      <span class="chev">⌄</span>
+    </button>
+
+    <div class="ticket-panel" id="ticketPanel">
+      <div class="ticket-summary">
+        <div class="now"><span class="pulse"></span>現在受付中</div>
+        <b>プレイガイド先行</b>
+        <small>発表済みの情報だけを表示しています</small>
+      </div>
+
+      <div class="timeline">
+        <div class="step done">
+          <span class="dot"></span>
+          <div class="step-head">
+            <span class="step-title">FC先行</span>
+            <span class="state">受付終了</span>
+          </div>
+          <div class="period">8月1日 12:00 〜 8月7日 23:59</div>
+          <div class="provider-row"><span class="provider fc">FC</span></div>
+        </div>
+
+        <div class="step done">
+          <span class="dot"></span>
+          <div class="step-head">
+            <span class="step-title">オフィシャル先行</span>
+            <span class="state">受付終了</span>
+          </div>
+          <div class="period">8月10日 12:00 〜 8月17日 23:59</div>
+          <div class="provider-row"><span class="provider official">公式</span></div>
+        </div>
+
+        <div class="step current">
+          <span class="dot"></span>
+          <div class="step-head">
+            <span class="step-title">プレイガイド先行</span>
+            <span class="state">受付中</span>
+          </div>
+          <div class="period">8月25日 12:00 〜 9月1日 23:59</div>
+          <div class="provider-row">
+            <span class="provider pia">ぴあ</span>
+            <span class="provider lawson">ローチケ</span>
+            <span class="provider eplus">イープラス</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="unannounced">
+        <strong>この先のチケット販売情報は未発表です</strong>
+        <small>一般販売など、新しい受付が公式発表された場合のみここへ追加します。</small>
+      </div>
+    </div>
+
+    <a class="src" href="#" onclick="return false;">公式の詳細・注意事項を確認 →</a>
+
+    <div class="note">
+      このプレビューでは「未来の販売順」を予測せず、発表済みの受付だけを時系列で表示しています。
+    </div>
+  </article>
+</main>
+
+<script>
+(function(){
+  var btn=document.getElementById('ticketToggle');
+  var panel=document.getElementById('ticketPanel');
+  function toggle(){
+    var open=btn.getAttribute('aria-expanded')==='true';
+    btn.setAttribute('aria-expanded',open?'false':'true');
+    panel.classList.toggle('open',!open);
+  }
+  btn.addEventListener('click',toggle,false);
+  btn.addEventListener('touchend',function(e){
+    e.preventDefault();
+    toggle();
+  },{passive:false});
+})();
+</script>
+</body>
+</html>
