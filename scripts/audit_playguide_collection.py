@@ -18,6 +18,7 @@ def main() -> int:
         return 2
 
     errors: list[str] = []
+    warnings: list[str] = []
     collected_at = str(diagnostics.get("collectedAt") or "")
     try:
         stamp = datetime.fromisoformat(collected_at)
@@ -34,10 +35,18 @@ def main() -> int:
     refreshed = diagnostics.get("refreshedSources") if isinstance(diagnostics.get("refreshedSources"), list) else []
 
     # Ten source/group pairs should be attempted: eplus + Lawson for five groups.
-    if len(refreshed) + len(failures) < 10:
-        errors.append(f"only {len(refreshed) + len(failures)}/10 playguide source/group attempts are accounted for")
-    if failures:
-        errors.append(f"{len(failures)} playguide source/group request(s) failed")
+    # A failed request is not by itself a release blocker: update_playguide_events.py
+    # preserves the previous known-good rows for that exact provider/group pair.
+    # This keeps unrelated schedule sources updating during a transient provider outage.
+    accounted = len(refreshed) + len(failures)
+    if accounted < 10:
+        errors.append(f"only {accounted}/10 playguide source/group attempts are accounted for")
+    if not refreshed:
+        errors.append("all playguide source/group requests failed")
+    elif failures:
+        warnings.append(
+            f"{len(failures)} playguide source/group request(s) failed; previous known-good rows were retained"
+        )
     if missing:
         errors.append(
             f"{len(missing)} still-active reception(s) disappeared from a successfully refreshed playguide source"
@@ -51,6 +60,7 @@ def main() -> int:
         "failureCount": len(failures),
         "stillActiveMissingCount": len(missing),
         "expiredRowsPruned": diagnostics.get("expiredRowsPruned", 0),
+        "warnings": warnings,
         "errors": errors,
     }
     print(json.dumps(report, ensure_ascii=False, indent=2))
