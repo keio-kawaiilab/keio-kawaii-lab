@@ -7,6 +7,8 @@ on:
     paths:
       - "data/live-events.json"
       - "data/ticket-source-registry.json"
+      - "data/ticket-history-backfill-sources.json"
+      - "scripts/backfill_ticket_history.py"
       - "scripts/archive_ticket_history.py"
       - "scripts/audit_ticket_sources.py"
       - "scripts/test_archive_ticket_history.py"
@@ -45,6 +47,9 @@ jobs:
       - name: Test append-only history rules
         working-directory: scripts
         run: python -m unittest -v test_archive_ticket_history.py
+
+      - name: Backfill verified historical ticket phases
+        run: python scripts/backfill_ticket_history.py
 
       - name: Archive direct-source ticket observations
         run: python scripts/archive_ticket_history.py
