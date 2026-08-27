@@ -1,0 +1,123 @@
+{
+  "version": 1,
+  "updatedAt": "2026-08-27",
+  "policy": {
+    "preserveEndedReceptions": true,
+    "predictFutureStages": false,
+    "requireDirectSourceForHistory": true,
+    "discoveryOnlyMayPublish": false,
+    "notes": [
+      "チケット販売履歴は受付終了後も削除しない。",
+      "FC先行→プレイガイド→一般発売など、未発表の販売段階を推測して補完しない。",
+      "履歴1行ごとに、その受付期間を直接確認できる情報源URLを保持する。",
+      "公式XなどのSNSは発見用途に使えるが、単独では自動公開せず、公式サイトまたは販売事業者ページで再確認する。"
+    ]
+  },
+  "sources": {
+    "group-official": {
+      "label": "各グループ公式サイト",
+      "kind": "official",
+      "publishPolicy": "direct",
+      "authority": [
+        "performance",
+        "group-fc-sale",
+        "official-sale",
+        "upgrade",
+        "resale",
+        "same-day-sale"
+      ],
+      "groups": {
+        "FRUITS ZIPPER": {
+          "baseUrl": "https://fruitszipper.asobisystem.com",
+          "newsUrl": "https://fruitszipper.asobisystem.com/news/1/",
+          "scheduleUrl": "https://fruitszipper.asobisystem.com/live_information/schedule/list/"
+        },
+        "CANDY TUNE": {
+          "baseUrl": "https://candytune.asobisystem.com",
+          "newsUrl": "https://candytune.asobisystem.com/news/1/",
+          "scheduleUrl": "https://candytune.asobisystem.com/live_information/schedule/list/"
+        },
+        "SWEET STEADY": {
+          "baseUrl": "https://sweetsteady.asobisystem.com",
+          "newsUrl": "https://sweetsteady.asobisystem.com/news/1/",
+          "scheduleUrl": "https://sweetsteady.asobisystem.com/live_information/schedule/list/"
+        },
+        "CUTIE STREET": {
+          "baseUrl": "https://cutiestreet.asobisystem.com",
+          "newsUrl": "https://cutiestreet.asobisystem.com/news/1/",
+          "scheduleUrl": "https://cutiestreet.asobisystem.com/live_information/schedule/list/"
+        },
+        "MORE STAR": {
+          "baseUrl": "https://morestar.asobisystem.com",
+          "newsUrl": "https://morestar.asobisystem.com/news/1/",
+          "scheduleUrl": "https://morestar.asobisystem.com/live_information/schedule/list/"
+        }
+      }
+    },
+    "kawaii-lab-fc": {
+      "label": "KAWAII LAB. OFFICIAL FANCLUB",
+      "kind": "official",
+      "publishPolicy": "direct",
+      "authority": [
+        "kawaii-lab-fc-sale",
+        "joint-event-sale",
+        "upgrade",
+        "resale",
+        "same-day-sale"
+      ],
+      "baseUrl": "https://kawaiilab.asobisystem.com",
+      "newsUrl": "https://kawaiilab.asobisystem.com/news/1/"
+    },
+    "pia": {
+      "label": "チケットぴあ",
+      "kind": "playguide",
+      "publishPolicy": "direct",
+      "authority": ["pia-sale-window"],
+      "artistUrls": {
+        "FRUITS ZIPPER": "https://t.pia.jp/pia/artist/artists.do?artistsCd=M4140001",
+        "CANDY TUNE": "https://t.pia.jp/pia/artist/artists.do?artistsCd=N1260021",
+        "SWEET STEADY": "https://t.pia.jp/pia/artist/artists.do?artistsCd=O1150071",
+        "CUTIE STREET": "https://t.pia.jp/pia/artist/artists.do?artistsCd=O7260002",
+        "MORE STAR": "https://t.pia.jp/pia/artist/artists.do?artistsCd=PC180040"
+      }
+    },
+    "eplus": {
+      "label": "イープラス",
+      "kind": "playguide",
+      "publishPolicy": "direct",
+      "authority": ["eplus-sale-window"],
+      "artistUrls": {
+        "FRUITS ZIPPER": "https://eplus.jp/sf/word/0000152889",
+        "CANDY TUNE": "https://eplus.jp/sf/word/0000157138",
+        "SWEET STEADY": "https://eplus.jp/sf/word/0000163600",
+        "CUTIE STREET": "https://eplus.jp/sf/word/0000166546",
+        "MORE STAR": "https://eplus.jp/sf/word/0000173782"
+      }
+    },
+    "lawson": {
+      "label": "ローチケ",
+      "kind": "playguide",
+      "publishPolicy": "direct",
+      "authority": ["lawson-sale-window"],
+      "searchBaseUrl": "https://l-tike.com/search/"
+    },
+    "official-x": {
+      "label": "各公式X",
+      "kind": "social",
+      "publishPolicy": "discovery-only",
+      "authority": ["discovery"],
+      "note": "公式Xで先に告知を発見した場合も、URL・受付期間を公式サイトまたは販売事業者ページで再確認してから履歴へ入れる。"
+    }
+  },
+  "hostRules": {
+    "fruitszipper.asobisystem.com": "group-official",
+    "candytune.asobisystem.com": "group-official",
+    "sweetsteady.asobisystem.com": "group-official",
+    "cutiestreet.asobisystem.com": "group-official",
+    "morestar.asobisystem.com": "group-official",
+    "kawaiilab.asobisystem.com": "kawaii-lab-fc",
+    "t.pia.jp": "pia",
+    "eplus.jp": "eplus",
+    "l-tike.com": "lawson"
+  }
+}
