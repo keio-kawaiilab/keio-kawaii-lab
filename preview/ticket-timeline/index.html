@@ -3,105 +3,84 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>チケット販売の流れ プレビュー</title>
+<title>実在公演｜チケット販売の流れ プレビュー</title>
 <style>
-:root{--navy:#22335f;--ink:#24304e;--muted:#68708b;--line:#e6e0d5;--bg:#fffdf8;--candy:#68c9ee}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif}
-main{max-width:760px;margin:auto;padding:18px 8px 70px}
-.demo{display:inline-flex;margin:0 0 10px 7px;padding:5px 9px;border-radius:999px;background:#fff4d8;color:#705a19;font-size:10px;font-weight:900}
-.card{background:#fff;border:1px solid var(--line);border-left:6px solid var(--candy);border-radius:16px;padding:14px;scroll-margin-top:86px}
-.performance-date{display:inline-flex;margin-bottom:7px;padding:5px 10px;border-radius:999px;background:#f1f3fa;color:var(--navy);font-size:12px;font-weight:900}
-.card h3{margin:2px 0 10px;color:var(--navy);font-size:17px}
-.meta{display:grid;grid-template-columns:1fr;gap:8px 14px;font-size:13px}
-.meta div{border-top:1px dashed var(--line);padding-top:7px}
-.meta b{display:block;color:var(--muted);font-size:11px}
-.venue{font-weight:900;text-decoration:underline;text-decoration-color:#a93b4f66;text-decoration-thickness:2px;text-underline-offset:3px}
-
-/* ↓ 本番の受付中チケット表示と同じCSS。ここは変更していません */
-.ticket-options{display:grid;gap:8px;margin-top:14px}
-.ticket-option{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:12px;background:#fafbff}
-.provider{display:inline-flex;justify-content:center;min-width:82px;padding:5px 8px;border-radius:999px;background:var(--navy);color:#fff;font-size:11px;font-weight:900}
-.provider.pia{background:#e04646}.provider.lawson{background:#2776ca}.provider.eplus{background:#e95b88}.provider.official{background:#596078}.provider.sukisuki{background:#8b67c4}
-.ticket-copy b,.ticket-copy small{display:block}.ticket-copy b{font-size:12px}.ticket-copy small{margin-top:2px;color:var(--muted);font-size:11px}
-.ticket-link{display:inline-flex;align-items:center;min-height:36px;padding:7px 10px;border-radius:9px;background:#fff;border:1px solid var(--line);color:var(--navy);text-decoration:none;font-size:12px;font-weight:900}
-.sale-state{display:inline-flex;margin-left:6px;padding:2px 6px;border-radius:999px;background:#eee;color:#5f6474;font-size:9px;font-weight:900}.sale-state.open{background:#e8f6ec;color:#23713a}
+:root{--navy:#22335f;--ink:#24304e;--muted:#68708b;--line:#e6e0d5;--bg:#fffdf8;--candy:#68c9ee;--fruits:#7b7f86;--open:#23713a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif}a{color:inherit}
+.head{position:sticky;top:0;z-index:20;padding:14px 16px;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);box-shadow:0 5px 18px rgba(34,51,95,.08);backdrop-filter:blur(10px)}.head>div{max-width:760px;margin:auto}.head b{display:block;color:var(--navy);font-size:17px}.head small{display:block;margin-top:3px;color:var(--muted);font-size:11px}
+main{max-width:760px;margin:auto;padding:18px 8px 70px}.notice{margin:0 4px 16px;padding:11px 12px;border:1px solid #ead79b;border-radius:12px;background:#fff8e6;color:#5a4c24;font-size:11px;line-height:1.65}.example{margin:22px 4px 8px;color:var(--navy);font-size:12px;font-weight:900}.example:first-of-type{margin-top:0}
+.card{background:#fff;border:1px solid var(--line);border-left:6px solid var(--gc,var(--navy));border-radius:16px;padding:14px}.g-candy{--gc:var(--candy)}.g-fruits{--gc:var(--fruits)}.performance-date{display:inline-flex;margin-bottom:7px;padding:5px 10px;border-radius:999px;background:#f1f3fa;color:var(--navy);font-size:12px;font-weight:900}.card h3{margin:2px 0 10px;color:var(--navy);font-size:17px}.meta{display:grid;grid-template-columns:1fr;gap:8px 14px;font-size:13px}.meta div{border-top:1px dashed var(--line);padding-top:7px}.meta b{display:block;color:var(--muted);font-size:11px}.venue{font-weight:900;text-decoration:underline;text-decoration-color:#a93b4f66;text-decoration-thickness:2px;text-underline-offset:3px}
+/* 現在の本番サイトの受付表示と同じ系統 */
+.ticket-options{display:grid;gap:8px;margin-top:14px}.ticket-option{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:12px;background:#fafbff}.provider{display:inline-flex;justify-content:center;min-width:82px;padding:5px 8px;border-radius:999px;background:var(--navy);color:#fff;font-size:11px;font-weight:900}.provider.pia{background:#e04646}.provider.lawson{background:#2776ca}.provider.eplus{background:#e95b88}.provider.official{background:#596078}.ticket-copy b,.ticket-copy small{display:block}.ticket-copy b{font-size:12px}.ticket-copy small{margin-top:2px;color:var(--muted);font-size:11px}.ticket-link{display:inline-flex;align-items:center;min-height:36px;padding:7px 10px;border-radius:9px;background:#fff;border:1px solid var(--line);color:var(--navy);text-decoration:none;font-size:12px;font-weight:900}.sale-state{display:inline-flex;margin-left:6px;padding:2px 6px;border-radius:999px;background:#eee;color:#5f6474;font-size:9px;font-weight:900}.sale-state.open{background:#e8f6ec;color:#23713a}
+/* 付け足す流れタブ */
+.ticket-flow{margin-top:10px;border:1px solid #dfe4f1;border-radius:12px;background:#f7f8fc;overflow:hidden}.ticket-flow summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 13px;cursor:pointer;color:var(--navy);font-size:12px;font-weight:900;-webkit-tap-highlight-color:transparent}.ticket-flow summary::-webkit-details-marker{display:none}.ticket-flow summary:after{content:'⌄';font-size:18px;transition:transform .18s ease}.ticket-flow[open] summary:after{transform:rotate(180deg)}.flow-inner{padding:0 13px 13px;background:#fff}.flow-note{padding:10px 0 4px;color:var(--muted);font-size:10px;line-height:1.6}.timeline{position:relative;margin:8px 2px 2px 7px;padding-left:24px}.timeline:before{content:'';position:absolute;left:6px;top:9px;bottom:13px;width:2px;background:#dfe3ec}.step{position:relative;margin:0 0 15px;padding-left:7px}.step:last-child{margin-bottom:3px}.dot{position:absolute;left:-24px;top:3px;width:15px;height:15px;border-radius:50%;border:3px solid #9ca4b3;background:#9ca4b3;box-shadow:inset 0 0 0 3px #fff}.step.current .dot{border-color:#2d9950;background:#2d9950;box-shadow:0 0 0 4px rgba(45,153,80,.12),inset 0 0 0 3px #fff}.step-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.step-title{color:var(--navy);font-size:12px;font-weight:900;line-height:1.45}.state{display:inline-flex;flex:0 0 auto;padding:3px 7px;border-radius:999px;background:#eef0f3;color:#656b79;font-size:9px;font-weight:900}.current .state{background:#e8f6ec;color:#23713a}.period{margin-top:3px;color:var(--muted);font-size:10px}.flow-gap{margin:3px 0 15px;padding:9px 10px;border:1px dashed #c9ceda;border-radius:9px;background:#faf9f6;color:#666d7c;font-size:10px;line-height:1.55}.unknown{margin-top:10px;padding:10px 11px;border:1px dashed #c9ceda;border-radius:10px;background:#faf9f6;color:#666d7c;font-size:10px;line-height:1.55}.srcs{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.srcs a{font-size:10px;font-weight:800;color:var(--navy);text-decoration:underline;text-underline-offset:3px}.actions{display:flex;justify-content:flex-end;margin-top:12px}.going{display:inline-flex;align-items:center;min-height:40px;padding:9px 13px;border:1px solid #efbdd0;border-radius:11px;background:#fff8fb;color:#ad3c69;font-size:11px;font-weight:900}
 @media(max-width:620px){.ticket-option{grid-template-columns:1fr auto}.provider{grid-column:1/-1;justify-self:start;min-width:0}.ticket-link{grid-column:2;grid-row:2}.ticket-copy{grid-column:1;grid-row:2}}
-/* ↑ ここまで本番と同じ */
-
-/* ↓ ここだけ新しく付け足す「流れ」タブ */
-.ticket-flow{margin-top:10px;border:1px solid #dfe4f1;border-radius:12px;background:#f7f8fc;overflow:hidden}
-.ticket-flow summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 13px;cursor:pointer;color:var(--navy);font-size:12px;font-weight:900;-webkit-tap-highlight-color:transparent}
-.ticket-flow summary::-webkit-details-marker{display:none}
-.ticket-flow summary:after{content:'⌄';font-size:18px;transition:transform .18s ease}
-.ticket-flow[open] summary:after{transform:rotate(180deg)}
-.flow-inner{padding:0 13px 13px;background:#fff}
-.flow-note{padding:10px 0 4px;color:var(--muted);font-size:10px;line-height:1.6}
-.timeline{position:relative;margin:8px 2px 2px 7px;padding-left:24px}
-.timeline:before{content:'';position:absolute;left:6px;top:9px;bottom:13px;width:2px;background:#dfe3ec}
-.step{position:relative;margin:0 0 15px;padding-left:7px}.step:last-child{margin-bottom:3px}
-.dot{position:absolute;left:-24px;top:3px;width:15px;height:15px;border-radius:50%;border:3px solid #9ca4b3;background:#9ca4b3;box-shadow:inset 0 0 0 3px #fff}
-.step.current .dot{border-color:#2d9950;background:#2d9950;box-shadow:0 0 0 4px rgba(45,153,80,.12),inset 0 0 0 3px #fff}
-.step-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.step-title{color:var(--navy);font-size:12px;font-weight:900}
-.state{display:inline-flex;padding:3px 7px;border-radius:999px;background:#eef0f3;color:#656b79;font-size:9px;font-weight:900}.current .state{background:#e8f6ec;color:#23713a}
-.period{margin-top:3px;color:var(--muted);font-size:10px}
-.unknown{margin-top:10px;padding:10px 11px;border:1px dashed #c9ceda;border-radius:10px;background:#faf9f6;color:#666d7c;font-size:10px;line-height:1.55}
-.src{display:inline-block;margin-top:12px;font-weight:800;color:var(--navy);text-decoration:underline;text-underline-offset:3px}
-.actions{display:flex;justify-content:flex-end;margin-top:12px}.going{display:inline-flex;align-items:center;min-height:40px;padding:9px 13px;border:1px solid #efbdd0;border-radius:11px;background:#fff8fb;color:#ad3c69;font-size:11px;font-weight:900}
-.caption{margin:13px 4px 0;color:var(--muted);font-size:10px;line-height:1.65}
 </style>
 </head>
 <body>
+<header class="head"><div><b>実在公演で見る「チケット販売の流れ」</b><small>本番未反映。受付中カードはそのまま、下に流れタブだけ追加する案。</small></div></header>
 <main>
-<span class="demo">※ 表示確認用サンプル</span>
-<article class="card">
-<span class="performance-date">2026/10/9（金）</span>
-<h3>🎤 CANDY TUNE JAPAN TOUR 2026 - AUTUMN -</h3>
-<div class="meta">
-<div><b>グループ</b>CANDY TUNE</div>
-<div><b>開催日時</b>2026/10/9（金） ／ 開場 17:30 ／ 開演 18:30</div>
-<div><b>会場</b><span class="venue">栃木県 宇都宮市文化会館 大ホール</span></div>
-</div>
+<div class="notice">今回は架空のFC先行を作らず、実在する公演と確認できた受付だけで3例を作成。履歴が抜けている所は、無理につながず「未取得」と明記しています。</div>
 
-<!-- ここは現在の本番コードと同じ構造 -->
+<div class="example">例1｜FC先行から現在までかなり素直に追える公演</div>
+<article class="card g-candy">
+<span class="performance-date">2026/10/1（木）</span>
+<h3>🎤 CANDY TUNE 小川奈々子 生誕祭 2026</h3>
+<div class="meta"><div><b>グループ</b>CANDY TUNE</div><div><b>開催日時</b>2026/10/1（木） ／ 開場 17:30 ／ 開演 19:00</div><div><b>会場</b><span class="venue">SGCホール有明</span></div></div>
 <div class="ticket-options">
-  <div class="ticket-option">
-    <span class="provider pia">チケットぴあ</span>
-    <span class="ticket-copy"><b>2次プレリザーブ<span class="sale-state open">受付中・予定</span></b><small>開始日時未取得 〜 2026/8/31 23:59</small></span>
-    <a class="ticket-link" href="#" onclick="return false">申込ページ →</a>
-  </div>
-  <div class="ticket-option">
-    <span class="provider eplus">イープラス</span>
-    <span class="ticket-copy"><b>抽選 2次プレオーダー受付<span class="sale-state open">受付中・予定</span></b><small>2026/8/21 12:00 〜 2026/8/31 23:59</small></span>
-    <a class="ticket-link" href="#" onclick="return false">申込ページ →</a>
-  </div>
-  <div class="ticket-option">
-    <span class="provider lawson">ローチケ</span>
-    <span class="ticket-copy"><b>抽選 プレリク<span class="sale-state open">受付中・予定</span></b><small>2026/8/20 12:00 〜 2026/8/31 23:59</small></span>
-    <a class="ticket-link" href="#" onclick="return false">申込ページ →</a>
-  </div>
+<div class="ticket-option"><span class="provider official">KAWAII LAB. FC</span><span class="ticket-copy"><b>会員先行<span class="sale-state open">受付中・予定</span></b><small>2026/8/26 12:00 〜 2026/8/31 23:59</small></span><a class="ticket-link" href="https://kawaiilab.asobisystem.com/news/detail/88104" target="_blank" rel="noopener">申込案内 →</a></div>
 </div>
-
-<!-- 新しく付け足すのはこのdetailsだけ -->
-<details class="ticket-flow">
-  <summary>🎫 チケット販売の流れを見る</summary>
-  <div class="flow-inner">
-    <div class="flow-note">公式発表済みの受付だけを時系列で表示します。</div>
-    <div class="timeline">
-      <div class="step"><span class="dot"></span><div class="step-head"><span class="step-title">FC先行</span><span class="state">受付終了</span></div><div class="period">7/3 18:00 〜 7/10 23:59</div></div>
-      <div class="step"><span class="dot"></span><div class="step-head"><span class="step-title">オフィシャル先行</span><span class="state">受付終了</span></div><div class="period">7/18 12:00 〜 7/27 23:59</div></div>
-      <div class="step"><span class="dot"></span><div class="step-head"><span class="step-title">プレイガイド 1次先行</span><span class="state">受付終了</span></div><div class="period">8月上旬</div></div>
-      <div class="step current"><span class="dot"></span><div class="step-head"><span class="step-title">プレイガイド 2次先行</span><span class="state">受付中</span></div><div class="period">現在の受付内容は上のカードを確認</div></div>
-    </div>
-    <div class="unknown">この先の販売情報は未発表です。新しい受付が公式発表された場合だけ追加します。</div>
-  </div>
-</details>
-
-<a class="src" href="#" onclick="return false">公演公式ページを確認 →</a>
+<details class="ticket-flow"><summary>🎫 チケット販売の流れを見る</summary><div class="flow-inner"><div class="flow-note">確認できた受付を古い順に表示。</div><div class="timeline">
+<div class="step"><span class="dot"></span><div class="step-head"><span class="step-title">CANDY TUNE OFFICIAL FANCLUB 年会費コース会員先行</span><span class="state">受付終了</span></div><div class="period">8/7 12:00 〜 8/11 23:59</div></div>
+<div class="step"><span class="dot"></span><div class="step-head"><span class="step-title">CANDY TUNE OFFICIAL FANCLUB 年会費・月会費会員先行</span><span class="state">受付終了</span></div><div class="period">8/16 12:00 〜 8/20 23:59</div></div>
+<div class="step current"><span class="dot"></span><div class="step-head"><span class="step-title">KAWAII LAB. OFFICIAL FANCLUB 会員先行</span><span class="state">受付中</span></div><div class="period">8/26 12:00 〜 8/31 23:59</div></div>
+</div><div class="unknown">この先の販売情報は未発表。新しい受付が公式発表された場合だけ追加。</div></div></details>
+<div class="srcs"><a href="https://candytune.asobisystem.com/news/detail/86518" target="_blank" rel="noopener">CANDY TUNE公式（最初のFC先行）↗</a><a href="https://kawaiilab.asobisystem.com/news/detail/88104" target="_blank" rel="noopener">KAWAII LAB.公式（現在のFC先行）↗</a></div>
 <div class="actions"><span class="going">＋ 行く予定に追加</span></div>
 </article>
-<p class="caption">受付中の3カードは本番のCSS・構造をそのまま使用しています。新規部分は直下の「チケット販売の流れを見る」タブだけです。</p>
+
+<div class="example">例2｜現在はプレイガイド受付中。ただし途中履歴に欠損あり</div>
+<article class="card g-candy">
+<span class="performance-date">2026/10/9（金）</span>
+<h3>🎤 CANDY TUNE JAPAN TOUR 2026 - AUTUMN -</h3>
+<div class="meta"><div><b>グループ</b>CANDY TUNE</div><div><b>開催日時</b>2026/10/9（金） ／ 開場 17:30 ／ 開演 18:30</div><div><b>会場</b><span class="venue">栃木県 宇都宮市文化会館 大ホール</span></div></div>
+<div class="ticket-options">
+<div class="ticket-option"><span class="provider pia">チケットぴあ</span><span class="ticket-copy"><b>2次プレリザーブ<span class="sale-state open">受付中・予定</span></b><small>開始日時未取得 〜 2026/8/31 23:59</small></span><a class="ticket-link" href="#" onclick="return false">申込ページ →</a></div>
+<div class="ticket-option"><span class="provider eplus">イープラス</span><span class="ticket-copy"><b>抽選 2次プレオーダー受付<span class="sale-state open">受付中・予定</span></b><small>2026/8/21 12:00 〜 2026/8/31 23:59</small></span><a class="ticket-link" href="#" onclick="return false">申込ページ →</a></div>
+<div class="ticket-option"><span class="provider lawson">ローチケ</span><span class="ticket-copy"><b>抽選 プレリク<span class="sale-state open">受付中・予定</span></b><small>2026/8/20 12:00 〜 2026/8/31 23:59</small></span><a class="ticket-link" href="#" onclick="return false">申込ページ →</a></div>
+</div>
+<details class="ticket-flow"><summary>🎫 チケット販売の流れを見る</summary><div class="flow-inner"><div class="flow-note">FC先行は公式で確認済み。現在のプレイガイド受付も確認済み。</div><div class="timeline">
+<div class="step"><span class="dot"></span><div class="step-head"><span class="step-title">CANDY TUNE OFFICIAL FANCLUB 年会費コース会員先行</span><span class="state">受付終了</span></div><div class="period">6/6 18:00 〜 6/15 23:59</div></div>
+<div class="step"><span class="dot"></span><div class="step-head"><span class="step-title">CANDY TUNE OFFICIAL FANCLUB 年会費・月会費会員先行</span><span class="state">受付終了</span></div><div class="period">6/24 18:00 〜 6/29 23:59</div></div>
+<div class="step"><span class="dot"></span><div class="step-head"><span class="step-title">KAWAII LAB. OFFICIAL FANCLUB 会員先行</span><span class="state">受付終了</span></div><div class="period">7/5 18:00 〜 7/13 23:59</div></div>
+<div class="flow-gap">⚠️ ここから現在受付までのプレイガイド履歴は、現時点で全件を確定できていないため省略。勝手に「1次先行」などを補完しない。</div>
+<div class="step current"><span class="dot"></span><div class="step-head"><span class="step-title">ローチケ｜抽選 プレリク</span><span class="state">受付中</span></div><div class="period">8/20 12:00 〜 8/31 23:59</div></div>
+<div class="step current"><span class="dot"></span><div class="step-head"><span class="step-title">イープラス｜抽選 2次プレオーダー受付</span><span class="state">受付中</span></div><div class="period">8/21 12:00 〜 8/31 23:59</div></div>
+<div class="step current"><span class="dot"></span><div class="step-head"><span class="step-title">チケットぴあ｜2次プレリザーブ</span><span class="state">受付中</span></div><div class="period">開始日時未取得 〜 8/31 23:59</div></div>
+</div><div class="unknown">欠損がある公演でもタブ自体は出す。ただし「これが全履歴」とは表示しない。</div></div></details>
+<div class="srcs"><a href="https://candytune.asobisystem.com/news/detail/80541" target="_blank" rel="noopener">CANDY TUNE公式（年会費FC先行）↗</a><a href="https://candytune.asobisystem.com/news/detail/82537" target="_blank" rel="noopener">CANDY TUNE公式（年額・月額FC先行）↗</a><a href="https://kawaiilab.asobisystem.com/news/detail/83517" target="_blank" rel="noopener">KAWAII LAB.公式（FC先行）↗</a></div>
+<div class="actions"><span class="going">＋ 行く予定に追加</span></div>
+</article>
+
+<div class="example">例3｜長い販売履歴を持つツアー公演</div>
+<article class="card g-fruits">
+<span class="performance-date">2026/10/26（月）</span>
+<h3>🎤 FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN -</h3>
+<div class="meta"><div><b>グループ</b>FRUITS ZIPPER</div><div><b>開催日時</b>2026/10/26（月） ／ 開場 17:30 ／ 開演 18:30</div><div><b>会場</b><span class="venue">福岡サンパレス</span></div></div>
+<div class="ticket-options"><div class="ticket-option"><span class="provider pia">チケットぴあ</span><span class="ticket-copy"><b>2次プレリザーブ<span class="sale-state open">受付中・予定</span></b><small>開始日時未取得 〜 2026/8/30 23:59</small></span><a class="ticket-link" href="#" onclick="return false">申込ページ →</a></div></div>
+<details class="ticket-flow"><summary>🎫 チケット販売の流れを見る</summary><div class="flow-inner"><div class="flow-note">FRUITS ZIPPER公式特設ページで確認できる受付を時系列表示。</div><div class="timeline">
+<div class="step"><span class="dot"></span><div class="step-head"><span class="step-title">FRUITS ZIPPER OFFICIAL FANCLUB 年会費コース会員先行</span><span class="state">受付終了</span></div><div class="period">5/6 20:00 〜 5/18 23:59</div></div>
+<div class="step"><span class="dot"></span><div class="step-head"><span class="step-title">FRUITS ZIPPER OFFICIAL FANCLUB 会員先行</span><span class="state">受付終了</span></div><div class="period">5/26 18:00 〜 6/1 23:59</div></div>
+<div class="step"><span class="dot"></span><div class="step-head"><span class="step-title">KAWAII LAB. OFFICIAL FANCLUB 会員先行</span><span class="state">受付終了</span></div><div class="period">6/9 18:00 〜 6/15 23:59</div></div>
+<div class="step"><span class="dot"></span><div class="step-head"><span class="step-title">いち早プレリザーブ（ぴあNICOSカード限定）</span><span class="state">受付終了</span></div><div class="period">6/23 18:00 〜 6/28 23:59</div></div>
+<div class="step"><span class="dot"></span><div class="step-head"><span class="step-title">最速プレイガイド先行</span><span class="state">受付終了</span></div><div class="period">7/3 18:00 〜 7/12 23:59</div></div>
+<div class="step"><span class="dot"></span><div class="step-head"><span class="step-title">プレリザーブ</span><span class="state">受付終了</span></div><div class="period">7/17 18:00 〜 7/20 23:59</div></div>
+<div class="flow-gap">⚠️ 地域別の追加先行は公演ごとに受付期間が異なるため、公演との紐付けを確定できたものだけ追加する運用にする。</div>
+<div class="step current"><span class="dot"></span><div class="step-head"><span class="step-title">チケットぴあ｜2次プレリザーブ</span><span class="state">受付中</span></div><div class="period">開始日時未取得 〜 8/30 23:59</div></div>
+</div><div class="unknown">この先も新しい受付が発表された時だけ追加。一般販売が来ると決めつけない。</div></div></details>
+<div class="srcs"><a href="https://fruitszipper.asobisystem.com/feature/2026tour_autumn" target="_blank" rel="noopener">FRUITS ZIPPER TOUR公式特設 ↗</a><a href="https://fruitszipper.asobisystem.com/live_information/detail/40041" target="_blank" rel="noopener">福岡公演公式詳細 ↗</a></div>
+<div class="actions"><span class="going">＋ 行く予定に追加</span></div>
+</article>
 </main>
 </body>
 </html>
