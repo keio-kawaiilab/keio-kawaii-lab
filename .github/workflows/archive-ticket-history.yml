@@ -13,6 +13,8 @@ on:
       - "scripts/backfill_ticket_history_oneoffs.py"
       - "scripts/archive_ticket_history.py"
       - "scripts/audit_ticket_sources.py"
+      - "scripts/audit_ticket_collection_continuity.py"
+      - "scripts/update_live_events_v2.py"
       - "scripts/test_archive_ticket_history.py"
       - ".github/workflows/archive-ticket-history.yml"
   schedule:
@@ -21,6 +23,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 concurrency:
   group: archive-ticket-history
@@ -29,7 +32,7 @@ concurrency:
 jobs:
   archive:
     runs-on: ubuntu-latest
-    timeout-minutes: 7
+    timeout-minutes: 15
     steps:
       - name: Checkout latest main
         uses: actions/checkout@v4
@@ -62,15 +65,90 @@ jobs:
       - name: Fail closed on unknown or weak sources
         run: python scripts/audit_ticket_sources.py --report data/ticket-source-health.json
 
-      - name: Commit history only after source audit passes
+      - name: Audit continuous source and history coverage
         shell: bash
         run: |
-          if git diff --quiet -- data/ticket-history.json data/ticket-source-health.json; then
-            echo "No ticket-history changes."
+          extra=""
+          # 03:32 JST run: re-open every future-history source URL as a deeper daily check.
+          if [ "$(date -u +%H)" = "18" ]; then
+            extra="--deep-links"
+          fi
+          python scripts/audit_ticket_collection_continuity.py \
+            --report data/ticket-collection-health.json \
+            --no-fail \
+            $extra
+
+      - name: Commit append-only history and health snapshots
+        shell: bash
+        run: |
+          if git diff --quiet -- data/ticket-history.json data/ticket-source-health.json data/ticket-collection-health.json; then
+            echo "No ticket-history or health changes."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/ticket-history.json data/ticket-source-health.json
+          git add data/ticket-history.json data/ticket-source-health.json data/ticket-collection-health.json
           git commit -m "chore: archive verified ticket history"
           git push
+
+      - name: Add ticket collection health to summary
+        if: always()
+        shell: bash
+        run: |
+          if [ -f data/ticket-collection-health.json ]; then
+            echo "### Ticket collection continuity" >> "$GITHUB_STEP_SUMMARY"
+            echo '```json' >> "$GITHUB_STEP_SUMMARY"
+            cat data/ticket-collection-health.json >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Verify ticket collection is healthy
+        id: continuity
+        continue-on-error: true
+        run: python scripts/audit_ticket_collection_continuity.py --report data/ticket-collection-health.json --verify-report
+
+      - name: Open or refresh ticket collection incident
+        if: steps.continuity.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          title="🚨 Ticket collection degraded"
+          existing="$(gh issue list --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
+          {
+            echo "@keio-kawaiilab"
+            echo
+            echo "チケット情報収集の継続監査で異常または未確認区間を検出しました。"
+            echo "**販売の流れ機能は、この状態では安全に公開できません。**"
+            echo
+            echo '```json'
+            cat data/ticket-collection-health.json
+            echo '```'
+            echo
+            echo "Actions run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          } > /tmp/ticket-collection-incident.md
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file /tmp/ticket-collection-incident.md
+            gh issue edit "$existing" --add-assignee "keio-kawaiilab" || true
+            echo "Updated incident issue #$existing."
+          else
+            gh issue create --title "$title" --body-file /tmp/ticket-collection-incident.md --assignee "keio-kawaiilab"
+          fi
+
+      - name: Close resolved ticket collection incident
+        if: steps.continuity.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          title="🚨 Ticket collection degraded"
+          existing="$(gh issue list --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
+          if [ -n "$existing" ]; then
+            gh issue close "$existing" --comment "チケット収集の継続監査が正常に戻りました。"
+          fi
+
+      - name: Fail job when ticket collection is not healthy
+        if: steps.continuity.outcome == 'failure'
+        run: |
+          echo "Ticket collection continuity is not healthy; see data/ticket-collection-health.json and the incident issue."
+          exit 1
