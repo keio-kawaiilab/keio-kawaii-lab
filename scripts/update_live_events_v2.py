@@ -18,6 +18,7 @@ CENTRAL_FC_BASE = "https://kawaiilab.asobisystem.com"
 FC_HINT_RE = re.compile(r"OFFICIAL\s*FANCLUB|ファンクラブ|FC(?:会員)?先行", re.I)
 NEWS_SCAN_PAGES = 15
 MAX_FETCH_ATTEMPTS = 3
+DISCOVERED_BY_GROUP: dict[str, dict[str, parser_v1.Candidate]] = {}
 
 
 def _get_with_retry(session: requests.Session, url: str, timeout: int = 20):
@@ -36,12 +37,7 @@ def _get_with_retry(session: requests.Session, url: str, timeout: int = 20):
 
 
 def deep_candidate_links(session: requests.Session, group: str, base: str) -> list[parser_v1.Candidate]:
-    """Scan deeper than the public-display window so short-lived/older FC phases are not missed.
-
-    The collector runs hourly, but ticket announcements can be displaced from the first few
-    news pages quickly. Fifteen pages gives us a durable discovery window while the permanent
-    ticket-history archive prevents an observed phase from ever disappearing afterwards.
-    """
+    """Scan fifteen official news pages and remember every ticket-related article discovered."""
     found: dict[str, parser_v1.Candidate] = {}
     readable_pages = 0
     for page in range(1, NEWS_SCAN_PAGES + 1):
@@ -65,6 +61,7 @@ def deep_candidate_links(session: requests.Session, group: str, base: str) -> li
         time.sleep(0.05)
     if readable_pages != NEWS_SCAN_PAGES:
         raise RuntimeError(f"only {readable_pages}/{NEWS_SCAN_PAGES} news pages were readable for {group}")
+    DISCOVERED_BY_GROUP[group] = dict(found)
     return list(found.values())
 
 
@@ -81,7 +78,6 @@ def event_last_day(event: dict) -> date | None:
 
 
 def should_show(event: dict, today: date) -> bool:
-    """Keep today's and future shows; hide a show as soon as its final date has passed."""
     last_day = event_last_day(event)
     if last_day is None:
         return True
@@ -106,7 +102,6 @@ def represented_by_fresh(event: dict, fresh_by_id: dict[str, dict], fresh_urls: 
 
 
 def performance_title(title: str, group: str) -> str:
-    """Remove FC announcement wording but keep a stable performance title."""
     text = parser_v1.normalize_space(title)
     text = re.sub(r"^[【\[]\s*" + re.escape(group) + r"\s*[】\]]\s*", "", text, flags=re.I)
     text = re.split(
@@ -137,7 +132,6 @@ def infer_group(title: str, existing: dict) -> str | None:
     direct = [group for group in parser_v1.GROUPS if group.lower() in title.lower()]
     if len(direct) == 1:
         return direct[0]
-
     raw_key = title_key(title)
     matches: list[str] = []
     for event in existing.get("events", []):
@@ -162,12 +156,10 @@ def find_existing_performance(existing: dict, group: str, title: str) -> dict | 
         key = title_key(event.get("eventTitle") or event.get("title"), group)
         if key and wanted and (key in wanted or wanted in key):
             candidates.append(event)
-    candidates.sort(
-        key=lambda event: (
-            0 if event.get("ticketType") == "現在受付なし" else 1,
-            str(event.get("eventDate") or "9999"),
-        )
-    )
+    candidates.sort(key=lambda event: (
+        0 if event.get("ticketType") == "現在受付なし" else 1,
+        str(event.get("eventDate") or "9999"),
+    ))
     return dict(candidates[0]) if candidates else None
 
 
@@ -201,17 +193,16 @@ def central_fallback_event(candidate, review: dict, existing: dict, group: str) 
     }
 
 
-def collect_central_fc(session: requests.Session, existing: dict) -> tuple[dict[str, dict], list[dict], list[dict], int]:
+def collect_central_fc(session: requests.Session, existing: dict) -> tuple[dict[str, dict], list[dict], list[dict], list[parser_v1.Candidate]]:
     events_by_id: dict[str, dict] = {}
     pending: list[dict] = []
     failures: list[dict] = []
-
     try:
-        candidates = deep_candidate_links(session, "KAWAII LAB. FC", CENTRAL_FC_BASE)
+        all_candidates = deep_candidate_links(session, "KAWAII LAB. FC", CENTRAL_FC_BASE)
     except Exception as exc:
-        return {}, [], [{"group": "KAWAII LAB. FC", "stage": "news-list", "error": str(exc)}], 0
+        return {}, [], [{"group": "KAWAII LAB. FC", "stage": "news-list", "error": str(exc)}], []
 
-    candidates = [candidate for candidate in candidates if FC_HINT_RE.search(candidate.title)]
+    candidates = [candidate for candidate in all_candidates if FC_HINT_RE.search(candidate.title)]
     for source_candidate in candidates:
         group = infer_group(source_candidate.title, existing)
         if not group:
@@ -222,7 +213,6 @@ def collect_central_fc(session: requests.Session, existing: dict) -> tuple[dict[
                 "reason": "対象グループを一意に特定できないため確認待ちにしました。",
             })
             continue
-
         candidate = parser_v1.Candidate(group=group, title=source_candidate.title, url=source_candidate.url)
         try:
             parsed, review = parser_v1.parse_candidate(session, candidate)
@@ -247,20 +237,41 @@ def collect_central_fc(session: requests.Session, existing: dict) -> tuple[dict[
                 else:
                     pending.append(review)
         except Exception as exc:
-            failures.append({
-                "group": group,
-                "url": candidate.url,
-                "stage": "central-fc-article",
-                "error": str(exc),
-            })
+            failures.append({"group": group, "url": candidate.url, "stage": "central-fc-article", "error": str(exc)})
+    return events_by_id, pending, failures, candidates
 
-    return events_by_id, pending, failures, len(candidates)
+
+def account_unresolved_candidates(
+    fresh_by_id: dict[str, dict], pending: list[dict], failures: list[dict], central_candidates: list[parser_v1.Candidate]
+) -> list[dict]:
+    """Ensure every discovered ticket-related official article is either parsed, pending, or failed explicitly."""
+    intended: dict[str, parser_v1.Candidate] = {}
+    for group in parser_v1.GROUPS:
+        intended.update(DISCOVERED_BY_GROUP.get(group, {}))
+    intended.update({candidate.url: candidate for candidate in central_candidates})
+
+    accounted = {str(event.get("url") or "") for event in fresh_by_id.values() if event.get("url")}
+    accounted.update(str(item.get("url") or "") for item in pending if isinstance(item, dict) and item.get("url"))
+    accounted.update(str(item.get("url") or "") for item in failures if isinstance(item, dict) and item.get("url"))
+
+    added: list[dict] = []
+    for url, candidate in intended.items():
+        if url in accounted:
+            continue
+        review = {
+            "group": candidate.group,
+            "title": candidate.title,
+            "url": candidate.url,
+            "reason": "チケット関連の公式記事として検出しましたが、申込期間または公演との対応を安全に自動抽出できなかったため確認待ちにしました。",
+        }
+        pending.append(review)
+        added.append(review)
+    return added
 
 
 def build_payload(existing: dict, fresh_by_id: dict[str, dict], pending: list[dict], failures: list[dict], today: date) -> dict:
     fresh_urls = {str(e.get("url")) for e in fresh_by_id.values() if e.get("url")}
     fresh_events = [e for e in fresh_by_id.values() if should_show(e, today)]
-
     retained: list[dict] = []
     for original in existing.get("events", []):
         if not isinstance(original, dict):
@@ -281,13 +292,11 @@ def build_payload(existing: dict, fresh_by_id: dict[str, dict], pending: list[di
         if event_id:
             seen_ids.add(event_id)
         result.append(event)
-
     result.sort(key=lambda e: (
         str(e.get("eventDate") or "9999"),
         str(e.get("applyEnd") or "9999"),
         str(e.get("group") or ""),
     ))
-
     return {
         "demo": False,
         "updatedAt": datetime.now(parser_v1.JST).isoformat(timespec="seconds"),
@@ -299,59 +308,67 @@ def build_payload(existing: dict, fresh_by_id: dict[str, dict], pending: list[di
 
 
 def main() -> int:
-    cli = argparse.ArgumentParser(description="Update LIVE calendar with future-show retention policy.")
+    cli = argparse.ArgumentParser(description="Update LIVE calendar with deep official ticket discovery and explicit conservation checks.")
     cli.add_argument("--check", action="store_true")
     args = cli.parse_args()
 
+    DISCOVERED_BY_GROUP.clear()
     session = requests.Session()
-    session.headers.update({
-        "User-Agent": "KeioKawaiiLabCalendarBot/2.0 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"
-    })
-
+    session.headers.update({"User-Agent": "KeioKawaiiLabCalendarBot/2.1 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"})
     existing = parser_v1.read_existing()
 
-    # The v1 collector resolves candidate_links from its own module globals, so patch in
-    # the deeper/retrying implementation for this run without changing its parser logic.
     parser_v1.candidate_links = deep_candidate_links
     fresh_by_id, pending, failures, candidate_counts = parser_v1.collect(session)
-    reachable_groups = sum(1 for count in candidate_counts.values() if count > 0)
-
-    central_events, central_pending, central_failures, central_count = collect_central_fc(session, existing)
+    central_events, central_pending, central_failures, central_candidates = collect_central_fc(session, existing)
     fresh_by_id.update(central_events)
     pending.extend(central_pending)
     failures.extend(central_failures)
-    candidate_counts["KAWAII LAB. FC"] = central_count
+    candidate_counts["KAWAII LAB. FC"] = len(central_candidates)
 
+    newly_pending = account_unresolved_candidates(fresh_by_id, pending, failures, central_candidates)
+    failed_lists = {
+        str(item.get("group")) for item in failures
+        if isinstance(item, dict) and item.get("stage") == "news-list"
+    }
+    reachable_group_feeds = len(parser_v1.GROUPS) - len(failed_lists.intersection(set(parser_v1.GROUPS)))
+    central_feed_reachable = "KAWAII LAB. FC" not in failed_lists
+
+    official_candidates = sum(candidate_counts.get(group, 0) for group in parser_v1.GROUPS)
+    pending_urls = sorted({str(x.get("url") or "") for x in pending if isinstance(x, dict) and x.get("url")})
     diagnostics = {
         "collectedAt": datetime.now(parser_v1.JST).isoformat(timespec="seconds"),
         "newsPagesScannedPerOfficialSource": NEWS_SCAN_PAGES,
+        "reachableGroupNewsFeeds": reachable_group_feeds,
+        "centralFcNewsFeedReachable": central_feed_reachable,
         "candidateCounts": candidate_counts,
+        "discoveredOfficialTicketArticles": official_candidates + len(central_candidates),
         "parsedEvents": len(fresh_by_id),
         "centralFcEvents": len(central_events),
         "pendingReview": len(pending),
-        "pendingReviewUrls": sorted({str(x.get("url") or "") for x in pending if isinstance(x, dict) and x.get("url")}),
+        "pendingReviewUrls": pending_urls,
+        "newlyAccountedUnresolvedArticles": len(newly_pending),
         "failureCount": len(failures),
         "failures": failures,
     }
     print(json.dumps(diagnostics, ensure_ascii=False, indent=2))
 
-    if reachable_groups < 4:
-        print("Fewer than four group news feeds were reachable with ticket candidates.", file=sys.stderr)
+    if reachable_group_feeds < len(parser_v1.GROUPS) or not central_feed_reachable:
+        print("At least one official ticket news feed could not be fully scanned; existing public data left untouched.", file=sys.stderr)
         return 2
-    if not fresh_by_id:
-        print("No automatically parsed events were found; existing data left untouched.", file=sys.stderr)
+    if official_candidates == 0:
+        print("No ticket-related articles were discovered across group official feeds; treating this as a collector anomaly.", file=sys.stderr)
+        return 2
+    if not fresh_by_id and not pending:
+        print("No parsed or reviewable official ticket observations were produced; existing data left untouched.", file=sys.stderr)
         return 2
     if args.check:
-        print("Live source check passed; no files were modified.")
+        print("Official ticket source check passed; every discovered ticket article is explicitly accounted for.")
         return 0
 
     payload = build_payload(existing, fresh_by_id, pending, failures, datetime.now(parser_v1.JST).date())
     payload["ticketCollectorDiagnostics"] = diagnostics
     parser_v1.OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    parser_v1.OUTPUT_PATH.write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
+    parser_v1.OUTPUT_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Wrote {len(payload['events'])} current/future events with collector diagnostics.")
     return 0
 
