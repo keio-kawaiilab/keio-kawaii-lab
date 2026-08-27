@@ -198,8 +198,11 @@ def audit_history(registry: dict, history: dict) -> tuple[list[str], dict]:
             errors.append(f"{entry_id or index}: missing application window")
         if item.get("publishable") and item.get("windowCompleteness") == "missing":
             errors.append(f"{entry_id or index}: publishable entry has missing window")
-        if item.get("windowCompleteness") != "full":
-            warnings.append(f"{entry_id or index}: partial window ({item.get('windowCompleteness')})")
+
+        # 終了済み履歴は終了日時が確認できれば掲載に十分。
+        # 開始日時だけ欠ける end-only は正常扱いにし、終了日時がない start-only だけ確認対象にする。
+        if item.get("windowCompleteness") == "start-only":
+            warnings.append(f"{entry_id or index}: missing application end")
         counts[source_key] += 1
 
     report = {
