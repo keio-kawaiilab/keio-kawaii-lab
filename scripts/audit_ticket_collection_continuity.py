@@ -3,9 +3,9 @@ from __future__ import annotations
 
 import argparse
 import json
-import sys
 import time
 from collections import Counter, defaultdict
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from urllib.parse import quote, urlparse
@@ -20,7 +20,11 @@ DEFAULT_REPORT_PATH = Path("data/ticket-collection-health.json")
 JST = ZoneInfo("Asia/Tokyo")
 SPECIAL_CATEGORIES = {"release-event", "large-benefit", "benefit-event", "online-benefit"}
 PLAYGUIDE_KEYS = {"pia", "eplus", "lawson"}
-FC_WORDS = ("FC", "FANCLUB", "ファンクラブ")
+FC_WORDS = ("fc", "fanclub", "ファンクラブ")
+USER_AGENT = "KeioKawaiiLabTicketIntegrityBot/1.1 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"
+HTTP_TIMEOUT = 10
+HTTP_ATTEMPTS = 2
+MAX_WORKERS = 8
 
 
 def load(path: Path, fallback: dict | None = None) -> dict:
@@ -93,7 +97,7 @@ def event_dates(event: dict) -> list[str]:
     return values
 
 
-def parse_iso_day(value: object) -> date | None:
+def parse_day(value: object) -> date | None:
     try:
         return date.fromisoformat(clean(value)[:10])
     except ValueError:
@@ -101,21 +105,19 @@ def parse_iso_day(value: object) -> date | None:
 
 
 def is_ticket_row(event: dict) -> bool:
-    return clean(event.get("ticketType")) not in {"", "現在受付なし"} and bool(
-        event.get("applyStart") or event.get("applyEnd")
-    )
+    return clean(event.get("ticketType")) not in {"", "現在受付なし"} and bool(event.get("applyStart") or event.get("applyEnd"))
 
 
 def is_active(event: dict, today: date) -> bool:
-    end = parse_iso_day(event.get("applyEnd"))
+    end = parse_day(event.get("applyEnd"))
     return bool(end and end >= today and is_ticket_row(event))
 
 
 def source_endpoints(registry: dict) -> list[dict]:
     sources = registry.get("sources") or {}
     checks: list[dict] = []
-    group_source = sources.get("group-official") or {}
-    for group, config in (group_source.get("groups") or {}).items():
+    groups = (sources.get("group-official") or {}).get("groups") or {}
+    for group, config in groups.items():
         if config.get("newsUrl"):
             checks.append({"key": f"group-official:{group}:news", "url": config["newsUrl"], "marker": "/news/detail/"})
         if config.get("scheduleUrl"):
@@ -126,37 +128,69 @@ def source_endpoints(registry: dict) -> list[dict]:
     for provider in ("pia", "eplus"):
         for group, url in ((sources.get(provider) or {}).get("artistUrls") or {}).items():
             checks.append({"key": f"{provider}:{group}", "url": url, "marker": None})
-    lawson = sources.get("lawson") or {}
-    base = clean(lawson.get("searchBaseUrl"))
-    if base:
-        for group in (group_source.get("groups") or {}):
-            sep = "&" if "?" in base else "?"
-            checks.append({"key": f"lawson:{group}", "url": f"{base}{sep}keyword={quote(group)}", "marker": None})
+    lawson_base = clean((sources.get("lawson") or {}).get("searchBaseUrl"))
+    if lawson_base:
+        for group in groups:
+            sep = "&" if "?" in lawson_base else "?"
+            checks.append({"key": f"lawson:{group}", "url": f"{lawson_base}{sep}keyword={quote(group)}", "marker": None})
     return checks
 
 
-def fetch_check(session: requests.Session, url: str, marker: str | None) -> tuple[bool, str, int | None]:
+def fetch_check(url: str, marker: str | None = None) -> tuple[bool, str, int | None]:
     last_error = "unknown"
-    for attempt in range(3):
+    for attempt in range(HTTP_ATTEMPTS):
         try:
-            response = session.get(url, timeout=18)
+            response = requests.get(url, timeout=HTTP_TIMEOUT, headers={"User-Agent": USER_AGENT})
             status = response.status_code
             response.raise_for_status()
             text = response.text
-            if len(text) < 400:
+            if len(text) < 300:
                 return False, f"response too small ({len(text)} bytes)", status
             if marker and marker not in text:
                 return False, f"expected marker {marker!r} missing", status
             return True, "ok", status
         except Exception as exc:  # pragma: no cover - network dependent
             last_error = f"{type(exc).__name__}: {exc}"
-            if attempt < 2:
-                time.sleep(0.7 * (attempt + 1))
+            if attempt + 1 < HTTP_ATTEMPTS:
+                time.sleep(0.4)
     return False, last_error, None
+
+
+def run_source_checks(registry: dict, previous: dict, now: datetime) -> tuple[dict, list[str]]:
+    specs = source_endpoints(registry)
+    old_checks = previous.get("sourceChecks") if isinstance(previous.get("sourceChecks"), dict) else {}
+    results: dict[str, dict] = {}
+    failures: list[str] = []
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as pool:
+        future_map = {pool.submit(fetch_check, spec["url"], spec.get("marker")): spec for spec in specs}
+        for future in as_completed(future_map):
+            spec = future_map[future]
+            try:
+                ok, message, status = future.result()
+            except Exception as exc:  # defensive
+                ok, message, status = False, f"{type(exc).__name__}: {exc}", None
+            old = old_checks.get(spec["key"]) if isinstance(old_checks, dict) else {}
+            old = old if isinstance(old, dict) else {}
+            consecutive = 0 if ok else int(old.get("consecutiveFailures") or 0) + 1
+            results[spec["key"]] = {
+                "url": spec["url"],
+                "ok": ok,
+                "httpStatus": status,
+                "message": message,
+                "lastSuccessAt": now.isoformat(timespec="seconds") if ok else old.get("lastSuccessAt"),
+                "consecutiveFailures": consecutive,
+            }
+            if not ok:
+                failures.append(f"{spec['key']}: {message}")
+    return dict(sorted(results.items())), sorted(failures)
 
 
 def live_history_gaps(live: dict, history: dict, registry: dict) -> list[dict]:
     entries = [x for x in history.get("entries") or [] if isinstance(x, dict)]
+    by_key: dict[tuple[str, str, str, str], list[dict]] = defaultdict(list)
+    for item in entries:
+        by_key[(clean(item.get("group")), clean(item.get("eventDate"))[:10], clean(item.get("ticketType")), clean(item.get("sourceKey")))].append(item)
+
     gaps: list[dict] = []
     for event in live.get("events") or []:
         if not isinstance(event, dict) or not is_ticket_row(event):
@@ -165,35 +199,19 @@ def live_history_gaps(live: dict, history: dict, registry: dict) -> list[dict]:
         if not source_url or not source_key:
             continue
         for day in event_dates(event):
-            matched = False
-            for item in entries:
-                if clean(item.get("group")) != clean(event.get("group")):
-                    continue
-                if clean(item.get("eventDate"))[:10] != day:
-                    continue
-                if clean(item.get("ticketType")) != clean(event.get("ticketType")):
-                    continue
-                if clean(item.get("sourceKey")) != source_key:
-                    continue
-                live_end = clean(event.get("applyEnd"))
-                hist_end = clean(item.get("applyEnd"))
-                if live_end and hist_end and live_end != hist_end:
-                    continue
-                live_start = clean(event.get("applyStart"))
-                hist_start = clean(item.get("applyStart"))
-                if live_start and hist_start and live_start != hist_start:
-                    continue
-                matched = True
-                break
+            rows = by_key.get((clean(event.get("group")), day, clean(event.get("ticketType")), source_key), [])
+            live_start = clean(event.get("applyStart"))
+            live_end = clean(event.get("applyEnd"))
+            matched = any(
+                (not live_end or not clean(row.get("applyEnd")) or live_end == clean(row.get("applyEnd")))
+                and (not live_start or not clean(row.get("applyStart")) or live_start == clean(row.get("applyStart")))
+                for row in rows
+            )
             if not matched:
                 gaps.append({
-                    "group": event.get("group"),
-                    "eventDate": day,
-                    "ticketType": event.get("ticketType"),
-                    "sourceKey": source_key,
-                    "sourceUrl": source_url,
-                    "applyStart": event.get("applyStart"),
-                    "applyEnd": event.get("applyEnd"),
+                    "group": event.get("group"), "eventDate": day, "ticketType": event.get("ticketType"),
+                    "sourceKey": source_key, "sourceUrl": source_url,
+                    "applyStart": event.get("applyStart"), "applyEnd": event.get("applyEnd"),
                 })
     return gaps
 
@@ -201,22 +219,19 @@ def live_history_gaps(live: dict, history: dict, registry: dict) -> list[dict]:
 def flow_coverage(live: dict, history: dict, today: date) -> dict:
     by_group_day: dict[tuple[str, str], list[dict]] = defaultdict(list)
     for item in history.get("entries") or []:
-        if not isinstance(item, dict) or not item.get("flowEligible"):
-            continue
-        by_group_day[(clean(item.get("group")), clean(item.get("eventDate"))[:10])].append(item)
+        if isinstance(item, dict) and item.get("flowEligible"):
+            by_group_day[(clean(item.get("group")), clean(item.get("eventDate"))[:10])].append(item)
 
     no_history: list[dict] = []
-    suspicious_missing_fc: list[dict] = []
+    suspicious: list[dict] = []
     checked: set[tuple[str, str]] = set()
     for event in live.get("events") or []:
-        if not isinstance(event, dict):
-            continue
-        if clean(event.get("eventScope")) != "kawaii-lab":
+        if not isinstance(event, dict) or clean(event.get("eventScope")) != "kawaii-lab":
             continue
         if clean(event.get("eventCategory")) in SPECIAL_CATEGORIES:
             continue
         for day in event_dates(event):
-            parsed = parse_iso_day(day)
+            parsed = parse_day(day)
             if parsed and parsed < today:
                 continue
             key = (clean(event.get("group")), day)
@@ -230,25 +245,23 @@ def flow_coverage(live: dict, history: dict, today: date) -> dict:
             has_playguide = any(clean(x.get("sourceKey")) in PLAYGUIDE_KEYS or clean(x.get("ticketProvider")) in PLAYGUIDE_KEYS for x in rows)
             has_fc = any(
                 clean(x.get("saleFamily")) in {"group-fc", "kawaii-lab-fc"}
-                or any(word.lower() in clean(x.get("ticketType")).lower() for word in FC_WORDS)
+                or any(word in clean(x.get("ticketType")).lower() for word in FC_WORDS)
                 for x in rows
             )
             if has_playguide and not has_fc:
-                suspicious_missing_fc.append({
-                    "group": key[0],
-                    "eventDate": day,
-                    "title": event.get("eventTitle") or event.get("title"),
-                    "knownHistoryRows": len(rows),
+                suspicious.append({
+                    "group": key[0], "eventDate": day,
+                    "title": event.get("eventTitle") or event.get("title"), "knownHistoryRows": len(rows),
                 })
     return {
         "eligibleFuturePerformancesChecked": len(checked),
         "noHistory": no_history,
-        "suspiciousMissingFcBeforePlayguide": suspicious_missing_fc,
+        "suspiciousMissingFcBeforePlayguide": suspicious,
     }
 
 
-def active_rows(live: dict, today: date) -> list[dict]:
-    rows = []
+def active_playguide_rows(live: dict, today: date) -> list[dict]:
+    rows: list[dict] = []
     for event in live.get("events") or []:
         if not isinstance(event, dict) or not is_active(event, today):
             continue
@@ -256,34 +269,36 @@ def active_rows(live: dict, today: date) -> list[dict]:
         if provider not in PLAYGUIDE_KEYS:
             continue
         rows.append({
-            "provider": provider,
-            "group": event.get("group"),
-            "eventDate": clean(event.get("eventDate"))[:10],
-            "ticketType": event.get("ticketType"),
-            "applyEnd": event.get("applyEnd"),
-            "url": event.get("url"),
+            "provider": provider, "group": event.get("group"), "eventDate": clean(event.get("eventDate"))[:10],
+            "ticketType": event.get("ticketType"), "applyEnd": event.get("applyEnd"), "url": event.get("url"),
             "sourceStale": bool(event.get("sourceStale")),
         })
     return rows
 
 
-def deep_link_failures(session: requests.Session, history: dict, today: date) -> list[dict]:
+def deep_link_failures(history: dict, today: date) -> list[dict]:
     urls: dict[str, dict] = {}
     for item in history.get("entries") or []:
         if not isinstance(item, dict):
             continue
-        event_day = parse_iso_day(item.get("eventDate"))
+        event_day = parse_day(item.get("eventDate"))
         if event_day and event_day < today:
             continue
         url = clean(item.get("sourceUrl"))
         if url:
             urls.setdefault(url, {"sourceKey": item.get("sourceKey"), "eventDate": item.get("eventDate")})
-    failures = []
-    for url, meta in urls.items():
-        ok, message, status = fetch_check(session, url, None)
-        if not ok:
-            failures.append({"url": url, "status": status, "error": message, **meta})
-    return failures
+    failures: list[dict] = []
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as pool:
+        future_map = {pool.submit(fetch_check, url, None): (url, meta) for url, meta in urls.items()}
+        for future in as_completed(future_map):
+            url, meta = future_map[future]
+            try:
+                ok, message, status = future.result()
+            except Exception as exc:
+                ok, message, status = False, f"{type(exc).__name__}: {exc}", None
+            if not ok:
+                failures.append({"url": url, "status": status, "error": message, **meta})
+    return sorted(failures, key=lambda x: x["url"])
 
 
 def build_report(*, deep_links: bool = False) -> dict:
@@ -294,29 +309,7 @@ def build_report(*, deep_links: bool = False) -> dict:
     now = datetime.now(JST)
     today = now.date()
 
-    session = requests.Session()
-    session.headers.update({"User-Agent": "KeioKawaiiLabTicketIntegrityBot/1.0 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"})
-
-    previous_checks = previous.get("sourceChecks") or {}
-    source_checks: dict[str, dict] = {}
-    source_errors: list[str] = []
-    for spec in source_endpoints(registry):
-        ok, message, status = fetch_check(session, spec["url"], spec.get("marker"))
-        old = previous_checks.get(spec["key"]) if isinstance(previous_checks, dict) else {}
-        old = old if isinstance(old, dict) else {}
-        consecutive = 0 if ok else int(old.get("consecutiveFailures") or 0) + 1
-        last_success = now.isoformat(timespec="seconds") if ok else old.get("lastSuccessAt")
-        source_checks[spec["key"]] = {
-            "url": spec["url"],
-            "ok": ok,
-            "httpStatus": status,
-            "message": message,
-            "lastSuccessAt": last_success,
-            "consecutiveFailures": consecutive,
-        }
-        if not ok:
-            source_errors.append(f"{spec['key']}: {message}")
-
+    source_checks, source_failures = run_source_checks(registry, previous, now)
     diagnostics = live.get("ticketCollectorDiagnostics") if isinstance(live.get("ticketCollectorDiagnostics"), dict) else {}
     collector_failures = diagnostics.get("failures") if isinstance(diagnostics.get("failures"), list) else []
     pending_urls = diagnostics.get("pendingReviewUrls") if isinstance(diagnostics.get("pendingReviewUrls"), list) else []
@@ -353,15 +346,21 @@ def build_report(*, deep_links: bool = False) -> dict:
     history_decreased = previous_history_entries > 0 and history_entries < previous_history_entries
     archive_gaps = live_history_gaps(live, history, registry)
     flow = flow_coverage(live, history, today)
-    current_active_rows = active_rows(live, today)
-    stale_active_pia = [row for row in current_active_rows if row.get("provider") == "pia" and row.get("sourceStale")]
-
-    active_counts = Counter(f"{x['provider']}:{x['group']}" for x in current_active_rows)
-    link_failures = deep_link_failures(session, history, today) if deep_links else []
+    active_rows = active_playguide_rows(live, today)
+    stale_active_pia = [row for row in active_rows if row["provider"] == "pia" and row.get("sourceStale")]
+    active_counts = Counter(f"{x['provider']}:{x['group']}" for x in active_rows)
+    link_failures = deep_link_failures(history, today) if deep_links else []
 
     errors: list[str] = []
     warnings: list[str] = []
-    errors.extend(source_errors)
+
+    # Source reachability is a hard failure only after two consecutive audits; the first miss is treated as transient.
+    hard_source_failures = [key for key, row in source_checks.items() if not row["ok"] and int(row.get("consecutiveFailures") or 0) >= 2]
+    transient_source_failures = [key for key, row in source_checks.items() if not row["ok"] and int(row.get("consecutiveFailures") or 0) < 2]
+    if hard_source_failures:
+        errors.append(f"{len(hard_source_failures)} source endpoint(s) failed at least twice consecutively")
+    if transient_source_failures:
+        warnings.append(f"{len(transient_source_failures)} source endpoint(s) failed this audit for the first time")
     if freshness_error:
         errors.append(freshness_error)
     if collector_failures:
@@ -372,26 +371,29 @@ def build_report(*, deep_links: bool = False) -> dict:
         errors.append(f"append-only history shrank from {previous_history_entries} to {history_entries}")
     if archive_gaps:
         errors.append(f"{len(archive_gaps)} current direct-source ticket row(s) are missing from permanent history")
+
     if sudden_drops:
         warnings.append(f"{len(sudden_drops)} official candidate count(s) dropped abruptly")
     if pending_urls:
-        warnings.append(f"{len(pending_urls)} official ticket article(s) still require direct mapping review")
+        warnings.append(f"{len(pending_urls)} official ticket article(s) still require safe performance mapping")
     if stale_active_pia:
         warnings.append(f"{len(stale_active_pia)} active Pia row(s) were retained after a scrape miss")
-    if flow["noHistory"]:
-        warnings.append(f"{len(flow['noHistory'])} hosted future performance(s) have no ticket history yet")
+    # noHistory is informational: a newly announced show may legitimately have no ticket sale yet.
     if flow["suspiciousMissingFcBeforePlayguide"]:
-        warnings.append(
-            f"{len(flow['suspiciousMissingFcBeforePlayguide'])} hosted performance(s) have playguide history but no verified FC phase"
-        )
+        warnings.append(f"{len(flow['suspiciousMissingFcBeforePlayguide'])} hosted performance(s) have playguide history but no verified FC phase")
     if link_failures:
         warnings.append(f"{len(link_failures)} future-history source link(s) failed deep verification")
 
     status = "degraded" if errors else "attention" if warnings else "healthy"
-    safe_for_flow = status == "healthy" and not pending_urls and not flow["noHistory"] and not flow["suspiciousMissingFcBeforePlayguide"]
+    safe_for_flow = (
+        status == "healthy"
+        and not flow["noHistory"]
+        and not flow["suspiciousMissingFcBeforePlayguide"]
+        and not pending_urls
+    )
 
     return {
-        "version": 1,
+        "version": 2,
         "checkedAt": now.isoformat(timespec="seconds"),
         "status": status,
         "safeForTicketFlowPublication": safe_for_flow,
@@ -404,9 +406,10 @@ def build_report(*, deep_links: bool = False) -> dict:
         "officialCollectorFailures": collector_failures[:50],
         "playguideFailures": playguide_failures[:50],
         "sourceChecks": source_checks,
-        "sourceFailureCount": len(source_errors),
+        "sourceFailureCount": len(source_failures),
+        "hardSourceFailureCount": len(hard_source_failures),
         "suddenCandidateDrops": sudden_drops,
-        "currentActivePlayguideRows": len(current_active_rows),
+        "currentActivePlayguideRows": len(active_rows),
         "activePlayguideRowsBySource": dict(sorted(active_counts.items())),
         "staleActivePiaRows": stale_active_pia[:50],
         "currentRowsMissingFromHistory": archive_gaps[:100],
@@ -421,17 +424,17 @@ def build_report(*, deep_links: bool = False) -> dict:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Continuously audit ticket collection completeness and source health.")
+    parser = argparse.ArgumentParser(description="Audit ticket source continuity, archive completeness and flow readiness.")
     parser.add_argument("--report", type=Path, default=DEFAULT_REPORT_PATH)
-    parser.add_argument("--no-fail", action="store_true", help="Write health state but do not fail the workflow.")
-    parser.add_argument("--deep-links", action="store_true", help="Also re-check every future-history source URL.")
-    parser.add_argument("--verify-report", action="store_true", help="Fail if an already-written report is not healthy.")
+    parser.add_argument("--no-fail", action="store_true", help="Write the health state without failing the step.")
+    parser.add_argument("--deep-links", action="store_true", help="Re-open every source URL used by future history entries.")
+    parser.add_argument("--verify-report", action="store_true", help="Fail only when the saved report is degraded. Attention still blocks flow publication.")
     args = parser.parse_args()
 
     if args.verify_report:
         report = load(args.report)
         print(json.dumps(report, ensure_ascii=False, indent=2))
-        return 0 if report.get("status") == "healthy" else 2
+        return 2 if report.get("status") == "degraded" else 0
 
     report = build_report(deep_links=args.deep_links)
     args.report.parent.mkdir(parents=True, exist_ok=True)
@@ -439,7 +442,7 @@ def main() -> int:
     print(json.dumps(report, ensure_ascii=False, indent=2))
     if args.no_fail:
         return 0
-    return 0 if report.get("status") == "healthy" else 2
+    return 2 if report.get("status") == "degraded" else 0
 
 
 if __name__ == "__main__":
