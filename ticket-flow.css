@@ -1,0 +1,21 @@
+/* Ticket sales flow: additive only. Existing .ticket-options/.ticket-option styles are intentionally untouched. */
+.ticket-flow{margin-top:10px;border:1px solid #dfe4f1;border-radius:12px;background:#f7f8fc;overflow:hidden}
+.ticket-flow summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 13px;cursor:pointer;color:var(--navy);font-size:12px;font-weight:900;-webkit-tap-highlight-color:transparent}
+.ticket-flow summary::-webkit-details-marker{display:none}
+.ticket-flow summary:after{content:'⌄';font-size:18px;transition:transform .18s ease}
+.ticket-flow[open] summary:after{transform:rotate(180deg)}
+.ticket-flow .flow-inner{padding:0 13px 13px;background:#fff}
+.ticket-flow .flow-note{padding:10px 0 4px;color:var(--muted);font-size:10px;line-height:1.6}
+.ticket-flow .timeline{position:relative;margin:8px 2px 2px 7px;padding-left:24px}
+.ticket-flow .timeline:before{content:'';position:absolute;left:6px;top:9px;bottom:13px;width:2px;background:#dfe3ec}
+.ticket-flow .step{position:relative;margin:0 0 15px;padding-left:7px}
+.ticket-flow .step:last-child{margin-bottom:3px}
+.ticket-flow .dot{position:absolute;left:-24px;top:3px;width:15px;height:15px;border-radius:50%;border:3px solid #9ca4b3;background:#9ca4b3;box-shadow:inset 0 0 0 3px #fff}
+.ticket-flow .step.current .dot{border-color:#2d9950;background:#2d9950;box-shadow:0 0 0 4px rgba(45,153,80,.12),inset 0 0 0 3px #fff}
+.ticket-flow .step-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.ticket-flow .step-title{color:var(--navy);font-size:12px;font-weight:900;line-height:1.45}
+.ticket-flow .state{display:inline-flex;flex:0 0 auto;padding:3px 7px;border-radius:999px;background:#eef0f3;color:#656b79;font-size:9px;font-weight:900}
+.ticket-flow .current .state{background:#e8f6ec;color:#23713a}
+.ticket-flow .period{margin-top:3px;color:var(--muted);font-size:10px;line-height:1.5}
+.ticket-flow .flow-source{display:inline-flex;margin-top:5px;color:var(--navy);font-size:9px;font-weight:800;text-decoration:underline;text-underline-offset:2px}
+.ticket-flow .unknown{margin-top:10px;padding:10px 11px;border:1px dashed #c9ceda;border-radius:10px;background:#faf9f6;color:#666d7c;font-size:10px;line-height:1.55}
