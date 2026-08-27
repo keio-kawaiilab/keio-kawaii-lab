@@ -3,14 +3,21 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from collections import Counter
 from pathlib import Path
 from urllib.parse import urlparse
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
 REGISTRY_PATH = Path("data/ticket-source-registry.json")
 HISTORY_PATH = Path("data/ticket-history.json")
+LIVE_PATH = Path("data/live-events.json")
 REQUIRED_GROUPS = {"FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR"}
 REQUIRED_SOURCES = {"group-official", "kawaii-lab-fc", "pia", "eplus", "lawson", "official-x"}
+SPECIAL_CATEGORIES = {"release-event", "large-benefit", "benefit-event", "online-benefit"}
 
 
 def load(path: Path) -> dict:
@@ -25,6 +32,30 @@ def host(url: object) -> str:
         return (urlparse(str(url or "")).hostname or "").lower()
     except ValueError:
         return ""
+
+
+def mapped_source(url: object, registry: dict) -> str | None:
+    source_host = host(url)
+    rules = registry.get("hostRules") or {}
+    if source_host in rules:
+        return str(rules[source_host])
+    for known_host, key in rules.items():
+        if source_host.endswith("." + str(known_host).lower()):
+            return str(key)
+    return None
+
+
+def candidate_urls(event: dict) -> list[str]:
+    result: list[str] = []
+    for key in ("applicationWindowSource", "deadlineSource", "url"):
+        value = str(event.get(key) or "").strip()
+        if value and value not in result:
+            result.append(value)
+    for value in event.get("urls") or []:
+        text = str(value or "").strip()
+        if text and text not in result:
+            result.append(text)
+    return result
 
 
 def audit_registry(registry: dict) -> list[str]:
@@ -53,6 +84,77 @@ def audit_registry(registry: dict) -> list[str]:
     if (sources.get("official-x") or {}).get("publishPolicy") != "discovery-only":
         errors.append("official-x must remain discovery-only")
     return errors
+
+
+def audit_collector_alignment(registry: dict) -> list[str]:
+    """Keep the crawler constants in sync with the central source registry."""
+    errors: list[str] = []
+    try:
+        import update_live_events as official
+        import update_live_events_v2 as central
+        import update_pia_events as pia
+        import update_playguide_events as playguide
+    except Exception as exc:  # pragma: no cover - import failure is itself an audit failure
+        return [f"could not import ticket collectors: {type(exc).__name__}: {exc}"]
+
+    sources = registry.get("sources") or {}
+    official_groups = (sources.get("group-official") or {}).get("groups") or {}
+    expected_group_bases = {group: str(config.get("baseUrl") or "") for group, config in official_groups.items()}
+    if dict(official.GROUPS) != expected_group_bases:
+        errors.append("update_live_events.GROUPS differs from ticket-source-registry.json")
+
+    expected_central = str((sources.get("kawaii-lab-fc") or {}).get("baseUrl") or "")
+    if central.CENTRAL_FC_BASE != expected_central:
+        errors.append("update_live_events_v2.CENTRAL_FC_BASE differs from ticket-source-registry.json")
+
+    expected_pia = dict((sources.get("pia") or {}).get("artistUrls") or {})
+    if dict(pia.ARTIST_URLS) != expected_pia:
+        errors.append("update_pia_events.ARTIST_URLS differs from ticket-source-registry.json")
+
+    expected_eplus = dict((sources.get("eplus") or {}).get("artistUrls") or {})
+    if dict(playguide.EPLUS_ARTIST_URLS) != expected_eplus:
+        errors.append("update_playguide_events.EPLUS_ARTIST_URLS differs from ticket-source-registry.json")
+    return errors
+
+
+def audit_live_source_coverage(registry: dict, live: dict) -> tuple[list[str], list[str]]:
+    """Flag KAWAII LAB-hosted live ticket rows that have no registered direct source.
+
+    External festivals may legitimately use many organizer ticket systems, so those are
+    warnings rather than release-blocking errors. Special/release events are handled by
+    their own pipelines and are excluded from the concert-ticket-flow source gate.
+    """
+    errors: list[str] = []
+    warnings: list[str] = []
+    sources = registry.get("sources") or {}
+
+    for event in live.get("events") or []:
+        if not isinstance(event, dict):
+            continue
+        if str(event.get("ticketType") or "") in {"", "現在受付なし"}:
+            continue
+        if not event.get("applyStart") and not event.get("applyEnd"):
+            continue
+        if str(event.get("eventCategory") or "") in SPECIAL_CATEGORIES:
+            continue
+
+        direct = []
+        for url in candidate_urls(event):
+            key = mapped_source(url, registry)
+            config = sources.get(key) if key else None
+            if isinstance(config, dict) and config.get("publishPolicy") == "direct":
+                direct.append((url, key))
+        if direct:
+            continue
+
+        label = f"{event.get('group')} / {event.get('eventDate')} / {event.get('ticketType')} / {event.get('title')}"
+        unknown_hosts = sorted({host(url) for url in candidate_urls(event) if host(url)})
+        message = f"unregistered ticket source for {label}; hosts={unknown_hosts or ['none']}"
+        if event.get("eventScope") == "kawaii-lab":
+            errors.append(message)
+        else:
+            warnings.append(message)
+    return errors, warnings
 
 
 def audit_history(registry: dict, history: dict) -> tuple[list[str], dict]:
@@ -101,12 +203,10 @@ def audit_history(registry: dict, history: dict) -> tuple[list[str], dict]:
         counts[source_key] += 1
 
     report = {
-        "status": "ok" if not errors else "blocked",
         "entries": len(history.get("entries") or []),
         "bySource": dict(sorted(counts.items())),
-        "warnings": warnings[:50],
-        "warningCount": len(warnings),
-        "errors": errors,
+        "historyWarnings": warnings[:50],
+        "historyWarningCount": len(warnings),
     }
     return errors, report
 
@@ -118,12 +218,23 @@ def main() -> int:
 
     registry = load(REGISTRY_PATH)
     history = load(HISTORY_PATH)
-    errors = audit_registry(registry)
+    live = load(LIVE_PATH)
+
+    registry_errors = audit_registry(registry)
+    alignment_errors = audit_collector_alignment(registry)
+    live_errors, live_warnings = audit_live_source_coverage(registry, live)
     history_errors, report = audit_history(registry, history)
-    errors.extend(history_errors)
-    report["registryErrors"] = [x for x in errors if x not in history_errors]
-    report["status"] = "blocked" if errors else "ok"
-    report["errors"] = errors
+    errors = registry_errors + alignment_errors + live_errors + history_errors
+
+    report.update({
+        "status": "blocked" if errors else "ok",
+        "registryErrors": registry_errors,
+        "collectorAlignmentErrors": alignment_errors,
+        "liveCoverageErrors": live_errors,
+        "liveCoverageWarnings": live_warnings[:50],
+        "liveCoverageWarningCount": len(live_warnings),
+        "errors": errors,
+    })
 
     text = json.dumps(report, ensure_ascii=False, indent=2)
     print(text)
