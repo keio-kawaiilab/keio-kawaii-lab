@@ -6,6 +6,7 @@ import json
 import re
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, datetime
 from urllib.parse import urljoin
 
@@ -17,6 +18,7 @@ import update_live_events as parser_v1
 CENTRAL_FC_BASE = "https://kawaiilab.asobisystem.com"
 FC_HINT_RE = re.compile(r"OFFICIAL\s*FANCLUB|ファンクラブ|FC(?:会員)?先行", re.I)
 NEWS_SCAN_PAGES = 15
+NEWS_PAGE_WORKERS = 5
 MAX_FETCH_ATTEMPTS = 3
 DISCOVERED_BY_GROUP: dict[str, dict[str, parser_v1.Candidate]] = {}
 
@@ -36,15 +38,32 @@ def _get_with_retry(session: requests.Session, url: str, timeout: int = 20):
     raise last_exc
 
 
+def _fetch_news_page(url: str, headers: dict[str, str]) -> str:
+    # requests.Session is deliberately not shared across threads.
+    with requests.Session() as worker_session:
+        worker_session.headers.update(headers)
+        return _get_with_retry(worker_session, url, timeout=20).text
+
+
 def deep_candidate_links(session: requests.Session, group: str, base: str) -> list[parser_v1.Candidate]:
-    """Scan fifteen official news pages and remember every ticket-related article discovered."""
+    """Scan fifteen official news pages, at five-page concurrency, and account for every ticket article."""
     found: dict[str, parser_v1.Candidate] = {}
-    readable_pages = 0
-    for page in range(1, NEWS_SCAN_PAGES + 1):
-        url = f"{base}/news/1/?page={page}"
-        response = _get_with_retry(session, url, timeout=20)
-        readable_pages += 1
-        soup = BeautifulSoup(response.text, "html.parser")
+    page_urls = {page: f"{base}/news/1/?page={page}" for page in range(1, NEWS_SCAN_PAGES + 1)}
+    html_by_page: dict[int, str] = {}
+    headers = {str(k): str(v) for k, v in session.headers.items()}
+
+    with ThreadPoolExecutor(max_workers=NEWS_PAGE_WORKERS) as pool:
+        futures = {pool.submit(_fetch_news_page, url, headers): page for page, url in page_urls.items()}
+        for future in as_completed(futures):
+            page = futures[future]
+            html_by_page[page] = future.result()
+
+    if len(html_by_page) != NEWS_SCAN_PAGES:
+        raise RuntimeError(f"only {len(html_by_page)}/{NEWS_SCAN_PAGES} news pages were readable for {group}")
+
+    # Parse in page order so diagnostics and dedupe stay deterministic.
+    for page in sorted(html_by_page):
+        soup = BeautifulSoup(html_by_page[page], "html.parser")
         for anchor in soup.find_all("a", href=True):
             href = anchor.get("href", "")
             if "/news/detail/" not in href:
@@ -58,9 +77,7 @@ def deep_candidate_links(session: requests.Session, group: str, base: str) -> li
                 continue
             full = urljoin(base, href)
             found[full] = parser_v1.Candidate(group=group, title=title, url=full)
-        time.sleep(0.05)
-    if readable_pages != NEWS_SCAN_PAGES:
-        raise RuntimeError(f"only {readable_pages}/{NEWS_SCAN_PAGES} news pages were readable for {group}")
+
     DISCOVERED_BY_GROUP[group] = dict(found)
     return list(found.values())
 
@@ -244,7 +261,7 @@ def collect_central_fc(session: requests.Session, existing: dict) -> tuple[dict[
 def account_unresolved_candidates(
     fresh_by_id: dict[str, dict], pending: list[dict], failures: list[dict], central_candidates: list[parser_v1.Candidate]
 ) -> list[dict]:
-    """Ensure every discovered ticket-related official article is either parsed, pending, or failed explicitly."""
+    """Every discovered official ticket article must be parsed, pending, or failed explicitly."""
     intended: dict[str, parser_v1.Candidate] = {}
     for group in parser_v1.GROUPS:
         intended.update(DISCOVERED_BY_GROUP.get(group, {}))
@@ -314,7 +331,7 @@ def main() -> int:
 
     DISCOVERED_BY_GROUP.clear()
     session = requests.Session()
-    session.headers.update({"User-Agent": "KeioKawaiiLabCalendarBot/2.1 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"})
+    session.headers.update({"User-Agent": "KeioKawaiiLabCalendarBot/2.2 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"})
     existing = parser_v1.read_existing()
 
     parser_v1.candidate_links = deep_candidate_links
@@ -338,6 +355,7 @@ def main() -> int:
     diagnostics = {
         "collectedAt": datetime.now(parser_v1.JST).isoformat(timespec="seconds"),
         "newsPagesScannedPerOfficialSource": NEWS_SCAN_PAGES,
+        "newsPageWorkersPerSource": NEWS_PAGE_WORKERS,
         "reachableGroupNewsFeeds": reachable_group_feeds,
         "centralFcNewsFeedReachable": central_feed_reachable,
         "candidateCounts": candidate_counts,
