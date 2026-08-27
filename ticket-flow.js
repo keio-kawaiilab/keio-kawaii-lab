@@ -6,7 +6,10 @@
 
   var healthUrl="./data/ticket-collection-health.json";
   var historyUrl="./data/ticket-history.json";
-  var flowRowsByGroupDate=null;
+  var flowRowsByGroupDate={};
+  var collectionHealth=null;
+  var healthAvailable=false;
+  var historyAvailable=false;
   var mounted=false;
   var MAX_HEALTH_AGE_MS=3*60*60*1000;
 
@@ -54,12 +57,19 @@
     return out;
   }
 
-  function freshHealth(health){
-    if(!health||health.safeForTicketFlowPublication!==true||health.status!=="healthy")return false;
-    var checked=new Date(clean(health.checkedAt));
-    if(isNaN(checked.getTime()))return false;
-    var age=Date.now()-checked.getTime();
-    return age>=0&&age<=MAX_HEALTH_AGE_MS;
+  function collectionState(){
+    if(!healthAvailable||!collectionHealth)return "unknown";
+    var checked=new Date(clean(collectionHealth.checkedAt));
+    var age=isNaN(checked.getTime())?Infinity:Date.now()-checked.getTime();
+    var fresh=age>=0&&age<=MAX_HEALTH_AGE_MS;
+    if(collectionHealth.safeForTicketFlowPublication===true&&collectionHealth.status==="healthy"&&fresh)return "healthy";
+    if(!fresh)return "stale";
+    return "degraded";
+  }
+
+  function safeSourceUrl(value){
+    var url=clean(value);
+    return /^https?:\/\//i.test(url)?url:"";
   }
 
   function buildIndex(history){
@@ -67,6 +77,7 @@
     (history.entries||[]).forEach(function(row){
       if(!row||row.publishable!==true||row.flowEligible!==true)return;
       if(clean(row.windowCompleteness)==="missing")return;
+      if(!safeSourceUrl(row.sourceUrl))return;
       var group=clean(row.group),day=clean(row.eventDate).slice(0,10);
       if(!group||!day)return;
       var key=group+"|"+day;
@@ -94,7 +105,6 @@
   }
 
   function safeRowsForCard(card){
-    if(!flowRowsByGroupDate)return[];
     var id=cardIdentity(card);
     if(!id.group||!id.day||!id.titleKey)return[];
     var rows=(flowRowsByGroupDate[id.group+"|"+id.day]||[]).filter(function(row){
@@ -122,37 +132,62 @@
     var now=new Date();
     var start=moment(row.applyStart,false);
     var end=moment(row.applyEnd,true);
-    if(start&&start>now)return{label:"受付予定",current:false};
-    if(end&&end<now)return{label:"受付終了",current:false};
-    return{label:"受付中",current:true};
+    if(end&&end<now)return{label:"受付終了",current:false,ended:true};
+    if(start&&start>now)return{label:"受付予定",current:false,ended:false};
+    if(start&&end&&start<=now&&end>=now)return{label:"受付中",current:true,ended:false};
+    if(!start&&end&&end>=now)return{label:"受付中・予定",current:true,ended:false};
+    return{label:"受付状況未確認",current:false,ended:false};
   }
 
-  function periodFor(row){
-    var start=clean(row.applyStart)?fmt(row.applyStart):"開始日時未取得";
-    var end=clean(row.applyEnd)?fmt(row.applyEnd):"終了日時未取得";
-    return start+" 〜 "+end;
+  function periodFor(row,state){
+    var hasStart=!!clean(row.applyStart),hasEnd=!!clean(row.applyEnd);
+    if(state&&state.ended&&!hasStart&&hasEnd)return fmt(row.applyEnd)+" 受付終了";
+    if(hasStart&&hasEnd)return fmt(row.applyStart)+" 〜 "+fmt(row.applyEnd);
+    if(!hasStart&&hasEnd)return "開始日時未取得 ／ "+fmt(row.applyEnd)+"まで";
+    if(hasStart&&!hasEnd)return fmt(row.applyStart)+"開始 ／ 終了日時未取得";
+    return "受付期間未取得";
+  }
+
+  function coverageHtml(rows){
+    if(!historyAvailable){
+      return '<div class="flow-note caution">現在、販売履歴データを読み込めません。確認できない情報を推測して表示することはありません。</div>';
+    }
+    if(!rows.length){
+      return '<div class="flow-note caution">現在の履歴データに確認済みの販売履歴はありません。販売がなかったことを意味するものではありません。</div>';
+    }
+    var state=collectionState();
+    if(state==="healthy"){
+      return '<div class="flow-note">公式・プレイガイドで確認できた受付を、確認できた範囲で古い順に表示します。</div>';
+    }
+    if(state==="stale"){
+      return '<div class="flow-note caution">収集状態の最新確認が古いため、履歴に抜けがある可能性があります。以下は根拠URLを持つ確認済みの受付だけです。</div>';
+    }
+    return '<div class="flow-note caution">一部の情報源を現在確認できていないため、履歴に抜けがある可能性があります。以下は根拠URLを持つ確認済みの受付だけです。</div>';
   }
 
   function flowHtml(rows){
     var steps=rows.map(function(row){
       var state=stateFor(row);
-      var source=clean(row.sourceUrl)?'<a class="flow-source" href="'+esc(row.sourceUrl)+'" target="_blank" rel="noopener">'+esc(row.sourceLabel||"情報源")+'を確認 ↗</a>':"";
-      return '<div class="step'+(state.current?' current':'')+'"><span class="dot"></span><div class="step-head"><span class="step-title">'+esc(providerLabel(row))+'</span><span class="state">'+esc(state.label)+'</span></div><div class="period">'+esc(periodFor(row))+'</div>'+source+'</div>';
+      var url=safeSourceUrl(row.sourceUrl);
+      var source=url?'<a class="flow-source" href="'+esc(url)+'" target="_blank" rel="noopener">'+esc(row.sourceLabel||"情報源")+'を確認 ↗</a>':"";
+      return '<div class="step'+(state.current?' current':'')+'"><span class="dot"></span><div class="step-head"><span class="step-title">'+esc(providerLabel(row))+'</span><span class="state">'+esc(state.label)+'</span></div><div class="period">'+esc(periodFor(row,state))+'</div>'+source+'</div>';
     }).join("");
-    return '<details class="ticket-flow"><summary>🎫 チケット販売の流れを見る</summary><div class="flow-inner"><div class="flow-note">公式・プレイガイドで確認できた受付だけを古い順に表示します。</div><div class="timeline">'+steps+'</div><div class="unknown">この先の販売情報は未発表です。新しい受付が公式発表された場合だけ追加します。</div></div></details>';
+    var timeline=steps?'<div class="timeline">'+steps+'</div>':"";
+    return '<details class="ticket-flow"><summary>🎫 チケット販売の流れを見る</summary><div class="flow-inner">'+coverageHtml(rows)+timeline+'<div class="unknown">未発表・未確認の販売段階は予測していません。新しい受付は確認できたものだけ追加します。</div></div></details>';
+  }
+
+  function isNormalLiveCard(card){
+    return !card.classList.contains("release-card")&&!card.classList.contains("benefit-card")&&!card.classList.contains("online-card");
   }
 
   function decorateCard(card){
-    if(card.querySelector(".ticket-flow"))return;
-    var rows=safeRowsForCard(card);
-    if(!rows.length)return;
+    if(!isNormalLiveCard(card)||card.querySelector(".ticket-flow"))return;
     var anchor=card.querySelector(".ticket-options")||card.querySelector(".no-ticket");
     if(!anchor)return;
-    anchor.insertAdjacentHTML("afterend",flowHtml(rows));
+    anchor.insertAdjacentHTML("afterend",flowHtml(safeRowsForCard(card)));
   }
 
   function decorateAll(){
-    if(!flowRowsByGroupDate)return;
     [].slice.call(cards.querySelectorAll(".card[data-performance-key]")).forEach(decorateCard);
   }
 
@@ -175,15 +210,24 @@
     });
   }
 
-  noStoreJson(healthUrl).then(function(health){
-    if(!freshHealth(health))return null;
-    return noStoreJson(historyUrl);
-  }).then(function(history){
-    if(!history)return;
+  var historyRequest=noStoreJson(historyUrl).then(function(history){
+    historyAvailable=true;
     flowRowsByGroupDate=buildIndex(history);
+  }).catch(function(){
+    historyAvailable=false;
+    flowRowsByGroupDate={};
+  });
+
+  var healthRequest=noStoreJson(healthUrl).then(function(health){
+    healthAvailable=true;
+    collectionHealth=health;
+  }).catch(function(){
+    healthAvailable=false;
+    collectionHealth=null;
+  });
+
+  Promise.all([historyRequest,healthRequest]).then(function(){
     observe();
     decorateAll();
-  }).catch(function(){
-    // Fail closed. If health/history cannot be verified, do not show a ticket flow.
   });
 })();

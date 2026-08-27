@@ -6,6 +6,7 @@
 .ticket-flow[open] summary:after{transform:rotate(180deg)}
 .ticket-flow .flow-inner{padding:0 13px 13px;background:#fff}
 .ticket-flow .flow-note{padding:10px 0 4px;color:var(--muted);font-size:10px;line-height:1.6}
+.ticket-flow .flow-note.caution{margin-top:9px;padding:9px 10px;border:1px solid #ead79b;border-radius:9px;background:#fff8e6;color:#5d5131}
 .ticket-flow .timeline{position:relative;margin:8px 2px 2px 7px;padding-left:24px}
 .ticket-flow .timeline:before{content:'';position:absolute;left:6px;top:9px;bottom:13px;width:2px;background:#dfe3ec}
 .ticket-flow .step{position:relative;margin:0 0 15px;padding-left:7px}
