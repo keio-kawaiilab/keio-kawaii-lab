@@ -8,7 +8,9 @@ on:
       - "data/live-events.json"
       - "data/ticket-source-registry.json"
       - "data/ticket-history-backfill-sources.json"
+      - "data/ticket-history-backfill-oneoffs.json"
       - "scripts/backfill_ticket_history.py"
+      - "scripts/backfill_ticket_history_oneoffs.py"
       - "scripts/archive_ticket_history.py"
       - "scripts/audit_ticket_sources.py"
       - "scripts/test_archive_ticket_history.py"
@@ -50,6 +52,9 @@ jobs:
 
       - name: Backfill verified historical ticket phases
         run: python scripts/backfill_ticket_history.py
+
+      - name: Backfill verified one-off ticket phases
+        run: python scripts/backfill_ticket_history_oneoffs.py
 
       - name: Archive direct-source ticket observations
         run: python scripts/archive_ticket_history.py
