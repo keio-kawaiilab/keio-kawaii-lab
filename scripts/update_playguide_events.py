@@ -7,6 +7,7 @@ import json
 import re
 import sys
 import unicodedata
+from collections import Counter
 from datetime import date, datetime
 from pathlib import Path
 from urllib.parse import quote, urljoin
@@ -14,7 +15,6 @@ from zoneinfo import ZoneInfo
 
 import requests
 from bs4 import BeautifulSoup
-
 
 DATA_PATH = Path("data/live-events.json")
 JST = ZoneInfo("Asia/Tokyo")
@@ -26,7 +26,6 @@ EPLUS_ARTIST_URLS = {
     "CUTIE STREET": "https://eplus.jp/sf/word/0000166546",
     "MORE STAR": "https://eplus.jp/sf/word/0000173782",
 }
-
 GROUPS = tuple(EPLUS_ARTIST_URLS)
 WINDOW_RE = re.compile(
     r"(20\d{2})/(\d{1,2})/(\d{1,2})(?:\([^)]*\))?\s*(\d{1,2}):(\d{2})"
@@ -178,23 +177,18 @@ def collect_eplus(session: requests.Session, group: str, today: date) -> list[di
     response = session.get(EPLUS_ARTIST_URLS[group], timeout=25)
     response.raise_for_status()
     results: list[dict] = []
-
     for performance in eplus_performance_links(session, response.text):
         day = performance.get("day")
         if not day or date.fromisoformat(day) < today:
             continue
         detail_url = str(performance["url"])
         venue = str(performance.get("venue") or "")
-        open_time = performance.get("openTime")
-        start_time = performance.get("startTime")
-
         detail = session.get(detail_url, timeout=20)
         detail.raise_for_status()
         detail_soup = BeautifulSoup(detail.text, "html.parser")
         meta = detail_soup.select_one('meta[property="og:title"]')
         page_title = norm(meta.get("content") if meta else group)
         page_title = re.sub(r"のチケット情報.*$", "", page_title).strip() or group
-
         for block in detail_soup.select(".block-ticket"):
             text = norm(block.get_text(" ", strip=True))
             apply_start, apply_end = iso_window(text)
@@ -208,7 +202,7 @@ def collect_eplus(session: requests.Session, group: str, today: date) -> list[di
             results.append(event_record(
                 provider="eplus", group=group, title=page_title, ticket_type=ticket_type,
                 apply_start=apply_start, apply_end=apply_end, event_date=day, venue=venue,
-                url=detail_url, open_time=open_time, start_time=start_time,
+                url=detail_url, open_time=performance.get("openTime"), start_time=performance.get("startTime"),
             ))
     return results
 
@@ -232,7 +226,6 @@ def collect_lawson(session: requests.Session, group: str, today: date) -> list[d
     response.raise_for_status()
     soup = BeautifulSoup(response.text, "html.parser")
     results: list[dict] = []
-
     for box in soup.select(".ResultBox"):
         title_node = box.select_one(".ResultBox__title")
         title = norm(title_node.get_text(" ", strip=True) if title_node else group)
@@ -259,8 +252,7 @@ def collect_lawson(session: requests.Session, group: str, today: date) -> list[d
             detail_url = f"https://l-tike.com/order/?gLcode={lcode}"
             results.append(event_record(
                 provider="lawson", group=group, title=title, ticket_type=ticket_type,
-                apply_start=apply_start, apply_end=apply_end, event_date=event_date,
-                venue=venue, url=detail_url,
+                apply_start=apply_start, apply_end=apply_end, event_date=event_date, venue=venue, url=detail_url,
             ))
     return results
 
@@ -270,15 +262,20 @@ def dedupe(events: list[dict]) -> list[dict]:
     seen: set[tuple] = set()
     for event in events:
         key = (
-            event.get("ticketProvider"), event.get("group"), event.get("eventDate"),
-            event.get("venue"), event.get("ticketType"), event.get("applyStart"),
-            event.get("applyEnd"), event.get("url"),
+            event.get("ticketProvider"), event.get("group"), event.get("eventDate"), event.get("venue"),
+            event.get("ticketType"), event.get("applyStart"), event.get("applyEnd"), event.get("url"),
         )
-        if key in seen:
-            continue
-        seen.add(key)
-        result.append(event)
+        if key not in seen:
+            seen.add(key)
+            result.append(event)
     return result
+
+
+def identity(event: dict) -> tuple[str, str, str, str]:
+    return (
+        str(event.get("ticketProvider") or event.get("sourceType") or "").lower(),
+        str(event.get("group") or ""), str(event.get("eventDate") or "")[:10], str(event.get("url") or ""),
+    )
 
 
 def main() -> int:
@@ -288,60 +285,90 @@ def main() -> int:
 
     payload = json.loads(DATA_PATH.read_text(encoding="utf-8"))
     existing = [dict(item) for item in payload.get("events", []) if isinstance(item, dict)]
-    today = datetime.now(JST).date()
+    now = datetime.now(JST)
+    today = now.date()
+    observed_at = now.isoformat(timespec="seconds")
     session = requests.Session()
-    session.headers.update({
-        "User-Agent": "KeioKawaiiLabCalendarBot/1.5 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"
-    })
+    session.headers.update({"User-Agent": "KeioKawaiiLabCalendarBot/1.6 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"})
 
     fresh: list[dict] = []
     refreshed: set[tuple[str, str]] = set()
     failures: list[str] = []
+    fresh_counts: Counter[str] = Counter()
     for group in GROUPS:
         for provider, collector in (("eplus", collect_eplus), ("lawson", collect_lawson)):
             try:
                 rows = collector(session, group, today)
+                for row in rows:
+                    row["sourceObservedAt"] = observed_at
+                    row["sourceStale"] = False
+                    row.pop("sourceStaleSince", None)
                 fresh.extend(rows)
+                fresh_counts[f"{provider}:{group}"] = len(rows)
                 refreshed.add((provider, group))
             except Exception as exc:
                 failures.append(f"{provider}/{group}: {type(exc).__name__}: {exc}")
 
+    fresh = dedupe(fresh)
     if args.check:
         if not refreshed:
             raise SystemExit("All playguide sources failed: " + "; ".join(failures))
         if failures:
             print("Playguide source warnings: " + "; ".join(failures), file=sys.stderr)
-        print(
-            f"Playguide source check passed: {len(dedupe(fresh))} active windows "
-            f"({len(failures)} source failures; failed sources retain previous data)"
-        )
+        print(json.dumps({
+            "status": "ok", "activeWindows": len(fresh), "freshCounts": dict(sorted(fresh_counts.items())),
+            "refreshedSources": [f"{p}:{g}" for p, g in sorted(refreshed)], "failures": failures,
+        }, ensure_ascii=False, indent=2))
         return 0
 
-    fresh = dedupe(fresh)
-    fresh_identity = {
-        (
-            str(event.get("ticketProvider") or "").lower(),
-            str(event.get("group") or ""),
-            str(event.get("eventDate") or "")[:10],
-            str(event.get("url") or ""),
-        )
-        for event in fresh
-    }
-    retained = []
+    fresh_identity = {identity(event) for event in fresh}
+    retained: list[dict] = []
+    still_active_missing: list[dict] = []
+    expired_pruned = 0
     for event in existing:
         provider = str(event.get("ticketProvider") or event.get("sourceType") or "").lower()
         group = str(event.get("group") or "")
-        if provider in {"eplus", "lawson"} and (provider, group) in refreshed:
-            identity = (provider, group, str(event.get("eventDate") or "")[:10], str(event.get("url") or ""))
-            if identity in fresh_identity:
-                continue
-        retained.append(event)
+        if provider not in {"eplus", "lawson"}:
+            retained.append(event)
+            continue
+        if (provider, group) not in refreshed:
+            # Network/source failure: fail safe and keep the previous observation unchanged.
+            retained.append(event)
+            continue
+        if identity(event) in fresh_identity:
+            # Current observation replaces every older window on the same provider/detail/performance.
+            continue
+        if is_current_window(str(event.get("applyEnd") or ""), today):
+            # The page was reachable but a still-active known reception disappeared. Keep it only as
+            # a safety fallback and flag it so the integrity audit can block flow publication.
+            event["sourceStale"] = True
+            event.setdefault("sourceStaleSince", observed_at)
+            retained.append(event)
+            still_active_missing.append({
+                "provider": provider, "group": group, "eventDate": event.get("eventDate"),
+                "ticketType": event.get("ticketType"), "applyEnd": event.get("applyEnd"), "url": event.get("url"),
+            })
+        else:
+            # A successfully refreshed source no longer shows an ended reception: remove it from the
+            # current UI dataset. The append-only ticket-history.json keeps the permanent record.
+            expired_pruned += 1
 
     payload["events"] = retained + fresh
-    payload["updatedAt"] = datetime.now(JST).isoformat(timespec="seconds")
+    payload["updatedAt"] = observed_at
     payload["playguideFailures"] = failures
+    payload["playguideDiagnostics"] = {
+        "collectedAt": observed_at,
+        "freshCounts": dict(sorted(fresh_counts.items())),
+        "refreshedSources": [f"{p}:{g}" for p, g in sorted(refreshed)],
+        "failureCount": len(failures),
+        "failures": failures,
+        "stillActiveMissingCount": len(still_active_missing),
+        "stillActiveMissing": still_active_missing,
+        "expiredRowsPruned": expired_pruned,
+    }
     DATA_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"Refreshed playguides: {len(fresh)} active windows ({len(failures)} source failures)")
+    print(json.dumps(payload["playguideDiagnostics"], ensure_ascii=False, indent=2))
+    print(f"Refreshed playguides: {len(fresh)} active windows; pruned {expired_pruned} ended rows")
     return 0
 
 
