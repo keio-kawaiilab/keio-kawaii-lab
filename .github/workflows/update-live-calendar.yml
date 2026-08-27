@@ -113,6 +113,7 @@ jobs:
           test_build_schedule_snapshot.py
           test_resolve_source_priority.py
           test_audit_schedule_release.py
+          test_audit_schedule_release_grouped.py
           test_schedule_scope.py
           test_update_official_schedule.py
           test_audit_official_schedule_coverage.py
@@ -125,7 +126,7 @@ jobs:
       - name: Validate current release on pull requests
         if: github.event_name == 'pull_request'
         run: |
-          python scripts/audit_schedule_release.py \
+          python scripts/audit_schedule_release_grouped.py \
             --previous data/live-events.json \
             --candidate data/live-events.json \
             --report /tmp/schedule-health.json
@@ -172,7 +173,7 @@ jobs:
       - name: Fail-closed release audit
         if: github.event_name != 'pull_request' && steps.control.outputs.frozen != 'true'
         run: |
-          python scripts/audit_schedule_release.py \
+          python scripts/audit_schedule_release_grouped.py \
             --previous /tmp/live-events-last-good.json \
             --candidate data/live-events.json \
             --report data/schedule-health.json
