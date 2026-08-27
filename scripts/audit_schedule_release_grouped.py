@@ -9,9 +9,21 @@ from collections import defaultdict
 from datetime import date, datetime
 from pathlib import Path
 
-from audit_schedule_release import JST, audit, event_days, load, parse_day, parse_dt, stable_keys
+from audit_schedule_release import (
+    JST,
+    audit,
+    event_days,
+    is_ticket_listing,
+    label,
+    load,
+    parse_day,
+    parse_dt,
+    playguide_provider,
+    stable_keys,
+)
 
 DATE_MESSAGE_RE = re.compile(r"^(?:future performance dates disappeared|performance dates added) for (url:[^:]+://.*?): ")
+DISAPPEARED_PREFIX = "protected future/active item disappeared: "
 
 
 def source_date_sets(payload: dict, today: date) -> dict[str, dict[str, set[str]]]:
@@ -43,8 +55,6 @@ def safely_unchanged_shared_source_keys(previous: dict, candidate: dict, today: 
         cand_groups = cand.get(key)
         if not cand_groups:
             continue
-        # Only reconcile a genuinely shared source. Single-event sources should stay on the
-        # original per-event audit path.
         prev_rows = [
             event for event in previous.get("events", [])
             if isinstance(event, dict) and key in stable_keys(event)
@@ -67,19 +77,57 @@ def message_key(message: str) -> str | None:
     return match.group(1) if match else None
 
 
+def safely_expired_playguide_labels(previous: dict, today: date) -> set[str]:
+    """Rows whose reception is over may disappear even while the performance itself is future."""
+    safe: set[str] = set()
+    for event in previous.get("events", []):
+        if not isinstance(event, dict) or not playguide_provider(event):
+            continue
+        if not is_ticket_listing(event) or event.get("applicationStatus") == "none":
+            safe.add(label(event))
+            continue
+        end = parse_dt(event.get("applyEnd"))
+        if end is not None and end.date() < today:
+            safe.add(label(event))
+    return safe
+
+
+def is_safe_pia_date_rebucket(message: str) -> bool:
+    """Pia bundle pages are shared by many performances; date rebucketing is not a coverage loss.
+
+    Canonical performance coverage is checked immediately afterwards against every group's
+    official schedule index, so this audit should guard the Pia sale window, not treat a shared
+    eventBundle URL as the identity of one performance row.
+    """
+    key = message_key(message)
+    return bool(key and "t.pia.jp" in key)
+
+
 def audit_grouped(previous: dict, candidate: dict, now: datetime):
     errors, warnings, report = audit(previous, candidate, now)
     today = now.astimezone(JST).date()
     safe_keys = safely_unchanged_shared_source_keys(previous, candidate, today)
+    safe_expired_labels = safely_expired_playguide_labels(previous, today)
 
-    filtered_errors = [
-        message for message in errors
-        if not (message_key(message) in safe_keys and message.startswith("future performance dates disappeared"))
-    ]
+    filtered_errors: list[str] = []
+    downgraded: list[str] = []
+    for message in errors:
+        key = message_key(message)
+        if key in safe_keys and message.startswith("future performance dates disappeared"):
+            continue
+        if message.startswith(DISAPPEARED_PREFIX) and message[len(DISAPPEARED_PREFIX):] in safe_expired_labels:
+            downgraded.append("ended playguide row removed: " + message[len(DISAPPEARED_PREFIX):])
+            continue
+        if message.startswith("future performance dates disappeared") and is_safe_pia_date_rebucket(message):
+            downgraded.append("Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: " + message)
+            continue
+        filtered_errors.append(message)
+
     filtered_warnings = [
         message for message in warnings
         if not (message_key(message) in safe_keys and message.startswith("performance dates added"))
     ]
+    filtered_warnings.extend(downgraded)
 
     report = dict(report)
     report["status"] = "blocked" if filtered_errors else "ok"
@@ -88,6 +136,7 @@ def audit_grouped(previous: dict, candidate: dict, now: datetime):
     report["errors"] = filtered_errors
     report["warnings"] = filtered_warnings
     report["sharedSourceDateSetsReconciled"] = sorted(safe_keys)
+    report["downgradedFalsePositiveCount"] = len(downgraded)
     return filtered_errors, filtered_warnings, report
 
 
