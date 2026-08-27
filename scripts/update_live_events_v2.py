@@ -5,14 +5,67 @@ import argparse
 import json
 import re
 import sys
+import time
 from datetime import date, datetime
+from urllib.parse import urljoin
 
 import requests
+from bs4 import BeautifulSoup
 
 import update_live_events as parser_v1
 
 CENTRAL_FC_BASE = "https://kawaiilab.asobisystem.com"
 FC_HINT_RE = re.compile(r"OFFICIAL\s*FANCLUB|ファンクラブ|FC(?:会員)?先行", re.I)
+NEWS_SCAN_PAGES = 15
+MAX_FETCH_ATTEMPTS = 3
+
+
+def _get_with_retry(session: requests.Session, url: str, timeout: int = 20):
+    last_exc: Exception | None = None
+    for attempt in range(MAX_FETCH_ATTEMPTS):
+        try:
+            response = session.get(url, timeout=timeout)
+            response.raise_for_status()
+            return response
+        except Exception as exc:  # pragma: no cover - network dependent
+            last_exc = exc
+            if attempt + 1 < MAX_FETCH_ATTEMPTS:
+                time.sleep(0.8 * (attempt + 1))
+    assert last_exc is not None
+    raise last_exc
+
+
+def deep_candidate_links(session: requests.Session, group: str, base: str) -> list[parser_v1.Candidate]:
+    """Scan deeper than the public-display window so short-lived/older FC phases are not missed.
+
+    The collector runs hourly, but ticket announcements can be displaced from the first few
+    news pages quickly. Fifteen pages gives us a durable discovery window while the permanent
+    ticket-history archive prevents an observed phase from ever disappearing afterwards.
+    """
+    found: dict[str, parser_v1.Candidate] = {}
+    readable_pages = 0
+    for page in range(1, NEWS_SCAN_PAGES + 1):
+        url = f"{base}/news/1/?page={page}"
+        response = _get_with_retry(session, url, timeout=20)
+        readable_pages += 1
+        soup = BeautifulSoup(response.text, "html.parser")
+        for anchor in soup.find_all("a", href=True):
+            href = anchor.get("href", "")
+            if "/news/detail/" not in href:
+                continue
+            title = parser_v1.normalize_space(anchor.get_text(" ", strip=True))
+            if not title:
+                continue
+            if not any(key in title for key in parser_v1.TICKET_HINTS):
+                continue
+            if any(key in title for key in parser_v1.IGNORE_TITLE_HINTS):
+                continue
+            full = urljoin(base, href)
+            found[full] = parser_v1.Candidate(group=group, title=title, url=full)
+        time.sleep(0.05)
+    if readable_pages != NEWS_SCAN_PAGES:
+        raise RuntimeError(f"only {readable_pages}/{NEWS_SCAN_PAGES} news pages were readable for {group}")
+    return list(found.values())
 
 
 def parse_day(value: object) -> date | None:
@@ -154,7 +207,7 @@ def collect_central_fc(session: requests.Session, existing: dict) -> tuple[dict[
     failures: list[dict] = []
 
     try:
-        candidates = parser_v1.candidate_links(session, "KAWAII LAB. FC", CENTRAL_FC_BASE)
+        candidates = deep_candidate_links(session, "KAWAII LAB. FC", CENTRAL_FC_BASE)
     except Exception as exc:
         return {}, [], [{"group": "KAWAII LAB. FC", "stage": "news-list", "error": str(exc)}], 0
 
@@ -252,10 +305,14 @@ def main() -> int:
 
     session = requests.Session()
     session.headers.update({
-        "User-Agent": "KeioKawaiiLabCalendarBot/1.5 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"
+        "User-Agent": "KeioKawaiiLabCalendarBot/2.0 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"
     })
 
     existing = parser_v1.read_existing()
+
+    # The v1 collector resolves candidate_links from its own module globals, so patch in
+    # the deeper/retrying implementation for this run without changing its parser logic.
+    parser_v1.candidate_links = deep_candidate_links
     fresh_by_id, pending, failures, candidate_counts = parser_v1.collect(session)
     reachable_groups = sum(1 for count in candidate_counts.values() if count > 0)
 
@@ -266,10 +323,14 @@ def main() -> int:
     candidate_counts["KAWAII LAB. FC"] = central_count
 
     diagnostics = {
+        "collectedAt": datetime.now(parser_v1.JST).isoformat(timespec="seconds"),
+        "newsPagesScannedPerOfficialSource": NEWS_SCAN_PAGES,
         "candidateCounts": candidate_counts,
         "parsedEvents": len(fresh_by_id),
         "centralFcEvents": len(central_events),
         "pendingReview": len(pending),
+        "pendingReviewUrls": sorted({str(x.get("url") or "") for x in pending if isinstance(x, dict) and x.get("url")}),
+        "failureCount": len(failures),
         "failures": failures,
     }
     print(json.dumps(diagnostics, ensure_ascii=False, indent=2))
@@ -285,12 +346,13 @@ def main() -> int:
         return 0
 
     payload = build_payload(existing, fresh_by_id, pending, failures, datetime.now(parser_v1.JST).date())
+    payload["ticketCollectorDiagnostics"] = diagnostics
     parser_v1.OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     parser_v1.OUTPUT_PATH.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
-    print(f"Wrote {len(payload['events'])} current/future events.")
+    print(f"Wrote {len(payload['events'])} current/future events with collector diagnostics.")
     return 0
 
 
