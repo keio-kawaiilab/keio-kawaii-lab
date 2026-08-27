@@ -14,8 +14,10 @@ on:
       - "scripts/archive_ticket_history.py"
       - "scripts/audit_ticket_sources.py"
       - "scripts/audit_ticket_collection_continuity.py"
+      - "scripts/audit_playguide_collection.py"
       - "scripts/update_live_events_v2.py"
-      - "scripts/test_archive_ticket_history.py"
+      - "scripts/update_pia_events.py"
+      - "scripts/update_playguide_events.py"
       - ".github/workflows/archive-ticket-history.yml"
   schedule:
     - cron: "32 * * * *"
@@ -32,7 +34,7 @@ concurrency:
 jobs:
   archive:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Checkout latest main
         uses: actions/checkout@v4
@@ -51,7 +53,7 @@ jobs:
 
       - name: Test append-only history rules
         working-directory: scripts
-        run: python -m unittest -v test_archive_ticket_history.py
+        run: python -m unittest -v test_archive_ticket_history.py test_update_live_events_v2.py test_update_playguide_events.py
 
       - name: Backfill verified historical ticket phases
         run: python scripts/backfill_ticket_history.py
@@ -59,17 +61,55 @@ jobs:
       - name: Backfill verified one-off ticket phases
         run: python scripts/backfill_ticket_history_oneoffs.py
 
-      - name: Archive direct-source ticket observations
+      - name: Collect ticket observations independently of public release
+        id: independent_collect
+        shell: bash
+        run: |
+          # This workflow is a second collection lane. Even when the public schedule release is
+          # blocked, verified ticket windows can still be archived instead of being lost.
+          cp data/live-events.json /tmp/live-events-public.json
+          cp data/live-events.json /tmp/live-events-before-independent-pia.json
+
+          official_rc=0
+          pia_rc=0
+          playguide_rc=0
+
+          set +e
+          python scripts/update_live_events_v2.py
+          official_rc=$?
+
+          # Work only on this runner's temporary copy. data/live-events.json is restored before commit.
+          cp data/live-events.json /tmp/live-events-before-independent-pia.json
+          python scripts/clean_pia_refresh.py --drop-all
+          python scripts/sanitize_live_events.py
+          python scripts/enrich_official_performance_times.py
+          python scripts/enrich_event_metadata.py
+          python scripts/update_pia_events.py
+          pia_rc=$?
+          python scripts/reconcile_pia_retention.py --previous /tmp/live-events-before-independent-pia.json
+
+          python scripts/update_playguide_events.py
+          playguide_rc=$?
+          set -e
+
+          echo "official_rc=$official_rc" >> "$GITHUB_OUTPUT"
+          echo "pia_rc=$pia_rc" >> "$GITHUB_OUTPUT"
+          echo "playguide_rc=$playguide_rc" >> "$GITHUB_OUTPUT"
+          echo "Independent collector exit codes: official=$official_rc pia=$pia_rc playguide=$playguide_rc"
+
+      - name: Archive every verified direct-source observation
         run: python scripts/archive_ticket_history.py
 
       - name: Fail closed on unknown or weak sources
+        id: source_audit
+        continue-on-error: true
         run: python scripts/audit_ticket_sources.py --report data/ticket-source-health.json
 
       - name: Audit continuous source and history coverage
         shell: bash
         run: |
           extra=""
-          # 03:32 JST run: re-open every future-history source URL as a deeper daily check.
+          # 03:32 JST run: re-open every source URL used by future ticket history once per day.
           if [ "$(date -u +%H)" = "18" ]; then
             extra="--deep-links"
           fi
@@ -77,6 +117,54 @@ jobs:
             --report data/ticket-collection-health.json \
             --no-fail \
             $extra
+
+      - name: Merge independent collector state into continuity report
+        env:
+          OFFICIAL_RC: ${{ steps.independent_collect.outputs.official_rc }}
+          PIA_RC: ${{ steps.independent_collect.outputs.pia_rc }}
+          PLAYGUIDE_RC: ${{ steps.independent_collect.outputs.playguide_rc }}
+          SOURCE_AUDIT_OUTCOME: ${{ steps.source_audit.outcome }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+
+          path = Path('data/ticket-collection-health.json')
+          report = json.loads(path.read_text(encoding='utf-8'))
+          collector = {
+              'officialExitCode': int(os.environ.get('OFFICIAL_RC') or 0),
+              'piaExitCode': int(os.environ.get('PIA_RC') or 0),
+              'playguideExitCode': int(os.environ.get('PLAYGUIDE_RC') or 0),
+              'sourceAuditOutcome': os.environ.get('SOURCE_AUDIT_OUTCOME') or 'unknown',
+          }
+          report['independentCollector'] = collector
+          independent_errors = []
+          if collector['officialExitCode'] != 0:
+              independent_errors.append('independent official/FC collector failed')
+          if collector['piaExitCode'] != 0:
+              independent_errors.append('independent Pia collector failed')
+          if collector['playguideExitCode'] != 0:
+              independent_errors.append('independent eplus/Lawson collector failed')
+          if collector['sourceAuditOutcome'] != 'success':
+              independent_errors.append('direct-source registry/history audit failed')
+          if independent_errors:
+              report['status'] = 'degraded'
+              report['safeForTicketFlowPublication'] = False
+              errors = list(report.get('errors') or [])
+              for message in independent_errors:
+                  if message not in errors:
+                      errors.append(message)
+              report['errors'] = errors
+          path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          print(json.dumps({'independentCollector': collector, 'status': report.get('status')}, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Restore public schedule data before any commit
+        if: always()
+        run: |
+          if [ -f /tmp/live-events-public.json ]; then
+            cp /tmp/live-events-public.json data/live-events.json
+          fi
 
       - name: Commit append-only history and health snapshots
         shell: bash
@@ -102,7 +190,7 @@ jobs:
             echo '```' >> "$GITHUB_STEP_SUMMARY"
           fi
 
-      - name: Verify ticket collection is healthy
+      - name: Verify ticket collection is not degraded
         id: continuity
         continue-on-error: true
         run: python scripts/audit_ticket_collection_continuity.py --report data/ticket-collection-health.json --verify-report
@@ -118,8 +206,8 @@ jobs:
           {
             echo "@keio-kawaiilab"
             echo
-            echo "チケット情報収集の継続監査で異常または未確認区間を検出しました。"
-            echo "**販売の流れ機能は、この状態では安全に公開できません。**"
+            echo "チケット情報収集の継続監査で異常を検出しました。"
+            echo "**異常が解消するまで、販売の流れ機能を安全扱いにしません。**"
             echo
             echo '```json'
             cat data/ticket-collection-health.json
@@ -130,7 +218,6 @@ jobs:
           if [ -n "$existing" ]; then
             gh issue comment "$existing" --body-file /tmp/ticket-collection-incident.md
             gh issue edit "$existing" --add-assignee "keio-kawaiilab" || true
-            echo "Updated incident issue #$existing."
           else
             gh issue create --title "$title" --body-file /tmp/ticket-collection-incident.md --assignee "keio-kawaiilab"
           fi
@@ -147,8 +234,8 @@ jobs:
             gh issue close "$existing" --comment "チケット収集の継続監査が正常に戻りました。"
           fi
 
-      - name: Fail job when ticket collection is not healthy
+      - name: Fail job when ticket collection is degraded
         if: steps.continuity.outcome == 'failure'
         run: |
-          echo "Ticket collection continuity is not healthy; see data/ticket-collection-health.json and the incident issue."
+          echo "Ticket collection continuity is degraded; public data was not modified by this workflow."
           exit 1
