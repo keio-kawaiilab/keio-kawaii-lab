@@ -34,12 +34,12 @@ permissions:
 
 concurrency:
   group: update-live-ticket-calendar-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -114,6 +114,7 @@ jobs:
           test_resolve_source_priority.py
           test_audit_schedule_release.py
           test_audit_schedule_release_grouped.py
+          test_prepare_release_candidate.py
           test_schedule_scope.py
           test_update_official_schedule.py
           test_audit_official_schedule_coverage.py
@@ -169,6 +170,7 @@ jobs:
           python scripts/harden_pia_events.py --check
           python scripts/update_official_schedule.py
           python scripts/apply_event_scopes.py
+          python scripts/prepare_release_candidate.py --previous /tmp/live-events-last-good.json
 
       - name: Fail-closed release audit
         if: github.event_name != 'pull_request' && steps.control.outputs.frozen != 'true'
