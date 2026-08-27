@@ -11,5 +11,4 @@
   }
 
   load("./schedule-weather-original.js?v=202608270205","data-schedule-weather-original");
-  load("./ticket-flow.js?v=202608271050","data-ticket-flow");
 })();
