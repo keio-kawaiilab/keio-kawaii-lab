@@ -85,22 +85,18 @@ def normalize_special(event: dict) -> tuple[dict, bool]:
 
     changed = False
     official_urls = [value for value in urls(event) if "asobisystem.com" in value]
-    has_schedule_evidence = bool(
-        event.get("officialScheduleUrl")
-        or any("/live_information/detail/" in value for value in official_urls)
-    )
     no_window = not (event.get("applyStart") or event.get("applyEnd"))
     no_reception = event.get("applicationStatus") == "none" or str(event.get("ticketType") or "") == "現在受付なし"
 
-    # A future special event can legitimately be listed on the official schedule before its
-    # purchase/reception details are announced. Treat that as schedule-only rather than as a
-    # malformed full-detail ticket row.
-    if official_urls and has_schedule_evidence and no_window and no_reception:
+    # Official announcements often publish the date/venue before the purchase window. A verified
+    # asobisystem page is enough to publish that performance as schedule-only; do not pretend a
+    # purchase window exists until the official page actually provides one.
+    if official_urls and no_window and no_reception:
         event["specialDetailsStatus"] = "awaiting-details"
         event["applicationDisplayMode"] = "schedule-only"
         event["applicationStatus"] = "none"
         if str(event.get("sourceType") or "") not in {"official-schedule", "official-special", "official-social"}:
-            event["sourceType"] = "official-schedule"
+            event["sourceType"] = "official-special"
         event["primarySource"] = "official"
         changed = True
 
@@ -143,13 +139,16 @@ def strong_keys(event: dict) -> set[str]:
     return keys
 
 
+def future_days(event: dict, today) -> list:
+    return [
+        value for value in (parse_day(day) for day in event_days(event))
+        if value is not None and value >= today
+    ]
+
+
 def should_retain_previous(event: dict, today) -> bool:
     provider = playguide_provider(event)
-    if provider:
-        if not is_ticket_listing(event):
-            # Ended playguide rounds must be allowed to disappear. Canonical performance coverage
-            # is guarded separately by the official-schedule coverage audit.
-            return False
+    if provider and is_ticket_listing(event):
         end = parse_dt(event.get("applyEnd"))
         if end is not None:
             return end.date() >= today
@@ -157,17 +156,39 @@ def should_retain_previous(event: dict, today) -> bool:
         # a later verified observation replaces it.
         return str(event.get("applicationStatus") or "") == "open"
 
-    days = [parse_day(value) for value in event_days(event)]
-    days = [value for value in days if value is not None]
-    if days and max(days) >= today:
+    # A no-reception row is the performance itself, even if one of its URLs happens to be a
+    # playguide URL. Keep the last-known-good future performance until the official schedule crawl
+    # represents it again. This avoids deleting a live merely because a ticket round ended.
+    if future_days(event, today):
         return True
     end = parse_dt(event.get("applyEnd"))
     return bool(end and end.date() >= today)
 
 
-def semantic_key(event: dict) -> tuple[str, str, tuple[str, ...]]:
+def semantic_key(event: dict) -> tuple:
+    """Fallback identity that never collapses different ticket providers/receptions."""
+    group = str(event.get("group") or "")
     title = text(event.get("eventTitle") or event.get("title")).casefold()
-    return str(event.get("group") or ""), title, tuple(event_days(event))
+    days = tuple(event_days(event))
+    provider = playguide_provider(event)
+    if provider and is_ticket_listing(event):
+        return (
+            "ticket",
+            provider,
+            group,
+            title,
+            text(event.get("ticketType")).casefold(),
+            text(event.get("applyStart")),
+            text(event.get("applyEnd")),
+            days,
+        )
+    return (
+        "performance",
+        group,
+        title,
+        text(event.get("venue")).casefold(),
+        days,
+    )
 
 
 def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]:
@@ -206,6 +227,8 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
             "group": kept.get("group"),
             "title": kept.get("title"),
             "ticketType": kept.get("ticketType"),
+            "provider": playguide_provider(kept),
+            "applyEnd": kept.get("applyEnd"),
         })
 
     events, duplicate_ids_removed_after_retention = dedupe_ids(events)
