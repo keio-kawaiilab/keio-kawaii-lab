@@ -254,4 +254,22 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/live-events.json data/official-schedule-index.json data/schedule-health.json schedule.html
           git commit -m "chore: publish audited live ticket calendar"
-          git push
+
+          # The refresh takes several minutes. A harmless UI/content commit can land on main
+          # while collection is running, which previously made the final push fail with
+          # "fetch first" even though every audit had passed. Rebase the audited commit onto
+          # the latest main and retry. A real overlap still fails closed on rebase conflict.
+          for attempt in 1 2 3; do
+            if git push; then
+              exit 0
+            fi
+            echo "Push attempt ${attempt} was rejected; rebasing onto the latest main."
+            git fetch origin main
+            if ! git rebase origin/main; then
+              git rebase --abort || true
+              echo "Concurrent changes overlap the audited calendar output; refusing to overwrite them."
+              exit 1
+            fi
+          done
+          echo "Unable to publish the audited calendar after 3 push attempts."
+          exit 1
