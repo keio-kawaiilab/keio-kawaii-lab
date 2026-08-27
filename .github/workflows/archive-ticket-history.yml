@@ -25,7 +25,7 @@ concurrency:
 jobs:
   archive:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 7
     steps:
       - name: Checkout latest main
         uses: actions/checkout@v4
@@ -36,6 +36,11 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+
+      - name: Install collector dependencies
+        run: pip install -r scripts/requirements.txt
 
       - name: Test append-only history rules
         working-directory: scripts
