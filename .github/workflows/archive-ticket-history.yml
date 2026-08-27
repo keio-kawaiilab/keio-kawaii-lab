@@ -1,0 +1,61 @@
+name: Archive verified ticket history
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "data/live-events.json"
+      - "data/ticket-source-registry.json"
+      - "scripts/archive_ticket_history.py"
+      - "scripts/audit_ticket_sources.py"
+      - "scripts/test_archive_ticket_history.py"
+      - ".github/workflows/archive-ticket-history.yml"
+  schedule:
+    - cron: "32 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: archive-ticket-history
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Test append-only history rules
+        working-directory: scripts
+        run: python -m unittest -v test_archive_ticket_history.py
+
+      - name: Archive direct-source ticket observations
+        run: python scripts/archive_ticket_history.py
+
+      - name: Fail closed on unknown or weak sources
+        run: python scripts/audit_ticket_sources.py --report data/ticket-source-health.json
+
+      - name: Commit history only after source audit passes
+        shell: bash
+        run: |
+          if git diff --quiet -- data/ticket-history.json data/ticket-source-health.json; then
+            echo "No ticket-history changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/ticket-history.json data/ticket-source-health.json
+          git commit -m "chore: archive verified ticket history"
+          git push
