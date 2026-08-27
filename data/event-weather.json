@@ -1,7 +1,7 @@
 {
   "date": "2026-08-27",
   "horizonDays": 7,
-  "generatedAt": "2026-08-27T09:02+09:00",
+  "generatedAt": "2026-08-27T22:04+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -17,43 +17,19 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "mesh5km",
-      "label": "雨",
-      "max": 32.0,
-      "min": 32.0,
-      "pop": "50",
-      "popLabel": "12〜18時",
-      "issuedAt": "2026-08-27T05:00:00+09:00",
-      "meshTime": "18:00",
+      "label": "くもり",
+      "max": null,
+      "min": null,
+      "pop": "30",
+      "popLabel": "18〜00時",
+      "issuedAt": "2026-08-27T17:00:00+09:00",
+      "meshTime": "21:00",
       "meshTempBand": "25〜29℃",
       "coordinates": {
         "lat": 35.731079,
         "lon": 139.715378
       },
       "meshTimeline": [
-        {
-          "time": "09:00",
-          "label": "くもり",
-          "tempBand": "30〜34℃",
-          "validAt": "2026-08-27T09:00+09:00"
-        },
-        {
-          "time": "12:00",
-          "label": "雨",
-          "tempBand": "30〜34℃",
-          "validAt": "2026-08-27T12:00+09:00"
-        },
-        {
-          "time": "15:00",
-          "label": "雨",
-          "tempBand": "30〜34℃",
-          "validAt": "2026-08-27T15:00+09:00"
-        },
-        {
-          "time": "18:00",
-          "label": "雨",
-          "tempBand": "25〜29℃",
-          "validAt": "2026-08-27T18:00+09:00"
-        },
         {
           "time": "21:00",
           "label": "くもり",
@@ -69,19 +45,19 @@
       ],
       "hourlyRain": [
         {
-          "time": "17:00",
+          "time": "16:30",
           "rain": true,
-          "validAt": "2026-08-27T17:00+09:00"
+          "validAt": "2026-08-27T16:30+09:00"
         },
         {
-          "time": "18:00",
-          "rain": false,
-          "validAt": "2026-08-27T18:00+09:00"
+          "time": "17:30",
+          "rain": true,
+          "validAt": "2026-08-27T17:30+09:00"
         },
         {
-          "time": "19:00",
-          "rain": false,
-          "validAt": "2026-08-27T19:00+09:00"
+          "time": "18:30",
+          "rain": true,
+          "validAt": "2026-08-27T18:30+09:00"
         }
       ]
     },
@@ -98,9 +74,9 @@
       "label": "くもり",
       "max": 31.0,
       "min": 26.0,
-      "pop": "10",
+      "pop": "20",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-08-27T05:00:00+09:00",
+      "issuedAt": "2026-08-27T17:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "25〜29℃",
       "coordinates": {
@@ -157,17 +133,17 @@
       "venue": "埼玉県 戸田市文化会館",
       "venueKey": "戸田市文化会館",
       "eventIds": [
-        "8623aa85ac3e3502"
+        "54a369497f59ce96"
       ],
       "areaCode": "110010",
-      "areaName": "埼玉県",
+      "areaName": "南部",
       "precision": "area",
-      "label": "くもり一時雨",
-      "max": 30.0,
-      "min": 24.0,
-      "pop": "50",
-      "popLabel": "1日",
-      "issuedAt": "2026-08-26T17:00:00+09:00",
+      "label": "くもり 一時 雨",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-08-27T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -183,11 +159,11 @@
       "areaName": "埼玉県",
       "precision": "area",
       "label": "くもり",
-      "max": 32.0,
-      "min": 23.0,
+      "max": 33.0,
+      "min": 22.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-08-26T17:00:00+09:00",
+      "issuedAt": "2026-08-27T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -197,17 +173,37 @@
       "venue": "埼玉県 戸田市文化会館",
       "venueKey": "戸田市文化会館",
       "eventIds": [
-        "8623aa85ac3e3502"
+        "54a369497f59ce96"
       ],
       "areaCode": "110010",
       "areaName": "埼玉県",
       "precision": "area",
       "label": "くもり",
-      "max": 32.0,
-      "min": 23.0,
+      "max": 33.0,
+      "min": 22.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-08-26T17:00:00+09:00",
+      "issuedAt": "2026-08-27T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-09-03",
+      "venue": "神奈川県 よこすか芸術劇場（大劇場）",
+      "venueKey": "よこすか芸術劇場大劇場",
+      "eventIds": [
+        "024676b8e98a3faf"
+      ],
+      "areaCode": "140010",
+      "areaName": "神奈川県",
+      "precision": "area",
+      "label": "くもり一時雨",
+      "max": 29.0,
+      "min": 24.0,
+      "pop": "60",
+      "popLabel": "1日",
+      "issuedAt": "2026-08-27T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -216,9 +212,9 @@
   "stats": {
     "occurrencesInRange": 7,
     "uniqueVenueDates": 7,
-    "weatherEntries": 5,
+    "weatherEntries": 6,
     "meshEntries": 2,
-    "failures": 2,
+    "failures": 1,
     "meshTimelineEntries": 2,
     "hourlyRainEntries": 1
   },
@@ -227,11 +223,6 @@
       "date": "2026-09-01",
       "venue": "エミテラス所沢 2F TOKOROZAWA e-CUBE",
       "reason": "都道府県を解決できません"
-    },
-    {
-      "date": "2026-09-03",
-      "venue": "神奈川県 よこすか芸術劇場（大劇場）",
-      "reason": "開催日の予報がまだありません"
     }
   ]
 }
