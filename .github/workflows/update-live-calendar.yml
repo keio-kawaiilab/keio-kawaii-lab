@@ -159,6 +159,7 @@ jobs:
           python scripts/update_pia_events.py
           python scripts/reconcile_pia_retention.py --previous /tmp/live-events-before-pia.json
           python scripts/update_playguide_events.py
+          python scripts/audit_playguide_collection.py
           python scripts/update_sukisuki_events.py
           python scripts/update_special_events.py
           python scripts/harden_pia_events.py
@@ -204,28 +205,27 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          if [ ! -f data/schedule-health.json ] || ! grep -q '"status": "blocked"' data/schedule-health.json; then
-            exit 0
-          fi
           title="🚨 Schedule release blocked"
           existing="$(gh issue list --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
-          if [ -n "$existing" ]; then
-            gh issue edit "$existing" --add-assignee "keio-kawaiilab" || true
-            echo "Incident issue #$existing is already open."
-            exit 0
-          fi
           {
             echo "@keio-kawaiilab"
             echo
-            echo "自動更新のリリース監査が異常を検出したため、**本番公開を停止して前回正常版を維持しています**。"
+            echo "自動更新で異常を検出したため、**本番公開を停止して前回正常版を維持しています**。"
             echo
-            echo '```json'
-            cat data/schedule-health.json
-            echo '```'
+            if [ -f data/schedule-health.json ]; then
+              echo '```json'
+              cat data/schedule-health.json
+              echo '```'
+            fi
             echo
             echo "Actions run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
           } > /tmp/schedule-incident.md
-          gh issue create --title "$title" --body-file /tmp/schedule-incident.md --assignee "keio-kawaiilab"
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file /tmp/schedule-incident.md
+            gh issue edit "$existing" --add-assignee "keio-kawaiilab" || true
+          else
+            gh issue create --title "$title" --body-file /tmp/schedule-incident.md --assignee "keio-kawaiilab"
+          fi
 
       - name: Close resolved release incident
         if: success() && github.event_name != 'pull_request' && steps.control.outputs.frozen != 'true'
