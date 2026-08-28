@@ -341,8 +341,8 @@ def main() -> int:
     page = ensure_site_navigation(page)
     if 'href="./train-status.css"' not in page:
         page = page.replace("<style>", '<link rel="stylesheet" href="./train-status.css">\n<style>', 1)
-    if 'src="./train-status.js"' not in page:
-        page = page.replace("</body>", '<script src="./train-status.js"></script>\n</body>', 1)
+    page = re.sub(r'<script src="\./train-status\.js(?:\?v=[^"]*)?"></script>\s*', "", page)
+    page = page.replace("</body>", '<script src="./train-status.js?v=202608281825"></script>\n</body>', 1)
 
     now = datetime.now(JST)
     today = now.date()

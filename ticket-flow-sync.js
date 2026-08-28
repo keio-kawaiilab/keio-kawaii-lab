@@ -90,7 +90,7 @@
 
   function makeStep(info){
     var step=document.createElement("div");
-    step.className="step"+(\/受付中\/.test(info.stateLabel)?" current":"");
+    step.className="step"+(/受付中/.test(info.stateLabel)?" current":"");
 
     var dot=document.createElement("span");
     dot.className="dot";
@@ -144,7 +144,7 @@
   }
 
   function updateExistingStep(step,info){
-    if(\/受付中\/.test(info.stateLabel))step.classList.add("current");
+    if(/受付中/.test(info.stateLabel))step.classList.add("current");
     var state=step.querySelector(".state");
     if(state&&info.stateLabel)state.textContent=info.stateLabel;
     if(info.url){
