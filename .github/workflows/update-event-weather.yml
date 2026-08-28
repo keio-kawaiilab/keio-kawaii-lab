@@ -5,7 +5,6 @@ on:
     branches:
       - main
       - fix/event-weather-precompute
-      - fix/exact-mesh-temperature
     paths:
       - "scripts/refresh_event_weather.py"
       - "scripts/refresh_event_weather_safe.py"
@@ -66,6 +65,8 @@ jobs:
           print(f"Future weather entries: {len(future)}")
           if stats.get('uniqueVenueDates', 0) > 1 and not future:
               raise SystemExit('Only today weather was generated although future venue-dates exist')
+          if stats.get('meshTimelineEntries', 0) > 0 and stats.get('meshExactTempSlots', 0) == 0:
+              raise SystemExit('5km timelines were generated without exact 1-degree temperatures')
           PY
 
       - name: Commit generated weather data
