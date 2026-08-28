@@ -22,7 +22,7 @@ on:
       - "data/schedule-control.json"
       - ".github/workflows/update-special-events-fast.yml"
   schedule:
-    - cron: "2,17,32,47 * * * *"
+    - cron: "2,32 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -38,8 +38,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Checkout
+      - name: Checkout latest main
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Read emergency freeze control
         id: control
