@@ -1,0 +1,391 @@
+name: Distributed live ticket calendar
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "scripts/update_playguide_events_parallel.py"
+      - "scripts/test_update_playguide_events_parallel.py"
+      - "scripts/merge_distributed_schedule_snapshots.py"
+      - "scripts/test_merge_distributed_schedule_snapshots.py"
+      - ".github/workflows/update-live-calendar-distributed.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+# This uses the same writer lock as the legacy refreshers during migration.
+# Inside this one run, source collection jobs execute in parallel and only the
+# final merge job is allowed to publish live-events.json.
+concurrency:
+  group: update-live-ticket-calendar-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      base_sha: ${{ steps.base.outputs.sha }}
+      frozen: ${{ steps.control.outputs.frozen }}
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Pin one base revision for every collector
+        id: base
+        shell: bash
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Read emergency freeze control
+        id: control
+        shell: bash
+        run: |
+          frozen="$(python - <<'PY'
+          import json
+          with open('data/schedule-control.json', encoding='utf-8') as f:
+              print(str(bool(json.load(f).get('freeze'))).lower())
+          PY
+          )"
+          echo "frozen=$frozen" >> "$GITHUB_OUTPUT"
+
+  collect-core:
+    needs: prepare
+    if: needs.prepare.outputs.frozen != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout pinned base
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.base_sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Collect official, PIA and official schedule data
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp data/live-events.json /tmp/live-events-last-good.json
+          cp data/live-events.json /tmp/live-events-before-pia.json
+          python scripts/update_live_events_v2.py
+          cp data/live-events.json /tmp/live-events-before-pia.json
+          python scripts/clean_pia_refresh.py --drop-all
+          python scripts/sanitize_live_events.py
+          python scripts/enrich_official_performance_times.py
+          python scripts/enrich_event_metadata.py
+          python scripts/update_pia_events.py
+          python scripts/reconcile_pia_retention.py --previous /tmp/live-events-before-pia.json
+          python scripts/harden_pia_events.py
+          python scripts/resolve_source_priority.py
+          python scripts/enrich_event_metadata.py
+          python scripts/harden_pia_events.py --check
+          python scripts/update_official_schedule.py
+          python scripts/apply_event_scopes.py
+          python scripts/prepare_release_candidate.py --previous /tmp/live-events-last-good.json
+
+      - name: Upload core snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-core-snapshot
+          path: |
+            data/live-events.json
+            data/official-schedule-index.json
+          retention-days: 1
+          if-no-files-found: error
+
+  collect-playguide:
+    needs: prepare
+    if: needs.prepare.outputs.frozen != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Checkout pinned base
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.base_sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Test and collect playguides in parallel
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd scripts
+          python -m unittest -v test_update_playguide_events.py test_update_playguide_events_parallel.py
+          cd ..
+          for attempt in 1 2; do
+            echo "Parallel playguide attempt ${attempt}/2"
+            python scripts/update_playguide_events_parallel.py --workers 10
+            failure_count="$(python - <<'PY'
+          import json
+          with open('data/live-events.json', encoding='utf-8') as f:
+              d = json.load(f).get('playguideDiagnostics') or {}
+          print(len(d.get('failures') or []))
+          PY
+            )"
+            if [ "$failure_count" = "0" ]; then break; fi
+            if [ "$attempt" = "1" ]; then sleep 15; fi
+          done
+          python scripts/audit_playguide_collection.py
+
+      - name: Upload playguide snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-playguide-snapshot
+          path: data/live-events.json
+          retention-days: 1
+          if-no-files-found: error
+
+  collect-sukisuki:
+    needs: prepare
+    if: needs.prepare.outputs.frozen != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Checkout pinned base
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.base_sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Test and collect SUKISUKI data
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd scripts
+          python -m unittest -v test_update_sukisuki_events.py
+          cd ..
+          python scripts/update_sukisuki_events.py
+
+      - name: Upload SUKISUKI snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-sukisuki-snapshot
+          path: data/live-events.json
+          retention-days: 1
+          if-no-files-found: error
+
+  collect-special:
+    needs: prepare
+    if: needs.prepare.outputs.frozen != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Checkout pinned base
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.base_sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Test and collect special-event data
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd scripts
+          python -m unittest -v test_update_special_events.py test_special_event_ancillary.py test_update_official_x_special_events.py
+          cd ..
+          python scripts/update_special_events.py
+          python scripts/update_official_x_special_events.py
+
+      - name: Upload special-event snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-special-snapshot
+          path: data/live-events.json
+          retention-days: 1
+          if-no-files-found: error
+
+  merge-publish:
+    needs: [prepare, collect-core, collect-playguide, collect-sukisuki, collect-special]
+    if: needs.prepare.outputs.frozen != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout pinned base
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.base_sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Preserve previous release for fail-closed audit
+        shell: bash
+        run: |
+          cp data/live-events.json /tmp/live-events-last-good.json
+          if [ -f data/official-schedule-index.json ]; then
+            cp data/official-schedule-index.json /tmp/official-schedule-index-last-good.json
+          else
+            echo '{"rows":[]}' > /tmp/official-schedule-index-last-good.json
+          fi
+
+      - name: Download core snapshot
+        uses: actions/download-artifact@v4
+        with:
+          name: calendar-core-snapshot
+          path: /tmp/calendar-core
+
+      - name: Download playguide snapshot
+        uses: actions/download-artifact@v4
+        with:
+          name: calendar-playguide-snapshot
+          path: /tmp/calendar-playguide
+
+      - name: Download SUKISUKI snapshot
+        uses: actions/download-artifact@v4
+        with:
+          name: calendar-sukisuki-snapshot
+          path: /tmp/calendar-sukisuki
+
+      - name: Download special-event snapshot
+        uses: actions/download-artifact@v4
+        with:
+          name: calendar-special-snapshot
+          path: /tmp/calendar-special
+
+      - name: Merge source snapshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd scripts
+          python -m unittest -v test_merge_distributed_schedule_snapshots.py test_audit_schedule_release_grouped.py test_prepare_release_candidate.py test_schedule_scope.py
+          cd ..
+          cp /tmp/calendar-core/official-schedule-index.json data/official-schedule-index.json
+          python scripts/merge_distributed_schedule_snapshots.py \
+            --core /tmp/calendar-core/live-events.json \
+            --playguide /tmp/calendar-playguide/live-events.json \
+            --sukisuki /tmp/calendar-sukisuki/live-events.json \
+            --special /tmp/calendar-special/live-events.json \
+            --output data/live-events.json \
+            --report /tmp/distributed-merge.json
+          python scripts/resolve_source_priority.py
+          python scripts/enrich_event_metadata.py
+          python scripts/apply_event_scopes.py
+          python scripts/prepare_release_candidate.py --previous /tmp/live-events-last-good.json
+
+      - name: Fail-closed integrated release audit
+        shell: bash
+        run: |
+          python scripts/audit_playguide_collection.py
+          python scripts/audit_schedule_release_grouped.py \
+            --previous /tmp/live-events-last-good.json \
+            --candidate data/live-events.json \
+            --report data/schedule-health.json
+          python scripts/audit_official_schedule_coverage.py \
+            --previous-index /tmp/official-schedule-index-last-good.json
+
+      - name: Build final public schedule
+        shell: bash
+        run: |
+          python scripts/build_schedule_snapshot.py
+          python scripts/fix_schedule_shell.py
+          python scripts/strip_schedule_explanations.py
+          node --check /tmp/schedule-inline.js
+          node scripts/test_schedule_band_grouping.js
+          node scripts/test_schedule_scope_ui.js
+
+      - name: Close resolved distributed incident
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          title="🚨 Distributed schedule refresh blocked"
+          existing="$(gh issue list --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
+          if [ -n "$existing" ]; then
+            gh issue close "$existing" --comment "並列取得・統合監査・公開が正常に通過したため、自動更新を再開しました。"
+          fi
+
+      - name: Commit one audited integrated release
+        shell: bash
+        run: |
+          if [ -z "$(git status --porcelain -- data/live-events.json data/official-schedule-index.json data/schedule-health.json schedule.html)" ]; then
+            echo "No audited distributed calendar changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/live-events.json data/official-schedule-index.json data/schedule-health.json schedule.html
+          git commit -m "chore: publish distributed audited calendar"
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then exit 0; fi
+            echo "Push attempt ${attempt} rejected; rebasing integrated release onto latest main."
+            git fetch origin main
+            if ! git rebase origin/main; then
+              git rebase --abort || true
+              echo "Concurrent changes overlap integrated calendar output; refusing overwrite."
+              exit 1
+            fi
+          done
+          exit 1
+
+  report-failure:
+    needs: [prepare, collect-core, collect-playguide, collect-sukisuki, collect-special, merge-publish]
+    if: >-
+      always() &&
+      needs.prepare.outputs.frozen != 'true' &&
+      (needs.collect-core.result == 'failure' ||
+       needs.collect-playguide.result == 'failure' ||
+       needs.collect-sukisuki.result == 'failure' ||
+       needs.collect-special.result == 'failure' ||
+       needs.merge-publish.result == 'failure')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Open distributed refresh incident
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          title="🚨 Distributed schedule refresh blocked"
+          existing="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
+          body="並列カレンダー更新のいずれかの取得ジョブ、統合監査、または最終公開で異常を検出しました。前回正常版を維持しています。\n\nActions run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body "$body"
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body "$body" --assignee "keio-kawaiilab"
+          fi
