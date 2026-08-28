@@ -292,12 +292,12 @@ jobs:
           name: calendar-special-snapshot
           path: /tmp/calendar-special
 
-      - name: Merge source snapshots
+      - name: Merge source snapshots and reconnect official index
         shell: bash
         run: |
           set -euo pipefail
           cd scripts
-          python -m unittest -v test_merge_distributed_schedule_snapshots.py test_audit_schedule_release_grouped.py test_prepare_release_candidate.py test_schedule_scope.py
+          python -m unittest -v test_merge_distributed_schedule_snapshots.py test_reconcile_official_schedule_index.py test_audit_schedule_release_grouped.py test_prepare_release_candidate.py test_schedule_scope.py
           cd ..
           cp /tmp/calendar-core/official-schedule-index.json data/official-schedule-index.json
           python scripts/merge_distributed_schedule_snapshots.py \
@@ -311,6 +311,10 @@ jobs:
           python scripts/enrich_event_metadata.py
           python scripts/apply_event_scopes.py
           python scripts/prepare_release_candidate.py --previous /tmp/live-events-last-good.json
+          python scripts/reconcile_official_schedule_index.py \
+            --data data/live-events.json \
+            --index data/official-schedule-index.json \
+            --report /tmp/official-index-reconcile.json
 
       - name: Fail-closed integrated release audit
         shell: bash
