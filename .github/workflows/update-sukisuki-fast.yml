@@ -18,7 +18,7 @@ on:
       - "data/schedule-control.json"
       - ".github/workflows/update-sukisuki-fast.yml"
   schedule:
-    - cron: "7,22,37,52 * * * *"
+    - cron: "7,37 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -34,8 +34,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Checkout
+      - name: Checkout latest main
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Read emergency freeze control
         id: control
