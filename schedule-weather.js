@@ -10,5 +10,5 @@
     document.head.appendChild(script);
   }
 
-  load("./schedule-weather-original.js?v=202608270205","data-schedule-weather-original");
+  load("./schedule-weather-original.js?v=202608282355","data-schedule-weather-original");
 })();
