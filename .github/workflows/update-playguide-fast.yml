@@ -1,40 +1,17 @@
-name: Fast playguide ticket refresh
+name: Legacy playguide fallback
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "scripts/update_playguide_events.py"
-      - "scripts/update_playguide_events_parallel.py"
-      - "scripts/audit_playguide_collection.py"
-      - "scripts/test_update_playguide_events.py"
-      - "scripts/test_update_playguide_events_parallel.py"
-      - "scripts/audit_schedule_release.py"
-      - "scripts/audit_schedule_release_grouped.py"
-      - "scripts/test_audit_schedule_release_grouped.py"
-      - "scripts/prepare_release_candidate.py"
-      - "scripts/test_prepare_release_candidate.py"
-      - "scripts/resolve_source_priority.py"
-      - "scripts/enrich_event_metadata.py"
-      - "scripts/apply_event_scopes.py"
-      - "scripts/build_schedule_snapshot.py"
-      - "data/schedule-control.json"
-      - ".github/workflows/update-playguide-fast.yml"
-  schedule:
-    - cron: "12,42 * * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
-  issues: write
 
 concurrency:
   group: update-live-ticket-calendar-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  refresh-playguides:
+  manual-playguide-fallback:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
@@ -42,162 +19,39 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
-
-      - name: Read emergency freeze control
-        id: control
-        shell: bash
-        run: |
-          frozen="$(python - <<'PY'
-          import json
-          with open('data/schedule-control.json', encoding='utf-8') as f:
-              print(str(bool(json.load(f).get('freeze'))).lower())
-          PY
-          )"
-          echo "frozen=$frozen" >> "$GITHUB_OUTPUT"
-          if [ "$frozen" = "true" ]; then
-            echo "Fast playguide auto-publication is FROZEN."
-          fi
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
           cache: pip
           cache-dependency-path: scripts/requirements.txt
-
       - name: Install dependencies
         run: pip install -r scripts/requirements.txt
-
-      - name: Test playguide parser and parallel collector
-        working-directory: scripts
-        run: >-
-          python -m unittest -v
-          test_update_playguide_events.py
-          test_update_playguide_events_parallel.py
-          test_audit_schedule_release_grouped.py
-          test_prepare_release_candidate.py
-          test_schedule_scope.py
-
-      - name: Refresh playguide candidate in parallel with retry
-        if: steps.control.outputs.frozen != 'true'
+      - name: Refresh and audit playguides
         shell: bash
         run: |
           set -euo pipefail
           cp data/live-events.json /tmp/live-events-last-good.json
-
-          for attempt in 1 2; do
-            echo "Parallel playguide collection attempt ${attempt}/2"
-            python scripts/update_playguide_events_parallel.py --workers 10
-            failure_count="$(python - <<'PY'
-          import json
-          with open('data/live-events.json', encoding='utf-8') as f:
-              d = json.load(f).get('playguideDiagnostics') or {}
-          print(len(d.get('failures') or []))
-          PY
-            )"
-            duration="$(python - <<'PY'
-          import json
-          with open('data/live-events.json', encoding='utf-8') as f:
-              d = json.load(f).get('playguideDiagnostics') or {}
-          print(d.get('durationSeconds', 'unknown'))
-          PY
-            )"
-            echo "Remaining source/group failures: ${failure_count}; collection duration: ${duration}s"
-            if [ "$failure_count" = "0" ]; then
-              break
-            fi
-            if [ "$attempt" = "1" ]; then
-              sleep 15
-            fi
-          done
-
+          python scripts/update_playguide_events_parallel.py --workers 10
           python scripts/audit_playguide_collection.py
           python scripts/resolve_source_priority.py
           python scripts/enrich_event_metadata.py
           python scripts/apply_event_scopes.py
           python scripts/prepare_release_candidate.py --previous /tmp/live-events-last-good.json
-
-      - name: Fail-closed playguide release audit
-        if: steps.control.outputs.frozen != 'true'
-        run: |
           python scripts/audit_schedule_release_grouped.py \
             --previous /tmp/live-events-last-good.json \
             --candidate data/live-events.json \
             --report data/schedule-health.json
-
-      - name: Build public schedule only after audit passes
-        if: steps.control.outputs.frozen != 'true'
-        run: |
           python scripts/build_schedule_snapshot.py
           python scripts/fix_schedule_shell.py
           python scripts/strip_schedule_explanations.py
           node --check /tmp/schedule-inline.js
-          node scripts/test_schedule_band_grouping.js
-          node scripts/test_schedule_scope_ui.js
-
-      - name: Open incident when playguide refresh is blocked
-        if: failure() && steps.control.outputs.frozen != 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Publish fallback result
         shell: bash
         run: |
-          title="🚨 Playguide schedule refresh blocked"
-          existing="$(gh issue list --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
-          {
-            echo "@keio-kawaiilab"
-            echo
-            echo "プレイガイド取得またはリリース監査で異常を検出したため、プレイガイド更新のみ前回正常版を維持しています。"
-            echo
-            if [ -f data/schedule-health.json ]; then
-              echo '```json'
-              cat data/schedule-health.json
-              echo '```'
-            fi
-            echo
-            echo "Actions run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-          } > /tmp/playguide-incident.md
-          if [ -n "$existing" ]; then
-            gh issue comment "$existing" --body-file /tmp/playguide-incident.md
-          else
-            gh issue create --title "$title" --body-file /tmp/playguide-incident.md --assignee "keio-kawaiilab"
-          fi
-
-      - name: Close resolved playguide incident
-        if: success() && steps.control.outputs.frozen != 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          title="🚨 Playguide schedule refresh blocked"
-          existing="$(gh issue list --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
-          if [ -n "$existing" ]; then
-            gh issue close "$existing" --comment "プレイガイド取得と監査が正常に通過したため、自動更新を再開しました。"
-          fi
-
-      - name: Commit only audited playguide changes
-        if: steps.control.outputs.frozen != 'true'
-        shell: bash
-        run: |
-          if [ -z "$(git status --porcelain -- data/live-events.json data/schedule-health.json schedule.html)" ]; then
-            echo "No audited playguide changes."
-            exit 0
-          fi
+          if [ -z "$(git status --porcelain -- data/live-events.json data/schedule-health.json schedule.html)" ]; then exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/live-events.json data/schedule-health.json schedule.html
-          git commit -m "chore: refresh playguide ticket data"
-
-          for attempt in 1 2 3; do
-            if git push; then
-              exit 0
-            fi
-            echo "Push attempt ${attempt} was rejected; rebasing onto latest main."
-            git fetch origin main
-            if ! git rebase origin/main; then
-              git rebase --abort || true
-              echo "Concurrent calendar output overlaps this refresh; refusing to overwrite it."
-              exit 1
-            fi
-          done
-          echo "Unable to publish playguide data after 3 push attempts."
-          exit 1
+          git commit -m "chore: publish manual playguide fallback"
+          git push
