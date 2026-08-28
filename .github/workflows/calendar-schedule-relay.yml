@@ -1,0 +1,83 @@
+name: Calendar schedule relay
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/calendar-schedule-relay.yml"
+  schedule:
+    # Secondary, lightweight check between the primary calendar slots.
+    - cron: "17,47 * * * *"
+  workflow_run:
+    workflows:
+      - "Distributed live ticket calendar"
+    types:
+      - completed
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: calendar-schedule-relay
+  cancel-in-progress: true
+
+jobs:
+  recover-missed-schedule:
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event != 'schedule')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Delay chained fallback toward the next 15-minute slot
+        if: github.event_name == 'workflow_run'
+        run: sleep 540
+
+      - name: Dispatch calendar only when the primary scheduler is stale
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          runs="$(gh run list \
+            --repo "$GITHUB_REPOSITORY" \
+            --workflow update-live-calendar-distributed.yml \
+            --limit 20 \
+            --json databaseId,status,event,createdAt)"
+
+          active="$(jq '[.[] | select(.status != "completed")] | length' <<<"$runs")"
+          if [ "$active" -gt 0 ]; then
+            echo "A distributed calendar refresh is already active; relay does nothing."
+            exit 0
+          fi
+
+          now="$(date -u +%s)"
+          latest_schedule="$(jq -r '[.[] | select(.event == "schedule")][0].createdAt // empty' <<<"$runs")"
+          if [ -n "$latest_schedule" ]; then
+            schedule_epoch="$(date -u -d "$latest_schedule" +%s)"
+            schedule_age="$((now - schedule_epoch))"
+            if [ "$schedule_age" -lt 1200 ]; then
+              echo "Primary scheduled trigger is healthy (${schedule_age}s old); relay stands down."
+              exit 0
+            fi
+          fi
+
+          updated_at="$(gh api "repos/$GITHUB_REPOSITORY/contents/data/live-events.json?ref=main" \
+            --jq .content | tr -d '\n' | base64 -d | jq -r '.updatedAt // empty')"
+          if [ -n "$updated_at" ]; then
+            updated_epoch="$(date -u -d "$updated_at" +%s)"
+            data_age="$((now - updated_epoch))"
+            if [ "$data_age" -lt 480 ]; then
+              echo "Public calendar is only ${data_age}s old; relay stands down."
+              exit 0
+            fi
+          fi
+
+          echo "Primary schedule has not fired recently; dispatching fallback calendar refresh."
+          gh workflow run update-live-calendar-distributed.yml --repo "$GITHUB_REPOSITORY" --ref main
