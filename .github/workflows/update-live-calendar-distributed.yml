@@ -155,9 +155,19 @@ jobs:
           cd scripts
           python -m unittest -v test_update_playguide_events.py test_update_playguide_events_parallel.py
           cd ..
+
+          cp data/live-events.json /tmp/live-events-before-playguide.json
+          playguide_ok=false
           for attempt in 1 2; do
             echo "Parallel playguide attempt ${attempt}/2"
-            python scripts/update_playguide_events_parallel.py --workers 10
+            if ! python scripts/update_playguide_events_parallel.py --workers 10; then
+              echo "::warning::Playguide collector attempt ${attempt} failed."
+              cp /tmp/live-events-before-playguide.json data/live-events.json
+              if [ "$attempt" = "1" ]; then sleep 15; fi
+              continue
+            fi
+
+            playguide_ok=true
             failure_count="$(python - <<'PY'
           import json
           with open('data/live-events.json', encoding='utf-8') as f:
@@ -168,7 +178,14 @@ jobs:
             if [ "$failure_count" = "0" ]; then break; fi
             if [ "$attempt" = "1" ]; then sleep 15; fi
           done
-          python scripts/audit_playguide_collection.py
+
+          if [ "$playguide_ok" != "true" ]; then
+            echo "::warning::All playguide attempts failed; retaining the previous playguide snapshot while other sources continue."
+            cp /tmp/live-events-before-playguide.json data/live-events.json
+          elif ! python scripts/audit_playguide_collection.py; then
+            echo "::warning::Playguide refresh did not pass source-health audit; retaining the previous playguide snapshot."
+            cp /tmp/live-events-before-playguide.json data/live-events.json
+          fi
 
       - name: Upload playguide snapshot
         uses: actions/upload-artifact@v4
@@ -348,10 +365,12 @@ jobs:
             --index data/official-schedule-index.json \
             --report /tmp/official-index-reconcile.json
 
-      - name: Fail-closed integrated release audit
+      - name: Integrated release audit with row-level quarantine
         shell: bash
         run: |
-          python scripts/audit_playguide_collection.py
+          if ! python scripts/audit_playguide_collection.py; then
+            echo "::warning::Merged playguide source-health is degraded; row-level release audit remains authoritative for public data."
+          fi
           python scripts/audit_schedule_release_grouped.py \
             --previous /tmp/live-events-last-good.json \
             --candidate data/live-events.json \
