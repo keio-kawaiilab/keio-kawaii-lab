@@ -57,16 +57,15 @@ jobs:
         if: steps.freshness.outputs.stale == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
+          AGE_MINUTES: ${{ steps.freshness.outputs.age_minutes }}
         shell: bash
         run: |
-          echo "Calendar is ${{
-            steps.freshness.outputs.age_minutes
-          }} minutes old; dispatching recovery refresh."
+          echo "Calendar is ${AGE_MINUTES} minutes old; dispatching recovery refresh."
           gh workflow run update-live-calendar-distributed.yml --repo "$GITHUB_REPOSITORY" --ref main
 
       - name: Report healthy calendar
         if: steps.freshness.outputs.stale != 'true'
-        run: |
-          echo "Calendar is fresh (${{
-            steps.freshness.outputs.age_minutes
-          }} minutes old, updated ${{ steps.freshness.outputs.updated_at }})."
+        env:
+          AGE_MINUTES: ${{ steps.freshness.outputs.age_minutes }}
+          UPDATED_AT: ${{ steps.freshness.outputs.updated_at }}
+        run: echo "Calendar is fresh (${AGE_MINUTES} minutes old, updated ${UPDATED_AT})."
