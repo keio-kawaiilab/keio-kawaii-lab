@@ -1,7 +1,7 @@
 {
   "date": "2026-08-28",
   "horizonDays": 7,
-  "generatedAt": "2026-08-28T23:52+09:00",
+  "generatedAt": "2026-08-28T23:54+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -33,14 +33,14 @@
         {
           "time": "21:00",
           "label": "くもり",
-          "tempBand": "25〜29℃",
-          "validAt": "2026-08-28T21:00+09:00"
+          "validAt": "2026-08-28T21:00+09:00",
+          "temp": 26
         },
         {
           "time": "24:00",
           "label": "くもり",
-          "tempBand": "25〜29℃",
-          "validAt": "2026-08-29T00:00+09:00"
+          "validAt": "2026-08-29T00:00+09:00",
+          "temp": 25
         }
       ],
       "hourlyRain": [
@@ -87,44 +87,44 @@
         {
           "time": "06:00",
           "label": "くもり",
-          "tempBand": "20〜24℃",
-          "validAt": "2026-08-29T06:00+09:00"
+          "validAt": "2026-08-29T06:00+09:00",
+          "temp": 23
         },
         {
           "time": "09:00",
           "label": "くもり",
-          "tempBand": "20〜24℃",
-          "validAt": "2026-08-29T09:00+09:00"
+          "validAt": "2026-08-29T09:00+09:00",
+          "temp": 24
         },
         {
           "time": "12:00",
           "label": "くもり",
-          "tempBand": "25〜29℃",
-          "validAt": "2026-08-29T12:00+09:00"
+          "validAt": "2026-08-29T12:00+09:00",
+          "temp": 26
         },
         {
           "time": "15:00",
           "label": "雨",
-          "tempBand": "25〜29℃",
-          "validAt": "2026-08-29T15:00+09:00"
+          "validAt": "2026-08-29T15:00+09:00",
+          "temp": 25
         },
         {
           "time": "18:00",
           "label": "雨",
-          "tempBand": "20〜24℃",
-          "validAt": "2026-08-29T18:00+09:00"
+          "validAt": "2026-08-29T18:00+09:00",
+          "temp": 23
         },
         {
           "time": "21:00",
           "label": "雨",
-          "tempBand": "20〜24℃",
-          "validAt": "2026-08-29T21:00+09:00"
+          "validAt": "2026-08-29T21:00+09:00",
+          "temp": 22
         },
         {
           "time": "24:00",
           "label": "雨",
-          "tempBand": "20〜24℃",
-          "validAt": "2026-08-30T00:00+09:00"
+          "validAt": "2026-08-30T00:00+09:00",
+          "temp": 22
         }
       ]
     },
@@ -257,6 +257,7 @@
     "meshEntries": 2,
     "failures": 0,
     "meshTimelineEntries": 2,
+    "meshExactTempSlots": 9,
     "hourlyRainEntries": 1
   },
   "failures": []
