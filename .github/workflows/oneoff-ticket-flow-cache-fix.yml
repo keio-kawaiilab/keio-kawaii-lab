@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Patch ticket flow and cache chain
+      - name: Patch ticket flow, cache chain, and history URL identity
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -49,31 +49,53 @@ jobs:
           new = f'''    page = re.sub(r'<script src="\\./train-status\\.js(?:\\?v=[^\"]*)?"></script>\\s*', "", page)\n    page = page.replace("</body>", '<script src="./train-status.js?v={version}"></script>\\n</body>', 1)\n'''
           if old in text:
               text = text.replace(old, new, 1)
-          else:
-              text = re.sub(
-                  r'''    page = re\.sub\(r'<script src="\\\\\./train-status\\\\\.js\(\?:\\\\\?v=\[\^\\"\]\*\)\?</script>\\\\s\*', "", page\)\n    page = page\.replace\("</body>", '<script src="\./train-status\.js\?v=\d+"></script>\\\\n</body>', 1\)\n''',
-                  new,
-                  text,
-              )
           builder.write_text(text, encoding="utf-8")
+
+          archiver = Path("scripts/archive_ticket_history.py")
+          text = archiver.read_text(encoding="utf-8")
+          text = text.replace(
+              "from urllib.parse import urlparse",
+              "from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse",
+          )
+          canonical_fn = '''\n\ndef canonical_source_url(url: str) -> str:\n    text = clean(url)\n    if not text:\n        return \"\"\n    try:\n        parsed = urlparse(text)\n    except ValueError:\n        return text\n    host = (parsed.hostname or \"\").lower()\n    tracking = {\"p1\", \"fbclid\", \"gclid\", \"_ga\"}\n    pairs = []\n    for key, value in parse_qsl(parsed.query, keep_blank_values=True):\n        lower = key.lower()\n        if lower in tracking or lower.startswith(\"utm_\"):\n            continue\n        pairs.append((key, value))\n    query = urlencode(pairs, doseq=True)\n    netloc = parsed.netloc.lower() if host else parsed.netloc\n    return urlunparse((parsed.scheme.lower(), netloc, parsed.path, parsed.params, query, \"\"))\n'''
+          if "def canonical_source_url(" not in text:
+              text = text.replace("\ndef source_key_for_url", canonical_fn + "\n\ndef source_key_for_url", 1)
+          text = text.replace(
+              "def history_identity(event: dict, source_url: str, source_key: str, day: str) -> str:\n    parts = (",
+              "def history_identity(event: dict, source_url: str, source_key: str, day: str) -> str:\n    source_url = canonical_source_url(source_url)\n    parts = (",
+          )
+          text = text.replace(
+              "def make_entry(event: dict, source_url: str, source_key: str, day: str, registry: dict, now: str) -> dict:\n    config = source_config(source_key, registry)",
+              "def make_entry(event: dict, source_url: str, source_key: str, day: str, registry: dict, now: str) -> dict:\n    source_url = canonical_source_url(source_url)\n    config = source_config(source_key, registry)",
+          )
+          old_entries = '''    entries = [dict(x) for x in history.get("entries", []) if isinstance(x, dict) and x.get("id")]\n    by_id = {str(x["id"]): x for x in entries}\n'''
+          new_entries = '''    entries = [dict(x) for x in history.get("entries", []) if isinstance(x, dict) and x.get("id")]\n    by_id: dict[str, dict] = {}\n    for existing in entries:\n        canonical_url = canonical_source_url(clean(existing.get("sourceUrl")))\n        source_key = clean(existing.get("sourceKey"))\n        stub = {\n            "group": existing.get("group"),\n            "eventTitle": existing.get("eventTitle"),\n            "ticketType": existing.get("ticketType"),\n            "ticketProvider": existing.get("ticketProvider"),\n        }\n        canonical_id = history_identity(stub, canonical_url, source_key, clean(existing.get("eventDate")))\n        existing["id"] = canonical_id\n        existing["sourceUrl"] = canonical_url\n        current = by_id.get(canonical_id)\n        by_id[canonical_id] = merge_entry(current, existing, now) if current else existing\n'''
+          if old_entries in text:
+              text = text.replace(old_entries, new_entries, 1)
+          archiver.write_text(text, encoding="utf-8")
           PY
+      - name: Compact permanent ticket history
+        run: python scripts/archive_ticket_history.py
       - name: Sanity checks
         run: |
           grep -q 'going-highlight-soften.js?v=202608281825' train-status.js
           grep -q 'ticket-flow-sync.js?v=202608281825' going-highlight-soften.js
           grep -q 'train-status.js?v=202608281825' schedule.html
+          grep -q 'def canonical_source_url' scripts/archive_ticket_history.py
           node --check train-status.js
           node --check going-highlight-soften.js
           node --check ticket-flow.js
           node --check ticket-flow-sync.js
+          python -m py_compile scripts/archive_ticket_history.py
+          python scripts/archive_ticket_history.py --check
       - name: Commit fix
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add ticket-flow-sync.js going-highlight-soften.js train-status.js schedule.html scripts/build_schedule_snapshot.py
+          git add ticket-flow-sync.js going-highlight-soften.js train-status.js schedule.html scripts/build_schedule_snapshot.py scripts/archive_ticket_history.py data/ticket-history.json
           if git diff --cached --quiet; then
             echo "No changes"
             exit 0
           fi
-          git commit -m "Fix ticket flow sync and cache chain"
+          git commit -m "Canonicalize ticket history source URLs"
           git push
