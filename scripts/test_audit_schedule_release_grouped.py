@@ -45,6 +45,31 @@ class GroupedReleaseAuditTests(unittest.TestCase):
         self.assertFalse(any("performance dates added" in item for item in warnings))
         self.assertIn("url:" + SOURCE, report["sharedSourceDateSetsReconciled"])
 
+    def test_new_date_on_same_multi_event_x_post_keeps_existing_dates_safe(self):
+        title = "『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント"
+        old_rows = [
+            event("feb3", "2027-02-03", title),
+            event("feb4", "2027-02-04", title),
+        ]
+        new_rows = [
+            copy.deepcopy(old_rows[0]),
+            copy.deepcopy(old_rows[1]),
+            event("feb5", "2027-02-05", title),
+        ]
+        errors, warnings, report = audit_grouped(payload(old_rows), payload(new_rows), NOW)
+        self.assertEqual([], errors)
+        self.assertFalse(any("2027-02-04" in item and "disappeared" in item for item in errors))
+        self.assertTrue(any("2027-02-05" in item and "performance dates added" in item for item in warnings))
+        self.assertIn("url:" + SOURCE, report["officialXSharedSourceKeysReconciled"])
+
+    def test_single_event_x_date_change_still_blocks(self):
+        title = "MORE STAR リリースイベント"
+        old_rows = [event("old", "2027-02-04", title)]
+        new_rows = [event("new", "2027-02-03", title)]
+        errors, _, report = audit_grouped(payload(old_rows), payload(new_rows), NOW)
+        self.assertTrue(any("disappeared" in item for item in errors))
+        self.assertEqual("blocked", report["status"])
+
     def test_real_missing_date_still_blocks(self):
         old_rows = [
             event("5th", "2026-09-24", "MORE STAR 単独ライブ 5th STAR"),
