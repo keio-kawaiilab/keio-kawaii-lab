@@ -7,11 +7,16 @@ on:
     paths:
       - ".github/workflows/calendar-freshness-watchdog.yml"
   schedule:
-    # Independent recovery lane: do not rely on another scheduled workflow firing first.
+    # Keep a direct timer, but do not rely on this timer alone.
     - cron: "14,44 * * * *"
   workflow_run:
+    # These are independent activity clocks. In particular, train status runs
+    # every 10 minutes and has continued firing even when this workflow's own
+    # schedule and the calendar schedule were not delivered.
     workflows:
+      - "Update event-day train status"
       - "Archive verified ticket history"
+      - "Update upcoming event weather"
     types:
       - completed
   workflow_dispatch:
@@ -19,6 +24,7 @@ on:
 permissions:
   actions: write
   contents: read
+  issues: write
 
 concurrency:
   group: calendar-freshness-watchdog
@@ -27,7 +33,7 @@ concurrency:
 jobs:
   recover-stale-calendar:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 4
     steps:
       - name: Checkout latest main
         uses: actions/checkout@v4
@@ -52,8 +58,14 @@ jobs:
                   updated = datetime.fromisoformat(raw)
                   if updated.tzinfo is None:
                       updated = updated.replace(tzinfo=timezone.utc)
-                  age_minutes = max(0.0, (datetime.now(timezone.utc) - updated.astimezone(timezone.utc)).total_seconds() / 60.0)
-                  stale = age_minutes > 45.0
+                  age_minutes = max(
+                      0.0,
+                      (datetime.now(timezone.utc) - updated.astimezone(timezone.utc)).total_seconds() / 60.0,
+                  )
+                  # The primary lane targets 15-minute starts. Twenty minutes
+                  # catches one missed slot while allowing a normal 6-8 minute
+                  # refresh to still be in progress.
+                  stale = age_minutes > 20.0
               except ValueError:
                   pass
           print(f"stale={'true' if stale else 'false'}")
@@ -62,6 +74,7 @@ jobs:
           PY
 
       - name: Recover stale distributed calendar
+        id: recovery
         if: steps.freshness.outputs.stale == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -69,22 +82,83 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          active="$(gh run list \
+          runs="$(gh run list \
             --repo "$GITHUB_REPOSITORY" \
             --workflow update-live-calendar-distributed.yml \
             --limit 20 \
-            --json status \
-            --jq '[.[] | select(.status == "queued" or .status == "in_progress" or .status == "pending" or .status == "requested" or .status == "waiting")] | length')"
-          if [ "$active" -gt 0 ]; then
-            echo "Calendar is ${AGE_MINUTES} minutes old, but ${active} distributed refresh run(s) are already active; skipping duplicate dispatch."
+            --json databaseId,status,conclusion,createdAt)"
+
+          now="$(date -u +%s)"
+          fresh_active="$(jq --argjson now "$now" '[.[]
+            | select(.status != "completed")
+            | select(($now - (.createdAt | fromdateiso8601)) < 1080)] | length' <<<"$runs")"
+
+          if [ "$fresh_active" -gt 0 ]; then
+            echo "Calendar is ${AGE_MINUTES} minutes old, but ${fresh_active} recent distributed refresh run(s) are active."
+            echo "action=active" >> "$GITHUB_OUTPUT"
             exit 0
           fi
+
+          # A stale queued/running job must never suppress recovery forever.
+          mapfile -t stuck_ids < <(jq -r --argjson now "$now" '.[]
+            | select(.status != "completed")
+            | select(($now - (.createdAt | fromdateiso8601)) >= 1080)
+            | .databaseId' <<<"$runs")
+          for run_id in "${stuck_ids[@]}"; do
+            [ -n "$run_id" ] || continue
+            echo "Cancelling stuck distributed run ${run_id}."
+            gh run cancel "$run_id" --repo "$GITHUB_REPOSITORY" || true
+          done
+
+          # Avoid a retry storm when a deterministic audit error is being
+          # investigated. A failed refresh can be retried automatically once
+          # the newest attempt is at least 10 minutes old.
+          latest_created="$(jq -r '.[0].createdAt // empty' <<<"$runs")"
+          if [ -n "$latest_created" ]; then
+            latest_epoch="$(date -u -d "$latest_created" +%s)"
+            latest_age="$((now - latest_epoch))"
+            if [ "$latest_age" -lt 600 ]; then
+              echo "Newest distributed attempt is only ${latest_age}s old; waiting for the next watchdog tick."
+              echo "action=cooldown" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          fi
+
           echo "Calendar is ${AGE_MINUTES} minutes old; dispatching recovery refresh."
           gh workflow run update-live-calendar-distributed.yml --repo "$GITHUB_REPOSITORY" --ref main
+          echo "action=dispatched" >> "$GITHUB_OUTPUT"
 
-      - name: Report healthy calendar
-        if: steps.freshness.outputs.stale != 'true'
+      - name: Record stale-calendar incident
+        if: steps.freshness.outputs.stale == 'true'
         env:
+          GH_TOKEN: ${{ github.token }}
           AGE_MINUTES: ${{ steps.freshness.outputs.age_minutes }}
           UPDATED_AT: ${{ steps.freshness.outputs.updated_at }}
-        run: echo "Calendar is fresh (${AGE_MINUTES} minutes old, updated ${UPDATED_AT})."
+          RECOVERY_ACTION: ${{ steps.recovery.outputs.action }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          title="🚨 Calendar freshness watchdog active"
+          existing="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
+          body="公開カレンダーの最終正常更新が古くなったため自動復旧を実行しています。\n\nupdatedAt: ${UPDATED_AT}\nage: ${AGE_MINUTES} minutes\naction: ${RECOVERY_ACTION:-unknown}\nwatchdog run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body "$body"
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body "$body"
+          fi
+
+      - name: Report healthy calendar and close watchdog incident
+        if: steps.freshness.outputs.stale != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AGE_MINUTES: ${{ steps.freshness.outputs.age_minutes }}
+          UPDATED_AT: ${{ steps.freshness.outputs.updated_at }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Calendar is fresh (${AGE_MINUTES} minutes old, updated ${UPDATED_AT})."
+          title="🚨 Calendar freshness watchdog active"
+          existing="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
+          if [ -n "$existing" ]; then
+            gh issue close "$existing" --repo "$GITHUB_REPOSITORY" --comment "公開カレンダーの正常更新を確認したため、自動復旧監視を通常状態へ戻しました。"
+          fi
