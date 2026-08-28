@@ -25,21 +25,24 @@ on:
       - "live.html"
       - "schedule.html"
   schedule:
-    - cron: "17,47 * * * *"
+    # Core refresh is staggered from special events, SUKISUKI and playguides.
+    - cron: "27,57 * * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
   issues: write
 
+# Every workflow that writes live-events.json uses the same writer lock.
+# Source collection is split into shorter pipelines; publication stays serialized.
 concurrency:
   group: update-live-ticket-calendar-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
-  update:
+  update-core:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -81,7 +84,15 @@ jobs:
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add schedule.html
             git commit -m "chore: refresh schedule shell"
-            git push
+            for attempt in 1 2 3; do
+              if git push; then exit 0; fi
+              git fetch origin main
+              if ! git rebase origin/main; then
+                git rebase --abort || true
+                exit 1
+              fi
+            done
+            exit 1
           fi
 
       - name: Set up Python
@@ -94,7 +105,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r scripts/requirements.txt
 
-      - name: Run parser and release-gate tests
+      - name: Run core parser and release-gate tests
         working-directory: scripts
         run: >-
           python -m unittest -v
@@ -102,13 +113,10 @@ jobs:
           test_enrich_official_performance_times.py
           test_update_live_events_v2.py
           test_update_pia_events.py
-          test_update_playguide_events.py
           test_clean_pia_refresh.py
           test_reconcile_pia_retention.py
           test_harden_pia_events.py
           test_sanitize_live_events.py
-          test_update_sukisuki_events.py
-          test_update_special_events.py
           test_enrich_event_metadata.py
           test_build_schedule_snapshot.py
           test_resolve_source_priority.py
@@ -133,9 +141,6 @@ jobs:
             --report /tmp/schedule-health.json
           python scripts/update_live_events_v2.py --check
           python scripts/update_pia_events.py --check
-          python scripts/update_playguide_events.py --check
-          python scripts/update_sukisuki_events.py --check
-          python scripts/update_special_events.py --check
           python scripts/update_official_schedule.py --check
           python scripts/apply_event_scopes.py --check
           python scripts/audit_official_schedule_coverage.py
@@ -147,11 +152,18 @@ jobs:
           node scripts/test_schedule_scope_ui.js
           git diff --exit-code -- schedule.html || true
 
-      - name: Refresh candidate data from public sources
+      - name: Refresh core candidate data from public sources
         if: github.event_name != 'pull_request' && steps.control.outputs.frozen != 'true'
         run: |
           cp data/live-events.json /tmp/live-events-last-good.json
-          if [ -f data/official-schedule-index.json ]; then cp data/official-schedule-index.json /tmp/official-schedule-index-last-good.json; fi
+          if [ -f data/official-schedule-index.json ]; then
+            cp data/official-schedule-index.json /tmp/official-schedule-index-last-good.json
+          else
+            echo '{"rows":[]}' > /tmp/official-schedule-index-last-good.json
+          fi
+
+          # Core pipeline: official public information + Ticket PIA + authoritative schedule coverage.
+          # Playguides, SUKISUKI and special events now refresh in their own shorter workflows.
           python scripts/update_live_events_v2.py
           cp data/live-events.json /tmp/live-events-before-pia.json
           python scripts/clean_pia_refresh.py --drop-all
@@ -160,10 +172,6 @@ jobs:
           python scripts/enrich_event_metadata.py
           python scripts/update_pia_events.py
           python scripts/reconcile_pia_retention.py --previous /tmp/live-events-before-pia.json
-          python scripts/update_playguide_events.py
-          python scripts/audit_playguide_collection.py
-          python scripts/update_sukisuki_events.py
-          python scripts/update_special_events.py
           python scripts/harden_pia_events.py
           python scripts/resolve_source_priority.py
           python scripts/enrich_event_metadata.py
@@ -202,18 +210,18 @@ jobs:
             echo '```' >> "$GITHUB_STEP_SUMMARY"
           fi
 
-      - name: Open incident when release audit blocks publication
+      - name: Open incident when core release audit blocks publication
         if: failure() && github.event_name != 'pull_request' && steps.control.outputs.frozen != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          title="🚨 Schedule release blocked"
+          title="🚨 Schedule core refresh blocked"
           existing="$(gh issue list --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
           {
             echo "@keio-kawaiilab"
             echo
-            echo "自動更新で異常を検出したため、**本番公開を停止して前回正常版を維持しています**。"
+            echo "公式・ぴあ・統合監査のコア更新で異常を検出したため、コア部分は前回正常版を維持しています。"
             echo
             if [ -f data/schedule-health.json ]; then
               echo '```json'
@@ -222,54 +230,49 @@ jobs:
             fi
             echo
             echo "Actions run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-          } > /tmp/schedule-incident.md
+          } > /tmp/schedule-core-incident.md
           if [ -n "$existing" ]; then
-            gh issue comment "$existing" --body-file /tmp/schedule-incident.md
-            gh issue edit "$existing" --add-assignee "keio-kawaiilab" || true
+            gh issue comment "$existing" --body-file /tmp/schedule-core-incident.md
           else
-            gh issue create --title "$title" --body-file /tmp/schedule-incident.md --assignee "keio-kawaiilab"
+            gh issue create --title "$title" --body-file /tmp/schedule-core-incident.md --assignee "keio-kawaiilab"
           fi
 
-      - name: Close resolved release incident
+      - name: Close resolved core incident
         if: success() && github.event_name != 'pull_request' && steps.control.outputs.frozen != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          title="🚨 Schedule release blocked"
+          title="🚨 Schedule core refresh blocked"
           existing="$(gh issue list --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
           if [ -n "$existing" ]; then
-            gh issue close "$existing" --comment "リリース監査が正常に通過したため、自動更新を再開しました。"
+            gh issue close "$existing" --comment "コア取得とリリース監査が正常に通過したため、自動更新を再開しました。"
           fi
 
-      - name: Commit only audited data and schedule
+      - name: Commit only audited core data and schedule
         if: github.event_name != 'pull_request' && steps.control.outputs.frozen != 'true'
         shell: bash
         run: |
           if [ -z "$(git status --porcelain -- data/live-events.json data/official-schedule-index.json data/schedule-health.json schedule.html)" ]; then
-            echo "No audited calendar changes."
+            echo "No audited core calendar changes."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/live-events.json data/official-schedule-index.json data/schedule-health.json schedule.html
-          git commit -m "chore: publish audited live ticket calendar"
+          git commit -m "chore: publish audited calendar core"
 
-          # The refresh takes several minutes. A harmless UI/content commit can land on main
-          # while collection is running, which previously made the final push fail with
-          # "fetch first" even though every audit had passed. Rebase the audited commit onto
-          # the latest main and retry. A real overlap still fails closed on rebase conflict.
           for attempt in 1 2 3; do
             if git push; then
               exit 0
             fi
-            echo "Push attempt ${attempt} was rejected; rebasing onto the latest main."
+            echo "Push attempt ${attempt} was rejected; rebasing onto latest main."
             git fetch origin main
             if ! git rebase origin/main; then
               git rebase --abort || true
-              echo "Concurrent changes overlap the audited calendar output; refusing to overwrite them."
+              echo "Concurrent changes overlap the audited core output; refusing to overwrite them."
               exit 1
             fi
           done
-          echo "Unable to publish the audited calendar after 3 push attempts."
+          echo "Unable to publish the audited core calendar after 3 push attempts."
           exit 1
