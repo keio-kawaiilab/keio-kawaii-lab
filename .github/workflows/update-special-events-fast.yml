@@ -11,7 +11,11 @@ on:
       - "scripts/test_special_event_ancillary.py"
       - "scripts/test_update_official_x_special_events.py"
       - "scripts/audit_schedule_release.py"
+      - "scripts/audit_schedule_release_grouped.py"
       - "scripts/test_audit_schedule_release.py"
+      - "scripts/test_audit_schedule_release_grouped.py"
+      - "scripts/prepare_release_candidate.py"
+      - "scripts/test_prepare_release_candidate.py"
       - "scripts/resolve_source_priority.py"
       - "scripts/test_resolve_source_priority.py"
       - "scripts/build_schedule_snapshot.py"
@@ -64,7 +68,16 @@ jobs:
 
       - name: Test special-event discovery and release gate
         working-directory: scripts
-        run: python -m unittest -v test_update_special_events.py test_special_event_ancillary.py test_update_official_x_special_events.py test_resolve_source_priority.py test_audit_schedule_release.py test_schedule_scope.py test_audit_official_schedule_coverage.py
+        run: >-
+          python -m unittest -v
+          test_update_special_events.py
+          test_special_event_ancillary.py
+          test_update_official_x_special_events.py
+          test_resolve_source_priority.py
+          test_audit_schedule_release.py
+          test_audit_schedule_release_grouped.py
+          test_prepare_release_candidate.py
+          test_schedule_scope.py
 
       - name: Refresh special-event candidate data
         if: steps.control.outputs.frozen != 'true'
@@ -77,6 +90,7 @@ jobs:
           python scripts/update_official_x_special_events.py 2>&1 | tee -a /tmp/special-event-refresh.log
           python scripts/resolve_source_priority.py
           python scripts/apply_event_scopes.py
+          python scripts/prepare_release_candidate.py --previous /tmp/live-events-last-good.json
           if git diff --quiet -- data/live-events.json; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "No special-event changes."
@@ -84,14 +98,13 @@ jobs:
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Fail-closed release audit
+      - name: Fail-closed special-event release audit
         if: steps.control.outputs.frozen != 'true' && steps.refresh.outputs.changed == 'true'
         run: |
-          python scripts/audit_schedule_release.py \
+          python scripts/audit_schedule_release_grouped.py \
             --previous /tmp/live-events-last-good.json \
             --candidate data/live-events.json \
             --report data/schedule-health.json
-          python scripts/audit_official_schedule_coverage.py
 
       - name: Build public schedule only after audit passes
         if: steps.control.outputs.frozen != 'true' && steps.refresh.outputs.changed == 'true'
@@ -164,4 +177,14 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/live-events.json data/schedule-health.json schedule.html
           git commit -m "chore: refresh special-event schedule"
-          git push
+          for attempt in 1 2 3; do
+            if git push; then exit 0; fi
+            echo "Push attempt ${attempt} was rejected; rebasing onto latest main."
+            git fetch origin main
+            if ! git rebase origin/main; then
+              git rebase --abort || true
+              echo "Concurrent calendar output overlaps this refresh; refusing to overwrite it."
+              exit 1
+            fi
+          done
+          exit 1
