@@ -1,52 +1,26 @@
-name: Update live ticket calendar
+name: Legacy calendar core fallback
 
 on:
-  pull_request:
-    paths:
-      - "scripts/**"
-      - ".github/workflows/update-live-calendar.yml"
-      - "data/live-events.json"
-      - "data/official-schedule-index.json"
-      - "data/schedule-control.json"
-      - "schedule.html"
-      - "live*.js"
-      - "calendar-*.js"
-      - "live.html"
-  push:
-    branches:
-      - "main"
-      - "feature/live-ticket-calendar"
-    paths:
-      - "scripts/**"
-      - ".github/workflows/update-live-calendar.yml"
-      - "data/schedule-control.json"
-      - "live*.js"
-      - "calendar-*.js"
-      - "live.html"
-      - "schedule.html"
-  schedule:
-    - cron: "17,47 * * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
   issues: write
 
+# Manual emergency fallback only. The distributed workflow owns automatic refreshes.
 concurrency:
   group: update-live-ticket-calendar-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  update-core:
+  legacy-core-fallback:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
-      - name: Checkout
+      - name: Checkout latest main
         uses: actions/checkout@v4
         with:
-          # Scheduled/push runs can sit behind another calendar writer. Start from the
-          # current branch tip when the job actually begins, not the older trigger SHA.
-          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.ref_name }}
+          ref: main
 
       - name: Read emergency freeze control
         id: control
@@ -59,42 +33,6 @@ jobs:
           PY
           )"
           echo "frozen=$frozen" >> "$GITHUB_OUTPUT"
-          if [ "$frozen" = "true" ]; then
-            echo "Schedule auto-publication is FROZEN. Last known-good public data will remain unchanged."
-          fi
-
-      - name: Check frontend JavaScript syntax
-        run: |
-          node --check live.js
-          node --check live-runtime-fallback.js
-          node --check calendar-performance-dates.js
-          node --check calendar-readable-labels.js
-          node --check calendar-scroll-detail.js
-          python scripts/fix_schedule_shell.py
-          python scripts/strip_schedule_explanations.py
-          node --check /tmp/schedule-inline.js
-
-      - name: Publish schedule shell changes immediately
-        if: github.event_name != 'pull_request'
-        shell: bash
-        run: |
-          if git diff --quiet -- schedule.html; then
-            echo "No schedule shell changes."
-          else
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add schedule.html
-            git commit -m "chore: refresh schedule shell"
-            for attempt in 1 2 3; do
-              if git push; then exit 0; fi
-              git fetch origin main
-              if ! git rebase origin/main; then
-                git rebase --abort || true
-                exit 1
-              fi
-            done
-            exit 1
-          fi
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -106,56 +44,11 @@ jobs:
       - name: Install dependencies
         run: pip install -r scripts/requirements.txt
 
-      - name: Run core parser and release-gate tests
-        working-directory: scripts
-        run: >-
-          python -m unittest -v
-          test_update_live_events.py
-          test_enrich_official_performance_times.py
-          test_update_live_events_v2.py
-          test_update_pia_events.py
-          test_clean_pia_refresh.py
-          test_reconcile_pia_retention.py
-          test_harden_pia_events.py
-          test_sanitize_live_events.py
-          test_enrich_event_metadata.py
-          test_build_schedule_snapshot.py
-          test_resolve_source_priority.py
-          test_audit_schedule_release.py
-          test_audit_schedule_release_grouped.py
-          test_prepare_release_candidate.py
-          test_schedule_scope.py
-          test_update_official_schedule.py
-          test_audit_official_schedule_coverage.py
-
-      - name: Test schedule band grouping
+      - name: Run legacy full refresh
+        if: steps.control.outputs.frozen != 'true'
+        shell: bash
         run: |
-          node scripts/test_schedule_band_grouping.js
-          node scripts/test_schedule_scope_ui.js
-
-      - name: Validate current release on pull requests
-        if: github.event_name == 'pull_request'
-        run: |
-          python scripts/audit_schedule_release_grouped.py \
-            --previous data/live-events.json \
-            --candidate data/live-events.json \
-            --report /tmp/schedule-health.json
-          python scripts/update_live_events_v2.py --check
-          python scripts/update_pia_events.py --check
-          python scripts/update_official_schedule.py --check
-          python scripts/apply_event_scopes.py --check
-          python scripts/audit_official_schedule_coverage.py
-          python scripts/harden_pia_events.py --check
-          python scripts/build_schedule_snapshot.py
-          python scripts/fix_schedule_shell.py
-          python scripts/strip_schedule_explanations.py
-          node --check /tmp/schedule-inline.js
-          node scripts/test_schedule_scope_ui.js
-          git diff --exit-code -- schedule.html || true
-
-      - name: Refresh core candidate data from public sources
-        if: github.event_name != 'pull_request' && steps.control.outputs.frozen != 'true'
-        run: |
+          set -euo pipefail
           cp data/live-events.json /tmp/live-events-last-good.json
           if [ -f data/official-schedule-index.json ]; then
             cp data/official-schedule-index.json /tmp/official-schedule-index-last-good.json
@@ -163,8 +56,6 @@ jobs:
             echo '{"rows":[]}' > /tmp/official-schedule-index-last-good.json
           fi
 
-          # Core pipeline: official public information + Ticket PIA + authoritative schedule coverage.
-          # Playguides, SUKISUKI and special events refresh in their own shorter workflows.
           python scripts/update_live_events_v2.py
           cp data/live-events.json /tmp/live-events-before-pia.json
           python scripts/clean_pia_refresh.py --drop-all
@@ -174,16 +65,17 @@ jobs:
           python scripts/update_pia_events.py
           python scripts/reconcile_pia_retention.py --previous /tmp/live-events-before-pia.json
           python scripts/harden_pia_events.py
+          python scripts/update_playguide_events_parallel.py --workers 10
+          python scripts/audit_playguide_collection.py
+          python scripts/update_sukisuki_events.py
+          python scripts/update_special_events.py
+          python scripts/update_official_x_special_events.py
           python scripts/resolve_source_priority.py
           python scripts/enrich_event_metadata.py
-          python scripts/harden_pia_events.py --check
           python scripts/update_official_schedule.py
           python scripts/apply_event_scopes.py
           python scripts/prepare_release_candidate.py --previous /tmp/live-events-last-good.json
 
-      - name: Fail-closed release audit
-        if: github.event_name != 'pull_request' && steps.control.outputs.frozen != 'true'
-        run: |
           python scripts/audit_schedule_release_grouped.py \
             --previous /tmp/live-events-last-good.json \
             --candidate data/live-events.json \
@@ -191,89 +83,31 @@ jobs:
           python scripts/audit_official_schedule_coverage.py \
             --previous-index /tmp/official-schedule-index-last-good.json
 
-      - name: Build public schedule only after audit passes
-        if: github.event_name != 'pull_request' && steps.control.outputs.frozen != 'true'
-        run: |
           python scripts/build_schedule_snapshot.py
           python scripts/fix_schedule_shell.py
           python scripts/strip_schedule_explanations.py
           node --check /tmp/schedule-inline.js
+          node scripts/test_schedule_band_grouping.js
           node scripts/test_schedule_scope_ui.js
 
-      - name: Add release audit to workflow summary
-        if: always() && github.event_name != 'pull_request' && steps.control.outputs.frozen != 'true'
-        shell: bash
-        run: |
-          if [ -f data/schedule-health.json ]; then
-            echo "### Schedule release audit" >> "$GITHUB_STEP_SUMMARY"
-            echo '```json' >> "$GITHUB_STEP_SUMMARY"
-            cat data/schedule-health.json >> "$GITHUB_STEP_SUMMARY"
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-      - name: Open incident when core release audit blocks publication
-        if: failure() && github.event_name != 'pull_request' && steps.control.outputs.frozen != 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          title="🚨 Schedule core refresh blocked"
-          existing="$(gh issue list --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
-          {
-            echo "@keio-kawaiilab"
-            echo
-            echo "公式・ぴあ・統合監査のコア更新で異常を検出したため、コア部分は前回正常版を維持しています。"
-            echo
-            if [ -f data/schedule-health.json ]; then
-              echo '```json'
-              cat data/schedule-health.json
-              echo '```'
-            fi
-            echo
-            echo "Actions run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-          } > /tmp/schedule-core-incident.md
-          if [ -n "$existing" ]; then
-            gh issue comment "$existing" --body-file /tmp/schedule-core-incident.md
-          else
-            gh issue create --title "$title" --body-file /tmp/schedule-core-incident.md --assignee "keio-kawaiilab"
-          fi
-
-      - name: Close resolved core incident
-        if: success() && github.event_name != 'pull_request' && steps.control.outputs.frozen != 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          title="🚨 Schedule core refresh blocked"
-          existing="$(gh issue list --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
-          if [ -n "$existing" ]; then
-            gh issue close "$existing" --comment "コア取得とリリース監査が正常に通過したため、自動更新を再開しました。"
-          fi
-
-      - name: Commit only audited core data and schedule
-        if: github.event_name != 'pull_request' && steps.control.outputs.frozen != 'true'
+      - name: Publish audited fallback release
+        if: steps.control.outputs.frozen != 'true'
         shell: bash
         run: |
           if [ -z "$(git status --porcelain -- data/live-events.json data/official-schedule-index.json data/schedule-health.json schedule.html)" ]; then
-            echo "No audited core calendar changes."
+            echo "No legacy fallback changes."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/live-events.json data/official-schedule-index.json data/schedule-health.json schedule.html
-          git commit -m "chore: publish audited calendar core"
-
+          git commit -m "chore: publish legacy fallback calendar"
           for attempt in 1 2 3; do
-            if git push; then
-              exit 0
-            fi
-            echo "Push attempt ${attempt} was rejected; rebasing onto latest main."
+            if git push; then exit 0; fi
             git fetch origin main
             if ! git rebase origin/main; then
               git rebase --abort || true
-              echo "Concurrent changes overlap the audited core output; refusing to overwrite them."
               exit 1
             fi
           done
-          echo "Unable to publish the audited core calendar after 3 push attempts."
           exit 1
