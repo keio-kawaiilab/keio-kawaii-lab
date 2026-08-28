@@ -5,7 +5,7 @@ import copy
 import unittest
 from datetime import datetime, timezone
 
-from audit_schedule_release_grouped import audit_grouped
+from audit_schedule_release_grouped import audit_grouped, repair_local_errors
 
 NOW = datetime(2026, 8, 27, 4, 0, tzinfo=timezone.utc)
 SOURCE = "https://x.com/MORE_STAR_/status/2092567739969966299"
@@ -62,7 +62,7 @@ class GroupedReleaseAuditTests(unittest.TestCase):
         self.assertTrue(any("2027-02-05" in item and "performance dates added" in item for item in warnings))
         self.assertIn("url:" + SOURCE, report["officialXSharedSourceKeysReconciled"])
 
-    def test_single_event_x_date_change_still_blocks(self):
+    def test_single_event_x_date_change_still_blocks_strict_audit(self):
         title = "MORE STAR リリースイベント"
         old_rows = [event("old", "2027-02-04", title)]
         new_rows = [event("new", "2027-02-03", title)]
@@ -70,7 +70,7 @@ class GroupedReleaseAuditTests(unittest.TestCase):
         self.assertTrue(any("disappeared" in item for item in errors))
         self.assertEqual("blocked", report["status"])
 
-    def test_real_missing_date_still_blocks(self):
+    def test_real_missing_date_still_blocks_strict_audit(self):
         old_rows = [
             event("5th", "2026-09-24", "MORE STAR 単独ライブ 5th STAR"),
             event("6th", "2026-10-21", "MORE STAR 単独ライブ 6th STAR"),
@@ -90,6 +90,58 @@ class GroupedReleaseAuditTests(unittest.TestCase):
         new_rows = [copy.deepcopy(old_rows[0]), copy.deepcopy(old_rows[2])]
         errors, _, _ = audit_grouped(payload(old_rows), payload(new_rows), NOW)
         self.assertTrue(any("disappeared" in item for item in errors))
+
+    def test_release_repair_restores_bad_source_but_keeps_unrelated_fresh_event(self):
+        title = "MORE STAR リリースイベント"
+        old = event("old", "2027-02-04", title)
+        changed = event("new", "2027-02-03", title)
+        unrelated = event("fresh", "2026-12-20", "新しい別公演")
+        other_source = "https://morestar.asobisystem.com/live_information/detail/99999"
+        unrelated["url"] = other_source
+        unrelated["urls"] = [other_source]
+        unrelated["sourceType"] = "official"
+
+        repaired, errors, _, report, actions = repair_local_errors(
+            payload([old]), payload([changed, unrelated]), NOW
+        )
+
+        ids = {row["id"] for row in repaired["events"]}
+        self.assertEqual([], errors)
+        self.assertIn("old", ids)
+        self.assertIn("fresh", ids)
+        self.assertNotIn("new", ids)
+        self.assertGreaterEqual(len(actions), 1)
+        self.assertEqual("ok", report["status"])
+
+    def test_release_repair_withholds_bad_brand_new_row_only(self):
+        stable = event("stable", "2026-09-24", "既存公演")
+        bad = event("bad-new", "2026-10-01", "新規だが壊れた公演")
+        bad["eventScope"] = ""
+        other_source = "https://morestar.asobisystem.com/live_information/detail/88888"
+        bad["url"] = other_source
+        bad["urls"] = [other_source]
+        bad["sourceType"] = "official"
+
+        repaired, errors, _, _, actions = repair_local_errors(
+            payload([stable]), payload([copy.deepcopy(stable), bad]), NOW
+        )
+
+        ids = {row["id"] for row in repaired["events"]}
+        self.assertEqual([], errors)
+        self.assertEqual({"stable"}, ids)
+        self.assertGreaterEqual(len(actions), 1)
+
+    def test_release_repair_keeps_global_integrity_failure_blocking(self):
+        stable = event("stable", "2026-09-24", "既存公演")
+        previous = payload([stable])
+        candidate = payload([copy.deepcopy(stable)])
+        candidate["updatedAt"] = "not-a-date"
+
+        _, errors, _, report, actions = repair_local_errors(previous, candidate, NOW)
+
+        self.assertTrue(any("candidate updatedAt is invalid" in item for item in errors))
+        self.assertEqual([], actions)
+        self.assertEqual("blocked", report["status"])
 
 
 if __name__ == "__main__":
