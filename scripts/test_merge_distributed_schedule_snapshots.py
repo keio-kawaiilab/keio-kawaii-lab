@@ -54,6 +54,33 @@ class DistributedSnapshotMergerTests(unittest.TestCase):
         )
         self.assertEqual("parallel", result["playguideDiagnostics"]["collectorMode"])
 
+    def test_replacement_keeps_core_official_schedule_link_for_same_id(self):
+        official_url = "https://sweetsteady.asobisystem.com/live_information/detail/12345"
+        core = {"events": [{
+            "id": "same-event",
+            "sourceType": "official-special",
+            "eventCategory": "release-event",
+            "title": "発売記念リリースイベント",
+            "eventDate": "2026-10-03",
+            "url": "https://sweetsteady.asobisystem.com/news/detail/1",
+            "urls": ["https://sweetsteady.asobisystem.com/news/detail/1", official_url],
+            "officialScheduleUrl": official_url,
+        }]}
+        special = {"events": [{
+            "id": "same-event",
+            "sourceType": "official-special",
+            "eventCategory": "release-event",
+            "title": "発売記念リリースイベント",
+            "eventDate": "2026-10-03",
+            "url": "https://sweetsteady.asobisystem.com/news/detail/1",
+            "urls": ["https://sweetsteady.asobisystem.com/news/detail/1"],
+        }]}
+        result = merger.merge_payloads(core, {"events": []}, {"events": []}, special)
+        event = next(row for row in result["events"] if row["id"] == "same-event")
+        self.assertEqual(official_url, event["officialScheduleUrl"])
+        self.assertIn(official_url, event["urls"])
+        self.assertEqual(1, result["distributedMergeDiagnostics"]["officialLinksPreserved"])
+
 
 if __name__ == "__main__":
     unittest.main()
