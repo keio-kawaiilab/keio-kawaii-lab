@@ -6,8 +6,10 @@ on:
       - main
     paths:
       - "scripts/update_playguide_events.py"
+      - "scripts/update_playguide_events_parallel.py"
       - "scripts/audit_playguide_collection.py"
       - "scripts/test_update_playguide_events.py"
+      - "scripts/test_update_playguide_events_parallel.py"
       - "scripts/audit_schedule_release.py"
       - "scripts/audit_schedule_release_grouped.py"
       - "scripts/test_audit_schedule_release_grouped.py"
@@ -34,7 +36,7 @@ concurrency:
 jobs:
   refresh-playguides:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 8
     steps:
       - name: Checkout latest main
         uses: actions/checkout@v4
@@ -66,16 +68,17 @@ jobs:
       - name: Install dependencies
         run: pip install -r scripts/requirements.txt
 
-      - name: Test playguide parser and release gate
+      - name: Test playguide parser and parallel collector
         working-directory: scripts
         run: >-
           python -m unittest -v
           test_update_playguide_events.py
+          test_update_playguide_events_parallel.py
           test_audit_schedule_release_grouped.py
           test_prepare_release_candidate.py
           test_schedule_scope.py
 
-      - name: Refresh playguide candidate with retry
+      - name: Refresh playguide candidate in parallel with retry
         if: steps.control.outputs.frozen != 'true'
         shell: bash
         run: |
@@ -83,8 +86,8 @@ jobs:
           cp data/live-events.json /tmp/live-events-last-good.json
 
           for attempt in 1 2; do
-            echo "Playguide collection attempt ${attempt}/2"
-            python scripts/update_playguide_events.py
+            echo "Parallel playguide collection attempt ${attempt}/2"
+            python scripts/update_playguide_events_parallel.py --workers 10
             failure_count="$(python - <<'PY'
           import json
           with open('data/live-events.json', encoding='utf-8') as f:
@@ -92,12 +95,19 @@ jobs:
           print(len(d.get('failures') or []))
           PY
             )"
-            echo "Remaining source/group failures: ${failure_count}"
+            duration="$(python - <<'PY'
+          import json
+          with open('data/live-events.json', encoding='utf-8') as f:
+              d = json.load(f).get('playguideDiagnostics') or {}
+          print(d.get('durationSeconds', 'unknown'))
+          PY
+            )"
+            echo "Remaining source/group failures: ${failure_count}; collection duration: ${duration}s"
             if [ "$failure_count" = "0" ]; then
               break
             fi
             if [ "$attempt" = "1" ]; then
-              sleep 30
+              sleep 15
             fi
           done
 
