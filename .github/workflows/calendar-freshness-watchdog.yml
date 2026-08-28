@@ -1,6 +1,11 @@
 name: Calendar freshness watchdog
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/calendar-freshness-watchdog.yml"
   workflow_run:
     workflows:
       - "Archive verified ticket history"
