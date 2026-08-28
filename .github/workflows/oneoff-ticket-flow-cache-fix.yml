@@ -1,0 +1,60 @@
+name: One-off ticket flow cache fix
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch cache chain and persistent builder
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          version = "202608281820"
+
+          train = Path("train-status.js")
+          text = train.read_text(encoding="utf-8")
+          text = re.sub(r'going-highlight-soften\.js\?v=\d+', f'going-highlight-soften.js?v={version}', text)
+          train.write_text(text, encoding="utf-8")
+
+          schedule = Path("schedule.html")
+          text = schedule.read_text(encoding="utf-8")
+          text = re.sub(r'<script src="\./train-status\.js(?:\?v=[^"]*)?"></script>', f'<script src="./train-status.js?v={version}"></script>', text)
+          schedule.write_text(text, encoding="utf-8")
+
+          builder = Path("scripts/build_schedule_snapshot.py")
+          text = builder.read_text(encoding="utf-8")
+          old = '''    if 'src="./train-status.js"' not in page:\n        page = page.replace("</body>", '<script src="./train-status.js"></script>\\n</body>', 1)\n'''
+          new = f'''    page = re.sub(r'<script src="\\./train-status\\.js(?:\\?v=[^\"]*)?"></script>\\s*', "", page)\n    page = page.replace("</body>", '<script src="./train-status.js?v={version}"></script>\\n</body>', 1)\n'''
+          if old not in text:
+              raise SystemExit("build_schedule_snapshot.py train-status block not found")
+          text = text.replace(old, new, 1)
+          builder.write_text(text, encoding="utf-8")
+          PY
+      - name: Sanity checks
+        run: |
+          grep -q 'going-highlight-soften.js?v=202608281820' train-status.js
+          grep -q 'train-status.js?v=202608281820' schedule.html
+          grep -q 'train-status.js?v=202608281820' scripts/build_schedule_snapshot.py
+          node --check train-status.js
+          node --check going-highlight-soften.js
+          node --check ticket-flow.js
+          node --check ticket-flow-sync.js
+      - name: Commit fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add train-status.js schedule.html scripts/build_schedule_snapshot.py
+          if git diff --cached --quiet; then
+            echo "No changes"
+            exit 0
+          fi
+          git commit -m "Bust ticket flow cache chain"
+          git push
