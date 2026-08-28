@@ -1,0 +1,72 @@
+name: Calendar freshness watchdog
+
+on:
+  workflow_run:
+    workflows:
+      - "Archive verified ticket history"
+    types:
+      - completed
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: calendar-freshness-watchdog
+  cancel-in-progress: true
+
+jobs:
+  recover-stale-calendar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Check public calendar freshness
+        id: freshness
+        shell: bash
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          payload = json.loads(Path('data/live-events.json').read_text(encoding='utf-8'))
+          raw = payload.get('updatedAt')
+          stale = True
+          age_minutes = 999999.0
+          if raw:
+              try:
+                  updated = datetime.fromisoformat(raw)
+                  if updated.tzinfo is None:
+                      updated = updated.replace(tzinfo=timezone.utc)
+                  age_minutes = max(0.0, (datetime.now(timezone.utc) - updated.astimezone(timezone.utc)).total_seconds() / 60.0)
+                  stale = age_minutes > 45.0
+              except ValueError:
+                  pass
+          print(f"stale={'true' if stale else 'false'}")
+          print(f"age_minutes={age_minutes:.1f}")
+          print(f"updated_at={raw or 'missing'}")
+          PY
+
+      - name: Recover stale distributed calendar
+        if: steps.freshness.outputs.stale == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          echo "Calendar is ${{
+            steps.freshness.outputs.age_minutes
+          }} minutes old; dispatching recovery refresh."
+          gh workflow run update-live-calendar-distributed.yml --repo "$GITHUB_REPOSITORY" --ref main
+
+      - name: Report healthy calendar
+        if: steps.freshness.outputs.stale != 'true'
+        run: |
+          echo "Calendar is fresh (${{
+            steps.freshness.outputs.age_minutes
+          }} minutes old, updated ${{ steps.freshness.outputs.updated_at }})."
