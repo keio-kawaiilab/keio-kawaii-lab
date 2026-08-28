@@ -29,9 +29,10 @@ OFFICIAL_X_STATUS_KEY_RE = re.compile(
     re.I,
 )
 DISAPPEARED_PREFIX = "protected future/active item disappeared: "
-LOCAL_KEY_ERROR_RE = re.compile(
-    r"^(?:future performance dates disappeared|active deadline disappeared|deadline moved earlier|deadline changed without source evidence) for (.+?)(?: \[[^\]]+\])?(?::|$)"
+LOCAL_KEY_COLON_ERROR_RE = re.compile(
+    r"^(?:future performance dates disappeared|active deadline disappeared|deadline moved earlier) for (.+?)(?: \[[^\]]+\])?: "
 )
+LOCAL_KEY_BARE_ERROR_RE = re.compile(r"^deadline changed without source evidence for (.+)$")
 DUPLICATE_ID_RE = re.compile(r"^duplicate event id: (.+)$")
 DUPLICATE_PIA_RE = re.compile(r"^duplicate Pia lot (pia:[^:]+):")
 
@@ -243,13 +244,12 @@ def _same_event_candidates(previous_events: list[dict], current: dict) -> list[d
     group = str(current.get("group") or "")
     title = str(current.get("title") or "")
     ticket_type = str(current.get("ticketType") or "")
-    fallback = [
+    return [
         event for event in previous_events
         if str(event.get("group") or "") == group
         and str(event.get("title") or "") == title
         and str(event.get("ticketType") or "") == ticket_type
     ]
-    return fallback
 
 
 def _replace_candidate_rows(candidate: dict, predicate, replacements: list[dict]) -> bool:
@@ -257,9 +257,7 @@ def _replace_candidate_rows(candidate: dict, predicate, replacements: list[dict]
     kept = [event for event in rows if not predicate(event)]
     if len(kept) == len(rows) and not replacements:
         return False
-
-    replacement_rows = [copy.deepcopy(event) for event in replacements]
-    candidate["events"] = kept + replacement_rows
+    candidate["events"] = kept + [copy.deepcopy(event) for event in replacements]
     return True
 
 
@@ -289,8 +287,7 @@ def _restore_label(previous: dict, candidate: dict, target_label: str) -> tuple[
 
 def _quarantine_candidate_label(previous: dict, candidate: dict, target_label: str) -> tuple[bool, int, str]:
     previous_events = _events(previous)
-    candidate_events = _events(candidate)
-    target_rows = [event for event in candidate_events if label(event) == target_label]
+    target_rows = [event for event in _events(candidate) if label(event) == target_label]
     if not target_rows:
         return False, 0, ""
 
@@ -310,11 +307,10 @@ def _quarantine_candidate_label(previous: dict, candidate: dict, target_label: s
 def repair_local_errors(previous: dict, candidate: dict, now: datetime, max_rounds: int = 6):
     """Quarantine event-scoped audit failures while preserving unrelated fresh rows.
 
-    This intentionally does not forgive global integrity failures such as invalid
-    top-level timestamps or a catastrophic event-count spike. Event/source-level
-    failures are rolled back to the previous known-good rows (or withheld when a
-    brand-new row cannot be matched safely), then the whole candidate is audited
-    again. Publication can continue only after the repaired candidate passes.
+    Global integrity failures (for example an invalid top-level timestamp or a
+    catastrophic count spike) still fail closed. Event/source-level failures are
+    rolled back to the previous known-good rows, or withheld when a brand-new row
+    cannot be matched safely, and then the entire repaired candidate is re-audited.
     """
     repaired = copy.deepcopy(candidate)
     quarantine_actions: list[dict] = []
@@ -332,20 +328,16 @@ def repair_local_errors(previous: dict, candidate: dict, now: datetime, max_roun
                 ]
                 report["warnings"] = quarantine_warnings + list(report.get("warnings") or [])
                 report["warningCount"] = len(report["warnings"])
-                report["quarantineCount"] = len(quarantine_actions)
-                report["quarantineActions"] = quarantine_actions
-                report["status"] = "ok"
                 warnings = report["warnings"]
-            else:
-                report["quarantineCount"] = 0
-                report["quarantineActions"] = []
+            report["quarantineCount"] = len(quarantine_actions)
+            report["quarantineActions"] = quarantine_actions
+            report["status"] = "ok"
             return repaired, [], warnings, report, quarantine_actions
 
         state = json.dumps(repaired.get("events", []), ensure_ascii=False, sort_keys=True, separators=(",", ":"))
         if state in seen_states:
             break
         seen_states.add(state)
-
         changed_this_round = False
         candidate_labels = sorted({label(event) for event in _events(repaired)}, key=len, reverse=True)
 
@@ -359,9 +351,10 @@ def repair_local_errors(previous: dict, candidate: dict, now: datetime, max_roun
                 changed, restored_count = _restore_label(previous, repaired, target)
                 action = "restored disappeared previous row"
             else:
-                key_match = LOCAL_KEY_ERROR_RE.match(error)
-                if key_match:
-                    key = key_match.group(1).strip()
+                key_match = LOCAL_KEY_COLON_ERROR_RE.match(error)
+                bare_match = LOCAL_KEY_BARE_ERROR_RE.match(error)
+                if key_match or bare_match:
+                    key = (key_match or bare_match).group(1).strip()
                     changed, restored_count = _restore_key(previous, repaired, key)
                     action = f"restored previous rows for {key}"
                 else:
@@ -452,8 +445,8 @@ def main() -> int:
 
     previous = load(args.previous)
     candidate = load(args.candidate)
-
     quarantine_actions: list[dict] = []
+
     if args.no_quarantine:
         errors, warnings, report = audit_grouped(previous, candidate, now)
     else:
