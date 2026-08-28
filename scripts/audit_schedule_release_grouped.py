@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import re
 import sys
@@ -28,6 +29,11 @@ OFFICIAL_X_STATUS_KEY_RE = re.compile(
     re.I,
 )
 DISAPPEARED_PREFIX = "protected future/active item disappeared: "
+LOCAL_KEY_ERROR_RE = re.compile(
+    r"^(?:future performance dates disappeared|active deadline disappeared|deadline moved earlier|deadline changed without source evidence) for (.+?)(?: \[[^\]]+\])?(?::|$)"
+)
+DUPLICATE_ID_RE = re.compile(r"^duplicate event id: (.+)$")
+DUPLICATE_PIA_RE = re.compile(r"^duplicate Pia lot (pia:[^:]+):")
 
 
 def source_date_sets(payload: dict, today: date) -> dict[str, dict[str, set[str]]]:
@@ -97,7 +103,8 @@ def reconcile_official_x_shared_dates(
     A single official X post can announce several dates. The base audit indexes a
     URL to one row, so a newly added earlier date can make an unchanged later row
     appear to have disappeared. For official status URLs with multiple rows, use
-    the full per-group date set instead. Real removals remain fail-closed.
+    the full per-group date set instead. Real removals remain fail-closed at the
+    audit layer and are quarantined by the CLI release path.
     """
     prev_sets = source_date_sets(previous, today)
     cand_sets = source_date_sets(candidate, today)
@@ -216,14 +223,227 @@ def audit_grouped(previous: dict, candidate: dict, now: datetime):
     return filtered_errors, filtered_warnings, report
 
 
+def _events(payload: dict) -> list[dict]:
+    return [event for event in payload.get("events", []) if isinstance(event, dict)]
+
+
+def _same_event_candidates(previous_events: list[dict], current: dict) -> list[dict]:
+    current_id = str(current.get("id") or "").strip()
+    if current_id:
+        exact = [event for event in previous_events if str(event.get("id") or "").strip() == current_id]
+        if exact:
+            return exact
+
+    keys = set(stable_keys(current))
+    if keys:
+        keyed = [event for event in previous_events if keys.intersection(stable_keys(event))]
+        if keyed:
+            return keyed
+
+    group = str(current.get("group") or "")
+    title = str(current.get("title") or "")
+    ticket_type = str(current.get("ticketType") or "")
+    fallback = [
+        event for event in previous_events
+        if str(event.get("group") or "") == group
+        and str(event.get("title") or "") == title
+        and str(event.get("ticketType") or "") == ticket_type
+    ]
+    return fallback
+
+
+def _replace_candidate_rows(candidate: dict, predicate, replacements: list[dict]) -> bool:
+    rows = _events(candidate)
+    kept = [event for event in rows if not predicate(event)]
+    if len(kept) == len(rows) and not replacements:
+        return False
+
+    replacement_rows = [copy.deepcopy(event) for event in replacements]
+    candidate["events"] = kept + replacement_rows
+    return True
+
+
+def _restore_key(previous: dict, candidate: dict, key: str) -> tuple[bool, int]:
+    previous_matches = [event for event in _events(previous) if key in stable_keys(event)]
+    if not previous_matches:
+        return False, 0
+    changed = _replace_candidate_rows(
+        candidate,
+        lambda event: key in stable_keys(event),
+        previous_matches,
+    )
+    return changed, len(previous_matches)
+
+
+def _restore_label(previous: dict, candidate: dict, target_label: str) -> tuple[bool, int]:
+    previous_matches = [event for event in _events(previous) if label(event) == target_label]
+    if not previous_matches:
+        return False, 0
+    changed = _replace_candidate_rows(
+        candidate,
+        lambda event: label(event) == target_label,
+        previous_matches,
+    )
+    return changed, len(previous_matches)
+
+
+def _quarantine_candidate_label(previous: dict, candidate: dict, target_label: str) -> tuple[bool, int, str]:
+    previous_events = _events(previous)
+    candidate_events = _events(candidate)
+    target_rows = [event for event in candidate_events if label(event) == target_label]
+    if not target_rows:
+        return False, 0, ""
+
+    replacements: list[dict] = []
+    for current in target_rows:
+        matches = _same_event_candidates(previous_events, current)
+        if len(matches) == 1:
+            replacement = matches[0]
+            if not any(str(item.get("id") or "") == str(replacement.get("id") or "") for item in replacements):
+                replacements.append(replacement)
+
+    changed = _replace_candidate_rows(candidate, lambda event: label(event) == target_label, replacements)
+    action = "restored previous row" if replacements else "withheld new/ambiguous row"
+    return changed, len(target_rows), action
+
+
+def repair_local_errors(previous: dict, candidate: dict, now: datetime, max_rounds: int = 6):
+    """Quarantine event-scoped audit failures while preserving unrelated fresh rows.
+
+    This intentionally does not forgive global integrity failures such as invalid
+    top-level timestamps or a catastrophic event-count spike. Event/source-level
+    failures are rolled back to the previous known-good rows (or withheld when a
+    brand-new row cannot be matched safely), then the whole candidate is audited
+    again. Publication can continue only after the repaired candidate passes.
+    """
+    repaired = copy.deepcopy(candidate)
+    quarantine_actions: list[dict] = []
+    seen_states: set[str] = set()
+
+    for _ in range(max_rounds):
+        errors, warnings, report = audit_grouped(previous, repaired, now)
+        if not errors:
+            report = dict(report)
+            if quarantine_actions:
+                quarantine_warnings = [
+                    "quarantined one event/source update and kept the previous known-good data: "
+                    + str(item.get("error") or "")
+                    for item in quarantine_actions
+                ]
+                report["warnings"] = quarantine_warnings + list(report.get("warnings") or [])
+                report["warningCount"] = len(report["warnings"])
+                report["quarantineCount"] = len(quarantine_actions)
+                report["quarantineActions"] = quarantine_actions
+                report["status"] = "ok"
+                warnings = report["warnings"]
+            else:
+                report["quarantineCount"] = 0
+                report["quarantineActions"] = []
+            return repaired, [], warnings, report, quarantine_actions
+
+        state = json.dumps(repaired.get("events", []), ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        if state in seen_states:
+            break
+        seen_states.add(state)
+
+        changed_this_round = False
+        candidate_labels = sorted({label(event) for event in _events(repaired)}, key=len, reverse=True)
+
+        for error in errors:
+            changed = False
+            restored_count = 0
+            action = ""
+
+            if error.startswith(DISAPPEARED_PREFIX):
+                target = error[len(DISAPPEARED_PREFIX):]
+                changed, restored_count = _restore_label(previous, repaired, target)
+                action = "restored disappeared previous row"
+            else:
+                key_match = LOCAL_KEY_ERROR_RE.match(error)
+                if key_match:
+                    key = key_match.group(1).strip()
+                    changed, restored_count = _restore_key(previous, repaired, key)
+                    action = f"restored previous rows for {key}"
+                else:
+                    id_match = DUPLICATE_ID_RE.match(error)
+                    if id_match:
+                        event_id = id_match.group(1).strip()
+                        previous_matches = [
+                            event for event in _events(previous)
+                            if str(event.get("id") or "").strip() == event_id
+                        ]
+                        changed = _replace_candidate_rows(
+                            repaired,
+                            lambda event: str(event.get("id") or "").strip() == event_id,
+                            previous_matches[:1],
+                        )
+                        restored_count = len(previous_matches[:1])
+                        action = "restored previous duplicate-id row" if previous_matches else "withheld duplicate new rows"
+                    else:
+                        pia_match = DUPLICATE_PIA_RE.match(error)
+                        if pia_match:
+                            key = pia_match.group(1)
+                            previous_matches = [event for event in _events(previous) if key in stable_keys(event)]
+                            changed = _replace_candidate_rows(
+                                repaired,
+                                lambda event: key in stable_keys(event),
+                                previous_matches,
+                            )
+                            restored_count = len(previous_matches)
+                            action = "restored previous Pia lot rows" if previous_matches else "withheld duplicate Pia lot rows"
+                        else:
+                            target_label = next((value for value in candidate_labels if value and value in error), None)
+                            if target_label:
+                                changed, restored_count, action = _quarantine_candidate_label(
+                                    previous, repaired, target_label
+                                )
+
+            if changed:
+                changed_this_round = True
+                quarantine_actions.append({
+                    "error": error,
+                    "action": action,
+                    "restoredPreviousRows": restored_count,
+                })
+
+        if not changed_this_round:
+            break
+
+    errors, warnings, report = audit_grouped(previous, repaired, now)
+    report = dict(report)
+    report["quarantineCount"] = len(quarantine_actions)
+    report["quarantineActions"] = quarantine_actions
+    return repaired, errors, warnings, report, quarantine_actions
+
+
+def _reconcile_default_official_index(candidate: dict) -> dict | None:
+    index_path = Path("data/official-schedule-index.json")
+    if not index_path.exists():
+        return None
+    try:
+        from reconcile_official_schedule_index import reconcile
+
+        index = json.loads(index_path.read_text(encoding="utf-8"))
+        result = reconcile(candidate, index)
+        index_path.write_text(json.dumps(index, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        return result
+    except Exception as exc:  # pragma: no cover - release-path safety net
+        return {"error": f"official index reconciliation after quarantine failed: {exc}"}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Fail-closed schedule release audit with safe shared-source date reconciliation"
+        description="Schedule release audit that quarantines bad event rows and only fail-closes on global integrity failures"
     )
     parser.add_argument("--previous", required=True, type=Path)
     parser.add_argument("--candidate", required=True, type=Path)
     parser.add_argument("--report", type=Path)
     parser.add_argument("--now", help="ISO-8601 time used by tests")
+    parser.add_argument(
+        "--no-quarantine",
+        action="store_true",
+        help="disable row-level recovery and use strict fail-closed audit behavior",
+    )
     args = parser.parse_args()
 
     now = parse_dt(args.now) if args.now else datetime.now(JST)
@@ -232,7 +452,22 @@ def main() -> int:
 
     previous = load(args.previous)
     candidate = load(args.candidate)
-    errors, warnings, report = audit_grouped(previous, candidate, now)
+
+    quarantine_actions: list[dict] = []
+    if args.no_quarantine:
+        errors, warnings, report = audit_grouped(previous, candidate, now)
+    else:
+        candidate, errors, warnings, report, quarantine_actions = repair_local_errors(
+            previous, candidate, now
+        )
+        if quarantine_actions and not errors:
+            args.candidate.write_text(
+                json.dumps(candidate, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            index_result = _reconcile_default_official_index(candidate)
+            if index_result is not None:
+                report["officialIndexReconciledAfterQuarantine"] = index_result
 
     if args.report:
         args.report.parent.mkdir(parents=True, exist_ok=True)
@@ -247,6 +482,8 @@ def main() -> int:
         print("Reconciled shared-source performance date sets:")
         for key in report["sharedSourceDateSetsReconciled"]:
             print(f"  - {key}")
+    if quarantine_actions:
+        print(f"Quarantined {len(quarantine_actions)} event/source update(s); unrelated fresh rows remain publishable.")
     return 1 if errors else 0
 
 
