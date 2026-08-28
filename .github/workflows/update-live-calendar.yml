@@ -25,16 +25,13 @@ on:
       - "live.html"
       - "schedule.html"
   schedule:
-    # Core refresh is staggered from special events, SUKISUKI and playguides.
-    - cron: "27,57 * * * *"
+    - cron: "17,47 * * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
   issues: write
 
-# Every workflow that writes live-events.json uses the same writer lock.
-# Source collection is split into shorter pipelines; publication stays serialized.
 concurrency:
   group: update-live-ticket-calendar-${{ github.ref }}
   cancel-in-progress: false
@@ -46,6 +43,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Scheduled/push runs can sit behind another calendar writer. Start from the
+          # current branch tip when the job actually begins, not the older trigger SHA.
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.ref_name }}
 
       - name: Read emergency freeze control
         id: control
@@ -163,7 +164,7 @@ jobs:
           fi
 
           # Core pipeline: official public information + Ticket PIA + authoritative schedule coverage.
-          # Playguides, SUKISUKI and special events now refresh in their own shorter workflows.
+          # Playguides, SUKISUKI and special events refresh in their own shorter workflows.
           python scripts/update_live_events_v2.py
           cp data/live-events.json /tmp/live-events-before-pia.json
           python scripts/clean_pia_refresh.py --drop-all
