@@ -125,7 +125,7 @@
           '<span class="schedule-weather-slot-time">'+esc(row.time)+'</span>'+
           '<span class="schedule-weather-slot-icon" aria-hidden="true">'+iconFor(row.label)+'</span>'+
           '<span class="schedule-weather-slot-label">'+esc(row.label||"")+'</span>'+
-          (row.tempBand?'<span class="schedule-weather-slot-temp">'+esc(row.tempBand)+'</span>':'')+
+          (row.temp!=null?'<span class="schedule-weather-slot-temp">'+esc(cleanTemp(row.temp))+'℃</span>':'')+
           '</div>';
       }).join('')+
       '</div></div>';
@@ -176,9 +176,6 @@
     if(entry.min!=null&&(entry.max==null||Number(entry.min)!==Number(entry.max)))temps+='<span class="schedule-weather-low">最低 '+esc(cleanTemp(entry.min))+'℃</span>';
 
     var sub=[];
-    if(!hasTimeline&&mesh&&entry.meshTempBand){
-      sub.push('<span class="schedule-weather-mesh-temp">🌡️ '+esc(entry.meshTime||"開演前後")+' '+esc(entry.meshTempBand)+'</span>');
-    }
     if(entry.pop!=null&&entry.pop!==""){
       var popArea=entry.areaName?entry.areaName+"・":"";
       sub.push('<span class="schedule-weather-pop">☔ '+esc(popArea+(entry.popLabel||"降水確率"))+' '+esc(entry.pop)+'%</span>');
