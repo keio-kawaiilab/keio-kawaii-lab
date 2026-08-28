@@ -13,18 +13,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Patch cache chain and persistent builder
+      - name: Patch ticket flow and cache chain
         run: |
           python - <<'PY'
           from pathlib import Path
           import re
 
-          version = "202608281820"
+          version = "202608281825"
+
+          sync = Path("ticket-flow-sync.js")
+          text = sync.read_text(encoding="utf-8")
+          text = text.replace(r"\/受付中\/", "/受付中/")
+          sync.write_text(text, encoding="utf-8")
 
           train = Path("train-status.js")
           text = train.read_text(encoding="utf-8")
           text = re.sub(r'going-highlight-soften\.js\?v=\d+', f'going-highlight-soften.js?v={version}', text)
           train.write_text(text, encoding="utf-8")
+
+          loader = Path("going-highlight-soften.js")
+          text = loader.read_text(encoding="utf-8")
+          text = re.sub(r'ticket-flow\.css\?v=\d+', f'ticket-flow.css?v={version}', text)
+          text = re.sub(r'ticket-flow\.js\?v=\d+', f'ticket-flow.js?v={version}', text)
+          text = re.sub(r'ticket-flow-sync\.js\?v=\d+', f'ticket-flow-sync.js?v={version}', text)
+          loader.write_text(text, encoding="utf-8")
 
           schedule = Path("schedule.html")
           text = schedule.read_text(encoding="utf-8")
@@ -35,16 +47,21 @@ jobs:
           text = builder.read_text(encoding="utf-8")
           old = '''    if 'src="./train-status.js"' not in page:\n        page = page.replace("</body>", '<script src="./train-status.js"></script>\\n</body>', 1)\n'''
           new = f'''    page = re.sub(r'<script src="\\./train-status\\.js(?:\\?v=[^\"]*)?"></script>\\s*', "", page)\n    page = page.replace("</body>", '<script src="./train-status.js?v={version}"></script>\\n</body>', 1)\n'''
-          if old not in text:
-              raise SystemExit("build_schedule_snapshot.py train-status block not found")
-          text = text.replace(old, new, 1)
+          if old in text:
+              text = text.replace(old, new, 1)
+          else:
+              text = re.sub(
+                  r'''    page = re\.sub\(r'<script src="\\\\\./train-status\\\\\.js\(\?:\\\\\?v=\[\^\\"\]\*\)\?</script>\\\\s\*', "", page\)\n    page = page\.replace\("</body>", '<script src="\./train-status\.js\?v=\d+"></script>\\\\n</body>', 1\)\n''',
+                  new,
+                  text,
+              )
           builder.write_text(text, encoding="utf-8")
           PY
       - name: Sanity checks
         run: |
-          grep -q 'going-highlight-soften.js?v=202608281820' train-status.js
-          grep -q 'train-status.js?v=202608281820' schedule.html
-          grep -q 'train-status.js?v=202608281820' scripts/build_schedule_snapshot.py
+          grep -q 'going-highlight-soften.js?v=202608281825' train-status.js
+          grep -q 'ticket-flow-sync.js?v=202608281825' going-highlight-soften.js
+          grep -q 'train-status.js?v=202608281825' schedule.html
           node --check train-status.js
           node --check going-highlight-soften.js
           node --check ticket-flow.js
@@ -53,10 +70,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add train-status.js schedule.html scripts/build_schedule_snapshot.py
+          git add ticket-flow-sync.js going-highlight-soften.js train-status.js schedule.html scripts/build_schedule_snapshot.py
           if git diff --cached --quiet; then
             echo "No changes"
             exit 0
           fi
-          git commit -m "Bust ticket flow cache chain"
+          git commit -m "Fix ticket flow sync and cache chain"
           git push
