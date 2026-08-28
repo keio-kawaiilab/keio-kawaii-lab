@@ -1,66 +1,12 @@
 {
-  "date": "2026-08-28",
+  "date": "2026-08-29",
   "horizonDays": 7,
-  "generatedAt": "2026-08-28T23:54+09:00",
+  "generatedAt": "2026-08-29T00:01+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
-    {
-      "date": "2026-08-28",
-      "venue": "テラスモール松戸 2Fこもれびステージ",
-      "venueKey": "テラスモール松戸2fこもれびステージ",
-      "eventIds": [
-        "37f900cc9a6d5c4b"
-      ],
-      "areaCode": "120010",
-      "areaName": "北西部",
-      "precision": "mesh5km",
-      "label": "くもり",
-      "max": null,
-      "min": null,
-      "pop": "30",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-08-28T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "25〜29℃",
-      "coordinates": {
-        "lat": 35.817673,
-        "lon": 139.932816
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "くもり",
-          "validAt": "2026-08-28T21:00+09:00",
-          "temp": 26
-        },
-        {
-          "time": "24:00",
-          "label": "くもり",
-          "validAt": "2026-08-29T00:00+09:00",
-          "temp": 25
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "17:00",
-          "rain": false,
-          "validAt": "2026-08-28T17:00+09:00"
-        },
-        {
-          "time": "18:00",
-          "rain": false,
-          "validAt": "2026-08-28T18:00+09:00"
-        },
-        {
-          "time": "19:00",
-          "rain": false,
-          "validAt": "2026-08-28T19:00+09:00"
-        }
-      ]
-    },
     {
       "date": "2026-08-29",
       "venue": "埼玉県 戸田市文化会館",
@@ -137,16 +83,19 @@
       ],
       "areaCode": "110010",
       "areaName": "南部",
-      "precision": "area",
-      "label": "くもり",
+      "precision": "mesh5km",
+      "label": "雨",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
       "issuedAt": "2026-08-28T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "meshTime": "00:00",
+      "meshTempBand": "20〜24℃",
+      "coordinates": {
+        "lat": 35.796692,
+        "lon": 139.506088
+      }
     },
     {
       "date": "2026-08-30",
@@ -157,16 +106,19 @@
       ],
       "areaCode": "110010",
       "areaName": "南部",
-      "precision": "area",
-      "label": "くもり",
+      "precision": "mesh5km",
+      "label": "雨",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
       "issuedAt": "2026-08-28T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "meshTime": "00:00",
+      "meshTempBand": "20〜24℃",
+      "coordinates": {
+        "lat": 35.817795,
+        "lon": 139.677124
+      }
     },
     {
       "date": "2026-09-01",
@@ -251,14 +203,25 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 9,
-    "uniqueVenueDates": 8,
-    "weatherEntries": 8,
-    "meshEntries": 2,
-    "failures": 0,
-    "meshTimelineEntries": 2,
-    "meshExactTempSlots": 9,
-    "hourlyRainEntries": 1
+    "occurrencesInRange": 11,
+    "uniqueVenueDates": 9,
+    "weatherEntries": 7,
+    "meshEntries": 3,
+    "failures": 2,
+    "meshTimelineEntries": 1,
+    "meshExactTempSlots": 7,
+    "hourlyRainEntries": 0
   },
-  "failures": []
+  "failures": [
+    {
+      "date": "2026-09-05",
+      "venue": "埼玉県 エミテラス所沢2F TOKOROZAWA e-CUBE",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-09-05",
+      "venue": "ベルサール汐留",
+      "reason": "開催日の予報がまだありません"
+    }
+  ]
 }
