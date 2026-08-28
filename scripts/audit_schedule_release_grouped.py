@@ -23,6 +23,10 @@ from audit_schedule_release import (
 )
 
 DATE_MESSAGE_RE = re.compile(r"^(?:future performance dates disappeared|performance dates added) for (url:[^:]+://.*?): ")
+OFFICIAL_X_STATUS_KEY_RE = re.compile(
+    r"^url:https://x\.com/(?:FRUITS_ZIPPER|CANDY_TUNE_|SWEET_STEADY|CUTIE_STREET_|MORE_STAR_)/status/\d+$",
+    re.I,
+)
 DISAPPEARED_PREFIX = "protected future/active item disappeared: "
 
 
@@ -45,6 +49,17 @@ def source_date_sets(payload: dict, today: date) -> dict[str, dict[str, set[str]
             if key.startswith("url:"):
                 grouped[key][group].update(days)
     return grouped
+
+
+def source_row_counts(payload: dict) -> dict[str, int]:
+    counts: dict[str, int] = defaultdict(int)
+    for event in payload.get("events", []):
+        if not isinstance(event, dict):
+            continue
+        for key in stable_keys(event):
+            if key.startswith("url:"):
+                counts[key] += 1
+    return counts
 
 
 def safely_unchanged_shared_source_keys(previous: dict, candidate: dict, today: date) -> set[str]:
@@ -70,6 +85,50 @@ def safely_unchanged_shared_source_keys(previous: dict, candidate: dict, today: 
         if all(prev_groups[group] == cand_groups[group] for group in prev_groups):
             safe.add(key)
     return safe
+
+
+def reconcile_official_x_shared_dates(
+    previous: dict,
+    candidate: dict,
+    today: date,
+) -> tuple[list[str], list[str], set[str]]:
+    """Compare multi-event official X posts as group-scoped date sets.
+
+    A single official X post can announce several dates. The base audit indexes a
+    URL to one row, so a newly added earlier date can make an unchanged later row
+    appear to have disappeared. For official status URLs with multiple rows, use
+    the full per-group date set instead. Real removals remain fail-closed.
+    """
+    prev_sets = source_date_sets(previous, today)
+    cand_sets = source_date_sets(candidate, today)
+    prev_counts = source_row_counts(previous)
+    cand_counts = source_row_counts(candidate)
+    errors: list[str] = []
+    warnings: list[str] = []
+    reconciled: set[str] = set()
+
+    for key in sorted(set(prev_sets).intersection(cand_sets)):
+        if not OFFICIAL_X_STATUS_KEY_RE.fullmatch(key):
+            continue
+        if max(prev_counts.get(key, 0), cand_counts.get(key, 0)) < 2:
+            continue
+        reconciled.add(key)
+        prev_groups = prev_sets.get(key, {})
+        cand_groups = cand_sets.get(key, {})
+        for group in sorted(set(prev_groups).union(cand_groups)):
+            before = prev_groups.get(group, set())
+            after = cand_groups.get(group, set())
+            missing = sorted(before - after)
+            added = sorted(after - before)
+            if missing:
+                errors.append(
+                    f"future performance dates disappeared for {key} [{group}]: {', '.join(missing)}"
+                )
+            if added:
+                warnings.append(
+                    f"performance dates added for {key} [{group}]: {', '.join(added)}"
+                )
+    return errors, warnings, reconciled
 
 
 def message_key(message: str) -> str | None:
@@ -108,11 +167,18 @@ def audit_grouped(previous: dict, candidate: dict, now: datetime):
     today = now.astimezone(JST).date()
     safe_keys = safely_unchanged_shared_source_keys(previous, candidate, today)
     safe_expired_labels = safely_expired_playguide_labels(previous, today)
+    x_errors, x_warnings, x_reconciled_keys = reconcile_official_x_shared_dates(
+        previous, candidate, today
+    )
 
     filtered_errors: list[str] = []
     downgraded: list[str] = []
+    reconciled_base_messages = 0
     for message in errors:
         key = message_key(message)
+        if key in x_reconciled_keys and message.startswith("future performance dates disappeared"):
+            reconciled_base_messages += 1
+            continue
         if key in safe_keys and message.startswith("future performance dates disappeared"):
             continue
         if message.startswith(DISAPPEARED_PREFIX) and message[len(DISAPPEARED_PREFIX):] in safe_expired_labels:
@@ -123,10 +189,18 @@ def audit_grouped(previous: dict, candidate: dict, now: datetime):
             continue
         filtered_errors.append(message)
 
-    filtered_warnings = [
-        message for message in warnings
-        if not (message_key(message) in safe_keys and message.startswith("performance dates added"))
-    ]
+    filtered_warnings = []
+    for message in warnings:
+        key = message_key(message)
+        if key in x_reconciled_keys and message.startswith("performance dates added"):
+            reconciled_base_messages += 1
+            continue
+        if key in safe_keys and message.startswith("performance dates added"):
+            continue
+        filtered_warnings.append(message)
+
+    filtered_errors.extend(x_errors)
+    filtered_warnings.extend(x_warnings)
     filtered_warnings.extend(downgraded)
 
     report = dict(report)
@@ -135,7 +209,9 @@ def audit_grouped(previous: dict, candidate: dict, now: datetime):
     report["warningCount"] = len(filtered_warnings)
     report["errors"] = filtered_errors
     report["warnings"] = filtered_warnings
-    report["sharedSourceDateSetsReconciled"] = sorted(safe_keys)
+    report["sharedSourceDateSetsReconciled"] = sorted(safe_keys.union(x_reconciled_keys))
+    report["officialXSharedSourceKeysReconciled"] = sorted(x_reconciled_keys)
+    report["reconciledBaseDateMessageCount"] = reconciled_base_messages
     report["downgradedFalsePositiveCount"] = len(downgraded)
     return filtered_errors, filtered_warnings, report
 
@@ -168,7 +244,7 @@ def main() -> int:
     for error in errors:
         print(f"ERROR: {error}", file=sys.stderr)
     if report.get("sharedSourceDateSetsReconciled"):
-        print("Reconciled unchanged shared-source performance date sets:")
+        print("Reconciled shared-source performance date sets:")
         for key in report["sharedSourceDateSetsReconciled"]:
             print(f"  - {key}")
     return 1 if errors else 0
