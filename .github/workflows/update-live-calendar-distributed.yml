@@ -83,19 +83,37 @@ jobs:
           set -euo pipefail
           cp data/live-events.json /tmp/live-events-last-good.json
           cp data/live-events.json /tmp/live-events-before-pia.json
-          python scripts/update_live_events_v2.py
+
+          # Network/source failures are isolated to that source. Restore the
+          # pre-step snapshot and continue so unrelated fresh data can publish.
+          if ! python scripts/update_live_events_v2.py; then
+            echo "::warning::Core official fetch failed; retaining previous official rows for this refresh."
+            cp /tmp/live-events-last-good.json data/live-events.json
+          fi
+
           cp data/live-events.json /tmp/live-events-before-pia.json
           python scripts/clean_pia_refresh.py --drop-all
           python scripts/sanitize_live_events.py
           python scripts/enrich_official_performance_times.py
           python scripts/enrich_event_metadata.py
-          python scripts/update_pia_events.py
+
+          if ! python scripts/update_pia_events.py; then
+            echo "::warning::PIA fetch failed; previous active PIA rows will be restored."
+          fi
           python scripts/reconcile_pia_retention.py --previous /tmp/live-events-before-pia.json
           python scripts/harden_pia_events.py
           python scripts/resolve_source_priority.py
           python scripts/enrich_event_metadata.py
           python scripts/harden_pia_events.py --check
-          python scripts/update_official_schedule_parallel.py --workers 10
+
+          cp data/live-events.json /tmp/live-events-before-official-schedule.json
+          cp data/official-schedule-index.json /tmp/official-schedule-index-before-refresh.json
+          if ! python scripts/update_official_schedule_parallel.py --workers 10; then
+            echo "::warning::Official schedule fetch was incomplete; retaining the previous official schedule source while publishing other sources."
+            cp /tmp/live-events-before-official-schedule.json data/live-events.json
+            cp /tmp/official-schedule-index-before-refresh.json data/official-schedule-index.json
+          fi
+
           python scripts/apply_event_scopes.py
           python scripts/prepare_release_candidate.py --previous /tmp/live-events-last-good.json
 
@@ -188,7 +206,11 @@ jobs:
           cd scripts
           python -m unittest -v test_update_sukisuki_events.py
           cd ..
-          python scripts/update_sukisuki_events.py
+          cp data/live-events.json /tmp/live-events-before-sukisuki.json
+          if ! python scripts/update_sukisuki_events.py; then
+            echo "::warning::SUKISUKI fetch failed; retaining previous SUKISUKI rows for this refresh."
+            cp /tmp/live-events-before-sukisuki.json data/live-events.json
+          fi
 
       - name: Upload SUKISUKI snapshot
         uses: actions/upload-artifact@v4
@@ -226,8 +248,18 @@ jobs:
           cd scripts
           python -m unittest -v test_update_special_events.py test_special_event_ancillary.py test_update_official_x_special_events.py
           cd ..
-          python scripts/update_special_events.py
-          python scripts/update_official_x_special_events.py
+
+          cp data/live-events.json /tmp/live-events-before-special-site.json
+          if ! python scripts/update_special_events.py; then
+            echo "::warning::Official special-event site fetch failed; retaining previous special-event rows for that source."
+            cp /tmp/live-events-before-special-site.json data/live-events.json
+          fi
+
+          cp data/live-events.json /tmp/live-events-before-official-x.json
+          if ! python scripts/update_official_x_special_events.py; then
+            echo "::warning::Official X fetch failed; retaining previous official-X rows while keeping other special-event updates."
+            cp /tmp/live-events-before-official-x.json data/live-events.json
+          fi
 
       - name: Upload special-event snapshot
         uses: actions/upload-artifact@v4
