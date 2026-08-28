@@ -1,66 +1,12 @@
 {
-  "date": "2026-08-27",
+  "date": "2026-08-28",
   "horizonDays": 7,
-  "generatedAt": "2026-08-27T22:04+09:00",
+  "generatedAt": "2026-08-28T09:22+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
-    {
-      "date": "2026-08-27",
-      "venue": "animate hall BLACK(アニメイト池袋本店 北館9F)",
-      "venueKey": "animatehallblackアニメイト池袋本店北館9f",
-      "eventIds": [
-        "575b595cc590672f"
-      ],
-      "areaCode": "130010",
-      "areaName": "東京地方",
-      "precision": "mesh5km",
-      "label": "くもり",
-      "max": null,
-      "min": null,
-      "pop": "30",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-08-27T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "25〜29℃",
-      "coordinates": {
-        "lat": 35.731079,
-        "lon": 139.715378
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "くもり",
-          "tempBand": "25〜29℃",
-          "validAt": "2026-08-27T21:00+09:00"
-        },
-        {
-          "time": "24:00",
-          "label": "くもり",
-          "tempBand": "25〜29℃",
-          "validAt": "2026-08-28T00:00+09:00"
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "16:30",
-          "rain": true,
-          "validAt": "2026-08-27T16:30+09:00"
-        },
-        {
-          "time": "17:30",
-          "rain": true,
-          "validAt": "2026-08-27T17:30+09:00"
-        },
-        {
-          "time": "18:30",
-          "rain": true,
-          "validAt": "2026-08-27T18:30+09:00"
-        }
-      ]
-    },
     {
       "date": "2026-08-28",
       "venue": "テラスモール松戸 2Fこもれびステージ",
@@ -72,11 +18,11 @@
       "areaName": "北西部",
       "precision": "mesh5km",
       "label": "くもり",
-      "max": 31.0,
-      "min": 26.0,
-      "pop": "20",
+      "max": 33.0,
+      "min": 33.0,
+      "pop": "30",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-08-27T17:00:00+09:00",
+      "issuedAt": "2026-08-28T05:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "25〜29℃",
       "coordinates": {
@@ -84,12 +30,6 @@
         "lon": 139.932816
       },
       "meshTimeline": [
-        {
-          "time": "06:00",
-          "label": "くもり",
-          "tempBand": "20〜24℃",
-          "validAt": "2026-08-28T06:00+09:00"
-        },
         {
           "time": "09:00",
           "label": "雨",
@@ -116,15 +56,32 @@
         },
         {
           "time": "21:00",
-          "label": "くもり",
+          "label": "雨",
           "tempBand": "25〜29℃",
           "validAt": "2026-08-28T21:00+09:00"
         },
         {
           "time": "24:00",
-          "label": "くもり",
+          "label": "雨",
           "tempBand": "25〜29℃",
           "validAt": "2026-08-29T00:00+09:00"
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "17:00",
+          "rain": false,
+          "validAt": "2026-08-28T17:00+09:00"
+        },
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-08-28T18:00+09:00"
+        },
+        {
+          "time": "19:00",
+          "rain": false,
+          "validAt": "2026-08-28T19:00+09:00"
         }
       ]
     },
@@ -137,16 +94,63 @@
       ],
       "areaCode": "110010",
       "areaName": "南部",
-      "precision": "area",
-      "label": "くもり 一時 雨",
-      "max": null,
-      "min": null,
-      "pop": null,
-      "popLabel": "",
-      "issuedAt": "2026-08-27T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "precision": "mesh5km",
+      "label": "雨",
+      "max": 27.0,
+      "min": 24.0,
+      "pop": "50",
+      "popLabel": "12〜18時",
+      "issuedAt": "2026-08-28T05:00:00+09:00",
+      "meshTime": "18:00",
+      "meshTempBand": "20〜24℃",
+      "coordinates": {
+        "lat": 35.817795,
+        "lon": 139.677124
+      },
+      "meshTimeline": [
+        {
+          "time": "06:00",
+          "label": "くもり",
+          "tempBand": "20〜24℃",
+          "validAt": "2026-08-29T06:00+09:00"
+        },
+        {
+          "time": "09:00",
+          "label": "くもり",
+          "tempBand": "25〜29℃",
+          "validAt": "2026-08-29T09:00+09:00"
+        },
+        {
+          "time": "12:00",
+          "label": "くもり",
+          "tempBand": "25〜29℃",
+          "validAt": "2026-08-29T12:00+09:00"
+        },
+        {
+          "time": "15:00",
+          "label": "雨",
+          "tempBand": "25〜29℃",
+          "validAt": "2026-08-29T15:00+09:00"
+        },
+        {
+          "time": "18:00",
+          "label": "雨",
+          "tempBand": "20〜24℃",
+          "validAt": "2026-08-29T18:00+09:00"
+        },
+        {
+          "time": "21:00",
+          "label": "雨",
+          "tempBand": "20〜24℃",
+          "validAt": "2026-08-29T21:00+09:00"
+        },
+        {
+          "time": "24:00",
+          "label": "くもり",
+          "tempBand": "20〜24℃",
+          "validAt": "2026-08-30T00:00+09:00"
+        }
+      ]
     },
     {
       "date": "2026-08-30",
@@ -210,11 +214,11 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 7,
-    "uniqueVenueDates": 7,
-    "weatherEntries": 6,
+    "occurrencesInRange": 8,
+    "uniqueVenueDates": 8,
+    "weatherEntries": 5,
     "meshEntries": 2,
-    "failures": 1,
+    "failures": 3,
     "meshTimelineEntries": 2,
     "hourlyRainEntries": 1
   },
@@ -223,6 +227,16 @@
       "date": "2026-09-01",
       "venue": "エミテラス所沢 2F TOKOROZAWA e-CUBE",
       "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-09-04",
+      "venue": "東京都 KAWAII MONSTER LAND -HARAJUKU-",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-09-04",
+      "venue": "神奈川県 カルッツかわさき 大ホール",
+      "reason": "開催日の予報がまだありません"
     }
   ]
 }
