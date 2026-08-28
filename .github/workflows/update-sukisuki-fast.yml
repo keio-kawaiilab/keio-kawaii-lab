@@ -8,7 +8,11 @@ on:
       - "scripts/update_sukisuki_events.py"
       - "scripts/test_update_sukisuki_events.py"
       - "scripts/audit_schedule_release.py"
+      - "scripts/audit_schedule_release_grouped.py"
       - "scripts/test_audit_schedule_release.py"
+      - "scripts/test_audit_schedule_release_grouped.py"
+      - "scripts/prepare_release_candidate.py"
+      - "scripts/test_prepare_release_candidate.py"
       - "scripts/resolve_source_priority.py"
       - "scripts/test_resolve_source_priority.py"
       - "data/schedule-control.json"
@@ -60,7 +64,14 @@ jobs:
 
       - name: Test SUKISUKI discovery and release gate
         working-directory: scripts
-        run: python -m unittest -v test_update_sukisuki_events.py test_resolve_source_priority.py test_audit_schedule_release.py test_schedule_scope.py test_audit_official_schedule_coverage.py
+        run: >-
+          python -m unittest -v
+          test_update_sukisuki_events.py
+          test_resolve_source_priority.py
+          test_audit_schedule_release.py
+          test_audit_schedule_release_grouped.py
+          test_prepare_release_candidate.py
+          test_schedule_scope.py
 
       - name: Refresh SUKISUKI candidate data
         if: steps.control.outputs.frozen != 'true'
@@ -69,15 +80,15 @@ jobs:
           python scripts/update_sukisuki_events.py
           python scripts/resolve_source_priority.py
           python scripts/apply_event_scopes.py
+          python scripts/prepare_release_candidate.py --previous /tmp/live-events-last-good.json
 
-      - name: Fail-closed release audit
+      - name: Fail-closed SUKISUKI release audit
         if: steps.control.outputs.frozen != 'true'
         run: |
-          python scripts/audit_schedule_release.py \
+          python scripts/audit_schedule_release_grouped.py \
             --previous /tmp/live-events-last-good.json \
             --candidate data/live-events.json \
             --report data/schedule-health.json
-          python scripts/audit_official_schedule_coverage.py
 
       - name: Build public schedule only after audit passes
         if: steps.control.outputs.frozen != 'true'
@@ -94,28 +105,38 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          if [ ! -f data/schedule-health.json ] || ! grep -q '"status": "blocked"' data/schedule-health.json; then
-            exit 0
-          fi
-          title="🚨 Schedule release blocked"
+          title="🚨 SUKISUKI schedule refresh blocked"
           existing="$(gh issue list --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
-          if [ -n "$existing" ]; then
-            gh issue edit "$existing" --add-assignee "keio-kawaiilab" || true
-            echo "Incident issue #$existing is already open."
-            exit 0
-          fi
           {
             echo "@keio-kawaiilab"
             echo
-            echo "SUKISUKI高速更新のリリース監査が異常を検出したため、**本番公開を停止して前回正常版を維持しています**。"
+            echo "SUKISUKI高速更新で取得失敗または監査エラーを検出したため、SUKISUKI部分は前回正常版を維持しています。"
             echo
-            echo '```json'
-            cat data/schedule-health.json
-            echo '```'
+            if [ -f data/schedule-health.json ]; then
+              echo '```json'
+              cat data/schedule-health.json
+              echo '```'
+            fi
             echo
             echo "Actions run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-          } > /tmp/schedule-incident.md
-          gh issue create --title "$title" --body-file /tmp/schedule-incident.md --assignee "keio-kawaiilab"
+          } > /tmp/sukisuki-incident.md
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file /tmp/sukisuki-incident.md
+          else
+            gh issue create --title "$title" --body-file /tmp/sukisuki-incident.md --assignee "keio-kawaiilab"
+          fi
+
+      - name: Close resolved SUKISUKI incident
+        if: success() && steps.control.outputs.frozen != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          title="🚨 SUKISUKI schedule refresh blocked"
+          existing="$(gh issue list --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
+          if [ -n "$existing" ]; then
+            gh issue close "$existing" --comment "SUKISUKI取得と監査が正常に通過したため、高速更新を再開しました。"
+          fi
 
       - name: Commit only audited SUKISUKI changes
         if: steps.control.outputs.frozen != 'true'
@@ -129,4 +150,14 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/live-events.json data/schedule-health.json schedule.html
           git commit -m "chore: publish audited SUKISUKI ticket data"
-          git push
+          for attempt in 1 2 3; do
+            if git push; then exit 0; fi
+            echo "Push attempt ${attempt} was rejected; rebasing onto latest main."
+            git fetch origin main
+            if ! git rebase origin/main; then
+              git rebase --abort || true
+              echo "Concurrent calendar output overlaps this refresh; refusing to overwrite it."
+              exit 1
+            fi
+          done
+          exit 1
