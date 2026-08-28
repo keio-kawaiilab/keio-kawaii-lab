@@ -4,6 +4,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 JS = (ROOT / "ticket-flow.js").read_text(encoding="utf-8")
+SYNC = (ROOT / "ticket-flow-sync.js").read_text(encoding="utf-8")
 CSS = (ROOT / "ticket-flow.css").read_text(encoding="utf-8")
 LOADER = (ROOT / "going-highlight-soften.js").read_text(encoding="utf-8")
 
@@ -55,11 +56,30 @@ class TicketFlowReleaseTests(unittest.TestCase):
         self.assertIn('"受付中・予定"', JS)
         self.assertIn('"受付状況未確認"', JS)
 
+    def test_current_visible_offers_are_synced_into_flow(self):
+        self.assertIn('.ticket-options .ticket-option', SYNC)
+        self.assertIn('currentInfo(option)', SYNC)
+        self.assertIn('updateExistingStep', SYNC)
+        self.assertIn('makeStep(info)', SYNC)
+        self.assertIn('申込ページを確認 ↗', SYNC)
+
+    def test_dedupe_is_generic_per_sale_family_and_period(self):
+        self.assertIn('function saleFamily', SYNC)
+        self.assertIn('function periodKey', SYNC)
+        self.assertIn('function semanticKey', SYNC)
+        self.assertIn('function dedupeTimeline', SYNC)
+        self.assertIn('kawaii-lab-fc', SYNC)
+        self.assertIn('return"pia"', SYNC)
+        self.assertIn('return"eplus"', SYNC)
+        self.assertIn('return"lawson"', SYNC)
+
     def test_loader_is_isolated_to_schedule(self):
         self.assertIn('document.getElementById("calendar")', LOADER)
         self.assertIn('document.getElementById("cards")', LOADER)
         self.assertIn('ticket-flow.css', LOADER)
         self.assertIn('ticket-flow.js', LOADER)
+        self.assertIn('ticket-flow-sync.js', LOADER)
+        self.assertNotIn('ticket-flow-dedupe.js', LOADER)
 
 
 if __name__ == "__main__":

@@ -46,24 +46,24 @@
   if(!document.querySelector('link[data-ticket-flow]')){
     var style=document.createElement("link");
     style.rel="stylesheet";
-    style.href="./ticket-flow.css?v=202608281740";
+    style.href="./ticket-flow.css?v=202608281805";
     style.setAttribute("data-ticket-flow","");
     document.head.appendChild(style);
   }
 
   if(!document.querySelector('script[data-ticket-flow]')){
     var flow=document.createElement("script");
-    flow.src="./ticket-flow.js?v=202608281740";
+    flow.src="./ticket-flow.js?v=202608281805";
     flow.defer=true;
     flow.setAttribute("data-ticket-flow","");
     document.body.appendChild(flow);
   }
 
-  if(!document.querySelector('script[data-ticket-flow-dedupe]')){
-    var dedupe=document.createElement("script");
-    dedupe.src="./ticket-flow-dedupe.js?v=202608281740";
-    dedupe.defer=true;
-    dedupe.setAttribute("data-ticket-flow-dedupe","");
-    document.body.appendChild(dedupe);
+  if(!document.querySelector('script[data-ticket-flow-sync]')){
+    var sync=document.createElement("script");
+    sync.src="./ticket-flow-sync.js?v=202608281805";
+    sync.defer=true;
+    sync.setAttribute("data-ticket-flow-sync","");
+    document.body.appendChild(sync);
   }
 })();
