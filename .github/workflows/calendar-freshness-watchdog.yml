@@ -6,6 +6,9 @@ on:
       - main
     paths:
       - ".github/workflows/calendar-freshness-watchdog.yml"
+  schedule:
+    # Independent recovery lane: do not rely on another scheduled workflow firing first.
+    - cron: "14,44 * * * *"
   workflow_run:
     workflows:
       - "Archive verified ticket history"
@@ -65,6 +68,17 @@ jobs:
           AGE_MINUTES: ${{ steps.freshness.outputs.age_minutes }}
         shell: bash
         run: |
+          set -euo pipefail
+          active="$(gh run list \
+            --repo "$GITHUB_REPOSITORY" \
+            --workflow update-live-calendar-distributed.yml \
+            --limit 20 \
+            --json status \
+            --jq '[.[] | select(.status == "queued" or .status == "in_progress" or .status == "pending" or .status == "requested" or .status == "waiting")] | length')"
+          if [ "$active" -gt 0 ]; then
+            echo "Calendar is ${AGE_MINUTES} minutes old, but ${active} distributed refresh run(s) are already active; skipping duplicate dispatch."
+            exit 0
+          fi
           echo "Calendar is ${AGE_MINUTES} minutes old; dispatching recovery refresh."
           gh workflow run update-live-calendar-distributed.yml --repo "$GITHUB_REPOSITORY" --ref main
 
