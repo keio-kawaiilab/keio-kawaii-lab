@@ -9,15 +9,16 @@ on:
       - "data/schedule-control.json"
       - ".github/workflows/update-live-calendar-distributed.yml"
   schedule:
-    - cron: "2,17,32,47 * * * *"
+    # Avoid the busiest first minutes of the hour; GitHub may delay scheduled runs under load.
+    - cron: "7,22,37,52 * * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
   issues: write
 
-# All source collection happens in parallel from one pinned base revision.
-# Only the merge-publish job may write the public calendar.
+# Every collector reads the same pinned revision in parallel. Only merge-publish
+# may write the public calendar. A newer run supersedes stale collection work.
 concurrency:
   group: update-live-ticket-calendar-${{ github.ref }}
   cancel-in-progress: true
@@ -55,7 +56,7 @@ jobs:
     needs: prepare
     if: needs.prepare.outputs.frozen != 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 10
     steps:
       - name: Checkout pinned base
         uses: actions/checkout@v4
@@ -71,6 +72,10 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r scripts/requirements.txt
+
+      - name: Test parallel official schedule collector
+        working-directory: scripts
+        run: python -m unittest -v test_update_official_schedule_parallel.py
 
       - name: Collect official, PIA and official schedule data
         shell: bash
@@ -90,7 +95,7 @@ jobs:
           python scripts/resolve_source_priority.py
           python scripts/enrich_event_metadata.py
           python scripts/harden_pia_events.py --check
-          python scripts/update_official_schedule.py
+          python scripts/update_official_schedule_parallel.py --workers 10
           python scripts/apply_event_scopes.py
           python scripts/prepare_release_candidate.py --previous /tmp/live-events-last-good.json
 
@@ -361,6 +366,7 @@ jobs:
               exit 1
             fi
           done
+          echo "Unable to publish integrated calendar after 3 attempts."
           exit 1
 
   report-failure:
