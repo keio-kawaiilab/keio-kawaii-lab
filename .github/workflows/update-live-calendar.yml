@@ -25,7 +25,7 @@ on:
       - "live.html"
       - "schedule.html"
   schedule:
-    - cron: "17 * * * *"
+    - cron: "17,47 * * * *"
   workflow_dispatch:
 
 permissions:
