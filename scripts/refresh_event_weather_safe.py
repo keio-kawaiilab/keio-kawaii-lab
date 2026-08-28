@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import io
 import json
+import math
 import re
 from datetime import date, datetime, timedelta
 
@@ -166,7 +167,76 @@ def _sample_palette(session: requests.Session, target: dict, element: str, lon: 
     return max(set(labels), key=labels.count) if labels else None
 
 
-def build_mesh_timeline(session: requests.Session, targets: list[dict], day: str, lon: float, lat: float, tile_cache: dict[str, Image.Image]):
+def _vector_geojson(session: requests.Session, target: dict, element: str, cache: dict[str, dict]):
+    url = (
+        f"{core.WDIST_BASE}/{target['basetime']}/none/{target['validtime']}"
+        f"/surf/{element}/data.geojson?id={element}"
+    )
+    if url in cache:
+        return cache[url]
+    try:
+        response = session.get(url, timeout=30)
+        response.raise_for_status()
+        payload = response.json()
+    except Exception:
+        cache[url] = {}
+        return {}
+    cache[url] = payload if isinstance(payload, dict) else {}
+    return cache[url]
+
+
+def _sample_exact_temperature(
+    session: requests.Session,
+    target: dict,
+    lon: float,
+    lat: float,
+    vector_cache: dict[str, dict],
+):
+    """気象庁 temp_point GeoJSON から最寄り5km格子の1℃単位気温を取得する。"""
+    payload = _vector_geojson(session, target, "temp_point", vector_cache)
+    features = payload.get("features") if isinstance(payload, dict) else None
+    if not isinstance(features, list):
+        return None
+
+    cos_lat = max(0.2, math.cos(math.radians(lat)))
+    best_distance = float("inf")
+    best_value = None
+    for feature in features:
+        if not isinstance(feature, dict):
+            continue
+        geometry = feature.get("geometry") or {}
+        coords = geometry.get("coordinates") or []
+        props = feature.get("properties") or {}
+        if not isinstance(coords, list) or len(coords) < 2 or not isinstance(props, dict):
+            continue
+        try:
+            point_lon = float(coords[0])
+            point_lat = float(coords[1])
+            value = float(props.get("value"))
+        except (TypeError, ValueError):
+            continue
+        dx = (point_lon - lon) * cos_lat
+        dy = point_lat - lat
+        distance = dx * dx + dy * dy
+        if distance < best_distance:
+            best_distance = distance
+            best_value = value
+
+    # 5km格子なら最寄り点は通常数km以内。10km超の点しか無い場合は誤対応防止で使わない。
+    if best_value is None or math.sqrt(best_distance) > 0.10:
+        return None
+    return int(round(best_value))
+
+
+def build_mesh_timeline(
+    session: requests.Session,
+    targets: list[dict],
+    day: str,
+    lon: float,
+    lat: float,
+    tile_cache: dict[str, Image.Image],
+    vector_cache: dict[str, dict],
+):
     base_day = date.fromisoformat(day)
     rows = []
     for hour in TIMELINE_HOURS:
@@ -176,22 +246,30 @@ def build_mesh_timeline(session: requests.Session, targets: list[dict], day: str
         else:
             wanted = datetime.combine(base_day, datetime.min.time(), tzinfo=core.JST) + timedelta(hours=hour)
             label_time = f"{hour:02d}:00"
-        target = _latest_target_near(targets, wanted, "wm", tolerance_minutes=20)
-        if not target:
+
+        weather_target = _latest_target_near(targets, wanted, "wm", tolerance_minutes=20)
+        if not weather_target:
             continue
-        weather = _sample_palette(session, target, "wm", lon, lat, core.WEATHER_PALETTE, tile_cache)
+        weather = _sample_palette(session, weather_target, "wm", lon, lat, core.WEATHER_PALETTE, tile_cache)
         if not weather:
             continue
-        temp_band = None
-        if "temp" in (target.get("elements") or []):
-            temp_band = _sample_palette(session, target, "temp", lon, lat, core.TEMP_PALETTE, tile_cache)
-        valid = core.utc_target_datetime(str(target.get("validtime") or ""))
-        rows.append({
+
+        # PNG の temp は5℃刻みの色分けなので数値表示には使わない。
+        # temp_point は同じ天気分布予報の1℃単位の5km格子値。
+        temp = None
+        temp_target = _latest_target_near(targets, wanted, "temp_point", tolerance_minutes=20)
+        if temp_target:
+            temp = _sample_exact_temperature(session, temp_target, lon, lat, vector_cache)
+
+        valid = core.utc_target_datetime(str(weather_target.get("validtime") or ""))
+        row = {
             "time": label_time,
             "label": weather,
-            "tempBand": temp_band,
             "validAt": valid.isoformat(timespec="minutes"),
-        })
+        }
+        if temp is not None:
+            row["temp"] = temp
+        rows.append(row)
     return rows
 
 
@@ -294,7 +372,9 @@ def augment_weather_output():
     rain_targets = rain_targets if isinstance(rain_targets, list) else []
     starts = _start_time_map()
     tile_cache: dict[str, Image.Image] = {}
+    vector_cache: dict[str, dict] = {}
     mesh_timeline_count = 0
+    mesh_exact_temp_slots = 0
     hourly_rain_count = 0
 
     for entry in entries:
@@ -318,12 +398,21 @@ def augment_weather_output():
         except (KeyError, TypeError, ValueError):
             continue
 
-        timeline = build_mesh_timeline(session, weather_targets, entry["date"], lon, lat, tile_cache)
+        timeline = build_mesh_timeline(
+            session,
+            weather_targets,
+            entry["date"],
+            lon,
+            lat,
+            tile_cache,
+            vector_cache,
+        )
         if timeline:
             entry["meshTimeline"] = timeline
             entry["precision"] = "mesh5km"
             entry["coordinates"] = {"lat": lat, "lon": lon}
             mesh_timeline_count += 1
+            mesh_exact_temp_slots += sum(1 for row in timeline if row.get("temp") is not None)
 
         start_times = starts.get((entry["date"], venue_key), [])
         hourly_rain = build_hourly_rain(session, rain_targets, entry["date"], start_times, lon, lat, tile_cache)
@@ -335,9 +424,13 @@ def augment_weather_output():
 
     stats = payload.setdefault("stats", {})
     stats["meshTimelineEntries"] = mesh_timeline_count
+    stats["meshExactTempSlots"] = mesh_exact_temp_slots
     stats["hourlyRainEntries"] = hourly_rain_count
     core.OUTPUT_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"Weather detail augmented: timeline={mesh_timeline_count}, hourly-rain={hourly_rain_count}")
+    print(
+        f"Weather detail augmented: timeline={mesh_timeline_count}, "
+        f"exact-temp-slots={mesh_exact_temp_slots}, hourly-rain={hourly_rain_count}"
+    )
 
 
 core.geocode = safe_geocode
