@@ -5,23 +5,22 @@ on:
     branches:
       - main
     paths:
-      - "scripts/update_playguide_events_parallel.py"
-      - "scripts/test_update_playguide_events_parallel.py"
-      - "scripts/merge_distributed_schedule_snapshots.py"
-      - "scripts/test_merge_distributed_schedule_snapshots.py"
+      - "scripts/**"
+      - "data/schedule-control.json"
       - ".github/workflows/update-live-calendar-distributed.yml"
+  schedule:
+    - cron: "2,17,32,47 * * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
   issues: write
 
-# This uses the same writer lock as the legacy refreshers during migration.
-# Inside this one run, source collection jobs execute in parallel and only the
-# final merge job is allowed to publish live-events.json.
+# All source collection happens in parallel from one pinned base revision.
+# Only the merge-publish job may write the public calendar.
 concurrency:
   group: update-live-ticket-calendar-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   prepare:
