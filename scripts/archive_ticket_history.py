@@ -6,7 +6,7 @@ import hashlib
 import json
 from datetime import datetime
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 from zoneinfo import ZoneInfo
 
 LIVE_PATH = Path("data/live-events.json")
@@ -34,6 +34,28 @@ def load_json(path: Path, fallback: dict | None = None) -> dict:
 
 def clean(value: object) -> str:
     return str(value or "").strip()
+
+
+
+def canonical_source_url(url: str) -> str:
+    text = clean(url)
+    if not text:
+        return ""
+    try:
+        parsed = urlparse(text)
+    except ValueError:
+        return text
+    host = (parsed.hostname or "").lower()
+    tracking = {"p1", "fbclid", "gclid", "_ga"}
+    pairs = []
+    for key, value in parse_qsl(parsed.query, keep_blank_values=True):
+        lower = key.lower()
+        if lower in tracking or lower.startswith("utm_"):
+            continue
+        pairs.append((key, value))
+    query = urlencode(pairs, doseq=True)
+    netloc = parsed.netloc.lower() if host else parsed.netloc
+    return urlunparse((parsed.scheme.lower(), netloc, parsed.path, parsed.params, query, ""))
 
 
 def source_key_for_url(url: str, registry: dict) -> str | None:
@@ -140,6 +162,7 @@ def publishable(event: dict, source_key: str, registry: dict) -> bool:
 
 
 def history_identity(event: dict, source_url: str, source_key: str, day: str) -> str:
+    source_url = canonical_source_url(source_url)
     parts = (
         clean(event.get("group")),
         title_for(event),
@@ -161,6 +184,7 @@ def snapshot_window(event: dict) -> dict:
 
 
 def make_entry(event: dict, source_url: str, source_key: str, day: str, registry: dict, now: str) -> dict:
+    source_url = canonical_source_url(source_url)
     config = source_config(source_key, registry)
     return {
         "id": history_identity(event, source_url, source_key, day),
@@ -224,7 +248,21 @@ def merge_entry(existing: dict, incoming: dict, now: str) -> dict:
 
 def archive_payload(live: dict, history: dict, registry: dict, now: str) -> dict:
     entries = [dict(x) for x in history.get("entries", []) if isinstance(x, dict) and x.get("id")]
-    by_id = {str(x["id"]): x for x in entries}
+    by_id: dict[str, dict] = {}
+    for existing in entries:
+        canonical_url = canonical_source_url(clean(existing.get("sourceUrl")))
+        source_key = clean(existing.get("sourceKey"))
+        stub = {
+            "group": existing.get("group"),
+            "eventTitle": existing.get("eventTitle"),
+            "ticketType": existing.get("ticketType"),
+            "ticketProvider": existing.get("ticketProvider"),
+        }
+        canonical_id = history_identity(stub, canonical_url, source_key, clean(existing.get("eventDate")))
+        existing["id"] = canonical_id
+        existing["sourceUrl"] = canonical_url
+        current = by_id.get(canonical_id)
+        by_id[canonical_id] = merge_entry(current, existing, now) if current else existing
 
     for event in live.get("events", []):
         if not isinstance(event, dict):
