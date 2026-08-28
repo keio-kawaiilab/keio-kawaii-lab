@@ -5,7 +5,7 @@ import re
 path = Path("schedule.html")
 text = path.read_text(encoding="utf-8")
 
-loader = '<script src="./schedule-weather.js?v=202608261510" data-schedule-weather-direct></script>'
+loader = '<script src="./schedule-weather.js?v=202608282355" data-schedule-weather-direct></script>'
 
 # Remove any prior direct loader so the cache-busting version is deterministic.
 text = re.sub(
