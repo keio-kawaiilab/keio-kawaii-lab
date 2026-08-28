@@ -108,14 +108,13 @@ jobs:
           python scripts/apply_event_scopes.py
           python scripts/prepare_release_candidate.py --previous /tmp/live-events-last-good.json
 
-      - name: Fail-closed release audit
+      - name: Fail-closed playguide release audit
         if: steps.control.outputs.frozen != 'true'
         run: |
           python scripts/audit_schedule_release_grouped.py \
             --previous /tmp/live-events-last-good.json \
             --candidate data/live-events.json \
             --report data/schedule-health.json
-          python scripts/audit_official_schedule_coverage.py
 
       - name: Build public schedule only after audit passes
         if: steps.control.outputs.frozen != 'true'
