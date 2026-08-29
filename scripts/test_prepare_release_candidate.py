@@ -137,9 +137,15 @@ class PrepareReleaseCandidateTests(unittest.TestCase):
         )
 
         self.assertEqual(1, len(prepared["events"]))
-        self.assertEqual("aggregate", prepared["events"][0]["id"])
-        self.assertEqual("2027-02-05", prepared["events"][0]["eventEndDate"])
-        self.assertIn("2027-02-05", prepared["events"][0]["eventDates"])
+        merged = prepared["events"][0]
+        self.assertEqual("aggregate", merged["id"])
+        self.assertEqual("2027-02-05", merged["eventEndDate"])
+        self.assertIn("2027-02-05", merged["eventDates"])
+        self.assertEqual("official-social", merged["sourceType"])
+        self.assertEqual("official-x", merged["sourceChannel"])
+        self.assertEqual("official", merged["primarySource"])
+        self.assertEqual("awaiting-details", merged["specialDetailsStatus"])
+        self.assertEqual("schedule-only", merged["applicationDisplayMode"])
         self.assertEqual(1, report["officialXRowsCollapsed"])
 
 
