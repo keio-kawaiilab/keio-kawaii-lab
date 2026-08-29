@@ -1,6 +1,6 @@
 {
   "demo": false,
-  "updatedAt": "2026-08-30T02:17:45+09:00",
+  "updatedAt": "2026-08-30T03:00:33+09:00",
   "source": "KAWAII LAB.各グループ公式公開情報 + チケットぴあ・ローチケ・イープラス公開情報 + SUKISUKI公開オンライン特典会情報 + 公式大特典会・リリースイベント情報",
   "events": [
     {
@@ -239,7 +239,7 @@
         "official"
       ],
       "eventScope": "kawaii-lab",
-      "officialScheduleUrl": "https://candytune.asobisystem.com/live_information/detail/40722",
+      "officialScheduleUrl": "https://candytune.asobisystem.com/live_information/detail/40726",
       "officialTourUrl": "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026"
     },
     {
@@ -1797,7 +1797,7 @@
         "official"
       ],
       "eventScope": "kawaii-lab",
-      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/40369",
+      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/40364",
       "openTime": "15:00",
       "startTime": "15:00",
       "officialTourUrl": "https://cutiestreet.asobisystem.com/feature/autumntour"
@@ -2615,7 +2615,7 @@
       "group": "CANDY TUNE",
       "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
       "ticketType": "2次プレリザーブ",
-      "applyStart": null,
+      "applyStart": "2026-08-27T11:00",
       "applyEnd": "2026-09-07T11:00",
       "resultDate": null,
       "paymentEnd": null,
@@ -2649,9 +2649,10 @@
         "鳥取県 米子コンベンションセンター",
         "広島県 広島文化学園HBGホール"
       ],
-      "applicationWindowVerified": false,
+      "applicationWindowVerified": true,
       "deadlineVerified": true,
-      "applicationDisplayMode": "band-from-today",
+      "applicationDisplayMode": "band",
+      "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=09569",
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=09569",
       "primarySource": "pia",
       "sourceCandidates": [
@@ -4182,37 +4183,28 @@
     "failures": []
   },
   "releasePreparation": {
-    "preparedAt": "2026-08-30T02:17:45+09:00",
+    "preparedAt": "2026-08-30T03:00:33+09:00",
     "normalizedSpecialEvents": 1,
     "duplicateIdsRemoved": 0,
-    "retainedPreviousRows": 1,
-    "retained": [
-      {
-        "id": "special-a91f4fd0f80a1f20-schedule",
-        "group": "CANDY TUNE",
-        "title": "CANDY TUNE 4thシングル『総意♡So Free / スペシャル感謝祭』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜",
-        "ticketType": "現在受付なし",
-        "provider": null,
-        "applyEnd": null
-      }
-    ],
+    "retainedPreviousRows": 0,
+    "retained": [],
     "expandedPreviousSpecialEntities": 8,
     "expandedCandidateSpecialEntities": 2,
     "officialXSeriesMerged": 0,
     "officialXRowsCollapsed": 0,
     "physicalEventInvariant": {
       "semanticNormalization": {
-        "sourceSpecialRows": 11,
+        "sourceSpecialRows": 10,
         "canonicalSpecialEvents": 9,
-        "rowsCollapsed": 2,
+        "rowsCollapsed": 1,
         "releaseEventEntities": 4,
         "largeBenefitEntities": 5,
-        "alreadyCanonicalRows": 3
+        "alreadyCanonicalRows": 2
       },
       "specialEventsBeforePhysicalMerge": 9,
       "specialEventsAfterPhysicalMerge": 8,
       "physicalRowsCollapsed": 1,
-      "internalScheduleRowsCollapsed": 1,
+      "internalScheduleRowsCollapsed": 0,
       "collisionCount": 1,
       "collisions": [
         {
@@ -4243,7 +4235,7 @@
     }
   },
   "distributedMergeDiagnostics": {
-    "mergedAt": "2026-08-30T02:17:45+09:00",
+    "mergedAt": "2026-08-30T03:00:33+09:00",
     "sources": {
       "playguide": {
         "previous": 14,
@@ -4311,7 +4303,7 @@
     "specialEventsBeforePhysicalMerge": 8,
     "specialEventsAfterPhysicalMerge": 8,
     "physicalRowsCollapsed": 0,
-    "internalScheduleRowsCollapsed": 1,
+    "internalScheduleRowsCollapsed": 0,
     "collisionCount": 0,
     "collisions": [],
     "remainingDuplicateCount": 0,
