@@ -138,7 +138,11 @@ class PrepareReleaseCandidateTests(unittest.TestCase):
 
         self.assertEqual(1, len(prepared["events"]))
         merged = prepared["events"][0]
-        self.assertEqual("aggregate", merged["id"])
+        # Canonical public entities intentionally get a deterministic `special-*`
+        # ID. Identity is the real event, not whichever source row happened to be
+        # selected as the representative during this refresh.
+        self.assertEqual("special-event", merged["entityType"])
+        self.assertTrue(str(merged["id"]).startswith("special-"))
         self.assertEqual("2027-02-05", merged["eventEndDate"])
         self.assertIn("2027-02-05", merged["eventDates"])
         self.assertEqual("official-social", merged["sourceType"])
@@ -147,6 +151,7 @@ class PrepareReleaseCandidateTests(unittest.TestCase):
         self.assertEqual("awaiting-details", merged["specialDetailsStatus"])
         self.assertEqual("schedule-only", merged["applicationDisplayMode"])
         self.assertEqual(1, report["officialXRowsCollapsed"])
+        self.assertEqual(0, report["physicalEventInvariant"]["remainingDuplicateCount"])
 
 
 if __name__ == "__main__":
