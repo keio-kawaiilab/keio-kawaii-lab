@@ -42,18 +42,19 @@
 (function(){
   "use strict";
   if(!document.getElementById("calendar")||!document.getElementById("cards"))return;
+  var version="202608300300";
 
   if(!document.querySelector('link[data-ticket-flow]')){
     var style=document.createElement("link");
     style.rel="stylesheet";
-    style.href="./ticket-flow.css?v=202608281825";
+    style.href="./ticket-flow.css?v="+version;
     style.setAttribute("data-ticket-flow","");
     document.head.appendChild(style);
   }
 
   if(!document.querySelector('script[data-ticket-flow]')){
     var flow=document.createElement("script");
-    flow.src="./ticket-flow.js?v=202608281825";
+    flow.src="./ticket-flow.js?v="+version;
     flow.defer=true;
     flow.setAttribute("data-ticket-flow","");
     document.body.appendChild(flow);
@@ -61,9 +62,17 @@
 
   if(!document.querySelector('script[data-ticket-flow-sync]')){
     var sync=document.createElement("script");
-    sync.src="./ticket-flow-sync.js?v=202608281825";
+    sync.src="./ticket-flow-sync.js?v="+version;
     sync.defer=true;
     sync.setAttribute("data-ticket-flow-sync","");
     document.body.appendChild(sync);
+  }
+
+  if(!document.querySelector('script[data-ticket-resale-ui]')){
+    var resale=document.createElement("script");
+    resale.src="./ticket-resale-ui.js?v="+version;
+    resale.defer=true;
+    resale.setAttribute("data-ticket-resale-ui","");
+    document.body.appendChild(resale);
   }
 })();
