@@ -393,6 +393,7 @@ jobs:
 
       - name: Close resolved distributed incident
         if: success()
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
@@ -440,6 +441,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Open distributed refresh incident
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
