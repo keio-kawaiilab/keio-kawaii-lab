@@ -71,6 +71,12 @@ class OfficialXSeriesDedupeTests(unittest.TestCase):
             rows[0]["schedule"],
         )
         self.assertEqual({shared, older}, set(rows[0]["urls"]))
+        self.assertEqual("official-social", rows[0]["sourceType"])
+        self.assertEqual("official-x", rows[0]["sourceChannel"])
+        self.assertEqual("official", rows[0]["primarySource"])
+        self.assertEqual("awaiting-details", rows[0]["specialDetailsStatus"])
+        self.assertEqual("schedule-only", rows[0]["applicationDisplayMode"])
+        self.assertEqual("none", rows[0]["applicationStatus"])
         self.assertEqual(1, report["officialXSeriesMerged"])
         self.assertEqual(1, report["officialXRowsCollapsed"])
 
