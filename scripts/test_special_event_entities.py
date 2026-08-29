@@ -83,9 +83,13 @@ class SpecialEventEntityTests(unittest.TestCase):
         ]}
         enforced, report = enforce_payload(payload)
         self.assertEqual(report["physicalRowsCollapsed"], 1)
+        self.assertEqual(report["internalScheduleRowsCollapsed"], 1)
         self.assertEqual(report["remainingDuplicateCount"], 0)
         self.assertEqual(len(enforced["events"]), 1)
-        self.assertTrue(enforced["events"][0]["physicalInvariantMerged"])
+        event = enforced["events"][0]
+        self.assertTrue(event["physicalInvariantMerged"])
+        self.assertEqual(event["eventCount"], 1)
+        self.assertEqual(len(event["schedule"]), 1)
         self.assertFalse(duplicate_physical_occurrences(enforced))
 
     def test_missing_time_shell_merges_into_same_release_event(self):
@@ -118,11 +122,17 @@ class SpecialEventEntityTests(unittest.TestCase):
         self.assertEqual(len(duplicate_physical_occurrences(payload)), 1)
         enforced, report = enforce_payload(payload)
         self.assertEqual(report["physicalRowsCollapsed"], 1)
+        self.assertEqual(report["internalScheduleRowsCollapsed"], 1)
         self.assertEqual(report["remainingDuplicateCount"], 0)
         self.assertEqual(len(enforced["events"]), 1)
         event = enforced["events"][0]
         self.assertTrue(event["physicalInvariantMerged"])
         self.assertEqual(event["eventDate"], "2026-09-01")
+        self.assertEqual(event["eventCount"], 1)
+        self.assertEqual(len(event["schedule"]), 1)
+        self.assertEqual(event["schedule"][0]["startTime"], "18:00")
+        self.assertEqual(event["startTime"], "18:00")
+        self.assertNotIn("複数会場", event["venue"])
         self.assertFalse(duplicate_physical_occurrences(enforced))
 
     def test_same_place_and_day_but_different_time_remains_separate(self):
