@@ -7,9 +7,11 @@ on:
     paths:
       - "scripts/normalize_special_event_entities.py"
       - "scripts/expand_special_event_entities.py"
+      - "scripts/enforce_physical_event_invariant.py"
       - "scripts/prepare_release_candidate.py"
       - "scripts/fix_schedule_shell.py"
       - "scripts/test_special_event_entities.py"
+      - "data/live-events.json"
       - ".github/workflows/test-special-event-entities.yml"
   workflow_dispatch:
 
@@ -27,8 +29,9 @@ jobs:
       - name: Run canonical special-event tests
         working-directory: scripts
         run: python -m unittest -v test_special_event_entities.py
-      - name: Verify current public data can normalize cleanly
+      - name: Verify current public data is canonical and physically unique
         run: |
           cp data/live-events.json /tmp/live-events-normalize-test.json
           python scripts/normalize_special_event_entities.py --data /tmp/live-events-normalize-test.json
           python scripts/normalize_special_event_entities.py --data /tmp/live-events-normalize-test.json --check
+          python scripts/enforce_physical_event_invariant.py --data data/live-events.json --check
