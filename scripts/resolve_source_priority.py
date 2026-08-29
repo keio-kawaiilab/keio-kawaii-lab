@@ -348,37 +348,55 @@ def match_score(playguide_event: dict, official_event: dict) -> int:
     return score
 
 
-def align_playguide_event_titles(events: list[dict]) -> list[dict]:
-    official = [
+def align_sale_event_titles(events: list[dict]) -> list[dict]:
+    # Schedule-only rows are the canonical representation of a performance.
+    # Ticket windows (official FC/presale/general plus each playguide) should
+    # inherit that title for UI identity, while remaining separate sale rows.
+    schedule_candidates = [
+        event for event in events
+        if sale_family(event) == "schedule-only" and canonical_title(event)
+    ]
+    official_candidates = [
         event for event in events
         if source_kind(event) == "official" and canonical_title(event)
     ]
+
     out: list[dict] = []
     for event in events:
-        source = source_kind(event)
-        if source not in {"pia", "lawson", "eplus"}:
+        if sale_family(event) == "schedule-only":
             out.append(event)
             continue
 
-        scored: list[tuple[int, dict]] = []
-        for candidate in official:
+        # Prefer the schedule-only performance. If a source has no such row,
+        # playguides may fall back to an authoritative official ticket row.
+        candidates = schedule_candidates
+        if source_kind(event) in {"pia", "lawson", "eplus"}:
+            candidates = schedule_candidates + [
+                candidate for candidate in official_candidates
+                if candidate not in schedule_candidates
+            ]
+
+        scored: list[tuple[int, int, dict]] = []
+        for candidate in candidates:
             score = match_score(event, candidate)
-            if score >= 0:
-                scored.append((score, candidate))
+            if score < 0:
+                continue
+            schedule_bonus = 1000 if sale_family(candidate) == "schedule-only" else 0
+            scored.append((schedule_bonus + score, score, candidate))
         if not scored:
             out.append(event)
             continue
 
-        top_score = max(score for score, _ in scored)
-        top = [candidate for score, candidate in scored if score == top_score]
+        top_score = max(total for total, _raw, _candidate in scored)
+        top = [candidate for total, _raw, candidate in scored if total == top_score]
         canonical_titles = {canonical_title(candidate) for candidate in top if canonical_title(candidate)}
-        # If two genuinely different official events are equally plausible, keep the
-        # provider title rather than risking a false merge in the public calendar.
+        # If two genuinely different performances are equally plausible, keep
+        # the original title instead of risking a false merge.
         if len(canonical_titles) != 1:
             out.append(event)
             continue
 
-        candidate = next(candidate for candidate in top if canonical_title(candidate) in canonical_titles)
+        candidate = top[0]
         authoritative_title = normalize_text(
             candidate.get("displayTitle") or candidate.get("eventTitle") or candidate.get("title")
         )
@@ -391,12 +409,11 @@ def align_playguide_event_titles(events: list[dict]) -> list[dict]:
         out.append(updated)
     return out
 
-
 def resolve_payload(payload: dict) -> dict:
     out = dict(payload)
     events = [dict(x) for x in payload.get("events", []) if isinstance(x, dict)]
     resolved = resolve(events)
-    out["events"] = align_playguide_event_titles(resolved)
+    out["events"] = align_sale_event_titles(resolved)
     out["source"] = "KAWAII LAB.各グループ公式公開情報 + チケットぴあ・ローチケ・イープラス公開情報 + SUKISUKI公開オンライン特典会情報 + 公式大特典会・リリースイベント情報"
     return out
 
