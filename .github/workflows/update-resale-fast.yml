@@ -40,35 +40,38 @@ jobs:
       - name: Install dependencies
         run: pip install -r scripts/requirements.txt
 
-      - name: Finalize persistent resale support and cache chain
+      - name: Finalize resale parser and cache chain
         shell: bash
         run: |
           python - <<'PY'
           from pathlib import Path
           import re
 
-          version = "202608300300"
+          version = "202608300330"
 
           collector = Path("scripts/update_resale_events.py")
           text = collector.read_text(encoding="utf-8")
+
+          # A resale window must be read from the window row itself. Looking ahead
+          # into subsequent rows can accidentally consume the next performance date.
           text = text.replace(
-              '        "sourcePublishedAt": article_date,\n        "applicationStatus": status,',
-              '        "sourcePublishedAt": article_date,\n        "eventScope": base_event.get("eventScope"),\n        "participants": base_event.get("participants") or [],\n        "applicationStatus": status,',
+              '        segment = " ".join(lines[index:index + 3])\n        values = date_matches(segment, article_year)',
+              '        segment = line\n        values = date_matches(segment, article_year)',
           )
-          text = text.replace(
-              '        if event_day < today.isoformat() or end < now:\n            continue',
-              '        if event_day < today.isoformat():\n            continue',
-          )
-          text = text.replace(
-              '''    excluded = {str(article_date or "")[:10]}\n    for _, start, end in windows:\n        excluded.add(start[:10])\n        excluded.add(end[:10])\n''',
-              '''    # Window rows are skipped below, so a performance date must not be discarded\n    # just because it happens to equal another resale window's start/end date.\n    excluded = {str(article_date or "")[:10]}\n''',
-          )
-          old = '''        if not ("日程" in line or "公演" in line or "会場" in line or re.match(r"^[\\s　【\\[（(]*20?\\d{0,4}年?\\s*\\d{1,2}[月/.-]\\s*\\d{1,2}", line)):\n            continue\n'''
-          new = '''        first = base.DATE_ANY_RE.search(line)\n        date_near_start = bool(first and first.start() <= 8)\n        if not ("日程" in line or "公演" in line or "会場" in line or date_near_start):\n            continue\n'''
-          if old not in text:
-              raise SystemExit("resale event-date guard not found")
-          text = text.replace(old, new, 1)
+
+          # When the matched schedule source is a tour-wide event, copy the exact
+          # venue/times for this performance date so the resale attaches to the
+          # existing performance card rather than creating a second generic card.
+          old_return = '''    candidates.sort(key=lambda row: row[0], reverse=True)\n    return dict(candidates[0][1]) if candidates else None\n'''
+          new_return = '''    candidates.sort(key=lambda row: row[0], reverse=True)\n    if not candidates:\n        return None\n    chosen = dict(candidates[0][1])\n    for schedule_row in chosen.get("schedule") or []:\n        if not isinstance(schedule_row, dict) or clean(schedule_row.get("date"))[:10] != day:\n            continue\n        chosen["eventDate"] = day\n        chosen["venue"] = schedule_row.get("venue") or chosen.get("venue")\n        chosen["openTime"] = schedule_row.get("openTime") or chosen.get("openTime")\n        chosen["startTime"] = schedule_row.get("startTime") or chosen.get("startTime")\n        break\n    return chosen\n'''
+          if old_return in text:
+              text = text.replace(old_return, new_return, 1)
           collector.write_text(text, encoding="utf-8")
+
+          loader = Path("going-highlight-soften.js")
+          text = loader.read_text(encoding="utf-8")
+          text = re.sub(r'var version="\d+";', f'var version="{version}";', text)
+          loader.write_text(text, encoding="utf-8")
 
           train = Path("train-status.js")
           text = train.read_text(encoding="utf-8")
@@ -125,6 +128,7 @@ jobs:
           git add \
             scripts/update_resale_events.py \
             scripts/build_schedule_snapshot.py \
+            going-highlight-soften.js \
             train-status.js \
             data/live-events.json \
             data/ticket-history.json \
