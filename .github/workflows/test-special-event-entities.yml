@@ -1,0 +1,34 @@
+name: Special event entity regression
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "scripts/normalize_special_event_entities.py"
+      - "scripts/expand_special_event_entities.py"
+      - "scripts/prepare_release_candidate.py"
+      - "scripts/fix_schedule_shell.py"
+      - "scripts/test_special_event_entities.py"
+      - ".github/workflows/test-special-event-entities.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run canonical special-event tests
+        working-directory: scripts
+        run: python -m unittest -v test_special_event_entities.py
+      - name: Verify current public data can normalize cleanly
+        run: |
+          cp data/live-events.json /tmp/live-events-normalize-test.json
+          python scripts/normalize_special_event_entities.py --data /tmp/live-events-normalize-test.json
+          python scripts/normalize_special_event_entities.py --data /tmp/live-events-normalize-test.json --check
