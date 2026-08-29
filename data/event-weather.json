@@ -1,7 +1,7 @@
 {
   "date": "2026-08-29",
   "horizonDays": 7,
-  "generatedAt": "2026-08-29T09:00+09:00",
+  "generatedAt": "2026-08-29T11:54+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -19,10 +19,10 @@
       "precision": "mesh5km",
       "label": "雨",
       "max": 27.0,
-      "min": 26.0,
+      "min": 24.0,
       "pop": "70",
       "popLabel": "12〜18時",
-      "issuedAt": "2026-08-29T05:00:00+09:00",
+      "issuedAt": "2026-08-29T11:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "20〜24℃",
       "coordinates": {
@@ -31,22 +31,10 @@
       },
       "meshTimeline": [
         {
-          "time": "09:00",
-          "label": "雨",
-          "validAt": "2026-08-29T09:00+09:00",
-          "temp": 22
-        },
-        {
-          "time": "12:00",
-          "label": "雨",
-          "validAt": "2026-08-29T12:00+09:00",
-          "temp": 25
-        },
-        {
           "time": "15:00",
           "label": "雨",
           "validAt": "2026-08-29T15:00+09:00",
-          "temp": 25
+          "temp": 23
         },
         {
           "time": "18:00",
@@ -69,18 +57,18 @@
       ],
       "hourlyRain": [
         {
-          "time": "16:00",
+          "time": "16:30",
           "rain": true,
-          "validAt": "2026-08-29T16:00+09:00"
+          "validAt": "2026-08-29T16:30+09:00"
         },
         {
-          "time": "17:00",
+          "time": "17:30",
           "rain": true,
-          "validAt": "2026-08-29T17:00+09:00"
+          "validAt": "2026-08-29T17:30+09:00"
         },
         {
           "time": "18:00",
-          "rain": true,
+          "rain": false,
           "validAt": "2026-08-29T18:00+09:00"
         }
       ]
@@ -100,7 +88,7 @@
       "min": 21.0,
       "pop": "10",
       "popLabel": "12〜18時",
-      "issuedAt": "2026-08-29T05:00:00+09:00",
+      "issuedAt": "2026-08-29T11:00:00+09:00",
       "meshTime": "12:00",
       "meshTempBand": "25〜29℃",
       "coordinates": {
@@ -167,7 +155,7 @@
       "min": 21.0,
       "pop": "10",
       "popLabel": "12〜18時",
-      "issuedAt": "2026-08-29T05:00:00+09:00",
+      "issuedAt": "2026-08-29T11:00:00+09:00",
       "meshTime": "15:00",
       "meshTempBand": "25〜29℃",
       "coordinates": {
@@ -232,10 +220,10 @@
       "precision": "area",
       "label": "くもり時々晴れ",
       "max": 36.0,
-      "min": 25.0,
+      "min": 24.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-08-28T17:00:00+09:00",
+      "issuedAt": "2026-08-29T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -251,11 +239,11 @@
       "areaName": "神奈川県",
       "precision": "area",
       "label": "くもり一時雨",
-      "max": 30.0,
-      "min": 24.0,
+      "max": 32.0,
+      "min": 25.0,
       "pop": "60",
       "popLabel": "1日",
-      "issuedAt": "2026-08-28T17:00:00+09:00",
+      "issuedAt": "2026-08-29T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -271,11 +259,11 @@
       "areaName": "東京地方",
       "precision": "area",
       "label": "くもり一時雨",
-      "max": 28.0,
-      "min": 22.0,
+      "max": 30.0,
+      "min": 23.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-08-28T17:00:00+09:00",
+      "issuedAt": "2026-08-29T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -291,36 +279,45 @@
       "areaName": "神奈川県",
       "precision": "area",
       "label": "くもり一時雨",
-      "max": 28.0,
-      "min": 22.0,
+      "max": 29.0,
+      "min": 24.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-08-28T17:00:00+09:00",
+      "issuedAt": "2026-08-29T11:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-09-05",
+      "venue": "埼玉県 エミテラス所沢2F TOKOROZAWA e-CUBE",
+      "venueKey": "エミテラス所沢2ftokorozawae-cube",
+      "eventIds": [
+        "230f0474484bfe70"
+      ],
+      "areaCode": "110010",
+      "areaName": "埼玉県",
+      "precision": "area",
+      "label": "くもり時々晴れ",
+      "max": 29.0,
+      "min": 21.0,
+      "pop": "20",
+      "popLabel": "1日",
+      "issuedAt": "2026-08-29T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
     }
   ],
   "stats": {
-    "occurrencesInRange": 11,
-    "uniqueVenueDates": 9,
-    "weatherEntries": 7,
+    "occurrencesInRange": 9,
+    "uniqueVenueDates": 8,
+    "weatherEntries": 8,
     "meshEntries": 3,
-    "failures": 2,
+    "failures": 0,
     "meshTimelineEntries": 3,
-    "meshExactTempSlots": 20,
+    "meshExactTempSlots": 18,
     "hourlyRainEntries": 1
   },
-  "failures": [
-    {
-      "date": "2026-09-05",
-      "venue": "埼玉県 エミテラス所沢2F TOKOROZAWA e-CUBE",
-      "reason": "開催日の予報がまだありません"
-    },
-    {
-      "date": "2026-09-05",
-      "venue": "ベルサール汐留",
-      "reason": "開催日の予報がまだありません"
-    }
-  ]
+  "failures": []
 }
