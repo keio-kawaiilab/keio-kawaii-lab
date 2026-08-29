@@ -1,17 +1,18 @@
 {
   "status": "ok",
-  "generatedAt": "2026-08-29T09:06:29.062072+09:00",
-  "candidateUpdatedAt": "2026-08-29T09:06:28+09:00",
-  "previousEventCount": 83,
+  "generatedAt": "2026-08-29T09:40:26.780336+09:00",
+  "candidateUpdatedAt": "2026-08-29T09:40:26+09:00",
+  "previousEventCount": 84,
   "candidateEventCount": 84,
-  "protectedPreviousCount": 83,
+  "protectedPreviousCount": 84,
   "errorCount": 0,
-  "warningCount": 1,
+  "warningCount": 2,
   "errors": [],
   "warnings": [
-    "performance dates added for url:https://x.com/MORE_STAR_/status/2093324279639392675 [MORE STAR]: 2027-02-02"
+    "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for url:https://x.com/MORE_STAR_/status/2092956382366744633 [MORE STAR]: 2027-02-03",
+    "quarantined one event/source update and kept the previous known-good data: duplicate event id: bc91bdf5602e005e"
   ],
-  "candidateSha256": "2076102191aeaae7e05701f8d55fb866c48212ecbc3db3015c01f350d72bca76",
+  "candidateSha256": "85ec73c9a75e28c25a2db0f7814f9c78483aa6d61ba426abbe914ff15afa8076",
   "sharedSourceDateSetsReconciled": [
     "url:https://books.faq.rakuten.net/s/ask",
     "url:https://fruitszipper.asobisystem.com/live_information/detail/42630",
@@ -33,8 +34,27 @@
     "url:https://x.com/MORE_STAR_/status/2092956382366744633",
     "url:https://x.com/MORE_STAR_/status/2093324279639392675"
   ],
-  "reconciledBaseDateMessageCount": 14,
+  "reconciledBaseDateMessageCount": 16,
   "downgradedFalsePositiveCount": 0,
-  "quarantineCount": 0,
-  "quarantineActions": []
+  "quarantineCount": 2,
+  "quarantineActions": [
+    {
+      "error": "future performance dates disappeared for url:https://x.com/MORE_STAR_/status/2092956382366744633 [MORE STAR]: 2027-02-03",
+      "action": "restored previous rows for url:https://x.com/MORE_STAR_/status/2092956382366744633",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "duplicate event id: bc91bdf5602e005e",
+      "action": "restored previous duplicate-id row",
+      "restoredPreviousRows": 1
+    }
+  ],
+  "officialIndexReconciledAfterQuarantine": {
+    "reassignedCount": 0,
+    "ambiguousCount": 0,
+    "unresolvedCount": 0,
+    "reassigned": [],
+    "ambiguous": [],
+    "unresolved": []
+  }
 }
