@@ -24,6 +24,12 @@
     var text=clean((copy&&copy.textContent)||"")+" "+clean((provider&&provider.textContent)||"");
     if(!/リセール|resale/i.test(text))return;
 
+    var stateLabel=clean((state&&state.textContent)||"");
+    if(stateLabel==="受付終了"||stateLabel==="リセール終了"){
+      option.remove();
+      return;
+    }
+
     option.classList.add("resale-ticket-option");
     if(provider){
       provider.textContent="公式リセール";
@@ -31,10 +37,8 @@
     }
     if(link)link.textContent="リセールページ →";
     if(state){
-      var label=clean(state.textContent);
-      if(label==="受付終了")state.textContent="リセール終了";
-      else if(/受付中/.test(label))state.textContent="リセール受付中";
-      else if(/予定/.test(label))state.textContent="リセール予定";
+      if(/受付中/.test(stateLabel))state.textContent="リセール受付中";
+      else if(/予定/.test(stateLabel))state.textContent="リセール予定";
     }
   }
 
@@ -57,6 +61,9 @@
   function run(){
     Array.prototype.slice.call(cards.querySelectorAll(".ticket-option")).forEach(decorateOption);
     Array.prototype.slice.call(cards.querySelectorAll(".ticket-flow .step")).forEach(decorateStep);
+    Array.prototype.slice.call(cards.querySelectorAll(".ticket-options")).forEach(function(list){
+      if(!list.querySelector(".ticket-option"))list.style.display="none";
+    });
   }
 
   var queued=false;
