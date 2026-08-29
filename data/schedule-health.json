@@ -1,17 +1,21 @@
 {
   "status": "ok",
-  "generatedAt": "2026-08-30T00:23:41.130204+09:00",
-  "candidateUpdatedAt": "2026-08-30T00:23:40+09:00",
-  "previousEventCount": 73,
-  "candidateEventCount": 73,
-  "protectedPreviousCount": 73,
+  "generatedAt": "2026-08-30T01:04:02.020259+09:00",
+  "candidateUpdatedAt": "2026-08-30T01:04:01+09:00",
+  "previousEventCount": 70,
+  "candidateEventCount": 71,
+  "protectedPreviousCount": 70,
   "errorCount": 0,
-  "warningCount": 0,
+  "warningCount": 2,
   "errors": [],
-  "warnings": [],
-  "candidateSha256": "91ec5eff4e5cf5ee79298190d428614cadd647cf907846566b1553cae630e8a1",
+  "warnings": [
+    "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for url:https://sweetsteady.asobisystem.com/news/detail/88315: 2026-09-07, 2026-09-14",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no verified purchase/ticket window: SWEET STEADY / 【SWEET STEADY】 3rdシングル『SWEET STEP』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし"
+  ],
+  "candidateSha256": "ffbf57ac47887c56675719750e6dcbb9efe6ecaaa63a5233570dbde1beafe6df",
   "sharedSourceDateSetsReconciled": [
     "url:https://books.faq.rakuten.net/s/ask",
+    "url:https://fruitszipper.asobisystem.com/news/detail/88153",
     "url:https://img.hmv.co.jp/cont/online/fzss17047926lp/",
     "url:https://kawaiilab.goods-order.com",
     "url:https://pages-kawaiilab.goods-order.com/usage",
@@ -28,6 +32,36 @@
   ],
   "reconciledBaseDateMessageCount": 4,
   "downgradedFalsePositiveCount": 0,
-  "quarantineCount": 0,
-  "quarantineActions": []
+  "legacyProtectedErrorCount": 1,
+  "legacyProtectedErrors": [
+    {
+      "error": "special event has no verified purchase/ticket window: SWEET STEADY / 【SWEET STEADY】 3rdシングル『SWEET STEP』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
+      "label": "SWEET STEADY / 【SWEET STEADY】 3rdシングル『SWEET STEP』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    }
+  ],
+  "quarantineCount": 1,
+  "quarantineActions": [
+    {
+      "error": "future performance dates disappeared for url:https://sweetsteady.asobisystem.com/news/detail/88315: 2026-09-07, 2026-09-14",
+      "action": "restored previous rows for url:https://sweetsteady.asobisystem.com/news/detail/88315",
+      "restoredPreviousRows": 1
+    }
+  ],
+  "officialIndexReconciledAfterQuarantine": {
+    "reassignedCount": 1,
+    "ambiguousCount": 0,
+    "unresolvedCount": 0,
+    "reassigned": [
+      {
+        "group": "SWEET STEADY",
+        "date": "2026-09-07",
+        "url": "https://sweetsteady.asobisystem.com/live_information/detail/43899",
+        "from": "b84092c8d69077b6",
+        "to": "special-9332aaf17a50c3a8"
+      }
+    ],
+    "ambiguous": [],
+    "unresolved": []
+  }
 }
