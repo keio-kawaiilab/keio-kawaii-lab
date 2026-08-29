@@ -21,52 +21,33 @@ PERFORMANCE_KEY_JS = (
 )
 
 
-def literal_replacement(_match: re.Match[str]) -> str:
-    """Return JavaScript verbatim instead of letting re.sub parse backslashes."""
-    return PERFORMANCE_KEY_JS
+def replace_identity_block(page: str) -> str:
+    """Replace the performance identity functions using stable JS anchors.
+
+    Do not parse minified JavaScript functions with a regex: regex literals in
+    the JS contain braces such as ``.{2,3}``, which look like function-closing
+    braces to a non-JS parser. The next named function is a stable delimiter
+    for both the legacy and current forms.
+    """
+    current_start = page.find("function performanceVenueKey(e,o)")
+    legacy_start = page.find("function performanceKey(e,o)")
+    if current_start >= 0:
+        start = current_start
+    elif legacy_start >= 0:
+        start = legacy_start
+    else:
+        raise RuntimeError("could not locate performanceKey() in schedule.html")
+
+    end = page.find("function performanceKeyForEvent", start)
+    if end < 0:
+        raise RuntimeError("could not locate performanceKeyForEvent() in schedule.html")
+
+    return page[:start] + PERFORMANCE_KEY_JS + page[end:]
 
 
 def main() -> int:
     page = PAGE.read_text(encoding="utf-8")
-
-    # First handle the already-normalized form. This makes the post-processor
-    # idempotent: repeated scheduled builds must not delete the helper before
-    # trying to recognize the occurrence-based performanceKey implementation.
-    current_pattern = (
-        r"function performanceVenueKey\(e,o\)\{.*?\}"
-        r"function performanceKey\(e,o\)\{.*?\}"
-        r"(?=function performanceKeyForEvent)"
-    )
-    page, count = re.subn(
-        current_pattern,
-        literal_replacement,
-        page,
-        count=1,
-        flags=re.S,
-    )
-
-    if count != 1:
-        # Upgrade the original title-based performance identity.
-        legacy_pattern = (
-            r"function performanceKey\(e,o\)\{"
-            r"return\[String\(e\.group\|\|''\),String\(o\.date\|\|''\)\.slice\(0,10\),"
-            r"eventKind\(e\),performanceTitleKey\(e\)\]\.join\('\|'\)\}"
-        )
-        page, count = re.subn(legacy_pattern, literal_replacement, page, count=1)
-
-    if count != 1:
-        # Recover safely if an older failed/manual post-process left the
-        # occurrence-based performanceKey in place without the venue helper.
-        page, count = re.subn(
-            r"function performanceKey\(e,o\)\{.*?\}(?=function performanceKeyForEvent)",
-            literal_replacement,
-            page,
-            count=1,
-            flags=re.S,
-        )
-
-    if count != 1:
-        raise RuntimeError("could not locate performanceKey() in schedule.html")
+    page = replace_identity_block(page)
 
     required = (
         "function performanceTitleKey(e)",
