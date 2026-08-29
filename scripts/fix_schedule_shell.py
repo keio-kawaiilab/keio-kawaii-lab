@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 
+import build_schedule_snapshot
+from normalize_special_event_entities import normalize_payload, validate
+
 PAGE = Path("schedule.html")
+DATA = Path("data/live-events.json")
 
 # Public schedule identity is based on the actual performance, not the sale row.
 # Normal live performances can have two shows on the same day, so a verified
@@ -38,8 +43,17 @@ PREPARE_OLD = "function prepare(raw){var fixed=raw.map(function(e){return repair
 PREPARE_NEW = "function prepare(raw){raw=expandCanonicalOffers(raw);var fixed=raw.map(function(e){return repair(e,raw)});fixed=mergePiaDuplicates(fixed);return fixed.filter(function(e){if(playguide(e)&&(family(e)==='fc'||family(e)==='upgrade'))return false;return currentEnough(e)})}"
 
 
+def canonicalize_public_data() -> dict:
+    payload = json.loads(DATA.read_text(encoding="utf-8"))
+    normalized, report = normalize_payload(payload)
+    errors = validate(normalized)
+    if errors:
+        raise RuntimeError("canonical special-event normalization failed: " + "; ".join(errors))
+    DATA.write_text(json.dumps(normalized, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return report
+
+
 def replace_identity_block(page: str) -> str:
-    """Replace performance identity using named JS function boundaries."""
     current_start = page.find("function performanceVenueKey(e,o)")
     legacy_start = page.find("function performanceKey(e,o)")
     if current_start >= 0:
@@ -70,6 +84,14 @@ def install_offer_adapter(page: str) -> str:
 
 
 def main() -> int:
+    # This is the final release boundary. Collectors/audits may temporarily work
+    # with one row per source, but no such row can reach the public JSON. Always
+    # collapse to one real event + child offers, then rebuild the page from that
+    # canonical data before applying the client-side compatibility adapter.
+    report = canonicalize_public_data()
+    if build_schedule_snapshot.main() != 0:
+        raise RuntimeError("failed to rebuild schedule after canonical special-event normalization")
+
     page = PAGE.read_text(encoding="utf-8")
     page = replace_identity_block(page)
     page = install_offer_adapter(page)
@@ -97,6 +119,7 @@ def main() -> int:
     Path("/tmp/schedule-inline.js").write_text(executable[0], encoding="utf-8")
     PAGE.write_text(page, encoding="utf-8")
     print("Schedule renders canonical special-event entities with child sale offers")
+    print(json.dumps(report, ensure_ascii=False))
     return 0
 
 
