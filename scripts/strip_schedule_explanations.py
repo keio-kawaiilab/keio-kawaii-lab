@@ -21,13 +21,16 @@ PERFORMANCE_KEY = (
     "function performanceKey(e,o){return[String(e.group||''),String(o.date||'').slice(0,10),eventKind(e),performanceTitleKey(e)].join('|')}"
 )
 # fix_schedule_shell.py upgrades the simple visible-title key to an occurrence-based
-# identity (group + date + kind + start time, with visible-title fallback). That is
-# stricter and still explicitly uses performanceTitleKey(e), so it is already valid.
+# identity. Normal lives use start time where available, while release/large-benefit
+# events intentionally ignore sale-row startTime and collapse by visible event + venue.
+# These markers validate either upgraded form without trying to parse minified JS.
 OCCURRENCE_PERFORMANCE_MARKERS = (
     "function performanceVenueKey(e,o)",
     "function performanceKey(e,o)",
     "performanceTitleKey(e)",
-    "base.concat(['fallback',performanceVenueKey(e,o),performanceTitleKey(e)]).join('|')",
+    "kind==='release'||kind==='benefit'",
+    "base.concat(['special',venue,titleKey]).join('|')",
+    "base.concat(['fallback',venue,titleKey]).join('|')",
 )
 LEGACY_BAND_KEY_TAIL = "String(e.applyEnd||''),canon(e)].join('|')"
 BAND_KEY_TAIL = "String(e.applyEnd||''),performanceTitleKey(e)].join('|')"
