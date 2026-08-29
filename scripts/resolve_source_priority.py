@@ -5,6 +5,7 @@ import json
 import re
 import unicodedata
 from pathlib import Path
+from urllib.parse import urlsplit, urlunsplit
 
 DATA_PATH = Path("data/live-events.json")
 GROUP_NAMES = (
@@ -13,6 +14,7 @@ GROUP_NAMES = (
 )
 LOT_RE = re.compile(r"[?&]lotRlsCd=([A-Za-z0-9_-]+)")
 SUKISUKI_GOODS_RE = re.compile(r"https?://(?:api\.)?sukisuki-shop\.com/goods/(\d+)", re.I)
+PREFECTURE_PREFIX_RE = re.compile(r"^(?:北海道|東京都|京都府|大阪府|.{2,3}県)\s*")
 
 
 def normalize_text(value: object) -> str:
@@ -132,6 +134,83 @@ def group_key(event: dict) -> tuple[str, tuple[str, ...]]:
     return normalize_text(event.get("group")), participants
 
 
+def canonical_source_url(event: dict) -> str:
+    values = source_urls(event)
+    if not values:
+        return ""
+    url = values[0].strip()
+    try:
+        parts = urlsplit(url)
+    except ValueError:
+        return url
+    host = parts.netloc.lower()
+    # eplus adds tracking / route query parameters (for example ?P1=0175)
+    # to the same /sf/detail/... performance. They are not separate receptions.
+    if source_kind(event) == "eplus" and host.endswith("eplus.jp") and "/sf/detail/" in parts.path:
+        return urlunsplit((parts.scheme.lower(), host, parts.path.rstrip("/"), "", ""))
+    return urlunsplit((parts.scheme.lower(), host, parts.path.rstrip("/"), parts.query, ""))
+
+
+def normalize_venue(value: object) -> str:
+    text = normalize_text(value).lower()
+    text = PREFECTURE_PREFIX_RE.sub("", text)
+    return re.sub(r"[\s　・･,，.。()（）\-–—_]", "", text)
+
+
+def occurrences(event: dict) -> list[tuple[str, str, str]]:
+    rows: list[tuple[str, str, str]] = []
+    schedule = event.get("schedule")
+    if isinstance(schedule, list) and schedule:
+        for item in schedule:
+            if not isinstance(item, dict) or not item.get("date"):
+                continue
+            rows.append((
+                str(item.get("date"))[:10],
+                normalize_venue(item.get("venue") or event.get("venue")),
+                normalize_text(item.get("startTime") or event.get("startTime")),
+            ))
+    elif isinstance(event.get("eventDates"), list) and event.get("eventDates"):
+        for value in event.get("eventDates") or []:
+            if value:
+                rows.append((
+                    str(value)[:10],
+                    normalize_venue(event.get("venue")),
+                    normalize_text(event.get("startTime")),
+                ))
+    elif event.get("eventDate"):
+        rows.append((
+            str(event.get("eventDate"))[:10],
+            normalize_venue(event.get("venue")),
+            normalize_text(event.get("startTime")),
+        ))
+    return rows
+
+
+def generic_same_source_duplicate(a: dict, b: dict) -> bool:
+    source_a, source_b = source_kind(a), source_kind(b)
+    if source_a != source_b or source_a not in {"pia", "lawson", "eplus"}:
+        return False
+    if normalize_text(a.get("ticketType")) != normalize_text(b.get("ticketType")):
+        return False
+    if normalize_text(a.get("applyStart")) != normalize_text(b.get("applyStart")):
+        return False
+    if normalize_text(a.get("applyEnd")) != normalize_text(b.get("applyEnd")):
+        return False
+    if event_days(a) != event_days(b) or not event_days(a):
+        return False
+
+    url_a, url_b = canonical_source_url(a), canonical_source_url(b)
+    if url_a and url_b and url_a == url_b:
+        return True
+
+    rows_a, rows_b = occurrences(a), occurrences(b)
+    if not rows_a or not rows_b:
+        return False
+    # Generic provider titles (often just the artist name) are safe to collapse
+    # when every performance date resolves to the same venue/start combination.
+    return set(rows_a) == set(rows_b)
+
+
 def same_event_and_sale(a: dict, b: dict) -> bool:
     if group_key(a) != group_key(b):
         return False
@@ -148,7 +227,7 @@ def same_event_and_sale(a: dict, b: dict) -> bool:
 
     # A Ticket Pia lotRlsCd is an actual application page. Never collapse two
     # different application pages into one record, even if dates/windows match.
-    if source_kind(a) == "pia" and source_kind(b) == "pia":
+    if source_a == "pia" and source_b == "pia":
         lots_a, lots_b = pia_lots(a), pia_lots(b)
         if lots_a and lots_b and lots_a != lots_b:
             return False
@@ -156,7 +235,7 @@ def same_event_and_sale(a: dict, b: dict) -> bool:
     # SUKISUKI often adds a separate first-come / bingo-first-come goods page
     # immediately before the stream. Keep each goods page as a distinct sale
     # round, and never collapse lottery and first-come ticket types together.
-    if source_kind(a) == "sukisuki" and source_kind(b) == "sukisuki":
+    if source_a == "sukisuki" and source_b == "sukisuki":
         if normalize_text(a.get("ticketType")) != normalize_text(b.get("ticketType")):
             return False
         goods_a, goods_b = sukisuki_goods(a), sukisuki_goods(b)
@@ -167,7 +246,7 @@ def same_event_and_sale(a: dict, b: dict) -> bool:
         return False
     title_a, title_b = canonical_title(a), canonical_title(b)
     if not title_a or not title_b:
-        return False
+        return generic_same_source_duplicate(a, b)
     return title_a == title_b or title_a in title_b or title_b in title_a
 
 
@@ -197,11 +276,18 @@ def merge_duplicate(items: list[dict]) -> dict:
         for url in source_urls(item):
             if url not in all_urls:
                 all_urls.append(url)
+        # Keep richer timing/venue data when the winning URL variant omitted it.
+        for field in ("venue", "openTime", "startTime", "eventTitle", "displayTitle"):
+            if not winner.get(field) and item.get(field):
+                winner[field] = item[field]
     if all_urls:
         winner["urls"] = all_urls
         winner["url"] = source_urls(ranked[0])[0] if source_urls(ranked[0]) else all_urls[0]
     winner["primarySource"] = source_kind(ranked[0])
     winner["sourceCandidates"] = sorted({source_kind(item) for item in ranked})
+    winner.pop("sourceStale", None)
+    winner.pop("sourceStaleSince", None)
+    winner.pop("releaseRetentionReason", None)
     return winner
 
 
@@ -223,10 +309,94 @@ def resolve(events: list[dict]) -> list[dict]:
     return result
 
 
+def match_score(playguide_event: dict, official_event: dict) -> int:
+    if group_key(playguide_event) != group_key(official_event):
+        return -1
+    if is_online(playguide_event) != is_online(official_event):
+        return -1
+    play_rows = occurrences(playguide_event)
+    off_rows = occurrences(official_event)
+    if not play_rows or not off_rows:
+        return -1
+
+    score = 0
+    matched_days: set[str] = set()
+    for day, venue, start in play_rows:
+        best = -1
+        for o_day, o_venue, o_start in off_rows:
+            if day != o_day:
+                continue
+            local = 10
+            if venue and o_venue:
+                if venue != o_venue:
+                    continue
+                local += 30
+            if start and o_start:
+                if start != o_start:
+                    continue
+                local += 20
+            best = max(best, local)
+        if best >= 0:
+            score += best
+            matched_days.add(day)
+
+    if not matched_days:
+        return -1
+    play_days = set(event_days(playguide_event))
+    if play_days and matched_days == play_days:
+        score += 40
+    return score
+
+
+def align_playguide_event_titles(events: list[dict]) -> list[dict]:
+    official = [
+        event for event in events
+        if source_kind(event) == "official" and canonical_title(event)
+    ]
+    out: list[dict] = []
+    for event in events:
+        source = source_kind(event)
+        if source not in {"pia", "lawson", "eplus"}:
+            out.append(event)
+            continue
+
+        scored: list[tuple[int, dict]] = []
+        for candidate in official:
+            score = match_score(event, candidate)
+            if score >= 0:
+                scored.append((score, candidate))
+        if not scored:
+            out.append(event)
+            continue
+
+        top_score = max(score for score, _ in scored)
+        top = [candidate for score, candidate in scored if score == top_score]
+        canonical_titles = {canonical_title(candidate) for candidate in top if canonical_title(candidate)}
+        # If two genuinely different official events are equally plausible, keep the
+        # provider title rather than risking a false merge in the public calendar.
+        if len(canonical_titles) != 1:
+            out.append(event)
+            continue
+
+        candidate = next(candidate for candidate in top if canonical_title(candidate) in canonical_titles)
+        authoritative_title = normalize_text(
+            candidate.get("displayTitle") or candidate.get("eventTitle") or candidate.get("title")
+        )
+        if not authoritative_title:
+            out.append(event)
+            continue
+        updated = dict(event)
+        updated["eventTitle"] = authoritative_title
+        updated["performanceMatchedToOfficial"] = True
+        out.append(updated)
+    return out
+
+
 def resolve_payload(payload: dict) -> dict:
     out = dict(payload)
     events = [dict(x) for x in payload.get("events", []) if isinstance(x, dict)]
-    out["events"] = resolve(events)
+    resolved = resolve(events)
+    out["events"] = align_playguide_event_titles(resolved)
     out["source"] = "KAWAII LAB.各グループ公式公開情報 + チケットぴあ・ローチケ・イープラス公開情報 + SUKISUKI公開オンライン特典会情報 + 公式大特典会・リリースイベント情報"
     return out
 
