@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-08-30T03:12:17.779397+09:00",
+  "generatedAt": "2026-08-30T03:14:44.405272+09:00",
   "candidateUpdatedAt": "2026-08-30T03:08:06+09:00",
-  "previousEventCount": 68,
+  "previousEventCount": 73,
   "candidateEventCount": 73,
-  "protectedPreviousCount": 68,
+  "protectedPreviousCount": 73,
   "errorCount": 0,
-  "warningCount": 6,
+  "warningCount": 10,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: special event has no verified purchase/ticket window: MORE STAR / 【MORE STAR】 1st シングル『サマーゴー！！ / WITH KAWAII論』発売記念リリースイベント @ところざわサクラタウン 千人テラス / 現在受付なし",
@@ -14,12 +14,17 @@
     "quarantined one event/source update and kept the previous known-good data: special event has no verified purchase/ticket window: SWEET STEADY / 【SWEET STEADY】 3rdシングル『SWEET STEP』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no verified purchase/ticket window: MORE STAR / 【MORE STAR】 1st シングル『サマーゴー！！ / WITH KAWAII論』発売記念リリースイベント @ところざわサクラタウン 千人テラス / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no verified purchase/ticket window: CANDY TUNE / CANDY TUNE 4thシングル『総意♡So Free / スペシャル感謝祭』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no verified purchase/ticket window: SWEET STEADY / 【SWEET STEADY】 3rdシングル『SWEET STEP』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし"
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no verified purchase/ticket window: SWEET STEADY / 【SWEET STEADY】 3rdシングル『SWEET STEP』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール"
   ],
-  "candidateSha256": "209b2833ea434a59bbc14b182eab86aa0f6d915617d902332f2704945ac8fbf6",
+  "candidateSha256": "9ac7f1e690716daf2458e1b73b90116e08decb5c77dc5d00a2228f7c1f7db1a0",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://img.hmv.co.jp/cont/online/fzss17047926lp/",
+    "url:https://kawaiilab.asobisystem.com/news/detail/88214",
     "url:https://kawaiilab.goods-order.com",
     "url:https://pages-kawaiilab.goods-order.com/usage",
     "url:https://sukisuki-shop.com/contact",
@@ -35,7 +40,7 @@
   ],
   "reconciledBaseDateMessageCount": 4,
   "downgradedFalsePositiveCount": 0,
-  "legacyProtectedErrorCount": 3,
+  "legacyProtectedErrorCount": 7,
   "legacyProtectedErrors": [
     {
       "error": "special event has no verified purchase/ticket window: MORE STAR / 【MORE STAR】 1st シングル『サマーゴー！！ / WITH KAWAII論』発売記念リリースイベント @ところざわサクラタウン 千人テラス / 現在受付なし",
@@ -50,6 +55,26 @@
     {
       "error": "special event has no verified purchase/ticket window: SWEET STEADY / 【SWEET STEADY】 3rdシングル『SWEET STEP』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
       "label": "SWEET STEADY / 【SWEET STEADY】 3rdシングル『SWEET STEP』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
+      "label": "CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
+      "label": "CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
+      "label": "CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
+      "label": "CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
