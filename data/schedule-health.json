@@ -1,23 +1,22 @@
 {
   "status": "ok",
-  "generatedAt": "2026-08-30T02:00:58.038696+09:00",
-  "candidateUpdatedAt": "2026-08-30T02:00:57+09:00",
-  "previousEventCount": 69,
-  "candidateEventCount": 69,
-  "protectedPreviousCount": 69,
+  "generatedAt": "2026-08-30T02:17:45.660807+09:00",
+  "candidateUpdatedAt": "2026-08-30T02:17:45+09:00",
+  "previousEventCount": 68,
+  "candidateEventCount": 68,
+  "protectedPreviousCount": 68,
   "errorCount": 0,
-  "warningCount": 7,
+  "warningCount": 6,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: special event has no verified purchase/ticket window: CANDY TUNE / CANDY TUNE 4thシングル『総意♡So Free / スペシャル感謝祭』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event has no verified purchase/ticket window: SWEET STEADY / 【SWEET STEADY】 3rdシングル『SWEET STEP』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for url:https://sweetsteady.asobisystem.com/news/detail/88315: 2026-09-07, 2026-09-14",
-    "quarantined one event/source update and kept the previous known-good data: protected future/active item disappeared: CANDY TUNE / 🍬🎸4th single リリースイベント🥁🍬 / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no verified purchase/ticket window: MORE STAR / 【MORE STAR】 1st シングル『サマーゴー！！ / WITH KAWAII論』発売記念リリースイベント @ところざわサクラタウン 千人テラス / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no verified purchase/ticket window: CANDY TUNE / CANDY TUNE 4thシングル『総意♡So Free / スペシャル感謝祭』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no verified purchase/ticket window: SWEET STEADY / 【SWEET STEADY】 3rdシングル『SWEET STEP』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし"
   ],
-  "candidateSha256": "25ccc308c33a16c1f2fc3b9281998c5e518e5c22ecfd0553843af52526a27ef3",
+  "candidateSha256": "73625a129fdd09c5c54973a1202f725486654c4f322add640d671af7ef9e1568",
   "sharedSourceDateSetsReconciled": [
     "url:https://img.hmv.co.jp/cont/online/fzss17047926lp/",
     "url:https://kawaiilab.goods-order.com",
@@ -53,7 +52,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 4,
+  "quarantineCount": 3,
   "quarantineActions": [
     {
       "error": "special event has no verified purchase/ticket window: CANDY TUNE / CANDY TUNE 4thシングル『総意♡So Free / スペシャル感謝祭』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
@@ -68,11 +67,6 @@
     {
       "error": "future performance dates disappeared for url:https://sweetsteady.asobisystem.com/news/detail/88315: 2026-09-07, 2026-09-14",
       "action": "restored previous rows for url:https://sweetsteady.asobisystem.com/news/detail/88315",
-      "restoredPreviousRows": 1
-    },
-    {
-      "error": "protected future/active item disappeared: CANDY TUNE / 🍬🎸4th single リリースイベント🥁🍬 / 現在受付なし",
-      "action": "restored disappeared previous row",
       "restoredPreviousRows": 1
     }
   ],

@@ -1,6 +1,6 @@
 {
   "demo": false,
-  "updatedAt": "2026-08-30T02:00:57+09:00",
+  "updatedAt": "2026-08-30T02:17:45+09:00",
   "source": "KAWAII LAB.各グループ公式公開情報 + チケットぴあ・ローチケ・イープラス公開情報 + SUKISUKI公開オンライン特典会情報 + 公式大特典会・リリースイベント情報",
   "events": [
     {
@@ -239,7 +239,7 @@
         "official"
       ],
       "eventScope": "kawaii-lab",
-      "officialScheduleUrl": "https://candytune.asobisystem.com/live_information/detail/40726",
+      "officialScheduleUrl": "https://candytune.asobisystem.com/live_information/detail/40722",
       "officialTourUrl": "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026"
     },
     {
@@ -364,7 +364,7 @@
       "eventCategory": "release-event",
       "ticketType": "現在受付なし",
       "eventDate": "2026-09-01",
-      "venue": "複数会場（全2公演）",
+      "venue": "埼玉県 エミテラス所沢2F TOKOROZAWA e-CUBE",
       "salesStartTime": "15:00",
       "gatheringTime": "17:15",
       "startTime": "18:00",
@@ -447,21 +447,16 @@
       "schedule": [
         {
           "date": "2026-09-01",
-          "venue": "エミテラス所沢 2F TOKOROZAWA e-CUBE"
-        },
-        {
-          "date": "2026-09-01",
           "venue": "埼玉県 エミテラス所沢2F TOKOROZAWA e-CUBE",
           "startTime": "18:00"
         }
       ],
-      "eventCount": 2,
+      "eventCount": 1,
       "eventDates": [
         "2026-09-01"
       ],
       "eventEndDate": "2026-09-01",
       "venues": [
-        "エミテラス所沢 2F TOKOROZAWA e-CUBE",
         "埼玉県 エミテラス所沢2F TOKOROZAWA e-CUBE"
       ],
       "physicalInvariantMerged": true
@@ -700,7 +695,7 @@
         "official"
       ],
       "eventScope": "kawaii-lab",
-      "officialScheduleUrl": "https://fruitszipper.asobisystem.com/live_information/detail/40042",
+      "officialScheduleUrl": "https://fruitszipper.asobisystem.com/live_information/detail/40033",
       "openTime": "17:30",
       "startTime": "18:30",
       "officialTourUrl": "https://fruitszipper.asobisystem.com/feature/2026tour_autumn"
@@ -4187,66 +4182,39 @@
     "failures": []
   },
   "releasePreparation": {
-    "preparedAt": "2026-08-30T02:00:57+09:00",
+    "preparedAt": "2026-08-30T02:17:45+09:00",
     "normalizedSpecialEvents": 1,
     "duplicateIdsRemoved": 0,
     "retainedPreviousRows": 1,
     "retained": [
       {
-        "id": "special-dcb27864cd548907-schedule",
+        "id": "special-a91f4fd0f80a1f20-schedule",
         "group": "CANDY TUNE",
-        "title": "🍬🎸4th single リリースイベント🥁🍬",
+        "title": "CANDY TUNE 4thシングル『総意♡So Free / スペシャル感謝祭』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜",
         "ticketType": "現在受付なし",
         "provider": null,
         "applyEnd": null
       }
     ],
-    "expandedPreviousSpecialEntities": 9,
+    "expandedPreviousSpecialEntities": 8,
     "expandedCandidateSpecialEntities": 2,
     "officialXSeriesMerged": 0,
     "officialXRowsCollapsed": 0,
     "physicalEventInvariant": {
       "semanticNormalization": {
         "sourceSpecialRows": 11,
-        "canonicalSpecialEvents": 10,
-        "rowsCollapsed": 1,
-        "releaseEventEntities": 5,
+        "canonicalSpecialEvents": 9,
+        "rowsCollapsed": 2,
+        "releaseEventEntities": 4,
         "largeBenefitEntities": 5,
         "alreadyCanonicalRows": 3
       },
-      "specialEventsBeforePhysicalMerge": 10,
+      "specialEventsBeforePhysicalMerge": 9,
       "specialEventsAfterPhysicalMerge": 8,
-      "physicalRowsCollapsed": 2,
-      "collisionCount": 2,
+      "physicalRowsCollapsed": 1,
+      "internalScheduleRowsCollapsed": 1,
+      "collisionCount": 1,
       "collisions": [
-        {
-          "sourceIds": [
-            "special-a91f4fd0f80a1f20",
-            "special-dcb27864cd548907"
-          ],
-          "titles": [
-            "4thシングル『総意♡So Free / スペシャル感謝祭』発売記念リリースイベント",
-            "🍬🎸4th single リリースイベント🥁🍬"
-          ],
-          "physicalOccurrences": [
-            {
-              "group": "candy tune",
-              "date": "2026-09-01",
-              "startTime": null,
-              "venueKey": "エミテラス所沢2ftokorozawaecube"
-            },
-            {
-              "group": "candy tune",
-              "date": "2026-09-01",
-              "startTime": "18:00",
-              "venueKey": "エミテラス所沢2ftokorozawaecube"
-            }
-          ],
-          "sourceCategories": [
-            "release-event"
-          ],
-          "containsIncompleteTime": true
-        },
         {
           "sourceIds": [
             "special-124c630f19e88897",
@@ -4275,7 +4243,7 @@
     }
   },
   "distributedMergeDiagnostics": {
-    "mergedAt": "2026-08-30T02:00:57+09:00",
+    "mergedAt": "2026-08-30T02:17:45+09:00",
     "sources": {
       "playguide": {
         "previous": 14,
@@ -4333,47 +4301,19 @@
   },
   "physicalEventInvariant": {
     "semanticNormalization": {
-      "sourceSpecialRows": 9,
-      "canonicalSpecialEvents": 9,
+      "sourceSpecialRows": 8,
+      "canonicalSpecialEvents": 8,
       "rowsCollapsed": 0,
-      "releaseEventEntities": 5,
+      "releaseEventEntities": 4,
       "largeBenefitEntities": 4,
-      "alreadyCanonicalRows": 9
+      "alreadyCanonicalRows": 8
     },
-    "specialEventsBeforePhysicalMerge": 9,
+    "specialEventsBeforePhysicalMerge": 8,
     "specialEventsAfterPhysicalMerge": 8,
-    "physicalRowsCollapsed": 1,
-    "collisionCount": 1,
-    "collisions": [
-      {
-        "sourceIds": [
-          "special-a91f4fd0f80a1f20",
-          "special-dcb27864cd548907"
-        ],
-        "titles": [
-          "4thシングル『総意♡So Free / スペシャル感謝祭』発売記念リリースイベント",
-          "🍬🎸4th single リリースイベント🥁🍬"
-        ],
-        "physicalOccurrences": [
-          {
-            "group": "candy tune",
-            "date": "2026-09-01",
-            "startTime": null,
-            "venueKey": "エミテラス所沢2ftokorozawaecube"
-          },
-          {
-            "group": "candy tune",
-            "date": "2026-09-01",
-            "startTime": "18:00",
-            "venueKey": "エミテラス所沢2ftokorozawaecube"
-          }
-        ],
-        "sourceCategories": [
-          "release-event"
-        ],
-        "containsIncompleteTime": true
-      }
-    ],
+    "physicalRowsCollapsed": 0,
+    "internalScheduleRowsCollapsed": 1,
+    "collisionCount": 0,
+    "collisions": [],
     "remainingDuplicateCount": 0,
     "remainingDuplicates": []
   },
