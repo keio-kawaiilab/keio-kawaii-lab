@@ -9,6 +9,7 @@ from pathlib import Path
 
 import dedupe_official_x_series as official_x_dedupe
 from expand_special_event_entities import expand_payload
+from enforce_physical_event_invariant import enforce_payload
 from audit_schedule_release import (
     JST,
     clock_minutes,
@@ -242,6 +243,12 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
         "expandedCandidateSpecialEntities": candidate_expand.get("expandedSpecialEntities", 0),
         **official_x_report,
     }
+
+    # Hard public invariant: source wording, URL and sales channel can never
+    # create two special-event entities for one physically impossible duplicate.
+    # Same group + same date + same start time + same venue is one real event.
+    out, physical_report = enforce_payload(out)
+    out["releasePreparation"]["physicalEventInvariant"] = physical_report
     return out, out["releasePreparation"]
 
 
