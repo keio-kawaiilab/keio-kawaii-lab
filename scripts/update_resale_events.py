@@ -113,10 +113,9 @@ def extract_resale_windows(lines: list[str], article_year: int) -> list[tuple[in
 
 
 def extract_event_day_candidates(lines: list[str], article_date: str | None, windows: list[tuple[int, str, str]], article_year: int) -> list[tuple[int, str]]:
+    # Window rows are skipped below, so a performance date must not be discarded
+    # just because it happens to equal another resale window's start/end date.
     excluded = {str(article_date or "")[:10]}
-    for _, start, end in windows:
-        excluded.add(start[:10])
-        excluded.add(end[:10])
     found = []
     seen = set()
     for index, line in enumerate(lines):
@@ -131,7 +130,9 @@ def extract_event_day_candidates(lines: list[str], article_date: str | None, win
         if article_date and day < article_date[:10]:
             continue
         # Event dates in resale notices normally appear as 日程/対象公演 rows or a date-leading row.
-        if not ("日程" in line or "公演" in line or "会場" in line or re.match(r"^[\s　【\[（(]*20?\d{0,4}年?\s*\d{1,2}[月/.-]\s*\d{1,2}", line)):
+        first = base.DATE_ANY_RE.search(line)
+        date_near_start = bool(first and first.start() <= 8)
+        if not ("日程" in line or "公演" in line or "会場" in line or date_near_start):
             continue
         seen.add(day)
         found.append((index, day))
@@ -220,6 +221,8 @@ def resale_entry(article_url: str, article_title: str, article_date: str | None,
         "sourceChannel": "kawaii-lab-resale",
         "sourceCandidates": ["kawaii-lab-resale"],
         "sourcePublishedAt": article_date,
+        "eventScope": base_event.get("eventScope"),
+        "participants": base_event.get("participants") or [],
         "applicationStatus": status,
         "applicationWindowVerified": True,
         "deadlineVerified": True,
@@ -302,7 +305,7 @@ def merge_resale(existing_payload: dict, fresh: list[dict], today: date) -> dict
         except ValueError:
             continue
         event_day = clean(row.get("eventDate"))[:10]
-        if event_day < today.isoformat() or end < now:
+        if event_day < today.isoformat():
             continue
         keep.append(row)
     seen = set()

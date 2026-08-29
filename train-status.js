@@ -302,7 +302,7 @@
 
   if(!document.querySelector('script[data-going-highlight-soften]')){
     var soften=document.createElement("script");
-    soften.src="./going-highlight-soften.js?v=202608281825";
+    soften.src="./going-highlight-soften.js?v=202608300300";
     soften.setAttribute("data-going-highlight-soften","");
     document.body.appendChild(soften);
   }
