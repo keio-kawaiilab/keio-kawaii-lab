@@ -59,6 +59,10 @@ jobs:
               '        if event_day < today.isoformat() or end < now:\n            continue',
               '        if event_day < today.isoformat():\n            continue',
           )
+          text = text.replace(
+              '''    excluded = {str(article_date or "")[:10]}\n    for _, start, end in windows:\n        excluded.add(start[:10])\n        excluded.add(end[:10])\n''',
+              '''    # Window rows are skipped below, so a performance date must not be discarded\n    # just because it happens to equal another resale window's start/end date.\n    excluded = {str(article_date or "")[:10]}\n''',
+          )
           old = '''        if not ("日程" in line or "公演" in line or "会場" in line or re.match(r"^[\\s　【\\[（(]*20?\\d{0,4}年?\\s*\\d{1,2}[月/.-]\\s*\\d{1,2}", line)):\n            continue\n'''
           new = '''        first = base.DATE_ANY_RE.search(line)\n        date_near_start = bool(first and first.start() <= 8)\n        if not ("日程" in line or "公演" in line or "会場" in line or date_near_start):\n            continue\n'''
           if old not in text:
