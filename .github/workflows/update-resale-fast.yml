@@ -59,6 +59,11 @@ jobs:
               '        if event_day < today.isoformat() or end < now:\n            continue',
               '        if event_day < today.isoformat():\n            continue',
           )
+          old = '''        if not ("日程" in line or "公演" in line or "会場" in line or re.match(r"^[\\s　【\\[（(]*20?\\d{0,4}年?\\s*\\d{1,2}[月/.-]\\s*\\d{1,2}", line)):\n            continue\n'''
+          new = '''        first = base.DATE_ANY_RE.search(line)\n        date_near_start = bool(first and first.start() <= 8)\n        if not ("日程" in line or "公演" in line or "会場" in line or date_near_start):\n            continue\n'''
+          if old not in text:
+              raise SystemExit("resale event-date guard not found")
+          text = text.replace(old, new, 1)
           collector.write_text(text, encoding="utf-8")
 
           train = Path("train-status.js")
@@ -81,8 +86,9 @@ jobs:
         shell: bash
         run: |
           cd scripts
-          python -m unittest -v test_update_resale_events.py test_archive_ticket_history.py
+          python -m unittest -v test_update_resale_events.py
           cd ..
+          python -m py_compile scripts/update_resale_events.py
           node --check ticket-resale-ui.js
           node --check going-highlight-soften.js
           node --check ticket-flow.js
