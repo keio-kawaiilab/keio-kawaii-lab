@@ -20,7 +20,7 @@ assert(page.includes('.card.release-card,.card.benefit-card{'), 'special-event d
 assert(source.includes("?' special-event':''"), 'release and large-benefit items need the special-event class');
 source = source.replace(
   /\}\)\(\);\s*$/,
-  "globalThis.__scheduleTest={prepare:prepare,groupedApplicationBands:groupedApplicationBands,eventKind:eventKind,specialHtml:specialHtml};})();",
+  "globalThis.__scheduleTest={prepare:prepare,groupedApplicationBands:groupedApplicationBands,eventKind:eventKind,specialHtml:specialHtml,performanceModels:performanceModels,performanceKey:performanceKey};})();",
 );
 
 function element() {
@@ -106,4 +106,44 @@ assert(special.includes('参加方法・整理券'));
 assert(special.includes('1〜200番'));
 assert(special.includes('09:50'));
 assert(special.includes('通常盤1枚でお見送り会参加券1枚'));
+
+const sameBenefitPerformance = [
+  {
+    id: 'benefit-sukisuki',
+    group: 'FRUITS ZIPPER',
+    title: 'FRUITS ZIPPER 大特典会',
+    displayTitle: 'FRUITS ZIPPER 大特典会',
+    eventCategory: 'large-benefit',
+    eventDate: '2099-09-06',
+    venue: 'ベルサール汐留',
+    startTime: '10:00',
+    ticketProvider: 'sukisuki',
+    ticketType: 'FC限定・対象商品応募',
+    applyStart: '2099-08-25T21:00',
+    applyEnd: '2099-08-26T23:59',
+    applicationStatus: 'open',
+    url: 'https://sukisuki-shop.com/goods/1',
+  },
+  {
+    id: 'benefit-hmv',
+    group: 'FRUITS ZIPPER',
+    title: 'FRUITS ZIPPER 大特典会',
+    displayTitle: 'FRUITS ZIPPER 大特典会',
+    eventCategory: 'large-benefit',
+    eventDate: '2099-09-06',
+    venue: 'ベルサール汐留',
+    startTime: '11:20',
+    ticketProvider: 'hmv',
+    ticketType: '対象商品予約（参加権付き）',
+    applyStart: '2099-08-25T21:00',
+    applyEnd: '2099-08-27T11:59',
+    applicationStatus: 'open',
+    url: 'https://www.hmv.co.jp/product/detail/1',
+  },
+];
+const benefitModels = context.__scheduleTest.performanceModels(context.__scheduleTest.prepare(sameBenefitPerformance));
+assert.strictEqual(benefitModels.length, 1, 'same special event must render as one performance even when sale rows have different start times');
+assert.strictEqual(benefitModels[0].offers.length, 2, 'all sales channels must remain available inside the consolidated special-event card');
+assert.strictEqual(context.__scheduleTest.performanceKey(sameBenefitPerformance[0], { date: '2099-09-06', venue: 'ベルサール汐留', startTime: '10:00' }), context.__scheduleTest.performanceKey(sameBenefitPerformance[1], { date: '2099-09-06', venue: 'ベルサール汐留', startTime: '11:20' }));
+
 console.log('Schedule band grouping tests passed');
