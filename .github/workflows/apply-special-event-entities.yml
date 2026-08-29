@@ -1,0 +1,58 @@
+name: Apply canonical special-event entities
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/apply-special-event-entities.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-canonical-special-event-entities
+  cancel-in-progress: true
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify canonical model
+        working-directory: scripts
+        run: python -m unittest -v test_special_event_entities.py
+      - name: Migrate public data and rebuild schedule
+        run: |
+          python scripts/normalize_special_event_entities.py
+          python scripts/build_schedule_snapshot.py
+          python scripts/fix_schedule_shell.py
+          python scripts/strip_schedule_explanations.py
+          node --check /tmp/schedule-inline.js
+          node scripts/test_schedule_band_grouping.js
+          node scripts/test_schedule_scope_ui.js
+          python scripts/normalize_special_event_entities.py --check
+      - name: Commit canonical public data
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "$(git status --porcelain -- data/live-events.json schedule.html)" ]; then
+            echo "Public data is already canonical."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/live-events.json schedule.html
+          git commit -m "chore: migrate special events to canonical entities"
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then exit 0; fi
+            git fetch origin main
+            git rebase origin/main
+          done
+          exit 1
