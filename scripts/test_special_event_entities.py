@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import unittest
 
+from enforce_physical_event_invariant import duplicate_physical_occurrences, enforce_payload
 from expand_special_event_entities import expand_payload
 from normalize_special_event_entities import normalize_payload, validate
 
@@ -50,6 +51,69 @@ class SpecialEventEntityTests(unittest.TestCase):
         self.assertEqual({o["provider"] for o in event["offers"]}, {"sukisuki", "hmv"})
         self.assertEqual(event["ticketType"], "現在受付なし")
         self.assertFalse(validate(normalized))
+
+    def test_same_physical_event_merges_even_when_titles_differ(self):
+        payload = {"events": [
+            {
+                "id": "second-sale",
+                "group": "CANDY TUNE",
+                "eventCategory": "large-benefit",
+                "displayTitle": "CANDY TUNE 大特典会",
+                "eventTitle": "9/5（土）CANDY TUNE 大特典会＠ベルサール汐留 特典会参加券2次販売が決定！",
+                "eventDate": "2026-09-05",
+                "venue": "ベルサール汐留",
+                "startTime": "10:00",
+                "ticketType": "現在受付なし",
+                "sourceType": "official-special",
+                "url": "https://candytune.asobisystem.com/news/detail/second-sale",
+            },
+            {
+                "id": "announcement",
+                "group": "CANDY TUNE",
+                "eventCategory": "large-benefit",
+                "displayTitle": "CANDY TUNE 4thシングル発売記念 大特典会",
+                "eventTitle": "4thシングル発売記念！9/5(土) CANDY TUNE大特典会をベルサール汐留にて開催決定！",
+                "eventDate": "2026-09-05",
+                "venue": "東京都 ベルサール汐留",
+                "startTime": "10:00",
+                "ticketType": "現在受付なし",
+                "sourceType": "official-special",
+                "url": "https://candytune.asobisystem.com/news/detail/announcement",
+            },
+        ]}
+        enforced, report = enforce_payload(payload)
+        self.assertEqual(report["physicalRowsCollapsed"], 1)
+        self.assertEqual(report["remainingDuplicateCount"], 0)
+        self.assertEqual(len(enforced["events"]), 1)
+        self.assertTrue(enforced["events"][0]["physicalInvariantMerged"])
+        self.assertFalse(duplicate_physical_occurrences(enforced))
+
+    def test_same_place_and_day_but_different_time_remains_separate(self):
+        payload = {"events": [
+            {
+                "id": "morning",
+                "group": "CUTIE STREET",
+                "eventCategory": "large-benefit",
+                "displayTitle": "午前イベント",
+                "eventDate": "2026-10-01",
+                "venue": "会場A",
+                "startTime": "10:00",
+                "ticketType": "現在受付なし",
+            },
+            {
+                "id": "evening",
+                "group": "CUTIE STREET",
+                "eventCategory": "large-benefit",
+                "displayTitle": "夕方イベント",
+                "eventDate": "2026-10-01",
+                "venue": "会場A",
+                "startTime": "17:00",
+                "ticketType": "現在受付なし",
+            },
+        ]}
+        enforced, report = enforce_payload(payload)
+        self.assertEqual(report["physicalRowsCollapsed"], 0)
+        self.assertEqual(len(enforced["events"]), 2)
 
     def test_release_series_split_across_dates_becomes_one_event(self):
         payload = {"events": [
