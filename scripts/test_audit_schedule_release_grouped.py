@@ -131,6 +131,33 @@ class GroupedReleaseAuditTests(unittest.TestCase):
         self.assertEqual({"stable"}, ids)
         self.assertGreaterEqual(len(actions), 1)
 
+    def test_release_repair_downgrades_unchanged_legacy_special_row(self):
+        title = "『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント"
+        legacy = event("legacy-special", "2026-09-10", title)
+        legacy["eventCategory"] = "release-event"
+        legacy["url"] = ""
+        legacy["urls"] = []
+        legacy["sourceType"] = "legacy-import"
+        legacy["primarySource"] = "legacy"
+
+        fresh = event("fresh", "2026-12-20", "新しい別公演")
+        fresh_source = "https://morestar.asobisystem.com/live_information/detail/77777"
+        fresh["url"] = fresh_source
+        fresh["urls"] = [fresh_source]
+        fresh["sourceType"] = "official"
+
+        previous = payload([legacy])
+        candidate = payload([copy.deepcopy(legacy), fresh])
+        repaired, errors, warnings, report, actions = repair_local_errors(previous, candidate, NOW)
+
+        ids = {row["id"] for row in repaired["events"]}
+        self.assertEqual([], errors)
+        self.assertEqual({"legacy-special", "fresh"}, ids)
+        self.assertEqual([], actions)
+        self.assertEqual("ok", report["status"])
+        self.assertGreater(report.get("legacyProtectedErrorCount", 0), 0)
+        self.assertTrue(any("protected unchanged last-good row" in item for item in warnings))
+
     def test_release_repair_keeps_global_integrity_failure_blocking(self):
         stable = event("stable", "2026-09-24", "既存公演")
         previous = payload([stable])
