@@ -304,6 +304,70 @@ def _quarantine_candidate_label(previous: dict, candidate: dict, target_label: s
     return changed, len(target_rows), action
 
 
+def _unchanged_previous_row_label_for_error(previous: dict, candidate: dict, error: str) -> str | None:
+    """Return the label only when the errored row is byte-for-byte unchanged from last-good.
+
+    This is deliberately narrower than ordinary row matching. A newly fetched row
+    that merely shares a title/source with a previous row must never inherit this
+    exemption. The exemption exists only to prevent a newly tightened validator
+    from freezing every unrelated update because an already-public legacy row is
+    still waiting for richer official metadata.
+    """
+    candidate_rows = _events(candidate)
+    for previous_row in _events(previous):
+        previous_label = label(previous_row)
+        if not previous_label or previous_label not in error:
+            continue
+        if any(current_row == previous_row for current_row in candidate_rows):
+            return previous_label
+    return None
+
+
+def _downgrade_unchanged_baseline_errors(
+    previous: dict,
+    candidate: dict,
+    errors: list[str],
+    warnings: list[str],
+    report: dict,
+    baseline_errors: set[str],
+) -> tuple[list[str], list[str], dict, list[dict]]:
+    """Downgrade only local errors already present on an unchanged last-good row."""
+    legacy_actions: list[dict] = []
+    remaining: list[str] = []
+    for error in errors:
+        if error not in baseline_errors:
+            remaining.append(error)
+            continue
+        target_label = _unchanged_previous_row_label_for_error(previous, candidate, error)
+        if not target_label:
+            remaining.append(error)
+            continue
+        legacy_actions.append({
+            "error": error,
+            "label": target_label,
+            "action": "retained unchanged previous row; validator regression downgraded to warning",
+        })
+
+    if not legacy_actions:
+        return errors, warnings, report, []
+
+    legacy_warnings = [
+        "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: "
+        + item["error"]
+        for item in legacy_actions
+    ]
+    updated_warnings = legacy_warnings + list(warnings)
+    updated_report = dict(report)
+    updated_report["status"] = "blocked" if remaining else "ok"
+    updated_report["errorCount"] = len(remaining)
+    updated_report["warningCount"] = len(updated_warnings)
+    updated_report["errors"] = remaining
+    updated_report["warnings"] = updated_warnings
+    updated_report["legacyProtectedErrorCount"] = len(legacy_actions)
+    updated_report["legacyProtectedErrors"] = legacy_actions
+    return remaining, updated_warnings, updated_report, legacy_actions
+
+
 def repair_local_errors(previous: dict, candidate: dict, now: datetime, max_rounds: int = 6):
     """Quarantine event-scoped audit failures while preserving unrelated fresh rows.
 
@@ -315,9 +379,19 @@ def repair_local_errors(previous: dict, candidate: dict, now: datetime, max_roun
     repaired = copy.deepcopy(candidate)
     quarantine_actions: list[dict] = []
     seen_states: set[str] = set()
+    baseline_errors, _, _ = audit_grouped(previous, previous, now)
+    baseline_error_set = set(baseline_errors)
 
     for _ in range(max_rounds):
         errors, warnings, report = audit_grouped(previous, repaired, now)
+        errors, warnings, report, _ = _downgrade_unchanged_baseline_errors(
+            previous,
+            repaired,
+            errors,
+            warnings,
+            report,
+            baseline_error_set,
+        )
         if not errors:
             report = dict(report)
             if quarantine_actions:
@@ -332,6 +406,8 @@ def repair_local_errors(previous: dict, candidate: dict, now: datetime, max_roun
             report["quarantineCount"] = len(quarantine_actions)
             report["quarantineActions"] = quarantine_actions
             report["status"] = "ok"
+            report["errorCount"] = 0
+            report["errors"] = []
             return repaired, [], warnings, report, quarantine_actions
 
         state = json.dumps(repaired.get("events", []), ensure_ascii=False, sort_keys=True, separators=(",", ":"))
@@ -403,9 +479,21 @@ def repair_local_errors(previous: dict, candidate: dict, now: datetime, max_roun
             break
 
     errors, warnings, report = audit_grouped(previous, repaired, now)
+    errors, warnings, report, _ = _downgrade_unchanged_baseline_errors(
+        previous,
+        repaired,
+        errors,
+        warnings,
+        report,
+        baseline_error_set,
+    )
     report = dict(report)
     report["quarantineCount"] = len(quarantine_actions)
     report["quarantineActions"] = quarantine_actions
+    if not errors:
+        report["status"] = "ok"
+        report["errorCount"] = 0
+        report["errors"] = []
     return repaired, errors, warnings, report, quarantine_actions
 
 
