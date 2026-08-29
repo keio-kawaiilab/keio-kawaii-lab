@@ -1,21 +1,23 @@
 {
   "status": "ok",
-  "generatedAt": "2026-08-30T01:18:27.186794+09:00",
-  "candidateUpdatedAt": "2026-08-30T01:18:26+09:00",
+  "generatedAt": "2026-08-30T01:44:57.267489+09:00",
+  "candidateUpdatedAt": "2026-08-30T01:44:56+09:00",
   "previousEventCount": 70,
-  "candidateEventCount": 71,
+  "candidateEventCount": 69,
   "protectedPreviousCount": 70,
   "errorCount": 0,
-  "warningCount": 2,
+  "warningCount": 5,
   "errors": [],
   "warnings": [
+    "quarantined one event/source update and kept the previous known-good data: special event has no verified purchase/ticket window: SWEET STEADY / 【SWEET STEADY】 3rdシングル『SWEET STEP』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for url:https://sweetsteady.asobisystem.com/news/detail/88315: 2026-09-07, 2026-09-14",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no verified purchase/ticket window: MORE STAR / 【MORE STAR】 1st シングル『サマーゴー！！ / WITH KAWAII論』発売記念リリースイベント @ところざわサクラタウン 千人テラス / 現在受付なし",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no verified purchase/ticket window: CANDY TUNE / CANDY TUNE 4thシングル『総意♡So Free / スペシャル感謝祭』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no verified purchase/ticket window: SWEET STEADY / 【SWEET STEADY】 3rdシングル『SWEET STEP』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし"
   ],
-  "candidateSha256": "2f35ab84ad220d12acce75b6eb6e6a590724a2a85f6827eb0549abce1fdf3bbb",
+  "candidateSha256": "3886d71152244ab73bf3289662dad18e0ab47ab907e3468f8b8b0a7ae063be3f",
   "sharedSourceDateSetsReconciled": [
     "url:https://books.faq.rakuten.net/s/ask",
-    "url:https://fruitszipper.asobisystem.com/news/detail/88153",
     "url:https://img.hmv.co.jp/cont/online/fzss17047926lp/",
     "url:https://kawaiilab.goods-order.com",
     "url:https://pages-kawaiilab.goods-order.com/usage",
@@ -32,16 +34,31 @@
   ],
   "reconciledBaseDateMessageCount": 4,
   "downgradedFalsePositiveCount": 0,
-  "legacyProtectedErrorCount": 1,
+  "legacyProtectedErrorCount": 3,
   "legacyProtectedErrors": [
+    {
+      "error": "special event has no verified purchase/ticket window: MORE STAR / 【MORE STAR】 1st シングル『サマーゴー！！ / WITH KAWAII論』発売記念リリースイベント @ところざわサクラタウン 千人テラス / 現在受付なし",
+      "label": "MORE STAR / 【MORE STAR】 1st シングル『サマーゴー！！ / WITH KAWAII論』発売記念リリースイベント @ところざわサクラタウン 千人テラス / 現在受付なし",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "special event has no verified purchase/ticket window: CANDY TUNE / CANDY TUNE 4thシングル『総意♡So Free / スペシャル感謝祭』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
+      "label": "CANDY TUNE / CANDY TUNE 4thシングル『総意♡So Free / スペシャル感謝祭』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
     {
       "error": "special event has no verified purchase/ticket window: SWEET STEADY / 【SWEET STEADY】 3rdシングル『SWEET STEP』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
       "label": "SWEET STEADY / 【SWEET STEADY】 3rdシングル『SWEET STEP』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 1,
+  "quarantineCount": 2,
   "quarantineActions": [
+    {
+      "error": "special event has no verified purchase/ticket window: SWEET STEADY / 【SWEET STEADY】 3rdシングル『SWEET STEP』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
+      "action": "restored previous row",
+      "restoredPreviousRows": 1
+    },
     {
       "error": "future performance dates disappeared for url:https://sweetsteady.asobisystem.com/news/detail/88315: 2026-09-07, 2026-09-14",
       "action": "restored previous rows for url:https://sweetsteady.asobisystem.com/news/detail/88315",
