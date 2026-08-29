@@ -8,6 +8,7 @@ from datetime import datetime
 from pathlib import Path
 
 import dedupe_official_x_series as official_x_dedupe
+from expand_special_event_entities import expand_payload
 from audit_schedule_release import (
     JST,
     clock_minutes,
@@ -89,9 +90,6 @@ def normalize_special(event: dict) -> tuple[dict, bool]:
     no_window = not (event.get("applyStart") or event.get("applyEnd"))
     no_reception = event.get("applicationStatus") == "none" or str(event.get("ticketType") or "") == "現在受付なし"
 
-    # Official announcements often publish the date/venue before the purchase window. A verified
-    # asobisystem page is enough to publish that performance as schedule-only; do not pretend a
-    # purchase window exists until the official page actually provides one.
     if official_urls and no_window and no_reception:
         event["specialDetailsStatus"] = "awaiting-details"
         event["applicationDisplayMode"] = "schedule-only"
@@ -106,8 +104,6 @@ def normalize_special(event: dict) -> tuple[dict, bool]:
         good_parts = [dict(row) for row in raw_parts if valid_part(row)]
         if len(good_parts) != len(raw_parts) or not good_parts:
             event["parts"] = good_parts
-            # Keep the verified event/window, but do not claim that its per-part timetable is
-            # complete. The release audit will still validate source, venue, product and window.
             event["specialDetailsStatus"] = "awaiting-details"
             event["partsStatus"] = "partial" if good_parts else "awaiting-details"
             changed = True
@@ -130,8 +126,6 @@ def strong_keys(event: dict) -> set[str]:
         for value in urls(event):
             keys.add(f"{provider}:{value}:days:{days}")
     elif provider == "pia":
-        # Pia bundle URLs are shared by many performances. Never use the bare bundle URL as a
-        # strong identity; the lot code above is the trustworthy sale identity.
         pass
     else:
         for value in urls(event):
@@ -153,13 +147,8 @@ def should_retain_previous(event: dict, today) -> bool:
         end = parse_dt(event.get("applyEnd"))
         if end is not None:
             return end.date() >= today
-        # A source can occasionally omit an exact deadline. Preserve an explicitly open row until
-        # a later verified observation replaces it.
         return str(event.get("applicationStatus") or "") == "open"
 
-    # A no-reception row is the performance itself, even if one of its URLs happens to be a
-    # playguide URL. Keep the last-known-good future performance until the official schedule crawl
-    # represents it again. This avoids deleting a live merely because a ticket round ended.
     if future_days(event, today):
         return True
     end = parse_dt(event.get("applyEnd"))
@@ -193,6 +182,13 @@ def semantic_key(event: dict) -> tuple:
 
 
 def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]:
+    # Public releases use canonical special-event entities (one real event with
+    # offers[] children). Existing collectors and integrity checks still operate
+    # on sale rows, so expand both sides at this compatibility boundary. This
+    # keeps the old collectors stable without letting their source rows leak back
+    # into the public data model.
+    previous, previous_expand = expand_payload(previous)
+    candidate, candidate_expand = expand_payload(candidate)
     events = [dict(event) for event in candidate.get("events", []) if isinstance(event, dict)]
 
     normalized = 0
@@ -242,6 +238,8 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
         "duplicateIdsRemoved": duplicate_ids_removed + duplicate_ids_removed_after_retention,
         "retainedPreviousRows": len(retained),
         "retained": retained,
+        "expandedPreviousSpecialEntities": previous_expand.get("expandedSpecialEntities", 0),
+        "expandedCandidateSpecialEntities": candidate_expand.get("expandedSpecialEntities", 0),
         **official_x_report,
     }
     return out, out["releasePreparation"]
