@@ -21,6 +21,11 @@ PERFORMANCE_KEY_JS = (
 )
 
 
+def literal_replacement(_match: re.Match[str]) -> str:
+    """Return JavaScript verbatim instead of letting re.sub parse backslashes."""
+    return PERFORMANCE_KEY_JS
+
+
 def main() -> int:
     page = PAGE.read_text(encoding="utf-8")
 
@@ -38,14 +43,14 @@ def main() -> int:
         r"return\[String\(e\.group\|\|''\),String\(o\.date\|\|''\)\.slice\(0,10\),"
         r"eventKind\(e\),performanceTitleKey\(e\)\]\.join\('\|'\)\}"
     )
-    page, count = re.subn(pattern, PERFORMANCE_KEY_JS, page, count=1)
+    page, count = re.subn(pattern, literal_replacement, page, count=1)
 
     if count != 1:
         # Also accept the occurrence-based form on repeated workflow runs and
         # replace it deterministically with the current definition.
         page, count = re.subn(
             r"function performanceVenueKey\(e,o\)\{.*?\}function performanceKey\(e,o\)\{.*?\}(?=function performanceKeyForEvent)",
-            PERFORMANCE_KEY_JS,
+            literal_replacement,
             page,
             count=1,
             flags=re.S,
