@@ -42,7 +42,7 @@
 (function(){
   "use strict";
   if(!document.getElementById("calendar")||!document.getElementById("cards"))return;
-  var version="202608300330";
+  var version="202608300345";
 
   if(!document.querySelector('link[data-ticket-flow]')){
     var style=document.createElement("link");
