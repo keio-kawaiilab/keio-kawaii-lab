@@ -1,60 +1,73 @@
 {
   "status": "ok",
-  "generatedAt": "2026-08-29T09:40:26.780336+09:00",
-  "candidateUpdatedAt": "2026-08-29T09:40:26+09:00",
-  "previousEventCount": 84,
-  "candidateEventCount": 84,
-  "protectedPreviousCount": 84,
+  "generatedAt": "2026-08-29T12:15:41.840046+09:00",
+  "candidateUpdatedAt": "2026-08-29T12:15:41+09:00",
+  "previousEventCount": 65,
+  "candidateEventCount": 71,
+  "protectedPreviousCount": 65,
   "errorCount": 0,
-  "warningCount": 2,
+  "warningCount": 7,
   "errors": [],
   "warnings": [
-    "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for url:https://x.com/MORE_STAR_/status/2092956382366744633 [MORE STAR]: 2027-02-03",
-    "quarantined one event/source update and kept the previous known-good data: duplicate event id: bc91bdf5602e005e"
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event is not marked as official-source data: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no participation method: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no target product: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no verified purchase/ticket window: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
   ],
-  "candidateSha256": "85ec73c9a75e28c25a2db0f7814f9c78483aa6d61ba426abbe914ff15afa8076",
+  "candidateSha256": "a1f0dc10010ae8e9c9ed8f851f03f27ad9ff0a78f32c6a225306d8c29603b30c",
   "sharedSourceDateSetsReconciled": [
-    "url:https://books.faq.rakuten.net/s/ask",
-    "url:https://fruitszipper.asobisystem.com/live_information/detail/42630",
-    "url:https://img.hmv.co.jp/cont/online/fzss17047926lp/",
     "url:https://kawaiilab.goods-order.com",
     "url:https://pages-kawaiilab.goods-order.com/usage",
-    "url:https://sukisuki-shop.com/contact",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
-    "url:https://www.hmv.co.jp/help/?q=005000041",
-    "url:https://www.hmv.co.jp/login/login/?AUTHTYPE=MEMBERS",
-    "url:https://www.hmv.co.jp/login/newcustomer/",
-    "url:https://x.com/MORE_STAR_/status/2092567739969966299",
-    "url:https://x.com/MORE_STAR_/status/2092956382366744633",
-    "url:https://x.com/MORE_STAR_/status/2093324279639392675"
+    "url:https://x.com/MORE_STAR_/status/2092567739969966299"
   ],
   "officialXSharedSourceKeysReconciled": [
-    "url:https://x.com/MORE_STAR_/status/2092567739969966299",
-    "url:https://x.com/MORE_STAR_/status/2092956382366744633",
-    "url:https://x.com/MORE_STAR_/status/2093324279639392675"
+    "url:https://x.com/MORE_STAR_/status/2092567739969966299"
   ],
-  "reconciledBaseDateMessageCount": 16,
+  "reconciledBaseDateMessageCount": 4,
   "downgradedFalsePositiveCount": 0,
-  "quarantineCount": 2,
-  "quarantineActions": [
+  "legacyProtectedErrorCount": 7,
+  "legacyProtectedErrors": [
     {
-      "error": "future performance dates disappeared for url:https://x.com/MORE_STAR_/status/2092956382366744633 [MORE STAR]: 2027-02-03",
-      "action": "restored previous rows for url:https://x.com/MORE_STAR_/status/2092956382366744633",
-      "restoredPreviousRows": 2
+      "error": "special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+      "label": "MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
     },
     {
-      "error": "duplicate event id: bc91bdf5602e005e",
-      "action": "restored previous duplicate-id row",
-      "restoredPreviousRows": 1
+      "error": "special event is not marked as official-source data: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+      "label": "MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "special event has no participation method: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+      "label": "MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "special event has no target product: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+      "label": "MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "special event has no verified purchase/ticket window: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+      "label": "MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+      "label": "MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+      "label": "MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "officialIndexReconciledAfterQuarantine": {
-    "reassignedCount": 0,
-    "ambiguousCount": 0,
-    "unresolvedCount": 0,
-    "reassigned": [],
-    "ambiguous": [],
-    "unresolved": []
-  }
+  "quarantineCount": 0,
+  "quarantineActions": []
 }
