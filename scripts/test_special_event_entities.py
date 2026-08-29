@@ -132,6 +132,34 @@ class SpecialEventEntityTests(unittest.TestCase):
         self.assertEqual(len(second["events"][0]["offers"]), 1)
         self.assertEqual(first["events"][0]["id"], second["events"][0]["id"])
 
+    def test_public_entity_never_leaks_sale_fields_to_parent(self):
+        payload = {"events": [
+            {
+                "id": "sale-a",
+                "group": "CANDY TUNE",
+                "eventCategory": "release-event",
+                "displayTitle": "『Example』発売記念リリースイベント",
+                "eventDate": "2026-11-01",
+                "venue": "会場A",
+                "ticketProvider": "tower",
+                "ticketType": "対象商品予約",
+                "applyStart": "2026-10-01T12:00",
+                "applyEnd": "2026-11-01T09:00",
+                "url": "https://tower.jp/example",
+                "sourceType": "official-special",
+            }
+        ]}
+        normalized, _ = normalize_payload(payload)
+        parent = normalized["events"][0]
+        self.assertEqual(parent["entityType"], "special-event")
+        self.assertNotIn("ticketProvider", parent)
+        self.assertNotIn("applyStart", parent)
+        self.assertNotIn("applyEnd", parent)
+        self.assertEqual(parent["ticketType"], "現在受付なし")
+        self.assertEqual(parent["applicationStatus"], "none")
+        self.assertEqual(len(parent["offers"]), 1)
+        self.assertEqual(parent["offers"][0]["provider"], "tower")
+
 
 if __name__ == "__main__":
     unittest.main()
