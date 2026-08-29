@@ -44,6 +44,10 @@ def expand_entity(event: dict) -> list[dict]:
         row.pop("entityType", None)
         row.pop("specialEventEntityVersion", None)
         row.pop("sourceRowIds", None)
+        # The parent is deliberately schedule-only. Do not leak that state into a
+        # child sale row or the next normalization pass will mistake the offer for
+        # "no reception" and silently drop it.
+        row.pop("applicationStatus", None)
         row["applicationDisplayMode"] = "sale"
         for key, value in offer.items():
             if key in {"sourceRowId", "provider"}:
@@ -54,6 +58,8 @@ def expand_entity(event: dict) -> list[dict]:
         row["ticketProvider"] = provider
         if provider != "official":
             row["primarySource"] = provider
+        if not row.get("applicationStatus") and (row.get("applyStart") or row.get("applyEnd") or row.get("ticketType")):
+            row["applicationStatus"] = "open"
         offer_urls = [str(value) for value in offer.get("urls") or [] if value]
         if offer.get("url") and str(offer["url"]) not in offer_urls:
             offer_urls.insert(0, str(offer["url"]))
