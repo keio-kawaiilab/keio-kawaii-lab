@@ -7,6 +7,7 @@ import re
 from datetime import datetime
 from pathlib import Path
 
+import dedupe_official_x_series as official_x_dedupe
 from audit_schedule_release import (
     JST,
     clock_minutes,
@@ -232,6 +233,7 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
         })
 
     events, duplicate_ids_removed_after_retention = dedupe_ids(events)
+    events, official_x_report = official_x_dedupe.collapse(events)
     out = dict(candidate)
     out["events"] = events
     out["releasePreparation"] = {
@@ -240,6 +242,7 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
         "duplicateIdsRemoved": duplicate_ids_removed + duplicate_ids_removed_after_retention,
         "retainedPreviousRows": len(retained),
         "retained": retained,
+        **official_x_report,
     }
     return out, out["releasePreparation"]
 
