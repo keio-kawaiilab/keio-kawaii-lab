@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - "scripts/fix_schedule_shell.py"
+      - "scripts/strip_schedule_explanations.py"
       - ".github/workflows/test-schedule-shell.yml"
   workflow_dispatch:
 
@@ -22,7 +23,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Verify schedule shell patch accepts JavaScript regex literals
+      - name: Verify schedule shell post-processing chain
         run: |
           python scripts/fix_schedule_shell.py
+          python scripts/strip_schedule_explanations.py
           node --check /tmp/schedule-inline.js
