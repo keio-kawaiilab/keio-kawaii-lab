@@ -6,6 +6,8 @@ import argparse
 import json
 from pathlib import Path
 
+from enforce_physical_event_invariant import enforce_payload
+from reconcile_official_schedule_index import reconcile
 from schedule_scope import VALID_SCOPES, special_event_category
 from update_official_schedule import GROUPS, event_days, participants
 
@@ -59,11 +61,50 @@ def main() -> int:
     data = json.loads(args.data.read_text(encoding="utf-8"))
     index = json.loads(args.index.read_text(encoding="utf-8"))
     previous = json.loads(args.previous_index.read_text(encoding="utf-8")) if args.previous_index and args.previous_index.exists() else None
+
+    # First verify the quarantined candidate against the official index exactly
+    # as before. This keeps the coverage safeguard independent from deduping.
     errors = audit(data, index, previous)
     if errors:
         print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2))
         return 1
-    print(json.dumps({"status": "ok", "officialRows": len(index.get("entries") or [])}, ensure_ascii=False, indent=2))
+
+    # Final release boundary. The grouped audit may restore a previous row while
+    # quarantining a bad source update. That restoration must never be allowed to
+    # resurrect a second card for the same physically impossible occurrence.
+    # Source/title/vendor wording is metadata; one group at one date/time/venue
+    # is one real special event.
+    data, physical_report = enforce_payload(data)
+    if physical_report.get("remainingDuplicateCount"):
+        print(json.dumps({
+            "status": "blocked",
+            "errors": ["physical special-event duplicates remain after enforcement"],
+            "physicalEventInvariant": physical_report,
+        }, ensure_ascii=False, indent=2))
+        return 1
+
+    args.data.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+    # Canonical merging can change event IDs, so reconnect every official index
+    # row to the final public entity and then verify coverage once more.
+    reconcile_report = reconcile(data, index)
+    args.index.write_text(json.dumps(index, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    errors = audit(data, index, previous)
+    if errors:
+        print(json.dumps({
+            "status": "blocked",
+            "errors": errors,
+            "physicalEventInvariant": physical_report,
+            "officialIndexReconcile": reconcile_report,
+        }, ensure_ascii=False, indent=2))
+        return 1
+
+    print(json.dumps({
+        "status": "ok",
+        "officialRows": len(index.get("entries") or []),
+        "physicalEventInvariant": physical_report,
+        "officialIndexReconcile": reconcile_report,
+    }, ensure_ascii=False, indent=2))
     return 0
 
 
