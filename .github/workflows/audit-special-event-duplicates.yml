@@ -1,0 +1,27 @@
+name: Special event duplicate audit
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "data/live-events.json"
+      - "scripts/audit_special_event_duplicates.py"
+      - ".github/workflows/audit-special-event-duplicates.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Report duplicate and split special-event rows
+        run: python scripts/audit_special_event_duplicates.py
