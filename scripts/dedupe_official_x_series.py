@@ -175,10 +175,19 @@ def merge_component(items: list[dict]) -> dict:
         merged["urls"] = urls
         if str(merged.get("url") or "") not in urls:
             merged["url"] = urls[0]
-    merged["sourceType"] = "derived" if len(schedule) > 1 else merged.get("sourceType", "official-social")
+
+    # These rows are still directly sourced from official X even when several
+    # dates are represented by one logical series. Calling the aggregate
+    # "derived" makes the release audit treat it as an unverified special
+    # event and restore the old split rows. Keep it explicitly official-social
+    # and schedule-only until a purchase/participation announcement appears.
+    merged["sourceType"] = "official-social"
     merged["sourceChannel"] = "official-x"
     merged["primarySource"] = "official"
     merged["sourceCandidates"] = ["official"]
+    merged["specialDetailsStatus"] = "awaiting-details"
+    merged["applicationDisplayMode"] = "schedule-only"
+    merged["applicationStatus"] = "none"
 
     if any(not item.get("sourceStale") for item in items):
         merged.pop("sourceStale", None)
