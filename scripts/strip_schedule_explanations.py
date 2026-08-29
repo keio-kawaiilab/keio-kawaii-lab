@@ -20,6 +20,15 @@ PERFORMANCE_KEY = (
     "function performanceTitleKey(e){return String(title(e)||'').toLowerCase().replace(/\\s+/g,'').replace(/[!！・|｜\\-–—_\\[\\]()（）『』「」]/g,'')}"
     "function performanceKey(e,o){return[String(e.group||''),String(o.date||'').slice(0,10),eventKind(e),performanceTitleKey(e)].join('|')}"
 )
+# fix_schedule_shell.py upgrades the simple visible-title key to an occurrence-based
+# identity (group + date + kind + start time, with visible-title fallback). That is
+# stricter and still explicitly uses performanceTitleKey(e), so it is already valid.
+OCCURRENCE_PERFORMANCE_MARKERS = (
+    "function performanceVenueKey(e,o)",
+    "function performanceKey(e,o)",
+    "performanceTitleKey(e)",
+    "base.concat(['fallback',performanceVenueKey(e,o),performanceTitleKey(e)]).join('|')",
+)
 LEGACY_BAND_KEY_TAIL = "String(e.applyEnd||''),canon(e)].join('|')"
 BAND_KEY_TAIL = "String(e.applyEnd||''),performanceTitleKey(e)].join('|')"
 
@@ -32,8 +41,12 @@ def ensure_past_performances_hidden(page: str) -> str:
     return page.replace(PAST_OCCURRENCE_RENDERER, CURRENT_OCCURRENCE_RENDERER, 1)
 
 
+def has_visible_title_performance_identity(page: str) -> bool:
+    return PERFORMANCE_KEY in page or all(marker in page for marker in OCCURRENCE_PERFORMANCE_MARKERS)
+
+
 def ensure_visible_title_performance_identity(page: str) -> str:
-    if PERFORMANCE_KEY in page:
+    if has_visible_title_performance_identity(page):
         fixed = page
     elif LEGACY_PERFORMANCE_KEY in page:
         fixed = page.replace(LEGACY_PERFORMANCE_KEY, PERFORMANCE_KEY, 1)
@@ -65,7 +78,8 @@ def main() -> int:
     # so generated updates cannot reintroduce yesterday's performance.
     page = ensure_past_performances_hidden(page)
 
-    # Deduplicate by the title users actually see, not by raw source headlines.
+    # Deduplicate by the title users actually see. If fix_schedule_shell.py has
+    # already upgraded this to occurrence-based identity, preserve that stricter key.
     page = ensure_visible_title_performance_identity(page)
 
     if HIDDEN_POLICY not in page:
@@ -87,7 +101,7 @@ def main() -> int:
 
     if CURRENT_OCCURRENCE_RENDERER not in page:
         raise RuntimeError("past-performance guard is missing from schedule detail renderer")
-    if PERFORMANCE_KEY not in page or BAND_KEY_TAIL not in page:
+    if not has_visible_title_performance_identity(page) or BAND_KEY_TAIL not in page:
         raise RuntimeError("visible-title performance dedupe is missing from schedule renderer")
 
     PAGE.write_text(page, encoding="utf-8")
