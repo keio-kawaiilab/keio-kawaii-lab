@@ -47,7 +47,7 @@ jobs:
           from pathlib import Path
           import re
 
-          version = "202608300330"
+          version = "202608300345"
 
           collector = Path("scripts/update_resale_events.py")
           text = collector.read_text(encoding="utf-8")
