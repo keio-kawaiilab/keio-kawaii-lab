@@ -85,6 +85,63 @@ class PrepareReleaseCandidateTests(unittest.TestCase):
         self.assertEqual(report["retainedPreviousRows"], 1)
         self.assertEqual({row.get("ticketProvider") for row in prepared["events"]}, {"lawson", "eplus"})
 
+    def test_retained_singleton_official_x_row_is_folded_into_series(self):
+        shared = "https://x.com/MORE_STAR_/status/2093324279639392675"
+        title = "『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント"
+        aggregate = {
+            "id": "aggregate",
+            "group": "MORE STAR",
+            "title": title,
+            "eventTitle": title,
+            "displayTitle": title,
+            "eventCategory": "release-event",
+            "ticketType": "現在受付なし",
+            "applicationStatus": "none",
+            "eventDate": "2027-01-03",
+            "eventEndDate": "2027-02-04",
+            "eventDates": ["2027-01-03", "2027-02-04"],
+            "eventCount": 2,
+            "schedule": [
+                {"date": "2027-01-03", "venue": "テラスモール松戸"},
+                {"date": "2027-02-04", "venue": "animate hall BLACK"},
+            ],
+            "venue": "複数会場（全2公演）",
+            "url": shared,
+            "urls": [shared],
+            "sourceType": "derived",
+            "sourceChannel": "official-x",
+            "primarySource": "official",
+        }
+        previous_singleton = {
+            "id": "singleton",
+            "group": "MORE STAR",
+            "title": title,
+            "eventTitle": title,
+            "displayTitle": title,
+            "eventCategory": "release-event",
+            "ticketType": "現在受付なし",
+            "applicationStatus": "none",
+            "eventDate": "2027-02-05",
+            "venue": "テラスモール松戸",
+            "url": shared,
+            "urls": [shared],
+            "sourceType": "official-social",
+            "sourceChannel": "official-x",
+            "primarySource": "official",
+        }
+
+        prepared, report = prep.prepare(
+            {"events": [aggregate, previous_singleton]},
+            {"events": [aggregate]},
+            self.NOW,
+        )
+
+        self.assertEqual(1, len(prepared["events"]))
+        self.assertEqual("aggregate", prepared["events"][0]["id"])
+        self.assertEqual("2027-02-05", prepared["events"][0]["eventEndDate"])
+        self.assertIn("2027-02-05", prepared["events"][0]["eventDates"])
+        self.assertEqual(1, report["officialXRowsCollapsed"])
+
 
 if __name__ == "__main__":
     unittest.main()
