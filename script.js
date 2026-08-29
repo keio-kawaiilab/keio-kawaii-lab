@@ -1,4 +1,23 @@
 // =========================================
+// Google Analytics 4 (site-wide)
+// =========================================
+(function installGoogleAnalytics() {
+  if (window.__KAWAII_GA4_INSTALLED__) return;
+  window.__KAWAII_GA4_INSTALLED__ = true;
+
+  const measurementId = "G-FLWTMG3S7R";
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+  window.gtag("js", new Date());
+  window.gtag("config", measurementId);
+
+  const script = document.createElement("script");
+  script.async = true;
+  script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+  document.head.appendChild(script);
+})();
+
+// =========================================
 // KAWAII LAB.同好会 公式サイト 共通スクリプト
 // =========================================
 
