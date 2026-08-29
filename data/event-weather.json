@@ -1,72 +1,18 @@
 {
-  "date": "2026-08-29",
+  "date": "2026-08-30",
   "horizonDays": 7,
-  "generatedAt": "2026-08-29T22:59+09:00",
+  "generatedAt": "2026-08-30T03:23+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
     {
-      "date": "2026-08-29",
-      "venue": "埼玉県 戸田市文化会館",
-      "venueKey": "戸田市文化会館",
-      "eventIds": [
-        "54a369497f59ce96"
-      ],
-      "areaCode": "110010",
-      "areaName": "南部",
-      "precision": "mesh5km",
-      "label": "雨",
-      "max": null,
-      "min": null,
-      "pop": "50",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-08-29T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "20〜24℃",
-      "coordinates": {
-        "lat": 35.817795,
-        "lon": 139.677124
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "雨",
-          "validAt": "2026-08-29T21:00+09:00",
-          "temp": 21
-        },
-        {
-          "time": "24:00",
-          "label": "くもり",
-          "validAt": "2026-08-30T00:00+09:00",
-          "temp": 20
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "16:00",
-          "rain": true,
-          "validAt": "2026-08-29T16:00+09:00"
-        },
-        {
-          "time": "17:00",
-          "rain": false,
-          "validAt": "2026-08-29T17:00+09:00"
-        },
-        {
-          "time": "18:00",
-          "rain": false,
-          "validAt": "2026-08-29T18:00+09:00"
-        }
-      ]
-    },
-    {
       "date": "2026-08-30",
       "venue": "埼玉県 ところざわサクラタウン 千人テラス",
       "venueKey": "ところざわサクラタウン千人テラス",
       "eventIds": [
-        "fdb98c99a1713f6a"
+        "special-79b6ff7fc6f3d86e"
       ],
       "areaCode": "110010",
       "areaName": "南部",
@@ -137,6 +83,11 @@
           "time": "13:00",
           "rain": false,
           "validAt": "2026-08-30T13:00+09:00"
+        },
+        {
+          "time": "14:00",
+          "rain": false,
+          "validAt": "2026-08-30T14:00+09:00"
         }
       ]
     },
@@ -145,7 +96,8 @@
       "venue": "埼玉県 戸田市文化会館",
       "venueKey": "戸田市文化会館",
       "eventIds": [
-        "54a369497f59ce96"
+        "54a369497f59ce96",
+        "a9dd48021711904e"
       ],
       "areaCode": "110010",
       "areaName": "南部",
@@ -205,6 +157,23 @@
           "validAt": "2026-08-31T00:00+09:00",
           "temp": 24
         }
+      ],
+      "hourlyRain": [
+        {
+          "time": "15:00",
+          "rain": false,
+          "validAt": "2026-08-30T15:00+09:00"
+        },
+        {
+          "time": "16:00",
+          "rain": false,
+          "validAt": "2026-08-30T16:00+09:00"
+        },
+        {
+          "time": "17:00",
+          "rain": false,
+          "validAt": "2026-08-30T17:00+09:00"
+        }
       ]
     },
     {
@@ -212,8 +181,7 @@
       "venue": "埼玉県 エミテラス所沢2F TOKOROZAWA e-CUBE",
       "venueKey": "エミテラス所沢2ftokorozawae-cube",
       "eventIds": [
-        "94954e5377334f3c",
-        "ef5a825ad5d37d85"
+        "special-a91f4fd0f80a1f20"
       ],
       "areaCode": "110010",
       "areaName": "埼玉県",
@@ -273,7 +241,8 @@
       "venue": "神奈川県 カルッツかわさき 大ホール",
       "venueKey": "カルッツかわさき",
       "eventIds": [
-        "54a369497f59ce96"
+        "54a369497f59ce96",
+        "a659348f628e2ac5"
       ],
       "areaCode": "140010",
       "areaName": "神奈川県",
@@ -293,7 +262,7 @@
       "venue": "埼玉県 エミテラス所沢2F TOKOROZAWA e-CUBE",
       "venueKey": "エミテラス所沢2ftokorozawae-cube",
       "eventIds": [
-        "230f0474484bfe70"
+        "special-9332aaf17a50c3a8"
       ],
       "areaCode": "110010",
       "areaName": "埼玉県",
@@ -313,8 +282,7 @@
       "venue": "ベルサール汐留",
       "venueKey": "ベルサール汐留",
       "eventIds": [
-        "e5aaaf86d78202fa",
-        "ec90b9bb4e9b0f71"
+        "special-124c630f19e88897"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
@@ -331,14 +299,20 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 11,
+    "occurrencesInRange": 12,
     "uniqueVenueDates": 9,
-    "weatherEntries": 9,
-    "meshEntries": 3,
-    "failures": 0,
-    "meshTimelineEntries": 3,
-    "meshExactTempSlots": 16,
+    "weatherEntries": 8,
+    "meshEntries": 2,
+    "failures": 1,
+    "meshTimelineEntries": 2,
+    "meshExactTempSlots": 14,
     "hourlyRainEntries": 2
   },
-  "failures": []
+  "failures": [
+    {
+      "date": "2026-09-06",
+      "venue": "ベルサール汐留",
+      "reason": "開催日の予報がまだありません"
+    }
+  ]
 }
