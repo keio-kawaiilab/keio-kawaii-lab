@@ -96,7 +96,7 @@ def extract_resale_windows(lines: list[str], article_year: int) -> list[tuple[in
     for index, line in enumerate(lines):
         if not RESALE_WINDOW_RE.search(line):
             continue
-        segment = " ".join(lines[index:index + 3])
+        segment = line
         values = date_matches(segment, article_year)
         if len(values) < 2:
             continue
@@ -188,7 +188,18 @@ def performance_for(existing: list[dict], group: str, day: str, article_title: s
             score += 5
         candidates.append((score, event))
     candidates.sort(key=lambda row: row[0], reverse=True)
-    return dict(candidates[0][1]) if candidates else None
+    if not candidates:
+        return None
+    chosen = dict(candidates[0][1])
+    for schedule_row in chosen.get("schedule") or []:
+        if not isinstance(schedule_row, dict) or clean(schedule_row.get("date"))[:10] != day:
+            continue
+        chosen["eventDate"] = day
+        chosen["venue"] = schedule_row.get("venue") or chosen.get("venue")
+        chosen["openTime"] = schedule_row.get("openTime") or chosen.get("openTime")
+        chosen["startTime"] = schedule_row.get("startTime") or chosen.get("startTime")
+        break
+    return chosen
 
 
 def resale_entry(article_url: str, article_title: str, article_date: str | None, group: str, day: str, start: str, end: str, existing: list[dict]) -> dict:
