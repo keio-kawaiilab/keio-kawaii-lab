@@ -7,8 +7,8 @@ from pathlib import Path
 PAGE = Path("schedule.html")
 
 # A performance must not become a second calendar/card item just because a
-# ticket source phrases the title differently.  Use the actual occurrence as
-# the primary identity: group + date + kind + start time.  When start time is
+# ticket source phrases the title differently. Use the actual occurrence as
+# the primary identity: group + date + kind + start time. When start time is
 # unavailable, fall back to normalized venue + visible title so genuinely
 # different same-day events are not collapsed blindly.
 PERFORMANCE_KEY_JS = (
@@ -29,27 +29,36 @@ def literal_replacement(_match: re.Match[str]) -> str:
 def main() -> int:
     page = PAGE.read_text(encoding="utf-8")
 
-    # Remove a previous helper if this script has already been applied.
-    page = re.sub(
-        r"function performanceVenueKey\(e,o\)\{.*?\}(?=function performanceKey\(e,o\))",
-        "",
+    # First handle the already-normalized form. This makes the post-processor
+    # idempotent: repeated scheduled builds must not delete the helper before
+    # trying to recognize the occurrence-based performanceKey implementation.
+    current_pattern = (
+        r"function performanceVenueKey\(e,o\)\{.*?\}"
+        r"function performanceKey\(e,o\)\{.*?\}"
+        r"(?=function performanceKeyForEvent)"
+    )
+    page, count = re.subn(
+        current_pattern,
+        literal_replacement,
         page,
         count=1,
         flags=re.S,
     )
 
-    pattern = (
-        r"function performanceKey\(e,o\)\{"
-        r"return\[String\(e\.group\|\|''\),String\(o\.date\|\|''\)\.slice\(0,10\),"
-        r"eventKind\(e\),performanceTitleKey\(e\)\]\.join\('\|'\)\}"
-    )
-    page, count = re.subn(pattern, literal_replacement, page, count=1)
+    if count != 1:
+        # Upgrade the original title-based performance identity.
+        legacy_pattern = (
+            r"function performanceKey\(e,o\)\{"
+            r"return\[String\(e\.group\|\|''\),String\(o\.date\|\|''\)\.slice\(0,10\),"
+            r"eventKind\(e\),performanceTitleKey\(e\)\]\.join\('\|'\)\}"
+        )
+        page, count = re.subn(legacy_pattern, literal_replacement, page, count=1)
 
     if count != 1:
-        # Also accept the occurrence-based form on repeated workflow runs and
-        # replace it deterministically with the current definition.
+        # Recover safely if an older failed/manual post-process left the
+        # occurrence-based performanceKey in place without the venue helper.
         page, count = re.subn(
-            r"function performanceVenueKey\(e,o\)\{.*?\}function performanceKey\(e,o\)\{.*?\}(?=function performanceKeyForEvent)",
+            r"function performanceKey\(e,o\)\{.*?\}(?=function performanceKeyForEvent)",
             literal_replacement,
             page,
             count=1,
@@ -71,7 +80,7 @@ def main() -> int:
     if missing:
         raise RuntimeError(f"schedule performance identity invariant missing: {missing}")
 
-    scripts = re.findall(r"<script(?:\\s[^>]*)?>(.*?)</script>", page, re.S)
+    scripts = re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>", page, re.S)
     executable = [script for script in scripts if "(function(){'use strict';" in script]
     if len(executable) != 1:
         raise RuntimeError(f"expected one executable inline script, found {len(executable)}")
