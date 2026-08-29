@@ -1,0 +1,32 @@
+name: Schedule quarantine regression tests
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "scripts/audit_schedule_release.py"
+      - "scripts/audit_schedule_release_grouped.py"
+      - "scripts/test_audit_schedule_release_grouped.py"
+      - ".github/workflows/test-schedule-quarantine.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run row-level quarantine regression tests
+        working-directory: scripts
+        run: python -m unittest -v test_audit_schedule_release_grouped.py
