@@ -88,6 +88,43 @@ class SpecialEventEntityTests(unittest.TestCase):
         self.assertTrue(enforced["events"][0]["physicalInvariantMerged"])
         self.assertFalse(duplicate_physical_occurrences(enforced))
 
+    def test_missing_time_shell_merges_into_same_release_event(self):
+        payload = {"events": [
+            {
+                "id": "detail",
+                "group": "CANDY TUNE",
+                "eventCategory": "release-event",
+                "displayTitle": "4thシングル『総意♡So Free / スペシャル感謝祭』発売記念リリースイベント",
+                "eventTitle": "CANDY TUNE 4thシングル『総意♡So Free / スペシャル感謝祭』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE",
+                "eventDate": "2026-09-01",
+                "venue": "埼玉県 エミテラス所沢2F TOKOROZAWA e-CUBE",
+                "startTime": "18:00",
+                "ticketType": "現在受付なし",
+                "sourceType": "official-special",
+            },
+            {
+                "id": "official-x-shell",
+                "group": "CANDY TUNE",
+                "eventCategory": "release-event",
+                "displayTitle": "🍬🎸4th single リリースイベント🥁🍬",
+                "eventDate": "2026-09-01",
+                "venue": "エミテラス所沢 2F TOKOROZAWA e-CUBE",
+                "ticketType": "現在受付なし",
+                "specialDetailsStatus": "awaiting-details",
+                "sourceType": "official-social",
+                "sourceChannel": "official-x",
+            },
+        ]}
+        self.assertEqual(len(duplicate_physical_occurrences(payload)), 1)
+        enforced, report = enforce_payload(payload)
+        self.assertEqual(report["physicalRowsCollapsed"], 1)
+        self.assertEqual(report["remainingDuplicateCount"], 0)
+        self.assertEqual(len(enforced["events"]), 1)
+        event = enforced["events"][0]
+        self.assertTrue(event["physicalInvariantMerged"])
+        self.assertEqual(event["eventDate"], "2026-09-01")
+        self.assertFalse(duplicate_physical_occurrences(enforced))
+
     def test_same_place_and_day_but_different_time_remains_separate(self):
         payload = {"events": [
             {
