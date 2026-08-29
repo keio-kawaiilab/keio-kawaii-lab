@@ -15,9 +15,15 @@
   }
 
   function clean(value){return String(value==null?"":value).normalize("NFKC").trim();}
+  function parseFirstMoment(text){
+    var match=clean(text).match(/(20\d{2})\/(\d{1,2})\/(\d{1,2})(?:\s+(\d{1,2}):(\d{2}))?/);
+    if(!match)return null;
+    return new Date(+match[1],+match[2]-1,+match[3],match[4]?+match[4]:0,match[5]?+match[5]:0,0,0);
+  }
 
   function decorateOption(option){
     var copy=option.querySelector(".ticket-copy b");
+    var period=option.querySelector(".ticket-copy small");
     var provider=option.querySelector(".provider");
     var link=option.querySelector(".ticket-link");
     var state=option.querySelector(".sale-state");
@@ -37,8 +43,9 @@
     }
     if(link)link.textContent="リセールページ →";
     if(state){
-      if(/受付中/.test(stateLabel))state.textContent="リセール受付中";
-      else if(/予定/.test(stateLabel))state.textContent="リセール予定";
+      var start=parseFirstMoment(period&&period.textContent);
+      if(start&&start>new Date())state.textContent="リセール予定";
+      else state.textContent="リセール受付中";
     }
   }
 
