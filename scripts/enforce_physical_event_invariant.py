@@ -184,9 +184,17 @@ def main() -> int:
     args = parser.parse_args()
 
     payload = json.loads(args.data.read_text(encoding="utf-8"))
+    if args.check:
+        duplicates = duplicate_physical_occurrences(payload)
+        print(json.dumps({
+            "status": "ok" if not duplicates else "blocked",
+            "duplicateCount": len(duplicates),
+            "duplicates": duplicates,
+        }, ensure_ascii=False, indent=2))
+        return 1 if duplicates else 0
+
     enforced, report = enforce_payload(payload)
-    if not args.check:
-        args.data.write_text(json.dumps(enforced, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    args.data.write_text(json.dumps(enforced, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, ensure_ascii=False, indent=2))
     return 1 if report["remainingDuplicateCount"] else 0
 
