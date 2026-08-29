@@ -20,6 +20,18 @@
     if(!match)return null;
     return new Date(+match[1],+match[2]-1,+match[3],match[4]?+match[4]:0,match[5]?+match[5]:0,0,0);
   }
+  function verifiedResaleHref(option){
+    var card=option.closest&&option.closest(".card");
+    if(!card)return"";
+    var steps=Array.prototype.slice.call(card.querySelectorAll(".ticket-flow .step"));
+    for(var i=0;i<steps.length;i++){
+      var title=steps[i].querySelector(".step-title");
+      if(!title||!/リセール|resale/i.test(clean(title.textContent)))continue;
+      var source=steps[i].querySelector(".flow-source");
+      if(source&&source.href)return source.href;
+    }
+    return"";
+  }
 
   function decorateOption(option){
     var copy=option.querySelector(".ticket-copy b");
@@ -41,7 +53,11 @@
       provider.textContent="公式リセール";
       provider.classList.add("resale");
     }
-    if(link)link.textContent="リセールページ →";
+    if(link){
+      link.textContent="リセールページ →";
+      var verifiedHref=verifiedResaleHref(option);
+      if(verifiedHref)link.href=verifiedHref;
+    }
     if(state){
       var start=parseFirstMoment(period&&period.textContent);
       if(start&&start>new Date())state.textContent="リセール予定";
@@ -66,8 +82,8 @@
   }
 
   function run(){
-    Array.prototype.slice.call(cards.querySelectorAll(".ticket-option")).forEach(decorateOption);
     Array.prototype.slice.call(cards.querySelectorAll(".ticket-flow .step")).forEach(decorateStep);
+    Array.prototype.slice.call(cards.querySelectorAll(".ticket-option")).forEach(decorateOption);
     Array.prototype.slice.call(cards.querySelectorAll(".ticket-options")).forEach(function(list){
       if(!list.querySelector(".ticket-option"))list.style.display="none";
     });
