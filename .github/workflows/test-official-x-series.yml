@@ -1,0 +1,81 @@
+name: Official X series regression
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "scripts/dedupe_official_x_series.py"
+      - "scripts/prepare_release_candidate.py"
+      - "scripts/test_dedupe_official_x_series.py"
+      - "scripts/test_prepare_release_candidate.py"
+      - ".github/workflows/test-official-x-series.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify X-series dedupe and release audit
+        shell: bash
+        run: |
+          cd scripts
+          python -m unittest -v test_dedupe_official_x_series.py test_prepare_release_candidate.py
+          cd ..
+          PYTHONPATH=scripts python - <<'PY'
+          from datetime import datetime
+          import prepare_release_candidate as prep
+          from audit_schedule_release import audit
+
+          now = datetime.fromisoformat("2026-08-29T21:00:00+09:00")
+          shared = "https://x.com/MORE_STAR_/status/2093324279639392675"
+          older = "https://x.com/MORE_STAR_/status/2092956382366744633"
+          title = "『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント"
+          aggregate = {
+              "id": "aggregate", "group": "MORE STAR", "title": title,
+              "eventTitle": title, "displayTitle": title,
+              "eventCategory": "release-event", "ticketType": "現在受付なし",
+              "applicationStatus": "none", "eventScope": "kawaii-lab",
+              "eventDate": "2027-01-03", "eventEndDate": "2027-02-04",
+              "eventDates": ["2027-01-03", "2027-02-04"],
+              "schedule": [
+                  {"date": "2027-01-03", "venue": "テラスモール松戸"},
+                  {"date": "2027-02-04", "venue": "animate hall BLACK"},
+              ],
+              "venue": "複数会場（全2公演）",
+              "url": shared, "urls": [shared, older],
+              "sourceType": "derived", "sourceChannel": "official-x",
+              "primarySource": "official",
+          }
+          singleton = {
+              "id": "singleton", "group": "MORE STAR", "title": title,
+              "eventTitle": title, "displayTitle": title,
+              "eventCategory": "release-event", "ticketType": "現在受付なし",
+              "applicationStatus": "none", "eventScope": "kawaii-lab",
+              "eventDate": "2027-02-05", "venue": "テラスモール松戸",
+              "url": shared, "urls": [shared],
+              "sourceType": "official-social", "sourceChannel": "official-x",
+              "primarySource": "official",
+          }
+          previous = {"updatedAt": "2026-08-29T20:00:00+09:00", "events": [aggregate, singleton]}
+          candidate = {"updatedAt": "2026-08-29T21:00:00+09:00", "events": [aggregate]}
+          prepared, report = prep.prepare(previous, candidate, now)
+          assert len(prepared["events"]) == 1, prepared["events"]
+          row = prepared["events"][0]
+          assert row["eventEndDate"] == "2027-02-05", row
+          assert row["sourceType"] == "official-social", row
+          assert row["specialDetailsStatus"] == "awaiting-details", row
+          assert row["applicationDisplayMode"] == "schedule-only", row
+          errors, warnings, audit_report = audit(previous, prepared, now)
+          assert not errors, errors
+          print({"prepare": report, "auditWarnings": warnings, "audit": audit_report})
+          PY
