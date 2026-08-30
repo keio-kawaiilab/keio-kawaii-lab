@@ -1,7 +1,7 @@
 {
   "date": "2026-08-30",
   "horizonDays": 7,
-  "generatedAt": "2026-08-30T07:46+09:00",
+  "generatedAt": "2026-08-30T17:31+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -17,43 +17,19 @@
       "areaCode": "110010",
       "areaName": "南部",
       "precision": "mesh5km",
-      "label": "雨",
-      "max": 28.0,
-      "min": 28.0,
-      "pop": "10",
-      "popLabel": "12〜18時",
-      "issuedAt": "2026-08-30T05:00:00+09:00",
-      "meshTime": "12:00",
+      "label": "くもり",
+      "max": null,
+      "min": null,
+      "pop": "20",
+      "popLabel": "18〜00時",
+      "issuedAt": "2026-08-30T17:00:00+09:00",
+      "meshTime": "21:00",
       "meshTempBand": "25〜29℃",
       "coordinates": {
         "lat": 35.796692,
         "lon": 139.506088
       },
       "meshTimeline": [
-        {
-          "time": "09:00",
-          "label": "くもり",
-          "validAt": "2026-08-30T09:00+09:00",
-          "temp": 24
-        },
-        {
-          "time": "12:00",
-          "label": "雨",
-          "validAt": "2026-08-30T12:00+09:00",
-          "temp": 25
-        },
-        {
-          "time": "15:00",
-          "label": "くもり",
-          "validAt": "2026-08-30T15:00+09:00",
-          "temp": 27
-        },
-        {
-          "time": "18:00",
-          "label": "くもり",
-          "validAt": "2026-08-30T18:00+09:00",
-          "temp": 27
-        },
         {
           "time": "21:00",
           "label": "くもり",
@@ -69,6 +45,16 @@
       ],
       "hourlyRain": [
         {
+          "time": "12:00",
+          "rain": false,
+          "validAt": "2026-08-30T12:00+09:00"
+        },
+        {
+          "time": "13:00",
+          "rain": false,
+          "validAt": "2026-08-30T13:00+09:00"
+        },
+        {
           "time": "14:00",
           "rain": false,
           "validAt": "2026-08-30T14:00+09:00"
@@ -82,48 +68,25 @@
       "eventIds": [
         "54a369497f59ce96",
         "6541ff25a43280d1",
-        "6887785e2f73c68c"
+        "6887785e2f73c68c",
+        "a9dd48021711904e"
       ],
       "areaCode": "110010",
       "areaName": "南部",
       "precision": "mesh5km",
       "label": "くもり",
-      "max": 28.0,
-      "min": 28.0,
-      "pop": "10",
-      "popLabel": "12〜18時",
-      "issuedAt": "2026-08-30T05:00:00+09:00",
-      "meshTime": "15:00",
+      "max": null,
+      "min": null,
+      "pop": "20",
+      "popLabel": "18〜00時",
+      "issuedAt": "2026-08-30T17:00:00+09:00",
+      "meshTime": "21:00",
       "meshTempBand": "25〜29℃",
       "coordinates": {
         "lat": 35.817795,
         "lon": 139.677124
       },
       "meshTimeline": [
-        {
-          "time": "09:00",
-          "label": "くもり",
-          "validAt": "2026-08-30T09:00+09:00",
-          "temp": 24
-        },
-        {
-          "time": "12:00",
-          "label": "くもり",
-          "validAt": "2026-08-30T12:00+09:00",
-          "temp": 25
-        },
-        {
-          "time": "15:00",
-          "label": "くもり",
-          "validAt": "2026-08-30T15:00+09:00",
-          "temp": 27
-        },
-        {
-          "time": "18:00",
-          "label": "くもり",
-          "validAt": "2026-08-30T18:00+09:00",
-          "temp": 27
-        },
         {
           "time": "21:00",
           "label": "くもり",
@@ -163,14 +126,14 @@
         "special-a91f4fd0f80a1f20"
       ],
       "areaCode": "110010",
-      "areaName": "埼玉県",
+      "areaName": "南部",
       "precision": "area",
-      "label": "くもり時々晴れ",
-      "max": 36.0,
-      "min": 24.0,
-      "pop": "30",
-      "popLabel": "1日",
-      "issuedAt": "2026-08-29T17:00:00+09:00",
+      "label": "くもり 時々 晴れ",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-08-30T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -187,10 +150,10 @@
       "precision": "area",
       "label": "くもり一時雨",
       "max": 32.0,
-      "min": 25.0,
-      "pop": "60",
+      "min": 24.0,
+      "pop": "70",
       "popLabel": "1日",
-      "issuedAt": "2026-08-29T17:00:00+09:00",
+      "issuedAt": "2026-08-30T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -206,11 +169,11 @@
       "areaName": "東京地方",
       "precision": "area",
       "label": "くもり一時雨",
-      "max": 30.0,
-      "min": 23.0,
-      "pop": "50",
+      "max": 27.0,
+      "min": 22.0,
+      "pop": "60",
       "popLabel": "1日",
-      "issuedAt": "2026-08-29T17:00:00+09:00",
+      "issuedAt": "2026-08-30T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -228,11 +191,11 @@
       "areaName": "神奈川県",
       "precision": "area",
       "label": "くもり一時雨",
-      "max": 29.0,
-      "min": 24.0,
-      "pop": "50",
+      "max": 26.0,
+      "min": 22.0,
+      "pop": "60",
       "popLabel": "1日",
-      "issuedAt": "2026-08-29T17:00:00+09:00",
+      "issuedAt": "2026-08-30T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -248,11 +211,11 @@
       "areaName": "埼玉県",
       "precision": "area",
       "label": "くもり時々晴れ",
-      "max": 29.0,
-      "min": 21.0,
+      "max": 28.0,
+      "min": 20.0,
       "pop": "20",
       "popLabel": "1日",
-      "issuedAt": "2026-08-29T17:00:00+09:00",
+      "issuedAt": "2026-08-30T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -268,31 +231,46 @@
       "areaName": "東京地方",
       "precision": "area",
       "label": "くもり",
-      "max": 29.0,
-      "min": 21.0,
+      "max": 27.0,
+      "min": 20.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-08-29T17:00:00+09:00",
+      "issuedAt": "2026-08-30T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-09-06",
+      "venue": "ベルサール汐留",
+      "venueKey": "ベルサール汐留",
+      "eventIds": [
+        "special-9eeecc44fadaa65a",
+        "special-88fbc286e6995c1d"
+      ],
+      "areaCode": "130010",
+      "areaName": "東京地方",
+      "precision": "area",
+      "label": "くもり",
+      "max": 27.0,
+      "min": 20.0,
+      "pop": "40",
+      "popLabel": "1日",
+      "issuedAt": "2026-08-30T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
     }
   ],
   "stats": {
-    "occurrencesInRange": 14,
+    "occurrencesInRange": 15,
     "uniqueVenueDates": 9,
-    "weatherEntries": 8,
+    "weatherEntries": 9,
     "meshEntries": 2,
-    "failures": 1,
+    "failures": 0,
     "meshTimelineEntries": 2,
-    "meshExactTempSlots": 12,
+    "meshExactTempSlots": 4,
     "hourlyRainEntries": 2
   },
-  "failures": [
-    {
-      "date": "2026-09-06",
-      "venue": "ベルサール汐留",
-      "reason": "開催日の予報がまだありません"
-    }
-  ]
+  "failures": []
 }
