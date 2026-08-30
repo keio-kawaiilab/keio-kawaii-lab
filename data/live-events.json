@@ -1,6 +1,6 @@
 {
   "demo": false,
-  "updatedAt": "2026-08-31T03:40:17+09:00",
+  "updatedAt": "2026-08-31T04:35:31+09:00",
   "source": "KAWAII LAB.各グループ公式公開情報 + チケットぴあ・ローチケ・イープラス公開情報 + SUKISUKI公開オンライン特典会情報 + 公式大特典会・リリースイベント情報",
   "events": [
     {
@@ -2283,7 +2283,7 @@
       "group": "CANDY TUNE",
       "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
       "ticketType": "2次プレリザーブ",
-      "applyStart": "2026-08-20T11:00",
+      "applyStart": null,
       "applyEnd": "2026-08-31T23:59",
       "resultDate": null,
       "paymentEnd": null,
@@ -2317,10 +2317,9 @@
         "宮城県 仙台サンプラザホール",
         "栃木県 宇都宮市文化会館 大ホール"
       ],
-      "applicationWindowVerified": true,
+      "applicationWindowVerified": false,
       "deadlineVerified": true,
-      "applicationDisplayMode": "band",
-      "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=28155",
+      "applicationDisplayMode": "band-from-today",
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=28155",
       "primarySource": "pia",
       "sourceCandidates": [
@@ -2934,7 +2933,7 @@
       "group": "FRUITS ZIPPER",
       "title": "FRUITS ZIPPER",
       "ticketType": "2次プレリザーブ",
-      "applyStart": null,
+      "applyStart": "2026-08-29T11:00",
       "applyEnd": "2026-09-07T23:59",
       "resultDate": null,
       "paymentEnd": null,
@@ -2952,9 +2951,10 @@
       "sourceType": "pia",
       "sourcePublishedAt": null,
       "applicationStatus": "open",
-      "applicationWindowVerified": false,
+      "applicationWindowVerified": true,
       "deadlineVerified": true,
-      "applicationDisplayMode": "band-from-today",
+      "applicationDisplayMode": "band",
+      "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=35131",
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=35131",
       "primarySource": "pia",
       "sourceCandidates": [
@@ -4421,20 +4421,11 @@
     "remainingDuplicates": []
   },
   "releasePreparation": {
-    "preparedAt": "2026-08-31T03:40:17+09:00",
+    "preparedAt": "2026-08-31T04:35:31+09:00",
     "normalizedSpecialEvents": 2,
     "duplicateIdsRemoved": 0,
-    "retainedPreviousRows": 1,
-    "retained": [
-      {
-        "id": "fd467c6e212b3ab9",
-        "group": "CANDY TUNE",
-        "title": "CANDY TUNE",
-        "ticketType": "抽選 2次プレオーダー受付",
-        "provider": "eplus",
-        "applyEnd": "2026-08-31T23:59"
-      }
-    ],
+    "retainedPreviousRows": 0,
+    "retained": [],
     "expandedPreviousSpecialEntities": 7,
     "expandedCandidateSpecialEntities": 3,
     "officialXSeriesMerged": 0,
@@ -4482,11 +4473,11 @@
     }
   },
   "distributedMergeDiagnostics": {
-    "mergedAt": "2026-08-31T03:40:17+09:00",
+    "mergedAt": "2026-08-31T04:35:31+09:00",
     "sources": {
       "playguide": {
-        "previous": 9,
-        "replacement": 17
+        "previous": 13,
+        "replacement": 12
       },
       "sukisuki": {
         "previous": 1,
@@ -4497,8 +4488,8 @@
         "replacement": 10
       }
     },
-    "officialLinksPreserved": 3,
-    "eventCount": 80
+    "officialLinksPreserved": 1,
+    "eventCount": 75
   },
   "resaleDiagnostics": {
     "articles": 24,
