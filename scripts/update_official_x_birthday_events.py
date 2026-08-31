@@ -437,9 +437,13 @@ def _has_application(event: dict) -> bool:
 
 
 def _official_site_row(event: dict) -> bool:
+    # Promoter pages (for example HOT STUFF) are trusted fallback evidence, but
+    # they are not KAWAII LAB./group official pages. Treating promoter rows as
+    # official-site rows caused a rich official ticket update to be enriched
+    # onto the promoter row and then immediately removed by fallback cleanup.
     return (
         str(event.get("primarySource") or "").lower() == "official"
-        and str(event.get("sourceType") or "").lower() != "official-social"
+        and str(event.get("sourceType") or "").lower() not in {"official-social", "promoter"}
     )
 
 
