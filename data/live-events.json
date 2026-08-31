@@ -1,6 +1,6 @@
 {
   "demo": false,
-  "updatedAt": "2026-08-31T19:06:53+09:00",
+  "updatedAt": "2026-08-31T19:17:11+09:00",
   "source": "KAWAII LAB.各グループ公式公開情報 + チケットぴあ・ローチケ・イープラス公開情報 + SUKISUKI公開オンライン特典会情報 + 公式大特典会・リリースイベント情報",
   "events": [
     {
@@ -746,6 +746,7 @@
       "sourceRowIds": [
         "special-124c630f19e88897"
       ],
+      "offers": [],
       "schedule": [
         {
           "date": "2026-09-05",
@@ -762,8 +763,7 @@
         "ベルサール汐留"
       ],
       "specialDetailsStatus": "awaiting-details",
-      "physicalInvariantMerged": true,
-      "offers": []
+      "physicalInvariantMerged": true
     },
     {
       "id": "special-9332aaf17a50c3a8",
@@ -994,6 +994,7 @@
       "sourceRowIds": [
         "special-9eeecc44fadaa65a"
       ],
+      "offers": [],
       "schedule": [
         {
           "date": "2026-09-06",
@@ -1009,8 +1010,7 @@
       "venues": [
         "ベルサール汐留"
       ],
-      "specialDetailsStatus": "awaiting-details",
-      "offers": []
+      "specialDetailsStatus": "awaiting-details"
     },
     {
       "id": "special-88fbc286e6995c1d",
@@ -1112,6 +1112,7 @@
       "sourceRowIds": [
         "special-88fbc286e6995c1d"
       ],
+      "offers": [],
       "schedule": [
         {
           "date": "2026-09-06",
@@ -1127,8 +1128,7 @@
       "venues": [
         "ベルサール汐留"
       ],
-      "specialDetailsStatus": "awaiting-details",
-      "offers": []
+      "specialDetailsStatus": "awaiting-details"
     },
     {
       "id": "84787797cc4cbcb3",
@@ -1765,7 +1765,7 @@
         "official"
       ],
       "eventScope": "kawaii-lab",
-      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/40312",
+      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/40369",
       "openTime": "15:00",
       "startTime": "15:00",
       "officialTourUrl": "https://cutiestreet.asobisystem.com/feature/autumntour"
@@ -2071,7 +2071,7 @@
       "group": "CANDY TUNE",
       "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
       "ticketType": "2次プレリザーブ",
-      "applyStart": null,
+      "applyStart": "2026-08-20T11:00",
       "applyEnd": "2026-08-31T23:59",
       "resultDate": null,
       "paymentEnd": null,
@@ -2105,9 +2105,10 @@
         "宮城県 仙台サンプラザホール",
         "栃木県 宇都宮市文化会館 大ホール"
       ],
-      "applicationWindowVerified": false,
+      "applicationWindowVerified": true,
       "deadlineVerified": true,
-      "applicationDisplayMode": "band-from-today",
+      "applicationDisplayMode": "band",
+      "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=28155",
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=28155",
       "primarySource": "pia",
       "sourceCandidates": [
@@ -2409,7 +2410,7 @@
       "group": "FRUITS ZIPPER",
       "title": "FRUITS ZIPPER",
       "ticketType": "2次プレリザーブ",
-      "applyStart": null,
+      "applyStart": "2026-08-26T11:00",
       "applyEnd": "2026-09-01T23:59",
       "resultDate": null,
       "paymentEnd": null,
@@ -2443,9 +2444,10 @@
         "香川県 レクザムホール 大ホール（香川県県民ホール）",
         "愛媛県 松山市民会館 大ホール"
       ],
-      "applicationWindowVerified": false,
+      "applicationWindowVerified": true,
       "deadlineVerified": true,
-      "applicationDisplayMode": "band-from-today",
+      "applicationDisplayMode": "band",
+      "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14547",
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14547",
       "primarySource": "pia",
       "sourceCandidates": [
@@ -2524,7 +2526,7 @@
       "group": "CANDY TUNE",
       "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
       "ticketType": "2次プレリザーブ",
-      "applyStart": "2026-08-26T11:00",
+      "applyStart": null,
       "applyEnd": "2026-09-06T23:59",
       "resultDate": null,
       "paymentEnd": null,
@@ -2563,10 +2565,9 @@
         "愛知県 愛知県芸術劇場 大ホール",
         "三重県 三重県文化会館大ホール"
       ],
-      "applicationWindowVerified": true,
+      "applicationWindowVerified": false,
       "deadlineVerified": true,
-      "applicationDisplayMode": "band",
-      "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
+      "applicationDisplayMode": "band-from-today",
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
       "primarySource": "pia",
       "sourceCandidates": [
@@ -4253,9 +4254,9 @@
   },
   "physicalEventInvariant": {
     "semanticNormalization": {
-      "sourceSpecialRows": 9,
+      "sourceSpecialRows": 7,
       "canonicalSpecialEvents": 7,
-      "rowsCollapsed": 2,
+      "rowsCollapsed": 0,
       "releaseEventEntities": 3,
       "largeBenefitEntities": 4,
       "alreadyCanonicalRows": 7
@@ -4270,36 +4271,59 @@
     "remainingDuplicates": []
   },
   "releasePreparation": {
-    "preparedAt": "2026-08-31T19:12:02+09:00",
-    "normalizedSpecialEvents": 6,
+    "preparedAt": "2026-08-31T19:17:11+09:00",
+    "normalizedSpecialEvents": 2,
     "duplicateIdsRemoved": 0,
     "retainedPreviousRows": 0,
     "retained": [],
     "expandedPreviousSpecialEntities": 7,
-    "expandedCandidateSpecialEntities": 7,
+    "expandedCandidateSpecialEntities": 3,
     "officialXSeriesMerged": 0,
     "officialXRowsCollapsed": 0,
     "physicalEventInvariant": {
       "semanticNormalization": {
-        "sourceSpecialRows": 9,
-        "canonicalSpecialEvents": 7,
-        "rowsCollapsed": 2,
+        "sourceSpecialRows": 11,
+        "canonicalSpecialEvents": 8,
+        "rowsCollapsed": 3,
         "releaseEventEntities": 3,
-        "largeBenefitEntities": 4,
-        "alreadyCanonicalRows": 7
+        "largeBenefitEntities": 5,
+        "alreadyCanonicalRows": 3
       },
-      "specialEventsBeforePhysicalMerge": 7,
+      "specialEventsBeforePhysicalMerge": 8,
       "specialEventsAfterPhysicalMerge": 7,
-      "physicalRowsCollapsed": 0,
+      "physicalRowsCollapsed": 1,
       "internalScheduleRowsCollapsed": 0,
-      "collisionCount": 0,
-      "collisions": [],
+      "collisionCount": 1,
+      "collisions": [
+        {
+          "sourceIds": [
+            "special-124c630f19e88897",
+            "special-c4eedd09daa779cc"
+          ],
+          "titles": [
+            "CANDY TUNE 大特典会",
+            "CANDY TUNE 4thシングル発売記念 大特典会"
+          ],
+          "physicalOccurrences": [
+            {
+              "group": "candy tune",
+              "date": "2026-09-05",
+              "startTime": "10:00",
+              "venueKey": "ベルサール汐留"
+            }
+          ],
+          "sourceCategories": [
+            "large-benefit"
+          ],
+          "containsIncompleteTime": false
+        }
+      ],
       "remainingDuplicateCount": 0,
       "remainingDuplicates": []
     }
   },
   "distributedMergeDiagnostics": {
-    "mergedAt": "2026-08-31T17:57:41+09:00",
+    "mergedAt": "2026-08-31T19:17:11+09:00",
     "sources": {
       "playguide": {
         "previous": 13,
