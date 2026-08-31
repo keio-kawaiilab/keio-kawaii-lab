@@ -66,7 +66,7 @@ jobs:
         run: |
           set -euo pipefail
           cp data/live-events.json /tmp/live-events-before-birthday.json
-          if ! timeout --signal=TERM --kill-after=10s 120s python scripts/update_promoter_birthday_events.py; then
+          if ! timeout --signal=TERM --kill-after=10s 300s python scripts/update_promoter_birthday_events.py; then
             echo "::warning::Promoter birthday collector failed; retaining previous known-good calendar."
             cp /tmp/live-events-before-birthday.json data/live-events.json
           fi
