@@ -41,6 +41,8 @@ CANONICAL_OFFER_JS = (
 
 PREPARE_OLD = "function prepare(raw){var fixed=raw.map(function(e){return repair(e,raw)});fixed=mergePiaDuplicates(fixed);return fixed.filter(function(e){if(playguide(e)&&(family(e)==='fc'||family(e)==='upgrade'))return false;return currentEnough(e)})}"
 PREPARE_NEW = "function prepare(raw){raw=expandCanonicalOffers(raw);var fixed=raw.map(function(e){return repair(e,raw)});fixed=mergePiaDuplicates(fixed);return fixed.filter(function(e){if(playguide(e)&&(family(e)==='fc'||family(e)==='upgrade'))return false;return currentEnough(e)})}"
+STATUS_OLD = "document.getElementById('status').textContent='最終データ更新: '+(data.updatedAt||'不明');render()"
+STATUS_NEW = "document.getElementById('status').textContent='最終確認: '+(data.checkedAt||'不明')+' ／ 最終データ更新: '+(data.updatedAt||'不明');render()"
 
 
 def canonicalize_public_data() -> dict:
@@ -83,6 +85,14 @@ def install_offer_adapter(page: str) -> str:
     return page.replace(PREPARE_OLD, PREPARE_NEW, 1)
 
 
+def install_truthful_status(page: str) -> str:
+    if STATUS_NEW in page:
+        return page
+    if STATUS_OLD not in page:
+        raise RuntimeError("schedule status renderer changed; truthful refresh status could not be installed")
+    return page.replace(STATUS_OLD, STATUS_NEW, 1)
+
+
 def main() -> int:
     # This is the final release boundary. Collectors/audits may temporarily work
     # with one row per source, but no such row can reach the public JSON. Always
@@ -95,6 +105,7 @@ def main() -> int:
     page = PAGE.read_text(encoding="utf-8")
     page = replace_identity_block(page)
     page = install_offer_adapter(page)
+    page = install_truthful_status(page)
 
     required = (
         "function performanceTitleKey(e)",
@@ -106,6 +117,8 @@ def main() -> int:
         "function performanceModels(vis)",
         "perfSeen[pk]",
         "data-performance-key",
+        "最終確認:",
+        "data.checkedAt",
     )
     missing = [token for token in required if token not in page]
     if missing:
@@ -118,7 +131,7 @@ def main() -> int:
 
     Path("/tmp/schedule-inline.js").write_text(executable[0], encoding="utf-8")
     PAGE.write_text(page, encoding="utf-8")
-    print("Schedule renders canonical special-event entities with child sale offers")
+    print("Schedule renders canonical special-event entities with truthful refresh timestamps")
     print(json.dumps(report, ensure_ascii=False))
     return 0
 
