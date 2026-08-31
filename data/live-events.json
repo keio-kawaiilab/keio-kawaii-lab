@@ -1,6 +1,6 @@
 {
   "demo": false,
-  "updatedAt": "2026-08-31T17:43:11+09:00",
+  "updatedAt": "2026-08-31T17:57:41+09:00",
   "source": "KAWAII LAB.各グループ公式公開情報 + チケットぴあ・ローチケ・イープラス公開情報 + SUKISUKI公開オンライン特典会情報 + 公式大特典会・リリースイベント情報",
   "events": [
     {
@@ -1215,7 +1215,7 @@
       "group": "CANDY TUNE",
       "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
       "ticketType": "2次プレリザーブ",
-      "applyStart": "2026-08-29T10:00",
+      "applyStart": null,
       "applyEnd": "2026-09-01T23:59",
       "resultDate": null,
       "paymentEnd": null,
@@ -1245,10 +1245,9 @@
       "sourceType": "pia",
       "sourcePublishedAt": null,
       "applicationStatus": "open",
-      "applicationWindowVerified": true,
+      "applicationWindowVerified": false,
       "deadlineVerified": true,
-      "applicationDisplayMode": "band",
-      "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=31589",
+      "applicationDisplayMode": "band-from-today",
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=31589",
       "primarySource": "pia",
       "sourceCandidates": [
@@ -1766,7 +1765,7 @@
         "official"
       ],
       "eventScope": "kawaii-lab",
-      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/40369",
+      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/40312",
       "openTime": "15:00",
       "startTime": "15:00",
       "officialTourUrl": "https://cutiestreet.asobisystem.com/feature/autumntour"
@@ -2410,7 +2409,7 @@
       "group": "FRUITS ZIPPER",
       "title": "FRUITS ZIPPER",
       "ticketType": "2次プレリザーブ",
-      "applyStart": "2026-08-26T11:00",
+      "applyStart": null,
       "applyEnd": "2026-09-01T23:59",
       "resultDate": null,
       "paymentEnd": null,
@@ -2444,10 +2443,9 @@
         "香川県 レクザムホール 大ホール（香川県県民ホール）",
         "愛媛県 松山市民会館 大ホール"
       ],
-      "applicationWindowVerified": true,
+      "applicationWindowVerified": false,
       "deadlineVerified": true,
-      "applicationDisplayMode": "band",
-      "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14547",
+      "applicationDisplayMode": "band-from-today",
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14547",
       "primarySource": "pia",
       "sourceCandidates": [
@@ -2526,7 +2524,7 @@
       "group": "CANDY TUNE",
       "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
       "ticketType": "2次プレリザーブ",
-      "applyStart": null,
+      "applyStart": "2026-08-26T11:00",
       "applyEnd": "2026-09-06T23:59",
       "resultDate": null,
       "paymentEnd": null,
@@ -2565,9 +2563,10 @@
         "愛知県 愛知県芸術劇場 大ホール",
         "三重県 三重県文化会館大ホール"
       ],
-      "applicationWindowVerified": false,
+      "applicationWindowVerified": true,
       "deadlineVerified": true,
-      "applicationDisplayMode": "band-from-today",
+      "applicationDisplayMode": "band",
+      "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
       "primarySource": "pia",
       "sourceCandidates": [
@@ -4271,28 +4270,11 @@
     "remainingDuplicates": []
   },
   "releasePreparation": {
-    "preparedAt": "2026-08-31T17:43:11+09:00",
+    "preparedAt": "2026-08-31T17:57:41+09:00",
     "normalizedSpecialEvents": 2,
     "duplicateIdsRemoved": 0,
-    "retainedPreviousRows": 2,
-    "retained": [
-      {
-        "id": "fd467c6e212b3ab9",
-        "group": "CANDY TUNE",
-        "title": "CANDY TUNE",
-        "ticketType": "抽選 2次プレオーダー受付",
-        "provider": "eplus",
-        "applyEnd": "2026-08-31T23:59"
-      },
-      {
-        "id": "e753f87ddfdd139d",
-        "group": "CANDY TUNE",
-        "title": "CANDY TUNE",
-        "ticketType": "抽選 2次プレオーダー受付",
-        "provider": "eplus",
-        "applyEnd": "2026-09-07T23:59"
-      }
-    ],
+    "retainedPreviousRows": 0,
+    "retained": [],
     "expandedPreviousSpecialEntities": 7,
     "expandedCandidateSpecialEntities": 3,
     "officialXSeriesMerged": 0,
@@ -4340,11 +4322,11 @@
     }
   },
   "distributedMergeDiagnostics": {
-    "mergedAt": "2026-08-31T17:43:11+09:00",
+    "mergedAt": "2026-08-31T17:57:41+09:00",
     "sources": {
       "playguide": {
         "previous": 13,
-        "replacement": 17
+        "replacement": 13
       },
       "sukisuki": {
         "previous": 1,
@@ -4355,8 +4337,8 @@
         "replacement": 10
       }
     },
-    "officialLinksPreserved": 3,
-    "eventCount": 79
+    "officialLinksPreserved": 1,
+    "eventCount": 75
   },
   "resaleDiagnostics": {
     "articles": 24,
