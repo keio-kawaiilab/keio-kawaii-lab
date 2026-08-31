@@ -18,8 +18,8 @@ permissions:
   issues: write
 
 concurrency:
-  group: update-live-ticket-calendar-${{ github.ref }}
-  cancel-in-progress: false
+  group: birthday-event-fallback-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   birthday-fallback:
