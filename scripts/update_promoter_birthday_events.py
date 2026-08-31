@@ -7,17 +7,15 @@ import json
 import re
 import time
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import urljoin
 
 import requests
 from bs4 import BeautifulSoup
 
-from schedule_scope import classify_scope
-
 DATA_PATH = Path("data/live-events.json")
-JST_OFFSET = "+09:00"
+JST = timezone(timedelta(hours=9))
 BASE_URL = "https://red-hot.ne.jp"
 MONTHS_AHEAD = 12
 GROUPS = (
@@ -102,8 +100,6 @@ def title_from_lines(lines: list[str], group: str) -> str | None:
         candidates.append(value)
     if not candidates:
         return None
-    # Prefer a line that explicitly contains the group name, then the most
-    # descriptive candidate. HOT STUFF detail pages may repeat the title.
     candidates.sort(key=lambda value: (group.lower() in value.lower(), len(value)), reverse=True)
     return candidates[0]
 
@@ -119,7 +115,7 @@ def first_match(pattern: re.Pattern, text: str) -> str | None:
 
 
 def parse_detail(url: str, html: str, today: date | None = None) -> dict | None:
-    today = today or datetime.now().date()
+    today = today or datetime.now(JST).date()
     soup = BeautifulSoup(html, "html.parser")
     lines = [normalize(value) for value in soup.stripped_strings if normalize(value)]
     text = "\n".join(lines)
@@ -153,10 +149,9 @@ def parse_detail(url: str, html: str, today: date | None = None) -> dict | None:
             venue = value
             break
     if not venue:
-        # The detail page is only publishable when a concrete venue is present.
         return None
 
-    event = {
+    return {
         "id": stable_id("promoter-birthday", group, day.isoformat(), url),
         "group": group,
         "title": title,
@@ -183,7 +178,6 @@ def parse_detail(url: str, html: str, today: date | None = None) -> dict | None:
         "eventScope": "kawaii-lab",
         "promoterVerified": True,
     }
-    return event
 
 
 def birthday_key(event: dict) -> tuple[str, str] | None:
@@ -203,8 +197,6 @@ def merge_payload(payload: dict, fresh_events: list[dict]) -> dict:
 
     existing = [dict(event) for event in payload.get("events", []) if isinstance(event, dict)]
     fresh_by_key = {birthday_key(event): event for event in fresh_events if birthday_key(event)}
-
-    # Any group-official row for the same birthday/date outranks a promoter row.
     official_keys = {
         birthday_key(event)
         for event in existing
@@ -228,8 +220,6 @@ def merge_payload(payload: dict, fresh_events: list[dict]) -> dict:
             result.append(merged)
             handled.add(key)
         else:
-            # Fail closed: keep the previous known-good promoter row when the
-            # external site temporarily omits or fails to return it.
             result.append(event)
 
     for key, event in fresh_by_key.items():
@@ -245,7 +235,7 @@ def merge_payload(payload: dict, fresh_events: list[dict]) -> dict:
     out = dict(payload)
     out["events"] = result
     if result != existing:
-        out["updatedAt"] = datetime.now().astimezone().isoformat(timespec="seconds")
+        out["updatedAt"] = datetime.now(JST).isoformat(timespec="seconds")
     return out
 
 
@@ -259,7 +249,7 @@ def make_session() -> requests.Session:
 
 
 def collect(session: requests.Session, today: date | None = None) -> tuple[list[dict], dict]:
-    today = today or datetime.now().astimezone().date()
+    today = today or datetime.now(JST).date()
     candidates: dict[str, Candidate] = {}
     failures = []
     months = month_pairs(today)
