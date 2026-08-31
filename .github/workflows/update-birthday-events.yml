@@ -5,11 +5,10 @@ on:
     branches:
       - main
     paths:
-      - "scripts/update_promoter_birthday_events.py"
-      - "scripts/test_update_promoter_birthday_events.py"
       - "scripts/update_official_birthday_news.py"
       - "scripts/update_official_x_birthday_events.py"
       - "scripts/test_update_official_x_birthday_events.py"
+      - "scripts/reconcile_birthday_ticket_rows.py"
       - "scripts/apply_event_scopes.py"
       - "scripts/test_schedule_scope.py"
       - ".github/workflows/update-birthday-events.yml"
@@ -22,14 +21,17 @@ permissions:
   contents: write
   issues: write
 
+# Share the same lock as the main distributed publisher. Both workflows write
+# live-events.json/schedule.html, so running them concurrently creates avoidable
+# rebase conflicts and can discard an otherwise valid birthday refresh.
 concurrency:
-  group: birthday-event-fallback-${{ github.ref }}
-  cancel-in-progress: true
+  group: distributed-live-calendar
+  cancel-in-progress: false
 
 jobs:
   birthday-fallback:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 6
     steps:
       - name: Checkout latest main
         uses: actions/checkout@v4
@@ -64,8 +66,8 @@ jobs:
         if: steps.control.outputs.frozen != 'true'
         working-directory: scripts
         run: |
-          python -m py_compile update_official_birthday_news.py
-          python -m unittest -v test_update_promoter_birthday_events.py test_update_official_x_birthday_events.py test_schedule_scope.py
+          python -m py_compile update_official_birthday_news.py reconcile_birthday_ticket_rows.py
+          python -m unittest -v test_update_official_x_birthday_events.py test_schedule_scope.py
 
       - name: Collect birthday announcements and ticket windows
         if: steps.control.outputs.frozen != 'true'
@@ -74,23 +76,19 @@ jobs:
           set -euo pipefail
           cp data/live-events.json /tmp/live-events-before-birthday.json
 
-          if ! timeout --signal=TERM --kill-after=10s 300s python scripts/update_promoter_birthday_events.py; then
-            echo "::warning::Promoter birthday collector failed; retaining previous known-good rows and continuing to official sources."
-            cp /tmp/live-events-before-birthday.json data/live-events.json
-          fi
-
-          # Primary enrichment path: official KAWAII LAB./group INFORMATION pages.
-          # This avoids making ticket completeness depend on X availability.
+          # Primary path: official KAWAII LAB./group INFORMATION pages. This is
+          # independent of X and supplies the displayed official URL and window.
           timeout --signal=TERM --kill-after=10s 180s python scripts/update_official_birthday_news.py || \
-            echo "::warning::Official birthday news collector failed; keeping promoter/previous birthday data."
+            echo "::warning::Official birthday news collector failed; keeping previous birthday data."
 
-          # X syndication remains a redundant fallback. Endpoint failures must not
-          # delete already-good official-news ticket windows.
-          timeout --signal=TERM --kill-after=10s 180s python scripts/update_official_x_birthday_events.py || \
-            echo "::warning::Official X birthday fallback failed; keeping official-news/promoter/previous birthday data."
+          # X syndication is only a redundant fallback. HTTP 429 must never erase
+          # the official-news result.
+          timeout --signal=TERM --kill-after=10s 90s python scripts/update_official_x_birthday_events.py || \
+            echo "::warning::Official X birthday fallback failed; keeping official-news/previous birthday data."
 
-          # Consolidate a stale schedule-only shadow into the richer FC/general
-          # birthday row before audit/publication, while preserving distinct sale rounds.
+          # Fold a verified official ticket row into the stable physical-event row
+          # so an old '現在受付なし' shadow cannot be restored by continuity guards.
+          python scripts/reconcile_birthday_ticket_rows.py
           python scripts/apply_event_scopes.py
           python scripts/prepare_release_candidate.py --previous /tmp/live-events-before-birthday.json
           python scripts/audit_schedule_release_grouped.py \
@@ -121,12 +119,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/live-events.json data/schedule-health.json schedule.html
           git commit -m "chore: publish birthday event fallback refresh"
-          for attempt in 1 2 3; do
-            if git push origin HEAD:main; then exit 0; fi
-            git fetch origin main
-            if ! git rebase origin/main; then
-              git rebase --abort || true
-              exit 1
-            fi
-          done
-          exit 1
+          git push origin HEAD:main
