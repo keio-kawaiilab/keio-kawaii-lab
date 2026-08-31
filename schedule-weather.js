@@ -23,6 +23,18 @@
     document.head.appendChild(script);
   }
 
+  function placeCalendarReturnButtonAtCorner(){
+    if(document.querySelector("style[data-calendar-return-placement]"))return;
+    var style=document.createElement("style");
+    style.setAttribute("data-calendar-return-placement","");
+    style.textContent='\
+.calendar-return-btn{left:auto!important;right:max(12px,env(safe-area-inset-right))!important;bottom:calc(12px + env(safe-area-inset-bottom))!important;width:auto!important;max-width:min(210px,calc(100vw - 24px))!important;min-height:42px!important;padding:9px 13px!important;font-size:12px!important;transform:translateY(18px)!important}\
+.calendar-return-btn.is-visible{transform:translateY(0)!important}\
+@media(max-width:620px){.calendar-return-btn{left:auto!important;right:max(10px,env(safe-area-inset-right))!important;width:auto!important;max-width:190px!important;min-height:40px!important;padding:8px 11px!important;font-size:11px!important}}';
+    document.head.appendChild(style);
+  }
+
+  placeCalendarReturnButtonAtCorner();
   load("./schedule-shared-mark-dedupe.js?v=202608301149","data-schedule-shared-mark-dedupe");
   load("./schedule-weather-original.js?v=202608282355","data-schedule-weather-original");
 })();
