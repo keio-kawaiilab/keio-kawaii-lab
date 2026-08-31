@@ -746,7 +746,6 @@
       "sourceRowIds": [
         "special-124c630f19e88897"
       ],
-      "offers": [],
       "schedule": [
         {
           "date": "2026-09-05",
@@ -763,7 +762,8 @@
         "ベルサール汐留"
       ],
       "specialDetailsStatus": "awaiting-details",
-      "physicalInvariantMerged": true
+      "physicalInvariantMerged": true,
+      "offers": []
     },
     {
       "id": "special-9332aaf17a50c3a8",
@@ -994,7 +994,6 @@
       "sourceRowIds": [
         "special-9eeecc44fadaa65a"
       ],
-      "offers": [],
       "schedule": [
         {
           "date": "2026-09-06",
@@ -1010,7 +1009,8 @@
       "venues": [
         "ベルサール汐留"
       ],
-      "specialDetailsStatus": "awaiting-details"
+      "specialDetailsStatus": "awaiting-details",
+      "offers": []
     },
     {
       "id": "special-88fbc286e6995c1d",
@@ -1112,7 +1112,6 @@
       "sourceRowIds": [
         "special-88fbc286e6995c1d"
       ],
-      "offers": [],
       "schedule": [
         {
           "date": "2026-09-06",
@@ -1128,7 +1127,8 @@
       "venues": [
         "ベルサール汐留"
       ],
-      "specialDetailsStatus": "awaiting-details"
+      "specialDetailsStatus": "awaiting-details",
+      "offers": []
     },
     {
       "id": "84787797cc4cbcb3",
@@ -4254,9 +4254,9 @@
   },
   "physicalEventInvariant": {
     "semanticNormalization": {
-      "sourceSpecialRows": 7,
+      "sourceSpecialRows": 9,
       "canonicalSpecialEvents": 7,
-      "rowsCollapsed": 0,
+      "rowsCollapsed": 2,
       "releaseEventEntities": 3,
       "largeBenefitEntities": 4,
       "alreadyCanonicalRows": 7
@@ -4271,53 +4271,30 @@
     "remainingDuplicates": []
   },
   "releasePreparation": {
-    "preparedAt": "2026-08-31T19:17:11+09:00",
-    "normalizedSpecialEvents": 2,
+    "preparedAt": "2026-08-31T19:20:18+09:00",
+    "normalizedSpecialEvents": 6,
     "duplicateIdsRemoved": 0,
     "retainedPreviousRows": 0,
     "retained": [],
     "expandedPreviousSpecialEntities": 7,
-    "expandedCandidateSpecialEntities": 3,
+    "expandedCandidateSpecialEntities": 7,
     "officialXSeriesMerged": 0,
     "officialXRowsCollapsed": 0,
     "physicalEventInvariant": {
       "semanticNormalization": {
-        "sourceSpecialRows": 11,
-        "canonicalSpecialEvents": 8,
-        "rowsCollapsed": 3,
+        "sourceSpecialRows": 9,
+        "canonicalSpecialEvents": 7,
+        "rowsCollapsed": 2,
         "releaseEventEntities": 3,
-        "largeBenefitEntities": 5,
-        "alreadyCanonicalRows": 3
+        "largeBenefitEntities": 4,
+        "alreadyCanonicalRows": 7
       },
-      "specialEventsBeforePhysicalMerge": 8,
+      "specialEventsBeforePhysicalMerge": 7,
       "specialEventsAfterPhysicalMerge": 7,
-      "physicalRowsCollapsed": 1,
+      "physicalRowsCollapsed": 0,
       "internalScheduleRowsCollapsed": 0,
-      "collisionCount": 1,
-      "collisions": [
-        {
-          "sourceIds": [
-            "special-124c630f19e88897",
-            "special-c4eedd09daa779cc"
-          ],
-          "titles": [
-            "CANDY TUNE 大特典会",
-            "CANDY TUNE 4thシングル発売記念 大特典会"
-          ],
-          "physicalOccurrences": [
-            {
-              "group": "candy tune",
-              "date": "2026-09-05",
-              "startTime": "10:00",
-              "venueKey": "ベルサール汐留"
-            }
-          ],
-          "sourceCategories": [
-            "large-benefit"
-          ],
-          "containsIncompleteTime": false
-        }
-      ],
+      "collisionCount": 0,
+      "collisions": [],
       "remainingDuplicateCount": 0,
       "remainingDuplicates": []
     }
