@@ -227,6 +227,12 @@ def event_payload_changed(previous: dict, current: dict) -> bool:
 
 
 def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]:
+    # Preserve the actual prior public representation for the final change check.
+    # Special events are expanded below for collector compatibility, then folded
+    # back into canonical public entities. Comparing the expanded form to the
+    # folded form would otherwise create a false update on every refresh.
+    previous_public = json.loads(json.dumps(previous, ensure_ascii=False))
+
     # Public releases use canonical special-event entities (one real event with
     # offers[] children). Existing collectors and integrity checks still operate
     # on sale rows, so expand both sides at this compatibility boundary. This
@@ -296,8 +302,8 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
 
     checked_at = now.astimezone(JST).isoformat(timespec="seconds")
     out["checkedAt"] = checked_at
-    changed = event_payload_changed(previous, out)
-    previous_updated_at = str(previous.get("updatedAt") or "").strip()
+    changed = event_payload_changed(previous_public, out)
+    previous_updated_at = str(previous_public.get("updatedAt") or "").strip()
     out["updatedAt"] = checked_at if changed or not previous_updated_at else previous_updated_at
     out["releasePreparation"]["eventPayloadChanged"] = changed
     out["releasePreparation"]["publicUpdatedAt"] = out["updatedAt"]
