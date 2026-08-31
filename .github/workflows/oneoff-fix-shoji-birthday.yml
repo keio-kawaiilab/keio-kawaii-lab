@@ -12,7 +12,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: birthday-event-fallback-${{ github.ref }}
+  group: oneoff-shoji-birthday-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
