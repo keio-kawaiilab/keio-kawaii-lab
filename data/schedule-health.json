@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-08-31T23:26:28.441888+09:00",
-  "candidateUpdatedAt": "2026-08-31T23:26:28+09:00",
+  "generatedAt": "2026-08-31T23:28:21.538654+09:00",
+  "candidateUpdatedAt": "2026-08-31T23:28:21+09:00",
   "previousEventCount": 84,
-  "candidateEventCount": 84,
+  "candidateEventCount": 107,
   "protectedPreviousCount": 84,
   "errorCount": 0,
-  "warningCount": 28,
+  "warningCount": 23,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: special event has no verified purchase/ticket window: CANDY TUNE / CANDY TUNE 4thシングル『総意♡So Free / スペシャル感謝祭』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
@@ -18,11 +18,6 @@
     "quarantined one event/source update and kept the previous known-good data: special event has no verified purchase/ticket window: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
-    "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
-    "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
-    "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for pia:35165: 2026-10-26, 2026-10-27, 2026-10-29",
-    "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
-    "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no verified purchase/ticket window: CANDY TUNE / CANDY TUNE 4thシングル『総意♡So Free / スペシャル感謝祭』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event is not marked as official-source data: SWEET STEADY / 【SWEET STEADY】 3rdシングル『SWEET STEP』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no verified purchase/ticket window: SWEET STEADY / 【SWEET STEADY】 3rdシングル『SWEET STEP』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
@@ -38,10 +33,11 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール"
   ],
-  "candidateSha256": "215103a828fe1611a0c67f1644df5974f472bc3b51cb440da25eb9a6119962b7",
+  "candidateSha256": "19c6c122e0b6d47c27e2a3e59cd5b70348f88581052739d79deff31a93638e38",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
+    "url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
     "url:https://img.hmv.co.jp/cont/online/fzss17047926lp/",
     "url:https://kawaiilab.asobisystem.com/news/detail/88214",
     "url:https://kawaiilab.goods-order.com",
@@ -133,7 +129,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 14,
+  "quarantineCount": 9,
   "quarantineActions": [
     {
       "error": "special event has no verified purchase/ticket window: CANDY TUNE / CANDY TUNE 4thシングル『総意♡So Free / スペシャル感謝祭』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
@@ -179,31 +175,6 @@
       "error": "special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
       "action": "restored previous row",
       "restoredPreviousRows": 1
-    },
-    {
-      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
-      "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
-      "restoredPreviousRows": 5
-    },
-    {
-      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
-      "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
-      "restoredPreviousRows": 5
-    },
-    {
-      "error": "future performance dates disappeared for pia:35165: 2026-10-26, 2026-10-27, 2026-10-29",
-      "action": "restored previous rows for pia:35165",
-      "restoredPreviousRows": 1
-    },
-    {
-      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
-      "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
-      "restoredPreviousRows": 5
-    },
-    {
-      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
-      "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
-      "restoredPreviousRows": 5
     }
   ],
   "officialIndexReconciledAfterQuarantine": {
