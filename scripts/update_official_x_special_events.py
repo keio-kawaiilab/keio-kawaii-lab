@@ -22,8 +22,9 @@ GROUP_X = {
     "MORE STAR": "MORE_STAR_",
 }
 SPECIAL_RE = re.compile(r"大特典会|リリースイベント|リリイベ|発売記念イベント")
-SOLO_LIVE_RE = re.compile(r"単独(?:ライブ|公演)|ワンマン(?:ライブ|公演)?", re.I)
-TRACKED_RE = re.compile(r"大特典会|リリースイベント|リリイベ|発売記念イベント|単独(?:ライブ|公演)|ワンマン(?:ライブ|公演)?", re.I)
+BIRTHDAY_RE = re.compile(r"生誕(?:祭|ライブ|イベント|公演)?|BIRTHDAY\s*(?:LIVE|EVENT|PARTY|FES|FESTIVAL)?|BD\s*(?:LIVE|EVENT)", re.I)
+SOLO_LIVE_RE = re.compile(r"単独(?:ライブ|公演)|ワンマン(?:ライブ|公演)?|生誕(?:祭|ライブ|イベント|公演)?|BIRTHDAY\s*(?:LIVE|EVENT|PARTY|FES|FESTIVAL)?|BD\s*(?:LIVE|EVENT)", re.I)
+TRACKED_RE = re.compile(r"大特典会|リリースイベント|リリイベ|発売記念イベント|単独(?:ライブ|公演)|ワンマン(?:ライブ|公演)?|生誕(?:祭|ライブ|イベント|公演)?|BIRTHDAY\s*(?:LIVE|EVENT|PARTY|FES|FESTIVAL)?|BD\s*(?:LIVE|EVENT)", re.I)
 DATE_RE = re.compile(r"(?:(20\d{2})[./年-])?\s*(\d{1,2})\s*[./月-]\s*(\d{1,2})\s*日?")
 VENUE_RE = re.compile(r"^(?:📍|会場[：:]?|場所[：:]?|開催場所[：:]?)\s*(.+)$")
 INLINE_VENUE_RE = re.compile(r"(?:^|\s)(?:📍|会場[：:]?|場所[：:]?|開催場所[：:]?)\s*([^🕰🎫📅🗓\n]+)")
@@ -48,7 +49,7 @@ def special_category(value: object) -> str:
         return "large-benefit"
     if SPECIAL_RE.search(text):
         return "release-event"
-    if SOLO_LIVE_RE.search(text):
+    if SOLO_LIVE_RE.search(text) or BIRTHDAY_RE.search(text):
         return "solo-live"
     return ""
 
@@ -204,6 +205,8 @@ def extract_title(group: str, text: str, lines: list[str], category: str) -> str
         return f"{group} 大特典会"
     if category == "release-event":
         return f"{group} リリースイベント"
+    if BIRTHDAY_RE.search(text):
+        return f"{group} 生誕イベント"
     return f"{group} 単独ライブ"
 
 
@@ -383,41 +386,41 @@ def merge_payload(payload: dict, social_events: list[dict], today: date | None =
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description="Collect KAWAII LAB. official-X special/solo/birthday events")
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
+
     payload = json.loads(DATA_PATH.read_text(encoding="utf-8"))
     session = requests.Session()
     session.headers.update({
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+        "User-Agent": "Mozilla/5.0 (compatible; keio-kawaii-lab-calendar/1.0; +https://github.com/keio-kawaiilab/keio-kawaii-lab)",
         "Accept-Language": "ja,en;q=0.8",
     })
-    today = datetime.now(JST).date()
-    fresh: list[dict] = []
+
+    collected = []
     failures = []
-    for group, handle in GROUP_X.items():
-        try:
-            html = fetch_profile(session, handle)
-            if not profile_payload_loaded(html):
-                raise RuntimeError("X returned HTML without a usable public timeline payload")
-            fresh.extend(parse_profile(group, handle, html, today))
-        except (requests.RequestException, RuntimeError) as exc:
-            failures.append(f"{group} @{handle}: {exc}")
+    try:
+        for group, handle in GROUP_X.items():
+            try:
+                html = fetch_profile(session, handle)
+                if not profile_payload_loaded(html):
+                    raise RuntimeError("official X profile payload was unavailable")
+                collected.extend(parse_profile(group, handle, html))
+            except Exception as exc:
+                failures.append({"group": group, "handle": handle, "error": f"{type(exc).__name__}: {exc}"})
+    finally:
+        session.close()
 
-    print(f"Official X tracked-event scan: {len(fresh)} future placeholders, accounts={len(GROUP_X) - len(failures)}/{len(GROUP_X)}")
-    for failure in failures:
-        print(f"ERROR: official X scan failed: {failure}", file=sys.stderr)
     if failures:
-        print("Official X tracked-event scan is incomplete; refusing to publish partial discovery data.", file=sys.stderr)
-        return 1
+        raise SystemExit("Official X crawl was incomplete: " + json.dumps(failures, ensure_ascii=False))
 
-    candidate = merge_payload(payload, fresh, today)
-    changed = candidate.get("events", []) != payload.get("events", [])
-    print(f"Official X merge: changed={changed}")
+    merged = merge_payload(payload, collected)
     if args.check:
+        print(json.dumps({"collected": len(collected), "changed": merged != payload}, ensure_ascii=False, indent=2))
         return 0
-    if changed:
-        DATA_PATH.write_text(json.dumps(candidate, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+    DATA_PATH.write_text(json.dumps(merged, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps({"collected": len(collected), "events": len(merged.get("events", []))}, ensure_ascii=False, indent=2))
     return 0
 
 
