@@ -31,7 +31,7 @@ class OfficialBirthdayNewsTests(unittest.TestCase):
             "FC先行受付\n"
             "受付期間：2026年8月31日 19:00〜2026年9月8日 23:59\n"
         )
-        rows = news.article_events(payload, "SWEET STEADY", article_url, text, date(2026, 8, 31))
+        rows = news.article_events(payload, "SWEET STEADY", article_url, text, date(2026, 9, 1))
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]["id"], "shoji-stable")
         self.assertEqual(rows[0]["eventDate"], "2026-10-26")
@@ -42,15 +42,16 @@ class OfficialBirthdayNewsTests(unittest.TestCase):
         shoji = [e for e in merged["events"] if e.get("id") == "shoji-stable"]
         self.assertEqual(len(shoji), 1)
         self.assertNotEqual(shoji[0]["ticketType"], "現在受付なし")
+        self.assertEqual(shoji[0]["applicationStatus"], "open")
         self.assertEqual(shoji[0]["eventDate"], "2026-10-26")
         self.assertEqual(shoji[0]["url"], article_url)
         self.assertEqual(shoji[0]["applyEnd"], "2026-09-08T23:59")
 
-    def test_cutie_three_people_keep_their_individual_schedule_dates(self):
+    def test_cutie_three_people_keep_current_2026_schedule_dates_and_deadlines(self):
         people = [
-            ("furusawa", "古澤里紗", "2026-10-18"),
-            ("itakura", "板倉可奈", "2026-11-11"),
-            ("sano", "佐野愛花", "2026-11-20"),
+            ("furusawa", "古澤里紗", "2026-11-09", "2026-09-09T23:59"),
+            ("itakura", "板倉可奈", "2026-11-11", "2026-09-09T23:59"),
+            ("sano", "佐野愛花", "2026-11-26", "2026-09-10T23:59"),
         ]
         payload = {"events": [
             {
@@ -64,34 +65,36 @@ class OfficialBirthdayNewsTests(unittest.TestCase):
                 "applicationStatus": "none",
                 "applyStart": None,
                 "applyEnd": None,
-                "url": f"https://cutiestreet.asobisystem.com/live_information/detail/{event_id}",
-                "sourceType": "official-schedule",
+                "url": f"https://red-hot.ne.jp/play/detail.php?pid={event_id}",
+                "sourceType": "promoter",
                 "primarySource": "official",
-                "sourceCandidates": ["official"],
+                "sourceCandidates": ["promoter"],
             }
-            for event_id, person, event_date in people
+            for event_id, person, event_date, _deadline in people
         ]}
-        article_url = "https://cutiestreet.asobisystem.com/news/detail/99998"
-        text = (
-            "CUTIE STREET 古澤里紗・板倉可奈・佐野愛花 生誕祭 2026\n"
-            "CUTIE STREET FC先行受付\n"
-            "受付期間：2026年8月31日 20:00〜2026年9月9日 23:59\n"
-        )
-        rows = news.article_events(payload, "CUTIE STREET", article_url, text, date(2026, 8, 31))
-        self.assertEqual(len(rows), 3)
-        by_id = {row["id"]: row for row in rows}
-        for event_id, _person, event_date in people:
-            self.assertEqual(by_id[event_id]["eventDate"], event_date)
-            self.assertEqual(by_id[event_id]["url"], article_url)
-            self.assertEqual(by_id[event_id]["applyEnd"], "2026-09-09T23:59")
 
-        merged = birthday.merge_birthday_events(payload, rows)
-        by_id = {event["id"]: event for event in merged["events"]}
-        for event_id, _person, event_date in people:
+        for event_id, person, event_date, deadline in people:
+            article_url = f"https://cutiestreet.asobisystem.com/news/detail/{event_id}"
+            text = (
+                f"CUTIE STREET {person} 生誕祭 2026\n"
+                "CUTIE STREET FC会員年会費コース限定先行受付\n"
+                f"受付期間：2026年8月31日 20:00〜{deadline[:4]}年{int(deadline[5:7])}月{int(deadline[8:10])}日 23:59\n"
+            )
+            rows = news.article_events(payload, "CUTIE STREET", article_url, text, date(2026, 9, 1))
+            self.assertEqual(len(rows), 1)
+            self.assertEqual(rows[0]["id"], event_id)
+            self.assertEqual(rows[0]["eventDate"], event_date)
+            self.assertEqual(rows[0]["url"], article_url)
+            self.assertEqual(rows[0]["applyEnd"], deadline)
+            self.assertEqual(rows[0]["applicationStatus"], "open")
+
+            merged = birthday.merge_birthday_events(payload, rows)
+            by_id = {event["id"]: event for event in merged["events"]}
             self.assertEqual(by_id[event_id]["eventDate"], event_date)
             self.assertNotEqual(by_id[event_id]["ticketType"], "現在受付なし")
+            self.assertEqual(by_id[event_id]["applicationStatus"], "open")
             self.assertEqual(by_id[event_id]["url"], article_url)
-            self.assertEqual(by_id[event_id]["applyEnd"], "2026-09-09T23:59")
+            self.assertEqual(by_id[event_id]["applyEnd"], deadline)
 
 
 if __name__ == "__main__":
