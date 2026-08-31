@@ -63,20 +63,21 @@ def month_pairs(today: date, count: int = MONTHS_AHEAD) -> list[tuple[int, int]]
 
 
 def discover_candidates(html: str, base_url: str = BASE_URL) -> list[Candidate]:
+    """Discover every promoter detail URL; birthday filtering belongs on detail pages.
+
+    The monthly listing markup is not a reliable place to classify an event: the
+    visible title can be outside the detail anchor or the anchor itself can be an
+    image/short label. Fetching each unique detail page avoids silently dropping
+    birthday announcements because of presentation-only markup changes.
+    """
     soup = BeautifulSoup(html, "html.parser")
     found: dict[str, Candidate] = {}
     for anchor in soup.find_all("a", href=True):
         href = str(anchor.get("href") or "")
         if not DETAIL_RE.search(href):
             continue
-        # The monthly page links the event title itself. Restrict the birthday
-        # check to the link text so a birthday item cannot contaminate a
-        # neighboring event that happens to share a broad parent container.
-        context = normalize(anchor.get_text(" ", strip=True))
-        if not BIRTHDAY_RE.search(context):
-            continue
         url = urljoin(base_url, href)
-        found[url] = Candidate(url=url, context=context)
+        found[url] = Candidate(url=url, context=normalize(anchor.get_text(" ", strip=True)))
     return list(found.values())
 
 
