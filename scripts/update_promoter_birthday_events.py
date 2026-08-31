@@ -69,11 +69,10 @@ def discover_candidates(html: str, base_url: str = BASE_URL) -> list[Candidate]:
         href = str(anchor.get("href") or "")
         if not DETAIL_RE.search(href):
             continue
-        pieces = [anchor.get_text(" ", strip=True)]
-        parent = anchor.parent
-        if parent is not None:
-            pieces.append(parent.get_text(" ", strip=True))
-        context = normalize(" ".join(pieces))
+        # The monthly page links the event title itself. Restrict the birthday
+        # check to the link text so a birthday item cannot contaminate a
+        # neighboring event that happens to share a broad parent container.
+        context = normalize(anchor.get_text(" ", strip=True))
         if not BIRTHDAY_RE.search(context):
             continue
         url = urljoin(base_url, href)
