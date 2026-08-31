@@ -1,7 +1,7 @@
 {
   "date": "2026-08-31",
   "horizonDays": 7,
-  "generatedAt": "2026-08-31T07:54+09:00",
+  "generatedAt": "2026-08-31T17:52+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -17,12 +17,12 @@
       "areaCode": "110010",
       "areaName": "南部",
       "precision": "area",
-      "label": "くもり 所により 明け方 まで 雨",
-      "max": 30.0,
+      "label": "くもり 昼過ぎ 晴れ 所により 明け方 まで 雨",
+      "max": 31.0,
       "min": 23.0,
       "pop": "20",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-08-31T05:00:00+09:00",
+      "issuedAt": "2026-08-31T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -42,7 +42,7 @@
       "min": 24.0,
       "pop": "70",
       "popLabel": "1日",
-      "issuedAt": "2026-08-30T17:00:00+09:00",
+      "issuedAt": "2026-08-31T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -57,12 +57,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "くもり一時雨",
-      "max": 27.0,
-      "min": 22.0,
-      "pop": "60",
+      "label": "くもり時々雨",
+      "max": 25.0,
+      "min": 21.0,
+      "pop": "70",
       "popLabel": "1日",
-      "issuedAt": "2026-08-30T17:00:00+09:00",
+      "issuedAt": "2026-08-31T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -78,12 +78,12 @@
       "areaCode": "140010",
       "areaName": "神奈川県",
       "precision": "area",
-      "label": "くもり一時雨",
-      "max": 26.0,
-      "min": 22.0,
-      "pop": "60",
+      "label": "くもり時々雨",
+      "max": 25.0,
+      "min": 21.0,
+      "pop": "70",
       "popLabel": "1日",
-      "issuedAt": "2026-08-30T17:00:00+09:00",
+      "issuedAt": "2026-08-31T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -98,12 +98,12 @@
       "areaCode": "110010",
       "areaName": "埼玉県",
       "precision": "area",
-      "label": "くもり時々晴れ",
-      "max": 28.0,
+      "label": "くもり",
+      "max": 26.0,
       "min": 20.0,
-      "pop": "20",
+      "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-08-30T17:00:00+09:00",
+      "issuedAt": "2026-08-31T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -119,11 +119,11 @@
       "areaName": "東京地方",
       "precision": "area",
       "label": "くもり",
-      "max": 27.0,
+      "max": 26.0,
       "min": 20.0,
-      "pop": "30",
+      "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-08-30T17:00:00+09:00",
+      "issuedAt": "2026-08-31T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -144,7 +144,27 @@
       "min": 20.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-08-30T17:00:00+09:00",
+      "issuedAt": "2026-08-31T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-09-07",
+      "venue": "東京都 都内某所",
+      "venueKey": "都内某所",
+      "eventIds": [
+        "special-9332aaf17a50c3a8"
+      ],
+      "areaCode": "130010",
+      "areaName": "東京地方",
+      "precision": "area",
+      "label": "くもり",
+      "max": 27.0,
+      "min": 20.0,
+      "pop": "40",
+      "popLabel": "1日",
+      "issuedAt": "2026-08-31T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -153,18 +173,12 @@
   "stats": {
     "occurrencesInRange": 10,
     "uniqueVenueDates": 8,
-    "weatherEntries": 7,
+    "weatherEntries": 8,
     "meshEntries": 0,
-    "failures": 1,
+    "failures": 0,
     "meshTimelineEntries": 0,
     "meshExactTempSlots": 0,
     "hourlyRainEntries": 0
   },
-  "failures": [
-    {
-      "date": "2026-09-07",
-      "venue": "東京都 都内某所",
-      "reason": "開催日の予報がまだありません"
-    }
-  ]
+  "failures": []
 }
