@@ -7,6 +7,10 @@ on:
     paths:
       - "scripts/update_promoter_birthday_events.py"
       - "scripts/test_update_promoter_birthday_events.py"
+      - "scripts/update_official_x_birthday_events.py"
+      - "scripts/test_update_official_x_birthday_events.py"
+      - "scripts/apply_event_scopes.py"
+      - "scripts/test_schedule_scope.py"
       - ".github/workflows/update-birthday-events.yml"
   schedule:
     # Runs between the main distributed refresh slots.
@@ -55,21 +59,31 @@ jobs:
         if: steps.control.outputs.frozen != 'true'
         run: pip install -r scripts/requirements.txt
 
-      - name: Test promoter birthday fallback parser
+      - name: Test birthday collectors and public dedupe
         if: steps.control.outputs.frozen != 'true'
         working-directory: scripts
-        run: python -m unittest -v test_update_promoter_birthday_events.py test_update_official_x_special_events.py
+        run: python -m unittest -v test_update_promoter_birthday_events.py test_update_official_x_birthday_events.py test_schedule_scope.py
 
-      - name: Collect birthday announcements from promoter schedule
+      - name: Collect birthday announcements from promoter schedule and official X
         if: steps.control.outputs.frozen != 'true'
         shell: bash
         run: |
           set -euo pipefail
           cp data/live-events.json /tmp/live-events-before-birthday.json
+
           if ! timeout --signal=TERM --kill-after=10s 300s python scripts/update_promoter_birthday_events.py; then
-            echo "::warning::Promoter birthday collector failed; retaining previous known-good calendar."
+            echo "::warning::Promoter birthday collector failed; retaining previous known-good rows and continuing to official X fallback."
             cp /tmp/live-events-before-birthday.json data/live-events.json
           fi
+
+          # X syndication is a redundant birthday-specific fallback. Its script is
+          # fail-soft: endpoint failures never delete already-good birthday rows.
+          timeout --signal=TERM --kill-after=10s 180s python scripts/update_official_x_birthday_events.py || \
+            echo "::warning::Official X birthday fallback failed; keeping promoter/previous birthday data."
+
+          # Consolidate a stale schedule-only shadow into the richer FC/general
+          # birthday row before audit/publication, while preserving distinct sale rounds.
+          python scripts/apply_event_scopes.py
           python scripts/prepare_release_candidate.py --previous /tmp/live-events-before-birthday.json
           python scripts/audit_schedule_release_grouped.py \
             --previous /tmp/live-events-before-birthday.json \
