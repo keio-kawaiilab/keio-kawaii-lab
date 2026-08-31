@@ -9,7 +9,6 @@ import time
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
-from urllib.parse import urljoin
 
 import requests
 from bs4 import BeautifulSoup
@@ -32,7 +31,10 @@ BIRTHDAY_RE = re.compile(
 DATE_RE = re.compile(r"(20\d{2})年\s*(\d{1,2})月\s*(\d{1,2})日")
 OPEN_RE = re.compile(r"OPEN\s*(\d{1,2})[:：](\d{2})", re.I)
 START_RE = re.compile(r"START\s*(\d{1,2})[:：](\d{2})", re.I)
-DETAIL_RE = re.compile(r"/play/detail\.php\?pid=[A-Za-z0-9_-]+")
+# Monthly listing markup has used several relative/absolute href shapes.  The
+# stable part is the promoter's py... performance id, so discover that instead
+# of requiring a specific /play/detail.php prefix.
+PID_RE = re.compile(r"pid(?:=|%3D)(py[A-Za-z0-9_-]+)", re.I)
 
 
 @dataclass(frozen=True)
@@ -51,7 +53,7 @@ def stable_id(*values: object) -> str:
 
 
 def month_pairs(today: date, count: int = MONTHS_AHEAD) -> list[tuple[int, int]]:
-    pairs = []
+    pairs: list[tuple[int, int]] = []
     year, month = today.year, today.month
     for _ in range(count):
         pairs.append((year, month))
@@ -62,22 +64,37 @@ def month_pairs(today: date, count: int = MONTHS_AHEAD) -> list[tuple[int, int]]
     return pairs
 
 
-def discover_candidates(html: str, base_url: str = BASE_URL) -> list[Candidate]:
-    """Discover every promoter detail URL; birthday filtering belongs on detail pages.
+def canonical_detail_url(pid: str, base_url: str = BASE_URL) -> str:
+    return f"{base_url.rstrip('/')}/play/detail.php?pid={pid}"
 
-    The monthly listing markup is not a reliable place to classify an event: the
-    visible title can be outside the detail anchor or the anchor itself can be an
-    image/short label. Fetching each unique detail page avoids silently dropping
-    birthday announcements because of presentation-only markup changes.
+
+def discover_candidates(html: str, base_url: str = BASE_URL) -> list[Candidate]:
+    """Discover promoter performance IDs without depending on link layout.
+
+    Birthday classification intentionally happens only after fetching the detail
+    page.  Monthly list anchors have changed between absolute, path-relative and
+    query-relative forms, so we scan both hrefs and raw HTML for the stable pid.
     """
     soup = BeautifulSoup(html, "html.parser")
     found: dict[str, Candidate] = {}
+
     for anchor in soup.find_all("a", href=True):
         href = str(anchor.get("href") or "")
-        if not DETAIL_RE.search(href):
-            continue
-        url = urljoin(base_url, href)
-        found[url] = Candidate(url=url, context=normalize(anchor.get_text(" ", strip=True)))
+        for match in PID_RE.finditer(href):
+            pid = match.group(1)
+            url = canonical_detail_url(pid, base_url)
+            found[url] = Candidate(
+                url=url,
+                context=normalize(anchor.get_text(" ", strip=True)),
+            )
+
+    # Some list templates keep the performance id in data/JS markup rather than
+    # a normal anchor.  Raw scanning prevents those announcements being dropped.
+    for match in PID_RE.finditer(html):
+        pid = match.group(1)
+        url = canonical_detail_url(pid, base_url)
+        found.setdefault(url, Candidate(url=url, context=""))
+
     return list(found.values())
 
 
@@ -90,7 +107,7 @@ def group_from_text(text: str) -> str | None:
 
 
 def title_from_lines(lines: list[str], group: str) -> str | None:
-    candidates = []
+    candidates: list[str] = []
     for line in lines:
         if not BIRTHDAY_RE.search(line):
             continue
@@ -100,7 +117,10 @@ def title_from_lines(lines: list[str], group: str) -> str | None:
         candidates.append(value)
     if not candidates:
         return None
-    candidates.sort(key=lambda value: (group.lower() in value.lower(), len(value)), reverse=True)
+    candidates.sort(
+        key=lambda value: (group.lower() in value.lower(), len(value)),
+        reverse=True,
+    )
     return candidates[0]
 
 
@@ -119,12 +139,14 @@ def parse_detail(url: str, html: str, today: date | None = None) -> dict | None:
     soup = BeautifulSoup(html, "html.parser")
     lines = [normalize(value) for value in soup.stripped_strings if normalize(value)]
     text = "\n".join(lines)
+
     if not BIRTHDAY_RE.search(text):
         return None
 
     group = group_from_text(text)
     if not group:
         return None
+
     title = title_from_lines(lines, group)
     if not title:
         return None
@@ -142,7 +164,7 @@ def parse_detail(url: str, html: str, today: date | None = None) -> dict | None:
     venue = None
     for anchor in soup.find_all("a", href=True):
         href = str(anchor.get("href") or "")
-        if "/venue/detail.php" not in href:
+        if "/venue/detail.php" not in href and "venue/detail.php" not in href:
             continue
         value = normalize(anchor.get_text(" ", strip=True))
         if value:
@@ -196,7 +218,11 @@ def merge_payload(payload: dict, fresh_events: list[dict]) -> dict:
         return payload
 
     existing = [dict(event) for event in payload.get("events", []) if isinstance(event, dict)]
-    fresh_by_key = {birthday_key(event): event for event in fresh_events if birthday_key(event)}
+    fresh_by_key = {
+        birthday_key(event): event
+        for event in fresh_events
+        if birthday_key(event)
+    }
     official_keys = {
         birthday_key(event)
         for event in existing
@@ -204,8 +230,8 @@ def merge_payload(payload: dict, fresh_events: list[dict]) -> dict:
         and str(event.get("primarySource") or "").lower() == "official"
     }
 
-    result = []
-    handled = set()
+    result: list[dict] = []
+    handled: set[tuple[str, str]] = set()
     for event in existing:
         key = birthday_key(event)
         if not key or str(event.get("sourceType") or "").lower() != "promoter":
@@ -227,11 +253,13 @@ def merge_payload(payload: dict, fresh_events: list[dict]) -> dict:
             continue
         result.append(event)
 
-    result.sort(key=lambda event: (
-        str(event.get("eventDate") or "9999-12-31")[:10],
-        str(event.get("group") or ""),
-        str(event.get("title") or ""),
-    ))
+    result.sort(
+        key=lambda event: (
+            str(event.get("eventDate") or "9999-12-31")[:10],
+            str(event.get("group") or ""),
+            str(event.get("title") or ""),
+        )
+    )
     out = dict(payload)
     out["events"] = result
     if result != existing:
@@ -241,17 +269,22 @@ def merge_payload(payload: dict, fresh_events: list[dict]) -> dict:
 
 def make_session() -> requests.Session:
     session = requests.Session()
-    session.headers.update({
-        "User-Agent": "Mozilla/5.0 (compatible; keio-kawaii-lab-calendar/1.0; +https://github.com/keio-kawaiilab/keio-kawaii-lab)",
-        "Accept-Language": "ja,en;q=0.8",
-    })
+    session.headers.update(
+        {
+            "User-Agent": "Mozilla/5.0 (compatible; keio-kawaii-lab-calendar/1.0; +https://github.com/keio-kawaiilab/keio-kawaii-lab)",
+            "Accept-Language": "ja,en;q=0.8",
+        }
+    )
     return session
 
 
-def collect(session: requests.Session, today: date | None = None) -> tuple[list[dict], dict]:
+def collect(
+    session: requests.Session,
+    today: date | None = None,
+) -> tuple[list[dict], dict]:
     today = today or datetime.now(JST).date()
     candidates: dict[str, Candidate] = {}
-    failures = []
+    failures: list[dict] = []
     months = month_pairs(today)
 
     for year, month in months:
@@ -262,10 +295,16 @@ def collect(session: requests.Session, today: date | None = None) -> tuple[list[
             for candidate in discover_candidates(response.text):
                 candidates[candidate.url] = candidate
         except Exception as exc:
-            failures.append({"stage": "month", "url": url, "error": f"{type(exc).__name__}: {exc}"})
+            failures.append(
+                {
+                    "stage": "month",
+                    "url": url,
+                    "error": f"{type(exc).__name__}: {exc}",
+                }
+            )
         time.sleep(0.1)
 
-    events = []
+    events: list[dict] = []
     for candidate in candidates.values():
         try:
             response = session.get(candidate.url, timeout=25)
@@ -274,7 +313,13 @@ def collect(session: requests.Session, today: date | None = None) -> tuple[list[
             if event:
                 events.append(event)
         except Exception as exc:
-            failures.append({"stage": "detail", "url": candidate.url, "error": f"{type(exc).__name__}: {exc}"})
+            failures.append(
+                {
+                    "stage": "detail",
+                    "url": candidate.url,
+                    "error": f"{type(exc).__name__}: {exc}",
+                }
+            )
         time.sleep(0.1)
 
     diagnostics = {
@@ -282,13 +327,16 @@ def collect(session: requests.Session, today: date | None = None) -> tuple[list[
         "monthsChecked": len(months),
         "candidates": len(candidates),
         "events": len(events),
+        "candidateUrls": sorted(candidates),
         "failures": failures,
     }
     return events, diagnostics
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Collect KAWAII LAB. birthday lives from HOT STUFF PROMOTION as a secondary source")
+    parser = argparse.ArgumentParser(
+        description="Collect KAWAII LAB. birthday lives from HOT STUFF PROMOTION as a secondary source"
+    )
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
 
@@ -306,7 +354,10 @@ def main() -> int:
     if args.check:
         return 0
 
-    DATA_PATH.write_text(json.dumps(merged, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    DATA_PATH.write_text(
+        json.dumps(merged, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
     return 0
 
 
