@@ -2,9 +2,29 @@ import unittest
 from datetime import date
 
 from update_official_schedule import (
-    OfficialRow, build_event, collapse_missing, enrich_existing, event_key,
+    OfficialRow, build_event, collapse_missing, enrich_existing, event_key, merge,
     parse_detail, parse_schedule_list, propagate_ticket_scopes,
 )
+
+
+class DummyResponse:
+    def __init__(self, text):
+        self.text = text
+
+    def raise_for_status(self):
+        return None
+
+
+class DummySession:
+    def get(self, _url, timeout=25):
+        return DummyResponse('''
+        <div class="block--title"><p class="tit">完全新規公演</p></div>
+        <ul class="block--liveinfo">
+          <li><p class="item-tit">公演日</p><p class="item-detail">2026.10.20</p></li>
+          <li><p class="item-tit">開催場所・会場</p><p class="item-detail">東京都 新規ホール</p></li>
+        </ul>
+        <div>OPEN 17:00 / START 18:00</div>
+        ''')
 
 
 class OfficialScheduleTests(unittest.TestCase):
@@ -72,6 +92,27 @@ class OfficialScheduleTests(unittest.TestCase):
         enrich_existing(event, row, {})
         self.assertEqual("large-benefit", event["eventCategory"])
         self.assertEqual("schedule-only", event["applicationDisplayMode"])
+
+    def test_unmatched_official_schedule_row_is_automatically_added(self):
+        row = OfficialRow(
+            "CANDY TUNE",
+            "2026-10-20",
+            "LIVE",
+            "完全新規公演",
+            "https://example.com/live_information/detail/new",
+            "kawaii-lab",
+        )
+        merged, diagnostics = merge({"events": []}, [row], DummySession())
+
+        self.assertEqual(1, diagnostics["addedEvents"])
+        self.assertEqual(1, len(merged["events"]))
+        event = merged["events"][0]
+        self.assertEqual("完全新規公演", event["title"])
+        self.assertEqual("2026-10-20", event["eventDate"])
+        self.assertEqual("東京都 新規ホール", event["venue"])
+        self.assertEqual("17:00", event["openTime"])
+        self.assertEqual("18:00", event["startTime"])
+        self.assertEqual("official-schedule", event["sourceType"])
 
 
 if __name__ == "__main__":
