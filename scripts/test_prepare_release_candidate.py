@@ -153,6 +153,56 @@ class PrepareReleaseCandidateTests(unittest.TestCase):
         self.assertEqual(1, report["officialXRowsCollapsed"])
         self.assertEqual(0, report["physicalEventInvariant"]["remainingDuplicateCount"])
 
+    def test_observation_clock_only_does_not_advance_public_updated_at(self):
+        previous = {
+            "updatedAt": "2026-08-27T18:00:00+09:00",
+            "events": [{
+                "id": "same",
+                "group": "CANDY TUNE",
+                "title": "Tour",
+                "eventDate": "2026-10-01",
+                "sourceObservedAt": "2026-08-27T18:00:00+09:00",
+            }],
+        }
+        candidate = {
+            "events": [{
+                "id": "same",
+                "group": "CANDY TUNE",
+                "title": "Tour",
+                "eventDate": "2026-10-01",
+                "sourceObservedAt": "2026-08-27T19:00:00+09:00",
+            }],
+        }
+        prepared, report = prep.prepare(previous, candidate, self.NOW)
+        self.assertFalse(report["eventPayloadChanged"])
+        self.assertEqual("2026-08-27T18:00:00+09:00", prepared["updatedAt"])
+        self.assertEqual("2026-08-27T19:00:00+09:00", prepared["checkedAt"])
+
+    def test_real_event_change_advances_public_updated_at(self):
+        previous = {
+            "updatedAt": "2026-08-27T18:00:00+09:00",
+            "events": [{
+                "id": "same",
+                "group": "CANDY TUNE",
+                "title": "Tour",
+                "eventDate": "2026-10-01",
+                "venue": "Old Hall",
+            }],
+        }
+        candidate = {
+            "events": [{
+                "id": "same",
+                "group": "CANDY TUNE",
+                "title": "Tour",
+                "eventDate": "2026-10-01",
+                "venue": "New Hall",
+            }],
+        }
+        prepared, report = prep.prepare(previous, candidate, self.NOW)
+        self.assertTrue(report["eventPayloadChanged"])
+        self.assertEqual("2026-08-27T19:00:00+09:00", prepared["updatedAt"])
+        self.assertEqual("2026-08-27T19:00:00+09:00", prepared["checkedAt"])
+
 
 if __name__ == "__main__":
     unittest.main()
