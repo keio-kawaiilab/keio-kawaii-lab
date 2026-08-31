@@ -5,8 +5,8 @@ on:
     branches:
       - main
     paths:
-      - "scripts/update_official_x_birthday_events.py"
-      - "scripts/test_update_official_x_birthday_events.py"
+      - "scripts/update_promoter_birthday_events.py"
+      - "scripts/test_update_promoter_birthday_events.py"
       - ".github/workflows/update-birthday-events.yml"
   schedule:
     # Runs between the main distributed refresh slots.
@@ -55,18 +55,21 @@ jobs:
         if: steps.control.outputs.frozen != 'true'
         run: pip install -r scripts/requirements.txt
 
-      - name: Test birthday fallback parser
+      - name: Test promoter birthday fallback parser
         if: steps.control.outputs.frozen != 'true'
         working-directory: scripts
-        run: python -m unittest -v test_update_official_x_birthday_events.py test_update_official_x_special_events.py
+        run: python -m unittest -v test_update_promoter_birthday_events.py test_update_official_x_special_events.py
 
-      - name: Collect birthday announcements from redundant X timeline
+      - name: Collect birthday announcements from promoter schedule
         if: steps.control.outputs.frozen != 'true'
         shell: bash
         run: |
           set -euo pipefail
           cp data/live-events.json /tmp/live-events-before-birthday.json
-          python scripts/update_official_x_birthday_events.py
+          if ! timeout --signal=TERM --kill-after=10s 120s python scripts/update_promoter_birthday_events.py; then
+            echo "::warning::Promoter birthday collector failed; retaining previous known-good calendar."
+            cp /tmp/live-events-before-birthday.json data/live-events.json
+          fi
           python scripts/prepare_release_candidate.py --previous /tmp/live-events-before-birthday.json
           python scripts/audit_schedule_release_grouped.py \
             --previous /tmp/live-events-before-birthday.json \
