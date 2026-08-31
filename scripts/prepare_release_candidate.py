@@ -25,6 +25,17 @@ from audit_schedule_release import (
 
 DATA_PATH = Path("data/live-events.json")
 PART_FIELDS = ("part", "content", "start", "end", "receptionStart", "receptionEnd")
+# Observation timestamps are refreshed when a source is checked. They prove that
+# the collector ran, but they are not a change to the public event information.
+# Excluding them keeps `updatedAt` truthful: it moves only when event data changes.
+VOLATILE_EVENT_FIELDS = {
+    "sourceObservedAt",
+    "sourceStaleSince",
+    "lastObservedAt",
+    "lastSeenAt",
+    "observedAt",
+    "checkedAt",
+}
 
 
 def text(value: object) -> str:
@@ -182,6 +193,39 @@ def semantic_key(event: dict) -> tuple:
     )
 
 
+def stable_public_value(value):
+    """Remove per-check observation clocks before comparing public event data."""
+    if isinstance(value, dict):
+        return {
+            key: stable_public_value(item)
+            for key, item in value.items()
+            if key not in VOLATILE_EVENT_FIELDS
+        }
+    if isinstance(value, list):
+        return [stable_public_value(item) for item in value]
+    return value
+
+
+def stable_event_payload(rows: object) -> list[dict]:
+    cleaned = [
+        stable_public_value(row)
+        for row in (rows if isinstance(rows, list) else [])
+        if isinstance(row, dict)
+    ]
+    # Collector/merge ordering alone must never make the public update clock move.
+    return sorted(
+        cleaned,
+        key=lambda row: (
+            str(row.get("id") or ""),
+            json.dumps(row, ensure_ascii=False, sort_keys=True, separators=(",", ":")),
+        ),
+    )
+
+
+def event_payload_changed(previous: dict, current: dict) -> bool:
+    return stable_event_payload(previous.get("events")) != stable_event_payload(current.get("events"))
+
+
 def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]:
     # Public releases use canonical special-event entities (one real event with
     # offers[] children). Existing collectors and integrity checks still operate
@@ -249,6 +293,15 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
     # Same group + same date + same start time + same venue is one real event.
     out, physical_report = enforce_payload(out)
     out["releasePreparation"]["physicalEventInvariant"] = physical_report
+
+    checked_at = now.astimezone(JST).isoformat(timespec="seconds")
+    out["checkedAt"] = checked_at
+    changed = event_payload_changed(previous, out)
+    previous_updated_at = str(previous.get("updatedAt") or "").strip()
+    out["updatedAt"] = checked_at if changed or not previous_updated_at else previous_updated_at
+    out["releasePreparation"]["eventPayloadChanged"] = changed
+    out["releasePreparation"]["publicUpdatedAt"] = out["updatedAt"]
+    out["releasePreparation"]["checkedAt"] = checked_at
     return out, out["releasePreparation"]
 
 
