@@ -1,7 +1,8 @@
 import time
 import unittest
-from datetime import date
+from datetime import date, datetime
 
+import audit_playguide_collection as playguide_audit
 import update_playguide_events_parallel as parallel
 
 
@@ -96,6 +97,69 @@ class ParallelPlayguideTests(unittest.TestCase):
         )
         self.assertEqual("lawson-old", result["events"][0]["id"])
         self.assertEqual("parallel", result["playguideDiagnostics"]["collectorMode"])
+
+    def test_missing_active_refreshed_row_is_retained_stale_without_blocking_other_updates(self):
+        payload = {
+            "events": [{
+                "id": "eplus-old",
+                "ticketProvider": "eplus",
+                "sourceType": "eplus",
+                "group": "SWEET STEADY",
+                "eventDate": "2026-10-03",
+                "applyEnd": "2026-10-02T23:59",
+                "url": "https://eplus.jp/old",
+            }]
+        }
+        collection = {
+            "fresh": [{
+                "id": "eplus-new",
+                "ticketProvider": "eplus",
+                "sourceType": "eplus",
+                "group": "SWEET STEADY",
+                "eventDate": "2026-10-04",
+                "applyEnd": "2026-10-03T23:59",
+                "url": "https://eplus.jp/new",
+            }],
+            "freshCounts": {"eplus:SWEET STEADY": 1},
+            "refreshed": {("eplus", "SWEET STEADY")},
+            "failures": [
+                "lawson/CANDY TUNE: TimeoutError: timeout",
+                "lawson/CUTIE STREET: TimeoutError: timeout",
+                "lawson/FRUITS ZIPPER: TimeoutError: timeout",
+                "lawson/MORE STAR: TimeoutError: timeout",
+                "lawson/SWEET STEADY: TimeoutError: timeout",
+            ],
+            "workerCount": 10,
+            "durationSeconds": 1.0,
+        }
+        # Account for the other four successful eplus group refreshes so the
+        # source-health audit can distinguish guarded source drift from an
+        # incomplete collector run.
+        collection["refreshed"].update({
+            ("eplus", "CANDY TUNE"),
+            ("eplus", "CUTIE STREET"),
+            ("eplus", "FRUITS ZIPPER"),
+            ("eplus", "MORE STAR"),
+        })
+        result = parallel.merge_collection(
+            payload,
+            collection,
+            date(2026, 8, 28),
+            "2026-08-28T15:00:00+09:00",
+        )
+        by_id = {row["id"]: row for row in result["events"]}
+        self.assertTrue(by_id["eplus-old"]["sourceStale"])
+        self.assertIn("eplus-new", by_id)
+        self.assertEqual(1, result["playguideDiagnostics"]["stillActiveMissingCount"])
+
+        report, code = playguide_audit.audit_payload(
+            result,
+            datetime.fromisoformat("2026-08-28T15:01:00+09:00"),
+        )
+        self.assertEqual(0, code)
+        self.assertEqual("ok", report["status"])
+        self.assertEqual([], report["errors"])
+        self.assertEqual(2, len(report["warnings"]))
 
 
 if __name__ == "__main__":
