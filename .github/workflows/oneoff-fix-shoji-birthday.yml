@@ -1,0 +1,163 @@
+name: One-off fix Shoji Nagisa birthday
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/oneoff-fix-shoji-birthday.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: birthday-event-fallback-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Insert verified Shoji Nagisa birthday event
+        shell: bash
+        run: |
+          cp data/live-events.json /tmp/live-events-before-shoji.json
+          python - <<'PY'
+          import json
+          from datetime import datetime, timedelta, timezone
+          from pathlib import Path
+
+          path = Path("data/live-events.json")
+          payload = json.loads(path.read_text(encoding="utf-8"))
+          title = "SWEET STEADY 庄司なぎさ BIRTHDAY LIVE 2026"
+          url = "https://red-hot.ne.jp/play/detail.php?pid=py28687"
+          event = {
+              "id": "e40de6975a9f5b25",
+              "group": "SWEET STEADY",
+              "title": title,
+              "eventTitle": title,
+              "displayTitle": title,
+              "eventCategory": "solo-live",
+              "ticketType": "現在受付なし",
+              "applicationStatus": "none",
+              "applyStart": None,
+              "applyEnd": None,
+              "resultDate": None,
+              "paymentEnd": None,
+              "applicationDisplayMode": "schedule-only",
+              "eventDate": "2026-10-26",
+              "venue": "SGC HALL ARIAKE",
+              "openTime": "17:30",
+              "startTime": "19:00",
+              "url": url,
+              "urls": [url],
+              "sourceType": "promoter",
+              "sourceChannel": "hot-stuff-promotion",
+              "primarySource": "promoter",
+              "sourceCandidates": ["promoter"],
+              "eventScope": "kawaii-lab",
+              "promoterVerified": True,
+          }
+
+          events = [e for e in payload.get("events", []) if isinstance(e, dict)]
+          key = ("SWEET STEADY", "2026-10-26")
+          official_exists = any(
+              str(e.get("group") or "") == key[0]
+              and str(e.get("eventDate") or "")[:10] == key[1]
+              and str(e.get("primarySource") or "").lower() == "official"
+              and ("BIRTHDAY" in str(e.get("eventTitle") or e.get("title") or "").upper() or "生誕" in str(e.get("eventTitle") or e.get("title") or ""))
+              for e in events
+          )
+
+          if not official_exists:
+              events = [
+                  e for e in events
+                  if not (
+                      str(e.get("group") or "") == key[0]
+                      and str(e.get("eventDate") or "")[:10] == key[1]
+                      and str(e.get("sourceType") or "").lower() == "promoter"
+                      and ("BIRTHDAY" in str(e.get("eventTitle") or e.get("title") or "").upper() or "生誕" in str(e.get("eventTitle") or e.get("title") or ""))
+                  )
+              ]
+              events.append(event)
+              events.sort(key=lambda e: (
+                  str(e.get("eventDate") or "9999-12-31")[:10],
+                  str(e.get("group") or ""),
+                  str(e.get("title") or ""),
+              ))
+              payload["events"] = events
+              payload["updatedAt"] = datetime.now(timezone(timedelta(hours=9))).isoformat(timespec="seconds")
+              path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          PY
+
+      - name: Audit release candidate
+        run: |
+          python scripts/prepare_release_candidate.py --previous /tmp/live-events-before-shoji.json
+          python scripts/audit_schedule_release_grouped.py \
+            --previous /tmp/live-events-before-shoji.json \
+            --candidate data/live-events.json \
+            --report data/schedule-health.json
+
+      - name: Build public schedule
+        run: |
+          python scripts/build_schedule_snapshot.py
+          python scripts/fix_schedule_shell.py
+          python scripts/strip_schedule_explanations.py
+          node --check /tmp/schedule-inline.js
+          node scripts/test_schedule_band_grouping.js
+          node scripts/test_schedule_scope_ui.js
+
+      - name: Verify exact event before publish
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          with open("data/live-events.json", encoding="utf-8") as f:
+              payload = json.load(f)
+          matches = [e for e in payload.get("events", []) if "庄司なぎさ" in str(e.get("eventTitle") or e.get("title") or "")]
+          assert matches, "庄司なぎさ birthday event is still missing"
+          e = matches[0]
+          assert str(e.get("eventDate"))[:10] == "2026-10-26"
+          assert e.get("venue") == "SGC HALL ARIAKE"
+          assert e.get("openTime") == "17:30"
+          assert e.get("startTime") == "19:00"
+          print(json.dumps(matches, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Publish hotfix
+        shell: bash
+        run: |
+          if [ -z "$(git status --porcelain -- data/live-events.json data/schedule-health.json schedule.html)" ]; then
+            echo "No hotfix changes needed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/live-events.json data/schedule-health.json schedule.html
+          git commit -m "fix: publish Shoji Nagisa birthday live"
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then exit 0; fi
+            git fetch origin main
+            if ! git rebase origin/main; then
+              git rebase --abort || true
+              exit 1
+            fi
+          done
+          exit 1
