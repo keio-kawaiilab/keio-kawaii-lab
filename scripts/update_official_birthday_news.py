@@ -191,6 +191,16 @@ def article_events(
     if not details or not details.get("ticketType") or details.get("ticketType") == "現在受付なし":
         return []
 
+    # If an official article names a birthday member already present in the
+    # schedule, that existing event identity is authoritative for the physical
+    # date. Do not re-infer the event date from a page that also contains FC
+    # application dates; doing so can bind the ticket window to the wrong day.
+    matched = fallback_events_from_existing(payload, group, article_url, article_text, details)
+    if matched:
+        return matched
+
+    # Only discover a brand-new birthday event from article text when there is
+    # no known schedule/promoter row to enrich.
     parsed = birthday.event_from_post(
         group,
         article_url,
@@ -204,9 +214,7 @@ def article_events(
         event["sourceChannel"] = "official-birthday-news"
         event["primarySource"] = "official"
         event["discoverySourceUrl"] = article_url
-    if parsed:
-        return parsed
-    return fallback_events_from_existing(payload, group, article_url, article_text, details)
+    return parsed
 
 
 def infer_groups(payload: dict, group_hint: str | None, corpus: str) -> list[str]:
@@ -278,13 +286,27 @@ def collect(
         if current is None or len(str(event.get("url") or "")) > len(str(current.get("url") or "")):
             deduped[key] = event
 
+    rows = list(deduped.values())
     diagnostics = {
         "candidateArticles": len(candidates),
         "articlesWithTicketDetails": articles_with_ticket_details,
-        "ticketEvents": len(deduped),
+        "ticketEvents": len(rows),
         "pagesPerSource": pages,
+        "ticketRows": [
+            {
+                "id": event.get("id"),
+                "group": event.get("group"),
+                "title": event.get("eventTitle") or event.get("title"),
+                "eventDate": event.get("eventDate"),
+                "ticketType": event.get("ticketType"),
+                "applyStart": event.get("applyStart"),
+                "applyEnd": event.get("applyEnd"),
+                "url": event.get("url"),
+            }
+            for event in rows
+        ],
     }
-    return list(deduped.values()), failures, diagnostics
+    return rows, failures, diagnostics
 
 
 def main() -> int:
@@ -295,7 +317,7 @@ def main() -> int:
     payload = json.loads(DATA_PATH.read_text(encoding="utf-8"))
     session = requests.Session()
     session.headers.update({
-        "User-Agent": "KeioKawaiiLabCalendarBot/2.2 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)",
+        "User-Agent": "KeioKawaiiLabCalendarBot/2.3 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)",
         "Accept-Language": "ja,en;q=0.8",
     })
     try:
