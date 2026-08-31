@@ -1,62 +1,66 @@
 name: Distributed live ticket calendar
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "scripts/**"
-      - "data/schedule-control.json"
-      - ".github/workflows/update-live-calendar-distributed.yml"
-  schedule:
-    # Avoid the busiest first minutes of the hour; GitHub may delay scheduled runs under load.
-    - cron: "7,22,37,52 * * * *"
   workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/update-live-calendar-distributed.yml"
+      - "scripts/**"
+      - "data/live-events.json"
+      - "data/official-schedule-index.json"
+  schedule:
+    - cron: "*/15 * * * *"
+
+concurrency:
+  group: distributed-live-calendar
+  cancel-in-progress: false
 
 permissions:
   contents: write
   issues: write
 
-# Every collector reads the same pinned revision in parallel. Only merge-publish
-# may write the public calendar. A newer run supersedes stale collection work.
-concurrency:
-  group: update-live-ticket-calendar-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   prepare:
     runs-on: ubuntu-latest
     outputs:
-      base_sha: ${{ steps.base.outputs.sha }}
-      frozen: ${{ steps.control.outputs.frozen }}
+      base_sha: ${{ steps.base.outputs.base_sha }}
+      frozen: ${{ steps.freeze.outputs.frozen }}
     steps:
       - name: Checkout latest main
         uses: actions/checkout@v4
         with:
           ref: main
+          fetch-depth: 1
 
       - name: Pin one base revision for every collector
         id: base
-        shell: bash
-        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+        run: echo "base_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Read emergency freeze control
-        id: control
+        id: freeze
         shell: bash
         run: |
-          frozen="$(python - <<'PY'
+          if [ -f data/schedule-refresh-freeze.json ] && python - <<'PY'
           import json
-          with open('data/schedule-control.json', encoding='utf-8') as f:
-              print(str(bool(json.load(f).get('freeze'))).lower())
+          from pathlib import Path
+          path = Path('data/schedule-refresh-freeze.json')
+          try:
+              payload = json.loads(path.read_text(encoding='utf-8'))
+          except Exception:
+              raise SystemExit(1)
+          raise SystemExit(0 if payload.get('frozen') is True else 1)
           PY
-          )"
-          echo "frozen=$frozen" >> "$GITHUB_OUTPUT"
+          then
+            echo "frozen=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "frozen=false" >> "$GITHUB_OUTPUT"
+          fi
 
   collect-core:
     needs: prepare
     if: needs.prepare.outputs.frozen != 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 8
     steps:
       - name: Checkout pinned base
         uses: actions/checkout@v4
@@ -73,9 +77,9 @@ jobs:
       - name: Install dependencies
         run: pip install -r scripts/requirements.txt
 
-      - name: Test parallel official schedule collector
+      - name: Test official schedule auto-add and parallel collector
         working-directory: scripts
-        run: python -m unittest -v test_update_official_schedule_parallel.py
+        run: python -m unittest -v test_update_official_schedule.py test_update_official_schedule_parallel.py
 
       - name: Collect official, PIA and official schedule data
         shell: bash
@@ -224,13 +228,9 @@ jobs:
         run: |
           set -euo pipefail
           cd scripts
-          python -m unittest -v test_update_sukisuki_events.py
+          python -m unittest -v test_update_sukisuki_events.py test_update_sukisuki_events_parallel.py
           cd ..
-          cp data/live-events.json /tmp/live-events-before-sukisuki.json
-          if ! timeout --signal=TERM --kill-after=10s 90s python scripts/update_sukisuki_events.py; then
-            echo "::warning::SUKISUKI fetch failed or timed out; retaining previous SUKISUKI rows for this refresh."
-            cp /tmp/live-events-before-sukisuki.json data/live-events.json
-          fi
+          timeout --signal=TERM --kill-after=10s 120s python scripts/update_sukisuki_events_parallel.py --workers 5
 
       - name: Upload SUKISUKI snapshot
         uses: actions/upload-artifact@v4
@@ -244,7 +244,7 @@ jobs:
     needs: prepare
     if: needs.prepare.outputs.frozen != 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 7
+    timeout-minutes: 6
     steps:
       - name: Checkout pinned base
         uses: actions/checkout@v4
@@ -266,20 +266,10 @@ jobs:
         run: |
           set -euo pipefail
           cd scripts
-          python -m unittest -v test_update_special_events.py test_special_event_ancillary.py test_update_official_x_special_events.py
+          python -m unittest -v test_update_special_events.py test_update_official_x_events.py
           cd ..
-
-          cp data/live-events.json /tmp/live-events-before-special-site.json
-          if ! timeout --signal=TERM --kill-after=10s 90s python scripts/update_special_events.py; then
-            echo "::warning::Official special-event site fetch failed or timed out; retaining previous special-event rows for that source."
-            cp /tmp/live-events-before-special-site.json data/live-events.json
-          fi
-
-          cp data/live-events.json /tmp/live-events-before-official-x.json
-          if ! timeout --signal=TERM --kill-after=10s 90s python scripts/update_official_x_special_events.py; then
-            echo "::warning::Official X fetch failed or timed out; retaining previous official-X rows while keeping other special-event updates."
-            cp /tmp/live-events-before-official-x.json data/live-events.json
-          fi
+          timeout --signal=TERM --kill-after=10s 120s python scripts/update_special_events.py
+          timeout --signal=TERM --kill-after=10s 120s python scripts/update_official_x_events.py
 
       - name: Upload special-event snapshot
         uses: actions/upload-artifact@v4
@@ -291,9 +281,9 @@ jobs:
 
   merge-publish:
     needs: [prepare, collect-core, collect-playguide, collect-sukisuki, collect-special]
-    if: needs.prepare.outputs.frozen != 'true'
+    if: always() && needs.prepare.result == 'success' && needs.prepare.outputs.frozen != 'true' && needs.collect-core.result == 'success' && needs.collect-playguide.result == 'success' && needs.collect-sukisuki.result == 'success' && needs.collect-special.result == 'success'
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 7
     steps:
       - name: Checkout pinned base
         uses: actions/checkout@v4
@@ -382,7 +372,6 @@ jobs:
             --previous-index /tmp/official-schedule-index-last-good.json
 
       - name: Build final public schedule
-        shell: bash
         run: |
           python scripts/build_schedule_snapshot.py
           python scripts/fix_schedule_shell.py
@@ -392,8 +381,6 @@ jobs:
           node scripts/test_schedule_scope_ui.js
 
       - name: Close resolved distributed incident
-        if: success()
-        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
@@ -430,27 +417,20 @@ jobs:
 
   report-failure:
     needs: [prepare, collect-core, collect-playguide, collect-sukisuki, collect-special, merge-publish]
-    if: >-
-      always() &&
-      needs.prepare.outputs.frozen != 'true' &&
-      (needs.collect-core.result == 'failure' ||
-       needs.collect-playguide.result == 'failure' ||
-       needs.collect-sukisuki.result == 'failure' ||
-       needs.collect-special.result == 'failure' ||
-       needs.merge-publish.result == 'failure')
+    if: always() && needs.prepare.outputs.frozen != 'true' && (needs.collect-core.result == 'failure' || needs.collect-playguide.result == 'failure' || needs.collect-sukisuki.result == 'failure' || needs.collect-special.result == 'failure' || needs.merge-publish.result == 'failure')
     runs-on: ubuntu-latest
     steps:
-      - name: Open distributed refresh incident
-        continue-on-error: true
+      - name: Open or update incident issue
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
+          set -euo pipefail
           title="🚨 Distributed schedule refresh blocked"
-          existing="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
-          body="並列カレンダー更新のいずれかの取得ジョブ、統合監査、または最終公開で異常を検出しました。前回正常版を維持しています。\n\nActions run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          body="自動カレンダー更新のどこかが失敗しました。Actions run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          existing="$(gh issue list --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
           if [ -n "$existing" ]; then
-            gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body "$body"
+            gh issue comment "$existing" --body "$body"
           else
-            gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body "$body" --assignee "keio-kawaiilab"
+            gh issue create --title "$title" --body "$body"
           fi
