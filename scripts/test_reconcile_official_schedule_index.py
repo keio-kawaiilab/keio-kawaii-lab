@@ -29,8 +29,60 @@ class ReconcileOfficialScheduleIndexTests(unittest.TestCase):
 
         self.assertEqual(index["entries"][0]["representedBy"], "rich-special-id")
         self.assertEqual(report["reassignedCount"], 1)
+        self.assertEqual(report["hydratedCount"], 0)
         self.assertEqual(report["ambiguousCount"], 0)
         self.assertEqual(report["unresolvedCount"], 0)
+
+    def test_hydrates_missing_official_url_on_existing_represented_event(self):
+        official_url = "https://candytune.asobisystem.com/live_information/detail/44452"
+        data = {
+            "events": [{
+                "id": "special-a91f4fd0f80a1f20",
+                "group": "CANDY TUNE",
+                "eventDate": "2026-09-01",
+                "title": "4th single リリースイベント",
+                "eventScope": "kawaii-lab",
+                "url": "https://candytune.asobisystem.com/news/detail/other",
+            }]
+        }
+        index = {
+            "entries": [{
+                "group": "CANDY TUNE",
+                "date": "2026-09-01",
+                "title": "4th single リリースイベント",
+                "eventScope": "kawaii-lab",
+                "url": official_url,
+                "representedBy": "special-a91f4fd0f80a1f20",
+            }]
+        }
+
+        report = reconcile(data, index)
+
+        self.assertEqual(data["events"][0]["officialScheduleUrl"], official_url)
+        self.assertEqual(report["hydratedCount"], 1)
+        self.assertEqual(report["unresolvedCount"], 0)
+
+    def test_does_not_hydrate_when_scope_disagrees(self):
+        official_url = "https://example.com/live/1"
+        data = {"events": [{
+            "id": "one",
+            "group": "SWEET STEADY",
+            "eventDate": "2026-09-06",
+            "eventScope": "external",
+        }]}
+        index = {"entries": [{
+            "group": "SWEET STEADY",
+            "date": "2026-09-06",
+            "eventScope": "kawaii-lab",
+            "url": official_url,
+            "representedBy": "one",
+        }]}
+
+        report = reconcile(data, index)
+
+        self.assertNotIn("officialScheduleUrl", data["events"][0])
+        self.assertEqual(report["hydratedCount"], 0)
+        self.assertEqual(report["unresolvedCount"], 1)
 
     def test_does_not_guess_when_two_final_events_match(self):
         official_url = "https://example.com/live/1"
