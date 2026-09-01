@@ -25,8 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ODPT_API_KEY: ${{ secrets.ODPT_API_KEY }}
-      # Keep JR East challenge data disabled by default. Enable only after
-      # confirming the intended use complies with the applicable specific terms.
+      # JR East Challenge 2026 topology is included by default. Set the
+      # repository variable to 0 only when the limited feed must be paused.
       ALLOW_JR_EAST_CHALLENGE_DATA: ${{ vars.ALLOW_JR_EAST_CHALLENGE_DATA }}
       # The hidden first-stage route search only needs station/railway topology.
       # Enable after the departure-time search UI is implemented and reviewed.

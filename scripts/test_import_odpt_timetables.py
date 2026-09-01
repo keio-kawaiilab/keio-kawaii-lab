@@ -8,6 +8,12 @@ import import_odpt_timetables as importer
 
 
 class ImportOdptTimetablesTests(unittest.TestCase):
+    def test_jr_east_import_is_enabled_by_default_and_can_be_paused(self):
+        with patch.dict("os.environ", {}, clear=True):
+            self.assertTrue(importer.jr_east_import_enabled())
+        with patch.dict("os.environ", {"ALLOW_JR_EAST_CHALLENGE_DATA": "0"}, clear=True):
+            self.assertFalse(importer.jr_east_import_enabled())
+
     def test_operator_discovery_prefers_exact_railway_uri_over_substrings(self):
         operators = [
             {

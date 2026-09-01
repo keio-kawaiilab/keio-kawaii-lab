@@ -4,10 +4,10 @@
 The script intentionally does not scrape railway websites. It uses the official
 ODPT API and expects the access token in ODPT_API_KEY.
 
-By default JR East challenge data is NOT imported because the 2026 challenge
-license has JR-East-specific restrictions on competing services. Set
-ALLOW_JR_EAST_CHALLENGE_DATA=1 only after confirming the intended use complies
-with the applicable license/terms.
+JR East data is imported from the Challenge 2026 feed. It covers only part of
+the conventional-line network around the Tokyo area and does not include the
+Shinkansen. Set ALLOW_JR_EAST_CHALLENGE_DATA=0 to pause the import if the
+challenge feed or its applicable terms change.
 """
 
 from __future__ import annotations
@@ -127,6 +127,12 @@ ENTITY_TYPES = ["odpt:Station", "odpt:Railway"]
 TIMETABLE_TYPES = ["odpt:StationTimetable", "odpt:TrainTimetable"]
 MIN_REQUEST_INTERVAL = float(os.environ.get("ODPT_REQUEST_INTERVAL_SECONDS", "0.75"))
 _last_request_at = 0.0
+
+
+def jr_east_import_enabled() -> bool:
+    """Include JR East unless an operator explicitly pauses the limited feed."""
+    value = os.environ.get("ALLOW_JR_EAST_CHALLENGE_DATA", "").strip().lower()
+    return value not in {"0", "false", "no", "off"}
 
 
 def dump_json(path: Path, value: Any) -> None:
@@ -297,7 +303,7 @@ def main() -> int:
         print("ODPT_API_KEY is not set. Register at developer.odpt.org and store the token as a GitHub Actions secret.", file=sys.stderr)
         return 2
 
-    include_jr = os.environ.get("ALLOW_JR_EAST_CHALLENGE_DATA", "").strip() == "1"
+    include_jr = jr_east_import_enabled()
     include_timetables = os.environ.get("ODPT_IMPORT_TIMETABLES", "").strip() == "1"
     session = requests.Session()
     session.headers.update({"User-Agent": "keio-kawaii-lab-transit-preview/0.1"})
@@ -312,7 +318,7 @@ def main() -> int:
         "operators": {},
         "notes": [
             "Static timetable data must be refreshed after ODPT data updates in accordance with the applicable license/guideline.",
-            "JR East challenge data is disabled by default because of JR-East-specific Challenge 2026 usage restrictions.",
+            "JR East data is provided under the Challenge 2026 limited license and covers only part of the conventional-line network around Tokyo; Shinkansen is not included.",
             "Keisei availability is detected at runtime; it may be unavailable from ODPT.",
             "Timetable downloads are disabled until the departure-time search stage; this first stage publishes station and railway topology only.",
         ],
@@ -333,8 +339,8 @@ def main() -> int:
         manifest["operators"][slug] = info
 
         if slug == "jr-east" and not include_jr:
-            info["status"] = "skipped-license-review"
-            info["reason"] = "Set ALLOW_JR_EAST_CHALLENGE_DATA=1 only after confirming the intended use complies with JR East Challenge 2026 specific terms."
+            info["status"] = "disabled"
+            info["reason"] = "JR East Challenge 2026 import was paused with ALLOW_JR_EAST_CHALLENGE_DATA=0."
             continue
 
         try:
