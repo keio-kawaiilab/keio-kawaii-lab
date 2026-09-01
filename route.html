@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" sizes="32x32" href="./favicon-32.png">
+<link rel="icon" type="image/svg+xml" sizes="any" href="./site-icon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+<meta name="theme-color" content="#14386f">
+<title>乗換案内 β｜慶應カワラボ同好会</title>
+<meta name="description" content="ODPTの公共交通オープンデータを使った鉄道の乗換ルート検索です。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./style.css">
+<link rel="stylesheet" href="./route.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html"><span class="brand-name">KAWAII LAB.同好会</span><span class="brand-sub">慶應義塾大学登録学生団体</span></a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="global-nav" aria-label="メニューを開閉">☰</button>
+    <nav class="global-nav" id="global-nav" aria-label="サイト内メニュー"><ul>
+      <li><a href="index.html">トップ</a></li><li><a href="about.html">About</a></li><li><a href="activities.html">活動内容</a></li><li><a href="join.html">入会案内</a></li><li><a href="schedule.html">LIVE・チケット</a></li><li><a href="venues.html">会場ガイド</a></li><li><a href="faq.html">FAQ</a></li><li><a href="contact.html">Contact</a></li>
+    </ul></nav>
+  </div>
+</header>
+<main class="route-main">
+  <section class="route-hero">
+    <div class="container route-hero-inner">
+      <span class="route-kicker">ODPT × KAWAII LAB.同好会</span>
+      <h1>乗換案内 <small>β</small></h1>
+      <p>出発駅と到着駅を入れると、対応路線の乗換ルートを検索します。</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container route-shell">
+      <div id="route-status" class="route-status" role="status">交通データを読み込んでいます…</div>
+      <form id="route-form" class="route-form" autocomplete="off">
+        <div class="route-field">
+          <label for="route-from">出発</label>
+          <input id="route-from" name="from" list="route-stations" placeholder="例：渋谷" required disabled>
+        </div>
+        <button id="route-swap" class="route-swap" type="button" aria-label="出発駅と到着駅を入れ替える" disabled>⇅</button>
+        <div class="route-field">
+          <label for="route-to">到着</label>
+          <input id="route-to" name="to" list="route-stations" placeholder="例：新宿" required disabled>
+        </div>
+        <datalist id="route-stations"></datalist>
+        <button id="route-submit" class="route-submit" type="submit" disabled>経路を検索</button>
+      </form>
+      <div id="route-result" class="route-result" aria-live="polite"></div>
+      <aside class="route-note">
+        <strong>現在のβ版について</strong>
+        <p>まずはODPTの駅・路線データから「どの路線で、どこで乗り換えるか」を検索します。発着時刻まで含む検索は次の段階で追加します。</p>
+      </aside>
+      <p class="route-source">公共交通オープンデータセンター（ODPT）提供データを利用しています。実際の運行・乗換は各交通事業者の最新案内も確認してください。</p>
+    </div>
+  </section>
+</main>
+<div class="footer-stripe" aria-hidden="true"></div>
+<footer class="site-footer"><div class="footer-inner"><div class="footer-brand"><span class="brand-name">KAWAII LAB.同好会</span><p>慶應義塾大学登録学生団体<br>当会は特定の企業・事務所とは関係のない非公式ファンサークルです。</p></div><nav class="footer-nav" aria-label="フッターメニュー"><ul><li><a href="index.html">トップ</a></li><li><a href="schedule.html">LIVE・チケット</a></li><li><a href="venues.html">会場ガイド</a></li><li><a href="contact.html">Contact</a></li><li><a href="privacy.html">Privacy</a></li></ul></nav></div><p class="copyright">© <span id="year">2026</span> 慶應義塾大学登録学生団体KAWAII LAB.同好会</p></footer>
+<script src="./script.js"></script>
+<script src="./route.js?v=20260901-1"></script>
+</body>
+</html>
