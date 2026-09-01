@@ -575,22 +575,33 @@ def compact_line_timetable(
     }, connections
 
 
-def best_time_offset(
+def time_offset_candidates(
     departures: Counter[int],
     following: Counter[int],
     maximum_minutes: int,
-) -> tuple[int, int] | None:
+    limit: int = 8,
+) -> list[tuple[int, int]]:
     if not departures or not following:
-        return None
+        return []
     scores = []
     for duration in range(1, maximum_minutes + 1):
         support = sum(
             min(count, following.get(minute + duration, 0))
             for minute, count in departures.items()
         )
-        scores.append((support, -duration, duration))
-    support, _negative_duration, duration = max(scores)
-    return (duration, support) if support >= 3 else None
+        if support >= 3:
+            scores.append((support, -duration, duration))
+    scores.sort(reverse=True)
+    return [(duration, support) for support, _negative_duration, duration in scores[:limit]]
+
+
+def best_time_offset(
+    departures: Counter[int],
+    following: Counter[int],
+    maximum_minutes: int,
+) -> tuple[int, int] | None:
+    candidates = time_offset_candidates(departures, following, maximum_minutes, 1)
+    return candidates[0] if candidates else None
 
 
 def infer_edge_minutes(
@@ -654,7 +665,7 @@ def infer_type_durations(
     order: list[str],
     ascending_direction: str,
     descending_direction: str,
-) -> dict[tuple[str, str, str, str], tuple[int, int]]:
+) -> dict[tuple[str, str, str, str], list[tuple[int, int]]]:
     """Infer multi-station durations for each train type and destination."""
     order_index = {station: index for index, station in enumerate(order)}
     grouped: dict[tuple[str, str, str, str], dict[str, Counter[int]]] = defaultdict(lambda: defaultdict(Counter))
@@ -681,17 +692,16 @@ def infer_type_durations(
             continue
         for from_position, from_station in enumerate(stations):
             for to_station in stations[from_position + 1:]:
-                result = best_time_offset(schedules[from_station], schedules[to_station], 180)
-                if result:
-                    candidates[(from_station, to_station, train_type, destination)].append(result)
+                results = time_offset_candidates(schedules[from_station], schedules[to_station], 180)
+                candidates[(from_station, to_station, train_type, destination)].extend(results)
 
-    inferred: dict[tuple[str, str, str, str], tuple[int, int]] = {}
+    inferred: dict[tuple[str, str, str, str], list[tuple[int, int]]] = {}
     for profile, values in candidates.items():
         duration_scores: Counter[int] = Counter()
         for duration, support in values:
             duration_scores[duration] += support
-        duration, support = max(duration_scores.items(), key=lambda value: (value[1], -value[0]))
-        inferred[profile] = (duration, support)
+        ranked = sorted(duration_scores.items(), key=lambda value: (-value[1], value[0]))
+        inferred[profile] = ranked[:8]
     return inferred
 
 
@@ -873,12 +883,13 @@ def compact_station_timetables(
             to_index = index_of(to_station, station_values, station_indexes)
             edge_minutes.append([from_index, to_index, minutes, support])
         type_durations = []
-        for (from_station, to_station, train_type, destination), (minutes, support) in sorted(inferred_types.items()):
+        for (from_station, to_station, train_type, destination), candidates in sorted(inferred_types.items()):
             from_index = index_of(from_station, station_values, station_indexes)
             to_index = index_of(to_station, station_values, station_indexes)
             type_index = index_of(train_type, train_type_values, train_type_indexes)
             destination_index = index_of(destination, destination_values, destination_indexes)
-            type_durations.append([from_index, to_index, type_index, destination_index, minutes, support])
+            for minutes, support in candidates:
+                type_durations.append([from_index, to_index, type_index, destination_index, minutes, support])
 
         results[railway_id] = ({
             "version": 1,

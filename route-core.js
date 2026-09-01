@@ -213,17 +213,25 @@
         }
         return total;
       }
+      function minimumMinutes(startOrder,endOrder){
+        var fromStation=stationById.get(order[startOrder]),toStation=stationById.get(order[endOrder]),meters=distanceMeters(fromStation,toStation);
+        return meters===null?1:Math.max(1,Math.ceil(meters/2000));
+      }
       function profileFor(startOrder,endOrder,typeIndex,destinationIndex,allowAnyDestination){
-        var fromIndex=stationIndexes.get(order[startOrder]),toIndex=stationIndexes.get(order[endOrder]),found=null;
+        var fromIndex=stationIndexes.get(order[startOrder]),toIndex=stationIndexes.get(order[endOrder]),minimum=minimumMinutes(startOrder,endOrder),found=null;
         (table.typeDurations||[]).forEach(function(row){
           if(!Array.isArray(row)||row[0]!==fromIndex||row[1]!==toIndex||row[2]!==typeIndex)return;
           if(!allowAnyDestination&&row[3]!==destinationIndex)return;
-          if(!found||Number(row[5])>Number(found[5]))found=row;
+          if(Number(row[4])<minimum)return;
+          if(!found||Number(row[5])>Number(found[5])||(Number(row[5])===Number(found[5])&&Number(row[4])<Number(found[4])))found=row;
         });
         return found;
       }
       function journeyMinutes(typeIndex,destinationIndex){
         if(fromOrder<0||toOrder<0||fromOrder===toOrder)return null;
+        var typeLabel=trainTypeName(trainTypeById.get(types[typeIndex])||{"owl:sameAs":types[typeIndex]}).toLowerCase();
+        var isLocal=typeLabel.indexOf("local")>=0||typeLabel.indexOf("普通")>=0||typeLabel.indexOf("各停")>=0||typeLabel.indexOf("各駅")>=0;
+        if(isLocal)return edgeSum(fromOrder,toOrder);
         var direct=profileFor(fromOrder,toOrder,typeIndex,destinationIndex,false)||profileFor(fromOrder,toOrder,typeIndex,destinationIndex,true);
         if(direct)return Number(direct[4]);
         var step=toOrder>fromOrder?1:-1,bestPartial=null;
@@ -235,9 +243,7 @@
           var remainder=edgeSum(bestPartial.order,toOrder);
           if(remainder!==null)return bestPartial.minutes+remainder;
         }
-        var typeLabel=trainTypeName(trainTypeById.get(types[typeIndex])||{"owl:sameAs":types[typeIndex]}).toLowerCase();
-        if(typeLabel.indexOf("local")<0&&typeLabel.indexOf("普通")<0&&typeLabel.indexOf("各停")<0&&typeLabel.indexOf("各駅")<0)return null;
-        return edgeSum(fromOrder,toOrder);
+        return null;
       }
       table.boards.forEach(function(board){
         if(!Array.isArray(board)||fromNodes.indexOf(stations[board[0]])<0||!calendarMatches(calendars[board[1]],service))return;
