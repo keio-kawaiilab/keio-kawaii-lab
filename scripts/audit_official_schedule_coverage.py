@@ -67,11 +67,22 @@ def main() -> int:
     index = json.loads(args.index.read_text(encoding="utf-8"))
     previous = json.loads(args.previous_index.read_text(encoding="utf-8")) if args.previous_index and args.previous_index.exists() else None
 
-    # First verify the quarantined candidate against the official index exactly
-    # as before. This keeps the coverage safeguard independent from deduping.
+    # The grouped row-level audit can restore a previous known-good event after
+    # the earlier reconciliation step. Reconnect the official index again here,
+    # immediately before coverage validation, so a strongly linked represented
+    # event can recover only its missing official schedule URL. Ambiguous or
+    # mismatched rows still remain unresolved and are blocked below.
+    pre_audit_reconcile = reconcile(data, index)
+    args.data.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    args.index.write_text(json.dumps(index, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
     errors = audit(data, index, previous)
     if errors:
-        print(json.dumps({"status": "blocked", "errors": errors}, ensure_ascii=False, indent=2))
+        print(json.dumps({
+            "status": "blocked",
+            "errors": errors,
+            "officialIndexReconcile": pre_audit_reconcile,
+        }, ensure_ascii=False, indent=2))
         return 1
 
     # Final release boundary. The grouped audit may restore a previous row while
@@ -110,6 +121,7 @@ def main() -> int:
     print(json.dumps({
         "status": "ok",
         "officialRows": len(index.get("entries") or []),
+        "preAuditOfficialIndexReconcile": pre_audit_reconcile,
         "physicalEventInvariant": physical_report,
         "officialIndexReconcile": reconcile_report,
     }, ensure_ascii=False, indent=2))
