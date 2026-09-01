@@ -198,28 +198,58 @@
       var desiredDirection="";
       if(fromOrder>=0&&toOrder>=0&&fromOrder!==toOrder)desiredDirection=toOrder>fromOrder?table.ascendingDirection:table.descendingDirection;
       var stations=table.stations||[],calendars=table.calendars||[],directions=table.directions||[],types=table.trainTypes||[],best=null;
+      var stationIndexes=new Map();stations.forEach(function(station,index){stationIndexes.set(station,index);});
+      var edges=new Map();
+      (table.edgeMinutes||[]).forEach(function(row){
+        if(Array.isArray(row))edges.set(String(stations[row[0]])+"\u0001"+String(stations[row[1]]),Number(row[2]));
+      });
+      function edgeSum(startOrder,endOrder){
+        if(startOrder===endOrder)return 0;
+        var step=endOrder>startOrder?1:-1,total=0;
+        for(var index=startOrder;index!==endOrder;index+=step){
+          var minutes=edges.get(String(order[index])+"\u0001"+String(order[index+step]));
+          if(!Number.isFinite(minutes)||minutes<=0)return null;
+          total+=minutes;
+        }
+        return total;
+      }
+      function profileFor(startOrder,endOrder,typeIndex,destinationIndex,allowAnyDestination){
+        var fromIndex=stationIndexes.get(order[startOrder]),toIndex=stationIndexes.get(order[endOrder]),found=null;
+        (table.typeDurations||[]).forEach(function(row){
+          if(!Array.isArray(row)||row[0]!==fromIndex||row[1]!==toIndex||row[2]!==typeIndex)return;
+          if(!allowAnyDestination&&row[3]!==destinationIndex)return;
+          if(!found||Number(row[5])>Number(found[5]))found=row;
+        });
+        return found;
+      }
+      function journeyMinutes(typeIndex,destinationIndex){
+        if(fromOrder<0||toOrder<0||fromOrder===toOrder)return null;
+        var direct=profileFor(fromOrder,toOrder,typeIndex,destinationIndex,false)||profileFor(fromOrder,toOrder,typeIndex,destinationIndex,true);
+        if(direct)return Number(direct[4]);
+        var step=toOrder>fromOrder?1:-1,bestPartial=null;
+        for(var checkpoint=fromOrder+step;checkpoint!==toOrder;checkpoint+=step){
+          var profile=profileFor(fromOrder,checkpoint,typeIndex,destinationIndex,false)||profileFor(fromOrder,checkpoint,typeIndex,destinationIndex,true);
+          if(profile)bestPartial={order:checkpoint,minutes:Number(profile[4])};
+        }
+        if(bestPartial){
+          var remainder=edgeSum(bestPartial.order,toOrder);
+          if(remainder!==null)return bestPartial.minutes+remainder;
+        }
+        var typeLabel=trainTypeName(trainTypeById.get(types[typeIndex])||{"owl:sameAs":types[typeIndex]}).toLowerCase();
+        if(typeLabel.indexOf("local")<0&&typeLabel.indexOf("普通")<0&&typeLabel.indexOf("各停")<0&&typeLabel.indexOf("各駅")<0)return null;
+        return edgeSum(fromOrder,toOrder);
+      }
       table.boards.forEach(function(board){
         if(!Array.isArray(board)||fromNodes.indexOf(stations[board[0]])<0||!calendarMatches(calendars[board[1]],service))return;
         var direction=directions[board[2]]||"";
         if(desiredDirection&&direction&&direction!==desiredDirection)return;
         (board[3]||[]).forEach(function(row){
           var minute=Number(row&&row[0]);if(!Number.isFinite(minute)||minute<earliest)return;
-          var candidate={departure:minute,trainType:types[row[1]]||"",trainNumber:"",timeBasis:"estimated-edge-duration"};
-          if(!best||candidate.departure<best.departure)best=candidate;
+          var typeIndex=Number(row[1]),destinationIndex=row.length>2?Number(row[2]):-1,duration=journeyMinutes(typeIndex,destinationIndex);
+          var candidate={departure:minute,arrival:Number.isFinite(duration)?minute+duration:null,trainType:types[typeIndex]||"",trainNumber:"",timeBasis:"estimated-edge-duration"};
+          if(!best||(Number.isFinite(candidate.arrival)&&(!Number.isFinite(best.arrival)||candidate.arrival<best.arrival))||(candidate.arrival===best.arrival&&candidate.departure<best.departure)||(!Number.isFinite(candidate.arrival)&&!Number.isFinite(best.arrival)&&candidate.departure<best.departure))best=candidate;
         });
       });
-      if(!best||fromOrder<0||toOrder<0||fromOrder===toOrder)return best;
-      var edges=new Map();
-      (table.edgeMinutes||[]).forEach(function(row){
-        if(Array.isArray(row))edges.set(String(stations[row[0]])+"\u0001"+String(stations[row[1]]),Number(row[2]));
-      });
-      var step=toOrder>fromOrder?1:-1,total=0;
-      for(var index=fromOrder;index!==toOrder;index+=step){
-        var minutes=edges.get(String(order[index])+"\u0001"+String(order[index+step]));
-        if(!Number.isFinite(minutes)||minutes<=0)return best;
-        total+=minutes;
-      }
-      best.arrival=best.departure+total;
       return best;
     }
     function timedItinerary(path,timetablesByRailway,departureMinutes,service,transferMinutes){

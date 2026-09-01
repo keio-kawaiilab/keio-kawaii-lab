@@ -182,8 +182,9 @@ class ImportOdptTimetablesTests(unittest.TestCase):
         )["railway:test"]
         self.assertEqual(compact["timeBasis"], "station-departure-only")
         self.assertEqual(compact["order"], ["station:a", "station:b"])
-        self.assertEqual(compact["boards"][0][3], [[481, 0], [491, 0], [501, 0]])
+        self.assertEqual(compact["boards"][0][3], [[481, 0, 0], [491, 0, 0], [501, 0, 0]])
         self.assertEqual(compact["edgeMinutes"], [[0, 1, 3, 3], [1, 0, 3, 3]])
+        self.assertEqual(compact["typeDurations"], [[0, 1, 0, 0, 3, 3]])
         self.assertEqual(connections, 0)
         self.assertEqual(departures, 6)
 

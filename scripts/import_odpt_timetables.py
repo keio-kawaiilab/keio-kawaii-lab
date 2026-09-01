@@ -575,6 +575,24 @@ def compact_line_timetable(
     }, connections
 
 
+def best_time_offset(
+    departures: Counter[int],
+    following: Counter[int],
+    maximum_minutes: int,
+) -> tuple[int, int] | None:
+    if not departures or not following:
+        return None
+    scores = []
+    for duration in range(1, maximum_minutes + 1):
+        support = sum(
+            min(count, following.get(minute + duration, 0))
+            for minute, count in departures.items()
+        )
+        scores.append((support, -duration, duration))
+    support, _negative_duration, duration = max(scores)
+    return (duration, support) if support >= 3 else None
+
+
 def infer_edge_minutes(
     boards: list[dict[str, Any]],
     order: list[str],
@@ -609,13 +627,9 @@ def infer_edge_minutes(
                 following = schedules.get((to_station, calendar, direction), Counter())
                 if not departures or not following:
                     continue
-                scores = []
-                for duration in range(1, 21):
-                    score = sum(min(count, following.get(minute + duration, 0)) for minute, count in departures.items())
-                    scores.append((score, -duration, duration))
-                support, _negative_duration, duration = max(scores)
-                if support >= 3:
-                    candidates[(from_station, to_station)].append((duration, support))
+                result = best_time_offset(departures, following, 20)
+                if result:
+                    candidates[(from_station, to_station)].append(result)
 
     inferred: dict[tuple[str, str], tuple[int, int]] = {}
     for edge, values in candidates.items():
@@ -632,6 +646,52 @@ def infer_edge_minutes(
             inferred[forward] = inferred[reverse]
         if reverse not in inferred and forward in inferred:
             inferred[reverse] = inferred[forward]
+    return inferred
+
+
+def infer_type_durations(
+    boards: list[dict[str, Any]],
+    order: list[str],
+    ascending_direction: str,
+    descending_direction: str,
+) -> dict[tuple[str, str, str, str], tuple[int, int]]:
+    """Infer multi-station durations for each train type and destination."""
+    order_index = {station: index for index, station in enumerate(order)}
+    grouped: dict[tuple[str, str, str, str], dict[str, Counter[int]]] = defaultdict(lambda: defaultdict(Counter))
+    for board in boards:
+        station = str(board["station"])
+        if station not in order_index:
+            continue
+        for departure, train_type, destination in board["departures"]:
+            key = (
+                str(board["calendar"]),
+                str(board["direction"]),
+                str(train_type),
+                str(destination),
+            )
+            grouped[key][station][int(departure)] += 1
+
+    candidates: dict[tuple[str, str, str, str], list[tuple[int, int]]] = defaultdict(list)
+    for (_calendar, direction, train_type, destination), schedules in grouped.items():
+        if direction == ascending_direction:
+            stations = sorted(schedules, key=order_index.get)
+        elif direction == descending_direction:
+            stations = sorted(schedules, key=order_index.get, reverse=True)
+        else:
+            continue
+        for from_position, from_station in enumerate(stations):
+            for to_station in stations[from_position + 1:]:
+                result = best_time_offset(schedules[from_station], schedules[to_station], 180)
+                if result:
+                    candidates[(from_station, to_station, train_type, destination)].append(result)
+
+    inferred: dict[tuple[str, str, str, str], tuple[int, int]] = {}
+    for profile, values in candidates.items():
+        duration_scores: Counter[int] = Counter()
+        for duration, support in values:
+            duration_scores[duration] += support
+        duration, support = max(duration_scores.items(), key=lambda value: (value[1], -value[0]))
+        inferred[profile] = (duration, support)
     return inferred
 
 
@@ -662,7 +722,7 @@ def compact_station_timetables(
         if not railway_id or not station_id:
             continue
 
-        board_departures: list[tuple[int, str]] = []
+        board_departures: list[tuple[int, str, str]] = []
 
         for row in item.get("odpt:stationTimetableObject") or []:
             if not isinstance(row, dict):
@@ -673,7 +733,11 @@ def compact_station_timetables(
                 continue
             train_type = str(row.get("odpt:trainType") or "")
             if departure is not None:
-                board_departures.append((departure, train_type))
+                raw_destinations = row.get("odpt:destinationStation")
+                destinations = raw_destinations if isinstance(raw_destinations, list) else [raw_destinations]
+                raw_destination = str(next((value for value in destinations if value), ""))
+                destination = station_aliases.get(raw_destination, raw_destination)
+                board_departures.append((departure, train_type, destination))
             train_ref = str(row.get("odpt:train") or "")
             train_number = str(row.get("odpt:trainNumber") or "")
             train_key = train_ref or train_number
@@ -721,6 +785,8 @@ def compact_station_timetables(
         calendar_indexes: dict[str, int] = {}
         train_type_values: list[str] = []
         train_type_indexes: dict[str, int] = {}
+        destination_values: list[str] = []
+        destination_indexes: dict[str, int] = {}
         direction_values: list[str] = []
         direction_indexes: dict[str, int] = {}
         trips: list[list[Any]] = []
@@ -778,9 +844,10 @@ def compact_station_timetables(
             calendar_index = index_of(board["calendar"], calendar_values, calendar_indexes)
             direction_index = index_of(board["direction"], direction_values, direction_indexes)
             departures = []
-            for departure, train_type in sorted(board["departures"]):
+            for departure, train_type, destination in sorted(board["departures"]):
                 type_index = index_of(train_type, train_type_values, train_type_indexes)
-                departures.append([departure, type_index])
+                destination_index = index_of(destination, destination_values, destination_indexes)
+                departures.append([departure, type_index, destination_index])
             if departures:
                 boards.append([station_index, calendar_index, direction_index, departures])
                 departure_count += len(departures)
@@ -797,11 +864,21 @@ def compact_station_timetables(
         inferred_edges = infer_edge_minutes(
             raw_boards.get(railway_id, []), order, ascending_direction, descending_direction
         )
+        inferred_types = infer_type_durations(
+            raw_boards.get(railway_id, []), order, ascending_direction, descending_direction
+        )
         edge_minutes = []
         for (from_station, to_station), (minutes, support) in sorted(inferred_edges.items()):
             from_index = index_of(from_station, station_values, station_indexes)
             to_index = index_of(to_station, station_values, station_indexes)
             edge_minutes.append([from_index, to_index, minutes, support])
+        type_durations = []
+        for (from_station, to_station, train_type, destination), (minutes, support) in sorted(inferred_types.items()):
+            from_index = index_of(from_station, station_values, station_indexes)
+            to_index = index_of(to_station, station_values, station_indexes)
+            type_index = index_of(train_type, train_type_values, train_type_indexes)
+            destination_index = index_of(destination, destination_values, destination_indexes)
+            type_durations.append([from_index, to_index, type_index, destination_index, minutes, support])
 
         results[railway_id] = ({
             "version": 1,
@@ -811,12 +888,14 @@ def compact_station_timetables(
             "calendars": calendar_values,
             "directions": direction_values,
             "trainTypes": train_type_values,
+            "destinations": destination_values,
             "trips": trips,
             "boards": boards,
             "order": order,
             "ascendingDirection": ascending_direction,
             "descendingDirection": descending_direction,
             "edgeMinutes": edge_minutes,
+            "typeDurations": type_durations,
         }, connections, departure_count)
     return results
 
