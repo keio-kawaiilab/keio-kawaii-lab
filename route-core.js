@@ -208,7 +208,11 @@
         var step=endOrder>startOrder?1:-1,total=0;
         for(var index=startOrder;index!==endOrder;index+=step){
           var minutes=edges.get(String(order[index])+"\u0001"+String(order[index+step]));
-          if(!Number.isFinite(minutes)||minutes<=0)return null;
+          if(!Number.isFinite(minutes)||minutes<=0){
+            var meters=distanceMeters(stationById.get(order[index]),stationById.get(order[index+step]));
+            if(meters===null)return null;
+            minutes=Math.max(2,Math.ceil(meters/750));
+          }
           total+=minutes;
         }
         return total;
@@ -220,18 +224,19 @@
       function consistentProfile(typeIndex,destinationIndex,allowAnyDestination){
         var fromIndex=stationIndexes.get(order[fromOrder]),step=toOrder>fromOrder?1:-1,states=[],latest=null;
         for(var checkpoint=fromOrder+step;;checkpoint+=step){
-          var checkpointIndex=stationIndexes.get(order[checkpoint]),minimum=minimumMinutes(fromOrder,checkpoint),rows=[];
+          var checkpointIndex=stationIndexes.get(order[checkpoint]),minimum=minimumMinutes(fromOrder,checkpoint),maximum=edgeSum(fromOrder,checkpoint),rows=[];
           (table.typeDurations||[]).forEach(function(row){
             if(!Array.isArray(row)||row[0]!==fromIndex||row[1]!==checkpointIndex||row[2]!==typeIndex)return;
             if(!allowAnyDestination&&row[3]!==destinationIndex)return;
             var duration=Number(row[4]),support=Number(row[5]);
-            if(!Number.isFinite(duration)||duration<minimum||!Number.isFinite(support)||support<=0)return;
+            if(!Number.isFinite(duration)||duration<minimum||(maximum!==null&&duration>maximum+5)||!Number.isFinite(support)||support<=0)return;
             rows.push({row:row,order:checkpoint,minutes:duration,support:support,score:support});
           });
           if(rows.length){
             rows.forEach(function(candidate){
               var predecessor=null;
               states.forEach(function(state){
+                if(allowAnyDestination&&state.row[3]!==candidate.row[3])return;
                 if(candidate.minutes<state.minutes+minimumMinutes(state.order,checkpoint))return;
                 if(!predecessor||state.score>predecessor.score||(state.score===predecessor.score&&state.minutes<predecessor.minutes))predecessor=state;
               });

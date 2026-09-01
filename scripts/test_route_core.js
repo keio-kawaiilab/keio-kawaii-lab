@@ -155,6 +155,22 @@ assert.equal(estimated.departure, 500);
 assert.equal(estimated.arrival, 503);
 assert.equal(estimated.estimatedArrival, true);
 
+const geographicFallback = model.timedItinerary(lineAPath, {
+  [lineA]: {
+    timeBasis: "station-departure-only",
+    stations: ["station:a1", "station:a2"],
+    calendars: ["odpt.Calendar:Weekday"],
+    directions: ["direction:ascending"],
+    trainTypes: ["odpt.TrainType:Test.Local"],
+    order: ["station:a1", "station:a2"],
+    ascendingDirection: "direction:ascending",
+    descendingDirection: "direction:descending",
+    edgeMinutes: [],
+    boards: [[0, 0, 0, [[500, 0]]]],
+  },
+}, 481, "weekday", 5);
+assert.ok(geographicFallback.arrival > geographicFallback.departure, "a missing terminal edge must use a conservative geographic estimate");
+
 const fastestEstimated = model.timedItinerary(lineAPath, {
   [lineA]: {
     timeBasis: "station-departure-only",

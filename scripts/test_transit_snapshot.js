@@ -71,5 +71,7 @@ assertEstimatedRoute("odakyu", "odpt.Railway:Odakyu.Odawara", "新宿", "町田"
 assertEstimatedRoute("tokyu", "odpt.Railway:Tokyu.Toyoko", "渋谷", "横浜", 25, 45);
 assertEstimatedRoute("keikyu", "odpt.Railway:Keikyu.Main", "品川", "横浜", 15, 35);
 assertEstimatedRoute("yurikamome", "odpt.Railway:Yurikamome.Yurikamome", "新橋", "豊洲", 25, 40);
+assertEstimatedRoute("seibu", "odpt.Railway:Seibu.Toshima", "練馬", "豊島園", 2, 5);
+assertEstimatedRoute("seibu", "odpt.Railway:Seibu.Seibuen", "東村山", "西武園", 2, 6);
 
 console.log(`transit snapshot tests passed (${model.stations.length} station choices)`);
