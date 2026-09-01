@@ -1,32 +1,12 @@
 {
-  "date": "2026-09-01",
+  "date": "2026-09-02",
   "horizonDays": 7,
-  "generatedAt": "2026-09-01T22:39+09:00",
+  "generatedAt": "2026-09-02T03:24+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
-    {
-      "date": "2026-09-01",
-      "venue": "埼玉県 エミテラス所沢2F TOKOROZAWA e-CUBE",
-      "venueKey": "エミテラス所沢2ftokorozawae-cube",
-      "eventIds": [
-        "special-a91f4fd0f80a1f20"
-      ],
-      "areaCode": "110010",
-      "areaName": "南部",
-      "precision": "area",
-      "label": "くもり 所により 雨",
-      "max": null,
-      "min": null,
-      "pop": "20",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-09-01T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
     {
       "date": "2026-09-03",
       "venue": "神奈川県 よこすか芸術劇場（大劇場）",
@@ -37,16 +17,19 @@
       ],
       "areaCode": "140010",
       "areaName": "東部",
-      "precision": "area",
-      "label": "くもり 後 一時 雨",
+      "precision": "mesh5km",
+      "label": "くもり",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
       "issuedAt": "2026-09-01T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "meshTime": "00:00",
+      "meshTempBand": "25〜29℃",
+      "coordinates": {
+        "lat": 35.281178,
+        "lon": 139.662613
+      }
     },
     {
       "date": "2026-09-04",
@@ -172,11 +155,11 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 12,
+    "occurrencesInRange": 13,
     "uniqueVenueDates": 9,
-    "weatherEntries": 8,
-    "meshEntries": 0,
-    "failures": 1,
+    "weatherEntries": 7,
+    "meshEntries": 1,
+    "failures": 2,
     "meshTimelineEntries": 0,
     "meshExactTempSlots": 0,
     "hourlyRainEntries": 0
@@ -186,6 +169,11 @@
       "date": "2026-09-02",
       "venue": "北海道 エスコンフィールドHOKKAIDO",
       "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-09-09",
+      "venue": "大阪府 グランキューブ大阪 メインホール",
+      "reason": "開催日の予報がまだありません"
     }
   ]
 }
