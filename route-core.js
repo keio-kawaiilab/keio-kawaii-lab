@@ -188,32 +188,8 @@
       });
       return best;
     }
-    function timedItinerary(path,timetablesByRailway,departureMinutes,service,transferMinutes){
-      var segments=segmentsFrom(path),current=Number(departureMinutes),buffer=Number(transferMinutes==null?5:transferMinutes),timed=[];
-      if(!Number.isFinite(current)||!segments.length)return null;
-      for(var i=0;i<segments.length;i++){
-        var segment=segments[i],fromGroup=groupByNode.get(segment.from),toGroup=groupByNode.get(segment.to);
-        var earliest=current+(i>0?buffer:0);
-        var trip=timetableTrip(
-          timetablesByRailway&&timetablesByRailway[segment.railway],
-          fromGroup?fromGroup.nodes:[segment.from],
-          toGroup?toGroup.nodes:[segment.to],
-          earliest,
-          service
-        );
-        if(!trip)return null;
-        timed.push(Object.assign({},segment,trip));current=trip.arrival;
-      }
-      return{segments:timed,departure:timed[0].departure,arrival:timed[timed.length-1].arrival,duration:timed[timed.length-1].arrival-timed[0].departure,transfers:Math.max(0,timed.length-1),stationDepartureBasis:timed.some(function(segment){return segment.timeBasis==="station-departure";})};
-    }
-
-    function nextDeparture(path,timetablesByRailway,departureMinutes,service){
-      var segments=segmentsFrom(path),segment=segments[0];
-      if(!segment)return null;
-      var table=timetablesByRailway&&timetablesByRailway[segment.railway];
+    function stationDepartureTrip(table,fromNodes,toNodes,earliest,service){
       if(!table||table.timeBasis!=="station-departure-only"||!Array.isArray(table.boards))return null;
-      var fromGroup=groupByNode.get(segment.from),toGroup=groupByNode.get(segment.to);
-      var fromNodes=fromGroup?fromGroup.nodes:[segment.from],toNodes=toGroup?toGroup.nodes:[segment.to];
       var order=table.order||[],fromOrder=-1,toOrder=-1;
       for(var i=0;i<order.length;i++){
         if(fromOrder<0&&fromNodes.indexOf(order[i])>=0)fromOrder=i;
@@ -221,19 +197,54 @@
       }
       var desiredDirection="";
       if(fromOrder>=0&&toOrder>=0&&fromOrder!==toOrder)desiredDirection=toOrder>fromOrder?table.ascendingDirection:table.descendingDirection;
-      var stations=table.stations||[],calendars=table.calendars||[],directions=table.directions||[],types=table.trainTypes||[];
-      var earliest=Number(departureMinutes),best=null;
+      var stations=table.stations||[],calendars=table.calendars||[],directions=table.directions||[],types=table.trainTypes||[],best=null;
       table.boards.forEach(function(board){
         if(!Array.isArray(board)||fromNodes.indexOf(stations[board[0]])<0||!calendarMatches(calendars[board[1]],service))return;
         var direction=directions[board[2]]||"";
         if(desiredDirection&&direction&&direction!==desiredDirection)return;
         (board[3]||[]).forEach(function(row){
           var minute=Number(row&&row[0]);if(!Number.isFinite(minute)||minute<earliest)return;
-          var candidate={departure:minute,trainType:types[row[1]]||"",railway:segment.railway,label:segment.label,from:segment.from,to:segment.to};
+          var candidate={departure:minute,trainType:types[row[1]]||"",trainNumber:"",timeBasis:"estimated-edge-duration"};
           if(!best||candidate.departure<best.departure)best=candidate;
         });
       });
+      if(!best||fromOrder<0||toOrder<0||fromOrder===toOrder)return best;
+      var edges=new Map();
+      (table.edgeMinutes||[]).forEach(function(row){
+        if(Array.isArray(row))edges.set(String(stations[row[0]])+"\u0001"+String(stations[row[1]]),Number(row[2]));
+      });
+      var step=toOrder>fromOrder?1:-1,total=0;
+      for(var index=fromOrder;index!==toOrder;index+=step){
+        var minutes=edges.get(String(order[index])+"\u0001"+String(order[index+step]));
+        if(!Number.isFinite(minutes)||minutes<=0)return best;
+        total+=minutes;
+      }
+      best.arrival=best.departure+total;
       return best;
+    }
+    function timedItinerary(path,timetablesByRailway,departureMinutes,service,transferMinutes){
+      var segments=segmentsFrom(path),current=Number(departureMinutes),buffer=Number(transferMinutes==null?5:transferMinutes),timed=[];
+      if(!Number.isFinite(current)||!segments.length)return null;
+      for(var i=0;i<segments.length;i++){
+        var segment=segments[i],fromGroup=groupByNode.get(segment.from),toGroup=groupByNode.get(segment.to);
+        var earliest=current+(i>0?buffer:0);
+        var table=timetablesByRailway&&timetablesByRailway[segment.railway];
+        var fromNodes=fromGroup?fromGroup.nodes:[segment.from],toNodes=toGroup?toGroup.nodes:[segment.to];
+        var trip=table&&table.timeBasis==="station-departure-only"?stationDepartureTrip(table,fromNodes,toNodes,earliest,service):timetableTrip(table,fromNodes,toNodes,earliest,service);
+        if(!trip||!Number.isFinite(trip.arrival))return null;
+        timed.push(Object.assign({},segment,trip));current=trip.arrival;
+      }
+      return{segments:timed,departure:timed[0].departure,arrival:timed[timed.length-1].arrival,duration:timed[timed.length-1].arrival-timed[0].departure,transfers:Math.max(0,timed.length-1),estimatedArrival:timed.some(function(segment){return segment.timeBasis==="station-departure"||segment.timeBasis==="estimated-edge-duration";})};
+    }
+
+    function nextDeparture(path,timetablesByRailway,departureMinutes,service){
+      var segments=segmentsFrom(path),segment=segments[0];
+      if(!segment)return null;
+      var table=timetablesByRailway&&timetablesByRailway[segment.railway];
+      var fromGroup=groupByNode.get(segment.from),toGroup=groupByNode.get(segment.to);
+      var fromNodes=fromGroup?fromGroup.nodes:[segment.from],toNodes=toGroup?toGroup.nodes:[segment.to];
+      var best=stationDepartureTrip(table,fromNodes,toNodes,Number(departureMinutes),service);
+      return best?Object.assign(best,{railway:segment.railway,label:segment.label,from:segment.from,to:segment.to}):null;
     }
 
     return{

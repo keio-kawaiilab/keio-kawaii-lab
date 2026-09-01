@@ -144,16 +144,30 @@ class ImportOdptTimetablesTests(unittest.TestCase):
         self.assertEqual(departures, 2)
 
     def test_station_timetable_without_train_ids_becomes_departure_board(self):
-        items = [{
-            "odpt:railway": "railway:test",
-            "odpt:station": "station:a",
-            "odpt:railDirection": "direction:ascending",
-            "odpt:calendar": "odpt.Calendar:Weekday",
-            "odpt:stationTimetableObject": [
-                {"odpt:trainType": "type:local", "odpt:departureTime": "08:01"},
-                {"odpt:trainType": "type:local", "odpt:departureTime": "08:11"},
-            ],
-        }]
+        items = [
+            {
+                "odpt:railway": "railway:test",
+                "odpt:station": "station:a",
+                "odpt:railDirection": "direction:ascending",
+                "odpt:calendar": "odpt.Calendar:Weekday",
+                "odpt:stationTimetableObject": [
+                    {"odpt:trainType": "type:local", "odpt:departureTime": "08:01"},
+                    {"odpt:trainType": "type:local", "odpt:departureTime": "08:11"},
+                    {"odpt:trainType": "type:local", "odpt:departureTime": "08:21"},
+                ],
+            },
+            {
+                "odpt:railway": "railway:test",
+                "odpt:station": "station:b",
+                "odpt:railDirection": "direction:ascending",
+                "odpt:calendar": "odpt.Calendar:Weekday",
+                "odpt:stationTimetableObject": [
+                    {"odpt:trainType": "type:local", "odpt:departureTime": "08:04"},
+                    {"odpt:trainType": "type:local", "odpt:departureTime": "08:14"},
+                    {"odpt:trainType": "type:local", "odpt:departureTime": "08:24"},
+                ],
+            },
+        ]
         railway = {
             "owl:sameAs": "railway:test",
             "odpt:ascendingRailDirection": "direction:ascending",
@@ -168,9 +182,10 @@ class ImportOdptTimetablesTests(unittest.TestCase):
         )["railway:test"]
         self.assertEqual(compact["timeBasis"], "station-departure-only")
         self.assertEqual(compact["order"], ["station:a", "station:b"])
-        self.assertEqual(compact["boards"][0][3], [[481, 0], [491, 0]])
+        self.assertEqual(compact["boards"][0][3], [[481, 0], [491, 0], [501, 0]])
+        self.assertEqual(compact["edgeMinutes"], [[0, 1, 3, 3], [1, 0, 3, 3]])
         self.assertEqual(connections, 0)
-        self.assertEqual(departures, 2)
+        self.assertEqual(departures, 6)
 
     def test_manual_topology_adds_all_stations_and_station_order(self):
         topology = {

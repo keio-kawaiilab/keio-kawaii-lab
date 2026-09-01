@@ -17,7 +17,7 @@ import hashlib
 import os
 import sys
 import time
-from collections import defaultdict
+from collections import Counter, defaultdict
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Any
@@ -575,6 +575,66 @@ def compact_line_timetable(
     }, connections
 
 
+def infer_edge_minutes(
+    boards: list[dict[str, Any]],
+    order: list[str],
+    ascending_direction: str,
+    descending_direction: str,
+) -> dict[tuple[str, str], tuple[int, int]]:
+    """Infer adjacent running times from repeated station-departure patterns.
+
+    The score for a candidate duration is the number of departures at the
+    following station that occur exactly that many minutes later. Real running
+    times repeat across the day, while unrelated neighbouring trains match far
+    less consistently. At least three matches are required. A missing terminal
+    direction inherits the independently inferred reverse-edge duration.
+    """
+    schedules: dict[tuple[str, str, str], Counter[int]] = defaultdict(Counter)
+    for board in boards:
+        key = (str(board["station"]), str(board["calendar"]), str(board["direction"]))
+        schedules[key].update(int(row[0]) for row in board["departures"])
+
+    candidates: dict[tuple[str, str], list[tuple[int, int]]] = defaultdict(list)
+    direction_pairs = [
+        (ascending_direction, list(zip(order, order[1:]))),
+        (descending_direction, list(zip(reversed(order), list(reversed(order))[1:]))),
+    ]
+    calendars = {str(board["calendar"]) for board in boards}
+    for direction, pairs in direction_pairs:
+        if not direction:
+            continue
+        for from_station, to_station in pairs:
+            for calendar in calendars:
+                departures = schedules.get((from_station, calendar, direction), Counter())
+                following = schedules.get((to_station, calendar, direction), Counter())
+                if not departures or not following:
+                    continue
+                scores = []
+                for duration in range(1, 21):
+                    score = sum(min(count, following.get(minute + duration, 0)) for minute, count in departures.items())
+                    scores.append((score, -duration, duration))
+                support, _negative_duration, duration = max(scores)
+                if support >= 3:
+                    candidates[(from_station, to_station)].append((duration, support))
+
+    inferred: dict[tuple[str, str], tuple[int, int]] = {}
+    for edge, values in candidates.items():
+        duration_scores: Counter[int] = Counter()
+        for duration, support in values:
+            duration_scores[duration] += support
+        duration, support = max(duration_scores.items(), key=lambda value: (value[1], -value[0]))
+        inferred[edge] = (duration, support)
+
+    for index in range(len(order) - 1):
+        forward = (order[index], order[index + 1])
+        reverse = (order[index + 1], order[index])
+        if forward not in inferred and reverse in inferred:
+            inferred[forward] = inferred[reverse]
+        if reverse not in inferred and forward in inferred:
+            inferred[reverse] = inferred[forward]
+    return inferred
+
+
 def compact_station_timetables(
     items: list[dict[str, Any]],
     station_aliases: dict[str, str] | None = None,
@@ -732,6 +792,16 @@ def compact_station_timetables(
             station_id = station_aliases.get(raw_station, raw_station)
             if station_id:
                 order.append(station_id)
+        ascending_direction = str(meta.get("odpt:ascendingRailDirection") or "")
+        descending_direction = str(meta.get("odpt:descendingRailDirection") or "")
+        inferred_edges = infer_edge_minutes(
+            raw_boards.get(railway_id, []), order, ascending_direction, descending_direction
+        )
+        edge_minutes = []
+        for (from_station, to_station), (minutes, support) in sorted(inferred_edges.items()):
+            from_index = index_of(from_station, station_values, station_indexes)
+            to_index = index_of(to_station, station_values, station_indexes)
+            edge_minutes.append([from_index, to_index, minutes, support])
 
         results[railway_id] = ({
             "version": 1,
@@ -744,8 +814,9 @@ def compact_station_timetables(
             "trips": trips,
             "boards": boards,
             "order": order,
-            "ascendingDirection": str(meta.get("odpt:ascendingRailDirection") or ""),
-            "descendingDirection": str(meta.get("odpt:descendingRailDirection") or ""),
+            "ascendingDirection": ascending_direction,
+            "descendingDirection": descending_direction,
+            "edgeMinutes": edge_minutes,
         }, connections, departure_count)
     return results
 

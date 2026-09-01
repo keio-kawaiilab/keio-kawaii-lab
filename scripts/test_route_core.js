@@ -119,7 +119,7 @@ const stationBasedTimetables = {
   },
 };
 const stationBased = model.timedItinerary(path, stationBasedTimetables, 475, "weekday", 5);
-assert.equal(stationBased.stationDepartureBasis, true, "station timetable results must be labelled as an arrival estimate");
+assert.equal(stationBased.estimatedArrival, true, "station timetable results must be labelled as an arrival estimate");
 
 const departureOnly = model.nextDeparture(path, {
   [lineA]: {
@@ -131,9 +131,28 @@ const departureOnly = model.nextDeparture(path, {
     order: ["station:a1", "station:a2"],
     ascendingDirection: "direction:ascending",
     descendingDirection: "direction:descending",
+    edgeMinutes: [[0, 1, 3, 3]],
     boards: [[0, 0, 0, [[480, 0], [500, 0]]]],
   },
 }, 481, "weekday");
 assert.equal(departureOnly.departure, 500, "departure-only data must return the next scheduled train");
+const lineAPath = model.shortestPath(origin, nearTransfer, { allowedRailways: [lineA] });
+const estimated = model.timedItinerary(lineAPath, {
+  [lineA]: {
+    timeBasis: "station-departure-only",
+    stations: ["station:a1", "station:a2"],
+    calendars: ["odpt.Calendar:Weekday"],
+    directions: ["direction:ascending"],
+    trainTypes: ["odpt.TrainType:Test.Local"],
+    order: ["station:a1", "station:a2"],
+    ascendingDirection: "direction:ascending",
+    descendingDirection: "direction:descending",
+    edgeMinutes: [[0, 1, 3, 3]],
+    boards: [[0, 0, 0, [[480, 0], [500, 0]]]],
+  },
+}, 481, "weekday", 5);
+assert.equal(estimated.departure, 500);
+assert.equal(estimated.arrival, 503);
+assert.equal(estimated.estimatedArrival, true);
 
 console.log("route-core tests passed");
