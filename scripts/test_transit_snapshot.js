@@ -19,6 +19,12 @@ required.forEach((slug) => {
   assert.ok(manifest.operators[slug]?.timetableConnections > 0, `${slug} must contain scheduled connections`);
 });
 
+["seibu", "odakyu", "tokyu", "keikyu", "yurikamome"].forEach((slug) => {
+  assert.equal(manifest.operators[slug]?.timetableStatus, "departure-only", `${slug} station timetable must be available`);
+  assert.ok(manifest.operators[slug]?.stationTimetables > 0, `${slug} must contain station timetable objects`);
+  assert.ok(manifest.operators[slug]?.departures > 0, `${slug} must contain scheduled departures`);
+});
+
 const payloads = Object.entries(manifest.operators)
   .filter(([, info]) => info?.status === "ok")
   .map(([slug]) => JSON.parse(fs.readFileSync(path.join(root, slug, "entities.json"), "utf8")));

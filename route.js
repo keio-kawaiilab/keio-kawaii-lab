@@ -144,7 +144,13 @@
     loadTimetables(segments).then(function(timetables){
       var timed=model.timedItinerary(timedPath,timetables,departureMinutes(date),service,5);
       if(timed)renderPath(fromResolved.group,toResolved.group,timedPath,timed,timed.stationDepartureBasis?"一部路線の到着時刻は、ODPT駅時刻表の次駅発車時刻を基準にした目安です。":"");
-      else renderPath(fromResolved.group,toResolved.group,timedPath,null,"選んだ時刻・運行日の列車を見つけられませんでした。時刻や平日／土休日を変えて試してください。");
+      else{
+        var departure=model.nextDeparture(timedPath,timetables,departureMinutes(date),service);
+        if(departure){
+          var type=model.displayTrainType(departure.trainType),copy=departure.label+"は "+formatTime(departure.departure)+" 発"+(type?"（"+type+"）":"")+"です。ODPTの提供データに到着時刻がないため、経路と次の発車時刻を表示しています。";
+          renderPath(fromResolved.group,toResolved.group,timedPath,null,copy);
+        }else renderPath(fromResolved.group,toResolved.group,timedPath,null,"選んだ時刻・運行日の列車を見つけられませんでした。時刻や平日／土休日を変えて試してください。");
+      }
       updateUrl();finishSearch();
     }).catch(function(error){console.error(error);renderPath(fromResolved.group,toResolved.group,path,null,"時刻表の読み込みに失敗したため、路線と乗換だけ表示しています。");finishSearch();});
   }

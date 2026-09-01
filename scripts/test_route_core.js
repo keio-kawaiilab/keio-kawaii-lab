@@ -121,4 +121,19 @@ const stationBasedTimetables = {
 const stationBased = model.timedItinerary(path, stationBasedTimetables, 475, "weekday", 5);
 assert.equal(stationBased.stationDepartureBasis, true, "station timetable results must be labelled as an arrival estimate");
 
+const departureOnly = model.nextDeparture(path, {
+  [lineA]: {
+    timeBasis: "station-departure-only",
+    stations: ["station:a1"],
+    calendars: ["odpt.Calendar:Weekday"],
+    directions: ["direction:ascending"],
+    trainTypes: ["odpt.TrainType:Test.Local"],
+    order: ["station:a1", "station:a2"],
+    ascendingDirection: "direction:ascending",
+    descendingDirection: "direction:descending",
+    boards: [[0, 0, 0, [[480, 0], [500, 0]]]],
+  },
+}, 481, "weekday");
+assert.equal(departureOnly.departure, 500, "departure-only data must return the next scheduled train");
+
 console.log("route-core tests passed");

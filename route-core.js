@@ -207,10 +207,39 @@
       return{segments:timed,departure:timed[0].departure,arrival:timed[timed.length-1].arrival,duration:timed[timed.length-1].arrival-timed[0].departure,transfers:Math.max(0,timed.length-1),stationDepartureBasis:timed.some(function(segment){return segment.timeBasis==="station-departure";})};
     }
 
+    function nextDeparture(path,timetablesByRailway,departureMinutes,service){
+      var segments=segmentsFrom(path),segment=segments[0];
+      if(!segment)return null;
+      var table=timetablesByRailway&&timetablesByRailway[segment.railway];
+      if(!table||table.timeBasis!=="station-departure-only"||!Array.isArray(table.boards))return null;
+      var fromGroup=groupByNode.get(segment.from),toGroup=groupByNode.get(segment.to);
+      var fromNodes=fromGroup?fromGroup.nodes:[segment.from],toNodes=toGroup?toGroup.nodes:[segment.to];
+      var order=table.order||[],fromOrder=-1,toOrder=-1;
+      for(var i=0;i<order.length;i++){
+        if(fromOrder<0&&fromNodes.indexOf(order[i])>=0)fromOrder=i;
+        if(toOrder<0&&toNodes.indexOf(order[i])>=0)toOrder=i;
+      }
+      var desiredDirection="";
+      if(fromOrder>=0&&toOrder>=0&&fromOrder!==toOrder)desiredDirection=toOrder>fromOrder?table.ascendingDirection:table.descendingDirection;
+      var stations=table.stations||[],calendars=table.calendars||[],directions=table.directions||[],types=table.trainTypes||[];
+      var earliest=Number(departureMinutes),best=null;
+      table.boards.forEach(function(board){
+        if(!Array.isArray(board)||fromNodes.indexOf(stations[board[0]])<0||!calendarMatches(calendars[board[1]],service))return;
+        var direction=directions[board[2]]||"";
+        if(desiredDirection&&direction&&direction!==desiredDirection)return;
+        (board[3]||[]).forEach(function(row){
+          var minute=Number(row&&row[0]);if(!Number.isFinite(minute)||minute<earliest)return;
+          var candidate={departure:minute,trainType:types[row[1]]||"",railway:segment.railway,label:segment.label,from:segment.from,to:segment.to};
+          if(!best||candidate.departure<best.departure)best=candidate;
+        });
+      });
+      return best;
+    }
+
     return{
       graph:graph,stationById:stationById,railwayById:railwayById,trainTypeById:trainTypeById,stationGroups:stationGroups,
       stations:Array.from(stationGroups.values()).sort(function(a,b){return a.label.localeCompare(b.label,"ja");}),
-      resolveInput:resolveInput,shortestPath:shortestPath,segmentsFrom:segmentsFrom,timedItinerary:timedItinerary,
+      resolveInput:resolveInput,shortestPath:shortestPath,segmentsFrom:segmentsFrom,timedItinerary:timedItinerary,nextDeparture:nextDeparture,
       displayStation:function(id){return stationName(stationById.get(id)||{"owl:sameAs":id});},
       displayTrainType:function(id){return trainTypeName(trainTypeById.get(id)||{"owl:sameAs":id});}
     };

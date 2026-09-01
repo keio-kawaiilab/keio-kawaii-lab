@@ -578,17 +578,19 @@ def compact_line_timetable(
 def compact_station_timetables(
     items: list[dict[str, Any]],
     station_aliases: dict[str, str] | None = None,
-) -> dict[str, tuple[dict[str, Any], int]]:
-    """Reconstruct per-line trips from ODPT station departure timetables.
+    railways: list[dict[str, Any]] | None = None,
+) -> dict[str, tuple[dict[str, Any], int, int]]:
+    """Build compact departure boards and any joinable trips per line.
 
-    Several operators publish odpt:StationTimetable but not
-    odpt:TrainTimetable. Entries for the same train are joined with the train
-    URI (or train number as a fallback). Arrival times are usually absent from
-    station timetables, so the following station's departure time is used as a
-    conservative arrival-time basis and is labelled as such in the UI.
+    Challenge operators often omit train identifiers and arrival times from
+    odpt:StationTimetable. Their exact departures remain useful, but must not
+    be presented as a fabricated arrival itinerary. The compact file therefore
+    retains station departure boards and only joins trips when ODPT supplies a
+    stable train URI or number.
     """
     station_aliases = station_aliases or {}
     grouped: dict[str, dict[tuple[str, str, str], dict[str, Any]]] = defaultdict(dict)
+    raw_boards: dict[str, list[dict[str, Any]]] = defaultdict(list)
 
     for item in items:
         railway_id = str(item.get("odpt:railway") or "")
@@ -600,6 +602,8 @@ def compact_station_timetables(
         if not railway_id or not station_id:
             continue
 
+        board_departures: list[tuple[int, str]] = []
+
         for row in item.get("odpt:stationTimetableObject") or []:
             if not isinstance(row, dict):
                 continue
@@ -607,12 +611,14 @@ def compact_station_timetables(
             departure = clock_minutes(row.get("odpt:departureTime"))
             if arrival is None and departure is None:
                 continue
+            train_type = str(row.get("odpt:trainType") or "")
+            if departure is not None:
+                board_departures.append((departure, train_type))
             train_ref = str(row.get("odpt:train") or "")
             train_number = str(row.get("odpt:trainNumber") or "")
             train_key = train_ref or train_number
             if not train_key:
                 continue
-            train_type = str(row.get("odpt:trainType") or "")
             for calendar_value in calendars:
                 calendar = str(calendar_value or "")
                 key = (calendar, direction, train_key)
@@ -632,16 +638,35 @@ def compact_station_timetables(
                 if departure is not None:
                     stop[1] = departure
 
-    results: dict[str, tuple[dict[str, Any], int]] = {}
-    for railway_id, trains in grouped.items():
+        if board_departures:
+            for calendar_value in calendars:
+                raw_boards[railway_id].append({
+                    "station": station_id,
+                    "calendar": str(calendar_value or ""),
+                    "direction": direction,
+                    "departures": board_departures,
+                })
+
+    railway_meta = {
+        str(item.get("owl:sameAs") or ""): item
+        for item in railways or []
+        if item.get("owl:sameAs")
+    }
+    results: dict[str, tuple[dict[str, Any], int, int]] = {}
+    for railway_id in set(grouped) | set(raw_boards):
+        trains = grouped.get(railway_id, {})
         station_values: list[str] = []
         station_indexes: dict[str, int] = {}
         calendar_values: list[str] = []
         calendar_indexes: dict[str, int] = {}
         train_type_values: list[str] = []
         train_type_indexes: dict[str, int] = {}
+        direction_values: list[str] = []
+        direction_indexes: dict[str, int] = {}
         trips: list[list[Any]] = []
+        boards: list[list[Any]] = []
         connections = 0
+        departure_count = 0
 
         def index_of(value: str, values: list[str], indexes: dict[str, int]) -> int:
             if value not in indexes:
@@ -688,49 +713,41 @@ def compact_station_timetables(
             trips.append([calendar_index, type_index, trip["trainNumber"], stops])
             connections += len(stops) - 1
 
+        for board in raw_boards.get(railway_id, []):
+            station_index = index_of(board["station"], station_values, station_indexes)
+            calendar_index = index_of(board["calendar"], calendar_values, calendar_indexes)
+            direction_index = index_of(board["direction"], direction_values, direction_indexes)
+            departures = []
+            for departure, train_type in sorted(board["departures"]):
+                type_index = index_of(train_type, train_type_values, train_type_indexes)
+                departures.append([departure, type_index])
+            if departures:
+                boards.append([station_index, calendar_index, direction_index, departures])
+                departure_count += len(departures)
+
+        meta = railway_meta.get(railway_id, {})
+        order = []
+        for row in sorted(meta.get("odpt:stationOrder") or [], key=lambda value: int(value.get("odpt:index") or 0)):
+            raw_station = str(row.get("odpt:station") or "")
+            station_id = station_aliases.get(raw_station, raw_station)
+            if station_id:
+                order.append(station_id)
+
         results[railway_id] = ({
             "version": 1,
             "railway": railway_id,
-            "timeBasis": "station-departure",
+            "timeBasis": "station-departure-only" if not trips else "station-departure",
             "stations": station_values,
             "calendars": calendar_values,
+            "directions": direction_values,
             "trainTypes": train_type_values,
             "trips": trips,
-        }, connections)
+            "boards": boards,
+            "order": order,
+            "ascendingDirection": str(meta.get("odpt:ascendingRailDirection") or ""),
+            "descendingDirection": str(meta.get("odpt:descendingRailDirection") or ""),
+        }, connections, departure_count)
     return results
-
-
-def station_timetable_metrics(items: list[dict[str, Any]]) -> str:
-    """Return value-free diagnostics for provider-specific timetable shapes."""
-    row_keys: set[str] = set()
-    identities: dict[tuple[str, str, str], set[str]] = defaultdict(set)
-    rows = departures = arrivals = train_refs = train_numbers = 0
-    for item in items:
-        station = str(item.get("odpt:station") or "")
-        calendar = str(item.get("odpt:calendar") or "")
-        direction = str(item.get("odpt:railDirection") or "")
-        for row in item.get("odpt:stationTimetableObject") or []:
-            if not isinstance(row, dict):
-                continue
-            rows += 1
-            row_keys.update(str(key) for key in row)
-            if row.get("odpt:departureTime"):
-                departures += 1
-            if row.get("odpt:arrivalTime"):
-                arrivals += 1
-            train_ref = str(row.get("odpt:train") or "")
-            train_number = str(row.get("odpt:trainNumber") or "")
-            train_refs += bool(train_ref)
-            train_numbers += bool(train_number)
-            identity = train_ref or train_number
-            if identity:
-                identities[(calendar, direction, identity)].add(station)
-    joinable = sum(1 for stations in identities.values() if len(stations) >= 2)
-    return (
-        f"objects={len(items)} rows={rows} departures={departures} arrivals={arrivals} "
-        f"trainRefs={train_refs} trainNumbers={train_numbers} identities={len(identities)} "
-        f"joinable={joinable} keys={','.join(sorted(row_keys))}"
-    )
 
 
 def timetable_filename(railway_id: str) -> str:
@@ -823,6 +840,7 @@ def main() -> int:
 
             timetable_index: dict[str, Any] = {"version": 1, "lines": {}}
             total_station_timetables = 0
+            total_station_departures = 0
             total_train_timetables = 0
             total_connections = 0
             timetable_dir = op_dir / "timetables"
@@ -866,10 +884,9 @@ def main() -> int:
                         base_url=base_url,
                     )
                     total_station_timetables = len(station_raw)
-                    station_lines = compact_station_timetables(station_raw, station_aliases)
-                    print(f"{slug}: station timetable shape {station_timetable_metrics(station_raw)}")
-                    for railway_id, (compact_timetable, connection_count) in station_lines.items():
-                        if not compact_timetable["trips"]:
+                    station_lines = compact_station_timetables(station_raw, station_aliases, railways)
+                    for railway_id, (compact_timetable, connection_count, departure_count) in station_lines.items():
+                        if not compact_timetable["trips"] and not compact_timetable["boards"]:
                             continue
                         filename = timetable_filename(railway_id)
                         dump_json(timetable_dir / filename, compact_timetable)
@@ -877,9 +894,11 @@ def main() -> int:
                             "file": f"timetables/{filename}",
                             "trips": len(compact_timetable["trips"]),
                             "connections": connection_count,
+                            "departures": departure_count,
                             "source": "station-timetable",
                         }
                         total_connections += connection_count
+                        total_station_departures += departure_count
             dump_json(op_dir / "timetable-index.json", timetable_index)
 
             unique_stations = {x.get("owl:sameAs") for x in stations if x.get("owl:sameAs")}
@@ -888,16 +907,16 @@ def main() -> int:
                 "status": "ok" if topology_edges else "topology-unavailable",
                 "topologyStatus": "ok" if topology_edges else "unavailable",
                 "topologyEdges": topology_edges,
-                "timetableStatus": "ok" if total_connections else ("not-available" if include_timetables else "not-requested"),
+                "timetableStatus": "ok" if total_connections else ("departure-only" if total_station_departures else ("not-available" if include_timetables else "not-requested")),
                 "stations": len(unique_stations),
                 "railways": len(railways),
                 "stationTimetables": total_station_timetables,
                 "trainTimetables": total_train_timetables,
                 "timetableLines": len(timetable_index["lines"]),
                 "timetableConnections": total_connections,
-                "departures": total_connections,
+                "departures": total_connections + total_station_departures,
             })
-            print(f"{slug}: {len(unique_stations)} stations / {topology_edges} topology edges / {total_connections} timetable connections / {total_train_timetables} train timetables")
+            print(f"{slug}: {len(unique_stations)} stations / {topology_edges} topology edges / {total_connections} timetable connections / {total_station_departures} station departures / {total_train_timetables} train timetables")
         except Exception as exc:  # continue other operators and expose failure in manifest
             info["status"] = "error"
             info["error"] = str(exc)

@@ -136,11 +136,41 @@ class ImportOdptTimetablesTests(unittest.TestCase):
             },
         ]
         lines = importer.compact_station_timetables(items, {"station:a-old": "station:a"})
-        compact, connections = lines["railway:test"]
+        compact, connections, departures = lines["railway:test"]
         self.assertEqual(compact["timeBasis"], "station-departure")
         self.assertEqual(compact["stations"], ["station:a", "station:b"])
         self.assertEqual(compact["trips"][0][3], [[0, 1438, 1438], [1, 1447, 1447]])
         self.assertEqual(connections, 1)
+        self.assertEqual(departures, 2)
+
+    def test_station_timetable_without_train_ids_becomes_departure_board(self):
+        items = [{
+            "odpt:railway": "railway:test",
+            "odpt:station": "station:a",
+            "odpt:railDirection": "direction:ascending",
+            "odpt:calendar": "odpt.Calendar:Weekday",
+            "odpt:stationTimetableObject": [
+                {"odpt:trainType": "type:local", "odpt:departureTime": "08:01"},
+                {"odpt:trainType": "type:local", "odpt:departureTime": "08:11"},
+            ],
+        }]
+        railway = {
+            "owl:sameAs": "railway:test",
+            "odpt:ascendingRailDirection": "direction:ascending",
+            "odpt:descendingRailDirection": "direction:descending",
+            "odpt:stationOrder": [
+                {"odpt:index": 1, "odpt:station": "station:a"},
+                {"odpt:index": 2, "odpt:station": "station:b"},
+            ],
+        }
+        compact, connections, departures = importer.compact_station_timetables(
+            items, {}, [railway]
+        )["railway:test"]
+        self.assertEqual(compact["timeBasis"], "station-departure-only")
+        self.assertEqual(compact["order"], ["station:a", "station:b"])
+        self.assertEqual(compact["boards"][0][3], [[481, 0], [491, 0]])
+        self.assertEqual(connections, 0)
+        self.assertEqual(departures, 2)
 
     def test_manual_topology_adds_all_stations_and_station_order(self):
         topology = {
