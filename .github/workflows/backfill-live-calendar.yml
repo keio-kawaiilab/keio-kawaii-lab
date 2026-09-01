@@ -22,8 +22,11 @@ on:
 permissions:
   contents: write
 
+# Deep discovery writes the same canonical schedule data as the regular
+# publisher. Put it behind the same lock so its daily backfill cannot collide
+# with a live 15-minute refresh at publish time.
 concurrency:
-  group: backfill-live-ticket-calendar-${{ github.ref }}
+  group: distributed-live-calendar
   cancel-in-progress: false
 
 jobs:
