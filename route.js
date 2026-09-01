@@ -115,7 +115,8 @@
     var segments=timed?timed.segments:model.segmentsFrom(path);
     if(!segments.length){resultEl.innerHTML='<div class="route-empty">同じ駅が選ばれています。</div>';return;}
     var transfers=Math.max(0,segments.length-1),stops=segments.reduce(function(sum,segment){return sum+segment.stops;},0);
-    var summary=timed?formatTime(timed.departure)+"発 → "+formatTime(timed.arrival)+"着・"+timed.duration+"分・乗換 "+transfers+"回":stops+"駅・乗換 "+transfers+"回";
+    var arrivalLabel=timed&&timed.stationDepartureBasis?"着目安":"着";
+    var summary=timed?formatTime(timed.departure)+"発 → "+formatTime(timed.arrival)+arrivalLabel+"・"+timed.duration+"分・乗換 "+transfers+"回":stops+"駅・乗換 "+transfers+"回";
     var html='<div class="route-result-card"><div class="route-summary"><strong>'+esc(fromGroup.label)+' → '+esc(toGroup.label)+'</strong><span>'+esc(summary)+'</span></div>';
     if(warning)html+='<div class="route-time-warning">'+esc(warning)+'</div>';
     segments.forEach(function(segment,index){
@@ -124,7 +125,7 @@
         html+='<div class="route-transfer">'+transferCopy+'</div>';
       }
       html+='<div class="route-leg" style="--route-line-color:'+safeColor(segment.color)+'"><div class="route-line-rail" aria-hidden="true"></div><div class="route-leg-copy">';
-      if(timed)html+='<div class="route-leg-time"><strong>'+formatTime(segment.departure)+' 発</strong><span>→</span><strong>'+formatTime(segment.arrival)+' 着</strong></div>';
+      if(timed)html+='<div class="route-leg-time"><strong>'+formatTime(segment.departure)+' 発</strong><span>→</span><strong>'+formatTime(segment.arrival)+' '+(segment.timeBasis==="station-departure"?'着目安':'着')+'</strong></div>';
       html+='<small>'+esc(model.displayStation(segment.from))+' → '+esc(model.displayStation(segment.to))+'</small><strong>'+esc(segment.label)+'</strong><p>'+segment.stops+'駅'+(timed&&trainLabel(segment)?'・'+esc(trainLabel(segment)):'')+'</p></div></div>';
     });
     html+='</div>';resultEl.innerHTML=html;
@@ -142,7 +143,7 @@
     var segments=model.segmentsFrom(timedPath),date=selectedDate(),service=serviceType(date);
     loadTimetables(segments).then(function(timetables){
       var timed=model.timedItinerary(timedPath,timetables,departureMinutes(date),service,5);
-      if(timed)renderPath(fromResolved.group,toResolved.group,timedPath,timed,"");
+      if(timed)renderPath(fromResolved.group,toResolved.group,timedPath,timed,timed.stationDepartureBasis?"一部路線の到着時刻は、ODPT駅時刻表の次駅発車時刻を基準にした目安です。":"");
       else renderPath(fromResolved.group,toResolved.group,timedPath,null,"選んだ時刻・運行日の列車を見つけられませんでした。時刻や平日／土休日を変えて試してください。");
       updateUrl();finishSearch();
     }).catch(function(error){console.error(error);renderPath(fromResolved.group,toResolved.group,path,null,"時刻表の読み込みに失敗したため、路線と乗換だけ表示しています。");finishSearch();});

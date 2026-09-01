@@ -181,7 +181,7 @@
         for(var j=boarding+1;j<stops.length;j++){
           var next=stops[j]||[],nextStation=stations[next[0]],arrival=next[1]!=null?Number(next[1]):Number(next[2]);
           if(!toSet.has(nextStation)||!Number.isFinite(arrival)||arrival<departure)continue;
-          var candidate={departure:departure,arrival:arrival,trainType:types[trip[1]]||"",trainNumber:String(trip[2]||"")};
+          var candidate={departure:departure,arrival:arrival,trainType:types[trip[1]]||"",trainNumber:String(trip[2]||""),timeBasis:timetable.timeBasis||"train-timetable"};
           if(!best||candidate.arrival<best.arrival||(candidate.arrival===best.arrival&&candidate.departure<best.departure))best=candidate;
           break;
         }
@@ -204,7 +204,7 @@
         if(!trip)return null;
         timed.push(Object.assign({},segment,trip));current=trip.arrival;
       }
-      return{segments:timed,departure:timed[0].departure,arrival:timed[timed.length-1].arrival,duration:timed[timed.length-1].arrival-timed[0].departure,transfers:Math.max(0,timed.length-1)};
+      return{segments:timed,departure:timed[0].departure,arrival:timed[timed.length-1].arrival,duration:timed[timed.length-1].arrival-timed[0].departure,transfers:Math.max(0,timed.length-1),stationDepartureBasis:timed.some(function(segment){return segment.timeBasis==="station-departure";})};
     }
 
     return{

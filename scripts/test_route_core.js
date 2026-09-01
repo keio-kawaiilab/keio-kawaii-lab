@@ -111,4 +111,14 @@ const bridgeModel = core.createModel([{
 assert.equal(bridgeModel.resolveInput("接続駅").ambiguous, false, "a connector node must merge every matching station cluster");
 assert.equal(bridgeModel.resolveInput("接続駅").group.nodes.length, 3);
 
+const stationBasedTimetables = {
+  ...weekdayTimetables,
+  [lineA]: {
+    ...weekdayTimetables[lineA],
+    timeBasis: "station-departure",
+  },
+};
+const stationBased = model.timedItinerary(path, stationBasedTimetables, 475, "weekday", 5);
+assert.equal(stationBased.stationDepartureBasis, true, "station timetable results must be labelled as an arrival estimate");
+
 console.log("route-core tests passed");

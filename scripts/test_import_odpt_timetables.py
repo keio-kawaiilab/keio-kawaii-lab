@@ -108,6 +108,40 @@ class ImportOdptTimetablesTests(unittest.TestCase):
         self.assertEqual(compact["trips"][0][3][1], [1, 1447, 1448])
         self.assertEqual(connections, 2)
 
+    def test_station_timetables_are_joined_into_trips(self):
+        items = [
+            {
+                "odpt:railway": "railway:test",
+                "odpt:station": "station:a-old",
+                "odpt:railDirection": "direction:outbound",
+                "odpt:calendar": "odpt.Calendar:Weekday",
+                "odpt:stationTimetableObject": [{
+                    "odpt:train": "train:101",
+                    "odpt:trainType": "type:local",
+                    "odpt:trainNumber": "101",
+                    "odpt:departureTime": "23:58",
+                }],
+            },
+            {
+                "odpt:railway": "railway:test",
+                "odpt:station": "station:b",
+                "odpt:railDirection": "direction:outbound",
+                "odpt:calendar": "odpt.Calendar:Weekday",
+                "odpt:stationTimetableObject": [{
+                    "odpt:train": "train:101",
+                    "odpt:trainType": "type:local",
+                    "odpt:trainNumber": "101",
+                    "odpt:departureTime": "00:07",
+                }],
+            },
+        ]
+        lines = importer.compact_station_timetables(items, {"station:a-old": "station:a"})
+        compact, connections = lines["railway:test"]
+        self.assertEqual(compact["timeBasis"], "station-departure")
+        self.assertEqual(compact["stations"], ["station:a", "station:b"])
+        self.assertEqual(compact["trips"][0][3], [[0, 1438, 1438], [1, 1447, 1447]])
+        self.assertEqual(connections, 1)
+
     def test_manual_topology_adds_all_stations_and_station_order(self):
         topology = {
             "lines": [{"name": "本線", "stations": ["A", "B", "C"], "color": "#123456"}],
