@@ -31,6 +31,8 @@ function assertRoute(from, to, expectedLine) {
 }
 
 assertRoute("京成上野", "成田空港", "京成本線");
+assertRoute("新宿", "京王八王子", "京王線");
+assertRoute("渋谷", "吉祥寺", "井の頭線");
 assertRoute("横浜", "元町・中華街", "みなとみらい線");
 
 console.log(`transit snapshot tests passed (${model.stations.length} station choices)`);

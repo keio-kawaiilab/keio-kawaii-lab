@@ -76,6 +76,54 @@
       }
     }
   },
+  "keio": {
+    "source": "https://www.keio.co.jp/train/station/",
+    "reviewedAt": "2026-09-02",
+    "lines": [
+      {
+        "id": "odpt.Railway:Keio.Keio",
+        "name": "京王線",
+        "color": "#C70075",
+        "stations": ["新宿", "笹塚", "代田橋", "明大前", "下高井戸", "桜上水", "上北沢", "八幡山", "芦花公園", "千歳烏山", "仙川", "つつじヶ丘", "柴崎", "国領", "布田", "調布", "西調布", "飛田給", "武蔵野台", "多磨霊園", "東府中", "府中", "分倍河原", "中河原", "聖蹟桜ヶ丘", "百草園", "高幡不動", "南平", "平山城址公園", "長沼", "北野", "京王八王子"]
+      },
+      {
+        "id": "odpt.Railway:Keio.KeioNew",
+        "name": "京王新線",
+        "color": "#C70075",
+        "stations": ["新宿", "初台", "幡ヶ谷", "笹塚"]
+      },
+      {
+        "id": "odpt.Railway:Keio.Sagamihara",
+        "name": "相模原線",
+        "color": "#C70075",
+        "stations": ["調布", "京王多摩川", "京王稲田堤", "京王よみうりランド", "稲城", "若葉台", "京王永山", "京王多摩センター", "京王堀之内", "南大沢", "多摩境", "橋本"]
+      },
+      {
+        "id": "odpt.Railway:Keio.Takao",
+        "name": "高尾線",
+        "color": "#C70075",
+        "stations": ["北野", "京王片倉", "山田", "めじろ台", "狭間", "高尾", "高尾山口"]
+      },
+      {
+        "id": "odpt.Railway:Keio.Inokashira",
+        "name": "井の頭線",
+        "color": "#000088",
+        "stations": ["渋谷", "神泉", "駒場東大前", "池ノ上", "下北沢", "新代田", "東松原", "明大前", "永福町", "西永福", "浜田山", "高井戸", "富士見ヶ丘", "久我山", "三鷹台", "井の頭公園", "吉祥寺"]
+      },
+      {
+        "id": "odpt.Railway:Keio.Keibajo",
+        "name": "競馬場線",
+        "color": "#C70075",
+        "stations": ["東府中", "府中競馬正門前"]
+      },
+      {
+        "id": "odpt.Railway:Keio.Dobutsuen",
+        "name": "動物園線",
+        "color": "#C70075",
+        "stations": ["高幡不動", "多摩動物公園"]
+      }
+    ]
+  },
   "yokohama-minatomirai": {
     "source": "https://www.mm21railway.co.jp/station/",
     "reviewedAt": "2026-09-02",

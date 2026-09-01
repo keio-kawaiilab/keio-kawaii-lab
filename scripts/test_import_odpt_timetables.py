@@ -94,8 +94,11 @@ class ImportOdptTimetablesTests(unittest.TestCase):
         station_b = next(item for item in merged["Station"] if item["dc:title"] == "B")
         self.assertEqual(station_b["odpt:connectingStation"], ["station:other"])
 
-    def test_reviewed_topology_contains_complete_keisei_and_minatomirai_lines(self):
+    def test_reviewed_topology_contains_complete_keio_keisei_and_minatomirai_lines(self):
         topology = importer.load_manual_topology()
+        keio = importer.merge_manual_topology(
+            "keio", "odpt.Operator:Keio", {"Station": [], "Railway": []}, topology["keio"]
+        )
         keisei = importer.merge_manual_topology(
             "keisei", "odpt.Operator:Keisei", {"Station": [], "Railway": []}, topology["keisei"]
         )
@@ -105,6 +108,12 @@ class ImportOdptTimetablesTests(unittest.TestCase):
             {"Station": [], "Railway": []},
             topology["yokohama-minatomirai"],
         )
+        self.assertEqual(len(keio["Railway"]), 7)
+        self.assertEqual(len(keio["Station"]), 69)
+        self.assertEqual(
+            sum(len(line["odpt:stationOrder"]) - 1 for line in keio["Railway"]), 69
+        )
+        self.assertTrue(all(len(line["odpt:stationOrder"]) >= 2 for line in keio["Railway"]))
         self.assertEqual(len(keisei["Railway"]), 8)
         self.assertGreaterEqual(len(keisei["Station"]), 80)
         self.assertTrue(all(len(line["odpt:stationOrder"]) >= 2 for line in keisei["Railway"]))
