@@ -212,6 +212,27 @@ class SpecialEventTests(unittest.TestCase):
         self.assertEqual(events[0]["applyEnd"], "2026-08-27T11:59")
         self.assertEqual(events[0]["ticketProvider"], "hmv")
 
+    def test_large_benefit_without_announced_window_is_published_as_schedule_only(self):
+        html = """
+        <html><head><title>SWEET STEADY大特典会</title></head><body>
+        <h1>SWEET STEADY大特典会を開催決定！</h1>
+        <p>2026.09.01</p><p>■開催日程</p><p>2026年9月22日(火・祝)</p>
+        <p>■開催会場</p><p>東京流通センター 第二展示場 Fホール</p>
+        <p>参加方法の詳細は後日お知らせします。</p>
+        </body></html>
+        """
+        events = s.parse_page(
+            "SWEET STEADY",
+            "https://sweetsteady.asobisystem.com/news/detail/1",
+            html,
+            datetime(2026, 9, 1, tzinfo=JST),
+        )
+        self.assertEqual(len(events), 1)
+        event = events[0]
+        self.assertEqual(event["ticketType"], "現在受付なし")
+        self.assertEqual(event["specialDetailsStatus"], "awaiting-details")
+        self.assertEqual(event["applicationDisplayMode"], "schedule-only")
+
     def test_fc_lottery_extracts_entry_result_and_payment_windows(self):
         html = """
         <html><head><title>FRUITS ZIPPER大特典会 ファンクラブ限定部 抽選</title></head><body>

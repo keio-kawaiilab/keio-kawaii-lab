@@ -158,6 +158,73 @@ class AuditScheduleReleaseTests(unittest.TestCase):
         errors, _, _ = audit(payload([event]), payload([copy.deepcopy(event)]), NOW)
         self.assertEqual([], errors)
 
+    def test_canonical_special_event_with_verified_offer_passes(self):
+        official = "https://candytune.asobisystem.com/news/detail/88915"
+        event = base_release(
+            id="canonical-benefit",
+            group="CANDY TUNE",
+            eventCategory="large-benefit",
+            title="CANDY TUNE 大特典会",
+            eventDate="2026-09-22",
+            venue="東京流通センター 第二展示場 Fホール",
+            url=official,
+            urls=[official, "https://tower.jp/article/feature_item/example"],
+            entityType="special-event",
+            specialEventEntityVersion=1,
+            ticketType="現在受付なし",
+            applicationStatus="none",
+            applicationDisplayMode="offers",
+            applyStart=None,
+            applyEnd=None,
+            applicationWindowVerified=None,
+            applicationWindowSource=official,
+            deadlineSource=official,
+            deadlineVerified=True,
+            parts=[{
+                "part": "第1部", "content": "2ショットチェキ撮影会",
+                "start": "10:00", "end": "11:00",
+                "receptionStart": "09:45", "receptionEnd": "10:40",
+            }],
+            offers=[{
+                "sourceRowId": "tower-offer",
+                "provider": "tower",
+                "ticketProvider": "tower",
+                "ticketType": "対象商品予約（参加権付き・先着）",
+                "applyStart": "2026-09-02T20:00",
+                "applyEnd": "2026-09-04T23:59",
+                "applicationStatus": "open",
+                "applicationWindowVerified": True,
+                "url": "https://tower.jp/article/feature_item/example",
+                "urls": [official, "https://tower.jp/article/feature_item/example"],
+            }],
+        )
+        errors, _, _ = audit(payload([]), payload([event]), NOW)
+        self.assertEqual([], errors)
+
+    def test_canonical_special_event_rejects_unverified_offer(self):
+        official = "https://candytune.asobisystem.com/news/detail/88915"
+        event = base_release(
+            id="canonical-bad",
+            entityType="special-event",
+            specialEventEntityVersion=1,
+            ticketType="現在受付なし",
+            applicationStatus="none",
+            applicationDisplayMode="offers",
+            applyStart=None,
+            applyEnd=None,
+            applicationWindowVerified=None,
+            applicationWindowSource=official,
+            deadlineSource=official,
+            deadlineVerified=True,
+            offers=[{
+                "provider": "tower",
+                "ticketType": "対象商品予約",
+                "url": "https://tower.jp/article/feature_item/example",
+            }],
+        )
+        errors, _, _ = audit(payload([]), payload([event]), NOW)
+        self.assertTrue(any("offer has no verified" in error for error in errors))
+
     def test_schedule_only_special_event_passes_while_details_are_unannounced(self):
         event = {
             "id": "schedule-benefit", "group": "SWEET STEADY", "eventScope": "kawaii-lab",

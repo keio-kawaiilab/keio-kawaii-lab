@@ -153,7 +153,7 @@ def source_links(soup: BeautifulSoup, page_url: str) -> list[str]:
     result: list[str] = [page_url]
     for anchor in soup.find_all("a", href=True):
         href = urljoin(page_url, anchor.get("href", ""))
-        if re.search(r"kawaiilab\.goods-order\.com|pages-kawaiilab\.goods-order\.com|sukisuki-shop\.com|r10\.to|rakuten|hmv\.co\.jp|tower\.jp", href, re.I):
+        if re.search(r"kawaiilab\.goods-order\.com|pages-kawaiilab\.goods-order\.com|sukisuki-shop\.com/goods/|r10\.to|rakuten|hmv\.co\.jp|tower\.jp", href, re.I):
             if href not in result:
                 result.append(href)
     return result
@@ -273,7 +273,11 @@ def parse_page(group: str, url: str, html_text: str, now: datetime | None = None
     links = source_links(soup, url)
     windows = window_rows(lines, default_year)
     current = (now or datetime.now(JST)).astimezone(JST)
-    if category == "release-event" and not windows:
+    # Publish the verified occurrence even when the purchase window has not
+    # been announced yet.  A later 15-minute refresh upgrades the same row with
+    # offers and detailed participation data.  This prevents a strict ticket
+    # validator from hiding a newly announced large benefit/release event.
+    if not windows:
         if venue == "会場未定":
             return []
         return [{

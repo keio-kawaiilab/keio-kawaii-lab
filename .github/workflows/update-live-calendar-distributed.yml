@@ -40,27 +40,37 @@ jobs:
         id: freeze
         shell: bash
         run: |
-          if [ -f data/schedule-refresh-freeze.json ] && python - <<'PY'
+          frozen="$(python - <<'PY'
           import json
           from pathlib import Path
-          path = Path('data/schedule-refresh-freeze.json')
-          try:
-              payload = json.loads(path.read_text(encoding='utf-8'))
-          except Exception:
-              raise SystemExit(1)
-          raise SystemExit(0 if payload.get('frozen') is True else 1)
+
+          controls = (
+              (Path('data/schedule-control.json'), 'freeze'),
+              (Path('data/schedule-refresh-freeze.json'), 'frozen'),
+          )
+          for path, key in controls:
+              if not path.exists():
+                  continue
+              try:
+                  payload = json.loads(path.read_text(encoding='utf-8'))
+              except Exception:
+                  raise SystemExit(f'invalid freeze control: {path}')
+              if payload.get(key) is True:
+                  print('true')
+                  break
+          else:
+              print('false')
           PY
-          then
-            echo "frozen=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "frozen=false" >> "$GITHUB_OUTPUT"
-          fi
+          )"
+          echo "frozen=$frozen" >> "$GITHUB_OUTPUT"
 
   collect-core:
     needs: prepare
     if: needs.prepare.outputs.frozen != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 8
+    outputs:
+      degraded: ${{ steps.collect.outputs.degraded }}
     steps:
       - name: Checkout pinned base
         uses: actions/checkout@v4
@@ -82,9 +92,14 @@ jobs:
         run: python -m unittest -v test_update_official_schedule.py test_update_official_schedule_parallel.py
 
       - name: Collect official, PIA and official schedule data
+        id: collect
         shell: bash
         run: |
           set -euo pipefail
+          degraded=""
+          mark_degraded() {
+            degraded="${degraded}${degraded:+,}$1"
+          }
           cp data/live-events.json /tmp/live-events-last-good.json
           cp data/live-events.json /tmp/live-events-before-pia.json
 
@@ -94,6 +109,7 @@ jobs:
           if ! timeout --signal=TERM --kill-after=10s 150s python scripts/update_live_events_v2.py; then
             echo "::warning::Core official fetch failed or timed out; retaining previous official rows for this refresh."
             cp /tmp/live-events-last-good.json data/live-events.json
+            mark_degraded "group-official-news"
           fi
 
           cp data/live-events.json /tmp/live-events-before-pia.json
@@ -105,6 +121,7 @@ jobs:
           if ! timeout --signal=TERM --kill-after=10s 90s python scripts/update_pia_events.py; then
             echo "::warning::PIA fetch failed or timed out; retaining the previous PIA snapshot."
             cp /tmp/live-events-before-pia.json data/live-events.json
+            mark_degraded "pia"
           else
             python scripts/reconcile_pia_retention.py --previous /tmp/live-events-before-pia.json
           fi
@@ -119,10 +136,12 @@ jobs:
             echo "::warning::Official schedule fetch failed or timed out; retaining the previous official schedule source while publishing other sources."
             cp /tmp/live-events-before-official-schedule.json data/live-events.json
             cp /tmp/official-schedule-index-before-refresh.json data/official-schedule-index.json
+            mark_degraded "group-official-schedule"
           fi
 
           python scripts/apply_event_scopes.py
           python scripts/prepare_release_candidate.py --previous /tmp/live-events-last-good.json
+          echo "degraded=$degraded" >> "$GITHUB_OUTPUT"
 
       - name: Upload core snapshot
         uses: actions/upload-artifact@v4
@@ -139,6 +158,8 @@ jobs:
     if: needs.prepare.outputs.frozen != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 6
+    outputs:
+      degraded: ${{ steps.collect.outputs.degraded }}
     steps:
       - name: Checkout pinned base
         uses: actions/checkout@v4
@@ -156,6 +177,7 @@ jobs:
         run: pip install -r scripts/requirements.txt
 
       - name: Test and collect playguides in parallel
+        id: collect
         shell: bash
         run: |
           set -euo pipefail
@@ -189,9 +211,13 @@ jobs:
           if [ "$playguide_ok" != "true" ]; then
             echo "::warning::All playguide attempts failed; retaining the previous playguide snapshot while other sources continue."
             cp /tmp/live-events-before-playguide.json data/live-events.json
+            echo "degraded=playguides" >> "$GITHUB_OUTPUT"
           elif ! python scripts/audit_playguide_collection.py; then
             echo "::warning::Playguide refresh did not pass source-health audit; retaining the previous playguide snapshot."
             cp /tmp/live-events-before-playguide.json data/live-events.json
+            echo "degraded=playguides" >> "$GITHUB_OUTPUT"
+          else
+            echo "degraded=" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Upload playguide snapshot
@@ -207,6 +233,8 @@ jobs:
     if: needs.prepare.outputs.frozen != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 6
+    outputs:
+      degraded: ${{ steps.collect.outputs.degraded }}
     steps:
       - name: Checkout pinned base
         uses: actions/checkout@v4
@@ -224,13 +252,21 @@ jobs:
         run: pip install -r scripts/requirements.txt
 
       - name: Test and collect SUKISUKI data
+        id: collect
         shell: bash
         run: |
           set -euo pipefail
           cd scripts
           python -m unittest -v test_update_sukisuki_events.py test_update_sukisuki_events_parallel.py
           cd ..
-          timeout --signal=TERM --kill-after=10s 120s python scripts/update_sukisuki_events_parallel.py --workers 5
+          cp data/live-events.json /tmp/live-events-before-sukisuki.json
+          if ! timeout --signal=TERM --kill-after=10s 120s python scripts/update_sukisuki_events_parallel.py --workers 5; then
+            echo "::warning::SUKISUKI fetch failed or timed out; retaining its previous known-good rows while other sources continue."
+            cp /tmp/live-events-before-sukisuki.json data/live-events.json
+            echo "degraded=sukisuki" >> "$GITHUB_OUTPUT"
+          else
+            echo "degraded=" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Upload SUKISUKI snapshot
         uses: actions/upload-artifact@v4
@@ -245,6 +281,8 @@ jobs:
     if: needs.prepare.outputs.frozen != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 6
+    outputs:
+      degraded: ${{ steps.collect.outputs.degraded }}
     steps:
       - name: Checkout pinned base
         uses: actions/checkout@v4
@@ -262,14 +300,28 @@ jobs:
         run: pip install -r scripts/requirements.txt
 
       - name: Test and collect special-event data
+        id: collect
         shell: bash
         run: |
           set -euo pipefail
           cd scripts
           python -m unittest -v test_update_special_events.py test_update_official_x_events.py
           cd ..
-          timeout --signal=TERM --kill-after=10s 120s python scripts/update_special_events.py
-          timeout --signal=TERM --kill-after=10s 120s python scripts/update_official_x_events.py
+          degraded=""
+          cp data/live-events.json /tmp/live-events-before-special.json
+          if ! timeout --signal=TERM --kill-after=10s 120s python scripts/update_special_events.py; then
+            echo "::warning::Special-event fetch failed or timed out; retaining its previous known-good rows."
+            cp /tmp/live-events-before-special.json data/live-events.json
+            degraded="special-events"
+          fi
+
+          cp data/live-events.json /tmp/live-events-before-official-x.json
+          if ! timeout --signal=TERM --kill-after=10s 120s python scripts/update_official_x_events.py; then
+            echo "::warning::Official X fallback fetch failed or timed out; retaining its previous known-good rows."
+            cp /tmp/live-events-before-official-x.json data/live-events.json
+            degraded="${degraded}${degraded:+,}official-x"
+          fi
+          echo "degraded=$degraded" >> "$GITHUB_OUTPUT"
 
       - name: Upload special-event snapshot
         uses: actions/upload-artifact@v4
@@ -386,9 +438,9 @@ jobs:
         shell: bash
         run: |
           title="🚨 Distributed schedule refresh blocked"
-          existing="$(gh issue list --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
+          existing="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
           if [ -n "$existing" ]; then
-            gh issue close "$existing" --comment "並列取得・統合監査・公開が正常に通過したため、自動更新を再開しました。"
+            gh issue close "$existing" --repo "$GITHUB_REPOSITORY" --comment "並列取得・統合監査・公開が正常に通過したため、自動更新を再開しました。"
           fi
 
       - name: Commit one audited integrated release
@@ -415,6 +467,41 @@ jobs:
           echo "Unable to publish integrated calendar after 3 attempts."
           exit 1
 
+  report-source-health:
+    needs: [prepare, collect-core, collect-playguide, collect-sukisuki, collect-special, merge-publish]
+    if: always() && needs.prepare.outputs.frozen != 'true' && needs.merge-publish.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Track source-level fallbacks
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CORE_DEGRADED: ${{ needs.collect-core.outputs.degraded }}
+          PLAYGUIDE_DEGRADED: ${{ needs.collect-playguide.outputs.degraded }}
+          SUKISUKI_DEGRADED: ${{ needs.collect-sukisuki.outputs.degraded }}
+          SPECIAL_DEGRADED: ${{ needs.collect-special.outputs.degraded }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          degraded="$(printf '%s\n' \
+            "$CORE_DEGRADED" \
+            "$PLAYGUIDE_DEGRADED" \
+            "$SUKISUKI_DEGRADED" \
+            "$SPECIAL_DEGRADED" \
+            | sed '/^$/d' | paste -sd, -)"
+          title="⚠️ Calendar source fallback active"
+          existing="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
+
+          if [ -n "$degraded" ]; then
+            body="一部の取得元が一時的に失敗したため、その取得元だけ前回正常データを維持し、取得できた他の最新情報は公開しました。次回以降も15分ごとに自動再試行します。\n\ndegraded sources: ${degraded}\nrun: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            if [ -n "$existing" ]; then
+              gh issue edit "$existing" --repo "$GITHUB_REPOSITORY" --body "$body"
+            else
+              gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body "$body"
+            fi
+          elif [ -n "$existing" ]; then
+            gh issue close "$existing" --repo "$GITHUB_REPOSITORY" --comment "全取得元の正常完了を確認しました。"
+          fi
+
   report-failure:
     needs: [prepare, collect-core, collect-playguide, collect-sukisuki, collect-special, merge-publish]
     if: always() && needs.prepare.outputs.frozen != 'true' && (needs.collect-core.result == 'failure' || needs.collect-playguide.result == 'failure' || needs.collect-sukisuki.result == 'failure' || needs.collect-special.result == 'failure' || needs.merge-publish.result == 'failure')
@@ -428,9 +515,9 @@ jobs:
           set -euo pipefail
           title="🚨 Distributed schedule refresh blocked"
           body="自動カレンダー更新のどこかが失敗しました。Actions run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          existing="$(gh issue list --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
+          existing="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
           if [ -n "$existing" ]; then
-            gh issue comment "$existing" --body "$body"
+            gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body "$body"
           else
-            gh issue create --title "$title" --body "$body"
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body "$body"
           fi

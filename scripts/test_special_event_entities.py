@@ -271,6 +271,33 @@ class SpecialEventEntityTests(unittest.TestCase):
         self.assertEqual(len(parent["offers"]), 1)
         self.assertEqual(parent["offers"][0]["provider"], "tower")
 
+    def test_explicit_sales_provider_beats_unrelated_support_link(self):
+        payload = {"events": [{
+            "id": "tower-sale",
+            "group": "CANDY TUNE",
+            "eventCategory": "large-benefit",
+            "displayTitle": "CANDY TUNE 大特典会",
+            "eventDate": "2026-09-22",
+            "venue": "東京流通センター 第二展示場 Fホール",
+            "ticketProvider": "tower",
+            "ticketType": "対象商品予約",
+            "applyStart": "2026-09-02T20:00",
+            "applyEnd": "2026-09-04T23:59",
+            "applicationStatus": "open",
+            "applicationWindowVerified": True,
+            "url": "https://candytune.asobisystem.com/news/detail/88915",
+            "urls": [
+                "https://candytune.asobisystem.com/news/detail/88915",
+                "https://tower.jp/article/feature_item/example",
+                "https://sukisuki-shop.com/contact",
+            ],
+            "sourceType": "official-special",
+        }]}
+        normalized, _ = normalize_payload(payload)
+        offer = normalized["events"][0]["offers"][0]
+        self.assertEqual(offer["provider"], "tower")
+        self.assertIn("tower.jp", offer["url"])
+
 
 if __name__ == "__main__":
     unittest.main()

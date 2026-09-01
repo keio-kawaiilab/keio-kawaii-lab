@@ -55,8 +55,14 @@ def occurrence_keys(event: dict) -> set[tuple[str, str]]:
 
 def provider(event: dict) -> str:
     raw = text(event.get("ticketProvider") or event.get("primarySource") or event.get("sourceType")).lower()
+    # Collectors already resolve the sales channel from the purchase section.
+    # Keep that explicit result authoritative: an article can also contain a
+    # SUKISUKI support/contact link, which must not turn a Tower/HMV offer into
+    # a fake SUKISUKI offer.
+    if raw in SALES_PROVIDERS:
+        return raw
     joined = " ".join(all_urls(event)).lower()
-    if "sukisuki-shop.com" in joined:
+    if "sukisuki-shop.com/goods/" in joined:
         return "sukisuki"
     if "hmv.co.jp" in joined:
         return "hmv"

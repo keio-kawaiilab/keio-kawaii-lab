@@ -14,6 +14,7 @@ on:
     # every 10 minutes and has continued firing even when this workflow's own
     # schedule and the calendar schedule were not delivered.
     workflows:
+      - "Distributed live ticket calendar"
       - "Update event-day train status"
       - "Archive verified ticket history"
       - "Update upcoming event weather"

@@ -24,6 +24,16 @@ OFFICIAL_ONLY_RE = re.compile(
 PIA_LOT_RE = re.compile(r"[?&]lotRlsCd=([A-Za-z0-9_-]+)")
 SUKISUKI_GOODS_RE = re.compile(r"sukisuki-shop\.com/goods/(\d+)")
 PLACEHOLDER_RE = re.compile(r"^(?:会場未定|未定|TBD|公式ページ記載(?:のイベント参加対象商品)?)$", re.I)
+SPECIAL_OFFER_PROVIDER_MARKERS = {
+    "sukisuki": ("sukisuki-shop.com/goods/",),
+    "hmv": ("hmv.co.jp",),
+    "tower": ("tower.jp",),
+    "rakuten": ("rakuten", "r10.to"),
+    "kawaii-store": ("kawaiilab.goods-order.com",),
+    "pia": ("t.pia.jp",),
+    "lawson": ("l-tike.com",),
+    "eplus": ("eplus.jp",),
+}
 
 
 def load(path: Path) -> dict:
@@ -188,6 +198,60 @@ def label(event: dict) -> str:
     return f"{event.get('group') or '?'} / {event.get('title') or '?'} / {event.get('ticketType') or '?'}"
 
 
+def is_canonical_special(event: dict) -> bool:
+    return event.get("entityType") == "special-event" and event.get("specialEventEntityVersion") == 1
+
+
+def audit_canonical_special_offers(event: dict) -> list[str]:
+    """Validate nested sale offers on a canonical special-event parent.
+
+    Canonical parents deliberately carry no top-level application window; the
+    renderer expands ``offers[]`` at display time.  Auditing only the parent as
+    a legacy sale row would therefore quarantine correct newly collected data.
+    """
+    errors: list[str] = []
+    if not is_canonical_special(event) or event.get("applicationDisplayMode") != "offers":
+        return errors
+
+    offers = event.get("offers")
+    if not isinstance(offers, list) or not offers:
+        return [f"canonical special event is in offers mode without offers: {label(event)}"]
+
+    official_window_source = str(event.get("applicationWindowSource") or "")
+    official_deadline_source = str(event.get("deadlineSource") or "")
+    if "asobisystem.com" not in official_window_source:
+        errors.append(f"canonical special event application window is not backed by an official page: {label(event)}")
+    if event.get("deadlineVerified") is not True or "asobisystem.com" not in official_deadline_source:
+        errors.append(f"canonical special event deadline is not verified by an official page: {label(event)}")
+
+    for index, offer in enumerate(offers, start=1):
+        if not isinstance(offer, dict):
+            errors.append(f"canonical special event offer {index} is invalid: {label(event)}")
+            continue
+        offer_name = f"{label(event)} / offer {index}"
+        ticket_type = str(offer.get("ticketType") or "").strip()
+        if not ticket_type or ticket_type == "現在受付なし":
+            errors.append(f"canonical special event offer has no sale type: {offer_name}")
+
+        start = parse_dt(offer.get("applyStart"))
+        end = parse_dt(offer.get("applyEnd"))
+        if not start or not end or offer.get("applicationWindowVerified") is not True:
+            errors.append(f"canonical special event offer has no verified purchase/ticket window: {offer_name}")
+        elif start > end:
+            errors.append(f"canonical special event offer window is reversed: {offer_name}")
+
+        offer_urls = [str(offer.get("url") or ""), *(str(value) for value in offer.get("urls") or [])]
+        offer_urls = [value for value in offer_urls if value]
+        if not offer_urls:
+            errors.append(f"canonical special event offer has no purchase URL: {offer_name}")
+            continue
+        provider = str(offer.get("provider") or offer.get("ticketProvider") or "official").lower()
+        markers = SPECIAL_OFFER_PROVIDER_MARKERS.get(provider)
+        if markers and not any(marker in value.lower() for marker in markers for value in offer_urls):
+            errors.append(f"canonical special event offer provider URL does not match {provider}: {offer_name}")
+    return errors
+
+
 def build_index(events: Iterable[dict]) -> dict[str, dict]:
     index: dict[str, dict] = {}
     for event in events:
@@ -305,6 +369,7 @@ def audit(previous: dict, candidate: dict, now: datetime) -> tuple[list[str], li
 
         category = str(event.get("eventCategory") or "")
         if category in {"large-benefit", "release-event"}:
+            errors.extend(audit_canonical_special_offers(event))
             social_schedule_only = (
                 event.get("sourceType") == "official-social"
                 and event.get("primarySource") == "official"
@@ -327,7 +392,8 @@ def audit(previous: dict, candidate: dict, now: datetime) -> tuple[list[str], li
                 )
                 or social_schedule_only
             )
-            if not schedule_only:
+            embedded_offer_mode = is_canonical_special(event) and event.get("applicationDisplayMode") == "offers"
+            if not schedule_only and not embedded_offer_mode:
                 if event.get("sourceType") != "official-special":
                     errors.append(f"special event is not marked as official-source data: {label(event)}")
                 if not event.get("purchaseMethod") or not event.get("ticketIssueMethod"):
