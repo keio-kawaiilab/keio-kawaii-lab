@@ -198,12 +198,21 @@ def api_get(session: requests.Session, rdf_type: str, key: str, operator: str | 
 
 def discover_operators(session: requests.Session, key: str) -> tuple[dict[str, str], list[dict[str, Any]]]:
     operators = api_get(session, "odpt:Operator", key)
+    operator_uris = {
+        item.get("owl:sameAs")
+        for item in operators
+        if isinstance(item.get("owl:sameAs"), str)
+    }
     found: dict[str, str] = {}
     for slug, config in TARGETS.items():
-        aliases = [a.casefold() for a in config["aliases"]]
+        fallback = str(config["fallback"])
+        if fallback in operator_uris:
+            found[slug] = fallback
+            continue
+        aliases = {" ".join(str(a).casefold().split()) for a in config["aliases"]}
         for item in operators:
-            haystack = " | ".join(title_values(item)).casefold()
-            if any(alias in haystack for alias in aliases):
+            titles = {" ".join(value.casefold().split()) for value in title_values(item)}
+            if aliases.intersection(titles):
                 uri = item.get("owl:sameAs")
                 if isinstance(uri, str):
                     found[slug] = uri
@@ -211,7 +220,7 @@ def discover_operators(session: requests.Session, key: str) -> tuple[dict[str, s
         if slug not in found:
             # Keep a standards-based fallback so a newly-added operator can be
             # attempted even if its title is not present in the Operator list.
-            found[slug] = str(config["fallback"])
+            found[slug] = fallback
     return found, operators
 
 

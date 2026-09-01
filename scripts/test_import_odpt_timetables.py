@@ -8,6 +8,27 @@ import import_odpt_timetables as importer
 
 
 class ImportOdptTimetablesTests(unittest.TestCase):
+    def test_operator_discovery_prefers_exact_railway_uri_over_substrings(self):
+        operators = [
+            {
+                "owl:sameAs": "odpt.Operator:Toei",
+                "odpt:operatorTitle": {"en": "Bureau of Transportation, Tokyo Metropolitan Government"},
+            },
+            {
+                "owl:sameAs": "odpt.Operator:TokyoMetro",
+                "odpt:operatorTitle": {"ja": "東京メトロ"},
+            },
+            {
+                "owl:sameAs": "odpt.Operator:SeibuBus",
+                "odpt:operatorTitle": {"en": "Seibu Bus"},
+            },
+        ]
+        with patch.object(importer, "api_get", return_value=operators):
+            found, _rows = importer.discover_operators(object(), "secret")
+        self.assertEqual(found["tokyo-metro"], "odpt.Operator:TokyoMetro")
+        self.assertEqual(found["toei"], "odpt.Operator:Toei")
+        self.assertEqual(found["seibu"], "odpt.Operator:Seibu")
+
     def test_api_get_filters_an_unscoped_response_by_operator(self):
         class Response:
             status_code = 200
