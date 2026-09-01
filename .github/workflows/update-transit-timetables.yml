@@ -11,6 +11,8 @@ on:
       - 'scripts/test_transit_snapshot.js'
       - 'route-core.js'
       - 'route.js'
+      - 'route.html'
+      - '_drafts/route.html'
       - '.github/workflows/update-transit-timetables.yml'
   schedule:
     - cron: '20 18 * * 0'
@@ -49,6 +51,8 @@ jobs:
         run: |
           node --check route-core.js
           node --check route.js
+          test ! -e route.html
+          grep -Fq '<meta name="robots" content="noindex,nofollow,noarchive">' _drafts/route.html
           node scripts/test_route_core.js
           python scripts/test_import_odpt_timetables.py
 
