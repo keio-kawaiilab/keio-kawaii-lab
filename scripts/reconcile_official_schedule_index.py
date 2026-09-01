@@ -41,12 +41,47 @@ def event_matches_entry(event: dict, entry: dict) -> bool:
     return True
 
 
+def represented_identity_matches(event: dict, entry: dict) -> bool:
+    """Trust the existing representedBy link only for the same dated scoped event."""
+    target_date = str(entry.get("date") or "").strip()
+    target_group = str(entry.get("group") or "").strip()
+    target_scope = str(entry.get("eventScope") or "").strip()
+    if not target_date or not target_group:
+        return False
+    if target_date not in event_days(event):
+        return False
+    if target_group not in participants(event):
+        return False
+    if target_scope and str(event.get("eventScope") or "").strip() != target_scope:
+        return False
+    return True
+
+
+def attach_official_url(event: dict, target_url: str) -> bool:
+    target_url = str(target_url or "").strip()
+    if not target_url or target_url in event_urls(event):
+        return False
+
+    current_schedule_url = str(event.get("officialScheduleUrl") or "").strip()
+    if not current_schedule_url:
+        event["officialScheduleUrl"] = target_url
+        return True
+
+    urls = [str(value).strip() for value in event.get("urls") or [] if str(value).strip()]
+    if target_url not in urls:
+        urls.append(target_url)
+        event["urls"] = urls
+        return True
+    return False
+
+
 def reconcile(data: dict, index: dict) -> dict:
     events = [event for event in data.get("events", []) if isinstance(event, dict)]
     by_id = {str(event.get("id") or ""): event for event in events if event.get("id")}
     entries = [entry for entry in index.get("entries", []) if isinstance(entry, dict)]
 
     reassigned: list[dict] = []
+    hydrated: list[dict] = []
     ambiguous: list[dict] = []
     unresolved: list[dict] = []
 
@@ -55,6 +90,23 @@ def reconcile(data: dict, index: dict) -> dict:
         current_event = by_id.get(current_id)
         if current_event and event_matches_entry(current_event, entry):
             continue
+
+        # The official collector created representedBy from this exact schedule
+        # row. Later canonical merging can retain that event id while dropping
+        # the schedule URL in favour of a richer news/ticket URL. When every
+        # identity signal still agrees, restore only the missing official URL;
+        # do not guess a different event.
+        if current_event and represented_identity_matches(current_event, entry):
+            target_url = str(entry.get("url") or "").strip()
+            if attach_official_url(current_event, target_url):
+                hydrated.append({
+                    "group": entry.get("group"),
+                    "date": entry.get("date"),
+                    "url": target_url,
+                    "eventId": current_id,
+                })
+            if event_matches_entry(current_event, entry):
+                continue
 
         matches = [event for event in events if event.get("id") and event_matches_entry(event, entry)]
         if len(matches) == 1:
@@ -85,9 +137,11 @@ def reconcile(data: dict, index: dict) -> dict:
     index["entries"] = entries
     return {
         "reassignedCount": len(reassigned),
+        "hydratedCount": len(hydrated),
         "ambiguousCount": len(ambiguous),
         "unresolvedCount": len(unresolved),
         "reassigned": reassigned,
+        "hydrated": hydrated,
         "ambiguous": ambiguous,
         "unresolved": unresolved,
     }
@@ -103,6 +157,7 @@ def main() -> int:
     data = json.loads(args.data.read_text(encoding="utf-8"))
     index = json.loads(args.index.read_text(encoding="utf-8"))
     report = reconcile(data, index)
+    args.data.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     args.index.write_text(json.dumps(index, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     if args.report:
         args.report.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
