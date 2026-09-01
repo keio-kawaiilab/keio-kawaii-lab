@@ -1,7 +1,7 @@
 {
   "date": "2026-09-02",
   "horizonDays": 7,
-  "generatedAt": "2026-09-02T03:24+09:00",
+  "generatedAt": "2026-09-02T07:48+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -18,18 +18,62 @@
       "areaCode": "140010",
       "areaName": "東部",
       "precision": "mesh5km",
-      "label": "くもり",
-      "max": null,
-      "min": null,
-      "pop": null,
-      "popLabel": "",
-      "issuedAt": "2026-09-01T17:00:00+09:00",
-      "meshTime": "00:00",
+      "label": "晴れ",
+      "max": 30.0,
+      "min": 26.0,
+      "pop": "40",
+      "popLabel": "18〜00時",
+      "issuedAt": "2026-09-02T05:00:00+09:00",
+      "meshTime": "18:00",
       "meshTempBand": "25〜29℃",
       "coordinates": {
         "lat": 35.281178,
         "lon": 139.662613
-      }
+      },
+      "meshTimeline": [
+        {
+          "time": "06:00",
+          "label": "雨",
+          "validAt": "2026-09-03T06:00+09:00",
+          "temp": 27
+        },
+        {
+          "time": "09:00",
+          "label": "くもり",
+          "validAt": "2026-09-03T09:00+09:00",
+          "temp": 28
+        },
+        {
+          "time": "12:00",
+          "label": "くもり",
+          "validAt": "2026-09-03T12:00+09:00",
+          "temp": 29
+        },
+        {
+          "time": "15:00",
+          "label": "くもり",
+          "validAt": "2026-09-03T15:00+09:00",
+          "temp": 28
+        },
+        {
+          "time": "18:00",
+          "label": "晴れ",
+          "validAt": "2026-09-03T18:00+09:00",
+          "temp": 27
+        },
+        {
+          "time": "21:00",
+          "label": "くもり",
+          "validAt": "2026-09-03T21:00+09:00",
+          "temp": 26
+        },
+        {
+          "time": "24:00",
+          "label": "くもり",
+          "validAt": "2026-09-04T00:00+09:00",
+          "temp": 25
+        }
+      ]
     },
     {
       "date": "2026-09-04",
@@ -97,7 +141,7 @@
       "venue": "ベルサール汐留",
       "venueKey": "ベルサール汐留",
       "eventIds": [
-        "special-124c630f19e88897"
+        "special-c4eedd09daa779cc"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
@@ -160,8 +204,8 @@
     "weatherEntries": 7,
     "meshEntries": 1,
     "failures": 2,
-    "meshTimelineEntries": 0,
-    "meshExactTempSlots": 0,
+    "meshTimelineEntries": 1,
+    "meshExactTempSlots": 7,
     "hourlyRainEntries": 0
   },
   "failures": [
