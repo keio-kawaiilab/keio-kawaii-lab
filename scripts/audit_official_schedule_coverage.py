@@ -36,8 +36,13 @@ def audit(data: dict, index: dict, previous_index: dict | None = None) -> list[s
             errors.append(f"represented event has the wrong participant: {label}")
         if event.get("eventScope") != entry.get("eventScope"):
             errors.append(f"represented event has a different scope: {label}")
-        sources = [str(event.get("url") or ""), *(str(value) for value in event.get("urls") or [])]
-        if str(entry.get("url") or "") not in sources:
+        sources = {
+            str(event.get("url") or "").strip(),
+            str(event.get("officialScheduleUrl") or "").strip(),
+            *(str(value).strip() for value in event.get("urls") or []),
+        }
+        sources.discard("")
+        if str(entry.get("url") or "").strip() not in sources:
             errors.append(f"represented event lacks its official URL: {label}")
         expected_category = special_event_category(entry.get("title"))
         if expected_category and event.get("eventCategory") != expected_category:
@@ -88,6 +93,9 @@ def main() -> int:
     # Canonical merging can change event IDs, so reconnect every official index
     # row to the final public entity and then verify coverage once more.
     reconcile_report = reconcile(data, index)
+    # reconcile may also restore an official schedule URL that canonical merging
+    # dropped from an otherwise identical represented event. Persist that repair.
+    args.data.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     args.index.write_text(json.dumps(index, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     errors = audit(data, index, previous)
     if errors:
