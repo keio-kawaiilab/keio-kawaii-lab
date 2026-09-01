@@ -421,7 +421,8 @@ def compact_train_timetable(item: dict[str, Any]) -> dict[str, Any]:
             continue
         out = {}
         for key in (
-            "odpt:index", "odpt:station", "odpt:arrivalTime", "odpt:departureTime",
+            "odpt:index", "odpt:station", "odpt:arrivalStation", "odpt:departureStation",
+            "odpt:arrivalTime", "odpt:departureTime",
             "odpt:platformNumber", "odpt:platformName",
         ):
             if key in row:
@@ -519,19 +520,34 @@ def compact_line_timetable(
         train_type = str(item.get("odpt:trainType") or "")
         train_number = str(item.get("odpt:trainNumber") or "")
         stops: list[list[int | None]] = []
+
+        def add_stop(station_value: Any, arrival: int | None, departure: int | None) -> None:
+            original_station = str(station_value or "")
+            station_id = station_aliases.get(original_station, original_station)
+            if not station_id or (arrival is None and departure is None):
+                return
+            station_index = index_of(station_id, station_values, station_indexes)
+            if stops and stops[-1][0] == station_index:
+                if arrival is not None:
+                    stops[-1][1] = arrival
+                if departure is not None:
+                    stops[-1][2] = departure
+                return
+            stops.append([station_index, arrival, departure])
+
         for row in item.get("odpt:trainTimetableObject") or []:
             if not isinstance(row, dict):
                 continue
-            original_station = str(row.get("odpt:station") or "")
-            station_id = station_aliases.get(original_station, original_station)
-            if not station_id:
-                continue
             arrival = clock_minutes(row.get("odpt:arrivalTime"))
             departure = clock_minutes(row.get("odpt:departureTime"))
-            if arrival is None and departure is None:
-                continue
-            station_index = index_of(station_id, station_values, station_indexes)
-            stops.append([station_index, arrival, departure])
+            generic_station = row.get("odpt:station")
+            arrival_station = row.get("odpt:arrivalStation") or generic_station
+            departure_station = row.get("odpt:departureStation") or generic_station
+            if arrival_station and departure_station and str(arrival_station) == str(departure_station):
+                add_stop(arrival_station, arrival, departure)
+            else:
+                add_stop(arrival_station, arrival, None)
+                add_stop(departure_station, None, departure)
         if len(stops) < 2:
             continue
         usable_connections = sum(

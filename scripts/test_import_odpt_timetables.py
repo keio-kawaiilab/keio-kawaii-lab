@@ -93,9 +93,10 @@ class ImportOdptTimetablesTests(unittest.TestCase):
             "odpt:trainType": "odpt.TrainType:Test.Local",
             "odpt:trainNumber": "101",
             "odpt:trainTimetableObject": [
-                {"odpt:station": "station:a-old", "odpt:departureTime": "23:58"},
-                {"odpt:station": "station:b", "odpt:arrivalTime": "24:07", "odpt:departureTime": "24:08"},
-                {"odpt:station": "station:c", "odpt:arrivalTime": "24:15"},
+                {"odpt:departureStation": "station:a-old", "odpt:departureTime": "23:58"},
+                {"odpt:arrivalStation": "station:b", "odpt:arrivalTime": "24:07"},
+                {"odpt:departureStation": "station:b", "odpt:departureTime": "24:08"},
+                {"odpt:arrivalStation": "station:c", "odpt:arrivalTime": "24:15"},
             ],
         }
         compact, connections = importer.compact_line_timetable(
