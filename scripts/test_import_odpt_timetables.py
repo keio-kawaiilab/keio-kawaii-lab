@@ -8,6 +8,13 @@ import import_odpt_timetables as importer
 
 
 class ImportOdptTimetablesTests(unittest.TestCase):
+    def test_challenge_operators_use_the_challenge_api(self):
+        self.assertEqual(
+            importer.api_base_for({"license": "challenge-2026"}),
+            importer.CHALLENGE_BASE_URL,
+        )
+        self.assertEqual(importer.api_base_for({"license": "basic"}), importer.BASE_URL)
+
     def test_jr_east_import_is_enabled_by_default_and_can_be_paused(self):
         with patch.dict("os.environ", {}, clear=True):
             self.assertTrue(importer.jr_east_import_enabled())
@@ -69,6 +76,36 @@ class ImportOdptTimetablesTests(unittest.TestCase):
         self.assertIn("odpt:connectingRailway", compact)
         self.assertNotIn("ignored", compact)
 
+    def test_manual_topology_adds_all_stations_and_station_order(self):
+        topology = {
+            "lines": [{"name": "本線", "stations": ["A", "B", "C"], "color": "#123456"}],
+            "stationMetadata": {"B": {"connectingStation": ["station:other"]}},
+        }
+        merged = importer.merge_manual_topology(
+            "test", "odpt.Operator:Test", {"Station": [], "Railway": []}, topology
+        )
+        self.assertEqual(len(merged["Station"]), 3)
+        self.assertEqual(len(merged["Railway"][0]["odpt:stationOrder"]), 3)
+        station_b = next(item for item in merged["Station"] if item["dc:title"] == "B")
+        self.assertEqual(station_b["odpt:connectingStation"], ["station:other"])
+
+    def test_reviewed_topology_contains_complete_keisei_and_minatomirai_lines(self):
+        topology = importer.load_manual_topology()
+        keisei = importer.merge_manual_topology(
+            "keisei", "odpt.Operator:Keisei", {"Station": [], "Railway": []}, topology["keisei"]
+        )
+        minatomirai = importer.merge_manual_topology(
+            "yokohama-minatomirai",
+            "manual.Operator:YokohamaMinatomirai",
+            {"Station": [], "Railway": []},
+            topology["yokohama-minatomirai"],
+        )
+        self.assertEqual(len(keisei["Railway"]), 8)
+        self.assertGreaterEqual(len(keisei["Station"]), 80)
+        self.assertTrue(all(len(line["odpt:stationOrder"]) >= 2 for line in keisei["Railway"]))
+        self.assertEqual(len(minatomirai["Station"]), 6)
+        self.assertEqual(len(minatomirai["Railway"][0]["odpt:stationOrder"]), 6)
+
     def test_topology_is_published_without_timetables(self):
         target = {
             "test": {
@@ -84,16 +121,25 @@ class ImportOdptTimetablesTests(unittest.TestCase):
             "odpt:railway": "odpt.Railway:Test.Main",
             "odpt:stationTitle": {"ja": "A"},
         }
+        station_b = {
+            "owl:sameAs": "odpt.Station:Test.B",
+            "odpt:operator": "odpt.Operator:Test",
+            "odpt:railway": "odpt.Railway:Test.Main",
+            "odpt:stationTitle": {"ja": "B"},
+        }
         railway = {
             "owl:sameAs": "odpt.Railway:Test.Main",
             "odpt:operator": "odpt.Operator:Test",
             "odpt:railwayTitle": {"ja": "本線"},
-            "odpt:stationOrder": [{"odpt:index": 1, "odpt:station": station["owl:sameAs"]}],
+            "odpt:stationOrder": [
+                {"odpt:index": 1, "odpt:station": station["owl:sameAs"]},
+                {"odpt:index": 2, "odpt:station": station_b["owl:sameAs"]},
+            ],
         }
 
-        def fake_get(_session, rdf_type, _key, _operator=None):
+        def fake_get(_session, rdf_type, _key, _operator=None, base_url=importer.BASE_URL):
             return {
-                "odpt:Station": [station],
+                "odpt:Station": [station, station_b],
                 "odpt:Railway": [railway],
                 "odpt:TrainType": [],
                 "odpt:RailDirection": [],
@@ -101,7 +147,7 @@ class ImportOdptTimetablesTests(unittest.TestCase):
                 "odpt:TrainTimetable": [],
             }.get(rdf_type, [])
 
-        with tempfile.TemporaryDirectory() as temp_dir, patch.dict("os.environ", {"ODPT_API_KEY": "secret"}, clear=True), patch.object(importer, "OUT_ROOT", Path(temp_dir)), patch.object(importer, "TARGETS", target), patch.object(importer, "discover_operators", return_value=({"test": "odpt.Operator:Test"}, [])), patch.object(importer, "api_get", side_effect=fake_get):
+        with tempfile.TemporaryDirectory() as temp_dir, patch.dict("os.environ", {"ODPT_API_KEY": "secret"}, clear=True), patch.object(importer, "OUT_ROOT", Path(temp_dir)), patch.object(importer, "MANUAL_TOPOLOGY_PATH", Path(temp_dir) / "missing.json"), patch.object(importer, "TARGETS", target), patch.object(importer, "discover_operators", return_value=({"test": "odpt.Operator:Test"}, [])), patch.object(importer, "api_get", side_effect=fake_get):
             self.assertEqual(importer.main(), 0)
             manifest = json.loads((Path(temp_dir) / "manifest.json").read_text(encoding="utf-8"))
             self.assertEqual(manifest["operators"]["test"]["status"], "ok")

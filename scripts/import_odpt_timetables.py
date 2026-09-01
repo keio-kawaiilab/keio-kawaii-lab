@@ -24,7 +24,9 @@ from typing import Any
 import requests
 
 BASE_URL = "https://api.odpt.org/api/v4"
+CHALLENGE_BASE_URL = "https://api-challenge.odpt.org/api/v4"
 OUT_ROOT = Path("data/transit")
+MANUAL_TOPOLOGY_PATH = Path("data/transit-sources/manual-topology.json")
 JST = timezone(timedelta(hours=9))
 
 # The first-version scope discussed for the site. Aliases are used to discover
@@ -121,6 +123,13 @@ TARGETS = {
         "fallback": "odpt.Operator:YokohamaMunicipal",
         "license": "basic",
     },
+    "yokohama-minatomirai": {
+        "label": "横浜高速鉄道（みなとみらい線）",
+        "aliases": ["横浜高速鉄道", "みなとみらい線", "Yokohama Minatomirai Railway"],
+        "fallback": "manual.Operator:YokohamaMinatomirai",
+        "license": "official-site-reference",
+        "manual_only": True,
+    },
 }
 
 ENTITY_TYPES = ["odpt:Station", "odpt:Railway"]
@@ -153,9 +162,15 @@ def title_values(obj: dict[str, Any]) -> list[str]:
     return values
 
 
-def api_get(session: requests.Session, rdf_type: str, key: str, operator: str | None = None) -> list[dict[str, Any]]:
+def api_get(
+    session: requests.Session,
+    rdf_type: str,
+    key: str,
+    operator: str | None = None,
+    base_url: str = BASE_URL,
+) -> list[dict[str, Any]]:
     global _last_request_at
-    url = f"{BASE_URL}/{rdf_type}"
+    url = f"{base_url}/{rdf_type}"
     params = {"acl:consumerKey": key}
     if operator:
         params["odpt:operator"] = operator
@@ -200,6 +215,126 @@ def api_get(session: requests.Session, rdf_type: str, key: str, operator: str | 
             if attempt < 5:
                 time.sleep(min(30, 2 ** attempt))
     raise RuntimeError(f"ODPT request failed for {rdf_type} / {operator}: {last_error}")
+
+
+def api_base_for(config: dict[str, Any]) -> str:
+    """Route challenge-only operators to the Challenge 2026 API host."""
+    return CHALLENGE_BASE_URL if config.get("license") == "challenge-2026" else BASE_URL
+
+
+def localized_title(item: dict[str, Any], key: str) -> str:
+    value = item.get(key)
+    if isinstance(value, str):
+        return value
+    if isinstance(value, dict):
+        return str(value.get("ja") or value.get("en") or "")
+    return ""
+
+
+def load_manual_topology() -> dict[str, Any]:
+    if not MANUAL_TOPOLOGY_PATH.exists():
+        return {}
+    data = json.loads(MANUAL_TOPOLOGY_PATH.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise ValueError("manual-topology.json must contain an object")
+    return data
+
+
+def merge_manual_topology(
+    slug: str,
+    operator_uri: str,
+    entities: dict[str, list[dict[str, Any]]],
+    topology: dict[str, Any] | None,
+) -> dict[str, list[dict[str, Any]]]:
+    """Merge small, reviewed official-site topology supplements into ODPT data."""
+    if not topology:
+        return entities
+
+    stations = {
+        str(item.get("owl:sameAs")): dict(item)
+        for item in entities.get("Station", [])
+        if item.get("owl:sameAs")
+    }
+    railways = {
+        str(item.get("owl:sameAs")): dict(item)
+        for item in entities.get("Railway", [])
+        if item.get("owl:sameAs")
+    }
+    station_ids_by_name: dict[str, str] = {}
+    for station_id, station in stations.items():
+        name = localized_title(station, "odpt:stationTitle") or str(station.get("dc:title") or "")
+        if name:
+            station_ids_by_name[name] = station_id
+
+    railway_ids_by_name: dict[str, str] = {}
+    for railway_id, railway in railways.items():
+        name = localized_title(railway, "odpt:railwayTitle") or str(railway.get("dc:title") or "")
+        if name:
+            railway_ids_by_name[name] = railway_id
+
+    configured_lines: list[tuple[str, dict[str, Any]]] = []
+    for line in topology.get("lines") or []:
+        if not isinstance(line, dict) or not line.get("name") or not line.get("stations"):
+            continue
+        name = str(line["name"])
+        railway_id = str(line.get("id") or railway_ids_by_name.get(name) or f"manual.Railway:{slug}.{name}")
+        configured_lines.append((railway_id, line))
+
+    station_railways: dict[str, list[str]] = defaultdict(list)
+    for railway_id, line in configured_lines:
+        for name in line["stations"]:
+            station_railways[str(name)].append(railway_id)
+
+    station_meta = topology.get("stationMetadata") or {}
+    for name, railway_ids in station_railways.items():
+        station_id = station_ids_by_name.get(name) or f"manual.Station:{slug}.{name}"
+        existing = stations.get(station_id, {})
+        meta = station_meta.get(name) if isinstance(station_meta, dict) else None
+        meta = meta if isinstance(meta, dict) else {}
+        railway_value: str | list[str] = railway_ids[0] if len(railway_ids) == 1 else railway_ids
+        station = {
+            **existing,
+            "dc:title": name,
+            "owl:sameAs": station_id,
+            "odpt:operator": operator_uri,
+            "odpt:railway": railway_value,
+            "odpt:stationTitle": {"ja": name},
+        }
+        if "lat" in meta and "lon" in meta:
+            station["geo:lat"] = meta["lat"]
+            station["geo:long"] = meta["lon"]
+        if meta.get("connectingStation"):
+            station["odpt:connectingStation"] = meta["connectingStation"]
+        if meta.get("connectingRailway"):
+            station["odpt:connectingRailway"] = meta["connectingRailway"]
+        stations[station_id] = station
+        station_ids_by_name[name] = station_id
+
+    # ODPT sometimes exposes one physical station as separate line-specific
+    # records. A reviewed supplement uses one shared node, so remove the stale
+    # duplicates to keep station-name resolution unambiguous.
+    for station_id, station in list(stations.items()):
+        name = localized_title(station, "odpt:stationTitle") or str(station.get("dc:title") or "")
+        if name in station_railways and station_id != station_ids_by_name[name]:
+            del stations[station_id]
+
+    for railway_id, line in configured_lines:
+        name = str(line["name"])
+        existing = railways.get(railway_id, {})
+        railways[railway_id] = {
+            **existing,
+            "dc:title": name,
+            "owl:sameAs": railway_id,
+            "odpt:operator": operator_uri,
+            "odpt:railwayTitle": {"ja": name},
+            "odpt:color": str(line.get("color") or existing.get("odpt:color") or ""),
+            "odpt:stationOrder": [
+                {"odpt:index": index, "odpt:station": station_ids_by_name[str(name)]}
+                for index, name in enumerate(line["stations"], start=1)
+            ],
+        }
+
+    return {"Station": list(stations.values()), "Railway": list(railways.values())}
 
 
 def discover_operators(session: requests.Session, key: str) -> tuple[dict[str, str], list[dict[str, Any]]]:
@@ -309,17 +444,20 @@ def main() -> int:
     session.headers.update({"User-Agent": "keio-kawaii-lab-transit-preview/0.1"})
 
     operator_ids, operators = discover_operators(session, key)
+    manual_topology = load_manual_topology()
     fetched_at = datetime.now(JST).isoformat(timespec="seconds")
     manifest: dict[str, Any] = {
         "fetchedAt": fetched_at,
         "source": "Public Transportation Open Data Center (ODPT)",
         "api": BASE_URL,
+        "challengeApi": CHALLENGE_BASE_URL,
         "scope": "Tokyo/Kanagawa/Saitama/Chiba first-version operator set; operator networks may extend outside the four prefectures",
         "operators": {},
         "notes": [
             "Static timetable data must be refreshed after ODPT data updates in accordance with the applicable license/guideline.",
             "JR East data is provided under the Challenge 2026 limited license and covers only part of the conventional-line network around Tokyo; Shinkansen is not included.",
             "Keisei availability is detected at runtime; it may be unavailable from ODPT.",
+            "Reviewed official-site topology supplements are merged only where ODPT does not provide a complete station order.",
             "Timetable downloads are disabled until the departure-time search stage; this first stage publishes station and railway topology only.",
         ],
     }
@@ -345,9 +483,17 @@ def main() -> int:
 
         try:
             entities: dict[str, list[dict[str, Any]]] = {}
-            for rdf_type in ENTITY_TYPES:
-                raw = api_get(session, rdf_type, key, operator_uri)
-                entities[rdf_type.split(":", 1)[1]] = [compact_entity(x) for x in raw]
+            base_url = api_base_for(config)
+            if not config.get("manual_only"):
+                for rdf_type in ENTITY_TYPES:
+                    raw = api_get(session, rdf_type, key, operator_uri, base_url=base_url)
+                    entities[rdf_type.split(":", 1)[1]] = [compact_entity(x) for x in raw]
+                info["api"] = base_url
+
+            supplement = manual_topology.get(slug)
+            entities = merge_manual_topology(slug, operator_uri, entities, supplement)
+            if supplement:
+                info["topologySource"] = supplement.get("source")
 
             stations = entities.get("Station") or []
             railways = entities.get("Railway") or []
@@ -361,17 +507,20 @@ def main() -> int:
 
             op_dir = OUT_ROOT / slug
             dump_json(op_dir / "entities.json", entities)
-            station_raw = api_get(session, "odpt:StationTimetable", key, operator_uri) if include_timetables else []
-            train_raw = api_get(session, "odpt:TrainTimetable", key, operator_uri) if include_timetables else []
+            station_raw = api_get(session, "odpt:StationTimetable", key, operator_uri, base_url=base_url) if include_timetables and not config.get("manual_only") else []
+            train_raw = api_get(session, "odpt:TrainTimetable", key, operator_uri, base_url=base_url) if include_timetables and not config.get("manual_only") else []
             station_compact = [compact_station_timetable(x) for x in station_raw]
             train_compact = [compact_train_timetable(x) for x in train_raw]
             dump_json(op_dir / "station-timetables.json", station_compact)
             dump_json(op_dir / "train-timetables.json", train_compact)
 
             unique_stations = {x.get("owl:sameAs") for x in stations if x.get("owl:sameAs")}
+            topology_edges = sum(max(0, len(x.get("odpt:stationOrder") or []) - 1) for x in railways)
             departures = sum(len(x.get("trains") or []) for x in station_compact)
             info.update({
-                "status": "ok",
+                "status": "ok" if topology_edges else "topology-unavailable",
+                "topologyStatus": "ok" if topology_edges else "unavailable",
+                "topologyEdges": topology_edges,
                 "timetableStatus": "ok" if station_compact else ("not-available" if include_timetables else "not-requested"),
                 "stations": len(unique_stations),
                 "railways": len(railways),
@@ -379,7 +528,7 @@ def main() -> int:
                 "trainTimetables": len(train_compact),
                 "departures": departures,
             })
-            print(f"{slug}: {len(unique_stations)} stations / {departures} departures / {len(train_compact)} train timetables")
+            print(f"{slug}: {len(unique_stations)} stations / {topology_edges} topology edges / {departures} departures / {len(train_compact)} train timetables")
         except Exception as exc:  # continue other operators and expose failure in manifest
             info["status"] = "error"
             info["error"] = str(exc)

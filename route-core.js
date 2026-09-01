@@ -84,8 +84,13 @@
     buckets.forEach(function(bucket,nameKey){
       var clusters=[];
       bucket.nodes.forEach(function(node){
-        var cluster=clusters.find(function(candidate){return candidate.some(function(other){return samePlace(node,other);});});
-        if(cluster)cluster.push(node);else clusters.push([node]);
+        var matches=clusters.filter(function(candidate){return candidate.some(function(other){return samePlace(node,other);});});
+        if(!matches.length){clusters.push([node]);return;}
+        var primary=matches[0];primary.push(node);
+        matches.slice(1).forEach(function(extra){
+          extra.forEach(function(other){if(primary.indexOf(other)<0)primary.push(other);});
+          clusters.splice(clusters.indexOf(extra),1);
+        });
       });
       var groups=clusters.map(function(nodes,index){
         var labels=lineLabels(nodes),label=bucket.name;

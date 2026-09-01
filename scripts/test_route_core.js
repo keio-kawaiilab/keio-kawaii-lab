@@ -65,4 +65,18 @@ assert.deepEqual(segments.map((item) => item.stops), [1, 1]);
 const impossible = model.shortestPath(origin, model.resolveInput("遠方").group);
 assert.equal(impossible, null, "same-name stations that are far apart must not become a transfer shortcut");
 
+const bridgeModel = core.createModel([{
+  Station: [
+    station("station:bridge-a", "接続駅", "line:a"),
+    station("station:bridge-b", "接続駅", "line:b"),
+    {
+      ...station("station:bridge", "接続駅", "line:bridge"),
+      "odpt:connectingStation": ["station:bridge-a", "station:bridge-b"],
+    },
+  ],
+  Railway: [],
+}]);
+assert.equal(bridgeModel.resolveInput("接続駅").ambiguous, false, "a connector node must merge every matching station cluster");
+assert.equal(bridgeModel.resolveInput("接続駅").group.nodes.length, 3);
+
 console.log("route-core tests passed");

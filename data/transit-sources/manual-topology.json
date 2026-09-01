@@ -1,0 +1,96 @@
+{
+  "keisei": {
+    "source": "https://www.keisei.co.jp/keisei/tetudou/accessj/vmap/index.php",
+    "reviewedAt": "2026-09-02",
+    "lines": [
+      {
+        "id": "odpt.Railway:Keisei.Main",
+        "name": "京成本線",
+        "color": "#005AAA",
+        "stations": ["京成上野", "日暮里", "新三河島", "町屋", "千住大橋", "京成関屋", "堀切菖蒲園", "お花茶屋", "青砥", "京成高砂", "京成小岩", "江戸川", "国府台", "市川真間", "菅野", "京成八幡", "鬼越", "京成中山", "東中山", "京成西船", "海神", "京成船橋", "大神宮下", "船橋競馬場", "谷津", "京成津田沼", "京成大久保", "実籾", "八千代台", "京成大和田", "勝田台", "志津", "ユーカリが丘", "京成臼井", "京成佐倉", "大佐倉", "京成酒々井", "宗吾参道", "公津の杜", "京成成田", "空港第2ビル", "成田空港"]
+      },
+      {
+        "id": "odpt.Railway:Keisei.Oshiage",
+        "name": "押上線",
+        "color": "#005AAA",
+        "stations": ["押上", "京成曳舟", "八広", "四ツ木", "京成立石", "青砥"]
+      },
+      {
+        "id": "odpt.Railway:Keisei.Kanamachi",
+        "name": "金町線",
+        "color": "#005AAA",
+        "stations": ["京成高砂", "柴又", "京成金町"]
+      },
+      {
+        "id": "odpt.Railway:Keisei.Chiba",
+        "name": "千葉線",
+        "color": "#005AAA",
+        "stations": ["京成津田沼", "京成幕張本郷", "京成幕張", "検見川", "京成稲毛", "みどり台", "西登戸", "新千葉", "京成千葉", "千葉中央"]
+      },
+      {
+        "id": "odpt.Railway:Keisei.Chihara",
+        "name": "千原線",
+        "color": "#005AAA",
+        "stations": ["千葉中央", "千葉寺", "大森台", "学園前", "おゆみ野", "ちはら台"]
+      },
+      {
+        "id": "odpt.Railway:Keisei.HigashiNarita",
+        "name": "東成田線",
+        "color": "#005AAA",
+        "stations": ["京成成田", "東成田"]
+      },
+      {
+        "id": "odpt.Railway:Keisei.NaritaSkyAccess",
+        "name": "成田スカイアクセス線",
+        "color": "#FF7300",
+        "stations": ["京成高砂", "東松戸", "新鎌ヶ谷", "千葉ニュータウン中央", "印旛日本医大", "成田湯川", "空港第2ビル", "成田空港"]
+      },
+      {
+        "id": "odpt.Railway:Keisei.Matsudo",
+        "name": "松戸線",
+        "color": "#77C043",
+        "stations": ["京成津田沼", "新津田沼", "前原", "薬園台", "習志野", "北習志野", "高根木戸", "高根公団", "滝不動", "三咲", "二和向台", "鎌ケ谷大仏", "初富", "新鎌ヶ谷", "北初富", "くぬぎ山", "元山", "五香", "常盤平", "八柱", "みのり台", "松戸新田", "上本郷", "松戸"]
+      }
+    ],
+    "stationMetadata": {
+      "日暮里": {
+        "connectingStation": ["odpt.Station:JR-East.JobanRapid.Nippori", "odpt.Station:JR-East.KeihinTohokuNegishi.Nippori", "odpt.Station:JR-East.Yamanote.Nippori"]
+      },
+      "町屋": {
+        "connectingStation": ["odpt.Station:TokyoMetro.Chiyoda.Machiya"]
+      },
+      "押上": {
+        "connectingStation": ["odpt.Station:TokyoMetro.Hanzomon.Oshiage", "odpt.Station:Toei.Asakusa.Oshiage"]
+      },
+      "京成八幡": {
+        "connectingStation": ["odpt.Station:Toei.Shinjuku.Motoyawata"]
+      },
+      "京成船橋": {
+        "connectingStation": ["odpt.Station:JR-East.ChuoSobuLocal.Funabashi", "odpt.Station:JR-East.SobuRapid.Funabashi"]
+      },
+      "新鎌ヶ谷": {
+        "connectingStation": ["odpt.Station:Tobu.Noda.ShinKamagaya"]
+      },
+      "松戸": {
+        "connectingStation": ["odpt.Station:JR-East.JobanLocal.Matsudo", "odpt.Station:JR-East.JobanRapid.Matsudo"]
+      }
+    }
+  },
+  "yokohama-minatomirai": {
+    "source": "https://www.mm21railway.co.jp/station/",
+    "reviewedAt": "2026-09-02",
+    "lines": [
+      {
+        "id": "manual.Railway:YokohamaMinatomirai.Minatomirai",
+        "name": "みなとみらい線",
+        "color": "#0067C0",
+        "stations": ["横浜", "新高島", "みなとみらい", "馬車道", "日本大通り", "元町・中華街"]
+      }
+    ],
+    "stationMetadata": {
+      "横浜": {
+        "connectingStation": ["odpt.Station:JR-East.KeihinTohokuNegishi.Yokohama", "odpt.Station:JR-East.ShonanShinjuku.Yokohama", "odpt.Station:JR-East.Tokaido.Yokohama", "odpt.Station:JR-East.Yokosuka.Yokohama", "odpt.Station:Tokyu.Toyoko.Yokohama", "odpt.Station:Keikyu.Main.Yokohama", "odpt.Station:Sotetsu.Main.Yokohama", "odpt.Station:YokohamaMunicipal.Blue.Yokohama"]
+      }
+    }
+  }
+}
