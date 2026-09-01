@@ -638,7 +638,11 @@ def infer_edge_minutes(
                 following = schedules.get((to_station, calendar, direction), Counter())
                 if not departures or not following:
                     continue
-                result = best_time_offset(departures, following, 20)
+                # These datasets cover dense commuter railways where adjacent
+                # stations are only a few minutes apart. Longer offsets are
+                # almost always a periodic-headway match to a different train
+                # (for example 2 minutes versus 17 or 19 minutes on Keikyu).
+                result = best_time_offset(departures, following, 8)
                 if result:
                     candidates[(from_station, to_station)].append(result)
 

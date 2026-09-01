@@ -217,33 +217,64 @@
         var fromStation=stationById.get(order[startOrder]),toStation=stationById.get(order[endOrder]),meters=distanceMeters(fromStation,toStation);
         return meters===null?1:Math.max(1,Math.ceil(meters/2000));
       }
-      function profileFor(startOrder,endOrder,typeIndex,destinationIndex,allowAnyDestination){
-        var fromIndex=stationIndexes.get(order[startOrder]),toIndex=stationIndexes.get(order[endOrder]),minimum=minimumMinutes(startOrder,endOrder),found=null;
-        (table.typeDurations||[]).forEach(function(row){
-          if(!Array.isArray(row)||row[0]!==fromIndex||row[1]!==toIndex||row[2]!==typeIndex)return;
-          if(!allowAnyDestination&&row[3]!==destinationIndex)return;
-          if(Number(row[4])<minimum)return;
-          if(!found||Number(row[5])>Number(found[5])||(Number(row[5])===Number(found[5])&&Number(row[4])<Number(found[4])))found=row;
-        });
-        return found;
+      function consistentProfile(typeIndex,destinationIndex,allowAnyDestination){
+        var fromIndex=stationIndexes.get(order[fromOrder]),step=toOrder>fromOrder?1:-1,states=[],latest=null;
+        for(var checkpoint=fromOrder+step;;checkpoint+=step){
+          var checkpointIndex=stationIndexes.get(order[checkpoint]),minimum=minimumMinutes(fromOrder,checkpoint),rows=[];
+          (table.typeDurations||[]).forEach(function(row){
+            if(!Array.isArray(row)||row[0]!==fromIndex||row[1]!==checkpointIndex||row[2]!==typeIndex)return;
+            if(!allowAnyDestination&&row[3]!==destinationIndex)return;
+            var duration=Number(row[4]),support=Number(row[5]);
+            if(!Number.isFinite(duration)||duration<minimum||!Number.isFinite(support)||support<=0)return;
+            rows.push({row:row,order:checkpoint,minutes:duration,support:support,score:support});
+          });
+          if(rows.length){
+            rows.forEach(function(candidate){
+              var predecessor=null;
+              states.forEach(function(state){
+                if(candidate.minutes<state.minutes+minimumMinutes(state.order,checkpoint))return;
+                if(!predecessor||state.score>predecessor.score||(state.score===predecessor.score&&state.minutes<predecessor.minutes))predecessor=state;
+              });
+              if(predecessor)candidate.score+=predecessor.score;
+            });
+            states=states.concat(rows);
+            latest=rows.reduce(function(bestState,state){
+              if(!bestState||state.score>bestState.score||(state.score===bestState.score&&state.minutes<bestState.minutes))return state;
+              return bestState;
+            },null);
+          }
+          if(checkpoint===toOrder)break;
+        }
+        return latest;
       }
+      function partialRemainder(profile){
+        if(!profile||profile.order===toOrder)return 0;
+        var generic=edgeSum(profile.order,toOrder),minimum=minimumMinutes(profile.order,toOrder);
+        var originStation=stationById.get(order[fromOrder]),profileStation=stationById.get(order[profile.order]),destinationStation=stationById.get(order[toOrder]);
+        var travelled=distanceMeters(originStation,profileStation),remaining=distanceMeters(profileStation,destinationStation),estimate=null;
+        if(travelled!==null&&remaining!==null&&travelled>0)estimate=Math.ceil(profile.minutes*remaining/travelled);
+        if(!Number.isFinite(estimate))return generic;
+        estimate=Math.max(minimum,estimate);
+        return generic===null?estimate:Math.min(generic,estimate);
+      }
+      var journeyCache=new Map();
       function journeyMinutes(typeIndex,destinationIndex){
+        var cacheKey=String(typeIndex)+"\u0001"+String(destinationIndex);
+        if(journeyCache.has(cacheKey))return journeyCache.get(cacheKey);
+        var result=null;
         if(fromOrder<0||toOrder<0||fromOrder===toOrder)return null;
         var typeLabel=trainTypeName(trainTypeById.get(types[typeIndex])||{"owl:sameAs":types[typeIndex]}).toLowerCase();
         var isLocal=typeLabel.indexOf("local")>=0||typeLabel.indexOf("普通")>=0||typeLabel.indexOf("各停")>=0||typeLabel.indexOf("各駅")>=0;
-        if(isLocal)return edgeSum(fromOrder,toOrder);
-        var direct=profileFor(fromOrder,toOrder,typeIndex,destinationIndex,false)||profileFor(fromOrder,toOrder,typeIndex,destinationIndex,true);
-        if(direct)return Number(direct[4]);
-        var step=toOrder>fromOrder?1:-1,bestPartial=null;
-        for(var checkpoint=fromOrder+step;checkpoint!==toOrder;checkpoint+=step){
-          var profile=profileFor(fromOrder,checkpoint,typeIndex,destinationIndex,false)||profileFor(fromOrder,checkpoint,typeIndex,destinationIndex,true);
-          if(profile)bestPartial={order:checkpoint,minutes:Number(profile[4])};
+        if(isLocal)result=edgeSum(fromOrder,toOrder);
+        else{
+          var profile=consistentProfile(typeIndex,destinationIndex,false)||consistentProfile(typeIndex,destinationIndex,true);
+          if(profile){
+            var remainder=partialRemainder(profile);
+            if(remainder!==null)result=profile.minutes+remainder;
+          }
         }
-        if(bestPartial){
-          var remainder=edgeSum(bestPartial.order,toOrder);
-          if(remainder!==null)return bestPartial.minutes+remainder;
-        }
-        return null;
+        journeyCache.set(cacheKey,result);
+        return result;
       }
       table.boards.forEach(function(board){
         if(!Array.isArray(board)||fromNodes.indexOf(stations[board[0]])<0||!calendarMatches(calendars[board[1]],service))return;

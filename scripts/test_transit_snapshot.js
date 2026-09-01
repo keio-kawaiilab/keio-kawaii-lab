@@ -49,4 +49,27 @@ assertRoute("渋谷", "吉祥寺");
 assertRoute("神泉", "駒場東大前", "井の頭線");
 assertRoute("横浜", "元町・中華街", "みなとみらい線");
 
+function assertEstimatedRoute(slug, railwayId, from, to, minimum, maximum) {
+  const origin = model.resolveInput(from);
+  const destination = model.resolveInput(to);
+  const route = model.shortestPath(origin.group, destination.group, { allowedRailways: [railwayId] });
+  assert.ok(route, `${from} to ${to} must have a ${railwayId} route`);
+  const timetableIndex = JSON.parse(fs.readFileSync(path.join(root, slug, "timetable-index.json"), "utf8"));
+  const entry = timetableIndex.lines[railwayId];
+  assert.ok(entry?.file, `${railwayId} must have a timetable file`);
+  const timetable = JSON.parse(fs.readFileSync(path.join(root, slug, entry.file), "utf8"));
+  const timed = model.timedItinerary(route, { [railwayId]: timetable }, 480, "weekday", 5);
+  assert.ok(timed?.estimatedArrival, `${from} to ${to} must have an estimated arrival`);
+  assert.ok(
+    timed.duration >= minimum && timed.duration <= maximum,
+    `${from} to ${to} duration ${timed.duration} must be between ${minimum} and ${maximum} minutes`,
+  );
+}
+
+assertEstimatedRoute("seibu", "odpt.Railway:Seibu.Ikebukuro", "池袋", "所沢", 18, 40);
+assertEstimatedRoute("odakyu", "odpt.Railway:Odakyu.Odawara", "新宿", "町田", 25, 50);
+assertEstimatedRoute("tokyu", "odpt.Railway:Tokyu.Toyoko", "渋谷", "横浜", 25, 45);
+assertEstimatedRoute("keikyu", "odpt.Railway:Keikyu.Main", "品川", "横浜", 15, 35);
+assertEstimatedRoute("yurikamome", "odpt.Railway:Yurikamome.Yurikamome", "新橋", "豊洲", 25, 40);
+
 console.log(`transit snapshot tests passed (${model.stations.length} station choices)`);

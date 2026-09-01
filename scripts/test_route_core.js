@@ -174,4 +174,26 @@ const fastestEstimated = model.timedItinerary(lineAPath, {
 assert.equal(fastestEstimated.departure, 501, "estimated routes must prefer the earliest arrival, not merely the first departure");
 assert.equal(fastestEstimated.arrival, 504);
 
+const periodicMatches = model.timedItinerary(lineAPath, {
+  [lineA]: {
+    timeBasis: "station-departure-only",
+    stations: ["station:a1", "station:mid1", "station:mid2", "station:a2"],
+    calendars: ["odpt.Calendar:Weekday"],
+    directions: ["direction:ascending"],
+    trainTypes: ["odpt.TrainType:Test.Express"],
+    destinations: ["station:after-a2"],
+    order: ["station:a1", "station:mid1", "station:mid2", "station:a2"],
+    ascendingDirection: "direction:ascending",
+    descendingDirection: "direction:descending",
+    edgeMinutes: [[0, 1, 3, 3], [1, 2, 3, 3], [2, 3, 3, 3]],
+    typeDurations: [
+      [0, 1, 0, 0, 4, 100], [0, 1, 0, 0, 24, 70],
+      [0, 2, 0, 0, 8, 90], [0, 2, 0, 0, 28, 75],
+      [0, 3, 0, 0, 7, 110], [0, 3, 0, 0, 12, 80], [0, 3, 0, 0, 32, 70],
+    ],
+    boards: [[0, 0, 0, [[500, 0, 0]]]],
+  },
+}, 481, "weekday", 5);
+assert.equal(periodicMatches.arrival, 512, "duration candidates must stay physically consistent across later stations");
+
 console.log("route-core tests passed");
