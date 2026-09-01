@@ -14,6 +14,11 @@ class ImportOdptTimetablesTests(unittest.TestCase):
             importer.CHALLENGE_BASE_URL,
         )
         self.assertEqual(importer.api_base_for({"license": "basic"}), importer.BASE_URL)
+        self.assertEqual(
+            importer.api_key_for({"license": "challenge-2026"}, "standard", "challenge"),
+            "challenge",
+        )
+        self.assertEqual(importer.api_key_for({"license": "basic"}, "standard", "challenge"), "standard")
 
     def test_jr_east_import_is_enabled_by_default_and_can_be_paused(self):
         with patch.dict("os.environ", {}, clear=True):

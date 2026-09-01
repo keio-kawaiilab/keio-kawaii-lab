@@ -27,6 +27,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ODPT_API_KEY: ${{ secrets.ODPT_API_KEY }}
+      # Challenge 2026 has a separate access token on the ODPT developer site.
+      ODPT_CHALLENGE_API_KEY: ${{ secrets.ODPT_CHALLENGE_API_KEY }}
       # JR East Challenge 2026 topology is included by default. Set the
       # repository variable to 0 only when the limited feed must be paused.
       ALLOW_JR_EAST_CHALLENGE_DATA: ${{ vars.ALLOW_JR_EAST_CHALLENGE_DATA }}

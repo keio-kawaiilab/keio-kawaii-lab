@@ -192,7 +192,10 @@ def api_get(
                 last_error = RuntimeError(f"ODPT rate limit persisted for {rdf_type}")
                 time.sleep(delay)
                 continue
-            if response.status_code in (403, 404):
+            if response.status_code == 403:
+                print(f"ODPT access denied for {base_url} / {rdf_type} / {operator}", file=sys.stderr)
+                return []
+            if response.status_code == 404:
                 return []
             response.raise_for_status()
             data = response.json()
@@ -220,6 +223,10 @@ def api_get(
 def api_base_for(config: dict[str, Any]) -> str:
     """Route challenge-only operators to the Challenge 2026 API host."""
     return CHALLENGE_BASE_URL if config.get("license") == "challenge-2026" else BASE_URL
+
+
+def api_key_for(config: dict[str, Any], standard_key: str, challenge_key: str) -> str:
+    return challenge_key if config.get("license") == "challenge-2026" else standard_key
 
 
 def localized_title(item: dict[str, Any], key: str) -> str:
@@ -433,8 +440,9 @@ def compact_train_timetable(item: dict[str, Any]) -> dict[str, Any]:
 
 
 def main() -> int:
-    key = os.environ.get("ODPT_API_KEY", "").strip()
-    if not key:
+    standard_key = os.environ.get("ODPT_API_KEY", "").strip()
+    challenge_key = os.environ.get("ODPT_CHALLENGE_API_KEY", "").strip() or standard_key
+    if not standard_key:
         print("ODPT_API_KEY is not set. Register at developer.odpt.org and store the token as a GitHub Actions secret.", file=sys.stderr)
         return 2
 
@@ -443,7 +451,7 @@ def main() -> int:
     session = requests.Session()
     session.headers.update({"User-Agent": "keio-kawaii-lab-transit-preview/0.1"})
 
-    operator_ids, operators = discover_operators(session, key)
+    operator_ids, operators = discover_operators(session, standard_key)
     manual_topology = load_manual_topology()
     fetched_at = datetime.now(JST).isoformat(timespec="seconds")
     manifest: dict[str, Any] = {
@@ -484,6 +492,7 @@ def main() -> int:
         try:
             entities: dict[str, list[dict[str, Any]]] = {}
             base_url = api_base_for(config)
+            key = api_key_for(config, standard_key, challenge_key)
             if not config.get("manual_only"):
                 for rdf_type in ENTITY_TYPES:
                     raw = api_get(session, rdf_type, key, operator_uri, base_url=base_url)
