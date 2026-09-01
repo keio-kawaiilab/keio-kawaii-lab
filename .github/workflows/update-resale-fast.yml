@@ -16,9 +16,12 @@ on:
 permissions:
   contents: write
 
+# This workflow writes live-events.json/schedule.html too. Serialize it with
+# the main distributed calendar publisher so one valid refresh cannot make the
+# other fail at the final git push/rebase step.
 concurrency:
-  group: update-official-resale-${{ github.ref }}
-  cancel-in-progress: true
+  group: distributed-live-calendar
+  cancel-in-progress: false
 
 jobs:
   update:
