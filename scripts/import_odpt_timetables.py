@@ -700,6 +700,39 @@ def compact_station_timetables(
     return results
 
 
+def station_timetable_metrics(items: list[dict[str, Any]]) -> str:
+    """Return value-free diagnostics for provider-specific timetable shapes."""
+    row_keys: set[str] = set()
+    identities: dict[tuple[str, str, str], set[str]] = defaultdict(set)
+    rows = departures = arrivals = train_refs = train_numbers = 0
+    for item in items:
+        station = str(item.get("odpt:station") or "")
+        calendar = str(item.get("odpt:calendar") or "")
+        direction = str(item.get("odpt:railDirection") or "")
+        for row in item.get("odpt:stationTimetableObject") or []:
+            if not isinstance(row, dict):
+                continue
+            rows += 1
+            row_keys.update(str(key) for key in row)
+            if row.get("odpt:departureTime"):
+                departures += 1
+            if row.get("odpt:arrivalTime"):
+                arrivals += 1
+            train_ref = str(row.get("odpt:train") or "")
+            train_number = str(row.get("odpt:trainNumber") or "")
+            train_refs += bool(train_ref)
+            train_numbers += bool(train_number)
+            identity = train_ref or train_number
+            if identity:
+                identities[(calendar, direction, identity)].add(station)
+    joinable = sum(1 for stations in identities.values() if len(stations) >= 2)
+    return (
+        f"objects={len(items)} rows={rows} departures={departures} arrivals={arrivals} "
+        f"trainRefs={train_refs} trainNumbers={train_numbers} identities={len(identities)} "
+        f"joinable={joinable} keys={','.join(sorted(row_keys))}"
+    )
+
+
 def timetable_filename(railway_id: str) -> str:
     digest = hashlib.sha1(railway_id.encode("utf-8"), usedforsecurity=False).hexdigest()[:14]
     return f"{digest}.json"
@@ -834,6 +867,7 @@ def main() -> int:
                     )
                     total_station_timetables = len(station_raw)
                     station_lines = compact_station_timetables(station_raw, station_aliases)
+                    print(f"{slug}: station timetable shape {station_timetable_metrics(station_raw)}")
                     for railway_id, (compact_timetable, connection_count) in station_lines.items():
                         if not compact_timetable["trips"]:
                             continue
