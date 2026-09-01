@@ -14,6 +14,11 @@ required.forEach((slug) => {
   assert.ok(manifest.operators[slug]?.topologyEdges > 0, `${slug} must contain connected station order`);
 });
 
+["jr-east", "keio"].forEach((slug) => {
+  assert.equal(manifest.operators[slug]?.timetableStatus, "ok", `${slug} timetable must be available`);
+  assert.ok(manifest.operators[slug]?.timetableConnections > 0, `${slug} must contain scheduled connections`);
+});
+
 const payloads = Object.entries(manifest.operators)
   .filter(([, info]) => info?.status === "ok")
   .map(([slug]) => JSON.parse(fs.readFileSync(path.join(root, slug, "entities.json"), "utf8")));

@@ -13,6 +13,7 @@ challenge feed or its applicable terms change.
 from __future__ import annotations
 
 import json
+import hashlib
 import os
 import sys
 import time
@@ -132,8 +133,7 @@ TARGETS = {
     },
 }
 
-ENTITY_TYPES = ["odpt:Station", "odpt:Railway"]
-TIMETABLE_TYPES = ["odpt:StationTimetable", "odpt:TrainTimetable"]
+ENTITY_TYPES = ["odpt:Station", "odpt:Railway", "odpt:TrainType"]
 MIN_REQUEST_INTERVAL = float(os.environ.get("ODPT_REQUEST_INTERVAL_SECONDS", "0.75"))
 _last_request_at = 0.0
 
@@ -168,12 +168,15 @@ def api_get(
     key: str,
     operator: str | None = None,
     base_url: str = BASE_URL,
+    extra_params: dict[str, str] | None = None,
 ) -> list[dict[str, Any]]:
     global _last_request_at
     url = f"{base_url}/{rdf_type}"
     params = {"acl:consumerKey": key}
     if operator:
         params["odpt:operator"] = operator
+    if extra_params:
+        params.update(extra_params)
     last_error: Exception | None = None
     for attempt in range(6):
         try:
@@ -341,7 +344,7 @@ def merge_manual_topology(
             ],
         }
 
-    return {"Station": list(stations.values()), "Railway": list(railways.values())}
+    return {**entities, "Station": list(stations.values()), "Railway": list(railways.values())}
 
 
 def discover_operators(session: requests.Session, key: str) -> tuple[dict[str, str], list[dict[str, Any]]]:
@@ -439,6 +442,127 @@ def compact_train_timetable(item: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def timetable_import_enabled() -> bool:
+    """Import scheduled train times unless an operator explicitly pauses it."""
+    value = os.environ.get("ODPT_IMPORT_TIMETABLES", "").strip().lower()
+    return value not in {"0", "false", "no", "off"}
+
+
+def clock_minutes(value: Any) -> int | None:
+    """Convert ODPT service-day times such as 24:18 to integer minutes."""
+    text = str(value or "").strip()
+    parts = text.split(":")
+    if len(parts) != 2:
+        return None
+    try:
+        hour, minute = int(parts[0]), int(parts[1])
+    except ValueError:
+        return None
+    if hour < 0 or minute < 0 or minute > 59:
+        return None
+    return hour * 60 + minute
+
+
+def canonical_station_aliases(
+    original_stations: list[dict[str, Any]],
+    merged_stations: list[dict[str, Any]],
+) -> dict[str, str]:
+    """Map line-specific ODPT station IDs to the canonical topology node."""
+    canonical_by_name: dict[str, str] = {}
+    for station in merged_stations:
+        station_id = str(station.get("owl:sameAs") or "")
+        name = localized_title(station, "odpt:stationTitle") or str(station.get("dc:title") or "")
+        if station_id and name:
+            canonical_by_name[name] = station_id
+
+    aliases: dict[str, str] = {}
+    for station in original_stations:
+        station_id = str(station.get("owl:sameAs") or "")
+        name = localized_title(station, "odpt:stationTitle") or str(station.get("dc:title") or "")
+        if station_id:
+            aliases[station_id] = canonical_by_name.get(name, station_id)
+    for station_id in canonical_by_name.values():
+        aliases[station_id] = station_id
+    return aliases
+
+
+def compact_line_timetable(
+    railway_id: str,
+    items: list[dict[str, Any]],
+    station_aliases: dict[str, str] | None = None,
+) -> tuple[dict[str, Any], int]:
+    """Build a compact client-side timetable for one railway."""
+    station_aliases = station_aliases or {}
+    station_values: list[str] = []
+    station_indexes: dict[str, int] = {}
+    calendar_values: list[str] = []
+    calendar_indexes: dict[str, int] = {}
+    train_type_values: list[str] = []
+    train_type_indexes: dict[str, int] = {}
+    trips: list[list[Any]] = []
+    connections = 0
+
+    def index_of(value: str, values: list[str], indexes: dict[str, int]) -> int:
+        if value not in indexes:
+            indexes[value] = len(values)
+            values.append(value)
+        return indexes[value]
+
+    for item in items:
+        raw_calendars = item.get("odpt:calendar")
+        if isinstance(raw_calendars, list):
+            calendars = [str(value) for value in raw_calendars if value]
+        elif raw_calendars:
+            calendars = [str(raw_calendars)]
+        else:
+            calendars = [""]
+        train_type = str(item.get("odpt:trainType") or "")
+        train_number = str(item.get("odpt:trainNumber") or "")
+        stops: list[list[int | None]] = []
+        for row in item.get("odpt:trainTimetableObject") or []:
+            if not isinstance(row, dict):
+                continue
+            original_station = str(row.get("odpt:station") or "")
+            station_id = station_aliases.get(original_station, original_station)
+            if not station_id:
+                continue
+            arrival = clock_minutes(row.get("odpt:arrivalTime"))
+            departure = clock_minutes(row.get("odpt:departureTime"))
+            if arrival is None and departure is None:
+                continue
+            station_index = index_of(station_id, station_values, station_indexes)
+            stops.append([station_index, arrival, departure])
+        if len(stops) < 2:
+            continue
+        usable_connections = sum(
+            1
+            for current, following in zip(stops, stops[1:])
+            if (current[2] if current[2] is not None else current[1]) is not None
+            and (following[1] if following[1] is not None else following[2]) is not None
+        )
+        if not usable_connections:
+            continue
+        connections += usable_connections * len(calendars)
+        type_index = index_of(train_type, train_type_values, train_type_indexes)
+        for calendar in calendars:
+            calendar_index = index_of(calendar, calendar_values, calendar_indexes)
+            trips.append([calendar_index, type_index, train_number, stops])
+
+    return {
+        "version": 1,
+        "railway": railway_id,
+        "stations": station_values,
+        "calendars": calendar_values,
+        "trainTypes": train_type_values,
+        "trips": trips,
+    }, connections
+
+
+def timetable_filename(railway_id: str) -> str:
+    digest = hashlib.sha1(railway_id.encode("utf-8"), usedforsecurity=False).hexdigest()[:14]
+    return f"{digest}.json"
+
+
 def main() -> int:
     standard_key = os.environ.get("ODPT_API_KEY", "").strip()
     challenge_key = os.environ.get("ODPT_CHALLENGE_API_KEY", "").strip() or standard_key
@@ -447,7 +571,7 @@ def main() -> int:
         return 2
 
     include_jr = jr_east_import_enabled()
-    include_timetables = os.environ.get("ODPT_IMPORT_TIMETABLES", "").strip() == "1"
+    include_timetables = timetable_import_enabled()
     session = requests.Session()
     session.headers.update({"User-Agent": "keio-kawaii-lab-transit-preview/0.1"})
 
@@ -466,7 +590,7 @@ def main() -> int:
             "JR East data is provided under the Challenge 2026 limited license and covers only part of the conventional-line network around Tokyo; Shinkansen is not included.",
             "Keisei availability is detected at runtime; it may be unavailable from ODPT.",
             "Reviewed official-site topology supplements are merged only where ODPT does not provide a complete station order.",
-            "Timetable downloads are disabled until the departure-time search stage; this first stage publishes station and railway topology only.",
+            "Scheduled train times are refreshed weekly and are not real-time delay or cancellation information.",
         ],
     }
 
@@ -491,11 +615,14 @@ def main() -> int:
 
         try:
             entities: dict[str, list[dict[str, Any]]] = {}
+            original_stations: list[dict[str, Any]] = []
             base_url = api_base_for(config)
             key = api_key_for(config, standard_key, challenge_key)
             if not config.get("manual_only"):
                 for rdf_type in ENTITY_TYPES:
                     raw = api_get(session, rdf_type, key, operator_uri, base_url=base_url)
+                    if rdf_type == "odpt:Station":
+                        original_stations = raw
                     entities[rdf_type.split(":", 1)[1]] = [compact_entity(x) for x in raw]
                 info["api"] = base_url
 
@@ -516,28 +643,62 @@ def main() -> int:
 
             op_dir = OUT_ROOT / slug
             dump_json(op_dir / "entities.json", entities)
-            station_raw = api_get(session, "odpt:StationTimetable", key, operator_uri, base_url=base_url) if include_timetables and not config.get("manual_only") else []
-            train_raw = api_get(session, "odpt:TrainTimetable", key, operator_uri, base_url=base_url) if include_timetables and not config.get("manual_only") else []
-            station_compact = [compact_station_timetable(x) for x in station_raw]
-            train_compact = [compact_train_timetable(x) for x in train_raw]
-            dump_json(op_dir / "station-timetables.json", station_compact)
-            dump_json(op_dir / "train-timetables.json", train_compact)
+            dump_json(op_dir / "station-timetables.json", [])
+            dump_json(op_dir / "train-timetables.json", [])
+
+            timetable_index: dict[str, Any] = {"version": 1, "lines": {}}
+            total_train_timetables = 0
+            total_connections = 0
+            timetable_dir = op_dir / "timetables"
+            if timetable_dir.exists():
+                for old_file in timetable_dir.glob("*.json"):
+                    old_file.unlink()
+            station_aliases = canonical_station_aliases(original_stations, stations)
+            if include_timetables and not config.get("manual_only"):
+                for railway in railways:
+                    railway_id = str(railway.get("owl:sameAs") or "")
+                    if not railway_id:
+                        continue
+                    train_raw = api_get(
+                        session,
+                        "odpt:TrainTimetable",
+                        key,
+                        operator_uri,
+                        base_url=base_url,
+                        extra_params={"odpt:railway": railway_id},
+                    )
+                    total_train_timetables += len(train_raw)
+                    compact_timetable, connection_count = compact_line_timetable(
+                        railway_id, train_raw, station_aliases
+                    )
+                    if not compact_timetable["trips"]:
+                        continue
+                    filename = timetable_filename(railway_id)
+                    dump_json(timetable_dir / filename, compact_timetable)
+                    timetable_index["lines"][railway_id] = {
+                        "file": f"timetables/{filename}",
+                        "trips": len(compact_timetable["trips"]),
+                        "connections": connection_count,
+                    }
+                    total_connections += connection_count
+            dump_json(op_dir / "timetable-index.json", timetable_index)
 
             unique_stations = {x.get("owl:sameAs") for x in stations if x.get("owl:sameAs")}
             topology_edges = sum(max(0, len(x.get("odpt:stationOrder") or []) - 1) for x in railways)
-            departures = sum(len(x.get("trains") or []) for x in station_compact)
             info.update({
                 "status": "ok" if topology_edges else "topology-unavailable",
                 "topologyStatus": "ok" if topology_edges else "unavailable",
                 "topologyEdges": topology_edges,
-                "timetableStatus": "ok" if station_compact else ("not-available" if include_timetables else "not-requested"),
+                "timetableStatus": "ok" if total_connections else ("not-available" if include_timetables else "not-requested"),
                 "stations": len(unique_stations),
                 "railways": len(railways),
-                "stationTimetables": len(station_compact),
-                "trainTimetables": len(train_compact),
-                "departures": departures,
+                "stationTimetables": 0,
+                "trainTimetables": total_train_timetables,
+                "timetableLines": len(timetable_index["lines"]),
+                "timetableConnections": total_connections,
+                "departures": total_connections,
             })
-            print(f"{slug}: {len(unique_stations)} stations / {topology_edges} topology edges / {departures} departures / {len(train_compact)} train timetables")
+            print(f"{slug}: {len(unique_stations)} stations / {topology_edges} topology edges / {total_connections} timetable connections / {total_train_timetables} train timetables")
         except Exception as exc:  # continue other operators and expose failure in manifest
             info["status"] = "error"
             info["error"] = str(exc)

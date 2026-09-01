@@ -14,6 +14,7 @@
   function idOf(item){return item&&item["owl:sameAs"]||"";}
   function stationName(item){return title(item&&item["odpt:stationTitle"])||item&&item["dc:title"]||idOf(item).split(".").pop()||"駅";}
   function railwayName(item){return title(item&&item["odpt:railwayTitle"])||item&&item["dc:title"]||idOf(item).split(".").pop()||"路線";}
+  function trainTypeName(item){return title(item&&item["odpt:trainTypeTitle"])||item&&item["dc:title"]||idOf(item).split(".").pop()||"";}
   function asArray(value){return Array.isArray(value)?value:(value?[value]:[]);}
   function distanceMeters(a,b){
     var lat1=Number(a&&a["geo:lat"]),lon1=Number(a&&a["geo:long"]),lat2=Number(b&&b["geo:lat"]),lon2=Number(b&&b["geo:long"]);
@@ -35,11 +36,12 @@
   };
 
   function createModel(payloads){
-    var graph=new Map(),stationById=new Map(),railwayById=new Map(),railwaysByStation=new Map();
+    var graph=new Map(),stationById=new Map(),railwayById=new Map(),trainTypeById=new Map(),railwaysByStation=new Map();
     function addEdge(from,to,edge){if(!from||!to||from===to)return;if(!graph.has(from))graph.set(from,[]);graph.get(from).push(Object.assign({to:to},edge));}
     (payloads||[]).forEach(function(payload){
       (payload&&payload.Station||[]).forEach(function(item){var id=idOf(item);if(id)stationById.set(id,item);});
       (payload&&payload.Railway||[]).forEach(function(item){var id=idOf(item);if(id)railwayById.set(id,item);});
+      (payload&&payload.TrainType||[]).forEach(function(item){var id=idOf(item);if(id)trainTypeById.set(id,item);});
     });
 
     railwayById.forEach(function(railway,railwayId){
@@ -80,7 +82,7 @@
       return labels.sort(function(a,b){return a.localeCompare(b,"ja");});
     }
 
-    var stationGroups=new Map(),groupsByName=new Map(),displayNameToKey=new Map();
+    var stationGroups=new Map(),groupsByName=new Map(),displayNameToKey=new Map(),groupByNode=new Map();
     buckets.forEach(function(bucket,nameKey){
       var clusters=[];
       bucket.nodes.forEach(function(node){
@@ -96,7 +98,7 @@
         var labels=lineLabels(nodes),label=bucket.name;
         if(clusters.length>1)label+="（"+(labels.slice(0,2).join("・")||"路線を確認")+"）";
         var key=nameKey+"::"+index,group={key:key,name:bucket.name,label:label,nodes:nodes,railways:labels};
-        stationGroups.set(key,group);displayNameToKey.set(normalize(label),key);return group;
+        stationGroups.set(key,group);nodes.forEach(function(node){groupByNode.set(node,group);});displayNameToKey.set(normalize(label),key);return group;
       });
       groupsByName.set(nameKey,groups);
       if(groups.length===1)displayNameToKey.set(nameKey,groups[0].key);
@@ -123,13 +125,15 @@
       return{group:matches.length===1?matches[0]:null,ambiguous:matches.length>1};
     }
     function stateKey(node,railway){return node+"\u0001"+(railway||"");}
-    function shortestPath(originGroup,destinationGroup){
+    function shortestPath(originGroup,destinationGroup,options){
+      var allowed=options&&options.allowedRailways?new Set(options.allowedRailways):null;
       var targets=new Set(destinationGroup.nodes),dist=new Map(),prev=new Map(),heap=new MinHeap(),reached=null;
       originGroup.nodes.forEach(function(node){var key=stateKey(node,"");dist.set(key,0);heap.push({key:key,node:node,railway:"",cost:0});});
       while(heap.items.length){
         var current=heap.pop();if(current.cost!==dist.get(current.key))continue;
         if(targets.has(current.node)){reached=current;break;}
         (graph.get(current.node)||[]).forEach(function(edge){
+          if(allowed&&edge.type==="ride"&&!allowed.has(edge.railway))return;
           var nextRailway=edge.type==="ride"?edge.railway:"";
           var switchPenalty=edge.type==="ride"&&current.railway&&current.railway!==edge.railway?6:0;
           var nextCost=current.cost+edge.cost+switchPenalty,nextKey=stateKey(edge.to,nextRailway);
@@ -156,11 +160,59 @@
       return segments;
     }
 
+    function calendarMatches(value,service){
+      var text=String(value||"").toLowerCase();
+      if(!text)return true;
+      if(service==="weekday")return text.indexOf("weekday")>=0||text.indexOf("平日")>=0;
+      return text.indexOf("saturdayholiday")>=0||text.indexOf("saturdayandholiday")>=0||text.indexOf("weekend")>=0||text.indexOf("saturday")>=0||text.indexOf("sunday")>=0||text.indexOf("holiday")>=0||text.indexOf("土休日")>=0||text.indexOf("土曜")>=0||text.indexOf("休日")>=0;
+    }
+    function timetableTrip(timetable,fromNodes,toNodes,earliest,service){
+      if(!timetable||!Array.isArray(timetable.trips))return null;
+      var stations=timetable.stations||[],calendars=timetable.calendars||[],types=timetable.trainTypes||[];
+      var fromSet=new Set(fromNodes),toSet=new Set(toNodes),best=null;
+      timetable.trips.forEach(function(trip){
+        if(!Array.isArray(trip)||!calendarMatches(calendars[trip[0]],service))return;
+        var stops=trip[3]||[],boarding=-1,departure=null;
+        for(var i=0;i<stops.length;i++){
+          var stop=stops[i]||[],stationId=stations[stop[0]],dep=stop[2]!=null?Number(stop[2]):Number(stop[1]);
+          if(fromSet.has(stationId)&&Number.isFinite(dep)&&dep>=earliest){boarding=i;departure=dep;break;}
+        }
+        if(boarding<0)return;
+        for(var j=boarding+1;j<stops.length;j++){
+          var next=stops[j]||[],nextStation=stations[next[0]],arrival=next[1]!=null?Number(next[1]):Number(next[2]);
+          if(!toSet.has(nextStation)||!Number.isFinite(arrival)||arrival<departure)continue;
+          var candidate={departure:departure,arrival:arrival,trainType:types[trip[1]]||"",trainNumber:String(trip[2]||"")};
+          if(!best||candidate.arrival<best.arrival||(candidate.arrival===best.arrival&&candidate.departure<best.departure))best=candidate;
+          break;
+        }
+      });
+      return best;
+    }
+    function timedItinerary(path,timetablesByRailway,departureMinutes,service,transferMinutes){
+      var segments=segmentsFrom(path),current=Number(departureMinutes),buffer=Number(transferMinutes==null?5:transferMinutes),timed=[];
+      if(!Number.isFinite(current)||!segments.length)return null;
+      for(var i=0;i<segments.length;i++){
+        var segment=segments[i],fromGroup=groupByNode.get(segment.from),toGroup=groupByNode.get(segment.to);
+        var earliest=current+(i>0?buffer:0);
+        var trip=timetableTrip(
+          timetablesByRailway&&timetablesByRailway[segment.railway],
+          fromGroup?fromGroup.nodes:[segment.from],
+          toGroup?toGroup.nodes:[segment.to],
+          earliest,
+          service
+        );
+        if(!trip)return null;
+        timed.push(Object.assign({},segment,trip));current=trip.arrival;
+      }
+      return{segments:timed,departure:timed[0].departure,arrival:timed[timed.length-1].arrival,duration:timed[timed.length-1].arrival-timed[0].departure,transfers:Math.max(0,timed.length-1)};
+    }
+
     return{
-      graph:graph,stationById:stationById,railwayById:railwayById,stationGroups:stationGroups,
+      graph:graph,stationById:stationById,railwayById:railwayById,trainTypeById:trainTypeById,stationGroups:stationGroups,
       stations:Array.from(stationGroups.values()).sort(function(a,b){return a.label.localeCompare(b.label,"ja");}),
-      resolveInput:resolveInput,shortestPath:shortestPath,segmentsFrom:segmentsFrom,
-      displayStation:function(id){return stationName(stationById.get(id)||{"owl:sameAs":id});}
+      resolveInput:resolveInput,shortestPath:shortestPath,segmentsFrom:segmentsFrom,timedItinerary:timedItinerary,
+      displayStation:function(id){return stationName(stationById.get(id)||{"owl:sameAs":id});},
+      displayTrainType:function(id){return trainTypeName(trainTypeById.get(id)||{"owl:sameAs":id});}
     };
   }
 

@@ -34,8 +34,8 @@ jobs:
       # JR East Challenge 2026 topology is included by default. Set the
       # repository variable to 0 only when the limited feed must be paused.
       ALLOW_JR_EAST_CHALLENGE_DATA: ${{ vars.ALLOW_JR_EAST_CHALLENGE_DATA }}
-      # The hidden first-stage route search only needs station/railway topology.
-      # Enable after the departure-time search UI is implemented and reviewed.
+      # Timetables are enabled by default. Set the repository variable to 0
+      # only when a temporary API or data-size issue requires pausing them.
       ODPT_IMPORT_TIMETABLES: ${{ vars.ODPT_IMPORT_TIMETABLES }}
     steps:
       - uses: actions/checkout@v4

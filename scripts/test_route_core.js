@@ -65,6 +65,38 @@ assert.deepEqual(segments.map((item) => item.stops), [1, 1]);
 const impossible = model.shortestPath(origin, model.resolveInput("遠方").group);
 assert.equal(impossible, null, "same-name stations that are far apart must not become a transfer shortcut");
 
+const weekdayTimetables = {
+  [lineA]: {
+    stations: ["station:a1", "station:a2"],
+    calendars: ["odpt.Calendar:Weekday", "odpt.Calendar:SaturdayHoliday"],
+    trainTypes: ["odpt.TrainType:Test.Local"],
+    trips: [
+      [0, 0, "101", [[0, null, 480], [1, 490, null]]],
+      [0, 0, "103", [[0, null, 500], [1, 510, null]]],
+      [1, 0, "休日101", [[0, null, 485], [1, 495, null]]],
+    ],
+  },
+  [lineB]: {
+    stations: ["station:b1", "station:b2"],
+    calendars: ["odpt.Calendar:Weekday"],
+    trainTypes: ["odpt.TrainType:Test.Express"],
+    trips: [
+      [0, 0, "201", [[0, null, 493], [1, 503, null]]],
+      [0, 0, "203", [[0, null, 496], [1, 506, null]]],
+    ],
+  },
+};
+const timed = model.timedItinerary(path, weekdayTimetables, 475, "weekday", 5);
+assert.ok(timed, "a timetable-aware itinerary must be found");
+assert.equal(timed.departure, 480);
+assert.equal(timed.arrival, 506, "the five-minute transfer buffer must reject train 201");
+assert.deepEqual(timed.segments.map((item) => item.trainNumber), ["101", "203"]);
+assert.equal(model.timedItinerary(path, weekdayTimetables, 475, "holiday", 5), null, "missing holiday service on the second line must not invent a time");
+
+const timedOnlyPath = model.shortestPath(origin, destination, { allowedRailways: [lineA, lineB] });
+assert.ok(timedOnlyPath, "railway availability filtering must retain supported routes");
+assert.equal(model.shortestPath(origin, destination, { allowedRailways: [lineA] }), null, "unsupported lines must be excluded from a timed route");
+
 const bridgeModel = core.createModel([{
   Station: [
     station("station:bridge-a", "接続駅", "line:a"),

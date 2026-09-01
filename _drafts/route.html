@@ -16,7 +16,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./style.css">
 <link rel="stylesheet" href="./route.css">
-<style>.route-leg .route-line-rail{background:var(--route-line-color,#14386f)}.route-leg .route-line-rail::before,.route-leg .route-line-rail::after{border-color:var(--route-line-color,#14386f)}</style>
+<style>
+.route-leg .route-line-rail{background:var(--route-line-color,#14386f)}.route-leg .route-line-rail::before,.route-leg .route-line-rail::after{border-color:var(--route-line-color,#14386f)}
+.route-field select{width:100%;border:2px solid #dde2ec;border-radius:14px;padding:14px 15px;font:inherit;background:#fff;color:#1f2a43;outline:none}.route-field select:focus{border-color:#6176aa;box-shadow:0 0 0 4px rgba(97,118,170,.12)}.route-field select:disabled{background:#f3f4f7;color:#9aa2b1}.route-datetime-field{grid-column:1/3}.route-calendar-field{grid-column:3}.route-time-warning{margin:14px 0 0;padding:10px 12px;border-radius:12px;background:#fff8df;color:#715b19;font-size:.78rem;line-height:1.55}.route-leg-time{display:flex;align-items:center;gap:10px;margin:0 0 5px;color:#162b50}.route-leg-time strong{font-size:1rem}.route-leg-time span{color:#8a93a3}
+@media(max-width:650px){.route-datetime-field,.route-calendar-field{grid-column:1/-1}.route-leg-time{gap:8px}.route-summary span{white-space:normal}}
+</style>
 </head>
 <body>
 <header class="site-header">
@@ -33,7 +37,7 @@
     <div class="container route-hero-inner">
       <span class="route-kicker">ODPT × KAWAII LAB.同好会</span>
       <h1>乗換案内 <small>β</small></h1>
-      <p>出発駅と到着駅を入れると、対応路線の乗換ルートを検索します。</p>
+      <p>出発駅・到着駅・日時を入れると、発着時刻つきの乗換ルートを検索します。</p>
     </div>
   </section>
   <section class="section">
@@ -50,12 +54,24 @@
           <input id="route-to" name="to" list="route-stations" placeholder="例：新宿" required disabled>
         </div>
         <datalist id="route-stations"></datalist>
-        <button id="route-submit" class="route-submit" type="submit" disabled>経路を検索</button>
+        <div class="route-field route-datetime-field">
+          <label for="route-datetime">出発日時</label>
+          <input id="route-datetime" name="at" type="datetime-local" required disabled>
+        </div>
+        <div class="route-field route-calendar-field">
+          <label for="route-calendar">ダイヤ</label>
+          <select id="route-calendar" name="calendar" disabled>
+            <option value="auto">曜日から自動判定</option>
+            <option value="weekday">平日</option>
+            <option value="holiday">土休日</option>
+          </select>
+        </div>
+        <button id="route-submit" class="route-submit" type="submit" disabled>時刻を検索</button>
       </form>
       <div id="route-result" class="route-result" aria-live="polite"></div>
       <aside class="route-note">
         <strong>現在のβ版について</strong>
-        <p>まずはODPTの駅・路線データから「どの路線で、どこで乗り換えるか」を検索します。発着時刻まで含む検索は次の段階で追加します。</p>
+        <p>ODPTの予定時刻表を使って発着時刻を検索します。祝日は「土休日」を選んでください。遅延・運休などのリアルタイム状況は含みません。</p>
       </aside>
       <p class="route-source">公共交通オープンデータセンター（ODPT）提供データを利用しています。実際の運行・乗換は各交通事業者の最新案内も確認してください。</p>
     </div>
@@ -64,7 +80,7 @@
 <div class="footer-stripe" aria-hidden="true"></div>
 <footer class="site-footer"><div class="footer-inner"><div class="footer-brand"><span class="brand-name">KAWAII LAB.同好会</span><p>慶應義塾大学登録学生団体<br>当会は特定の企業・事務所とは関係のない非公式ファンサークルです。</p></div><nav class="footer-nav" aria-label="フッターメニュー"><ul><li><a href="index.html">トップ</a></li><li><a href="schedule.html">LIVE・チケット</a></li><li><a href="venues.html">会場ガイド</a></li><li><a href="contact.html">Contact</a></li><li><a href="privacy.html">Privacy</a></li></ul></nav></div><p class="copyright">© <span id="year">2026</span> 慶應義塾大学登録学生団体KAWAII LAB.同好会</p></footer>
 <script src="./script.js"></script>
-<script src="./route-core.js?v=20260902-1"></script>
-<script src="./route.js?v=20260902-1"></script>
+<script src="./route-core.js?v=20260902-2"></script>
+<script src="./route.js?v=20260902-2"></script>
 </body>
 </html>

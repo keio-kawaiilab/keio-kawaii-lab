@@ -26,6 +26,12 @@ class ImportOdptTimetablesTests(unittest.TestCase):
         with patch.dict("os.environ", {"ALLOW_JR_EAST_CHALLENGE_DATA": "0"}, clear=True):
             self.assertFalse(importer.jr_east_import_enabled())
 
+    def test_timetable_import_is_enabled_by_default_and_can_be_paused(self):
+        with patch.dict("os.environ", {}, clear=True):
+            self.assertTrue(importer.timetable_import_enabled())
+        with patch.dict("os.environ", {"ODPT_IMPORT_TIMETABLES": "0"}, clear=True):
+            self.assertFalse(importer.timetable_import_enabled())
+
     def test_operator_discovery_prefers_exact_railway_uri_over_substrings(self):
         operators = [
             {
@@ -80,6 +86,26 @@ class ImportOdptTimetablesTests(unittest.TestCase):
         self.assertEqual(compact["odpt:color"], "#123456")
         self.assertIn("odpt:connectingRailway", compact)
         self.assertNotIn("ignored", compact)
+
+    def test_compact_line_timetable_keeps_service_day_times_and_station_aliases(self):
+        item = {
+            "odpt:calendar": "odpt.Calendar:Weekday",
+            "odpt:trainType": "odpt.TrainType:Test.Local",
+            "odpt:trainNumber": "101",
+            "odpt:trainTimetableObject": [
+                {"odpt:station": "station:a-old", "odpt:departureTime": "23:58"},
+                {"odpt:station": "station:b", "odpt:arrivalTime": "24:07", "odpt:departureTime": "24:08"},
+                {"odpt:station": "station:c", "odpt:arrivalTime": "24:15"},
+            ],
+        }
+        compact, connections = importer.compact_line_timetable(
+            "railway:test", [item], {"station:a-old": "station:a"}
+        )
+        self.assertEqual(compact["stations"], ["station:a", "station:b", "station:c"])
+        self.assertEqual(compact["calendars"], ["odpt.Calendar:Weekday"])
+        self.assertEqual(compact["trips"][0][3][0], [0, None, 1438])
+        self.assertEqual(compact["trips"][0][3][1], [1, 1447, 1448])
+        self.assertEqual(connections, 2)
 
     def test_manual_topology_adds_all_stations_and_station_order(self):
         topology = {
@@ -161,7 +187,7 @@ class ImportOdptTimetablesTests(unittest.TestCase):
                 "odpt:TrainTimetable": [],
             }.get(rdf_type, [])
 
-        with tempfile.TemporaryDirectory() as temp_dir, patch.dict("os.environ", {"ODPT_API_KEY": "secret"}, clear=True), patch.object(importer, "OUT_ROOT", Path(temp_dir)), patch.object(importer, "MANUAL_TOPOLOGY_PATH", Path(temp_dir) / "missing.json"), patch.object(importer, "TARGETS", target), patch.object(importer, "discover_operators", return_value=({"test": "odpt.Operator:Test"}, [])), patch.object(importer, "api_get", side_effect=fake_get):
+        with tempfile.TemporaryDirectory() as temp_dir, patch.dict("os.environ", {"ODPT_API_KEY": "secret", "ODPT_IMPORT_TIMETABLES": "0"}, clear=True), patch.object(importer, "OUT_ROOT", Path(temp_dir)), patch.object(importer, "MANUAL_TOPOLOGY_PATH", Path(temp_dir) / "missing.json"), patch.object(importer, "TARGETS", target), patch.object(importer, "discover_operators", return_value=({"test": "odpt.Operator:Test"}, [])), patch.object(importer, "api_get", side_effect=fake_get):
             self.assertEqual(importer.main(), 0)
             manifest = json.loads((Path(temp_dir) / "manifest.json").read_text(encoding="utf-8"))
             self.assertEqual(manifest["operators"]["test"]["status"], "ok")
