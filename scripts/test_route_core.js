@@ -58,6 +58,7 @@ const origin = model.resolveInput("出発").group;
 const destination = model.resolveInput("到着").group;
 const path = model.shortestPath(origin, destination);
 assert.ok(path, "a route through a nearby transfer must be found");
+assert.equal(path.cost, 3, "a transfer between lines of the same operator must have a small penalty");
 const segments = model.segmentsFrom(path);
 assert.deepEqual(segments.map((item) => item.label), ["A線", "B線"]);
 assert.deepEqual(segments.map((item) => item.stops), [1, 1]);

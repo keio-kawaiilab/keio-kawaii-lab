@@ -49,6 +49,14 @@ assertRoute("渋谷", "吉祥寺");
 assertRoute("神泉", "駒場東大前", "井の頭線");
 assertRoute("横浜", "元町・中華街", "みなとみらい線");
 
+const airportRoute = model.shortestPath(
+  model.resolveInput("品川").group,
+  model.resolveInput("羽田空港第1・第2ターミナル").group,
+);
+const airportLines = model.segmentsFrom(airportRoute).map((segment) => segment.label);
+assert.ok(airportLines.includes("京急本線") && airportLines.includes("空港線"), "品川 to 羽田空港 must use Keikyu directly");
+assert.ok(!airportLines.includes("東海道線"), "品川 to 羽田空港 must not detour through Kawasaki on JR");
+
 function assertEstimatedRoute(slug, railwayId, from, to, minimum, maximum) {
   const origin = model.resolveInput(from);
   const destination = model.resolveInput(to);

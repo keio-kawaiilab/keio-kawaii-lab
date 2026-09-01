@@ -52,8 +52,10 @@
       for(var i=0;i<order.length-1;i++){
         var from=order[i]&&order[i]["odpt:station"],to=order[i+1]&&order[i+1]["odpt:station"];
         if(!from||!to)continue;
-        addEdge(from,to,{type:"ride",railway:railwayId,label:label,color:color,cost:1});
-        addEdge(to,from,{type:"ride",railway:railwayId,label:label,color:color,cost:1});
+        var meters=distanceMeters(stationById.get(from),stationById.get(to));
+        var rideCost=meters===null?1:Math.max(1,Math.ceil(meters/2000));
+        addEdge(from,to,{type:"ride",railway:railwayId,label:label,color:color,cost:rideCost});
+        addEdge(to,from,{type:"ride",railway:railwayId,label:label,color:color,cost:rideCost});
       }
     });
 
@@ -76,6 +78,13 @@
       if(meters!==null)return meters<=850;
       return asArray(a&&a["odpt:connectingStation"]).indexOf(bId)>=0||asArray(b&&b["odpt:connectingStation"]).indexOf(aId)>=0;
     }
+    function operatorIds(item){return asArray(item&&item["odpt:operator"]);}
+    function sameOperator(a,b){
+      var first=operatorIds(a),second=new Set(operatorIds(b));
+      return first.some(function(id){return second.has(id);});
+    }
+    function transferCost(aId,bId){return sameOperator(stationById.get(aId),stationById.get(bId))?1:6;}
+    function railwaySwitchCost(aId,bId){return sameOperator(railwayById.get(aId),railwayById.get(bId))?1:6;}
     function lineLabels(nodes){
       var labels=[];
       nodes.forEach(function(node){(railwaysByStation.get(node)||[]).forEach(function(id){var label=railwayName(railwayById.get(id)||{"owl:sameAs":id});if(label&&labels.indexOf(label)<0)labels.push(label);});});
@@ -106,15 +115,17 @@
 
     stationGroups.forEach(function(group){
       for(var i=0;i<group.nodes.length;i++)for(var j=i+1;j<group.nodes.length;j++){
-        addEdge(group.nodes[i],group.nodes[j],{type:"transfer",label:"乗換",cost:6});
-        addEdge(group.nodes[j],group.nodes[i],{type:"transfer",label:"乗換",cost:6});
+        var cost=transferCost(group.nodes[i],group.nodes[j]);
+        addEdge(group.nodes[i],group.nodes[j],{type:"transfer",label:"乗換",cost:cost});
+        addEdge(group.nodes[j],group.nodes[i],{type:"transfer",label:"乗換",cost:cost});
       }
     });
     stationById.forEach(function(station,stationId){
       asArray(station["odpt:connectingStation"]).forEach(function(connectedId){
         if(!stationById.has(connectedId))return;
-        addEdge(stationId,connectedId,{type:"transfer",label:"乗換",cost:6});
-        addEdge(connectedId,stationId,{type:"transfer",label:"乗換",cost:6});
+        var cost=transferCost(stationId,connectedId);
+        addEdge(stationId,connectedId,{type:"transfer",label:"乗換",cost:cost});
+        addEdge(connectedId,stationId,{type:"transfer",label:"乗換",cost:cost});
       });
     });
 
@@ -135,7 +146,7 @@
         (graph.get(current.node)||[]).forEach(function(edge){
           if(allowed&&edge.type==="ride"&&!allowed.has(edge.railway))return;
           var nextRailway=edge.type==="ride"?edge.railway:"";
-          var switchPenalty=edge.type==="ride"&&current.railway&&current.railway!==edge.railway?6:0;
+          var switchPenalty=edge.type==="ride"&&current.railway&&current.railway!==edge.railway?railwaySwitchCost(current.railway,edge.railway):0;
           var nextCost=current.cost+edge.cost+switchPenalty,nextKey=stateKey(edge.to,nextRailway);
           if(nextCost<(dist.has(nextKey)?dist.get(nextKey):Infinity)){
             dist.set(nextKey,nextCost);prev.set(nextKey,{previousKey:current.key,from:current.node,to:edge.to,edge:edge});
