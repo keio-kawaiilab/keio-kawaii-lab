@@ -10,6 +10,9 @@ on:
       - "scripts/strip_schedule_explanations.py"
       - "scripts/test_schedule_band_grouping.js"
       - "scripts/test_schedule_scope_ui.js"
+      - "schedule-shared-mark-dedupe.js"
+      - "schedule-weather.js"
+      - "schedule.html"
       - ".github/workflows/test-schedule-shell.yml"
   workflow_dispatch:
 

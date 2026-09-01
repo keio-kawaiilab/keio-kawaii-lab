@@ -18,6 +18,8 @@ assert(source.includes('window.location.reload()'), 'pull-to-refresh must reload
 assert(page.includes('.special-event{background-image:radial-gradient'), 'special-event calendar items need a polka-dot background');
 assert(page.includes('.card.release-card,.card.benefit-card{'), 'special-event detail cards need a shared polka-dot treatment');
 assert(source.includes("?' special-event':''"), 'release and large-benefit items need the special-event class');
+assert(source.includes("data-band-apply-start"), 'application bands must expose their exact start for safe deduplication');
+assert(source.includes("data-band-group"), 'application bands must expose their group for safe deduplication');
 source = source.replace(
   /\}\)\(\);\s*$/,
   "globalThis.__scheduleTest={prepare:prepare,groupedApplicationBands:groupedApplicationBands,eventKind:eventKind,specialHtml:specialHtml,performanceModels:performanceModels,performanceKey:performanceKey};})();",
@@ -145,5 +147,89 @@ const benefitModels = context.__scheduleTest.performanceModels(context.__schedul
 assert.strictEqual(benefitModels.length, 1, 'same special event must render as one performance even when sale rows have different start times');
 assert.strictEqual(benefitModels[0].offers.length, 2, 'all sales channels must remain available inside the consolidated special-event card');
 assert.strictEqual(context.__scheduleTest.performanceKey(sameBenefitPerformance[0], { date: '2099-09-06', venue: 'ベルサール汐留', startTime: '10:00' }), context.__scheduleTest.performanceKey(sameBenefitPerformance[1], { date: '2099-09-06', venue: 'ベルサール汐留', startTime: '11:20' }));
+
+const dedupeSource = fs.readFileSync('schedule-shared-mark-dedupe.js', 'utf8');
+
+function fakeClassList(values) {
+  const list = values.slice();
+  list.add = function add(name) {
+    if (!list.includes(name)) list.push(name);
+  };
+  list.remove = function remove(name) {
+    const index = list.indexOf(name);
+    if (index >= 0) list.splice(index, 1);
+  };
+  return list;
+}
+
+function fakeBand({ group, groupClass, applyStart }) {
+  const attributes = {
+    'data-band-group': group,
+    'data-band-provider': 'tower',
+    'data-band-ticket-type': '対象商品予約（参加権付き・先着／受付）',
+    'data-band-apply-start': applyStart,
+    'data-band-apply-end': '2099-09-04T23:59',
+  };
+  return {
+    removed: false,
+    title: `${group} 大特典会｜タワーレコード`,
+    classList: fakeClassList(['mark', 'band', groupClass, 'special-event']),
+    style: { left: 'calc(28.5714285714% + 2px)', width: 'calc(42.8571428571% - 4px)' },
+    getAttribute(name) { return attributes[name] || null; },
+    setAttribute(name, value) { attributes[name] = String(value); },
+    querySelector(selector) {
+      if (selector === 'strong') return { textContent: '大特典会' };
+      if (selector === 'span') return { textContent: 'タワーレコード｜対象商品予約（参加権付き・先着／受付）｜2099/9/4 23:59まで' };
+      return null;
+    },
+    remove() { this.removed = true; },
+  };
+}
+
+function runSharedMarkDedupe(marks) {
+  const week = {
+    clientWidth: 700,
+    style: {},
+    querySelectorAll(selector) {
+      if (selector === '.band') return marks.filter((mark) => !mark.removed);
+      return [];
+    },
+  };
+  const calendar = {
+    querySelectorAll(selector) { return selector === '.week' ? [week] : []; },
+  };
+  function MutationObserver() {}
+  MutationObserver.prototype.observe = function observe() {};
+  vm.runInNewContext(dedupeSource, {
+    document: { getElementById(id) { return id === 'calendar' ? calendar : null; } },
+    MutationObserver,
+    window: {
+      addEventListener() {},
+      matchMedia() { return { matches: false }; },
+      setTimeout(callback) { callback(); },
+    },
+  });
+  return marks.filter((mark) => !mark.removed);
+}
+
+const candyBand = fakeBand({ group: 'CANDY TUNE', groupClass: 'g-CANDY', applyStart: '2099-09-02T20:00' });
+const sweetBand = fakeBand({ group: 'SWEET STEADY', groupClass: 'g-SWEET', applyStart: '2099-09-02T23:00' });
+let remaining = runSharedMarkDedupe([candyBand, sweetBand]);
+assert.strictEqual(remaining.length, 2, 'different groups must keep separate application bands');
+assert(candyBand.classList.includes('g-CANDY'), 'CANDY TUNE band must keep its group color');
+assert(sweetBand.classList.includes('g-SWEET'), 'SWEET STEADY band must keep its group color');
+assert(!candyBand.classList.includes('g-LAB'), 'CANDY TUNE band must not become a joint black band');
+
+const earlyCandyBand = fakeBand({ group: 'CANDY TUNE', groupClass: 'g-CANDY', applyStart: '2099-09-02T20:00' });
+const lateCandyBand = fakeBand({ group: 'CANDY TUNE', groupClass: 'g-CANDY', applyStart: '2099-09-02T23:00' });
+remaining = runSharedMarkDedupe([earlyCandyBand, lateCandyBand]);
+assert.strictEqual(remaining.length, 2, 'different exact start times must not be deduplicated');
+
+const duplicateCandyA = fakeBand({ group: 'CANDY TUNE', groupClass: 'g-CANDY', applyStart: '2099-09-02T20:00' });
+const duplicateCandyB = fakeBand({ group: 'CANDY TUNE', groupClass: 'g-CANDY', applyStart: '2099-09-02T20:00' });
+remaining = runSharedMarkDedupe([duplicateCandyA, duplicateCandyB]);
+assert.strictEqual(remaining.length, 1, 'true same-group duplicates should still collapse');
+assert(duplicateCandyA.classList.includes('g-CANDY'), 'deduplicated same-group band must keep its color');
+assert(!duplicateCandyA.title.includes('複数グループ共通'), 'same-group deduplication must not claim a joint event');
 
 console.log('Schedule band grouping tests passed');

@@ -13,21 +13,33 @@
     return text(mark.style.left)+"|"+text(mark.style.width);
   }
 
+  function attribute(mark,name){
+    return text(mark.getAttribute&&mark.getAttribute(name));
+  }
+
+  function groupClass(mark){
+    return [].slice.call(mark.classList).filter(function(name){
+      return /^g-/.test(name);
+    }).sort().join(",");
+  }
+
   function bandIdentity(mark){
     var strong=mark.querySelector("strong");
     var sub=mark.querySelector("span");
-    return [geometry(mark),text(strong&&strong.textContent),text(sub&&sub.textContent)].join("|");
+    return [
+      attribute(mark,"data-band-group")||groupClass(mark),
+      attribute(mark,"data-band-provider"),
+      attribute(mark,"data-band-ticket-type"),
+      attribute(mark,"data-band-apply-start"),
+      attribute(mark,"data-band-apply-end"),
+      geometry(mark),
+      text(strong&&strong.textContent),
+      text(sub&&sub.textContent)
+    ].join("|");
   }
 
-  function makeShared(mark,count){
-    [].slice.call(mark.classList).forEach(function(name){
-      if(/^g-/.test(name))mark.classList.remove(name);
-    });
-    mark.classList.add("g-LAB");
+  function markDeduped(mark,count){
     mark.setAttribute("data-shared-band-count",String(count));
-    if(mark.title&&mark.title.indexOf("複数グループ共通")<0){
-      mark.title+="｜複数グループ共通";
-    }
   }
 
   function dedupeBands(week){
@@ -39,7 +51,7 @@
     Object.keys(groups).forEach(function(key){
       var same=groups[key];
       if(same.length<2)return;
-      makeShared(same[0],same.length);
+      markDeduped(same[0],same.length);
       same.slice(1).forEach(function(mark){mark.remove();});
     });
   }
