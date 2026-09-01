@@ -123,8 +123,10 @@ TARGETS = {
     },
 }
 
-ENTITY_TYPES = ["odpt:Station", "odpt:Railway", "odpt:TrainType", "odpt:RailDirection"]
+ENTITY_TYPES = ["odpt:Station", "odpt:Railway"]
 TIMETABLE_TYPES = ["odpt:StationTimetable", "odpt:TrainTimetable"]
+MIN_REQUEST_INTERVAL = float(os.environ.get("ODPT_REQUEST_INTERVAL_SECONDS", "0.75"))
+_last_request_at = 0.0
 
 
 def dump_json(path: Path, value: Any) -> None:
@@ -146,25 +148,51 @@ def title_values(obj: dict[str, Any]) -> list[str]:
 
 
 def api_get(session: requests.Session, rdf_type: str, key: str, operator: str | None = None) -> list[dict[str, Any]]:
+    global _last_request_at
     url = f"{BASE_URL}/{rdf_type}"
     params = {"acl:consumerKey": key}
     if operator:
         params["odpt:operator"] = operator
     last_error: Exception | None = None
-    for attempt in range(3):
+    for attempt in range(6):
         try:
+            wait_for_slot = MIN_REQUEST_INTERVAL - (time.monotonic() - _last_request_at)
+            if wait_for_slot > 0:
+                time.sleep(wait_for_slot)
             response = session.get(url, params=params, timeout=(15, 180))
+            _last_request_at = time.monotonic()
+            if response.status_code == 429:
+                retry_after = response.headers.get("Retry-After", "")
+                try:
+                    delay = max(float(retry_after), min(60.0, 3.0 * (2 ** attempt)))
+                except ValueError:
+                    delay = min(60.0, 3.0 * (2 ** attempt))
+                print(f"ODPT rate limit for {rdf_type}; retrying in {delay:.0f}s", file=sys.stderr)
+                last_error = RuntimeError(f"ODPT rate limit persisted for {rdf_type}")
+                time.sleep(delay)
+                continue
             if response.status_code in (403, 404):
                 return []
             response.raise_for_status()
             data = response.json()
             if not isinstance(data, list):
                 raise ValueError(f"Unexpected {rdf_type} response: {type(data).__name__}")
+            if operator:
+                with_operator = [item for item in data if item.get("odpt:operator")]
+                if with_operator:
+                    data = [
+                        item for item in data
+                        if operator in (
+                            item.get("odpt:operator")
+                            if isinstance(item.get("odpt:operator"), list)
+                            else [item.get("odpt:operator")]
+                        )
+                    ]
             return data
         except (requests.RequestException, ValueError) as exc:
             last_error = exc
-            if attempt < 2:
-                time.sleep(2 ** attempt)
+            if attempt < 5:
+                time.sleep(min(30, 2 ** attempt))
     raise RuntimeError(f"ODPT request failed for {rdf_type} / {operator}: {last_error}")
 
 
@@ -261,6 +289,7 @@ def main() -> int:
         return 2
 
     include_jr = os.environ.get("ALLOW_JR_EAST_CHALLENGE_DATA", "").strip() == "1"
+    include_timetables = os.environ.get("ODPT_IMPORT_TIMETABLES", "").strip() == "1"
     session = requests.Session()
     session.headers.update({"User-Agent": "keio-kawaii-lab-transit-preview/0.1"})
 
@@ -276,6 +305,7 @@ def main() -> int:
             "Static timetable data must be refreshed after ODPT data updates in accordance with the applicable license/guideline.",
             "JR East challenge data is disabled by default because of JR-East-specific Challenge 2026 usage restrictions.",
             "Keisei availability is detected at runtime; it may be unavailable from ODPT.",
+            "Timetable downloads are disabled until the departure-time search stage; this first stage publishes station and railway topology only.",
         ],
     }
 
@@ -316,8 +346,8 @@ def main() -> int:
 
             op_dir = OUT_ROOT / slug
             dump_json(op_dir / "entities.json", entities)
-            station_raw = api_get(session, "odpt:StationTimetable", key, operator_uri)
-            train_raw = api_get(session, "odpt:TrainTimetable", key, operator_uri)
+            station_raw = api_get(session, "odpt:StationTimetable", key, operator_uri) if include_timetables else []
+            train_raw = api_get(session, "odpt:TrainTimetable", key, operator_uri) if include_timetables else []
             station_compact = [compact_station_timetable(x) for x in station_raw]
             train_compact = [compact_train_timetable(x) for x in train_raw]
             dump_json(op_dir / "station-timetables.json", station_compact)
@@ -327,7 +357,7 @@ def main() -> int:
             departures = sum(len(x.get("trains") or []) for x in station_compact)
             info.update({
                 "status": "ok",
-                "timetableStatus": "ok" if station_compact else "not-available",
+                "timetableStatus": "ok" if station_compact else ("not-available" if include_timetables else "not-requested"),
                 "stations": len(unique_stations),
                 "railways": len(railways),
                 "stationTimetables": len(station_compact),

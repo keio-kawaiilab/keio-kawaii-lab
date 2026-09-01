@@ -8,6 +8,28 @@ import import_odpt_timetables as importer
 
 
 class ImportOdptTimetablesTests(unittest.TestCase):
+    def test_api_get_filters_an_unscoped_response_by_operator(self):
+        class Response:
+            status_code = 200
+            headers = {}
+
+            def raise_for_status(self):
+                return None
+
+            def json(self):
+                return [
+                    {"owl:sameAs": "station:a", "odpt:operator": "odpt.Operator:A"},
+                    {"owl:sameAs": "station:b", "odpt:operator": "odpt.Operator:B"},
+                ]
+
+        class Session:
+            def get(self, *_args, **_kwargs):
+                return Response()
+
+        with patch.object(importer, "MIN_REQUEST_INTERVAL", 0):
+            rows = importer.api_get(Session(), "odpt:Station", "secret", "odpt.Operator:A")
+        self.assertEqual([row["owl:sameAs"] for row in rows], ["station:a"])
+
     def test_compact_entity_keeps_route_fields(self):
         compact = importer.compact_entity({
             "owl:sameAs": "odpt.Station:Test.A",
@@ -56,7 +78,7 @@ class ImportOdptTimetablesTests(unittest.TestCase):
             self.assertEqual(importer.main(), 0)
             manifest = json.loads((Path(temp_dir) / "manifest.json").read_text(encoding="utf-8"))
             self.assertEqual(manifest["operators"]["test"]["status"], "ok")
-            self.assertEqual(manifest["operators"]["test"]["timetableStatus"], "not-available")
+            self.assertEqual(manifest["operators"]["test"]["timetableStatus"], "not-requested")
             self.assertTrue((Path(temp_dir) / "test" / "entities.json").exists())
 
 

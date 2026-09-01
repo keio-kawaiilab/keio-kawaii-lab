@@ -28,6 +28,9 @@ jobs:
       # Keep JR East challenge data disabled by default. Enable only after
       # confirming the intended use complies with the applicable specific terms.
       ALLOW_JR_EAST_CHALLENGE_DATA: ${{ vars.ALLOW_JR_EAST_CHALLENGE_DATA }}
+      # The hidden first-stage route search only needs station/railway topology.
+      # Enable after the departure-time search UI is implemented and reviewed.
+      ODPT_IMPORT_TIMETABLES: ${{ vars.ODPT_IMPORT_TIMETABLES }}
     steps:
       - uses: actions/checkout@v4
 
@@ -69,4 +72,13 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/transit
           git commit -m "Update transit timetable snapshot"
-          git push
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            sleep $((attempt * 3))
+          done
+          echo "Failed to push transit data after 3 attempts." >&2
+          exit 1
