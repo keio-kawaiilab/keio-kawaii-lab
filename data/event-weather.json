@@ -1,7 +1,7 @@
 {
   "date": "2026-09-01",
   "horizonDays": 7,
-  "generatedAt": "2026-09-01T16:58+09:00",
+  "generatedAt": "2026-09-01T22:39+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -172,14 +172,20 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 11,
-    "uniqueVenueDates": 8,
+    "occurrencesInRange": 12,
+    "uniqueVenueDates": 9,
     "weatherEntries": 8,
     "meshEntries": 0,
-    "failures": 0,
+    "failures": 1,
     "meshTimelineEntries": 0,
     "meshExactTempSlots": 0,
     "hourlyRainEntries": 0
   },
-  "failures": []
+  "failures": [
+    {
+      "date": "2026-09-02",
+      "venue": "北海道 エスコンフィールドHOKKAIDO",
+      "reason": "都道府県を解決できません"
+    }
+  ]
 }
