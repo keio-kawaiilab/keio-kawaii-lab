@@ -1,6 +1,6 @@
 {
   "demo": false,
-  "updatedAt": "2026-09-01T21:31:39+09:00",
+  "updatedAt": "2026-09-01T21:46:42+09:00",
   "source": "KAWAII LAB.各グループ公式公開情報 + チケットぴあ・ローチケ・イープラス公開情報 + SUKISUKI公開オンライン特典会情報 + 公式大特典会・リリースイベント情報",
   "events": [
     {
@@ -287,7 +287,8 @@
       "urls": [
         "https://candytune.asobisystem.com/news/detail/88563",
         "https://kawaiilab.goods-order.com",
-        "https://pages-kawaiilab.goods-order.com/usage"
+        "https://pages-kawaiilab.goods-order.com/usage",
+        "https://candytune.asobisystem.com/live_information/detail/44452"
       ],
       "sourceType": "official-special",
       "primarySource": "official",
@@ -301,6 +302,7 @@
       "applicationWindowSource": "https://candytune.asobisystem.com/news/detail/88563",
       "deadlineSource": "https://candytune.asobisystem.com/news/detail/88563",
       "discoverySourceUrl": "https://candytune.asobisystem.com/news/detail/88563",
+      "officialScheduleUrl": "https://candytune.asobisystem.com/live_information/detail/44452",
       "eventScope": "kawaii-lab",
       "entityType": "special-event",
       "specialEventEntityVersion": 1,
@@ -323,8 +325,7 @@
       "venues": [
         "埼玉県 エミテラス所沢2F TOKOROZAWA e-CUBE"
       ],
-      "specialDetailsStatus": "awaiting-details",
-      "officialScheduleUrl": "https://candytune.asobisystem.com/live_information/detail/44452"
+      "specialDetailsStatus": "awaiting-details"
     },
     {
       "id": "6db7b0f6e3e2cde6",
@@ -1244,7 +1245,10 @@
       ],
       "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
       "performanceMatchedToOfficial": true,
-      "eventScope": "kawaii-lab"
+      "eventScope": "kawaii-lab",
+      "retainedFromPreviousPiaRun": true,
+      "piaRetentionReason": "not rediscovered; kept until known deadline",
+      "sourceStale": true
     },
     {
       "id": "8980db78c4d524b7",
@@ -1877,7 +1881,7 @@
         "official"
       ],
       "eventScope": "kawaii-lab",
-      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/40364",
+      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/40369",
       "openTime": "15:00",
       "startTime": "15:00",
       "officialTourUrl": "https://cutiestreet.asobisystem.com/feature/autumntour"
@@ -2335,7 +2339,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4568220001-P0030001P021002?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/4568220001-P0030001P021002?P1=0175",
-      "sourceObservedAt": "2026-09-01T21:26:45+09:00",
+      "sourceObservedAt": "2026-09-01T21:42:00+09:00",
       "officialScheduleUrl": "https://sweetsteady.asobisystem.com/live_information/detail/43903",
       "eventScope": "external"
     },
@@ -2702,7 +2706,7 @@
       "group": "FRUITS ZIPPER",
       "title": "FRUITS ZIPPER",
       "ticketType": "2次プレリザーブ",
-      "applyStart": "2026-08-26T11:00",
+      "applyStart": null,
       "applyEnd": "2026-09-01T23:59",
       "resultDate": null,
       "paymentEnd": null,
@@ -2736,10 +2740,9 @@
         "香川県 レクザムホール 大ホール（香川県県民ホール）",
         "愛媛県 松山市民会館 大ホール"
       ],
-      "applicationWindowVerified": true,
+      "applicationWindowVerified": false,
       "deadlineVerified": true,
-      "applicationDisplayMode": "band",
-      "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14547",
+      "applicationDisplayMode": "band-from-today",
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14547",
       "primarySource": "pia",
       "sourceCandidates": [
@@ -2747,10 +2750,7 @@
       ],
       "eventTitle": "FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN -",
       "performanceMatchedToOfficial": true,
-      "eventScope": "kawaii-lab",
-      "retainedFromPreviousPiaRun": true,
-      "piaRetentionReason": "not rediscovered; kept until known deadline",
-      "sourceStale": true
+      "eventScope": "kawaii-lab"
     },
     {
       "id": "177bc2a9c9d757b9",
@@ -2821,7 +2821,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/0401040001-P0030021P021001?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/0401040001-P0030021P021001?P1=0175",
-      "sourceObservedAt": "2026-09-01T21:26:45+09:00",
+      "sourceObservedAt": "2026-09-01T21:42:00+09:00",
       "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/39680",
       "eventScope": "external"
     },
@@ -2903,7 +2903,7 @@
       "group": "CANDY TUNE",
       "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
       "ticketType": "2次プレリザーブ",
-      "applyStart": "2026-08-26T11:00",
+      "applyStart": null,
       "applyEnd": "2026-09-06T23:59",
       "resultDate": null,
       "paymentEnd": null,
@@ -2942,9 +2942,9 @@
         "愛知県 愛知県芸術劇場 大ホール",
         "三重県 三重県文化会館大ホール"
       ],
-      "applicationWindowVerified": true,
+      "applicationWindowVerified": false,
       "deadlineVerified": true,
-      "applicationDisplayMode": "band",
+      "applicationDisplayMode": "band-from-today",
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
       "primarySource": "pia",
@@ -2953,7 +2953,10 @@
       ],
       "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
       "performanceMatchedToOfficial": true,
-      "eventScope": "kawaii-lab"
+      "eventScope": "kawaii-lab",
+      "retainedFromPreviousPiaRun": true,
+      "piaRetentionReason": "not rediscovered; kept until known deadline",
+      "sourceStale": true
     },
     {
       "id": "1fcecf13407d3207",
@@ -3294,7 +3297,7 @@
       "group": "CANDY TUNE",
       "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
       "ticketType": "2次プレリザーブ",
-      "applyStart": "2026-08-27T11:00",
+      "applyStart": null,
       "applyEnd": "2026-09-07T11:00",
       "resultDate": null,
       "paymentEnd": null,
@@ -3328,9 +3331,9 @@
         "鳥取県 米子コンベンションセンター",
         "広島県 広島文化学園HBGホール"
       ],
-      "applicationWindowVerified": true,
+      "applicationWindowVerified": false,
       "deadlineVerified": true,
-      "applicationDisplayMode": "band",
+      "applicationDisplayMode": "band-from-today",
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=09569",
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=09569",
       "primarySource": "pia",
@@ -3339,7 +3342,10 @@
       ],
       "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
       "performanceMatchedToOfficial": true,
-      "eventScope": "kawaii-lab"
+      "eventScope": "kawaii-lab",
+      "retainedFromPreviousPiaRun": true,
+      "piaRetentionReason": "not rediscovered; kept until known deadline",
+      "sourceStale": true
     },
     {
       "id": "061d4fcac1f2a69c",
@@ -3388,7 +3394,7 @@
       "group": "FRUITS ZIPPER",
       "title": "FRUITS ZIPPER",
       "ticketType": "2次プレリザーブ",
-      "applyStart": null,
+      "applyStart": "2026-08-29T11:00",
       "applyEnd": "2026-09-07T23:59",
       "resultDate": null,
       "paymentEnd": null,
@@ -3406,9 +3412,9 @@
       "sourceType": "pia",
       "sourcePublishedAt": null,
       "applicationStatus": "open",
-      "applicationWindowVerified": false,
+      "applicationWindowVerified": true,
       "deadlineVerified": true,
-      "applicationDisplayMode": "band-from-today",
+      "applicationDisplayMode": "band",
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=35131",
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=35131",
       "primarySource": "pia",
@@ -3417,10 +3423,7 @@
       ],
       "eventTitle": "FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN -",
       "performanceMatchedToOfficial": true,
-      "eventScope": "kawaii-lab",
-      "retainedFromPreviousPiaRun": true,
-      "piaRetentionReason": "not rediscovered; kept until known deadline",
-      "sourceStale": true
+      "eventScope": "kawaii-lab"
     },
     {
       "id": "e693de809c5ce3ef",
@@ -4003,7 +4006,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3923750001-P0030012P021001?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030012P021001?P1=0175",
-      "sourceObservedAt": "2026-09-01T21:26:45+09:00",
+      "sourceObservedAt": "2026-09-01T21:42:00+09:00",
       "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
       "performanceMatchedToOfficial": true,
       "eventScope": "kawaii-lab"
@@ -4099,7 +4102,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3923750001-P0030013P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030013P021001",
-      "sourceObservedAt": "2026-09-01T21:26:45+09:00",
+      "sourceObservedAt": "2026-09-01T21:42:00+09:00",
       "sourceStale": false,
       "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
       "performanceMatchedToOfficial": true,
@@ -4135,7 +4138,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003",
-      "sourceObservedAt": "2026-09-01T21:26:45+09:00",
+      "sourceObservedAt": "2026-09-01T21:42:00+09:00",
       "eventTitle": "『HIROSHIMA CONTI-NeW FeS 2026』@ 広島グリーンアリーナ",
       "performanceMatchedToOfficial": true,
       "eventScope": "external"
@@ -5479,7 +5482,7 @@
     "remainingDuplicates": []
   },
   "releasePreparation": {
-    "preparedAt": "2026-09-01T21:31:39+09:00",
+    "preparedAt": "2026-09-01T21:46:42+09:00",
     "normalizedSpecialEvents": 3,
     "duplicateIdsRemoved": 0,
     "retainedPreviousRows": 1,
@@ -5539,10 +5542,10 @@
       "remainingDuplicates": []
     },
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-09-01T21:31:39+09:00",
-    "checkedAt": "2026-09-01T21:31:39+09:00"
+    "publicUpdatedAt": "2026-09-01T21:46:42+09:00",
+    "checkedAt": "2026-09-01T21:46:42+09:00"
   },
-  "checkedAt": "2026-09-01T21:31:39+09:00",
+  "checkedAt": "2026-09-01T21:46:42+09:00",
   "playguideFailures": [
     "lawson/CANDY TUNE: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=25)",
     "lawson/CUTIE STREET: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=25)",
@@ -5551,10 +5554,10 @@
     "lawson/SWEET STEADY: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=25)"
   ],
   "playguideDiagnostics": {
-    "collectedAt": "2026-09-01T21:26:45+09:00",
+    "collectedAt": "2026-09-01T21:42:00+09:00",
     "collectorMode": "parallel",
     "workerCount": 10,
-    "durationSeconds": 26.193,
+    "durationSeconds": 25.192,
     "freshCounts": {
       "eplus:CANDY TUNE": 3,
       "eplus:CUTIE STREET": 4,
@@ -5591,7 +5594,7 @@
     "expiredRowsPruned": 0
   },
   "distributedMergeDiagnostics": {
-    "mergedAt": "2026-09-01T21:31:39+09:00",
+    "mergedAt": "2026-09-01T21:46:41+09:00",
     "sources": {
       "playguide": {
         "previous": 11,

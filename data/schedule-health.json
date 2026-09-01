@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-01T21:31:39.790043+09:00",
-  "candidateUpdatedAt": "2026-09-01T21:31:39+09:00",
-  "previousEventCount": 103,
+  "generatedAt": "2026-09-01T21:46:42.483024+09:00",
+  "candidateUpdatedAt": "2026-09-01T21:46:42+09:00",
+  "previousEventCount": 109,
   "candidateEventCount": 109,
-  "protectedPreviousCount": 103,
+  "protectedPreviousCount": 109,
   "errorCount": 0,
-  "warningCount": 76,
+  "warningCount": 74,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: special event has no verified purchase/ticket window: SWEET STEADY / 【SWEET STEADY】 3rdシングル『SWEET STEP』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
@@ -30,7 +30,6 @@
     "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
     "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
     "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
-    "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for pia:35165: 2026-10-26, 2026-10-27, 2026-10-29",
     "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
     "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
     "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
@@ -83,10 +82,9 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
-    "deadline extended for eplus:https://eplus.jp/sf/detail/4401630001-P0030002P021003:days:2026-12-05: 2026-09-02T23:59 -> 2026-09-09T23:59"
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール"
   ],
-  "candidateSha256": "dfa3235c2fde8777fd46216370bc0d9c2783e6cc65ac2b36ecad00edeb582263",
+  "candidateSha256": "702a4556e62dd5c5c5cace872f45b934d39b6aeb2905f7ffdf5a349aa11bb2ad",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -295,7 +293,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 39,
+  "quarantineCount": 38,
   "quarantineActions": [
     {
       "error": "special event has no verified purchase/ticket window: SWEET STEADY / 【SWEET STEADY】 3rdシングル『SWEET STEP』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
@@ -403,11 +401,6 @@
       "restoredPreviousRows": 24
     },
     {
-      "error": "future performance dates disappeared for pia:35165: 2026-10-26, 2026-10-27, 2026-10-29",
-      "action": "restored previous rows for pia:35165",
-      "restoredPreviousRows": 1
-    },
-    {
       "error": "active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
       "action": "restored previous rows for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
       "restoredPreviousRows": 24
@@ -495,7 +488,7 @@
   ],
   "officialIndexReconciledAfterQuarantine": {
     "reassignedCount": 1,
-    "hydratedCount": 1,
+    "hydratedCount": 0,
     "ambiguousCount": 0,
     "unresolvedCount": 0,
     "reassigned": [
@@ -507,14 +500,7 @@
         "to": "special-8c03cb92f4d2247f"
       }
     ],
-    "hydrated": [
-      {
-        "group": "SWEET STEADY",
-        "date": "2026-09-14",
-        "url": "https://sweetsteady.asobisystem.com/live_information/detail/44456",
-        "eventId": "special-9332aaf17a50c3a8"
-      }
-    ],
+    "hydrated": [],
     "ambiguous": [],
     "unresolved": []
   }
