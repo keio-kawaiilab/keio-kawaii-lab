@@ -5,6 +5,10 @@ on:
   push:
     paths:
       - 'scripts/import_odpt_timetables.py'
+      - 'scripts/test_import_odpt_timetables.py'
+      - 'scripts/test_route_core.js'
+      - 'route-core.js'
+      - 'route.js'
       - '.github/workflows/update-transit-timetables.yml'
   schedule:
     - cron: '20 18 * * 0'
@@ -33,6 +37,13 @@ jobs:
 
       - name: Install importer dependency
         run: pip install requests==2.32.5
+
+      - name: Test route search and ODPT importer
+        run: |
+          node --check route-core.js
+          node --check route.js
+          node scripts/test_route_core.js
+          python scripts/test_import_odpt_timetables.py
 
       - name: Import ODPT timetables
         id: import

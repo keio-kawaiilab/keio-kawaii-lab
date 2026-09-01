@@ -9,11 +9,13 @@
 <meta name="theme-color" content="#14386f">
 <title>乗換案内 β｜慶應カワラボ同好会</title>
 <meta name="description" content="ODPTの公共交通オープンデータを使った鉄道の乗換ルート検索です。">
+<meta name="robots" content="noindex,nofollow,noarchive">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./style.css">
 <link rel="stylesheet" href="./route.css">
+<style>.route-leg .route-line-rail{background:var(--route-line-color,#14386f)}.route-leg .route-line-rail::before,.route-leg .route-line-rail::after{border-color:var(--route-line-color,#14386f)}</style>
 </head>
 <body>
 <header class="site-header">
@@ -61,6 +63,7 @@
 <div class="footer-stripe" aria-hidden="true"></div>
 <footer class="site-footer"><div class="footer-inner"><div class="footer-brand"><span class="brand-name">KAWAII LAB.同好会</span><p>慶應義塾大学登録学生団体<br>当会は特定の企業・事務所とは関係のない非公式ファンサークルです。</p></div><nav class="footer-nav" aria-label="フッターメニュー"><ul><li><a href="index.html">トップ</a></li><li><a href="schedule.html">LIVE・チケット</a></li><li><a href="venues.html">会場ガイド</a></li><li><a href="contact.html">Contact</a></li><li><a href="privacy.html">Privacy</a></li></ul></nav></div><p class="copyright">© <span id="year">2026</span> 慶應義塾大学登録学生団体KAWAII LAB.同好会</p></footer>
 <script src="./script.js"></script>
-<script src="./route.js?v=20260901-1"></script>
+<script src="./route-core.js?v=20260902-1"></script>
+<script src="./route.js?v=20260902-1"></script>
 </body>
 </html>

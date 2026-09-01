@@ -194,6 +194,7 @@ def compact_entity(item: dict[str, Any]) -> dict[str, Any]:
         "odpt:railDirectionTitle", "odpt:stationCode", "odpt:lineCode",
         "odpt:ascendingRailDirection", "odpt:descendingRailDirection",
         "odpt:stationOrder", "geo:lat", "geo:long",
+        "odpt:connectingRailway", "odpt:connectingStation", "odpt:color",
     }
     return {k: v for k, v in item.items() if k in keep}
 
@@ -303,27 +304,32 @@ def main() -> int:
                 raw = api_get(session, rdf_type, key, operator_uri)
                 entities[rdf_type.split(":", 1)[1]] = [compact_entity(x) for x in raw]
 
-            station_raw = api_get(session, "odpt:StationTimetable", key, operator_uri)
-            train_raw = api_get(session, "odpt:TrainTimetable", key, operator_uri)
-
-            if not station_raw:
+            stations = entities.get("Station") or []
+            railways = entities.get("Railway") or []
+            if not stations or not railways:
                 info["status"] = "not-available"
+                info["stations"] = len(stations)
+                info["railways"] = len(railways)
                 info["stationTimetables"] = 0
-                info["trainTimetables"] = len(train_raw)
+                info["trainTimetables"] = 0
                 continue
 
             op_dir = OUT_ROOT / slug
             dump_json(op_dir / "entities.json", entities)
+            station_raw = api_get(session, "odpt:StationTimetable", key, operator_uri)
+            train_raw = api_get(session, "odpt:TrainTimetable", key, operator_uri)
             station_compact = [compact_station_timetable(x) for x in station_raw]
             train_compact = [compact_train_timetable(x) for x in train_raw]
             dump_json(op_dir / "station-timetables.json", station_compact)
             dump_json(op_dir / "train-timetables.json", train_compact)
 
-            unique_stations = {x.get("station") for x in station_compact if x.get("station")}
+            unique_stations = {x.get("owl:sameAs") for x in stations if x.get("owl:sameAs")}
             departures = sum(len(x.get("trains") or []) for x in station_compact)
             info.update({
                 "status": "ok",
+                "timetableStatus": "ok" if station_compact else "not-available",
                 "stations": len(unique_stations),
+                "railways": len(railways),
                 "stationTimetables": len(station_compact),
                 "trainTimetables": len(train_compact),
                 "departures": departures,
