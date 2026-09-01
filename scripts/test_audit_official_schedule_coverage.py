@@ -23,6 +23,13 @@ class CoverageAuditTests(unittest.TestCase):
         data, index = self.fixture()
         self.assertEqual([], audit(data, index))
 
+    def test_official_schedule_url_field_counts_as_source(self):
+        data, index = self.fixture()
+        official_url = index["entries"][0]["url"]
+        data["events"][0]["url"] = "https://candytune.asobisystem.com/news/detail/1"
+        data["events"][0]["officialScheduleUrl"] = official_url
+        self.assertEqual([], audit(data, index))
+
     def test_missing_representation_blocks(self):
         data, index = self.fixture()
         index["entries"][0]["representedBy"] = "missing"
