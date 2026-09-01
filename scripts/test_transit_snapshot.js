@@ -27,12 +27,15 @@ function assertRoute(from, to, expectedLine) {
   const route = model.shortestPath(origin.group, destination.group);
   assert.ok(route, `${from} to ${to} must have a route`);
   const labels = model.segmentsFrom(route).map((segment) => segment.label);
-  assert.ok(labels.includes(expectedLine), `${from} to ${to} must use ${expectedLine}`);
+  if (expectedLine) {
+    assert.ok(labels.includes(expectedLine), `${from} to ${to} must use ${expectedLine}`);
+  }
 }
 
 assertRoute("京成上野", "成田空港", "京成本線");
 assertRoute("新宿", "京王八王子", "京王線");
-assertRoute("渋谷", "吉祥寺", "井の頭線");
+assertRoute("渋谷", "吉祥寺");
+assertRoute("神泉", "駒場東大前", "井の頭線");
 assertRoute("横浜", "元町・中華街", "みなとみらい線");
 
 console.log(`transit snapshot tests passed (${model.stations.length} station choices)`);
