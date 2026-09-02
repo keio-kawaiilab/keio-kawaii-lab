@@ -26,8 +26,6 @@ GROUPS = (
     "CUTIE STREET",
     "MORE STAR",
 )
-# SUKISUKI changes the wording used for the same family of online events.
-# Do not require only the historical "オンライン特典会" label at discovery time.
 ONLINE_HINTS = (
     "オンライン特典会",
     "オンラインサイン会",
@@ -36,7 +34,9 @@ ONLINE_HINTS = (
     "オン特",
 )
 YEARLESS_MAX_DAYS = 60
-MAX_DISCOVERED_GOODS = 180
+# Read the newest goods themselves before deciding whether they are online
+# events.  The list-card text is not a reliable source of type/group metadata.
+MAX_DISCOVERED_GOODS = 120
 YEAR_HINT_LABELS = (
     "抽選申込期間", "申込期間", "販売期間",
     "当落発表日", "当落発表", "当選発表",
@@ -208,6 +208,12 @@ def stable_id(*parts: object) -> str:
 
 
 def discover(session: requests.Session) -> tuple[list[str], list[str]]:
+    """Discover recent SUKISUKI goods without guessing their type from cards.
+
+    The listing markup is intentionally treated only as a link index.  Group
+    attribution and online-event classification happen after the full official
+    detail page is fetched in parse_goods().
+    """
     urls: set[str] = set()
     failures: list[str] = []
     for list_url in LIST_URLS:
@@ -220,17 +226,7 @@ def discover(session: requests.Session) -> tuple[list[str], list[str]]:
         soup = BeautifulSoup(response.text, "html.parser")
         for anchor in soup.find_all("a", href=True):
             href = str(anchor.get("href") or "")
-            if "/goods/" not in href:
-                continue
-            context = normalize_space(anchor.get_text(" ", strip=True))
-            parent = anchor.parent
-            if parent is not None:
-                context += " " + normalize_space(parent.get_text(" ", strip=True))
-            # Group attribution is intentionally NOT required here. SUKISUKI
-            # cards sometimes expose only a member name or a shortened title.
-            # Read the detail page first, then identify the KAWAII LAB. group
-            # from the full official product text in parse_goods().
-            if not any(hint in context for hint in ONLINE_HINTS):
+            if not GOODS_ID_RE.search(href):
                 continue
             urls.add(canonical_goods_url(urljoin(list_url, href)))
 
@@ -319,7 +315,7 @@ def main() -> int:
 
     session = requests.Session()
     session.headers.update({
-        "User-Agent": "KeioKawaiiLabCalendarBot/2.0 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"
+        "User-Agent": "KeioKawaiiLabCalendarBot/2.1 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"
     })
     urls, discovery_failures = discover(session)
     today = datetime.now(JST).date()
@@ -334,8 +330,19 @@ def main() -> int:
             failures.append(f"{url}: {exc}")
 
     print(json.dumps({
-        "discovered": len(urls),
+        "discoveredGoods": len(urls),
+        "newestGoods": urls[:10],
         "futureOnlineEvents": len(parsed),
+        "futureOnlineEventSample": [
+            {
+                "group": event.get("group"),
+                "eventDate": event.get("eventDate"),
+                "startTime": event.get("startTime"),
+                "title": event.get("title"),
+                "url": event.get("url"),
+            }
+            for event in parsed[:10]
+        ],
         "failures": failures,
     }, ensure_ascii=False, indent=2))
 
@@ -349,9 +356,6 @@ def main() -> int:
         return 0
 
     payload = json.loads(DATA_PATH.read_text(encoding="utf-8"))
-    # Replace every prior SUKISUKI-derived row, even if a sanitizer changed
-    # sourceType to derived. This prevents stale schedule-only duplicates from
-    # surviving next to the current lottery/first-come sale rows.
     existing = [
         event for event in payload.get("events", [])
         if isinstance(event, dict) and not is_sukisuki_event(event)
