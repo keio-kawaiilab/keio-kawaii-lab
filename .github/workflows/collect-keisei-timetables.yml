@@ -75,7 +75,25 @@ jobs:
           if [ "$FULL_REFRESH" = "true" ]; then
             echo "Full refresh: rediscovering the current official Keisei timetable."
             python scripts/collect_keisei_timetables.py --discover
-            checkpoint "Refresh Keisei official train discovery"
+            python - <<'PY'
+          import json
+          from pathlib import Path
+          state = json.loads(Path('data/transit/keisei/collector-state.json').read_text(encoding='utf-8'))
+          count = int(state.get('trainReferenceCount') or 0)
+          by_dw = state.get('trainReferencesByDw') or {}
+          pages = int(state.get('pageCount') or 0)
+          assert 3000 <= count <= 7000, count
+          assert int(by_dw.get('0', 0)) > 1000, by_dw
+          assert int(by_dw.get('1', 0)) > 1000, by_dw
+          assert int(by_dw.get('0', 0)) + int(by_dw.get('1', 0)) == count, (count, by_dw)
+          assert pages >= 150, pages
+          print('Fresh discovery sanity check:', count, by_dw, 'pages=', pages)
+          PY
+            # Once the new discovery is known-good, remove the previous generation's
+            # detail checkpoints. The already-published merged database is left intact
+            # until the entire new generation validates successfully.
+            rm -f data/transit/keisei/train-detail-chunks/chunk-*.json
+            checkpoint "Start fresh Keisei timetable generation"
           else
             echo "Resume mode: using the saved discovery and completed train chunks."
           fi
@@ -91,9 +109,6 @@ jobs:
 
           for ((chunk=0; chunk<CHUNKS; chunk++)); do
             echo "=== Keisei detail chunk $chunk/$((CHUNKS-1)) ==="
-            if [ "$FULL_REFRESH" = "true" ]; then
-              rm -f "data/transit/keisei/train-detail-chunks/chunk-$(printf '%03d' "$chunk").json"
-            fi
             success=0
             for attempt in 1 2 3; do
               set +e
@@ -116,19 +131,6 @@ jobs:
               exit 1
             fi
           done
-
-          # Remove obsolete chunk files if a future timetable contains fewer trains.
-          if [ -d data/transit/keisei/train-detail-chunks ]; then
-            for path in data/transit/keisei/train-detail-chunks/chunk-*.json; do
-              [ -e "$path" ] || continue
-              number=${path##*chunk-}
-              number=${number%.json}
-              index=$((10#$number))
-              if [ "$index" -ge "$CHUNKS" ]; then
-                rm -f "$path"
-              fi
-            done
-          fi
 
           python scripts/collect_keisei_timetables.py --merge-chunks --chunk-size "$CHUNK_SIZE"
           checkpoint "Merge all Keisei official train details"
