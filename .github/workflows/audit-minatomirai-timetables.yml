@@ -21,7 +21,9 @@ on:
       - 'scripts/build_minatomirai_downbound_trips.py'
       - 'scripts/build_minatomirai_upbound_trips.py'
       - 'scripts/build_minatomirai_routing_timetable.py'
+      - 'scripts/build_minatomirai_routing_timetable_v2.py'
       - 'data/transit/yokohama-minatomirai/verified-upbound-minatomirai-20260314.json'
+      - 'data/transit/yokohama-minatomirai/verified-upbound-minatomirai-holiday-20260314.json'
       - 'data/transit/yokohama-minatomirai/verified-upbound-supplement-20260314.json'
       - '.github/workflows/audit-minatomirai-timetables.yml'
 
@@ -60,7 +62,7 @@ jobs:
       - name: Audit saved downbound timetable snapshot
         run: python scripts/audit_minatomirai_downbound.py
       - name: Build routing timetable
-        run: python scripts/build_minatomirai_routing_timetable.py
+        run: python scripts/build_minatomirai_routing_timetable_v2.py
       - name: Smoke-test route engine with Minatomirai timetable
         run: |
           node <<'NODE'
