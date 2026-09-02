@@ -16,6 +16,9 @@ on:
       - 'scripts/collect_keisei_timetables.py'
       - 'scripts/build_keisei_official_timetables.py'
       - 'scripts/build_keisei_network_timetable.py'
+      - 'scripts/test_keisei_route_ui.js'
+      - 'route.js'
+      - 'route-core.js'
       - '.github/workflows/collect-keisei-timetables.yml'
 
 permissions:
@@ -42,6 +45,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
 
       - name: Install collector dependencies
         run: pip install requests==2.32.5 beautifulsoup4==4.13.5
@@ -198,13 +205,20 @@ jobs:
                   data/transit/manifest.json
           if git diff --cached --quiet; then
             echo "No compact timetable changes."
-            exit 0
+          else
+            git commit -m "Publish Keisei official timetable database"
+            for push_attempt in 1 2 3 4; do
+              if git pull --rebase origin main && git push origin HEAD:main; then
+                break
+              fi
+              if [ "$push_attempt" -eq 4 ]; then exit 1; fi
+              sleep $((push_attempt * 3))
+            done
           fi
-          git commit -m "Publish Keisei official timetable database"
-          for push_attempt in 1 2 3 4; do
-            if git pull --rebase origin main && git push origin HEAD:main; then
-              exit 0
-            fi
-            sleep $((push_attempt * 3))
-          done
-          exit 1
+
+      - name: Exercise refreshed Keisei data through browser route logic
+        run: |
+          node --check route-core.js
+          node --check route.js
+          node --check scripts/test_keisei_route_ui.js
+          node scripts/test_keisei_route_ui.js
