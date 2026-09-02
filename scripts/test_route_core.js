@@ -17,6 +17,7 @@ function station(id, name, railway, lat, lon, operator = "odpt.Operator:Test") {
 function railway(id, name, color, stations) {
   return {
     "owl:sameAs": id,
+    "odpt:operator": "odpt.Operator:Test",
     "odpt:railwayTitle": { ja: name },
     "odpt:color": color,
     "odpt:stationOrder": stations.map((stationId, index) => ({
@@ -94,9 +95,52 @@ assert.equal(timed.arrival, 506, "the five-minute transfer buffer must reject tr
 assert.deepEqual(timed.segments.map((item) => item.trainNumber), ["101", "203"]);
 assert.equal(model.timedItinerary(path, weekdayTimetables, 475, "holiday", 5), null, "missing holiday service on the second line must not invent a time");
 
+const throughTimetables = {
+  [lineA]: {
+    timeBasis: "station-departure-only",
+    stations: ["station:a1", "station:a2"], calendars: ["odpt.Calendar:Weekday"], directions: ["direction:ascending"],
+    trainTypes: ["odpt.TrainType:Test.Local"], destinations: ["station:b2"], order: ["station:a1", "station:a2"],
+    ascendingDirection: "direction:ascending", descendingDirection: "direction:descending", edgeMinutes: [[0, 1, 10, 3]],
+    boards: [[0, 0, 0, [[480, 0, 0]]]], inferredTrips: [[0, 0, 0, 0, 100, [[0, null, 480], [1, null, 490]]]],
+  },
+  [lineB]: {
+    timeBasis: "station-departure-only",
+    stations: ["station:b1", "station:b2"], calendars: ["odpt.Calendar:Weekday"], directions: ["direction:ascending"],
+    trainTypes: ["odpt.TrainType:Test.Local"], destinations: ["station:b2"], order: ["station:b1", "station:b2"],
+    ascendingDirection: "direction:ascending", descendingDirection: "direction:descending", edgeMinutes: [[0, 1, 10, 3]],
+    boards: [[0, 0, 0, [[490, 0, 0]]]], inferredTrips: [[0, 0, 0, 0, 100, [[0, null, 490], [1, null, 500]]]],
+  },
+};
+const throughTimed = model.timedItinerary(path, throughTimetables, 475, "weekday", 5);
+assert.equal(throughTimed.arrival, 500, "a matching same-operator continuation must not receive a fictitious transfer wait");
+assert.equal(throughTimed.transfers, 0);
+assert.equal(throughTimed.segments[1].throughFromPrevious, true);
+
 const timedOnlyPath = model.shortestPath(origin, destination, { allowedRailways: [lineA, lineB] });
 assert.ok(timedOnlyPath, "railway availability filtering must retain supported routes");
 assert.equal(model.shortestPath(origin, destination, { allowedRailways: [lineA] }), null, "unsupported lines must be excluded from a timed route");
+
+const alternativeModel = core.createModel([{
+  Station: [
+    station("station:route-origin", "候補出発", "line:slow", 35.000, 139.000),
+    station("station:route-middle", "候補中間", "line:slow", 35.010, 139.010),
+    station("station:route-destination", "候補到着", ["line:slow", "line:direct"], 35.020, 139.020),
+  ],
+  Railway: [
+    railway("line:slow", "各駅線", "#334455", ["station:route-origin", "station:route-middle", "station:route-destination"]),
+    railway("line:direct", "直通線", "#556677", ["station:route-origin", "station:route-destination"]),
+  ],
+}]);
+const alternativePaths = alternativeModel.candidatePaths(
+  alternativeModel.resolveInput("候補出発").group,
+  alternativeModel.resolveInput("候補到着").group,
+  { allowedRailways: ["line:slow", "line:direct"], limit: 4 },
+);
+assert.equal(alternativePaths.length, 2, "multiple viable rail routes must be retained for timetable comparison");
+assert.deepEqual(
+  new Set(alternativePaths.flatMap((candidate) => alternativeModel.segmentsFrom(candidate).map((segment) => segment.railway))),
+  new Set(["line:slow", "line:direct"]),
+);
 
 const bridgeModel = core.createModel([{
   Station: [
@@ -155,6 +199,25 @@ const estimated = model.timedItinerary(lineAPath, {
 assert.equal(estimated.departure, 500);
 assert.equal(estimated.arrival, 503);
 assert.equal(estimated.estimatedArrival, true);
+
+const waitAware = model.timedItinerary(lineAPath, {
+  [lineA]: {
+    timeBasis: "station-departure-only",
+    stations: ["station:a1", "station:a2"],
+    calendars: ["odpt.Calendar:Weekday"],
+    directions: ["direction:ascending"],
+    trainTypes: ["odpt.TrainType:Test.Local"],
+    destinations: ["station:a2"],
+    order: ["station:a1", "station:a2"],
+    ascendingDirection: "direction:ascending",
+    descendingDirection: "direction:descending",
+    edgeMinutes: [[0, 1, 3, 3]],
+    boards: [[0, 0, 0, [[500, 0, 0]]]],
+    inferredTrips: [[0, 0, 0, 0, 95, [[0, null, 500], [1, null, 510]]]],
+  },
+}, 481, "weekday", 5);
+assert.equal(waitAware.arrival, 510, "a reconstructed train must retain its individual waiting time");
+assert.equal(waitAware.segments[0].timeBasis, "inferred-station-trip");
 
 const geographicFallback = model.timedItinerary(lineAPath, {
   [lineA]: {

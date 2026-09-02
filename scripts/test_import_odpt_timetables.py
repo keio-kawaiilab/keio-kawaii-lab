@@ -185,8 +185,51 @@ class ImportOdptTimetablesTests(unittest.TestCase):
         self.assertEqual(compact["boards"][0][3], [[481, 0, 0], [491, 0, 0], [501, 0, 0]])
         self.assertEqual(compact["edgeMinutes"], [[0, 1, 3, 3], [1, 0, 3, 3]])
         self.assertEqual(compact["typeDurations"], [[0, 1, 0, 0, 3, 3]])
+        self.assertEqual(len(compact["inferredTrips"]), 3)
+        self.assertEqual(compact["inferredConnections"], 3)
         self.assertEqual(connections, 0)
         self.assertEqual(departures, 6)
+
+    def test_inferred_station_trips_keep_train_specific_waiting_time(self):
+        station_times = {
+            "station:a": ["08:00", "08:10", "08:20"],
+            "station:b": ["08:03", "08:13", "08:23"],
+            # The first local waits four extra minutes here; later trains do not.
+            "station:c": ["08:10", "08:16", "08:26"],
+            "station:d": ["08:13", "08:19", "08:29"],
+        }
+        items = []
+        for station_id, times in station_times.items():
+            items.append({
+                "odpt:railway": "railway:test",
+                "odpt:station": station_id,
+                "odpt:railDirection": "direction:ascending",
+                "odpt:calendar": "odpt.Calendar:Weekday",
+                "odpt:stationTimetableObject": [{
+                    "odpt:trainType": "type:local",
+                    "odpt:destinationStation": ["station:d"],
+                    "odpt:departureTime": departure,
+                } for departure in times],
+            })
+        railway = {
+            "owl:sameAs": "railway:test",
+            "odpt:ascendingRailDirection": "direction:ascending",
+            "odpt:descendingRailDirection": "direction:descending",
+            "odpt:stationOrder": [
+                {"odpt:index": index + 1, "odpt:station": station_id}
+                for index, station_id in enumerate(station_times)
+            ],
+        }
+        compact, connections, _departures = importer.compact_station_timetables(
+            items, {}, [railway]
+        )["railway:test"]
+        first_trip = next(
+            trip for trip in compact["inferredTrips"]
+            if trip[5][0][2] == 8 * 60
+        )
+        self.assertEqual([stop[2] for stop in first_trip[5]], [480, 483, 490, 493])
+        self.assertEqual(compact["inferredConnections"], 9)
+        self.assertEqual(connections, 0, "inferred trips must remain labelled as estimates")
 
     def test_manual_topology_adds_all_stations_and_station_order(self):
         topology = {

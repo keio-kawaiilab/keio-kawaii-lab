@@ -709,6 +709,217 @@ def infer_type_durations(
     return inferred
 
 
+def align_departure_events(
+    departures: list[dict[str, Any]],
+    following: list[dict[str, Any]],
+    preferred_minutes: int,
+    maximum_extra_minutes: int = 8,
+) -> list[tuple[int, int, int]]:
+    """Monotonically match two station event sequences.
+
+    Trains with the same direction, type and destination do not normally pass
+    one another. Maximising the number of ordered matches therefore recovers
+    individual trains even when one local service waits several extra minutes
+    for an express to pass. Timing deviation is only a secondary tie-breaker.
+    """
+    first_count = len(departures)
+    following_count = len(following)
+    states: list[list[tuple[int, int] | None]] = [
+        [None] * (following_count + 1) for _ in range(first_count + 1)
+    ]
+    parents: list[list[tuple[int, int, str] | None]] = [
+        [None] * (following_count + 1) for _ in range(first_count + 1)
+    ]
+    states[0][0] = (0, 0)
+
+    def update(
+        next_first: int,
+        next_following: int,
+        candidate: tuple[int, int],
+        parent: tuple[int, int, str],
+    ) -> None:
+        existing = states[next_first][next_following]
+        # More matched trains always wins; with equal coverage, prefer the
+        # alignment closest to the repeated baseline running time.
+        if existing is None or (candidate[0], -candidate[1]) > (existing[0], -existing[1]):
+            states[next_first][next_following] = candidate
+            parents[next_first][next_following] = parent
+
+    minimum_minutes = max(1, preferred_minutes - 2)
+    maximum_minutes = preferred_minutes + maximum_extra_minutes
+    for first_index in range(first_count + 1):
+        for following_index in range(following_count + 1):
+            state = states[first_index][following_index]
+            if state is None:
+                continue
+            matches, cost = state
+            if first_index < first_count:
+                update(
+                    first_index + 1,
+                    following_index,
+                    state,
+                    (first_index, following_index, "skip-first"),
+                )
+            if following_index < following_count:
+                update(
+                    first_index,
+                    following_index + 1,
+                    state,
+                    (first_index, following_index, "skip-following"),
+                )
+            if first_index >= first_count or following_index >= following_count:
+                continue
+            duration = int(following[following_index]["basis"]) - int(departures[first_index]["basis"])
+            if minimum_minutes <= duration <= maximum_minutes:
+                update(
+                    first_index + 1,
+                    following_index + 1,
+                    (matches + 1, cost + abs(duration - preferred_minutes)),
+                    (first_index, following_index, "match"),
+                )
+
+    matches: list[tuple[int, int, int]] = []
+    first_index = first_count
+    following_index = following_count
+    while first_index or following_index:
+        parent = parents[first_index][following_index]
+        if parent is None:
+            break
+        previous_first, previous_following, operation = parent
+        if operation == "match":
+            duration = int(following[previous_following]["basis"]) - int(
+                departures[previous_first]["basis"]
+            )
+            matches.append((previous_first, previous_following, duration))
+        first_index, following_index = previous_first, previous_following
+    matches.reverse()
+    return matches
+
+
+def infer_departure_trips(
+    boards: list[dict[str, Any]],
+    order: list[str],
+    ascending_direction: str,
+    descending_direction: str,
+    inferred_edges: dict[tuple[str, str], tuple[int, int]],
+) -> tuple[list[dict[str, Any]], int]:
+    """Recover likely individual trains from station timetable sequences.
+
+    ODPT's challenge feeds for several operators contain exact station event
+    times but omit train identifiers. Events are partitioned by service day,
+    direction, train type and destination, then aligned in station order. A
+    recovered trip retains the observed time at every matched station, so an
+    exceptional wait or overtaking stop affects that train rather than the
+    generic line-wide running-time estimate.
+    """
+    order_index = {station: index for index, station in enumerate(order)}
+    grouped: dict[
+        tuple[str, str, str, str], dict[str, list[dict[str, Any]]]
+    ] = defaultdict(lambda: defaultdict(list))
+    for board in boards:
+        station = str(board["station"])
+        if station not in order_index:
+            continue
+        for event in board.get("events") or []:
+            key = (
+                str(board["calendar"]),
+                str(board["direction"]),
+                str(event["trainType"]),
+                str(event["destination"]),
+            )
+            grouped[key][station].append(event)
+
+    recovered: list[dict[str, Any]] = []
+    connection_count = 0
+    for (calendar, direction, train_type, destination), schedules in grouped.items():
+        if direction == ascending_direction:
+            stations = sorted(schedules, key=order_index.get)
+        elif direction == descending_direction:
+            stations = sorted(schedules, key=order_index.get, reverse=True)
+        else:
+            continue
+        for station in stations:
+            schedules[station].sort(key=lambda event: int(event["basis"]))
+
+        successors: dict[tuple[str, int], tuple[str, int]] = {}
+        predecessors: dict[tuple[str, int], tuple[str, int]] = {}
+        deviations: dict[tuple[str, int], int] = {}
+        for from_station, to_station in zip(stations, stations[1:]):
+            from_position = order_index[from_station]
+            to_position = order_index[to_station]
+            step = 1 if to_position > from_position else -1
+            baseline = 0
+            for position in range(from_position, to_position, step):
+                edge = (order[position], order[position + step])
+                baseline += int(inferred_edges.get(edge, (3, 0))[0])
+            maximum_candidate = max(8, baseline + 15)
+            candidates = time_offset_candidates(
+                Counter(int(event["basis"]) for event in schedules[from_station]),
+                Counter(int(event["basis"]) for event in schedules[to_station]),
+                maximum_candidate,
+            )
+            # The independently inferred adjacent-edge time is the safest
+            # anchor for neighbouring stations. For an express that skips
+            # stations, accept the best repeated offset that is no slower than
+            # the all-stations baseline by more than normal platform dwell.
+            if abs(to_position - from_position) == 1:
+                preferred = max(1, baseline)
+            else:
+                plausible = [candidate for candidate in candidates if candidate[0] <= baseline + 3]
+                preferred = int(plausible[0][0]) if plausible else max(1, baseline)
+            for from_index, to_index, duration in align_departure_events(
+                schedules[from_station], schedules[to_station], preferred
+            ):
+                first_node = (from_station, from_index)
+                following_node = (to_station, to_index)
+                successors[first_node] = following_node
+                predecessors[following_node] = first_node
+                deviations[first_node] = abs(duration - preferred)
+
+        nodes = [
+            (station, event_index)
+            for station in stations
+            for event_index in range(len(schedules[station]))
+        ]
+        visited: set[tuple[str, int]] = set()
+        for node in nodes:
+            if node in predecessors:
+                continue
+            chain: list[tuple[str, int]] = []
+            current = node
+            while current not in visited:
+                visited.add(current)
+                chain.append(current)
+                if current not in successors:
+                    break
+                current = successors[current]
+            if len(chain) < 2:
+                continue
+            observed_stops = []
+            link_deviations = []
+            for station, event_index in chain:
+                event = schedules[station][event_index]
+                observed_stops.append([
+                    station,
+                    event.get("arrival"),
+                    event.get("departure"),
+                ])
+                if (station, event_index) in deviations:
+                    link_deviations.append(deviations[(station, event_index)])
+            mean_deviation = sum(link_deviations) / max(1, len(link_deviations))
+            confidence = max(1, round(100 - min(20, mean_deviation) * 5))
+            recovered.append({
+                "calendar": calendar,
+                "direction": direction,
+                "trainType": train_type,
+                "destination": destination,
+                "confidence": confidence,
+                "stops": observed_stops,
+            })
+            connection_count += len(observed_stops) - 1
+    return recovered, connection_count
+
+
 def compact_station_timetables(
     items: list[dict[str, Any]],
     station_aliases: dict[str, str] | None = None,
@@ -737,6 +948,7 @@ def compact_station_timetables(
             continue
 
         board_departures: list[tuple[int, str, str]] = []
+        board_events: list[dict[str, Any]] = []
 
         for row in item.get("odpt:stationTimetableObject") or []:
             if not isinstance(row, dict):
@@ -746,12 +958,24 @@ def compact_station_timetables(
             if arrival is None and departure is None:
                 continue
             train_type = str(row.get("odpt:trainType") or "")
+            raw_destinations = row.get("odpt:destinationStation")
+            destinations = raw_destinations if isinstance(raw_destinations, list) else [raw_destinations]
+            raw_destination = str(next((value for value in destinations if value), ""))
+            destination = station_aliases.get(raw_destination, raw_destination)
+            # Arrival-only terminal rows do not always repeat their destination.
+            # Treating the current station as the destination lets them join the
+            # preceding station's explicitly destination-labelled departure.
+            if not destination and departure is None:
+                destination = station_id
             if departure is not None:
-                raw_destinations = row.get("odpt:destinationStation")
-                destinations = raw_destinations if isinstance(raw_destinations, list) else [raw_destinations]
-                raw_destination = str(next((value for value in destinations if value), ""))
-                destination = station_aliases.get(raw_destination, raw_destination)
                 board_departures.append((departure, train_type, destination))
+            board_events.append({
+                "arrival": arrival,
+                "departure": departure,
+                "basis": departure if departure is not None else arrival,
+                "trainType": train_type,
+                "destination": destination,
+            })
             train_ref = str(row.get("odpt:train") or "")
             train_number = str(row.get("odpt:trainNumber") or "")
             train_key = train_ref or train_number
@@ -776,13 +1000,14 @@ def compact_station_timetables(
                 if departure is not None:
                     stop[1] = departure
 
-        if board_departures:
+        if board_departures or board_events:
             for calendar_value in calendars:
                 raw_boards[railway_id].append({
                     "station": station_id,
                     "calendar": str(calendar_value or ""),
                     "direction": direction,
                     "departures": board_departures,
+                    "events": board_events,
                 })
 
     railway_meta = {
@@ -804,6 +1029,7 @@ def compact_station_timetables(
         direction_values: list[str] = []
         direction_indexes: dict[str, int] = {}
         trips: list[list[Any]] = []
+        inferred_trips: list[list[Any]] = []
         boards: list[list[Any]] = []
         connections = 0
         departure_count = 0
@@ -881,6 +1107,13 @@ def compact_station_timetables(
         inferred_types = infer_type_durations(
             raw_boards.get(railway_id, []), order, ascending_direction, descending_direction
         )
+        recovered_trips, inferred_connection_count = infer_departure_trips(
+            raw_boards.get(railway_id, []),
+            order,
+            ascending_direction,
+            descending_direction,
+            inferred_edges,
+        )
         edge_minutes = []
         for (from_station, to_station), (minutes, support) in sorted(inferred_edges.items()):
             from_index = index_of(from_station, station_values, station_indexes)
@@ -894,9 +1127,26 @@ def compact_station_timetables(
             destination_index = index_of(destination, destination_values, destination_indexes)
             for minutes, support in candidates:
                 type_durations.append([from_index, to_index, type_index, destination_index, minutes, support])
+        for trip in recovered_trips:
+            calendar_index = index_of(trip["calendar"], calendar_values, calendar_indexes)
+            direction_index = index_of(trip["direction"], direction_values, direction_indexes)
+            type_index = index_of(trip["trainType"], train_type_values, train_type_indexes)
+            destination_index = index_of(trip["destination"], destination_values, destination_indexes)
+            stops = []
+            for station_id, arrival, departure in trip["stops"]:
+                station_index = index_of(station_id, station_values, station_indexes)
+                stops.append([station_index, arrival, departure])
+            inferred_trips.append([
+                calendar_index,
+                direction_index,
+                type_index,
+                destination_index,
+                trip["confidence"],
+                stops,
+            ])
 
         results[railway_id] = ({
-            "version": 1,
+            "version": 2,
             "railway": railway_id,
             "timeBasis": "station-departure-only" if not trips else "station-departure",
             "stations": station_values,
@@ -905,6 +1155,8 @@ def compact_station_timetables(
             "trainTypes": train_type_values,
             "destinations": destination_values,
             "trips": trips,
+            "inferredTrips": inferred_trips,
+            "inferredConnections": inferred_connection_count,
             "boards": boards,
             "order": order,
             "ascendingDirection": ascending_direction,
@@ -1008,6 +1260,7 @@ def main() -> int:
             total_station_departures = 0
             total_train_timetables = 0
             total_connections = 0
+            total_inferred_connections = 0
             timetable_dir = op_dir / "timetables"
             if timetable_dir.exists():
                 for old_file in timetable_dir.glob("*.json"):
@@ -1059,10 +1312,13 @@ def main() -> int:
                             "file": f"timetables/{filename}",
                             "trips": len(compact_timetable["trips"]),
                             "connections": connection_count,
+                            "inferredTrips": len(compact_timetable.get("inferredTrips") or []),
+                            "inferredConnections": int(compact_timetable.get("inferredConnections") or 0),
                             "departures": departure_count,
                             "source": "station-timetable",
                         }
                         total_connections += connection_count
+                        total_inferred_connections += int(compact_timetable.get("inferredConnections") or 0)
                         total_station_departures += departure_count
             dump_json(op_dir / "timetable-index.json", timetable_index)
 
@@ -1079,9 +1335,10 @@ def main() -> int:
                 "trainTimetables": total_train_timetables,
                 "timetableLines": len(timetable_index["lines"]),
                 "timetableConnections": total_connections,
+                "inferredConnections": total_inferred_connections,
                 "departures": total_connections + total_station_departures,
             })
-            print(f"{slug}: {len(unique_stations)} stations / {topology_edges} topology edges / {total_connections} timetable connections / {total_station_departures} station departures / {total_train_timetables} train timetables")
+            print(f"{slug}: {len(unique_stations)} stations / {topology_edges} topology edges / {total_connections} exact timetable connections / {total_inferred_connections} inferred connections / {total_station_departures} station departures / {total_train_timetables} train timetables")
         except Exception as exc:  # continue other operators and expose failure in manifest
             info["status"] = "error"
             info["error"] = str(exc)
