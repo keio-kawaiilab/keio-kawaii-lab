@@ -9,6 +9,7 @@ on:
       - 'preview/transfer-guide/**'
       - 'scripts/test_keisei_route_ui.js'
       - 'scripts/test_route_preview_smoke.js'
+      - 'scripts/test_route_preview_ui.js'
       - 'data/transit/**/entities.json'
       - 'data/transit/**/timetable-index.json'
       - 'data/transit/**/timetables/**'
@@ -34,7 +35,10 @@ jobs:
           node --check preview/transfer-guide/preview.js
           node --check scripts/test_keisei_route_ui.js
           node --check scripts/test_route_preview_smoke.js
+          node --check scripts/test_route_preview_ui.js
       - name: Exercise exact Keisei through route in the browser logic
         run: node scripts/test_keisei_route_ui.js
       - name: Exercise preview routes across operators
         run: node scripts/test_route_preview_smoke.js
+      - name: Exercise owner preview interactions
+        run: node scripts/test_route_preview_ui.js
