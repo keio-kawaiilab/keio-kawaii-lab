@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  collect-test:
+  discover:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,20 +27,20 @@ jobs:
       - name: Install collector dependencies
         run: pip install requests==2.32.5 beautifulsoup4==4.13.5
 
-      - name: Collect twenty detailed train timetables
-        run: python scripts/collect_keisei_timetables.py --limit 20
+      - name: Discover all Keisei station pages and trains
+        run: python scripts/collect_keisei_timetables.py --discover
 
-      - name: Commit validation snapshot
+      - name: Commit durable discovery checkpoint
         shell: bash
         run: |
-          if [ -z "$(git status --porcelain -- data/transit/keisei/collector-test.json)" ]; then
-            echo "No collector snapshot changes."
+          if [ -z "$(git status --porcelain -- data/transit/keisei/collector-state.json)" ]; then
+            echo "No discovery changes."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/transit/keisei/collector-test.json
-          git commit -m "Validate twenty Keisei train timetables"
+          git add data/transit/keisei/collector-state.json
+          git commit -m "Checkpoint Keisei timetable discovery"
           for attempt in 1 2 3; do
             git fetch origin main
             git rebase origin/main
