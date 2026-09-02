@@ -25,7 +25,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends tesseract-ocr
-          pip install requests==2.32.5 Pillow==11.3.0 pytesseract==0.3.13
+          pip install requests==2.32.5 Pillow==11.3.0 pytesseract==0.3.13 numpy==2.3.2
       - name: Probe official timetable artwork
         run: python scripts/probe_minatomirai_ocr.py
       - name: Save probe for inspection
