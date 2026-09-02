@@ -24,7 +24,7 @@ SEARCH_URL = f"{BASE}/search/timetable"
 OUT_DIR = Path("data/transit/keisei")
 PROBE_PATH = OUT_DIR / "collector-probe.json"
 UA = "Keio-Kawaii-Lab timetable research/1.0 (+https://github.com/keio-kawaiilab/keio-kawaii-lab)"
-REQUEST_INTERVAL = float(os.environ.get("KEISEI_REQUEST_INTERVAL_SECONDS", "1.0"))
+REQUEST_INTERVAL = float(os.environ.get("KEISEI_REQUEST_INTERVAL_SECONDS", "0.8"))
 
 
 def get(session: requests.Session, url: str) -> requests.Response:
@@ -48,42 +48,87 @@ def get(session: requests.Session, url: str) -> requests.Response:
     raise RuntimeError(f"failed to fetch {url}: {last}")
 
 
-def hrefs_from_html(html: str, base_url: str) -> list[str]:
+def soup_urls(html: str, base_url: str, tag: str, attr: str) -> list[str]:
     soup = BeautifulSoup(html, "html.parser")
     urls: list[str] = []
-    for tag in soup.find_all("a", href=True):
-        href = str(tag.get("href") or "").strip()
-        if href:
-            urls.append(urljoin(base_url, href))
+    for node in soup.find_all(tag):
+        value = str(node.get(attr) or "").strip()
+        if value:
+            urls.append(urljoin(base_url, value))
     return urls
+
+
+def hrefs_from_html(html: str, base_url: str) -> list[str]:
+    return soup_urls(html, base_url, "a", "href")
+
+
+def keyword_windows(text: str, keywords: list[str], radius: int = 180) -> list[str]:
+    out: list[str] = []
+    lower = text.lower()
+    for keyword in keywords:
+        start = 0
+        needle = keyword.lower()
+        while len(out) < 40:
+            idx = lower.find(needle, start)
+            if idx < 0:
+                break
+            a = max(0, idx - radius)
+            b = min(len(text), idx + len(keyword) + radius)
+            chunk = re.sub(r"\s+", " ", text[a:b])
+            if chunk not in out:
+                out.append(chunk)
+            start = idx + len(keyword)
+    return out
 
 
 def probe(session: requests.Session) -> dict:
     root = get(session, SEARCH_URL)
-    root_hrefs = hrefs_from_html(root.text, root.url)
-    station_hrefs = sorted({u for u in root_hrefs if "/search/timetable/station/" in u})
-
     sample_station = f"{BASE}/search/timetable/station/254-0/d1?dw=0"
     station = get(session, sample_station)
+
+    root_hrefs = hrefs_from_html(root.text, root.url)
     station_hrefs_all = hrefs_from_html(station.text, station.url)
+    station_hrefs = sorted({u for u in root_hrefs if "/search/timetable/station/" in u})
     train_hrefs = sorted({u for u in station_hrefs_all if "onetraintimetable" in u})
 
-    raw_station_matches = sorted(set(re.findall(r"/search/timetable/station/[0-9]+-[0-9]+/d[12][^\"'<> ]*", root.text)))
-    raw_train_matches = sorted(set(re.findall(r"[^\"'<> ]*onetraintimetable[^\"'<> ]*", station.text)))
+    root_scripts = soup_urls(root.text, root.url, "script", "src")
+    station_scripts = soup_urls(station.text, station.url, "script", "src")
+    candidate_scripts = []
+    for u in root_scripts + station_scripts:
+        if u not in candidate_scripts and any(k in u.lower() for k in ("timetable", "app", "main", "chunk", "search", "common")):
+            candidate_scripts.append(u)
+
+    js_results = []
+    for url in candidate_scripts[:20]:
+        try:
+            response = get(session, url)
+        except Exception as exc:  # probe should continue when one asset is stale
+            js_results.append({"url": url, "error": str(exc)})
+            continue
+        windows = keyword_windows(
+            response.text,
+            ["onetraintimetable", "/api/", "axios", "timetable", "station/", "train", "tx="],
+            radius=220,
+        )
+        if windows:
+            js_results.append({"url": url, "bytes": len(response.content), "windows": windows[:16]})
 
     result = {
         "root_status": root.status_code,
         "root_bytes": len(root.content),
+        "root_script_count": len(root_scripts),
+        "root_scripts": root_scripts,
         "station_anchor_count": len(station_hrefs),
         "station_anchor_samples": station_hrefs[:10],
-        "station_raw_match_count": len(raw_station_matches),
-        "station_raw_samples": raw_station_matches[:10],
         "sample_station_status": station.status_code,
         "sample_station_bytes": len(station.content),
+        "station_script_count": len(station_scripts),
+        "station_scripts": station_scripts,
         "train_anchor_count": len(train_hrefs),
         "train_anchor_samples": train_hrefs[:10],
-        "train_raw_match_count": len(raw_train_matches),
-        "train_raw_samples": raw_train_matches[:10],
+        "root_keyword_windows": keyword_windows(root.text, ["api", "station", "line", "timetable", "vue"], 220)[:20],
+        "station_keyword_windows": keyword_windows(station.text, ["onetraintimetable", "api", "tx=", "train", "timetable", "vue"], 220)[:20],
+        "javascript_candidates": js_results,
     }
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     PROBE_PATH.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -103,8 +148,6 @@ def main() -> int:
         probe(session)
         return 0
 
-    # Full resumable collection is enabled after the official-page structure
-    # probe has been verified in GitHub Actions.
     probe(session)
     return 0
 
