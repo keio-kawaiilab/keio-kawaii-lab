@@ -3,6 +3,13 @@
 const assert = require("node:assert/strict");
 const core = require("../route-core.js");
 
+assert.equal(core.serviceForDate(new Date(2026, 1, 11, 8, 0)), "holiday", "a Japanese national holiday must use the holiday timetable");
+assert.equal(core.serviceForDate(new Date(2026, 4, 6, 8, 0)), "holiday", "a substitute holiday must use the holiday timetable");
+assert.equal(core.serviceForDate(new Date(2026, 8, 22, 8, 0)), "holiday", "a citizen's holiday must use the holiday timetable");
+assert.equal(core.serviceForDate(new Date(2026, 8, 2, 8, 0)), "weekday");
+assert.equal(core.serviceForDate(new Date(2026, 8, 7, 0, 30)), "holiday", "after-midnight trains must retain the previous service day");
+assert.equal(core.departureMinutesForDate(new Date(2026, 8, 7, 0, 30)), 1470);
+
 function station(id, name, railway, lat, lon, operator = "odpt.Operator:Test") {
   return {
     "owl:sameAs": id,
@@ -108,11 +115,11 @@ const throughTimetables = {
     stations: ["station:b1", "station:b2"], calendars: ["odpt.Calendar:Weekday"], directions: ["direction:ascending"],
     trainTypes: ["odpt.TrainType:Test.Local"], destinations: ["station:b2"], order: ["station:b1", "station:b2"],
     ascendingDirection: "direction:ascending", descendingDirection: "direction:descending", edgeMinutes: [[0, 1, 10, 3]],
-    boards: [[0, 0, 0, [[490, 0, 0]]]], inferredTrips: [[0, 0, 0, 0, 100, [[0, null, 490], [1, null, 500]]]],
+    boards: [[0, 0, 0, [[492, 0, 0]]]], inferredTrips: [[0, 0, 0, 0, 100, [[0, 490, 492], [1, null, 502]]]],
   },
 };
 const throughTimed = model.timedItinerary(path, throughTimetables, 475, "weekday", 5);
-assert.equal(throughTimed.arrival, 500, "a matching same-operator continuation must not receive a fictitious transfer wait");
+assert.equal(throughTimed.arrival, 502, "a matching same-operator continuation must preserve dwell without a fictitious transfer wait");
 assert.equal(throughTimed.transfers, 0);
 assert.equal(throughTimed.segments[1].throughFromPrevious, true);
 

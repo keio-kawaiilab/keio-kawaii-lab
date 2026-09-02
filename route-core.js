@@ -24,6 +24,36 @@
     return 2*r*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
   }
 
+  var japaneseHolidayCache=new Map();
+  function dateKey(date){return[date.getFullYear(),String(date.getMonth()+1).padStart(2,"0"),String(date.getDate()).padStart(2,"0")].join("-");}
+  function japaneseHolidaySet(year){
+    if(japaneseHolidayCache.has(year))return japaneseHolidayCache.get(year);
+    var holidays=new Set();
+    function add(month,day){holidays.add([year,String(month).padStart(2,"0"),String(day).padStart(2,"0")].join("-"));}
+    function nthMonday(month,nth){var first=new Date(year,month-1,1),offset=(8-first.getDay())%7;return 1+offset+(nth-1)*7;}
+    add(1,1);add(1,nthMonday(1,2));add(2,11);add(2,23);
+    add(3,Math.floor(20.8431+0.242194*(year-1980)-Math.floor((year-1980)/4)));
+    add(4,29);add(5,3);add(5,4);add(5,5);add(7,nthMonday(7,3));add(8,11);
+    add(9,nthMonday(9,3));add(9,Math.floor(23.2488+0.242194*(year-1980)-Math.floor((year-1980)/4)));
+    add(10,nthMonday(10,2));add(11,3);add(11,23);
+    for(var cursor=new Date(year,0,2);cursor.getFullYear()===year;cursor.setDate(cursor.getDate()+1)){
+      if(holidays.has(dateKey(cursor)))continue;
+      var before=new Date(cursor);before.setDate(before.getDate()-1);var after=new Date(cursor);after.setDate(after.getDate()+1);
+      if(holidays.has(dateKey(before))&&holidays.has(dateKey(after)))holidays.add(dateKey(cursor));
+    }
+    Array.from(holidays).sort().forEach(function(key){
+      var parts=key.split("-").map(Number),holiday=new Date(parts[0],parts[1]-1,parts[2]);
+      if(holiday.getDay()!==0)return;
+      var substitute=new Date(holiday);substitute.setDate(substitute.getDate()+1);
+      while(holidays.has(dateKey(substitute)))substitute.setDate(substitute.getDate()+1);
+      holidays.add(dateKey(substitute));
+    });
+    japaneseHolidayCache.set(year,holidays);return holidays;
+  }
+  function serviceDate(date){var result=new Date(date);if(result.getHours()<3)result.setDate(result.getDate()-1);return result;}
+  function serviceForDate(date){var service=serviceDate(date),day=service.getDay();return day===0||day===6||japaneseHolidaySet(service.getFullYear()).has(dateKey(service))?"holiday":"weekday";}
+  function departureMinutesForDate(date){var hour=date.getHours();return(hour<3?hour+24:hour)*60+date.getMinutes();}
+
   function MinHeap(){this.items=[];}
   MinHeap.prototype.push=function(item){
     var a=this.items;a.push(item);var i=a.length-1;
@@ -393,7 +423,7 @@
         if(throughCandidate&&trip){
           var sameDestination=trip.destination&&trip.destination===previous.destination;
           var sameType=!previous.trainType||!trip.trainType||previous.trainType===trip.trainType;
-          if(trip.departure===current&&sameDestination&&sameType)trip.throughFromPrevious=true;
+          if(trip.departure>=current&&trip.departure-current<=3&&sameDestination&&sameType)trip.throughFromPrevious=true;
           else{
             earliest=current+buffer;
             trip=table&&table.timeBasis==="station-departure-only"?stationDepartureTrip(table,fromNodes,toNodes,earliest,service):timetableTrip(table,fromNodes,toNodes,earliest,service);
@@ -424,5 +454,5 @@
     };
   }
 
-  return{createModel:createModel,normalize:normalize,distanceMeters:distanceMeters};
+  return{createModel:createModel,normalize:normalize,distanceMeters:distanceMeters,serviceForDate:serviceForDate,departureMinutesForDate:departureMinutesForDate};
 });

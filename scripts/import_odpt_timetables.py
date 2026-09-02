@@ -619,9 +619,18 @@ def infer_edge_minutes(
     direction inherits the independently inferred reverse-edge duration.
     """
     schedules: dict[tuple[str, str, str], Counter[int]] = defaultdict(Counter)
+    profile_schedules: dict[tuple[str, str, str, str, str], Counter[int]] = defaultdict(Counter)
     for board in boards:
         key = (str(board["station"]), str(board["calendar"]), str(board["direction"]))
         schedules[key].update(int(row[0]) for row in board["departures"])
+        for departure, train_type, destination in board["departures"]:
+            profile_schedules[(
+                str(board["station"]),
+                str(board["calendar"]),
+                str(board["direction"]),
+                str(train_type),
+                str(destination),
+            )][int(departure)] += 1
 
     candidates: dict[tuple[str, str], list[tuple[int, int]]] = defaultdict(list)
     direction_pairs = [
@@ -637,6 +646,29 @@ def infer_edge_minutes(
                 departures = schedules.get((from_station, calendar, direction), Counter())
                 following = schedules.get((to_station, calendar, direction), Counter())
                 if not departures or not following:
+                    continue
+                profile_results = []
+                profiles = {
+                    (train_type, destination)
+                    for station, profile_calendar, profile_direction, train_type, destination in profile_schedules
+                    if station in (from_station, to_station)
+                    and profile_calendar == calendar
+                    and profile_direction == direction
+                }
+                for train_type, destination in profiles:
+                    result = best_time_offset(
+                        profile_schedules.get(
+                            (from_station, calendar, direction, train_type, destination), Counter()
+                        ),
+                        profile_schedules.get(
+                            (to_station, calendar, direction, train_type, destination), Counter()
+                        ),
+                        8,
+                    )
+                    if result:
+                        profile_results.append(result)
+                if profile_results:
+                    candidates[(from_station, to_station)].extend(profile_results)
                     continue
                 # These datasets cover dense commuter railways where adjacent
                 # stations are only a few minutes apart. Longer offsets are
@@ -844,6 +876,7 @@ def infer_departure_trips(
         successors: dict[tuple[str, int], tuple[str, int]] = {}
         predecessors: dict[tuple[str, int], tuple[str, int]] = {}
         deviations: dict[tuple[str, int], int] = {}
+        arrival_estimates: dict[tuple[str, int], int] = {}
         for from_station, to_station in zip(stations, stations[1:]):
             from_position = order_index[from_station]
             to_position = order_index[to_station]
@@ -875,6 +908,10 @@ def infer_departure_trips(
                 successors[first_node] = following_node
                 predecessors[following_node] = first_node
                 deviations[first_node] = abs(duration - preferred)
+                arrival_estimates[following_node] = min(
+                    int(schedules[to_station][to_index]["basis"]),
+                    int(schedules[from_station][from_index]["basis"]) + preferred,
+                )
 
         nodes = [
             (station, event_index)
@@ -901,7 +938,9 @@ def infer_departure_trips(
                 event = schedules[station][event_index]
                 observed_stops.append([
                     station,
-                    event.get("arrival"),
+                    event.get("arrival")
+                    if event.get("arrival") is not None
+                    else arrival_estimates.get((station, event_index)),
                     event.get("departure"),
                 ])
                 if (station, event_index) in deviations:
@@ -917,7 +956,117 @@ def infer_departure_trips(
                 "stops": observed_stops,
             })
             connection_count += len(observed_stops) - 1
-    return recovered, connection_count
+
+    # A physical train may change its advertised type mid-route (for example,
+    # Express to Local). The type-partitioned pass above then produces two
+    # otherwise trustworthy fragments. Join only different-type fragment ends
+    # and starts with the same calendar, direction and destination, preferring
+    # the nearest downstream station and preserving every observed departure.
+    fragment_groups: dict[tuple[str, str, str], list[int]] = defaultdict(list)
+    for trip_index, trip in enumerate(recovered):
+        if trip["destination"]:
+            fragment_groups[(trip["calendar"], trip["direction"], trip["destination"])].append(trip_index)
+
+    fragment_successors: dict[int, int] = {}
+    fragment_predecessors: dict[int, int] = {}
+    stitched_arrivals: dict[int, int] = {}
+
+    def stop_basis(stop: list[Any]) -> int | None:
+        return int(stop[2]) if stop[2] is not None else (int(stop[1]) if stop[1] is not None else None)
+
+    for (_calendar, direction, _destination), trip_indexes in fragment_groups.items():
+        if direction == ascending_direction:
+            step = 1
+        elif direction == descending_direction:
+            step = -1
+        else:
+            continue
+        endings: dict[str, list[int]] = defaultdict(list)
+        starts: dict[str, list[int]] = defaultdict(list)
+        for trip_index in trip_indexes:
+            stops = recovered[trip_index]["stops"]
+            if not stops or stops[0][0] not in order_index or stops[-1][0] not in order_index:
+                continue
+            starts[stops[0][0]].append(trip_index)
+            endings[stops[-1][0]].append(trip_index)
+
+        for gap in range(1, 7):
+            for end_station, raw_from_indexes in endings.items():
+                start_position = order_index[end_station] + step * gap
+                if start_position < 0 or start_position >= len(order):
+                    continue
+                start_station = order[start_position]
+                raw_to_indexes = starts.get(start_station) or []
+                from_indexes = sorted(
+                    (
+                        trip_index for trip_index in raw_from_indexes
+                        if trip_index not in fragment_successors
+                        and stop_basis(recovered[trip_index]["stops"][-1]) is not None
+                    ),
+                    key=lambda trip_index: stop_basis(recovered[trip_index]["stops"][-1]),
+                )
+                to_indexes = sorted(
+                    (
+                        trip_index for trip_index in raw_to_indexes
+                        if trip_index not in fragment_predecessors
+                        and stop_basis(recovered[trip_index]["stops"][0]) is not None
+                    ),
+                    key=lambda trip_index: stop_basis(recovered[trip_index]["stops"][0]),
+                )
+                if not from_indexes or not to_indexes:
+                    continue
+                baseline = 0
+                position = order_index[end_station]
+                while position != start_position:
+                    edge = (order[position], order[position + step])
+                    baseline += int(inferred_edges.get(edge, (3, 0))[0])
+                    position += step
+                from_events = [
+                    {"basis": stop_basis(recovered[trip_index]["stops"][-1])}
+                    for trip_index in from_indexes
+                ]
+                to_events = [
+                    {"basis": stop_basis(recovered[trip_index]["stops"][0])}
+                    for trip_index in to_indexes
+                ]
+                for from_match, to_match, _duration in align_departure_events(
+                    from_events, to_events, max(1, baseline)
+                ):
+                    from_trip = from_indexes[from_match]
+                    to_trip = to_indexes[to_match]
+                    if recovered[from_trip]["trainType"] == recovered[to_trip]["trainType"]:
+                        continue
+                    fragment_successors[from_trip] = to_trip
+                    fragment_predecessors[to_trip] = from_trip
+                    from_time = stop_basis(recovered[from_trip]["stops"][-1])
+                    to_time = stop_basis(recovered[to_trip]["stops"][0])
+                    if from_time is not None and to_time is not None:
+                        stitched_arrivals[to_trip] = min(to_time, from_time + max(1, baseline))
+
+    extended: list[dict[str, Any]] = []
+    for trip_index, trip in enumerate(recovered):
+        stops = [list(stop) for stop in trip["stops"]]
+        confidence = int(trip["confidence"])
+        current = trip_index
+        visited_fragments = {current}
+        while current in fragment_successors:
+            following_index = fragment_successors[current]
+            if following_index in visited_fragments:
+                break
+            visited_fragments.add(following_index)
+            following = recovered[following_index]
+            following_stops = [list(stop) for stop in following["stops"]]
+            if following_stops and following_stops[0][1] is None and following_index in stitched_arrivals:
+                following_stops[0][1] = stitched_arrivals[following_index]
+            if stops and following_stops and stops[-1][0] == following_stops[0][0]:
+                following_stops = following_stops[1:]
+            stops.extend(following_stops)
+            confidence = min(confidence, int(following["confidence"]))
+            current = following_index
+        extended.append({**trip, "confidence": confidence, "stops": stops})
+
+    connection_count = sum(max(0, len(trip["stops"]) - 1) for trip in extended)
+    return extended, connection_count
 
 
 def compact_station_timetables(

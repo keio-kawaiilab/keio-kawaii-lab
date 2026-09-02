@@ -83,9 +83,9 @@
   function selectedDate(){var date=datetimeInput&&datetimeInput.value?new Date(datetimeInput.value):new Date();return isNaN(date.getTime())?new Date():date;}
   function serviceType(date){
     if(calendarInput&&calendarInput.value!=="auto")return calendarInput.value;
-    var day=date.getDay();return day===0||day===6?"holiday":"weekday";
+    return core.serviceForDate(date);
   }
-  function departureMinutes(date){return date.getHours()*60+date.getMinutes();}
+  function departureMinutes(date){return core.departureMinutesForDate(date);}
   function formatTime(minutes){
     var value=Math.max(0,Math.round(Number(minutes)||0)),day=Math.floor(value/1440),clock=value%1440;
     return(day?"翌":"")+String(Math.floor(clock/60)).padStart(2,"0")+":"+String(clock%60).padStart(2,"0");

@@ -231,6 +231,93 @@ class ImportOdptTimetablesTests(unittest.TestCase):
         self.assertEqual(compact["inferredConnections"], 9)
         self.assertEqual(connections, 0, "inferred trips must remain labelled as estimates")
 
+    def test_inferred_station_trip_keeps_an_arrival_only_terminal(self):
+        items = [
+            {
+                "odpt:railway": "railway:test",
+                "odpt:station": "station:a",
+                "odpt:railDirection": "direction:ascending",
+                "odpt:calendar": "odpt.Calendar:Weekday",
+                "odpt:stationTimetableObject": [{
+                    "odpt:trainType": "type:local",
+                    "odpt:destinationStation": ["station:b"],
+                    "odpt:departureTime": value,
+                } for value in ["08:00", "08:10", "08:20"]],
+            },
+            {
+                "odpt:railway": "railway:test",
+                "odpt:station": "station:b",
+                "odpt:railDirection": "direction:ascending",
+                "odpt:calendar": "odpt.Calendar:Weekday",
+                "odpt:stationTimetableObject": [{
+                    "odpt:trainType": "type:local",
+                    "odpt:arrivalTime": value,
+                } for value in ["08:03", "08:13", "08:23"]],
+            },
+        ]
+        railway = {
+            "owl:sameAs": "railway:test",
+            "odpt:ascendingRailDirection": "direction:ascending",
+            "odpt:descendingRailDirection": "direction:descending",
+            "odpt:stationOrder": [
+                {"odpt:index": 1, "odpt:station": "station:a"},
+                {"odpt:index": 2, "odpt:station": "station:b"},
+            ],
+        }
+        compact, _connections, departures = importer.compact_station_timetables(
+            items, {}, [railway]
+        )["railway:test"]
+        first_trip = next(trip for trip in compact["inferredTrips"] if trip[5][0][2] == 480)
+        self.assertEqual(first_trip[5][1][1:], [483, None])
+        self.assertEqual(departures, 3, "arrival-only rows must not become boardable departures")
+
+    def test_inferred_station_trip_joins_a_mid_route_type_change(self):
+        station_rows = {
+            "station:a": ("type:express", ["08:00", "08:10", "08:20"]),
+            "station:b": ("type:express", ["08:03", "08:13", "08:23"]),
+            "station:c": ("type:local", ["08:10", "08:20", "08:30"]),
+            "station:d": ("type:local", ["08:13", "08:23", "08:33"]),
+        }
+        items = [{
+            "odpt:railway": "railway:test",
+            "odpt:station": station_id,
+            "odpt:railDirection": "direction:ascending",
+            "odpt:calendar": "odpt.Calendar:Weekday",
+            "odpt:stationTimetableObject": [{
+                "odpt:trainType": train_type,
+                "odpt:destinationStation": ["station:d"],
+                "odpt:departureTime": departure,
+            } for departure in times],
+        } for station_id, (train_type, times) in station_rows.items()]
+        for item in items:
+            if item["odpt:station"] not in ("station:b", "station:c"):
+                continue
+            no_wait_times = ["08:05", "08:15", "08:25"] if item["odpt:station"] == "station:b" else ["08:08", "08:18", "08:28"]
+            item["odpt:stationTimetableObject"].extend({
+                "odpt:trainType": "type:no-wait",
+                "odpt:destinationStation": ["station:elsewhere"],
+                "odpt:departureTime": departure,
+            } for departure in no_wait_times)
+        railway = {
+            "owl:sameAs": "railway:test",
+            "odpt:ascendingRailDirection": "direction:ascending",
+            "odpt:descendingRailDirection": "direction:descending",
+            "odpt:stationOrder": [
+                {"odpt:index": index + 1, "odpt:station": station_id}
+                for index, station_id in enumerate(station_rows)
+            ],
+        }
+        compact, _connections, _departures = importer.compact_station_timetables(
+            items, {}, [railway]
+        )["railway:test"]
+        express_index = compact["trainTypes"].index("type:express")
+        first_trip = next(
+            trip for trip in compact["inferredTrips"]
+            if trip[2] == express_index and trip[5][0][2] == 480
+        )
+        self.assertEqual([stop[2] for stop in first_trip[5]], [480, 483, 490, 493])
+        self.assertEqual(first_trip[5][2][1], 486, "the extra four minutes must be platform dwell, not running time")
+
     def test_manual_topology_adds_all_stations_and_station_order(self):
         topology = {
             "lines": [{"name": "本線", "stations": ["A", "B", "C"], "color": "#123456"}],
