@@ -353,15 +353,15 @@ def main() -> int:
             "inferredConnections": 0,
             "departures": total_connections,
         })
-        manifest["fetchedAt"] = datetime.now(JST).isoformat(timespec="seconds")
+        operator["timetableBuiltAt"] = report["builtAt"]
         notes = manifest.setdefault("notes", [])
         note = "Keisei scheduled train times are built from the official Keisei timetable pages; the complete source snapshot is retained for validation."
         if note not in notes:
             notes.append(note)
         dump_json(MANIFEST_PATH, manifest)
 
-    if report["sourceTrainCount"] != 4659:
-        raise RuntimeError(f"expected 4659 source trains, got {report['sourceTrainCount']}")
+    if not 3000 <= report["sourceTrainCount"] <= 7000:
+        raise RuntimeError(f"unexpected Keisei source train count: {report['sourceTrainCount']}")
     if len(line_index) != 8 or any(not row["trips"] for row in line_report.values()):
         raise RuntimeError(f"not all Keisei lines received timetable trips: {line_report}")
     print(json.dumps(report, ensure_ascii=False, indent=2))

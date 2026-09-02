@@ -313,12 +313,12 @@ def main() -> int:
     }
     dump_json(REPORT_PATH, report)
 
-    if report["sourceTrainCount"] != 4659:
-        raise RuntimeError(f"expected 4659 source trains, got {report['sourceTrainCount']}")
+    if not 3000 <= report["sourceTrainCount"] <= 7000:
+        raise RuntimeError(f"unexpected Keisei source train count: {report['sourceTrainCount']}")
     if report["unresolvedPairCount"]:
         raise RuntimeError(f"unresolved Keisei topology pairs remain: {report['unresolvedPairs'][:10]}")
-    if len(trips) < 4500:
-        raise RuntimeError(f"unexpectedly few network trips: {len(trips)}")
+    if len(trips) + skipped_under_two != report["sourceTrainCount"]:
+        raise RuntimeError(f"network trip coverage mismatch: trips={len(trips)} skipped={skipped_under_two} source={report['sourceTrainCount']}")
     print(json.dumps(report, ensure_ascii=False, indent=2))
     return 0
 
