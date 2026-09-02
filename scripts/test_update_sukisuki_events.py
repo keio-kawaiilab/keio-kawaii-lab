@@ -41,6 +41,12 @@ class SukisukiParserTests(unittest.TestCase):
             "オンライン特典会・先着販売",
         )
 
+    def test_sale_typeオンラインリリイベ(self):
+        self.assertEqual(
+            s.sale_type("CANDY TUNE オンラインリリイベ", "抽選販売"),
+            "オンラインリリースイベント・抽選販売",
+        )
+
     def test_application_window(self):
         text = "抽選申込期間：2026年8月20日 18:00～2026年8月22日 23:59"
         self.assertEqual(
@@ -55,6 +61,19 @@ class SukisukiParserTests(unittest.TestCase):
         <p>抽選申込期間：2026年8月19日 21:00～2026年8月20日 23:59</p></html>"""
         event = s.parse_goods(FakeSession({url: html}), url, date(2026, 8, 19))
         self.assertEqual("18:00", event["startTime"])
+
+    def test_online_release_event_is_parsed(self):
+        url = "https://sukisuki-shop.com/goods/6500000005001"
+        html = """<html><h1>〖抽選販売〗2026年9月8日 CANDY TUNE オンラインリリイベ</h1>
+        <p>CANDY TUNEのオンラインリリイベを開催します。</p>
+        <p>配信予定日：2026年9月8日 17:00</p>
+        <p>抽選申込期間：2026年9月2日 21:00～2026年9月4日 23:59</p></html>"""
+        event = s.parse_goods(FakeSession({url: html}), url, date(2026, 9, 2))
+        self.assertIsNotNone(event)
+        self.assertEqual("CANDY TUNE", event["group"])
+        self.assertEqual("2026-09-08", event["eventDate"])
+        self.assertEqual("17:00", event["startTime"])
+        self.assertEqual("オンラインリリースイベント・抽選販売", event["ticketType"])
 
     def test_discovery_reads_api_even_when_normal_list_has_results(self):
         pages = {
@@ -73,6 +92,19 @@ class SukisukiParserTests(unittest.TestCase):
         self.assertIn("https://sukisuki-shop.com/goods/6500000004000", urls)
         self.assertEqual(session.calls, list(s.LIST_URLS))
         self.assertGreater(s.goods_rank(urls[0]), s.goods_rank(urls[1]))
+
+    def test_discovery_does_not_require_group_name_on_list_card(self):
+        pages = {
+            "https://api.sukisuki-shop.com/goods": (
+                '<a href="/goods/6500000005001">〖抽選販売〗2026年9月8日 オンラインリリイベ</a>'
+            ),
+            "https://sukisuki-shop.com/goods": "",
+            "https://sukisuki-shop.com/": "",
+        }
+        session = FakeSession(pages)
+        urls, failures = s.discover(session)
+        self.assertEqual([], failures)
+        self.assertIn("https://sukisuki-shop.com/goods/6500000005001", urls)
 
     def test_api_goods_detail_url_is_normalized_to_shop_host(self):
         self.assertEqual(
