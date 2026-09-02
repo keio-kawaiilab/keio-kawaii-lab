@@ -1,16 +1,14 @@
 {
-  "version": 4,
+  "version": 5,
   "sourceRetrievedAt": "2026-09-02T23:19:09+09:00",
   "station": "manual.Station:yokohama-minatomirai.新高島",
   "direction": "odpt.RailDirection:Outbound",
-  "method": "immutable Yokohama anchors, local correction, and physically impossible OCR isolation",
+  "method": "OCR artifact isolation followed by strict Yokohama < Shin-Takashima < Minatomirai validation",
   "acceptance": {
-    "holidayTrustedExactCoverage": 1.0,
-    "weekdayTrustedExactCoverage": 0.967,
+    "holidayAcceptedStopCount": 149,
+    "holidayPhysicalCorrectionCount": 1,
     "weekdayAcceptedStopCount": 180,
-    "weekdayCorrectedCount": 4,
-    "weekdayRejectedOcrArtifactCount": 2,
-    "weekdayMaxCorrectionMinutes": 2
+    "weekdayPhysicalCorrectionCount": 11
   },
   "calendars": {
     "odpt.Calendar:SaturdayHoliday": {
@@ -99,7 +97,7 @@
         "15:29",
         "15:37",
         "15:44",
-        "15:52",
+        "15:51",
         "15:59",
         "16:07",
         "16:14",
@@ -343,7 +341,20 @@
         ],
         "rejectedOcrArtifacts": [],
         "acceptedStopCount": 149,
-        "accountedObservedCount": 149
+        "accountedObservedCount": 149,
+        "physicalCorrectionCount": 1,
+        "physicalCorrections": [
+          {
+            "trainIndex": 155,
+            "yokohama": "15:50",
+            "before": "15:52",
+            "after": "15:51",
+            "minatomirai": "15:52",
+            "correctionMinutes": 1
+          }
+        ],
+        "physicalUnresolved": [],
+        "physicalPreservedCount": 148
       },
       "rows": [
         {
@@ -353,7 +364,8 @@
           "reconstructed": "05:11",
           "minatomirai": "05:13",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 1,
@@ -362,7 +374,8 @@
           "reconstructed": "05:21",
           "minatomirai": "05:22",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 2,
@@ -371,7 +384,8 @@
           "reconstructed": "05:32",
           "minatomirai": "05:33",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 3,
@@ -380,7 +394,8 @@
           "reconstructed": "05:43",
           "minatomirai": "05:45",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 5,
@@ -389,7 +404,8 @@
           "reconstructed": "05:57",
           "minatomirai": "05:59",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 6,
@@ -398,7 +414,8 @@
           "reconstructed": "06:03",
           "minatomirai": "06:05",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 8,
@@ -407,7 +424,8 @@
           "reconstructed": "06:13",
           "minatomirai": "06:15",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 9,
@@ -416,7 +434,8 @@
           "reconstructed": "06:22",
           "minatomirai": "06:24",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 10,
@@ -425,7 +444,8 @@
           "reconstructed": "06:32",
           "minatomirai": "06:33",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 12,
@@ -434,7 +454,8 @@
           "reconstructed": "06:42",
           "minatomirai": "06:43",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 13,
@@ -443,7 +464,8 @@
           "reconstructed": "06:48",
           "minatomirai": "06:49",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 14,
@@ -452,7 +474,8 @@
           "reconstructed": "06:54",
           "minatomirai": "06:56",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 16,
@@ -461,7 +484,8 @@
           "reconstructed": "07:04",
           "minatomirai": "07:05",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 18,
@@ -470,7 +494,8 @@
           "reconstructed": "07:12",
           "minatomirai": "07:14",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 19,
@@ -479,7 +504,8 @@
           "reconstructed": "07:19",
           "minatomirai": "07:21",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 21,
@@ -488,7 +514,8 @@
           "reconstructed": "07:27",
           "minatomirai": "07:28",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 23,
@@ -497,7 +524,8 @@
           "reconstructed": "07:36",
           "minatomirai": "07:37",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 24,
@@ -506,7 +534,8 @@
           "reconstructed": "07:42",
           "minatomirai": "07:44",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 26,
@@ -515,7 +544,8 @@
           "reconstructed": "07:51",
           "minatomirai": "07:53",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 28,
@@ -524,7 +554,8 @@
           "reconstructed": "07:59",
           "minatomirai": "08:01",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 30,
@@ -533,7 +564,8 @@
           "reconstructed": "08:07",
           "minatomirai": "08:09",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 32,
@@ -542,7 +574,8 @@
           "reconstructed": "08:14",
           "minatomirai": "08:16",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 34,
@@ -551,7 +584,8 @@
           "reconstructed": "08:22",
           "minatomirai": "08:24",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 36,
@@ -560,7 +594,8 @@
           "reconstructed": "08:29",
           "minatomirai": "08:31",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 38,
@@ -569,7 +604,8 @@
           "reconstructed": "08:37",
           "minatomirai": "08:39",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 40,
@@ -578,7 +614,8 @@
           "reconstructed": "08:44",
           "minatomirai": "08:46",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 42,
@@ -587,7 +624,8 @@
           "reconstructed": "08:52",
           "minatomirai": "08:54",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 44,
@@ -596,7 +634,8 @@
           "reconstructed": "08:59",
           "minatomirai": "09:01",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 46,
@@ -605,7 +644,8 @@
           "reconstructed": "09:07",
           "minatomirai": "09:09",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 48,
@@ -614,7 +654,8 @@
           "reconstructed": "09:14",
           "minatomirai": "09:16",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 50,
@@ -623,7 +664,8 @@
           "reconstructed": "09:22",
           "minatomirai": "09:24",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 52,
@@ -632,7 +674,8 @@
           "reconstructed": "09:29",
           "minatomirai": "09:31",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 54,
@@ -641,7 +684,8 @@
           "reconstructed": "09:37",
           "minatomirai": "09:39",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 56,
@@ -650,7 +694,8 @@
           "reconstructed": "09:44",
           "minatomirai": "09:46",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 58,
@@ -659,7 +704,8 @@
           "reconstructed": "09:52",
           "minatomirai": "09:54",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 60,
@@ -668,7 +714,8 @@
           "reconstructed": "10:00",
           "minatomirai": "10:02",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 62,
@@ -677,7 +724,8 @@
           "reconstructed": "10:08",
           "minatomirai": "10:10",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 64,
@@ -686,7 +734,8 @@
           "reconstructed": "10:14",
           "minatomirai": "10:16",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 66,
@@ -695,7 +744,8 @@
           "reconstructed": "10:22",
           "minatomirai": "10:24",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 68,
@@ -704,7 +754,8 @@
           "reconstructed": "10:29",
           "minatomirai": "10:31",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 70,
@@ -713,7 +764,8 @@
           "reconstructed": "10:37",
           "minatomirai": "10:39",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 72,
@@ -722,7 +774,8 @@
           "reconstructed": "10:43",
           "minatomirai": "10:45",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 75,
@@ -731,7 +784,8 @@
           "reconstructed": "10:52",
           "minatomirai": "10:54",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 77,
@@ -740,7 +794,8 @@
           "reconstructed": "10:59",
           "minatomirai": "11:02",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 79,
@@ -749,7 +804,8 @@
           "reconstructed": "11:07",
           "minatomirai": "11:09",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 81,
@@ -758,7 +814,8 @@
           "reconstructed": "11:14",
           "minatomirai": "11:16",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 83,
@@ -767,7 +824,8 @@
           "reconstructed": "11:22",
           "minatomirai": "11:24",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 85,
@@ -776,7 +834,8 @@
           "reconstructed": "11:29",
           "minatomirai": "11:31",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 87,
@@ -785,7 +844,8 @@
           "reconstructed": "11:37",
           "minatomirai": "11:39",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 89,
@@ -794,7 +854,8 @@
           "reconstructed": "11:44",
           "minatomirai": "11:46",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 91,
@@ -803,7 +864,8 @@
           "reconstructed": "11:52",
           "minatomirai": "11:54",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 93,
@@ -812,7 +874,8 @@
           "reconstructed": "11:59",
           "minatomirai": "12:01",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 95,
@@ -821,7 +884,8 @@
           "reconstructed": "12:07",
           "minatomirai": "12:08",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 97,
@@ -830,7 +894,8 @@
           "reconstructed": "12:14",
           "minatomirai": "12:16",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 99,
@@ -839,7 +904,8 @@
           "reconstructed": "12:22",
           "minatomirai": "12:24",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 101,
@@ -848,7 +914,8 @@
           "reconstructed": "12:29",
           "minatomirai": "12:31",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 103,
@@ -857,7 +924,8 @@
           "reconstructed": "12:37",
           "minatomirai": "12:39",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 105,
@@ -866,7 +934,8 @@
           "reconstructed": "12:44",
           "minatomirai": "12:46",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 107,
@@ -875,7 +944,8 @@
           "reconstructed": "12:52",
           "minatomirai": "12:54",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 109,
@@ -884,7 +954,8 @@
           "reconstructed": "12:59",
           "minatomirai": "13:01",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 111,
@@ -893,7 +964,8 @@
           "reconstructed": "13:07",
           "minatomirai": "13:09",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 113,
@@ -902,7 +974,8 @@
           "reconstructed": "13:14",
           "minatomirai": "13:16",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 115,
@@ -911,7 +984,8 @@
           "reconstructed": "13:22",
           "minatomirai": "13:24",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 117,
@@ -920,7 +994,8 @@
           "reconstructed": "13:29",
           "minatomirai": "13:31",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 119,
@@ -929,7 +1004,8 @@
           "reconstructed": "13:37",
           "minatomirai": "13:39",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 121,
@@ -938,7 +1014,8 @@
           "reconstructed": "13:44",
           "minatomirai": "13:46",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 123,
@@ -947,7 +1024,8 @@
           "reconstructed": "13:52",
           "minatomirai": "13:54",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 125,
@@ -956,7 +1034,8 @@
           "reconstructed": "13:59",
           "minatomirai": "14:01",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 127,
@@ -965,7 +1044,8 @@
           "reconstructed": "14:07",
           "minatomirai": "14:08",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 129,
@@ -974,7 +1054,8 @@
           "reconstructed": "14:14",
           "minatomirai": "14:16",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 131,
@@ -983,7 +1064,8 @@
           "reconstructed": "14:22",
           "minatomirai": "14:24",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 133,
@@ -992,7 +1074,8 @@
           "reconstructed": "14:29",
           "minatomirai": "14:31",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 135,
@@ -1001,7 +1084,8 @@
           "reconstructed": "14:37",
           "minatomirai": "14:39",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 137,
@@ -1010,7 +1094,8 @@
           "reconstructed": "14:44",
           "minatomirai": "14:46",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 139,
@@ -1019,7 +1104,8 @@
           "reconstructed": "14:52",
           "minatomirai": "14:54",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 141,
@@ -1028,7 +1114,8 @@
           "reconstructed": "14:59",
           "minatomirai": "15:01",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 143,
@@ -1037,7 +1124,8 @@
           "reconstructed": "15:07",
           "minatomirai": "15:08",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 145,
@@ -1046,7 +1134,8 @@
           "reconstructed": "15:14",
           "minatomirai": "15:16",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 147,
@@ -1055,7 +1144,8 @@
           "reconstructed": "15:22",
           "minatomirai": "15:24",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 149,
@@ -1064,7 +1154,8 @@
           "reconstructed": "15:29",
           "minatomirai": "15:31",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 151,
@@ -1073,7 +1164,8 @@
           "reconstructed": "15:37",
           "minatomirai": "15:39",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 153,
@@ -1082,16 +1174,20 @@
           "reconstructed": "15:44",
           "minatomirai": "15:46",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 155,
           "yokohama": "15:50",
           "observed": "15:52",
-          "reconstructed": "15:52",
+          "reconstructed": "15:51",
           "minatomirai": "15:49",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "reconstructedBeforePhysicalValidation": "15:52",
+          "physicalValidation": "corrected-strict-between-adjacent-stations",
+          "physicalCorrectionMinutes": 1
         },
         {
           "trainIndex": 157,
@@ -1100,7 +1196,8 @@
           "reconstructed": "15:59",
           "minatomirai": "16:01",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 159,
@@ -1109,7 +1206,8 @@
           "reconstructed": "16:07",
           "minatomirai": "16:08",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 161,
@@ -1118,7 +1216,8 @@
           "reconstructed": "16:14",
           "minatomirai": "16:16",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 163,
@@ -1127,7 +1226,8 @@
           "reconstructed": "16:22",
           "minatomirai": "16:23",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 165,
@@ -1136,7 +1236,8 @@
           "reconstructed": "16:29",
           "minatomirai": "16:31",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 167,
@@ -1145,7 +1246,8 @@
           "reconstructed": "16:37",
           "minatomirai": "16:39",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 169,
@@ -1154,7 +1256,8 @@
           "reconstructed": "16:44",
           "minatomirai": "16:46",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 171,
@@ -1163,7 +1266,8 @@
           "reconstructed": "16:51",
           "minatomirai": "16:55",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 173,
@@ -1172,7 +1276,8 @@
           "reconstructed": "17:00",
           "minatomirai": "17:02",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 175,
@@ -1181,7 +1286,8 @@
           "reconstructed": "17:07",
           "minatomirai": "17:09",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 177,
@@ -1190,7 +1296,8 @@
           "reconstructed": "17:13",
           "minatomirai": "17:15",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 179,
@@ -1199,7 +1306,8 @@
           "reconstructed": "17:23",
           "minatomirai": "17:25",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 181,
@@ -1208,7 +1316,8 @@
           "reconstructed": "17:30",
           "minatomirai": "17:32",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 183,
@@ -1217,7 +1326,8 @@
           "reconstructed": "17:37",
           "minatomirai": "17:39",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 185,
@@ -1226,7 +1336,8 @@
           "reconstructed": "17:44",
           "minatomirai": "17:46",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 187,
@@ -1235,7 +1346,8 @@
           "reconstructed": "17:52",
           "minatomirai": "17:54",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 189,
@@ -1244,7 +1356,8 @@
           "reconstructed": "17:59",
           "minatomirai": "18:01",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 191,
@@ -1253,7 +1366,8 @@
           "reconstructed": "18:07",
           "minatomirai": "18:08",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 193,
@@ -1262,7 +1376,8 @@
           "reconstructed": "18:14",
           "minatomirai": "18:16",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 195,
@@ -1271,7 +1386,8 @@
           "reconstructed": "18:22",
           "minatomirai": "18:24",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 197,
@@ -1280,7 +1396,8 @@
           "reconstructed": "18:29",
           "minatomirai": "18:31",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 199,
@@ -1289,7 +1406,8 @@
           "reconstructed": "18:37",
           "minatomirai": "18:39",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 201,
@@ -1298,7 +1416,8 @@
           "reconstructed": "18:44",
           "minatomirai": "18:46",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 203,
@@ -1307,7 +1426,8 @@
           "reconstructed": "18:52",
           "minatomirai": "18:54",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 205,
@@ -1316,7 +1436,8 @@
           "reconstructed": "18:59",
           "minatomirai": "19:01",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 207,
@@ -1325,7 +1446,8 @@
           "reconstructed": "19:07",
           "minatomirai": "19:08",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 209,
@@ -1334,7 +1456,8 @@
           "reconstructed": "19:14",
           "minatomirai": "19:15",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 211,
@@ -1343,7 +1466,8 @@
           "reconstructed": "19:23",
           "minatomirai": "19:25",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 213,
@@ -1352,7 +1476,8 @@
           "reconstructed": "19:31",
           "minatomirai": "19:33",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 216,
@@ -1361,7 +1486,8 @@
           "reconstructed": "19:42",
           "minatomirai": "19:44",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 218,
@@ -1370,7 +1496,8 @@
           "reconstructed": "19:52",
           "minatomirai": "19:54",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 220,
@@ -1379,7 +1506,8 @@
           "reconstructed": "19:59",
           "minatomirai": "20:01",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 221,
@@ -1388,7 +1516,8 @@
           "reconstructed": "20:05",
           "minatomirai": "20:06",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 223,
@@ -1397,7 +1526,8 @@
           "reconstructed": "20:13",
           "minatomirai": "20:15",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 225,
@@ -1406,7 +1536,8 @@
           "reconstructed": "20:23",
           "minatomirai": "20:24",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 227,
@@ -1415,7 +1546,8 @@
           "reconstructed": "20:29",
           "minatomirai": "20:32",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 228,
@@ -1424,7 +1556,8 @@
           "reconstructed": "20:35",
           "minatomirai": "20:37",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 230,
@@ -1433,7 +1566,8 @@
           "reconstructed": "20:44",
           "minatomirai": "20:46",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 232,
@@ -1442,7 +1576,8 @@
           "reconstructed": "20:54",
           "minatomirai": "20:55",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 234,
@@ -1451,7 +1586,8 @@
           "reconstructed": "21:00",
           "minatomirai": "21:02",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 235,
@@ -1460,7 +1596,8 @@
           "reconstructed": "21:04",
           "minatomirai": "21:06",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 237,
@@ -1469,7 +1606,8 @@
           "reconstructed": "21:13",
           "minatomirai": "21:15",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 239,
@@ -1478,7 +1616,8 @@
           "reconstructed": "21:23",
           "minatomirai": "21:24",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 241,
@@ -1487,7 +1626,8 @@
           "reconstructed": "21:29",
           "minatomirai": "21:31",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 242,
@@ -1496,7 +1636,8 @@
           "reconstructed": "21:35",
           "minatomirai": "21:37",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 244,
@@ -1505,7 +1646,8 @@
           "reconstructed": "21:44",
           "minatomirai": "21:45",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 246,
@@ -1514,7 +1656,8 @@
           "reconstructed": "21:53",
           "minatomirai": "21:54",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 248,
@@ -1523,7 +1666,8 @@
           "reconstructed": "22:02",
           "minatomirai": "22:03",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 250,
@@ -1532,7 +1676,8 @@
           "reconstructed": "22:13",
           "minatomirai": "22:15",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 251,
@@ -1541,7 +1686,8 @@
           "reconstructed": "22:19",
           "minatomirai": "22:21",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 253,
@@ -1550,7 +1696,8 @@
           "reconstructed": "22:28",
           "minatomirai": "22:29",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 254,
@@ -1559,7 +1706,8 @@
           "reconstructed": "22:34",
           "minatomirai": "22:36",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 255,
@@ -1568,7 +1716,8 @@
           "reconstructed": "22:41",
           "minatomirai": "22:43",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 257,
@@ -1577,7 +1726,8 @@
           "reconstructed": "22:51",
           "minatomirai": "22:53",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 259,
@@ -1586,7 +1736,8 @@
           "reconstructed": "22:58",
           "minatomirai": "23:00",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 260,
@@ -1595,7 +1746,8 @@
           "reconstructed": "23:04",
           "minatomirai": "23:06",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 261,
@@ -1604,7 +1756,8 @@
           "reconstructed": "23:11",
           "minatomirai": "23:13",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 263,
@@ -1613,7 +1766,8 @@
           "reconstructed": "23:21",
           "minatomirai": "23:22",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 265,
@@ -1622,7 +1776,8 @@
           "reconstructed": "23:28",
           "minatomirai": "23:30",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 266,
@@ -1631,7 +1786,8 @@
           "reconstructed": "23:35",
           "minatomirai": "23:36",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 268,
@@ -1640,7 +1796,8 @@
           "reconstructed": "23:45",
           "minatomirai": "23:47",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 269,
@@ -1649,7 +1806,8 @@
           "reconstructed": "23:53",
           "minatomirai": "23:54",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 270,
@@ -1658,7 +1816,8 @@
           "reconstructed": "23:59",
           "minatomirai": "24:01",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 271,
@@ -1667,7 +1826,8 @@
           "reconstructed": "24:07",
           "minatomirai": "24:08",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 272,
@@ -1676,7 +1836,8 @@
           "reconstructed": "24:18",
           "minatomirai": "24:20",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 273,
@@ -1685,7 +1846,8 @@
           "reconstructed": "24:30",
           "minatomirai": "24:31",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         }
       ]
     },
@@ -1719,12 +1881,12 @@
         "07:57",
         "08:03",
         "08:05",
-        "08:10",
+        "08:09",
         "08:12",
         "08:19",
         "08:22",
         "08:28",
-        "08:31",
+        "08:30",
         "08:35",
         "08:38",
         "08:41",
@@ -1732,7 +1894,7 @@
         "08:51",
         "08:59",
         "09:06",
-        "09:11",
+        "09:10",
         "09:14",
         "09:21",
         "09:24",
@@ -1781,7 +1943,7 @@
         "14:37",
         "14:44",
         "14:52",
-        "14:59",
+        "14:58",
         "15:07",
         "15:14",
         "15:22",
@@ -1806,27 +1968,27 @@
         "17:38",
         "17:46",
         "17:53",
-        "17:59",
+        "17:57",
         "18:01",
         "18:08",
         "18:15",
-        "18:22",
+        "18:19",
         "18:23",
-        "18:30",
+        "18:27",
         "18:31",
         "18:33",
         "18:38",
-        "18:43",
+        "18:41",
         "18:53",
         "19:03",
         "19:08",
         "19:15",
-        "19:20",
+        "19:19",
         "19:24",
         "19:30",
         "19:33",
         "19:38",
-        "19:43",
+        "19:41",
         "19:49",
         "19:53",
         "20:00",
@@ -1844,7 +2006,7 @@
         "21:08",
         "21:11",
         "21:16",
-        "21:20",
+        "21:19",
         "21:23",
         "21:30",
         "21:38",
@@ -2214,7 +2376,100 @@
           }
         ],
         "acceptedStopCount": 180,
-        "accountedObservedCount": 182
+        "accountedObservedCount": 182,
+        "physicalCorrectionCount": 11,
+        "physicalCorrections": [
+          {
+            "trainIndex": 43,
+            "yokohama": "08:05",
+            "before": "08:10",
+            "after": "08:09",
+            "minatomirai": "08:10",
+            "correctionMinutes": 1
+          },
+          {
+            "trainIndex": 50,
+            "yokohama": "08:29",
+            "before": "08:31",
+            "after": "08:30",
+            "minatomirai": "08:31",
+            "correctionMinutes": 1
+          },
+          {
+            "trainIndex": 61,
+            "yokohama": "09:08",
+            "before": "09:11",
+            "after": "09:10",
+            "minatomirai": "09:11",
+            "correctionMinutes": 1
+          },
+          {
+            "trainIndex": 154,
+            "yokohama": "14:57",
+            "before": "14:59",
+            "after": "14:58",
+            "minatomirai": "14:59",
+            "correctionMinutes": 1
+          },
+          {
+            "trainIndex": 201,
+            "yokohama": "17:55",
+            "before": "17:59",
+            "after": "17:57",
+            "minatomirai": "17:58",
+            "correctionMinutes": 2
+          },
+          {
+            "trainIndex": 207,
+            "yokohama": "18:17",
+            "before": "18:22",
+            "after": "18:19",
+            "minatomirai": "18:20",
+            "correctionMinutes": 3
+          },
+          {
+            "trainIndex": 209,
+            "yokohama": "18:25",
+            "before": "18:30",
+            "after": "18:27",
+            "minatomirai": "18:28",
+            "correctionMinutes": 3
+          },
+          {
+            "trainIndex": 213,
+            "yokohama": "18:39",
+            "before": "18:43",
+            "after": "18:41",
+            "minatomirai": "18:42",
+            "correctionMinutes": 2
+          },
+          {
+            "trainIndex": 223,
+            "yokohama": "19:17",
+            "before": "19:20",
+            "after": "19:19",
+            "minatomirai": "19:20",
+            "correctionMinutes": 1
+          },
+          {
+            "trainIndex": 229,
+            "yokohama": "19:39",
+            "before": "19:43",
+            "after": "19:41",
+            "minatomirai": "19:42",
+            "correctionMinutes": 2
+          },
+          {
+            "trainIndex": 255,
+            "yokohama": "21:17",
+            "before": "21:20",
+            "after": "21:19",
+            "minatomirai": "21:20",
+            "correctionMinutes": 1
+          }
+        ],
+        "physicalUnresolved": [],
+        "physicalPreservedCount": 169
       },
       "rows": [
         {
@@ -2224,7 +2479,8 @@
           "reconstructed": "05:21",
           "minatomirai": "05:22",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 2,
@@ -2233,7 +2489,8 @@
           "reconstructed": "05:32",
           "minatomirai": "05:35",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 3,
@@ -2242,7 +2499,8 @@
           "reconstructed": "05:43",
           "minatomirai": "05:45",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 5,
@@ -2251,7 +2509,8 @@
           "reconstructed": "05:57",
           "minatomirai": "05:59",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 7,
@@ -2260,7 +2519,8 @@
           "reconstructed": "06:12",
           "minatomirai": "06:14",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 8,
@@ -2269,7 +2529,8 @@
           "reconstructed": "06:19",
           "minatomirai": "06:23",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 10,
@@ -2278,7 +2539,8 @@
           "reconstructed": "06:28",
           "minatomirai": "06:30",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 12,
@@ -2287,7 +2549,8 @@
           "reconstructed": "06:33",
           "minatomirai": "06:35",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 14,
@@ -2296,7 +2559,8 @@
           "reconstructed": "06:40",
           "minatomirai": "06:42",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 15,
@@ -2305,7 +2569,8 @@
           "reconstructed": "06:44",
           "minatomirai": "06:45",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 17,
@@ -2314,7 +2579,8 @@
           "reconstructed": "06:50",
           "minatomirai": "06:52",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 19,
@@ -2323,7 +2589,8 @@
           "reconstructed": "06:57",
           "minatomirai": "06:59",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 21,
@@ -2332,7 +2599,8 @@
           "reconstructed": "07:03",
           "minatomirai": "07:05",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 22,
@@ -2341,7 +2609,8 @@
           "reconstructed": "07:06",
           "minatomirai": "07:07",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 24,
@@ -2350,7 +2619,8 @@
           "reconstructed": "07:12",
           "minatomirai": "07:14",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 26,
@@ -2359,7 +2629,8 @@
           "reconstructed": "07:18",
           "minatomirai": "07:20",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 27,
@@ -2368,7 +2639,8 @@
           "reconstructed": "07:20",
           "minatomirai": "07:22",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 29,
@@ -2377,7 +2649,8 @@
           "reconstructed": "07:26",
           "minatomirai": "07:28",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 31,
@@ -2386,7 +2659,8 @@
           "reconstructed": "07:33",
           "minatomirai": "07:34",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 32,
@@ -2395,7 +2669,8 @@
           "reconstructed": "07:36",
           "minatomirai": "07:37",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 34,
@@ -2404,7 +2679,8 @@
           "reconstructed": "07:41",
           "minatomirai": "07:43",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 36,
@@ -2413,7 +2689,8 @@
           "reconstructed": "07:48",
           "minatomirai": "07:49",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 37,
@@ -2422,7 +2699,8 @@
           "reconstructed": "07:50",
           "minatomirai": "07:52",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 39,
@@ -2431,7 +2709,8 @@
           "reconstructed": "07:57",
           "minatomirai": "07:58",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 41,
@@ -2440,7 +2719,8 @@
           "reconstructed": "08:03",
           "minatomirai": "08:05",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 42,
@@ -2449,16 +2729,20 @@
           "reconstructed": "08:05",
           "minatomirai": "08:07",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 43,
           "yokohama": "08:05",
           "observed": "08:10",
-          "reconstructed": "08:10",
+          "reconstructed": "08:09",
           "minatomirai": "08:10",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "reconstructedBeforePhysicalValidation": "08:10",
+          "physicalValidation": "corrected-strict-between-adjacent-stations",
+          "physicalCorrectionMinutes": 1
         },
         {
           "trainIndex": 44,
@@ -2467,7 +2751,8 @@
           "reconstructed": "08:12",
           "minatomirai": "08:14",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 46,
@@ -2476,7 +2761,8 @@
           "reconstructed": "08:19",
           "minatomirai": "08:21",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 47,
@@ -2485,7 +2771,8 @@
           "reconstructed": "08:22",
           "minatomirai": "08:24",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 49,
@@ -2494,16 +2781,20 @@
           "reconstructed": "08:28",
           "minatomirai": "08:30",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 50,
           "yokohama": "08:29",
           "observed": "08:31",
-          "reconstructed": "08:31",
+          "reconstructed": "08:30",
           "minatomirai": "08:31",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "reconstructedBeforePhysicalValidation": "08:31",
+          "physicalValidation": "corrected-strict-between-adjacent-stations",
+          "physicalCorrectionMinutes": 1
         },
         {
           "trainIndex": 51,
@@ -2512,7 +2803,8 @@
           "reconstructed": "08:35",
           "minatomirai": "08:36",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 52,
@@ -2521,7 +2813,8 @@
           "reconstructed": "08:38",
           "minatomirai": "08:40",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 53,
@@ -2530,7 +2823,8 @@
           "reconstructed": "08:41",
           "minatomirai": "08:43",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 54,
@@ -2539,7 +2833,8 @@
           "reconstructed": "08:44",
           "minatomirai": "08:47",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 56,
@@ -2548,7 +2843,8 @@
           "reconstructed": "08:51",
           "minatomirai": "08:54",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 58,
@@ -2557,7 +2853,8 @@
           "reconstructed": "08:59",
           "minatomirai": "09:01",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 60,
@@ -2566,16 +2863,20 @@
           "reconstructed": "09:06",
           "minatomirai": "09:09",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 61,
           "yokohama": "09:08",
           "observed": "09:11",
-          "reconstructed": "09:11",
+          "reconstructed": "09:10",
           "minatomirai": "09:11",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "reconstructedBeforePhysicalValidation": "09:11",
+          "physicalValidation": "corrected-strict-between-adjacent-stations",
+          "physicalCorrectionMinutes": 1
         },
         {
           "trainIndex": 62,
@@ -2584,7 +2885,8 @@
           "reconstructed": "09:14",
           "minatomirai": "09:16",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 64,
@@ -2593,7 +2895,8 @@
           "reconstructed": "09:21",
           "minatomirai": "09:23",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 65,
@@ -2602,7 +2905,8 @@
           "reconstructed": "09:24",
           "minatomirai": "09:26",
           "correctionMinutes": 2,
-          "evidence": "gap-repair-soft-minatomirai-check"
+          "evidence": "gap-repair-soft-minatomirai-check",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 66,
@@ -2611,7 +2915,8 @@
           "reconstructed": "09:28",
           "minatomirai": "09:30",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 67,
@@ -2620,7 +2925,8 @@
           "reconstructed": "09:32",
           "minatomirai": "09:34",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 69,
@@ -2629,7 +2935,8 @@
           "reconstructed": "09:38",
           "minatomirai": "09:41",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 70,
@@ -2638,7 +2945,8 @@
           "reconstructed": "09:43",
           "minatomirai": "09:45",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 72,
@@ -2647,7 +2955,8 @@
           "reconstructed": "09:50",
           "minatomirai": "09:52",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 74,
@@ -2656,7 +2965,8 @@
           "reconstructed": "09:58",
           "minatomirai": "10:01",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 76,
@@ -2665,7 +2975,8 @@
           "reconstructed": "10:07",
           "minatomirai": "10:09",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 78,
@@ -2674,7 +2985,8 @@
           "reconstructed": "10:14",
           "minatomirai": "10:16",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 80,
@@ -2683,7 +2995,8 @@
           "reconstructed": "10:22",
           "minatomirai": "10:24",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 82,
@@ -2692,7 +3005,8 @@
           "reconstructed": "10:29",
           "minatomirai": "10:31",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 84,
@@ -2701,7 +3015,8 @@
           "reconstructed": "10:37",
           "minatomirai": "10:39",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 86,
@@ -2710,7 +3025,8 @@
           "reconstructed": "10:44",
           "minatomirai": "10:46",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 88,
@@ -2719,7 +3035,8 @@
           "reconstructed": "10:52",
           "minatomirai": "10:54",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 90,
@@ -2728,7 +3045,8 @@
           "reconstructed": "10:59",
           "minatomirai": "11:01",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 92,
@@ -2737,7 +3055,8 @@
           "reconstructed": "11:07",
           "minatomirai": "11:09",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 94,
@@ -2746,7 +3065,8 @@
           "reconstructed": "11:14",
           "minatomirai": "11:16",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 96,
@@ -2755,7 +3075,8 @@
           "reconstructed": "11:22",
           "minatomirai": "11:24",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 98,
@@ -2764,7 +3085,8 @@
           "reconstructed": "11:29",
           "minatomirai": "11:31",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 100,
@@ -2773,7 +3095,8 @@
           "reconstructed": "11:37",
           "minatomirai": "11:39",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 102,
@@ -2782,7 +3105,8 @@
           "reconstructed": "11:44",
           "minatomirai": "11:46",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 104,
@@ -2791,7 +3115,8 @@
           "reconstructed": "11:52",
           "minatomirai": "11:54",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 106,
@@ -2800,7 +3125,8 @@
           "reconstructed": "11:59",
           "minatomirai": "12:01",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 108,
@@ -2809,7 +3135,8 @@
           "reconstructed": "12:07",
           "minatomirai": "12:09",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 110,
@@ -2818,7 +3145,8 @@
           "reconstructed": "12:14",
           "minatomirai": "12:16",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 112,
@@ -2827,7 +3155,8 @@
           "reconstructed": "12:22",
           "minatomirai": "12:24",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 114,
@@ -2836,7 +3165,8 @@
           "reconstructed": "12:29",
           "minatomirai": "12:31",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 116,
@@ -2845,7 +3175,8 @@
           "reconstructed": "12:37",
           "minatomirai": "12:39",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 118,
@@ -2854,7 +3185,8 @@
           "reconstructed": "12:44",
           "minatomirai": "12:46",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 120,
@@ -2863,7 +3195,8 @@
           "reconstructed": "12:52",
           "minatomirai": "12:54",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 122,
@@ -2872,7 +3205,8 @@
           "reconstructed": "12:59",
           "minatomirai": "13:01",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 124,
@@ -2881,7 +3215,8 @@
           "reconstructed": "13:07",
           "minatomirai": "13:09",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 126,
@@ -2890,7 +3225,8 @@
           "reconstructed": "13:14",
           "minatomirai": "13:16",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 128,
@@ -2899,7 +3235,8 @@
           "reconstructed": "13:22",
           "minatomirai": "13:24",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 130,
@@ -2908,7 +3245,8 @@
           "reconstructed": "13:29",
           "minatomirai": "13:31",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 132,
@@ -2917,7 +3255,8 @@
           "reconstructed": "13:37",
           "minatomirai": "13:39",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 134,
@@ -2926,7 +3265,8 @@
           "reconstructed": "13:44",
           "minatomirai": "13:46",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 136,
@@ -2935,7 +3275,8 @@
           "reconstructed": "13:52",
           "minatomirai": "13:54",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 138,
@@ -2944,7 +3285,8 @@
           "reconstructed": "13:59",
           "minatomirai": "14:01",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 140,
@@ -2953,7 +3295,8 @@
           "reconstructed": "14:07",
           "minatomirai": "14:09",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 142,
@@ -2962,7 +3305,8 @@
           "reconstructed": "14:14",
           "minatomirai": "14:16",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 144,
@@ -2971,7 +3315,8 @@
           "reconstructed": "14:22",
           "minatomirai": "14:24",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 146,
@@ -2980,7 +3325,8 @@
           "reconstructed": "14:29",
           "minatomirai": "14:31",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 148,
@@ -2989,7 +3335,8 @@
           "reconstructed": "14:37",
           "minatomirai": "14:39",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 150,
@@ -2998,7 +3345,8 @@
           "reconstructed": "14:44",
           "minatomirai": "14:46",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 152,
@@ -3007,16 +3355,20 @@
           "reconstructed": "14:52",
           "minatomirai": "14:54",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 154,
           "yokohama": "14:57",
           "observed": "14:59",
-          "reconstructed": "14:59",
+          "reconstructed": "14:58",
           "minatomirai": "14:59",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "reconstructedBeforePhysicalValidation": "14:59",
+          "physicalValidation": "corrected-strict-between-adjacent-stations",
+          "physicalCorrectionMinutes": 1
         },
         {
           "trainIndex": 156,
@@ -3025,7 +3377,8 @@
           "reconstructed": "15:07",
           "minatomirai": "15:09",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 158,
@@ -3034,7 +3387,8 @@
           "reconstructed": "15:14",
           "minatomirai": "15:16",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 160,
@@ -3043,7 +3397,8 @@
           "reconstructed": "15:22",
           "minatomirai": "15:24",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 162,
@@ -3052,7 +3407,8 @@
           "reconstructed": "15:29",
           "minatomirai": "15:31",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 164,
@@ -3061,7 +3417,8 @@
           "reconstructed": "15:37",
           "minatomirai": "15:39",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 166,
@@ -3070,7 +3427,8 @@
           "reconstructed": "15:44",
           "minatomirai": "15:46",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 168,
@@ -3079,7 +3437,8 @@
           "reconstructed": "15:52",
           "minatomirai": "15:54",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 170,
@@ -3088,7 +3447,8 @@
           "reconstructed": "15:59",
           "minatomirai": "16:01",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 172,
@@ -3097,7 +3457,8 @@
           "reconstructed": "16:07",
           "minatomirai": "16:09",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 174,
@@ -3106,7 +3467,8 @@
           "reconstructed": "16:14",
           "minatomirai": "16:16",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 176,
@@ -3115,7 +3477,8 @@
           "reconstructed": "16:22",
           "minatomirai": "16:24",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 178,
@@ -3124,7 +3487,8 @@
           "reconstructed": "16:29",
           "minatomirai": "16:30",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 180,
@@ -3133,7 +3497,8 @@
           "reconstructed": "16:37",
           "minatomirai": "16:39",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 182,
@@ -3142,7 +3507,8 @@
           "reconstructed": "16:43",
           "minatomirai": "16:45",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 184,
@@ -3151,7 +3517,8 @@
           "reconstructed": "16:50",
           "minatomirai": "16:52",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 186,
@@ -3160,7 +3527,8 @@
           "reconstructed": "16:58",
           "minatomirai": "17:00",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 188,
@@ -3169,7 +3537,8 @@
           "reconstructed": "17:05",
           "minatomirai": "17:07",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 190,
@@ -3178,7 +3547,8 @@
           "reconstructed": "17:13",
           "minatomirai": "17:15",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 192,
@@ -3187,7 +3557,8 @@
           "reconstructed": "17:21",
           "minatomirai": "17:22",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 194,
@@ -3196,7 +3567,8 @@
           "reconstructed": "17:29",
           "minatomirai": "17:30",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 195,
@@ -3205,7 +3577,8 @@
           "reconstructed": "17:33",
           "minatomirai": "17:35",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 196,
@@ -3214,7 +3587,8 @@
           "reconstructed": "17:38",
           "minatomirai": "17:40",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 198,
@@ -3223,7 +3597,8 @@
           "reconstructed": "17:46",
           "minatomirai": "17:47",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 200,
@@ -3232,16 +3607,20 @@
           "reconstructed": "17:53",
           "minatomirai": "17:55",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 201,
           "yokohama": "17:55",
           "observed": "17:59",
-          "reconstructed": "17:59",
+          "reconstructed": "17:57",
           "minatomirai": "17:58",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "reconstructedBeforePhysicalValidation": "17:59",
+          "physicalValidation": "corrected-strict-between-adjacent-stations",
+          "physicalCorrectionMinutes": 2
         },
         {
           "trainIndex": 202,
@@ -3250,7 +3629,8 @@
           "reconstructed": "18:01",
           "minatomirai": "18:03",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 204,
@@ -3259,7 +3639,8 @@
           "reconstructed": "18:08",
           "minatomirai": "18:10",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 206,
@@ -3268,16 +3649,20 @@
           "reconstructed": "18:15",
           "minatomirai": "18:17",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 207,
           "yokohama": "18:17",
           "observed": "18:22",
-          "reconstructed": "18:22",
+          "reconstructed": "18:19",
           "minatomirai": "18:20",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "reconstructedBeforePhysicalValidation": "18:22",
+          "physicalValidation": "corrected-strict-between-adjacent-stations",
+          "physicalCorrectionMinutes": 3
         },
         {
           "trainIndex": 208,
@@ -3286,16 +3671,20 @@
           "reconstructed": "18:23",
           "minatomirai": "18:25",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 209,
           "yokohama": "18:25",
           "observed": "18:30",
-          "reconstructed": "18:30",
+          "reconstructed": "18:27",
           "minatomirai": "18:28",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "reconstructedBeforePhysicalValidation": "18:30",
+          "physicalValidation": "corrected-strict-between-adjacent-stations",
+          "physicalCorrectionMinutes": 3
         },
         {
           "trainIndex": 210,
@@ -3304,7 +3693,8 @@
           "reconstructed": "18:31",
           "minatomirai": "18:32",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 211,
@@ -3313,7 +3703,8 @@
           "reconstructed": "18:33",
           "minatomirai": "18:35",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 212,
@@ -3322,16 +3713,20 @@
           "reconstructed": "18:38",
           "minatomirai": "18:40",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 213,
           "yokohama": "18:39",
           "observed": "18:43",
-          "reconstructed": "18:43",
+          "reconstructed": "18:41",
           "minatomirai": "18:42",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "reconstructedBeforePhysicalValidation": "18:43",
+          "physicalValidation": "corrected-strict-between-adjacent-stations",
+          "physicalCorrectionMinutes": 2
         },
         {
           "trainIndex": 216,
@@ -3340,7 +3735,8 @@
           "reconstructed": "18:53",
           "minatomirai": "18:55",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 219,
@@ -3349,7 +3745,8 @@
           "reconstructed": "19:03",
           "minatomirai": "19:06",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 220,
@@ -3358,7 +3755,8 @@
           "reconstructed": "19:08",
           "minatomirai": "19:10",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 222,
@@ -3367,16 +3765,20 @@
           "reconstructed": "19:15",
           "minatomirai": "19:17",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 223,
           "yokohama": "19:17",
           "observed": "19:20",
-          "reconstructed": "19:20",
+          "reconstructed": "19:19",
           "minatomirai": "19:20",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "reconstructedBeforePhysicalValidation": "19:20",
+          "physicalValidation": "corrected-strict-between-adjacent-stations",
+          "physicalCorrectionMinutes": 1
         },
         {
           "trainIndex": 224,
@@ -3385,7 +3787,8 @@
           "reconstructed": "19:24",
           "minatomirai": "19:25",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 226,
@@ -3394,7 +3797,8 @@
           "reconstructed": "19:30",
           "minatomirai": "19:32",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 227,
@@ -3403,7 +3807,8 @@
           "reconstructed": "19:33",
           "minatomirai": "19:35",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 228,
@@ -3412,16 +3817,20 @@
           "reconstructed": "19:38",
           "minatomirai": "19:40",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 229,
           "yokohama": "19:39",
           "observed": "19:43",
-          "reconstructed": "19:43",
+          "reconstructed": "19:41",
           "minatomirai": "19:42",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "reconstructedBeforePhysicalValidation": "19:43",
+          "physicalValidation": "corrected-strict-between-adjacent-stations",
+          "physicalCorrectionMinutes": 2
         },
         {
           "trainIndex": 231,
@@ -3430,7 +3839,8 @@
           "reconstructed": "19:49",
           "minatomirai": "19:50",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 232,
@@ -3439,7 +3849,8 @@
           "reconstructed": "19:53",
           "minatomirai": "19:55",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 234,
@@ -3448,7 +3859,8 @@
           "reconstructed": "20:00",
           "minatomirai": "20:01",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 236,
@@ -3457,7 +3869,8 @@
           "reconstructed": "20:08",
           "minatomirai": "20:10",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 237,
@@ -3466,7 +3879,8 @@
           "reconstructed": "20:11",
           "minatomirai": "20:12",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 238,
@@ -3475,7 +3889,8 @@
           "reconstructed": "20:16",
           "minatomirai": "20:18",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 240,
@@ -3484,7 +3899,8 @@
           "reconstructed": "20:23",
           "minatomirai": "20:25",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 242,
@@ -3493,7 +3909,8 @@
           "reconstructed": "20:30",
           "minatomirai": "20:32",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 243,
@@ -3502,7 +3919,8 @@
           "reconstructed": "20:33",
           "minatomirai": "20:36",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 244,
@@ -3511,7 +3929,8 @@
           "reconstructed": "20:38",
           "minatomirai": "20:40",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 245,
@@ -3520,7 +3939,8 @@
           "reconstructed": "20:41",
           "minatomirai": "20:42",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 246,
@@ -3529,7 +3949,8 @@
           "reconstructed": "20:46",
           "minatomirai": "20:47",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 248,
@@ -3538,7 +3959,8 @@
           "reconstructed": "20:53",
           "minatomirai": "20:55",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 251,
@@ -3547,7 +3969,8 @@
           "reconstructed": "21:04",
           "minatomirai": "21:05",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 252,
@@ -3556,7 +3979,8 @@
           "reconstructed": "21:08",
           "minatomirai": "21:10",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 253,
@@ -3565,7 +3989,8 @@
           "reconstructed": "21:11",
           "minatomirai": "21:12",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 254,
@@ -3574,16 +3999,20 @@
           "reconstructed": "21:16",
           "minatomirai": "21:17",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 255,
           "yokohama": "21:17",
           "observed": "21:20",
-          "reconstructed": "21:20",
+          "reconstructed": "21:19",
           "minatomirai": "21:20",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "reconstructedBeforePhysicalValidation": "21:20",
+          "physicalValidation": "corrected-strict-between-adjacent-stations",
+          "physicalCorrectionMinutes": 1
         },
         {
           "trainIndex": 256,
@@ -3592,7 +4021,8 @@
           "reconstructed": "21:23",
           "minatomirai": "21:25",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 258,
@@ -3601,7 +4031,8 @@
           "reconstructed": "21:30",
           "minatomirai": "21:32",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 260,
@@ -3610,7 +4041,8 @@
           "reconstructed": "21:38",
           "minatomirai": "21:40",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 261,
@@ -3619,7 +4051,8 @@
           "reconstructed": "21:41",
           "minatomirai": "21:42",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 262,
@@ -3628,7 +4061,8 @@
           "reconstructed": "21:46",
           "minatomirai": "21:48",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 264,
@@ -3637,7 +4071,8 @@
           "reconstructed": "21:53",
           "minatomirai": "21:55",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 266,
@@ -3646,7 +4081,8 @@
           "reconstructed": "22:00",
           "minatomirai": "22:01",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 268,
@@ -3655,7 +4091,8 @@
           "reconstructed": "22:08",
           "minatomirai": "22:10",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 270,
@@ -3664,7 +4101,8 @@
           "reconstructed": "22:16",
           "minatomirai": "22:18",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 271,
@@ -3673,7 +4111,8 @@
           "reconstructed": "22:20",
           "minatomirai": "22:21",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 272,
@@ -3682,7 +4121,8 @@
           "reconstructed": "22:25",
           "minatomirai": "22:27",
           "correctionMinutes": 2,
-          "evidence": "gap-repair-soft-minatomirai-check"
+          "evidence": "gap-repair-soft-minatomirai-check",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 273,
@@ -3691,7 +4131,8 @@
           "reconstructed": "22:31",
           "minatomirai": "22:34",
           "correctionMinutes": 1,
-          "evidence": "gap-repair-soft-minatomirai-check"
+          "evidence": "gap-repair-soft-minatomirai-check",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 274,
@@ -3700,7 +4141,8 @@
           "reconstructed": "22:37",
           "minatomirai": "22:38",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 275,
@@ -3709,7 +4151,8 @@
           "reconstructed": "22:42",
           "minatomirai": "22:43",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 278,
@@ -3718,7 +4161,8 @@
           "reconstructed": "22:52",
           "minatomirai": "22:54",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 280,
@@ -3727,7 +4171,8 @@
           "reconstructed": "23:00",
           "minatomirai": "23:03",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 282,
@@ -3736,7 +4181,8 @@
           "reconstructed": "23:07",
           "minatomirai": "23:09",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 283,
@@ -3745,7 +4191,8 @@
           "reconstructed": "23:11",
           "minatomirai": "23:13",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 284,
@@ -3754,7 +4201,8 @@
           "reconstructed": "23:15",
           "minatomirai": "23:17",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 286,
@@ -3763,7 +4211,8 @@
           "reconstructed": "23:22",
           "minatomirai": "23:23",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 287,
@@ -3772,7 +4221,8 @@
           "reconstructed": "23:29",
           "minatomirai": "23:31",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 289,
@@ -3781,7 +4231,8 @@
           "reconstructed": "23:37",
           "minatomirai": "23:39",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 290,
@@ -3790,7 +4241,8 @@
           "reconstructed": "23:44",
           "minatomirai": "23:46",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 291,
@@ -3799,7 +4251,8 @@
           "reconstructed": "23:47",
           "minatomirai": "23:49",
           "correctionMinutes": 2,
-          "evidence": "gap-repair-soft-minatomirai-check"
+          "evidence": "gap-repair-soft-minatomirai-check",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 292,
@@ -3808,7 +4261,8 @@
           "reconstructed": "23:52",
           "minatomirai": "23:54",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 293,
@@ -3817,7 +4271,8 @@
           "reconstructed": "23:59",
           "minatomirai": "24:02",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 295,
@@ -3826,7 +4281,8 @@
           "reconstructed": "24:17",
           "minatomirai": "24:19",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         },
         {
           "trainIndex": 296,
@@ -3835,7 +4291,8 @@
           "reconstructed": "24:30",
           "minatomirai": "24:31",
           "correctionMinutes": 0,
-          "evidence": "trusted-yokohama-exact"
+          "evidence": "trusted-yokohama-exact",
+          "physicalValidation": "preserved"
         }
       ]
     }
