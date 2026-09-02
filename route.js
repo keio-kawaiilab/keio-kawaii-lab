@@ -121,7 +121,8 @@
     if(warning)html+='<div class="route-time-warning">'+esc(warning)+'</div>';
     segments.forEach(function(segment,index){
       if(index>0){
-        var transferCopy=segment.throughFromPrevious?esc(model.displayStation(segment.from))+"から直通":esc(model.displayStation(segment.from))+"で乗換"+(timed?"（"+formatTime(segment.departure)+"発）":"");
+        var transferDetail=timed?"（"+(segment.transferMinutes?"乗換目安 "+segment.transferMinutes+"分・":"")+formatTime(segment.departure)+"発）":"";
+        var transferCopy=segment.throughFromPrevious?esc(model.displayStation(segment.from))+"から直通":esc(model.displayStation(segment.from))+"で乗換"+transferDetail;
         html+='<div class="route-transfer">'+transferCopy+'</div>';
       }
       html+='<div class="route-leg" style="--route-line-color:'+safeColor(segment.color)+'"><div class="route-line-rail" aria-hidden="true"></div><div class="route-leg-copy">';

@@ -418,18 +418,24 @@
         var previous=i>0?timed[i-1]:null;
         var sameCompany=previous&&sameOperator(railwayById.get(previous.railway),railwayById.get(segment.railway));
         var throughCandidate=Boolean(sameCompany&&previous.destination&&fromNodes.indexOf(previous.destination)<0);
-        var earliest=current+(i>0&&!throughCandidate?buffer:0);
+        var interchangeBuffer=buffer;
+        if(previous){
+          var interchangeMeters=distanceMeters(stationById.get(previous.to),stationById.get(segment.from));
+          if(interchangeMeters!==null)interchangeBuffer=Math.max(buffer,Math.min(15,Math.ceil(interchangeMeters/75)+2));
+        }
+        var earliest=current+(i>0&&!throughCandidate?interchangeBuffer:0);
         var trip=table&&table.timeBasis==="station-departure-only"?stationDepartureTrip(table,fromNodes,toNodes,earliest,service):timetableTrip(table,fromNodes,toNodes,earliest,service);
         if(throughCandidate&&trip){
           var sameDestination=trip.destination&&trip.destination===previous.destination;
           var sameType=!previous.trainType||!trip.trainType||previous.trainType===trip.trainType;
           if(trip.departure>=current&&trip.departure-current<=3&&sameDestination&&sameType)trip.throughFromPrevious=true;
           else{
-            earliest=current+buffer;
+            earliest=current+interchangeBuffer;
             trip=table&&table.timeBasis==="station-departure-only"?stationDepartureTrip(table,fromNodes,toNodes,earliest,service):timetableTrip(table,fromNodes,toNodes,earliest,service);
           }
         }
         if(!trip||!Number.isFinite(trip.arrival))return null;
+        if(i>0&&!trip.throughFromPrevious)trip.transferMinutes=interchangeBuffer;
         timed.push(Object.assign({},segment,trip));current=trip.arrival;
       }
       return{segments:timed,departure:timed[0].departure,arrival:timed[timed.length-1].arrival,duration:timed[timed.length-1].arrival-timed[0].departure,transfers:timed.slice(1).filter(function(segment){return!segment.throughFromPrevious;}).length,estimatedArrival:timed.some(function(segment){return segment.timeBasis==="station-departure"||segment.timeBasis==="inferred-station-trip"||segment.timeBasis==="estimated-edge-duration";})};

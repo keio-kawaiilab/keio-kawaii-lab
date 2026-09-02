@@ -123,6 +123,35 @@ assert.equal(throughTimed.arrival, 502, "a matching same-operator continuation m
 assert.equal(throughTimed.transfers, 0);
 assert.equal(throughTimed.segments[1].throughFromPrevious, true);
 
+const walkingModel = core.createModel([{
+  Station: [
+    station("station:walk-origin", "徒歩出発", "line:walk-a", 35.000, 139.000),
+    station("station:walk-a", "徒歩乗換", "line:walk-a", 35.010, 139.000),
+    station("station:walk-b", "徒歩乗換", "line:walk-b", 35.016, 139.000),
+    station("station:walk-destination", "徒歩到着", "line:walk-b", 35.026, 139.000),
+  ],
+  Railway: [
+    railway("line:walk-a", "徒歩A線", "#112233", ["station:walk-origin", "station:walk-a"]),
+    railway("line:walk-b", "徒歩B線", "#223344", ["station:walk-b", "station:walk-destination"]),
+  ],
+}]);
+const walkingPath = walkingModel.shortestPath(
+  walkingModel.resolveInput("徒歩出発").group,
+  walkingModel.resolveInput("徒歩到着").group,
+);
+const walkingTimed = walkingModel.timedItinerary(walkingPath, {
+  "line:walk-a": {
+    stations: ["station:walk-origin", "station:walk-a"], calendars: ["odpt.Calendar:Weekday"], trainTypes: ["type:local"],
+    trips: [[0, 0, "1", [[0, null, 480], [1, 490, null]]]],
+  },
+  "line:walk-b": {
+    stations: ["station:walk-b", "station:walk-destination"], calendars: ["odpt.Calendar:Weekday"], trainTypes: ["type:local"],
+    trips: [[0, 0, "2", [[0, null, 496], [1, 506, null]]], [0, 0, "3", [[0, null, 502], [1, 512, null]]]],
+  },
+}, 475, "weekday", 5);
+assert.equal(walkingTimed.arrival, 512, "a long interchange walk must reject an impossible connection");
+assert.ok(walkingTimed.segments[1].transferMinutes >= 10);
+
 const timedOnlyPath = model.shortestPath(origin, destination, { allowedRailways: [lineA, lineB] });
 assert.ok(timedOnlyPath, "railway availability filtering must retain supported routes");
 assert.equal(model.shortestPath(origin, destination, { allowedRailways: [lineA] }), null, "unsupported lines must be excluded from a timed route");
