@@ -28,7 +28,9 @@ EXPECTED = {
     },
 }
 BASE_SIZE = 1654.0
-FIRST_X = 226.0
+# Minute cells start at x≈294 on the 1654×1654 official artwork. 226 was
+# the hour-label gutter, which made the first probe crop the wrong cells.
+FIRST_X = 294.0
 X_PITCH = 68.0
 FIRST_Y = 47.0
 Y_PITCH = 74.5
@@ -164,7 +166,7 @@ def validate_sample(name: str, parsed: dict[str, list[int]]) -> None:
 
 
 def main() -> int:
-    result = {"version": 6, "samples": {}}
+    result = {"version": 7, "samples": {}}
     session = requests.Session()
     session.headers["User-Agent"] = "Keio-Kawaii-Lab timetable validation/1.0"
     failures = []
