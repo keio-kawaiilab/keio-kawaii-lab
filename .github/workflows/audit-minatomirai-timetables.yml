@@ -10,6 +10,7 @@ on:
       - 'scripts/reconstruct_minatomirai_weekday_downbound_v3.py'
       - 'scripts/reconstruct_minatomirai_weekday_downbound_v4.py'
       - 'scripts/reconstruct_shintakashima_downbound.py'
+      - 'scripts/reconstruct_shintakashima_downbound_v2.py'
       - '.github/workflows/audit-minatomirai-timetables.yml'
 
 permissions:
@@ -29,7 +30,7 @@ jobs:
       - name: Reconstruct weekday Minatomirai departures
         run: python scripts/reconstruct_minatomirai_weekday_downbound_v4.py
       - name: Reconstruct Shin-Takashima departures
-        run: python scripts/reconstruct_shintakashima_downbound.py
+        run: python scripts/reconstruct_shintakashima_downbound_v2.py
       - name: Audit saved timetable snapshot
         run: python scripts/audit_minatomirai_downbound.py
       - name: Save audit and reconstruction
