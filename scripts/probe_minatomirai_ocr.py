@@ -4,13 +4,11 @@ from __future__ import annotations
 import io
 import json
 import math
-import re
 from pathlib import Path
 
 import pytesseract
 import requests
 from PIL import Image, ImageEnhance, ImageOps
-from pytesseract import Output
 
 OUT = Path("data/transit/yokohama-minatomirai/ocr-probe.json")
 SAMPLES = {
@@ -35,13 +33,15 @@ X_PITCH = 68.0
 FIRST_Y = 47.0
 Y_PITCH = 74.5
 MAX_COLUMNS = 21
+TILE_W = 168
+TILE_H = 150
+SHEET_COLUMNS = 7
 
 
 def minute_crop(image: Image.Image, hour: int, column: int) -> Image.Image:
     sx, sy = image.width / BASE_SIZE, image.height / BASE_SIZE
     cx = (FIRST_X + X_PITCH * column) * sx
     cy = (FIRST_Y + Y_PITCH * (hour - 4)) * sy
-    # Destination abbreviations on upbound artwork sit above this narrow band.
     left, right = int(cx - 25 * sx), int(cx + 25 * sx)
     top, bottom = int(cy - 21 * sy), int(cy + 23 * sy)
     return image.crop((max(0, left), max(0, top), min(image.width, right), min(image.height, bottom)))
@@ -52,7 +52,7 @@ def ink_count(crop: Image.Image) -> int:
     for r, g, b in crop.convert("RGB").getdata():
         spread = max(r, g, b) - min(r, g, b)
         mean = (r + g + b) / 3
-        if mean < 155 or (spread > 45 and mean < 235):
+        if mean < 165 or (spread > 40 and mean < 238):
             count += 1
     return count
 
@@ -63,16 +63,15 @@ def candidate_cells(image: Image.Image) -> list[dict]:
         for column in range(MAX_COLUMNS):
             crop = minute_crop(image, hour, column)
             ink = ink_count(crop)
-            if ink < max(25, int(crop.width * crop.height * 0.018)):
+            if ink < max(18, int(crop.width * crop.height * 0.010)):
                 continue
             rows.append({"hour": hour, "column": column, "ink": ink, "crop": crop})
     return rows
 
 
 def contact_sheet(cells: list[dict], *, threshold: bool = False) -> tuple[Image.Image, dict[tuple[int, int], int]]:
-    tile_w, tile_h, columns = 156, 144, 8
-    rows = max(1, math.ceil(len(cells) / columns))
-    sheet = Image.new("L", (tile_w * columns, tile_h * rows), 255)
+    rows = max(1, math.ceil(len(cells) / SHEET_COLUMNS))
+    sheet = Image.new("L", (TILE_W * SHEET_COLUMNS, TILE_H * rows), 255)
     locator: dict[tuple[int, int], int] = {}
     for index, cell in enumerate(cells):
         crop = ImageOps.grayscale(cell["crop"])
@@ -80,39 +79,43 @@ def contact_sheet(cells: list[dict], *, threshold: bool = False) -> tuple[Image.
         crop = ImageEnhance.Contrast(crop).enhance(1.55)
         crop = crop.resize((crop.width * 3, crop.height * 3), Image.Resampling.LANCZOS)
         if threshold:
-            crop = crop.point(lambda value: 0 if value < 190 else 255)
-        row, column = divmod(index, columns)
-        x = column * tile_w + (tile_w - crop.width) // 2
-        y = row * tile_h + (tile_h - crop.height) // 2
+            crop = crop.point(lambda value: 0 if value < 205 else 255)
+        row, column = divmod(index, SHEET_COLUMNS)
+        x = column * TILE_W + (TILE_W - crop.width) // 2
+        y = row * TILE_H + (TILE_H - crop.height) // 2
         sheet.paste(crop, (x, y))
         locator[(row, column)] = index
     return sheet, locator
 
 
 def read_sheet(sheet: Image.Image, locator: dict[tuple[int, int], int]) -> dict[int, str]:
-    data = pytesseract.image_to_data(
+    raw = pytesseract.image_to_boxes(
         sheet,
-        output_type=Output.DICT,
-        config="--psm 11 -c tessedit_char_whitelist=0123456789",
+        config="--psm 6 -c tessedit_char_whitelist=0123456789",
         lang="eng",
     )
-    result: dict[int, tuple[str, float]] = {}
-    tile_w, tile_h = 156, 144
-    for i, raw in enumerate(data["text"]):
-        digits = re.sub(r"\D", "", str(raw or ""))
-        if not digits:
+    grouped: dict[int, list[tuple[float, str]]] = {}
+    for line in raw.splitlines():
+        parts = line.split()
+        if len(parts) < 5:
             continue
-        cx = int(data["left"][i]) + int(data["width"][i]) / 2
-        cy = int(data["top"][i]) + int(data["height"][i]) / 2
-        key = (int(cy // tile_h), int(cx // tile_w))
-        index = locator.get(key)
+        char = parts[0]
+        if len(char) != 1 or not char.isdigit():
+            continue
+        left, bottom, right, top = map(int, parts[1:5])
+        cx = (left + right) / 2
+        cy_from_top = sheet.height - (bottom + top) / 2
+        tile_row = int(cy_from_top // TILE_H)
+        tile_column = int(cx // TILE_W)
+        index = locator.get((tile_row, tile_column))
         if index is None:
             continue
-        conf = float(data["conf"][i]) if str(data["conf"][i]).strip() not in {"", "-1"} else -1
-        old = result.get(index)
-        if old is None or conf > old[1]:
-            result[index] = (digits, conf)
-    return {index: value[0] for index, value in result.items()}
+        grouped.setdefault(index, []).append((cx, char))
+    result = {}
+    for index, chars in grouped.items():
+        chars.sort(key=lambda row: row[0])
+        result[index] = "".join(char for _, char in chars)
+    return result
 
 
 def parse_rows(image: Image.Image) -> tuple[dict[str, list[int]], dict]:
@@ -144,7 +147,12 @@ def parse_rows(image: Image.Image) -> tuple[dict[str, list[int]], dict]:
             unresolved_rows.append({"hour": cell["hour"], "column": cell["column"], "text": text, "ink": cell["ink"], "reason": "non-monotonic"})
             continue
         row.append(minute)
-    diagnostics = {"candidateCount": len(cells), "recognizedCount": sum(len(v) for v in parsed.values()), "unresolved": unresolved_rows}
+    diagnostics = {
+        "candidateCount": len(cells),
+        "recognizedCount": sum(len(v) for v in parsed.values()),
+        "unresolvedCount": len(unresolved_rows),
+        "unresolved": unresolved_rows[:80],
+    }
     return parsed, diagnostics
 
 
@@ -156,15 +164,15 @@ def validate_sample(name: str, parsed: dict[str, list[int]]) -> None:
 
 
 def main() -> int:
-    result = {"version": 5, "samples": {}}
+    result = {"version": 6, "samples": {}}
     session = requests.Session()
     session.headers["User-Agent"] = "Keio-Kawaii-Lab timetable validation/1.0"
+    failures = []
     for name, url in SAMPLES.items():
         response = session.get(url, timeout=60)
         response.raise_for_status()
         image = Image.open(io.BytesIO(response.content)).convert("RGB")
         parsed, diagnostics = parse_rows(image)
-        validate_sample(name, parsed)
         result["samples"][name] = {
             "url": url,
             "size": list(image.size),
@@ -173,8 +181,14 @@ def main() -> int:
             "diagnostics": diagnostics,
         }
         print(name, "departures", result["samples"][name]["departureCount"], diagnostics, flush=True)
+        try:
+            validate_sample(name, parsed)
+        except RuntimeError as exc:
+            failures.append(str(exc))
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+    if failures:
+        raise RuntimeError("; ".join(failures))
     return 0
 
 
