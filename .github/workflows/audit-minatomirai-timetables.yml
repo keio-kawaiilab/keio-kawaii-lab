@@ -7,6 +7,7 @@ on:
       - 'scripts/audit_minatomirai_downbound.py'
       - 'scripts/reconstruct_minatomirai_weekday_downbound.py'
       - 'scripts/reconstruct_minatomirai_weekday_downbound_v2.py'
+      - 'scripts/reconstruct_minatomirai_weekday_downbound_v3.py'
       - '.github/workflows/audit-minatomirai-timetables.yml'
 
 permissions:
@@ -24,7 +25,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Reconstruct weekday Minatomirai departures
-        run: python scripts/reconstruct_minatomirai_weekday_downbound_v2.py
+        run: python scripts/reconstruct_minatomirai_weekday_downbound_v3.py
       - name: Audit saved timetable snapshot
         run: python scripts/audit_minatomirai_downbound.py
       - name: Save audit and reconstruction
