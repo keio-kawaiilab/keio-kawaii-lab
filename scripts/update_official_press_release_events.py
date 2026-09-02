@@ -2,9 +2,14 @@
 """Discover future KAWAII LAB. release/large-benefit events from official PR TIMES releases.
 
 ASOBISYSTEM sometimes publishes a release schedule in a company press release
-before a dedicated group-site event page exists.  Those verified date/venue
+before a dedicated group-site event page exists. Those verified date/venue
 rows are published as schedule-only placeholders and later replaced by richer
 official-site data.
+
+This collector intentionally discovers *articles*, not hard-coded event dates.
+It watches PR TIMES' server-rendered search surface for new ASOBISYSTEM releases,
+filters article URLs to ASOBISYSTEM's company id, then parses every future
+release-event / large-benefit row it can verify from those official releases.
 """
 from __future__ import annotations
 
@@ -13,7 +18,7 @@ import json
 import re
 from datetime import date, datetime, timedelta
 from pathlib import Path
-from urllib.parse import urljoin
+from urllib.parse import quote, urljoin
 
 import requests
 from bs4 import BeautifulSoup
@@ -21,9 +26,13 @@ from bs4 import BeautifulSoup
 import update_official_x_special_events as special
 
 DATA_PATH = Path("data/live-events.json")
-COMPANY_INDEX = "https://prtimes.jp/main/html/searchrlp/company_id/17258"
+ASOBISYSTEM_COMPANY_ID = "000017258"
+DISCOVERY_URL = (
+    "https://prtimes.jp/main/action.php?page=searchkey&run=html&search_word="
+    + quote("アソビシステム株式会社")
+)
 GROUPS = tuple(special.GROUP_X.keys())
-ARTICLE_RE = re.compile(r"/main/html/rd/p/\d+\.\d+\.html")
+ARTICLE_RE = re.compile(r"/main/html/rd/p/\d+\.(\d+)\.html")
 DATE_LINE_RE = re.compile(
     r"(?:(20\d{2})\s*[./年-]\s*)?(\d{1,2})\s*[./月-]\s*(\d{1,2})\s*日?"
     r"(?:\s*[（(][^）)]*[）)])?\s*"
@@ -36,12 +45,19 @@ def normalize(value: object) -> str:
     return re.sub(r"\s+", " ", str(value or "")).strip()
 
 
-def article_links(html: str, limit: int = 40) -> list[str]:
+def article_links(html: str, limit: int = 60) -> list[str]:
+    """Return only ASOBISYSTEM's own PR TIMES release URLs.
+
+    The keyword-search result can contain third-party releases that merely
+    mention ASOBISYSTEM, so the company id encoded in the canonical release URL
+    is the authority filter. This also avoids relying on page CSS/classes.
+    """
     soup = BeautifulSoup(html, "html.parser")
     found: list[str] = []
     for anchor in soup.find_all("a", href=True):
-        href = urljoin(COMPANY_INDEX, str(anchor.get("href") or ""))
-        if not ARTICLE_RE.search(href):
+        href = urljoin(DISCOVERY_URL, str(anchor.get("href") or ""))
+        match = ARTICLE_RE.search(href)
+        if not match or match.group(1) != ASOBISYSTEM_COMPANY_ID:
             continue
         href = href.split("?", 1)[0].split("#", 1)[0]
         if href not in found:
@@ -85,8 +101,10 @@ def groups_for_article(title: str, text: str) -> list[str]:
 
 def venue_from_tail(tail: str) -> str | None:
     value = normalize(tail)
-    value = re.sub(r"^(?:大特典会|リリースイベント|リリイベ|発売記念イベント)\s*", "", value, flags=re.I)
+    # PR TIMES schedule rows are commonly either
+    #   "リリースイベント 会場名" or "会場名 リリースイベント".
     value = re.sub(r"^(?:大特典会|リリースイベント|リリイベ|発売記念イベント)\s*[@＠]?\s*", "", value, flags=re.I)
+    value = re.sub(r"\s*(?:大特典会|リリースイベント|リリイベ|発売記念イベント)\s*$", "", value, flags=re.I)
     value = value.lstrip("@＠：:・- ")
     value = re.sub(r"\s*(?:※.*)?$", "", value).strip()
     return value or None
@@ -150,7 +168,7 @@ def parse_article(url: str, html: str, today: date | None = None) -> list[dict]:
                 "venue": venue,
                 "url": url,
                 "urls": [url],
-                "sourceType": "official-social",
+                "sourceType": "official-special",
                 "sourceChannel": "official-prtimes",
                 "primarySource": "official",
                 "sourceCandidates": ["official"],
@@ -161,7 +179,7 @@ def parse_article(url: str, html: str, today: date | None = None) -> list[dict]:
 
 def collect(session: requests.Session, today: date | None = None) -> tuple[list[dict], list[dict], int]:
     today = today or datetime.now(special.JST).date()
-    response = session.get(COMPANY_INDEX, timeout=20)
+    response = session.get(DISCOVERY_URL, timeout=20)
     response.raise_for_status()
     links = article_links(response.text)
     events: list[dict] = []
@@ -215,6 +233,7 @@ def main() -> int:
 
     diagnostics = {
         "collector": "official-prtimes-special",
+        "discoveryUrl": DISCOVERY_URL,
         "articleLinks": fetched,
         "collected": len(collected),
         "failures": failures,
