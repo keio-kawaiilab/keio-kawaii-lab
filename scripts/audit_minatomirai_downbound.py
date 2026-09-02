@@ -46,18 +46,18 @@ def load_tokyu_through_departures() -> dict[str, list[dict]]:
         if not (0 <= direction_i < len(directions)):
             continue
         direction = directions[direction_i]
-        # We do not hard-code which ordinal means southbound. Destination and
-        # the presence of Yokohama are sufficient for through trains.
         for stop in stops:
             if len(stop) < 3 or stop[0] not in yokohama_indexes:
                 continue
-            departure = stop[2]
-            if departure is None:
+            arrival, departure = stop[1], stop[2]
+            boundary_time = departure if departure is not None else arrival
+            if boundary_time is None:
                 continue
             calendar = calendars[calendar_i]
             result[calendar].append({
-                "minute": int(departure),
-                "time": service_time(int(departure)),
+                "minute": int(boundary_time),
+                "time": service_time(int(boundary_time)),
+                "timeKind": "departure" if departure is not None else "arrival",
                 "trainType": train_types[train_type_i],
                 "destination": destination,
                 "confidence": int(confidence),
@@ -104,29 +104,25 @@ def match_times(official: list[int], reference: list[int], tolerance: int = 0) -
 
 def main() -> int:
     mm = json.loads(MM_PATH.read_text(encoding="utf-8"))
-    boards = {
-        (board["stationTitle"], board["calendar"]): board
-        for board in mm["boards"]
-    }
+    boards = {(board["stationTitle"], board["calendar"]): board for board in mm["boards"]}
     through = load_tokyu_through_departures()
     report = {
-        "version": 1,
+        "version": 2,
         "retrievedAt": mm.get("retrievedAt"),
         "tokyuThroughCounts": {},
+        "tokyuTrainTypeCounts": {},
         "yokohamaCrossCheck": {},
         "adjacentChecks": {},
     }
     for calendar, rows in through.items():
         report["tokyuThroughCounts"][calendar] = len(rows)
+        report["tokyuTrainTypeCounts"][calendar] = dict(Counter(row["trainType"] for row in rows))
         official = [to_minute(value) for value in boards[("横浜", calendar)]["departures"]]
         reference = [row["minute"] for row in rows]
         report["yokohamaCrossCheck"][calendar] = match_times(official, reference, tolerance=1)
 
     station_order = ["横浜", "新高島", "みなとみらい", "馬車道", "日本大通り"]
     calendars = sorted({board["calendar"] for board in mm["boards"]})
-    # For every downstream departure, check whether an upstream departure can
-    # plausibly feed it. Passing trains may be absent at the downstream board,
-    # so coverage is measured from downstream to upstream.
     for calendar in calendars:
         for left, right in zip(station_order, station_order[1:]):
             upstream = [to_minute(value) for value in boards[(left, calendar)]["departures"]]
@@ -154,14 +150,7 @@ def main() -> int:
 
     OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(report, ensure_ascii=False), flush=True)
-    # Do not yet block the snapshot on Tokyu parity because some special trains
-    # can be represented differently across operator feeds. Adjacent official
-    # station coverage, however, should be overwhelmingly high.
-    bad = [
-        (key, value["coverage"])
-        for key, value in report["adjacentChecks"].items()
-        if value["coverage"] < 0.90
-    ]
+    bad = [(key, value["coverage"]) for key, value in report["adjacentChecks"].items() if value["coverage"] < 0.90]
     if bad:
         raise RuntimeError(f"adjacent timetable coverage below 90%: {bad}")
     return 0
