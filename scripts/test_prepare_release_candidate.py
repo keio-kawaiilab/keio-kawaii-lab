@@ -85,6 +85,88 @@ class PrepareReleaseCandidateTests(unittest.TestCase):
         self.assertEqual(report["retainedPreviousRows"], 1)
         self.assertEqual({row.get("ticketProvider") for row in prepared["events"]}, {"lawson", "eplus"})
 
+    def test_stale_joint_special_is_removed_after_every_group_gets_its_own_row(self):
+        title = "CANDY TUNE／SWEET STEADY 発売記念大特典会"
+        shared = {
+            "eventCategory": "large-benefit",
+            "title": title,
+            "eventTitle": title,
+            "ticketType": "現在受付なし",
+            "applicationStatus": "none",
+            "eventDate": "2026-09-22",
+            "venue": "東京流通センター 第二展示場Fホール",
+            "startTime": "10:00",
+            "sourceType": "official-special",
+            "primarySource": "official",
+            "specialDetailsStatus": "awaiting-details",
+            "applicationDisplayMode": "schedule-only",
+            "eventScope": "kawaii-lab",
+        }
+        stale_joint = {
+            **shared,
+            "id": "joint-old",
+            "group": "KAWAII LAB.合同",
+            "participants": ["CANDY TUNE", "SWEET STEADY"],
+            "sourceStale": True,
+            "url": "https://candytune.asobisystem.com/news/detail/1",
+        }
+        candy = {
+            **shared,
+            "id": "candy-current",
+            "group": "CANDY TUNE",
+            "url": "https://candytune.asobisystem.com/news/detail/1",
+        }
+        sweet = {
+            **shared,
+            "id": "sweet-current",
+            "group": "SWEET STEADY",
+            "url": "https://sweetsteady.asobisystem.com/news/detail/2",
+        }
+
+        prepared, report = prep.prepare(
+            {"events": [stale_joint, candy, sweet]},
+            {"events": [stale_joint, candy, sweet]},
+            self.NOW,
+        )
+
+        groups = {row.get("group") for row in prepared["events"]}
+        self.assertEqual({"CANDY TUNE", "SWEET STEADY"}, groups)
+        self.assertNotIn("KAWAII LAB.合同", groups)
+        self.assertGreaterEqual(report["supersededStaleJointRowsRemoved"], 1)
+
+    def test_joint_special_stays_until_all_participant_rows_are_present(self):
+        base = {
+            "eventCategory": "large-benefit",
+            "title": "合同大特典会",
+            "eventDate": "2026-09-22",
+            "venue": "東京流通センター",
+            "ticketType": "現在受付なし",
+            "applicationStatus": "none",
+            "sourceType": "official-special",
+            "specialDetailsStatus": "awaiting-details",
+            "applicationDisplayMode": "schedule-only",
+            "eventScope": "kawaii-lab",
+        }
+        joint = {
+            **base,
+            "id": "joint",
+            "group": "KAWAII LAB.合同",
+            "participants": ["CANDY TUNE", "SWEET STEADY"],
+            "sourceStale": True,
+            "url": "https://candytune.asobisystem.com/news/detail/1",
+        }
+        candy = {
+            **base,
+            "id": "candy",
+            "group": "CANDY TUNE",
+            "url": "https://candytune.asobisystem.com/news/detail/1",
+        }
+
+        kept, dropped = prep.drop_superseded_stale_joint_specials([joint, candy])
+
+        self.assertEqual([], dropped)
+        self.assertIn("KAWAII LAB.合同", {row.get("group") for row in kept})
+
     def test_retained_singleton_official_x_row_is_folded_into_series(self):
         shared = "https://x.com/MORE_STAR_/status/2093324279639392675"
         title = "『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント"

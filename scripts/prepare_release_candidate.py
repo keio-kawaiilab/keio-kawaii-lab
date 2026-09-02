@@ -25,6 +25,8 @@ from audit_schedule_release import (
 
 DATA_PATH = Path("data/live-events.json")
 PART_FIELDS = ("part", "content", "start", "end", "receptionStart", "receptionEnd")
+SPECIAL_CATEGORIES = {"large-benefit", "release-event"}
+JOINT_GROUPS = {"KAWAII LAB.合同", "KAWAII LAB."}
 # Observation timestamps are refreshed when a source is checked. They prove that
 # the collector ran, but they are not a change to the public event information.
 # Excluding them keeps `updatedAt` truthful: it moves only when event data changes.
@@ -121,6 +123,73 @@ def normalize_special(event: dict) -> tuple[dict, bool]:
             changed = True
 
     return event, changed
+
+
+def physical_places(event: dict) -> set[tuple[str, str]]:
+    """Return date/venue identities without the display group.
+
+    A joint placeholder and its later group-specific rows necessarily have
+    different group names.  Date and venue are therefore the stable identity
+    used only for deciding whether a stale joint placeholder has been fully
+    superseded.
+    """
+    rows = event.get("schedule") if isinstance(event.get("schedule"), list) else []
+    places = {
+        (
+            str(row.get("date") or "")[:10],
+            re.sub(r"[\s　]+", "", str(row.get("venue") or event.get("venue") or "")).casefold(),
+        )
+        for row in rows
+        if isinstance(row, dict) and row.get("date")
+    }
+    if places:
+        return {(day, venue) for day, venue in places if day and venue}
+    venue = re.sub(r"[\s　]+", "", str(event.get("venue") or "")).casefold()
+    return {(day, venue) for day in event_days(event) if day and venue}
+
+
+def stale_joint_replaced_by_participant_rows(joint: dict, events: list[dict]) -> bool:
+    """Whether a stale joint placeholder is covered by every named group.
+
+    Large benefit events can first arrive as one schedule-only joint row.  Once
+    each participating group's own sale details arrive at different times, the
+    sanitizer correctly keeps those group-specific rows separate.  Retaining
+    the earlier joint row as fail-soft history would then render a third black
+    copy of the same event, so that stale placeholder must be retired.
+    """
+    if not joint.get("sourceStale") or str(joint.get("group") or "") not in JOINT_GROUPS:
+        return False
+    category = str(joint.get("eventCategory") or "")
+    participants = {
+        str(value) for value in joint.get("participants") or []
+        if str(value) and str(value) not in JOINT_GROUPS
+    }
+    places = physical_places(joint)
+    if category not in SPECIAL_CATEGORIES or len(participants) < 2 or not places:
+        return False
+
+    covered = set()
+    for event in events:
+        group = str(event.get("group") or "")
+        if group not in participants or event.get("sourceStale"):
+            continue
+        if str(event.get("eventCategory") or "") != category:
+            continue
+        if places.intersection(physical_places(event)):
+            covered.add(group)
+    return covered == participants
+
+
+def drop_superseded_stale_joint_specials(events: list[dict]) -> tuple[list[dict], list[str]]:
+    dropped = [
+        str(event.get("id") or "")
+        for event in events
+        if stale_joint_replaced_by_participant_rows(event, events)
+    ]
+    return [
+        event for event in events
+        if not stale_joint_replaced_by_participant_rows(event, events)
+    ], dropped
 
 
 def strong_keys(event: dict) -> set[str]:
@@ -249,7 +318,8 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
         normalized += int(changed)
         normalized_events.append(event)
 
-    events, duplicate_ids_removed = dedupe_ids(normalized_events)
+    events, superseded_joint_rows = drop_superseded_stale_joint_specials(normalized_events)
+    events, duplicate_ids_removed = dedupe_ids(events)
     candidate_strong = set().union(*(strong_keys(event) for event in events)) if events else set()
     candidate_semantic = {semantic_key(event) for event in events}
 
@@ -257,6 +327,8 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
     today = now.astimezone(JST).date()
     for old in previous.get("events", []):
         if not isinstance(old, dict) or not should_retain_previous(old, today):
+            continue
+        if stale_joint_replaced_by_participant_rows(old, events):
             continue
         keys = strong_keys(old)
         if keys and candidate_strong.intersection(keys):
@@ -291,6 +363,8 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
         "retained": retained,
         "expandedPreviousSpecialEntities": previous_expand.get("expandedSpecialEntities", 0),
         "expandedCandidateSpecialEntities": candidate_expand.get("expandedSpecialEntities", 0),
+        "supersededStaleJointRowsRemoved": len(superseded_joint_rows),
+        "supersededStaleJointRowIds": superseded_joint_rows,
         **official_x_report,
     }
 
