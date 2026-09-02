@@ -1,0 +1,44 @@
+name: Upgrade route preview many choices
+
+on:
+  push:
+    paths:
+      - 'scripts/upgrade_route_preview_many_choices.py'
+      - '.github/workflows/upgrade-route-preview-many-choices.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Expand route choices
+        run: python scripts/upgrade_route_preview_many_choices.py
+      - name: Refresh preview copy and asset versions
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('preview/transfer-guide/index.html')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace('候補経路を最大3件まで比較できます。','候補経路を最大12件まで横に比較できます。')
+          s=s.replace('20260903-4','20260903-5')
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit upgrade
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add preview/transfer-guide/preview.js preview/transfer-guide/index.html
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Expand route preview choices"
+          git pull --rebase origin main
+          git push origin HEAD:main
