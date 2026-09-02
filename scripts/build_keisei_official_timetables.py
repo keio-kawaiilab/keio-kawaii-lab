@@ -45,6 +45,7 @@ def normalize_name(value: Any) -> str:
         "成田空港(成田第1ターミナル)": "成田空港",
         "空港第2ビル(成田第2・第3ターミナル)": "空港第2ビル",
         "空港第2ビル(成田第2・3ターミナル)": "空港第2ビル",
+        "新鎌ケ谷": "新鎌ヶ谷",
     }
     return aliases.get(text, text)
 
@@ -138,11 +139,9 @@ def pair_candidates(first: str, second: str, lines: dict[str, dict[str, Any]]) -
 def choose_pair_lines(candidate_rows: list[list[str]]) -> list[str | None]:
     """Choose ambiguous shared-track pairs while minimizing railway changes."""
     result: list[str | None] = [None] * len(candidate_rows)
-    # First lock unambiguous pairs.
     for index, candidates in enumerate(candidate_rows):
         if len(candidates) == 1:
             result[index] = candidates[0]
-    # Propagate a neighbouring known railway into ambiguous pairs.
     changed = True
     while changed:
         changed = False
@@ -158,9 +157,6 @@ def choose_pair_lines(candidate_rows: list[list[str]]) -> list[str | None]:
             if neighbours and all(value == neighbours[0] for value in neighbours):
                 result[index] = neighbours[0]
                 changed = True
-    # A remaining ambiguous pair is normally the shared Airport T2/T1 edge.
-    # Prefer Narita Sky Access only when an adjacent pair proves that path;
-    # otherwise Main is the conservative physical-line default.
     for index, candidates in enumerate(candidate_rows):
         if result[index] is None and candidates:
             if "odpt.Railway:Keisei.Main" in candidates:
@@ -251,17 +247,12 @@ def main() -> int:
             raw_name = normalize_name(stop.get("station"))
             station_id = station_by_name.get(raw_name)
             if not station_id:
-                # Through services may start/end on Toei/Keikyu/etc. Those rows
-                # are intentionally kept in the source snapshot but excluded
-                # from the Keisei-only app files.
                 unmapped_stops[raw_name] += 1
                 mapped.append({"stationId": None, "name": raw_name, "arrival": stop.get("arrival"), "departure": stop.get("departure")})
                 continue
             mapped_stop_rows += 1
             mapped.append({"stationId": station_id, "name": raw_name, "arrival": stop.get("arrival"), "departure": stop.get("departure")})
 
-        # Work on each contiguous Keisei block separately so external through
-        # portions cannot create false Keisei edges.
         blocks: list[list[dict[str, Any]]] = []
         current: list[dict[str, Any]] = []
         for row in mapped:
