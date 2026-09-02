@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """Compatibility entrypoint for official-X event collection.
 
-The distributed workflow historically invokes this filename. Keep that public
-entrypoint stable and fan it out to both the general special-event collector and
-the birthday-specific syndication fallback so birthday announcements cannot be
-lost just because one X surface is unavailable.
+Run two independent generic special-event discovery surfaces plus the
+birthday-specific enrichment collector.  Birthday success must never mask a
+failure of ordinary release-event / large-benefit / solo-event monitoring.
 """
 from __future__ import annotations
 
@@ -22,18 +21,18 @@ def run(script: str) -> tuple[str, int]:
 
 
 def main() -> int:
-    results = [
-        run("update_official_x_special_events.py"),
-        run("update_official_x_birthday_events.py"),
-    ]
+    profile = run("update_official_x_special_events.py")
+    syndication = run("update_official_x_special_events_syndication.py")
+    birthday = run("update_official_x_birthday_events.py")
+    results = [profile, syndication, birthday]
     print(json.dumps({"officialXCollectors": dict(results)}, ensure_ascii=False, indent=2))
 
-    # The birthday syndication collector is deliberately fail-soft and preserves
-    # last-good data. The generic X page can be intermittently unavailable, so
-    # do not block all schedule publication when only that redundant surface
-    # fails. A total wrapper failure is reserved for the impossible case where
-    # both child entrypoints fail before completing their own safety behavior.
-    return 0 if any(code == 0 for _, code in results) else 1
+    # The calendar's generic special-event monitor is healthy only when at
+    # least one independent generic discovery path completed successfully.
+    # Birthday monitoring is supplementary and can no longer make a broken
+    # release-event monitor look healthy.
+    generic_ok = profile[1] == 0 or syndication[1] == 0
+    return 0 if generic_ok else 1
 
 
 if __name__ == "__main__":
