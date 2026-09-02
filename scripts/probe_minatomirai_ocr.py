@@ -39,8 +39,6 @@ EXPECTED = {
     },
 }
 BASE_SIZE = 1654.0
-# Current official artwork has two horizontal grid layouts.  The layout is not
-# tied reliably to a station or service day, so score both rather than guessing.
 FIRST_X_CANDIDATES = (226.0, 294.0)
 X_PITCH = 68.0
 FIRST_Y = 47.0
@@ -60,26 +58,64 @@ def minute_crop(image: Image.Image, first_x: float, hour: int, column: int) -> I
     return image.crop((max(0, left), max(0, top), min(image.width, right), min(image.height, bottom)))
 
 
-def ink_count(crop: Image.Image) -> int:
-    count = 0
-    for r, g, b in crop.convert("RGB").getdata():
-        spread = max(r, g, b) - min(r, g, b)
-        mean = (r + g + b) / 3
-        if mean < 165 or (spread > 40 and mean < 238):
-            count += 1
-    return count
+def ink_pixels(crop: Image.Image) -> list[tuple[int, int]]:
+    pixels: list[tuple[int, int]] = []
+    rgb = crop.convert("RGB")
+    for y in range(rgb.height):
+        for x in range(rgb.width):
+            r, g, b = rgb.getpixel((x, y))
+            spread = max(r, g, b) - min(r, g, b)
+            mean = (r + g + b) / 3
+            if mean < 165 or (spread > 40 and mean < 238):
+                pixels.append((x, y))
+    return pixels
 
 
-def candidate_cells(image: Image.Image, first_x: float) -> list[dict]:
+def is_pass_dash(crop: Image.Image, pixels: list[tuple[int, int]]) -> bool:
+    """Recognise the orange em dash used for a train that passes this station."""
+    if not pixels:
+        return False
+    xs = [point[0] for point in pixels]
+    ys = [point[1] for point in pixels]
+    width = max(xs) - min(xs) + 1
+    height = max(ys) - min(ys) + 1
+    # Digits are roughly 30-40 px tall in the source artwork.  A pass marker
+    # is a wide horizontal stroke only a few pixels tall.
+    return width >= max(8, int(crop.width * 0.20)) and height <= max(8, int(crop.height * 0.24))
+
+
+def candidate_cells(image: Image.Image, first_x: float) -> tuple[list[dict], int]:
     rows = []
+    dash_count = 0
     for hour in range(4, 25):
         for column in range(MAX_COLUMNS):
             crop = minute_crop(image, first_x, hour, column)
-            ink = ink_count(crop)
+            pixels = ink_pixels(crop)
+            ink = len(pixels)
             if ink < max(18, int(crop.width * crop.height * 0.010)):
                 continue
+            if is_pass_dash(crop, pixels):
+                dash_count += 1
+                continue
             rows.append({"hour": hour, "column": column, "ink": ink, "crop": crop})
-    return rows
+    return rows, dash_count
+
+
+def prepare_ocr_crop(source: Image.Image, *, threshold: bool) -> Image.Image:
+    # Trim the thin rectangle around commuter/limited-express numbers.  The
+    # border was being mistaken for 9/0 while the actual two digits sit safely
+    # inside this inset.
+    inset_x = max(2, int(source.width * 0.10))
+    inset_y = max(1, int(source.height * 0.06))
+    if source.width > inset_x * 2 + 4 and source.height > inset_y * 2 + 4:
+        source = source.crop((inset_x, inset_y, source.width - inset_x, source.height - inset_y))
+    crop = ImageOps.grayscale(source)
+    crop = ImageOps.autocontrast(crop)
+    crop = ImageEnhance.Contrast(crop).enhance(1.55)
+    crop = crop.resize((crop.width * 3, crop.height * 3), Image.Resampling.LANCZOS)
+    if threshold:
+        crop = crop.point(lambda value: 0 if value < 205 else 255)
+    return crop
 
 
 def contact_sheet(cells: list[dict], *, threshold: bool = False) -> tuple[Image.Image, dict[tuple[int, int], int]]:
@@ -87,12 +123,7 @@ def contact_sheet(cells: list[dict], *, threshold: bool = False) -> tuple[Image.
     sheet = Image.new("L", (TILE_W * SHEET_COLUMNS, TILE_H * rows), 255)
     locator: dict[tuple[int, int], int] = {}
     for index, cell in enumerate(cells):
-        crop = ImageOps.grayscale(cell["crop"])
-        crop = ImageOps.autocontrast(crop)
-        crop = ImageEnhance.Contrast(crop).enhance(1.55)
-        crop = crop.resize((crop.width * 3, crop.height * 3), Image.Resampling.LANCZOS)
-        if threshold:
-            crop = crop.point(lambda value: 0 if value < 205 else 255)
+        crop = prepare_ocr_crop(cell["crop"], threshold=threshold)
         row, column = divmod(index, SHEET_COLUMNS)
         x = column * TILE_W + (TILE_W - crop.width) // 2
         y = row * TILE_H + (TILE_H - crop.height) // 2
@@ -132,7 +163,7 @@ def read_sheet(sheet: Image.Image, locator: dict[tuple[int, int], int]) -> dict[
 
 
 def parse_rows_at_origin(image: Image.Image, first_x: float) -> tuple[dict[str, list[int]], dict]:
-    cells = candidate_cells(image, first_x)
+    cells, dash_count = candidate_cells(image, first_x)
     sheet, locator = contact_sheet(cells, threshold=False)
     first = read_sheet(sheet, locator)
     unresolved = [index for index in range(len(cells)) if len(first.get(index, "")) != 2]
@@ -163,6 +194,7 @@ def parse_rows_at_origin(image: Image.Image, first_x: float) -> tuple[dict[str, 
     diagnostics = {
         "firstX": first_x,
         "candidateCount": len(cells),
+        "dashCount": dash_count,
         "recognizedCount": sum(len(v) for v in parsed.values()),
         "unresolvedCount": len(unresolved_rows),
         "unresolved": unresolved_rows[:80],
@@ -187,6 +219,7 @@ def parse_rows(image: Image.Image) -> tuple[dict[str, list[int]], dict]:
         {
             "firstX": trial_diag["firstX"],
             "candidateCount": trial_diag["candidateCount"],
+            "dashCount": trial_diag["dashCount"],
             "recognizedCount": trial_diag["recognizedCount"],
             "unresolvedCount": trial_diag["unresolvedCount"],
         }
@@ -203,7 +236,7 @@ def validate_sample(name: str, parsed: dict[str, list[int]]) -> None:
 
 
 def main() -> int:
-    result = {"version": 10, "samples": {}}
+    result = {"version": 11, "samples": {}}
     session = requests.Session()
     session.headers["User-Agent"] = "Keio-Kawaii-Lab timetable validation/1.0"
     failures = []
