@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  probe:
+  collect-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,18 +27,26 @@ jobs:
       - name: Install collector dependencies
         run: pip install requests==2.32.5 beautifulsoup4==4.13.5
 
-      - name: Probe Keisei timetable HTML structure
-        run: python scripts/collect_keisei_timetables.py --probe
+      - name: Collect two detailed train timetables
+        run: python scripts/collect_keisei_timetables.py --limit 2
 
-      - name: Commit probe snapshot
+      - name: Commit validation snapshot
         shell: bash
         run: |
-          if git diff --quiet -- data/transit/keisei/collector-probe.json; then
-            echo "No probe changes."
+          if [ -z "$(git status --porcelain -- data/transit/keisei/collector-test.json)" ]; then
+            echo "No collector snapshot changes."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/transit/keisei/collector-probe.json
-          git commit -m "Probe Keisei timetable source"
-          git push origin HEAD:main
+          git add data/transit/keisei/collector-test.json
+          git commit -m "Validate Keisei train timetable collection"
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            sleep $((attempt * 3))
+          done
+          exit 1
