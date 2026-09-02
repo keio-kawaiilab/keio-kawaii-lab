@@ -51,9 +51,9 @@ SHEET_COLUMNS = 7
 def detect_first_x(image: Image.Image) -> float:
     """Find the minute-grid origin from the coloured 4-hour box.
 
-    Official artwork has two horizontal layouts (for example Yokohama starts
-    farther left than Minatomirai), but the first minute cell consistently
-    begins about 40 source pixels to the right of the hour box.
+    Official artwork has multiple horizontal layouts, but the first minute
+    cell consistently begins about 40 source pixels to the right of the
+    visible blue/cyan core of the hour box.
     """
     rgb = image.convert("RGB")
     sx, sy = image.width / BASE_SIZE, image.height / BASE_SIZE
@@ -83,7 +83,8 @@ def detect_first_x(image: Image.Image) -> float:
     runs.append((start, previous))
     start, right = max(runs, key=lambda run: run[1] - run[0])
     width_base = (right - start + 1) / sx
-    if not 45 <= width_base <= 100:
+    # The colour mask sees only the saturated core, not the anti-aliased edge.
+    if not 30 <= width_base <= 110:
         raise RuntimeError(f"unexpected hour-box width {width_base:.1f}")
     return right / sx + 40.0
 
@@ -216,7 +217,7 @@ def validate_sample(name: str, parsed: dict[str, list[int]]) -> None:
 
 
 def main() -> int:
-    result = {"version": 8, "samples": {}}
+    result = {"version": 9, "samples": {}}
     session = requests.Session()
     session.headers["User-Agent"] = "Keio-Kawaii-Lab timetable validation/1.0"
     failures = []
