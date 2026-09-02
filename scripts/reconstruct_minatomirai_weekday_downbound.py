@@ -48,7 +48,13 @@ def ordered_subset_match(
             best = dp[i - 1][j]
             delta = downstream[j - 1] - upstream[i - 1]
             if min_delta <= delta <= max_delta and dp[i - 1][j - 1] < inf:
-                cost = dp[i - 1][j - 1] + abs(delta - target_delta)
+                # Zero-minute travel is physically impossible here, but one
+                # known Shin-Takashima OCR cell can collapse onto the Yokohama
+                # minute.  Penalise it heavily while preserving train order;
+                # the bad Shin-Takashima minute itself is never copied into the
+                # reconstructed Minatomirai board.
+                anomaly_penalty = 20 if delta <= 0 else 0
+                cost = dp[i - 1][j - 1] + abs(delta - target_delta) + anomaly_penalty
                 if cost < best:
                     best = cost
                     take[i][j] = True
@@ -92,7 +98,7 @@ def modal_delta_by_stop_pattern(
     shin_map = ordered_subset_match(
         yokohama,
         shintakashima,
-        min_delta=1,
+        min_delta=0,
         max_delta=5,
         target_delta=2,
     )
@@ -124,7 +130,7 @@ def reconstruct(
     shin_map = ordered_subset_match(
         yokohama,
         shintakashima,
-        min_delta=1,
+        min_delta=0,
         max_delta=5,
         target_delta=2,
     )
@@ -155,13 +161,22 @@ def reconstruct(
                 cost += 2
 
             if stops_shin:
-                after_shin = minute - shin_map[index]
-                evidence["shintakashima"] = fmt(shin_map[index])
+                shin_value = shin_map[index]
+                shin_delta_from_yoko = shin_value - yoko
+                after_shin = minute - shin_value
+                evidence["shintakashima"] = fmt(shin_value)
+                evidence["shintakashimaDeltaFromYokohama"] = shin_delta_from_yoko
                 evidence["minutesAfterShinTakashima"] = after_shin
-                if 1 <= after_shin <= 3:
-                    cost -= 3
+                # Only use a physically plausible Shin-Takashima timestamp as
+                # a timing constraint. A 0-minute alignment is retained merely
+                # as evidence that this train stops there.
+                if shin_delta_from_yoko >= 1:
+                    if 1 <= after_shin <= 3:
+                        cost -= 3
+                    else:
+                        cost += 30 + abs(after_shin - 2) * 5
                 else:
-                    cost += 30 + abs(after_shin - 2) * 5
+                    evidence["shintakashimaTimeTrusted"] = False
 
             rows.append((minute, cost, evidence))
         candidates.append(rows)
@@ -208,6 +223,11 @@ def reconstruct(
 
     exact_ocr = sum(1 for value in final if value in raw_set)
     near_ocr = sum(1 for value in final if nearest_distance(raw_minatomirai, value) <= 1)
+    anomalous_shin = [
+        {"yokohama": fmt(yokohama[index]), "shintakashima": fmt(value), "delta": value - yokohama[index]}
+        for index, value in shin_map.items()
+        if value - yokohama[index] <= 0
+    ]
     try:
         basha_map = ordered_subset_match(
             final,
@@ -238,6 +258,7 @@ def reconstruct(
         "exactOcrSupport": exact_ocr,
         "withinOneMinuteOcrSupport": near_ocr,
         "syntheticExactMissing": [fmt(value) for value in final if value not in raw_set],
+        "anomalousShinTakashimaAlignments": anomalous_shin,
         "bashamichiValidation": basha_validation,
     }
     return final, [row for row in details if row is not None], diagnostics
@@ -281,12 +302,12 @@ def main() -> int:
     )
 
     result = {
-        "version": 3,
+        "version": 4,
         "sourceRetrievedAt": payload.get("retrievedAt"),
         "calendar": WEEKDAY,
         "station": "manual.Station:yokohama-minatomirai.みなとみらい",
         "direction": "odpt.RailDirection:Outbound",
-        "method": "Yokohama + ShinTakashima + partial Minatomirai OCR; calibrated on SaturdayHoliday; Bashamichi validation only",
+        "method": "Yokohama + ShinTakashima stop evidence + partial Minatomirai OCR; calibrated on SaturdayHoliday; Bashamichi validation only",
         "calibration": {
             "modalDeltaFromYokohama": modal,
             "deltaHistograms": calibration_hist,
