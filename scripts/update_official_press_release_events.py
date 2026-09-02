@@ -31,7 +31,14 @@ DISCOVERY_URL = (
     "https://prtimes.jp/main/action.php?page=searchkey&run=html&search_word="
     + quote("アソビシステム株式会社")
 )
-GROUPS = tuple(special.GROUP_X.keys())
+GROUP_BASES = {
+    "FRUITS ZIPPER": "https://fruitszipper.asobisystem.com/",
+    "CANDY TUNE": "https://candytune.asobisystem.com/",
+    "SWEET STEADY": "https://sweetsteady.asobisystem.com/",
+    "CUTIE STREET": "https://cutiestreet.asobisystem.com/",
+    "MORE STAR": "https://morestar.asobisystem.com/",
+}
+GROUPS = tuple(GROUP_BASES)
 ARTICLE_RE = re.compile(r"/main/html/rd/p/\d+\.(\d+)\.html")
 DATE_LINE_RE = re.compile(
     r"(?:(20\d{2})\s*[./年-]\s*)?(\d{1,2})\s*[./月-]\s*(\d{1,2})\s*日?"
@@ -152,6 +159,7 @@ def parse_article(url: str, html: str, today: date | None = None) -> list[dict]:
                 continue
             seen.add(key)
             display = f"{group} {'大特典会' if category == 'large-benefit' else 'リリースイベント'}"
+            article_urls = [url, GROUP_BASES[group]]
             rows.append({
                 "id": special.stable_id("official-prtimes-event", group, day.isoformat(), category, venue),
                 "group": group,
@@ -170,7 +178,7 @@ def parse_article(url: str, html: str, today: date | None = None) -> list[dict]:
                 "eventDate": day.isoformat(),
                 "venue": venue,
                 "url": url,
-                "urls": [url],
+                "urls": article_urls,
                 "sourceType": "official-special",
                 "sourceChannel": "official-prtimes",
                 "primarySource": "official",
