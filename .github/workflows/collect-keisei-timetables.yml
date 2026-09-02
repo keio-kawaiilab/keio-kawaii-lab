@@ -2,6 +2,15 @@ name: Collect Keisei timetables
 
 on:
   workflow_dispatch:
+    inputs:
+      full_refresh:
+        description: 'Rediscover the current official timetable and refetch every train'
+        required: false
+        type: boolean
+        default: false
+  schedule:
+    # 04:17 JST every Monday. The odd minute avoids GitHub's top-of-hour congestion.
+    - cron: '17 19 * * 0'
   push:
     paths:
       - 'scripts/collect_keisei_timetables.py'
@@ -24,6 +33,7 @@ jobs:
       CHUNK_SIZE: '300'
       KEISEI_WORKERS: '6'
       KEISEI_REQUEST_INTERVAL_SECONDS: '0.35'
+      FULL_REFRESH: ${{ github.event_name == 'schedule' || inputs.full_refresh == true }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -45,14 +55,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          TOTAL=$(python - <<'PY'
-          import json
-          with open('data/transit/keisei/collector-state.json', encoding='utf-8') as f:
-              print(len(json.load(f)['trainRefs']))
-          PY
-          )
-          CHUNKS=$(( (TOTAL + CHUNK_SIZE - 1) / CHUNK_SIZE ))
-          echo "Collecting $TOTAL trains in $CHUNKS chunks of $CHUNK_SIZE"
 
           checkpoint() {
             local label="$1"
@@ -70,8 +72,28 @@ jobs:
             return 1
           }
 
+          if [ "$FULL_REFRESH" = "true" ]; then
+            echo "Full refresh: rediscovering the current official Keisei timetable."
+            python scripts/collect_keisei_timetables.py --discover
+            checkpoint "Refresh Keisei official train discovery"
+          else
+            echo "Resume mode: using the saved discovery and completed train chunks."
+          fi
+
+          TOTAL=$(python - <<'PY'
+          import json
+          with open('data/transit/keisei/collector-state.json', encoding='utf-8') as f:
+              print(len(json.load(f)['trainRefs']))
+          PY
+          )
+          CHUNKS=$(( (TOTAL + CHUNK_SIZE - 1) / CHUNK_SIZE ))
+          echo "Collecting $TOTAL trains in $CHUNKS chunks of $CHUNK_SIZE"
+
           for ((chunk=0; chunk<CHUNKS; chunk++)); do
             echo "=== Keisei detail chunk $chunk/$((CHUNKS-1)) ==="
+            if [ "$FULL_REFRESH" = "true" ]; then
+              rm -f "data/transit/keisei/train-detail-chunks/chunk-$(printf '%03d' "$chunk").json"
+            fi
             success=0
             for attempt in 1 2 3; do
               set +e
@@ -95,10 +117,23 @@ jobs:
             fi
           done
 
+          # Remove obsolete chunk files if a future timetable contains fewer trains.
+          if [ -d data/transit/keisei/train-detail-chunks ]; then
+            for path in data/transit/keisei/train-detail-chunks/chunk-*.json; do
+              [ -e "$path" ] || continue
+              number=${path##*chunk-}
+              number=${number%.json}
+              index=$((10#$number))
+              if [ "$index" -ge "$CHUNKS" ]; then
+                rm -f "$path"
+              fi
+            done
+          fi
+
           python scripts/collect_keisei_timetables.py --merge-chunks --chunk-size "$CHUNK_SIZE"
           checkpoint "Merge all Keisei official train details"
 
-      - name: Validate exact discovery and detail counts
+      - name: Validate discovery and detail counts
         run: |
           python - <<'PY'
           import json
@@ -106,12 +141,16 @@ jobs:
           root = Path('data/transit/keisei')
           state = json.loads((root/'collector-state.json').read_text(encoding='utf-8'))
           merged = json.loads((root/'official-train-details.json').read_text(encoding='utf-8'))
-          assert state['trainReferenceCount'] == 4659, state['trainReferenceCount']
-          assert merged['trainCount'] == 4659, merged['trainCount']
-          assert merged['weekdayCount'] == 2491, merged['weekdayCount']
-          assert merged['holidayCount'] == 2168, merged['holidayCount']
+          expected = int(state['trainReferenceCount'])
+          by_dw = state.get('trainReferencesByDw') or {}
+          assert 3000 <= expected <= 7000, expected
+          assert merged['trainCount'] == expected, (merged['trainCount'], expected)
+          assert merged['weekdayCount'] == int(by_dw.get('0', 0)), (merged['weekdayCount'], by_dw)
+          assert merged['holidayCount'] == int(by_dw.get('1', 0)), (merged['holidayCount'], by_dw)
+          assert merged['weekdayCount'] + merged['holidayCount'] == expected
           assert all(len(train.get('stops') or []) >= 2 for train in merged['trains'])
           print('Validated Keisei trains:', merged['trainCount'])
+          print('Validated weekday/holiday:', merged['weekdayCount'], merged['holidayCount'])
           print('Validated stop rows:', merged['stopRowCount'])
           PY
 
@@ -128,15 +167,18 @@ jobs:
           import json
           from pathlib import Path
           root = Path('data/transit/keisei')
+          state = json.loads((root/'collector-state.json').read_text(encoding='utf-8'))
           index = json.loads((root/'timetable-index.json').read_text(encoding='utf-8'))
           report = json.loads((root/'official-conversion-report.json').read_text(encoding='utf-8'))
           network = json.loads((root/'official-network-report.json').read_text(encoding='utf-8'))
+          expected = int(state['trainReferenceCount'])
           assert len(index.get('lines') or {}) == 8, index
-          assert report['sourceTrainCount'] == 4659, report['sourceTrainCount']
+          assert report['sourceTrainCount'] == expected, (report['sourceTrainCount'], expected)
           assert report['compactTripCount'] > 0, report
           assert report['compactConnectionCount'] > 0, report
           assert index.get('network', {}).get('timeBasis') == 'train-timetable-network', index
-          assert network['networkTripCount'] >= 4500, network
+          assert network['sourceTrainCount'] == expected, (network['sourceTrainCount'], expected)
+          assert network['networkTripCount'] + network['skippedUnderTwoMappedStops'] == expected, network
           assert network['unresolvedPairCount'] == 0, network
           assert (root/index['network']['file']).exists(), index['network']
           for railway_id, row in index['lines'].items():
