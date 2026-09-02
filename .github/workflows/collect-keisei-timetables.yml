@@ -2,10 +2,6 @@ name: Collect Keisei timetables
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - 'scripts/collect_keisei_timetables.py'
-      - '.github/workflows/collect-keisei-timetables.yml'
 
 permissions:
   contents: write
@@ -19,34 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-
       - name: Install collector dependencies
         run: pip install requests==2.32.5 beautifulsoup4==4.13.5
-
       - name: Discover all Keisei station pages and trains
         run: python scripts/collect_keisei_timetables.py --discover
-
-      - name: Commit durable discovery checkpoint
-        shell: bash
-        run: |
-          if [ -z "$(git status --porcelain -- data/transit/keisei/collector-state.json)" ]; then
-            echo "No discovery changes."
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/transit/keisei/collector-state.json
-          git commit -m "Checkpoint Keisei timetable discovery"
-          for attempt in 1 2 3; do
-            git fetch origin main
-            git rebase origin/main
-            if git push origin HEAD:main; then
-              exit 0
-            fi
-            sleep $((attempt * 3))
-          done
-          exit 1
