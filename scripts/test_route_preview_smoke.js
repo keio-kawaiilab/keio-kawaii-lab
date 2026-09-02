@@ -28,6 +28,11 @@ if(declaredLines<120) throw new Error(`unexpected timetable coverage: ${declared
 const model=Core.createModel(entities);
 if(model.stations.length<500) throw new Error(`unexpected station coverage: ${model.stations.length}`);
 
+const previewSource=fs.readFileSync('preview/transfer-guide/preview.js','utf8');
+if(!previewSource.includes('limit:24')) throw new Error('preview path limit is not 24');
+if(!previewSource.includes('choices.slice(0,12)')) throw new Error('preview display limit is not 12');
+if(!previewSource.includes('attempt<3')) throw new Error('preview does not collect multiple departures per path');
+
 function loadTable(railway){
   const entry=indices.get(railway);
   if(!entry) return null;
@@ -35,10 +40,14 @@ function loadTable(railway){
   if(!fs.existsSync(filename)) throw new Error(`timetable file missing: ${filename}`);
   return JSON.parse(fs.readFileSync(filename,'utf8'));
 }
-function findTimed(from,to,earliest,service){
+function resolvePair(from,to){
   const a=model.resolveInput(from),b=model.resolveInput(to);
   if(!a.group||!b.group) throw new Error(`station resolution failed: ${from} -> ${to}`);
-  const paths=model.candidatePaths(a.group,b.group,{allowedRailways:allowed,limit:8});
+  return {a,b};
+}
+function findTimed(from,to,earliest,service){
+  const {a,b}=resolvePair(from,to);
+  const paths=model.candidatePaths(a.group,b.group,{allowedRailways:allowed,limit:24});
   if(!paths.length) throw new Error(`candidate path missing: ${from} -> ${to}`);
   for(const candidate of paths){
     const tables={};
@@ -64,4 +73,38 @@ for(const row of cases){
   const result=findTimed(from,to,minute,service);
   console.log(`${service} ${from}->${to}: ${result.timed.departure}->${result.timed.arrival}, transfers=${result.timed.transfers}`);
 }
+
+// A well-connected pair should expose several structurally different paths.
+{
+  const {a,b}=resolvePair('武蔵小杉','池袋');
+  const paths=model.candidatePaths(a.group,b.group,{allowedRailways:allowed,limit:24});
+  console.log(`武蔵小杉->池袋 candidate paths: ${paths.length}`);
+  if(paths.length<4) throw new Error(`route repertoire still too small: ${paths.length} paths`);
+}
+
+// The preview now keeps later trains on the same path as separate comparison choices.
+{
+  const {a,b}=resolvePair('横浜','元町・中華街');
+  const paths=model.candidatePaths(a.group,b.group,{allowedRailways:allowed,limit:24});
+  let departures=[];
+  for(const candidate of paths){
+    const tables={};
+    for(const segment of model.segmentsFrom(candidate)){
+      if(!(segment.railway in tables)) tables[segment.railway]=loadTable(segment.railway);
+    }
+    let cursor=600;
+    departures=[];
+    for(let attempt=0;attempt<3;attempt++){
+      const timed=model.timedItinerary(candidate,tables,cursor,'weekday',5);
+      if(!timed) break;
+      departures.push(timed.departure);
+      cursor=timed.departure+1;
+    }
+    if(departures.length>=3) break;
+  }
+  console.log(`横浜->元町・中華街 successive departures: ${departures.join(', ')}`);
+  if(departures.length<3) throw new Error('could not obtain three successive departure choices');
+  if(!(departures[0]<departures[1]&&departures[1]<departures[2])) throw new Error('successive departure choices are not strictly increasing');
+}
+
 console.log(`coverage: ${declaredLines} lines, ${model.stations.length} station groups`);
