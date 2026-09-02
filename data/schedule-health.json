@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-03T06:53:38.215911+09:00",
-  "candidateUpdatedAt": "2026-09-03T06:53:37+09:00",
-  "previousEventCount": 111,
-  "candidateEventCount": 113,
-  "protectedPreviousCount": 111,
+  "generatedAt": "2026-09-03T07:12:07.798971+09:00",
+  "candidateUpdatedAt": "2026-09-03T07:12:07+09:00",
+  "previousEventCount": 113,
+  "candidateEventCount": 114,
+  "protectedPreviousCount": 113,
   "errorCount": 0,
   "warningCount": 68,
   "errors": [],
@@ -78,7 +78,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール"
   ],
-  "candidateSha256": "42cca07048b271106957ccdb3f80c9c47eddc323aacf3d2948a345398813e785",
+  "candidateSha256": "8c653277a7e948594a28d0e05d4f6de0cf12d537eca2d5895546d8224de77a22",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -93,6 +93,7 @@
     "url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
     "url:https://fruitszipper.asobisystem.com/live_information/detail/44011",
     "url:https://fruitszipper.asobisystem.com/news/detail/87763",
+    "url:https://img.hmv.co.jp/cont/online/fzss17047926lp/",
     "url:https://kawaiilab.asobisystem.com/news/detail/77965",
     "url:https://kawaiilab.asobisystem.com/news/detail/87217",
     "url:https://kawaiilab.asobisystem.com/news/detail/88140",
@@ -103,6 +104,9 @@
     "url:https://sweetsteady.asobisystem.com/news/detail/87767",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
+    "url:https://www.hmv.co.jp/help/?q=005000041",
+    "url:https://www.hmv.co.jp/login/login/?AUTHTYPE=MEMBERS",
+    "url:https://www.hmv.co.jp/login/newcustomer/",
     "url:https://x.com/MORE_STAR_/status/2092567739969966299"
   ],
   "officialXSharedSourceKeysReconciled": [
@@ -460,7 +464,7 @@
     "reassignedCount": 1,
     "hydratedCount": 0,
     "ambiguousCount": 0,
-    "unresolvedCount": 0,
+    "unresolvedCount": 1,
     "reassigned": [
       {
         "group": "SWEET STEADY",
@@ -472,6 +476,13 @@
     ],
     "hydrated": [],
     "ambiguous": [],
-    "unresolved": []
+    "unresolved": [
+      {
+        "group": "SWEET STEADY",
+        "date": "2026-09-22",
+        "url": "https://sweetsteady.asobisystem.com/live_information/detail/43900",
+        "representedBy": "f5b3f27e221b053f"
+      }
+    ]
   }
 }
