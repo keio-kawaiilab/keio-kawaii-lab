@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-02T12:03:13.894282+09:00",
-  "candidateUpdatedAt": "2026-09-02T12:03:13+09:00",
-  "previousEventCount": 112,
+  "generatedAt": "2026-09-02T12:17:52.404815+09:00",
+  "candidateUpdatedAt": "2026-09-02T12:17:52+09:00",
+  "previousEventCount": 113,
   "candidateEventCount": 113,
-  "protectedPreviousCount": 112,
+  "protectedPreviousCount": 113,
   "errorCount": 0,
-  "warningCount": 70,
+  "warningCount": 69,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -27,7 +27,6 @@
     "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
     "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
     "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
-    "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for pia:35165: 2026-10-26, 2026-10-27, 2026-10-29",
     "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
     "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
     "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
@@ -80,7 +79,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール"
   ],
-  "candidateSha256": "498b342c610468b64aa5171da0ba456524831823792c22ec49084bb4480934e4",
+  "candidateSha256": "9b9abc3b3a05d7094f2556564256b057d315c368d12260c93e87a49bbedb3415",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -97,6 +96,7 @@
     "url:https://kawaiilab.asobisystem.com/news/detail/88140",
     "url:https://kawaiilab.asobisystem.com/news/detail/88214",
     "url:https://sweetsteady.asobisystem.com/news/detail/88913",
+    "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
     "url:https://tower.jp/article/feature_item/2026/08/28/0704",
     "url:https://tower.jp/ec/Customer/Login.aspx?npage=https%3a%2f%2ftower.jp%2fec%2fCustomer%2fMenu",
@@ -283,7 +283,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 36,
+  "quarantineCount": 35,
   "quarantineActions": [
     {
       "error": "special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -374,11 +374,6 @@
       "error": "active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
       "action": "restored previous rows for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
       "restoredPreviousRows": 24
-    },
-    {
-      "error": "future performance dates disappeared for pia:35165: 2026-10-26, 2026-10-27, 2026-10-29",
-      "action": "restored previous rows for pia:35165",
-      "restoredPreviousRows": 1
     },
     {
       "error": "active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
