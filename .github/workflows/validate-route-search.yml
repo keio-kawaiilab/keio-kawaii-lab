@@ -33,6 +33,7 @@ jobs:
           node --check route-core.js
           node --check route.js
           node --check preview/transfer-guide/preview.js
+          node --check preview/transfer-guide/preview-compare.js
           node --check scripts/test_keisei_route_ui.js
           node --check scripts/test_route_preview_smoke.js
           node --check scripts/test_route_preview_ui.js
