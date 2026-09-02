@@ -2,9 +2,9 @@
 """Compatibility entrypoint plus fresh SUKISUKI discovery.
 
 SUKISUKI's public goods list can lag behind product links announced by official
-accounts.  The maintained collector still owns parsing/merging; this wrapper
+accounts. The maintained collector still owns parsing/merging; this wrapper
 supplements its discovered URLs by probing a small bounded range immediately
-after the newest numeric goods id seen on the public list.  Every probed page
+after the newest numeric goods id seen on the public list. Every probed page
 must still pass the normal detail-page group/type/date parser before it can be
 published.
 """
@@ -24,10 +24,22 @@ PROBE_AHEAD = 64
 PROBE_TIMEOUT = 4
 
 
+class ProbeSession(requests.Session):
+    """Session that caps only speculative probe latency."""
+
+    def get(self, url, **kwargs):
+        requested = kwargs.get("timeout", PROBE_TIMEOUT)
+        try:
+            kwargs["timeout"] = min(float(requested), float(PROBE_TIMEOUT))
+        except (TypeError, ValueError):
+            kwargs["timeout"] = PROBE_TIMEOUT
+        return super().get(url, **kwargs)
+
+
 def _probe_one(goods_id: int, headers: dict[str, str]) -> str | None:
     """Return URL only when a not-yet-listed detail page is a valid future online event."""
     url = f"https://sukisuki-shop.com/goods/{goods_id}"
-    session = requests.Session()
+    session = ProbeSession()
     session.headers.update(headers)
     try:
         # parse_goods performs the same official detail-page validation used by
