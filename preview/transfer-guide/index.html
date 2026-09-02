@@ -1,1 +1,40 @@
-<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><title>Preview Locked</title><style>body{margin:0;min-height:100dvh;display:grid;place-items:center;background:#fdfcf8;color:#1d2547;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",sans-serif;padding:24px}.b{max-width:420px;text-align:center;background:#fff;border:1px solid #e7e3d8;border-radius:20px;padding:28px;box-shadow:0 8px 28px #26305c14}h1{font-size:20px}p{font-size:13px;color:#6b7089;line-height:1.7}</style><body><div class="b"><div style="font-size:32px">🔒</div><h1>プレビューは非公開になりました</h1><p>この乗り換え案内プレビューはオーナー専用の閲覧鍵方式へ移行しています。</p></div></body></html>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+<meta name="theme-color" content="#142b57">
+<title>乗換案内 Preview｜慶應カワラボ同好会</title>
+<link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700;900&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../style.css">
+<link rel="stylesheet" href="./preview.css">
+</head>
+<body>
+<div id="preview-lock" class="preview-lock" aria-live="polite">
+  <div class="preview-lock-card">
+    <div class="preview-lock-icon">🔒</div>
+    <p class="preview-eyebrow">OWNER PREVIEW</p>
+    <h1>乗換案内プレビュー</h1>
+    <p id="preview-lock-message">閲覧鍵を確認しています…</p>
+  </div>
+</div>
+<div id="preview-app" class="preview-app" hidden>
+<header class="preview-topbar"><div class="preview-topbar-inner"><a class="preview-brand" href="../../index.html" aria-label="KAWAII LAB.同好会 トップ"><span>KAWAII LAB.同好会</span><small>慶應義塾大学登録学生団体</small></a><div class="preview-badge"><span></span> OWNER PREVIEW</div></div></header>
+<main>
+<section class="preview-hero"><div class="preview-container preview-hero-grid"><div><div class="preview-hero-tag">ROUTE PLANNER <span>β</span></div><h1>ライブの日の移動を、<br><em>迷わず一発で。</em></h1><p>首都圏の鉄道路線を横断して、予定時刻表から乗換ルートを検索。みなとみらい線・京成の直通列車にも対応した開発中プレビューです。</p><div class="preview-coverage" aria-label="対応状況"><div><strong id="coverage-operators">—</strong><span>事業者</span></div><div><strong id="coverage-lines">—</strong><span>時刻対応路線</span></div><div><strong id="coverage-stations">—</strong><span>駅データ</span></div></div></div><div class="preview-hero-art" aria-hidden="true"><div class="preview-orbit orbit-a"></div><div class="preview-orbit orbit-b"></div><div class="preview-station-dot dot-a"></div><div class="preview-station-dot dot-b"></div><div class="preview-station-dot dot-c"></div><div class="preview-train-pill">🚆</div></div></div></section>
+<section class="preview-search-section"><div class="preview-container"><div id="route-status" class="route-status is-loading" role="status"><span class="status-dot"></span><span>交通データを読み込んでいます…</span></div>
+<form id="route-form" class="route-form" autocomplete="off"><div class="route-station-grid"><div class="route-field route-station-field"><label for="route-from"><span class="field-mark from-mark"></span>出発駅</label><div class="station-input-wrap"><input id="route-from" name="from" list="route-stations" placeholder="例：渋谷" required disabled><button class="clear-input" type="button" data-clear="route-from" aria-label="出発駅を消去">×</button></div></div><button id="route-swap" class="route-swap" type="button" aria-label="出発駅と到着駅を入れ替える" disabled><span>⇅</span></button><div class="route-field route-station-field"><label for="route-to"><span class="field-mark to-mark"></span>到着駅</label><div class="station-input-wrap"><input id="route-to" name="to" list="route-stations" placeholder="例：みなとみらい" required disabled><button class="clear-input" type="button" data-clear="route-to" aria-label="到着駅を消去">×</button></div></div><datalist id="route-stations"></datalist></div>
+<div class="route-options-grid"><div class="route-field"><label for="route-datetime">出発日時</label><input id="route-datetime" name="at" type="datetime-local" required disabled></div><div class="route-field"><label for="route-calendar">ダイヤ</label><select id="route-calendar" name="calendar" disabled><option value="auto">曜日から自動</option><option value="weekday">平日</option><option value="holiday">土休日</option></select></div><div class="route-field"><label for="route-priority">優先</label><select id="route-priority" name="priority" disabled><option value="fastest">到着が早い</option><option value="transfers">乗換が少ない</option></select></div></div>
+<button id="route-submit" class="route-submit" type="submit" disabled><span class="route-submit-icon">⌕</span><span>乗換を検索</span></button></form>
+<div class="route-shortcuts" aria-label="検索例"><span>検索例</span><button type="button" data-from="横浜" data-to="元町・中華街">横浜 → 元町・中華街</button><button type="button" data-from="京成上野" data-to="成田空港">京成上野 → 成田空港</button><button type="button" data-from="渋谷" data-to="みなとみらい">渋谷 → みなとみらい</button></div>
+<section id="recent-section" class="recent-section" hidden><div class="section-heading-row"><div><p class="section-kicker">RECENT</p><h2>最近の検索</h2></div><button id="clear-history" class="text-button" type="button">履歴を消す</button></div><div id="recent-searches" class="recent-searches"></div></section>
+<section id="results-section" class="results-section" aria-live="polite"><div class="route-empty-state"><div class="empty-route-icon"><span></span><span></span><span></span></div><h2>駅と日時を選んで検索</h2><p>候補経路を最大3件まで比較できます。</p></div></section>
+<aside class="preview-notice"><div class="notice-icon">i</div><div><strong>開発中プレビュー</strong><p>予定時刻表を使った試験機能です。遅延・運休は反映しません。一部路線では駅時刻表から到着時刻を推定して「着目安」と表示します。祝日は「土休日」を選んでください。実際の利用時は鉄道各社の最新案内も確認してください。</p></div></aside></div></section></main>
+<footer class="preview-footer"><div class="preview-container"><strong>KAWAII LAB.同好会</strong><p>慶應義塾大学登録学生団体 / 非公式ファンサークル</p><p class="source-note">公共交通オープンデータセンター（ODPT）および各鉄道事業者の公式時刻表をもとに構築しています。</p></div></footer></div>
+<script src="../../route-core.js?v=20260903-1"></script><script src="./preview.js?v=20260903-1"></script>
+</body></html>
