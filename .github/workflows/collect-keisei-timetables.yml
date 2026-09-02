@@ -2,6 +2,10 @@ name: Collect Keisei timetables
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/collect_keisei_timetables.py'
+      - '.github/workflows/collect-keisei-timetables.yml'
 
 permissions:
   contents: write
@@ -11,14 +15,100 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  discover:
+  collect-details:
     runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      CHUNK_SIZE: '300'
+      KEISEI_WORKERS: '6'
+      KEISEI_REQUEST_INTERVAL_SECONDS: '0.35'
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
       - name: Install collector dependencies
         run: pip install requests==2.32.5 beautifulsoup4==4.13.5
-      - name: Discover all Keisei station pages and trains
-        run: python scripts/collect_keisei_timetables.py --discover
+
+      - name: Configure checkpoint commits
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Collect every detailed train timetable with checkpoints
+        shell: bash
+        run: |
+          set -euo pipefail
+          TOTAL=$(python - <<'PY'
+          import json
+          with open('data/transit/keisei/collector-state.json', encoding='utf-8') as f:
+              print(len(json.load(f)['trainRefs']))
+          PY
+          )
+          CHUNKS=$(( (TOTAL + CHUNK_SIZE - 1) / CHUNK_SIZE ))
+          echo "Collecting $TOTAL trains in $CHUNKS chunks of $CHUNK_SIZE"
+
+          checkpoint() {
+            local label="$1"
+            if [ -z "$(git status --porcelain -- data/transit/keisei)" ]; then
+              return 0
+            fi
+            git add data/transit/keisei
+            git commit -m "$label"
+            for push_attempt in 1 2 3 4; do
+              if git pull --rebase origin main && git push origin HEAD:main; then
+                return 0
+              fi
+              sleep $((push_attempt * 3))
+            done
+            return 1
+          }
+
+          for ((chunk=0; chunk<CHUNKS; chunk++)); do
+            echo "=== Keisei detail chunk $chunk/$((CHUNKS-1)) ==="
+            success=0
+            for attempt in 1 2 3; do
+              set +e
+              python scripts/collect_keisei_timetables.py \
+                --collect-chunk "$chunk" \
+                --chunk-size "$CHUNK_SIZE" \
+                --workers "$KEISEI_WORKERS"
+              status=$?
+              set -e
+              checkpoint "Checkpoint Keisei train details chunk $(printf '%03d' "$chunk") attempt $attempt"
+              if [ "$status" -eq 0 ]; then
+                success=1
+                break
+              fi
+              echo "Chunk $chunk attempt $attempt incomplete; retrying only missing trains."
+              sleep $((attempt * 5))
+            done
+            if [ "$success" -ne 1 ]; then
+              echo "Chunk $chunk remains incomplete after retries."
+              exit 1
+            fi
+          done
+
+          python scripts/collect_keisei_timetables.py --merge-chunks --chunk-size "$CHUNK_SIZE"
+          checkpoint "Merge all Keisei official train details"
+
+      - name: Validate exact discovery and detail counts
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('data/transit/keisei')
+          state = json.loads((root/'collector-state.json').read_text(encoding='utf-8'))
+          merged = json.loads((root/'official-train-details.json').read_text(encoding='utf-8'))
+          assert state['trainReferenceCount'] == 4659, state['trainReferenceCount']
+          assert merged['trainCount'] == 4659, merged['trainCount']
+          assert merged['weekdayCount'] == 2491, merged['weekdayCount']
+          assert merged['holidayCount'] == 2168, merged['holidayCount']
+          assert all(len(train.get('stops') or []) >= 2 for train in merged['trains'])
+          print('Validated Keisei trains:', merged['trainCount'])
+          print('Validated stop rows:', merged['stopRowCount'])
+          PY
