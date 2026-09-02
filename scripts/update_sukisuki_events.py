@@ -26,9 +26,17 @@ GROUPS = (
     "CUTIE STREET",
     "MORE STAR",
 )
-ONLINE_HINTS = ("オンライン特典会", "オンラインサイン会")
+# SUKISUKI changes the wording used for the same family of online events.
+# Do not require only the historical "オンライン特典会" label at discovery time.
+ONLINE_HINTS = (
+    "オンライン特典会",
+    "オンラインサイン会",
+    "オンラインリリイベ",
+    "オンラインリリースイベント",
+    "オン特",
+)
 YEARLESS_MAX_DAYS = 60
-MAX_DISCOVERED_GOODS = 120
+MAX_DISCOVERED_GOODS = 180
 YEAR_HINT_LABELS = (
     "抽選申込期間", "申込期間", "販売期間",
     "当落発表日", "当落発表", "当選発表",
@@ -181,9 +189,12 @@ def group_from(text: str) -> str | None:
 
 def sale_type(title: str, text: str) -> str:
     corpus = f"{title}\n{text[:2500]}"
-    kind = "オンライン特典会"
-    if "オンラインサイン会" in corpus:
+    if "オンラインリリースイベント" in corpus or "オンラインリリイベ" in corpus:
+        kind = "オンラインリリースイベント"
+    elif "オンラインサイン会" in corpus:
         kind = "オンラインサイン会"
+    else:
+        kind = "オンライン特典会"
     if "抽選販売" in corpus or "抽選申込" in corpus:
         return f"{kind}・抽選販売"
     if "先着販売" in corpus or "先着" in corpus:
@@ -215,8 +226,10 @@ def discover(session: requests.Session) -> tuple[list[str], list[str]]:
             parent = anchor.parent
             if parent is not None:
                 context += " " + normalize_space(parent.get_text(" ", strip=True))
-            if not any(group in context for group in GROUPS):
-                continue
+            # Group attribution is intentionally NOT required here. SUKISUKI
+            # cards sometimes expose only a member name or a shortened title.
+            # Read the detail page first, then identify the KAWAII LAB. group
+            # from the full official product text in parse_goods().
             if not any(hint in context for hint in ONLINE_HINTS):
                 continue
             urls.add(canonical_goods_url(urljoin(list_url, href)))
@@ -306,7 +319,7 @@ def main() -> int:
 
     session = requests.Session()
     session.headers.update({
-        "User-Agent": "KeioKawaiiLabCalendarBot/1.9 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"
+        "User-Agent": "KeioKawaiiLabCalendarBot/2.0 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"
     })
     urls, discovery_failures = discover(session)
     today = datetime.now(JST).date()
