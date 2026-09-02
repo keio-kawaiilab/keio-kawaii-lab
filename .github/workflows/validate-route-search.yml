@@ -10,6 +10,7 @@ on:
       - 'data/transit/keisei/entities.json'
       - 'data/transit/keisei/timetable-index.json'
       - 'data/transit/keisei/timetables/**'
+      - '.github/workflows/validate-route-search.yml'
 
 permissions:
   contents: read
