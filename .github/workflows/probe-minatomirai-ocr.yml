@@ -1,0 +1,39 @@
+name: Probe Minatomirai timetable OCR
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/probe_minatomirai_ocr.py'
+      - '.github/workflows/probe-minatomirai-ocr.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install OCR dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends tesseract-ocr
+          pip install requests==2.32.5 Pillow==11.3.0 pytesseract==0.3.13
+      - name: Probe official timetable artwork
+        run: python scripts/probe_minatomirai_ocr.py
+      - name: Save probe for inspection
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/transit/yokohama-minatomirai/ocr-probe.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Record Minatomirai timetable OCR probe"
+          git pull --rebase origin main
+          git push origin HEAD:main
