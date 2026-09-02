@@ -39,6 +39,9 @@ EXPECTED = {
     },
 }
 BASE_SIZE = 1654.0
+# Current official artwork has two horizontal grid layouts.  The layout is not
+# tied reliably to a station or service day, so score both rather than guessing.
+FIRST_X_CANDIDATES = (226.0, 294.0)
 X_PITCH = 68.0
 FIRST_Y = 47.0
 Y_PITCH = 74.5
@@ -46,47 +49,6 @@ MAX_COLUMNS = 21
 TILE_W = 168
 TILE_H = 150
 SHEET_COLUMNS = 7
-
-
-def detect_first_x(image: Image.Image) -> float:
-    """Find the minute-grid origin from the coloured 4-hour box.
-
-    Official artwork has multiple horizontal layouts, but the first minute
-    cell consistently begins about 40 source pixels to the right of the
-    visible blue/cyan core of the hour box.
-    """
-    rgb = image.convert("RGB")
-    sx, sy = image.width / BASE_SIZE, image.height / BASE_SIZE
-    cy = FIRST_Y * sy
-    top = max(0, int(cy - 28 * sy))
-    bottom = min(image.height, int(cy + 28 * sy))
-    maximum_x = min(image.width, int(450 * sx))
-    qualifying: list[int] = []
-    for x in range(maximum_x):
-        hits = 0
-        for y in range(top, bottom):
-            r, g, b = rgb.getpixel((x, y))
-            spread = max(r, g, b) - min(r, g, b)
-            if spread > 45 and b > r + 20 and b >= g - 35:
-                hits += 1
-        if hits >= max(4, int((bottom - top) * 0.45)):
-            qualifying.append(x)
-    if not qualifying:
-        raise RuntimeError("could not find hour-box colour band")
-    runs: list[tuple[int, int]] = []
-    start = previous = qualifying[0]
-    for x in qualifying[1:]:
-        if x > previous + 1:
-            runs.append((start, previous))
-            start = x
-        previous = x
-    runs.append((start, previous))
-    start, right = max(runs, key=lambda run: run[1] - run[0])
-    width_base = (right - start + 1) / sx
-    # The colour mask sees only the saturated core, not the anti-aliased edge.
-    if not 30 <= width_base <= 110:
-        raise RuntimeError(f"unexpected hour-box width {width_base:.1f}")
-    return right / sx + 40.0
 
 
 def minute_crop(image: Image.Image, first_x: float, hour: int, column: int) -> Image.Image:
@@ -169,8 +131,7 @@ def read_sheet(sheet: Image.Image, locator: dict[tuple[int, int], int]) -> dict[
     return result
 
 
-def parse_rows(image: Image.Image) -> tuple[dict[str, list[int]], dict]:
-    first_x = detect_first_x(image)
+def parse_rows_at_origin(image: Image.Image, first_x: float) -> tuple[dict[str, list[int]], dict]:
     cells = candidate_cells(image, first_x)
     sheet, locator = contact_sheet(cells, threshold=False)
     first = read_sheet(sheet, locator)
@@ -200,12 +161,37 @@ def parse_rows(image: Image.Image) -> tuple[dict[str, list[int]], dict]:
             continue
         row.append(minute)
     diagnostics = {
-        "firstX": round(first_x, 2),
+        "firstX": first_x,
         "candidateCount": len(cells),
         "recognizedCount": sum(len(v) for v in parsed.values()),
         "unresolvedCount": len(unresolved_rows),
         "unresolved": unresolved_rows[:80],
     }
+    return parsed, diagnostics
+
+
+def parse_rows(image: Image.Image) -> tuple[dict[str, list[int]], dict]:
+    trials = []
+    for first_x in FIRST_X_CANDIDATES:
+        parsed, diagnostics = parse_rows_at_origin(image, first_x)
+        trials.append((parsed, diagnostics))
+    parsed, diagnostics = max(
+        trials,
+        key=lambda item: (
+            item[1]["recognizedCount"],
+            -item[1]["unresolvedCount"],
+        ),
+    )
+    diagnostics = dict(diagnostics)
+    diagnostics["originTrials"] = [
+        {
+            "firstX": trial_diag["firstX"],
+            "candidateCount": trial_diag["candidateCount"],
+            "recognizedCount": trial_diag["recognizedCount"],
+            "unresolvedCount": trial_diag["unresolvedCount"],
+        }
+        for _, trial_diag in trials
+    ]
     return parsed, diagnostics
 
 
@@ -217,7 +203,7 @@ def validate_sample(name: str, parsed: dict[str, list[int]]) -> None:
 
 
 def main() -> int:
-    result = {"version": 9, "samples": {}}
+    result = {"version": 10, "samples": {}}
     session = requests.Session()
     session.headers["User-Agent"] = "Keio-Kawaii-Lab timetable validation/1.0"
     failures = []
