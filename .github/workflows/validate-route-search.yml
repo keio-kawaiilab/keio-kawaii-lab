@@ -1,0 +1,32 @@
+name: Validate route search
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'route.js'
+      - 'route-core.js'
+      - 'scripts/test_keisei_route_ui.js'
+      - 'data/transit/keisei/entities.json'
+      - 'data/transit/keisei/timetable-index.json'
+      - 'data/transit/keisei/timetables/**'
+
+permissions:
+  contents: read
+
+jobs:
+  route-search:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check JavaScript syntax
+        run: |
+          node --check route-core.js
+          node --check route.js
+          node --check scripts/test_keisei_route_ui.js
+      - name: Exercise exact Keisei through route in the browser logic
+        run: node scripts/test_keisei_route_ui.js
