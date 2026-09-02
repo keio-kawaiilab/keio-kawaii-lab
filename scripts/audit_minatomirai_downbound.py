@@ -29,84 +29,39 @@ def load_tokyu_pack() -> dict:
     return json.loads((TOKYU_ROOT / rel).read_text(encoding="utf-8"))
 
 
-def inspect_tokyu_pack(packed: dict) -> dict:
-    destinations = packed.get("destinations") or []
+def load_tokyu_yokohama_boards(packed: dict) -> dict[str, list[dict]]:
     stations = packed.get("stations") or []
     calendars = packed.get("calendars") or []
     directions = packed.get("directions") or []
     train_types = packed.get("trainTypes") or []
-    trips = packed.get("inferredTrips") or []
-    destination_usage = Counter()
-    yokohama_destination_usage = Counter()
-    motomachi_indexes = [i for i, value in enumerate(destinations) if str(value).endswith(MOTOMACHI_SUFFIX)]
+    destinations = packed.get("destinations") or []
     yokohama_indexes = {i for i, value in enumerate(stations) if str(value).endswith(YOKOHAMA_SUFFIX)}
-    examples = []
-    for trip in trips:
-        if len(trip) < 6:
+    result: dict[str, list[dict]] = defaultdict(list)
+    for board in packed.get("boards") or []:
+        if len(board) < 4:
             continue
-        calendar_i, direction_i, train_type_i, destination_i, confidence, stops = trip[:6]
-        destination = destinations[destination_i] if isinstance(destination_i, int) and 0 <= destination_i < len(destinations) else f"<bad:{destination_i}>"
-        destination_usage[destination] += 1
-        has_yokohama = any(isinstance(stop, list) and len(stop) >= 3 and stop[0] in yokohama_indexes for stop in stops)
-        if has_yokohama:
-            yokohama_destination_usage[destination] += 1
-        if len(examples) < 12 and (has_yokohama or destination_i in motomachi_indexes):
-            examples.append({
-                "calendar": calendars[calendar_i] if isinstance(calendar_i, int) and 0 <= calendar_i < len(calendars) else calendar_i,
-                "direction": directions[direction_i] if isinstance(direction_i, int) and 0 <= direction_i < len(directions) else direction_i,
-                "trainType": train_types[train_type_i] if isinstance(train_type_i, int) and 0 <= train_type_i < len(train_types) else train_type_i,
-                "destinationIndex": destination_i,
-                "destination": destination,
-                "confidence": confidence,
-                "yokohamaStop": next((stop for stop in stops if isinstance(stop, list) and len(stop) >= 3 and stop[0] in yokohama_indexes), None),
-            })
-    return {
-        "tripCount": len(trips),
-        "destinationCount": len(destinations),
-        "motomachiDestinationIndexes": motomachi_indexes,
-        "motomachiDestinationValues": [destinations[i] for i in motomachi_indexes],
-        "destinationUsageTop": dict(destination_usage.most_common(20)),
-        "yokohamaDestinationUsageTop": dict(yokohama_destination_usage.most_common(20)),
-        "yokohamaStationIndexes": sorted(yokohama_indexes),
-        "examples": examples,
-    }
-
-
-def load_tokyu_through_departures(packed: dict) -> dict[str, list[dict]]:
-    stations = packed["stations"]
-    calendars = packed["calendars"]
-    directions = packed["directions"]
-    train_types = packed["trainTypes"]
-    destinations = packed["destinations"]
-    yokohama_indexes = {i for i, station in enumerate(stations) if station.endswith(YOKOHAMA_SUFFIX)}
-    result = defaultdict(list)
-    for trip in packed.get("inferredTrips", []):
-        if len(trip) < 6:
+        station_i, calendar_i, direction_i, departures = board[:4]
+        if station_i not in yokohama_indexes:
             continue
-        calendar_i, direction_i, train_type_i, destination_i, confidence, stops = trip[:6]
-        if not isinstance(destination_i, int) or not (0 <= destination_i < len(destinations)):
+        if not isinstance(calendar_i, int) or not (0 <= calendar_i < len(calendars)):
             continue
-        destination = destinations[destination_i]
-        if not destination.endswith(MOTOMACHI_SUFFIX):
-            continue
-        if not isinstance(direction_i, int) or not (0 <= direction_i < len(directions)):
-            continue
-        direction = directions[direction_i]
-        for stop in stops:
-            if len(stop) < 3 or stop[0] not in yokohama_indexes:
+        calendar = calendars[calendar_i]
+        direction = directions[direction_i] if isinstance(direction_i, int) and 0 <= direction_i < len(directions) else str(direction_i)
+        for row in departures:
+            if len(row) < 3:
                 continue
-            arrival, departure = stop[1], stop[2]
-            boundary_time = departure if departure is not None else arrival
-            if boundary_time is None:
+            minute, type_i, destination_i = row[:3]
+            if not isinstance(destination_i, int) or not (0 <= destination_i < len(destinations)):
                 continue
-            calendar = calendars[calendar_i]
+            destination = destinations[destination_i]
+            if not str(destination).endswith(MOTOMACHI_SUFFIX):
+                continue
+            train_type = train_types[type_i] if isinstance(type_i, int) and 0 <= type_i < len(train_types) else str(type_i)
             result[calendar].append({
-                "minute": int(boundary_time),
-                "time": service_time(int(boundary_time)),
-                "timeKind": "departure" if departure is not None else "arrival",
-                "trainType": train_types[train_type_i],
+                "minute": int(minute),
+                "time": service_time(int(minute)),
+                "trainType": train_type,
                 "destination": destination,
-                "confidence": int(confidence),
                 "direction": direction,
             })
     for calendar in result:
@@ -164,33 +119,90 @@ def ordered_delta_report(upstream: list[int], downstream: list[int]) -> dict:
     }
 
 
+def type_delta_report(boundary_rows: list[dict], downstream: list[int]) -> dict:
+    if len(boundary_rows) != len(downstream):
+        return {"sameCount": False, "boundaryCount": len(boundary_rows), "downstreamCount": len(downstream)}
+    by_type: dict[str, Counter] = defaultdict(Counter)
+    examples = []
+    for row, arrival in zip(boundary_rows, downstream):
+        delta = arrival - row["minute"]
+        by_type[row["trainType"]][delta] += 1
+        if delta < 2 or delta > 5:
+            examples.append({
+                "yokohama": row["time"],
+                "minatomirai": service_time(arrival),
+                "trainType": row["trainType"],
+                "delta": delta,
+            })
+    return {
+        "sameCount": True,
+        "byTrainType": {
+            train_type: {str(delta): count for delta, count in sorted(counter.items())}
+            for train_type, counter in sorted(by_type.items())
+        },
+        "outliers": examples[:30],
+    }
+
+
+def infer_modal_deltas(type_report: dict) -> dict[str, int]:
+    result = {}
+    for train_type, raw in (type_report.get("byTrainType") or {}).items():
+        counter = Counter({int(delta): int(count) for delta, count in raw.items() if 2 <= int(delta) <= 5})
+        if counter:
+            result[train_type] = counter.most_common(1)[0][0]
+    return result
+
+
+def proposed_from_boundary(boundary_rows: list[dict], modal_deltas: dict[str, int]) -> list[int]:
+    result = []
+    for row in boundary_rows:
+        delta = modal_deltas.get(row["trainType"])
+        if delta is None:
+            continue
+        result.append(row["minute"] + delta)
+    return result
+
+
 def main() -> int:
     mm = json.loads(MM_PATH.read_text(encoding="utf-8"))
     boards = {(board["stationTitle"], board["calendar"]): board for board in mm["boards"]}
     packed = load_tokyu_pack()
-    through = load_tokyu_through_departures(packed)
+    boundary = load_tokyu_yokohama_boards(packed)
     report = {
-        "version": 3,
+        "version": 4,
         "retrievedAt": mm.get("retrievedAt"),
-        "tokyuPackDiagnostics": inspect_tokyu_pack(packed),
-        "tokyuThroughCounts": {},
+        "tokyuBoundaryCounts": {},
         "tokyuTrainTypeCounts": {},
         "yokohamaCrossCheck": {},
         "orderedBoundaryChecks": {},
+        "deltaByTrainType": {},
+        "weekdayMinatomiraiProposal": {},
         "adjacentChecks": {},
     }
-    for calendar, rows in through.items():
-        report["tokyuThroughCounts"][calendar] = len(rows)
+    calendars = sorted({board["calendar"] for board in mm["boards"]})
+    for calendar in calendars:
+        rows = boundary.get(calendar, [])
+        report["tokyuBoundaryCounts"][calendar] = len(rows)
         report["tokyuTrainTypeCounts"][calendar] = dict(Counter(row["trainType"] for row in rows))
         official = [to_minute(value) for value in boards[("横浜", calendar)]["departures"]]
         reference = [row["minute"] for row in rows]
         report["yokohamaCrossCheck"][calendar] = match_times(official, reference, tolerance=1)
-
-    calendars = sorted({board["calendar"] for board in mm["boards"]})
-    for calendar in calendars:
-        yokohama = [to_minute(value) for value in boards[("横浜", calendar)]["departures"]]
         minatomirai = [to_minute(value) for value in boards[("みなとみらい", calendar)]["departures"]]
-        report["orderedBoundaryChecks"][calendar] = ordered_delta_report(yokohama, minatomirai)
+        report["orderedBoundaryChecks"][calendar] = ordered_delta_report(official, minatomirai)
+        report["deltaByTrainType"][calendar] = type_delta_report(rows, minatomirai)
+
+    holiday = "odpt.Calendar:SaturdayHoliday"
+    weekday = "odpt.Calendar:Weekday"
+    modal_deltas = infer_modal_deltas(report["deltaByTrainType"].get(holiday, {}))
+    weekday_proposed = proposed_from_boundary(boundary.get(weekday, []), modal_deltas)
+    weekday_ocr = [to_minute(value) for value in boards[("みなとみらい", weekday)]["departures"]]
+    report["weekdayMinatomiraiProposal"] = {
+        "modalDeltasFromSaturdayHoliday": modal_deltas,
+        "proposedCount": len(weekday_proposed),
+        "ocrCount": len(weekday_ocr),
+        "proposalVsOcr": match_times(weekday_proposed, weekday_ocr, tolerance=1),
+        "proposedTimes": [service_time(value) for value in weekday_proposed],
+    }
 
     station_order = ["横浜", "新高島", "みなとみらい", "馬車道", "日本大通り"]
     for calendar in calendars:
@@ -219,7 +231,15 @@ def main() -> int:
             }
 
     OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(json.dumps(report, ensure_ascii=False), flush=True)
+    print(json.dumps({
+        "version": report["version"],
+        "tokyuBoundaryCounts": report["tokyuBoundaryCounts"],
+        "tokyuTrainTypeCounts": report["tokyuTrainTypeCounts"],
+        "yokohamaCrossCheck": report["yokohamaCrossCheck"],
+        "orderedBoundaryChecks": report["orderedBoundaryChecks"],
+        "deltaByTrainType": report["deltaByTrainType"],
+        "weekdayMinatomiraiProposal": {k: v for k, v in report["weekdayMinatomiraiProposal"].items() if k != "proposedTimes"},
+    }, ensure_ascii=False), flush=True)
     bad = [(key, value["coverage"]) for key, value in report["adjacentChecks"].items() if value["coverage"] < 0.90]
     if bad:
         raise RuntimeError(f"adjacent timetable coverage below 90%: {bad}")
