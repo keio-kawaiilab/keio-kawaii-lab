@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-03T01:22:25.919749+09:00",
-  "candidateUpdatedAt": "2026-09-03T01:22:25+09:00",
+  "generatedAt": "2026-09-03T01:28:48.400740+09:00",
+  "candidateUpdatedAt": "2026-09-03T01:28:48+09:00",
   "previousEventCount": 144,
   "candidateEventCount": 144,
   "protectedPreviousCount": 144,
   "errorCount": 0,
-  "warningCount": 69,
+  "warningCount": 70,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -17,6 +17,7 @@
     "quarantined one event/source update and kept the previous known-good data: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
+    "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for url:https://sweetsteady.asobisystem.com/news/detail/88315: 2026-09-14",
     "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
     "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
     "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
@@ -79,7 +80,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール"
   ],
-  "candidateSha256": "b6d00ff7c2010467aa0680ec8c9f073af7711d9e0045078cf0cb918adb4f1bb4",
+  "candidateSha256": "70cf0ffdc42e5415e7fde69026644cf95b8a65c1b19af7da30869958f3ec2ca4",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -294,7 +295,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 36,
+  "quarantineCount": 37,
   "quarantineActions": [
     {
       "error": "special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -335,6 +336,11 @@
       "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
       "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
       "restoredPreviousRows": 5
+    },
+    {
+      "error": "future performance dates disappeared for url:https://sweetsteady.asobisystem.com/news/detail/88315: 2026-09-14",
+      "action": "restored previous rows for url:https://sweetsteady.asobisystem.com/news/detail/88315",
+      "restoredPreviousRows": 1
     },
     {
       "error": "active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
@@ -478,11 +484,19 @@
     }
   ],
   "officialIndexReconciledAfterQuarantine": {
-    "reassignedCount": 0,
+    "reassignedCount": 1,
     "hydratedCount": 0,
     "ambiguousCount": 0,
     "unresolvedCount": 1,
-    "reassigned": [],
+    "reassigned": [
+      {
+        "group": "SWEET STEADY",
+        "date": "2026-09-14",
+        "url": "https://sweetsteady.asobisystem.com/live_information/detail/44456",
+        "from": "b84092c8d69077b6",
+        "to": "special-9332aaf17a50c3a8"
+      }
+    ],
     "hydrated": [],
     "ambiguous": [],
     "unresolved": [
