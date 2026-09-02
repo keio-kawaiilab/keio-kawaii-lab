@@ -78,10 +78,10 @@ class SukisukiParserTests(unittest.TestCase):
     def test_discovery_reads_api_even_when_normal_list_has_results(self):
         pages = {
             "https://api.sukisuki-shop.com/goods": (
-                '<a href="/goods/6500000004999">〖二次ビンゴ先着販売〗2026年8月24日 CANDY TUNE オンライン特典会</a>'
+                '<a href="/goods/6500000004999">新商品A</a>'
             ),
             "https://sukisuki-shop.com/goods": (
-                '<a href="/goods/6500000004000">〖抽選販売〗2026年8月24日 CANDY TUNE オンライン特典会</a>'
+                '<a href="/goods/6500000004000">新商品B</a>'
             ),
             "https://sukisuki-shop.com/": "",
         }
@@ -93,10 +93,10 @@ class SukisukiParserTests(unittest.TestCase):
         self.assertEqual(session.calls, list(s.LIST_URLS))
         self.assertGreater(s.goods_rank(urls[0]), s.goods_rank(urls[1]))
 
-    def test_discovery_does_not_require_group_name_on_list_card(self):
+    def test_discovery_requires_no_group_or_online_hint_on_list_card(self):
         pages = {
             "https://api.sukisuki-shop.com/goods": (
-                '<a href="/goods/6500000005001">〖抽選販売〗2026年9月8日 オンラインリリイベ</a>'
+                '<a href="/goods/6500000005002"><img alt="商品画像"></a>'
             ),
             "https://sukisuki-shop.com/goods": "",
             "https://sukisuki-shop.com/": "",
@@ -104,7 +104,23 @@ class SukisukiParserTests(unittest.TestCase):
         session = FakeSession(pages)
         urls, failures = s.discover(session)
         self.assertEqual([], failures)
-        self.assertIn("https://sukisuki-shop.com/goods/6500000005001", urls)
+        self.assertEqual(
+            ["https://sukisuki-shop.com/goods/6500000005002"],
+            urls,
+        )
+
+    def test_detail_page_does_the_actual_online_event_classification(self):
+        url = "https://sukisuki-shop.com/goods/6500000005002"
+        html = """<html><h1>2026年9月8日 CANDY TUNE オンライン特典会</h1>
+        <p>SOUI Knit衣装でオンライン特典会を開催します。</p>
+        <p>配信予定日：2026年9月8日 17:00</p>
+        <p>販売期間：2026年9月2日 20:00～2026年9月7日 23:59</p></html>"""
+        event = s.parse_goods(FakeSession({url: html}), url, date(2026, 9, 2))
+        self.assertIsNotNone(event)
+        self.assertEqual("CANDY TUNE", event["group"])
+        self.assertEqual("2026-09-08", event["eventDate"])
+        self.assertEqual("17:00", event["startTime"])
+        self.assertEqual("オンライン特典会", event["ticketType"])
 
     def test_api_goods_detail_url_is_normalized_to_shop_host(self):
         self.assertEqual(
