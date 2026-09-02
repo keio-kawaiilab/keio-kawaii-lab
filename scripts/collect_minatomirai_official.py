@@ -16,8 +16,7 @@ OUT_UP = Path("data/transit/yokohama-minatomirai/official-upbound-departures.jso
 JST = timezone(timedelta(hours=9))
 BASE = "https://www.mm21railway.co.jp/station/timestable/{slug}/{slug}_{suffix}.jpg"
 
-# Official artwork naming uses "bashamichi" for the image asset even though
-# some current station-page URLs use "basyamichi".
+# Asset slugs are not always identical to the public station-page slug.
 DOWN_STATIONS = [
     ("横浜", "yokohama", "manual.Station:yokohama-minatomirai.横浜"),
     ("新高島", "shintakashima", "manual.Station:yokohama-minatomirai.新高島"),
@@ -26,7 +25,7 @@ DOWN_STATIONS = [
     ("日本大通り", "nihonodori", "manual.Station:yokohama-minatomirai.日本大通り"),
 ]
 UP_STATIONS = [
-    ("元町・中華街", "motomachi", "manual.Station:yokohama-minatomirai.元町・中華街"),
+    ("元町・中華街", "motomachichukagai", "manual.Station:yokohama-minatomirai.元町・中華街"),
     ("日本大通り", "nihonodori", "manual.Station:yokohama-minatomirai.日本大通り"),
     ("馬車道", "bashamichi", "manual.Station:yokohama-minatomirai.馬車道"),
     ("みなとみらい", "minatomirai", "manual.Station:yokohama-minatomirai.みなとみらい"),
@@ -60,7 +59,6 @@ def collect_direction(
     collected = []
     for station_name, slug, station_id in stations:
         for calendar_name, calendar_id, day_prefix in CALENDARS:
-            # m = Motomachi-Chukagai bound (down), y = Yokohama/Shibuya bound (up)
             suffix = f"{day_prefix}{calendar_suffix_letter}"
             url = BASE.format(slug=slug, suffix=suffix)
             response = session.get(url, timeout=60)
@@ -68,8 +66,6 @@ def collect_direction(
             image = Image.open(io.BytesIO(response.content)).convert("RGB")
             rows, diagnostics = ocr.parse_rows(image)
             departures = flatten(rows)
-            # Local-only stations legitimately have fewer departures because
-            # express/limited-express services pass without stopping.
             if len(departures) < 100:
                 raise RuntimeError(
                     f"implausibly sparse timetable: {station_name} {calendar_name} {direction_id} {len(departures)}"
