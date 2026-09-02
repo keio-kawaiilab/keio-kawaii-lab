@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "effectiveFrom": "2026-03-14",
+  "scope": "downbound timetable OCR corrections verified against official print PDFs",
+  "officialPdfSources": {
+    "横浜": "https://www.mm21railway.co.jp/station/timestable/yokohama/pdf/yokohama_timeschedule.pdf",
+    "みなとみらい": "https://www.mm21railway.co.jp/station/timestable/minatomirai/pdf/minatomirai_timeschedule.pdf",
+    "馬車道": "https://www.mm21railway.co.jp/station/timestable/bashamichi/pdf/bashamichi_timeschedule.pdf",
+    "日本大通り": "https://www.mm21railway.co.jp/station/timestable/nihonodori/pdf/nihonodori_timeschedule.pdf"
+  },
+  "directBoardReplacements": [
+    {
+      "calendar": "odpt.Calendar:SaturdayHoliday",
+      "station": "横浜",
+      "from": "23:39",
+      "to": "23:35",
+      "reason": "official PDF reads 35; OCR read 39"
+    },
+    {
+      "calendar": "odpt.Calendar:Weekday",
+      "station": "馬車道",
+      "from": "14:39",
+      "to": "14:35",
+      "reason": "official PDF reads 35; OCR read 39"
+    }
+  ],
+  "masterTrainStopOverrides": [
+    {
+      "calendar": "odpt.Calendar:SaturdayHoliday",
+      "yokohamaDeparture": "23:35",
+      "station": "みなとみらい",
+      "departure": "23:39"
+    },
+    {
+      "calendar": "odpt.Calendar:Weekday",
+      "yokohamaDeparture": "05:30",
+      "station": "みなとみらい",
+      "departure": "05:33"
+    },
+    {
+      "calendar": "odpt.Calendar:Weekday",
+      "yokohamaDeparture": "06:17",
+      "station": "みなとみらい",
+      "departure": "06:21"
+    },
+    {
+      "calendar": "odpt.Calendar:Weekday",
+      "yokohamaDeparture": "14:45",
+      "station": "みなとみらい",
+      "departure": "14:48"
+    },
+    {
+      "calendar": "odpt.Calendar:Weekday",
+      "yokohamaDeparture": "22:45",
+      "station": "みなとみらい",
+      "departure": "22:48"
+    }
+  ],
+  "verifiedSequences": [
+    {
+      "calendar": "odpt.Calendar:SaturdayHoliday",
+      "yokohama": "23:35",
+      "minatomirai": "23:39",
+      "bashamichi": "23:40",
+      "nihonOdori": "23:42"
+    },
+    {
+      "calendar": "odpt.Calendar:Weekday",
+      "yokohama": "05:30",
+      "minatomirai": "05:33",
+      "bashamichi": "05:35",
+      "nihonOdori": "05:36"
+    },
+    {
+      "calendar": "odpt.Calendar:Weekday",
+      "yokohama": "06:17",
+      "minatomirai": "06:21",
+      "bashamichi": "06:22",
+      "nihonOdori": "06:24"
+    },
+    {
+      "calendar": "odpt.Calendar:Weekday",
+      "yokohama": "14:30",
+      "minatomirai": "14:33",
+      "bashamichi": "14:35",
+      "nihonOdori": "14:37"
+    },
+    {
+      "calendar": "odpt.Calendar:Weekday",
+      "yokohama": "14:45",
+      "minatomirai": "14:48",
+      "bashamichi": "14:50",
+      "nihonOdori": "14:51"
+    },
+    {
+      "calendar": "odpt.Calendar:Weekday",
+      "yokohama": "22:45",
+      "minatomirai": "22:48",
+      "bashamichi": "22:50",
+      "nihonOdori": "22:51"
+    }
+  ]
+}
