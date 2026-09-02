@@ -180,7 +180,7 @@
       if(!choices.length){resultsSection.innerHTML='<div class="route-empty-state"><h2>この条件では時刻つき経路が見つかりませんでした</h2><p>日時や駅名を変えてもう一度試してください。</p></div>';return;}
       var dayLabel=service==="weekday"?"平日ダイヤ":"土休日ダイヤ";
       var header='<div class="results-header"><div><p class="section-kicker">RESULT</p><h2>'+esc(fromGroup.label)+' → '+esc(toGroup.label)+'</h2><p>'+date.toLocaleString("ja-JP",{month:"numeric",day:"numeric",weekday:"short",hour:"2-digit",minute:"2-digit"})+' 出発・'+dayLabel+'</p></div><div></div></div>';
-      var cards=choices.slice(0,3).map(function(choice,index){
+      var cards=choices.slice(0,12).map(function(choice,index){
         var timed=choice.timed,arrivalLabel=timed.estimatedArrival?"着目安":"着";
         var meta='<span>'+timed.duration+'分</span><span>乗換 '+timed.transfers+'回</span>'+(index===0?'<span class="best-pill">おすすめ</span>':'');
         var warning=timed.estimatedArrival?'<div class="result-warning">この経路には駅時刻表から算出した到着目安が含まれます。</div>':'';
@@ -205,11 +205,23 @@
       var fromResolved=resolve(fromInput),toResolved=resolve(toInput);if(!fromResolved.group||!toResolved.group){showInputError(fromResolved,toResolved);return;}
       if(fromResolved.group.key===toResolved.group.key){resultsSection.innerHTML='<div class="route-empty-state"><h2>同じ駅が選ばれています</h2><p>出発駅と到着駅を変えてください。</p></div>';return;}
       setSearching(true);
-      var paths=model.candidatePaths(fromResolved.group,toResolved.group,{allowedRailways:Array.from(timetableLines.keys()),limit:8});
+      var paths=model.candidatePaths(fromResolved.group,toResolved.group,{allowedRailways:Array.from(timetableLines.keys()),limit:24});
       if(!paths.length){resultsSection.innerHTML='<div class="route-empty-state"><h2>経路を見つけられませんでした</h2><p>現在の対応エリア内で別の駅を試してください。</p></div>';setSearching(false);return;}
       var date=selectedDate(),service=serviceType(date),start=departureMinutes(date);
       loadTimetables(paths).then(function(timetables){
-        var choices=paths.map(function(path){return{path:path,timed:bestTimedItinerary(path,fromResolved.group,toResolved.group,timetables,start,service)};}).filter(function(choice){return choice.timed;});
+        var choices=[];
+        paths.forEach(function(path){
+          var cursor=start;
+          for(var attempt=0;attempt<3;attempt++){
+            var timed=bestTimedItinerary(path,fromResolved.group,toResolved.group,timetables,cursor,service);
+            if(!timed)break;
+            choices.push({path:path,timed:timed});
+            if(!Number.isFinite(timed.departure))break;
+            var nextStart=timed.departure+1;
+            if(nextStart<=cursor)nextStart=cursor+1;
+            cursor=nextStart;
+          }
+        });
         choices=sortChoices(choices);renderChoices(fromResolved.group,toResolved.group,choices,service,date);saveHistory(fromGroupLabel(fromResolved.group),fromGroupLabel(toResolved.group));updateUrl();
       }).catch(function(error){console.error(error);resultsSection.innerHTML='<div class="route-empty-state"><h2>検索中にエラーが起きました</h2><p>ページを再読み込みしてもう一度試してください。</p></div>';}).finally(function(){setSearching(false);});
     }
