@@ -6,12 +6,12 @@
   function text(el){return el?String(el.textContent||"").trim():"";}
   function parseNumber(value,re){var m=String(value||"").match(re);return m?Number(m[1]):null;}
   function parseClock(value){var m=String(value||"").match(/(?:翌\s*)?(\d{1,2}):(\d{2})/g)||[];return m.map(function(v){var next=v.indexOf("翌")>=0?1440:0;var p=v.replace(/翌\s*/,"").split(":");return next+Number(p[0])*60+Number(p[1]);});}
+  function clock(minutes){if(!Number.isFinite(minutes))return"—";var day=minutes>=1440?"翌 ":"";var value=minutes%1440;return day+String(Math.floor(value/60)).padStart(2,"0")+":"+String(value%60).padStart(2,"0");}
   function safeColor(value){var m=String(value||"").match(/#[0-9a-f]{6}/i);return m?m[0]:"#35598f";}
   function esc(value){return String(value==null?"":value).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 
   function dataFromCard(card,index){
-    var timeText=text(card.querySelector(".result-time strong"));
-    var clocks=parseClock(timeText);
+    var clocks=parseClock(text(card.querySelector(".result-time strong")));
     var meta=text(card.querySelector(".result-meta"));
     var duration=parseNumber(meta,/(\d+)分/)||0;
     var transfers=parseNumber(meta,/乗換\s*(\d+)回/);
@@ -23,7 +23,18 @@
       var color=safeColor(dot&&dot.getAttribute("style"));
       if(label&&!lines.some(function(item){return item.label===label;}))lines.push({label:label,color:color});
     });
-    return{index:index,departure:clocks[0]||0,arrival:clocks[1]||0,duration:duration,transfers:transfers==null?99:transfers,fare:fare,lines:lines,card:card};
+    return{index:index,departure:clocks[0],arrival:clocks[1],duration:duration,transfers:transfers==null?99:transfers,fare:fare,lines:lines,card:card};
+  }
+
+  function railDiagram(item){
+    var lines=item.lines.length?item.lines:[{label:"鉄道路線",color:"#35598f"}];
+    var html='<span class="compare-node start"></span>';
+    lines.slice(0,4).forEach(function(line,i){
+      html+='<span class="compare-rail" style="--compare-line:'+line.color+'"><i></i><b>'+esc(line.label)+'</b></span>';
+      if(i<Math.min(lines.length,4)-1)html+='<span class="compare-transfer-dot">乗換</span>';
+    });
+    html+='<span class="compare-node end"></span>';
+    return html;
   }
 
   function summaryButton(item,fastestArrival,leastTransfers,cheapestFare){
@@ -31,10 +42,16 @@
     if(item.arrival===fastestArrival)flags.push('<span class="route-flag fast">早</span>');
     if(item.transfers===leastTransfers)flags.push('<span class="route-flag easy">楽</span>');
     if(cheapestFare!=null&&item.fare===cheapestFare)flags.push('<span class="route-flag cheap">安</span>');
-    var lineHtml=item.lines.slice(0,3).map(function(line,i){return(i?'<span class="route-choice-arrow">›</span>':'')+'<span class="route-choice-line"><i style="background:'+line.color+'"></i><span>'+esc(line.label)+'</span></span>';}).join("");
-    var departText=item.departure?String(Math.floor(item.departure%1440/60)).padStart(2,"0")+":"+String(item.departure%60).padStart(2,"0"):"—";
-    var arriveText=item.arrival?String(Math.floor(item.arrival%1440/60)).padStart(2,"0")+":"+String(item.arrival%60).padStart(2,"0"):"—";
-    return'<button type="button" class="route-choice" data-route-choice="'+item.index+'" aria-pressed="false"><span class="route-choice-top"><span class="route-choice-rank">経路 '+(item.index+1)+'</span><span class="route-choice-flags">'+flags.join("")+'</span></span><span class="route-choice-time">'+departText+'<span>→</span>'+arriveText+'</span><span class="route-choice-stats"><span class="route-choice-stat"><strong>'+item.duration+'分</strong><small>所要時間</small></span><span class="route-choice-stat"><strong>'+item.transfers+'回</strong><small>乗換</small></span><span class="route-choice-stat"><strong>'+(item.fare!=null?item.fare+'円':'—')+'</strong><small>運賃</small></span></span><span class="route-choice-lines">'+lineHtml+'</span><span class="route-choice-open"><span>タップして詳細</span><b>›</b></span></button>';
+    return '<button type="button" class="route-choice" data-route-choice="'+item.index+'" aria-pressed="false">'
+      +'<span class="route-choice-rank">経路 '+(item.index+1)+'</span>'
+      +'<span class="route-choice-duration"><strong>'+item.duration+'分</strong><small>所要時間</small></span>'
+      +'<span class="route-choice-clock"><small>出発</small><strong>'+clock(item.departure)+'</strong></span>'
+      +'<span class="route-choice-railmap">'+railDiagram(item)+'</span>'
+      +'<span class="route-choice-clock arrive"><small>到着</small><strong>'+clock(item.arrival)+'</strong></span>'
+      +'<span class="route-choice-bottom"><span class="route-choice-transfer">乗換 <strong>'+item.transfers+'回</strong></span><span class="route-choice-fare">'+(item.fare!=null?'<strong>'+item.fare+'円</strong>':'<strong>—</strong><small>運賃未対応</small>')+'</span></span>'
+      +'<span class="route-choice-flags">'+flags.join("")+'</span>'
+      +'<span class="route-choice-open">詳細を見る <b>›</b></span>'
+      +'</button>';
   }
 
   function enhance(){
@@ -45,13 +62,13 @@
     list.dataset.compareEnhanced="1";
     list.classList.add("route-original-results");
     var items=cards.map(dataFromCard);
-    var fastestArrival=Math.min.apply(null,items.map(function(i){return i.arrival||99999;}));
+    var fastestArrival=Math.min.apply(null,items.map(function(i){return Number.isFinite(i.arrival)?i.arrival:99999;}));
     var leastTransfers=Math.min.apply(null,items.map(function(i){return i.transfers;}));
     var fares=items.map(function(i){return i.fare;}).filter(function(v){return Number.isFinite(v);});
     var cheapestFare=fares.length?Math.min.apply(null,fares):null;
     var shell=document.createElement("div");
     shell.className="route-comparison";
-    shell.innerHTML='<div class="route-comparison-head"><div class="route-comparison-legend"><span class="route-flag fast">早</span><span class="route-flag easy">楽</span>'+(cheapestFare!=null?'<span class="route-flag cheap">安</span>':'<span class="route-flag muted">安</span>')+'</div><div class="route-comparison-note">早＝最速到着 / 楽＝乗換最少'+(cheapestFare==null?' / 安＝運賃DB準備中':' / 安＝最安')+'</div></div><div class="route-choice-strip">'+items.map(function(item){return summaryButton(item,fastestArrival,leastTransfers,cheapestFare);}).join("")+'</div><div class="route-detail-shell"><div class="route-detail-placeholder">見たい経路をタップすると、ここに詳しい乗換内容が出ます。</div></div>';
+    shell.innerHTML='<div class="route-comparison-head"><div><strong>'+items.length+'経路を比較</strong><span>左右にスワイプして比較できます</span></div><div class="route-comparison-legend"><span class="route-flag fast">早</span><small>最速到着</small><span class="route-flag easy">楽</span><small>乗換最少</small>'+(cheapestFare!=null?'<span class="route-flag cheap">安</span><small>最安</small>':'<span class="route-flag muted">安</span><small>運賃DB準備中</small>')+'</div></div><div class="route-choice-strip">'+items.map(function(item){return summaryButton(item,fastestArrival,leastTransfers,cheapestFare);}).join("")+'</div><div class="route-detail-shell"><div class="route-detail-placeholder">経路をタップすると、乗る列車・乗換駅・各区間の時刻を詳しく表示します。</div></div>';
     list.parentNode.insertBefore(shell,list);
     shell._routeItems=items;
   }
@@ -68,14 +85,12 @@
     var clone=item.card.cloneNode(true);
     clone.classList.remove("is-best");
     clone.querySelectorAll(".best-pill").forEach(function(node){node.remove();});
-    var label='<div class="route-detail-title"><strong>経路 '+(index+1)+' の詳細</strong><span>もう一度別の経路をタップすると切替</span></div>';
-    detail.innerHTML=label;
+    detail.innerHTML='<div class="route-detail-title"><strong>経路 '+(index+1)+' の詳細</strong><span>'+clock(item.departure)+'発 → '+clock(item.arrival)+'着</span></div>';
     detail.appendChild(clone);
-    if(item.fare==null){var note=document.createElement("div");note.className="fare-pending";note.textContent="運賃比較は現在準備中です。運賃DBを追加後、この画面で「安」も自動判定します。";detail.appendChild(note);}
+    if(item.fare==null){var note=document.createElement("div");note.className="fare-pending";note.textContent="運賃比較は準備中です。運賃データを追加した経路から「安」を自動判定します。";detail.appendChild(note);}
     detail.scrollIntoView({behavior:"smooth",block:"nearest"});
   });
 
-  var observer=new MutationObserver(function(){enhance();});
-  observer.observe(results,{childList:true,subtree:true});
+  new MutationObserver(enhance).observe(results,{childList:true,subtree:true});
   enhance();
 })();
