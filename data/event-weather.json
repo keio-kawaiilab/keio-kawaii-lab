@@ -1,7 +1,7 @@
 {
   "date": "2026-09-03",
   "horizonDays": 7,
-  "generatedAt": "2026-09-03T03:36+09:00",
+  "generatedAt": "2026-09-03T07:49+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -13,17 +13,18 @@
       "venueKey": "よこすか芸術劇場大劇場",
       "eventIds": [
         "024676b8e98a3faf",
+        "87777f0367a4e907",
         "b689a37336790777"
       ],
       "areaCode": "140010",
       "areaName": "東部",
       "precision": "mesh5km",
-      "label": "晴れ",
+      "label": "雨",
       "max": 31.0,
-      "min": 26.0,
+      "min": 31.0,
       "pop": "50",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-09-02T17:00:00+09:00",
+      "issuedAt": "2026-09-03T05:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "25〜29℃",
       "coordinates": {
@@ -31,12 +32,6 @@
         "lon": 139.662613
       },
       "meshTimeline": [
-        {
-          "time": "06:00",
-          "label": "くもり",
-          "validAt": "2026-09-03T06:00+09:00",
-          "temp": 26
-        },
         {
           "time": "09:00",
           "label": "くもり",
@@ -57,7 +52,7 @@
         },
         {
           "time": "18:00",
-          "label": "晴れ",
+          "label": "雨",
           "validAt": "2026-09-03T18:00+09:00",
           "temp": 27
         },
@@ -79,6 +74,16 @@
           "time": "18:00",
           "rain": false,
           "validAt": "2026-09-03T18:00+09:00"
+        },
+        {
+          "time": "19:00",
+          "rain": false,
+          "validAt": "2026-09-03T19:00+09:00"
+        },
+        {
+          "time": "20:00",
+          "rain": false,
+          "validAt": "2026-09-03T20:00+09:00"
         }
       ]
     },
@@ -92,12 +97,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "くもり 時々 雨",
-      "max": null,
-      "min": null,
-      "pop": null,
-      "popLabel": "",
-      "issuedAt": "2026-09-02T17:00:00+09:00",
+      "label": "雨 昼前 まで 時々 くもり 所により 夜 激しく 降る",
+      "max": 26.0,
+      "min": 23.0,
+      "pop": "70",
+      "popLabel": "12〜18時",
+      "issuedAt": "2026-09-03T05:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -113,18 +118,62 @@
       "areaCode": "140010",
       "areaName": "東部",
       "precision": "mesh5km",
-      "label": "くもり",
-      "max": null,
-      "min": null,
-      "pop": null,
-      "popLabel": "",
-      "issuedAt": "2026-09-02T17:00:00+09:00",
-      "meshTime": "00:00",
-      "meshTempBand": "25〜29℃",
+      "label": "雨",
+      "max": 26.0,
+      "min": 24.0,
+      "pop": "60",
+      "popLabel": "18〜00時",
+      "issuedAt": "2026-09-03T05:00:00+09:00",
+      "meshTime": "18:00",
+      "meshTempBand": "20〜24℃",
       "coordinates": {
         "lat": 35.529778,
         "lon": 139.71022
-      }
+      },
+      "meshTimeline": [
+        {
+          "time": "06:00",
+          "label": "くもり",
+          "validAt": "2026-09-04T06:00+09:00",
+          "temp": 25
+        },
+        {
+          "time": "09:00",
+          "label": "くもり",
+          "validAt": "2026-09-04T09:00+09:00",
+          "temp": 25
+        },
+        {
+          "time": "12:00",
+          "label": "くもり",
+          "validAt": "2026-09-04T12:00+09:00",
+          "temp": 26
+        },
+        {
+          "time": "15:00",
+          "label": "雨",
+          "validAt": "2026-09-04T15:00+09:00",
+          "temp": 24
+        },
+        {
+          "time": "18:00",
+          "label": "雨",
+          "validAt": "2026-09-04T18:00+09:00",
+          "temp": 23
+        },
+        {
+          "time": "21:00",
+          "label": "雨",
+          "validAt": "2026-09-04T21:00+09:00",
+          "temp": 22
+        },
+        {
+          "time": "24:00",
+          "label": "雨",
+          "validAt": "2026-09-05T00:00+09:00",
+          "temp": 21
+        }
+      ]
     },
     {
       "date": "2026-09-05",
@@ -270,13 +319,13 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 17,
+    "occurrencesInRange": 18,
     "uniqueVenueDates": 12,
     "weatherEntries": 10,
     "meshEntries": 2,
     "failures": 2,
-    "meshTimelineEntries": 1,
-    "meshExactTempSlots": 7,
+    "meshTimelineEntries": 2,
+    "meshExactTempSlots": 13,
     "hourlyRainEntries": 1
   },
   "failures": [
