@@ -16,6 +16,7 @@ on:
       - 'scripts/reconstruct_shintakashima_downbound_v4.py'
       - 'scripts/reconstruct_shintakashima_downbound_v5.py'
       - 'scripts/diagnose_bashamichi_gaps.py'
+      - 'scripts/diagnose_minatomirai_bashamichi_joint.py'
       - 'scripts/build_minatomirai_downbound_trips.py'
       - '.github/workflows/audit-minatomirai-timetables.yml'
 
@@ -43,6 +44,8 @@ jobs:
         run: python scripts/reconstruct_shintakashima_downbound_v5.py
       - name: Diagnose Bashamichi unmatched rows
         run: python scripts/diagnose_bashamichi_gaps.py
+      - name: Jointly diagnose Minatomirai and Bashamichi
+        run: python scripts/diagnose_minatomirai_bashamichi_joint.py
       - name: Build downbound train chains
         run: python scripts/build_minatomirai_downbound_trips.py
       - name: Audit saved timetable snapshot
