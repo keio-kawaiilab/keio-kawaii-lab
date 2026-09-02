@@ -27,8 +27,8 @@ jobs:
       - name: Install collector dependencies
         run: pip install requests==2.32.5 beautifulsoup4==4.13.5
 
-      - name: Collect two detailed train timetables
-        run: python scripts/collect_keisei_timetables.py --limit 2
+      - name: Collect twenty detailed train timetables
+        run: python scripts/collect_keisei_timetables.py --limit 20
 
       - name: Commit validation snapshot
         shell: bash
@@ -40,7 +40,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/transit/keisei/collector-test.json
-          git commit -m "Validate Keisei train timetable collection"
+          git commit -m "Validate twenty Keisei train timetables"
           for attempt in 1 2 3; do
             git fetch origin main
             git rebase origin/main
