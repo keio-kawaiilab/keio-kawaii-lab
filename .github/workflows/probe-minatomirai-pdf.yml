@@ -1,0 +1,36 @@
+name: Probe Minatomirai timetable PDF
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/probe_minatomirai_pdf.py'
+      - '.github/workflows/probe-minatomirai-pdf.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PDF dependencies
+        run: pip install requests==2.32.5 PyMuPDF==1.26.4
+      - name: Inspect official timetable PDF
+        run: python scripts/probe_minatomirai_pdf.py
+      - name: Save probe for inspection
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/transit/yokohama-minatomirai/pdf-probe.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Record Minatomirai timetable PDF probe"
+          git pull --rebase origin main
+          git push origin HEAD:main
