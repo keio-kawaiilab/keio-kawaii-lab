@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 RAW = Path("data/transit/yokohama-minatomirai/official-upbound-departures.json")
+VERIFIED_MINA = Path("data/transit/yokohama-minatomirai/verified-upbound-minatomirai-20260314.json")
 OUT = Path("data/transit/yokohama-minatomirai/upbound-trips-candidate.json")
 WEEKDAY = "odpt.Calendar:Weekday"
 HOLIDAY = "odpt.Calendar:SaturdayHoliday"
@@ -26,6 +27,18 @@ def board_map(payload: dict) -> dict[tuple[str, str], list[int]]:
     }
 
 
+def verified_weekday_minatomirai() -> list[int]:
+    payload = json.loads(VERIFIED_MINA.read_text(encoding="utf-8"))
+    values = []
+    for raw_hour, minutes in payload["rows"].items():
+        hour = int(raw_hour)
+        values.extend(hour * 60 + int(value) for value in minutes)
+    expected = int(payload["departureCount"])
+    if len(values) != expected:
+        raise RuntimeError(f"verified Minatomirai count mismatch: {len(values)} != {expected}")
+    return values
+
+
 def map_middle_rows(
     motomachi: list[int],
     minatomirai: list[int],
@@ -45,8 +58,6 @@ def map_middle_rows(
             mm = minatomirai[train_index]
             if m < n < b < mm and 1 <= n - m <= 5 and 1 <= mm - b <= 5:
                 candidates.append(train_index)
-            # With no overtaking, once the master train has reached/passed
-            # this downstream row, all later master trains are too late.
             if m >= n:
                 break
         if candidates:
@@ -111,11 +122,10 @@ def build_calendar(boards: dict, calendar: str) -> dict:
     motomachi = boards[("元町・中華街", calendar)]
     nihon = boards[("日本大通り", calendar)]
     basha = boards[("馬車道", calendar)]
-    minatomirai = boards[("みなとみらい", calendar)]
+    raw_minatomirai = boards[("みなとみらい", calendar)]
+    minatomirai = verified_weekday_minatomirai() if calendar == WEEKDAY else raw_minatomirai
     shin = boards[("新高島", calendar)]
 
-    # Every service on this line starts at Motomachi-Chukagai and stops at
-    # Minatomirai. With no intermediate turn-back or overtaking, nth = nth.
     if len(motomachi) != len(minatomirai):
         raise RuntimeError(
             f"{calendar}: Motomachi/Minatomirai master count mismatch "
@@ -148,7 +158,11 @@ def build_calendar(boards: dict, calendar: str) -> dict:
                 {"station": "日本大通り", "departure": fmt(nihon[row]), "source": "official-board"},
                 {"station": "馬車道", "departure": fmt(basha[row]), "source": "official-board"},
             ])
-        stops.append({"station": "みなとみらい", "departure": fmt(minatomirai[i]), "source": "official-board"})
+        stops.append({
+            "station": "みなとみらい",
+            "departure": fmt(minatomirai[i]),
+            "source": "official-artwork-direct-verification" if calendar == WEEKDAY else "official-board",
+        })
         if i in shin_map:
             row = shin_map[i]
             stops.append({"station": "新高島", "departure": fmt(shin[row]), "source": "official-board"})
@@ -160,6 +174,9 @@ def build_calendar(boards: dict, calendar: str) -> dict:
     return {
         "calendar": calendar,
         "masterTrainCount": len(motomachi),
+        "rawMinatomiraiCount": len(raw_minatomirai),
+        "effectiveMinatomiraiCount": len(minatomirai),
+        "minatomiraiSource": "verified-official-artwork" if calendar == WEEKDAY else "raw-official-artwork-ocr",
         "middleStopCount": len(nihon),
         "middleMappedCount": len(middle_map),
         "shintakashimaStopCount": len(shin),
@@ -179,7 +196,7 @@ def main() -> int:
     boards = board_map(payload)
     calendars = {cal: build_calendar(boards, cal) for cal in (HOLIDAY, WEEKDAY)}
     result = {
-        "version": 1,
+        "version": 2,
         "sourceRetrievedAt": payload.get("retrievedAt"),
         "direction": "odpt.RailDirection:Inbound",
         "method": "fixed train order; no overtaking or intermediate turn-back; station boards are forward subsequences",
@@ -190,6 +207,8 @@ def main() -> int:
     summary = {
         cal: {
             "masterTrainCount": data["masterTrainCount"],
+            "rawMinatomiraiCount": data["rawMinatomiraiCount"],
+            "effectiveMinatomiraiCount": data["effectiveMinatomiraiCount"],
             "middleStopCount": data["middleStopCount"],
             "middleMappedCount": data["middleMappedCount"],
             "shintakashimaStopCount": data["shintakashimaStopCount"],
@@ -202,9 +221,6 @@ def main() -> int:
         for cal, data in calendars.items()
     }
     print(json.dumps(summary, ensure_ascii=False), flush=True)
-
-    # First run is deliberately diagnostic: OCR artifacts are expected to be
-    # isolated from the printed diagnostics before this candidate is promoted.
     return 0
 
 
