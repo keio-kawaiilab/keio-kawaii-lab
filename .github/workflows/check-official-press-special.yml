@@ -26,5 +26,19 @@ jobs:
       - name: Test release-plan parser
         working-directory: scripts
         run: python -m unittest -v test_update_official_press_release_events.py
+      - name: Inspect current PR TIMES company index
+        run: |
+          python - <<'PY'
+          import re, requests
+          u='https://prtimes.jp/main/html/searchrlp/company_id/17258'
+          r=requests.get(u, timeout=20, headers={'User-Agent':'Mozilla/5.0'})
+          print('status=', r.status_code, 'length=', len(r.text), 'url=', r.url)
+          for pattern in [r'/main/html/rd/p/[^"\'<> ]+', r'000017258', r'__NEXT_DATA__', r'release']:
+              matches=re.findall(pattern, r.text, re.I)
+              print('pattern', pattern, 'count', len(matches), 'sample', matches[:10])
+          hrefs=re.findall(r'href=["\']([^"\']+)', r.text, re.I)
+          print('href sample=', hrefs[:40])
+          print('head=', r.text[:2500].replace('\n',' '))
+          PY
       - name: Probe current ASOBISYSTEM press releases
         run: python scripts/update_official_press_release_events.py --check
