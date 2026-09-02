@@ -17,7 +17,10 @@ on:
       - 'scripts/reconstruct_shintakashima_downbound_v5.py'
       - 'scripts/diagnose_bashamichi_gaps.py'
       - 'scripts/diagnose_minatomirai_bashamichi_joint.py'
+      - 'scripts/diagnose_minatomirai_upbound_order.py'
       - 'scripts/build_minatomirai_downbound_trips.py'
+      - 'scripts/build_minatomirai_upbound_trips.py'
+      - 'data/transit/yokohama-minatomirai/verified-upbound-minatomirai-20260314.json'
       - '.github/workflows/audit-minatomirai-timetables.yml'
 
 permissions:
@@ -48,7 +51,11 @@ jobs:
         run: python scripts/diagnose_minatomirai_bashamichi_joint.py
       - name: Build downbound train chains
         run: python scripts/build_minatomirai_downbound_trips.py
-      - name: Audit saved timetable snapshot
+      - name: Diagnose upbound fixed train order
+        run: python scripts/diagnose_minatomirai_upbound_order.py
+      - name: Build upbound train chains
+        run: python scripts/build_minatomirai_upbound_trips.py
+      - name: Audit saved downbound timetable snapshot
         run: python scripts/audit_minatomirai_downbound.py
       - name: Save audit and reconstruction
         run: |
@@ -59,7 +66,9 @@ jobs:
             data/transit/yokohama-minatomirai/reconstructed-weekday-minatomirai.json \
             data/transit/yokohama-minatomirai/reconstructed-minatomirai-downbound.json \
             data/transit/yokohama-minatomirai/reconstructed-shintakashima-downbound.json \
-            data/transit/yokohama-minatomirai/downbound-trips-candidate.json
+            data/transit/yokohama-minatomirai/downbound-trips-candidate.json \
+            data/transit/yokohama-minatomirai/upbound-order-diagnostics.json \
+            data/transit/yokohama-minatomirai/upbound-trips-candidate.json
           if git diff --cached --quiet; then exit 0; fi
           git commit -m "Update Minatomirai timetable audit"
           git pull --rebase origin main
