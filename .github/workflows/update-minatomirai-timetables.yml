@@ -4,6 +4,12 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '17 18 * * 1'
+  push:
+    paths:
+      - 'scripts/collect_minatomirai_official.py'
+      - 'scripts/probe_minatomirai_ocr.py'
+      - 'scripts/probe_minatomirai_ocr_v3.py'
+      - '.github/workflows/update-minatomirai-timetables.yml'
 
 permissions:
   contents: write
