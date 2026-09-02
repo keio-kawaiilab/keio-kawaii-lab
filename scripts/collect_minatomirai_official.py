@@ -33,13 +33,7 @@ def flatten(rows: dict[str, list[int]]) -> list[str]:
     for raw_hour, minutes in rows.items():
         hour = int(raw_hour)
         for minute in minutes:
-            service_hour = hour
-            if service_hour == 24:
-                # Keep 24:xx as service-day time. The route engine already
-                # works on minutes-from-service-day rather than wall-clock date.
-                result.append(f"24:{minute:02d}")
-            else:
-                result.append(f"{service_hour:02d}:{minute:02d}")
+            result.append(f"{hour:02d}:{minute:02d}")
     return result
 
 
@@ -55,10 +49,18 @@ def main() -> int:
             image = Image.open(io.BytesIO(response.content)).convert("RGB")
             rows, diagnostics = ocr.parse_rows(image)
             departures = flatten(rows)
-            if len(departures) < 150:
+            # Local-only stations legitimately have far fewer departures than
+            # Yokohama because express services pass without stopping.
+            if len(departures) < 100:
                 raise RuntimeError(f"implausibly sparse timetable: {station_name} {calendar_name} {len(departures)}")
             if departures != sorted(departures, key=lambda value: (int(value.split(':')[0]), int(value.split(':')[1]))):
                 raise RuntimeError(f"non-monotonic timetable: {station_name} {calendar_name}")
+            repair_count = int(diagnostics.get("repairCount") or 0)
+            if repair_count > len(departures) * 0.55:
+                raise RuntimeError(
+                    f"OCR repair ratio too high: {station_name} {calendar_name} "
+                    f"{repair_count}/{len(departures)}"
+                )
             collected.append({
                 "station": station_id,
                 "stationTitle": station_name,
@@ -74,11 +76,11 @@ def main() -> int:
                 "ocrDiagnostics": {
                     "firstX": diagnostics.get("firstX"),
                     "candidateCount": diagnostics.get("candidateCount"),
-                    "repairCount": diagnostics.get("repairCount"),
+                    "repairCount": repair_count,
                     "dashCount": diagnostics.get("dashCount"),
                 },
             })
-            print(station_name, calendar_name, len(departures), diagnostics.get("repairCount"), flush=True)
+            print(station_name, calendar_name, len(departures), repair_count, flush=True)
 
     payload = {
         "version": 1,
