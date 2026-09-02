@@ -6,6 +6,7 @@ on:
     paths:
       - 'scripts/collect_keisei_timetables.py'
       - 'scripts/build_keisei_official_timetables.py'
+      - 'scripts/build_keisei_network_timetable.py'
       - '.github/workflows/collect-keisei-timetables.yml'
 
 permissions:
@@ -117,6 +118,9 @@ jobs:
       - name: Build compact Keisei app timetables
         run: python scripts/build_keisei_official_timetables.py
 
+      - name: Build exact Keisei through network timetable
+        run: python scripts/build_keisei_network_timetable.py
+
       - name: Validate and publish compact Keisei timetable database
         shell: bash
         run: |
@@ -126,20 +130,27 @@ jobs:
           root = Path('data/transit/keisei')
           index = json.loads((root/'timetable-index.json').read_text(encoding='utf-8'))
           report = json.loads((root/'official-conversion-report.json').read_text(encoding='utf-8'))
+          network = json.loads((root/'official-network-report.json').read_text(encoding='utf-8'))
           assert len(index.get('lines') or {}) == 8, index
           assert report['sourceTrainCount'] == 4659, report['sourceTrainCount']
           assert report['compactTripCount'] > 0, report
           assert report['compactConnectionCount'] > 0, report
+          assert index.get('network', {}).get('timeBasis') == 'train-timetable-network', index
+          assert network['networkTripCount'] >= 4500, network
+          assert network['unresolvedPairCount'] == 0, network
+          assert (root/index['network']['file']).exists(), index['network']
           for railway_id, row in index['lines'].items():
               assert row['trips'] > 0, (railway_id, row)
               assert (root/row['file']).exists(), (railway_id, row['file'])
           print('Keisei compact trips:', report['compactTripCount'])
           print('Keisei compact connections:', report['compactConnectionCount'])
-          print('Cross-line skipped pairs:', report['crossLineSkippedPairCount'])
+          print('Keisei exact network trips:', network['networkTripCount'])
+          print('Cross-line skipped pairs covered by network:', report['crossLineSkippedPairCount'])
           PY
           git add data/transit/keisei/timetable-index.json \
                   data/transit/keisei/timetables \
                   data/transit/keisei/official-conversion-report.json \
+                  data/transit/keisei/official-network-report.json \
                   data/transit/manifest.json
           if git diff --cached --quiet; then
             echo "No compact timetable changes."
