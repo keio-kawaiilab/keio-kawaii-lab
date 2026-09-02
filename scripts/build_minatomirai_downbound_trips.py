@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 RAW = Path("data/transit/yokohama-minatomirai/official-downbound-departures.json")
-MINA = Path("data/transit/yokohama-minatomirai/reconstructed-weekday-minatomirai.json")
+MINA = Path("data/transit/yokohama-minatomirai/reconstructed-minatomirai-downbound.json")
 SHIN = Path("data/transit/yokohama-minatomirai/reconstructed-shintakashima-downbound.json")
 OUT = Path("data/transit/yokohama-minatomirai/downbound-trips-candidate.json")
 WEEKDAY = "odpt.Calendar:Weekday"
@@ -70,28 +70,22 @@ def ordered_match(upstream: list[int], downstream: list[int], lo: int, hi: int, 
             i -= 1
         else:
             j -= 1
-    unmatched_down = [idx for idx in range(m) if idx not in used_down]
-    return mapping, unmatched_down
+    return mapping, [idx for idx in range(m) if idx not in used_down]
 
 
-def load_complete_minatomirai(boards, calendar: str) -> list[int]:
-    if calendar == WEEKDAY:
-        return [to_minute(x) for x in json.loads(MINA.read_text(encoding="utf-8"))["departures"]]
-    return boards[("みなとみらい", calendar)]
+def load_complete_minatomirai(calendar: str) -> list[int]:
+    payload = json.loads(MINA.read_text(encoding="utf-8"))
+    return [to_minute(x) for x in payload["calendars"][calendar]["departures"]]
 
 
 def load_shin(calendar: str) -> dict[int, int]:
     payload = json.loads(SHIN.read_text(encoding="utf-8"))
     item = payload["calendars"][calendar]
-    return {
-        int(index): to_minute(value)
-        for index, value in zip(item["stoppingTrainIndexes"], item["departures"])
-    }
+    return {int(index): to_minute(value) for index, value in zip(item["stoppingTrainIndexes"], item["departures"])}
 
 
 def pair_middle_boards(basha: list[int], nihon: list[int]) -> dict:
-    pairs = []
-    bad = []
+    pairs, bad = [], []
     for idx, (b, n) in enumerate(zip(basha, nihon)):
         delta = n - b
         row = {"index": idx, "bashamichi": fmt(b), "nihonOdori": fmt(n), "delta": delta}
@@ -103,7 +97,7 @@ def pair_middle_boards(basha: list[int], nihon: list[int]) -> dict:
 
 def build_calendar(boards, calendar: str) -> dict:
     yoko = boards[("横浜", calendar)]
-    mina = load_complete_minatomirai(boards, calendar)
+    mina = load_complete_minatomirai(calendar)
     shin = load_shin(calendar)
     basha = boards[("馬車道", calendar)]
     nihon = boards[("日本大通り", calendar)]
@@ -113,25 +107,16 @@ def build_calendar(boards, calendar: str) -> dict:
     if not middle["sameCount"]:
         raise RuntimeError(f"{calendar}: Bashamichi/Nihon-odori counts differ")
 
-    # First map Bashamichi rows to the complete Minatomirai train list. A train
-    # that does not map is treated as a pass-through candidate, not invented.
     bmap, b_unmatched = ordered_match(mina, basha, 1, 4, 2)
     b_by_train = {ti: basha[oi] for ti, oi in bmap.items()}
+    n_by_train = {ti: nihon[oi] for ti, oi in bmap.items() if oi < len(nihon)}
 
-    # Nihon-odori has the same stop count as Bashamichi. Pair by board order,
-    # then attach that paired row to the same master train index.
-    n_by_train = {}
-    for ti, oi in bmap.items():
-        if oi < len(nihon):
-            n_by_train[ti] = nihon[oi]
-
-    trips = []
-    physical_errors = []
+    trips, physical_errors = [], []
     for i, y in enumerate(yoko):
         stops = [{"station": "横浜", "departure": fmt(y), "source": "official-ocr"}]
         if i in shin:
             stops.append({"station": "新高島", "departure": fmt(shin[i]), "source": "validated-reconstruction"})
-        stops.append({"station": "みなとみらい", "departure": fmt(mina[i]), "source": "official-or-validated-reconstruction"})
+        stops.append({"station": "みなとみらい", "departure": fmt(mina[i]), "source": "validated-reconstruction"})
         if i in b_by_train:
             stops.append({"station": "馬車道", "departure": fmt(b_by_train[i]), "source": "official-ocr"})
         if i in n_by_train:
@@ -159,22 +144,16 @@ def build_calendar(boards, calendar: str) -> dict:
 def main() -> int:
     payload = json.loads(RAW.read_text(encoding="utf-8"))
     boards = board_map(payload)
-    calendars = {
-        calendar: build_calendar(boards, calendar)
-        for calendar in (HOLIDAY, WEEKDAY)
-    }
+    calendars = {calendar: build_calendar(boards, calendar) for calendar in (HOLIDAY, WEEKDAY)}
     result = {
-        "version": 1,
+        "version": 2,
         "sourceRetrievedAt": payload.get("retrievedAt"),
         "direction": "odpt.RailDirection:Outbound",
-        "method": "Yokohama master train order with validated station-stop attachment",
+        "method": "Yokohama master train order with calendar-independent reconstructed Minatomirai board",
         "calendars": calendars,
     }
     OUT.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
-    summary = {
-        cal: {k: v for k, v in data.items() if k != "trips" and k != "physicalErrors"}
-        for cal, data in calendars.items()
-    }
+    summary = {cal: {k: v for k, v in data.items() if k not in ("trips", "physicalErrors")} for cal, data in calendars.items()}
     print(json.dumps(summary, ensure_ascii=False), flush=True)
 
     for calendar, data in calendars.items():
@@ -182,7 +161,6 @@ def main() -> int:
             raise RuntimeError(f"{calendar}: Bashamichi/Nihon-odori pair anomalies: {data['middleBoardAnomalies'][:10]}")
         if data["physicalErrorCount"]:
             raise RuntimeError(f"{calendar}: non-monotonic station chain: {data['physicalErrors'][:10]}")
-        # Do not accept a mapping that silently loses more than a few OCR rows.
         if data["bashamichiMatchedCount"] / max(1, data["bashamichiRawCount"]) < 0.97:
             raise RuntimeError(f"{calendar}: Bashamichi mapping below 97%: {summary[calendar]}")
     return 0
