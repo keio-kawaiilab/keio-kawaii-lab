@@ -23,7 +23,25 @@
       var color=safeColor(dot&&dot.getAttribute("style"));
       if(label&&!lines.some(function(item){return item.label===label;}))lines.push({label:label,color:color});
     });
-    return{index:index,departure:clocks[0],arrival:clocks[1],duration:duration,transfers:transfers==null?99:transfers,fare:fare,lines:lines,card:card};
+    var via=[];
+    card.querySelectorAll(".leg-main h3").forEach(function(h){var value=text(h);if(value)via.push(value);});
+    var signature=lines.map(function(line){return line.label;}).join(">")+"|"+(transfers==null?99:transfers)+"|"+via.join(">");
+    return{originalIndex:index,departure:clocks[0],arrival:clocks[1],duration:duration,transfers:transfers==null?99:transfers,fare:fare,lines:lines,via:via,signature:signature,variant:0,card:card};
+  }
+
+  function prioritize(items){
+    var groups=[],bySignature=new Map();
+    items.forEach(function(item){
+      var group=bySignature.get(item.signature);
+      if(!group){group=[];bySignature.set(item.signature,group);groups.push(group);}
+      item.variant=group.length;
+      if(group.length<3)group.push(item);
+    });
+    var ordered=[];
+    for(var round=0;round<3&&ordered.length<12;round++){
+      groups.forEach(function(group){if(group[round]&&ordered.length<12)ordered.push(group[round]);});
+    }
+    return ordered;
   }
 
   function railDiagram(item){
@@ -37,20 +55,21 @@
     return html;
   }
 
-  function summaryButton(item,fastestArrival,leastTransfers,cheapestFare){
+  function summaryButton(item,visualIndex,fastestArrival,leastTransfers,cheapestFare){
     var flags=[];
     if(item.arrival===fastestArrival)flags.push('<span class="route-flag fast">早</span>');
     if(item.transfers===leastTransfers)flags.push('<span class="route-flag easy">楽</span>');
     if(cheapestFare!=null&&item.fare===cheapestFare)flags.push('<span class="route-flag cheap">安</span>');
-    return '<button type="button" class="route-choice" data-route-choice="'+item.index+'" aria-pressed="false">'
-      +'<span class="route-choice-rank">経路 '+(item.index+1)+'</span>'
+    var variant=item.variant>0?'<span class="route-choice-variant">同ルート '+(item.variant+1)+'本目</span>':'<span class="route-choice-variant primary">別経路優先</span>';
+    return '<button type="button" class="route-choice" data-route-choice="'+visualIndex+'" aria-pressed="false">'
+      +'<span class="route-choice-top"><span class="route-choice-rank">経路 '+(visualIndex+1)+'</span>'+variant+'</span>'
       +'<span class="route-choice-duration"><strong>'+item.duration+'分</strong><small>所要時間</small></span>'
       +'<span class="route-choice-clock"><small>出発</small><strong>'+clock(item.departure)+'</strong></span>'
       +'<span class="route-choice-railmap">'+railDiagram(item)+'</span>'
       +'<span class="route-choice-clock arrive"><small>到着</small><strong>'+clock(item.arrival)+'</strong></span>'
       +'<span class="route-choice-bottom"><span class="route-choice-transfer">乗換 <strong>'+item.transfers+'回</strong></span><span class="route-choice-fare">'+(item.fare!=null?'<strong>'+item.fare+'円</strong>':'<strong>—</strong><small>運賃未対応</small>')+'</span></span>'
       +'<span class="route-choice-flags">'+flags.join("")+'</span>'
-      +'<span class="route-choice-open">詳細を見る <b>›</b></span>'
+      +'<span class="route-choice-open">タップで詳細 <b>›</b></span>'
       +'</button>';
   }
 
@@ -61,14 +80,16 @@
     if(!cards.length)return;
     list.dataset.compareEnhanced="1";
     list.classList.add("route-original-results");
-    var items=cards.map(dataFromCard);
+    var allItems=cards.map(dataFromCard);
+    var items=prioritize(allItems);
+    var distinctCount=new Set(items.map(function(i){return i.signature;})).size;
     var fastestArrival=Math.min.apply(null,items.map(function(i){return Number.isFinite(i.arrival)?i.arrival:99999;}));
     var leastTransfers=Math.min.apply(null,items.map(function(i){return i.transfers;}));
     var fares=items.map(function(i){return i.fare;}).filter(function(v){return Number.isFinite(v);});
     var cheapestFare=fares.length?Math.min.apply(null,fares):null;
     var shell=document.createElement("div");
     shell.className="route-comparison";
-    shell.innerHTML='<div class="route-comparison-head"><div><strong>'+items.length+'経路を比較</strong><span>左右にスワイプして比較できます</span></div><div class="route-comparison-legend"><span class="route-flag fast">早</span><small>最速到着</small><span class="route-flag easy">楽</span><small>乗換最少</small>'+(cheapestFare!=null?'<span class="route-flag cheap">安</span><small>最安</small>':'<span class="route-flag muted">安</span><small>運賃DB準備中</small>')+'</div></div><div class="route-choice-strip">'+items.map(function(item){return summaryButton(item,fastestArrival,leastTransfers,cheapestFare);}).join("")+'</div><div class="route-detail-shell"><div class="route-detail-placeholder">経路をタップすると、乗る列車・乗換駅・各区間の時刻を詳しく表示します。</div></div>';
+    shell.innerHTML='<div class="route-comparison-head"><div><strong>'+items.length+'候補を比較</strong><span>'+distinctCount+'種類の経路を先に表示し、その後に同ルートの後続列車を表示します</span></div><div class="route-comparison-legend"><span class="route-flag fast">早</span><small>最速到着</small><span class="route-flag easy">楽</span><small>乗換最少</small>'+(cheapestFare!=null?'<span class="route-flag cheap">安</span><small>最安</small>':'<span class="route-flag muted">安</span><small>運賃DB準備中</small>')+'</div></div><div class="route-choice-strip">'+items.map(function(item,index){return summaryButton(item,index,fastestArrival,leastTransfers,cheapestFare);}).join("")+'</div><div class="route-detail-shell"><div class="route-detail-placeholder">見たい経路をタップすると、乗る列車・乗換駅・各区間の発着時刻を詳しく表示します。</div></div>';
     list.parentNode.insertBefore(shell,list);
     shell._routeItems=items;
   }
@@ -85,7 +106,7 @@
     var clone=item.card.cloneNode(true);
     clone.classList.remove("is-best");
     clone.querySelectorAll(".best-pill").forEach(function(node){node.remove();});
-    detail.innerHTML='<div class="route-detail-title"><strong>経路 '+(index+1)+' の詳細</strong><span>'+clock(item.departure)+'発 → '+clock(item.arrival)+'着</span></div>';
+    detail.innerHTML='<div class="route-detail-title"><strong>経路 '+(index+1)+' の詳細</strong><span>'+clock(item.departure)+'発 → '+clock(item.arrival)+'着 / '+item.duration+'分 / 乗換'+item.transfers+'回</span></div>';
     detail.appendChild(clone);
     if(item.fare==null){var note=document.createElement("div");note.className="fare-pending";note.textContent="運賃比較は準備中です。運賃データを追加した経路から「安」を自動判定します。";detail.appendChild(note);}
     detail.scrollIntoView({behavior:"smooth",block:"nearest"});
