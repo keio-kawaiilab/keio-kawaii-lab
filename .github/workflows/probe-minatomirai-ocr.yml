@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - 'scripts/probe_minatomirai_ocr.py'
+      - 'scripts/probe_minatomirai_ocr_v2.py'
       - '.github/workflows/probe-minatomirai-ocr.yml'
 
 permissions:
@@ -27,7 +28,7 @@ jobs:
           sudo apt-get install -y --no-install-recommends tesseract-ocr
           pip install requests==2.32.5 Pillow==11.3.0 pytesseract==0.3.13 numpy==2.3.2
       - name: Probe official timetable artwork
-        run: python scripts/probe_minatomirai_ocr.py
+        run: python scripts/probe_minatomirai_ocr_v2.py
       - name: Save probe for inspection
         run: |
           git config user.name "github-actions[bot]"
