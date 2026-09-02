@@ -15,6 +15,8 @@ SAMPLES = {
     "yokohama_weekday_down": "https://www.mm21railway.co.jp/station/timestable/yokohama/yokohama_wm.jpg",
     "minatomirai_weekday_up": "https://www.mm21railway.co.jp/station/timestable/minatomirai/minatomirai_wy.jpg",
     "minatomirai_holiday_down": "https://www.mm21railway.co.jp/station/timestable/minatomirai/minatomirai_hm.jpg",
+    "bashamichi_weekday_down": "https://www.mm21railway.co.jp/station/timestable/bashamichi/bashamichi_wm.jpg",
+    "nihonodori_weekday_down": "https://www.mm21railway.co.jp/station/timestable/nihonodori/nihonodori_wm.jpg",
 }
 EXPECTED = {
     "yokohama_weekday_down": {
@@ -26,11 +28,17 @@ EXPECTED = {
         5: [13, 22, 33, 45, 49, 59],
         6: [5, 7, 15, 24, 33, 39, 43, 49, 56, 58],
     },
+    "bashamichi_weekday_down": {
+        5: [15, 24, 35, 47, 49],
+        6: [0, 8, 15, 22, 26, 31, 33, 37, 40, 44, 47, 49, 53, 56],
+        7: [0, 3, 6, 9, 11, 15, 18, 22, 24, 26, 30, 33, 36, 39, 41, 45, 48, 51, 54, 56],
+    },
+    "nihonodori_weekday_down": {
+        5: [16, 25, 36, 48, 50],
+        6: [2, 9, 17, 24, 28, 33, 35, 38, 41, 45, 48, 50, 55, 57],
+    },
 }
 BASE_SIZE = 1654.0
-# Minute cells start at x≈294 on the 1654×1654 official artwork. 226 was
-# the hour-label gutter, which made the first probe crop the wrong cells.
-FIRST_X = 294.0
 X_PITCH = 68.0
 FIRST_Y = 47.0
 Y_PITCH = 74.5
@@ -40,9 +48,49 @@ TILE_H = 150
 SHEET_COLUMNS = 7
 
 
-def minute_crop(image: Image.Image, hour: int, column: int) -> Image.Image:
+def detect_first_x(image: Image.Image) -> float:
+    """Find the minute-grid origin from the coloured 4-hour box.
+
+    Official artwork has two horizontal layouts (for example Yokohama starts
+    farther left than Minatomirai), but the first minute cell consistently
+    begins about 40 source pixels to the right of the hour box.
+    """
+    rgb = image.convert("RGB")
     sx, sy = image.width / BASE_SIZE, image.height / BASE_SIZE
-    cx = (FIRST_X + X_PITCH * column) * sx
+    cy = FIRST_Y * sy
+    top = max(0, int(cy - 28 * sy))
+    bottom = min(image.height, int(cy + 28 * sy))
+    maximum_x = min(image.width, int(450 * sx))
+    qualifying: list[int] = []
+    for x in range(maximum_x):
+        hits = 0
+        for y in range(top, bottom):
+            r, g, b = rgb.getpixel((x, y))
+            spread = max(r, g, b) - min(r, g, b)
+            if spread > 45 and b > r + 20 and b >= g - 35:
+                hits += 1
+        if hits >= max(4, int((bottom - top) * 0.45)):
+            qualifying.append(x)
+    if not qualifying:
+        raise RuntimeError("could not find hour-box colour band")
+    runs: list[tuple[int, int]] = []
+    start = previous = qualifying[0]
+    for x in qualifying[1:]:
+        if x > previous + 1:
+            runs.append((start, previous))
+            start = x
+        previous = x
+    runs.append((start, previous))
+    start, right = max(runs, key=lambda run: run[1] - run[0])
+    width_base = (right - start + 1) / sx
+    if not 45 <= width_base <= 100:
+        raise RuntimeError(f"unexpected hour-box width {width_base:.1f}")
+    return right / sx + 40.0
+
+
+def minute_crop(image: Image.Image, first_x: float, hour: int, column: int) -> Image.Image:
+    sx, sy = image.width / BASE_SIZE, image.height / BASE_SIZE
+    cx = (first_x + X_PITCH * column) * sx
     cy = (FIRST_Y + Y_PITCH * (hour - 4)) * sy
     left, right = int(cx - 25 * sx), int(cx + 25 * sx)
     top, bottom = int(cy - 21 * sy), int(cy + 23 * sy)
@@ -59,11 +107,11 @@ def ink_count(crop: Image.Image) -> int:
     return count
 
 
-def candidate_cells(image: Image.Image) -> list[dict]:
+def candidate_cells(image: Image.Image, first_x: float) -> list[dict]:
     rows = []
     for hour in range(4, 25):
         for column in range(MAX_COLUMNS):
-            crop = minute_crop(image, hour, column)
+            crop = minute_crop(image, first_x, hour, column)
             ink = ink_count(crop)
             if ink < max(18, int(crop.width * crop.height * 0.010)):
                 continue
@@ -121,7 +169,8 @@ def read_sheet(sheet: Image.Image, locator: dict[tuple[int, int], int]) -> dict[
 
 
 def parse_rows(image: Image.Image) -> tuple[dict[str, list[int]], dict]:
-    cells = candidate_cells(image)
+    first_x = detect_first_x(image)
+    cells = candidate_cells(image, first_x)
     sheet, locator = contact_sheet(cells, threshold=False)
     first = read_sheet(sheet, locator)
     unresolved = [index for index in range(len(cells)) if len(first.get(index, "")) != 2]
@@ -150,6 +199,7 @@ def parse_rows(image: Image.Image) -> tuple[dict[str, list[int]], dict]:
             continue
         row.append(minute)
     diagnostics = {
+        "firstX": round(first_x, 2),
         "candidateCount": len(cells),
         "recognizedCount": sum(len(v) for v in parsed.values()),
         "unresolvedCount": len(unresolved_rows),
@@ -166,7 +216,7 @@ def validate_sample(name: str, parsed: dict[str, list[int]]) -> None:
 
 
 def main() -> int:
-    result = {"version": 7, "samples": {}}
+    result = {"version": 8, "samples": {}}
     session = requests.Session()
     session.headers["User-Agent"] = "Keio-Kawaii-Lab timetable validation/1.0"
     failures = []
