@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - 'scripts/collect_keisei_timetables.py'
+      - 'scripts/build_keisei_official_timetables.py'
       - '.github/workflows/collect-keisei-timetables.yml'
 
 permissions:
@@ -112,3 +113,43 @@ jobs:
           print('Validated Keisei trains:', merged['trainCount'])
           print('Validated stop rows:', merged['stopRowCount'])
           PY
+
+      - name: Build compact Keisei app timetables
+        run: python scripts/build_keisei_official_timetables.py
+
+      - name: Validate and publish compact Keisei timetable database
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('data/transit/keisei')
+          index = json.loads((root/'timetable-index.json').read_text(encoding='utf-8'))
+          report = json.loads((root/'official-conversion-report.json').read_text(encoding='utf-8'))
+          assert len(index.get('lines') or {}) == 8, index
+          assert report['sourceTrainCount'] == 4659, report['sourceTrainCount']
+          assert report['compactTripCount'] > 0, report
+          assert report['compactConnectionCount'] > 0, report
+          for railway_id, row in index['lines'].items():
+              assert row['trips'] > 0, (railway_id, row)
+              assert (root/row['file']).exists(), (railway_id, row['file'])
+          print('Keisei compact trips:', report['compactTripCount'])
+          print('Keisei compact connections:', report['compactConnectionCount'])
+          print('Cross-line skipped pairs:', report['crossLineSkippedPairCount'])
+          PY
+          git add data/transit/keisei/timetable-index.json \
+                  data/transit/keisei/timetables \
+                  data/transit/keisei/official-conversion-report.json \
+                  data/transit/manifest.json
+          if git diff --cached --quiet; then
+            echo "No compact timetable changes."
+            exit 0
+          fi
+          git commit -m "Publish Keisei official timetable database"
+          for push_attempt in 1 2 3 4; do
+            if git pull --rebase origin main && git push origin HEAD:main; then
+              exit 0
+            fi
+            sleep $((push_attempt * 3))
+          done
+          exit 1
