@@ -20,7 +20,9 @@ on:
       - 'scripts/diagnose_minatomirai_upbound_order.py'
       - 'scripts/build_minatomirai_downbound_trips.py'
       - 'scripts/build_minatomirai_upbound_trips.py'
+      - 'scripts/build_minatomirai_routing_timetable.py'
       - 'data/transit/yokohama-minatomirai/verified-upbound-minatomirai-20260314.json'
+      - 'data/transit/yokohama-minatomirai/verified-upbound-supplement-20260314.json'
       - '.github/workflows/audit-minatomirai-timetables.yml'
 
 permissions:
@@ -29,7 +31,7 @@ permissions:
 jobs:
   audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
         with:
@@ -57,11 +59,47 @@ jobs:
         run: python scripts/build_minatomirai_upbound_trips.py
       - name: Audit saved downbound timetable snapshot
         run: python scripts/audit_minatomirai_downbound.py
-      - name: Save audit and reconstruction
+      - name: Build routing timetable
+        run: python scripts/build_minatomirai_routing_timetable.py
+      - name: Smoke-test route engine with Minatomirai timetable
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const Core = require('./route-core.js');
+          const entities = JSON.parse(fs.readFileSync('data/transit/yokohama-minatomirai/entities.json', 'utf8'));
+          const table = JSON.parse(fs.readFileSync('data/transit/yokohama-minatomirai/timetables/minatomirai.json', 'utf8'));
+          const railway = 'manual.Railway:YokohamaMinatomirai.Minatomirai';
+          const model = Core.createModel([entities]);
+          const tests = [
+            ['横浜', '元町・中華街', 600, 'weekday'],
+            ['元町・中華街', '横浜', 600, 'weekday'],
+            ['日本大通り', '横浜', 600, 'holiday'],
+            ['横浜', '新高島', 600, 'holiday'],
+            ['みなとみらい', '元町・中華街', 1380, 'weekday'],
+            ['元町・中華街', 'みなとみらい', 1380, 'holiday'],
+          ];
+          for (const [from, to, minute, service] of tests) {
+            const origin = model.resolveInput(from).group;
+            const destination = model.resolveInput(to).group;
+            if (!origin || !destination) throw new Error(`station resolution failed: ${from} -> ${to}`);
+            const path = model.shortestPath(origin, destination, {});
+            if (!path) throw new Error(`path not found: ${from} -> ${to}`);
+            const timed = model.timedItinerary(path, { [railway]: table }, minute, service, 5);
+            if (!timed || !Number.isFinite(timed.departure) || !Number.isFinite(timed.arrival) || timed.arrival <= timed.departure) {
+              throw new Error(`timed route failed: ${from} -> ${to} ${service} ${JSON.stringify(timed)}`);
+            }
+            console.log(`${service} ${from}->${to}: ${timed.departure} -> ${timed.arrival}`);
+          }
+          NODE
+      - name: Save audit, reconstruction, and production timetable
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add \
+            data/transit/manifest.json \
+            data/transit/yokohama-minatomirai/entities.json \
+            data/transit/yokohama-minatomirai/timetable-index.json \
+            data/transit/yokohama-minatomirai/timetables/minatomirai.json \
             data/transit/yokohama-minatomirai/downbound-audit.json \
             data/transit/yokohama-minatomirai/reconstructed-weekday-minatomirai.json \
             data/transit/yokohama-minatomirai/reconstructed-minatomirai-downbound.json \
@@ -70,6 +108,6 @@ jobs:
             data/transit/yokohama-minatomirai/upbound-order-diagnostics.json \
             data/transit/yokohama-minatomirai/upbound-trips-candidate.json
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m "Update Minatomirai timetable audit"
+          git commit -m "Build Minatomirai routing timetable"
           git pull --rebase origin main
           git push origin HEAD:main
