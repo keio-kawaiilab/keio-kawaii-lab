@@ -6,10 +6,12 @@ before a dedicated group-site event page exists. Those verified date/venue
 rows are published as schedule-only placeholders and later replaced by richer
 official-site data.
 
-This collector intentionally discovers *articles*, not hard-coded event dates.
+This collector intentionally discovers articles, not hard-coded event dates.
 It watches PR TIMES' server-rendered search surface for new ASOBISYSTEM releases,
 filters article URLs to ASOBISYSTEM's company id, then parses every future
 release-event / large-benefit row it can verify from those official releases.
+It supports both inline rows ("9/11 リリースイベント 会場") and section-style
+plans where a "＜リリースイベント＞" heading is followed by dates and venues.
 """
 from __future__ import annotations
 
@@ -40,13 +42,13 @@ GROUP_BASES = {
 }
 GROUPS = tuple(GROUP_BASES)
 ARTICLE_RE = re.compile(r"/main/html/rd/p/\d+\.(\d+)\.html")
-DATE_LINE_RE = re.compile(
-    r"(?:(20\d{2})\s*[./年-]\s*)?(\d{1,2})\s*[./月-]\s*(\d{1,2})\s*日?"
-    r"(?:\s*[（(][^）)]*[）)])?\s*"
-    r"(.*(?:大特典会|リリースイベント|リリイベ|発売記念イベント).*)",
+EVENT_LABEL_RE = r"(?:大特典会|リリースイベント|リリイベ|発売記念イベント)"
+DATE_PREFIX_RE = re.compile(
+    r"^(?:(20\d{2})\s*[./年-]\s*)?(\d{1,2})\s*[./月-]\s*(\d{1,2})\s*日?"
+    r"(?:\s*[（(][^）)]*[）)])?\s*(.*)$",
     re.I,
 )
-EVENT_LABEL_RE = r"(?:大特典会|リリースイベント|リリイベ|発売記念イベント)"
+HEADING_RE = re.compile(r"^[＜<【〖■◆◇].{1,80}[＞>】〗]?$", re.I)
 
 
 def normalize(value: object) -> str:
@@ -54,12 +56,7 @@ def normalize(value: object) -> str:
 
 
 def article_links(html: str, limit: int = 60) -> list[str]:
-    """Return only ASOBISYSTEM's own PR TIMES release URLs.
-
-    The keyword-search result can contain third-party releases that merely
-    mention ASOBISYSTEM, so the company id encoded in the canonical release URL
-    is the authority filter. This also avoids relying on page CSS/classes.
-    """
+    """Return only ASOBISYSTEM's own PR TIMES release URLs."""
     soup = BeautifulSoup(html, "html.parser")
     found: list[str] = []
     for anchor in soup.find_all("a", href=True):
@@ -109,15 +106,65 @@ def groups_for_article(title: str, text: str) -> list[str]:
 
 def venue_from_tail(tail: str) -> str | None:
     value = normalize(tail)
-    # PR TIMES schedule rows are commonly either
-    #   "リリースイベント 会場名" or "会場名 リリースイベント".
-    # Some releases repeat the label ("大特典会 大特典会＠会場"), so strip
-    # one or more leading labels rather than exactly one.
     value = re.sub(rf"^(?:{EVENT_LABEL_RE}\s*[@＠]?\s*)+", "", value, flags=re.I)
     value = re.sub(rf"\s*{EVENT_LABEL_RE}\s*$", "", value, flags=re.I)
     value = value.lstrip("@＠：:・- ")
+    value = re.sub(r"\s*(?:参加メンバー|出演メンバー)\s*[：:].*$", "", value, flags=re.I)
     value = re.sub(r"\s*(?:※.*)?$", "", value).strip()
     return value or None
+
+
+def section_category(line: str) -> str | None:
+    clean = normalize(line).strip("＜＞<>【】〖〗■◆◇ ")
+    if DATE_PREFIX_RE.match(clean):
+        return None
+    if "大特典会" in clean and len(clean) <= 40:
+        return "large-benefit"
+    if re.search(r"(?:CD)?リリースイベント(?:情報)?|発売記念イベント", clean, re.I) and len(clean) <= 50:
+        return "release-event"
+    return None
+
+
+def plausible_section_venue(line: str) -> str | None:
+    value = venue_from_tail(line)
+    if not value:
+        return None
+    if value.startswith("※") or value.startswith("注"):
+        return None
+    if re.search(r"詳細|お問い合わせ|今後も日程|オフィシャルサイト|発売情報|ツアー情報", value):
+        return None
+    if HEADING_RE.match(value):
+        return None
+    return value
+
+
+def make_event(group: str, day: date, category: str, venue: str, url: str) -> dict:
+    display = f"{group} {'大特典会' if category == 'large-benefit' else 'リリースイベント'}"
+    return {
+        "id": special.stable_id("official-prtimes-event", group, day.isoformat(), category, venue),
+        "group": group,
+        "title": display,
+        "eventTitle": display,
+        "displayTitle": display,
+        "eventCategory": category,
+        "ticketType": "現在受付なし",
+        "applicationStatus": "none",
+        "applyStart": None,
+        "applyEnd": None,
+        "resultDate": None,
+        "paymentEnd": None,
+        "specialDetailsStatus": "awaiting-details",
+        "applicationDisplayMode": "schedule-only",
+        "eventDate": day.isoformat(),
+        "venue": venue,
+        "url": url,
+        "urls": [url, GROUP_BASES[group]],
+        "sourceType": "official-special",
+        "sourceChannel": "official-prtimes",
+        "primarySource": "official",
+        "sourceCandidates": ["official"],
+        "eventScope": "kawaii-lab",
+    }
 
 
 def parse_article(url: str, html: str, today: date | None = None) -> list[dict]:
@@ -128,7 +175,7 @@ def parse_article(url: str, html: str, today: date | None = None) -> list[dict]:
         title = normalize(soup.find("title").get_text(" ", strip=True))
     lines = [normalize(line) for line in soup.get_text("\n", strip=True).splitlines() if normalize(line)]
     text = "\n".join(lines)
-    if not re.search(r"リリースイベント|リリイベ|大特典会|発売記念イベント", text, re.I):
+    if not re.search(EVENT_LABEL_RE, text, re.I):
         return []
     groups = groups_for_article(title, text)
     if not groups:
@@ -137,54 +184,76 @@ def parse_article(url: str, html: str, today: date | None = None) -> list[dict]:
     published_year = published_year_from_text(text, today)
     rows: list[dict] = []
     seen: set[tuple[str, str, str, str]] = set()
-    for line in lines:
-        match = DATE_LINE_RE.search(line)
-        if not match:
-            continue
-        year_text, month_text, day_text, tail = match.groups()
-        day = infer_day(year_text, month_text, day_text, published_year, today)
-        if not day or day < today:
-            continue
-        category = "large-benefit" if "大特典会" in tail else "release-event"
-        venue = venue_from_tail(tail)
-        if not venue:
-            continue
-        # Ignore prose that only mentions a generic event type without an
-        # actual location. Official release-plan rows have a concrete venue.
-        if venue in {"開催予定", "開催決定", "詳細は後日発表", "詳細は後日改めてお知らせします"}:
-            continue
+    active_section: str | None = None
+
+    def add(day: date, category: str, venue: str) -> None:
+        if day < today:
+            return
         for group in groups:
             key = (group, day.isoformat(), category, venue)
             if key in seen:
                 continue
             seen.add(key)
-            display = f"{group} {'大特典会' if category == 'large-benefit' else 'リリースイベント'}"
-            article_urls = [url, GROUP_BASES[group]]
-            rows.append({
-                "id": special.stable_id("official-prtimes-event", group, day.isoformat(), category, venue),
-                "group": group,
-                "title": display,
-                "eventTitle": display,
-                "displayTitle": display,
-                "eventCategory": category,
-                "ticketType": "現在受付なし",
-                "applicationStatus": "none",
-                "applyStart": None,
-                "applyEnd": None,
-                "resultDate": None,
-                "paymentEnd": None,
-                "specialDetailsStatus": "awaiting-details",
-                "applicationDisplayMode": "schedule-only",
-                "eventDate": day.isoformat(),
-                "venue": venue,
-                "url": url,
-                "urls": article_urls,
-                "sourceType": "official-special",
-                "sourceChannel": "official-prtimes",
-                "primarySource": "official",
-                "sourceCandidates": ["official"],
-                "eventScope": "kawaii-lab",
-            })
+            rows.append(make_event(group, day, category, venue, url))
+
+    index = 0
+    while index < len(lines):
+        line = lines[index]
+        new_section = section_category(line)
+        if new_section:
+            active_section = new_section
+            index += 1
+            continue
+        if active_section and HEADING_RE.match(line) and not re.search(EVENT_LABEL_RE, line, re.I):
+            active_section = None
+
+        match = DATE_PREFIX_RE.match(line)
+        if not match:
+            index += 1
+            continue
+        year_text, month_text, day_text, tail = match.groups()
+        day = infer_day(year_text, month_text, day_text, published_year, today)
+        if not day:
+            index += 1
+            continue
+
+        explicit_category = None
+        if "大特典会" in tail:
+            explicit_category = "large-benefit"
+        elif re.search(r"リリースイベント|リリイベ|発売記念イベント", tail, re.I):
+            explicit_category = "release-event"
+
+        if explicit_category:
+            venue = venue_from_tail(tail)
+            if venue:
+                add(day, explicit_category, venue)
+            index += 1
+            continue
+
+        if active_section:
+            same_line_venue = plausible_section_venue(tail)
+            if same_line_venue:
+                add(day, active_section, same_line_venue)
+                index += 1
+                continue
+
+            # Section-style releases can put one date on its own line and then
+            # list multiple location/member rows below it (e.g. FRUITS ZIPPER).
+            scan = index + 1
+            while scan < len(lines):
+                candidate = lines[scan]
+                if DATE_PREFIX_RE.match(candidate) or HEADING_RE.match(candidate):
+                    break
+                if candidate.startswith("※"):
+                    break
+                venue = plausible_section_venue(candidate)
+                if venue:
+                    add(day, active_section, venue)
+                scan += 1
+            index = max(index + 1, scan)
+            continue
+
+        index += 1
     return rows
 
 
@@ -205,6 +274,57 @@ def collect(session: requests.Session, today: date | None = None) -> tuple[list[
         except requests.RequestException as exc:
             failures.append({"url": url, "error": f"{type(exc).__name__}: {exc}"})
     return events, failures, fetched
+
+
+def merge_payload(payload: dict, collected: list[dict], today: date | None = None) -> dict:
+    """Refresh PR placeholders without overriding richer official-site rows."""
+    today = today or datetime.now(special.JST).date()
+    events = [event for event in payload.get("events", []) if isinstance(event, dict)]
+
+    def key(event: dict) -> tuple[str, str, str]:
+        return (
+            str(event.get("group") or ""),
+            str(event.get("eventDate") or "")[:10],
+            str(event.get("eventCategory") or ""),
+        )
+
+    richer_keys = {
+        key(event)
+        for event in events
+        if event.get("primarySource") == "official"
+        and event.get("sourceChannel") != "official-prtimes"
+        and event.get("sourceType") in {"official-special", "official-schedule"}
+    }
+    fresh = {key(event): event for event in collected if key(event) not in richer_keys}
+    result: list[dict] = []
+    used: set[tuple[str, str, str]] = set()
+    for event in events:
+        event_key = key(event)
+        if event.get("sourceChannel") != "official-prtimes":
+            result.append(event)
+            continue
+        try:
+            if date.fromisoformat(event_key[1]) < today:
+                continue
+        except ValueError:
+            continue
+        replacement = fresh.get(event_key)
+        if replacement:
+            result.append(replacement)
+            used.add(event_key)
+        elif event_key in richer_keys:
+            continue
+        else:
+            result.append(event)
+    for event_key, event in fresh.items():
+        if event_key not in used:
+            result.append(event)
+    result.sort(key=lambda event: (str(event.get("eventDate") or "9999"), str(event.get("group") or ""), str(event.get("title") or "")))
+    out = dict(payload)
+    out["events"] = result
+    if result != events:
+        out["updatedAt"] = datetime.now(special.JST).isoformat(timespec="seconds")
+    return out
 
 
 def main() -> int:
@@ -229,17 +349,15 @@ def main() -> int:
     finally:
         session.close()
 
-    # Deduplicate the same occurrence if multiple press releases repeat the
-    # schedule. Prefer the most recently encountered row without multiplying it.
     deduped: dict[tuple[str, str, str, str], dict] = {}
     for event in collected:
-        key = (
+        event_key = (
             str(event.get("group") or ""),
             str(event.get("eventDate") or "")[:10],
             str(event.get("eventCategory") or ""),
             str(event.get("venue") or ""),
         )
-        deduped[key] = event
+        deduped[event_key] = event
     collected = list(deduped.values())
 
     diagnostics = {
@@ -263,7 +381,7 @@ def main() -> int:
     if fetched == 0:
         return 2
 
-    merged = special.merge_payload(payload, collected)
+    merged = merge_payload(payload, collected)
     if args.check:
         return 0
     if merged != payload:
