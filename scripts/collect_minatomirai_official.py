@@ -75,12 +75,23 @@ def collect_direction(
                 key=lambda value: (int(value.split(':')[0]), int(value.split(':')[1])),
             ):
                 raise RuntimeError(f"non-monotonic timetable: {station_name} {calendar_name} {direction_id}")
+
             repair_count = int(diagnostics.get("repairCount") or 0)
-            if repair_count > len(departures) * 0.55:
-                raise RuntimeError(
-                    f"OCR repair ratio too high: {station_name} {calendar_name} "
-                    f"{repair_count}/{len(departures)}"
+            high_repair_ratio = repair_count > len(departures) * 0.55
+            # A high repair ratio means this board needs stronger cross-station
+            # validation. It must NOT discard the source snapshot: on this line
+            # there is no overtaking or intermediate turn-back, so the saved raw
+            # board can be reconciled safely against adjacent stations afterward.
+            if high_repair_ratio:
+                print(
+                    "WARNING high OCR repair ratio",
+                    direction_id,
+                    station_name,
+                    calendar_name,
+                    f"{repair_count}/{len(departures)}",
+                    flush=True,
                 )
+
             collected.append({
                 "station": station_id,
                 "stationTitle": station_name,
@@ -97,6 +108,8 @@ def collect_direction(
                     "firstX": diagnostics.get("firstX"),
                     "candidateCount": diagnostics.get("candidateCount"),
                     "repairCount": repair_count,
+                    "repairRatio": round(repair_count / max(1, len(departures)), 4),
+                    "highRepairRatio": high_repair_ratio,
                     "dashCount": diagnostics.get("dashCount"),
                 },
             })
@@ -132,7 +145,7 @@ def collect_direction(
 
 def main() -> int:
     session = requests.Session()
-    session.headers["User-Agent"] = "Keio-Kawaii-Lab timetable collector/2.0"
+    session.headers["User-Agent"] = "Keio-Kawaii-Lab timetable collector/2.1"
     retrieved_at = datetime.now(JST).isoformat(timespec="seconds")
 
     collect_direction(
