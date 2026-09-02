@@ -7,6 +7,7 @@ from pathlib import Path
 RAW = Path("data/transit/yokohama-minatomirai/official-downbound-departures.json")
 MINA = Path("data/transit/yokohama-minatomirai/reconstructed-minatomirai-downbound.json")
 SHIN = Path("data/transit/yokohama-minatomirai/reconstructed-shintakashima-downbound.json")
+OVERRIDES = Path("data/transit/yokohama-minatomirai/verified-overrides-20260314.json")
 OUT = Path("data/transit/yokohama-minatomirai/downbound-trips-candidate.json")
 WEEKDAY = "odpt.Calendar:Weekday"
 HOLIDAY = "odpt.Calendar:SaturdayHoliday"
@@ -28,99 +29,168 @@ def board_map(payload: dict) -> dict[tuple[str, str], list[int]]:
     }
 
 
-def ordered_match(upstream: list[int], downstream: list[int], lo: int, hi: int, target: int):
-    n, m = len(upstream), len(downstream)
-    bad = (-10**9, -10**9)
-    dp = [[bad] * (m + 1) for _ in range(n + 1)]
-    move = [[""] * (m + 1) for _ in range(n + 1)]
-    dp[0][0] = (0, 0)
-    for i in range(n + 1):
-        for j in range(m + 1):
-            state = dp[i][j]
-            if state == bad:
-                continue
-            if i < n and state > dp[i + 1][j]:
-                dp[i + 1][j] = state
-                move[i + 1][j] = "skip_up"
-            if j < m and state > dp[i][j + 1]:
-                dp[i][j + 1] = state
-                move[i][j + 1] = "skip_down"
-            if i < n and j < m:
-                delta = downstream[j] - upstream[i]
-                if lo <= delta <= hi:
-                    cand = (state[0] + 1, state[1] - abs(delta - target))
-                    if cand > dp[i + 1][j + 1]:
-                        dp[i + 1][j + 1] = cand
-                        move[i + 1][j + 1] = "match"
-    mapping = {}
-    used_down = set()
-    i, j = n, m
-    while i > 0 or j > 0:
-        mv = move[i][j]
-        if mv == "match":
-            mapping[i - 1] = j - 1
-            used_down.add(j - 1)
-            i -= 1
-            j -= 1
-        elif mv == "skip_up":
-            i -= 1
-        elif mv == "skip_down":
-            j -= 1
-        elif i:
-            i -= 1
-        else:
-            j -= 1
-    return mapping, [idx for idx in range(m) if idx not in used_down]
+def apply_direct_board_replacements(boards: dict, overrides: dict) -> list[dict]:
+    applied = []
+    for item in overrides.get("directBoardReplacements", []):
+        key = (item["station"], item["calendar"])
+        if key not in boards:
+            raise RuntimeError(f"override board not found: {key}")
+        before = to_minute(item["from"])
+        after = to_minute(item["to"])
+        indexes = [i for i, value in enumerate(boards[key]) if value == before]
+        if len(indexes) != 1:
+            raise RuntimeError(
+                f"override must identify exactly one raw cell: {key} {item['from']} -> {item['to']} indexes={indexes}"
+            )
+        idx = indexes[0]
+        boards[key][idx] = after
+        if any(a > b for a, b in zip(boards[key], boards[key][1:])):
+            raise RuntimeError(f"override broke board order: {key} {item}")
+        applied.append({**item, "index": idx})
+    return applied
 
 
-def load_complete_minatomirai(calendar: str) -> list[int]:
+def load_complete_minatomirai(calendar: str, yoko: list[int], overrides: dict) -> tuple[list[int], list[dict]]:
     payload = json.loads(MINA.read_text(encoding="utf-8"))
-    return [to_minute(x) for x in payload["calendars"][calendar]["departures"]]
+    values = [to_minute(x) for x in payload["calendars"][calendar]["departures"]]
+    if len(values) != len(yoko):
+        raise RuntimeError(f"{calendar}: Yokohama/Minatomirai count mismatch {len(yoko)} != {len(values)}")
+
+    applied = []
+    for item in overrides.get("masterTrainStopOverrides", []):
+        if item["calendar"] != calendar or item["station"] != "みなとみらい":
+            continue
+        y = to_minute(item["yokohamaDeparture"])
+        indexes = [i for i, value in enumerate(yoko) if value == y]
+        if len(indexes) != 1:
+            raise RuntimeError(
+                f"master override must identify one Yokohama train: {calendar} {item['yokohamaDeparture']} indexes={indexes}"
+            )
+        idx = indexes[0]
+        before = values[idx]
+        values[idx] = to_minute(item["departure"])
+        applied.append({
+            "trainIndex": idx,
+            "yokohama": fmt(y),
+            "before": fmt(before),
+            "after": item["departure"],
+        })
+
+    if any(a > b for a, b in zip(values, values[1:])):
+        raise RuntimeError(f"{calendar}: reconstructed Minatomirai board is not in train order")
+    return values, applied
 
 
 def load_shin(calendar: str) -> dict[int, int]:
     payload = json.loads(SHIN.read_text(encoding="utf-8"))
     item = payload["calendars"][calendar]
-    return {int(index): to_minute(value) for index, value in zip(item["stoppingTrainIndexes"], item["departures"])}
+    return {
+        int(index): to_minute(value)
+        for index, value in zip(item["stoppingTrainIndexes"], item["departures"])
+    }
 
 
-def pair_middle_boards(basha: list[int], nihon: list[int]) -> dict:
-    pairs, bad = [], []
+def pair_middle_boards(basha: list[int], nihon: list[int]) -> tuple[list[tuple[int, int]], list[dict]]:
+    if len(basha) != len(nihon):
+        raise RuntimeError(f"Bashamichi/Nihon-odori counts differ: {len(basha)} != {len(nihon)}")
+    pairs = []
+    anomalies = []
     for idx, (b, n) in enumerate(zip(basha, nihon)):
         delta = n - b
-        row = {"index": idx, "bashamichi": fmt(b), "nihonOdori": fmt(n), "delta": delta}
-        pairs.append(row)
         if not 1 <= delta <= 4:
-            bad.append(row)
-    return {"sameCount": len(basha) == len(nihon), "pairs": pairs, "anomalies": bad}
+            anomalies.append({"index": idx, "bashamichi": fmt(b), "nihonOdori": fmt(n), "delta": delta})
+        pairs.append((b, n))
+    return pairs, anomalies
 
 
-def build_calendar(boards, calendar: str) -> dict:
+def fixed_order_subsequence_match(master: list[int], downstream_pairs: list[tuple[int, int]]) -> tuple[dict[int, int], list[dict]]:
+    """Attach stopping rows without ever changing train order.
+
+    The Minatomirai line has no overtaking and no intermediate turn-backs here.
+    Therefore the Bashamichi/Nihon-odori rows are a subsequence of the complete
+    Yokohama/Minatomirai train list. We only move forward through the master
+    list. A row may skip express trains, but it can never move backwards or
+    swap two trains.
+    """
+    mapping: dict[int, int] = {}
+    diagnostics: list[dict] = []
+    cursor = 0
+
+    for row_index, (basha, nihon) in enumerate(downstream_pairs):
+        candidates = []
+        for train_index in range(cursor, len(master)):
+            mina = master[train_index]
+            delta = basha - mina
+            if 1 <= delta <= 4:
+                candidates.append(train_index)
+            # Once Minatomirai is already at/after this Bashamichi row,
+            # all later master trains are impossible because order never reverses.
+            if mina >= basha:
+                break
+
+        if not candidates:
+            diagnostics.append({
+                "rowIndex": row_index,
+                "bashamichi": fmt(basha),
+                "nihonOdori": fmt(nihon),
+                "cursor": cursor,
+                "classification": "no-forward-master-candidate",
+            })
+            continue
+
+        # No overtaking means the earliest physically possible forward train is
+        # the only safe assignment. Later candidates remain available to later
+        # station rows instead of crossing the order.
+        train_index = candidates[0]
+        mapping[train_index] = row_index
+        diagnostics.append({
+            "rowIndex": row_index,
+            "trainIndex": train_index,
+            "minatomirai": fmt(master[train_index]),
+            "bashamichi": fmt(basha),
+            "nihonOdori": fmt(nihon),
+            "candidateTrainIndexes": candidates,
+        })
+        cursor = train_index + 1
+
+    return mapping, diagnostics
+
+
+def build_calendar(boards: dict, calendar: str, overrides: dict) -> dict:
     yoko = boards[("横浜", calendar)]
-    mina = load_complete_minatomirai(calendar)
+    mina, mina_overrides = load_complete_minatomirai(calendar, yoko, overrides)
     shin = load_shin(calendar)
     basha = boards[("馬車道", calendar)]
     nihon = boards[("日本大通り", calendar)]
-    if len(yoko) != len(mina):
-        raise RuntimeError(f"{calendar}: Yokohama/Minatomirai count mismatch {len(yoko)} != {len(mina)}")
-    middle = pair_middle_boards(basha, nihon)
-    if not middle["sameCount"]:
-        raise RuntimeError(f"{calendar}: Bashamichi/Nihon-odori counts differ")
 
-    bmap, b_unmatched = ordered_match(mina, basha, 1, 4, 2)
-    b_by_train = {ti: basha[oi] for ti, oi in bmap.items()}
-    n_by_train = {ti: nihon[oi] for ti, oi in bmap.items() if oi < len(nihon)}
+    middle_pairs, middle_anomalies = pair_middle_boards(basha, nihon)
+    if middle_anomalies:
+        raise RuntimeError(f"{calendar}: Bashamichi/Nihon-odori row-order anomaly: {middle_anomalies[:10]}")
 
-    trips, physical_errors = [], []
+    bmap, mapping_diagnostics = fixed_order_subsequence_match(mina, middle_pairs)
+    unmatched_rows = [
+        row for row in mapping_diagnostics
+        if row.get("classification") == "no-forward-master-candidate"
+    ]
+    if unmatched_rows:
+        raise RuntimeError(f"{calendar}: order-fixed mapping left rows unmatched: {unmatched_rows[:10]}")
+    if len(bmap) != len(basha):
+        raise RuntimeError(f"{calendar}: mapped {len(bmap)} of {len(basha)} Bashamichi rows")
+
+    b_by_train = {train_index: basha[row_index] for train_index, row_index in bmap.items()}
+    n_by_train = {train_index: nihon[row_index] for train_index, row_index in bmap.items()}
+
+    trips = []
+    physical_errors = []
     for i, y in enumerate(yoko):
-        stops = [{"station": "横浜", "departure": fmt(y), "source": "official-ocr"}]
+        stops = [{"station": "横浜", "departure": fmt(y), "source": "official-board"}]
         if i in shin:
             stops.append({"station": "新高島", "departure": fmt(shin[i]), "source": "validated-reconstruction"})
         stops.append({"station": "みなとみらい", "departure": fmt(mina[i]), "source": "validated-reconstruction"})
         if i in b_by_train:
-            stops.append({"station": "馬車道", "departure": fmt(b_by_train[i]), "source": "official-ocr"})
-        if i in n_by_train:
-            stops.append({"station": "日本大通り", "departure": fmt(n_by_train[i]), "source": "official-ocr"})
+            stops.append({"station": "馬車道", "departure": fmt(b_by_train[i]), "source": "official-board"})
+            stops.append({"station": "日本大通り", "departure": fmt(n_by_train[i]), "source": "official-board"})
+
         mins = [to_minute(stop["departure"]) for stop in stops]
         if any(a >= b for a, b in zip(mins, mins[1:])):
             physical_errors.append({"trainIndex": i, "stops": stops})
@@ -130,39 +200,59 @@ def build_calendar(boards, calendar: str) -> dict:
         "calendar": calendar,
         "masterTrainCount": len(yoko),
         "shintakashimaStopCount": len(shin),
-        "bashamichiRawCount": len(basha),
-        "nihonOdoriRawCount": len(nihon),
-        "bashamichiMatchedCount": len(bmap),
-        "bashamichiUnmatchedRaw": [fmt(basha[i]) for i in b_unmatched],
-        "middleBoardAnomalies": middle["anomalies"],
+        "bashamichiStopCount": len(basha),
+        "nihonOdoriStopCount": len(nihon),
+        "bashamichiMappedCount": len(bmap),
+        "minatomiraiVerifiedOverrides": mina_overrides,
         "physicalErrorCount": len(physical_errors),
         "physicalErrors": physical_errors[:50],
+        "mappingDiagnostics": mapping_diagnostics,
         "trips": trips,
     }
 
 
 def main() -> int:
     payload = json.loads(RAW.read_text(encoding="utf-8"))
+    overrides = json.loads(OVERRIDES.read_text(encoding="utf-8"))
     boards = board_map(payload)
-    calendars = {calendar: build_calendar(boards, calendar) for calendar in (HOLIDAY, WEEKDAY)}
+    direct_applied = apply_direct_board_replacements(boards, overrides)
+
+    calendars = {
+        calendar: build_calendar(boards, calendar, overrides)
+        for calendar in (HOLIDAY, WEEKDAY)
+    }
     result = {
-        "version": 2,
+        "version": 3,
         "sourceRetrievedAt": payload.get("retrievedAt"),
+        "effectiveFrom": overrides.get("effectiveFrom"),
         "direction": "odpt.RailDirection:Outbound",
-        "method": "Yokohama master train order with calendar-independent reconstructed Minatomirai board",
+        "method": "fixed train order; no overtaking or intermediate turn-back; station boards are forward subsequences",
+        "verifiedDirectBoardReplacements": direct_applied,
         "calendars": calendars,
     }
     OUT.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
-    summary = {cal: {k: v for k, v in data.items() if k not in ("trips", "physicalErrors")} for cal, data in calendars.items()}
+
+    summary = {
+        "directBoardReplacements": direct_applied,
+        "calendars": {
+            cal: {
+                "masterTrainCount": data["masterTrainCount"],
+                "shintakashimaStopCount": data["shintakashimaStopCount"],
+                "bashamichiStopCount": data["bashamichiStopCount"],
+                "bashamichiMappedCount": data["bashamichiMappedCount"],
+                "physicalErrorCount": data["physicalErrorCount"],
+                "minatomiraiVerifiedOverrideCount": len(data["minatomiraiVerifiedOverrides"]),
+            }
+            for cal, data in calendars.items()
+        },
+    }
     print(json.dumps(summary, ensure_ascii=False), flush=True)
 
     for calendar, data in calendars.items():
-        if data["middleBoardAnomalies"]:
-            raise RuntimeError(f"{calendar}: Bashamichi/Nihon-odori pair anomalies: {data['middleBoardAnomalies'][:10]}")
         if data["physicalErrorCount"]:
             raise RuntimeError(f"{calendar}: non-monotonic station chain: {data['physicalErrors'][:10]}")
-        if data["bashamichiMatchedCount"] / max(1, data["bashamichiRawCount"]) < 0.97:
-            raise RuntimeError(f"{calendar}: Bashamichi mapping below 97%: {summary[calendar]}")
+        if data["bashamichiMappedCount"] != data["bashamichiStopCount"]:
+            raise RuntimeError(f"{calendar}: not every Bashamichi row was attached")
     return 0
 
 
