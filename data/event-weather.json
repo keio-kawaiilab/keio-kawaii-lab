@@ -1,7 +1,7 @@
 {
-  "date": "2026-09-02",
+  "date": "2026-09-03",
   "horizonDays": 7,
-  "generatedAt": "2026-09-02T21:57+09:00",
+  "generatedAt": "2026-09-03T03:36+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -73,6 +73,13 @@
           "validAt": "2026-09-04T00:00+09:00",
           "temp": 25
         }
+      ],
+      "hourlyRain": [
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-09-03T18:00+09:00"
+        }
       ]
     },
     {
@@ -105,12 +112,35 @@
       ],
       "areaCode": "140010",
       "areaName": "東部",
-      "precision": "area",
-      "label": "くもり 時々 雨",
+      "precision": "mesh5km",
+      "label": "くもり",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
+      "issuedAt": "2026-09-02T17:00:00+09:00",
+      "meshTime": "00:00",
+      "meshTempBand": "25〜29℃",
+      "coordinates": {
+        "lat": 35.529778,
+        "lon": 139.71022
+      }
+    },
+    {
+      "date": "2026-09-05",
+      "venue": "東京都 Veats Shibuya",
+      "venueKey": "veatsshibuya",
+      "eventIds": [
+        "f9915fcb23fb364e"
+      ],
+      "areaCode": "130010",
+      "areaName": "東京地方",
+      "precision": "area",
+      "label": "くもり時々雨",
+      "max": 23.0,
+      "min": 19.0,
+      "pop": "70",
+      "popLabel": "1日",
       "issuedAt": "2026-09-02T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
@@ -217,23 +247,48 @@
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
+    },
+    {
+      "date": "2026-09-09",
+      "venue": "神奈川・横浜赤レンガ倉庫イベント広場B",
+      "venueKey": "神奈川横浜赤レンガ倉庫イベント広場b",
+      "eventIds": [
+        "a68c1d5158db37a3"
+      ],
+      "areaCode": "140010",
+      "areaName": "神奈川県",
+      "precision": "area",
+      "label": "くもり一時雨",
+      "max": 29.0,
+      "min": 23.0,
+      "pop": "50",
+      "popLabel": "1日",
+      "issuedAt": "2026-09-02T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
     }
   ],
   "stats": {
-    "occurrencesInRange": 13,
-    "uniqueVenueDates": 9,
-    "weatherEntries": 8,
-    "meshEntries": 1,
-    "failures": 1,
+    "occurrencesInRange": 17,
+    "uniqueVenueDates": 12,
+    "weatherEntries": 10,
+    "meshEntries": 2,
+    "failures": 2,
     "meshTimelineEntries": 1,
     "meshExactTempSlots": 7,
-    "hourlyRainEntries": 0
+    "hourlyRainEntries": 1
   },
   "failures": [
     {
-      "date": "2026-09-02",
-      "venue": "北海道 エスコンフィールドHOKKAIDO",
+      "date": "2026-09-06",
+      "venue": "青森・青い海公園・アスパム",
       "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-09-10",
+      "venue": "大阪府 グランキューブ大阪 メインホール",
+      "reason": "開催日の予報がまだありません"
     }
   ]
 }
