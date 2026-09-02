@@ -6,10 +6,13 @@ on:
     paths:
       - 'route.js'
       - 'route-core.js'
+      - 'preview/transfer-guide/**'
       - 'scripts/test_keisei_route_ui.js'
-      - 'data/transit/keisei/entities.json'
-      - 'data/transit/keisei/timetable-index.json'
-      - 'data/transit/keisei/timetables/**'
+      - 'scripts/test_route_preview_smoke.js'
+      - 'data/transit/**/entities.json'
+      - 'data/transit/**/timetable-index.json'
+      - 'data/transit/**/timetables/**'
+      - 'data/transit/manifest.json'
       - '.github/workflows/validate-route-search.yml'
 
 permissions:
@@ -28,6 +31,10 @@ jobs:
         run: |
           node --check route-core.js
           node --check route.js
+          node --check preview/transfer-guide/preview.js
           node --check scripts/test_keisei_route_ui.js
+          node --check scripts/test_route_preview_smoke.js
       - name: Exercise exact Keisei through route in the browser logic
         run: node scripts/test_keisei_route_ui.js
+      - name: Exercise preview routes across operators
+        run: node scripts/test_route_preview_smoke.js
