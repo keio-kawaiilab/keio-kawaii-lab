@@ -11,20 +11,30 @@ from PIL import Image
 
 import probe_minatomirai_ocr_v3 as ocr
 
-OUT = Path("data/transit/yokohama-minatomirai/official-downbound-departures.json")
+OUT_DOWN = Path("data/transit/yokohama-minatomirai/official-downbound-departures.json")
+OUT_UP = Path("data/transit/yokohama-minatomirai/official-upbound-departures.json")
 JST = timezone(timedelta(hours=9))
 BASE = "https://www.mm21railway.co.jp/station/timestable/{slug}/{slug}_{suffix}.jpg"
 
-STATIONS = [
+# Official artwork naming uses "bashamichi" for the image asset even though
+# some current station-page URLs use "basyamichi".
+DOWN_STATIONS = [
     ("横浜", "yokohama", "manual.Station:yokohama-minatomirai.横浜"),
     ("新高島", "shintakashima", "manual.Station:yokohama-minatomirai.新高島"),
     ("みなとみらい", "minatomirai", "manual.Station:yokohama-minatomirai.みなとみらい"),
     ("馬車道", "bashamichi", "manual.Station:yokohama-minatomirai.馬車道"),
     ("日本大通り", "nihonodori", "manual.Station:yokohama-minatomirai.日本大通り"),
 ]
+UP_STATIONS = [
+    ("元町・中華街", "motomachi", "manual.Station:yokohama-minatomirai.元町・中華街"),
+    ("日本大通り", "nihonodori", "manual.Station:yokohama-minatomirai.日本大通り"),
+    ("馬車道", "bashamichi", "manual.Station:yokohama-minatomirai.馬車道"),
+    ("みなとみらい", "minatomirai", "manual.Station:yokohama-minatomirai.みなとみらい"),
+    ("新高島", "shintakashima", "manual.Station:yokohama-minatomirai.新高島"),
+]
 CALENDARS = [
-    ("weekday", "odpt.Calendar:Weekday", "wm"),
-    ("saturday-holiday", "odpt.Calendar:SaturdayHoliday", "hm"),
+    ("weekday", "odpt.Calendar:Weekday", "w"),
+    ("saturday-holiday", "odpt.Calendar:SaturdayHoliday", "h"),
 ]
 
 
@@ -37,24 +47,38 @@ def flatten(rows: dict[str, list[int]]) -> list[str]:
     return result
 
 
-def main() -> int:
-    session = requests.Session()
-    session.headers["User-Agent"] = "Keio-Kawaii-Lab timetable collector/1.0"
+def collect_direction(
+    session: requests.Session,
+    *,
+    stations: list[tuple[str, str, str]],
+    calendar_suffix_letter: str,
+    direction_id: str,
+    destination_id: str,
+    output: Path,
+    retrieved_at: str,
+) -> dict:
     collected = []
-    for station_name, slug, station_id in STATIONS:
-        for calendar_name, calendar_id, suffix in CALENDARS:
+    for station_name, slug, station_id in stations:
+        for calendar_name, calendar_id, day_prefix in CALENDARS:
+            # m = Motomachi-Chukagai bound (down), y = Yokohama/Shibuya bound (up)
+            suffix = f"{day_prefix}{calendar_suffix_letter}"
             url = BASE.format(slug=slug, suffix=suffix)
             response = session.get(url, timeout=60)
             response.raise_for_status()
             image = Image.open(io.BytesIO(response.content)).convert("RGB")
             rows, diagnostics = ocr.parse_rows(image)
             departures = flatten(rows)
-            # Local-only stations legitimately have far fewer departures than
-            # Yokohama because express services pass without stopping.
+            # Local-only stations legitimately have fewer departures because
+            # express/limited-express services pass without stopping.
             if len(departures) < 100:
-                raise RuntimeError(f"implausibly sparse timetable: {station_name} {calendar_name} {len(departures)}")
-            if departures != sorted(departures, key=lambda value: (int(value.split(':')[0]), int(value.split(':')[1]))):
-                raise RuntimeError(f"non-monotonic timetable: {station_name} {calendar_name}")
+                raise RuntimeError(
+                    f"implausibly sparse timetable: {station_name} {calendar_name} {direction_id} {len(departures)}"
+                )
+            if departures != sorted(
+                departures,
+                key=lambda value: (int(value.split(':')[0]), int(value.split(':')[1])),
+            ):
+                raise RuntimeError(f"non-monotonic timetable: {station_name} {calendar_name} {direction_id}")
             repair_count = int(diagnostics.get("repairCount") or 0)
             if repair_count > len(departures) * 0.55:
                 raise RuntimeError(
@@ -67,8 +91,8 @@ def main() -> int:
                 "railway": "manual.Railway:YokohamaMinatomirai.Minatomirai",
                 "calendar": calendar_id,
                 "calendarKey": calendar_name,
-                "direction": "odpt.RailDirection:Outbound",
-                "destination": "manual.Station:yokohama-minatomirai.元町・中華街",
+                "direction": direction_id,
+                "destination": destination_id,
                 "sourceUrl": url,
                 "imageSize": list(image.size),
                 "departureCount": len(departures),
@@ -80,19 +104,59 @@ def main() -> int:
                     "dashCount": diagnostics.get("dashCount"),
                 },
             })
-            print(station_name, calendar_name, len(departures), repair_count, flush=True)
+            print(
+                direction_id,
+                station_name,
+                calendar_name,
+                len(departures),
+                repair_count,
+                flush=True,
+            )
 
     payload = {
-        "version": 1,
+        "version": 2,
         "source": "Yokohama Minatomirai Railway official timetable artwork",
-        "retrievedAt": datetime.now(JST).isoformat(timespec="seconds"),
+        "retrievedAt": retrieved_at,
         "railway": "manual.Railway:YokohamaMinatomirai.Minatomirai",
-        "direction": "odpt.RailDirection:Outbound",
+        "direction": direction_id,
         "boards": collected,
     }
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    print("boards", len(collected), "departures", sum(row["departureCount"] for row in collected), flush=True)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(
+        output,
+        "boards",
+        len(collected),
+        "departures",
+        sum(row["departureCount"] for row in collected),
+        flush=True,
+    )
+    return payload
+
+
+def main() -> int:
+    session = requests.Session()
+    session.headers["User-Agent"] = "Keio-Kawaii-Lab timetable collector/2.0"
+    retrieved_at = datetime.now(JST).isoformat(timespec="seconds")
+
+    collect_direction(
+        session,
+        stations=DOWN_STATIONS,
+        calendar_suffix_letter="m",
+        direction_id="odpt.RailDirection:Outbound",
+        destination_id="manual.Station:yokohama-minatomirai.元町・中華街",
+        output=OUT_DOWN,
+        retrieved_at=retrieved_at,
+    )
+    collect_direction(
+        session,
+        stations=UP_STATIONS,
+        calendar_suffix_letter="y",
+        direction_id="odpt.RailDirection:Inbound",
+        destination_id="manual.Station:yokohama-minatomirai.横浜",
+        output=OUT_UP,
+        retrieved_at=retrieved_at,
+    )
     return 0
 
 
