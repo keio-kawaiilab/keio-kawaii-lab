@@ -834,6 +834,9 @@ def infer_departure_trips(
     ascending_direction: str,
     descending_direction: str,
     inferred_edges: dict[tuple[str, str], tuple[int, int]],
+    inferred_type_durations: dict[
+        tuple[str, str, str, str], list[tuple[int, int]]
+    ] | None = None,
 ) -> tuple[list[dict[str, Any]], int]:
     """Recover likely individual trains from station timetable sequences.
 
@@ -1041,7 +1044,34 @@ def infer_departure_trips(
                     from_time = stop_basis(recovered[from_trip]["stops"][-1])
                     to_time = stop_basis(recovered[to_trip]["stops"][0])
                     if from_time is not None and to_time is not None:
-                        stitched_arrivals[to_trip] = min(to_time, from_time + max(1, baseline))
+                        observed_duration = to_time - from_time
+                        duration_profiles = inferred_type_durations or {}
+                        exact_candidates = duration_profiles.get((
+                            end_station,
+                            start_station,
+                            recovered[from_trip]["trainType"],
+                            recovered[from_trip]["destination"],
+                        ), [])
+                        any_destination_candidates = [
+                            candidate
+                            for (profile_from, profile_to, profile_type, _profile_destination), candidates in duration_profiles.items()
+                            if profile_from == end_station
+                            and profile_to == start_station
+                            and profile_type == recovered[from_trip]["trainType"]
+                            for candidate in candidates
+                        ]
+                        plausible = [
+                            candidate
+                            for candidate in (exact_candidates or any_destination_candidates)
+                            if 1 <= candidate[0] <= observed_duration
+                            and candidate[0] <= baseline + 3
+                        ]
+                        running_minutes = max(
+                            plausible,
+                            key=lambda candidate: (candidate[1], -candidate[0]),
+                            default=(max(1, baseline), 0),
+                        )[0]
+                        stitched_arrivals[to_trip] = min(to_time, from_time + running_minutes)
 
     extended: list[dict[str, Any]] = []
     for trip_index, trip in enumerate(recovered):
@@ -1262,6 +1292,7 @@ def compact_station_timetables(
             ascending_direction,
             descending_direction,
             inferred_edges,
+            inferred_types,
         )
         edge_minutes = []
         for (from_station, to_station), (minutes, support) in sorted(inferred_edges.items()):

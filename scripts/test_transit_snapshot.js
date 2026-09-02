@@ -5,7 +5,8 @@ const fs = require("node:fs");
 const path = require("node:path");
 const core = require("../route-core.js");
 
-const root = path.join(__dirname, "..", "data", "transit");
+const repositoryRoot = path.join(__dirname, "..");
+const root = path.join(repositoryRoot, "data", "transit");
 const manifest = JSON.parse(fs.readFileSync(path.join(root, "manifest.json"), "utf8"));
 const required = ["jr-east", "keio", "keisei", "tokyo-metro", "yokohama-minatomirai"];
 
@@ -23,7 +24,40 @@ required.forEach((slug) => {
   assert.equal(manifest.operators[slug]?.timetableStatus, "departure-only", `${slug} station timetable must be available`);
   assert.ok(manifest.operators[slug]?.stationTimetables > 0, `${slug} must contain station timetable objects`);
   assert.ok(manifest.operators[slug]?.departures > 0, `${slug} must contain scheduled departures`);
+  assert.ok(
+    manifest.operators[slug]?.inferredConnections >= manifest.operators[slug]?.departures * 0.8,
+    `${slug} must reconstruct at least 80% as many connections as departures`,
+  );
+  const timetableIndex = JSON.parse(fs.readFileSync(path.join(root, slug, "timetable-index.json"), "utf8"));
+  let inferredTripCount = 0;
+  Object.values(timetableIndex.lines || {}).forEach((entry) => {
+    const timetable = JSON.parse(fs.readFileSync(path.join(root, slug, entry.file), "utf8"));
+    (timetable.inferredTrips || []).forEach((trip) => {
+      inferredTripCount += 1;
+      assert.ok(trip[4] >= 1 && trip[4] <= 100, `${slug} inferred confidence must be bounded`);
+      assert.ok(trip[5]?.length >= 2, `${slug} inferred trip must have at least two stops`);
+      let previous = -Infinity;
+      trip[5].forEach((stop) => {
+        const arrival = stop[1] == null ? null : Number(stop[1]);
+        const departure = stop[2] == null ? null : Number(stop[2]);
+        const basis = departure == null ? arrival : departure;
+        assert.ok(Number.isFinite(basis) && basis >= previous, `${slug} inferred times must be monotonic`);
+        if (arrival != null && departure != null) {
+          assert.ok(arrival <= departure, `${slug} arrival must not be later than departure`);
+        }
+        previous = basis;
+      });
+    });
+  });
+  assert.ok(inferredTripCount > 0, `${slug} must contain reconstructed trips`);
 });
+
+assert.equal(fs.existsSync(path.join(repositoryRoot, "route.html")), false, "the route page must remain unpublished");
+assert.match(
+  fs.readFileSync(path.join(repositoryRoot, "_drafts", "route.html"), "utf8"),
+  /noindex,nofollow,noarchive/,
+  "the route draft must remain excluded from indexing",
+);
 
 const payloads = Object.entries(manifest.operators)
   .filter(([, info]) => info?.status === "ok")
