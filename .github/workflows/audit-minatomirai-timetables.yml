@@ -12,6 +12,7 @@ on:
       - 'scripts/reconstruct_shintakashima_downbound.py'
       - 'scripts/reconstruct_shintakashima_downbound_v2.py'
       - 'scripts/reconstruct_shintakashima_downbound_v3.py'
+      - 'scripts/reconstruct_shintakashima_downbound_v4.py'
       - 'scripts/diagnose_shintakashima_gaps.py'
       - '.github/workflows/audit-minatomirai-timetables.yml'
 
@@ -31,10 +32,8 @@ jobs:
           python-version: '3.12'
       - name: Reconstruct weekday Minatomirai departures
         run: python scripts/reconstruct_minatomirai_weekday_downbound_v4.py
-      - name: Diagnose Shin-Takashima unmatched rows
-        run: python scripts/diagnose_shintakashima_gaps.py
       - name: Reconstruct Shin-Takashima departures
-        run: python scripts/reconstruct_shintakashima_downbound_v3.py
+        run: python scripts/reconstruct_shintakashima_downbound_v4.py
       - name: Audit saved timetable snapshot
         run: python scripts/audit_minatomirai_downbound.py
       - name: Save audit and reconstruction
