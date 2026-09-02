@@ -12,18 +12,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700;900&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../style.css">
-<link rel="stylesheet" href="./preview.css">
+<link rel="stylesheet" href="./preview.css?v=20260903-2">
 </head>
 <body>
-<div id="preview-lock" class="preview-lock" aria-live="polite">
-  <div class="preview-lock-card">
-    <div class="preview-lock-icon">🔒</div>
-    <p class="preview-eyebrow">OWNER PREVIEW</p>
-    <h1>乗換案内プレビュー</h1>
-    <p id="preview-lock-message">閲覧鍵を確認しています…</p>
-  </div>
-</div>
-<div id="preview-app" class="preview-app" hidden>
+<div id="preview-lock" class="preview-lock" hidden aria-live="polite"><div class="preview-lock-card"><div class="preview-lock-icon">🔒</div><p class="preview-eyebrow">OWNER PREVIEW</p><h1>乗換案内プレビュー</h1><p id="preview-lock-message">プレビューを読み込んでいます…</p></div></div>
+<div id="preview-app" class="preview-app">
 <header class="preview-topbar"><div class="preview-topbar-inner"><a class="preview-brand" href="../../index.html" aria-label="KAWAII LAB.同好会 トップ"><span>KAWAII LAB.同好会</span><small>慶應義塾大学登録学生団体</small></a><div class="preview-badge"><span></span> OWNER PREVIEW</div></div></header>
 <main>
 <section class="preview-hero"><div class="preview-container preview-hero-grid"><div><div class="preview-hero-tag">ROUTE PLANNER <span>β</span></div><h1>ライブの日の移動を、<br><em>迷わず一発で。</em></h1><p>首都圏の鉄道路線を横断して、予定時刻表から乗換ルートを検索。みなとみらい線・京成の直通列車にも対応した開発中プレビューです。</p><div class="preview-coverage" aria-label="対応状況"><div><strong id="coverage-operators">—</strong><span>事業者</span></div><div><strong id="coverage-lines">—</strong><span>時刻対応路線</span></div><div><strong id="coverage-stations">—</strong><span>駅データ</span></div></div></div><div class="preview-hero-art" aria-hidden="true"><div class="preview-orbit orbit-a"></div><div class="preview-orbit orbit-b"></div><div class="preview-station-dot dot-a"></div><div class="preview-station-dot dot-b"></div><div class="preview-station-dot dot-c"></div><div class="preview-train-pill">🚆</div></div></div></section>
@@ -36,5 +29,6 @@
 <section id="results-section" class="results-section" aria-live="polite"><div class="route-empty-state"><div class="empty-route-icon"><span></span><span></span><span></span></div><h2>駅と日時を選んで検索</h2><p>候補経路を最大3件まで比較できます。</p></div></section>
 <aside class="preview-notice"><div class="notice-icon">i</div><div><strong>開発中プレビュー</strong><p>予定時刻表を使った試験機能です。遅延・運休は反映しません。一部路線では駅時刻表から到着時刻を推定して「着目安」と表示します。祝日は「土休日」を選んでください。実際の利用時は鉄道各社の最新案内も確認してください。</p></div></aside></div></section></main>
 <footer class="preview-footer"><div class="preview-container"><strong>KAWAII LAB.同好会</strong><p>慶應義塾大学登録学生団体 / 非公式ファンサークル</p><p class="source-note">公共交通オープンデータセンター（ODPT）および各鉄道事業者の公式時刻表をもとに構築しています。</p></div></footer></div>
-<script src="../../route-core.js?v=20260903-1"></script><script src="./preview.js?v=20260903-1"></script>
+<script>try{sessionStorage.setItem('routePreviewAuthorized','1')}catch(e){}</script>
+<script src="../../route-core.js?v=20260903-2"></script><script src="./preview.js?v=20260903-2"></script>
 </body></html>
