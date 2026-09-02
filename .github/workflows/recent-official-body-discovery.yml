@@ -7,6 +7,7 @@ on:
     paths:
       - ".github/workflows/recent-official-body-discovery.yml"
       - "scripts/augment_recent_official_news.py"
+      - "scripts/augment_kawaiilab_official.py"
       - "scripts/test_augment_recent_official_news.py"
   schedule:
     # Offset from the primary :00/:15/:30/:45 distributed refresh.
@@ -24,7 +25,7 @@ concurrency:
 jobs:
   discover-audit-publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 9
+    timeout-minutes: 12
     steps:
       - name: Checkout latest main
         uses: actions/checkout@v4
@@ -42,7 +43,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r scripts/requirements.txt
 
-      - name: Test non-destructive body discovery merge
+      - name: Test discovery merge and umbrella inference
         working-directory: scripts
         run: python -m unittest -v test_augment_recent_official_news.py
 
@@ -52,12 +53,13 @@ jobs:
           cp data/live-events.json /tmp/live-events-before-body-discovery.json
           cp data/official-schedule-index.json /tmp/official-schedule-index-before-body-discovery.json
 
-      - name: Read newest official article bodies
+      - name: Read individual and umbrella official sources
         shell: bash
         run: |
           set -euo pipefail
           python scripts/augment_recent_official_news.py --mode ticket
           python scripts/augment_recent_official_news.py --mode special
+          python scripts/augment_kawaiilab_official.py
 
       - name: Detect substantive discovery changes
         id: diff
@@ -76,7 +78,7 @@ jobs:
           echo "changed=$changed" >> "$GITHUB_OUTPUT"
           if [ "$changed" != "true" ]; then
             cp /tmp/live-events-before-body-discovery.json data/live-events.json
-            echo "No new or changed authoritative event information found in recent article bodies."
+            echo "No new or changed authoritative event information found."
           fi
 
       - name: Normalize and audit discovered rows
@@ -110,7 +112,7 @@ jobs:
           node scripts/test_schedule_band_grouping.js
           node scripts/test_schedule_scope_ui.js
 
-      - name: Publish audited body discoveries
+      - name: Publish audited discoveries
         if: steps.diff.outputs.changed == 'true'
         shell: bash
         run: |
@@ -121,10 +123,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/live-events.json data/official-schedule-index.json data/schedule-health.json schedule.html
-          git commit -m "chore: publish official body discoveries"
+          git commit -m "chore: publish autonomous official discoveries"
           for attempt in 1 2 3; do
             if git push origin HEAD:main; then exit 0; fi
-            echo "Push attempt ${attempt} rejected; rebasing body discovery onto latest main."
+            echo "Push attempt ${attempt} rejected; rebasing discovery onto latest main."
             git fetch origin main
             if ! git rebase origin/main; then
               git rebase --abort || true
