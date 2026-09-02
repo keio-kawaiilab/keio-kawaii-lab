@@ -55,8 +55,6 @@ def digit_boxes(image: Image.Image) -> list[dict]:
 
 
 def parse_rows(image: Image.Image, boxes: list[dict]) -> dict[str, list[int]]:
-    # Official artwork is a fixed square template. The hour rows (4..24) are
-    # evenly spaced; using normalized geometry avoids depending on text/color OCR.
     first_center = image.height * 0.0308
     pitch = image.height * 0.04505
     row_half_height = pitch * 0.42
@@ -65,7 +63,8 @@ def parse_rows(image: Image.Image, boxes: list[dict]) -> dict[str, list[int]]:
         center_y = first_center + offset * pitch
         chars = [
             row for row in boxes
-            if row["cx"] > image.width * 0.19
+            # Hour blocks end around x=0.11w; first minute begins near x=0.12w.
+            if row["cx"] > image.width * 0.115
             and abs(row["cy"] - center_y) <= row_half_height
             and (row["bottom"] - row["top"]) >= image.height * 0.018
         ]
@@ -77,8 +76,7 @@ def parse_rows(image: Image.Image, boxes: list[dict]) -> dict[str, list[int]]:
                 continue
             previous = groups[-1][-1]
             gap = char["left"] - previous["right"]
-            # Digits inside one minute value nearly touch; departures are spaced.
-            if gap <= image.width * 0.008:
+            if gap <= image.width * 0.006:
                 groups[-1].append(char)
             else:
                 groups.append([char])
@@ -102,7 +100,7 @@ def validate_sample(name: str, parsed: dict[str, list[int]]) -> None:
 
 
 def main() -> int:
-    result = {"version": 3, "samples": {}}
+    result = {"version": 4, "samples": {}}
     session = requests.Session()
     session.headers["User-Agent"] = "Keio-Kawaii-Lab timetable validation/1.0"
     for name, url in SAMPLES.items():
