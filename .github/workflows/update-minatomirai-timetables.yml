@@ -1,0 +1,37 @@
+name: Update Minatomirai timetables
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 18 * * 1'
+
+permissions:
+  contents: write
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install OCR dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends tesseract-ocr
+          pip install requests==2.32.5 Pillow==11.3.0 pytesseract==0.3.13 numpy==2.3.2
+      - name: Collect official downbound timetables
+        run: python scripts/collect_minatomirai_official.py
+      - name: Save timetable snapshot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/transit/yokohama-minatomirai/official-downbound-departures.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Update Minatomirai official timetable snapshot"
+          git pull --rebase origin main
+          git push origin HEAD:main
