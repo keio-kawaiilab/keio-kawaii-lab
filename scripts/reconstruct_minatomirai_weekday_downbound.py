@@ -93,7 +93,7 @@ def modal_delta_by_stop_pattern(
         yokohama,
         shintakashima,
         min_delta=1,
-        max_delta=4,
+        max_delta=5,
         target_delta=2,
     )
     hist = {"stopsShinTakashima": Counter(), "skipsShinTakashima": Counter()}
@@ -125,7 +125,7 @@ def reconstruct(
         yokohama,
         shintakashima,
         min_delta=1,
-        max_delta=4,
+        max_delta=5,
         target_delta=2,
     )
 
@@ -166,9 +166,6 @@ def reconstruct(
             rows.append((minute, cost, evidence))
         candidates.append(rows)
 
-    # Dynamic programming across the full service day.  This makes one output
-    # departure for every Yokohama train while keeping the reconstructed board
-    # strictly increasing even where the source OCR dropped a cell.
     dp: list[dict[int, tuple[int, int | None, dict]]] = []
     for index, rows in enumerate(candidates):
         current: dict[int, tuple[int, int | None, dict]] = {}
@@ -196,7 +193,7 @@ def reconstruct(
     details: list[dict | None] = [None] * len(yokohama)
     minute = last_minute
     for index in range(len(yokohama) - 1, -1, -1):
-        total_cost, previous, evidence = dp[index][minute]
+        _, previous, evidence = dp[index][minute]
         final[index] = minute
         details[index] = {
             "index": index,
@@ -211,19 +208,12 @@ def reconstruct(
 
     exact_ocr = sum(1 for value in final if value in raw_set)
     near_ocr = sum(1 for value in final if nearest_distance(raw_minatomirai, value) <= 1)
-
-    # Bashamichi is deliberately a validator, not a reconstruction input.  Its
-    # board omits trains that pass the station, so forcing a direct Yokohama ->
-    # Bashamichi match can over-constrain the reconstruction.  Once the full
-    # Minatomirai board is reconstructed, every Bashamichi departure should be
-    # explainable by a unique Minatomirai departure shortly before it.
-    basha_validation: dict
     try:
         basha_map = ordered_subset_match(
             final,
             bashamichi,
             min_delta=1,
-            max_delta=4,
+            max_delta=5,
             target_delta=2,
         )
         basha_validation = {
@@ -291,7 +281,7 @@ def main() -> int:
     )
 
     result = {
-        "version": 2,
+        "version": 3,
         "sourceRetrievedAt": payload.get("retrievedAt"),
         "calendar": WEEKDAY,
         "station": "manual.Station:yokohama-minatomirai.みなとみらい",
