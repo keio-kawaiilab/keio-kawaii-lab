@@ -3,11 +3,14 @@ from __future__ import annotations
 
 import io
 import json
+import math
+import re
 from pathlib import Path
 
 import pytesseract
 import requests
 from PIL import Image, ImageEnhance, ImageOps
+from pytesseract import Output
 
 OUT = Path("data/transit/yokohama-minatomirai/ocr-probe.json")
 SAMPLES = {
@@ -26,70 +29,123 @@ EXPECTED = {
         6: [5, 7, 15, 24, 33, 39, 43, 49, 56, 58],
     },
 }
+BASE_SIZE = 1654.0
+FIRST_X = 226.0
+X_PITCH = 68.0
+FIRST_Y = 47.0
+Y_PITCH = 74.5
+MAX_COLUMNS = 21
 
 
-def digit_boxes(image: Image.Image) -> list[dict]:
-    gray = ImageEnhance.Contrast(ImageOps.autocontrast(ImageOps.grayscale(image))).enhance(1.35)
-    raw = pytesseract.image_to_boxes(
-        gray,
-        config="--psm 11 -c tessedit_char_whitelist=0123456789",
-        lang="eng",
-    )
+def minute_crop(image: Image.Image, hour: int, column: int) -> Image.Image:
+    sx, sy = image.width / BASE_SIZE, image.height / BASE_SIZE
+    cx = (FIRST_X + X_PITCH * column) * sx
+    cy = (FIRST_Y + Y_PITCH * (hour - 4)) * sy
+    # Destination abbreviations on upbound artwork sit above this narrow band.
+    left, right = int(cx - 25 * sx), int(cx + 25 * sx)
+    top, bottom = int(cy - 21 * sy), int(cy + 23 * sy)
+    return image.crop((max(0, left), max(0, top), min(image.width, right), min(image.height, bottom)))
+
+
+def ink_count(crop: Image.Image) -> int:
+    count = 0
+    for r, g, b in crop.convert("RGB").getdata():
+        spread = max(r, g, b) - min(r, g, b)
+        mean = (r + g + b) / 3
+        if mean < 155 or (spread > 45 and mean < 235):
+            count += 1
+    return count
+
+
+def candidate_cells(image: Image.Image) -> list[dict]:
     rows = []
-    for line in raw.splitlines():
-        parts = line.split()
-        if len(parts) < 5 or len(parts[0]) != 1 or not parts[0].isdigit():
-            continue
-        char, left, bottom, right, top = parts[:5]
-        left, bottom, right, top = map(int, (left, bottom, right, top))
-        rows.append({
-            "char": char,
-            "left": left,
-            "right": right,
-            "top": image.height - top,
-            "bottom": image.height - bottom,
-            "cx": (left + right) / 2,
-            "cy": image.height - (bottom + top) / 2,
-        })
+    for hour in range(4, 25):
+        for column in range(MAX_COLUMNS):
+            crop = minute_crop(image, hour, column)
+            ink = ink_count(crop)
+            if ink < max(25, int(crop.width * crop.height * 0.018)):
+                continue
+            rows.append({"hour": hour, "column": column, "ink": ink, "crop": crop})
     return rows
 
 
-def parse_rows(image: Image.Image, boxes: list[dict]) -> dict[str, list[int]]:
-    first_center = image.height * 0.0308
-    pitch = image.height * 0.04505
-    row_half_height = pitch * 0.42
-    result: dict[str, list[int]] = {}
-    for offset, hour in enumerate(range(4, 25)):
-        center_y = first_center + offset * pitch
-        chars = [
-            row for row in boxes
-            # Hour blocks end around x=0.11w; first minute begins near x=0.12w.
-            if row["cx"] > image.width * 0.115
-            and abs(row["cy"] - center_y) <= row_half_height
-            and (row["bottom"] - row["top"]) >= image.height * 0.018
-        ]
-        chars.sort(key=lambda row: row["left"])
-        groups: list[list[dict]] = []
-        for char in chars:
-            if not groups:
-                groups.append([char])
-                continue
-            previous = groups[-1][-1]
-            gap = char["left"] - previous["right"]
-            if gap <= image.width * 0.006:
-                groups[-1].append(char)
-            else:
-                groups.append([char])
-        minutes: list[int] = []
-        for group in groups:
-            text = "".join(row["char"] for row in group)
-            if len(text) != 2:
-                continue
-            value = int(text)
-            if 0 <= value <= 59 and (not minutes or value > minutes[-1]):
-                minutes.append(value)
-        result[str(hour)] = minutes
-    return result
+def contact_sheet(cells: list[dict], *, threshold: bool = False) -> tuple[Image.Image, dict[tuple[int, int], int]]:
+    tile_w, tile_h, columns = 156, 144, 8
+    rows = max(1, math.ceil(len(cells) / columns))
+    sheet = Image.new("L", (tile_w * columns, tile_h * rows), 255)
+    locator: dict[tuple[int, int], int] = {}
+    for index, cell in enumerate(cells):
+        crop = ImageOps.grayscale(cell["crop"])
+        crop = ImageOps.autocontrast(crop)
+        crop = ImageEnhance.Contrast(crop).enhance(1.55)
+        crop = crop.resize((crop.width * 3, crop.height * 3), Image.Resampling.LANCZOS)
+        if threshold:
+            crop = crop.point(lambda value: 0 if value < 190 else 255)
+        row, column = divmod(index, columns)
+        x = column * tile_w + (tile_w - crop.width) // 2
+        y = row * tile_h + (tile_h - crop.height) // 2
+        sheet.paste(crop, (x, y))
+        locator[(row, column)] = index
+    return sheet, locator
+
+
+def read_sheet(sheet: Image.Image, locator: dict[tuple[int, int], int]) -> dict[int, str]:
+    data = pytesseract.image_to_data(
+        sheet,
+        output_type=Output.DICT,
+        config="--psm 11 -c tessedit_char_whitelist=0123456789",
+        lang="eng",
+    )
+    result: dict[int, tuple[str, float]] = {}
+    tile_w, tile_h = 156, 144
+    for i, raw in enumerate(data["text"]):
+        digits = re.sub(r"\D", "", str(raw or ""))
+        if not digits:
+            continue
+        cx = int(data["left"][i]) + int(data["width"][i]) / 2
+        cy = int(data["top"][i]) + int(data["height"][i]) / 2
+        key = (int(cy // tile_h), int(cx // tile_w))
+        index = locator.get(key)
+        if index is None:
+            continue
+        conf = float(data["conf"][i]) if str(data["conf"][i]).strip() not in {"", "-1"} else -1
+        old = result.get(index)
+        if old is None or conf > old[1]:
+            result[index] = (digits, conf)
+    return {index: value[0] for index, value in result.items()}
+
+
+def parse_rows(image: Image.Image) -> tuple[dict[str, list[int]], dict]:
+    cells = candidate_cells(image)
+    sheet, locator = contact_sheet(cells, threshold=False)
+    first = read_sheet(sheet, locator)
+    unresolved = [index for index in range(len(cells)) if len(first.get(index, "")) != 2]
+    second: dict[int, str] = {}
+    if unresolved:
+        retry_cells = [cells[index] for index in unresolved]
+        retry_sheet, retry_locator = contact_sheet(retry_cells, threshold=True)
+        retry_values = read_sheet(retry_sheet, retry_locator)
+        second = {unresolved[index]: value for index, value in retry_values.items()}
+    values = dict(first)
+    for index, value in second.items():
+        if len(values.get(index, "")) != 2 and len(value) == 2:
+            values[index] = value
+
+    parsed: dict[str, list[int]] = {str(hour): [] for hour in range(4, 25)}
+    unresolved_rows = []
+    for index, cell in enumerate(cells):
+        text = values.get(index, "")
+        if len(text) != 2 or not text.isdigit() or int(text) > 59:
+            unresolved_rows.append({"hour": cell["hour"], "column": cell["column"], "text": text, "ink": cell["ink"]})
+            continue
+        minute = int(text)
+        row = parsed[str(cell["hour"])]
+        if row and minute <= row[-1]:
+            unresolved_rows.append({"hour": cell["hour"], "column": cell["column"], "text": text, "ink": cell["ink"], "reason": "non-monotonic"})
+            continue
+        row.append(minute)
+    diagnostics = {"candidateCount": len(cells), "recognizedCount": sum(len(v) for v in parsed.values()), "unresolved": unresolved_rows}
+    return parsed, diagnostics
 
 
 def validate_sample(name: str, parsed: dict[str, list[int]]) -> None:
@@ -100,24 +156,23 @@ def validate_sample(name: str, parsed: dict[str, list[int]]) -> None:
 
 
 def main() -> int:
-    result = {"version": 4, "samples": {}}
+    result = {"version": 5, "samples": {}}
     session = requests.Session()
     session.headers["User-Agent"] = "Keio-Kawaii-Lab timetable validation/1.0"
     for name, url in SAMPLES.items():
         response = session.get(url, timeout=60)
         response.raise_for_status()
         image = Image.open(io.BytesIO(response.content)).convert("RGB")
-        boxes = digit_boxes(image)
-        parsed = parse_rows(image, boxes)
+        parsed, diagnostics = parse_rows(image)
         validate_sample(name, parsed)
         result["samples"][name] = {
             "url": url,
             "size": list(image.size),
-            "digitBoxCount": len(boxes),
             "rows": parsed,
             "departureCount": sum(len(row) for row in parsed.values()),
+            "diagnostics": diagnostics,
         }
-        print(name, "digits", len(boxes), "departures", result["samples"][name]["departureCount"], flush=True)
+        print(name, "departures", result["samples"][name]["departureCount"], diagnostics, flush=True)
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
     return 0
