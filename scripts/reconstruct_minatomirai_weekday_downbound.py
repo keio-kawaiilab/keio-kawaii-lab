@@ -128,17 +128,8 @@ def reconstruct(
         max_delta=4,
         target_delta=2,
     )
-    # Yokohama -> Bashamichi normally takes roughly 4-7 minutes.  Use a broad
-    # window because limited/commuter-limited services can skip Bashamichi and
-    # because timetable dwell occasionally adds a minute.
-    basha_map = ordered_subset_match(
-        yokohama,
-        bashamichi,
-        min_delta=3,
-        max_delta=9,
-        target_delta=6,
-    )
 
+    raw_set = set(raw_minatomirai)
     candidates: list[list[tuple[int, int, dict]]] = []
     for index, yoko in enumerate(yokohama):
         stops_shin = index in shin_map
@@ -155,7 +146,7 @@ def reconstruct(
             }
             ocr_distance = evidence["ocrDistance"]
             if ocr_distance == 0:
-                cost -= 8
+                cost -= 10
             elif ocr_distance == 1:
                 cost -= 4
             elif ocr_distance == 2:
@@ -172,20 +163,12 @@ def reconstruct(
                 else:
                     cost += 30 + abs(after_shin - 2) * 5
 
-            if index in basha_map:
-                before_basha = basha_map[index] - minute
-                evidence["bashamichi"] = fmt(basha_map[index])
-                evidence["minutesBeforeBashamichi"] = before_basha
-                if 1 <= before_basha <= 3:
-                    cost -= 3
-                else:
-                    cost += 30 + abs(before_basha - 2) * 5
-
             rows.append((minute, cost, evidence))
         candidates.append(rows)
 
-    # Dynamic programming across the whole day guarantees a strictly
-    # increasing one-train/one-departure sequence.
+    # Dynamic programming across the full service day.  This makes one output
+    # departure for every Yokohama train while keeping the reconstructed board
+    # strictly increasing even where the source OCR dropped a cell.
     dp: list[dict[int, tuple[int, int | None, dict]]] = []
     for index, rows in enumerate(candidates):
         current: dict[int, tuple[int, int | None, dict]] = {}
@@ -210,25 +193,52 @@ def reconstruct(
 
     last_minute = min(dp[-1], key=lambda minute: dp[-1][minute][0])
     final = [0] * len(yokohama)
-    details = [None] * len(yokohama)
+    details: list[dict | None] = [None] * len(yokohama)
     minute = last_minute
     for index in range(len(yokohama) - 1, -1, -1):
-        cost, previous, evidence = dp[index][minute]
+        total_cost, previous, evidence = dp[index][minute]
         final[index] = minute
         details[index] = {
             "index": index,
             "yokohama": fmt(yokohama[index]),
             "minatomirai": fmt(minute),
-            "cost": cost if index == len(yokohama) - 1 else None,
             **evidence,
-            "supportedByExactOcr": minute in set(raw_minatomirai),
+            "supportedByExactOcr": minute in raw_set,
         }
         if previous is None:
             break
         minute = previous
 
-    exact_ocr = sum(1 for value in final if value in set(raw_minatomirai))
+    exact_ocr = sum(1 for value in final if value in raw_set)
     near_ocr = sum(1 for value in final if nearest_distance(raw_minatomirai, value) <= 1)
+
+    # Bashamichi is deliberately a validator, not a reconstruction input.  Its
+    # board omits trains that pass the station, so forcing a direct Yokohama ->
+    # Bashamichi match can over-constrain the reconstruction.  Once the full
+    # Minatomirai board is reconstructed, every Bashamichi departure should be
+    # explainable by a unique Minatomirai departure shortly before it.
+    basha_validation: dict
+    try:
+        basha_map = ordered_subset_match(
+            final,
+            bashamichi,
+            min_delta=1,
+            max_delta=4,
+            target_delta=2,
+        )
+        basha_validation = {
+            "matched": len(basha_map),
+            "expected": len(bashamichi),
+            "coverage": round(len(basha_map) / max(1, len(bashamichi)), 4),
+        }
+    except RuntimeError as exc:
+        basha_validation = {
+            "matched": 0,
+            "expected": len(bashamichi),
+            "coverage": 0.0,
+            "error": str(exc),
+        }
+
     diagnostics = {
         "yokohamaCount": len(yokohama),
         "shintakashimaCount": len(shintakashima),
@@ -237,9 +247,10 @@ def reconstruct(
         "reconstructedCount": len(final),
         "exactOcrSupport": exact_ocr,
         "withinOneMinuteOcrSupport": near_ocr,
-        "syntheticExactMissing": [fmt(value) for value in final if value not in set(raw_minatomirai)],
+        "syntheticExactMissing": [fmt(value) for value in final if value not in raw_set],
+        "bashamichiValidation": basha_validation,
     }
-    return final, details, diagnostics
+    return final, [row for row in details if row is not None], diagnostics
 
 
 def compare_exact(expected: list[int], actual: list[int]) -> dict:
@@ -268,8 +279,6 @@ def main() -> int:
     holiday_b = boards[("馬車道", HOLIDAY)]
     modal, calibration_hist = modal_delta_by_stop_pattern(holiday_y, holiday_s, holiday_m)
 
-    # Control run: the Saturday/holiday Minatomirai board is already high
-    # quality. Reconstruct it from adjacent boards and measure exact agreement.
     control, _, control_diag = reconstruct(holiday_y, holiday_s, holiday_b, holiday_m, modal)
     control_check = compare_exact(holiday_m, control)
 
@@ -282,12 +291,12 @@ def main() -> int:
     )
 
     result = {
-        "version": 1,
+        "version": 2,
         "sourceRetrievedAt": payload.get("retrievedAt"),
         "calendar": WEEKDAY,
         "station": "manual.Station:yokohama-minatomirai.みなとみらい",
         "direction": "odpt.RailDirection:Outbound",
-        "method": "adjacent-official-board reconstruction calibrated on SaturdayHoliday",
+        "method": "Yokohama + ShinTakashima + partial Minatomirai OCR; calibrated on SaturdayHoliday; Bashamichi validation only",
         "calibration": {
             "modalDeltaFromYokohama": modal,
             "deltaHistograms": calibration_hist,
@@ -303,15 +312,16 @@ def main() -> int:
         "modal": modal,
         "calibrationHistograms": calibration_hist,
         "controlCheck": control_check,
+        "controlDiagnostics": control_diag,
         "weekdayDiagnostics": diagnostics,
     }, ensure_ascii=False), flush=True)
 
-    # Guardrail: do not accept a reconstruction method that cannot reproduce
-    # at least 98% of the high-quality control timetable exactly.
     if not control_check.get("sameCount") or control_check.get("accuracy", 0) < 0.98:
         raise RuntimeError(f"control reconstruction below 98%: {control_check}")
     if len(reconstructed) != len(weekday_y):
         raise RuntimeError("weekday reconstruction does not preserve one train per Yokohama departure")
+    if diagnostics["bashamichiValidation"].get("coverage", 0) < 0.95:
+        raise RuntimeError(f"weekday reconstruction fails Bashamichi validation: {diagnostics['bashamichiValidation']}")
     return 0
 
 
