@@ -39,6 +39,7 @@ DATE_LINE_RE = re.compile(
     r"(.*(?:大特典会|リリースイベント|リリイベ|発売記念イベント).*)",
     re.I,
 )
+EVENT_LABEL_RE = r"(?:大特典会|リリースイベント|リリイベ|発売記念イベント)"
 
 
 def normalize(value: object) -> str:
@@ -103,8 +104,10 @@ def venue_from_tail(tail: str) -> str | None:
     value = normalize(tail)
     # PR TIMES schedule rows are commonly either
     #   "リリースイベント 会場名" or "会場名 リリースイベント".
-    value = re.sub(r"^(?:大特典会|リリースイベント|リリイベ|発売記念イベント)\s*[@＠]?\s*", "", value, flags=re.I)
-    value = re.sub(r"\s*(?:大特典会|リリースイベント|リリイベ|発売記念イベント)\s*$", "", value, flags=re.I)
+    # Some releases repeat the label ("大特典会 大特典会＠会場"), so strip
+    # one or more leading labels rather than exactly one.
+    value = re.sub(rf"^(?:{EVENT_LABEL_RE}\s*[@＠]?\s*)+", "", value, flags=re.I)
+    value = re.sub(rf"\s*{EVENT_LABEL_RE}\s*$", "", value, flags=re.I)
     value = value.lstrip("@＠：:・- ")
     value = re.sub(r"\s*(?:※.*)?$", "", value).strip()
     return value or None
