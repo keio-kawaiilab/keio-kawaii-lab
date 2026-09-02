@@ -26,19 +26,18 @@ jobs:
       - name: Test release-plan parser
         working-directory: scripts
         run: python -m unittest -v test_update_official_press_release_events.py
-      - name: Inspect current PR TIMES company index
+      - name: Inspect PR TIMES RSS
         run: |
           python - <<'PY'
           import re, requests
-          u='https://prtimes.jp/main/html/searchrlp/company_id/17258'
+          u='https://prtimes.jp/index.rdf'
           r=requests.get(u, timeout=20, headers={'User-Agent':'Mozilla/5.0'})
-          print('status=', r.status_code, 'length=', len(r.text), 'url=', r.url)
-          for pattern in [r'/main/html/rd/p/[^"\'<> ]+', r'000017258', r'__NEXT_DATA__', r'release']:
-              matches=re.findall(pattern, r.text, re.I)
-              print('pattern', pattern, 'count', len(matches), 'sample', matches[:10])
-          hrefs=re.findall(r'href=["\']([^"\']+)', r.text, re.I)
-          print('href sample=', hrefs[:40])
-          print('head=', r.text[:2500].replace('\n',' '))
+          print('status=', r.status_code, 'length=', len(r.text), 'type=', r.headers.get('content-type'))
+          links=re.findall(r'https://prtimes\.jp/main/html/rd/p/\d+\.\d+\.html', r.text)
+          print('release links=', len(links), 'sample=', links[:10])
+          own=[x for x in links if '.000017258.html' in x]
+          print('asobisystem=', len(own), own[:20])
+          print('head=', r.text[:1800].replace('\n',' '))
           PY
       - name: Probe current ASOBISYSTEM press releases
         run: python scripts/update_official_press_release_events.py --check
