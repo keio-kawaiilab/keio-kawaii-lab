@@ -3,7 +3,7 @@
 
 The primary collectors intentionally use cheap title filters for deep history scans.
 This companion catches same-day announcements whose list-page title does not contain
-obvious ticket/special-event keywords.  It only feeds existing parsers; it does not
+obvious ticket/special-event keywords. It only feeds existing parsers; it does not
 invent dates, venues or sales windows.
 """
 from __future__ import annotations
@@ -27,6 +27,26 @@ LATEST_INDEX_PAGES = 2
 MAX_ARTICLES_PER_GROUP = 36
 WORKERS = 12
 TIMEOUT = 18
+EMPTY_VALUES = (None, "", [], {})
+
+# These fields are normally hydrated by richer collectors (official LIVE/EVENT,
+# schedule reconciliation, or performance-time enrichment). A body-level NEWS
+# discovery must never erase or downgrade them merely because its parser does
+# not know them.
+PRESERVE_EXISTING_FIELDS = {
+    "url",
+    "source",
+    "sourceChannel",
+    "officialScheduleUrl",
+    "officialScheduleSource",
+    "officialScheduleMatchedAt",
+    "eventStart",
+    "performanceTime",
+    "performanceTimeSourceUrl",
+    "doorsOpen",
+    "doorsOpenSourceUrl",
+    "eventScope",
+}
 
 
 def normalize(value: object) -> str:
@@ -119,6 +139,82 @@ def future_event(event: dict) -> bool:
     return not dates or max(dates) >= today
 
 
+def _unique(values: list[object]) -> list[object]:
+    result: list[object] = []
+    seen: set[str] = set()
+    for value in values:
+        marker = json.dumps(value, ensure_ascii=False, sort_keys=True) if isinstance(value, (dict, list)) else str(value)
+        if marker in seen:
+            continue
+        seen.add(marker)
+        result.append(value)
+    return result
+
+
+def _merge_schedule(existing: object, incoming: object) -> list[dict]:
+    rows: dict[str, dict] = {}
+    leftovers: list[dict] = []
+    for candidate in [*(existing or []), *(incoming or [])]:
+        if not isinstance(candidate, dict):
+            continue
+        key = str(candidate.get("date") or "")
+        if not key:
+            leftovers.append(dict(candidate))
+            continue
+        if key not in rows:
+            rows[key] = dict(candidate)
+            continue
+        merged = dict(rows[key])
+        for field, value in candidate.items():
+            if value not in EMPTY_VALUES:
+                merged[field] = value
+        rows[key] = merged
+    return [*sorted(rows.values(), key=lambda row: str(row.get("date") or "")), *leftovers]
+
+
+def merge_discovered_ticket_event(existing: dict, incoming: dict) -> dict:
+    """Merge a body-discovered ticket row without downgrading richer metadata."""
+    merged = dict(existing)
+
+    for key, value in incoming.items():
+        if value in EMPTY_VALUES:
+            continue
+        if key in {"urls", "eventDates", "participants", "schedule"}:
+            continue
+        if key in PRESERVE_EXISTING_FIELDS and merged.get(key) not in EMPTY_VALUES:
+            continue
+        merged[key] = value
+
+    # Keep the canonical URL selected by the richer collector, but retain every
+    # official article that helped discover/update this event as provenance.
+    all_urls: list[object] = []
+    for value in (existing.get("url"), incoming.get("url"), incoming.get("discoverySourceUrl")):
+        if value:
+            all_urls.append(value)
+    all_urls.extend(existing.get("urls") or [])
+    all_urls.extend(incoming.get("urls") or [])
+    if all_urls:
+        merged["urls"] = _unique(all_urls)
+
+    if incoming.get("discoverySourceUrl"):
+        merged["discoverySourceUrl"] = incoming["discoverySourceUrl"]
+
+    if existing.get("schedule") or incoming.get("schedule"):
+        merged["schedule"] = _merge_schedule(existing.get("schedule"), incoming.get("schedule"))
+    if existing.get("eventDates") or incoming.get("eventDates"):
+        merged["eventDates"] = _unique([*(existing.get("eventDates") or []), *(incoming.get("eventDates") or [])])
+    if existing.get("participants") or incoming.get("participants"):
+        merged["participants"] = _unique([*(existing.get("participants") or []), *(incoming.get("participants") or [])])
+
+    # Preserve established provenance; body discovery is supplemental for an
+    # existing entity rather than a replacement source of truth.
+    if existing.get("sourceChannel"):
+        merged["sourceChannel"] = existing["sourceChannel"]
+    if existing.get("source"):
+        merged["source"] = existing["source"]
+    return merged
+
+
 def augment_ticket(payload: dict, articles: list[dict], failures: list[dict]) -> tuple[dict, dict]:
     session = requests.Session()
     session.headers.update({"User-Agent": "KeioKawaiiLabCalendarBot/2.3 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"})
@@ -145,7 +241,6 @@ def augment_ticket(payload: dict, articles: list[dict], failures: list[dict]) ->
             if not future_event(event):
                 continue
             event = dict(event)
-            event["sourceChannel"] = "recent-official-body"
             event["discoverySourceUrl"] = candidate.url
             event_id = str(event.get("id") or "")
             if event_id:
@@ -166,7 +261,20 @@ def augment_ticket(payload: dict, articles: list[dict], failures: list[dict]) ->
             by_id[event_id] = event
         else:
             no_id.append(event)
-    by_id.update(additions)
+
+    new_count = 0
+    refreshed_count = 0
+    for event_id, incoming in additions.items():
+        existing = by_id.get(event_id)
+        if existing is None:
+            row = dict(incoming)
+            row.setdefault("sourceChannel", "recent-official-body")
+            by_id[event_id] = row
+            new_count += 1
+        else:
+            by_id[event_id] = merge_discovered_ticket_event(existing, incoming)
+            refreshed_count += 1
+
     out = dict(payload)
     out["events"] = sorted(
         [*no_id, *(event for event in by_id.values() if future_event(event))],
@@ -177,6 +285,8 @@ def augment_ticket(payload: dict, articles: list[dict], failures: list[dict]) ->
         "scannedArticles": len(articles),
         "bodyTicketCandidates": candidates,
         "parsedAdditionsOrRefreshes": len(additions),
+        "newEvents": new_count,
+        "refreshedEvents": refreshed_count,
         "failureCount": len(failures),
         "failures": failures,
     }
