@@ -1,9 +1,263 @@
 {
-  "version": 2,
+  "version": 3,
   "retrievedAt": "2026-09-02T23:19:09+09:00",
+  "tokyuPackDiagnostics": {
+    "tripCount": 1471,
+    "destinationCount": 27,
+    "motomachiDestinationIndexes": [
+      17
+    ],
+    "motomachiDestinationValues": [
+      "odpt.Station:Minatomirai.Minatomirai.MotomachiChukagai"
+    ],
+    "destinationUsageTop": {
+      "odpt.Station:Minatomirai.Minatomirai.MotomachiChukagai": 602,
+      "odpt.Station:TokyoMetro.Fukutoshin.Wakoshi": 209,
+      "odpt.Station:Tokyu.Toyoko.Shibuya": 189,
+      "odpt.Station:Sotetsu.Izumino.Shonandai": 62,
+      "odpt.Station:Seibu.Ikebukuro.Kotesashi": 56,
+      "odpt.Station:Tokyu.Toyoko.MusashiKosugi": 54,
+      "odpt.Station:TokyoMetro.Fukutoshin.Ikebukuro": 43,
+      "odpt.Station:Tobu.Tojo.ShinrinKoen": 40,
+      "odpt.Station:Seibu.Ikebukuro.ShakujiiKoen": 36,
+      "odpt.Station:TokyoMetro.Fukutoshin.ShinjukuSanchome": 24,
+      "odpt.Station:Tobu.Tojo.Kawagoeshi": 23,
+      "odpt.Station:Tobu.Tojo.Shiki": 19,
+      "odpt.Station:Tokyu.Toyoko.Kikuna": 17,
+      "odpt.Station:Seibu.Ikebukuro.Kiyose": 16,
+      "odpt.Station:Sotetsu.Main.Ebina": 14,
+      "odpt.Station:Seibu.Ikebukuro.Hoya": 12,
+      "odpt.Station:Seibu.Ikebukuro.Tokorozawa": 11,
+      "odpt.Station:Seibu.Ikebukuro.Hanno": 11,
+      "odpt.Station:Tokyu.Toyoko.Yokohama": 8,
+      "odpt.Station:Sotetsu.SotetsuShinYokohama.Nishiya": 7
+    },
+    "yokohamaDestinationUsageTop": {
+      "odpt.Station:TokyoMetro.Fukutoshin.Wakoshi": 168,
+      "odpt.Station:Tokyu.Toyoko.Shibuya": 151,
+      "odpt.Station:Seibu.Ikebukuro.Kotesashi": 37,
+      "odpt.Station:Seibu.Ikebukuro.ShakujiiKoen": 33,
+      "odpt.Station:TokyoMetro.Fukutoshin.Ikebukuro": 33,
+      "odpt.Station:Tobu.Tojo.ShinrinKoen": 30,
+      "odpt.Station:TokyoMetro.Fukutoshin.ShinjukuSanchome": 15,
+      "odpt.Station:Seibu.Ikebukuro.Kiyose": 10,
+      "odpt.Station:Tokyu.Toyoko.MusashiKosugi": 8,
+      "odpt.Station:Seibu.Ikebukuro.Hoya": 7,
+      "odpt.Station:Seibu.Ikebukuro.Hanno": 6,
+      "odpt.Station:Tobu.Tojo.Shiki": 4,
+      "odpt.Station:Seibu.Ikebukuro.Tokorozawa": 2,
+      "odpt.Station:Tokyu.Toyoko.Hiyoshi": 2,
+      "odpt.Station:Tokyu.Toyoko.Motosumiyoshi": 2,
+      "odpt.Station:Tokyu.Toyoko.Kikuna": 2,
+      "odpt.Station:Tokyu.Toyoko.Jiyugaoka": 1
+    },
+    "yokohamaStationIndexes": [
+      19
+    ],
+    "examples": [
+      {
+        "calendar": "odpt.Calendar:Weekday",
+        "direction": "odpt.RailDirection:Inbound",
+        "trainType": "odpt.TrainType:Tokyu.Local",
+        "destinationIndex": 4,
+        "destination": "odpt.Station:TokyoMetro.Fukutoshin.Wakoshi",
+        "confidence": 98,
+        "yokohamaStop": [
+          19,
+          null,
+          305
+        ]
+      },
+      {
+        "calendar": "odpt.Calendar:Weekday",
+        "direction": "odpt.RailDirection:Inbound",
+        "trainType": "odpt.TrainType:Tokyu.Local",
+        "destinationIndex": 4,
+        "destination": "odpt.Station:TokyoMetro.Fukutoshin.Wakoshi",
+        "confidence": 98,
+        "yokohamaStop": [
+          19,
+          null,
+          317
+        ]
+      },
+      {
+        "calendar": "odpt.Calendar:Weekday",
+        "direction": "odpt.RailDirection:Inbound",
+        "trainType": "odpt.TrainType:Tokyu.Local",
+        "destinationIndex": 4,
+        "destination": "odpt.Station:TokyoMetro.Fukutoshin.Wakoshi",
+        "confidence": 99,
+        "yokohamaStop": [
+          19,
+          null,
+          335
+        ]
+      },
+      {
+        "calendar": "odpt.Calendar:Weekday",
+        "direction": "odpt.RailDirection:Inbound",
+        "trainType": "odpt.TrainType:Tokyu.Local",
+        "destinationIndex": 4,
+        "destination": "odpt.Station:TokyoMetro.Fukutoshin.Wakoshi",
+        "confidence": 97,
+        "yokohamaStop": [
+          19,
+          null,
+          366
+        ]
+      },
+      {
+        "calendar": "odpt.Calendar:Weekday",
+        "direction": "odpt.RailDirection:Inbound",
+        "trainType": "odpt.TrainType:Tokyu.Local",
+        "destinationIndex": 4,
+        "destination": "odpt.Station:TokyoMetro.Fukutoshin.Wakoshi",
+        "confidence": 96,
+        "yokohamaStop": [
+          19,
+          null,
+          412
+        ]
+      },
+      {
+        "calendar": "odpt.Calendar:Weekday",
+        "direction": "odpt.RailDirection:Inbound",
+        "trainType": "odpt.TrainType:Tokyu.Local",
+        "destinationIndex": 4,
+        "destination": "odpt.Station:TokyoMetro.Fukutoshin.Wakoshi",
+        "confidence": 96,
+        "yokohamaStop": [
+          19,
+          null,
+          430
+        ]
+      },
+      {
+        "calendar": "odpt.Calendar:Weekday",
+        "direction": "odpt.RailDirection:Inbound",
+        "trainType": "odpt.TrainType:Tokyu.Local",
+        "destinationIndex": 4,
+        "destination": "odpt.Station:TokyoMetro.Fukutoshin.Wakoshi",
+        "confidence": 97,
+        "yokohamaStop": [
+          19,
+          null,
+          445
+        ]
+      },
+      {
+        "calendar": "odpt.Calendar:Weekday",
+        "direction": "odpt.RailDirection:Inbound",
+        "trainType": "odpt.TrainType:Tokyu.Local",
+        "destinationIndex": 4,
+        "destination": "odpt.Station:TokyoMetro.Fukutoshin.Wakoshi",
+        "confidence": 96,
+        "yokohamaStop": [
+          19,
+          null,
+          465
+        ]
+      },
+      {
+        "calendar": "odpt.Calendar:Weekday",
+        "direction": "odpt.RailDirection:Inbound",
+        "trainType": "odpt.TrainType:Tokyu.Local",
+        "destinationIndex": 4,
+        "destination": "odpt.Station:TokyoMetro.Fukutoshin.Wakoshi",
+        "confidence": 96,
+        "yokohamaStop": [
+          19,
+          null,
+          471
+        ]
+      },
+      {
+        "calendar": "odpt.Calendar:Weekday",
+        "direction": "odpt.RailDirection:Inbound",
+        "trainType": "odpt.TrainType:Tokyu.Local",
+        "destinationIndex": 4,
+        "destination": "odpt.Station:TokyoMetro.Fukutoshin.Wakoshi",
+        "confidence": 97,
+        "yokohamaStop": [
+          19,
+          null,
+          502
+        ]
+      },
+      {
+        "calendar": "odpt.Calendar:Weekday",
+        "direction": "odpt.RailDirection:Inbound",
+        "trainType": "odpt.TrainType:Tokyu.Local",
+        "destinationIndex": 4,
+        "destination": "odpt.Station:TokyoMetro.Fukutoshin.Wakoshi",
+        "confidence": 96,
+        "yokohamaStop": [
+          19,
+          null,
+          512
+        ]
+      },
+      {
+        "calendar": "odpt.Calendar:Weekday",
+        "direction": "odpt.RailDirection:Inbound",
+        "trainType": "odpt.TrainType:Tokyu.Local",
+        "destinationIndex": 4,
+        "destination": "odpt.Station:TokyoMetro.Fukutoshin.Wakoshi",
+        "confidence": 98,
+        "yokohamaStop": [
+          19,
+          null,
+          523
+        ]
+      }
+    ]
+  },
   "tokyuThroughCounts": {},
   "tokyuTrainTypeCounts": {},
   "yokohamaCrossCheck": {},
+  "orderedBoundaryChecks": {
+    "odpt.Calendar:SaturdayHoliday": {
+      "sameCount": true,
+      "count": 274,
+      "deltaHistogram": {
+        "-1": 2,
+        "0": 1,
+        "2": 3,
+        "3": 106,
+        "4": 154,
+        "5": 7,
+        "6": 1
+      },
+      "outliers": [
+        {
+          "upstream": "14:55",
+          "downstream": "15:01",
+          "delta": 6
+        },
+        {
+          "upstream": "15:50",
+          "downstream": "15:49",
+          "delta": -1
+        },
+        {
+          "upstream": "15:53",
+          "downstream": "15:52",
+          "delta": -1
+        },
+        {
+          "upstream": "23:39",
+          "downstream": "23:39",
+          "delta": 0
+        }
+      ]
+    },
+    "odpt.Calendar:Weekday": {
+      "sameCount": false,
+      "upstreamCount": 297,
+      "downstreamCount": 277
+    }
+  },
   "adjacentChecks": {
     "odpt.Calendar:SaturdayHoliday|横浜->新高島": {
       "upstreamCount": 274,
