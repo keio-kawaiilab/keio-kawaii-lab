@@ -1,3 +1,4 @@
+// Generates transfer candidates from the current transit dataset.
 import fs from 'node:fs';
 import path from 'node:path';
 
