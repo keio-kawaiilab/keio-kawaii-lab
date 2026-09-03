@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-03T09:44:21.988894+09:00",
-  "candidateUpdatedAt": "2026-09-03T09:44:21+09:00",
-  "previousEventCount": 147,
+  "generatedAt": "2026-09-03T10:27:42.858129+09:00",
+  "candidateUpdatedAt": "2026-09-03T10:27:42+09:00",
+  "previousEventCount": 150,
   "candidateEventCount": 150,
-  "protectedPreviousCount": 147,
+  "protectedPreviousCount": 150,
   "errorCount": 0,
-  "warningCount": 41,
+  "warningCount": 40,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -16,7 +16,6 @@
     "quarantined one event/source update and kept the previous known-good data: special event has no verified purchase/ticket window: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
-    "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for url:https://sweetsteady.asobisystem.com/: 2027-07-13",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event is not marked as official-source data: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no participation method: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -51,13 +50,14 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 公式リセール"
   ],
-  "candidateSha256": "313485800cc8f79c24e1d3f315866985646ec7aaeace719b2f2d8c87e334cec7",
+  "candidateSha256": "c63041dfe89b9f68c96c373b38e120d3c087c9c50a29bc7f2127ce0dba37fa22",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/news/detail/87180",
     "url:https://candytune.asobisystem.com/news/detail/87766",
     "url:https://candytune.asobisystem.com/news/detail/87780",
+    "url:https://cutiestreet.asobisystem.com",
     "url:https://cutiestreet.asobisystem.com/feature/autumntour",
     "url:https://cutiestreet.asobisystem.com/live_information/detail/40309",
     "url:https://cutiestreet.asobisystem.com/live_information/detail/40310",
@@ -269,7 +269,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 8,
+  "quarantineCount": 7,
   "quarantineActions": [
     {
       "error": "special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -304,11 +304,6 @@
     {
       "error": "special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
       "action": "restored previous row",
-      "restoredPreviousRows": 1
-    },
-    {
-      "error": "future performance dates disappeared for url:https://sweetsteady.asobisystem.com/: 2027-07-13",
-      "action": "restored previous rows for url:https://sweetsteady.asobisystem.com/",
       "restoredPreviousRows": 1
     }
   ],
