@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-03T13:22:55.051Z",
+  "generatedAt": "2026-09-03T13:23:50.393Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-03T13:22:33.879Z",
+  "rulesGeneratedAt": "2026-09-03T13:23:33.238Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 194,
-    "uncuratedPairs": 759,
+    "curatedPairs": 198,
+    "uncuratedPairs": 755,
     "blockedPairs": 7,
-    "curatedSourceRules": 194,
+    "curatedSourceRules": 198,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -340,16 +340,6 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 4,
       "railwayCount": 5,
-      "priorityScore": 10
-    },
-    {
-      "place": "田町 ↔ 三田",
-      "totalPairs": 4,
-      "curatedPairs": 0,
-      "uncuratedPairs": 4,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 4,
-      "railwayCount": 4,
       "priorityScore": 10
     },
     {
@@ -1004,6 +994,16 @@
     },
     {
       "place": "川崎",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 3
+    },
+    {
+      "place": "蘇我",
       "totalPairs": 3,
       "curatedPairs": 0,
       "uncuratedPairs": 3,
@@ -13222,58 +13222,6 @@
       "sources": [
         "connecting-station",
         "same-place-group"
-      ]
-    },
-    {
-      "place": "田町 ↔ 三田",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:Toei.Mita",
-      "railwayBName": "三田線",
-      "sameOperator": false,
-      "distanceMeters": 347,
-      "fallbackMinutes": 7,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "田町 ↔ 三田",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:Toei.Asakusa",
-      "railwayBName": "浅草線",
-      "sameOperator": false,
-      "distanceMeters": 130,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "田町 ↔ 三田",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:Toei.Mita",
-      "railwayBName": "三田線",
-      "sameOperator": false,
-      "distanceMeters": 347,
-      "fallbackMinutes": 7,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "田町 ↔ 三田",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:Toei.Asakusa",
-      "railwayBName": "浅草線",
-      "sameOperator": false,
-      "distanceMeters": 130,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station"
       ]
     },
     {
