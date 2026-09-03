@@ -32,6 +32,10 @@ function candidateState(row){
   const covered=stationPairs.some(key=>coveredExact.has([key,railwayPair].join('\u0002')));
   return blocked?'blocked':covered?'curated':'uncurated';
 }
+function compact(row){return{
+  railwayA:row.railwayA,railwayAName:row.railwayAName,railwayB:row.railwayB,railwayBName:row.railwayBName,
+  sameOperator:row.sameOperator,distanceMeters:row.distanceMeters,fallbackMinutes:row.fallbackMinutes,sources:row.sources
+};}
 
 const rows=(candidates.candidates||[]).map(row=>({...row,state:candidateState(row)}));
 const places=new Map();
@@ -55,6 +59,11 @@ const summary={
   curatedSourceRules:(rules.rules||[]).length,
   transferPlaces:new Set(rows.map(r=>r.placeLabel)).size
 };
+const priorityDetails=placeRows.slice(0,30).map(place=>({
+  ...place,
+  crossOperatorPairs:rows.filter(r=>r.state==='uncurated'&&r.placeLabel===place.place&&!r.sameOperator).map(compact),
+  sameOperatorPairs:rows.filter(r=>r.state==='uncurated'&&r.placeLabel===place.place&&r.sameOperator).map(compact)
+}));
 const output={
   generatedAt:new Date().toISOString(),
   candidateGeneratedAt:candidates.generatedAt||null,
@@ -62,10 +71,8 @@ const output={
   methodology:'Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.',
   summary,
   priorityPlaces:placeRows.slice(0,100),
-  uncurated:rows.filter(r=>r.state==='uncurated').map(r=>({
-    place:r.placeLabel,railwayA:r.railwayA,railwayAName:r.railwayAName,railwayB:r.railwayB,railwayBName:r.railwayBName,
-    sameOperator:r.sameOperator,distanceMeters:r.distanceMeters,fallbackMinutes:r.fallbackMinutes,sources:r.sources
-  }))
+  priorityDetails,
+  uncurated:rows.filter(r=>r.state==='uncurated').map(r=>({place:r.placeLabel,...compact(r)}))
 };
 fs.writeFileSync(path.join(transit,'transfer-coverage.json'),JSON.stringify(output,null,2)+'\n');
 console.log(JSON.stringify(summary));
