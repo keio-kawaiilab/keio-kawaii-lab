@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準・実測乗換（安全側）",
+    "sourceType": "current transfer guide / measured route",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "浅草橋",
+      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayB": "odpt.Railway:Toei.Asakusa",
+      "railwayAName": "中央・総武各駅停車",
+      "railwayBName": "浅草線",
+      "minutes": 3,
+      "source": "https://honnne.com/blog/norikaeasakusabashiasakusabashi/",
+      "sourceType": "2026 measured platform-to-platform transfer; rounded up"
+    },
+    {
+      "place": "蔵前",
+      "railwayA": "odpt.Railway:Toei.Asakusa",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "railwayAName": "浅草線",
+      "railwayBName": "大江戸線",
+      "minutes": 6,
+      "source": "https://wadattsu261.com/content/kuramae-toeiasakusa-toeioedoline-transfer-information/"
+    },
+    {
+      "place": "王子",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "南北線",
+      "minutes": 4,
+      "source": "https://wadattsu261.com/content/oji-jrkeihin-metronamboku-route/"
+    },
+    {
+      "place": "巣鴨",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:Toei.Mita",
+      "railwayAName": "山手線",
+      "railwayBName": "三田線",
+      "minutes": 4,
+      "source": "https://honnne.com/blog/norikae-sugamo/",
+      "sourceType": "2026 measured platform-to-platform transfer; rounded up"
+    },
+    {
+      "place": "駒込",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
+      "railwayAName": "山手線",
+      "railwayBName": "南北線",
+      "minutes": 4,
+      "source": "https://honnne.com/blog/norikae-metrokomagome/",
+      "sourceType": "2026 measured platform-to-platform transfer; rounded up"
+    },
+    {
+      "place": "新御徒町",
+      "railwayA": "odpt.Railway:MIR.TsukubaExpress",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "railwayAName": "つくばエクスプレス",
+      "railwayBName": "大江戸線",
+      "minutes": 3,
+      "source": "https://honnne.com/blog/norikae-shinokachimachi/",
+      "sourceType": "2026 measured platform-to-platform transfer; rounded up"
+    },
+    {
+      "place": "中井",
+      "railwayA": "odpt.Railway:Seibu.Shinjuku",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "railwayAName": "西武新宿線",
+      "railwayBName": "大江戸線",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/nakai-seibushinjuku-toeioedoline-transfer-information/"
+    },
+    {
+      "place": "東中野",
+      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "railwayAName": "中央・総武各駅停車",
+      "railwayBName": "大江戸線",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/higashinakano-toeioedo-jrchuoslowline-transfer-information/"
+    }
+  ]
+}
