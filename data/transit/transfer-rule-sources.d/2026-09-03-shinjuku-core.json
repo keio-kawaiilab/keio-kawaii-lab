@@ -1,0 +1,164 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換",
+    "sourceType": "Jorudan standard transfer time",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:Keio.KeioNew",
+      "railwayB": "odpt.Railway:Odakyu.Odawara",
+      "railwayAName": "京王新線",
+      "railwayBName": "小田原線",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/keio-shin_line-odakyu_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:Keio.KeioNew",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "railwayAName": "京王新線",
+      "railwayBName": "大江戸線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/keio-shin_line-toei_subway-oedo_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:Keio.Keio",
+      "railwayB": "odpt.Railway:Odakyu.Odawara",
+      "railwayAName": "京王線",
+      "railwayBName": "小田原線",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/keio_line-odakyu_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:Keio.Keio",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "railwayAName": "京王線",
+      "railwayBName": "大江戸線",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/keio_line-toei_subway-oedo_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:Keio.Keio",
+      "railwayB": "odpt.Railway:Toei.Shinjuku",
+      "railwayAName": "京王線",
+      "railwayBName": "新宿線",
+      "minutes": 10,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/keio_line-toei_subway-shinjuku_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:Odakyu.Odawara",
+      "railwayB": "odpt.Railway:Toei.Shinjuku",
+      "railwayAName": "小田原線",
+      "railwayBName": "新宿線",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/odakyu_line-toei_subway-shinjuku_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:Odakyu.Odawara",
+      "railwayB": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayAName": "小田原線",
+      "railwayBName": "埼京線・川越線",
+      "minutes": 5,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/odakyu_line-saikyo_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:Odakyu.Odawara",
+      "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayAName": "小田原線",
+      "railwayBName": "湘南新宿ライン",
+      "minutes": 5,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/odakyu_line-saikyo_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:Odakyu.Odawara",
+      "railwayB": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayAName": "小田原線",
+      "railwayBName": "中央線快速",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/odakyu_line-chuo_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:Odakyu.Odawara",
+      "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayAName": "小田原線",
+      "railwayBName": "中央・総武各駅停車",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/odakyu_line-sobu_line_local.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:Keio.KeioNew",
+      "railwayB": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayAName": "京王新線",
+      "railwayBName": "埼京線・川越線",
+      "minutes": 8,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/keio-shin_line-saikyo_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:Keio.KeioNew",
+      "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayAName": "京王新線",
+      "railwayBName": "湘南新宿ライン",
+      "minutes": 8,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/keio-shin_line-saikyo_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:Keio.KeioNew",
+      "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayAName": "京王新線",
+      "railwayBName": "中央・総武各駅停車",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/keio-shin_line-sobu_line_local.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:Keio.KeioNew",
+      "railwayB": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayAName": "京王新線",
+      "railwayBName": "中央線快速",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/keio-shin_line-chuo_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:Toei.Shinjuku",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "railwayAName": "新宿線",
+      "railwayBName": "大江戸線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/toei_subway-shinjuku_line-toei_subway-oedo_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:Keio.Keio",
+      "railwayB": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayAName": "京王線",
+      "railwayBName": "埼京線・川越線",
+      "minutes": 8,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/keio_line-saikyo_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:Keio.Keio",
+      "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayAName": "京王線",
+      "railwayBName": "湘南新宿ライン",
+      "minutes": 8,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/keio_line-saikyo_line.html"
+    }
+  ]
+}
