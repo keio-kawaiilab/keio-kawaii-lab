@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-03T13:19:55.536Z",
+  "generatedAt": "2026-09-03T13:22:10.090Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-03T13:19:32.998Z",
+  "rulesGeneratedAt": "2026-09-03T13:21:50.424Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 191,
-    "uncuratedPairs": 762,
+    "curatedPairs": 192,
+    "uncuratedPairs": 761,
     "blockedPairs": 7,
-    "curatedSourceRules": 191,
+    "curatedSourceRules": 192,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -6785,20 +6785,6 @@
       "railwayBName": "東上線",
       "sameOperator": false,
       "distanceMeters": 63,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "旗の台",
-      "railwayA": "odpt.Railway:Tokyu.Ikegami",
-      "railwayAName": "池上線",
-      "railwayB": "odpt.Railway:Tokyu.Oimachi",
-      "railwayBName": "大井町線",
-      "sameOperator": true,
-      "distanceMeters": 0,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
