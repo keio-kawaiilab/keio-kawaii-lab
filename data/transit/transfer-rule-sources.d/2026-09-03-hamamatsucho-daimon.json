@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換",
+    "sourceType": "Jorudan standard transfer time",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {
+      "place": "浜松町 ↔ 大門",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:Toei.Asakusa",
+      "railwayAName": "山手線",
+      "railwayBName": "浅草線",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/hamamatsucho/yamanote_line-toei_subway-asakusa_line.html"
+    },
+    {
+      "place": "浜松町 ↔ 大門",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "railwayAName": "山手線",
+      "railwayBName": "大江戸線",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/hamamatsucho/yamanote_line-toei_subway-oedo_line.html"
+    },
+    {
+      "place": "浜松町 ↔ 大門",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:Toei.Asakusa",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "浅草線",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/hamamatsucho/keihintohoku_line-toei_subway-asakusa_line.html"
+    },
+    {
+      "place": "浜松町 ↔ 大門",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "大江戸線",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/hamamatsucho/keihintohoku_line-toei_subway-oedo_line.html"
+    }
+  ]
+}
