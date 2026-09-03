@@ -1,4 +1,5 @@
 import unittest
+from bs4 import BeautifulSoup
 
 import ticket_classification_guard_v2 as g
 
@@ -20,6 +21,22 @@ class TicketClassificationGuardV2Tests(unittest.TestCase):
         text = "年会費コース会員向けアップグレード抽選受付を実施"
         self.assertFalse(g.has_explicit_annual_sale(text))
 
+    def test_upgrade_article_cannot_reuse_eligible_prior_sale_name(self):
+        html = """
+        <html><head><title>梅田みゆ 生誕祭 アップグレード抽選受付のお知らせ</title></head>
+        <body>
+          <h1>「CUTIE STREET 梅田みゆ 生誕祭 2026」アップグレード抽選受付のお知らせ</h1>
+          <p>受付期間：2026年8月5日12:00 ～ 8月9日23:59</p>
+          <h2>申し込み対象先行</h2>
+          <p>CUTIE STREET OFFICIAL FANCLUB 年会費コース会員先行</p>
+          <p>CUTIE STREET OFFICIAL FANCLUB 年額・月額会員先行</p>
+        </body></html>
+        """
+        soup = BeautifulSoup(html, "html.parser")
+        text = soup.get_text("\n", strip=True)
+        self.assertTrue(g.has_explicit_annual_sale(text))
+        self.assertTrue(g.is_upgrade_notice(soup, text))
+
     def test_legitimate_sale_and_separate_upgrade_can_coexist(self):
         text = (
             "年会費コース会員限定先行受付を開始します。"
@@ -32,7 +49,7 @@ class TicketClassificationGuardV2Tests(unittest.TestCase):
             {
                 "id": "bad",
                 "ticketType": "年会費コース会員先行",
-                "sourceUrl": "https://cutiestreet.asobisystem.com/news/detail/87826",
+                "sourceUrl": "https://cutiestreet.asobisystem.com/news/detail/86338",
             },
             {
                 "id": "good",
@@ -41,7 +58,7 @@ class TicketClassificationGuardV2Tests(unittest.TestCase):
             },
         ]}
         self.assertEqual(
-            g.purge_invalid_history(history, ["https://cutiestreet.asobisystem.com/news/detail/87826"]),
+            g.purge_invalid_history(history, ["https://cutiestreet.asobisystem.com/news/detail/86338"]),
             1,
         )
         self.assertEqual([x["id"] for x in history["entries"]], ["good"])
