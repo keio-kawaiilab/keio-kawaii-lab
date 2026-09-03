@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換",
+    "sourceType": "Jorudan standard transfer time",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {"place":"渋谷","railwayA":"odpt.Railway:Keio.Inokashira","railwayB":"odpt.Railway:JR-East.SaikyoKawagoe","railwayAName":"井の頭線","railwayBName":"埼京線・川越線","minutes":8,"source":"https://mb.jorudan.co.jp/os/noritxt/shibuya/keio-inokashira_line-saikyo_line.html"},
+    {"place":"渋谷","railwayA":"odpt.Railway:Keio.Inokashira","railwayB":"odpt.Railway:JR-East.ShonanShinjuku","railwayAName":"井の頭線","railwayBName":"湘南新宿ライン","minutes":8,"source":"https://mb.jorudan.co.jp/os/noritxt/shibuya/keio-inokashira_line-saikyo_line.html"}
+  ]
+}
