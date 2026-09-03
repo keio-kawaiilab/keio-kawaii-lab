@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換",
+    "sourceType": "Jorudan standard transfer time",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {"place":"池袋","railwayA":"odpt.Railway:Seibu.Ikebukuro","railwayB":"odpt.Railway:TokyoMetro.Marunouchi","railwayAName":"池袋線","railwayBName":"丸ノ内線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/ikebukuro/seibu-ikebukuro_line-tokyo-metro_marunouchi_line.html"},
+    {"place":"池袋","railwayA":"odpt.Railway:Seibu.Ikebukuro","railwayB":"odpt.Railway:TokyoMetro.Yurakucho","railwayAName":"池袋線","railwayBName":"有楽町線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/ikebukuro/seibu-ikebukuro_line-tokyo-metro_yurakucho_line.html"},
+    {"place":"池袋","railwayA":"odpt.Railway:Seibu.Ikebukuro","railwayB":"odpt.Railway:TokyoMetro.Fukutoshin","railwayAName":"池袋線","railwayBName":"副都心線","minutes":9,"source":"https://mb.jorudan.co.jp/os/noritxt/ikebukuro/seibu-ikebukuro_line-tokyo-metro_fukutoshin_line.html"},
+    {"place":"池袋","railwayA":"odpt.Railway:Tobu.Tojo","railwayB":"odpt.Railway:TokyoMetro.Marunouchi","railwayAName":"東上線","railwayBName":"丸ノ内線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/ikebukuro/tobu-tojo_line-tokyo-metro_marunouchi_line.html"},
+    {"place":"池袋","railwayA":"odpt.Railway:Tobu.Tojo","railwayB":"odpt.Railway:TokyoMetro.Yurakucho","railwayAName":"東上線","railwayBName":"有楽町線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/ikebukuro/tobu-tojo_line-tokyo-metro_yurakucho_line.html"},
+    {"place":"池袋","railwayA":"odpt.Railway:Tobu.Tojo","railwayB":"odpt.Railway:TokyoMetro.Fukutoshin","railwayAName":"東上線","railwayBName":"副都心線","minutes":5,"source":"https://mb.jorudan.co.jp/os/noritxt/ikebukuro/tobu-tojo_line-tokyo-metro_fukutoshin_line.html"},
+    {"place":"池袋","railwayA":"odpt.Railway:Seibu.Ikebukuro","railwayB":"odpt.Railway:JR-East.SaikyoKawagoe","railwayAName":"池袋線","railwayBName":"埼京線・川越線","minutes":5,"source":"https://mb.jorudan.co.jp/os/noritxt/ikebukuro/seibu-ikebukuro_line-saikyo_line.html"},
+    {"place":"池袋","railwayA":"odpt.Railway:Seibu.Ikebukuro","railwayB":"odpt.Railway:JR-East.ShonanShinjuku","railwayAName":"池袋線","railwayBName":"湘南新宿ライン","minutes":5,"source":"https://mb.jorudan.co.jp/os/noritxt/ikebukuro/seibu-ikebukuro_line-saikyo_line.html"}
+  ]
+}
