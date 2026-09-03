@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-03T12:49:32.359Z",
+  "generatedAt": "2026-09-03T12:51:39.471Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -9,6 +9,7 @@
     "transfer-rule-sources.d/2026-09-03-major-hubs-4.json",
     "transfer-rule-sources.d/2026-09-03-shinjuku-core.json",
     "transfer-rule-sources.d/2026-09-03-shinjuku-jr-subway.json",
+    "transfer-rule-sources.d/2026-09-03-shinjuku-linked-stations.json",
     "transfer-rule-sources.d/2026-09-03-tokyo-marunouchi.json"
   ],
   "description": "Curated station/railway-specific transfer times. Generated from transfer-rule source files and resolved against transfer-candidates.json.",
@@ -1232,6 +1233,32 @@
       "bidirectional": true,
       "label": "標準乗換",
       "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/toei_subway-oedo_line-sobu_line_local.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "新宿 ↔ 西武新宿-西武新宿線-丸ノ内線",
+      "fromStation": "odpt.Station:Seibu.Shinjuku.SeibuShinjuku",
+      "toStation": "odpt.Station:TokyoMetro.Marunouchi.Shinjuku",
+      "fromRailway": "odpt.Railway:Seibu.Shinjuku",
+      "toRailway": "odpt.Railway:TokyoMetro.Marunouchi",
+      "minutes": 13,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/seibu-shinjuku_line-tokyo-metro_marunouchi_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "新宿 ↔ 西武新宿-西武新宿線-新宿線",
+      "fromStation": "odpt.Station:Seibu.Shinjuku.SeibuShinjuku",
+      "toStation": "odpt.Station:Toei.Shinjuku.Shinjuku",
+      "fromRailway": "odpt.Railway:Seibu.Shinjuku",
+      "toRailway": "odpt.Railway:Toei.Shinjuku",
+      "minutes": 14,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/seibu-shinjuku_line-toei_subway-shinjuku_line.html",
       "sourceType": "Jorudan standard transfer time",
       "verifiedAt": "2026-09-03"
     },
