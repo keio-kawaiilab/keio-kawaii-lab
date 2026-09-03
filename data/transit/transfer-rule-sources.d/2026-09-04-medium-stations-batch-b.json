@@ -1,0 +1,150 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準・実測乗換（安全側）",
+    "sourceType": "current transfer guide / measured route",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "森下",
+      "railwayA": "odpt.Railway:Toei.Oedo",
+      "railwayB": "odpt.Railway:Toei.Shinjuku",
+      "railwayAName": "大江戸線",
+      "railwayBName": "新宿線",
+      "minutes": 4,
+      "source": "https://wadattsu261.com/content/morishita-toeioedo-shinjukuline-transfer-information/"
+    },
+    {
+      "place": "月島",
+      "railwayA": "odpt.Railway:Toei.Oedo",
+      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+      "railwayAName": "大江戸線",
+      "railwayBName": "有楽町線",
+      "minutes": 6,
+      "source": "https://wadattsu261.com/content/tsukishima-metroyurakucho-toeioedoline-transfer-information/"
+    },
+    {
+      "place": "日本橋",
+      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayB": "odpt.Railway:TokyoMetro.Tozai",
+      "railwayAName": "銀座線",
+      "railwayBName": "東西線",
+      "minutes": 3,
+      "source": "https://wadattsu261.com/content/nihonbashi-metrotozai-ginzaline-transfer-information/"
+    },
+    {
+      "place": "日本橋",
+      "railwayA": "odpt.Railway:Toei.Asakusa",
+      "railwayB": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayAName": "浅草線",
+      "railwayBName": "銀座線",
+      "minutes": 6,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/nihombashi/toei_subway-asakusa_line-tokyo-metro_ginza_line.html",
+      "sourceType": "Jorudan standard transfer time"
+    },
+    {
+      "place": "日本橋",
+      "railwayA": "odpt.Railway:Toei.Asakusa",
+      "railwayB": "odpt.Railway:TokyoMetro.Tozai",
+      "railwayAName": "浅草線",
+      "railwayBName": "東西線",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/nihonbashi-toeiasakusa-metrotozailine-transfer-information/"
+    },
+    {
+      "place": "人形町",
+      "railwayA": "odpt.Railway:Toei.Asakusa",
+      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+      "railwayAName": "浅草線",
+      "railwayBName": "日比谷線",
+      "minutes": 3,
+      "source": "https://wadattsu261.com/content/ningyocho-toeiasakusa-metrohibiyaline-transfer-information/"
+    },
+    {
+      "place": "水天宮前 ↔ 人形町",
+      "railwayA": "odpt.Railway:Toei.Asakusa",
+      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
+      "railwayAName": "浅草線",
+      "railwayBName": "半蔵門線",
+      "minutes": 8,
+      "source": "https://tren.hatenablog.com/entry/z10-h14"
+    },
+    {
+      "place": "水天宮前 ↔ 人形町",
+      "railwayA": "odpt.Railway:TokyoMetro.Hanzomon",
+      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+      "railwayAName": "半蔵門線",
+      "railwayBName": "日比谷線",
+      "minutes": 6,
+      "source": "https://tren.hatenablog.com/entry/z10-h14"
+    },
+    {
+      "place": "新御茶ノ水 ↔ 淡路町",
+      "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayAName": "千代田線",
+      "railwayBName": "丸ノ内線",
+      "minutes": 6,
+      "source": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E5%BE%A1%E8%8C%B6%E3%83%8E%E6%B0%B4-%E6%B7%A1%E8%B7%AF%E7%94%BA",
+      "sourceType": "current route-planner standard walk"
+    },
+    {
+      "place": "新御茶ノ水 ↔ 小川町",
+      "railwayA": "odpt.Railway:Toei.Shinjuku",
+      "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayAName": "新宿線",
+      "railwayBName": "千代田線",
+      "minutes": 4,
+      "source": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E5%BE%A1%E8%8C%B6%E3%83%8E%E6%B0%B4-%E4%B8%8A%E9%87%8E",
+      "sourceType": "current route-planner standard walk"
+    },
+    {
+      "place": "淡路町 ↔ 小川町",
+      "railwayA": "odpt.Railway:Toei.Shinjuku",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayAName": "新宿線",
+      "railwayBName": "丸ノ内線",
+      "minutes": 4,
+      "source": "https://transit.yahoo.co.jp/search/result/%E6%B7%A1%E8%B7%AF%E7%94%BA-%E4%BA%BA%E5%BD%A2%E7%94%BA",
+      "sourceType": "current route-planner walk; rounded up for buffer"
+    },
+    {
+      "place": "東銀座",
+      "railwayA": "odpt.Railway:Toei.Asakusa",
+      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+      "railwayAName": "浅草線",
+      "railwayBName": "日比谷線",
+      "minutes": 3,
+      "source": "https://wadattsu261.com/content/higashiginza-toeiasakusa-metrohibiyaline-transfer-information/"
+    },
+    {
+      "place": "浅草",
+      "railwayA": "odpt.Railway:Toei.Asakusa",
+      "railwayB": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayAName": "浅草線",
+      "railwayBName": "銀座線",
+      "minutes": 5,
+      "source": "https://tren.hatenablog.com/entry/a18-g19"
+    },
+    {
+      "place": "浅草",
+      "railwayA": "odpt.Railway:Tobu.TobuSkytree",
+      "railwayB": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayAName": "東武スカイツリーライン",
+      "railwayBName": "銀座線",
+      "minutes": 3,
+      "source": "https://tren.hatenablog.com/entry/ts01-g19"
+    },
+    {
+      "place": "浅草",
+      "railwayA": "odpt.Railway:Tobu.TobuSkytree",
+      "railwayB": "odpt.Railway:Toei.Asakusa",
+      "railwayAName": "東武スカイツリーライン",
+      "railwayBName": "浅草線",
+      "minutes": 10,
+      "source": "https://tren.hatenablog.com/entry/a18-ts01"
+    }
+  ]
+}
