@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準・実測乗換（安全側）",
+    "sourceType": "current route-planner transfer time",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "下北沢",
+      "railwayA": "odpt.Railway:Keio.Inokashira",
+      "railwayB": "odpt.Railway:Odakyu.Odawara",
+      "railwayAName": "井の頭線",
+      "railwayBName": "小田原線",
+      "minutes": 5,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%B8%8B%E8%B0%B7_%E6%88%90%E5%9F%8E%E5%AD%A6%E5%9C%92%E5%89%8D.html",
+      "sourceType": "Jorudan current route-planner transfer time"
+    },
+    {
+      "place": "明大前",
+      "railwayA": "odpt.Railway:Keio.Inokashira",
+      "railwayB": "odpt.Railway:Keio.Keio",
+      "railwayAName": "井の頭線",
+      "railwayBName": "京王線",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%B8%8B%E8%B0%B7_%E8%AA%BF%E5%B8%83.html",
+      "sourceType": "Jorudan current route-planner transfer time"
+    },
+    {
+      "place": "三軒茶屋",
+      "railwayA": "odpt.Railway:Tokyu.DenEnToshi",
+      "railwayB": "odpt.Railway:Tokyu.Setagaya",
+      "railwayAName": "田園都市線",
+      "railwayBName": "世田谷線",
+      "minutes": 6,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E4%B8%96%E7%94%B0%E8%B0%B7_%E6%B8%8B%E8%B0%B7.html",
+      "sourceType": "Jorudan current route-planner transfer time"
+    },
+    {
+      "place": "大岡山",
+      "railwayA": "odpt.Railway:Tokyu.Meguro",
+      "railwayB": "odpt.Railway:Tokyu.Oimachi",
+      "railwayAName": "目黒線",
+      "railwayBName": "大井町線",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%AD%A6%E8%94%B5%E5%B0%8F%E5%B1%B1_%E5%A4%A7%E4%BA%95%E7%94%BA.html",
+      "sourceType": "Jorudan current route-planner transfer time; platform-independent conservative bound"
+    },
+    {
+      "place": "蒲田",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:Tokyu.Ikegami",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "池上線",
+      "minutes": 4,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%B7%9D%E5%B4%8E_%E6%B1%A0%E4%B8%8A.html",
+      "sourceType": "Jorudan current route-planner transfer time"
+    },
+    {
+      "place": "蒲田",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:Tokyu.TokyuTamagawa",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "東急多摩川線",
+      "minutes": 4,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E4%BA%AC%E6%80%A5%E8%92%B2%E7%94%B0_%E5%A4%9A%E6%91%A9%E5%B7%9D.html",
+      "sourceType": "Jorudan current route-planner transfer time"
+    },
+    {
+      "place": "蒲田",
+      "railwayA": "odpt.Railway:Tokyu.Ikegami",
+      "railwayB": "odpt.Railway:Tokyu.TokyuTamagawa",
+      "railwayAName": "池上線",
+      "railwayBName": "東急多摩川線",
+      "minutes": 2,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%B1%A0%E4%B8%8A_%E5%A4%9A%E6%91%A9%E5%B7%9D.html",
+      "sourceType": "Jorudan current route-planner transfer time"
+    }
+  ]
+}
