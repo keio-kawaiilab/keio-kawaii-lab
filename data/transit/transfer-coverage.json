@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-03T13:03:39.267Z",
+  "generatedAt": "2026-09-03T13:06:23.793Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-03T13:03:24.956Z",
+  "rulesGeneratedAt": "2026-09-03T13:06:08.465Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 160,
-    "uncuratedPairs": 793,
+    "curatedPairs": 168,
+    "uncuratedPairs": 785,
     "blockedPairs": 7,
-    "curatedSourceRules": 160,
+    "curatedSourceRules": 168,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -101,16 +101,6 @@
       "crossOperatorUncuratedPairs": 5,
       "railwayCount": 6,
       "priorityScore": 22.5
-    },
-    {
-      "place": "日暮里",
-      "totalPairs": 10,
-      "curatedPairs": 2,
-      "uncuratedPairs": 8,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 7,
-      "railwayCount": 5,
-      "priorityScore": 18.5
     },
     {
       "place": "新橋",
@@ -1010,6 +1000,16 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 3,
+      "priorityScore": 3
+    },
+    {
+      "place": "銀座 ↔ 銀座一丁目",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 4,
       "priorityScore": 3
     }
   ],
@@ -3261,124 +3261,6 @@
       ]
     },
     {
-      "place": "日暮里",
-      "totalPairs": 10,
-      "curatedPairs": 2,
-      "uncuratedPairs": 8,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 7,
-      "railwayCount": 5,
-      "priorityScore": 18.5,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Keisei.Main",
-          "railwayAName": "京成本線",
-          "railwayB": "odpt.Railway:Toei.NipporiToneri",
-          "railwayBName": "日暮里・舎人ライナー",
-          "sameOperator": false,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:Keisei.Main",
-          "railwayBName": "京成本線",
-          "sameOperator": false,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:Toei.NipporiToneri",
-          "railwayBName": "日暮里・舎人ライナー",
-          "sameOperator": false,
-          "distanceMeters": 133,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Yamanote",
-          "railwayAName": "山手線",
-          "railwayB": "odpt.Railway:Keisei.Main",
-          "railwayBName": "京成本線",
-          "sameOperator": false,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Yamanote",
-          "railwayAName": "山手線",
-          "railwayB": "odpt.Railway:Toei.NipporiToneri",
-          "railwayBName": "日暮里・舎人ライナー",
-          "sameOperator": false,
-          "distanceMeters": 133,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.JobanRapid",
-          "railwayAName": "常磐線快速",
-          "railwayB": "odpt.Railway:Keisei.Main",
-          "railwayBName": "京成本線",
-          "sameOperator": false,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.JobanRapid",
-          "railwayAName": "常磐線快速",
-          "railwayB": "odpt.Railway:Toei.NipporiToneri",
-          "railwayBName": "日暮里・舎人ライナー",
-          "sameOperator": false,
-          "distanceMeters": 104,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.JobanRapid",
-          "railwayAName": "常磐線快速",
-          "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayBName": "京浜東北線・根岸線",
-          "sameOperator": true,
-          "distanceMeters": 33,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
       "place": "新橋",
       "totalPairs": 28,
       "curatedPairs": 16,
@@ -5342,6 +5224,98 @@
           "railwayBName": "有楽町線",
           "sameOperator": true,
           "distanceMeters": 51,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ]
+    },
+    {
+      "place": "練馬",
+      "totalPairs": 6,
+      "curatedPairs": 0,
+      "uncuratedPairs": 6,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 3,
+      "railwayCount": 4,
+      "priorityScore": 10.5,
+      "crossOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:Seibu.SeibuYurakucho",
+          "railwayAName": "西武有楽町線",
+          "railwayB": "odpt.Railway:Toei.Oedo",
+          "railwayBName": "大江戸線",
+          "sameOperator": false,
+          "distanceMeters": 118,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:Seibu.Ikebukuro",
+          "railwayAName": "池袋線",
+          "railwayB": "odpt.Railway:Toei.Oedo",
+          "railwayBName": "大江戸線",
+          "sameOperator": false,
+          "distanceMeters": 118,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:Seibu.Toshima",
+          "railwayAName": "豊島線",
+          "railwayB": "odpt.Railway:Toei.Oedo",
+          "railwayBName": "大江戸線",
+          "sameOperator": false,
+          "distanceMeters": 118,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:Seibu.SeibuYurakucho",
+          "railwayAName": "西武有楽町線",
+          "railwayB": "odpt.Railway:Seibu.Toshima",
+          "railwayBName": "豊島線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:Seibu.Ikebukuro",
+          "railwayAName": "池袋線",
+          "railwayB": "odpt.Railway:Seibu.SeibuYurakucho",
+          "railwayBName": "西武有楽町線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:Seibu.Ikebukuro",
+          "railwayAName": "池袋線",
+          "railwayB": "odpt.Railway:Seibu.Toshima",
+          "railwayBName": "豊島線",
+          "sameOperator": true,
+          "distanceMeters": 0,
           "fallbackMinutes": 5,
           "sources": [
             "connecting-station",
@@ -14481,118 +14455,6 @@
       "fallbackMinutes": 6,
       "sources": [
         "connecting-station"
-      ]
-    },
-    {
-      "place": "日暮里",
-      "railwayA": "odpt.Railway:Keisei.Main",
-      "railwayAName": "京成本線",
-      "railwayB": "odpt.Railway:Toei.NipporiToneri",
-      "railwayBName": "日暮里・舎人ライナー",
-      "sameOperator": false,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "日暮里",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:Keisei.Main",
-      "railwayBName": "京成本線",
-      "sameOperator": false,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "日暮里",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:Toei.NipporiToneri",
-      "railwayBName": "日暮里・舎人ライナー",
-      "sameOperator": false,
-      "distanceMeters": 133,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "日暮里",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:Keisei.Main",
-      "railwayBName": "京成本線",
-      "sameOperator": false,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "日暮里",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:Toei.NipporiToneri",
-      "railwayBName": "日暮里・舎人ライナー",
-      "sameOperator": false,
-      "distanceMeters": 133,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "日暮里",
-      "railwayA": "odpt.Railway:JR-East.JobanRapid",
-      "railwayAName": "常磐線快速",
-      "railwayB": "odpt.Railway:Keisei.Main",
-      "railwayBName": "京成本線",
-      "sameOperator": false,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "日暮里",
-      "railwayA": "odpt.Railway:JR-East.JobanRapid",
-      "railwayAName": "常磐線快速",
-      "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayBName": "京浜東北線・根岸線",
-      "sameOperator": true,
-      "distanceMeters": 33,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "日暮里",
-      "railwayA": "odpt.Railway:JR-East.JobanRapid",
-      "railwayAName": "常磐線快速",
-      "railwayB": "odpt.Railway:Toei.NipporiToneri",
-      "railwayBName": "日暮里・舎人ライナー",
-      "sameOperator": false,
-      "distanceMeters": 104,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
       ]
     },
     {
