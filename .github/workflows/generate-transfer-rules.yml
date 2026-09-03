@@ -47,4 +47,27 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add data/transit/transfer-rules.json
           git commit -m 'Update curated transfer times'
-          git push
+
+          # Other site automation may push to main while this job is building.
+          # Rebase our generated commit onto the latest main before pushing so
+          # unrelated concurrent updates do not make transfer generation fail.
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            if git rebase origin/main && git push origin HEAD:main; then
+              exit 0
+            fi
+            git rebase --abort || true
+            echo "Push attempt ${attempt} failed; rebuilding on latest main..."
+            git reset --hard origin/main
+            node scripts/build-transfer-rules.mjs
+            node -e "JSON.parse(require('fs').readFileSync('data/transit/transfer-rules.json','utf8'))"
+            if [ -z "$(git status --porcelain -- data/transit/transfer-rules.json)" ]; then
+              echo 'Latest main already contains generated transfer rules.'
+              exit 0
+            fi
+            git add data/transit/transfer-rules.json
+            git commit -m 'Update curated transfer times'
+            sleep 2
+          done
+          echo 'Failed to push generated transfer rules after retries.'
+          exit 1
