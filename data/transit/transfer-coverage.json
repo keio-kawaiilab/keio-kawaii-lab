@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-03T13:23:50.393Z",
+  "generatedAt": "2026-09-03T13:25:08.711Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-03T13:23:33.238Z",
+  "rulesGeneratedAt": "2026-09-03T13:24:54.554Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 198,
-    "uncuratedPairs": 755,
+    "curatedPairs": 201,
+    "uncuratedPairs": 752,
     "blockedPairs": 7,
-    "curatedSourceRules": 198,
+    "curatedSourceRules": 201,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -234,16 +234,6 @@
     },
     {
       "place": "戸塚",
-      "totalPairs": 6,
-      "curatedPairs": 0,
-      "uncuratedPairs": 6,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 3,
-      "railwayCount": 4,
-      "priorityScore": 10.5
-    },
-    {
-      "place": "神田",
       "totalPairs": 6,
       "curatedPairs": 0,
       "uncuratedPairs": 6,
@@ -970,6 +960,16 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 3,
+      "priorityScore": 3
+    },
+    {
+      "place": "神田",
+      "totalPairs": 6,
+      "curatedPairs": 3,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 4,
       "priorityScore": 3
     },
     {
@@ -4682,98 +4682,6 @@
       ]
     },
     {
-      "place": "神田",
-      "totalPairs": 6,
-      "curatedPairs": 0,
-      "uncuratedPairs": 6,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 3,
-      "railwayCount": 4,
-      "priorityScore": 10.5,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:TokyoMetro.Ginza",
-          "railwayBName": "銀座線",
-          "sameOperator": false,
-          "distanceMeters": 216,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Yamanote",
-          "railwayAName": "山手線",
-          "railwayB": "odpt.Railway:TokyoMetro.Ginza",
-          "railwayBName": "銀座線",
-          "sameOperator": false,
-          "distanceMeters": 216,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-          "railwayAName": "中央線快速",
-          "railwayB": "odpt.Railway:TokyoMetro.Ginza",
-          "railwayBName": "銀座線",
-          "sameOperator": false,
-          "distanceMeters": 216,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:JR-East.Yamanote",
-          "railwayBName": "山手線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-          "railwayAName": "中央線快速",
-          "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayBName": "京浜東北線・根岸線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-          "railwayAName": "中央線快速",
-          "railwayB": "odpt.Railway:JR-East.Yamanote",
-          "railwayBName": "山手線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
       "place": "西船橋",
       "totalPairs": 6,
       "curatedPairs": 0,
@@ -5426,6 +5334,67 @@
           ]
         }
       ]
+    },
+    {
+      "place": "後楽園 ↔ 春日",
+      "totalPairs": 4,
+      "curatedPairs": 0,
+      "uncuratedPairs": 4,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 4,
+      "railwayCount": 4,
+      "priorityScore": 10,
+      "crossOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:Toei.Mita",
+          "railwayAName": "三田線",
+          "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+          "railwayBName": "丸ノ内線",
+          "sameOperator": false,
+          "distanceMeters": 330,
+          "fallbackMinutes": 7,
+          "sources": [
+            "connecting-station"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:Toei.Mita",
+          "railwayAName": "三田線",
+          "railwayB": "odpt.Railway:TokyoMetro.Namboku",
+          "railwayBName": "南北線",
+          "sameOperator": false,
+          "distanceMeters": 186,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:Toei.Oedo",
+          "railwayAName": "大江戸線",
+          "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+          "railwayBName": "丸ノ内線",
+          "sameOperator": false,
+          "distanceMeters": 197,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:Toei.Oedo",
+          "railwayAName": "大江戸線",
+          "railwayB": "odpt.Railway:TokyoMetro.Namboku",
+          "railwayBName": "南北線",
+          "sameOperator": false,
+          "distanceMeters": 64,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station"
+          ]
+        }
+      ],
+      "sameOperatorPairs": []
     }
   ],
   "uncurated": [
@@ -10313,38 +10282,10 @@
       "place": "神田",
       "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
       "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:TokyoMetro.Ginza",
-      "railwayBName": "銀座線",
-      "sameOperator": false,
-      "distanceMeters": 216,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "神田",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
       "railwayB": "odpt.Railway:JR-East.Yamanote",
       "railwayBName": "山手線",
       "sameOperator": true,
       "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "神田",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:TokyoMetro.Ginza",
-      "railwayBName": "銀座線",
-      "sameOperator": false,
-      "distanceMeters": 216,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
@@ -10359,20 +10300,6 @@
       "railwayBName": "京浜東北線・根岸線",
       "sameOperator": true,
       "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "神田",
-      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-      "railwayAName": "中央線快速",
-      "railwayB": "odpt.Railway:TokyoMetro.Ginza",
-      "railwayBName": "銀座線",
-      "sameOperator": false,
-      "distanceMeters": 216,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
