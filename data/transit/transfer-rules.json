@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-03T13:40:21.337Z",
+  "generatedAt": "2026-09-03T13:40:54.905Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -29,6 +29,7 @@
     "transfer-rule-sources.d/2026-09-03-shinjuku-jr-subway.json",
     "transfer-rule-sources.d/2026-09-03-shinjuku-linked-stations.json",
     "transfer-rule-sources.d/2026-09-03-takadanobaba.json",
+    "transfer-rule-sources.d/2026-09-03-takanawa-gateway-sengakuji.json",
     "transfer-rule-sources.d/2026-09-03-tamachi-mita.json",
     "transfer-rule-sources.d/2026-09-03-tokyo-marunouchi.json",
     "transfer-rule-sources.d/2026-09-03-yotsuya.json",
@@ -2543,6 +2544,58 @@
       "label": "実測乗換（安全側上限）",
       "source": "https://wadattsu261.com/content/takadanobaba-metrotozai-seibushinjukuline-transfer-information/",
       "sourceType": "Measured transfer guide; conservative upper bound",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "高輪ゲートウェイ ↔ 泉岳寺-京浜東北線・根岸線-京急本線",
+      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.TakanawaGateway",
+      "toStation": "odpt.Station:Keikyu.Main.Sengakuji",
+      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "toRailway": "odpt.Railway:Keikyu.Main",
+      "minutes": 10,
+      "bidirectional": true,
+      "label": "標準乗換（安全側）",
+      "source": "https://ekitan.com/transit/route/sf-9909/st-2417",
+      "sourceType": "current route-planner standard walk",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "高輪ゲートウェイ ↔ 泉岳寺-京浜東北線・根岸線-浅草線",
+      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.TakanawaGateway",
+      "toStation": "odpt.Station:Toei.Asakusa.Sengakuji",
+      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "toRailway": "odpt.Railway:Toei.Asakusa",
+      "minutes": 10,
+      "bidirectional": true,
+      "label": "標準乗換（安全側）",
+      "source": "https://ekitan.com/transit/route/sf-9909/st-2417",
+      "sourceType": "current route-planner standard walk",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "高輪ゲートウェイ ↔ 泉岳寺-山手線-京急本線",
+      "fromStation": "odpt.Station:JR-East.Yamanote.TakanawaGateway",
+      "toStation": "odpt.Station:Keikyu.Main.Sengakuji",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:Keikyu.Main",
+      "minutes": 10,
+      "bidirectional": true,
+      "label": "標準乗換（安全側）",
+      "source": "https://ekitan.com/transit/route/sf-2417/st-9909",
+      "sourceType": "current route-planner standard walk",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "高輪ゲートウェイ ↔ 泉岳寺-山手線-浅草線",
+      "fromStation": "odpt.Station:JR-East.Yamanote.TakanawaGateway",
+      "toStation": "odpt.Station:Toei.Asakusa.Sengakuji",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:Toei.Asakusa",
+      "minutes": 10,
+      "bidirectional": true,
+      "label": "標準乗換（安全側）",
+      "source": "https://ekitan.com/transit/route/sf-2417/st-9909",
+      "sourceType": "current route-planner standard walk",
       "verifiedAt": "2026-09-03"
     },
     {
