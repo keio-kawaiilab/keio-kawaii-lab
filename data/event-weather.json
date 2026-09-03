@@ -1,7 +1,7 @@
 {
   "date": "2026-09-03",
   "horizonDays": 7,
-  "generatedAt": "2026-09-03T07:49+09:00",
+  "generatedAt": "2026-09-03T16:21+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -24,7 +24,7 @@
       "min": 31.0,
       "pop": "50",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-09-03T05:00:00+09:00",
+      "issuedAt": "2026-09-03T11:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "25〜29℃",
       "coordinates": {
@@ -32,18 +32,6 @@
         "lon": 139.662613
       },
       "meshTimeline": [
-        {
-          "time": "09:00",
-          "label": "くもり",
-          "validAt": "2026-09-03T09:00+09:00",
-          "temp": 28
-        },
-        {
-          "time": "12:00",
-          "label": "くもり",
-          "validAt": "2026-09-03T12:00+09:00",
-          "temp": 30
-        },
         {
           "time": "15:00",
           "label": "くもり",
@@ -68,24 +56,27 @@
           "validAt": "2026-09-04T00:00+09:00",
           "temp": 25
         }
-      ],
-      "hourlyRain": [
-        {
-          "time": "18:00",
-          "rain": false,
-          "validAt": "2026-09-03T18:00+09:00"
-        },
-        {
-          "time": "19:00",
-          "rain": false,
-          "validAt": "2026-09-03T19:00+09:00"
-        },
-        {
-          "time": "20:00",
-          "rain": false,
-          "validAt": "2026-09-03T20:00+09:00"
-        }
       ]
+    },
+    {
+      "date": "2026-09-03",
+      "venue": "福岡県 北九州メッセ",
+      "venueKey": "北九州メッセ",
+      "eventIds": [
+        "923b8a17644fcc6f"
+      ],
+      "areaCode": "400010",
+      "areaName": "福岡地方",
+      "precision": "area",
+      "label": "くもり 昼過ぎ から 雨 所により 夜 雷を伴い 激しく 降る",
+      "max": 33.0,
+      "min": 33.0,
+      "pop": "60",
+      "popLabel": "当日最大",
+      "issuedAt": "2026-09-03T11:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
     },
     {
       "date": "2026-09-04",
@@ -102,7 +93,7 @@
       "min": 23.0,
       "pop": "70",
       "popLabel": "12〜18時",
-      "issuedAt": "2026-09-03T05:00:00+09:00",
+      "issuedAt": "2026-09-03T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -123,7 +114,7 @@
       "min": 24.0,
       "pop": "60",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-09-03T05:00:00+09:00",
+      "issuedAt": "2026-09-03T11:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "20〜24℃",
       "coordinates": {
@@ -165,7 +156,7 @@
           "time": "21:00",
           "label": "雨",
           "validAt": "2026-09-04T21:00+09:00",
-          "temp": 22
+          "temp": 23
         },
         {
           "time": "24:00",
@@ -185,12 +176,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "くもり時々雨",
-      "max": 23.0,
-      "min": 19.0,
-      "pop": "70",
-      "popLabel": "1日",
-      "issuedAt": "2026-09-02T17:00:00+09:00",
+      "label": "くもり 時々 雨",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-09-03T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -203,14 +194,14 @@
         "special-9332aaf17a50c3a8"
       ],
       "areaCode": "110010",
-      "areaName": "埼玉県",
+      "areaName": "南部",
       "precision": "area",
-      "label": "くもり時々雨",
-      "max": 24.0,
-      "min": 20.0,
-      "pop": "70",
-      "popLabel": "1日",
-      "issuedAt": "2026-09-02T17:00:00+09:00",
+      "label": "くもり 時々 雨",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-09-03T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -225,12 +216,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "くもり時々雨",
-      "max": 23.0,
-      "min": 19.0,
-      "pop": "70",
-      "popLabel": "1日",
-      "issuedAt": "2026-09-02T17:00:00+09:00",
+      "label": "くもり 時々 雨",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-09-03T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -247,11 +238,11 @@
       "areaName": "東京地方",
       "precision": "area",
       "label": "くもり時々雨",
-      "max": 24.0,
-      "min": 19.0,
+      "max": 25.0,
+      "min": 20.0,
       "pop": "70",
       "popLabel": "1日",
-      "issuedAt": "2026-09-02T17:00:00+09:00",
+      "issuedAt": "2026-09-03T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -267,11 +258,11 @@
       "areaName": "東京地方",
       "precision": "area",
       "label": "くもり時々雨",
-      "max": 26.0,
+      "max": 25.0,
       "min": 20.0,
       "pop": "70",
       "popLabel": "1日",
-      "issuedAt": "2026-09-02T17:00:00+09:00",
+      "issuedAt": "2026-09-03T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -287,12 +278,12 @@
       "areaCode": "270000",
       "areaName": "大阪府",
       "precision": "area",
-      "label": "くもり",
+      "label": "くもり一時雨",
       "max": 32.0,
-      "min": 25.0,
-      "pop": "40",
+      "min": 26.0,
+      "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-09-02T17:00:00+09:00",
+      "issuedAt": "2026-09-03T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -312,32 +303,48 @@
       "min": 23.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-09-02T17:00:00+09:00",
+      "issuedAt": "2026-09-03T11:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-09-10",
+      "venue": "大阪府 グランキューブ大阪 メインホール",
+      "venueKey": "グランキューブ大阪メインホール",
+      "eventIds": [
+        "54a369497f59ce96",
+        "84787797cc4cbcb3"
+      ],
+      "areaCode": "270000",
+      "areaName": "大阪府",
+      "precision": "area",
+      "label": "くもり一時雨",
+      "max": 32.0,
+      "min": 26.0,
+      "pop": "50",
+      "popLabel": "1日",
+      "issuedAt": "2026-09-03T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
     }
   ],
   "stats": {
-    "occurrencesInRange": 18,
-    "uniqueVenueDates": 12,
-    "weatherEntries": 10,
+    "occurrencesInRange": 19,
+    "uniqueVenueDates": 13,
+    "weatherEntries": 12,
     "meshEntries": 2,
-    "failures": 2,
+    "failures": 1,
     "meshTimelineEntries": 2,
-    "meshExactTempSlots": 13,
-    "hourlyRainEntries": 1
+    "meshExactTempSlots": 11,
+    "hourlyRainEntries": 0
   },
   "failures": [
     {
       "date": "2026-09-06",
       "venue": "青森・青い海公園・アスパム",
       "reason": "都道府県を解決できません"
-    },
-    {
-      "date": "2026-09-10",
-      "venue": "大阪府 グランキューブ大阪 メインホール",
-      "reason": "開催日の予報がまだありません"
     }
   ]
 }
