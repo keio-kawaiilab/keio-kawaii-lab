@@ -1,0 +1,101 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換",
+    "sourceType": "Jorudan standard transfer time",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {
+      "place": "大手町",
+      "railwayA": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayB": "odpt.Railway:TokyoMetro.Tozai",
+      "railwayAName": "丸ノ内線",
+      "railwayBName": "東西線",
+      "minutes": 5,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/otemachi/tokyo-metro_marunouchi_line-tokyo-metro_tozai_line.html"
+    },
+    {
+      "place": "大手町",
+      "railwayA": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayAName": "丸ノ内線",
+      "railwayBName": "千代田線",
+      "minutes": 5,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/otemachi/tokyo-metro_marunouchi_line-tokyo-metro_chiyoda_line.html"
+    },
+    {
+      "place": "大手町",
+      "railwayA": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
+      "railwayAName": "丸ノ内線",
+      "railwayBName": "半蔵門線",
+      "minutes": 3,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/otemachi/tokyo-metro_marunouchi_line-tokyo-metro_hanzomon_line.html"
+    },
+    {
+      "place": "大手町",
+      "railwayA": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayB": "odpt.Railway:Toei.Mita",
+      "railwayAName": "丸ノ内線",
+      "railwayBName": "三田線",
+      "minutes": 8,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/otemachi/tokyo-metro_marunouchi_line-toei_subway-mita_line.html"
+    },
+    {
+      "place": "大手町",
+      "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayB": "odpt.Railway:Toei.Mita",
+      "railwayAName": "千代田線",
+      "railwayBName": "三田線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/otemachi/toei_subway-mita_line-tokyo-metro_chiyoda_line.html"
+    },
+    {
+      "place": "大手町",
+      "railwayA": "odpt.Railway:TokyoMetro.Hanzomon",
+      "railwayB": "odpt.Railway:TokyoMetro.Tozai",
+      "railwayAName": "半蔵門線",
+      "railwayBName": "東西線",
+      "minutes": 6,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/otemachi/tokyo-metro_hanzomon_line-tokyo-metro_tozai_line.html"
+    },
+    {
+      "place": "大手町",
+      "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayB": "odpt.Railway:TokyoMetro.Tozai",
+      "railwayAName": "千代田線",
+      "railwayBName": "東西線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/otemachi/tokyo-metro_chiyoda_line-tokyo-metro_tozai_line.html"
+    },
+    {
+      "place": "大手町",
+      "railwayA": "odpt.Railway:TokyoMetro.Tozai",
+      "railwayB": "odpt.Railway:Toei.Mita",
+      "railwayAName": "東西線",
+      "railwayBName": "三田線",
+      "minutes": 6,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/otemachi/tokyo-metro_tozai_line-toei_subway-mita_line.html"
+    },
+    {
+      "place": "大手町",
+      "railwayA": "odpt.Railway:TokyoMetro.Hanzomon",
+      "railwayB": "odpt.Railway:Toei.Mita",
+      "railwayAName": "半蔵門線",
+      "railwayBName": "三田線",
+      "minutes": 6,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/otemachi/toei_subway-mita_line-tokyo-metro_hanzomon_line.html"
+    },
+    {
+      "place": "大手町",
+      "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
+      "railwayAName": "千代田線",
+      "railwayBName": "半蔵門線",
+      "minutes": 3,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/otemachi/tokyo-metro_chiyoda_line-tokyo-metro_hanzomon_line.html"
+    }
+  ]
+}
