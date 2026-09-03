@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準・実測乗換（安全側）",
+    "sourceType": "route-planner standard walk / current measured transfer guide",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {
+      "place": "秋葉原 ↔ 岩本町",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:Toei.Shinjuku",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "新宿線",
+      "minutes": 8,
+      "source": "https://ekitan.com/transit/route/sf-1625/st-1483"
+    },
+    {
+      "place": "秋葉原 ↔ 岩本町",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:Toei.Shinjuku",
+      "railwayAName": "山手線",
+      "railwayBName": "新宿線",
+      "minutes": 8,
+      "source": "https://ekitan.com/transit/route/sf-1625/st-1483"
+    },
+    {
+      "place": "秋葉原 ↔ 岩本町",
+      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayB": "odpt.Railway:Toei.Shinjuku",
+      "railwayAName": "中央・総武各駅停車",
+      "railwayBName": "新宿線",
+      "minutes": 8,
+      "source": "https://ekitan.com/transit/route/sf-1625/st-1483"
+    },
+    {
+      "place": "秋葉原 ↔ 岩本町",
+      "railwayA": "odpt.Railway:Toei.Shinjuku",
+      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+      "railwayAName": "新宿線",
+      "railwayBName": "日比谷線",
+      "minutes": 7,
+      "source": "https://tren.hatenablog.com/entry/s08toh16"
+    }
+  ]
+}
