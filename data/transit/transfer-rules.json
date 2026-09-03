@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-03T13:10:38.596Z",
+  "generatedAt": "2026-09-03T13:12:25.236Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -19,6 +19,7 @@
     "transfer-rule-sources.d/2026-09-03-shinjuku-jr-internal.json",
     "transfer-rule-sources.d/2026-09-03-shinjuku-jr-subway.json",
     "transfer-rule-sources.d/2026-09-03-shinjuku-linked-stations.json",
+    "transfer-rule-sources.d/2026-09-03-takadanobaba.json",
     "transfer-rule-sources.d/2026-09-03-tokyo-marunouchi.json",
     "transfer-rule-sources.d/2026-09-03-yurakucho-hibiya.json"
   ],
@@ -2180,6 +2181,45 @@
       "label": "標準乗換",
       "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/seibu-shinjuku_line-toei_subway-shinjuku_line.html",
       "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "高田馬場-山手線-東西線",
+      "fromStation": "odpt.Station:JR-East.Yamanote.Takadanobaba",
+      "toStation": "odpt.Station:TokyoMetro.Tozai.Takadanobaba",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:TokyoMetro.Tozai",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "実測乗換（安全側上限）",
+      "source": "https://tren.hatenablog.com/entry/jy15-t03",
+      "sourceType": "Measured transfer guide; conservative upper bound",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "高田馬場-山手線-西武新宿線",
+      "fromStation": "odpt.Station:JR-East.Yamanote.Takadanobaba",
+      "toStation": "odpt.Station:Seibu.Shinjuku.Takadanobaba",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:Seibu.Shinjuku",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "実測乗換（安全側上限）",
+      "source": "https://tren.hatenablog.com/entry/jy15-ss02",
+      "sourceType": "Measured transfer guide; conservative upper bound",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "高田馬場-東西線-西武新宿線",
+      "fromStation": "odpt.Station:TokyoMetro.Tozai.Takadanobaba",
+      "toStation": "odpt.Station:Seibu.Shinjuku.Takadanobaba",
+      "fromRailway": "odpt.Railway:TokyoMetro.Tozai",
+      "toRailway": "odpt.Railway:Seibu.Shinjuku",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "実測乗換（安全側上限）",
+      "source": "https://wadattsu261.com/content/takadanobaba-metrotozai-seibushinjukuline-transfer-information/",
+      "sourceType": "Measured transfer guide; conservative upper bound",
       "verifiedAt": "2026-09-03"
     },
     {
