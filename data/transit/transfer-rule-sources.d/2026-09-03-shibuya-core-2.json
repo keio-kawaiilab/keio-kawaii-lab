@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換",
+    "sourceType": "Jorudan standard transfer time",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {"place":"渋谷","railwayA":"odpt.Railway:Keio.Inokashira","railwayB":"odpt.Railway:TokyoMetro.Ginza","railwayAName":"井の頭線","railwayBName":"銀座線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/shibuya/keio-inokashira_line-tokyo-metro_ginza_line.html"},
+    {"place":"渋谷","railwayA":"odpt.Railway:Keio.Inokashira","railwayB":"odpt.Railway:Tokyu.DenEnToshi","railwayAName":"井の頭線","railwayBName":"田園都市線","minutes":8,"source":"https://mb.jorudan.co.jp/os/noritxt/shibuya/keio-inokashira_line-tokyo-metro_hanzomon_line.html"},
+    {"place":"渋谷","railwayA":"odpt.Railway:Keio.Inokashira","railwayB":"odpt.Railway:TokyoMetro.Hanzomon","railwayAName":"井の頭線","railwayBName":"半蔵門線","minutes":8,"source":"https://mb.jorudan.co.jp/os/noritxt/shibuya/keio-inokashira_line-tokyo-metro_hanzomon_line.html"},
+    {"place":"渋谷","railwayA":"odpt.Railway:Keio.Inokashira","railwayB":"odpt.Railway:TokyoMetro.Fukutoshin","railwayAName":"井の頭線","railwayBName":"副都心線","minutes":9,"source":"https://mb.jorudan.co.jp/os/noritxt/shibuya/keio-inokashira_line-tokyo-metro_fukutoshin_line.html"},
+    {"place":"渋谷","railwayA":"odpt.Railway:TokyoMetro.Ginza","railwayB":"odpt.Railway:Tokyu.DenEnToshi","railwayAName":"銀座線","railwayBName":"田園都市線","minutes":6,"source":"https://mb.jorudan.co.jp/os/noritxt/shibuya/tokyo-metro_ginza_line-tokyo-metro_hanzomon_line.html"},
+    {"place":"渋谷","railwayA":"odpt.Railway:JR-East.SaikyoKawagoe","railwayB":"odpt.Railway:TokyoMetro.Ginza","railwayAName":"埼京線・川越線","railwayBName":"銀座線","minutes":6,"source":"https://mb.jorudan.co.jp/os/noritxt/shibuya/saikyo_line-tokyo-metro_ginza_line.html"},
+    {"place":"渋谷","railwayA":"odpt.Railway:JR-East.ShonanShinjuku","railwayB":"odpt.Railway:TokyoMetro.Ginza","railwayAName":"湘南新宿ライン","railwayBName":"銀座線","minutes":6,"source":"https://mb.jorudan.co.jp/os/noritxt/shibuya/saikyo_line-tokyo-metro_ginza_line.html"},
+    {"place":"渋谷","railwayA":"odpt.Railway:JR-East.SaikyoKawagoe","railwayB":"odpt.Railway:Tokyu.DenEnToshi","railwayAName":"埼京線・川越線","railwayBName":"田園都市線","minutes":8,"source":"https://mb.jorudan.co.jp/os/noritxt/shibuya/saikyo_line-tokyo-metro_hanzomon_line.html"},
+    {"place":"渋谷","railwayA":"odpt.Railway:JR-East.SaikyoKawagoe","railwayB":"odpt.Railway:TokyoMetro.Hanzomon","railwayAName":"埼京線・川越線","railwayBName":"半蔵門線","minutes":8,"source":"https://mb.jorudan.co.jp/os/noritxt/shibuya/saikyo_line-tokyo-metro_hanzomon_line.html"},
+    {"place":"渋谷","railwayA":"odpt.Railway:JR-East.ShonanShinjuku","railwayB":"odpt.Railway:Tokyu.DenEnToshi","railwayAName":"湘南新宿ライン","railwayBName":"田園都市線","minutes":8,"source":"https://mb.jorudan.co.jp/os/noritxt/shibuya/saikyo_line-tokyo-metro_hanzomon_line.html"},
+    {"place":"渋谷","railwayA":"odpt.Railway:JR-East.ShonanShinjuku","railwayB":"odpt.Railway:TokyoMetro.Hanzomon","railwayAName":"湘南新宿ライン","railwayBName":"半蔵門線","minutes":8,"source":"https://mb.jorudan.co.jp/os/noritxt/shibuya/saikyo_line-tokyo-metro_hanzomon_line.html"},
+    {"place":"渋谷","railwayA":"odpt.Railway:TokyoMetro.Ginza","railwayB":"odpt.Railway:TokyoMetro.Hanzomon","railwayAName":"銀座線","railwayBName":"半蔵門線","minutes":6,"source":"https://mb.jorudan.co.jp/os/noritxt/shibuya/tokyo-metro_ginza_line-tokyo-metro_hanzomon_line.html"},
+    {"place":"渋谷","railwayA":"odpt.Railway:TokyoMetro.Fukutoshin","railwayB":"odpt.Railway:TokyoMetro.Ginza","railwayAName":"副都心線","railwayBName":"銀座線","minutes":7,"source":"https://mb.jorudan.co.jp/os/noritxt/shibuya/tokyo-metro_fukutoshin_line-tokyo-metro_ginza_line.html"}
+  ]
+}
