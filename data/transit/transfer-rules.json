@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-03T13:17:12.826Z",
+  "generatedAt": "2026-09-03T13:18:49.533Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -13,6 +13,7 @@
     "transfer-rule-sources.d/2026-09-03-major-hubs-4.json",
     "transfer-rule-sources.d/2026-09-03-meguro-jr.json",
     "transfer-rule-sources.d/2026-09-03-nippori.json",
+    "transfer-rule-sources.d/2026-09-03-oimachi.json",
     "transfer-rule-sources.d/2026-09-03-otemachi.json",
     "transfer-rule-sources.d/2026-09-03-shibuya-core-2.json",
     "transfer-rule-sources.d/2026-09-03-shibuya-inokashira-jr.json",
@@ -1325,6 +1326,45 @@
       "label": "標準乗換",
       "source": "https://mb.jorudan.co.jp/os/noritxt/nippori/keihintohoku_line-joban_line.html",
       "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "大井町-京浜東北線・根岸線-大井町線",
+      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Oimachi",
+      "toStation": "odpt.Station:Tokyu.Oimachi.Oimachi",
+      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "toRailway": "odpt.Railway:Tokyu.Oimachi",
+      "minutes": 2,
+      "bidirectional": true,
+      "label": "実測乗換",
+      "source": "https://norikaemap.com/oimachi/0121/",
+      "sourceType": "Measured transfer guide",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "大井町-京浜東北線・根岸線-りんかい線",
+      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Oimachi",
+      "toStation": "odpt.Station:TWR.Rinkai.Oimachi",
+      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "toRailway": "odpt.Railway:TWR.Rinkai",
+      "minutes": 6,
+      "bidirectional": true,
+      "label": "実測乗換",
+      "source": "https://norikaemap.com/oimachi/0112",
+      "sourceType": "Measured transfer guide",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "大井町-大井町線-りんかい線",
+      "fromStation": "odpt.Station:Tokyu.Oimachi.Oimachi",
+      "toStation": "odpt.Station:TWR.Rinkai.Oimachi",
+      "fromRailway": "odpt.Railway:Tokyu.Oimachi",
+      "toRailway": "odpt.Railway:TWR.Rinkai",
+      "minutes": 6,
+      "bidirectional": true,
+      "label": "実測乗換",
+      "source": "https://norikaemap.com/oimachi/2112/",
+      "sourceType": "Measured transfer guide",
       "verifiedAt": "2026-09-03"
     },
     {
