@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-03T13:32:03.289Z",
+  "generatedAt": "2026-09-03T13:38:28.655Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-03T13:31:50.468Z",
+  "rulesGeneratedAt": "2026-09-03T13:38:13.551Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 207,
-    "uncuratedPairs": 746,
+    "curatedPairs": 211,
+    "uncuratedPairs": 742,
     "blockedPairs": 7,
-    "curatedSourceRules": 207,
+    "curatedSourceRules": 211,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -290,16 +290,6 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 5,
-      "priorityScore": 10
-    },
-    {
-      "place": "後楽園 ↔ 春日",
-      "totalPairs": 4,
-      "curatedPairs": 0,
-      "uncuratedPairs": 4,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 4,
-      "railwayCount": 4,
       "priorityScore": 10
     },
     {
@@ -1004,6 +994,16 @@
     },
     {
       "place": "多摩川",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 3
+    },
+    {
+      "place": "太田",
       "totalPairs": 3,
       "curatedPairs": 0,
       "uncuratedPairs": 3,
@@ -5244,67 +5244,6 @@
       ]
     },
     {
-      "place": "後楽園 ↔ 春日",
-      "totalPairs": 4,
-      "curatedPairs": 0,
-      "uncuratedPairs": 4,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 4,
-      "railwayCount": 4,
-      "priorityScore": 10,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Toei.Mita",
-          "railwayAName": "三田線",
-          "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
-          "railwayBName": "丸ノ内線",
-          "sameOperator": false,
-          "distanceMeters": 330,
-          "fallbackMinutes": 7,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Toei.Mita",
-          "railwayAName": "三田線",
-          "railwayB": "odpt.Railway:TokyoMetro.Namboku",
-          "railwayBName": "南北線",
-          "sameOperator": false,
-          "distanceMeters": 186,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Toei.Oedo",
-          "railwayAName": "大江戸線",
-          "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
-          "railwayBName": "丸ノ内線",
-          "sameOperator": false,
-          "distanceMeters": 197,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Toei.Oedo",
-          "railwayAName": "大江戸線",
-          "railwayB": "odpt.Railway:TokyoMetro.Namboku",
-          "railwayBName": "南北線",
-          "sameOperator": false,
-          "distanceMeters": 64,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station"
-          ]
-        }
-      ],
-      "sameOperatorPairs": []
-    },
-    {
       "place": "高輪ゲートウェイ ↔ 泉岳寺",
       "totalPairs": 4,
       "curatedPairs": 0,
@@ -5358,6 +5297,67 @@
           "sameOperator": false,
           "distanceMeters": 375,
           "fallbackMinutes": 8,
+          "sources": [
+            "connecting-station"
+          ]
+        }
+      ],
+      "sameOperatorPairs": []
+    },
+    {
+      "place": "秋葉原 ↔ 岩本町",
+      "totalPairs": 4,
+      "curatedPairs": 0,
+      "uncuratedPairs": 4,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 4,
+      "railwayCount": 5,
+      "priorityScore": 10,
+      "crossOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+          "railwayAName": "京浜東北線・根岸線",
+          "railwayB": "odpt.Railway:Toei.Shinjuku",
+          "railwayBName": "新宿線",
+          "sameOperator": false,
+          "distanceMeters": 376,
+          "fallbackMinutes": 8,
+          "sources": [
+            "connecting-station"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.Yamanote",
+          "railwayAName": "山手線",
+          "railwayB": "odpt.Railway:Toei.Shinjuku",
+          "railwayBName": "新宿線",
+          "sameOperator": false,
+          "distanceMeters": 376,
+          "fallbackMinutes": 8,
+          "sources": [
+            "connecting-station"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:Toei.Shinjuku",
+          "railwayAName": "新宿線",
+          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+          "railwayBName": "日比谷線",
+          "sameOperator": false,
+          "distanceMeters": 265,
+          "fallbackMinutes": 6,
+          "sources": [
+            "connecting-station"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+          "railwayAName": "中央・総武各駅停車",
+          "railwayB": "odpt.Railway:Toei.Shinjuku",
+          "railwayBName": "新宿線",
+          "sameOperator": false,
+          "distanceMeters": 347,
+          "fallbackMinutes": 7,
           "sources": [
             "connecting-station"
           ]
@@ -7521,58 +7521,6 @@
       "sources": [
         "connecting-station",
         "same-place-group"
-      ]
-    },
-    {
-      "place": "後楽園 ↔ 春日",
-      "railwayA": "odpt.Railway:Toei.Mita",
-      "railwayAName": "三田線",
-      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
-      "railwayBName": "丸ノ内線",
-      "sameOperator": false,
-      "distanceMeters": 330,
-      "fallbackMinutes": 7,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "後楽園 ↔ 春日",
-      "railwayA": "odpt.Railway:Toei.Mita",
-      "railwayAName": "三田線",
-      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
-      "railwayBName": "南北線",
-      "sameOperator": false,
-      "distanceMeters": 186,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "後楽園 ↔ 春日",
-      "railwayA": "odpt.Railway:Toei.Oedo",
-      "railwayAName": "大江戸線",
-      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
-      "railwayBName": "丸ノ内線",
-      "sameOperator": false,
-      "distanceMeters": 197,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "後楽園 ↔ 春日",
-      "railwayA": "odpt.Railway:Toei.Oedo",
-      "railwayAName": "大江戸線",
-      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
-      "railwayBName": "南北線",
-      "sameOperator": false,
-      "distanceMeters": 64,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station"
       ]
     },
     {
