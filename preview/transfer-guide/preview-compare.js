@@ -11,6 +11,7 @@
   function esc(value){return String(value==null?"":value).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
   function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
   function queryMinute(){var input=document.getElementById("route-datetime");var value=input&&input.value||"";var m=value.match(/T(\d{2}):(\d{2})/);return m?Number(m[1])*60+Number(m[2]):null;}
+  function collapseLabels(values){var result=[];(values||[]).forEach(function(value){if(value&&result[result.length-1]!==value)result.push(value);});return result;}
 
   function dataFromCard(card,index){
     var clocks=parseClock(text(card.querySelector(".result-time strong")));
@@ -28,14 +29,50 @@
     });
     var lines=[];segments.forEach(function(s){if(!lines.some(function(x){return x.label===s.label;}))lines.push({label:s.label,color:s.color});});
     var via=[];card.querySelectorAll(".leg-main h3").forEach(function(h){var value=text(h);if(value)via.push(value);});
-    var signature=lines.map(function(line){return line.label;}).join(">")+"|"+(transfers==null?99:transfers)+"|"+via.join(">");
-    return{originalIndex:index,departure:clocks[0],arrival:clocks[1],duration:duration,transfers:transfers==null?99:transfers,fare:fare,lines:lines,segments:segments,via:via,signature:signature,variant:0,card:card};
+    var family=collapseLabels(segments.map(function(s){return s.label;})).join(">");
+    if(!family)family=lines.map(function(line){return line.label;}).join(">");
+    var routeShape=family+"|"+(transfers==null?99:transfers)+"|"+via.join(">");
+    return{originalIndex:index,departure:clocks[0],arrival:clocks[1],duration:duration,transfers:transfers==null?99:transfers,fare:fare,lines:lines,segments:segments,via:via,family:family,routeShape:routeShape,variant:0,card:card};
+  }
+
+  function dominates(a,b){
+    if(!Number.isFinite(a.departure)||!Number.isFinite(a.arrival)||!Number.isFinite(b.departure)||!Number.isFinite(b.arrival))return false;
+    var noWorse=a.departure>=b.departure&&a.arrival<=b.arrival&&a.transfers<=b.transfers;
+    var strictlyBetter=a.departure>b.departure||a.arrival<b.arrival||a.transfers<b.transfers;
+    return noWorse&&strictlyBetter;
+  }
+
+  function pruneFamily(group){
+    return group.filter(function(item,index){
+      return !group.some(function(other,otherIndex){return otherIndex!==index&&dominates(other,item);});
+    });
   }
 
   function prioritize(items){
-    var groups=[],bySignature=new Map();
-    items.forEach(function(item){var group=bySignature.get(item.signature);if(!group){group=[];bySignature.set(item.signature,group);groups.push(group);}item.variant=group.length;if(group.length<3)group.push(item);});
-    var ordered=[];for(var round=0;round<3&&ordered.length<12;round++){groups.forEach(function(group){if(group[round]&&ordered.length<12)ordered.push(group[round]);});}return ordered;
+    var groups=[],byFamily=new Map();
+    items.forEach(function(item){
+      var key=item.family||item.routeShape||String(item.originalIndex),group=byFamily.get(key);
+      if(!group){group=[];byFamily.set(key,group);groups.push(group);}
+      group.push(item);
+    });
+    groups=groups.map(pruneFamily).filter(function(group){return group.length;});
+    var ordered=[];
+
+    // First pass: one representative from every genuinely different railway family.
+    groups.forEach(function(group){
+      if(ordered.length>=12)return;
+      group[0].variant=0;ordered.push(group[0]);
+    });
+
+    // Second pass: at most one extra variant per family, preferring a different transfer pattern
+    // over merely taking the next train on the exact same route.
+    groups.forEach(function(group){
+      if(ordered.length>=12||group.length<2)return;
+      var representative=group[0];
+      var alternate=group.find(function(item,index){return index>0&&item.routeShape!==representative.routeShape;})||group[1];
+      if(alternate){alternate.variant=1;ordered.push(alternate);}
+    });
+    return ordered;
   }
 
   function timelineHtml(item,start,end){
@@ -58,7 +95,7 @@
     if(item.arrival===fastestArrival)flags.push('<span class="route-flag fast">早</span>');
     if(item.transfers===leastTransfers)flags.push('<span class="route-flag easy">楽</span>');
     if(cheapestFare!=null&&item.fare===cheapestFare)flags.push('<span class="route-flag cheap">安</span>');
-    var variant=item.variant>0?'<span class="route-choice-variant">同ルート '+(item.variant+1)+'本目</span>':'<span class="route-choice-variant primary">別経路優先</span>';
+    var variant=item.variant>0?'<span class="route-choice-variant">同系統の別案</span>':'<span class="route-choice-variant primary">別系統優先</span>';
     return '<button type="button" class="route-choice" data-route-choice="'+visualIndex+'" aria-pressed="false">'
       +'<span class="route-choice-top"><span class="route-choice-rank">経路 '+(visualIndex+1)+'</span>'+variant+'</span>'
       +'<span class="route-choice-duration"><strong>'+item.duration+'分</strong><small>所要時間</small></span>'
@@ -74,7 +111,7 @@
     var cards=Array.from(list.querySelectorAll(":scope > .result-card"));if(!cards.length)return;
     list.dataset.compareEnhanced="1";list.classList.add("route-original-results");
     var items=prioritize(cards.map(dataFromCard));
-    var distinctCount=new Set(items.map(function(i){return i.signature;})).size;
+    var distinctCount=new Set(items.map(function(i){return i.family;})).size;
     var fastestArrival=Math.min.apply(null,items.map(function(i){return Number.isFinite(i.arrival)?i.arrival:99999;}));
     var leastTransfers=Math.min.apply(null,items.map(function(i){return i.transfers;}));
     var fares=items.map(function(i){return i.fare;}).filter(Number.isFinite),cheapestFare=fares.length?Math.min.apply(null,fares):null;
@@ -83,7 +120,7 @@
     var scaleStart=Number.isFinite(requested)?Math.min(requested,minDeparture):minDeparture;
     var scaleEnd=Math.max(scaleStart+30,maxArrival+2);
     var shell=document.createElement("div");shell.className="route-comparison";
-    shell.innerHTML='<div class="route-comparison-head"><div><strong>'+items.length+'候補を比較</strong><span>'+distinctCount+'種類の経路 / 棒は全候補で共通の時間軸です</span></div><div class="route-comparison-legend"><span class="route-flag fast">早</span><small>最速到着</small><span class="route-flag easy">楽</span><small>乗換最少</small>'+(cheapestFare!=null?'<span class="route-flag cheap">安</span><small>最安</small>':'<span class="route-flag muted">安</span><small>運賃DB準備中</small>')+'</div></div><div class="route-time-scale"><b>'+clock(scaleStart)+'</b><span>共通時間軸</span><b>'+clock(scaleEnd)+'</b></div><div class="route-choice-strip">'+items.map(function(item,index){return summaryButton(item,index,fastestArrival,leastTransfers,cheapestFare,scaleStart,scaleEnd);}).join("")+'</div><div class="route-detail-shell"><div class="route-detail-placeholder">見たい経路をタップすると、乗る列車・乗換駅・各区間の発着時刻を詳しく表示します。</div></div>';
+    shell.innerHTML='<div class="route-comparison-head"><div><strong>'+items.length+'候補を比較</strong><span>'+distinctCount+'系統を優先表示 / 同じ路線系列の亜種は後ろにまとめています</span></div><div class="route-comparison-legend"><span class="route-flag fast">早</span><small>最速到着</small><span class="route-flag easy">楽</span><small>乗換最少</small>'+(cheapestFare!=null?'<span class="route-flag cheap">安</span><small>最安</small>':'<span class="route-flag muted">安</span><small>運賃DB準備中</small>')+'</div></div><div class="route-time-scale"><b>'+clock(scaleStart)+'</b><span>共通時間軸</span><b>'+clock(scaleEnd)+'</b></div><div class="route-choice-strip">'+items.map(function(item,index){return summaryButton(item,index,fastestArrival,leastTransfers,cheapestFare,scaleStart,scaleEnd);}).join("")+'</div><div class="route-detail-shell"><div class="route-detail-placeholder">見たい経路をタップすると、乗る列車・乗換駅・各区間の発着時刻を詳しく表示します。</div></div>';
     list.parentNode.insertBefore(shell,list);shell._routeItems=items;
   }
 
