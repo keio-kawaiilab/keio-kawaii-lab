@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換",
+    "sourceType": "Jorudan standard transfer time",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {
+      "place": "神田",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayAName": "山手線",
+      "railwayBName": "銀座線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/kanda/yamanote_line-tokyo-metro_ginza_line.html"
+    },
+    {
+      "place": "神田",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "銀座線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/kanda/keihintohoku_line-tokyo-metro_ginza_line.html"
+    },
+    {
+      "place": "神田",
+      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayB": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayAName": "中央線快速",
+      "railwayBName": "銀座線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/kanda/chuo_line-tokyo-metro_ginza_line.html"
+    }
+  ]
+}
