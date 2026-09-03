@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換",
+    "sourceType": "Jorudan standard transfer time",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {"place":"新橋","railwayA":"odpt.Railway:Yurikamome.Yurikamome","railwayB":"odpt.Railway:JR-East.Yamanote","railwayAName":"ゆりかもめ","railwayBName":"山手線","minutes":6,"source":"https://mb.jorudan.co.jp/os/noritxt/shimbashi/yurikamome-yamanote_line.html"},
+    {"place":"新橋","railwayA":"odpt.Railway:Yurikamome.Yurikamome","railwayB":"odpt.Railway:JR-East.Tokaido","railwayAName":"ゆりかもめ","railwayBName":"東海道線","minutes":6,"source":"https://mb.jorudan.co.jp/os/noritxt/shimbashi/yurikamome-tokaido_line_jr_east.html"},
+    {"place":"新橋","railwayA":"odpt.Railway:Yurikamome.Yurikamome","railwayB":"odpt.Railway:JR-East.KeihinTohokuNegishi","railwayAName":"ゆりかもめ","railwayBName":"京浜東北線・根岸線","minutes":6,"source":"https://mb.jorudan.co.jp/os/noritxt/shimbashi/yurikamome-keihintohoku_line.html"},
+    {"place":"新橋","railwayA":"odpt.Railway:Yurikamome.Yurikamome","railwayB":"odpt.Railway:JR-East.Yokosuka","railwayAName":"ゆりかもめ","railwayBName":"横須賀線","minutes":6,"source":"https://mb.jorudan.co.jp/os/noritxt/shimbashi/yurikamome-yokosuka_line.html"},
+    {"place":"新橋","railwayA":"odpt.Railway:Yurikamome.Yurikamome","railwayB":"odpt.Railway:TokyoMetro.Ginza","railwayAName":"ゆりかもめ","railwayBName":"銀座線","minutes":6,"source":"https://mb.jorudan.co.jp/os/noritxt/shimbashi/yurikamome-tokyo-metro_ginza_line.html"},
+    {"place":"新橋","railwayA":"odpt.Railway:Yurikamome.Yurikamome","railwayB":"odpt.Railway:Toei.Asakusa","railwayAName":"ゆりかもめ","railwayBName":"浅草線","minutes":6,"source":"https://mb.jorudan.co.jp/os/noritxt/shimbashi/yurikamome-toei_subway-asakusa_line.html"},
+    {"place":"新橋","railwayA":"odpt.Railway:TokyoMetro.Ginza","railwayB":"odpt.Railway:JR-East.Tokaido","railwayAName":"銀座線","railwayBName":"東海道線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/shimbashi/tokyo-metro_ginza_line-tokaido_line_jr_east.html"},
+    {"place":"新橋","railwayA":"odpt.Railway:TokyoMetro.Ginza","railwayB":"odpt.Railway:JR-East.KeihinTohokuNegishi","railwayAName":"銀座線","railwayBName":"京浜東北線・根岸線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/shimbashi/tokyo-metro_ginza_line-keihintohoku_line.html"},
+    {"place":"新橋","railwayA":"odpt.Railway:TokyoMetro.Ginza","railwayB":"odpt.Railway:JR-East.Yokosuka","railwayAName":"銀座線","railwayBName":"横須賀線","minutes":6,"source":"https://mb.jorudan.co.jp/os/noritxt/shimbashi/tokyo-metro_ginza_line-yokosuka_line.html"},
+    {"place":"新橋","railwayA":"odpt.Railway:Toei.Asakusa","railwayB":"odpt.Railway:JR-East.Yamanote","railwayAName":"浅草線","railwayBName":"山手線","minutes":6,"source":"https://mb.jorudan.co.jp/os/noritxt/shimbashi/toei_subway-asakusa_line-yamanote_line.html"},
+    {"place":"新橋","railwayA":"odpt.Railway:Toei.Asakusa","railwayB":"odpt.Railway:JR-East.Tokaido","railwayAName":"浅草線","railwayBName":"東海道線","minutes":6,"source":"https://mb.jorudan.co.jp/os/noritxt/shimbashi/tokaido_line_jr_east-toei_subway-asakusa_line.html"},
+    {"place":"新橋","railwayA":"odpt.Railway:Toei.Asakusa","railwayB":"odpt.Railway:JR-East.KeihinTohokuNegishi","railwayAName":"浅草線","railwayBName":"京浜東北線・根岸線","minutes":6,"source":"https://mb.jorudan.co.jp/os/noritxt/shimbashi/toei_subway-asakusa_line-keihintohoku_line.html"},
+    {"place":"新橋","railwayA":"odpt.Railway:Toei.Asakusa","railwayB":"odpt.Railway:JR-East.Yokosuka","railwayAName":"浅草線","railwayBName":"横須賀線","minutes":6,"source":"https://mb.jorudan.co.jp/os/noritxt/shimbashi/toei_subway-asakusa_line-yokosuka_line.html"},
+    {"place":"新橋","railwayA":"odpt.Railway:JR-East.Tokaido","railwayB":"odpt.Railway:JR-East.Yokosuka","railwayAName":"東海道線","railwayBName":"横須賀線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/shimbashi/yokosuka_line-tokaido_line_jr_east.html"}
+  ]
+}
