@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "実測乗換",
+    "sourceType": "Measured transfer guide",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {
+      "place": "武蔵溝ノ口 ↔ 溝の口",
+      "railwayA": "odpt.Railway:JR-East.Nambu",
+      "railwayB": "odpt.Railway:Tokyu.DenEnToshi",
+      "railwayAName": "南武線",
+      "railwayBName": "田園都市線",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/musashimizonokuchi-mizonokuchi-jrnambu-tokyudenentoshi-oimachiline-transfer-information/"
+    },
+    {
+      "place": "武蔵溝ノ口 ↔ 溝の口",
+      "railwayA": "odpt.Railway:JR-East.Nambu",
+      "railwayB": "odpt.Railway:Tokyu.Oimachi",
+      "railwayAName": "南武線",
+      "railwayBName": "大井町線",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/musashimizonokuchi-mizonokuchi-jrnambu-tokyudenentoshi-oimachiline-transfer-information/"
+    }
+  ]
+}
