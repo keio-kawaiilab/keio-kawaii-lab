@@ -1,0 +1,148 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準・実測乗換（安全側）",
+    "sourceType": "current route-planner transfer time",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "新木場",
+      "railwayA": "odpt.Railway:JR-East.Keiyo",
+      "railwayB": "odpt.Railway:TWR.Rinkai",
+      "railwayAName": "京葉線",
+      "railwayBName": "りんかい線",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%9D%B1%E4%BA%AC%E3%83%86%E3%83%AC%E3%83%9D%E3%83%BC%E3%83%88_%E8%88%9E%E6%B5%9C.html"
+    },
+    {
+      "place": "新木場",
+      "railwayA": "odpt.Railway:JR-East.Keiyo",
+      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+      "railwayAName": "京葉線",
+      "railwayBName": "有楽町線",
+      "minutes": 4,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%88%9E%E6%B5%9C_%E6%9C%89%E6%A5%BD%E7%94%BA.html"
+    },
+    {
+      "place": "新木場",
+      "railwayA": "odpt.Railway:TWR.Rinkai",
+      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+      "railwayAName": "りんかい線",
+      "railwayBName": "有楽町線",
+      "minutes": 4,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%B1%8A%E6%B4%B2_%E6%9D%B1%E4%BA%AC%E3%83%86%E3%83%AC%E3%83%9D%E3%83%BC%E3%83%88.html"
+    },
+    {
+      "place": "柏",
+      "railwayA": "odpt.Railway:JR-East.JobanRapid",
+      "railwayB": "odpt.Railway:Tobu.TobuUrbanPark",
+      "railwayAName": "常磐線快速",
+      "railwayBName": "東武アーバンパークライン",
+      "minutes": 4,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%96%B0%E6%9F%8F_%E4%B8%8A%E9%87%8E.html"
+    },
+    {
+      "place": "柏",
+      "railwayA": "odpt.Railway:JR-East.JobanLocal",
+      "railwayB": "odpt.Railway:Tobu.TobuUrbanPark",
+      "railwayAName": "常磐線各駅停車",
+      "railwayBName": "東武アーバンパークライン",
+      "minutes": 4,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%9D%B1%E4%BA%AC_%E6%96%B0%E6%9F%8F.html"
+    },
+    {
+      "place": "柏",
+      "railwayA": "odpt.Railway:JR-East.JobanLocal",
+      "railwayB": "odpt.Railway:JR-East.JobanRapid",
+      "railwayAName": "常磐線各駅停車",
+      "railwayBName": "常磐線快速",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%8C%97%E6%9F%8F_%E4%B8%8A%E9%87%8E.html"
+    },
+    {
+      "place": "松戸",
+      "railwayA": "odpt.Railway:JR-East.JobanRapid",
+      "railwayB": "odpt.Railway:Keisei.Matsudo",
+      "railwayAName": "常磐線快速",
+      "railwayBName": "松戸線",
+      "minutes": 4,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%96%B0%E5%85%AB%E6%9F%B1_%E4%B8%8A%E9%87%8E.html"
+    },
+    {
+      "place": "松戸",
+      "railwayA": "odpt.Railway:JR-East.JobanLocal",
+      "railwayB": "odpt.Railway:Keisei.Matsudo",
+      "railwayAName": "常磐線各駅停車",
+      "railwayBName": "松戸線",
+      "minutes": 4,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%8C%97%E6%9D%BE%E6%88%B8_%E6%96%B0%E5%85%AB%E6%9F%B1.html"
+    },
+    {
+      "place": "松戸",
+      "railwayA": "odpt.Railway:JR-East.JobanLocal",
+      "railwayB": "odpt.Railway:JR-East.JobanRapid",
+      "railwayAName": "常磐線各駅停車",
+      "railwayBName": "常磐線快速",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%8C%97%E6%9D%BE%E6%88%B8_%E4%B8%8A%E9%87%8E.html"
+    },
+    {
+      "place": "南千住",
+      "railwayA": "odpt.Railway:JR-East.JobanRapid",
+      "railwayB": "odpt.Railway:MIR.TsukubaExpress",
+      "railwayAName": "常磐線快速",
+      "railwayBName": "つくばエクスプレス",
+      "minutes": 4,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%8D%97%E6%B5%81%E5%B1%B1_%E6%9D%B1%E4%BA%AC.html"
+    },
+    {
+      "place": "南千住",
+      "railwayA": "odpt.Railway:MIR.TsukubaExpress",
+      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+      "railwayAName": "つくばエクスプレス",
+      "railwayBName": "日比谷線",
+      "minutes": 5,
+      "source": "https://www.youtube.com/watch?v=pnkXjAS0knY",
+      "sourceType": "Measured transfer guide; conservative bound"
+    },
+    {
+      "place": "南千住",
+      "railwayA": "odpt.Railway:JR-East.JobanRapid",
+      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+      "railwayAName": "常磐線快速",
+      "railwayBName": "日比谷線",
+      "minutes": 4,
+      "source": "https://www.youtube.com/watch?v=pnkXjAS0knY",
+      "sourceType": "Measured station-layout guide; conservative inferred bound"
+    },
+    {
+      "place": "国分寺",
+      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayB": "odpt.Railway:Seibu.Kokubunji",
+      "railwayAName": "中央線快速",
+      "railwayBName": "国分寺線",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%A5%BF%E6%AD%A6%E6%96%B0%E5%AE%BF_%E6%9D%B1%E6%9D%91%E5%B1%B1.html"
+    },
+    {
+      "place": "国分寺",
+      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayB": "odpt.Railway:Seibu.Tamako",
+      "railwayAName": "中央線快速",
+      "railwayBName": "多摩湖線",
+      "minutes": 4,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%96%B0%E5%AE%BF_%E4%B8%80%E6%A9%8B%E5%AD%A6%E5%9C%92.html"
+    },
+    {
+      "place": "国分寺",
+      "railwayA": "odpt.Railway:Seibu.Kokubunji",
+      "railwayB": "odpt.Railway:Seibu.Tamako",
+      "railwayAName": "国分寺線",
+      "railwayBName": "多摩湖線",
+      "minutes": 2,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%B0%8F%E5%B9%B3_%E4%B8%80%E6%A9%8B%E5%AD%A6%E5%9C%92.html"
+    }
+  ]
+}
