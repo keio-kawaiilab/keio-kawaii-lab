@@ -4,11 +4,10 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - "scripts/ticket_history_guard.py"
       - "scripts/ticket_history_pia_guard.py"
-      - "scripts/ticket_classification_guard.py"
-      - "scripts/test_ticket_history_guard.py"
+      - "scripts/ticket_classification_guard_v2.py"
       - "scripts/test_ticket_history_pia_guard.py"
+      - "scripts/test_ticket_classification_guard_v2.py"
       - "data/ticket-source-registry.json"
       - ".github/workflows/ticket-history-guard.yml"
   schedule:
@@ -43,13 +42,13 @@ jobs:
         env:
           PYTHONPATH: scripts
         run: |
-          python -m unittest scripts/test_ticket_history_guard.py
+          python -m unittest scripts/test_ticket_classification_guard_v2.py
           python -m unittest scripts/test_ticket_history_pia_guard.py
 
       - name: Quarantine unsupported ticket classifications
         env:
           PYTHONPATH: scripts
-        run: python scripts/ticket_classification_guard.py
+        run: python scripts/ticket_classification_guard_v2.py
 
       - name: Preserve ended and sold-out Ticket Pia sales
         env:
