@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-03T13:24:54.554Z",
+  "generatedAt": "2026-09-03T13:31:50.468Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -29,6 +29,7 @@
     "transfer-rule-sources.d/2026-09-03-takadanobaba.json",
     "transfer-rule-sources.d/2026-09-03-tamachi-mita.json",
     "transfer-rule-sources.d/2026-09-03-tokyo-marunouchi.json",
+    "transfer-rule-sources.d/2026-09-03-yotsuya.json",
     "transfer-rule-sources.d/2026-09-03-yurakucho-hibiya.json"
   ],
   "description": "Curated station/railway-specific transfer times. Generated from transfer-rule source files and resolved against transfer-candidates.json.",
@@ -2553,6 +2554,84 @@
       "label": "標準乗換",
       "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/tokyo-metro_marunouchi_line-keiyo_line.html",
       "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "四ツ谷-中央線快速-中央・総武各駅停車",
+      "fromStation": "odpt.Station:JR-East.ChuoRapid.Yotsuya",
+      "toStation": "odpt.Station:JR-East.ChuoSobuLocal.Yotsuya",
+      "fromRailway": "odpt.Railway:JR-East.ChuoRapid",
+      "toRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "実測乗換（安全側）",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E4%BF%A1%E6%BF%83%E7%94%BA_%E6%9D%B1%E4%BA%AC.html",
+      "sourceType": "measured transfer guide / route-planner observed transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "四ツ谷-中央線快速-丸ノ内線",
+      "fromStation": "odpt.Station:JR-East.ChuoRapid.Yotsuya",
+      "toStation": "odpt.Station:TokyoMetro.Marunouchi.Yotsuya",
+      "fromRailway": "odpt.Railway:JR-East.ChuoRapid",
+      "toRailway": "odpt.Railway:TokyoMetro.Marunouchi",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "実測乗換（安全側）",
+      "source": "https://tren.hatenablog.com/entry/jc04",
+      "sourceType": "measured transfer guide / route-planner observed transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "四ツ谷-中央・総武各駅停車-丸ノ内線",
+      "fromStation": "odpt.Station:JR-East.ChuoSobuLocal.Yotsuya",
+      "toStation": "odpt.Station:TokyoMetro.Marunouchi.Yotsuya",
+      "fromRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "toRailway": "odpt.Railway:TokyoMetro.Marunouchi",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "実測乗換（安全側）",
+      "source": "https://tren.hatenablog.com/entry/jc04",
+      "sourceType": "measured transfer guide / route-planner observed transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "四ツ谷-中央線快速-南北線",
+      "fromStation": "odpt.Station:JR-East.ChuoRapid.Yotsuya",
+      "toStation": "odpt.Station:TokyoMetro.Namboku.Yotsuya",
+      "fromRailway": "odpt.Railway:JR-East.ChuoRapid",
+      "toRailway": "odpt.Railway:TokyoMetro.Namboku",
+      "minutes": 6,
+      "bidirectional": true,
+      "label": "実測乗換（安全側）",
+      "source": "https://norikaemap.com/yotsuya/1301/",
+      "sourceType": "measured transfer guide / route-planner observed transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "四ツ谷-中央・総武各駅停車-南北線",
+      "fromStation": "odpt.Station:JR-East.ChuoSobuLocal.Yotsuya",
+      "toStation": "odpt.Station:TokyoMetro.Namboku.Yotsuya",
+      "fromRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "toRailway": "odpt.Railway:TokyoMetro.Namboku",
+      "minutes": 6,
+      "bidirectional": true,
+      "label": "実測乗換（安全側）",
+      "source": "https://norikaemap.com/yotsuya/1303/",
+      "sourceType": "measured transfer guide / route-planner observed transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "四ツ谷-丸ノ内線-南北線",
+      "fromStation": "odpt.Station:TokyoMetro.Marunouchi.Yotsuya",
+      "toStation": "odpt.Station:TokyoMetro.Namboku.Yotsuya",
+      "fromRailway": "odpt.Railway:TokyoMetro.Marunouchi",
+      "toRailway": "odpt.Railway:TokyoMetro.Namboku",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "実測乗換（安全側）",
+      "source": "https://tren.hatenablog.com/entry/m12n08",
+      "sourceType": "measured transfer guide / route-planner observed transfer time",
       "verifiedAt": "2026-09-03"
     },
     {
