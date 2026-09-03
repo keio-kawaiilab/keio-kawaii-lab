@@ -1,0 +1,53 @@
+name: Apply transfer blocks integration
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/apply-transfer-blocks-integration.mjs'
+      - 'scripts/test_transfer_blocks.js'
+      - '.github/workflows/apply-transfer-blocks-integration.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-transfer-blocks-integration
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build current transfer blocks for validation
+        run: node scripts/build-transfer-blocks.mjs
+      - name: Apply integration
+        run: node scripts/apply-transfer-blocks-integration.mjs
+      - name: Validate JavaScript
+        run: |
+          node --check route.js
+          node --check route-core.js
+          node --check scripts/test_transfer_blocks.js
+      - name: Run route tests
+        run: |
+          node scripts/test_route_core.js
+          node scripts/test_transfer_blocks.js
+          if [ -f scripts/test_transit_snapshot.js ]; then node scripts/test_transit_snapshot.js; fi
+      - name: Commit route integration
+        run: |
+          if [ -z "$(git status --porcelain -- route.js route-core.js)" ]; then
+            echo 'Transfer-block integration already present.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add route.js route-core.js
+          git commit -m 'Block false same-name transfer shortcuts'
+          git push
