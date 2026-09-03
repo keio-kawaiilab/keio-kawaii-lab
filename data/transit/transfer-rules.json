@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-03T13:23:33.238Z",
+  "generatedAt": "2026-09-03T13:24:54.554Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -10,6 +10,7 @@
     "transfer-rule-sources.d/2026-09-03-iidabashi-internal.json",
     "transfer-rule-sources.d/2026-09-03-ikebukuro-core.json",
     "transfer-rule-sources.d/2026-09-03-jiyugaoka.json",
+    "transfer-rule-sources.d/2026-09-03-kanda-metro.json",
     "transfer-rule-sources.d/2026-09-03-major-hubs-2.json",
     "transfer-rule-sources.d/2026-09-03-major-hubs-3.json",
     "transfer-rule-sources.d/2026-09-03-major-hubs-4.json",
@@ -953,6 +954,45 @@
       "label": "実測乗換",
       "source": "https://norikaemap.com/jiyugaoka/0502/",
       "sourceType": "Measured transfer guide",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "神田-山手線-銀座線",
+      "fromStation": "odpt.Station:JR-East.Yamanote.Kanda",
+      "toStation": "odpt.Station:TokyoMetro.Ginza.Kanda",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:TokyoMetro.Ginza",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/kanda/yamanote_line-tokyo-metro_ginza_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "神田-京浜東北線・根岸線-銀座線",
+      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Kanda",
+      "toStation": "odpt.Station:TokyoMetro.Ginza.Kanda",
+      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "toRailway": "odpt.Railway:TokyoMetro.Ginza",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/kanda/keihintohoku_line-tokyo-metro_ginza_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "神田-中央線快速-銀座線",
+      "fromStation": "odpt.Station:JR-East.ChuoRapid.Kanda",
+      "toStation": "odpt.Station:TokyoMetro.Ginza.Kanda",
+      "fromRailway": "odpt.Railway:JR-East.ChuoRapid",
+      "toRailway": "odpt.Railway:TokyoMetro.Ginza",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/kanda/chuo_line-tokyo-metro_ginza_line.html",
+      "sourceType": "Jorudan standard transfer time",
       "verifiedAt": "2026-09-03"
     },
     {
