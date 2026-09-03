@@ -65,7 +65,9 @@
     return first;
   };
 
-  function createModel(payloads){
+  function stationPairKey(a,b){return a<b?a+"\u0001"+b:b+"\u0001"+a;}
+  function createModel(payloads,options){
+    var blockedStationPairs=new Set(options&&options.blockedStationPairs||[]);
     var graph=new Map(),stationById=new Map(),railwayById=new Map(),trainTypeById=new Map(),railwaysByStation=new Map();
     function addEdge(from,to,edge){if(!from||!to||from===to)return;if(!graph.has(from))graph.set(from,[]);graph.get(from).push(Object.assign({to:to},edge));}
     (payloads||[]).forEach(function(payload){
@@ -145,6 +147,7 @@
 
     stationGroups.forEach(function(group){
       for(var i=0;i<group.nodes.length;i++)for(var j=i+1;j<group.nodes.length;j++){
+        if(blockedStationPairs.has(stationPairKey(group.nodes[i],group.nodes[j])))continue;
         var cost=transferCost(group.nodes[i],group.nodes[j]);
         addEdge(group.nodes[i],group.nodes[j],{type:"transfer",label:"乗換",cost:cost});
         addEdge(group.nodes[j],group.nodes[i],{type:"transfer",label:"乗換",cost:cost});

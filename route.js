@@ -20,6 +20,7 @@
   var timetableNetworks=[];
   var timetableNetworkCache=new Map();
   var transferRulesByKey=new Map();
+  var blockedStationPairs=[];
 
   function esc(value){return String(value==null?"":value).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
   function safeColor(value){var color=String(value||"").trim();return /^#[0-9a-f]{6}$/i.test(color)?color:"#14386f";}
@@ -58,6 +59,9 @@
     if(!context)return null;
     return transferRulesByKey.get(transferRuleKey(context.fromStationId,context.toStationId,context.fromRailway,context.toRailway))||null;
   }
+  function indexTransferBlocks(payload){
+    blockedStationPairs=payload&&Array.isArray(payload.blockedStationPairs)?payload.blockedStationPairs.map(String):[];
+  }
   function fillStations(){stationList.innerHTML=model.stations.map(function(station){return'<option value="'+esc(station.label)+'"></option>';}).join("");}
   function localDatetimeValue(date){
     var shifted=new Date(date.getTime()-date.getTimezoneOffset()*60000);
@@ -86,11 +90,15 @@
           fetchJson(base+"timetable-index.json?v="+version).catch(function(){return null;})
         ]).then(function(values){return{slug:slug,base:base,entities:values[0],index:values[1]};});
       })).then(function(bundles){
-        return fetchJson("./data/transit/transfer-rules.json?v="+encodeURIComponent(manifest.fetchedAt||Date.now())).catch(function(error){console.warn(error);return{rules:[]};}).then(function(payload){
-          indexTransferRules(payload);return bundles;
+        var dataVersion=encodeURIComponent(manifest.fetchedAt||Date.now());
+        return Promise.all([
+          fetchJson("./data/transit/transfer-rules.json?v="+dataVersion).catch(function(error){console.warn(error);return{rules:[]};}),
+          fetchJson("./data/transit/transfer-blocks.json?v="+dataVersion).catch(function(error){console.warn(error);return{blockedStationPairs:[]};})
+        ]).then(function(payloads){
+          indexTransferRules(payloads[0]);indexTransferBlocks(payloads[1]);return bundles;
         });
       }).then(function(bundles){
-        model=core.createModel(bundles.map(function(bundle){return bundle.entities;}).filter(Boolean));
+        model=core.createModel(bundles.map(function(bundle){return bundle.entities;}).filter(Boolean),{blockedStationPairs:blockedStationPairs});
         if(!model.stations.length)throw new Error("駅データが空です");
         timetableLines.clear();timetableNetworks=[];timetableNetworkCache.clear();
         bundles.forEach(function(bundle){
