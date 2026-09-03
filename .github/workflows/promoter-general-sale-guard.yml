@@ -1,0 +1,65 @@
+name: Promoter General Sale Guard
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "scripts/promoter_general_sale_guard.py"
+      - "scripts/test_promoter_general_sale_guard.py"
+      - ".github/workflows/promoter-general-sale-guard.yml"
+  schedule:
+    - cron: "17 18 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: promoter-general-sale-guard
+  cancel-in-progress: false
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Regression tests
+        env:
+          PYTHONPATH: scripts
+        run: python -m unittest scripts/test_promoter_general_sale_guard.py
+
+      - name: Recover promoter general-sale history
+        env:
+          PYTHONPATH: scripts
+        run: python scripts/promoter_general_sale_guard.py
+
+      - name: Archive verified ticket observations
+        env:
+          PYTHONPATH: scripts
+        run: python scripts/archive_ticket_history.py
+
+      - name: Commit recovered ticket history
+        shell: bash
+        run: |
+          if git diff --quiet -- data/live-events.json data/ticket-history.json; then
+            echo "No promoter ticket-history changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/live-events.json data/ticket-history.json
+          git commit -m "Recover promoter general sale history"
+          git pull --rebase origin main
+          git push origin HEAD:main
