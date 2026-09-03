@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-03T13:14:59.935Z",
+  "generatedAt": "2026-09-03T13:17:41.065Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-03T13:14:40.659Z",
+  "rulesGeneratedAt": "2026-09-03T13:17:12.826Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 184,
-    "uncuratedPairs": 769,
+    "curatedPairs": 187,
+    "uncuratedPairs": 766,
     "blockedPairs": 7,
-    "curatedSourceRules": 184,
+    "curatedSourceRules": 187,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -180,16 +180,6 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 6,
       "railwayCount": 5,
-      "priorityScore": 15
-    },
-    {
-      "place": "目黒",
-      "totalPairs": 6,
-      "curatedPairs": 0,
-      "uncuratedPairs": 6,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 6,
-      "railwayCount": 4,
       "priorityScore": 15
     },
     {
@@ -470,6 +460,16 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 3,
       "railwayCount": 3,
+      "priorityScore": 7.5
+    },
+    {
+      "place": "目黒",
+      "totalPairs": 6,
+      "curatedPairs": 3,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 3,
+      "railwayCount": 4,
       "priorityScore": 7.5
     },
     {
@@ -4136,97 +4136,6 @@
       "sameOperatorPairs": []
     },
     {
-      "place": "目黒",
-      "totalPairs": 6,
-      "curatedPairs": 0,
-      "uncuratedPairs": 6,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 6,
-      "railwayCount": 4,
-      "priorityScore": 15,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Toei.Mita",
-          "railwayAName": "三田線",
-          "railwayB": "odpt.Railway:TokyoMetro.Namboku",
-          "railwayBName": "南北線",
-          "sameOperator": false,
-          "distanceMeters": 129,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Toei.Mita",
-          "railwayAName": "三田線",
-          "railwayB": "odpt.Railway:Tokyu.Meguro",
-          "railwayBName": "目黒線",
-          "sameOperator": false,
-          "distanceMeters": 74,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Yamanote",
-          "railwayAName": "山手線",
-          "railwayB": "odpt.Railway:Toei.Mita",
-          "railwayBName": "三田線",
-          "sameOperator": false,
-          "distanceMeters": 88,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Yamanote",
-          "railwayAName": "山手線",
-          "railwayB": "odpt.Railway:TokyoMetro.Namboku",
-          "railwayBName": "南北線",
-          "sameOperator": false,
-          "distanceMeters": 55,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Yamanote",
-          "railwayAName": "山手線",
-          "railwayB": "odpt.Railway:Tokyu.Meguro",
-          "railwayBName": "目黒線",
-          "sameOperator": false,
-          "distanceMeters": 40,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Namboku",
-          "railwayAName": "南北線",
-          "railwayB": "odpt.Railway:Tokyu.Meguro",
-          "railwayBName": "目黒線",
-          "sameOperator": false,
-          "distanceMeters": 57,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": []
-    },
-    {
       "place": "西日暮里",
       "totalPairs": 6,
       "curatedPairs": 0,
@@ -5367,6 +5276,149 @@
           "railwayBName": "高崎線",
           "sameOperator": true,
           "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ]
+    },
+    {
+      "place": "千葉",
+      "totalPairs": 10,
+      "curatedPairs": 0,
+      "uncuratedPairs": 10,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 5,
+      "priorityScore": 10,
+      "crossOperatorPairs": [],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:JR-East.Sotobo",
+          "railwayAName": "外房線",
+          "railwayB": "odpt.Railway:JR-East.Uchibo",
+          "railwayBName": "内房線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.SobuRapid",
+          "railwayAName": "総武快速線",
+          "railwayB": "odpt.Railway:JR-East.Sotobo",
+          "railwayBName": "外房線",
+          "sameOperator": true,
+          "distanceMeters": 66,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.SobuRapid",
+          "railwayAName": "総武快速線",
+          "railwayB": "odpt.Railway:JR-East.Uchibo",
+          "railwayBName": "内房線",
+          "sameOperator": true,
+          "distanceMeters": 66,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.Sobu",
+          "railwayAName": "総武本線",
+          "railwayB": "odpt.Railway:JR-East.Sotobo",
+          "railwayBName": "外房線",
+          "sameOperator": true,
+          "distanceMeters": 66,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.Sobu",
+          "railwayAName": "総武本線",
+          "railwayB": "odpt.Railway:JR-East.SobuRapid",
+          "railwayBName": "総武快速線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.Sobu",
+          "railwayAName": "総武本線",
+          "railwayB": "odpt.Railway:JR-East.Uchibo",
+          "railwayBName": "内房線",
+          "sameOperator": true,
+          "distanceMeters": 66,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+          "railwayAName": "中央・総武各駅停車",
+          "railwayB": "odpt.Railway:JR-East.Sotobo",
+          "railwayBName": "外房線",
+          "sameOperator": true,
+          "distanceMeters": 66,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+          "railwayAName": "中央・総武各駅停車",
+          "railwayB": "odpt.Railway:JR-East.SobuRapid",
+          "railwayBName": "総武快速線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+          "railwayAName": "中央・総武各駅停車",
+          "railwayB": "odpt.Railway:JR-East.Sobu",
+          "railwayBName": "総武本線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+          "railwayAName": "中央・総武各駅停車",
+          "railwayB": "odpt.Railway:JR-East.Uchibo",
+          "railwayBName": "内房線",
+          "sameOperator": true,
+          "distanceMeters": 66,
           "fallbackMinutes": 5,
           "sources": [
             "connecting-station",
@@ -15598,48 +15650,6 @@
       "railwayBName": "目黒線",
       "sameOperator": false,
       "distanceMeters": 74,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "目黒",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:Toei.Mita",
-      "railwayBName": "三田線",
-      "sameOperator": false,
-      "distanceMeters": 88,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "目黒",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
-      "railwayBName": "南北線",
-      "sameOperator": false,
-      "distanceMeters": 55,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "目黒",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:Tokyu.Meguro",
-      "railwayBName": "目黒線",
-      "sameOperator": false,
-      "distanceMeters": 40,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
