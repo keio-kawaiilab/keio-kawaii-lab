@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換（安全側）",
+    "sourceType": "current route-planner standard walk",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {
+      "place": "川崎 ↔ 京急川崎",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:Keikyu.Main",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "京急本線",
+      "minutes": 11,
+      "source": "https://ekitan.com/transit/route/sf-1911/st-2050"
+    },
+    {
+      "place": "川崎 ↔ 京急川崎",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:Keikyu.Daishi",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "大師線",
+      "minutes": 11,
+      "source": "https://ekitan.com/transit/route/sf-1911/st-2050"
+    },
+    {
+      "place": "川崎 ↔ 京急川崎",
+      "railwayA": "odpt.Railway:JR-East.Tokaido",
+      "railwayB": "odpt.Railway:Keikyu.Main",
+      "railwayAName": "東海道線",
+      "railwayBName": "京急本線",
+      "minutes": 11,
+      "source": "https://ekitan.com/transit/route/sf-1911/st-2050"
+    },
+    {
+      "place": "川崎 ↔ 京急川崎",
+      "railwayA": "odpt.Railway:JR-East.Tokaido",
+      "railwayB": "odpt.Railway:Keikyu.Daishi",
+      "railwayAName": "東海道線",
+      "railwayBName": "大師線",
+      "minutes": 11,
+      "source": "https://ekitan.com/transit/route/sf-1911/st-2050"
+    },
+    {
+      "place": "川崎 ↔ 京急川崎",
+      "railwayA": "odpt.Railway:JR-East.Nambu",
+      "railwayB": "odpt.Railway:Keikyu.Main",
+      "railwayAName": "南武線",
+      "railwayBName": "京急本線",
+      "minutes": 11,
+      "source": "https://ekitan.com/transit/route/sf-2050/st-1911"
+    },
+    {
+      "place": "川崎 ↔ 京急川崎",
+      "railwayA": "odpt.Railway:JR-East.Nambu",
+      "railwayB": "odpt.Railway:Keikyu.Daishi",
+      "railwayAName": "南武線",
+      "railwayBName": "大師線",
+      "minutes": 11,
+      "source": "https://ekitan.com/transit/route/sf-2050/st-1911"
+    }
+  ]
+}
