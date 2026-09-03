@@ -1,10 +1,11 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-03T12:38:13.775Z",
+  "generatedAt": "2026-09-03T12:40:34.083Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
-    "transfer-rule-sources.d/2026-09-03-major-hubs-2.json"
+    "transfer-rule-sources.d/2026-09-03-major-hubs-2.json",
+    "transfer-rule-sources.d/2026-09-03-major-hubs-3.json"
   ],
   "description": "Curated station/railway-specific transfer times. Generated from transfer-rule source files and resolved against transfer-candidates.json.",
   "rules": [
@@ -746,6 +747,97 @@
       "bidirectional": true,
       "label": "標準乗換",
       "source": "https://mb.jorudan.co.jp/os/noritxt/iidabashi/toei_subway-oedo_line-sobu_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "東京-中央線快速-東海道線",
+      "fromStation": "odpt.Station:JR-East.ChuoRapid.Tokyo",
+      "toStation": "odpt.Station:JR-East.Tokaido.Tokyo",
+      "fromRailway": "odpt.Railway:JR-East.ChuoRapid",
+      "toRailway": "odpt.Railway:JR-East.Tokaido",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/chuo_line-tokaido_line_jr_east.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "東京-東海道線-京浜東北線・根岸線",
+      "fromStation": "odpt.Station:JR-East.Tokaido.Tokyo",
+      "toStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Tokyo",
+      "fromRailway": "odpt.Railway:JR-East.Tokaido",
+      "toRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/tokaido_line_jr_east-keihintohoku_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "渋谷-埼京線・川越線-東横線",
+      "fromStation": "odpt.Station:JR-East.SaikyoKawagoe.Shibuya",
+      "toStation": "odpt.Station:Tokyu.Toyoko.Shibuya",
+      "fromRailway": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "toRailway": "odpt.Railway:Tokyu.Toyoko",
+      "minutes": 9,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/saikyo_line-tokyu-toyoko_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "渋谷-湘南新宿ライン-東横線",
+      "fromStation": "odpt.Station:JR-East.ShonanShinjuku.Shibuya",
+      "toStation": "odpt.Station:Tokyu.Toyoko.Shibuya",
+      "fromRailway": "odpt.Railway:JR-East.ShonanShinjuku",
+      "toRailway": "odpt.Railway:Tokyu.Toyoko",
+      "minutes": 9,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/saikyo_line-tokyu-toyoko_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "渋谷-銀座線-東横線",
+      "fromStation": "odpt.Station:TokyoMetro.Ginza.Shibuya",
+      "toStation": "odpt.Station:Tokyu.Toyoko.Shibuya",
+      "fromRailway": "odpt.Railway:TokyoMetro.Ginza",
+      "toRailway": "odpt.Railway:Tokyu.Toyoko",
+      "minutes": 7,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/tokyo-metro_ginza_line-tokyu-toyoko_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "渋谷-半蔵門線-東横線",
+      "fromStation": "odpt.Station:TokyoMetro.Hanzomon.Shibuya",
+      "toStation": "odpt.Station:Tokyu.Toyoko.Shibuya",
+      "fromRailway": "odpt.Railway:TokyoMetro.Hanzomon",
+      "toRailway": "odpt.Railway:Tokyu.Toyoko",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/tokyo-metro_hanzomon_line-tokyu-toyoko_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "渋谷-田園都市線-東横線",
+      "fromStation": "odpt.Station:Tokyu.DenEnToshi.Shibuya",
+      "toStation": "odpt.Station:Tokyu.Toyoko.Shibuya",
+      "fromRailway": "odpt.Railway:Tokyu.DenEnToshi",
+      "toRailway": "odpt.Railway:Tokyu.Toyoko",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/tokyu-denentoshi_line-tokyu-toyoko_line.html",
       "sourceType": "Jorudan standard transfer time",
       "verifiedAt": "2026-09-03"
     }
