@@ -1,0 +1,48 @@
+name: Apply transfer rules integration
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/apply-transfer-rules-integration.mjs'
+      - '.github/workflows/apply-transfer-rules-integration.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-transfer-rules-integration
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply integration
+        run: node scripts/apply-transfer-rules-integration.mjs
+      - name: Validate JavaScript
+        run: |
+          node --check route.js
+          node --check route-core.js
+      - name: Run route tests
+        run: |
+          if [ -f scripts/test_route_core.js ]; then node scripts/test_route_core.js; fi
+          if [ -f scripts/test_transit_snapshot.js ]; then node scripts/test_transit_snapshot.js; fi
+      - name: Commit route integration
+        run: |
+          if [ -z "$(git status --porcelain -- route.js)" ]; then
+            echo 'Route integration already present.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add route.js
+          git commit -m 'Use curated transfer times in route planner'
+          git push
