@@ -1,0 +1,141 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準・実測乗換（安全側）",
+    "sourceType": "current route-planner transfer time / current walk guide",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "新日本橋 ↔ 三越前",
+      "railwayA": "odpt.Railway:JR-East.SobuRapid",
+      "railwayB": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayAName": "総武快速線",
+      "railwayBName": "銀座線",
+      "minutes": 6,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%96%B0%E6%97%A5%E6%9C%AC%E6%A9%8B_%E4%B8%89%E8%B6%8A%E5%89%8D.html",
+      "sourceType": "Jorudan current direct walk time"
+    },
+    {
+      "place": "新日本橋 ↔ 三越前",
+      "railwayA": "odpt.Railway:JR-East.SobuRapid",
+      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
+      "railwayAName": "総武快速線",
+      "railwayBName": "半蔵門線",
+      "minutes": 6,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%96%B0%E6%97%A5%E6%9C%AC%E6%A9%8B_%E4%B8%89%E8%B6%8A%E5%89%8D.html",
+      "sourceType": "Jorudan current direct walk time; conservative station-pair bound"
+    },
+    {
+      "place": "馬喰町 ↔ 東日本橋",
+      "railwayA": "odpt.Railway:JR-East.SobuRapid",
+      "railwayB": "odpt.Railway:Toei.Asakusa",
+      "railwayAName": "総武快速線",
+      "railwayBName": "浅草線",
+      "minutes": 9,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E9%A6%AC%E5%96%B0%E7%94%BA_%E6%9D%B1%E6%97%A5%E6%9C%AC%E6%A9%8B.html",
+      "sourceType": "Jorudan current direct walk time"
+    },
+    {
+      "place": "馬喰町 ↔ 馬喰横山",
+      "railwayA": "odpt.Railway:JR-East.SobuRapid",
+      "railwayB": "odpt.Railway:Toei.Shinjuku",
+      "railwayAName": "総武快速線",
+      "railwayBName": "新宿線",
+      "minutes": 4,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E9%A6%AC%E5%96%B0%E7%94%BA_%E9%A6%AC%E5%96%B0%E6%A8%AA%E5%B1%B1.html?Cway=2",
+      "sourceType": "Jorudan current direct walk time; conservative bound"
+    },
+    {
+      "place": "東日本橋 ↔ 馬喰横山",
+      "railwayA": "odpt.Railway:Toei.Asakusa",
+      "railwayB": "odpt.Railway:Toei.Shinjuku",
+      "railwayAName": "浅草線",
+      "railwayBName": "新宿線",
+      "minutes": 3,
+      "source": "https://transit.yahoo.co.jp/search/result/%E9%A6%AC%E5%96%B0%E6%A8%AA%E5%B1%B1-%E6%9D%B1%E6%97%A5%E6%9C%AC%E6%A9%8B",
+      "sourceType": "Yahoo Transit current same-station walk time"
+    },
+    {
+      "place": "押上〈スカイツリー前〉 ↔ 押上",
+      "railwayA": "odpt.Railway:Toei.Asakusa",
+      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
+      "railwayAName": "浅草線",
+      "railwayBName": "半蔵門線",
+      "minutes": 4,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%8D%8A%E8%94%B5%E9%96%80_%E6%B5%85%E8%8D%89.html",
+      "sourceType": "Jorudan current route-planner transfer time"
+    },
+    {
+      "place": "上野 ↔ 京成上野",
+      "railwayA": "odpt.Railway:JR-East.Utsunomiya",
+      "railwayB": "odpt.Railway:Keisei.Main",
+      "railwayAName": "宇都宮線",
+      "railwayBName": "京成本線",
+      "minutes": 9,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E4%B8%8A%E9%87%8E_%E4%BA%AC%E6%88%90%E4%B8%8A%E9%87%8E.html",
+      "sourceType": "Jorudan current direct walk time; conservative upper bound"
+    },
+    {
+      "place": "上野 ↔ 京成上野",
+      "railwayA": "odpt.Railway:Keisei.Main",
+      "railwayB": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayAName": "京成本線",
+      "railwayBName": "銀座線",
+      "minutes": 9,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E4%B8%8A%E9%87%8E_%E4%BA%AC%E6%88%90%E4%B8%8A%E9%87%8E.html",
+      "sourceType": "Jorudan current direct walk time; conservative upper bound"
+    },
+    {
+      "place": "上野 ↔ 京成上野",
+      "railwayA": "odpt.Railway:Keisei.Main",
+      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+      "railwayAName": "京成本線",
+      "railwayBName": "日比谷線",
+      "minutes": 9,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E4%B8%8A%E9%87%8E_%E4%BA%AC%E6%88%90%E4%B8%8A%E9%87%8E.html",
+      "sourceType": "Jorudan current direct walk time; conservative upper bound"
+    },
+    {
+      "place": "上野 ↔ 京成上野",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:Keisei.Main",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "京成本線",
+      "minutes": 9,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E4%B8%8A%E9%87%8E_%E4%BA%AC%E6%88%90%E4%B8%8A%E9%87%8E.html",
+      "sourceType": "Jorudan current direct walk time; conservative upper bound"
+    },
+    {
+      "place": "上野 ↔ 京成上野",
+      "railwayA": "odpt.Railway:JR-East.Takasaki",
+      "railwayB": "odpt.Railway:Keisei.Main",
+      "railwayAName": "高崎線",
+      "railwayBName": "京成本線",
+      "minutes": 9,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E4%B8%8A%E9%87%8E_%E4%BA%AC%E6%88%90%E4%B8%8A%E9%87%8E.html",
+      "sourceType": "Jorudan current direct walk time; conservative upper bound"
+    },
+    {
+      "place": "上野 ↔ 京成上野",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:Keisei.Main",
+      "railwayAName": "山手線",
+      "railwayBName": "京成本線",
+      "minutes": 9,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E4%B8%8A%E9%87%8E_%E4%BA%AC%E6%88%90%E4%B8%8A%E9%87%8E.html",
+      "sourceType": "Jorudan current direct walk time; conservative upper bound"
+    },
+    {
+      "place": "上野 ↔ 京成上野",
+      "railwayA": "odpt.Railway:JR-East.JobanRapid",
+      "railwayB": "odpt.Railway:Keisei.Main",
+      "railwayAName": "常磐線快速",
+      "railwayBName": "京成本線",
+      "minutes": 9,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E4%B8%8A%E9%87%8E_%E4%BA%AC%E6%88%90%E4%B8%8A%E9%87%8E.html",
+      "sourceType": "Jorudan current direct walk time; conservative upper bound"
+    }
+  ]
+}
