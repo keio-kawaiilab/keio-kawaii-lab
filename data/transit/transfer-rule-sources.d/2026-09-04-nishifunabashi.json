@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換",
+    "sourceType": "Jorudan current route-planner transfer time",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "西船橋",
+      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayB": "odpt.Railway:JR-East.Keiyo",
+      "railwayAName": "中央・総武各駅停車",
+      "railwayBName": "京葉線",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%B8%82%E5%B7%9D_%E6%B5%B7%E6%B5%9C%E5%B9%95%E5%BC%B5.html"
+    },
+    {
+      "place": "西船橋",
+      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayB": "odpt.Railway:JR-East.Musashino",
+      "railwayAName": "中央・総武各駅停車",
+      "railwayBName": "武蔵野線",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%B8%82%E5%B7%9D_%E6%96%B0%E6%9D%BE%E6%88%B8.html"
+    },
+    {
+      "place": "西船橋",
+      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayB": "odpt.Railway:TokyoMetro.Tozai",
+      "railwayAName": "中央・総武各駅停車",
+      "railwayBName": "東西線",
+      "minutes": 4,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%88%B9%E6%A9%8B_%E8%8C%85%E5%A0%B4%E7%94%BA.html"
+    },
+    {
+      "place": "西船橋",
+      "railwayA": "odpt.Railway:JR-East.Musashino",
+      "railwayB": "odpt.Railway:TokyoMetro.Tozai",
+      "railwayAName": "武蔵野線",
+      "railwayBName": "東西線",
+      "minutes": 4,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%96%B0%E6%9D%BE%E6%88%B8_%E8%8C%85%E5%A0%B4%E7%94%BA.html"
+    },
+    {
+      "place": "西船橋",
+      "railwayA": "odpt.Railway:JR-East.Keiyo",
+      "railwayB": "odpt.Railway:TokyoMetro.Tozai",
+      "railwayAName": "京葉線",
+      "railwayBName": "東西線",
+      "minutes": 4,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%8C%85%E5%A0%B4%E7%94%BA_%E5%8D%97%E8%88%B9%E6%A9%8B.html"
+    }
+  ]
+}
