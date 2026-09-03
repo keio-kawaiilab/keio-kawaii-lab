@@ -43,6 +43,51 @@ def guarded_status(context: str) -> str | None:
     return None
 
 
+def _original_sale_window(context: str) -> tuple[str | None, str | None]:
+    # Copy the ordinary active/upcoming behaviour without calling the monkeypatch.
+    for token in ("まもなく抽選受付", "まもなく受付", "まもなく発売"):
+        pos = context.find(token)
+        if pos >= 0:
+            return pia._range_from_tail(context[pos:pos + 320])
+
+    if "発売前" in context:
+        pos = context.find("発売前")
+        match = pia.DATE_RE.search(context[pos:pos + 220])
+        return (pia.to_iso(match) if match else None), None
+
+    for token in ("抽選受付中", "販売期間中", "受付中", "本日発売初日"):
+        pos = context.find(token)
+        if pos < 0:
+            continue
+        tail = context[pos:pos + 280]
+        matches = list(pia.DATE_RE.finditer(tail))
+        if matches:
+            return None, pia.to_iso(matches[-1])
+    return None, None
+
+
+def guarded_sale_window(context: str) -> tuple[str | None, str | None]:
+    original = (
+        pia.sale_window_original(context)
+        if hasattr(pia, "sale_window_original")
+        else _original_sale_window(context)
+    )
+    if original[0] or original[1]:
+        return original
+
+    # Ended rows often stop showing the start time but still retain the known
+    # deadline (e.g. "予定枚数終了 ～2026/9/9 23:59"). Preserve that directly
+    # observed boundary instead of dropping the entire historical sale.
+    positions = [context.find(hint) for hint in pia.ENDED_HINTS if context.find(hint) >= 0]
+    if not positions:
+        return None, None
+    tail = context[min(positions):min(positions) + 360]
+    matches = list(pia.DATE_RE.finditer(tail))
+    if not matches:
+        return None, None
+    return None, pia.to_iso(matches[-1])
+
+
 def history_key(event: dict) -> tuple[str, str, str, str]:
     group = str(event.get("group") or "")
     day = str(event.get("eventDate") or "")[:10]
@@ -109,9 +154,12 @@ def collect_ended_sales(
     ended: list[dict] = []
     failures: list[str] = []
 
-    original = pia.availability_status
+    original_status = pia.availability_status
+    original_sale = pia.sale_window
     pia.availability_status_original = _original_status
+    pia.sale_window_original = _original_sale_window
     pia.availability_status = guarded_status
+    pia.sale_window = guarded_sale_window
     try:
         for group in pia.ARTIST_URLS:
             pages, page_failures = discover_pages(session, group)
@@ -139,9 +187,11 @@ def collect_ended_sales(
                         continue
                     ended.append(normalize_guard_row(event))
     finally:
-        pia.availability_status = original
-        if hasattr(pia, "availability_status_original"):
-            delattr(pia, "availability_status_original")
+        pia.availability_status = original_status
+        pia.sale_window = original_sale
+        for attr in ("availability_status_original", "sale_window_original"):
+            if hasattr(pia, attr):
+                delattr(pia, attr)
 
     return ended, failures
 
@@ -183,7 +233,7 @@ def run(check: bool = False, today: date | None = None) -> dict:
     payload = json.loads(json.dumps(original_payload, ensure_ascii=False))
     session = requests.Session()
     session.headers.update({
-        "User-Agent": "Mozilla/5.0 (compatible; keio-kawaii-lab-pia-history-guard/1.0; +https://github.com/keio-kawaiilab/keio-kawaii-lab)",
+        "User-Agent": "Mozilla/5.0 (compatible; keio-kawaii-lab-pia-history-guard/1.1; +https://github.com/keio-kawaiilab/keio-kawaii-lab)",
         "Accept-Language": "ja,en;q=0.8",
     })
     try:
