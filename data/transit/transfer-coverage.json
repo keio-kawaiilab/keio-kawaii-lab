@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-03T12:51:54.294Z",
+  "generatedAt": "2026-09-03T12:52:22.947Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-03T12:51:39.471Z",
+  "rulesGeneratedAt": "2026-09-03T12:52:07.930Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 101,
-    "uncuratedPairs": 852,
+    "curatedPairs": 106,
+    "uncuratedPairs": 847,
     "blockedPairs": 7,
-    "curatedSourceRules": 101,
+    "curatedSourceRules": 106,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -65,12 +65,12 @@
     {
       "place": "新宿",
       "totalPairs": 55,
-      "curatedPairs": 34,
-      "uncuratedPairs": 19,
+      "curatedPairs": 39,
+      "uncuratedPairs": 14,
       "blockedPairs": 2,
       "crossOperatorUncuratedPairs": 12,
       "railwayCount": 11,
-      "priorityScore": 37
+      "priorityScore": 32
     },
     {
       "place": "武蔵小杉",
@@ -2907,12 +2907,12 @@
     {
       "place": "新宿",
       "totalPairs": 55,
-      "curatedPairs": 34,
-      "uncuratedPairs": 19,
+      "curatedPairs": 39,
+      "uncuratedPairs": 14,
       "blockedPairs": 2,
       "crossOperatorUncuratedPairs": 12,
       "railwayCount": 11,
-      "priorityScore": 37,
+      "priorityScore": 32,
       "crossOperatorPairs": [
         {
           "railwayA": "odpt.Railway:Keio.KeioNew",
@@ -3089,71 +3089,6 @@
           "railwayAName": "埼京線・川越線",
           "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
           "railwayBName": "湘南新宿ライン",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-          "railwayAName": "中央・総武各駅停車",
-          "railwayB": "odpt.Railway:JR-East.SaikyoKawagoe",
-          "railwayBName": "埼京線・川越線",
-          "sameOperator": true,
-          "distanceMeters": 81,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-          "railwayAName": "中央・総武各駅停車",
-          "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
-          "railwayBName": "湘南新宿ライン",
-          "sameOperator": true,
-          "distanceMeters": 81,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-          "railwayAName": "中央線快速",
-          "railwayB": "odpt.Railway:JR-East.SaikyoKawagoe",
-          "railwayBName": "埼京線・川越線",
-          "sameOperator": true,
-          "distanceMeters": 81,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-          "railwayAName": "中央線快速",
-          "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
-          "railwayBName": "湘南新宿ライン",
-          "sameOperator": true,
-          "distanceMeters": 81,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-          "railwayAName": "中央線快速",
-          "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
-          "railwayBName": "中央・総武各駅停車",
           "sameOperator": true,
           "distanceMeters": 0,
           "fallbackMinutes": 5,
@@ -10938,34 +10873,6 @@
     },
     {
       "place": "新宿",
-      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-      "railwayAName": "中央・総武各駅停車",
-      "railwayB": "odpt.Railway:JR-East.SaikyoKawagoe",
-      "railwayBName": "埼京線・川越線",
-      "sameOperator": true,
-      "distanceMeters": 81,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "新宿",
-      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-      "railwayAName": "中央・総武各駅停車",
-      "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
-      "railwayBName": "湘南新宿ライン",
-      "sameOperator": true,
-      "distanceMeters": 81,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "新宿",
       "railwayA": "odpt.Railway:JR-East.ChuoRapid",
       "railwayAName": "中央線快速",
       "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
@@ -10986,48 +10893,6 @@
       "railwayBName": "京王線",
       "sameOperator": false,
       "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "新宿",
-      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-      "railwayAName": "中央線快速",
-      "railwayB": "odpt.Railway:JR-East.SaikyoKawagoe",
-      "railwayBName": "埼京線・川越線",
-      "sameOperator": true,
-      "distanceMeters": 81,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "新宿",
-      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-      "railwayAName": "中央線快速",
-      "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
-      "railwayBName": "湘南新宿ライン",
-      "sameOperator": true,
-      "distanceMeters": 81,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "新宿",
-      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-      "railwayAName": "中央線快速",
-      "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
-      "railwayBName": "中央・総武各駅停車",
-      "sameOperator": true,
-      "distanceMeters": 0,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
