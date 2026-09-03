@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-27",
+  "updatedAt": "2026-09-03",
   "policy": {
     "preserveEndedReceptions": true,
     "predictFutureStages": false,
@@ -10,7 +10,8 @@
       "チケット販売履歴は受付終了後も削除しない。",
       "FC先行→プレイガイド→一般発売など、未発表の販売段階を推測して補完しない。",
       "履歴1行ごとに、その受付期間を直接確認できる情報源URLを保持する。",
-      "公式XなどのSNSは発見用途に使えるが、単独では自動公開せず、公式サイトまたは販売事業者ページで再確認する。"
+      "公式XなどのSNSは発見用途に使えるが、単独では自動公開せず、公式サイトまたは販売事業者ページで再確認する。",
+      "公演主催・制作会社が販売開始日時を直接掲載している場合は、終了・完売後の販売履歴を保持するための独立根拠として利用できる。"
     ]
   },
   "sources": {
@@ -101,6 +102,16 @@
       "authority": ["lawson-sale-window"],
       "searchBaseUrl": "https://l-tike.com/search/"
     },
+    "promoter": {
+      "label": "公演主催・制作（HOT STUFF PROMOTION）",
+      "kind": "promoter",
+      "publishPolicy": "direct",
+      "authority": [
+        "performance",
+        "general-sale-window"
+      ],
+      "baseUrl": "https://red-hot.ne.jp"
+    },
     "official-x": {
       "label": "各公式X",
       "kind": "social",
@@ -118,6 +129,7 @@
     "kawaiilab.asobisystem.com": "kawaii-lab-fc",
     "t.pia.jp": "pia",
     "eplus.jp": "eplus",
-    "l-tike.com": "lawson"
+    "l-tike.com": "lawson",
+    "red-hot.ne.jp": "promoter"
   }
 }
