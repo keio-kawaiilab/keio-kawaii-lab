@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-03T13:17:41.065Z",
+  "generatedAt": "2026-09-03T13:19:06.410Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-03T13:17:12.826Z",
+  "rulesGeneratedAt": "2026-09-03T13:18:49.533Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 187,
-    "uncuratedPairs": 766,
+    "curatedPairs": 190,
+    "uncuratedPairs": 763,
     "blockedPairs": 7,
-    "curatedSourceRules": 187,
+    "curatedSourceRules": 190,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -440,16 +440,6 @@
       "blockedPairs": 3,
       "crossOperatorUncuratedPairs": 3,
       "railwayCount": 4,
-      "priorityScore": 7.5
-    },
-    {
-      "place": "大井町",
-      "totalPairs": 3,
-      "curatedPairs": 0,
-      "uncuratedPairs": 3,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 3,
-      "railwayCount": 3,
       "priorityScore": 7.5
     },
     {
@@ -1004,6 +994,16 @@
     },
     {
       "place": "成田",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 3
+    },
+    {
+      "place": "西大井",
       "totalPairs": 3,
       "curatedPairs": 0,
       "uncuratedPairs": 3,
@@ -12079,48 +12079,6 @@
       "railwayBName": "千代田線",
       "sameOperator": false,
       "distanceMeters": 19,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "大井町",
-      "railwayA": "odpt.Railway:TWR.Rinkai",
-      "railwayAName": "りんかい線",
-      "railwayB": "odpt.Railway:Tokyu.Oimachi",
-      "railwayBName": "大井町線",
-      "sameOperator": false,
-      "distanceMeters": 36,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "大井町",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:TWR.Rinkai",
-      "railwayBName": "りんかい線",
-      "sameOperator": false,
-      "distanceMeters": 70,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "大井町",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:Tokyu.Oimachi",
-      "railwayBName": "大井町線",
-      "sameOperator": false,
-      "distanceMeters": 87,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
