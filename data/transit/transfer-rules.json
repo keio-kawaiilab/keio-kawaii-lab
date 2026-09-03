@@ -1,12 +1,13 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-03T12:44:57.240Z",
+  "generatedAt": "2026-09-03T12:45:40.726Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
     "transfer-rule-sources.d/2026-09-03-major-hubs-2.json",
     "transfer-rule-sources.d/2026-09-03-major-hubs-3.json",
-    "transfer-rule-sources.d/2026-09-03-major-hubs-4.json"
+    "transfer-rule-sources.d/2026-09-03-major-hubs-4.json",
+    "transfer-rule-sources.d/2026-09-03-tokyo-marunouchi.json"
   ],
   "description": "Curated station/railway-specific transfer times. Generated from transfer-rule source files and resolved against transfer-candidates.json.",
   "rules": [
@@ -891,6 +892,71 @@
       "bidirectional": true,
       "label": "標準乗換",
       "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/keio-inokashira_line-tokyu-toyoko_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "東京-丸ノ内線-中央線快速",
+      "fromStation": "odpt.Station:TokyoMetro.Marunouchi.Tokyo",
+      "toStation": "odpt.Station:JR-East.ChuoRapid.Tokyo",
+      "fromRailway": "odpt.Railway:TokyoMetro.Marunouchi",
+      "toRailway": "odpt.Railway:JR-East.ChuoRapid",
+      "minutes": 6,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/tokyo-metro_marunouchi_line-chuo_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "東京-丸ノ内線-京浜東北線・根岸線",
+      "fromStation": "odpt.Station:TokyoMetro.Marunouchi.Tokyo",
+      "toStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Tokyo",
+      "fromRailway": "odpt.Railway:TokyoMetro.Marunouchi",
+      "toRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/keihintohoku_line-tokyo-metro_marunouchi_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "東京-丸ノ内線-横須賀線",
+      "fromStation": "odpt.Station:TokyoMetro.Marunouchi.Tokyo",
+      "toStation": "odpt.Station:JR-East.Yokosuka.Tokyo",
+      "fromRailway": "odpt.Railway:TokyoMetro.Marunouchi",
+      "toRailway": "odpt.Railway:JR-East.Yokosuka",
+      "minutes": 8,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/tokyo-metro_marunouchi_line-yokosuka_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "東京-丸ノ内線-総武快速線",
+      "fromStation": "odpt.Station:TokyoMetro.Marunouchi.Tokyo",
+      "toStation": "odpt.Station:JR-East.SobuRapid.Tokyo",
+      "fromRailway": "odpt.Railway:TokyoMetro.Marunouchi",
+      "toRailway": "odpt.Railway:JR-East.SobuRapid",
+      "minutes": 8,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/tokyo-metro_marunouchi_line-yokosuka_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "東京-丸ノ内線-京葉線",
+      "fromStation": "odpt.Station:TokyoMetro.Marunouchi.Tokyo",
+      "toStation": "odpt.Station:JR-East.Keiyo.Tokyo",
+      "fromRailway": "odpt.Railway:TokyoMetro.Marunouchi",
+      "toRailway": "odpt.Railway:JR-East.Keiyo",
+      "minutes": 12,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/tokyo-metro_marunouchi_line-keiyo_line.html",
       "sourceType": "Jorudan standard transfer time",
       "verifiedAt": "2026-09-03"
     }
