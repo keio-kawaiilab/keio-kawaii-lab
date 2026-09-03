@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "実測乗換（安全側上限）",
+    "sourceType": "Measured transfer guide; conservative upper bound",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {
+      "place": "田町 ↔ 三田",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:Toei.Asakusa",
+      "railwayAName": "山手線",
+      "railwayBName": "浅草線",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/tamachi-mita-jryamanote-keihin-toeiasakusaline-transfer-information/"
+    },
+    {
+      "place": "田町 ↔ 三田",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:Toei.Asakusa",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "浅草線",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/tamachi-mita-jryamanote-keihin-toeiasakusaline-transfer-information/"
+    },
+    {
+      "place": "田町 ↔ 三田",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:Toei.Mita",
+      "railwayAName": "山手線",
+      "railwayBName": "三田線",
+      "minutes": 9,
+      "source": "https://wadattsu261.com/content/tamachi-mita-jryamanote-keihin-toeimitaline-transfer-information/"
+    },
+    {
+      "place": "田町 ↔ 三田",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:Toei.Mita",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "三田線",
+      "minutes": 9,
+      "source": "https://wadattsu261.com/content/tamachi-mita-jryamanote-keihin-toeimitaline-transfer-information/"
+    }
+  ]
+}
