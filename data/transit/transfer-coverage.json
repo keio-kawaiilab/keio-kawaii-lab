@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-03T12:58:58.112Z",
+  "generatedAt": "2026-09-03T13:02:36.626Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-03T12:58:44.561Z",
+  "rulesGeneratedAt": "2026-09-03T13:02:18.880Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 143,
-    "uncuratedPairs": 810,
+    "curatedPairs": 153,
+    "uncuratedPairs": 800,
     "blockedPairs": 7,
-    "curatedSourceRules": 143,
+    "curatedSourceRules": 153,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -144,16 +144,6 @@
     },
     {
       "place": "大崎",
-      "totalPairs": 10,
-      "curatedPairs": 0,
-      "uncuratedPairs": 10,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 4,
-      "railwayCount": 5,
-      "priorityScore": 16
-    },
-    {
-      "place": "大手町",
       "totalPairs": 10,
       "curatedPairs": 0,
       "uncuratedPairs": 10,
@@ -1004,6 +994,16 @@
     },
     {
       "place": "京成高砂",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 3
+    },
+    {
+      "place": "京成津田沼",
       "totalPairs": 3,
       "curatedPairs": 0,
       "uncuratedPairs": 3,
@@ -3887,150 +3887,6 @@
       ]
     },
     {
-      "place": "大手町",
-      "totalPairs": 10,
-      "curatedPairs": 0,
-      "uncuratedPairs": 10,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 4,
-      "railwayCount": 5,
-      "priorityScore": 16,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Toei.Mita",
-          "railwayAName": "三田線",
-          "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
-          "railwayBName": "丸ノ内線",
-          "sameOperator": false,
-          "distanceMeters": 436,
-          "fallbackMinutes": 8,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Toei.Mita",
-          "railwayAName": "三田線",
-          "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
-          "railwayBName": "千代田線",
-          "sameOperator": false,
-          "distanceMeters": 136,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Toei.Mita",
-          "railwayAName": "三田線",
-          "railwayB": "odpt.Railway:TokyoMetro.Tozai",
-          "railwayBName": "東西線",
-          "sameOperator": false,
-          "distanceMeters": 300,
-          "fallbackMinutes": 6,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Toei.Mita",
-          "railwayAName": "三田線",
-          "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
-          "railwayBName": "半蔵門線",
-          "sameOperator": false,
-          "distanceMeters": 351,
-          "fallbackMinutes": 7,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Marunouchi",
-          "railwayAName": "丸ノ内線",
-          "railwayB": "odpt.Railway:TokyoMetro.Tozai",
-          "railwayBName": "東西線",
-          "sameOperator": true,
-          "distanceMeters": 243,
-          "fallbackMinutes": 6,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
-          "railwayAName": "千代田線",
-          "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
-          "railwayBName": "丸ノ内線",
-          "sameOperator": true,
-          "distanceMeters": 320,
-          "fallbackMinutes": 7,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
-          "railwayAName": "千代田線",
-          "railwayB": "odpt.Railway:TokyoMetro.Tozai",
-          "railwayBName": "東西線",
-          "sameOperator": true,
-          "distanceMeters": 255,
-          "fallbackMinutes": 6,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
-          "railwayAName": "千代田線",
-          "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
-          "railwayBName": "半蔵門線",
-          "sameOperator": true,
-          "distanceMeters": 221,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Hanzomon",
-          "railwayAName": "半蔵門線",
-          "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
-          "railwayBName": "丸ノ内線",
-          "sameOperator": true,
-          "distanceMeters": 118,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Hanzomon",
-          "railwayAName": "半蔵門線",
-          "railwayB": "odpt.Railway:TokyoMetro.Tozai",
-          "railwayBName": "東西線",
-          "sameOperator": true,
-          "distanceMeters": 249,
-          "fallbackMinutes": 6,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
       "place": "秋葉原",
       "totalPairs": 10,
       "curatedPairs": 2,
@@ -5399,6 +5255,98 @@
           "railwayBName": "東急新横浜線",
           "sameOperator": true,
           "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ]
+    },
+    {
+      "place": "拝島",
+      "totalPairs": 6,
+      "curatedPairs": 0,
+      "uncuratedPairs": 6,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 3,
+      "railwayCount": 4,
+      "priorityScore": 10.5,
+      "crossOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:JR-East.Itsukaichi",
+          "railwayAName": "五日市線",
+          "railwayB": "odpt.Railway:Seibu.Haijima",
+          "railwayBName": "拝島線",
+          "sameOperator": false,
+          "distanceMeters": 80,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.Ome",
+          "railwayAName": "青梅線",
+          "railwayB": "odpt.Railway:Seibu.Haijima",
+          "railwayBName": "拝島線",
+          "sameOperator": false,
+          "distanceMeters": 80,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.Hachiko",
+          "railwayAName": "八高線",
+          "railwayB": "odpt.Railway:Seibu.Haijima",
+          "railwayBName": "拝島線",
+          "sameOperator": false,
+          "distanceMeters": 59,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:JR-East.Itsukaichi",
+          "railwayAName": "五日市線",
+          "railwayB": "odpt.Railway:JR-East.Ome",
+          "railwayBName": "青梅線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.Hachiko",
+          "railwayAName": "八高線",
+          "railwayB": "odpt.Railway:JR-East.Itsukaichi",
+          "railwayBName": "五日市線",
+          "sameOperator": true,
+          "distanceMeters": 28,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.Hachiko",
+          "railwayAName": "八高線",
+          "railwayB": "odpt.Railway:JR-East.Ome",
+          "railwayBName": "青梅線",
+          "sameOperator": true,
+          "distanceMeters": 28,
           "fallbackMinutes": 5,
           "sources": [
             "connecting-station",
@@ -12550,146 +12498,6 @@
       "sameOperator": true,
       "distanceMeters": 0,
       "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "大手町",
-      "railwayA": "odpt.Railway:TokyoMetro.Marunouchi",
-      "railwayAName": "丸ノ内線",
-      "railwayB": "odpt.Railway:TokyoMetro.Tozai",
-      "railwayBName": "東西線",
-      "sameOperator": true,
-      "distanceMeters": 243,
-      "fallbackMinutes": 6,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "大手町",
-      "railwayA": "odpt.Railway:Toei.Mita",
-      "railwayAName": "三田線",
-      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
-      "railwayBName": "丸ノ内線",
-      "sameOperator": false,
-      "distanceMeters": 436,
-      "fallbackMinutes": 8,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "大手町",
-      "railwayA": "odpt.Railway:Toei.Mita",
-      "railwayAName": "三田線",
-      "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
-      "railwayBName": "千代田線",
-      "sameOperator": false,
-      "distanceMeters": 136,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "大手町",
-      "railwayA": "odpt.Railway:Toei.Mita",
-      "railwayAName": "三田線",
-      "railwayB": "odpt.Railway:TokyoMetro.Tozai",
-      "railwayBName": "東西線",
-      "sameOperator": false,
-      "distanceMeters": 300,
-      "fallbackMinutes": 6,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "大手町",
-      "railwayA": "odpt.Railway:Toei.Mita",
-      "railwayAName": "三田線",
-      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
-      "railwayBName": "半蔵門線",
-      "sameOperator": false,
-      "distanceMeters": 351,
-      "fallbackMinutes": 7,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "大手町",
-      "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
-      "railwayAName": "千代田線",
-      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
-      "railwayBName": "丸ノ内線",
-      "sameOperator": true,
-      "distanceMeters": 320,
-      "fallbackMinutes": 7,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "大手町",
-      "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
-      "railwayAName": "千代田線",
-      "railwayB": "odpt.Railway:TokyoMetro.Tozai",
-      "railwayBName": "東西線",
-      "sameOperator": true,
-      "distanceMeters": 255,
-      "fallbackMinutes": 6,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "大手町",
-      "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
-      "railwayAName": "千代田線",
-      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
-      "railwayBName": "半蔵門線",
-      "sameOperator": true,
-      "distanceMeters": 221,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "大手町",
-      "railwayA": "odpt.Railway:TokyoMetro.Hanzomon",
-      "railwayAName": "半蔵門線",
-      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
-      "railwayBName": "丸ノ内線",
-      "sameOperator": true,
-      "distanceMeters": 118,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "大手町",
-      "railwayA": "odpt.Railway:TokyoMetro.Hanzomon",
-      "railwayAName": "半蔵門線",
-      "railwayB": "odpt.Railway:TokyoMetro.Tozai",
-      "railwayBName": "東西線",
-      "sameOperator": true,
-      "distanceMeters": 249,
-      "fallbackMinutes": 6,
       "sources": [
         "connecting-station",
         "same-place-group"
