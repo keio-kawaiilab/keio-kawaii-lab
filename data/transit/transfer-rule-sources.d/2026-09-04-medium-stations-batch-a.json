@@ -1,0 +1,299 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準・実測乗換（安全側）",
+    "sourceType": "current transfer guide / measured route",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "新宿三丁目",
+      "railwayA": "odpt.Railway:Toei.Shinjuku",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayAName": "新宿線",
+      "railwayBName": "丸ノ内線",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/shinjukusanchome-toeishinjuku-metromarunouchiline-transfer-information/"
+    },
+    {
+      "place": "新宿三丁目",
+      "railwayA": "odpt.Railway:Toei.Shinjuku",
+      "railwayB": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "railwayAName": "新宿線",
+      "railwayBName": "副都心線",
+      "minutes": 5,
+      "source": "https://tren.hatenablog.com/entry/s02-f13"
+    },
+    {
+      "place": "新宿三丁目",
+      "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayAName": "副都心線",
+      "railwayBName": "丸ノ内線",
+      "minutes": 2,
+      "source": "https://wadattsu261.com/content/shinjukusanchome-metrofukutoshin-marunouchiline-transfer-information/"
+    },
+    {
+      "place": "市ケ谷",
+      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
+      "railwayAName": "中央・総武各駅停車",
+      "railwayBName": "南北線",
+      "minutes": 6,
+      "source": "https://wadattsu261.com/content/ichigaya-jrline-metronambokuline-transfer-information/"
+    },
+    {
+      "place": "市ケ谷",
+      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+      "railwayAName": "中央・総武各駅停車",
+      "railwayBName": "有楽町線",
+      "minutes": 4,
+      "source": "https://wadattsu261.com/content/ichigaya-jrline-metroyurakucholine-transfer-information/"
+    },
+    {
+      "place": "市ケ谷",
+      "railwayA": "odpt.Railway:TokyoMetro.Namboku",
+      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+      "railwayAName": "南北線",
+      "railwayBName": "有楽町線",
+      "minutes": 3,
+      "source": "https://tren.hatenablog.com/entry/y14-n09"
+    },
+    {
+      "place": "市ケ谷 ↔ 市ヶ谷",
+      "railwayA": "odpt.Railway:Toei.Shinjuku",
+      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
+      "railwayAName": "新宿線",
+      "railwayBName": "南北線",
+      "minutes": 6,
+      "source": "https://wadattsu261.com/content/ichigaya-metronambokuline-toeishinjukuline-transfer-information/"
+    },
+    {
+      "place": "市ケ谷 ↔ 市ヶ谷",
+      "railwayA": "odpt.Railway:Toei.Shinjuku",
+      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+      "railwayAName": "新宿線",
+      "railwayBName": "有楽町線",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/ichigaya-metroyurakucholine-toeishinjukuline-transfer-information/"
+    },
+    {
+      "place": "市ケ谷 ↔ 市ヶ谷",
+      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayB": "odpt.Railway:Toei.Shinjuku",
+      "railwayAName": "中央・総武各駅停車",
+      "railwayBName": "新宿線",
+      "minutes": 4,
+      "source": "https://wadattsu261.com/content/ichigaya-jrline-toeishinjukuline-transfer-information/"
+    },
+    {
+      "place": "代々木",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "railwayAName": "山手線",
+      "railwayBName": "大江戸線",
+      "minutes": 5,
+      "source": "https://tren.hatenablog.com/entry/yoyogi-jy-e"
+    },
+    {
+      "place": "代々木",
+      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "railwayAName": "中央・総武各駅停車",
+      "railwayBName": "大江戸線",
+      "minutes": 5,
+      "source": "https://tren.hatenablog.com/entry/yoyogi-jy-e"
+    },
+    {
+      "place": "神保町",
+      "railwayA": "odpt.Railway:Toei.Mita",
+      "railwayB": "odpt.Railway:Toei.Shinjuku",
+      "railwayAName": "三田線",
+      "railwayBName": "新宿線",
+      "minutes": 4,
+      "source": "https://wadattsu261.com/content/jinbocho-toeishinjuku-mitaline-transfer-information/"
+    },
+    {
+      "place": "神保町",
+      "railwayA": "odpt.Railway:Toei.Mita",
+      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
+      "railwayAName": "三田線",
+      "railwayBName": "半蔵門線",
+      "minutes": 5,
+      "source": "https://tren.hatenablog.com/entry/itoz"
+    },
+    {
+      "place": "神保町",
+      "railwayA": "odpt.Railway:Toei.Shinjuku",
+      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
+      "railwayAName": "新宿線",
+      "railwayBName": "半蔵門線",
+      "minutes": 3,
+      "source": "https://tren.hatenablog.com/entry/z07-s06"
+    },
+    {
+      "place": "御茶ノ水",
+      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayAName": "中央・総武各駅停車",
+      "railwayBName": "丸ノ内線",
+      "minutes": 5,
+      "source": "https://tren.hatenablog.com/entry/jb18-m20"
+    },
+    {
+      "place": "御茶ノ水",
+      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayAName": "中央線快速",
+      "railwayBName": "丸ノ内線",
+      "minutes": 5,
+      "source": "https://tren.hatenablog.com/entry/jb18-m20"
+    },
+    {
+      "place": "御茶ノ水 ↔ 新御茶ノ水",
+      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayAName": "中央・総武各駅停車",
+      "railwayBName": "千代田線",
+      "minutes": 6,
+      "source": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E5%BE%A1%E8%8C%B6%E3%83%8E%E6%B0%B4-%E5%BE%A1%E8%8C%B6%E3%83%8E%E6%B0%B4"
+    },
+    {
+      "place": "御茶ノ水 ↔ 新御茶ノ水",
+      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayAName": "中央線快速",
+      "railwayBName": "千代田線",
+      "minutes": 6,
+      "source": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E5%BE%A1%E8%8C%B6%E3%83%8E%E6%B0%B4-%E5%BE%A1%E8%8C%B6%E3%83%8E%E6%B0%B4"
+    },
+    {
+      "place": "三田",
+      "railwayA": "odpt.Railway:Toei.Asakusa",
+      "railwayB": "odpt.Railway:Toei.Mita",
+      "railwayAName": "浅草線",
+      "railwayBName": "三田線",
+      "minutes": 3,
+      "source": "https://wadattsu261.com/content/mita-toeimita-asakusaline-transfer-information/"
+    },
+    {
+      "place": "田町",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.Yamanote",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "山手線",
+      "minutes": 2,
+      "source": "https://norikaemap.com/tamachi/0102/"
+    },
+    {
+      "place": "本郷三丁目",
+      "railwayA": "odpt.Railway:Toei.Oedo",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayAName": "大江戸線",
+      "railwayBName": "丸ノ内線",
+      "minutes": 6,
+      "source": "https://tren.hatenablog.com/entry/m21e08"
+    },
+    {
+      "place": "六本木",
+      "railwayA": "odpt.Railway:Toei.Oedo",
+      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+      "railwayAName": "大江戸線",
+      "railwayBName": "日比谷線",
+      "minutes": 7,
+      "source": "https://honnne.com/blog/norikae-roppongi/"
+    },
+    {
+      "place": "麻布十番",
+      "railwayA": "odpt.Railway:Toei.Oedo",
+      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
+      "railwayAName": "大江戸線",
+      "railwayBName": "南北線",
+      "minutes": 6,
+      "source": "https://tren.hatenablog.com/entry/n04-e22"
+    },
+    {
+      "place": "青山一丁目",
+      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
+      "railwayAName": "銀座線",
+      "railwayBName": "半蔵門線",
+      "minutes": 2,
+      "source": "https://diyisheng.seesaa.net/article/142517432.html"
+    },
+    {
+      "place": "青山一丁目",
+      "railwayA": "odpt.Railway:Toei.Oedo",
+      "railwayB": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayAName": "大江戸線",
+      "railwayBName": "銀座線",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/aoyamaicchome-toeioedo-metroginzaline-transfer-information/"
+    },
+    {
+      "place": "青山一丁目",
+      "railwayA": "odpt.Railway:Toei.Oedo",
+      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
+      "railwayAName": "大江戸線",
+      "railwayBName": "半蔵門線",
+      "minutes": 4,
+      "source": "https://wadattsu261.com/content/aoyamaicchome-metrohanzomon-toeioedoline-transfer-information/"
+    },
+    {
+      "place": "門前仲町",
+      "railwayA": "odpt.Railway:Toei.Oedo",
+      "railwayB": "odpt.Railway:TokyoMetro.Tozai",
+      "railwayAName": "大江戸線",
+      "railwayBName": "東西線",
+      "minutes": 4,
+      "source": "https://wadattsu261.com/content/monzennakacho-toeioedo-metrotozailine-transfer-information/"
+    },
+    {
+      "place": "九段下",
+      "railwayA": "odpt.Railway:Toei.Shinjuku",
+      "railwayB": "odpt.Railway:TokyoMetro.Tozai",
+      "railwayAName": "新宿線",
+      "railwayBName": "東西線",
+      "minutes": 3,
+      "source": "https://wadattsu261.com/content/kudanshita-metrotozai-toeishinjuku-metrohanzomonline-transfer-information/"
+    },
+    {
+      "place": "九段下",
+      "railwayA": "odpt.Railway:Toei.Shinjuku",
+      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
+      "railwayAName": "新宿線",
+      "railwayBName": "半蔵門線",
+      "minutes": 3,
+      "source": "https://norikaemap.com/kudanshita/0406/"
+    },
+    {
+      "place": "九段下",
+      "railwayA": "odpt.Railway:TokyoMetro.Hanzomon",
+      "railwayB": "odpt.Railway:TokyoMetro.Tozai",
+      "railwayAName": "半蔵門線",
+      "railwayBName": "東西線",
+      "minutes": 3,
+      "source": "https://norikaemap.com/kudanshita/0204/"
+    },
+    {
+      "place": "住吉",
+      "railwayA": "odpt.Railway:Toei.Shinjuku",
+      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
+      "railwayAName": "新宿線",
+      "railwayBName": "半蔵門線",
+      "minutes": 2,
+      "source": "https://norikaemap.com/sumiyoshi/0111/"
+    },
+    {
+      "place": "清澄白河",
+      "railwayA": "odpt.Railway:Toei.Oedo",
+      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
+      "railwayAName": "大江戸線",
+      "railwayBName": "半蔵門線",
+      "minutes": 3,
+      "source": "https://norikaemap.com/kiyosumi-shirakawa/1101/"
+    }
+  ]
+}
