@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-03T13:12:48.565Z",
+  "generatedAt": "2026-09-03T13:14:59.935Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-03T13:12:25.236Z",
+  "rulesGeneratedAt": "2026-09-03T13:14:40.659Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 181,
-    "uncuratedPairs": 772,
+    "curatedPairs": 184,
+    "uncuratedPairs": 769,
     "blockedPairs": 7,
-    "curatedSourceRules": 181,
+    "curatedSourceRules": 184,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -374,16 +374,6 @@
     },
     {
       "place": "海老名",
-      "totalPairs": 3,
-      "curatedPairs": 0,
-      "uncuratedPairs": 3,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 3,
-      "railwayCount": 3,
-      "priorityScore": 7.5
-    },
-    {
-      "place": "五反田",
       "totalPairs": 3,
       "curatedPairs": 0,
       "uncuratedPairs": 3,
@@ -1004,6 +994,16 @@
     },
     {
       "place": "取手",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 3
+    },
+    {
+      "place": "成田",
       "totalPairs": 3,
       "curatedPairs": 0,
       "uncuratedPairs": 3,
@@ -7517,48 +7517,6 @@
       "fallbackMinutes": 8,
       "sources": [
         "connecting-station"
-      ]
-    },
-    {
-      "place": "五反田",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:Toei.Asakusa",
-      "railwayBName": "浅草線",
-      "sameOperator": false,
-      "distanceMeters": 81,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "五反田",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:Tokyu.Ikegami",
-      "railwayBName": "池上線",
-      "sameOperator": false,
-      "distanceMeters": 100,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "五反田",
-      "railwayA": "odpt.Railway:Toei.Asakusa",
-      "railwayAName": "浅草線",
-      "railwayB": "odpt.Railway:Tokyu.Ikegami",
-      "railwayBName": "池上線",
-      "sameOperator": false,
-      "distanceMeters": 145,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
       ]
     },
     {
