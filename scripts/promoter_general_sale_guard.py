@@ -16,7 +16,6 @@ import update_promoter_birthday_events as promoter
 
 DATA_PATH = Path("data/live-events.json")
 JST = timezone(timedelta(hours=9))
-MONTHS_AHEAD = 8
 
 GENERAL_RE = re.compile(r"一般(?:発売|販売)")
 SOLD_OUT_RE = re.compile(r"SOLD\s*OUT|予定枚数終了|完売", re.I)
@@ -73,9 +72,6 @@ def candidate_context(anchor) -> str:
         node = getattr(node, "parent", None)
         if node is None:
             break
-        # Once an ancestor contains multiple distinct performance IDs, it is a
-        # list/grid wrapper rather than one event card. Never borrow text from a
-        # neighbouring performance.
         pids = pid_values(node)
         if len(pids) > 1:
             break
@@ -89,10 +85,12 @@ def candidate_context(anchor) -> str:
 
 
 def discover_birthday_candidates(html: str, base_url: str = promoter.BASE_URL) -> list[promoter.Candidate]:
-    """Find only KAWAII LAB. birthday-event detail pages from a HOT STUFF month page.
+    """Conservative month-card matcher used as a regression-tested helper.
 
-    This deliberately avoids fetching every promoter event detail page.  A candidate
-    must have birthday wording and one supported group in its local card/context.
+    Production recovery uses the established promoter.collect() path below because
+    HOT STUFF has also used templates where the stable PID lives outside the visible
+    event card. This helper remains intentionally strict so adjacent events can never
+    be joined by accident.
     """
     soup = BeautifulSoup(html, "html.parser")
     found: dict[str, promoter.Candidate] = {}
@@ -174,8 +172,8 @@ def extract_general_sale(soup: BeautifulSoup, event_day: str, source_url: str) -
     match = GENERAL_RE.search(text)
     if not match:
         return None
-    # Start after the explicit sale label so an earlier performance date can never
-    # be mistaken for the ticket sale date.
+    # Start after the explicit sale label so the performance date shown near the
+    # top of the page cannot become a ticket-sale date by accident.
     segment = text[match.start():match.start() + 600]
     start = parse_sale_start(segment, event_day)
     if not start:
@@ -192,52 +190,49 @@ def extract_general_sale(soup: BeautifulSoup, event_day: str, source_url: str) -
 
 
 def collect(session: requests.Session, today: date) -> tuple[list[dict], list[dict]]:
-    candidates: dict[str, promoter.Candidate] = {}
-    failures: list[dict] = []
+    # Use the existing battle-tested HOT STUFF collector as the discovery layer.
+    # It scans stable promoter PIDs even when they are held in JS/data markup, then
+    # returns only supported future KAWAII LAB. birthday performances. This daily
+    # fallback intentionally prioritizes recall; it runs only once per day.
+    try:
+        birthday_events, diagnostics = promoter.collect(session, today)
+    except Exception as exc:
+        return [], [{
+            "stage": "promoter-birthday-collection",
+            "error": f"{type(exc).__name__}: {exc}",
+        }]
 
-    for year, month in promoter.month_pairs(today, MONTHS_AHEAD):
-        url = f"{promoter.BASE_URL}/play/?mth={month}&y={year}"
-        try:
-            response = session.get(url, timeout=25)
-            response.raise_for_status()
-            for candidate in discover_birthday_candidates(response.text):
-                candidates[candidate.url] = candidate
-        except Exception as exc:
-            failures.append({
-                "stage": "month",
-                "url": url,
-                "error": f"{type(exc).__name__}: {exc}",
-            })
-
+    failures = list(diagnostics.get("failures") or [])
     rows: list[dict] = []
-    for candidate in candidates.values():
+    for event in birthday_events:
+        source_url = canonical_url(event.get("url"))
+        event_day = str(event.get("eventDate") or "")[:10]
+        if not source_url or not event_day:
+            continue
         try:
-            response = session.get(candidate.url, timeout=25)
+            response = session.get(source_url, timeout=25)
             response.raise_for_status()
             soup = BeautifulSoup(response.text, "html.parser")
-            event = promoter.parse_detail(candidate.url, response.text, today)
-            if not event:
-                continue
-            sale = extract_general_sale(soup, str(event.get("eventDate") or ""), candidate.url)
+            sale = extract_general_sale(soup, event_day, source_url)
             if not sale:
                 continue
         except Exception as exc:
             failures.append({
-                "stage": "detail",
-                "url": candidate.url,
+                "stage": "general-sale-detail",
+                "url": source_url,
                 "error": f"{type(exc).__name__}: {exc}",
             })
             continue
 
         title = normalize(event.get("eventTitle") or event.get("title"))
         provider_links_list = sale["providerLinks"]
-        row = {
+        rows.append({
             "id": stable_id(
                 "promoter-general-sale",
                 event.get("group"),
-                event.get("eventDate"),
+                event_day,
                 sale["applyStart"],
-                candidate.url,
+                source_url,
             ),
             "group": event.get("group"),
             "title": title,
@@ -253,13 +248,13 @@ def collect(session: requests.Session, today: date) -> tuple[list[dict], list[di
             "applicationStatus": sale["applicationStatus"],
             "applicationDisplayMode": "offers",
             "applicationWindowVerified": True,
-            "applicationWindowSource": candidate.url,
-            "eventDate": event.get("eventDate"),
+            "applicationWindowSource": source_url,
+            "eventDate": event_day,
             "venue": event.get("venue"),
             "openTime": event.get("openTime"),
             "startTime": event.get("startTime"),
-            "url": candidate.url,
-            "urls": list(dict.fromkeys([candidate.url, *provider_links_list])),
+            "url": source_url,
+            "urls": list(dict.fromkeys([source_url, *provider_links_list])),
             "sourceType": "ticket-history-guard",
             "sourceChannel": "promoter-general-sale",
             "primarySource": "promoter",
@@ -267,8 +262,7 @@ def collect(session: requests.Session, today: date) -> tuple[list[dict], list[di
             "eventScope": "kawaii-lab",
             "historyPreserved": True,
             "soldOutObserved": sale["soldOutObserved"],
-        }
-        rows.append(row)
+        })
     return rows, failures
 
 
@@ -305,7 +299,7 @@ def merge(payload: dict, rows: list[dict]) -> tuple[int, int]:
         target = events[index[key]]
         changed = False
         # Cross-source reconciliation: promoter often preserves the sale start after
-        # sell-out while Pia may preserve the deadline.  Keep both direct facts.
+        # sell-out while Pia may preserve the deadline. Keep both direct facts.
         if not target.get("applyStart") and row.get("applyStart"):
             target["applyStart"] = row["applyStart"]
             target["applicationWindowVerified"] = True
@@ -331,7 +325,7 @@ def merge(payload: dict, rows: list[dict]) -> tuple[int, int]:
 def make_session() -> requests.Session:
     session = requests.Session()
     session.headers.update({
-        "User-Agent": "Mozilla/5.0 (compatible; keio-kawaii-lab-promoter-sale-guard/1.1; +https://github.com/keio-kawaiilab/keio-kawaii-lab)",
+        "User-Agent": "Mozilla/5.0 (compatible; keio-kawaii-lab-promoter-sale-guard/1.2; +https://github.com/keio-kawaiilab/keio-kawaii-lab)",
         "Accept-Language": "ja,en;q=0.8",
     })
     return session
