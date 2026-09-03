@@ -1,0 +1,49 @@
+name: Generate transfer blocks
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'data/transit/transfer-block-sources.json'
+      - 'scripts/build-transfer-blocks.mjs'
+      - '.github/workflows/generate-transfer-blocks.yml'
+  workflow_run:
+    workflows:
+      - 'Generate transfer candidates'
+    types:
+      - completed
+
+permissions:
+  contents: write
+
+concurrency:
+  group: generate-transfer-blocks
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build transfer blocks
+        run: node scripts/build-transfer-blocks.mjs
+      - name: Validate generated JSON
+        run: node -e "JSON.parse(require('fs').readFileSync('data/transit/transfer-blocks.json','utf8')); console.log('transfer-blocks.json OK')"
+      - name: Commit generated blocks
+        run: |
+          if [ -z "$(git status --porcelain -- data/transit/transfer-blocks.json)" ]; then
+            echo 'No transfer-block changes.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/transit/transfer-blocks.json
+          git commit -m 'Update blocked heuristic transfers'
+          git push
