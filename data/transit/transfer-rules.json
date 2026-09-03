@@ -1,10 +1,11 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-03T13:46:18.393Z",
+  "generatedAt": "2026-09-03T13:47:06.177Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
     "transfer-rule-sources.d/2026-09-03-akihabara-iwamotocho.json",
+    "transfer-rule-sources.d/2026-09-03-ebina.json",
     "transfer-rule-sources.d/2026-09-03-gotanda.json",
     "transfer-rule-sources.d/2026-09-03-hamamatsucho-daimon.json",
     "transfer-rule-sources.d/2026-09-03-hatanodai.json",
@@ -713,6 +714,45 @@
       "label": "標準・実測乗換（安全側）",
       "source": "https://tren.hatenablog.com/entry/s08toh16",
       "sourceType": "route-planner standard walk / current measured transfer guide",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "海老名-小田原線-相鉄本線",
+      "fromStation": "odpt.Station:Odakyu.Odawara.Ebina",
+      "toStation": "odpt.Station:Sotetsu.Main.Ebina",
+      "fromRailway": "odpt.Railway:Odakyu.Odawara",
+      "toRailway": "odpt.Railway:Sotetsu.Main",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://wadattsu261.com/content/ebina-odakyu-sotetsuline-transfer-information/",
+      "sourceType": "current route-planner walk / current transfer guide",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "海老名-相模線-小田原線",
+      "fromStation": "odpt.Station:JR-East.Sagami.Ebina",
+      "toStation": "odpt.Station:Odakyu.Odawara.Ebina",
+      "fromRailway": "odpt.Railway:JR-East.Sagami",
+      "toRailway": "odpt.Railway:Odakyu.Odawara",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://transit.yahoo.co.jp/search/result/%E6%B5%B7%E8%80%81%E5%90%8D%28%E7%9B%B8%E6%A8%A1%E7%B7%9A%29-%E6%9C%AC%E5%8E%9A%E6%9C%A8",
+      "sourceType": "current route-planner walk / current transfer guide",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "海老名-相模線-相鉄本線",
+      "fromStation": "odpt.Station:JR-East.Sagami.Ebina",
+      "toStation": "odpt.Station:Sotetsu.Main.Ebina",
+      "fromRailway": "odpt.Railway:JR-East.Sagami",
+      "toRailway": "odpt.Railway:Sotetsu.Main",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://transit.yahoo.co.jp/search/result/%E6%B5%B7%E8%80%81%E5%90%8D%28%E7%9B%B8%E6%A8%A1%E7%B7%9A%29-%E6%A8%AA%E6%B5%9C",
+      "sourceType": "current route-planner walk / current transfer guide",
       "verifiedAt": "2026-09-03"
     },
     {
