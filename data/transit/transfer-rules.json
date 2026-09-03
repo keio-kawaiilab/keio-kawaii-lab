@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-03T12:51:39.471Z",
+  "generatedAt": "2026-09-03T12:52:07.930Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -8,6 +8,7 @@
     "transfer-rule-sources.d/2026-09-03-major-hubs-3.json",
     "transfer-rule-sources.d/2026-09-03-major-hubs-4.json",
     "transfer-rule-sources.d/2026-09-03-shinjuku-core.json",
+    "transfer-rule-sources.d/2026-09-03-shinjuku-jr-internal.json",
     "transfer-rule-sources.d/2026-09-03-shinjuku-jr-subway.json",
     "transfer-rule-sources.d/2026-09-03-shinjuku-linked-stations.json",
     "transfer-rule-sources.d/2026-09-03-tokyo-marunouchi.json"
@@ -1116,6 +1117,71 @@
       "bidirectional": true,
       "label": "標準乗換",
       "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/keio_line-saikyo_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "新宿-中央線快速-中央・総武各駅停車",
+      "fromStation": "odpt.Station:JR-East.ChuoRapid.Shinjuku",
+      "toStation": "odpt.Station:JR-East.ChuoSobuLocal.Shinjuku",
+      "fromRailway": "odpt.Railway:JR-East.ChuoRapid",
+      "toRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/chuo_line-sobu_line_local.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "新宿-中央線快速-埼京線・川越線",
+      "fromStation": "odpt.Station:JR-East.ChuoRapid.Shinjuku",
+      "toStation": "odpt.Station:JR-East.SaikyoKawagoe.Shinjuku",
+      "fromRailway": "odpt.Railway:JR-East.ChuoRapid",
+      "toRailway": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/chuo_line-saikyo_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "新宿-中央線快速-湘南新宿ライン",
+      "fromStation": "odpt.Station:JR-East.ChuoRapid.Shinjuku",
+      "toStation": "odpt.Station:JR-East.ShonanShinjuku.Shinjuku",
+      "fromRailway": "odpt.Railway:JR-East.ChuoRapid",
+      "toRailway": "odpt.Railway:JR-East.ShonanShinjuku",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/chuo_line-saikyo_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "新宿-中央・総武各駅停車-埼京線・川越線",
+      "fromStation": "odpt.Station:JR-East.ChuoSobuLocal.Shinjuku",
+      "toStation": "odpt.Station:JR-East.SaikyoKawagoe.Shinjuku",
+      "fromRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "toRailway": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/sobu_line_local-saikyo_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "新宿-中央・総武各駅停車-湘南新宿ライン",
+      "fromStation": "odpt.Station:JR-East.ChuoSobuLocal.Shinjuku",
+      "toStation": "odpt.Station:JR-East.ShonanShinjuku.Shinjuku",
+      "fromRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "toRailway": "odpt.Railway:JR-East.ShonanShinjuku",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/sobu_line_local-saikyo_line.html",
       "sourceType": "Jorudan standard transfer time",
       "verifiedAt": "2026-09-03"
     },
