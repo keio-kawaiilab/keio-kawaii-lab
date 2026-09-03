@@ -52,6 +52,19 @@ def canonical_url(value: object) -> str:
     return str(value or "").strip().split("#", 1)[0]
 
 
+def pid_values(node) -> set[str]:
+    values: set[str] = set()
+    try:
+        anchors = node.find_all("a", href=True)
+    except AttributeError:
+        return values
+    for anchor in anchors:
+        href = str(anchor.get("href") or "")
+        for match in promoter.PID_RE.finditer(href):
+            values.add(match.group(1))
+    return values
+
+
 def candidate_context(anchor) -> str:
     own = normalize(anchor.get_text(" ", strip=True))
     node = anchor
@@ -59,6 +72,12 @@ def candidate_context(anchor) -> str:
     for _ in range(6):
         node = getattr(node, "parent", None)
         if node is None:
+            break
+        # Once an ancestor contains multiple distinct performance IDs, it is a
+        # list/grid wrapper rather than one event card. Never borrow text from a
+        # neighbouring performance.
+        pids = pid_values(node)
+        if len(pids) > 1:
             break
         text = normalize(node.get_text(" ", strip=True))
         if len(text) > 1800:
@@ -312,7 +331,7 @@ def merge(payload: dict, rows: list[dict]) -> tuple[int, int]:
 def make_session() -> requests.Session:
     session = requests.Session()
     session.headers.update({
-        "User-Agent": "Mozilla/5.0 (compatible; keio-kawaii-lab-promoter-sale-guard/1.0; +https://github.com/keio-kawaiilab/keio-kawaii-lab)",
+        "User-Agent": "Mozilla/5.0 (compatible; keio-kawaii-lab-promoter-sale-guard/1.1; +https://github.com/keio-kawaiilab/keio-kawaii-lab)",
         "Accept-Language": "ja,en;q=0.8",
     })
     return session
