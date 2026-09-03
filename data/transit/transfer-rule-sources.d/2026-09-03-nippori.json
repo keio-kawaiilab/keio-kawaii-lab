@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換",
+    "sourceType": "Jorudan standard transfer time",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {
+      "place": "日暮里",
+      "railwayA": "odpt.Railway:Keisei.Main",
+      "railwayB": "odpt.Railway:JR-East.Yamanote",
+      "railwayAName": "京成本線",
+      "railwayBName": "山手線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/nippori/keisei_line-yamanote_line.html"
+    },
+    {
+      "place": "日暮里",
+      "railwayA": "odpt.Railway:Keisei.Main",
+      "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayAName": "京成本線",
+      "railwayBName": "京浜東北線・根岸線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/nippori/keisei_line-keihintohoku_line.html"
+    },
+    {
+      "place": "日暮里",
+      "railwayA": "odpt.Railway:Keisei.Main",
+      "railwayB": "odpt.Railway:JR-East.JobanRapid",
+      "railwayAName": "京成本線",
+      "railwayBName": "常磐線快速",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/nippori/keisei_line-joban_line.html"
+    },
+    {
+      "place": "日暮里",
+      "railwayA": "odpt.Railway:Toei.NipporiToneri",
+      "railwayB": "odpt.Railway:JR-East.Yamanote",
+      "railwayAName": "日暮里・舎人ライナー",
+      "railwayBName": "山手線",
+      "minutes": 6,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/nippori/nippori_toneri_liner-yamanote_line.html"
+    },
+    {
+      "place": "日暮里",
+      "railwayA": "odpt.Railway:Toei.NipporiToneri",
+      "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayAName": "日暮里・舎人ライナー",
+      "railwayBName": "京浜東北線・根岸線",
+      "minutes": 6,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/nippori/nippori_toneri_liner-keihintohoku_line.html"
+    },
+    {
+      "place": "日暮里",
+      "railwayA": "odpt.Railway:Toei.NipporiToneri",
+      "railwayB": "odpt.Railway:JR-East.JobanRapid",
+      "railwayAName": "日暮里・舎人ライナー",
+      "railwayBName": "常磐線快速",
+      "minutes": 6,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/nippori/nippori_toneri_liner-joban_line.html"
+    },
+    {
+      "place": "日暮里",
+      "railwayA": "odpt.Railway:Toei.NipporiToneri",
+      "railwayB": "odpt.Railway:Keisei.Main",
+      "railwayAName": "日暮里・舎人ライナー",
+      "railwayBName": "京成本線",
+      "minutes": 6,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/nippori/nippori_toneri_liner-keisei_line.html"
+    },
+    {
+      "place": "日暮里",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.JobanRapid",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "常磐線快速",
+      "minutes": 3,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/nippori/keihintohoku_line-joban_line.html"
+    }
+  ]
+}
