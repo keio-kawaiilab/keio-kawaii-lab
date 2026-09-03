@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "実測乗換",
+    "sourceType": "Measured transfer guide",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {
+      "place": "大井町",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:Tokyu.Oimachi",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "大井町線",
+      "minutes": 2,
+      "source": "https://norikaemap.com/oimachi/0121/"
+    },
+    {
+      "place": "大井町",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:TWR.Rinkai",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "りんかい線",
+      "minutes": 6,
+      "source": "https://norikaemap.com/oimachi/0112"
+    },
+    {
+      "place": "大井町",
+      "railwayA": "odpt.Railway:Tokyu.Oimachi",
+      "railwayB": "odpt.Railway:TWR.Rinkai",
+      "railwayAName": "大井町線",
+      "railwayBName": "りんかい線",
+      "minutes": 6,
+      "source": "https://norikaemap.com/oimachi/2112/"
+    }
+  ]
+}
