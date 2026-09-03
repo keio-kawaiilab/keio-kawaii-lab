@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-03T23:30:31.328Z",
+  "generatedAt": "2026-09-03T23:38:44.227Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-03T23:30:10.734Z",
+  "rulesGeneratedAt": "2026-09-03T23:38:28.716Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 295,
-    "uncuratedPairs": 658,
+    "curatedPairs": 305,
+    "uncuratedPairs": 648,
     "blockedPairs": 7,
-    "curatedSourceRules": 295,
+    "curatedSourceRules": 305,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -363,16 +363,6 @@
       "priorityScore": 6
     },
     {
-      "place": "荻窪",
-      "totalPairs": 3,
-      "curatedPairs": 0,
-      "uncuratedPairs": 3,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 2,
-      "railwayCount": 3,
-      "priorityScore": 6
-    },
-    {
       "place": "蒲田",
       "totalPairs": 3,
       "curatedPairs": 0,
@@ -383,27 +373,7 @@
       "priorityScore": 6
     },
     {
-      "place": "吉祥寺",
-      "totalPairs": 3,
-      "curatedPairs": 0,
-      "uncuratedPairs": 3,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 2,
-      "railwayCount": 3,
-      "priorityScore": 6
-    },
-    {
       "place": "橋本",
-      "totalPairs": 3,
-      "curatedPairs": 0,
-      "uncuratedPairs": 3,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 2,
-      "railwayCount": 3,
-      "priorityScore": 6
-    },
-    {
-      "place": "錦糸町",
       "totalPairs": 3,
       "curatedPairs": 0,
       "uncuratedPairs": 3,
@@ -1004,6 +974,36 @@
     },
     {
       "place": "岩本町 ↔ 秋葉原",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 2,
+      "priorityScore": 2.5
+    },
+    {
+      "place": "寄居",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 2,
+      "priorityScore": 2.5
+    },
+    {
+      "place": "菊名",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 2,
+      "priorityScore": 2.5
+    },
+    {
+      "place": "久喜",
       "totalPairs": 1,
       "curatedPairs": 0,
       "uncuratedPairs": 1,
@@ -6271,34 +6271,6 @@
     },
     {
       "place": "荻窪",
-      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-      "railwayAName": "中央・総武各駅停車",
-      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
-      "railwayBName": "丸ノ内線",
-      "sameOperator": false,
-      "distanceMeters": 52,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "荻窪",
-      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-      "railwayAName": "中央線快速",
-      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
-      "railwayBName": "丸ノ内線",
-      "sameOperator": false,
-      "distanceMeters": 52,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "荻窪",
       "railwayA": "odpt.Railway:JR-East.ChuoRapid",
       "railwayAName": "中央線快速",
       "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
@@ -6591,20 +6563,6 @@
       ]
     },
     {
-      "place": "亀戸",
-      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-      "railwayAName": "中央・総武各駅停車",
-      "railwayB": "odpt.Railway:Tobu.Kameido",
-      "railwayBName": "亀戸線",
-      "sameOperator": false,
-      "distanceMeters": 69,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
       "place": "菊名",
       "railwayA": "odpt.Railway:JR-East.Yokohama",
       "railwayAName": "横浜線",
@@ -6612,34 +6570,6 @@
       "railwayBName": "東横線",
       "sameOperator": false,
       "distanceMeters": 98,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "吉祥寺",
-      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-      "railwayAName": "中央・総武各駅停車",
-      "railwayB": "odpt.Railway:Keio.Inokashira",
-      "railwayBName": "井の頭線",
-      "sameOperator": false,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "吉祥寺",
-      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-      "railwayAName": "中央線快速",
-      "railwayB": "odpt.Railway:Keio.Inokashira",
-      "railwayBName": "井の頭線",
-      "sameOperator": false,
-      "distanceMeters": null,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
@@ -6868,48 +6798,6 @@
       "railwayBName": "相模原線",
       "sameOperator": false,
       "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "錦糸町",
-      "railwayA": "odpt.Railway:JR-East.SobuRapid",
-      "railwayAName": "総武快速線",
-      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
-      "railwayBName": "半蔵門線",
-      "sameOperator": false,
-      "distanceMeters": 99,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "錦糸町",
-      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-      "railwayAName": "中央・総武各駅停車",
-      "railwayB": "odpt.Railway:JR-East.SobuRapid",
-      "railwayBName": "総武快速線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "錦糸町",
-      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-      "railwayAName": "中央・総武各駅停車",
-      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
-      "railwayBName": "半蔵門線",
-      "sameOperator": false,
-      "distanceMeters": 99,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
@@ -7172,19 +7060,6 @@
       "sameOperator": false,
       "distanceMeters": 413,
       "fallbackMinutes": 8,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "戸越 ↔ 戸越銀座",
-      "railwayA": "odpt.Railway:Toei.Asakusa",
-      "railwayAName": "浅草線",
-      "railwayB": "odpt.Railway:Tokyu.Ikegami",
-      "railwayBName": "池上線",
-      "sameOperator": false,
-      "distanceMeters": 206,
-      "fallbackMinutes": 5,
       "sources": [
         "connecting-station"
       ]
@@ -11501,20 +11376,6 @@
       "fallbackMinutes": 7,
       "sources": [
         "connecting-station"
-      ]
-    },
-    {
-      "place": "中延",
-      "railwayA": "odpt.Railway:Toei.Asakusa",
-      "railwayAName": "浅草線",
-      "railwayB": "odpt.Railway:Tokyu.Oimachi",
-      "railwayBName": "大井町線",
-      "sameOperator": false,
-      "distanceMeters": 102,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
       ]
     },
     {
