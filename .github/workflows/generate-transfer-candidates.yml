@@ -45,7 +45,7 @@ jobs:
           path: data/transit/transfer-candidates.json
       - name: Commit generated data
         run: |
-          if git diff --quiet -- data/transit/transfer-candidates.json; then
+          if [ -z "$(git status --porcelain -- data/transit/transfer-candidates.json)" ]; then
             echo 'No transfer-candidate changes.'
             exit 0
           fi
