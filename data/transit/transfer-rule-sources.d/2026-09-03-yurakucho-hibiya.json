@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換",
+    "sourceType": "Jorudan standard transfer time",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {
+      "place": "有楽町 ↔ 日比谷",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+      "railwayAName": "山手線",
+      "railwayBName": "日比谷線",
+      "minutes": 6,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/yurakucho/yamanote_line-tokyo-metro_hibiya_line.html"
+    },
+    {
+      "place": "有楽町 ↔ 日比谷",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayAName": "山手線",
+      "railwayBName": "千代田線",
+      "minutes": 6,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/yurakucho/yamanote_line-tokyo-metro_chiyoda_line.html"
+    },
+    {
+      "place": "有楽町 ↔ 日比谷",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:Toei.Mita",
+      "railwayAName": "山手線",
+      "railwayBName": "三田線",
+      "minutes": 5,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/yurakucho/yamanote_line-toei_subway-mita_line.html"
+    },
+    {
+      "place": "有楽町 ↔ 日比谷",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "日比谷線",
+      "minutes": 6,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/yurakucho/keihintohoku_line-tokyo-metro_hibiya_line.html"
+    },
+    {
+      "place": "有楽町 ↔ 日比谷",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "千代田線",
+      "minutes": 6,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/yurakucho/keihintohoku_line-tokyo-metro_chiyoda_line.html"
+    },
+    {
+      "place": "有楽町 ↔ 日比谷",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:Toei.Mita",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "三田線",
+      "minutes": 5,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/yurakucho/toei_subway-mita_line-keihintohoku_line.html"
+    },
+    {
+      "place": "有楽町 ↔ 日比谷",
+      "railwayA": "odpt.Railway:TokyoMetro.Yurakucho",
+      "railwayB": "odpt.Railway:Toei.Mita",
+      "railwayAName": "有楽町線",
+      "railwayBName": "三田線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/yurakucho/tokyo-metro_yurakucho_line-toei_subway-mita_line.html"
+    }
+  ]
+}
