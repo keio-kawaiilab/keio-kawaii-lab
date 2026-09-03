@@ -9,6 +9,7 @@
     (values||[]).forEach(function(value){if(value&&result[result.length-1]!==value)result.push(value);});
     return result;
   }
+  function asArray(value){return Array.isArray(value)?value:(value?[value]:[]);}
   function edgeKey(from,edge){return[from,edge.to,edge.type,edge.railway||""].join("\u0001");}
 
   core.createModel=function(){
@@ -18,15 +19,16 @@
     function segments(path){return model.segmentsFrom(path)||[];}
     function pathSignature(path){return segments(path).map(function(s){return[s.railway,s.from,s.to].join("\u0002");}).join("\u0003");}
     function familySignature(path){return collapse(segments(path).map(function(s){return s.railway;})).join("\u0003");}
+    function operatorIds(railwayId){var item=model.railwayById&&model.railwayById.get(railwayId);return asArray(item&&item["odpt:operator"]);}
 
     function diverseCandidatePaths(originGroup,destinationGroup,options){
       options=options||{};
       var requested=Math.max(1,Math.min(18,Number(options.limit)||8));
       if(requested<=8)return originalCandidatePaths(originGroup,destinationGroup,options);
-      var allowed=options.allowedRailways?Array.from(options.allowedRailways):null;
+      var allowed=options.allowedRailways?Array.from(options.allowedRailways):Array.from(model.railwayById.keys());
       var base=model.shortestPath(originGroup,destinationGroup,{allowedRailways:allowed});
       if(!base)return[];
-      var maxCost=base.cost+Math.max(20,Math.ceil(base.cost*0.95));
+      var maxCost=base.cost+Math.max(30,Math.ceil(base.cost*1.25));
       var results=[],seen=new Set(),pool=new Map(),expanded=new Set(),familyCounts=new Map(),expansionCount=0;
 
       function accept(path){
@@ -47,8 +49,21 @@
         var sig=pathSignature(path);if(expanded.has(sig)||expansionCount>=10)return;
         expanded.add(sig);expansionCount++;
         var segs=segments(path),railways=Array.from(new Set(segs.map(function(s){return s.railway;}).filter(Boolean)));
+
+        // First, knock out individual lines to find nearby alternatives.
         railways.forEach(function(railway){alternate({blockedRailways:[railway]});});
 
+        // Then knock out an entire operator represented in the route. This is deliberately stronger:
+        // if JR variants dominate a route, for example, it forces the search to inspect Metro/Toei/private-railway corridors too.
+        var operators=new Set();
+        railways.forEach(function(railway){operatorIds(railway).forEach(function(operator){if(operator)operators.add(operator);});});
+        operators.forEach(function(operator){
+          var blocked=allowed.filter(function(railway){return operatorIds(railway).indexOf(operator)>=0;});
+          if(blocked.length&&blocked.length<allowed.length)alternate({blockedRailways:blocked});
+        });
+
+        // Finally perturb important edges so transfer-point variants remain discoverable internally,
+        // without letting those variants determine the display order.
         var edges=path.edges||[],indexes=[],edgeCount=edges.length,stride=Math.max(1,Math.ceil(edgeCount/10));
         edges.forEach(function(step,index){
           var prev=edges[index-1],next=edges[index+1];
