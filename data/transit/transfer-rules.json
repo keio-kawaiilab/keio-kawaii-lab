@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-03T13:14:40.659Z",
+  "generatedAt": "2026-09-03T13:17:12.826Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -11,6 +11,7 @@
     "transfer-rule-sources.d/2026-09-03-major-hubs-2.json",
     "transfer-rule-sources.d/2026-09-03-major-hubs-3.json",
     "transfer-rule-sources.d/2026-09-03-major-hubs-4.json",
+    "transfer-rule-sources.d/2026-09-03-meguro-jr.json",
     "transfer-rule-sources.d/2026-09-03-nippori.json",
     "transfer-rule-sources.d/2026-09-03-otemachi.json",
     "transfer-rule-sources.d/2026-09-03-shibuya-core-2.json",
@@ -1181,6 +1182,45 @@
       "label": "標準乗換",
       "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/keio-inokashira_line-tokyu-toyoko_line.html",
       "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "目黒-山手線-目黒線",
+      "fromStation": "odpt.Station:JR-East.Yamanote.Meguro",
+      "toStation": "odpt.Station:Tokyu.Meguro.Meguro",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:Tokyu.Meguro",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "実測乗換",
+      "source": "https://norikaemap.com/meguro/1101/",
+      "sourceType": "Measured transfer guide",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "目黒-山手線-南北線",
+      "fromStation": "odpt.Station:JR-East.Yamanote.Meguro",
+      "toStation": "odpt.Station:TokyoMetro.Namboku.Meguro",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:TokyoMetro.Namboku",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "実測乗換",
+      "source": "https://norikaemap.com/meguro/1101/",
+      "sourceType": "Measured transfer guide",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "目黒-山手線-三田線",
+      "fromStation": "odpt.Station:JR-East.Yamanote.Meguro",
+      "toStation": "odpt.Station:Toei.Mita.Meguro",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:Toei.Mita",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "実測乗換",
+      "source": "https://norikaemap.com/meguro/1101/",
+      "sourceType": "Measured transfer guide",
       "verifiedAt": "2026-09-03"
     },
     {
