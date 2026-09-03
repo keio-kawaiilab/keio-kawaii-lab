@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-03T13:11:20.595Z",
+  "generatedAt": "2026-09-03T13:12:48.565Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-03T13:10:38.596Z",
+  "rulesGeneratedAt": "2026-09-03T13:12:25.236Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 178,
-    "uncuratedPairs": 775,
+    "curatedPairs": 181,
+    "uncuratedPairs": 772,
     "blockedPairs": 7,
-    "curatedSourceRules": 178,
+    "curatedSourceRules": 181,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -384,16 +384,6 @@
     },
     {
       "place": "五反田",
-      "totalPairs": 3,
-      "curatedPairs": 0,
-      "uncuratedPairs": 3,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 3,
-      "railwayCount": 3,
-      "priorityScore": 7.5
-    },
-    {
-      "place": "高田馬場",
       "totalPairs": 3,
       "curatedPairs": 0,
       "uncuratedPairs": 3,
@@ -1010,6 +1000,16 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 4,
+      "priorityScore": 3
+    },
+    {
+      "place": "取手",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
       "priorityScore": 3
     }
   ],
@@ -7841,48 +7841,6 @@
       "railwayBName": "上越線",
       "sameOperator": true,
       "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "高田馬場",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:Seibu.Shinjuku",
-      "railwayBName": "新宿線",
-      "sameOperator": false,
-      "distanceMeters": 20,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "高田馬場",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:TokyoMetro.Tozai",
-      "railwayBName": "東西線",
-      "sameOperator": false,
-      "distanceMeters": 118,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "高田馬場",
-      "railwayA": "odpt.Railway:Seibu.Shinjuku",
-      "railwayAName": "新宿線",
-      "railwayB": "odpt.Railway:TokyoMetro.Tozai",
-      "railwayBName": "東西線",
-      "sameOperator": false,
-      "distanceMeters": 99,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
