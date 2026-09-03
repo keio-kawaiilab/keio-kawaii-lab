@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-03T13:22:33.879Z",
+  "generatedAt": "2026-09-03T13:23:33.238Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -26,6 +26,7 @@
     "transfer-rule-sources.d/2026-09-03-shinjuku-jr-subway.json",
     "transfer-rule-sources.d/2026-09-03-shinjuku-linked-stations.json",
     "transfer-rule-sources.d/2026-09-03-takadanobaba.json",
+    "transfer-rule-sources.d/2026-09-03-tamachi-mita.json",
     "transfer-rule-sources.d/2026-09-03-tokyo-marunouchi.json",
     "transfer-rule-sources.d/2026-09-03-yurakucho-hibiya.json"
   ],
@@ -2394,6 +2395,58 @@
       "bidirectional": true,
       "label": "実測乗換（安全側上限）",
       "source": "https://wadattsu261.com/content/takadanobaba-metrotozai-seibushinjukuline-transfer-information/",
+      "sourceType": "Measured transfer guide; conservative upper bound",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "田町 ↔ 三田-山手線-浅草線",
+      "fromStation": "odpt.Station:JR-East.Yamanote.Tamachi",
+      "toStation": "odpt.Station:Toei.Asakusa.Mita",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:Toei.Asakusa",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "実測乗換（安全側上限）",
+      "source": "https://wadattsu261.com/content/tamachi-mita-jryamanote-keihin-toeiasakusaline-transfer-information/",
+      "sourceType": "Measured transfer guide; conservative upper bound",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "田町 ↔ 三田-京浜東北線・根岸線-浅草線",
+      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Tamachi",
+      "toStation": "odpt.Station:Toei.Asakusa.Mita",
+      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "toRailway": "odpt.Railway:Toei.Asakusa",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "実測乗換（安全側上限）",
+      "source": "https://wadattsu261.com/content/tamachi-mita-jryamanote-keihin-toeiasakusaline-transfer-information/",
+      "sourceType": "Measured transfer guide; conservative upper bound",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "田町 ↔ 三田-山手線-三田線",
+      "fromStation": "odpt.Station:JR-East.Yamanote.Tamachi",
+      "toStation": "odpt.Station:Toei.Mita.Mita",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:Toei.Mita",
+      "minutes": 9,
+      "bidirectional": true,
+      "label": "実測乗換（安全側上限）",
+      "source": "https://wadattsu261.com/content/tamachi-mita-jryamanote-keihin-toeimitaline-transfer-information/",
+      "sourceType": "Measured transfer guide; conservative upper bound",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "田町 ↔ 三田-京浜東北線・根岸線-三田線",
+      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Tamachi",
+      "toStation": "odpt.Station:Toei.Mita.Mita",
+      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "toRailway": "odpt.Railway:Toei.Mita",
+      "minutes": 9,
+      "bidirectional": true,
+      "label": "実測乗換（安全側上限）",
+      "source": "https://wadattsu261.com/content/tamachi-mita-jryamanote-keihin-toeimitaline-transfer-information/",
       "sourceType": "Measured transfer guide; conservative upper bound",
       "verifiedAt": "2026-09-03"
     },
