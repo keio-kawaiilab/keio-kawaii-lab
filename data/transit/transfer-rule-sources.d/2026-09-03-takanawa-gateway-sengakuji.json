@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換（安全側）",
+    "sourceType": "current route-planner standard walk",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {
+      "place": "高輪ゲートウェイ ↔ 泉岳寺",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:Keikyu.Main",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "京急本線",
+      "minutes": 10,
+      "source": "https://ekitan.com/transit/route/sf-9909/st-2417"
+    },
+    {
+      "place": "高輪ゲートウェイ ↔ 泉岳寺",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:Toei.Asakusa",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "浅草線",
+      "minutes": 10,
+      "source": "https://ekitan.com/transit/route/sf-9909/st-2417"
+    },
+    {
+      "place": "高輪ゲートウェイ ↔ 泉岳寺",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:Keikyu.Main",
+      "railwayAName": "山手線",
+      "railwayBName": "京急本線",
+      "minutes": 10,
+      "source": "https://ekitan.com/transit/route/sf-2417/st-9909"
+    },
+    {
+      "place": "高輪ゲートウェイ ↔ 泉岳寺",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:Toei.Asakusa",
+      "railwayAName": "山手線",
+      "railwayBName": "浅草線",
+      "minutes": 10,
+      "source": "https://ekitan.com/transit/route/sf-2417/st-9909"
+    }
+  ]
+}
