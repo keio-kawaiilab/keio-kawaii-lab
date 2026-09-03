@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "実測乗換",
+    "sourceType": "Measured transfer guide",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {
+      "place": "目黒",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:Tokyu.Meguro",
+      "railwayAName": "山手線",
+      "railwayBName": "目黒線",
+      "minutes": 4,
+      "source": "https://norikaemap.com/meguro/1101/"
+    },
+    {
+      "place": "目黒",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
+      "railwayAName": "山手線",
+      "railwayBName": "南北線",
+      "minutes": 4,
+      "source": "https://norikaemap.com/meguro/1101/"
+    },
+    {
+      "place": "目黒",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:Toei.Mita",
+      "railwayAName": "山手線",
+      "railwayBName": "三田線",
+      "minutes": 4,
+      "source": "https://norikaemap.com/meguro/1101/"
+    }
+  ]
+}
