@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "実測乗換（安全側）",
+    "sourceType": "measured transfer guide / route-planner observed transfer time",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {
+      "place": "四ツ谷",
+      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayAName": "中央線快速",
+      "railwayBName": "中央・総武各駅停車",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E4%BF%A1%E6%BF%83%E7%94%BA_%E6%9D%B1%E4%BA%AC.html"
+    },
+    {
+      "place": "四ツ谷",
+      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayAName": "中央線快速",
+      "railwayBName": "丸ノ内線",
+      "minutes": 3,
+      "source": "https://tren.hatenablog.com/entry/jc04"
+    },
+    {
+      "place": "四ツ谷",
+      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayAName": "中央・総武各駅停車",
+      "railwayBName": "丸ノ内線",
+      "minutes": 3,
+      "source": "https://tren.hatenablog.com/entry/jc04"
+    },
+    {
+      "place": "四ツ谷",
+      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
+      "railwayAName": "中央線快速",
+      "railwayBName": "南北線",
+      "minutes": 6,
+      "source": "https://norikaemap.com/yotsuya/1301/"
+    },
+    {
+      "place": "四ツ谷",
+      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
+      "railwayAName": "中央・総武各駅停車",
+      "railwayBName": "南北線",
+      "minutes": 6,
+      "source": "https://norikaemap.com/yotsuya/1303/"
+    },
+    {
+      "place": "四ツ谷",
+      "railwayA": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
+      "railwayAName": "丸ノ内線",
+      "railwayBName": "南北線",
+      "minutes": 4,
+      "source": "https://tren.hatenablog.com/entry/m12n08"
+    }
+  ]
+}
