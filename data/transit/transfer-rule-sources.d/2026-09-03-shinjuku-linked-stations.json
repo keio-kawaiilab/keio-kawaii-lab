@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換",
+    "sourceType": "Jorudan standard transfer time",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {
+      "place": "新宿 ↔ 西武新宿",
+      "railwayA": "odpt.Railway:Seibu.Shinjuku",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayAName": "西武新宿線",
+      "railwayBName": "丸ノ内線",
+      "minutes": 13,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/seibu-shinjuku_line-tokyo-metro_marunouchi_line.html"
+    },
+    {
+      "place": "新宿 ↔ 西武新宿",
+      "railwayA": "odpt.Railway:Seibu.Shinjuku",
+      "railwayB": "odpt.Railway:Keio.Keio",
+      "railwayAName": "西武新宿線",
+      "railwayBName": "京王線",
+      "minutes": 14,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/seibu-shinjuku_line-keio_line.html"
+    },
+    {
+      "place": "新宿 ↔ 西武新宿",
+      "railwayA": "odpt.Railway:Seibu.Shinjuku",
+      "railwayB": "odpt.Railway:Odakyu.Odawara",
+      "railwayAName": "西武新宿線",
+      "railwayBName": "小田原線",
+      "minutes": 13,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/seibu-shinjuku_line-odakyu_line.html"
+    },
+    {
+      "place": "新宿 ↔ 西武新宿",
+      "railwayA": "odpt.Railway:Seibu.Shinjuku",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "railwayAName": "西武新宿線",
+      "railwayBName": "大江戸線",
+      "minutes": 18,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/seibu-shinjuku_line-toei_subway-oedo_line.html"
+    },
+    {
+      "place": "新宿 ↔ 西武新宿",
+      "railwayA": "odpt.Railway:Seibu.Shinjuku",
+      "railwayB": "odpt.Railway:Toei.Shinjuku",
+      "railwayAName": "西武新宿線",
+      "railwayBName": "新宿線",
+      "minutes": 14,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/seibu-shinjuku_line-toei_subway-shinjuku_line.html"
+    },
+    {
+      "place": "新宿 ↔ 新宿西口",
+      "railwayA": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "railwayAName": "丸ノ内線",
+      "railwayBName": "大江戸線",
+      "minutes": 6,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/tokyo-metro_marunouchi_line-oedonishi.html"
+    }
+  ]
+}
