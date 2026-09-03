@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "公式・実測乗換（安全側）",
+    "sourceType": "official station route / current measured transfer guide / current route-planner connection",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {
+      "place": "新横浜",
+      "railwayA": "odpt.Railway:JR-East.Yokohama",
+      "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
+      "railwayAName": "横浜線",
+      "railwayBName": "ブルーライン",
+      "minutes": 10,
+      "source": "https://norikae.hodokechi.com/yokohamaline-blueline-norikae-higashikanagawa/"
+    },
+    {
+      "place": "新横浜",
+      "railwayA": "odpt.Railway:JR-East.Yokohama",
+      "railwayB": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
+      "railwayAName": "横浜線",
+      "railwayBName": "相鉄新横浜線",
+      "minutes": 10,
+      "source": "https://www.tokyu.co.jp/special/chokutsusen/"
+    },
+    {
+      "place": "新横浜",
+      "railwayA": "odpt.Railway:JR-East.Yokohama",
+      "railwayB": "odpt.Railway:Tokyu.TokyuShinYokohama",
+      "railwayAName": "横浜線",
+      "railwayBName": "東急新横浜線",
+      "minutes": 10,
+      "source": "https://www.tokyu.co.jp/special/chokutsusen/"
+    },
+    {
+      "place": "新横浜",
+      "railwayA": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
+      "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
+      "railwayAName": "相鉄新横浜線",
+      "railwayBName": "ブルーライン",
+      "minutes": 5,
+      "source": "https://transit.yahoo.co.jp/search/result/%E5%8C%97%E6%96%B0%E6%A8%AA%E6%B5%9C-%E7%BE%BD%E6%B2%A2%E6%A8%AA%E6%B5%9C%E5%9B%BD%E5%A4%A7"
+    },
+    {
+      "place": "新横浜",
+      "railwayA": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
+      "railwayB": "odpt.Railway:Tokyu.TokyuShinYokohama",
+      "railwayAName": "相鉄新横浜線",
+      "railwayBName": "東急新横浜線",
+      "minutes": 2,
+      "source": "https://www.tokyu.co.jp/area/shin-yokohama/station/"
+    },
+    {
+      "place": "新横浜",
+      "railwayA": "odpt.Railway:Tokyu.TokyuShinYokohama",
+      "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
+      "railwayAName": "東急新横浜線",
+      "railwayBName": "ブルーライン",
+      "minutes": 5,
+      "source": "https://www.navitime.co.jp/transfer/searchlist?defaultCondition=0&dnvStationCode=00009220&dnvStationName=%E8%B5%A4%E7%BE%BD%E6%A9%8B&orvStationCode=00002953&orvStationName=%E4%B8%89%E3%83%83%E6%B2%A2%E4%B8%8A%E7%94%BA"
+    }
+  ]
+}
