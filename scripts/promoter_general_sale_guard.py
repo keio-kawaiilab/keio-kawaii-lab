@@ -85,13 +85,7 @@ def candidate_context(anchor) -> str:
 
 
 def discover_birthday_candidates(html: str, base_url: str = promoter.BASE_URL) -> list[promoter.Candidate]:
-    """Conservative month-card matcher used as a regression-tested helper.
-
-    Production recovery uses the established promoter.collect() path below because
-    HOT STUFF has also used templates where the stable PID lives outside the visible
-    event card. This helper remains intentionally strict so adjacent events can never
-    be joined by accident.
-    """
+    """Strict local-card matcher used by tests and when a template exposes cards."""
     soup = BeautifulSoup(html, "html.parser")
     found: dict[str, promoter.Candidate] = {}
     for anchor in soup.find_all("a", href=True):
@@ -189,29 +183,47 @@ def extract_general_sale(soup: BeautifulSoup, event_day: str, source_url: str) -
     }
 
 
-def collect(session: requests.Session, today: date) -> tuple[list[dict], list[dict]]:
-    # Use the existing battle-tested HOT STUFF collector as the discovery layer.
-    # It scans stable promoter PIDs even when they are held in JS/data markup, then
-    # returns only supported future KAWAII LAB. birthday performances. This daily
-    # fallback intentionally prioritizes recall; it runs only once per day.
-    try:
-        birthday_events, diagnostics = promoter.collect(session, today)
-    except Exception as exc:
-        return [], [{
-            "stage": "promoter-birthday-collection",
-            "error": f"{type(exc).__name__}: {exc}",
-        }]
+def discover_group_candidates(session: requests.Session) -> tuple[list[promoter.Candidate], list[dict]]:
+    """Discover HOT STUFF detail PIDs using five group-specific searches.
 
-    failures = list(diagnostics.get("failures") or [])
+    Search pages are much cheaper than crawling every HOT STUFF event for twelve
+    months. We intentionally allow a broad set of PIDs here; parse_detail() below
+    is the authoritative birthday/group filter before anything can be published.
+    """
+    found: dict[str, promoter.Candidate] = {}
+    failures: list[dict] = []
+    for group in promoter.GROUPS:
+        try:
+            response = session.get(
+                f"{promoter.BASE_URL}/search/",
+                params={"d": "", "key": group, "mth": "", "y": ""},
+                timeout=25,
+            )
+            response.raise_for_status()
+            for candidate in promoter.discover_candidates(response.text):
+                found[candidate.url] = candidate
+        except Exception as exc:
+            failures.append({
+                "stage": "group-search",
+                "group": group,
+                "error": f"{type(exc).__name__}: {exc}",
+            })
+    return list(found.values()), failures
+
+
+def collect(session: requests.Session, today: date) -> tuple[list[dict], list[dict]]:
+    candidates, failures = discover_group_candidates(session)
     rows: list[dict] = []
-    for event in birthday_events:
-        source_url = canonical_url(event.get("url"))
-        event_day = str(event.get("eventDate") or "")[:10]
-        if not source_url or not event_day:
-            continue
+
+    for candidate in candidates:
+        source_url = canonical_url(candidate.url)
         try:
             response = session.get(source_url, timeout=25)
             response.raise_for_status()
+            event = promoter.parse_detail(source_url, response.text, today)
+            if not event:
+                continue
+            event_day = str(event.get("eventDate") or "")[:10]
             soup = BeautifulSoup(response.text, "html.parser")
             sale = extract_general_sale(soup, event_day, source_url)
             if not sale:
@@ -325,7 +337,7 @@ def merge(payload: dict, rows: list[dict]) -> tuple[int, int]:
 def make_session() -> requests.Session:
     session = requests.Session()
     session.headers.update({
-        "User-Agent": "Mozilla/5.0 (compatible; keio-kawaii-lab-promoter-sale-guard/1.2; +https://github.com/keio-kawaiilab/keio-kawaii-lab)",
+        "User-Agent": "Mozilla/5.0 (compatible; keio-kawaii-lab-promoter-sale-guard/1.3; +https://github.com/keio-kawaiilab/keio-kawaii-lab)",
         "Accept-Language": "ja,en;q=0.8",
     })
     return session
