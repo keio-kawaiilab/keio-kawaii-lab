@@ -19,6 +19,7 @@
   var timetableCache=new Map();
   var timetableNetworks=[];
   var timetableNetworkCache=new Map();
+  var transferRulesByKey=new Map();
 
   function esc(value){return String(value==null?"":value).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
   function safeColor(value){var color=String(value||"").trim();return /^#[0-9a-f]{6}$/i.test(color)?color:"#14386f";}
@@ -30,6 +31,32 @@
   function operatorEntries(manifest){
     if(!manifest||!manifest.operators||Array.isArray(manifest.operators))return[];
     return Object.keys(manifest.operators).map(function(slug){return[slug,manifest.operators[slug]];}).filter(function(pair){return pair[1]&&pair[1].status==="ok";});
+  }
+  function transferRuleKey(fromStation,toStation,fromRailway,toRailway){return[fromStation,toStation,fromRailway,toRailway].join("\u0001");}
+  function indexTransferRules(payload){
+    transferRulesByKey.clear();
+    var rules=payload&&Array.isArray(payload.rules)?payload.rules:[];
+    rules.forEach(function(rule){
+      var fromStation=String(rule&&rule.fromStation||""),toStation=String(rule&&rule.toStation||"");
+      var fromRailway=String(rule&&rule.fromRailway||""),toRailway=String(rule&&rule.toRailway||"");
+      var minutes=Number(rule&&rule.minutes);
+      if(!fromStation||!toStation||!fromRailway||!toRailway||!Number.isFinite(minutes)||minutes<0)return;
+      var normalized={minutes:minutes,id:String(rule.id||""),label:String(rule.label||""),samePlatform:Boolean(rule.samePlatform)};
+      transferRulesByKey.set(transferRuleKey(fromStation,toStation,fromRailway,toRailway),normalized);
+      if(rule.bidirectional!==false){
+        var reverseMinutes=Number(rule.reverseMinutes),reverseSamePlatform=rule.reverseSamePlatform;
+        transferRulesByKey.set(transferRuleKey(toStation,fromStation,toRailway,fromRailway),{
+          minutes:Number.isFinite(reverseMinutes)&&reverseMinutes>=0?reverseMinutes:minutes,
+          id:String(rule.id||"")+(rule.id?":reverse":""),
+          label:String(rule.reverseLabel||rule.label||""),
+          samePlatform:reverseSamePlatform==null?Boolean(rule.samePlatform):Boolean(reverseSamePlatform)
+        });
+      }
+    });
+  }
+  function resolveTransferRule(context){
+    if(!context)return null;
+    return transferRulesByKey.get(transferRuleKey(context.fromStationId,context.toStationId,context.fromRailway,context.toRailway))||null;
   }
   function fillStations(){stationList.innerHTML=model.stations.map(function(station){return'<option value="'+esc(station.label)+'"></option>';}).join("");}
   function localDatetimeValue(date){
@@ -59,6 +86,10 @@
           fetchJson(base+"timetable-index.json?v="+version).catch(function(){return null;})
         ]).then(function(values){return{slug:slug,base:base,entities:values[0],index:values[1]};});
       })).then(function(bundles){
+        return fetchJson("./data/transit/transfer-rules.json?v="+encodeURIComponent(manifest.fetchedAt||Date.now())).catch(function(error){console.warn(error);return{rules:[]};}).then(function(payload){
+          indexTransferRules(payload);return bundles;
+        });
+      }).then(function(bundles){
         model=core.createModel(bundles.map(function(bundle){return bundle.entities;}).filter(Boolean));
         if(!model.stations.length)throw new Error("駅データが空です");
         timetableLines.clear();timetableNetworks=[];timetableNetworkCache.clear();
@@ -197,7 +228,7 @@
     return best;
   }
   function bestTimedItinerary(path,fromGroup,toGroup,timetables,earliest,service){
-    var normal=model.timedItinerary(path,timetables,earliest,service,5);
+    var normal=model.timedItinerary(path,timetables,earliest,service,5,resolveTransferRule);
     var direct=networkTimedItinerary(path,fromGroup,toGroup,timetables,earliest,service);
     if(!normal)return direct;if(!direct)return normal;
     if(direct.arrival<normal.arrival)return direct;
@@ -221,7 +252,8 @@
     if(warning)html+='<div class="route-time-warning">'+esc(warning)+'</div>';
     segments.forEach(function(segment,index){
       if(index>0){
-        var transferDetail=timed?"（"+(segment.transferMinutes?"乗換目安 "+segment.transferMinutes+"分・":"")+formatTime(segment.departure)+"発）":"";
+        var transferRuleNote=timed&&segment.transferRuleLabel?"・"+segment.transferRuleLabel:timed&&segment.transferSamePlatform?"・同一ホーム":"";
+        var transferDetail=timed?"（"+(segment.transferMinutes?"乗換目安 "+segment.transferMinutes+"分"+transferRuleNote+"・":"")+formatTime(segment.departure)+"発）":"";
         var transferCopy=segment.throughFromPrevious?esc(model.displayStation(segment.from))+"から直通":esc(model.displayStation(segment.from))+"で乗換"+transferDetail;
         html+='<div class="route-transfer">'+transferCopy+'</div>';
       }
