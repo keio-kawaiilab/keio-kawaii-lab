@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-03T13:19:06.410Z",
+  "generatedAt": "2026-09-03T13:19:55.536Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-03T13:18:49.533Z",
+  "rulesGeneratedAt": "2026-09-03T13:19:32.998Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 190,
-    "uncuratedPairs": 763,
+    "curatedPairs": 191,
+    "uncuratedPairs": 762,
     "blockedPairs": 7,
-    "curatedSourceRules": 190,
+    "curatedSourceRules": 191,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -8407,20 +8407,6 @@
       "railwayAName": "中央・総武各駅停車",
       "railwayB": "odpt.Railway:JR-East.SobuRapid",
       "railwayBName": "総武快速線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "自由が丘",
-      "railwayA": "odpt.Railway:Tokyu.Oimachi",
-      "railwayAName": "大井町線",
-      "railwayB": "odpt.Railway:Tokyu.Toyoko",
-      "railwayBName": "東横線",
       "sameOperator": true,
       "distanceMeters": 0,
       "fallbackMinutes": 5,
