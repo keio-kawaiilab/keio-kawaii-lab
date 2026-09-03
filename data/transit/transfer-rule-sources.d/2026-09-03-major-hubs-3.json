@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換",
+    "sourceType": "Jorudan standard transfer time",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {
+      "place": "東京",
+      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayB": "odpt.Railway:JR-East.Tokaido",
+      "railwayAName": "中央線快速",
+      "railwayBName": "東海道線",
+      "minutes": 5,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/chuo_line-tokaido_line_jr_east.html"
+    },
+    {
+      "place": "東京",
+      "railwayA": "odpt.Railway:JR-East.Tokaido",
+      "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayAName": "東海道線",
+      "railwayBName": "京浜東北線・根岸線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/tokaido_line_jr_east-keihintohoku_line.html"
+    },
+    {
+      "place": "渋谷",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:Tokyu.Toyoko",
+      "railwayAName": "埼京線・川越線",
+      "railwayBName": "東横線",
+      "minutes": 9,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/saikyo_line-tokyu-toyoko_line.html"
+    },
+    {
+      "place": "渋谷",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:Tokyu.Toyoko",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "東横線",
+      "minutes": 9,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/saikyo_line-tokyu-toyoko_line.html"
+    },
+    {
+      "place": "渋谷",
+      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayB": "odpt.Railway:Tokyu.Toyoko",
+      "railwayAName": "銀座線",
+      "railwayBName": "東横線",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/tokyo-metro_ginza_line-tokyu-toyoko_line.html"
+    },
+    {
+      "place": "渋谷",
+      "railwayA": "odpt.Railway:TokyoMetro.Hanzomon",
+      "railwayB": "odpt.Railway:Tokyu.Toyoko",
+      "railwayAName": "半蔵門線",
+      "railwayBName": "東横線",
+      "minutes": 3,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/tokyo-metro_hanzomon_line-tokyu-toyoko_line.html"
+    },
+    {
+      "place": "渋谷",
+      "railwayA": "odpt.Railway:Tokyu.DenEnToshi",
+      "railwayB": "odpt.Railway:Tokyu.Toyoko",
+      "railwayAName": "田園都市線",
+      "railwayBName": "東横線",
+      "minutes": 3,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/tokyu-denentoshi_line-tokyu-toyoko_line.html"
+    }
+  ]
+}
