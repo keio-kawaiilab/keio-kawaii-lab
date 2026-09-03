@@ -1,9 +1,10 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-03T12:37:36.643Z",
+  "generatedAt": "2026-09-03T12:38:13.775Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
-    "transfer-rule-sources.json"
+    "transfer-rule-sources.json",
+    "transfer-rule-sources.d/2026-09-03-major-hubs-2.json"
   ],
   "description": "Curated station/railway-specific transfer times. Generated from transfer-rule source files and resolved against transfer-candidates.json.",
   "rules": [
@@ -628,6 +629,123 @@
       "bidirectional": true,
       "label": "標準乗換",
       "source": "https://mb.jorudan.co.jp/os/noritxt/nippori/yamanote_line-joban_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "東京-山手線-中央線快速",
+      "fromStation": "odpt.Station:JR-East.Yamanote.Tokyo",
+      "toStation": "odpt.Station:JR-East.ChuoRapid.Tokyo",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:JR-East.ChuoRapid",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/yamanote_line-chuo_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "東京-山手線-横須賀線",
+      "fromStation": "odpt.Station:JR-East.Yamanote.Tokyo",
+      "toStation": "odpt.Station:JR-East.Yokosuka.Tokyo",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:JR-East.Yokosuka",
+      "minutes": 8,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/yamanote_line-yokosuka_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "東京-山手線-総武快速線",
+      "fromStation": "odpt.Station:JR-East.Yamanote.Tokyo",
+      "toStation": "odpt.Station:JR-East.SobuRapid.Tokyo",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:JR-East.SobuRapid",
+      "minutes": 8,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/yamanote_line-yokosuka_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "秋葉原-山手線-日比谷線",
+      "fromStation": "odpt.Station:JR-East.Yamanote.Akihabara",
+      "toStation": "odpt.Station:TokyoMetro.Hibiya.Akihabara",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:TokyoMetro.Hibiya",
+      "minutes": 8,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/akihabara/yamanote_line-tokyo-metro_hibiya_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "秋葉原-中央・総武各駅停車-日比谷線",
+      "fromStation": "odpt.Station:JR-East.ChuoSobuLocal.Akihabara",
+      "toStation": "odpt.Station:TokyoMetro.Hibiya.Akihabara",
+      "fromRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "toRailway": "odpt.Railway:TokyoMetro.Hibiya",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/akihabara/chuo_line-tokyo-metro_hibiya_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "飯田橋-東西線-中央・総武各駅停車",
+      "fromStation": "odpt.Station:TokyoMetro.Tozai.Iidabashi",
+      "toStation": "odpt.Station:JR-East.ChuoSobuLocal.Iidabashi",
+      "fromRailway": "odpt.Railway:TokyoMetro.Tozai",
+      "toRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/iidabashi/tokyo-metro_tozai_line-sobu_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "飯田橋-有楽町線-中央・総武各駅停車",
+      "fromStation": "odpt.Station:TokyoMetro.Yurakucho.Iidabashi",
+      "toStation": "odpt.Station:JR-East.ChuoSobuLocal.Iidabashi",
+      "fromRailway": "odpt.Railway:TokyoMetro.Yurakucho",
+      "toRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/iidabashi/tokyo-metro_yurakucho_line-sobu_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "飯田橋-南北線-中央・総武各駅停車",
+      "fromStation": "odpt.Station:TokyoMetro.Namboku.Iidabashi",
+      "toStation": "odpt.Station:JR-East.ChuoSobuLocal.Iidabashi",
+      "fromRailway": "odpt.Railway:TokyoMetro.Namboku",
+      "toRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/iidabashi/tokyo-metro_nanboku_line-sobu_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "飯田橋-大江戸線-中央・総武各駅停車",
+      "fromStation": "odpt.Station:Toei.Oedo.Iidabashi",
+      "toStation": "odpt.Station:JR-East.ChuoSobuLocal.Iidabashi",
+      "fromRailway": "odpt.Railway:Toei.Oedo",
+      "toRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "minutes": 7,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/iidabashi/toei_subway-oedo_line-sobu_line.html",
       "sourceType": "Jorudan standard transfer time",
       "verifiedAt": "2026-09-03"
     }
