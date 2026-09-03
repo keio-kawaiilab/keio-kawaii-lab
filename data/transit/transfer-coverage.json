@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-03T13:47:19.505Z",
+  "generatedAt": "2026-09-03T13:53:03.364Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-03T13:47:06.177Z",
+  "rulesGeneratedAt": "2026-09-03T13:52:49.370Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 234,
-    "uncuratedPairs": 719,
+    "curatedPairs": 240,
+    "uncuratedPairs": 713,
     "blockedPairs": 7,
-    "curatedSourceRules": 234,
+    "curatedSourceRules": 240,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -141,16 +141,6 @@
       "crossOperatorUncuratedPairs": 5,
       "railwayCount": 5,
       "priorityScore": 15.5
-    },
-    {
-      "place": "新横浜",
-      "totalPairs": 6,
-      "curatedPairs": 0,
-      "uncuratedPairs": 6,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 6,
-      "railwayCount": 4,
-      "priorityScore": 15
     },
     {
       "place": "新宿 ↔ 新宿西口",
@@ -1011,6 +1001,16 @@
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 3,
       "priorityScore": 3
+    },
+    {
+      "place": "あざみ野",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 2,
+      "priorityScore": 2.5
     }
   ],
   "priorityDetails": [
@@ -3790,97 +3790,6 @@
       ]
     },
     {
-      "place": "新横浜",
-      "totalPairs": 6,
-      "curatedPairs": 0,
-      "uncuratedPairs": 6,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 6,
-      "railwayCount": 4,
-      "priorityScore": 15,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.Yokohama",
-          "railwayAName": "横浜線",
-          "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
-          "railwayBName": "ブルーライン",
-          "sameOperator": false,
-          "distanceMeters": 235,
-          "fallbackMinutes": 6,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Yokohama",
-          "railwayAName": "横浜線",
-          "railwayB": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
-          "railwayBName": "相鉄新横浜線",
-          "sameOperator": false,
-          "distanceMeters": 212,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Yokohama",
-          "railwayAName": "横浜線",
-          "railwayB": "odpt.Railway:Tokyu.TokyuShinYokohama",
-          "railwayBName": "東急新横浜線",
-          "sameOperator": false,
-          "distanceMeters": 244,
-          "fallbackMinutes": 6,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
-          "railwayAName": "相鉄新横浜線",
-          "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
-          "railwayBName": "ブルーライン",
-          "sameOperator": false,
-          "distanceMeters": 31,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
-          "railwayAName": "相鉄新横浜線",
-          "railwayB": "odpt.Railway:Tokyu.TokyuShinYokohama",
-          "railwayBName": "東急新横浜線",
-          "sameOperator": false,
-          "distanceMeters": 36,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Tokyu.TokyuShinYokohama",
-          "railwayAName": "東急新横浜線",
-          "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
-          "railwayBName": "ブルーライン",
-          "sameOperator": false,
-          "distanceMeters": 10,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": []
-    },
-    {
       "place": "新宿 ↔ 新宿西口",
       "totalPairs": 6,
       "curatedPairs": 0,
@@ -5316,6 +5225,58 @@
           "fallbackMinutes": 6,
           "sources": [
             "connecting-station"
+          ]
+        }
+      ],
+      "sameOperatorPairs": []
+    },
+    {
+      "place": "新木場",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 3,
+      "railwayCount": 3,
+      "priorityScore": 7.5,
+      "crossOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:TWR.Rinkai",
+          "railwayAName": "りんかい線",
+          "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+          "railwayBName": "有楽町線",
+          "sameOperator": false,
+          "distanceMeters": 33,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.Keiyo",
+          "railwayAName": "京葉線",
+          "railwayB": "odpt.Railway:TWR.Rinkai",
+          "railwayBName": "りんかい線",
+          "sameOperator": false,
+          "distanceMeters": 7,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.Keiyo",
+          "railwayAName": "京葉線",
+          "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+          "railwayBName": "有楽町線",
+          "sameOperator": false,
+          "distanceMeters": 32,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
           ]
         }
       ],
@@ -8986,90 +8947,6 @@
       "railwayBName": "南武線浜川崎支線",
       "sameOperator": true,
       "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "新横浜",
-      "railwayA": "odpt.Railway:JR-East.Yokohama",
-      "railwayAName": "横浜線",
-      "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
-      "railwayBName": "ブルーライン",
-      "sameOperator": false,
-      "distanceMeters": 235,
-      "fallbackMinutes": 6,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "新横浜",
-      "railwayA": "odpt.Railway:JR-East.Yokohama",
-      "railwayAName": "横浜線",
-      "railwayB": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
-      "railwayBName": "相鉄新横浜線",
-      "sameOperator": false,
-      "distanceMeters": 212,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "新横浜",
-      "railwayA": "odpt.Railway:JR-East.Yokohama",
-      "railwayAName": "横浜線",
-      "railwayB": "odpt.Railway:Tokyu.TokyuShinYokohama",
-      "railwayBName": "東急新横浜線",
-      "sameOperator": false,
-      "distanceMeters": 244,
-      "fallbackMinutes": 6,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "新横浜",
-      "railwayA": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
-      "railwayAName": "相鉄新横浜線",
-      "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
-      "railwayBName": "ブルーライン",
-      "sameOperator": false,
-      "distanceMeters": 31,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "新横浜",
-      "railwayA": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
-      "railwayAName": "相鉄新横浜線",
-      "railwayB": "odpt.Railway:Tokyu.TokyuShinYokohama",
-      "railwayBName": "東急新横浜線",
-      "sameOperator": false,
-      "distanceMeters": 36,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "新横浜",
-      "railwayA": "odpt.Railway:Tokyu.TokyuShinYokohama",
-      "railwayAName": "東急新横浜線",
-      "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
-      "railwayBName": "ブルーライン",
-      "sameOperator": false,
-      "distanceMeters": 10,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
