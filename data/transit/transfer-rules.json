@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-03T13:18:49.533Z",
+  "generatedAt": "2026-09-03T13:19:32.998Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -8,6 +8,7 @@
     "transfer-rule-sources.d/2026-09-03-hamamatsucho-daimon.json",
     "transfer-rule-sources.d/2026-09-03-iidabashi-internal.json",
     "transfer-rule-sources.d/2026-09-03-ikebukuro-core.json",
+    "transfer-rule-sources.d/2026-09-03-jiyugaoka.json",
     "transfer-rule-sources.d/2026-09-03-major-hubs-2.json",
     "transfer-rule-sources.d/2026-09-03-major-hubs-3.json",
     "transfer-rule-sources.d/2026-09-03-major-hubs-4.json",
@@ -923,6 +924,19 @@
       "label": "標準乗換",
       "source": "https://mb.jorudan.co.jp/os/noritxt/ikebukuro/seibu-ikebukuro_line-saikyo_line.html",
       "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "自由が丘-東横線-大井町線",
+      "fromStation": "odpt.Station:Tokyu.Toyoko.Jiyugaoka",
+      "toStation": "odpt.Station:Tokyu.Oimachi.Jiyugaoka",
+      "fromRailway": "odpt.Railway:Tokyu.Toyoko",
+      "toRailway": "odpt.Railway:Tokyu.Oimachi",
+      "minutes": 1,
+      "bidirectional": true,
+      "label": "実測乗換",
+      "source": "https://norikaemap.com/jiyugaoka/0502/",
+      "sourceType": "Measured transfer guide",
       "verifiedAt": "2026-09-03"
     },
     {
