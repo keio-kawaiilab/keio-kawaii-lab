@@ -1,0 +1,52 @@
+name: Verify displayed Yashio Hiyoshi diversity
+
+on:
+  push:
+    paths:
+      - '.github/workflows/diagnose-selected-yashio-hiyoshi.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify selected families
+        run: |
+          node <<'NODE'
+          const fs=require('fs'),path=require('path');
+          const Core=require('./route-core.js');global.RoutePlannerCore=Core;require('./preview/transfer-guide/route-diversity.js');
+          const manifest=JSON.parse(fs.readFileSync('data/transit/manifest.json','utf8')),entities=[],indices=new Map(),allowed=[];
+          for(const [slug,info] of Object.entries(manifest.operators||{})){
+            if(!info||info.status!=='ok')continue;const base=path.join('data','transit',slug),ep=path.join(base,'entities.json'),ip=path.join(base,'timetable-index.json');
+            if(fs.existsSync(ep))entities.push(JSON.parse(fs.readFileSync(ep,'utf8')));if(fs.existsSync(ip)){const idx=JSON.parse(fs.readFileSync(ip,'utf8'));for(const [r,row] of Object.entries(idx.lines||{}))if(row&&row.file){indices.set(r,{base,row});allowed.push(r)}}
+          }
+          const model=Core.createModel(entities),a=model.resolveInput('八潮').group,b=model.resolveInput('日吉').group;
+          function load(r){const e=indices.get(r);return e?JSON.parse(fs.readFileSync(path.join(e.base,e.row.file),'utf8')):null}
+          const collapse=v=>{const o=[];for(const x of v||[])if(x&&o[o.length-1]!==x)o.push(x);return o};
+          const op=v=>{const id=String(v||''),tail=id.includes(':')?id.split(':').pop():id;return tail.split('.')[0]||tail};
+          const family=c=>collapse(c.timed.segments.map(s=>s.railway)).join('>');
+          const corridor=c=>collapse(c.timed.segments.map(s=>op(s.railway))).join('>');
+          const labels=c=>c.timed.segments.map(s=>s.label||s.railway).join(' → ');
+          let choices=[];const start=16*60+50;
+          for(const p of model.candidatePaths(a,b,{allowedRailways:allowed,limit:24})){
+            const tables={};for(const s of model.segmentsFrom(p))if(!(s.railway in tables))tables[s.railway]=load(s.railway);
+            let cursor=start;for(let n=0;n<3;n++){const t=model.timedItinerary(p,tables,cursor,'weekday',5);if(!t)break;choices.push({path:p,timed:t});cursor=t.departure+1}
+          }
+          choices.sort((a,b)=>a.timed.arrival-b.timed.arrival||a.timed.transfers-b.timed.transfers||a.timed.duration-b.timed.duration||b.timed.departure-a.timed.departure);
+          const seen=new Set();choices=choices.filter(c=>{const k=c.timed.segments.map(s=>[s.railway,s.from,s.to].join('|')).join('>')+'|'+c.timed.departure+'|'+c.timed.arrival;if(seen.has(k))return false;seen.add(k);return true});
+          choices=choices.filter((c,i)=>!choices.some((o,j)=>{if(i===j||family(o)!==family(c))return false;const a=o.timed,b=c.timed;return a.departure>=b.departure&&a.arrival<=b.arrival&&a.transfers<=b.transfers&&(a.departure>b.departure||a.arrival<b.arrival||a.transfers<b.transfers)}));
+          const groups=[],map=new Map();for(const c of choices){const k=corridor(c);let g=map.get(k);if(!g){g={key:k,items:[]};map.set(k,g);groups.push(g)}g.items.push(c)}
+          const out=[],used=new Set();for(const g of groups){if(out.length>=12)break;if(g.items.length){const c=g.items.shift();out.push(c);used.add(family(c))}}
+          while(out.length<12){let added=false;for(const g of groups){if(out.length>=12||!g.items.length)continue;const i=g.items.findIndex(c=>!used.has(family(c)));if(i<0)continue;const c=g.items.splice(i,1)[0];out.push(c);used.add(family(c));added=true}if(!added)break}
+          const counts=new Map();for(const c of out)counts.set(corridor(c),(counts.get(corridor(c))||0)+1);
+          while(out.length<12){let best=null;for(const g of groups)if(g.items.length&&(!best||(counts.get(g.key)||0)<(counts.get(best.key)||0)))best=g;if(!best)break;const c=best.items.shift();out.push(c);counts.set(best.key,(counts.get(best.key)||0)+1)}
+          console.log(`SELECTED ${out.length}`);out.forEach((c,i)=>console.log(`#${i+1} ${c.timed.departure}->${c.timed.arrival} ${corridor(c)} :: ${labels(c)}`));
+          if(!out.some(c=>labels(c).includes('日比谷線')))throw new Error('日比谷線系が表示候補に入っていない');
+          const distinct=new Set(out.map(c=>corridor(c))).size;console.log(`corridors=${distinct}`);if(distinct<2)throw new Error('表示候補が単一系統に偏っている');
+          NODE
