@@ -26,6 +26,7 @@ OFFICIAL_HOSTS = {
     "morestar.asobisystem.com",
 }
 UPGRADE_RE = re.compile(r"アップグレード|upgrade", re.I)
+UPGRADE_NOTICE_RE = re.compile(r"アップグレード.*(?:抽選|受付|申込|販売)|(?:抽選|受付|申込|販売).*アップグレード", re.I)
 ANNUAL_SALE_RE = re.compile(
     r"(?:"
     r"年会費コース\s*(?:会員)?\s*(?:限定)?\s*(?:チケット)?\s*(?:最速)?\s*(?:先行|受付|申込|販売)"
@@ -40,9 +41,6 @@ def normalize(value: object) -> str:
 
 
 def clauses(text: str) -> list[str]:
-    # Keep classification local to a sentence/list item.  This prevents an FC
-    # sale mentioned in one sentence from combining with "年会費コース" inside
-    # a separate upgrade sentence.
     return [
         normalize(part)
         for part in re.split(r"[\n\r。！？!?]+", str(text or ""))
@@ -62,6 +60,27 @@ def annual_sale_evidence(text: str) -> str | None:
 
 def has_explicit_annual_sale(text: str) -> bool:
     return annual_sale_evidence(text) is not None
+
+
+def is_upgrade_notice(soup: BeautifulSoup, text: str) -> bool:
+    # Article titles/headings define what the page is announcing.  An upgrade
+    # notice may legitimately list the old FC sales that are eligible to upgrade;
+    # those historical names must never be treated as the sale currently announced.
+    heading_texts: list[str] = []
+    if soup.title:
+        heading_texts.append(normalize(soup.title.get_text(" ", strip=True)))
+    for node in soup.find_all(["h1", "h2", "h3"], limit=8):
+        value = normalize(node.get_text(" ", strip=True))
+        if value:
+            heading_texts.append(value)
+    if any(UPGRADE_NOTICE_RE.search(value) for value in heading_texts):
+        return True
+
+    # Some templates do not expose the article title in a heading.  Limit the
+    # fallback to the opening clauses so an upgrade note far below a real sale
+    # announcement cannot invalidate the real sale.
+    lead = "\n".join(clauses(text)[:8])
+    return bool(UPGRADE_NOTICE_RE.search(lead))
 
 
 def canonical_url(value: object) -> str:
@@ -105,6 +124,9 @@ def quarantine_ticket_fields(event: dict, source: str, reason: str) -> None:
         "deadlineVerified",
         "applicationWindowSource",
         "deadlineSource",
+        "ticketClassificationVerified",
+        "ticketClassificationSource",
+        "ticketClassificationEvidence",
     ):
         event.pop(key, None)
     event["ticketGuardRejected"] = True
@@ -120,8 +142,6 @@ def validate_annual_rows(payload: dict, session: requests.Session) -> tuple[list
             continue
         source = official_source_url(event)
         if not source:
-            # No direct official source means we cannot safely relabel it here.
-            # Leave the row untouched, but surface it as an audit failure.
             failures.append({
                 "event": normalize(event.get("title")),
                 "stage": "annual-classification",
@@ -131,7 +151,8 @@ def validate_annual_rows(payload: dict, session: requests.Session) -> tuple[list
         try:
             response = session.get(source, timeout=20)
             response.raise_for_status()
-            text = BeautifulSoup(response.text, "html.parser").get_text("\n", strip=True)
+            soup = BeautifulSoup(response.text, "html.parser")
+            text = soup.get_text("\n", strip=True)
         except Exception as exc:
             # Never delete data merely because a source is temporarily unavailable.
             failures.append({
@@ -140,6 +161,15 @@ def validate_annual_rows(payload: dict, session: requests.Session) -> tuple[list
                 "url": source,
                 "error": f"{type(exc).__name__}: {exc}",
             })
+            continue
+
+        if is_upgrade_notice(soup, text):
+            invalid_sources.append(canonical_url(source))
+            quarantine_ticket_fields(
+                event,
+                source,
+                "upgrade notice cannot be used as the source of an annual-fee ticket sale",
+            )
             continue
 
         evidence = annual_sale_evidence(text)
@@ -153,12 +183,11 @@ def validate_annual_rows(payload: dict, session: requests.Session) -> tuple[list
             continue
 
         invalid_sources.append(canonical_url(source))
-        reason = (
-            "upgrade wording is not annual-fee sale evidence"
-            if UPGRADE_RE.search(text)
-            else "direct source does not explicitly support annual-fee sale classification"
+        quarantine_ticket_fields(
+            event,
+            source,
+            "direct source does not explicitly support annual-fee sale classification",
         )
-        quarantine_ticket_fields(event, source, reason)
     return invalid_sources, failures
 
 
@@ -192,7 +221,7 @@ def run(check: bool = False) -> dict:
 
     session = requests.Session()
     session.headers.update({
-        "User-Agent": "Mozilla/5.0 (compatible; keio-kawaii-lab-ticket-classification-guard/2.0; +https://github.com/keio-kawaiilab/keio-kawaii-lab)",
+        "User-Agent": "Mozilla/5.0 (compatible; keio-kawaii-lab-ticket-classification-guard/2.1; +https://github.com/keio-kawaiilab/keio-kawaii-lab)",
         "Accept-Language": "ja,en;q=0.8",
     })
     try:
@@ -223,7 +252,7 @@ def run(check: bool = False) -> dict:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Reject unsupported annual-fee ticket classifications using sentence-scoped evidence.")
+    parser = argparse.ArgumentParser(description="Reject unsupported annual-fee ticket classifications using article-purpose-aware evidence.")
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     print(json.dumps(run(check=args.check), ensure_ascii=False, indent=2))
