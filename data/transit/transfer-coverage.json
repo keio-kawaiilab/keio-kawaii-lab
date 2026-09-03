@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-03T13:06:23.793Z",
+  "generatedAt": "2026-09-03T13:07:22.158Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-03T13:06:08.465Z",
+  "rulesGeneratedAt": "2026-09-03T13:06:58.864Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 168,
-    "uncuratedPairs": 785,
+    "curatedPairs": 172,
+    "uncuratedPairs": 781,
     "blockedPairs": 7,
-    "curatedSourceRules": 168,
+    "curatedSourceRules": 172,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -364,16 +364,6 @@
     },
     {
       "place": "田町 ↔ 三田",
-      "totalPairs": 4,
-      "curatedPairs": 0,
-      "uncuratedPairs": 4,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 4,
-      "railwayCount": 4,
-      "priorityScore": 10
-    },
-    {
-      "place": "浜松町 ↔ 大門",
       "totalPairs": 4,
       "curatedPairs": 0,
       "uncuratedPairs": 4,
@@ -1010,6 +1000,16 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 4,
+      "priorityScore": 3
+    },
+    {
+      "place": "高崎",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
       "priorityScore": 3
     }
   ],
@@ -15040,58 +15040,6 @@
       "sources": [
         "connecting-station",
         "same-place-group"
-      ]
-    },
-    {
-      "place": "浜松町 ↔ 大門",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:Toei.Asakusa",
-      "railwayBName": "浅草線",
-      "sameOperator": false,
-      "distanceMeters": 274,
-      "fallbackMinutes": 6,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "浜松町 ↔ 大門",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:Toei.Oedo",
-      "railwayBName": "大江戸線",
-      "sameOperator": false,
-      "distanceMeters": 190,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "浜松町 ↔ 大門",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:Toei.Asakusa",
-      "railwayBName": "浅草線",
-      "sameOperator": false,
-      "distanceMeters": 274,
-      "fallbackMinutes": 6,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "浜松町 ↔ 大門",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:Toei.Oedo",
-      "railwayBName": "大江戸線",
-      "sameOperator": false,
-      "distanceMeters": 190,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station"
       ]
     },
     {
