@@ -5,7 +5,10 @@ on:
   push:
     paths:
       - "scripts/ticket_history_guard.py"
+      - "scripts/ticket_history_pia_guard.py"
+      - "scripts/ticket_classification_guard.py"
       - "scripts/test_ticket_history_guard.py"
+      - "scripts/test_ticket_history_pia_guard.py"
       - "data/ticket-source-registry.json"
       - ".github/workflows/ticket-history-guard.yml"
   schedule:
@@ -39,12 +42,19 @@ jobs:
       - name: Regression tests
         env:
           PYTHONPATH: scripts
-        run: python -m unittest scripts/test_ticket_history_guard.py
+        run: |
+          python -m unittest scripts/test_ticket_history_guard.py
+          python -m unittest scripts/test_ticket_history_pia_guard.py
 
-      - name: Apply ticket-history guard
+      - name: Quarantine unsupported ticket classifications
         env:
           PYTHONPATH: scripts
-        run: python scripts/ticket_history_guard.py
+        run: python scripts/ticket_classification_guard.py
+
+      - name: Preserve ended and sold-out Ticket Pia sales
+        env:
+          PYTHONPATH: scripts
+        run: python scripts/ticket_history_pia_guard.py
 
       - name: Archive verified ticket observations
         env:
@@ -54,13 +64,13 @@ jobs:
       - name: Commit guarded data
         shell: bash
         run: |
-          if git diff --quiet -- data/live-events.json data/ticket-history.json data/ticket-history-guard.json; then
+          if git diff --quiet -- data/live-events.json data/ticket-history.json; then
             echo "No guarded ticket data changes."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/live-events.json data/ticket-history.json data/ticket-history-guard.json
+          git add data/live-events.json data/ticket-history.json
           git commit -m "Guard ticket sale history"
           git pull --rebase origin main
           git push origin HEAD:main
