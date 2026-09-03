@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "generatedAt": "2026-09-03T12:28:05.877Z",
+  "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
+  "verifiedAt": "2026-09-03",
+  "description": "Station pairs excluded only from the route planner same-name/nearby heuristic. Explicit connectingStation links are unaffected.",
+  "blockedStationPairs": [
+    "odpt.Station:Keikyu.Main.Gumyoji\u0001odpt.Station:YokohamaMunicipal.Blue.Gumyoji",
+    "odpt.Station:MIR.TsukubaExpress.Asakusa\u0001odpt.Station:Tobu.TobuSkytree.Asakusa",
+    "odpt.Station:MIR.TsukubaExpress.Asakusa\u0001odpt.Station:Toei.Asakusa.Asakusa",
+    "odpt.Station:MIR.TsukubaExpress.Asakusa\u0001odpt.Station:TokyoMetro.Ginza.Asakusa",
+    "odpt.Station:Toei.Arakawa.Waseda\u0001odpt.Station:TokyoMetro.Tozai.Waseda",
+    "odpt.Station:Toei.Oedo.Shinjuku\u0001odpt.Station:TokyoMetro.Marunouchi.Shinjuku",
+    "odpt.Station:Toei.Shinjuku.Shinjuku\u0001odpt.Station:TokyoMetro.Marunouchi.Shinjuku"
+  ],
+  "blocks": [
+    {
+      "id": "gumyoji-keikyu-blue",
+      "place": "弘明寺",
+      "stationA": "odpt.Station:Keikyu.Main.Gumyoji",
+      "stationB": "odpt.Station:YokohamaMunicipal.Blue.Gumyoji",
+      "railwayA": "odpt.Railway:Keikyu.Main",
+      "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
+      "reason": "京急の公式路線図で弘明寺は横浜市営地下鉄への乗換駅として案内されていない。",
+      "source": "https://www.keikyu.co.jp/ride/kakueki/"
+    },
+    {
+      "id": "asakusa-tx-tobu",
+      "place": "浅草",
+      "stationA": "odpt.Station:MIR.TsukubaExpress.Asakusa",
+      "stationB": "odpt.Station:Tobu.TobuSkytree.Asakusa",
+      "railwayA": "odpt.Railway:MIR.TsukubaExpress",
+      "railwayB": "odpt.Railway:Tobu.TobuSkytree",
+      "reason": "つくばエクスプレス浅草駅は、東京メトロ・都営・東武の浅草駅群とは別駅として扱う。",
+      "source": "https://www.tokyometro.jp/station/asakusa/index.html?stationYardmap=Transit"
+    },
+    {
+      "id": "asakusa-tx-asakusa",
+      "place": "浅草",
+      "stationA": "odpt.Station:MIR.TsukubaExpress.Asakusa",
+      "stationB": "odpt.Station:Toei.Asakusa.Asakusa",
+      "railwayA": "odpt.Railway:MIR.TsukubaExpress",
+      "railwayB": "odpt.Railway:Toei.Asakusa",
+      "reason": "つくばエクスプレス浅草駅は、東京メトロ・都営・東武の浅草駅群とは別駅として扱う。",
+      "source": "https://www.tokyometro.jp/station/asakusa/index.html?stationYardmap=Transit"
+    },
+    {
+      "id": "asakusa-tx-ginza",
+      "place": "浅草",
+      "stationA": "odpt.Station:MIR.TsukubaExpress.Asakusa",
+      "stationB": "odpt.Station:TokyoMetro.Ginza.Asakusa",
+      "railwayA": "odpt.Railway:MIR.TsukubaExpress",
+      "railwayB": "odpt.Railway:TokyoMetro.Ginza",
+      "reason": "東京メトロ浅草駅の公式案内は乗換会社として都営地下鉄・東武鉄道のみを掲載している。",
+      "source": "https://www.tokyometro.jp/station/asakusa/index.html?stationYardmap=Transit"
+    },
+    {
+      "id": "waseda-tram-tozai",
+      "place": "早稲田",
+      "stationA": "odpt.Station:Toei.Arakawa.Waseda",
+      "stationB": "odpt.Station:TokyoMetro.Tozai.Waseda",
+      "railwayA": "odpt.Railway:Toei.Arakawa",
+      "railwayB": "odpt.Railway:TokyoMetro.Tozai",
+      "reason": "東京メトロ早稲田駅の公式駅案内に都電荒川線への乗換案内がなく、同名の別駅として扱う。",
+      "source": "https://www.tokyometro.jp/station/waseda/index.html"
+    },
+    {
+      "id": "shinjuku-oedo-e27-marunouchi",
+      "place": "新宿",
+      "stationA": "odpt.Station:Toei.Oedo.Shinjuku",
+      "stationB": "odpt.Station:TokyoMetro.Marunouchi.Shinjuku",
+      "railwayA": "odpt.Railway:Toei.Oedo",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "reason": "大江戸線E27新宿の公式乗換案内に丸ノ内線は含まれない。丸ノ内線M08との公式接続はE01新宿西口。",
+      "source": "https://www.kotsu.metro.tokyo.jp/subway/stations/shinjuku.html",
+      "correctConnectionSource": "https://www.kotsu.metro.tokyo.jp/subway/stations/shinjuku-nishiguchi.html"
+    },
+    {
+      "id": "shinjuku-toei-shinjuku-marunouchi",
+      "place": "新宿",
+      "stationA": "odpt.Station:Toei.Shinjuku.Shinjuku",
+      "stationB": "odpt.Station:TokyoMetro.Marunouchi.Shinjuku",
+      "railwayA": "odpt.Railway:Toei.Shinjuku",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "reason": "都営新宿駅S01の公式乗換案内に丸ノ内線は含まれない。丸ノ内線との都営接続は別の公式接続駅を使用する。",
+      "source": "https://www.kotsu.metro.tokyo.jp/subway/stations/shinjuku.html"
+    }
+  ]
+}
