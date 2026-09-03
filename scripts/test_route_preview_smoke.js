@@ -61,6 +61,20 @@ function findTimed(from,to,earliest,service){
   }
   throw new Error(`timed route missing: ${from} -> ${to}`);
 }
+function formatMinute(value){
+  const day=value>=1440?'翌':'';
+  const m=value%1440;
+  return `${day}${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
+}
+function signature(timed){
+  return timed.segments.map(s=>[s.railway,s.from,s.to].join('|')).join('>');
+}
+function labelSegment(s){
+  const from=model.displayStation(s.from)||String(s.from).split('.').pop();
+  const to=model.displayStation(s.to)||String(s.to).split('.').pop();
+  const type=model.displayTrainType(s.trainType)||'';
+  return `${from}→${to} [${s.label||s.railway}${type?` / ${type}`:''}${s.trainNumber?` / ${s.trainNumber}`:''}] ${formatMinute(s.departure)}-${formatMinute(s.arrival)}`;
+}
 
 const cases=[
   ['横浜','元町・中華街',600,'weekday'],
@@ -105,6 +119,43 @@ for(const row of cases){
   console.log(`横浜->元町・中華街 successive departures: ${departures.join(', ')}`);
   if(departures.length<3) throw new Error('could not obtain three successive departure choices');
   if(!(departures[0]<departures[1]&&departures[1]<departures[2])) throw new Error('successive departure choices are not strictly increasing');
+}
+
+// Diagnostic: reproduce the current preview's Yashio -> Hiyoshi choices at 13:44 on a weekday.
+{
+  const from='八潮',to='日吉',start=13*60+44,service='weekday';
+  const {a,b}=resolvePair(from,to);
+  const paths=model.candidatePaths(a.group,b.group,{allowedRailways:allowed,limit:24});
+  const choices=[];
+  console.log(`YASHIO_HIYOSHI pathCount=${paths.length} start=${formatMinute(start)} service=${service}`);
+  paths.forEach((candidate,pathIndex)=>{
+    const tables={};
+    for(const segment of model.segmentsFrom(candidate)){
+      if(!(segment.railway in tables)) tables[segment.railway]=loadTable(segment.railway);
+    }
+    let cursor=start;
+    for(let attempt=0;attempt<3;attempt++){
+      const timed=model.timedItinerary(candidate,tables,cursor,service,5);
+      if(!timed) break;
+      choices.push({pathIndex,timed});
+      if(!Number.isFinite(timed.departure)) break;
+      cursor=Math.max(cursor+1,timed.departure+1);
+    }
+  });
+  choices.sort((x,y)=>x.timed.arrival-y.timed.arrival||x.timed.transfers-y.timed.transfers||x.timed.duration-y.timed.duration||y.timed.departure-x.timed.departure);
+  const seen=new Set();
+  const dedup=choices.filter(choice=>{
+    const key=`${signature(choice.timed)}|${choice.timed.departure}|${choice.timed.arrival}`;
+    if(seen.has(key)) return false;
+    seen.add(key);return true;
+  });
+  console.log(`YASHIO_HIYOSHI rawChoices=${choices.length} dedupChoices=${dedup.length}`);
+  dedup.slice(0,12).forEach((choice,i)=>{
+    const t=choice.timed;
+    console.log(`YASHIO_HIYOSHI #${i+1} path=${choice.pathIndex+1} ${formatMinute(t.departure)}->${formatMinute(t.arrival)} duration=${t.duration} transfers=${t.transfers} estimated=${!!t.estimatedArrival}`);
+    t.segments.forEach((s,j)=>console.log(`  leg${j+1}: ${labelSegment(s)}`));
+  });
+  if(!dedup.length) throw new Error('Yashio -> Hiyoshi diagnostic returned no routes');
 }
 
 console.log(`coverage: ${declaredLines} lines, ${model.stations.length} station groups`);
