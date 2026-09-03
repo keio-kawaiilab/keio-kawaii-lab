@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "実測・構内乗換（安全側）",
+    "sourceType": "current measured transfer guide / station platform layout",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {
+      "place": "西日暮里",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.Yamanote",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "山手線",
+      "minutes": 2,
+      "source": "https://wadattsu261.com/content/nishinippori-yamanote-keihinhome-info/"
+    },
+    {
+      "place": "西日暮里",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "千代田線",
+      "minutes": 4,
+      "source": "https://tren.hatenablog.com/entry/jr-c16"
+    },
+    {
+      "place": "西日暮里",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:Toei.NipporiToneri",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "日暮里・舎人ライナー",
+      "minutes": 6,
+      "source": "https://wadattsu261.com/content/nishinippori-jryamanote-keihin-toneriliner-transfer-information/"
+    },
+    {
+      "place": "西日暮里",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayAName": "山手線",
+      "railwayBName": "千代田線",
+      "minutes": 4,
+      "source": "https://tren.hatenablog.com/entry/jr-c16"
+    },
+    {
+      "place": "西日暮里",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:Toei.NipporiToneri",
+      "railwayAName": "山手線",
+      "railwayBName": "日暮里・舎人ライナー",
+      "minutes": 6,
+      "source": "https://honnne.com/blog/norikae-tonerinishinippori/"
+    },
+    {
+      "place": "西日暮里",
+      "railwayA": "odpt.Railway:Toei.NipporiToneri",
+      "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayAName": "日暮里・舎人ライナー",
+      "railwayBName": "千代田線",
+      "minutes": 6,
+      "source": "https://wadattsu261.com/content/nishinippori-toneriliner-metrochiyodaline-transfer-information/"
+    }
+  ]
+}
