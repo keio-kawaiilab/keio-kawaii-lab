@@ -1,60 +1,388 @@
 {
   "version": 1,
   "rules": [
-    {"place":"東京","railwayAName":"山手線","railwayBName":"丸ノ内線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/tokyo/yamanote_line-tokyo-metro_marunouchi_line.html"},
-    {"place":"東京","railwayAName":"山手線","railwayBName":"京葉線","minutes":10,"source":"https://mb.jorudan.co.jp/os/noritxt/tokyo/keiyo_line-yamanote_line.html"},
-    {"place":"東京","railwayAName":"京葉線","railwayBName":"東海道線","minutes":10,"source":"https://mb.jorudan.co.jp/os/noritxt/tokyo/keiyo_line-tokaido_line_jr_east.html"},
-    {"place":"東京","railwayAName":"京葉線","railwayBName":"中央線快速","minutes":12,"source":"https://mb.jorudan.co.jp/os/noritxt/tokyo/keiyo_line-chuo_line.html"},
-    {"place":"東京","railwayAName":"京葉線","railwayBName":"横須賀線","minutes":13,"source":"https://mb.jorudan.co.jp/os/noritxt/tokyo/keiyo_line-yokosuka_line.html"},
-    {"place":"東京","railwayAName":"京葉線","railwayBName":"総武快速線","minutes":13,"source":"https://mb.jorudan.co.jp/os/noritxt/tokyo/keiyo_line-yokosuka_line.html"},
-    {"place":"東京","railwayAName":"京葉線","railwayBName":"京浜東北線・根岸線","minutes":10,"source":"https://mb.jorudan.co.jp/os/noritxt/tokyo/keiyo_line-keihintohoku_line.html"},
-    {"place":"東京","railwayAName":"東海道線","railwayBName":"丸ノ内線","minutes":6,"source":"https://mb.jorudan.co.jp/os/noritxt/tokyo/tokaido_line_jr_east-tokyo-metro_marunouchi_line.html"},
-    {"place":"東京","railwayA":"odpt.Railway:JR-East.Yamanote","railwayB":"odpt.Railway:JR-East.KeihinTohokuNegishi","railwayAName":"山手線","railwayBName":"京浜東北・根岸線","minutes":1,"source":"https://mb.jorudan.co.jp/os/noritxt/tokyo/yamanote_line-keihintohoku_line.html"},
-
-    {"place":"新宿","railwayAName":"山手線","railwayBName":"京王線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/shinjuku/yamanote_line-keio_line.html"},
-    {"place":"新宿","railwayAName":"山手線","railwayBName":"京王新線","minutes":7,"source":"https://mb.jorudan.co.jp/os/noritxt/shinjuku/yamanote_line-keio-shin_line.html"},
-    {"place":"新宿","railwayAName":"山手線","railwayBName":"新宿線","minutes":7,"source":"https://mb.jorudan.co.jp/os/noritxt/shinjuku/yamanote_line-toei_subway-shinjuku_line.html"},
-    {"place":"新宿","railwayAName":"山手線","railwayBName":"小田原線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/shinjuku/yamanote_line-odakyu_line.html"},
-    {"place":"新宿","railwayAName":"山手線","railwayBName":"中央線快速","minutes":3,"source":"https://mb.jorudan.co.jp/os/noritxt/shinjuku/yamanote_line-chuo_line.html"},
-    {"place":"新宿","railwayAName":"山手線","railwayBName":"中央・総武各駅停車","minutes":3,"source":"https://mb.jorudan.co.jp/os/noritxt/shinjuku/sobu_line_local-yamanote_line.html"},
-    {"place":"新宿","railwayAName":"山手線","railwayBName":"埼京線・川越線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/shinjuku/yamanote_line-saikyo_line.html"},
-    {"place":"新宿","railwayAName":"山手線","railwayBName":"湘南新宿ライン","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/shinjuku/yamanote_line-saikyo_line.html"},
-
-    {"place":"渋谷","railwayAName":"山手線","railwayBName":"田園都市線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/shibuya/yamanote_line-tokyo-metro_hanzomon_line.html"},
-    {"place":"渋谷","railwayAName":"山手線","railwayBName":"半蔵門線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/shibuya/yamanote_line-tokyo-metro_hanzomon_line.html"},
-    {"place":"渋谷","railwayAName":"山手線","railwayBName":"東横線","minutes":6,"source":"https://mb.jorudan.co.jp/os/noritxt/shibuya/yamanote_line-tokyu-toyoko_line.html"},
-    {"place":"渋谷","railwayAName":"山手線","railwayBName":"副都心線","minutes":6,"source":"https://mb.jorudan.co.jp/os/noritxt/shibuya/yamanote_line-tokyo-metro_fukutoshin_line.html"},
-    {"place":"渋谷","railwayAName":"山手線","railwayBName":"井の頭線","minutes":5,"source":"https://mb.jorudan.co.jp/os/noritxt/shibuya/yamanote_line-keio-inokashira_line.html"},
-    {"place":"渋谷","railwayAName":"埼京線・川越線","railwayBName":"副都心線","minutes":9,"source":"https://mb.jorudan.co.jp/os/noritxt/shibuya/saikyo_line-tokyo-metro_fukutoshin_line.html"},
-    {"place":"渋谷","railwayAName":"湘南新宿ライン","railwayBName":"副都心線","minutes":9,"source":"https://mb.jorudan.co.jp/os/noritxt/shibuya/saikyo_line-tokyo-metro_fukutoshin_line.html"},
-    {"place":"渋谷","railwayA":"odpt.Railway:JR-East.Yamanote","railwayB":"odpt.Railway:TokyoMetro.Ginza","railwayAName":"山手線","railwayBName":"銀座線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/shibuya/yamanote_line-tokyo-metro_ginza_line.html"},
-
-    {"place":"池袋","railwayAName":"山手線","railwayBName":"池袋線","minutes":5,"source":"https://mb.jorudan.co.jp/os/noritxt/ikebukuro/yamanote_line-seibu-ikebukuro_line.html"},
-    {"place":"池袋","railwayAName":"山手線","railwayBName":"東上線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/ikebukuro/yamanote_line-tobu-tojo_line.html"},
-    {"place":"池袋","railwayAName":"山手線","railwayBName":"丸ノ内線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/ikebukuro/yamanote_line-tokyo-metro_marunouchi_line.html"},
-    {"place":"池袋","railwayAName":"山手線","railwayBName":"有楽町線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/ikebukuro/yamanote_line-tokyo-metro_yurakucho_line.html"},
-    {"place":"池袋","railwayAName":"山手線","railwayBName":"副都心線","minutes":6,"source":"https://mb.jorudan.co.jp/os/noritxt/ikebukuro/yamanote_line-tokyo-metro_fukutoshin_line.html"},
-
-    {"place":"品川","railwayA":"odpt.Railway:JR-East.Yamanote","railwayB":"odpt.Railway:JR-East.Yokosuka","railwayAName":"山手線","railwayBName":"横須賀線","minutes":3,"source":"https://mb.jorudan.co.jp/os/noritxt/shinagawa/yamanote_line-yokosuka_line.html"},
-    {"place":"品川","railwayA":"odpt.Railway:Keikyu.Main","railwayB":"odpt.Railway:JR-East.Yamanote","railwayAName":"京急本線","railwayBName":"山手線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/shinagawa/keikyu_line-yamanote_line.html"},
-    {"place":"品川","railwayA":"odpt.Railway:Keikyu.Main","railwayB":"odpt.Railway:JR-East.Tokaido","railwayAName":"京急本線","railwayBName":"東海道線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/shinagawa/keikyu_line-tokaido_line_jr_east.html"},
-    {"place":"品川","railwayA":"odpt.Railway:JR-East.Yamanote","railwayB":"odpt.Railway:JR-East.Tokaido","railwayAName":"山手線","railwayBName":"東海道線","minutes":3,"source":"https://mb.jorudan.co.jp/os/noritxt/shinagawa/yamanote_line-tokaido_line_jr_east.html"},
-    {"place":"品川","railwayA":"odpt.Railway:JR-East.Tokaido","railwayB":"odpt.Railway:JR-East.Yokosuka","railwayAName":"東海道線","railwayBName":"横須賀線","minutes":3,"source":"https://mb.jorudan.co.jp/os/noritxt/shinagawa/tokaido_line_jr_east-yokosuka_line.html"},
-    {"place":"品川","railwayA":"odpt.Railway:Keikyu.Main","railwayB":"odpt.Railway:JR-East.Yokosuka","railwayAName":"京急本線","railwayBName":"横須賀線","minutes":5,"source":"https://mb.jorudan.co.jp/os/noritxt/shinagawa/keikyu_line-yokosuka_line.html"},
-    {"place":"品川","railwayA":"odpt.Railway:Keikyu.Main","railwayB":"odpt.Railway:JR-East.KeihinTohokuNegishi","railwayAName":"京急本線","railwayBName":"京浜東北・根岸線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/shinagawa/keikyu_line-keihintohoku_line.html"},
-    {"place":"品川","railwayA":"odpt.Railway:JR-East.Yamanote","railwayB":"odpt.Railway:JR-East.KeihinTohokuNegishi","railwayAName":"山手線","railwayBName":"京浜東北・根岸線","minutes":3,"label":"標準乗換（方向により1〜3分）","source":"https://mb.jorudan.co.jp/os/noritxt/shinagawa/yamanote_line-keihintohoku_line.html"},
-
-    {"place":"上野","railwayA":"odpt.Railway:TokyoMetro.Ginza","railwayB":"odpt.Railway:JR-East.Yamanote","railwayAName":"銀座線","railwayBName":"山手線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/ueno/tokyo-metro_ginza_line-yamanote_line.html"},
-    {"place":"上野","railwayA":"odpt.Railway:TokyoMetro.Ginza","railwayB":"odpt.Railway:JR-East.Utsunomiya","railwayAName":"銀座線","railwayBName":"宇都宮線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/ueno/utsunomiya_line-tokyo-metro_ginza_line.html"},
-    {"place":"上野","railwayA":"odpt.Railway:TokyoMetro.Ginza","railwayB":"odpt.Railway:JR-East.Takasaki","railwayAName":"銀座線","railwayBName":"高崎線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/ueno/utsunomiya_line-tokyo-metro_ginza_line.html"},
-    {"place":"上野","railwayA":"odpt.Railway:TokyoMetro.Ginza","railwayB":"odpt.Railway:JR-East.Joban","railwayAName":"銀座線","railwayBName":"常磐線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/ueno/tokyo-metro_ginza_line-joban_line.html"},
-    {"place":"上野","railwayA":"odpt.Railway:TokyoMetro.Ginza","railwayB":"odpt.Railway:JR-East.KeihinTohokuNegishi","railwayAName":"銀座線","railwayBName":"京浜東北・根岸線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/ueno/tokyo-metro_ginza_line-keihintohoku_line.html"},
-
-    {"place":"新橋","railwayA":"odpt.Railway:JR-East.Yamanote","railwayB":"odpt.Railway:TokyoMetro.Ginza","railwayAName":"山手線","railwayBName":"銀座線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/shimbashi/yamanote_line-tokyo-metro_ginza_line.html"},
-    {"place":"新橋","railwayA":"odpt.Railway:JR-East.Yamanote","railwayB":"odpt.Railway:JR-East.KeihinTohokuNegishi","railwayAName":"山手線","railwayBName":"京浜東北・根岸線","minutes":1,"source":"https://mb.jorudan.co.jp/os/noritxt/shimbashi/yamanote_line-keihintohoku_line.html"},
-    {"place":"浜松町","railwayA":"odpt.Railway:JR-East.Yamanote","railwayB":"odpt.Railway:JR-East.KeihinTohokuNegishi","railwayAName":"山手線","railwayBName":"京浜東北・根岸線","minutes":1,"source":"https://mb.jorudan.co.jp/os/noritxt/hamamatsucho/yamanote_line-keihintohoku_line.html"},
-    {"place":"日暮里","railwayA":"odpt.Railway:JR-East.Yamanote","railwayB":"odpt.Railway:JR-East.KeihinTohokuNegishi","railwayAName":"山手線","railwayBName":"京浜東北・根岸線","minutes":1,"source":"https://mb.jorudan.co.jp/os/noritxt/nippori/yamanote_line-keihintohoku_line.html"},
-    {"place":"日暮里","railwayA":"odpt.Railway:JR-East.Yamanote","railwayB":"odpt.Railway:JR-East.Joban","railwayAName":"山手線","railwayBName":"常磐線","minutes":3,"source":"https://mb.jorudan.co.jp/os/noritxt/nippori/yamanote_line-joban_line.html"}
+    {
+      "place": "東京",
+      "railwayAName": "山手線",
+      "railwayBName": "丸ノ内線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/yamanote_line-tokyo-metro_marunouchi_line.html"
+    },
+    {
+      "place": "東京",
+      "railwayAName": "山手線",
+      "railwayBName": "京葉線",
+      "minutes": 10,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/keiyo_line-yamanote_line.html"
+    },
+    {
+      "place": "東京",
+      "railwayAName": "京葉線",
+      "railwayBName": "東海道線",
+      "minutes": 10,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/keiyo_line-tokaido_line_jr_east.html"
+    },
+    {
+      "place": "東京",
+      "railwayAName": "京葉線",
+      "railwayBName": "中央線快速",
+      "minutes": 12,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/keiyo_line-chuo_line.html"
+    },
+    {
+      "place": "東京",
+      "railwayAName": "京葉線",
+      "railwayBName": "横須賀線",
+      "minutes": 13,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/keiyo_line-yokosuka_line.html"
+    },
+    {
+      "place": "東京",
+      "railwayAName": "京葉線",
+      "railwayBName": "総武快速線",
+      "minutes": 13,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/keiyo_line-yokosuka_line.html"
+    },
+    {
+      "place": "東京",
+      "railwayAName": "京葉線",
+      "railwayBName": "京浜東北線・根岸線",
+      "minutes": 10,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/keiyo_line-keihintohoku_line.html"
+    },
+    {
+      "place": "東京",
+      "railwayAName": "東海道線",
+      "railwayBName": "丸ノ内線",
+      "minutes": 6,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/tokaido_line_jr_east-tokyo-metro_marunouchi_line.html"
+    },
+    {
+      "place": "東京",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayAName": "山手線",
+      "railwayBName": "京浜東北・根岸線",
+      "minutes": 1,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/yamanote_line-keihintohoku_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayAName": "山手線",
+      "railwayBName": "京王線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/yamanote_line-keio_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayAName": "山手線",
+      "railwayBName": "京王新線",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/yamanote_line-keio-shin_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayAName": "山手線",
+      "railwayBName": "新宿線",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/yamanote_line-toei_subway-shinjuku_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayAName": "山手線",
+      "railwayBName": "小田原線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/yamanote_line-odakyu_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayAName": "山手線",
+      "railwayBName": "中央線快速",
+      "minutes": 3,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/yamanote_line-chuo_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayAName": "山手線",
+      "railwayBName": "中央・総武各駅停車",
+      "minutes": 3,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/sobu_line_local-yamanote_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayAName": "山手線",
+      "railwayBName": "埼京線・川越線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/yamanote_line-saikyo_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayAName": "山手線",
+      "railwayBName": "湘南新宿ライン",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/yamanote_line-saikyo_line.html"
+    },
+    {
+      "place": "渋谷",
+      "railwayAName": "山手線",
+      "railwayBName": "田園都市線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/yamanote_line-tokyo-metro_hanzomon_line.html"
+    },
+    {
+      "place": "渋谷",
+      "railwayAName": "山手線",
+      "railwayBName": "半蔵門線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/yamanote_line-tokyo-metro_hanzomon_line.html"
+    },
+    {
+      "place": "渋谷",
+      "railwayAName": "山手線",
+      "railwayBName": "東横線",
+      "minutes": 6,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/yamanote_line-tokyu-toyoko_line.html"
+    },
+    {
+      "place": "渋谷",
+      "railwayAName": "山手線",
+      "railwayBName": "副都心線",
+      "minutes": 6,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/yamanote_line-tokyo-metro_fukutoshin_line.html"
+    },
+    {
+      "place": "渋谷",
+      "railwayAName": "山手線",
+      "railwayBName": "井の頭線",
+      "minutes": 5,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/yamanote_line-keio-inokashira_line.html"
+    },
+    {
+      "place": "渋谷",
+      "railwayAName": "埼京線・川越線",
+      "railwayBName": "副都心線",
+      "minutes": 9,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/saikyo_line-tokyo-metro_fukutoshin_line.html"
+    },
+    {
+      "place": "渋谷",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "副都心線",
+      "minutes": 9,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/saikyo_line-tokyo-metro_fukutoshin_line.html"
+    },
+    {
+      "place": "渋谷",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayAName": "山手線",
+      "railwayBName": "銀座線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/yamanote_line-tokyo-metro_ginza_line.html"
+    },
+    {
+      "place": "池袋",
+      "railwayAName": "山手線",
+      "railwayBName": "池袋線",
+      "minutes": 5,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/ikebukuro/yamanote_line-seibu-ikebukuro_line.html"
+    },
+    {
+      "place": "池袋",
+      "railwayAName": "山手線",
+      "railwayBName": "東上線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/ikebukuro/yamanote_line-tobu-tojo_line.html"
+    },
+    {
+      "place": "池袋",
+      "railwayAName": "山手線",
+      "railwayBName": "丸ノ内線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/ikebukuro/yamanote_line-tokyo-metro_marunouchi_line.html"
+    },
+    {
+      "place": "池袋",
+      "railwayAName": "山手線",
+      "railwayBName": "有楽町線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/ikebukuro/yamanote_line-tokyo-metro_yurakucho_line.html"
+    },
+    {
+      "place": "池袋",
+      "railwayAName": "山手線",
+      "railwayBName": "副都心線",
+      "minutes": 6,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/ikebukuro/yamanote_line-tokyo-metro_fukutoshin_line.html"
+    },
+    {
+      "place": "品川",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:JR-East.Yokosuka",
+      "railwayAName": "山手線",
+      "railwayBName": "横須賀線",
+      "minutes": 3,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinagawa/yamanote_line-yokosuka_line.html"
+    },
+    {
+      "place": "品川",
+      "railwayA": "odpt.Railway:Keikyu.Main",
+      "railwayB": "odpt.Railway:JR-East.Yamanote",
+      "railwayAName": "京急本線",
+      "railwayBName": "山手線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinagawa/keikyu_line-yamanote_line.html"
+    },
+    {
+      "place": "品川",
+      "railwayA": "odpt.Railway:Keikyu.Main",
+      "railwayB": "odpt.Railway:JR-East.Tokaido",
+      "railwayAName": "京急本線",
+      "railwayBName": "東海道線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinagawa/keikyu_line-tokaido_line_jr_east.html"
+    },
+    {
+      "place": "品川",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:JR-East.Tokaido",
+      "railwayAName": "山手線",
+      "railwayBName": "東海道線",
+      "minutes": 3,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinagawa/yamanote_line-tokaido_line_jr_east.html"
+    },
+    {
+      "place": "品川",
+      "railwayA": "odpt.Railway:JR-East.Tokaido",
+      "railwayB": "odpt.Railway:JR-East.Yokosuka",
+      "railwayAName": "東海道線",
+      "railwayBName": "横須賀線",
+      "minutes": 3,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinagawa/tokaido_line_jr_east-yokosuka_line.html"
+    },
+    {
+      "place": "品川",
+      "railwayA": "odpt.Railway:Keikyu.Main",
+      "railwayB": "odpt.Railway:JR-East.Yokosuka",
+      "railwayAName": "京急本線",
+      "railwayBName": "横須賀線",
+      "minutes": 5,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinagawa/keikyu_line-yokosuka_line.html"
+    },
+    {
+      "place": "品川",
+      "railwayA": "odpt.Railway:Keikyu.Main",
+      "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayAName": "京急本線",
+      "railwayBName": "京浜東北・根岸線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinagawa/keikyu_line-keihintohoku_line.html"
+    },
+    {
+      "place": "品川",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayAName": "山手線",
+      "railwayBName": "京浜東北・根岸線",
+      "minutes": 3,
+      "label": "標準乗換（方向により1〜3分）",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinagawa/yamanote_line-keihintohoku_line.html"
+    },
+    {
+      "place": "上野",
+      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayB": "odpt.Railway:JR-East.Yamanote",
+      "railwayAName": "銀座線",
+      "railwayBName": "山手線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/ueno/tokyo-metro_ginza_line-yamanote_line.html"
+    },
+    {
+      "place": "上野",
+      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayB": "odpt.Railway:JR-East.Utsunomiya",
+      "railwayAName": "銀座線",
+      "railwayBName": "宇都宮線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/ueno/utsunomiya_line-tokyo-metro_ginza_line.html"
+    },
+    {
+      "place": "上野",
+      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayB": "odpt.Railway:JR-East.Takasaki",
+      "railwayAName": "銀座線",
+      "railwayBName": "高崎線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/ueno/utsunomiya_line-tokyo-metro_ginza_line.html"
+    },
+    {
+      "place": "上野",
+      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayB": "odpt.Railway:JR-East.JobanRapid",
+      "railwayAName": "銀座線",
+      "railwayBName": "常磐線快速",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/ueno/tokyo-metro_ginza_line-joban_line.html"
+    },
+    {
+      "place": "上野",
+      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayAName": "銀座線",
+      "railwayBName": "京浜東北・根岸線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/ueno/tokyo-metro_ginza_line-keihintohoku_line.html"
+    },
+    {
+      "place": "新橋",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayAName": "山手線",
+      "railwayBName": "銀座線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shimbashi/yamanote_line-tokyo-metro_ginza_line.html"
+    },
+    {
+      "place": "新橋",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayAName": "山手線",
+      "railwayBName": "京浜東北・根岸線",
+      "minutes": 1,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shimbashi/yamanote_line-keihintohoku_line.html"
+    },
+    {
+      "place": "浜松町",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayAName": "山手線",
+      "railwayBName": "京浜東北・根岸線",
+      "minutes": 1,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/hamamatsucho/yamanote_line-keihintohoku_line.html"
+    },
+    {
+      "place": "日暮里",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayAName": "山手線",
+      "railwayBName": "京浜東北・根岸線",
+      "minutes": 1,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/nippori/yamanote_line-keihintohoku_line.html"
+    },
+    {
+      "place": "日暮里",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:JR-East.JobanRapid",
+      "railwayAName": "山手線",
+      "railwayBName": "常磐線快速",
+      "minutes": 3,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/nippori/yamanote_line-joban_line.html"
+    }
   ],
-  "defaults": {"bidirectional":true,"label":"標準乗換","sourceType":"Jorudan standard transfer time","verifiedAt":"2026-09-03"}
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換",
+    "sourceType": "Jorudan standard transfer time",
+    "verifiedAt": "2026-09-03"
+  }
 }
