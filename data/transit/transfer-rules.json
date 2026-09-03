@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-03T13:02:18.880Z",
+  "generatedAt": "2026-09-03T13:03:24.956Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -16,7 +16,8 @@
     "transfer-rule-sources.d/2026-09-03-shinjuku-jr-internal.json",
     "transfer-rule-sources.d/2026-09-03-shinjuku-jr-subway.json",
     "transfer-rule-sources.d/2026-09-03-shinjuku-linked-stations.json",
-    "transfer-rule-sources.d/2026-09-03-tokyo-marunouchi.json"
+    "transfer-rule-sources.d/2026-09-03-tokyo-marunouchi.json",
+    "transfer-rule-sources.d/2026-09-03-yurakucho-hibiya.json"
   ],
   "description": "Curated station/railway-specific transfer times. Generated from transfer-rule source files and resolved against transfer-candidates.json.",
   "rules": [
@@ -2006,6 +2007,97 @@
       "bidirectional": true,
       "label": "標準乗換",
       "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/tokyo-metro_marunouchi_line-keiyo_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "有楽町 ↔ 日比谷-山手線-日比谷線",
+      "fromStation": "odpt.Station:JR-East.Yamanote.Yurakucho",
+      "toStation": "odpt.Station:TokyoMetro.Hibiya.Hibiya",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:TokyoMetro.Hibiya",
+      "minutes": 6,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/yurakucho/yamanote_line-tokyo-metro_hibiya_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "有楽町 ↔ 日比谷-山手線-千代田線",
+      "fromStation": "odpt.Station:JR-East.Yamanote.Yurakucho",
+      "toStation": "odpt.Station:TokyoMetro.Chiyoda.Hibiya",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:TokyoMetro.Chiyoda",
+      "minutes": 6,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/yurakucho/yamanote_line-tokyo-metro_chiyoda_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "有楽町 ↔ 日比谷-山手線-三田線",
+      "fromStation": "odpt.Station:JR-East.Yamanote.Yurakucho",
+      "toStation": "odpt.Station:Toei.Mita.Hibiya",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:Toei.Mita",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/yurakucho/yamanote_line-toei_subway-mita_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "有楽町 ↔ 日比谷-京浜東北線・根岸線-日比谷線",
+      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Yurakucho",
+      "toStation": "odpt.Station:TokyoMetro.Hibiya.Hibiya",
+      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "toRailway": "odpt.Railway:TokyoMetro.Hibiya",
+      "minutes": 6,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/yurakucho/keihintohoku_line-tokyo-metro_hibiya_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "有楽町 ↔ 日比谷-京浜東北線・根岸線-千代田線",
+      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Yurakucho",
+      "toStation": "odpt.Station:TokyoMetro.Chiyoda.Hibiya",
+      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "toRailway": "odpt.Railway:TokyoMetro.Chiyoda",
+      "minutes": 6,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/yurakucho/keihintohoku_line-tokyo-metro_chiyoda_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "有楽町 ↔ 日比谷-京浜東北線・根岸線-三田線",
+      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Yurakucho",
+      "toStation": "odpt.Station:Toei.Mita.Hibiya",
+      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "toRailway": "odpt.Railway:Toei.Mita",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/yurakucho/toei_subway-mita_line-keihintohoku_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "有楽町 ↔ 日比谷-有楽町線-三田線",
+      "fromStation": "odpt.Station:TokyoMetro.Yurakucho.Yurakucho",
+      "toStation": "odpt.Station:Toei.Mita.Hibiya",
+      "fromRailway": "odpt.Railway:TokyoMetro.Yurakucho",
+      "toRailway": "odpt.Railway:Toei.Mita",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/yurakucho/tokyo-metro_yurakucho_line-toei_subway-mita_line.html",
       "sourceType": "Jorudan standard transfer time",
       "verifiedAt": "2026-09-03"
     }
