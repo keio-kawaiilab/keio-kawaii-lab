@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-03T13:21:50.424Z",
+  "generatedAt": "2026-09-03T13:22:33.879Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -14,6 +14,7 @@
     "transfer-rule-sources.d/2026-09-03-major-hubs-3.json",
     "transfer-rule-sources.d/2026-09-03-major-hubs-4.json",
     "transfer-rule-sources.d/2026-09-03-meguro-jr.json",
+    "transfer-rule-sources.d/2026-09-03-musashimizonokuchi-mizonokuchi.json",
     "transfer-rule-sources.d/2026-09-03-nippori.json",
     "transfer-rule-sources.d/2026-09-03-oimachi.json",
     "transfer-rule-sources.d/2026-09-03-otemachi.json",
@@ -1249,6 +1250,32 @@
       "bidirectional": true,
       "label": "実測乗換",
       "source": "https://norikaemap.com/meguro/1101/",
+      "sourceType": "Measured transfer guide",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "武蔵溝ノ口 ↔ 溝の口-南武線-田園都市線",
+      "fromStation": "odpt.Station:JR-East.Nambu.MusashiMizonokuchi",
+      "toStation": "odpt.Station:Tokyu.DenEnToshi.Mizonokuchi",
+      "fromRailway": "odpt.Railway:JR-East.Nambu",
+      "toRailway": "odpt.Railway:Tokyu.DenEnToshi",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "実測乗換",
+      "source": "https://wadattsu261.com/content/musashimizonokuchi-mizonokuchi-jrnambu-tokyudenentoshi-oimachiline-transfer-information/",
+      "sourceType": "Measured transfer guide",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "武蔵溝ノ口 ↔ 溝の口-南武線-大井町線",
+      "fromStation": "odpt.Station:JR-East.Nambu.MusashiMizonokuchi",
+      "toStation": "odpt.Station:Tokyu.Oimachi.Mizonokuchi",
+      "fromRailway": "odpt.Railway:JR-East.Nambu",
+      "toRailway": "odpt.Railway:Tokyu.Oimachi",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "実測乗換",
+      "source": "https://wadattsu261.com/content/musashimizonokuchi-mizonokuchi-jrnambu-tokyudenentoshi-oimachiline-transfer-information/",
       "sourceType": "Measured transfer guide",
       "verifiedAt": "2026-09-03"
     },
