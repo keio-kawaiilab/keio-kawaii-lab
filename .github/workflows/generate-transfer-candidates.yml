@@ -2,7 +2,6 @@ name: Generate transfer candidates
 
 on:
   workflow_dispatch:
-  pull_request:
   push:
     paths:
       - '.github/workflows/generate-transfer-candidates.yml'
@@ -10,17 +9,30 @@ on:
       - 'data/transit/manifest.json'
       - 'data/transit/*/entities.json'
       - 'data/transit/*/timetable-index.json'
+  workflow_run:
+    workflows:
+      - 'Update transit timetables'
+      - 'Collect Keisei timetables'
+      - 'Update Minatomirai timetables'
+    types:
+      - completed
 
 permissions:
   contents: write
 
+concurrency:
+  group: generate-transfer-candidates
+  cancel-in-progress: false
+
 jobs:
   build:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: main
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -32,7 +44,6 @@ jobs:
           name: transfer-candidates
           path: data/transit/transfer-candidates.json
       - name: Commit generated data
-        if: github.event_name == 'push'
         run: |
           if git diff --quiet -- data/transit/transfer-candidates.json; then
             echo 'No transfer-candidate changes.'
