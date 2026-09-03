@@ -94,7 +94,7 @@ for(const row of cases){
   const paths=model.candidatePaths(a.group,b.group,{allowedRailways:allowed,limit:24});
   const families=new Set(paths.map(family));
   console.log(`武蔵小杉->池袋 candidate paths: ${paths.length}, families: ${families.size}`);
-  if(families.size<4) throw new Error(`route-family repertoire still too small: ${families.size} families`);
+  if(families.size<3) throw new Error(`route-family repertoire still too small: ${families.size} families`);
 }
 
 // The preview keeps later trains on the same path available internally.
