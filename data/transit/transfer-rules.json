@@ -1,9 +1,10 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-03T13:38:13.551Z",
+  "generatedAt": "2026-09-03T13:40:21.337Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
+    "transfer-rule-sources.d/2026-09-03-akihabara-iwamotocho.json",
     "transfer-rule-sources.d/2026-09-03-gotanda.json",
     "transfer-rule-sources.d/2026-09-03-hamamatsucho-daimon.json",
     "transfer-rule-sources.d/2026-09-03-hatanodai.json",
@@ -657,6 +658,58 @@
       "label": "標準乗換",
       "source": "https://mb.jorudan.co.jp/os/noritxt/nippori/yamanote_line-joban_line.html",
       "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "秋葉原 ↔ 岩本町-京浜東北線・根岸線-新宿線",
+      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Akihabara",
+      "toStation": "odpt.Station:Toei.Shinjuku.Iwamotocho",
+      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "toRailway": "odpt.Railway:Toei.Shinjuku",
+      "minutes": 8,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://ekitan.com/transit/route/sf-1625/st-1483",
+      "sourceType": "route-planner standard walk / current measured transfer guide",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "秋葉原 ↔ 岩本町-山手線-新宿線",
+      "fromStation": "odpt.Station:JR-East.Yamanote.Akihabara",
+      "toStation": "odpt.Station:Toei.Shinjuku.Iwamotocho",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:Toei.Shinjuku",
+      "minutes": 8,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://ekitan.com/transit/route/sf-1625/st-1483",
+      "sourceType": "route-planner standard walk / current measured transfer guide",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "秋葉原 ↔ 岩本町-中央・総武各駅停車-新宿線",
+      "fromStation": "odpt.Station:JR-East.ChuoSobuLocal.Akihabara",
+      "toStation": "odpt.Station:Toei.Shinjuku.Iwamotocho",
+      "fromRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "toRailway": "odpt.Railway:Toei.Shinjuku",
+      "minutes": 8,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://ekitan.com/transit/route/sf-1625/st-1483",
+      "sourceType": "route-planner standard walk / current measured transfer guide",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "秋葉原 ↔ 岩本町-新宿線-日比谷線",
+      "fromStation": "odpt.Station:Toei.Shinjuku.Iwamotocho",
+      "toStation": "odpt.Station:TokyoMetro.Hibiya.Akihabara",
+      "fromRailway": "odpt.Railway:Toei.Shinjuku",
+      "toRailway": "odpt.Railway:TokyoMetro.Hibiya",
+      "minutes": 7,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://tren.hatenablog.com/entry/s08toh16",
+      "sourceType": "route-planner standard walk / current measured transfer guide",
       "verifiedAt": "2026-09-03"
     },
     {
