@@ -1,0 +1,49 @@
+name: Generate transfer coverage
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/build-transfer-coverage.mjs'
+      - '.github/workflows/generate-transfer-coverage.yml'
+  workflow_run:
+    workflows:
+      - 'Generate transfer rules'
+      - 'Generate transfer candidates'
+    types:
+      - completed
+
+permissions:
+  contents: write
+
+concurrency:
+  group: generate-transfer-coverage
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build coverage audit
+        run: node scripts/build-transfer-coverage.mjs
+      - name: Validate coverage JSON
+        run: node -e "JSON.parse(require('fs').readFileSync('data/transit/transfer-coverage.json','utf8')); console.log('transfer-coverage.json OK')"
+      - name: Commit coverage audit
+        run: |
+          if [ -z "$(git status --porcelain -- data/transit/transfer-coverage.json)" ]; then
+            echo 'No coverage changes.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/transit/transfer-coverage.json
+          git commit -m 'Update transfer coverage audit'
+          git push
