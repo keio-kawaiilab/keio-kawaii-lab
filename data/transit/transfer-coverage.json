@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-03T23:48:15.762Z",
+  "generatedAt": "2026-09-03T23:51:07.764Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-03T23:48:04.006Z",
+  "rulesGeneratedAt": "2026-09-03T23:50:49.105Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 330,
-    "uncuratedPairs": 623,
+    "curatedPairs": 337,
+    "uncuratedPairs": 616,
     "blockedPairs": 7,
-    "curatedSourceRules": 330,
+    "curatedSourceRules": 337,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -340,16 +340,6 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 4,
-      "priorityScore": 6
-    },
-    {
-      "place": "蒲田",
-      "totalPairs": 3,
-      "curatedPairs": 0,
-      "uncuratedPairs": 3,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 2,
-      "railwayCount": 3,
       "priorityScore": 6
     },
     {
@@ -913,16 +903,6 @@
       "priorityScore": 2.5
     },
     {
-      "place": "下北沢",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5
-    },
-    {
       "place": "岩本町 ↔ 秋葉原",
       "totalPairs": 1,
       "curatedPairs": 0,
@@ -1004,6 +984,26 @@
     },
     {
       "place": "豪徳寺 ↔ 山下",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 2,
+      "priorityScore": 2.5
+    },
+    {
+      "place": "国際展示場 ↔ 有明",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 2,
+      "priorityScore": 2.5
+    },
+    {
+      "place": "雑司が谷 ↔ 鬼子母神前",
       "totalPairs": 1,
       "curatedPairs": 0,
       "uncuratedPairs": 1,
@@ -6209,20 +6209,6 @@
       ]
     },
     {
-      "place": "下北沢",
-      "railwayA": "odpt.Railway:Keio.Inokashira",
-      "railwayAName": "井の頭線",
-      "railwayB": "odpt.Railway:Odakyu.Odawara",
-      "railwayBName": "小田原線",
-      "sameOperator": false,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
       "place": "霞ケ関",
       "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
       "railwayAName": "千代田線",
@@ -6298,48 +6284,6 @@
       "railwayAName": "常磐線各駅停車",
       "railwayB": "odpt.Railway:JR-East.NaritaAbikoBranch",
       "railwayBName": "成田線我孫子支線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "蒲田",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:Tokyu.Ikegami",
-      "railwayBName": "池上線",
-      "sameOperator": false,
-      "distanceMeters": 154,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "蒲田",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:Tokyu.TokyuTamagawa",
-      "railwayBName": "東急多摩川線",
-      "sameOperator": false,
-      "distanceMeters": 154,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "蒲田",
-      "railwayA": "odpt.Railway:Tokyu.Ikegami",
-      "railwayAName": "池上線",
-      "railwayB": "odpt.Railway:Tokyu.TokyuTamagawa",
-      "railwayBName": "東急多摩川線",
       "sameOperator": true,
       "distanceMeters": 0,
       "fallbackMinutes": 5,
@@ -7490,20 +7434,6 @@
       "sameOperator": true,
       "distanceMeters": 254,
       "fallbackMinutes": 6,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "三軒茶屋",
-      "railwayA": "odpt.Railway:Tokyu.DenEnToshi",
-      "railwayAName": "田園都市線",
-      "railwayB": "odpt.Railway:Tokyu.Setagaya",
-      "railwayBName": "世田谷線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
         "same-place-group"
@@ -10314,20 +10244,6 @@
       "railwayBName": "千代田線",
       "sameOperator": false,
       "distanceMeters": 19,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "大岡山",
-      "railwayA": "odpt.Railway:Tokyu.Meguro",
-      "railwayAName": "目黒線",
-      "railwayB": "odpt.Railway:Tokyu.Oimachi",
-      "railwayBName": "大井町線",
-      "sameOperator": true,
-      "distanceMeters": 0,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
@@ -13479,19 +13395,6 @@
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "明大前",
-      "railwayA": "odpt.Railway:Keio.Inokashira",
-      "railwayAName": "井の頭線",
-      "railwayB": "odpt.Railway:Keio.Keio",
-      "railwayBName": "京王線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
         "same-place-group"
       ]
     },
