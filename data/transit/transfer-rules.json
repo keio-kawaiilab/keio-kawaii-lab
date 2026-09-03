@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-03T23:48:04.006Z",
+  "generatedAt": "2026-09-03T23:50:49.105Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -43,7 +43,8 @@
     "transfer-rule-sources.d/2026-09-04-medium-stations-batch-c.json",
     "transfer-rule-sources.d/2026-09-04-medium-stations-batch-d.json",
     "transfer-rule-sources.d/2026-09-04-medium-stations-batch-e.json",
-    "transfer-rule-sources.d/2026-09-04-medium-stations-batch-f.json"
+    "transfer-rule-sources.d/2026-09-04-medium-stations-batch-f.json",
+    "transfer-rule-sources.d/2026-09-04-medium-stations-batch-g.json"
   ],
   "description": "Curated station/railway-specific transfer times. Generated from transfer-rule source files and resolved against transfer-candidates.json.",
   "rules": [
@@ -4334,6 +4335,97 @@
       "bidirectional": true,
       "label": "標準・実測乗換（安全側）",
       "source": "https://www.jorudan.co.jp/norikae/route/%E5%85%AD%E4%BC%9A%E6%97%A5%E5%A4%A7%E5%89%8D_%E7%AB%8B%E5%A0%B4.html",
+      "sourceType": "Jorudan current route-planner transfer time",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "下北沢-井の頭線-小田原線",
+      "fromStation": "odpt.Station:Keio.Inokashira.ShimoKitazawa",
+      "toStation": "odpt.Station:Odakyu.Odawara.ShimoKitazawa",
+      "fromRailway": "odpt.Railway:Keio.Inokashira",
+      "toRailway": "odpt.Railway:Odakyu.Odawara",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%B8%8B%E8%B0%B7_%E6%88%90%E5%9F%8E%E5%AD%A6%E5%9C%92%E5%89%8D.html",
+      "sourceType": "Jorudan current route-planner transfer time",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "明大前-井の頭線-京王線",
+      "fromStation": "odpt.Station:Keio.Keio.Meidaimae",
+      "toStation": "odpt.Station:Keio.Keio.Meidaimae",
+      "fromRailway": "odpt.Railway:Keio.Inokashira",
+      "toRailway": "odpt.Railway:Keio.Keio",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%B8%8B%E8%B0%B7_%E8%AA%BF%E5%B8%83.html",
+      "sourceType": "Jorudan current route-planner transfer time",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "三軒茶屋-田園都市線-世田谷線",
+      "fromStation": "odpt.Station:Tokyu.DenEnToshi.SangenJaya",
+      "toStation": "odpt.Station:Tokyu.Setagaya.SangenJaya",
+      "fromRailway": "odpt.Railway:Tokyu.DenEnToshi",
+      "toRailway": "odpt.Railway:Tokyu.Setagaya",
+      "minutes": 6,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E4%B8%96%E7%94%B0%E8%B0%B7_%E6%B8%8B%E8%B0%B7.html",
+      "sourceType": "Jorudan current route-planner transfer time",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "大岡山-目黒線-大井町線",
+      "fromStation": "odpt.Station:Tokyu.Meguro.Ookayama",
+      "toStation": "odpt.Station:Tokyu.Oimachi.Ookayama",
+      "fromRailway": "odpt.Railway:Tokyu.Meguro",
+      "toRailway": "odpt.Railway:Tokyu.Oimachi",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%AD%A6%E8%94%B5%E5%B0%8F%E5%B1%B1_%E5%A4%A7%E4%BA%95%E7%94%BA.html",
+      "sourceType": "Jorudan current route-planner transfer time; platform-independent conservative bound",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "蒲田-京浜東北線・根岸線-池上線",
+      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Kamata",
+      "toStation": "odpt.Station:Tokyu.Ikegami.Kamata",
+      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "toRailway": "odpt.Railway:Tokyu.Ikegami",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%B7%9D%E5%B4%8E_%E6%B1%A0%E4%B8%8A.html",
+      "sourceType": "Jorudan current route-planner transfer time",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "蒲田-京浜東北線・根岸線-東急多摩川線",
+      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Kamata",
+      "toStation": "odpt.Station:Tokyu.TokyuTamagawa.Kamata",
+      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "toRailway": "odpt.Railway:Tokyu.TokyuTamagawa",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E4%BA%AC%E6%80%A5%E8%92%B2%E7%94%B0_%E5%A4%9A%E6%91%A9%E5%B7%9D.html",
+      "sourceType": "Jorudan current route-planner transfer time",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "蒲田-池上線-東急多摩川線",
+      "fromStation": "odpt.Station:Tokyu.Ikegami.Kamata",
+      "toStation": "odpt.Station:Tokyu.TokyuTamagawa.Kamata",
+      "fromRailway": "odpt.Railway:Tokyu.Ikegami",
+      "toRailway": "odpt.Railway:Tokyu.TokyuTamagawa",
+      "minutes": 2,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%B1%A0%E4%B8%8A_%E5%A4%9A%E6%91%A9%E5%B7%9D.html",
       "sourceType": "Jorudan current route-planner transfer time",
       "verifiedAt": "2026-09-04"
     }
