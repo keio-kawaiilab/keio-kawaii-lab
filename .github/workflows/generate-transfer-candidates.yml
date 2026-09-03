@@ -1,0 +1,38 @@
+name: Generate transfer candidates
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/generate-transfer-candidates.yml'
+      - 'scripts/build-transfer-candidates.mjs'
+      - 'data/transit/manifest.json'
+      - 'data/transit/*/entities.json'
+      - 'data/transit/*/timetable-index.json'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build transfer candidates
+        run: node scripts/build-transfer-candidates.mjs
+      - name: Commit generated data
+        run: |
+          if git diff --quiet -- data/transit/transfer-candidates.json; then
+            echo 'No transfer-candidate changes.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/transit/transfer-candidates.json
+          git commit -m 'Update transfer candidate data'
+          git push
