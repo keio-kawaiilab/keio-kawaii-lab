@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-03T23:26:44.207Z",
+  "generatedAt": "2026-09-03T23:30:10.734Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -39,7 +39,8 @@
     "transfer-rule-sources.d/2026-09-03-yotsuya.json",
     "transfer-rule-sources.d/2026-09-03-yurakucho-hibiya.json",
     "transfer-rule-sources.d/2026-09-04-medium-stations-batch-a.json",
-    "transfer-rule-sources.d/2026-09-04-medium-stations-batch-b.json"
+    "transfer-rule-sources.d/2026-09-04-medium-stations-batch-b.json",
+    "transfer-rule-sources.d/2026-09-04-medium-stations-batch-c.json"
   ],
   "description": "Curated station/railway-specific transfer times. Generated from transfer-rule source files and resolved against transfer-candidates.json.",
   "rules": [
@@ -3771,6 +3772,110 @@
       "bidirectional": true,
       "label": "標準・実測乗換（安全側）",
       "source": "https://tren.hatenablog.com/entry/a18-ts01",
+      "sourceType": "current transfer guide / measured route",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "浅草橋-中央・総武各駅停車-浅草線",
+      "fromStation": "odpt.Station:JR-East.ChuoSobuLocal.Asakusabashi",
+      "toStation": "odpt.Station:Toei.Asakusa.Asakusabashi",
+      "fromRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "toRailway": "odpt.Railway:Toei.Asakusa",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://honnne.com/blog/norikaeasakusabashiasakusabashi/",
+      "sourceType": "2026 measured platform-to-platform transfer; rounded up",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "蔵前-浅草線-大江戸線",
+      "fromStation": "odpt.Station:Toei.Asakusa.Kuramae",
+      "toStation": "odpt.Station:Toei.Oedo.Kuramae",
+      "fromRailway": "odpt.Railway:Toei.Asakusa",
+      "toRailway": "odpt.Railway:Toei.Oedo",
+      "minutes": 6,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://wadattsu261.com/content/kuramae-toeiasakusa-toeioedoline-transfer-information/",
+      "sourceType": "current transfer guide / measured route",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "王子-京浜東北線・根岸線-南北線",
+      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Oji",
+      "toStation": "odpt.Station:TokyoMetro.Namboku.Oji",
+      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "toRailway": "odpt.Railway:TokyoMetro.Namboku",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://wadattsu261.com/content/oji-jrkeihin-metronamboku-route/",
+      "sourceType": "current transfer guide / measured route",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "巣鴨-山手線-三田線",
+      "fromStation": "odpt.Station:JR-East.Yamanote.Sugamo",
+      "toStation": "odpt.Station:Toei.Mita.Sugamo",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:Toei.Mita",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://honnne.com/blog/norikae-sugamo/",
+      "sourceType": "2026 measured platform-to-platform transfer; rounded up",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "駒込-山手線-南北線",
+      "fromStation": "odpt.Station:JR-East.Yamanote.Komagome",
+      "toStation": "odpt.Station:TokyoMetro.Namboku.Komagome",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:TokyoMetro.Namboku",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://honnne.com/blog/norikae-metrokomagome/",
+      "sourceType": "2026 measured platform-to-platform transfer; rounded up",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "新御徒町-つくばエクスプレス-大江戸線",
+      "fromStation": "odpt.Station:MIR.TsukubaExpress.ShinOkachimachi",
+      "toStation": "odpt.Station:Toei.Oedo.ShinOkachimachi",
+      "fromRailway": "odpt.Railway:MIR.TsukubaExpress",
+      "toRailway": "odpt.Railway:Toei.Oedo",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://honnne.com/blog/norikae-shinokachimachi/",
+      "sourceType": "2026 measured platform-to-platform transfer; rounded up",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "中井-西武新宿線-大江戸線",
+      "fromStation": "odpt.Station:Seibu.Shinjuku.Nakai",
+      "toStation": "odpt.Station:Toei.Oedo.Nakai",
+      "fromRailway": "odpt.Railway:Seibu.Shinjuku",
+      "toRailway": "odpt.Railway:Toei.Oedo",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://wadattsu261.com/content/nakai-seibushinjuku-toeioedoline-transfer-information/",
+      "sourceType": "current transfer guide / measured route",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "東中野-中央・総武各駅停車-大江戸線",
+      "fromStation": "odpt.Station:JR-East.ChuoSobuLocal.HigashiNakano",
+      "toStation": "odpt.Station:Toei.Oedo.HigashiNakano",
+      "fromRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "toRailway": "odpt.Railway:Toei.Oedo",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://wadattsu261.com/content/higashinakano-toeioedo-jrchuoslowline-transfer-information/",
       "sourceType": "current transfer guide / measured route",
       "verifiedAt": "2026-09-04"
     }
