@@ -151,15 +151,17 @@ function addCandidate(placeKey, placeLabel, stationIdsA, stationIdsB, railwayA, 
     distanceMeters: distance === null ? null : Math.round(distance),
     sources: [source]
   };
-  if (!existing) pairMap.set(key, candidate);
-  else {
-    existing.stationIdsA = [...new Set([...existing.stationIdsA, ...candidate.stationIdsA])].sort();
-    existing.stationIdsB = [...new Set([...existing.stationIdsB, ...candidate.stationIdsB])].sort();
-    existing.sources = [...new Set([...existing.sources, source])].sort();
-    if (candidate.distanceMeters !== null && (existing.distanceMeters === null || candidate.distanceMeters < existing.distanceMeters)) {
-      existing.distanceMeters = candidate.distanceMeters;
-      existing.fallbackMinutes = candidate.fallbackMinutes;
-    }
+
+  if (!existing) {
+    pairMap.set(key, candidate);
+    return;
+  }
+  existing.stationIdsA = [...new Set([...existing.stationIdsA, ...candidate.stationIdsA])].sort();
+  existing.stationIdsB = [...new Set([...existing.stationIdsB, ...candidate.stationIdsB])].sort();
+  existing.sources = [...new Set([...existing.sources, source])].sort();
+  if (candidate.distanceMeters !== null && (existing.distanceMeters === null || candidate.distanceMeters < existing.distanceMeters)) {
+    existing.distanceMeters = candidate.distanceMeters;
+    existing.fallbackMinutes = candidate.fallbackMinutes;
   }
 }
 
@@ -172,6 +174,7 @@ for (const [stationId, station] of stationById) {
   buckets.get(key).nodes.push(stationId);
 }
 
+const groupInfoByStation = new Map();
 for (const [nameKey, bucket] of buckets) {
   const clusters = [];
   for (const node of bucket.nodes) {
@@ -189,12 +192,14 @@ for (const [nameKey, bucket] of buckets) {
   }
 
   clusters.forEach((nodes, index) => {
+    const placeKey = `group:${nameKey}:${index}`;
+    for (const node of nodes) groupInfoByStation.set(node, { placeKey, placeLabel: bucket.name });
     const lines = [...new Set(nodes.flatMap(supportedLinesForStation))].sort();
     for (let i = 0; i < lines.length; i++) {
       for (let j = i + 1; j < lines.length; j++) {
         const aNodes = nodes.filter(id => supportedLinesForStation(id).includes(lines[i]));
         const bNodes = nodes.filter(id => supportedLinesForStation(id).includes(lines[j]));
-        addCandidate(`group:${nameKey}:${index}`, bucket.name, aNodes, bNodes, lines[i], lines[j], 'same-place-group');
+        addCandidate(placeKey, bucket.name, aNodes, bNodes, lines[i], lines[j], 'same-place-group');
       }
     }
   });
@@ -207,12 +212,19 @@ for (const [fromId, fromStation] of stationById) {
     const fromLines = supportedLinesForStation(fromId);
     const toLines = supportedLinesForStation(toId);
     if (!fromLines.length || !toLines.length) continue;
+
+    const fromGroup = groupInfoByStation.get(fromId);
+    const toGroup = groupInfoByStation.get(toId);
+    const sameGroup = fromGroup && toGroup && fromGroup.placeKey === toGroup.placeKey;
     const fromName = stationName(fromStation);
     const toName = stationName(stationById.get(toId));
     const canonicalStations = [fromId, toId].sort();
-    const placeKey = `explicit:${canonicalStations.join('|')}`;
-    const placeLabel = fromName === toName ? fromName : `${fromName} ↔ ${toName}`;
-    for (const a of fromLines) for (const b of toLines) addCandidate(placeKey, placeLabel, [fromId], [toId], a, b, 'connecting-station');
+    const placeKey = sameGroup ? fromGroup.placeKey : `explicit:${canonicalStations.join('|')}`;
+    const placeLabel = sameGroup ? fromGroup.placeLabel : (fromName === toName ? fromName : `${fromName} ↔ ${toName}`);
+
+    for (const a of fromLines) {
+      for (const b of toLines) addCandidate(placeKey, placeLabel, [fromId], [toId], a, b, 'connecting-station');
+    }
   }
 }
 
@@ -238,7 +250,7 @@ for (const row of candidates) {
 const output = {
   generatedAt: new Date().toISOString(),
   sourceManifestFetchedAt: manifest.fetchedAt || null,
-  methodology: 'Replicates route-planner same-name/850m grouping and explicit odpt:connectingStation edges; only timetable-supported railways are retained.',
+  methodology: 'Replicates route-planner same-name/850m grouping and explicit odpt:connectingStation edges; only timetable-supported railways are retained. Duplicate sources for the same place/railway pair are merged.',
   summary: {
     supportedRailways: supportedRailways.size,
     transferPlaces: placeKeys.size,
