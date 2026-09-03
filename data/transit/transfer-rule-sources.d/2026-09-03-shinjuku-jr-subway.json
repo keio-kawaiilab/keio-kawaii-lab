@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換",
+    "sourceType": "Jorudan standard transfer time",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "railwayAName": "山手線",
+      "railwayBName": "大江戸線",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/yamanote_line-toei_subway-oedo_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayB": "odpt.Railway:Toei.Shinjuku",
+      "railwayAName": "中央線快速",
+      "railwayBName": "新宿線",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/chuo_line-toei_subway-shinjuku_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:Toei.Shinjuku",
+      "railwayAName": "埼京線・川越線",
+      "railwayBName": "新宿線",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/saikyo_line-toei_subway-shinjuku_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:Toei.Shinjuku",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "新宿線",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/saikyo_line-toei_subway-shinjuku_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "railwayAName": "中央線快速",
+      "railwayBName": "大江戸線",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/chuo_line-toei_subway-oedo_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "railwayAName": "埼京線・川越線",
+      "railwayBName": "大江戸線",
+      "minutes": 8,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/toei_subway-oedo_line-saikyo_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "大江戸線",
+      "minutes": 8,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/toei_subway-oedo_line-saikyo_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayB": "odpt.Railway:Toei.Shinjuku",
+      "railwayAName": "中央・総武各駅停車",
+      "railwayBName": "新宿線",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/sobu_line_local-toei_subway-shinjuku_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "railwayAName": "中央・総武各駅停車",
+      "railwayBName": "大江戸線",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/toei_subway-oedo_line-sobu_line_local.html"
+    }
+  ]
+}
