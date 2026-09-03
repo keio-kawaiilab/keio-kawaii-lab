@@ -23,10 +23,21 @@ function sourceAIsRowA(row,source){
 function sourceLabel(source,side){
   return String(source[`${side}Name`]||source[side]||'');
 }
+function placeDiagnostics(place){
+  const rows=(candidates.candidates||[]).filter(row=>row.placeLabel===place);
+  const railways=new Map();
+  for(const row of rows){
+    railways.set(row.railwayA,row.railwayAName);
+    railways.set(row.railwayB,row.railwayBName);
+  }
+  return [...railways.entries()].map(([id,name])=>`${name}=${id}`).sort().join(', ');
+}
 
 for(const source of sources.rules||[]){
   const matches=(candidates.candidates||[]).filter(row=>row.placeLabel===source.place&&samePair(row,source));
-  if(matches.length!==1)throw new Error(`${source.place} ${sourceLabel(source,'railwayA')} / ${sourceLabel(source,'railwayB')}: expected 1 candidate, got ${matches.length}`);
+  if(matches.length!==1){
+    throw new Error(`${source.place} ${sourceLabel(source,'railwayA')} / ${sourceLabel(source,'railwayB')}: expected 1 candidate, got ${matches.length}. Available railways at place: ${placeDiagnostics(source.place)}`);
+  }
   const row=matches[0];
   const aIsRowA=sourceAIsRowA(row,source);
   const fromRailway=aIsRowA?row.railwayA:row.railwayB;
