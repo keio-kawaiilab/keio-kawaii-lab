@@ -8,26 +8,37 @@ const sources=JSON.parse(fs.readFileSync(path.join(transit,'transfer-rule-source
 const defaults=sources.defaults||{};
 const output=[];
 
+function hasRailwayIds(rule){return Boolean(rule&&rule.railwayA&&rule.railwayB);}
 function samePair(row,rule){
+  if(hasRailwayIds(rule)){
+    return (row.railwayA===rule.railwayA&&row.railwayB===rule.railwayB)||
+      (row.railwayA===rule.railwayB&&row.railwayB===rule.railwayA);
+  }
   return (row.railwayAName===rule.railwayAName&&row.railwayBName===rule.railwayBName)||
     (row.railwayAName===rule.railwayBName&&row.railwayBName===rule.railwayAName);
+}
+function sourceAIsRowA(row,source){
+  return hasRailwayIds(source)?row.railwayA===source.railwayA:row.railwayAName===source.railwayAName;
+}
+function sourceLabel(source,side){
+  return String(source[`${side}Name`]||source[side]||'');
 }
 
 for(const source of sources.rules||[]){
   const matches=(candidates.candidates||[]).filter(row=>row.placeLabel===source.place&&samePair(row,source));
-  if(matches.length!==1)throw new Error(`${source.place} ${source.railwayAName} / ${source.railwayBName}: expected 1 candidate, got ${matches.length}`);
+  if(matches.length!==1)throw new Error(`${source.place} ${sourceLabel(source,'railwayA')} / ${sourceLabel(source,'railwayB')}: expected 1 candidate, got ${matches.length}`);
   const row=matches[0];
-  const sourceAIsRowA=row.railwayAName===source.railwayAName;
-  const fromRailway=sourceAIsRowA?row.railwayA:row.railwayB;
-  const toRailway=sourceAIsRowA?row.railwayB:row.railwayA;
-  const fromStations=sourceAIsRowA?row.stationIdsA:row.stationIdsB;
-  const toStations=sourceAIsRowA?row.stationIdsB:row.stationIdsA;
+  const aIsRowA=sourceAIsRowA(row,source);
+  const fromRailway=aIsRowA?row.railwayA:row.railwayB;
+  const toRailway=aIsRowA?row.railwayB:row.railwayA;
+  const fromStations=aIsRowA?row.stationIdsA:row.stationIdsB;
+  const toStations=aIsRowA?row.stationIdsB:row.stationIdsA;
   const minutes=Number(source.minutes);
   if(!Number.isFinite(minutes)||minutes<0)throw new Error(`Invalid minutes for ${source.place}`);
   for(const fromStation of fromStations){
     for(const toStation of toStations){
       output.push({
-        id:String(source.id||`${source.place}-${source.railwayAName}-${source.railwayBName}`),
+        id:String(source.id||`${source.place}-${sourceLabel(source,'railwayA')}-${sourceLabel(source,'railwayB')}`),
         fromStation,
         toStation,
         fromRailway,
