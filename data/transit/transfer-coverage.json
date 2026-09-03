@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-03T13:25:08.711Z",
+  "generatedAt": "2026-09-03T13:32:03.289Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-03T13:24:54.554Z",
+  "rulesGeneratedAt": "2026-09-03T13:31:50.468Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 201,
-    "uncuratedPairs": 752,
+    "curatedPairs": 207,
+    "uncuratedPairs": 746,
     "blockedPairs": 7,
-    "curatedSourceRules": 201,
+    "curatedSourceRules": 207,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -201,16 +201,6 @@
       "crossOperatorUncuratedPairs": 5,
       "railwayCount": 7,
       "priorityScore": 12.5
-    },
-    {
-      "place": "四ツ谷",
-      "totalPairs": 6,
-      "curatedPairs": 0,
-      "uncuratedPairs": 6,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 4,
-      "railwayCount": 4,
-      "priorityScore": 12
     },
     {
       "place": "渋谷",
@@ -1004,6 +994,16 @@
     },
     {
       "place": "蘇我",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 3
+    },
+    {
+      "place": "多摩川",
       "totalPairs": 3,
       "curatedPairs": 0,
       "uncuratedPairs": 3,
@@ -4301,98 +4301,6 @@
       "sameOperatorPairs": []
     },
     {
-      "place": "四ツ谷",
-      "totalPairs": 6,
-      "curatedPairs": 0,
-      "uncuratedPairs": 6,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 4,
-      "railwayCount": 4,
-      "priorityScore": 12,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-          "railwayAName": "中央・総武各駅停車",
-          "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
-          "railwayBName": "丸ノ内線",
-          "sameOperator": false,
-          "distanceMeters": 168,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-          "railwayAName": "中央・総武各駅停車",
-          "railwayB": "odpt.Railway:TokyoMetro.Namboku",
-          "railwayBName": "南北線",
-          "sameOperator": false,
-          "distanceMeters": 91,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-          "railwayAName": "中央線快速",
-          "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
-          "railwayBName": "丸ノ内線",
-          "sameOperator": false,
-          "distanceMeters": 168,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-          "railwayAName": "中央線快速",
-          "railwayB": "odpt.Railway:TokyoMetro.Namboku",
-          "railwayBName": "南北線",
-          "sameOperator": false,
-          "distanceMeters": 91,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Marunouchi",
-          "railwayAName": "丸ノ内線",
-          "railwayB": "odpt.Railway:TokyoMetro.Namboku",
-          "railwayBName": "南北線",
-          "sameOperator": true,
-          "distanceMeters": 212,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-          "railwayAName": "中央線快速",
-          "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
-          "railwayBName": "中央・総武各駅停車",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
       "place": "渋谷",
       "totalPairs": 36,
       "curatedPairs": 29,
@@ -5389,6 +5297,67 @@
           "sameOperator": false,
           "distanceMeters": 64,
           "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station"
+          ]
+        }
+      ],
+      "sameOperatorPairs": []
+    },
+    {
+      "place": "高輪ゲートウェイ ↔ 泉岳寺",
+      "totalPairs": 4,
+      "curatedPairs": 0,
+      "uncuratedPairs": 4,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 4,
+      "railwayCount": 4,
+      "priorityScore": 10,
+      "crossOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+          "railwayAName": "京浜東北線・根岸線",
+          "railwayB": "odpt.Railway:Keikyu.Main",
+          "railwayBName": "京急本線",
+          "sameOperator": false,
+          "distanceMeters": 318,
+          "fallbackMinutes": 7,
+          "sources": [
+            "connecting-station"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+          "railwayAName": "京浜東北線・根岸線",
+          "railwayB": "odpt.Railway:Toei.Asakusa",
+          "railwayBName": "浅草線",
+          "sameOperator": false,
+          "distanceMeters": 375,
+          "fallbackMinutes": 8,
+          "sources": [
+            "connecting-station"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.Yamanote",
+          "railwayAName": "山手線",
+          "railwayB": "odpt.Railway:Keikyu.Main",
+          "railwayBName": "京急本線",
+          "sameOperator": false,
+          "distanceMeters": 318,
+          "fallbackMinutes": 7,
+          "sources": [
+            "connecting-station"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.Yamanote",
+          "railwayAName": "山手線",
+          "railwayB": "odpt.Railway:Toei.Asakusa",
+          "railwayBName": "浅草線",
+          "sameOperator": false,
+          "distanceMeters": 375,
+          "fallbackMinutes": 8,
           "sources": [
             "connecting-station"
           ]
@@ -8186,90 +8155,6 @@
       "sameOperator": true,
       "distanceMeters": 285,
       "fallbackMinutes": 6,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "四ツ谷",
-      "railwayA": "odpt.Railway:TokyoMetro.Marunouchi",
-      "railwayAName": "丸ノ内線",
-      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
-      "railwayBName": "南北線",
-      "sameOperator": true,
-      "distanceMeters": 212,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "四ツ谷",
-      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-      "railwayAName": "中央・総武各駅停車",
-      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
-      "railwayBName": "丸ノ内線",
-      "sameOperator": false,
-      "distanceMeters": 168,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "四ツ谷",
-      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-      "railwayAName": "中央・総武各駅停車",
-      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
-      "railwayBName": "南北線",
-      "sameOperator": false,
-      "distanceMeters": 91,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "四ツ谷",
-      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-      "railwayAName": "中央線快速",
-      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
-      "railwayBName": "丸ノ内線",
-      "sameOperator": false,
-      "distanceMeters": 168,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "四ツ谷",
-      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-      "railwayAName": "中央線快速",
-      "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
-      "railwayBName": "中央・総武各駅停車",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "四ツ谷",
-      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-      "railwayAName": "中央線快速",
-      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
-      "railwayBName": "南北線",
-      "sameOperator": false,
-      "distanceMeters": 91,
-      "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
         "same-place-group"
