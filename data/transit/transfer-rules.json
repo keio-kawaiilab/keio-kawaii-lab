@@ -1,11 +1,12 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-03T12:40:34.083Z",
+  "generatedAt": "2026-09-03T12:44:57.240Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
     "transfer-rule-sources.d/2026-09-03-major-hubs-2.json",
-    "transfer-rule-sources.d/2026-09-03-major-hubs-3.json"
+    "transfer-rule-sources.d/2026-09-03-major-hubs-3.json",
+    "transfer-rule-sources.d/2026-09-03-major-hubs-4.json"
   ],
   "description": "Curated station/railway-specific transfer times. Generated from transfer-rule source files and resolved against transfer-candidates.json.",
   "rules": [
@@ -838,6 +839,58 @@
       "bidirectional": true,
       "label": "標準乗換",
       "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/tokyu-denentoshi_line-tokyu-toyoko_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "東京-山手線-東海道線",
+      "fromStation": "odpt.Station:JR-East.Yamanote.Tokyo",
+      "toStation": "odpt.Station:JR-East.Tokaido.Tokyo",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:JR-East.Tokaido",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/yamanote_line-tokaido_line_jr_east.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "東京-横須賀線-東海道線",
+      "fromStation": "odpt.Station:JR-East.Yokosuka.Tokyo",
+      "toStation": "odpt.Station:JR-East.Tokaido.Tokyo",
+      "fromRailway": "odpt.Railway:JR-East.Yokosuka",
+      "toRailway": "odpt.Railway:JR-East.Tokaido",
+      "minutes": 8,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/yokosuka_line-tokaido_line_jr_east.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "東京-総武快速線-東海道線",
+      "fromStation": "odpt.Station:JR-East.SobuRapid.Tokyo",
+      "toStation": "odpt.Station:JR-East.Tokaido.Tokyo",
+      "fromRailway": "odpt.Railway:JR-East.SobuRapid",
+      "toRailway": "odpt.Railway:JR-East.Tokaido",
+      "minutes": 8,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/yokosuka_line-tokaido_line_jr_east.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "渋谷-井の頭線-東横線",
+      "fromStation": "odpt.Station:Keio.Inokashira.Shibuya",
+      "toStation": "odpt.Station:Tokyu.Toyoko.Shibuya",
+      "fromRailway": "odpt.Railway:Keio.Inokashira",
+      "toRailway": "odpt.Railway:Tokyu.Toyoko",
+      "minutes": 9,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/keio-inokashira_line-tokyu-toyoko_line.html",
       "sourceType": "Jorudan standard transfer time",
       "verifiedAt": "2026-09-03"
     }
