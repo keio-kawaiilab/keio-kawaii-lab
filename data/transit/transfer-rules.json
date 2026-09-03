@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-03T12:57:55.073Z",
+  "generatedAt": "2026-09-03T12:58:44.561Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -9,6 +9,7 @@
     "transfer-rule-sources.d/2026-09-03-major-hubs-3.json",
     "transfer-rule-sources.d/2026-09-03-major-hubs-4.json",
     "transfer-rule-sources.d/2026-09-03-shibuya-core-2.json",
+    "transfer-rule-sources.d/2026-09-03-shibuya-inokashira-jr.json",
     "transfer-rule-sources.d/2026-09-03-shimbashi-core.json",
     "transfer-rule-sources.d/2026-09-03-shinjuku-core.json",
     "transfer-rule-sources.d/2026-09-03-shinjuku-jr-internal.json",
@@ -1172,6 +1173,32 @@
       "bidirectional": true,
       "label": "標準乗換",
       "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/tokyo-metro_fukutoshin_line-tokyo-metro_ginza_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "渋谷-井の頭線-埼京線・川越線",
+      "fromStation": "odpt.Station:Keio.Inokashira.Shibuya",
+      "toStation": "odpt.Station:JR-East.SaikyoKawagoe.Shibuya",
+      "fromRailway": "odpt.Railway:Keio.Inokashira",
+      "toRailway": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "minutes": 8,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/keio-inokashira_line-saikyo_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "渋谷-井の頭線-湘南新宿ライン",
+      "fromStation": "odpt.Station:Keio.Inokashira.Shibuya",
+      "toStation": "odpt.Station:JR-East.ShonanShinjuku.Shibuya",
+      "fromRailway": "odpt.Railway:Keio.Inokashira",
+      "toRailway": "odpt.Railway:JR-East.ShonanShinjuku",
+      "minutes": 8,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/keio-inokashira_line-saikyo_line.html",
       "sourceType": "Jorudan standard transfer time",
       "verifiedAt": "2026-09-03"
     },
