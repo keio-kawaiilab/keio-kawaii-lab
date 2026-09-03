@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-03T13:46:34.315Z",
+  "generatedAt": "2026-09-03T13:47:19.505Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-03T13:46:18.393Z",
+  "rulesGeneratedAt": "2026-09-03T13:47:06.177Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 231,
-    "uncuratedPairs": 722,
+    "curatedPairs": 234,
+    "uncuratedPairs": 719,
     "blockedPairs": 7,
-    "curatedSourceRules": 231,
+    "curatedSourceRules": 234,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -281,16 +281,6 @@
       "crossOperatorUncuratedPairs": 1,
       "railwayCount": 6,
       "priorityScore": 8.5
-    },
-    {
-      "place": "海老名",
-      "totalPairs": 3,
-      "curatedPairs": 0,
-      "uncuratedPairs": 3,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 3,
-      "railwayCount": 3,
-      "priorityScore": 7.5
     },
     {
       "place": "市ケ谷 ↔ 市ヶ谷",
@@ -1004,6 +994,16 @@
     },
     {
       "place": "表参道",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 3
+    },
+    {
+      "place": "立川",
       "totalPairs": 3,
       "curatedPairs": 0,
       "uncuratedPairs": 3,
@@ -5172,58 +5172,6 @@
       ]
     },
     {
-      "place": "海老名",
-      "totalPairs": 3,
-      "curatedPairs": 0,
-      "uncuratedPairs": 3,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 3,
-      "railwayCount": 3,
-      "priorityScore": 7.5,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Odakyu.Odawara",
-          "railwayAName": "小田原線",
-          "railwayB": "odpt.Railway:Sotetsu.Main",
-          "railwayBName": "相鉄本線",
-          "sameOperator": false,
-          "distanceMeters": 96,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Sagami",
-          "railwayAName": "相模線",
-          "railwayB": "odpt.Railway:Odakyu.Odawara",
-          "railwayBName": "小田原線",
-          "sameOperator": false,
-          "distanceMeters": 223,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Sagami",
-          "railwayAName": "相模線",
-          "railwayB": "odpt.Railway:Sotetsu.Main",
-          "railwayBName": "相鉄本線",
-          "sameOperator": false,
-          "distanceMeters": 310,
-          "fallbackMinutes": 7,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": []
-    },
-    {
       "place": "市ケ谷 ↔ 市ヶ谷",
       "totalPairs": 3,
       "curatedPairs": 0,
@@ -5319,6 +5267,55 @@
           "sources": [
             "connecting-station",
             "same-place-group"
+          ]
+        }
+      ],
+      "sameOperatorPairs": []
+    },
+    {
+      "place": "新宿西口 ↔ 新宿",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 3,
+      "railwayCount": 4,
+      "priorityScore": 7.5,
+      "crossOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:Keio.KeioNew",
+          "railwayAName": "京王新線",
+          "railwayB": "odpt.Railway:Toei.Oedo",
+          "railwayBName": "大江戸線",
+          "sameOperator": false,
+          "distanceMeters": null,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:Keio.Keio",
+          "railwayAName": "京王線",
+          "railwayB": "odpt.Railway:Toei.Oedo",
+          "railwayBName": "大江戸線",
+          "sameOperator": false,
+          "distanceMeters": null,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:Odakyu.Odawara",
+          "railwayAName": "小田原線",
+          "railwayB": "odpt.Railway:Toei.Oedo",
+          "railwayBName": "大江戸線",
+          "sameOperator": false,
+          "distanceMeters": 279,
+          "fallbackMinutes": 6,
+          "sources": [
+            "connecting-station"
           ]
         }
       ],
@@ -6488,48 +6485,6 @@
       "sameOperator": true,
       "distanceMeters": 0,
       "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "海老名",
-      "railwayA": "odpt.Railway:Odakyu.Odawara",
-      "railwayAName": "小田原線",
-      "railwayB": "odpt.Railway:Sotetsu.Main",
-      "railwayBName": "相鉄本線",
-      "sameOperator": false,
-      "distanceMeters": 96,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "海老名",
-      "railwayA": "odpt.Railway:JR-East.Sagami",
-      "railwayAName": "相模線",
-      "railwayB": "odpt.Railway:Odakyu.Odawara",
-      "railwayBName": "小田原線",
-      "sameOperator": false,
-      "distanceMeters": 223,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "海老名",
-      "railwayA": "odpt.Railway:JR-East.Sagami",
-      "railwayAName": "相模線",
-      "railwayB": "odpt.Railway:Sotetsu.Main",
-      "railwayBName": "相鉄本線",
-      "sameOperator": false,
-      "distanceMeters": 310,
-      "fallbackMinutes": 7,
       "sources": [
         "connecting-station",
         "same-place-group"
