@@ -1,0 +1,65 @@
+name: Fix preview route family selection
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-preview-family-selection.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch preview family selection
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p=Path('preview/transfer-guide/preview.js')
+          s=p.read_text()
+
+          marker='    function routeSignature(choice){return choice.timed.segments.map(function(s){return[s.railway,s.from,s.to].join("|");}).join(">");}\n'
+          insert='''    function routeSignature(choice){return choice.timed.segments.map(function(s){return[s.railway,s.from,s.to].join("|");}).join(">");}\n    function railwayOperatorKey(value){\n      var id=String(value||""),tail=id.indexOf(":")>=0?id.split(":").pop():id;\n      return tail.split(".")[0]||tail;\n    }\n    function routeFamilyKey(choice){\n      return collapseRailways(choice.timed.segments.map(function(segment){return segment.railway;})).join(">");\n    }\n    function routeCorridorKey(choice){\n      return collapseRailways(choice.timed.segments.map(function(segment){return railwayOperatorKey(segment.railway);})).join(">");\n    }\n'''
+          if marker not in s:
+              raise SystemExit('routeSignature marker not found')
+          s=s.replace(marker,insert,1)
+
+          marker2='''    function showInputError(fromResolved,toResolved){var msg=(fromResolved.ambiguous||toResolved.ambiguous)?"同名駅が複数あります。候補から選び直してください。":"候補にある駅名を選んでください。";resultsSection.innerHTML='<div class="route-empty-state"><h2>駅名を確認してください</h2><p>'+esc(msg)+'</p></div>';}\n'''
+          diversify='''    function diversifyChoices(choices){\n      var filtered=choices.filter(function(choice,index){\n        var family=routeFamilyKey(choice),timed=choice.timed;\n        return !choices.some(function(other,otherIndex){\n          if(index===otherIndex||routeFamilyKey(other)!==family)return false;\n          var candidate=other.timed;\n          var noWorse=candidate.departure>=timed.departure&&candidate.arrival<=timed.arrival&&candidate.transfers<=timed.transfers;\n          var strictlyBetter=candidate.departure>timed.departure||candidate.arrival<timed.arrival||candidate.transfers<timed.transfers;\n          return noWorse&&strictlyBetter;\n        });\n      });\n      var groups=[],byCorridor=new Map();\n      filtered.forEach(function(choice){\n        var key=routeCorridorKey(choice),group=byCorridor.get(key);\n        if(!group){group={key:key,items:[]};byCorridor.set(key,group);groups.push(group);}\n        group.items.push(choice);\n      });\n      var output=[],usedFamilies=new Set();\n      groups.forEach(function(group){\n        if(output.length>=12||!group.items.length)return;\n        var choice=group.items.shift();output.push(choice);usedFamilies.add(routeFamilyKey(choice));\n      });\n      while(output.length<12){\n        var added=false;\n        groups.forEach(function(group){\n          if(output.length>=12||!group.items.length)return;\n          var index=group.items.findIndex(function(choice){return !usedFamilies.has(routeFamilyKey(choice));});\n          if(index<0)return;\n          var choice=group.items.splice(index,1)[0];output.push(choice);usedFamilies.add(routeFamilyKey(choice));added=true;\n        });\n        if(!added)break;\n      }\n      var corridorCounts=new Map();\n      output.forEach(function(choice){var key=routeCorridorKey(choice);corridorCounts.set(key,(corridorCounts.get(key)||0)+1);});\n      while(output.length<12){\n        var bestGroup=null;\n        groups.forEach(function(group){\n          if(!group.items.length)return;\n          if(!bestGroup||(corridorCounts.get(group.key)||0)<(corridorCounts.get(bestGroup.key)||0))bestGroup=group;\n        });\n        if(!bestGroup)break;\n        output.push(bestGroup.items.shift());corridorCounts.set(bestGroup.key,(corridorCounts.get(bestGroup.key)||0)+1);\n      }\n      return output.slice(0,12);\n    }\n\n'''+marker2
+          if marker2 not in s:
+              raise SystemExit('showInputError marker not found')
+          s=s.replace(marker2,diversify,1)
+
+          old='choices=sortChoices(choices);renderChoices(fromResolved.group,toResolved.group,choices,service,date);'
+          new='choices=diversifyChoices(sortChoices(choices));renderChoices(fromResolved.group,toResolved.group,choices,service,date);'
+          if old not in s:
+              raise SystemExit('sort/render marker not found')
+          s=s.replace(old,new,1)
+          p.write_text(s)
+
+          idx=Path('preview/transfer-guide/index.html')
+          t=idx.read_text().replace('20260903-8','20260903-9')
+          idx.write_text(t)
+
+          test=Path('scripts/test_route_preview_smoke.js')
+          u=test.read_text()
+          needle="if(!previewSource.includes('attempt<3')) throw new Error('preview does not collect multiple departures per path');"
+          add=needle+"\nif(!previewSource.includes('diversifyChoices(sortChoices(choices))')) throw new Error('preview caps choices before diversity selection');\nif(!previewSource.includes('routeCorridorKey')) throw new Error('preview has no corridor-level diversity selection');"
+          if needle not in u:
+              raise SystemExit('smoke marker not found')
+          test.write_text(u.replace(needle,add,1))
+          PY
+      - name: Syntax and smoke tests
+        run: |
+          node --check preview/transfer-guide/preview.js
+          node scripts/test_route_preview_smoke.js
+      - name: Commit patch
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add preview/transfer-guide/preview.js preview/transfer-guide/index.html scripts/test_route_preview_smoke.js
+          git commit -m "Diversify route families before display cap"
+          git push
