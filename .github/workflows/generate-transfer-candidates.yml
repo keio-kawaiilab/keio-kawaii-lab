@@ -2,6 +2,7 @@ name: Generate transfer candidates
 
 on:
   workflow_dispatch:
+  pull_request:
   push:
     paths:
       - '.github/workflows/generate-transfer-candidates.yml'
@@ -25,7 +26,13 @@ jobs:
           node-version: '22'
       - name: Build transfer candidates
         run: node scripts/build-transfer-candidates.mjs
+      - name: Upload generated audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: transfer-candidates
+          path: data/transit/transfer-candidates.json
       - name: Commit generated data
+        if: github.event_name == 'push'
         run: |
           if git diff --quiet -- data/transit/transfer-candidates.json; then
             echo 'No transfer-candidate changes.'
