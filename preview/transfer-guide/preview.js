@@ -167,6 +167,16 @@
     function stationLabel(id){return model.displayStation(id)||String(id||"").split(".").pop();}
     function isEstimated(segment){return segment.timeBasis==="station-departure"||segment.timeBasis==="inferred-station-trip"||segment.timeBasis==="estimated-edge-duration";}
     function routeSignature(choice){return choice.timed.segments.map(function(s){return[s.railway,s.from,s.to].join("|");}).join(">");}
+    function railwayOperatorKey(value){
+      var id=String(value||""),tail=id.indexOf(":")>=0?id.split(":").pop():id;
+      return tail.split(".")[0]||tail;
+    }
+    function routeFamilyKey(choice){
+      return collapseRailways(choice.timed.segments.map(function(segment){return segment.railway;})).join(">");
+    }
+    function routeCorridorKey(choice){
+      return collapseRailways(choice.timed.segments.map(function(segment){return railwayOperatorKey(segment.railway);})).join(">");
+    }
 
     function renderLeg(segment,index,total){
       var color=safeColor(segment.color),label=esc(segment.label||"鉄道路線"),train=esc(trainLabel(segment)),from=esc(stationLabel(segment.from)),to=esc(stationLabel(segment.to));
@@ -198,6 +208,52 @@
       var seen=new Set();return choices.filter(function(choice){var key=routeSignature(choice)+"|"+choice.timed.departure+"|"+choice.timed.arrival;if(seen.has(key))return false;seen.add(key);return true;});
     }
 
+    function diversifyChoices(choices){
+      var filtered=choices.filter(function(choice,index){
+        var family=routeFamilyKey(choice),timed=choice.timed;
+        return !choices.some(function(other,otherIndex){
+          if(index===otherIndex||routeFamilyKey(other)!==family)return false;
+          var candidate=other.timed;
+          var noWorse=candidate.departure>=timed.departure&&candidate.arrival<=timed.arrival&&candidate.transfers<=timed.transfers;
+          var strictlyBetter=candidate.departure>timed.departure||candidate.arrival<timed.arrival||candidate.transfers<timed.transfers;
+          return noWorse&&strictlyBetter;
+        });
+      });
+      var groups=[],byCorridor=new Map();
+      filtered.forEach(function(choice){
+        var key=routeCorridorKey(choice),group=byCorridor.get(key);
+        if(!group){group={key:key,items:[]};byCorridor.set(key,group);groups.push(group);}
+        group.items.push(choice);
+      });
+      var output=[],usedFamilies=new Set();
+      groups.forEach(function(group){
+        if(output.length>=12||!group.items.length)return;
+        var choice=group.items.shift();output.push(choice);usedFamilies.add(routeFamilyKey(choice));
+      });
+      while(output.length<12){
+        var added=false;
+        groups.forEach(function(group){
+          if(output.length>=12||!group.items.length)return;
+          var index=group.items.findIndex(function(choice){return !usedFamilies.has(routeFamilyKey(choice));});
+          if(index<0)return;
+          var choice=group.items.splice(index,1)[0];output.push(choice);usedFamilies.add(routeFamilyKey(choice));added=true;
+        });
+        if(!added)break;
+      }
+      var corridorCounts=new Map();
+      output.forEach(function(choice){var key=routeCorridorKey(choice);corridorCounts.set(key,(corridorCounts.get(key)||0)+1);});
+      while(output.length<12){
+        var bestGroup=null;
+        groups.forEach(function(group){
+          if(!group.items.length)return;
+          if(!bestGroup||(corridorCounts.get(group.key)||0)<(corridorCounts.get(bestGroup.key)||0))bestGroup=group;
+        });
+        if(!bestGroup)break;
+        output.push(bestGroup.items.shift());corridorCounts.set(bestGroup.key,(corridorCounts.get(bestGroup.key)||0)+1);
+      }
+      return output.slice(0,12);
+    }
+
     function showInputError(fromResolved,toResolved){var msg=(fromResolved.ambiguous||toResolved.ambiguous)?"同名駅が複数あります。候補から選び直してください。":"候補にある駅名を選んでください。";resultsSection.innerHTML='<div class="route-empty-state"><h2>駅名を確認してください</h2><p>'+esc(msg)+'</p></div>';}
     function setSearching(active){submitBtn.disabled=active;submitBtn.innerHTML=active?'<span class="route-submit-icon">…</span><span>検索中</span>':'<span class="route-submit-icon">⌕</span><span>乗換を検索</span>';}
 
@@ -222,7 +278,7 @@
             cursor=nextStart;
           }
         });
-        choices=sortChoices(choices);renderChoices(fromResolved.group,toResolved.group,choices,service,date);saveHistory(fromGroupLabel(fromResolved.group),fromGroupLabel(toResolved.group));updateUrl();
+        choices=diversifyChoices(sortChoices(choices));renderChoices(fromResolved.group,toResolved.group,choices,service,date);saveHistory(fromGroupLabel(fromResolved.group),fromGroupLabel(toResolved.group));updateUrl();
       }).catch(function(error){console.error(error);resultsSection.innerHTML='<div class="route-empty-state"><h2>検索中にエラーが起きました</h2><p>ページを再読み込みしてもう一度試してください。</p></div>';}).finally(function(){setSearching(false);});
     }
 

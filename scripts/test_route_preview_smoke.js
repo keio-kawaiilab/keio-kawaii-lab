@@ -36,6 +36,8 @@ const indexSource=fs.readFileSync('preview/transfer-guide/index.html','utf8');
 if(!previewSource.includes('limit:24')) throw new Error('preview path limit is not 24');
 if(!previewSource.includes('choices.slice(0,12)')) throw new Error('preview display limit is not 12');
 if(!previewSource.includes('attempt<3')) throw new Error('preview does not collect multiple departures per path');
+if(!previewSource.includes('diversifyChoices(sortChoices(choices))')) throw new Error('preview caps choices before diversity selection');
+if(!previewSource.includes('routeCorridorKey')) throw new Error('preview has no corridor-level diversity selection');
 if(!indexSource.includes('route-diversity.js')) throw new Error('diversity search layer is not loaded by preview');
 if(!compareSource.includes('byFamily')||!compareSource.includes('同系統の別案')) throw new Error('comparison does not prioritize route families');
 
