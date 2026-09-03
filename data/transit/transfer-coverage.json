@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-03T13:40:37.263Z",
+  "generatedAt": "2026-09-03T13:41:08.739Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-03T13:40:21.337Z",
+  "rulesGeneratedAt": "2026-09-03T13:40:54.905Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 215,
-    "uncuratedPairs": 738,
+    "curatedPairs": 219,
+    "uncuratedPairs": 734,
     "blockedPairs": 7,
-    "curatedSourceRules": 215,
+    "curatedSourceRules": 219,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -290,16 +290,6 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 5,
-      "priorityScore": 10
-    },
-    {
-      "place": "高輪ゲートウェイ ↔ 泉岳寺",
-      "totalPairs": 4,
-      "curatedPairs": 0,
-      "uncuratedPairs": 4,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 4,
-      "railwayCount": 4,
       "priorityScore": 10
     },
     {
@@ -1004,6 +994,16 @@
     },
     {
       "place": "東村山",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 3
+    },
+    {
+      "place": "東武動物公園",
       "totalPairs": 3,
       "curatedPairs": 0,
       "uncuratedPairs": 3,
@@ -5244,67 +5244,6 @@
       ]
     },
     {
-      "place": "高輪ゲートウェイ ↔ 泉岳寺",
-      "totalPairs": 4,
-      "curatedPairs": 0,
-      "uncuratedPairs": 4,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 4,
-      "railwayCount": 4,
-      "priorityScore": 10,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:Keikyu.Main",
-          "railwayBName": "京急本線",
-          "sameOperator": false,
-          "distanceMeters": 318,
-          "fallbackMinutes": 7,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:Toei.Asakusa",
-          "railwayBName": "浅草線",
-          "sameOperator": false,
-          "distanceMeters": 375,
-          "fallbackMinutes": 8,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Yamanote",
-          "railwayAName": "山手線",
-          "railwayB": "odpt.Railway:Keikyu.Main",
-          "railwayBName": "京急本線",
-          "sameOperator": false,
-          "distanceMeters": 318,
-          "fallbackMinutes": 7,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Yamanote",
-          "railwayAName": "山手線",
-          "railwayB": "odpt.Railway:Toei.Asakusa",
-          "railwayBName": "浅草線",
-          "sameOperator": false,
-          "distanceMeters": 375,
-          "fallbackMinutes": 8,
-          "sources": [
-            "connecting-station"
-          ]
-        }
-      ],
-      "sameOperatorPairs": []
-    },
-    {
       "place": "品川",
       "totalPairs": 15,
       "curatedPairs": 8,
@@ -5408,6 +5347,58 @@
           ]
         }
       ]
+    },
+    {
+      "place": "海老名",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 3,
+      "railwayCount": 3,
+      "priorityScore": 7.5,
+      "crossOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:Odakyu.Odawara",
+          "railwayAName": "小田原線",
+          "railwayB": "odpt.Railway:Sotetsu.Main",
+          "railwayBName": "相鉄本線",
+          "sameOperator": false,
+          "distanceMeters": 96,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.Sagami",
+          "railwayAName": "相模線",
+          "railwayB": "odpt.Railway:Odakyu.Odawara",
+          "railwayBName": "小田原線",
+          "sameOperator": false,
+          "distanceMeters": 223,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.Sagami",
+          "railwayAName": "相模線",
+          "railwayB": "odpt.Railway:Sotetsu.Main",
+          "railwayBName": "相鉄本線",
+          "sameOperator": false,
+          "distanceMeters": 310,
+          "fallbackMinutes": 7,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ],
+      "sameOperatorPairs": []
     }
   ],
   "uncurated": [
@@ -7812,58 +7803,6 @@
       "sources": [
         "connecting-station",
         "same-place-group"
-      ]
-    },
-    {
-      "place": "高輪ゲートウェイ ↔ 泉岳寺",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:Keikyu.Main",
-      "railwayBName": "京急本線",
-      "sameOperator": false,
-      "distanceMeters": 318,
-      "fallbackMinutes": 7,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "高輪ゲートウェイ ↔ 泉岳寺",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:Toei.Asakusa",
-      "railwayBName": "浅草線",
-      "sameOperator": false,
-      "distanceMeters": 375,
-      "fallbackMinutes": 8,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "高輪ゲートウェイ ↔ 泉岳寺",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:Keikyu.Main",
-      "railwayBName": "京急本線",
-      "sameOperator": false,
-      "distanceMeters": 318,
-      "fallbackMinutes": 7,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "高輪ゲートウェイ ↔ 泉岳寺",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:Toei.Asakusa",
-      "railwayBName": "浅草線",
-      "sameOperator": false,
-      "distanceMeters": 375,
-      "fallbackMinutes": 8,
-      "sources": [
-        "connecting-station"
       ]
     },
     {
