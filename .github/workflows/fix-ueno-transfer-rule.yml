@@ -1,0 +1,49 @@
+name: Fix Ueno transfer rule
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-ueno-transfer-rule.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Fix Ueno Joban railway id
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const file = 'data/transit/transfer-rule-sources.json';
+          const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+          const row = data.rules.find(r => r.place === '上野' && r.railwayA === 'odpt.Railway:TokyoMetro.Ginza' && r.railwayB === 'odpt.Railway:JR-East.Joban');
+          if (!row) throw new Error('Target Ueno Joban rule not found');
+          row.railwayB = 'odpt.Railway:JR-East.JobanRapid';
+          row.railwayBName = '常磐線快速';
+          fs.writeFileSync(file, JSON.stringify(data, null, 2) + '\n');
+          NODE
+      - name: Rebuild transfer rules
+        run: node scripts/build-transfer-rules.mjs
+      - name: Validate generated JSON
+        run: |
+          node -e "JSON.parse(require('fs').readFileSync('data/transit/transfer-rule-sources.json','utf8')); JSON.parse(require('fs').readFileSync('data/transit/transfer-rules.json','utf8'));"
+      - name: Commit fix
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/transit/transfer-rule-sources.json data/transit/transfer-rules.json
+          if git diff --cached --quiet; then
+            echo 'No changes.'
+            exit 0
+          fi
+          git commit -m 'Fix Ueno Joban transfer rule'
+          git push
