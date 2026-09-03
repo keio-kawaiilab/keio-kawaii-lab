@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-03T13:41:08.739Z",
+  "generatedAt": "2026-09-03T13:43:38.043Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-03T13:40:54.905Z",
+  "rulesGeneratedAt": "2026-09-03T13:43:24.059Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 219,
-    "uncuratedPairs": 734,
+    "curatedPairs": 225,
+    "uncuratedPairs": 728,
     "blockedPairs": 7,
-    "curatedSourceRules": 219,
+    "curatedSourceRules": 225,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -164,16 +164,6 @@
     },
     {
       "place": "成田 ↔ 京成成田",
-      "totalPairs": 6,
-      "curatedPairs": 0,
-      "uncuratedPairs": 6,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 6,
-      "railwayCount": 5,
-      "priorityScore": 15
-    },
-    {
-      "place": "川崎 ↔ 京急川崎",
       "totalPairs": 6,
       "curatedPairs": 0,
       "uncuratedPairs": 6,
@@ -1004,6 +994,16 @@
     },
     {
       "place": "東武動物公園",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 3
+    },
+    {
+      "place": "八王子",
       "totalPairs": 3,
       "curatedPairs": 0,
       "uncuratedPairs": 3,
@@ -4051,91 +4051,6 @@
       "sameOperatorPairs": []
     },
     {
-      "place": "川崎 ↔ 京急川崎",
-      "totalPairs": 6,
-      "curatedPairs": 0,
-      "uncuratedPairs": 6,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 6,
-      "railwayCount": 5,
-      "priorityScore": 15,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:Keikyu.Main",
-          "railwayBName": "京急本線",
-          "sameOperator": false,
-          "distanceMeters": 374,
-          "fallbackMinutes": 7,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:Keikyu.Daishi",
-          "railwayBName": "大師線",
-          "sameOperator": false,
-          "distanceMeters": 374,
-          "fallbackMinutes": 7,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Tokaido",
-          "railwayAName": "東海道線",
-          "railwayB": "odpt.Railway:Keikyu.Main",
-          "railwayBName": "京急本線",
-          "sameOperator": false,
-          "distanceMeters": 374,
-          "fallbackMinutes": 7,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Tokaido",
-          "railwayAName": "東海道線",
-          "railwayB": "odpt.Railway:Keikyu.Daishi",
-          "railwayBName": "大師線",
-          "sameOperator": false,
-          "distanceMeters": 374,
-          "fallbackMinutes": 7,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Nambu",
-          "railwayAName": "南武線",
-          "railwayB": "odpt.Railway:Keikyu.Main",
-          "railwayBName": "京急本線",
-          "sameOperator": false,
-          "distanceMeters": 374,
-          "fallbackMinutes": 7,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Nambu",
-          "railwayAName": "南武線",
-          "railwayB": "odpt.Railway:Keikyu.Daishi",
-          "railwayBName": "大師線",
-          "sameOperator": false,
-          "distanceMeters": 374,
-          "fallbackMinutes": 7,
-          "sources": [
-            "connecting-station"
-          ]
-        }
-      ],
-      "sameOperatorPairs": []
-    },
-    {
       "place": "西日暮里",
       "totalPairs": 6,
       "curatedPairs": 0,
@@ -5395,6 +5310,55 @@
           "sources": [
             "connecting-station",
             "same-place-group"
+          ]
+        }
+      ],
+      "sameOperatorPairs": []
+    },
+    {
+      "place": "市ケ谷 ↔ 市ヶ谷",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 3,
+      "railwayCount": 4,
+      "priorityScore": 7.5,
+      "crossOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:Toei.Shinjuku",
+          "railwayAName": "新宿線",
+          "railwayB": "odpt.Railway:TokyoMetro.Namboku",
+          "railwayBName": "南北線",
+          "sameOperator": false,
+          "distanceMeters": 190,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:Toei.Shinjuku",
+          "railwayAName": "新宿線",
+          "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+          "railwayBName": "有楽町線",
+          "sameOperator": false,
+          "distanceMeters": 132,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+          "railwayAName": "中央・総武各駅停車",
+          "railwayB": "odpt.Railway:Toei.Shinjuku",
+          "railwayBName": "新宿線",
+          "sameOperator": false,
+          "distanceMeters": 209,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station"
           ]
         }
       ],
@@ -11290,84 +11254,6 @@
       "sources": [
         "connecting-station",
         "same-place-group"
-      ]
-    },
-    {
-      "place": "川崎 ↔ 京急川崎",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:Keikyu.Main",
-      "railwayBName": "京急本線",
-      "sameOperator": false,
-      "distanceMeters": 374,
-      "fallbackMinutes": 7,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "川崎 ↔ 京急川崎",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:Keikyu.Daishi",
-      "railwayBName": "大師線",
-      "sameOperator": false,
-      "distanceMeters": 374,
-      "fallbackMinutes": 7,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "川崎 ↔ 京急川崎",
-      "railwayA": "odpt.Railway:JR-East.Tokaido",
-      "railwayAName": "東海道線",
-      "railwayB": "odpt.Railway:Keikyu.Main",
-      "railwayBName": "京急本線",
-      "sameOperator": false,
-      "distanceMeters": 374,
-      "fallbackMinutes": 7,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "川崎 ↔ 京急川崎",
-      "railwayA": "odpt.Railway:JR-East.Tokaido",
-      "railwayAName": "東海道線",
-      "railwayB": "odpt.Railway:Keikyu.Daishi",
-      "railwayBName": "大師線",
-      "sameOperator": false,
-      "distanceMeters": 374,
-      "fallbackMinutes": 7,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "川崎 ↔ 京急川崎",
-      "railwayA": "odpt.Railway:JR-East.Nambu",
-      "railwayAName": "南武線",
-      "railwayB": "odpt.Railway:Keikyu.Main",
-      "railwayBName": "京急本線",
-      "sameOperator": false,
-      "distanceMeters": 374,
-      "fallbackMinutes": 7,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "川崎 ↔ 京急川崎",
-      "railwayA": "odpt.Railway:JR-East.Nambu",
-      "railwayAName": "南武線",
-      "railwayB": "odpt.Railway:Keikyu.Daishi",
-      "railwayBName": "大師線",
-      "sameOperator": false,
-      "distanceMeters": 374,
-      "fallbackMinutes": 7,
-      "sources": [
-        "connecting-station"
       ]
     },
     {
