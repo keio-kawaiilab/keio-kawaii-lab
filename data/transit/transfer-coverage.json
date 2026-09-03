@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-03T13:02:36.626Z",
+  "generatedAt": "2026-09-03T13:03:39.267Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-03T13:02:18.880Z",
+  "rulesGeneratedAt": "2026-09-03T13:03:24.956Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 153,
-    "uncuratedPairs": 800,
+    "curatedPairs": 160,
+    "uncuratedPairs": 793,
     "blockedPairs": 7,
-    "curatedSourceRules": 153,
+    "curatedSourceRules": 160,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -130,16 +130,6 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 7,
       "railwayCount": 8,
-      "priorityScore": 17.5
-    },
-    {
-      "place": "有楽町 ↔ 日比谷",
-      "totalPairs": 7,
-      "curatedPairs": 0,
-      "uncuratedPairs": 7,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 7,
-      "railwayCount": 6,
       "priorityScore": 17.5
     },
     {
@@ -1004,6 +994,16 @@
     },
     {
       "place": "京成津田沼",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 3
+    },
+    {
+      "place": "銀座",
       "totalPairs": 3,
       "curatedPairs": 0,
       "uncuratedPairs": 3,
@@ -3646,103 +3646,6 @@
       "sameOperatorPairs": []
     },
     {
-      "place": "有楽町 ↔ 日比谷",
-      "totalPairs": 7,
-      "curatedPairs": 0,
-      "uncuratedPairs": 7,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 7,
-      "railwayCount": 6,
-      "priorityScore": 17.5,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:Toei.Mita",
-          "railwayBName": "三田線",
-          "sameOperator": false,
-          "distanceMeters": 320,
-          "fallbackMinutes": 7,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
-          "railwayBName": "千代田線",
-          "sameOperator": false,
-          "distanceMeters": 424,
-          "fallbackMinutes": 8,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-          "railwayBName": "日比谷線",
-          "sameOperator": false,
-          "distanceMeters": 255,
-          "fallbackMinutes": 6,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Toei.Mita",
-          "railwayAName": "三田線",
-          "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
-          "railwayBName": "有楽町線",
-          "sameOperator": false,
-          "distanceMeters": 194,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Yamanote",
-          "railwayAName": "山手線",
-          "railwayB": "odpt.Railway:Toei.Mita",
-          "railwayBName": "三田線",
-          "sameOperator": false,
-          "distanceMeters": 320,
-          "fallbackMinutes": 7,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Yamanote",
-          "railwayAName": "山手線",
-          "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
-          "railwayBName": "千代田線",
-          "sameOperator": false,
-          "distanceMeters": 424,
-          "fallbackMinutes": 8,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Yamanote",
-          "railwayAName": "山手線",
-          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-          "railwayBName": "日比谷線",
-          "sameOperator": false,
-          "distanceMeters": 255,
-          "fallbackMinutes": 6,
-          "sources": [
-            "connecting-station"
-          ]
-        }
-      ],
-      "sameOperatorPairs": []
-    },
-    {
       "place": "大崎",
       "totalPairs": 10,
       "curatedPairs": 0,
@@ -5347,6 +5250,98 @@
           "railwayBName": "青梅線",
           "sameOperator": true,
           "distanceMeters": 28,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ]
+    },
+    {
+      "place": "飯田橋",
+      "totalPairs": 10,
+      "curatedPairs": 4,
+      "uncuratedPairs": 6,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 3,
+      "railwayCount": 5,
+      "priorityScore": 10.5,
+      "crossOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:Toei.Oedo",
+          "railwayAName": "大江戸線",
+          "railwayB": "odpt.Railway:TokyoMetro.Tozai",
+          "railwayBName": "東西線",
+          "sameOperator": false,
+          "distanceMeters": 207,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:Toei.Oedo",
+          "railwayAName": "大江戸線",
+          "railwayB": "odpt.Railway:TokyoMetro.Namboku",
+          "railwayBName": "南北線",
+          "sameOperator": false,
+          "distanceMeters": 210,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:Toei.Oedo",
+          "railwayAName": "大江戸線",
+          "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+          "railwayBName": "有楽町線",
+          "sameOperator": false,
+          "distanceMeters": 258,
+          "fallbackMinutes": 6,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:TokyoMetro.Tozai",
+          "railwayAName": "東西線",
+          "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+          "railwayBName": "有楽町線",
+          "sameOperator": true,
+          "distanceMeters": 299,
+          "fallbackMinutes": 6,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:TokyoMetro.Namboku",
+          "railwayAName": "南北線",
+          "railwayB": "odpt.Railway:TokyoMetro.Tozai",
+          "railwayBName": "東西線",
+          "sameOperator": true,
+          "distanceMeters": 254,
+          "fallbackMinutes": 6,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:TokyoMetro.Namboku",
+          "railwayAName": "南北線",
+          "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+          "railwayBName": "有楽町線",
+          "sameOperator": true,
+          "distanceMeters": 51,
           "fallbackMinutes": 5,
           "sources": [
             "connecting-station",
@@ -16026,97 +16021,6 @@
       "sources": [
         "connecting-station",
         "same-place-group"
-      ]
-    },
-    {
-      "place": "有楽町 ↔ 日比谷",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:Toei.Mita",
-      "railwayBName": "三田線",
-      "sameOperator": false,
-      "distanceMeters": 320,
-      "fallbackMinutes": 7,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "有楽町 ↔ 日比谷",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
-      "railwayBName": "千代田線",
-      "sameOperator": false,
-      "distanceMeters": 424,
-      "fallbackMinutes": 8,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "有楽町 ↔ 日比谷",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-      "railwayBName": "日比谷線",
-      "sameOperator": false,
-      "distanceMeters": 255,
-      "fallbackMinutes": 6,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "有楽町 ↔ 日比谷",
-      "railwayA": "odpt.Railway:Toei.Mita",
-      "railwayAName": "三田線",
-      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
-      "railwayBName": "有楽町線",
-      "sameOperator": false,
-      "distanceMeters": 194,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "有楽町 ↔ 日比谷",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:Toei.Mita",
-      "railwayBName": "三田線",
-      "sameOperator": false,
-      "distanceMeters": 320,
-      "fallbackMinutes": 7,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "有楽町 ↔ 日比谷",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
-      "railwayBName": "千代田線",
-      "sameOperator": false,
-      "distanceMeters": 424,
-      "fallbackMinutes": 8,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "有楽町 ↔ 日比谷",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-      "railwayBName": "日比谷線",
-      "sameOperator": false,
-      "distanceMeters": 255,
-      "fallbackMinutes": 6,
-      "sources": [
-        "connecting-station"
       ]
     },
     {
