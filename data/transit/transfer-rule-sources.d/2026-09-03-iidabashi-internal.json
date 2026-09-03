@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換",
+    "sourceType": "Jorudan standard transfer time",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {
+      "place": "飯田橋",
+      "railwayA": "odpt.Railway:TokyoMetro.Tozai",
+      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+      "railwayAName": "東西線",
+      "railwayBName": "有楽町線",
+      "minutes": 5,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/iidabashi/tokyo-metro_tozai_line-tokyo-metro_yurakucho_line.html"
+    },
+    {
+      "place": "飯田橋",
+      "railwayA": "odpt.Railway:TokyoMetro.Tozai",
+      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
+      "railwayAName": "東西線",
+      "railwayBName": "南北線",
+      "minutes": 5,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/iidabashi/tokyo-metro_tozai_line-tokyo-metro_nanboku_line.html"
+    },
+    {
+      "place": "飯田橋",
+      "railwayA": "odpt.Railway:TokyoMetro.Tozai",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "railwayAName": "東西線",
+      "railwayBName": "大江戸線",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/iidabashi/tokyo-metro_tozai_line-toei_subway-oedo_line.html"
+    },
+    {
+      "place": "飯田橋",
+      "railwayA": "odpt.Railway:TokyoMetro.Yurakucho",
+      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
+      "railwayAName": "有楽町線",
+      "railwayBName": "南北線",
+      "minutes": 3,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/iidabashi/tokyo-metro_yurakucho_line-tokyo-metro_nanboku_line.html"
+    },
+    {
+      "place": "飯田橋",
+      "railwayA": "odpt.Railway:TokyoMetro.Yurakucho",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "railwayAName": "有楽町線",
+      "railwayBName": "大江戸線",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/iidabashi/tokyo-metro_yurakucho_line-toei_subway-oedo_line.html"
+    },
+    {
+      "place": "飯田橋",
+      "railwayA": "odpt.Railway:TokyoMetro.Namboku",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "railwayAName": "南北線",
+      "railwayBName": "大江戸線",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/iidabashi/tokyo-metro_nanboku_line-toei_subway-oedo_line.html"
+    }
+  ]
+}
