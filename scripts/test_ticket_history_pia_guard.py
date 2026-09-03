@@ -22,6 +22,13 @@ class TicketHistoryPiaGuardTests(unittest.TestCase):
             "open",
         )
 
+    def test_sold_out_row_keeps_observed_deadline(self):
+        start, end = g.guarded_sale_window(
+            "一般発売 2026/9/14(月) SGC HALL ARIAKE 予定枚数終了 ～2026/9/9(水) 23:59 詳細へ"
+        )
+        self.assertIsNone(start)
+        self.assertEqual(end, "2026-09-09T23:59")
+
     def test_guard_row_is_not_removed_by_main_pia_replacement(self):
         row = g.normalize_guard_row({
             "group": "CUTIE STREET",
