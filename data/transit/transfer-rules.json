@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-03T23:50:49.105Z",
+  "generatedAt": "2026-09-03T23:52:16.718Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -44,7 +44,8 @@
     "transfer-rule-sources.d/2026-09-04-medium-stations-batch-d.json",
     "transfer-rule-sources.d/2026-09-04-medium-stations-batch-e.json",
     "transfer-rule-sources.d/2026-09-04-medium-stations-batch-f.json",
-    "transfer-rule-sources.d/2026-09-04-medium-stations-batch-g.json"
+    "transfer-rule-sources.d/2026-09-04-medium-stations-batch-g.json",
+    "transfer-rule-sources.d/2026-09-04-nishifunabashi.json"
   ],
   "description": "Curated station/railway-specific transfer times. Generated from transfer-rule source files and resolved against transfer-candidates.json.",
   "rules": [
@@ -4426,6 +4427,71 @@
       "bidirectional": true,
       "label": "標準・実測乗換（安全側）",
       "source": "https://www.jorudan.co.jp/norikae/route/%E6%B1%A0%E4%B8%8A_%E5%A4%9A%E6%91%A9%E5%B7%9D.html",
+      "sourceType": "Jorudan current route-planner transfer time",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "西船橋-中央・総武各駅停車-京葉線",
+      "fromStation": "odpt.Station:JR-East.ChuoSobuLocal.NishiFunabashi",
+      "toStation": "odpt.Station:JR-East.Keiyo.NishiFunabashi",
+      "fromRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "toRailway": "odpt.Railway:JR-East.Keiyo",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%B8%82%E5%B7%9D_%E6%B5%B7%E6%B5%9C%E5%B9%95%E5%BC%B5.html",
+      "sourceType": "Jorudan current route-planner transfer time",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "西船橋-中央・総武各駅停車-武蔵野線",
+      "fromStation": "odpt.Station:JR-East.ChuoSobuLocal.NishiFunabashi",
+      "toStation": "odpt.Station:JR-East.Musashino.NishiFunabashi",
+      "fromRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "toRailway": "odpt.Railway:JR-East.Musashino",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%B8%82%E5%B7%9D_%E6%96%B0%E6%9D%BE%E6%88%B8.html",
+      "sourceType": "Jorudan current route-planner transfer time",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "西船橋-中央・総武各駅停車-東西線",
+      "fromStation": "odpt.Station:JR-East.ChuoSobuLocal.NishiFunabashi",
+      "toStation": "odpt.Station:TokyoMetro.Tozai.NishiFunabashi",
+      "fromRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "toRailway": "odpt.Railway:TokyoMetro.Tozai",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%88%B9%E6%A9%8B_%E8%8C%85%E5%A0%B4%E7%94%BA.html",
+      "sourceType": "Jorudan current route-planner transfer time",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "西船橋-武蔵野線-東西線",
+      "fromStation": "odpt.Station:JR-East.Musashino.NishiFunabashi",
+      "toStation": "odpt.Station:TokyoMetro.Tozai.NishiFunabashi",
+      "fromRailway": "odpt.Railway:JR-East.Musashino",
+      "toRailway": "odpt.Railway:TokyoMetro.Tozai",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%96%B0%E6%9D%BE%E6%88%B8_%E8%8C%85%E5%A0%B4%E7%94%BA.html",
+      "sourceType": "Jorudan current route-planner transfer time",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "西船橋-京葉線-東西線",
+      "fromStation": "odpt.Station:JR-East.Keiyo.NishiFunabashi",
+      "toStation": "odpt.Station:TokyoMetro.Tozai.NishiFunabashi",
+      "fromRailway": "odpt.Railway:JR-East.Keiyo",
+      "toRailway": "odpt.Railway:TokyoMetro.Tozai",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%8C%85%E5%A0%B4%E7%94%BA_%E5%8D%97%E8%88%B9%E6%A9%8B.html",
       "sourceType": "Jorudan current route-planner transfer time",
       "verifiedAt": "2026-09-04"
     }
