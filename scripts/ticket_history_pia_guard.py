@@ -20,22 +20,26 @@ def stable_id(*parts: object) -> str:
     return hashlib.sha1(raw.encode("utf-8")).hexdigest()[:16]
 
 
+def _original_status(context: str) -> str | None:
+    if any(hint in context for hint in pia.ACTIVE_HINTS):
+        return "open"
+    if any(hint in context for hint in pia.UPCOMING_HINTS):
+        return "upcoming"
+    return None
+
+
 def guarded_status(context: str) -> str | None:
-    original = pia.availability_status_original(context) if hasattr(pia, "availability_status_original") else None
+    original = (
+        pia.availability_status_original(context)
+        if hasattr(pia, "availability_status_original")
+        else _original_status(context)
+    )
     if original:
         return original
     if "予定枚数終了" in context:
         return "sold_out"
     if any(hint in context for hint in pia.ENDED_HINTS):
         return "ended"
-    return None
-
-
-def _original_status(context: str) -> str | None:
-    if any(hint in context for hint in pia.ACTIVE_HINTS):
-        return "open"
-    if any(hint in context for hint in pia.UPCOMING_HINTS):
-        return "upcoming"
     return None
 
 
