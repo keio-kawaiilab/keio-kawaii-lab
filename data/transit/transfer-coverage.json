@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-03T23:51:07.764Z",
+  "generatedAt": "2026-09-03T23:52:27.977Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-03T23:50:49.105Z",
+  "rulesGeneratedAt": "2026-09-03T23:52:16.718Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 337,
-    "uncuratedPairs": 616,
+    "curatedPairs": 342,
+    "uncuratedPairs": 611,
     "blockedPairs": 7,
-    "curatedSourceRules": 337,
+    "curatedSourceRules": 342,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -184,16 +184,6 @@
     },
     {
       "place": "戸塚",
-      "totalPairs": 6,
-      "curatedPairs": 0,
-      "uncuratedPairs": 6,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 3,
-      "railwayCount": 4,
-      "priorityScore": 10.5
-    },
-    {
-      "place": "西船橋",
       "totalPairs": 6,
       "curatedPairs": 0,
       "uncuratedPairs": 6,
@@ -1004,6 +994,16 @@
     },
     {
       "place": "雑司が谷 ↔ 鬼子母神前",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 2,
+      "priorityScore": 2.5
+    },
+    {
+      "place": "三ノ輪 ↔ 三ノ輪橋",
       "totalPairs": 1,
       "curatedPairs": 0,
       "uncuratedPairs": 1,
@@ -4225,98 +4225,6 @@
       ]
     },
     {
-      "place": "西船橋",
-      "totalPairs": 6,
-      "curatedPairs": 0,
-      "uncuratedPairs": 6,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 3,
-      "railwayCount": 4,
-      "priorityScore": 10.5,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.Keiyo",
-          "railwayAName": "京葉線",
-          "railwayB": "odpt.Railway:TokyoMetro.Tozai",
-          "railwayBName": "東西線",
-          "sameOperator": false,
-          "distanceMeters": 68,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-          "railwayAName": "中央・総武各駅停車",
-          "railwayB": "odpt.Railway:TokyoMetro.Tozai",
-          "railwayBName": "東西線",
-          "sameOperator": false,
-          "distanceMeters": 62,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Musashino",
-          "railwayAName": "武蔵野線",
-          "railwayB": "odpt.Railway:TokyoMetro.Tozai",
-          "railwayBName": "東西線",
-          "sameOperator": false,
-          "distanceMeters": 68,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.Keiyo",
-          "railwayAName": "京葉線",
-          "railwayB": "odpt.Railway:JR-East.Musashino",
-          "railwayBName": "武蔵野線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-          "railwayAName": "中央・総武各駅停車",
-          "railwayB": "odpt.Railway:JR-East.Keiyo",
-          "railwayBName": "京葉線",
-          "sameOperator": true,
-          "distanceMeters": 101,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-          "railwayAName": "中央・総武各駅停車",
-          "railwayB": "odpt.Railway:JR-East.Musashino",
-          "railwayBName": "武蔵野線",
-          "sameOperator": true,
-          "distanceMeters": 101,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
       "place": "日吉",
       "totalPairs": 6,
       "curatedPairs": 0,
@@ -5226,6 +5134,58 @@
           "sameOperator": false,
           "distanceMeters": 274,
           "fallbackMinutes": 6,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ],
+      "sameOperatorPairs": []
+    },
+    {
+      "place": "目黒",
+      "totalPairs": 6,
+      "curatedPairs": 3,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 3,
+      "railwayCount": 4,
+      "priorityScore": 7.5,
+      "crossOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:Toei.Mita",
+          "railwayAName": "三田線",
+          "railwayB": "odpt.Railway:TokyoMetro.Namboku",
+          "railwayBName": "南北線",
+          "sameOperator": false,
+          "distanceMeters": 129,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:Toei.Mita",
+          "railwayAName": "三田線",
+          "railwayB": "odpt.Railway:Tokyu.Meguro",
+          "railwayBName": "目黒線",
+          "sameOperator": false,
+          "distanceMeters": 74,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:TokyoMetro.Namboku",
+          "railwayAName": "南北線",
+          "railwayB": "odpt.Railway:Tokyu.Meguro",
+          "railwayBName": "目黒線",
+          "sameOperator": false,
+          "distanceMeters": 57,
+          "fallbackMinutes": 5,
           "sources": [
             "connecting-station",
             "same-place-group"
@@ -9260,80 +9220,10 @@
       "place": "西船橋",
       "railwayA": "odpt.Railway:JR-East.Keiyo",
       "railwayAName": "京葉線",
-      "railwayB": "odpt.Railway:TokyoMetro.Tozai",
-      "railwayBName": "東西線",
-      "sameOperator": false,
-      "distanceMeters": 68,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "西船橋",
-      "railwayA": "odpt.Railway:JR-East.Keiyo",
-      "railwayAName": "京葉線",
       "railwayB": "odpt.Railway:JR-East.Musashino",
       "railwayBName": "武蔵野線",
       "sameOperator": true,
       "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "西船橋",
-      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-      "railwayAName": "中央・総武各駅停車",
-      "railwayB": "odpt.Railway:JR-East.Keiyo",
-      "railwayBName": "京葉線",
-      "sameOperator": true,
-      "distanceMeters": 101,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "西船橋",
-      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-      "railwayAName": "中央・総武各駅停車",
-      "railwayB": "odpt.Railway:TokyoMetro.Tozai",
-      "railwayBName": "東西線",
-      "sameOperator": false,
-      "distanceMeters": 62,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "西船橋",
-      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-      "railwayAName": "中央・総武各駅停車",
-      "railwayB": "odpt.Railway:JR-East.Musashino",
-      "railwayBName": "武蔵野線",
-      "sameOperator": true,
-      "distanceMeters": 101,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "西船橋",
-      "railwayA": "odpt.Railway:JR-East.Musashino",
-      "railwayAName": "武蔵野線",
-      "railwayB": "odpt.Railway:TokyoMetro.Tozai",
-      "railwayBName": "東西線",
-      "sameOperator": false,
-      "distanceMeters": 68,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
