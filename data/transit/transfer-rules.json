@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-03T13:31:50.468Z",
+  "generatedAt": "2026-09-03T13:38:13.551Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -11,6 +11,7 @@
     "transfer-rule-sources.d/2026-09-03-ikebukuro-core.json",
     "transfer-rule-sources.d/2026-09-03-jiyugaoka.json",
     "transfer-rule-sources.d/2026-09-03-kanda-metro.json",
+    "transfer-rule-sources.d/2026-09-03-korakuen-kasuga.json",
     "transfer-rule-sources.d/2026-09-03-major-hubs-2.json",
     "transfer-rule-sources.d/2026-09-03-major-hubs-3.json",
     "transfer-rule-sources.d/2026-09-03-major-hubs-4.json",
@@ -994,6 +995,58 @@
       "label": "標準乗換",
       "source": "https://mb.jorudan.co.jp/os/noritxt/kanda/chuo_line-tokyo-metro_ginza_line.html",
       "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "後楽園 ↔ 春日-丸ノ内線-三田線",
+      "fromStation": "odpt.Station:TokyoMetro.Marunouchi.Korakuen",
+      "toStation": "odpt.Station:Toei.Mita.Kasuga",
+      "fromRailway": "odpt.Railway:TokyoMetro.Marunouchi",
+      "toRailway": "odpt.Railway:Toei.Mita",
+      "minutes": 8,
+      "bidirectional": true,
+      "label": "実測乗換（安全側）",
+      "source": "https://wadattsu261.com/content/kasuga-korakuen-toeimita-metromarunouchiline-transfer-information/",
+      "sourceType": "current measured transfer guide",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "後楽園 ↔ 春日-丸ノ内線-大江戸線",
+      "fromStation": "odpt.Station:TokyoMetro.Marunouchi.Korakuen",
+      "toStation": "odpt.Station:Toei.Oedo.Kasuga",
+      "fromRailway": "odpt.Railway:TokyoMetro.Marunouchi",
+      "toRailway": "odpt.Railway:Toei.Oedo",
+      "minutes": 6,
+      "bidirectional": true,
+      "label": "実測乗換（安全側）",
+      "source": "https://wadattsu261.com/content/kasuga-korakuen-toeioedo-metromarunouchiline-transfer-information/",
+      "sourceType": "current measured transfer guide",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "後楽園 ↔ 春日-南北線-三田線",
+      "fromStation": "odpt.Station:TokyoMetro.Namboku.Korakuen",
+      "toStation": "odpt.Station:Toei.Mita.Kasuga",
+      "fromRailway": "odpt.Railway:TokyoMetro.Namboku",
+      "toRailway": "odpt.Railway:Toei.Mita",
+      "minutes": 6,
+      "bidirectional": true,
+      "label": "実測乗換（安全側）",
+      "source": "https://wadattsu261.com/content/kasuga-korakuen-toeimita-metronambokuline-transfer-information/",
+      "sourceType": "current measured transfer guide",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "後楽園 ↔ 春日-南北線-大江戸線",
+      "fromStation": "odpt.Station:TokyoMetro.Namboku.Korakuen",
+      "toStation": "odpt.Station:Toei.Oedo.Kasuga",
+      "fromRailway": "odpt.Railway:TokyoMetro.Namboku",
+      "toRailway": "odpt.Railway:Toei.Oedo",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "実測乗換（安全側）",
+      "source": "https://wadattsu261.com/content/kasuga-korakuen-toeioedo-metronambokuline-transfer-information/",
+      "sourceType": "current measured transfer guide",
       "verifiedAt": "2026-09-03"
     },
     {
