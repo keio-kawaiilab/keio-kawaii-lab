@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "実測乗換（安全側上限）",
+    "sourceType": "Measured transfer guide; conservative upper bound",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {
+      "place": "五反田",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:Toei.Asakusa",
+      "railwayAName": "山手線",
+      "railwayBName": "浅草線",
+      "minutes": 5,
+      "source": "https://tren.hatenablog.com/entry/jy23-a05"
+    },
+    {
+      "place": "五反田",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:Tokyu.Ikegami",
+      "railwayAName": "山手線",
+      "railwayBName": "池上線",
+      "minutes": 4,
+      "source": "https://tren.hatenablog.com/entry/jy23-ike01"
+    },
+    {
+      "place": "五反田",
+      "railwayA": "odpt.Railway:Toei.Asakusa",
+      "railwayB": "odpt.Railway:Tokyu.Ikegami",
+      "railwayAName": "浅草線",
+      "railwayBName": "池上線",
+      "minutes": 7,
+      "source": "https://tren.hatenablog.com/entry/a05-ik01"
+    }
+  ]
+}
