@@ -1,9 +1,10 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-03T13:12:25.236Z",
+  "generatedAt": "2026-09-03T13:14:40.659Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
+    "transfer-rule-sources.d/2026-09-03-gotanda.json",
     "transfer-rule-sources.d/2026-09-03-hamamatsucho-daimon.json",
     "transfer-rule-sources.d/2026-09-03-iidabashi-internal.json",
     "transfer-rule-sources.d/2026-09-03-ikebukuro-core.json",
@@ -647,6 +648,45 @@
       "label": "標準乗換",
       "source": "https://mb.jorudan.co.jp/os/noritxt/nippori/yamanote_line-joban_line.html",
       "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "五反田-山手線-浅草線",
+      "fromStation": "odpt.Station:JR-East.Yamanote.Gotanda",
+      "toStation": "odpt.Station:Toei.Asakusa.Gotanda",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:Toei.Asakusa",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "実測乗換（安全側上限）",
+      "source": "https://tren.hatenablog.com/entry/jy23-a05",
+      "sourceType": "Measured transfer guide; conservative upper bound",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "五反田-山手線-池上線",
+      "fromStation": "odpt.Station:JR-East.Yamanote.Gotanda",
+      "toStation": "odpt.Station:Tokyu.Ikegami.Gotanda",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:Tokyu.Ikegami",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "実測乗換（安全側上限）",
+      "source": "https://tren.hatenablog.com/entry/jy23-ike01",
+      "sourceType": "Measured transfer guide; conservative upper bound",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "五反田-浅草線-池上線",
+      "fromStation": "odpt.Station:Toei.Asakusa.Gotanda",
+      "toStation": "odpt.Station:Tokyu.Ikegami.Gotanda",
+      "fromRailway": "odpt.Railway:Toei.Asakusa",
+      "toRailway": "odpt.Railway:Tokyu.Ikegami",
+      "minutes": 7,
+      "bidirectional": true,
+      "label": "実測乗換（安全側上限）",
+      "source": "https://tren.hatenablog.com/entry/a05-ik01",
+      "sourceType": "Measured transfer guide; conservative upper bound",
       "verifiedAt": "2026-09-03"
     },
     {
