@@ -1,11 +1,12 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-03T13:19:32.998Z",
+  "generatedAt": "2026-09-03T13:21:50.424Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
     "transfer-rule-sources.d/2026-09-03-gotanda.json",
     "transfer-rule-sources.d/2026-09-03-hamamatsucho-daimon.json",
+    "transfer-rule-sources.d/2026-09-03-hatanodai.json",
     "transfer-rule-sources.d/2026-09-03-iidabashi-internal.json",
     "transfer-rule-sources.d/2026-09-03-ikebukuro-core.json",
     "transfer-rule-sources.d/2026-09-03-jiyugaoka.json",
@@ -742,6 +743,19 @@
       "label": "標準乗換",
       "source": "https://mb.jorudan.co.jp/os/noritxt/hamamatsucho/keihintohoku_line-toei_subway-oedo_line.html",
       "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "旗の台-池上線-大井町線",
+      "fromStation": "odpt.Station:Tokyu.Ikegami.Hatanodai",
+      "toStation": "odpt.Station:Tokyu.Oimachi.Hatanodai",
+      "fromRailway": "odpt.Railway:Tokyu.Ikegami",
+      "toRailway": "odpt.Railway:Tokyu.Oimachi",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "実測乗換（安全側上限）",
+      "source": "https://wadattsu261.com/content/hatanodai-tokyuikegami-oimachiline-transfer-information/",
+      "sourceType": "Measured transfer guide; conservative upper bound",
       "verifiedAt": "2026-09-03"
     },
     {
