@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準・実測乗換（安全側）",
+    "sourceType": "current route-planner walk / current transfer guide",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {
+      "place": "海老名",
+      "railwayA": "odpt.Railway:Odakyu.Odawara",
+      "railwayB": "odpt.Railway:Sotetsu.Main",
+      "railwayAName": "小田原線",
+      "railwayBName": "相鉄本線",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/ebina-odakyu-sotetsuline-transfer-information/"
+    },
+    {
+      "place": "海老名",
+      "railwayA": "odpt.Railway:JR-East.Sagami",
+      "railwayB": "odpt.Railway:Odakyu.Odawara",
+      "railwayAName": "相模線",
+      "railwayBName": "小田原線",
+      "minutes": 4,
+      "source": "https://transit.yahoo.co.jp/search/result/%E6%B5%B7%E8%80%81%E5%90%8D%28%E7%9B%B8%E6%A8%A1%E7%B7%9A%29-%E6%9C%AC%E5%8E%9A%E6%9C%A8"
+    },
+    {
+      "place": "海老名",
+      "railwayA": "odpt.Railway:JR-East.Sagami",
+      "railwayB": "odpt.Railway:Sotetsu.Main",
+      "railwayAName": "相模線",
+      "railwayBName": "相鉄本線",
+      "minutes": 4,
+      "source": "https://transit.yahoo.co.jp/search/result/%E6%B5%B7%E8%80%81%E5%90%8D%28%E7%9B%B8%E6%A8%A1%E7%B7%9A%29-%E6%A8%AA%E6%B5%9C"
+    }
+  ]
+}
