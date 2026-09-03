@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換",
+    "sourceType": "Jorudan standard transfer time",
+    "verifiedAt": "2026-09-03"
+  },
+  "rules": [
+    {
+      "place": "東京",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:JR-East.Tokaido",
+      "railwayAName": "山手線",
+      "railwayBName": "東海道線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/yamanote_line-tokaido_line_jr_east.html"
+    },
+    {
+      "place": "東京",
+      "railwayA": "odpt.Railway:JR-East.Yokosuka",
+      "railwayB": "odpt.Railway:JR-East.Tokaido",
+      "railwayAName": "横須賀線",
+      "railwayBName": "東海道線",
+      "minutes": 8,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/yokosuka_line-tokaido_line_jr_east.html"
+    },
+    {
+      "place": "東京",
+      "railwayA": "odpt.Railway:JR-East.SobuRapid",
+      "railwayB": "odpt.Railway:JR-East.Tokaido",
+      "railwayAName": "総武快速線",
+      "railwayBName": "東海道線",
+      "minutes": 8,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/yokosuka_line-tokaido_line_jr_east.html"
+    },
+    {
+      "place": "渋谷",
+      "railwayA": "odpt.Railway:Keio.Inokashira",
+      "railwayB": "odpt.Railway:Tokyu.Toyoko",
+      "railwayAName": "井の頭線",
+      "railwayBName": "東横線",
+      "minutes": 9,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shibuya/keio-inokashira_line-tokyu-toyoko_line.html"
+    }
+  ]
+}
