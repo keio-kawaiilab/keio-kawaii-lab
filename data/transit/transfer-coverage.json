@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-03T12:56:14.315Z",
+  "generatedAt": "2026-09-03T12:58:09.464Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-03T12:55:56.942Z",
+  "rulesGeneratedAt": "2026-09-03T12:57:55.073Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 128,
-    "uncuratedPairs": 825,
+    "curatedPairs": 141,
+    "uncuratedPairs": 812,
     "blockedPairs": 7,
-    "curatedSourceRules": 128,
+    "curatedSourceRules": 141,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -21,16 +21,6 @@
       "crossOperatorUncuratedPairs": 30,
       "railwayCount": 9,
       "priorityScore": 81
-    },
-    {
-      "place": "渋谷",
-      "totalPairs": 36,
-      "curatedPairs": 14,
-      "uncuratedPairs": 22,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 16,
-      "railwayCount": 9,
-      "priorityScore": 46
     },
     {
       "place": "東京",
@@ -151,6 +141,16 @@
       "crossOperatorUncuratedPairs": 7,
       "railwayCount": 6,
       "priorityScore": 17.5
+    },
+    {
+      "place": "渋谷",
+      "totalPairs": 36,
+      "curatedPairs": 27,
+      "uncuratedPairs": 9,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 5,
+      "railwayCount": 9,
+      "priorityScore": 16.5
     },
     {
       "place": "大崎",
@@ -1488,306 +1488,6 @@
           "railwayBName": "横須賀線",
           "sameOperator": true,
           "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "渋谷",
-      "totalPairs": 36,
-      "curatedPairs": 14,
-      "uncuratedPairs": 22,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 16,
-      "railwayCount": 9,
-      "priorityScore": 46,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Keio.Inokashira",
-          "railwayAName": "井の頭線",
-          "railwayB": "odpt.Railway:TokyoMetro.Ginza",
-          "railwayBName": "銀座線",
-          "sameOperator": false,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Keio.Inokashira",
-          "railwayAName": "井の頭線",
-          "railwayB": "odpt.Railway:Tokyu.DenEnToshi",
-          "railwayBName": "田園都市線",
-          "sameOperator": false,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Keio.Inokashira",
-          "railwayAName": "井の頭線",
-          "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
-          "railwayBName": "半蔵門線",
-          "sameOperator": false,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Keio.Inokashira",
-          "railwayAName": "井の頭線",
-          "railwayB": "odpt.Railway:TokyoMetro.Fukutoshin",
-          "railwayBName": "副都心線",
-          "sameOperator": false,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Ginza",
-          "railwayAName": "銀座線",
-          "railwayB": "odpt.Railway:Tokyu.DenEnToshi",
-          "railwayBName": "田園都市線",
-          "sameOperator": false,
-          "distanceMeters": 151,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
-          "railwayAName": "埼京線・川越線",
-          "railwayB": "odpt.Railway:Keio.Inokashira",
-          "railwayBName": "井の頭線",
-          "sameOperator": false,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
-          "railwayAName": "埼京線・川越線",
-          "railwayB": "odpt.Railway:TokyoMetro.Ginza",
-          "railwayBName": "銀座線",
-          "sameOperator": false,
-          "distanceMeters": 134,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
-          "railwayAName": "埼京線・川越線",
-          "railwayB": "odpt.Railway:Tokyu.DenEnToshi",
-          "railwayBName": "田園都市線",
-          "sameOperator": false,
-          "distanceMeters": 144,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
-          "railwayAName": "埼京線・川越線",
-          "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
-          "railwayBName": "半蔵門線",
-          "sameOperator": false,
-          "distanceMeters": 158,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
-          "railwayAName": "湘南新宿ライン",
-          "railwayB": "odpt.Railway:Keio.Inokashira",
-          "railwayBName": "井の頭線",
-          "sameOperator": false,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
-          "railwayAName": "湘南新宿ライン",
-          "railwayB": "odpt.Railway:TokyoMetro.Ginza",
-          "railwayBName": "銀座線",
-          "sameOperator": false,
-          "distanceMeters": 134,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
-          "railwayAName": "湘南新宿ライン",
-          "railwayB": "odpt.Railway:Tokyu.DenEnToshi",
-          "railwayBName": "田園都市線",
-          "sameOperator": false,
-          "distanceMeters": 144,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
-          "railwayAName": "湘南新宿ライン",
-          "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
-          "railwayBName": "半蔵門線",
-          "sameOperator": false,
-          "distanceMeters": 158,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Hanzomon",
-          "railwayAName": "半蔵門線",
-          "railwayB": "odpt.Railway:Tokyu.DenEnToshi",
-          "railwayBName": "田園都市線",
-          "sameOperator": false,
-          "distanceMeters": 17,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
-          "railwayAName": "副都心線",
-          "railwayB": "odpt.Railway:Tokyu.DenEnToshi",
-          "railwayBName": "田園都市線",
-          "sameOperator": false,
-          "distanceMeters": 142,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
-          "railwayAName": "副都心線",
-          "railwayB": "odpt.Railway:Tokyu.Toyoko",
-          "railwayBName": "東横線",
-          "sameOperator": false,
-          "distanceMeters": 142,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Ginza",
-          "railwayAName": "銀座線",
-          "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
-          "railwayBName": "半蔵門線",
-          "sameOperator": true,
-          "distanceMeters": 153,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
-          "railwayAName": "埼京線・川越線",
-          "railwayB": "odpt.Railway:JR-East.Yamanote",
-          "railwayBName": "山手線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
-          "railwayAName": "埼京線・川越線",
-          "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
-          "railwayBName": "湘南新宿ライン",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
-          "railwayAName": "湘南新宿ライン",
-          "railwayB": "odpt.Railway:JR-East.Yamanote",
-          "railwayBName": "山手線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
-          "railwayAName": "副都心線",
-          "railwayB": "odpt.Railway:TokyoMetro.Ginza",
-          "railwayBName": "銀座線",
-          "sameOperator": true,
-          "distanceMeters": 9,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
-          "railwayAName": "副都心線",
-          "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
-          "railwayBName": "半蔵門線",
-          "sameOperator": true,
-          "distanceMeters": 144,
           "fallbackMinutes": 5,
           "sources": [
             "connecting-station",
@@ -4041,6 +3741,137 @@
         }
       ],
       "sameOperatorPairs": []
+    },
+    {
+      "place": "渋谷",
+      "totalPairs": 36,
+      "curatedPairs": 27,
+      "uncuratedPairs": 9,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 5,
+      "railwayCount": 9,
+      "priorityScore": 16.5,
+      "crossOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+          "railwayAName": "埼京線・川越線",
+          "railwayB": "odpt.Railway:Keio.Inokashira",
+          "railwayBName": "井の頭線",
+          "sameOperator": false,
+          "distanceMeters": null,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+          "railwayAName": "湘南新宿ライン",
+          "railwayB": "odpt.Railway:Keio.Inokashira",
+          "railwayBName": "井の頭線",
+          "sameOperator": false,
+          "distanceMeters": null,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:TokyoMetro.Hanzomon",
+          "railwayAName": "半蔵門線",
+          "railwayB": "odpt.Railway:Tokyu.DenEnToshi",
+          "railwayBName": "田園都市線",
+          "sameOperator": false,
+          "distanceMeters": 17,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
+          "railwayAName": "副都心線",
+          "railwayB": "odpt.Railway:Tokyu.DenEnToshi",
+          "railwayBName": "田園都市線",
+          "sameOperator": false,
+          "distanceMeters": 142,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
+          "railwayAName": "副都心線",
+          "railwayB": "odpt.Railway:Tokyu.Toyoko",
+          "railwayBName": "東横線",
+          "sameOperator": false,
+          "distanceMeters": 142,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+          "railwayAName": "埼京線・川越線",
+          "railwayB": "odpt.Railway:JR-East.Yamanote",
+          "railwayBName": "山手線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+          "railwayAName": "埼京線・川越線",
+          "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
+          "railwayBName": "湘南新宿ライン",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+          "railwayAName": "湘南新宿ライン",
+          "railwayB": "odpt.Railway:JR-East.Yamanote",
+          "railwayBName": "山手線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
+          "railwayAName": "副都心線",
+          "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
+          "railwayBName": "半蔵門線",
+          "sameOperator": true,
+          "distanceMeters": 144,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ]
     },
     {
       "place": "大崎",
@@ -8938,110 +8769,12 @@
     },
     {
       "place": "渋谷",
-      "railwayA": "odpt.Railway:Keio.Inokashira",
-      "railwayAName": "井の頭線",
-      "railwayB": "odpt.Railway:TokyoMetro.Ginza",
-      "railwayBName": "銀座線",
-      "sameOperator": false,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "渋谷",
-      "railwayA": "odpt.Railway:Keio.Inokashira",
-      "railwayAName": "井の頭線",
-      "railwayB": "odpt.Railway:Tokyu.DenEnToshi",
-      "railwayBName": "田園都市線",
-      "sameOperator": false,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "渋谷",
-      "railwayA": "odpt.Railway:Keio.Inokashira",
-      "railwayAName": "井の頭線",
-      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
-      "railwayBName": "半蔵門線",
-      "sameOperator": false,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "渋谷",
-      "railwayA": "odpt.Railway:Keio.Inokashira",
-      "railwayAName": "井の頭線",
-      "railwayB": "odpt.Railway:TokyoMetro.Fukutoshin",
-      "railwayBName": "副都心線",
-      "sameOperator": false,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "渋谷",
-      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
-      "railwayAName": "銀座線",
-      "railwayB": "odpt.Railway:Tokyu.DenEnToshi",
-      "railwayBName": "田園都市線",
-      "sameOperator": false,
-      "distanceMeters": 151,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "渋谷",
-      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
-      "railwayAName": "銀座線",
-      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
-      "railwayBName": "半蔵門線",
-      "sameOperator": true,
-      "distanceMeters": 153,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "渋谷",
       "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
       "railwayAName": "埼京線・川越線",
       "railwayB": "odpt.Railway:Keio.Inokashira",
       "railwayBName": "井の頭線",
       "sameOperator": false,
       "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "渋谷",
-      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
-      "railwayAName": "埼京線・川越線",
-      "railwayB": "odpt.Railway:TokyoMetro.Ginza",
-      "railwayBName": "銀座線",
-      "sameOperator": false,
-      "distanceMeters": 134,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
@@ -9078,54 +8811,12 @@
     },
     {
       "place": "渋谷",
-      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
-      "railwayAName": "埼京線・川越線",
-      "railwayB": "odpt.Railway:Tokyu.DenEnToshi",
-      "railwayBName": "田園都市線",
-      "sameOperator": false,
-      "distanceMeters": 144,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "渋谷",
-      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
-      "railwayAName": "埼京線・川越線",
-      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
-      "railwayBName": "半蔵門線",
-      "sameOperator": false,
-      "distanceMeters": 158,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "渋谷",
       "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
       "railwayAName": "湘南新宿ライン",
       "railwayB": "odpt.Railway:Keio.Inokashira",
       "railwayBName": "井の頭線",
       "sameOperator": false,
       "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "渋谷",
-      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
-      "railwayAName": "湘南新宿ライン",
-      "railwayB": "odpt.Railway:TokyoMetro.Ginza",
-      "railwayBName": "銀座線",
-      "sameOperator": false,
-      "distanceMeters": 134,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
@@ -9148,54 +8839,12 @@
     },
     {
       "place": "渋谷",
-      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
-      "railwayAName": "湘南新宿ライン",
-      "railwayB": "odpt.Railway:Tokyu.DenEnToshi",
-      "railwayBName": "田園都市線",
-      "sameOperator": false,
-      "distanceMeters": 144,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "渋谷",
-      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
-      "railwayAName": "湘南新宿ライン",
-      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
-      "railwayBName": "半蔵門線",
-      "sameOperator": false,
-      "distanceMeters": 158,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "渋谷",
       "railwayA": "odpt.Railway:TokyoMetro.Hanzomon",
       "railwayAName": "半蔵門線",
       "railwayB": "odpt.Railway:Tokyu.DenEnToshi",
       "railwayBName": "田園都市線",
       "sameOperator": false,
       "distanceMeters": 17,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "渋谷",
-      "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
-      "railwayAName": "副都心線",
-      "railwayB": "odpt.Railway:TokyoMetro.Ginza",
-      "railwayBName": "銀座線",
-      "sameOperator": true,
-      "distanceMeters": 9,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
