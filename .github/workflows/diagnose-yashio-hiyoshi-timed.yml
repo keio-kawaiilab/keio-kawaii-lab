@@ -1,0 +1,54 @@
+name: Diagnose Yashio Hiyoshi timed diversity
+
+on:
+  push:
+    paths:
+      - '.github/workflows/diagnose-yashio-hiyoshi-timed.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Diagnose timed families
+        run: |
+          node <<'NODE'
+          const fs=require('fs');
+          const path=require('path');
+          const Core=require('./route-core.js');
+          global.RoutePlannerCore=Core;
+          require('./preview/transfer-guide/route-diversity.js');
+          const manifest=JSON.parse(fs.readFileSync('data/transit/manifest.json','utf8'));
+          const entities=[],indices=new Map(),allowed=[];
+          for(const [slug,info] of Object.entries(manifest.operators||{})){
+            if(!info||info.status!=='ok') continue;
+            const base=path.join('data','transit',slug),ep=path.join(base,'entities.json'),ip=path.join(base,'timetable-index.json');
+            if(fs.existsSync(ep)) entities.push(JSON.parse(fs.readFileSync(ep,'utf8')));
+            if(fs.existsSync(ip)){
+              const idx=JSON.parse(fs.readFileSync(ip,'utf8'));
+              for(const [railway,row] of Object.entries(idx.lines||{})) if(row&&row.file){indices.set(railway,{base,row});allowed.push(railway);}
+            }
+          }
+          const model=Core.createModel(entities);
+          const a=model.resolveInput('八潮').group,b=model.resolveInput('日吉').group;
+          const paths=model.candidatePaths(a,b,{allowedRailways:allowed,limit:24});
+          function load(r){const e=indices.get(r);if(!e)return null;return JSON.parse(fs.readFileSync(path.join(e.base,e.row.file),'utf8'));}
+          function fam(t){const ids=[];for(const s of t.segments){if(s.railway&&ids[ids.length-1]!==s.railway)ids.push(s.railway);}return ids.join('>');}
+          function label(t){return t.segments.map(s=>s.label||s.railway).join(' → ');}
+          const start=16*60+20,service='weekday',surv=[];
+          paths.forEach((p,i)=>{
+            const tables={};for(const s of model.segmentsFrom(p)) if(!(s.railway in tables)) tables[s.railway]=load(s.railway);
+            const t=model.timedItinerary(p,tables,start,service,5);
+            const raw=model.segmentsFrom(p).map(s=>s.label||s.railway).join(' → ');
+            if(t){surv.push({i,t});console.log(`SURVIVE path${i+1} ${t.departure}->${t.arrival} xfer=${t.transfers} ${label(t)}`)}
+            else console.log(`DROP path${i+1} ${raw}`);
+          });
+          const fsig=new Set(surv.map(x=>fam(x.t)));
+          console.log(`SUMMARY paths=${paths.length} timed=${surv.length} timedFamilies=${fsig.size}`);
+          NODE
