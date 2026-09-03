@@ -157,7 +157,7 @@
     }
 
     function bestTimedItinerary(path,fromGroup,toGroup,timetables,earliest,service){
-      var normal=model.timedItinerary(path,timetables,earliest,service,5);
+      var normal=model.timedItinerary(path,timetables,earliest,service,5,window.RouteTransferRules&&window.RouteTransferRules.resolve);
       var direct=networkTimedItinerary(path,fromGroup,toGroup,timetables,earliest,service);
       if(!normal)return direct;if(!direct)return normal;
       if(direct.arrival<normal.arrival)return direct;if(direct.arrival===normal.arrival&&direct.transfers<normal.transfers)return direct;if(direct.arrival===normal.arrival&&direct.transfers===normal.transfers&&direct.departure>normal.departure)return direct;return normal;
@@ -178,11 +178,17 @@
       return collapseRailways(choice.timed.segments.map(function(segment){return railwayOperatorKey(segment.railway);})).join(">");
     }
 
-    function renderLeg(segment,index,total){
+    function renderLeg(segment,index,total,nextSegment){
       var color=safeColor(segment.color),label=esc(segment.label||"鉄道路線"),train=esc(trainLabel(segment)),from=esc(stationLabel(segment.from)),to=esc(stationLabel(segment.to));
       var detail=[];if(train)detail.push("<strong>"+train+"</strong>");if(segment.stops)detail.push(segment.stops+"駅");if(segment.networkDirect)detail.push("直通運転");if(isEstimated(segment))detail.push("到着時刻は目安");
       var html='<div class="route-leg"><div class="leg-clock"><span>発</span>'+formatTime(segment.departure)+'<span style="margin-top:42px">着</span>'+formatTime(segment.arrival)+'</div><div class="leg-rail" style="--route-color:'+color+'"></div><div class="leg-main"><h3>'+from+' → '+to+'</h3><div class="leg-line"><span class="line-dot" style="--route-color:'+color+'"></span><span>'+label+'</span></div><div class="leg-detail">'+detail.map(function(d){return'<span>'+d+'</span>';}).join("")+'</div></div></div>';
-      if(index<total-1&&!segment.throughFromPrevious)html+='<div class="transfer-row">↳ 乗換'+(segment.transferMinutes?"・目安 "+segment.transferMinutes+"分":"")+'</div>';
+      if(index<total-1&&nextSegment&&!nextSegment.throughFromPrevious){
+        var transferText="";
+        if(nextSegment.transferSamePlatform)transferText="・対面乗換";
+        else if(Number.isFinite(Number(nextSegment.transferMinutes)))transferText="・目安 "+Number(nextSegment.transferMinutes)+"分";
+        if(nextSegment.transferRuleLabel)transferText+=' <small>'+esc(nextSegment.transferRuleLabel)+'</small>';
+        html+='<div class="transfer-row">↳ 乗換'+transferText+'</div>';
+      }
       return html;
     }
 
@@ -194,7 +200,7 @@
         var timed=choice.timed,arrivalLabel=timed.estimatedArrival?"着目安":"着";
         var meta='<span>'+timed.duration+'分</span><span>乗換 '+timed.transfers+'回</span>'+(index===0?'<span class="best-pill">おすすめ</span>':'');
         var warning=timed.estimatedArrival?'<div class="result-warning">この経路には駅時刻表から算出した到着目安が含まれます。</div>':'';
-        return'<article class="result-card '+(index===0?'is-best':'')+'"><div class="result-head"><div class="result-rank">'+(index+1)+'</div><div class="result-time"><strong>'+formatTime(timed.departure)+'<span>→</span>'+formatTime(timed.arrival)+'</strong><small>'+arrivalLabel+' / '+(timed.networkDirect?'直通列車を優先':'予定時刻表ベース')+'</small></div><div class="result-meta">'+meta+'</div></div><div class="route-legs">'+timed.segments.map(function(segment,i){return renderLeg(segment,i,timed.segments.length);}).join("")+'</div>'+warning+'</article>';
+        return'<article class="result-card '+(index===0?'is-best':'')+'"><div class="result-head"><div class="result-rank">'+(index+1)+'</div><div class="result-time"><strong>'+formatTime(timed.departure)+'<span>→</span>'+formatTime(timed.arrival)+'</strong><small>'+arrivalLabel+' / '+(timed.networkDirect?'直通列車を優先':'予定時刻表ベース')+'</small></div><div class="result-meta">'+meta+'</div></div><div class="route-legs">'+timed.segments.map(function(segment,i){return renderLeg(segment,i,timed.segments.length,timed.segments[i+1]||null);}).join("")+'</div>'+warning+'</article>';
       }).join("");
       resultsSection.innerHTML=header+'<div class="result-list">'+cards+'</div>';
     }

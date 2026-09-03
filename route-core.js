@@ -408,7 +408,7 @@
       });
       return best;
     }
-    function timedItinerary(path,timetablesByRailway,departureMinutes,service,transferMinutes){
+    function timedItinerary(path,timetablesByRailway,departureMinutes,service,transferMinutes,transferResolver){
       var segments=segmentsFrom(path),current=Number(departureMinutes),buffer=Number(transferMinutes==null?5:transferMinutes),timed=[];
       if(!Number.isFinite(current)||!segments.length)return null;
       for(var i=0;i<segments.length;i++){
@@ -418,10 +418,24 @@
         var previous=i>0?timed[i-1]:null;
         var sameCompany=previous&&sameOperator(railwayById.get(previous.railway),railwayById.get(segment.railway));
         var throughCandidate=Boolean(sameCompany&&previous.destination&&fromNodes.indexOf(previous.destination)<0);
-        var interchangeBuffer=buffer;
+        var interchangeBuffer=buffer,transferRule=null;
         if(previous){
           var interchangeMeters=distanceMeters(stationById.get(previous.to),stationById.get(segment.from));
           if(interchangeMeters!==null)interchangeBuffer=Math.max(buffer,Math.min(15,Math.ceil(interchangeMeters/75)+2));
+          if(typeof transferResolver==="function"){
+            var resolvedTransfer=transferResolver({
+              fromStationId:previous.to,toStationId:segment.from,
+              fromStationName:stationName(stationById.get(previous.to)),toStationName:stationName(stationById.get(segment.from)),
+              fromRailway:previous.railway,toRailway:segment.railway,
+              fromRailwayName:railwayName(railwayById.get(previous.railway)||{"owl:sameAs":previous.railway}),
+              toRailwayName:railwayName(railwayById.get(segment.railway)||{"owl:sameAs":segment.railway}),
+              fallbackMinutes:interchangeBuffer
+            });
+            if(resolvedTransfer&&Number.isFinite(Number(resolvedTransfer.minutes))){
+              interchangeBuffer=Math.max(0,Number(resolvedTransfer.minutes));
+              transferRule=resolvedTransfer;
+            }
+          }
         }
         var earliest=current+(i>0&&!throughCandidate?interchangeBuffer:0);
         var trip=table&&table.timeBasis==="station-departure-only"?stationDepartureTrip(table,fromNodes,toNodes,earliest,service):timetableTrip(table,fromNodes,toNodes,earliest,service);
@@ -435,7 +449,14 @@
           }
         }
         if(!trip||!Number.isFinite(trip.arrival))return null;
-        if(i>0&&!trip.throughFromPrevious)trip.transferMinutes=interchangeBuffer;
+        if(i>0&&!trip.throughFromPrevious){
+          trip.transferMinutes=interchangeBuffer;
+          if(transferRule){
+            trip.transferRule=String(transferRule.id||"");
+            trip.transferRuleLabel=String(transferRule.label||"");
+            trip.transferSamePlatform=Boolean(transferRule.samePlatform);
+          }
+        }
         timed.push(Object.assign({},segment,trip));current=trip.arrival;
       }
       return{segments:timed,departure:timed[0].departure,arrival:timed[timed.length-1].arrival,duration:timed[timed.length-1].arrival-timed[0].departure,transfers:timed.slice(1).filter(function(segment){return!segment.throughFromPrevious;}).length,estimatedArrival:timed.some(function(segment){return segment.timeBasis==="station-departure"||segment.timeBasis==="inferred-station-trip"||segment.timeBasis==="estimated-edge-duration";})};
