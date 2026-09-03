@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-03T13:22:10.090Z",
+  "generatedAt": "2026-09-03T13:22:55.051Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-03T13:21:50.424Z",
+  "rulesGeneratedAt": "2026-09-03T13:22:33.879Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 192,
-    "uncuratedPairs": 761,
+    "curatedPairs": 194,
+    "uncuratedPairs": 759,
     "blockedPairs": 7,
-    "curatedSourceRules": 192,
+    "curatedSourceRules": 194,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -843,16 +843,6 @@
       "priorityScore": 5
     },
     {
-      "place": "武蔵溝ノ口 ↔ 溝の口",
-      "totalPairs": 2,
-      "curatedPairs": 0,
-      "uncuratedPairs": 2,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 2,
-      "railwayCount": 3,
-      "priorityScore": 5
-    },
-    {
       "place": "水天宮前 ↔ 人形町",
       "totalPairs": 2,
       "curatedPairs": 0,
@@ -1004,6 +994,16 @@
     },
     {
       "place": "西大井",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 3
+    },
+    {
+      "place": "川崎",
       "totalPairs": 3,
       "curatedPairs": 0,
       "uncuratedPairs": 3,
@@ -14961,32 +14961,6 @@
       "sources": [
         "connecting-station",
         "same-place-group"
-      ]
-    },
-    {
-      "place": "武蔵溝ノ口 ↔ 溝の口",
-      "railwayA": "odpt.Railway:JR-East.Nambu",
-      "railwayAName": "南武線",
-      "railwayB": "odpt.Railway:Tokyu.Oimachi",
-      "railwayBName": "大井町線",
-      "sameOperator": false,
-      "distanceMeters": 144,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "武蔵溝ノ口 ↔ 溝の口",
-      "railwayA": "odpt.Railway:JR-East.Nambu",
-      "railwayAName": "南武線",
-      "railwayB": "odpt.Railway:Tokyu.DenEnToshi",
-      "railwayBName": "田園都市線",
-      "sameOperator": false,
-      "distanceMeters": 144,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station"
       ]
     },
     {
