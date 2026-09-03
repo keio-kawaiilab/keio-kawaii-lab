@@ -1,4 +1,4 @@
-name: Fix Ueno transfer rule
+name: Fix JobanRapid transfer rules
 
 on:
   push:
@@ -19,16 +19,26 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Fix Ueno Joban railway id
+      - name: Fix JobanRapid railway ids
         run: |
           node <<'NODE'
           const fs = require('fs');
           const file = 'data/transit/transfer-rule-sources.json';
           const data = JSON.parse(fs.readFileSync(file, 'utf8'));
-          const row = data.rules.find(r => r.place === '上野' && r.railwayA === 'odpt.Railway:TokyoMetro.Ginza' && r.railwayB === 'odpt.Railway:JR-East.Joban');
-          if (!row) throw new Error('Target Ueno Joban rule not found');
-          row.railwayB = 'odpt.Railway:JR-East.JobanRapid';
-          row.railwayBName = '常磐線快速';
+          let count = 0;
+          for (const row of data.rules) {
+            if ((row.place === '上野' || row.place === '日暮里') && row.railwayB === 'odpt.Railway:JR-East.Joban') {
+              row.railwayB = 'odpt.Railway:JR-East.JobanRapid';
+              row.railwayBName = '常磐線快速';
+              count++;
+            }
+            if ((row.place === '上野' || row.place === '日暮里') && row.railwayA === 'odpt.Railway:JR-East.Joban') {
+              row.railwayA = 'odpt.Railway:JR-East.JobanRapid';
+              row.railwayAName = '常磐線快速';
+              count++;
+            }
+          }
+          if (count < 2) throw new Error(`Expected at least 2 Joban rules to fix, got ${count}`);
           fs.writeFileSync(file, JSON.stringify(data, null, 2) + '\n');
           NODE
       - name: Rebuild transfer rules
@@ -45,5 +55,5 @@ jobs:
             echo 'No changes.'
             exit 0
           fi
-          git commit -m 'Fix Ueno Joban transfer rule'
+          git commit -m 'Fix JobanRapid transfer rule ids'
           git push
