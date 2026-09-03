@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - 'data/transit/transfer-rule-sources.json'
+      - 'data/transit/transfer-rule-sources.d/*.json'
       - 'scripts/build-transfer-rules.mjs'
       - '.github/workflows/generate-transfer-rules.yml'
   workflow_run:
