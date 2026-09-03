@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-03T13:43:38.043Z",
+  "generatedAt": "2026-09-03T13:46:34.315Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-03T13:43:24.059Z",
+  "rulesGeneratedAt": "2026-09-03T13:46:18.393Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 225,
-    "uncuratedPairs": 728,
+    "curatedPairs": 231,
+    "uncuratedPairs": 722,
     "blockedPairs": 7,
-    "curatedSourceRules": 225,
+    "curatedSourceRules": 231,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -171,16 +171,6 @@
       "crossOperatorUncuratedPairs": 6,
       "railwayCount": 5,
       "priorityScore": 15
-    },
-    {
-      "place": "西日暮里",
-      "totalPairs": 6,
-      "curatedPairs": 0,
-      "uncuratedPairs": 6,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 5,
-      "railwayCount": 4,
-      "priorityScore": 13.5
     },
     {
       "place": "新宿 ↔ 西武新宿",
@@ -1004,6 +994,16 @@
     },
     {
       "place": "八王子",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 3
+    },
+    {
+      "place": "表参道",
       "totalPairs": 3,
       "curatedPairs": 0,
       "uncuratedPairs": 3,
@@ -4051,98 +4051,6 @@
       "sameOperatorPairs": []
     },
     {
-      "place": "西日暮里",
-      "totalPairs": 6,
-      "curatedPairs": 0,
-      "uncuratedPairs": 6,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 5,
-      "railwayCount": 4,
-      "priorityScore": 13.5,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
-          "railwayBName": "千代田線",
-          "sameOperator": false,
-          "distanceMeters": 32,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:Toei.NipporiToneri",
-          "railwayBName": "日暮里・舎人ライナー",
-          "sameOperator": false,
-          "distanceMeters": 223,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Yamanote",
-          "railwayAName": "山手線",
-          "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
-          "railwayBName": "千代田線",
-          "sameOperator": false,
-          "distanceMeters": 32,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Yamanote",
-          "railwayAName": "山手線",
-          "railwayB": "odpt.Railway:Toei.NipporiToneri",
-          "railwayBName": "日暮里・舎人ライナー",
-          "sameOperator": false,
-          "distanceMeters": 223,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Toei.NipporiToneri",
-          "railwayAName": "日暮里・舎人ライナー",
-          "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
-          "railwayBName": "千代田線",
-          "sameOperator": false,
-          "distanceMeters": 192,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:JR-East.Yamanote",
-          "railwayBName": "山手線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
       "place": "新宿 ↔ 西武新宿",
       "totalPairs": 7,
       "curatedPairs": 2,
@@ -5359,6 +5267,58 @@
           "fallbackMinutes": 5,
           "sources": [
             "connecting-station"
+          ]
+        }
+      ],
+      "sameOperatorPairs": []
+    },
+    {
+      "place": "湘南台",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 3,
+      "railwayCount": 3,
+      "priorityScore": 7.5,
+      "crossOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:Sotetsu.Izumino",
+          "railwayAName": "いずみ野線",
+          "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
+          "railwayBName": "ブルーライン",
+          "sameOperator": false,
+          "distanceMeters": 49,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:Odakyu.Enoshima",
+          "railwayAName": "江ノ島線",
+          "railwayB": "odpt.Railway:Sotetsu.Izumino",
+          "railwayBName": "いずみ野線",
+          "sameOperator": false,
+          "distanceMeters": 20,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:Odakyu.Enoshima",
+          "railwayAName": "江ノ島線",
+          "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
+          "railwayBName": "ブルーライン",
+          "sameOperator": false,
+          "distanceMeters": 29,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
           ]
         }
       ],
@@ -10536,90 +10496,6 @@
       "railwayBName": "相鉄新横浜線",
       "sameOperator": true,
       "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "西日暮里",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:JR-East.Yamanote",
-      "railwayBName": "山手線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "西日暮里",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
-      "railwayBName": "千代田線",
-      "sameOperator": false,
-      "distanceMeters": 32,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "西日暮里",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:Toei.NipporiToneri",
-      "railwayBName": "日暮里・舎人ライナー",
-      "sameOperator": false,
-      "distanceMeters": 223,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "西日暮里",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
-      "railwayBName": "千代田線",
-      "sameOperator": false,
-      "distanceMeters": 32,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "西日暮里",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:Toei.NipporiToneri",
-      "railwayBName": "日暮里・舎人ライナー",
-      "sameOperator": false,
-      "distanceMeters": 223,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "西日暮里",
-      "railwayA": "odpt.Railway:Toei.NipporiToneri",
-      "railwayAName": "日暮里・舎人ライナー",
-      "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
-      "railwayBName": "千代田線",
-      "sameOperator": false,
-      "distanceMeters": 192,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
