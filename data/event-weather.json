@@ -1,88 +1,12 @@
 {
-  "date": "2026-09-03",
+  "date": "2026-09-04",
   "horizonDays": 7,
-  "generatedAt": "2026-09-03T21:59+09:00",
+  "generatedAt": "2026-09-04T03:34+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
-    {
-      "date": "2026-09-03",
-      "venue": "神奈川県 よこすか芸術劇場（大劇場）",
-      "venueKey": "よこすか芸術劇場大劇場",
-      "eventIds": [
-        "024676b8e98a3faf",
-        "87777f0367a4e907",
-        "b689a37336790777"
-      ],
-      "areaCode": "140010",
-      "areaName": "東部",
-      "precision": "mesh5km",
-      "label": "雨",
-      "max": null,
-      "min": null,
-      "pop": "50",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-09-03T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "25〜29℃",
-      "coordinates": {
-        "lat": 35.281178,
-        "lon": 139.662613
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "雨",
-          "validAt": "2026-09-03T21:00+09:00",
-          "temp": 26
-        },
-        {
-          "time": "24:00",
-          "label": "くもり",
-          "validAt": "2026-09-04T00:00+09:00",
-          "temp": 25
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "17:30",
-          "rain": false,
-          "validAt": "2026-09-03T17:30+09:00"
-        },
-        {
-          "time": "18:30",
-          "rain": false,
-          "validAt": "2026-09-03T18:30+09:00"
-        },
-        {
-          "time": "19:30",
-          "rain": false,
-          "validAt": "2026-09-03T19:30+09:00"
-        }
-      ]
-    },
-    {
-      "date": "2026-09-03",
-      "venue": "福岡県 北九州メッセ",
-      "venueKey": "北九州メッセ",
-      "eventIds": [
-        "923b8a17644fcc6f"
-      ],
-      "areaCode": "400010",
-      "areaName": "福岡地方",
-      "precision": "area",
-      "label": "雨 所により 雷 を伴う",
-      "max": null,
-      "min": null,
-      "pop": "50",
-      "popLabel": "当日最大",
-      "issuedAt": "2026-09-03T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
     {
       "date": "2026-09-04",
       "venue": "東京都 KAWAII MONSTER LAND -HARAJUKU-",
@@ -168,6 +92,13 @@
           "label": "雨",
           "validAt": "2026-09-05T00:00+09:00",
           "temp": 22
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-09-04T18:00+09:00"
         }
       ]
     },
@@ -336,19 +267,29 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 19,
+    "occurrencesInRange": 17,
     "uniqueVenueDates": 13,
-    "weatherEntries": 12,
-    "meshEntries": 2,
-    "failures": 1,
-    "meshTimelineEntries": 2,
-    "meshExactTempSlots": 9,
+    "weatherEntries": 10,
+    "meshEntries": 1,
+    "failures": 3,
+    "meshTimelineEntries": 1,
+    "meshExactTempSlots": 7,
     "hourlyRainEntries": 1
   },
   "failures": [
     {
       "date": "2026-09-06",
       "venue": "青森・青い海公園・アスパム",
+      "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-09-11",
+      "venue": "東京ガーデンシアター（東京都江東区有明2-1-6）",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-09-11",
+      "venue": "神戸ハーバーランド スペースシアター",
       "reason": "都道府県を解決できません"
     }
   ]
