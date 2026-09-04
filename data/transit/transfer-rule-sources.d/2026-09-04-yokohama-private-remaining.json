@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換（方向差は安全側）",
+    "sourceType": "current transfer guide",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:Keikyu.Main",
+      "railwayB": "odpt.Railway:Tokyu.Toyoko",
+      "railwayAName": "京急本線",
+      "railwayBName": "東横線",
+      "minutes": 3,
+      "source": "https://eki-kara-access.yokohama/norikae-tizu-touyoko/"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:Keikyu.Main",
+      "railwayB": "manual.Railway:YokohamaMinatomirai.Minatomirai",
+      "railwayAName": "京急本線",
+      "railwayBName": "みなとみらい線",
+      "minutes": 3,
+      "source": "https://eki-kara-access.yokohama/norikae-tizu-touyoko/"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:Tokyu.Toyoko",
+      "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
+      "railwayAName": "東横線",
+      "railwayBName": "ブルーライン",
+      "minutes": 5,
+      "source": "https://eki-kara-access.yokohama/norikae-tizu-blueline/"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "manual.Railway:YokohamaMinatomirai.Minatomirai",
+      "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
+      "railwayAName": "みなとみらい線",
+      "railwayBName": "ブルーライン",
+      "minutes": 5,
+      "source": "https://eki-kara-access.yokohama/norikae-tizu-blueline/"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:Tokyu.Toyoko",
+      "railwayB": "odpt.Railway:Sotetsu.Main",
+      "railwayAName": "東横線",
+      "railwayBName": "相鉄本線",
+      "minutes": 3,
+      "source": "https://eki-kara-access.yokohama/norikae-tizu-touyoko/"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "manual.Railway:YokohamaMinatomirai.Minatomirai",
+      "railwayB": "odpt.Railway:Sotetsu.Main",
+      "railwayAName": "みなとみらい線",
+      "railwayBName": "相鉄本線",
+      "minutes": 3,
+      "source": "https://eki-kara-access.yokohama/norikae-tizu-touyoko/"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:YokohamaMunicipal.Blue",
+      "railwayB": "odpt.Railway:Sotetsu.Main",
+      "railwayAName": "ブルーライン",
+      "railwayBName": "相鉄本線",
+      "minutes": 1,
+      "source": "https://eki-kara-access.yokohama/norikae-tizu-blueline/"
+    }
+  ]
+}
