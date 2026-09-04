@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T09:59:10.749Z",
+  "generatedAt": "2026-09-04T09:59:55.350Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -56,6 +56,7 @@
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-8b.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-9c.json",
     "transfer-rule-sources.d/2026-09-04-final-exact-3.json",
+    "transfer-rule-sources.d/2026-09-04-final-layout-6.json",
     "transfer-rule-sources.d/2026-09-04-haijima-crossop.json",
     "transfer-rule-sources.d/2026-09-04-hibiya-yurakucho.json",
     "transfer-rule-sources.d/2026-09-04-higashimurayama-hibiya-6.json",
@@ -127,7 +128,7 @@
     "transfer-rule-sources.d/2026-09-04-yokohama-private-remaining.json"
   ],
   "description": "Station/railway-specific transfer times. Explicit curated rules are preferred; any remaining unblocked candidate pair receives a conservative fallbackMinutes rule until an external standard time is added.",
-  "fallbackCandidatePairs": 6,
+  "fallbackCandidatePairs": 0,
   "rules": [
     {
       "id": "東京-山手線-丸ノ内線",
@@ -4616,6 +4617,84 @@
       "label": "標準乗換",
       "source": "https://mb.jorudan.co.jp/os/noritxt/tameikesanno/tokyo-metro_ginza_line-tokyo-metro_nanboku_line.html",
       "sourceType": "ジョルダン標準乗換時間3分",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "松岸-成田線-総武本線",
+      "fromStation": "odpt.Station:JR-East.Narita.Matsugishi",
+      "toStation": "odpt.Station:JR-East.Sobu.Matsugishi",
+      "fromRailway": "odpt.Railway:JR-East.Narita",
+      "toRailway": "odpt.Railway:JR-East.Sobu",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "標準乗換（構内図・現行案内ベース／安全側）",
+      "source": "https://timetables.jreast.co.jp/timetable/list1436.html",
+      "sourceType": "JR East current timetable identifies Matsugishi as the Sobu Main/Narita Line junction and combines both lines toward Choshi; station is a compact 2-platform/3-track junction; conservative 3-minute minimum when an actual train change is required",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "銚子-成田線-総武本線",
+      "fromStation": "odpt.Station:JR-East.Narita.Choshi",
+      "toStation": "odpt.Station:JR-East.Sobu.Choshi",
+      "fromRailway": "odpt.Railway:JR-East.Narita",
+      "toRailway": "odpt.Railway:JR-East.Sobu",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "標準乗換（構内図・現行案内ベース／安全側）",
+      "source": "https://www.jreast.co.jp/estation/stations/993.html",
+      "sourceType": "JR East station layout plus current platform usage: Sobu and Narita services share the compact 1-3 platform group, with a footbridge required for some assignments; conservative 3-minute minimum",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "豊島園-豊島線-大江戸線",
+      "fromStation": "odpt.Station:Seibu.Toshima.Toshimaen",
+      "toStation": "odpt.Station:Toei.Oedo.Toshimaen",
+      "fromRailway": "odpt.Railway:Seibu.Toshima",
+      "toRailway": "odpt.Railway:Toei.Oedo",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "標準乗換（構内図・現行案内ベース／安全側）",
+      "source": "https://map.yahoo.co.jp/v3/place/U0pjAujcH-U",
+      "sourceType": "current map guidance places Toei Toshimaen about 2 minutes on foot from the Seibu exit; 5 minutes retained as conservative platform-to-platform transfer including gates and vertical circulation",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "成田空港-京成本線-成田スカイアクセス線",
+      "fromStation": "odpt.Station:Keisei.NaritaSkyAccess.NaritaAirportTerminal1",
+      "toStation": "odpt.Station:Keisei.NaritaSkyAccess.NaritaAirportTerminal1",
+      "fromRailway": "odpt.Railway:Keisei.Main",
+      "toRailway": "odpt.Railway:Keisei.NaritaSkyAccess",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "標準乗換（構内図・現行案内ベース／安全側）",
+      "source": "https://www.keisei.co.jp/keisei/tetudou/stationmap/pdf/jp/145.pdf",
+      "sourceType": "official Keisei Narita Airport station map; Main Line and Narita Sky Access use dedicated platform/concourse zones separated by an intermediate gate; conservative 5-minute minimum",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "成田空港-成田線空港支線-京成本線",
+      "fromStation": "odpt.Station:JR-East.NaritaAirportBranch.NaritaAirportTerminal1",
+      "toStation": "odpt.Station:Keisei.NaritaSkyAccess.NaritaAirportTerminal1",
+      "fromRailway": "odpt.Railway:JR-East.NaritaAirportBranch",
+      "toRailway": "odpt.Railway:Keisei.Main",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "標準乗換（構内図・現行案内ベース／安全側）",
+      "source": "https://www.jreast.co.jp/multi/customer_support/service_center.html",
+      "sourceType": "official JR East Terminal 1 guidance states JR and Keisei ticket gates are both on B1 facing the same service-center area; 5-minute conservative platform-to-platform minimum",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "成田空港-成田線空港支線-成田スカイアクセス線",
+      "fromStation": "odpt.Station:JR-East.NaritaAirportBranch.NaritaAirportTerminal1",
+      "toStation": "odpt.Station:Keisei.NaritaSkyAccess.NaritaAirportTerminal1",
+      "fromRailway": "odpt.Railway:JR-East.NaritaAirportBranch",
+      "toRailway": "odpt.Railway:Keisei.NaritaSkyAccess",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "標準乗換（構内図・現行案内ベース／安全側）",
+      "source": "https://www.jreast.co.jp/multi/customer_support/service_center.html",
+      "sourceType": "official JR East Terminal 1 guidance states JR and Keisei ticket gates are both on B1 facing the same service-center area; 5-minute conservative platform-to-platform minimum",
       "verifiedAt": "2026-09-04"
     },
     {
@@ -12445,84 +12524,6 @@
       "source": "https://eki-kara-access.yokohama/norikae-tizu-blueline/",
       "sourceType": "current transfer guide",
       "verifiedAt": "2026-09-04"
-    },
-    {
-      "id": "fallback-松岸-成田線-総武本線",
-      "fromStation": "odpt.Station:JR-East.Narita.Matsugishi",
-      "toStation": "odpt.Station:JR-East.Sobu.Matsugishi",
-      "fromRailway": "odpt.Railway:JR-East.Narita",
-      "toRailway": "odpt.Railway:JR-East.Sobu",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-成田空港-京成本線-成田スカイアクセス線",
-      "fromStation": "odpt.Station:Keisei.NaritaSkyAccess.NaritaAirportTerminal1",
-      "toStation": "odpt.Station:Keisei.NaritaSkyAccess.NaritaAirportTerminal1",
-      "fromRailway": "odpt.Railway:Keisei.Main",
-      "toRailway": "odpt.Railway:Keisei.NaritaSkyAccess",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-成田空港-成田線空港支線-京成本線",
-      "fromStation": "odpt.Station:JR-East.NaritaAirportBranch.NaritaAirportTerminal1",
-      "toStation": "odpt.Station:Keisei.NaritaSkyAccess.NaritaAirportTerminal1",
-      "fromRailway": "odpt.Railway:JR-East.NaritaAirportBranch",
-      "toRailway": "odpt.Railway:Keisei.Main",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-成田空港-成田線空港支線-成田スカイアクセス線",
-      "fromStation": "odpt.Station:JR-East.NaritaAirportBranch.NaritaAirportTerminal1",
-      "toStation": "odpt.Station:Keisei.NaritaSkyAccess.NaritaAirportTerminal1",
-      "fromRailway": "odpt.Railway:JR-East.NaritaAirportBranch",
-      "toRailway": "odpt.Railway:Keisei.NaritaSkyAccess",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-銚子-成田線-総武本線",
-      "fromStation": "odpt.Station:JR-East.Narita.Choshi",
-      "toStation": "odpt.Station:JR-East.Sobu.Choshi",
-      "fromRailway": "odpt.Railway:JR-East.Narita",
-      "toRailway": "odpt.Railway:JR-East.Sobu",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-豊島園-豊島線-大江戸線",
-      "fromStation": "odpt.Station:Seibu.Toshima.Toshimaen",
-      "toStation": "odpt.Station:Toei.Oedo.Toshimaen",
-      "fromRailway": "odpt.Railway:Seibu.Toshima",
-      "toRailway": "odpt.Railway:Toei.Oedo",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
     }
   ]
 }
