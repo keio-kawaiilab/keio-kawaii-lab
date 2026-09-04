@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-09-04T08:23:00.452Z",
+  "generatedAt": "2026-09-04T08:27:07.707Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T08:22:45.309Z",
+  "rulesGeneratedAt": "2026-09-04T08:26:32.939Z",
   "methodology": "Candidate railway pairs are classified as curated when backed by an explicit transfer rule, fallback when covered by conservative fallbackMinutes, blocked for false same-name/nearby links, and uncurated only when no usable rule exists.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 921,
-    "fallbackPairs": 32,
+    "curatedPairs": 925,
+    "fallbackPairs": 28,
     "uncuratedPairs": 0,
     "blockedPairs": 7,
-    "curatedSourceRules": 921,
-    "fallbackGeneratedRules": 32,
+    "curatedSourceRules": 925,
+    "fallbackGeneratedRules": 28,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -202,28 +202,6 @@
       "priorityScore": 0
     },
     {
-      "place": "青砥",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "千葉中央",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
       "place": "浅野",
       "totalPairs": 1,
       "curatedPairs": 0,
@@ -302,28 +280,6 @@
     },
     {
       "place": "豊島園",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "木更津",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "溜池山王 ↔ 国会議事堂前",
       "totalPairs": 1,
       "curatedPairs": 0,
       "fallbackPairs": 1,
@@ -1113,6 +1069,50 @@
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
       "priorityScore": 0
+    },
+    {
+      "place": "溝の口",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
+      "place": "香取",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
+      "place": "高崎",
+      "totalPairs": 3,
+      "curatedPairs": 3,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 0
+    },
+    {
+      "place": "高田馬場",
+      "totalPairs": 3,
+      "curatedPairs": 3,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 0
     }
   ],
   "priorityDetails": [],
@@ -1382,32 +1382,6 @@
       ]
     },
     {
-      "place": "青砥",
-      "railwayA": "odpt.Railway:Keisei.Main",
-      "railwayAName": "京成本線",
-      "railwayB": "odpt.Railway:Keisei.Oshiage",
-      "railwayBName": "押上線",
-      "sameOperator": true,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "千葉中央",
-      "railwayA": "odpt.Railway:Keisei.Chiba",
-      "railwayAName": "千葉線",
-      "railwayB": "odpt.Railway:Keisei.Chihara",
-      "railwayBName": "千原線",
-      "sameOperator": true,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "same-place-group"
-      ]
-    },
-    {
       "place": "浅野",
       "railwayA": "odpt.Railway:JR-East.Tsurumi",
       "railwayAName": "鶴見線",
@@ -1516,33 +1490,6 @@
       "fallbackMinutes": 5,
       "sources": [
         "same-place-group"
-      ]
-    },
-    {
-      "place": "木更津",
-      "railwayA": "odpt.Railway:JR-East.Kururi",
-      "railwayAName": "久留里線",
-      "railwayB": "odpt.Railway:JR-East.Uchibo",
-      "railwayBName": "内房線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "溜池山王 ↔ 国会議事堂前",
-      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
-      "railwayAName": "銀座線",
-      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
-      "railwayBName": "丸ノ内線",
-      "sameOperator": true,
-      "distanceMeters": 496,
-      "fallbackMinutes": 9,
-      "sources": [
-        "connecting-station"
       ]
     },
     {
