@@ -29,46 +29,68 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Confirm quarantine convergence budget
+      - name: Prefer exact row identity before shared source URLs
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
           from pathlib import Path
 
-          path = Path("scripts/audit_schedule_release_grouped.py")
+          path = Path("scripts/audit_schedule_release.py")
           text = path.read_text(encoding="utf-8")
-          old = "def repair_local_errors(previous: dict, candidate: dict, now: datetime, max_rounds: int = 6):"
-          new = "def repair_local_errors(previous: dict, candidate: dict, now: datetime, max_rounds: int = 64):"
-          if new not in text:
-              if old not in text:
-                  raise SystemExit("expected repair_local_errors signature not found")
-              path.write_text(text.replace(old, new, 1), encoding="utf-8")
+          marker = "    return result\n\n\ndef future_or_active(event: dict, today: date) -> bool:\n"
+          helper = '''    return result\n\n\ndef preferred_match_keys(event: dict) -> list[str]:\n    \"\"\"Prefer exact row identities before generic URLs shared by many sale rounds.\"\"\"\n    keys = stable_keys(event)\n    rank = lambda key: (\n        0 if key.startswith(\"id:\") else\n        1 if key.startswith((\"pia:\", \"sukisuki:\", \"lawson:\", \"eplus:\")) else\n        2\n    )\n    return sorted(keys, key=rank)\n\n\ndef future_or_active(event: dict, today: date) -> bool:\n'''
+          if "def preferred_match_keys(event: dict)" not in text:
+              if marker not in text:
+                  raise SystemExit("stable_keys insertion marker not found")
+              text = text.replace(marker, helper, 1)
+          old_loop = "        for key in stable_keys(old):\n"
+          new_loop = "        for key in preferred_match_keys(old):\n"
+          if new_loop not in text:
+              if old_loop not in text:
+                  raise SystemExit("protected-item match loop not found")
+              text = text.replace(old_loop, new_loop, 1)
+          path.write_text(text, encoding="utf-8")
+
+          test_path = Path("scripts/test_audit_schedule_release.py")
+          test_text = test_path.read_text(encoding="utf-8")
+          test_name = "test_shared_official_feature_prefers_exact_id_before_shared_url"
+          if test_name not in test_text:
+              insert_before = "    def test_duplicate_pia_lot_is_blocked(self):\n"
+              test = '''    def test_shared_official_feature_prefers_exact_id_before_shared_url(self):\n        shared = \"https://cutiestreet.asobisystem.com/feature/autumntour\"\n        later = {\n            \"id\": \"upgrade-later\", \"group\": \"CUTIE STREET\", \"eventScope\": \"kawaii-lab\",\n            \"title\": \"CUTIE STREET JAPAN TOUR 2026\", \"ticketType\": \"アップグレード抽選受付\",\n            \"applyStart\": \"2026-09-03T20:00\", \"applyEnd\": \"2026-09-08T23:59\",\n            \"eventDate\": \"2026-10-03\", \"url\": shared, \"urls\": [shared],\n            \"sourceType\": \"official\", \"primarySource\": \"official\", \"applicationStatus\": \"open\",\n        }\n        earlier = {\n            \"id\": \"upgrade-earlier\", \"group\": \"CUTIE STREET\", \"eventScope\": \"kawaii-lab\",\n            \"title\": \"CUTIE STREET JAPAN TOUR 2026\", \"ticketType\": \"アップグレード抽選受付\",\n            \"applyStart\": \"2026-09-01T20:00\", \"applyEnd\": \"2026-09-06T23:59\",\n            \"eventDate\": \"2026-09-23\", \"url\": shared, \"urls\": [shared],\n            \"sourceType\": \"official\", \"primarySource\": \"official\", \"applicationStatus\": \"open\",\n        }\n        old = payload([later, earlier])\n        new = payload([copy.deepcopy(earlier), copy.deepcopy(later)])\n        errors, _, _ = audit(old, new, NOW)\n        self.assertEqual([], errors)\n\n'''
+              if insert_before not in test_text:
+                  raise SystemExit("test insertion marker not found")
+              test_text = test_text.replace(insert_before, test + insert_before, 1)
+              test_path.write_text(test_text, encoding="utf-8")
           PY
 
-      - name: Run grouped release tests
-        run: python scripts/test_audit_schedule_release_grouped.py
-
-      - name: Commit repair if needed
+      - name: Run release audit tests
         shell: bash
         run: |
           set -euo pipefail
-          if git diff --quiet -- scripts/audit_schedule_release_grouped.py; then
+          cd scripts
+          python -m unittest -v test_audit_schedule_release.py test_audit_schedule_release_grouped.py
+
+      - name: Commit root-cause repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- scripts/audit_schedule_release.py scripts/test_audit_schedule_release.py; then
             echo "Repair already present"
-            exit 0
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add scripts/audit_schedule_release.py scripts/test_audit_schedule_release.py
+            git commit -m "Fix shared-source ticket audit matching"
+            for attempt in 1 2 3; do
+              if git push origin HEAD:main; then
+                break
+              fi
+              git fetch origin main
+              git rebase origin/main
+              if [ "$attempt" -eq 3 ]; then exit 1; fi
+            done
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add scripts/audit_schedule_release_grouped.py
-          git commit -m "Fix calendar quarantine convergence"
-          for attempt in 1 2 3; do
-            if git push origin HEAD:main; then
-              exit 0
-            fi
-            git fetch origin main
-            git rebase origin/main
-          done
-          exit 1
 
       - name: Dispatch distributed calendar refresh
         env:
