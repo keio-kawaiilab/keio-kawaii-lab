@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準・実測乗換（安全側）",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "新橋",
+      "railwayA": "odpt.Railway:JR-East.JobanRapid",
+      "railwayB": "odpt.Railway:JR-East.Tokaido",
+      "railwayAName": "常磐線快速",
+      "railwayBName": "東海道線",
+      "minutes": 1,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%9D%BE%E6%88%B8_%E5%B7%9D%E5%B4%8E.html",
+      "sourceType": "current Jorudan routes transfer on same Shimbashi platform; 1 minute in both directions"
+    },
+    {
+      "place": "所沢",
+      "railwayA": "odpt.Railway:Seibu.Ikebukuro",
+      "railwayB": "odpt.Railway:Seibu.Shinjuku",
+      "railwayAName": "池袋線",
+      "railwayBName": "新宿線",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%A5%BF%E6%89%80%E6%B2%A2_%E6%9D%B1%E6%9D%91%E5%B1%B1.html",
+      "sourceType": "current Jorudan routes via Tokorozawa; 1-3 minutes depending direction/platform, conservative upper bound"
+    },
+    {
+      "place": "小平",
+      "railwayA": "odpt.Railway:Seibu.Haijima",
+      "railwayB": "odpt.Railway:Seibu.Shinjuku",
+      "railwayAName": "拝島線",
+      "railwayBName": "新宿線",
+      "minutes": 1,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%AD%A6%E8%94%B5%E5%A4%A7%E5%92%8C_%E8%8A%B1%E5%B0%8F%E9%87%91%E4%BA%95.html",
+      "sourceType": "current Jorudan route via Kodaira; 1-minute transfer"
+    },
+    {
+      "place": "西所沢",
+      "railwayA": "odpt.Railway:Seibu.Ikebukuro",
+      "railwayB": "odpt.Railway:Seibu.Sayama",
+      "railwayAName": "池袋線",
+      "railwayBName": "狭山線",
+      "minutes": 2,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%A5%BF%E6%AD%A6%E7%90%83%E5%A0%B4%E5%89%8D_%E6%89%80%E6%B2%A2.html?Cway=2",
+      "sourceType": "current Jorudan routes via Nishi-Tokorozawa; 1-2 minutes depending direction, conservative upper bound"
+    }
+  ]
+}
