@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Patch physical-station destination resolution and verified boundaries
+      - name: Patch safe physical-station destination resolution and verified boundaries
         shell: bash
         run: |
           python - <<'PY'
@@ -38,27 +38,74 @@ jobs:
               return result
           '''
           new = '''def destination_railways(destination: str, indexes: dict[str, Any]) -> set[str]:
-              # ODPT station IDs are railway-scoped.  A published destination can
-              # therefore carry (for example) the Kodomonokuni-line Nagatsuta ID
-              # even when the train actually reaches physical Nagatsuta via the
-              # Den-en-toshi line.  Resolve the physical station first, then let
-              # the verified operational graph choose the reachable railway.
+              # Station IDs are railway-scoped. Expand a physical station only
+              # inside the same operator as the published destination. This
+              # fixes line-specific IDs (e.g. Tokyu Nagatsuta) without turning
+              # ordinary interchanges such as Shinjuku into through services.
               result = set(indexes['stationRailways'].get(destination, set()))
-              station_name = str(indexes['stationTitle'].get(destination) or '')
-              if station_name:
-                  for sid, name in indexes['stationTitle'].items():
-                      if name == station_name:
-                          result.update(indexes['stationRailways'].get(sid, set()))
+              if result:
+                  station_name = str(indexes['stationTitle'].get(destination) or '')
+                  operators = {
+                      str(indexes['railwayOperator'].get(rid) or '')
+                      for rid in result
+                      if indexes['railwayOperator'].get(rid)
+                  }
+                  if station_name and operators:
+                      for sid, name in indexes['stationTitle'].items():
+                          if name != station_name:
+                              continue
+                          for rid in indexes['stationRailways'].get(sid, set()):
+                              if str(indexes['railwayOperator'].get(rid) or '') in operators:
+                                  result.add(rid)
                   return result
               suffix = destination.rsplit('.', 1)[-1] if destination else ''
+              operator_token = ''
+              if destination.startswith('odpt.Station:'):
+                  operator_token = destination.split(':', 1)[1].split('.', 1)[0]
               for sid, railways in indexes['stationRailways'].items():
-                  if sid.rsplit('.', 1)[-1] == suffix:
-                      result.update(railways)
+                  if sid.rsplit('.', 1)[-1] != suffix:
+                      continue
+                  for rid in railways:
+                      if operator_token and not rid.startswith(f'odpt.Railway:{operator_token}.'):
+                          continue
+                      result.add(rid)
               return result
           '''
           if old not in text:
               raise SystemExit('destination_railways source block not found')
           script.write_text(text.replace(old, new), encoding='utf-8')
+
+          finalizer = Path('scripts/finalize_transit_v2.py')
+          ftext = finalizer.read_text(encoding='utf-8')
+          fold = '''        target_railways: set[str] = set()
+              for destination in destinations:
+                  target_railways.update(base.destination_railways(destination, indexes))
+              target_railways.discard(str(fragment.get('railway') or ''))
+              if not target_railways:
+                  continue
+          '''
+          fnew = '''        current_railway = str(fragment.get('railway') or '')
+              target_railways: set[str] = set()
+              external_destinations: list[str] = []
+              for destination in destinations:
+                  resolved = base.destination_railways(destination, indexes)
+                  # If the published physical destination exists on the current
+                  # railway, this fragment simply terminates there. A different
+                  # line-scoped Station ID must not manufacture a through train.
+                  if current_railway in resolved:
+                      continue
+                  external_destinations.append(destination)
+                  target_railways.update(resolved)
+              target_railways.discard(current_railway)
+              if not target_railways:
+                  continue
+          '''
+          if fold not in ftext:
+              raise SystemExit('classify_inferred_routes target block not found')
+          ftext = ftext.replace(fold, fnew)
+          # Report only destinations that actually require leaving the current railway.
+          ftext = ftext.replace("                'destination': destinations,\n", "                'destination': external_destinations,\n", 1)
+          finalizer.write_text(ftext, encoding='utf-8')
 
           path = Path('data/transit-v2/service-boundaries.json')
           data = json.loads(path.read_text(encoding='utf-8'))
@@ -143,18 +190,38 @@ jobs:
           path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
           print('added boundaries:', [r['id'] for r in additions if r['id'] not in known])
           PY
-      - name: Validate physical destination expansion
+      - name: Validate safe destination resolution
         run: |
           python -m py_compile scripts/build_transit_v2.py scripts/finalize_transit_v2.py scripts/audit_transit_v2.py
           python - <<'PY'
           import json
-          import scripts.build_transit_v2 as base
           from pathlib import Path
+          import scripts.build_transit_v2 as base
+          import scripts.finalize_transit_v2 as final
+
           manifest=json.loads(Path('data/transit/manifest.json').read_text(encoding='utf-8'))
-          indexes=base.index_entities(manifest)
-          targets=base.destination_railways('odpt.Station:Tokyu.Kodomonokuni.Nagatsuta', indexes)
-          assert 'odpt.Railway:Tokyu.DenEnToshi' in targets, targets
           registry=json.loads(Path('data/transit-v2/service-boundaries.json').read_text(encoding='utf-8'))
+          indexes=final.strict_indexes(manifest, registry)
+
+          nagatsuta=base.destination_railways('odpt.Station:Tokyu.Kodomonokuni.Nagatsuta', indexes)
+          assert 'odpt.Railway:Tokyu.DenEnToshi' in nagatsuta, nagatsuta
+          assert all(indexes['railwayOperator'].get(r) == 'odpt.Operator:Tokyu' for r in nagatsuta), nagatsuta
+
+          shinjuku=base.destination_railways('odpt.Station:Odakyu.Odawara.Shinjuku', indexes)
+          assert 'odpt.Railway:JR-East.Yamanote' not in shinjuku, shinjuku
+          assert all(indexes['railwayOperator'].get(r) == 'odpt.Operator:Odakyu' for r in shinjuku), shinjuku
+
+          local=[{'id':'test-local','railway':'odpt.Railway:Odakyu.Odawara','destination':['odpt.Station:Odakyu.Odawara.Shinjuku'],'sourceKind':'station-timetable-reconstruction'}]
+          unresolved=[]
+          final.classify_inferred_routes(local, indexes, unresolved)
+          assert unresolved == [], unresolved
+          assert not local[0].get('throughRailwayPath'), local[0]
+
+          through=[{'id':'test-through','railway':'odpt.Railway:Tokyu.Oimachi','destination':['odpt.Station:Tokyu.Kodomonokuni.Nagatsuta'],'sourceKind':'station-timetable-reconstruction'}]
+          unresolved=[]
+          final.classify_inferred_routes(through, indexes, unresolved)
+          assert through[0].get('throughRailwayPath') == ['odpt.Railway:Tokyu.Oimachi','odpt.Railway:Tokyu.DenEnToshi'], (through, unresolved)
+
           ids={r['id'] for r in registry['boundaries']}
           assert 'seibu-ikebukuro-toshima-nerima' in ids
           assert 'keisei-oshiage-main-aoto' in ids
@@ -181,7 +248,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add scripts/build_transit_v2.py data/transit-v2
+          git add scripts/build_transit_v2.py scripts/finalize_transit_v2.py data/transit-v2
           if git diff --cached --quiet; then
             echo "No changes."
             exit 0
