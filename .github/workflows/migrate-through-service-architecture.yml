@@ -1,0 +1,36 @@
+name: Migrate through-service architecture
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/migrate_remove_through_time_heuristic.py'
+      - '.github/workflows/migrate-through-service-architecture.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove unsafe runtime inference
+        run: python scripts/migrate_remove_through_time_heuristic.py
+      - name: Syntax check
+        run: node --check route-core.js
+      - name: Assert no three-minute through heuristic remains
+        run: |
+          ! grep -q 'throughLatest=throughCandidate?current+3' route-core.js
+          ! grep -q 'trip.departure-current<=3' route-core.js
+      - name: Commit migration
+        run: |
+          if git diff --quiet -- route-core.js; then
+            echo 'No route-core.js changes to commit'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add route-core.js
+          git commit -m 'Remove timetable-gap through-service inference'
+          git push
