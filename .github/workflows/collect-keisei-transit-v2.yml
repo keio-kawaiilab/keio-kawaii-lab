@@ -2,6 +2,10 @@ name: Collect Keisei transit v2
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/collect-keisei-transit-v2.yml'
+      - 'scripts/collect_keisei_timetables.py'
   schedule:
     - cron: '20 17 * * 6'
 
