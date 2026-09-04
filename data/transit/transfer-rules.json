@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T00:21:40.472Z",
+  "generatedAt": "2026-09-04T00:21:54.793Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -49,6 +49,7 @@
     "transfer-rule-sources.d/2026-09-04-medium-stations-batch-j.json",
     "transfer-rule-sources.d/2026-09-04-musashikosugi-hiyoshi.json",
     "transfer-rule-sources.d/2026-09-04-nishifunabashi.json",
+    "transfer-rule-sources.d/2026-09-04-shinjuku-marunouchi-jr.json",
     "transfer-rule-sources.d/2026-09-04-shinjuku-remaining-direct.json",
     "transfer-rule-sources.d/2026-09-04-tokyo-jr-core.json",
     "transfer-rule-sources.d/2026-09-04-tokyo-marunouchi-remaining.json",
@@ -4994,6 +4995,71 @@
       "label": "標準乗換",
       "source": "https://www.jorudan.co.jp/norikae/route/%E8%8C%85%E5%A0%B4%E7%94%BA_%E5%8D%97%E8%88%B9%E6%A9%8B.html",
       "sourceType": "Jorudan current route-planner transfer time",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "新宿-丸ノ内線-山手線",
+      "fromStation": "odpt.Station:TokyoMetro.Marunouchi.Shinjuku",
+      "toStation": "odpt.Station:JR-East.Yamanote.Shinjuku",
+      "fromRailway": "odpt.Railway:TokyoMetro.Marunouchi",
+      "toRailway": "odpt.Railway:JR-East.Yamanote",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://wadattsu261.com/content/shinjuku-metromarunouchi-jrchuo-sobuline-transfer-information/",
+      "sourceType": "current platform-to-platform transfer guide",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "新宿-丸ノ内線-中央・総武各駅停車",
+      "fromStation": "odpt.Station:TokyoMetro.Marunouchi.Shinjuku",
+      "toStation": "odpt.Station:JR-East.ChuoSobuLocal.Shinjuku",
+      "fromRailway": "odpt.Railway:TokyoMetro.Marunouchi",
+      "toRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://wadattsu261.com/content/shinjuku-metromarunouchi-jrchuo-sobuline-transfer-information/",
+      "sourceType": "current platform-to-platform transfer guide",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "新宿-丸ノ内線-中央線快速",
+      "fromStation": "odpt.Station:TokyoMetro.Marunouchi.Shinjuku",
+      "toStation": "odpt.Station:JR-East.ChuoRapid.Shinjuku",
+      "fromRailway": "odpt.Railway:TokyoMetro.Marunouchi",
+      "toRailway": "odpt.Railway:JR-East.ChuoRapid",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://wadattsu261.com/content/shinjuku-metromarunouchi-jrchuo-omeline-transfer-information/",
+      "sourceType": "current platform-to-platform transfer guide",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "新宿-丸ノ内線-埼京線・川越線",
+      "fromStation": "odpt.Station:TokyoMetro.Marunouchi.Shinjuku",
+      "toStation": "odpt.Station:JR-East.SaikyoKawagoe.Shinjuku",
+      "fromRailway": "odpt.Railway:TokyoMetro.Marunouchi",
+      "toRailway": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://wadattsu261.com/content/shinjuku-metromarunouchi-jrsaikyo-shonanshinjukuline-transfer-information/",
+      "sourceType": "current platform-to-platform transfer guide",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "新宿-丸ノ内線-湘南新宿ライン",
+      "fromStation": "odpt.Station:TokyoMetro.Marunouchi.Shinjuku",
+      "toStation": "odpt.Station:JR-East.ShonanShinjuku.Shinjuku",
+      "fromRailway": "odpt.Railway:TokyoMetro.Marunouchi",
+      "toRailway": "odpt.Railway:JR-East.ShonanShinjuku",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://wadattsu261.com/content/shinjuku-metromarunouchi-jrsaikyo-shonanshinjukuline-transfer-information/",
+      "sourceType": "current platform-to-platform transfer guide",
       "verifiedAt": "2026-09-04"
     },
     {
