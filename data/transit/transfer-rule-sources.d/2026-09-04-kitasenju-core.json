@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換（安全側）",
+    "sourceType": "current platform-to-platform transfer guide / on-site measurement",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "北千住",
+      "railwayA": "odpt.Railway:MIR.TsukubaExpress",
+      "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayAName": "つくばエクスプレス",
+      "railwayBName": "千代田線",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/kitasenju-tx-metrochiyodaline-transfer-information/"
+    },
+    {
+      "place": "北千住",
+      "railwayA": "odpt.Railway:JR-East.JobanRapid",
+      "railwayB": "odpt.Railway:MIR.TsukubaExpress",
+      "railwayAName": "常磐線快速",
+      "railwayBName": "つくばエクスプレス",
+      "minutes": 3,
+      "source": "https://tren.hatenablog.com/entry/kitasenju"
+    },
+    {
+      "place": "北千住",
+      "railwayA": "odpt.Railway:JR-East.JobanRapid",
+      "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayAName": "常磐線快速",
+      "railwayBName": "千代田線",
+      "minutes": 3,
+      "source": "https://wadattsu261.com/content/kitasenju-jrjoban-metrochiyodaline-transfer-information/"
+    },
+    {
+      "place": "北千住",
+      "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+      "railwayAName": "千代田線",
+      "railwayBName": "日比谷線",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/kitasenju-metrochiyoda-metrohibiya-tobuisezakiline-transfer-information/"
+    },
+    {
+      "place": "北千住",
+      "railwayA": "odpt.Railway:Tobu.TobuSkytree",
+      "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayAName": "東武スカイツリーライン",
+      "railwayBName": "千代田線",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/kitasenju-metrohibiya-tobuisezaki-metrochiyodaline-transfer-information/"
+    },
+    {
+      "place": "北千住",
+      "railwayA": "odpt.Railway:JR-East.JobanRapid",
+      "railwayB": "odpt.Railway:Tobu.TobuSkytree",
+      "railwayAName": "常磐線快速",
+      "railwayBName": "東武スカイツリーライン",
+      "minutes": 3,
+      "source": "https://rekichiri.com/kita-senju-jr-tobu-transfer/"
+    }
+  ]
+}
