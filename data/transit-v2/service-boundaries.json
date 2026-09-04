@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-09-04",
+  "updatedAt": "2026-09-05",
   "policy": {
     "purpose": "Verified operational boundaries and junctions used only to constrain possible railway paths. A boundary alone never proves that an individual train is through-running.",
     "boundaryAloneMayEstablishTrainIdentity": false,
@@ -547,6 +547,21 @@
       "status": "verified",
       "sourceUrls": [
         "https://www.keisei.co.jp/keisei/tetudou/accessj/"
+      ]
+    },
+    {
+      "id": "seibu-tamako-haijima-hagiyama",
+      "station": "萩山",
+      "fromRailway": "odpt.Railway:Seibu.Tamako",
+      "toRailway": "odpt.Railway:Seibu.Haijima",
+      "fromStation": "odpt.Station:Seibu.Tamako.Hagiyama",
+      "toStation": "odpt.Station:Seibu.Haijima.Hagiyama",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.seiburailway.jp/railway/station/hagiyama/",
+        "https://www.seiburailway.jp/railway/station/tamako/",
+        "https://seibu.ekitan.com/norikae/timetable/station/234-2/d1?dw=1"
       ]
     }
   ]
