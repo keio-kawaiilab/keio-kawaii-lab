@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-04T01:12:05.675Z",
+  "generatedAt": "2026-09-04T01:12:32.835Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T01:11:46.918Z",
+  "rulesGeneratedAt": "2026-09-04T01:12:15.354Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 474,
-    "uncuratedPairs": 479,
+    "curatedPairs": 478,
+    "uncuratedPairs": 475,
     "blockedPairs": 7,
-    "curatedSourceRules": 474,
+    "curatedSourceRules": 478,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -30,16 +30,6 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 4,
       "railwayCount": 6,
-      "priorityScore": 16
-    },
-    {
-      "place": "大崎",
-      "totalPairs": 10,
-      "curatedPairs": 0,
-      "uncuratedPairs": 10,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 4,
-      "railwayCount": 5,
       "priorityScore": 16
     },
     {
@@ -110,6 +100,16 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 3,
       "railwayCount": 4,
+      "priorityScore": 10.5
+    },
+    {
+      "place": "大崎",
+      "totalPairs": 10,
+      "curatedPairs": 4,
+      "uncuratedPairs": 6,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 3,
+      "railwayCount": 5,
       "priorityScore": 10.5
     },
     {
@@ -1497,150 +1497,6 @@
       ]
     },
     {
-      "place": "大崎",
-      "totalPairs": 10,
-      "curatedPairs": 0,
-      "uncuratedPairs": 10,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 4,
-      "railwayCount": 5,
-      "priorityScore": 16,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
-          "railwayAName": "埼京線・川越線",
-          "railwayB": "odpt.Railway:TWR.Rinkai",
-          "railwayBName": "りんかい線",
-          "sameOperator": false,
-          "distanceMeters": 10,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Yamanote",
-          "railwayAName": "山手線",
-          "railwayB": "odpt.Railway:TWR.Rinkai",
-          "railwayBName": "りんかい線",
-          "sameOperator": false,
-          "distanceMeters": 10,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
-          "railwayAName": "湘南新宿ライン",
-          "railwayB": "odpt.Railway:TWR.Rinkai",
-          "railwayBName": "りんかい線",
-          "sameOperator": false,
-          "distanceMeters": 10,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.SotetsuDirect",
-          "railwayAName": "相鉄直通線",
-          "railwayB": "odpt.Railway:TWR.Rinkai",
-          "railwayBName": "りんかい線",
-          "sameOperator": false,
-          "distanceMeters": 10,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
-          "railwayAName": "埼京線・川越線",
-          "railwayB": "odpt.Railway:JR-East.Yamanote",
-          "railwayBName": "山手線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
-          "railwayAName": "埼京線・川越線",
-          "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
-          "railwayBName": "湘南新宿ライン",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
-          "railwayAName": "埼京線・川越線",
-          "railwayB": "odpt.Railway:JR-East.SotetsuDirect",
-          "railwayBName": "相鉄直通線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
-          "railwayAName": "湘南新宿ライン",
-          "railwayB": "odpt.Railway:JR-East.Yamanote",
-          "railwayBName": "山手線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
-          "railwayAName": "湘南新宿ライン",
-          "railwayB": "odpt.Railway:JR-East.SotetsuDirect",
-          "railwayBName": "相鉄直通線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.SotetsuDirect",
-          "railwayAName": "相鉄直通線",
-          "railwayB": "odpt.Railway:JR-East.Yamanote",
-          "railwayBName": "山手線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
       "place": "新宿 ↔ 新宿西口",
       "totalPairs": 6,
       "curatedPairs": 0,
@@ -2253,6 +2109,98 @@
           "railwayAName": "東海道線",
           "railwayB": "odpt.Railway:JR-East.Yokosuka",
           "railwayBName": "横須賀線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ]
+    },
+    {
+      "place": "大崎",
+      "totalPairs": 10,
+      "curatedPairs": 4,
+      "uncuratedPairs": 6,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 3,
+      "railwayCount": 5,
+      "priorityScore": 10.5,
+      "crossOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+          "railwayAName": "埼京線・川越線",
+          "railwayB": "odpt.Railway:TWR.Rinkai",
+          "railwayBName": "りんかい線",
+          "sameOperator": false,
+          "distanceMeters": 10,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+          "railwayAName": "湘南新宿ライン",
+          "railwayB": "odpt.Railway:TWR.Rinkai",
+          "railwayBName": "りんかい線",
+          "sameOperator": false,
+          "distanceMeters": 10,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.SotetsuDirect",
+          "railwayAName": "相鉄直通線",
+          "railwayB": "odpt.Railway:TWR.Rinkai",
+          "railwayBName": "りんかい線",
+          "sameOperator": false,
+          "distanceMeters": 10,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+          "railwayAName": "埼京線・川越線",
+          "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
+          "railwayBName": "湘南新宿ライン",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+          "railwayAName": "埼京線・川越線",
+          "railwayB": "odpt.Railway:JR-East.SotetsuDirect",
+          "railwayBName": "相鉄直通線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+          "railwayAName": "湘南新宿ライン",
+          "railwayB": "odpt.Railway:JR-East.SotetsuDirect",
+          "railwayBName": "相鉄直通線",
           "sameOperator": true,
           "distanceMeters": 0,
           "fallbackMinutes": 5,
@@ -8158,20 +8106,6 @@
       "place": "大崎",
       "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
       "railwayAName": "埼京線・川越線",
-      "railwayB": "odpt.Railway:JR-East.Yamanote",
-      "railwayBName": "山手線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "大崎",
-      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
-      "railwayAName": "埼京線・川越線",
       "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
       "railwayBName": "湘南新宿ライン",
       "sameOperator": true,
@@ -8198,40 +8132,12 @@
     },
     {
       "place": "大崎",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:TWR.Rinkai",
-      "railwayBName": "りんかい線",
-      "sameOperator": false,
-      "distanceMeters": 10,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "大崎",
       "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
       "railwayAName": "湘南新宿ライン",
       "railwayB": "odpt.Railway:TWR.Rinkai",
       "railwayBName": "りんかい線",
       "sameOperator": false,
       "distanceMeters": 10,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "大崎",
-      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
-      "railwayAName": "湘南新宿ライン",
-      "railwayB": "odpt.Railway:JR-East.Yamanote",
-      "railwayBName": "山手線",
-      "sameOperator": true,
-      "distanceMeters": 0,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
@@ -8260,20 +8166,6 @@
       "railwayBName": "りんかい線",
       "sameOperator": false,
       "distanceMeters": 10,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "大崎",
-      "railwayA": "odpt.Railway:JR-East.SotetsuDirect",
-      "railwayAName": "相鉄直通線",
-      "railwayB": "odpt.Railway:JR-East.Yamanote",
-      "railwayBName": "山手線",
-      "sameOperator": true,
-      "distanceMeters": 0,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
