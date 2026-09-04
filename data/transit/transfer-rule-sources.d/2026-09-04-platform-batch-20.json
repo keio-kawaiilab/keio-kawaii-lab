@@ -1,0 +1,211 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換（安全側）",
+    "sourceType": "current platform/route transfer guidance",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "横浜",
+      "railwayA": "manual.Railway:YokohamaMinatomirai.Minatomirai",
+      "railwayB": "odpt.Railway:Tokyu.Toyoko",
+      "railwayAName": "みなとみらい線",
+      "railwayBName": "東横線",
+      "minutes": 1,
+      "source": "https://www.mm21railway.co.jp/info/faq04.html",
+      "sourceType": "official through-service/no-transfer guidance; 1-minute safety buffer"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:JR-East.Yokosuka",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "横須賀線",
+      "minutes": 1,
+      "source": "https://wadattsu261.com/content/yokohama-yokosuka-shonanshinjukuline-info/",
+      "sourceType": "current shared-platform guide; 1-minute safety buffer"
+    },
+    {
+      "place": "西大井",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:JR-East.Yokosuka",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "横須賀線",
+      "minutes": 1,
+      "source": "https://wadattsu261.com/content/nishioi-yokosuka-shonanshinjukuline-sotetsudirecthome-info/",
+      "sourceType": "current shared-platform guide; 1-minute safety buffer"
+    },
+    {
+      "place": "西大井",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:JR-East.SotetsuDirect",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "相鉄直通線",
+      "minutes": 1,
+      "source": "https://wadattsu261.com/content/nishioi-yokosuka-shonanshinjukuline-sotetsudirecthome-info/",
+      "sourceType": "current shared-platform guide; 1-minute safety buffer"
+    },
+    {
+      "place": "西大井",
+      "railwayA": "odpt.Railway:JR-East.SotetsuDirect",
+      "railwayB": "odpt.Railway:JR-East.Yokosuka",
+      "railwayAName": "相鉄直通線",
+      "railwayBName": "横須賀線",
+      "minutes": 1,
+      "source": "https://wadattsu261.com/content/nishioi-yokosuka-shonanshinjukuline-sotetsudirecthome-info/",
+      "sourceType": "current shared-platform guide; 1-minute safety buffer"
+    },
+    {
+      "place": "日吉",
+      "railwayA": "odpt.Railway:Tokyu.Meguro",
+      "railwayB": "odpt.Railway:Tokyu.Toyoko",
+      "railwayAName": "目黒線",
+      "railwayBName": "東横線",
+      "minutes": 1,
+      "source": "https://www.ecomo-rakuraku.jp/ja/station/%E6%97%A5%E5%90%89%EF%BC%88%E7%A5%9E%E5%A5%88%E5%B7%9D%EF%BC%89/",
+      "sourceType": "same-platform transfer guidance; 1-minute safety buffer"
+    },
+    {
+      "place": "日吉",
+      "railwayA": "odpt.Railway:Tokyu.TokyuShinYokohama",
+      "railwayB": "odpt.Railway:Tokyu.Toyoko",
+      "railwayAName": "東急新横浜線",
+      "railwayBName": "東横線",
+      "minutes": 1,
+      "source": "https://www.tokyu.co.jp/railway/ty/",
+      "sourceType": "official direct-service guidance; 1-minute safety buffer"
+    },
+    {
+      "place": "日吉",
+      "railwayA": "odpt.Railway:Tokyu.Meguro",
+      "railwayB": "odpt.Railway:Tokyu.TokyuShinYokohama",
+      "railwayAName": "目黒線",
+      "railwayBName": "東急新横浜線",
+      "minutes": 1,
+      "source": "https://www.tokyu.co.jp/railway/timetable/",
+      "sourceType": "official through-service timetable; 1-minute safety buffer"
+    },
+    {
+      "place": "和光市",
+      "railwayA": "odpt.Railway:Tobu.Tojo",
+      "railwayB": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "railwayAName": "東上線",
+      "railwayBName": "副都心線",
+      "minutes": 1,
+      "source": "https://www.city.wako.lg.jp/shisei/city/1001519/1001778/index.html",
+      "sourceType": "official mutual through-service guidance; shared station platforms; 1-minute safety buffer"
+    },
+    {
+      "place": "和光市",
+      "railwayA": "odpt.Railway:Tobu.Tojo",
+      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+      "railwayAName": "東上線",
+      "railwayBName": "有楽町線",
+      "minutes": 1,
+      "source": "https://www.city.wako.lg.jp/shisei/city/1001519/1001778/index.html",
+      "sourceType": "official mutual through-service guidance; shared station platforms; 1-minute safety buffer"
+    },
+    {
+      "place": "和光市",
+      "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+      "railwayAName": "副都心線",
+      "railwayBName": "有楽町線",
+      "minutes": 1,
+      "source": "https://www.city.wako.lg.jp/shisei/city/1001519/1001778/index.html",
+      "sourceType": "official mutual through-service guidance; shared station platforms; 1-minute safety buffer"
+    },
+    {
+      "place": "浦和",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.Utsunomiya",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "宇都宮線",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%AD%A6%E8%94%B5%E6%B5%A6%E5%92%8C_%E5%AE%87%E9%83%BD%E5%AE%AE.html?Cway=2",
+      "sourceType": "current route-planner platform transfer time"
+    },
+    {
+      "place": "浦和",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.Takasaki",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "高崎線",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%AD%A6%E8%94%B5%E6%B5%A6%E5%92%8C_%E9%AB%98%E5%B4%8E.html",
+      "sourceType": "current route-planner platform transfer time"
+    },
+    {
+      "place": "浦和",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "湘南新宿ライン",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E3%81%95%E3%81%84%E3%81%9F%E3%81%BE%E6%96%B0%E9%83%BD%E5%BF%83_%E6%96%B0%E5%AE%BF%E8%A5%BF%E5%8F%A3.html",
+      "sourceType": "current route-planner platform transfer time"
+    },
+    {
+      "place": "浦和",
+      "railwayA": "odpt.Railway:JR-East.Takasaki",
+      "railwayB": "odpt.Railway:JR-East.Utsunomiya",
+      "railwayAName": "高崎線",
+      "railwayBName": "宇都宮線",
+      "minutes": 1,
+      "source": "https://www.jreast.co.jp/estation/station/info.aspx?StationCd=259",
+      "sourceType": "official combined Utsunomiya/Takasaki platform group; 1-minute safety buffer"
+    },
+    {
+      "place": "浦和",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:JR-East.Utsunomiya",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "宇都宮線",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%96%B0%E5%AE%BF%E8%A5%BF%E5%8F%A3_%E3%81%95%E3%81%84%E3%81%9F%E3%81%BE%E6%96%B0%E9%83%BD%E5%BF%83.html",
+      "sourceType": "current route-planner platform transfer time"
+    },
+    {
+      "place": "浦和",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:JR-East.Takasaki",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "高崎線",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%96%B0%E7%B7%9A%E6%96%B0%E5%AE%BF_%E3%81%95%E3%81%84%E3%81%9F%E3%81%BE%E6%96%B0%E9%83%BD%E5%BF%83.html",
+      "sourceType": "current route-planner platform transfer time"
+    },
+    {
+      "place": "さいたま新都心",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.Utsunomiya",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "宇都宮線",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E4%B8%8E%E9%87%8E_%E6%A0%97%E6%A9%8B.html",
+      "sourceType": "current route-planner platform transfer time"
+    },
+    {
+      "place": "さいたま新都心",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.Takasaki",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "高崎線",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E4%B8%8E%E9%87%8E_%E9%AB%98%E5%B4%8E.html?Cway=2",
+      "sourceType": "current route-planner platform transfer time"
+    },
+    {
+      "place": "さいたま新都心",
+      "railwayA": "odpt.Railway:JR-East.Takasaki",
+      "railwayB": "odpt.Railway:JR-East.Utsunomiya",
+      "railwayAName": "高崎線",
+      "railwayBName": "宇都宮線",
+      "minutes": 1,
+      "source": "https://wwwjp.jorudan.com.cn/norikae/route/%E6%A0%A2%E5%B1%B1_%E7%A6%8F%E5%B1%85.html",
+      "sourceType": "current route-planner same-platform transfer; 1-minute safety buffer"
+    }
+  ]
+}
