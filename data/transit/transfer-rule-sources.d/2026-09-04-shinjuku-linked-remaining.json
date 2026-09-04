@@ -1,0 +1,129 @@
+{
+  "defaults": {
+    "bidirectional": true,
+    "label": "駅間徒歩乗換",
+    "sourceType": "current route-planner station-to-station walking time",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "新宿 ↔ 新宿西口",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "minutes": 5,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E5%AE%BF-%E6%96%B0%E5%AE%BF%E8%A5%BF%E5%8F%A3"
+    },
+    {
+      "place": "新宿 ↔ 新宿西口",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "minutes": 5,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E5%AE%BF-%E6%96%B0%E5%AE%BF%E8%A5%BF%E5%8F%A3"
+    },
+    {
+      "place": "新宿 ↔ 新宿西口",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "minutes": 5,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E5%AE%BF-%E6%96%B0%E5%AE%BF%E8%A5%BF%E5%8F%A3"
+    },
+    {
+      "place": "新宿 ↔ 新宿西口",
+      "railwayA": "odpt.Railway:Toei.Oedo",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "minutes": 3,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E5%AE%BF%28%E6%9D%B1%E4%BA%AC%E3%83%A1%E3%83%88%E3%83%AD%29-%E6%96%B0%E5%AE%BF%E8%A5%BF%E5%8F%A3"
+    },
+    {
+      "place": "新宿 ↔ 新宿西口",
+      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "minutes": 5,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E5%AE%BF-%E6%96%B0%E5%AE%BF%E8%A5%BF%E5%8F%A3"
+    },
+    {
+      "place": "新宿 ↔ 新宿西口",
+      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "minutes": 5,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E5%AE%BF-%E6%96%B0%E5%AE%BF%E8%A5%BF%E5%8F%A3"
+    },
+    {
+      "place": "新宿西口 ↔ 新宿",
+      "railwayA": "odpt.Railway:Keio.KeioNew",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "minutes": 5,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E5%AE%BF%E8%A5%BF%E5%8F%A3-%E4%BA%AC%E7%8E%8B%E3%82%88%E3%81%BF%E3%81%86%E3%82%8A%E3%83%A9%E3%83%B3%E3%83%89"
+    },
+    {
+      "place": "新宿西口 ↔ 新宿",
+      "railwayA": "odpt.Railway:Keio.Keio",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "minutes": 5,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E5%AE%BF%E8%A5%BF%E5%8F%A3-%E4%BA%AC%E7%8E%8B%E3%82%88%E3%81%BF%E3%81%86%E3%82%8A%E3%83%A9%E3%83%B3%E3%83%89"
+    },
+    {
+      "place": "新宿西口 ↔ 新宿",
+      "railwayA": "odpt.Railway:Odakyu.Odawara",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "minutes": 5,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E5%B0%8F%E7%94%B0%E6%80%A5%E7%9B%B8%E6%A8%A1%E5%8E%9F-%E6%96%B0%E5%AE%BF%E8%A5%BF%E5%8F%A3"
+    },
+    {
+      "place": "新宿 ↔ 西武新宿",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:Seibu.Shinjuku",
+      "minutes": 9,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E5%AE%BF-%E8%A5%BF%E6%AD%A6%E6%96%B0%E5%AE%BF"
+    },
+    {
+      "place": "新宿 ↔ 西武新宿",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:Seibu.Shinjuku",
+      "minutes": 9,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E5%AE%BF-%E8%A5%BF%E6%AD%A6%E6%96%B0%E5%AE%BF"
+    },
+    {
+      "place": "新宿 ↔ 西武新宿",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:Seibu.Shinjuku",
+      "minutes": 9,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E5%AE%BF-%E8%A5%BF%E6%AD%A6%E6%96%B0%E5%AE%BF"
+    },
+    {
+      "place": "新宿 ↔ 西武新宿",
+      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayB": "odpt.Railway:Seibu.Shinjuku",
+      "minutes": 9,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E5%AE%BF-%E8%A5%BF%E6%AD%A6%E6%96%B0%E5%AE%BF"
+    },
+    {
+      "place": "新宿 ↔ 西武新宿",
+      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayB": "odpt.Railway:Seibu.Shinjuku",
+      "minutes": 9,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E5%AE%BF-%E8%A5%BF%E6%AD%A6%E6%96%B0%E5%AE%BF"
+    },
+    {
+      "place": "西武新宿 ↔ 新宿",
+      "railwayA": "odpt.Railway:Keio.KeioNew",
+      "railwayB": "odpt.Railway:Seibu.Shinjuku",
+      "minutes": 9,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E8%A5%BF%E6%AD%A6%E6%96%B0%E5%AE%BF-%E4%BA%AC%E7%8E%8B%E5%A4%9A%E6%91%A9%E5%B7%9D"
+    },
+    {
+      "place": "西武新宿 ↔ 新宿",
+      "railwayA": "odpt.Railway:Keio.Keio",
+      "railwayB": "odpt.Railway:Seibu.Shinjuku",
+      "minutes": 9,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E8%A5%BF%E6%AD%A6%E6%96%B0%E5%AE%BF-%E4%BA%AC%E7%8E%8B%E5%A4%9A%E6%91%A9%E5%B7%9D"
+    },
+    {
+      "place": "西武新宿 ↔ 新宿",
+      "railwayA": "odpt.Railway:Odakyu.Odawara",
+      "railwayB": "odpt.Railway:Seibu.Shinjuku",
+      "minutes": 9,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E8%A5%BF%E6%AD%A6%E6%96%B0%E5%AE%BF-%E5%B0%8F%E7%94%B0%E6%80%A5%E7%9B%B8%E6%A8%A1%E5%8E%9F"
+    }
+  ]
+}
