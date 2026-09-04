@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T08:10:28.697Z",
+  "generatedAt": "2026-09-04T08:12:56.253Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -45,6 +45,7 @@
     "transfer-rule-sources.d/2026-09-04-ebisu-core.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-11.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-20.json",
+    "transfer-rule-sources.d/2026-09-04-fallback-upgrade-4d.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-8b.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-9c.json",
     "transfer-rule-sources.d/2026-09-04-final-exact-3.json",
@@ -117,7 +118,7 @@
     "transfer-rule-sources.d/2026-09-04-yokohama-private-remaining.json"
   ],
   "description": "Station/railway-specific transfer times. Explicit curated rules are preferred; any remaining unblocked candidate pair receives a conservative fallbackMinutes rule until an external standard time is added.",
-  "fallbackCandidatePairs": 45,
+  "fallbackCandidatePairs": 41,
   "rules": [
     {
       "id": "東京-山手線-丸ノ内線",
@@ -3966,6 +3967,59 @@
       "label": "乗換",
       "source": "https://timetables.jreast.co.jp/timetable/list1410.html",
       "sourceType": "official current JR East timetable explicitly groups Uchibo and Sotobo services on the common Chiba-bound platform group; 1-minute safety buffer for the shared-track service boundary",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "二子玉川-田園都市線-大井町線",
+      "fromStation": "odpt.Station:Tokyu.DenEnToshi.FutakoTamagawa",
+      "toStation": "odpt.Station:Tokyu.Oimachi.FutakoTamagawa",
+      "fromRailway": "odpt.Railway:Tokyu.DenEnToshi",
+      "toRailway": "odpt.Railway:Tokyu.Oimachi",
+      "minutes": 3,
+      "bidirectional": true,
+      "reverseMinutes": 1,
+      "label": "乗換",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%B8%8B%E8%B0%B7_%E7%AD%89%E3%80%85%E5%8A%9B.html",
+      "sourceType": "current route planner; Den-en-toshi to Oimachi transfer at Futako-tamagawa shown as 3 minutes; reverse Oimachi-to-Den-en-toshi example shown as 1 minute",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "溝の口-田園都市線-大井町線",
+      "fromStation": "odpt.Station:Tokyu.DenEnToshi.Mizonokuchi",
+      "toStation": "odpt.Station:Tokyu.Oimachi.Mizonokuchi",
+      "fromRailway": "odpt.Railway:Tokyu.DenEnToshi",
+      "toRailway": "odpt.Railway:Tokyu.Oimachi",
+      "minutes": 1,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%A2%B6%E3%81%8C%E8%B0%B7_%E5%A4%A7%E4%BA%95%E7%94%BA.html",
+      "sourceType": "current route planner; Den-en-toshi Line platform 4 to Oimachi Line platform 3 at Mizonokuchi shown as 1 minute",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "田園調布-目黒線-東横線",
+      "fromStation": "odpt.Station:Tokyu.Meguro.DenEnChofu",
+      "toStation": "odpt.Station:Tokyu.Toyoko.DenEnChofu",
+      "fromRailway": "odpt.Railway:Tokyu.Meguro",
+      "toRailway": "odpt.Railway:Tokyu.Toyoko",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%A5%A5%E6%B2%A2_%E8%87%AA%E7%94%B1%E3%81%8C%E4%B8%98%EF%BC%88%E6%9D%B1%E4%BA%AC%EF%BC%89.html",
+      "sourceType": "current route planner; Meguro Line platform 2 to Toyoko Line platform 4 at Den-en-chofu shown as 3 minutes; opposite-line example also shows 3 minutes",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "津田沼-中央総武各駅停車-総武快速線",
+      "fromStation": "odpt.Station:JR-East.ChuoSobuLocal.Tsudanuma",
+      "toStation": "odpt.Station:JR-East.SobuRapid.Tsudanuma",
+      "fromRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "toRailway": "odpt.Railway:JR-East.SobuRapid",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%8D%83%E8%91%89_%E6%9D%B1%E8%88%B9%E6%A9%8B.html",
+      "sourceType": "current route planner; Sobu Rapid to Chuo-Sobu Local transfer at Tsudanuma shown as 3 minutes; used as conservative common station transfer value",
       "verifiedAt": "2026-09-04"
     },
     {
@@ -12031,19 +12085,6 @@
       "verifiedAt": ""
     },
     {
-      "id": "fallback-溝の口-田園都市線-大井町線",
-      "fromStation": "odpt.Station:Tokyu.DenEnToshi.Mizonokuchi",
-      "toStation": "odpt.Station:Tokyu.Oimachi.Mizonokuchi",
-      "fromRailway": "odpt.Railway:Tokyu.DenEnToshi",
-      "toRailway": "odpt.Railway:Tokyu.Oimachi",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
       "id": "fallback-高円寺-中央線快速-中央・総武各駅停車",
       "fromStation": "odpt.Station:JR-East.ChuoRapid.Koenji",
       "toStation": "odpt.Station:JR-East.ChuoSobuLocal.Koenji",
@@ -12356,19 +12397,6 @@
       "verifiedAt": ""
     },
     {
-      "id": "fallback-津田沼-中央・総武各駅停車-総武快速線",
-      "fromStation": "odpt.Station:JR-East.ChuoSobuLocal.Tsudanuma",
-      "toStation": "odpt.Station:JR-East.SobuRapid.Tsudanuma",
-      "fromRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
-      "toRailway": "odpt.Railway:JR-East.SobuRapid",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
       "id": "fallback-鶴見-京浜東北線・根岸線-鶴見線",
       "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Tsurumi",
       "toStation": "odpt.Station:JR-East.Tsurumi.Tsurumi",
@@ -12387,32 +12415,6 @@
       "toStation": "odpt.Station:JR-East.JobanRapid.Tennodai",
       "fromRailway": "odpt.Railway:JR-East.JobanLocal",
       "toRailway": "odpt.Railway:JR-East.JobanRapid",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-田園調布-目黒線-東横線",
-      "fromStation": "odpt.Station:Tokyu.Meguro.DenEnChofu",
-      "toStation": "odpt.Station:Tokyu.Toyoko.DenEnChofu",
-      "fromRailway": "odpt.Railway:Tokyu.Meguro",
-      "toRailway": "odpt.Railway:Tokyu.Toyoko",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-二子玉川-田園都市線-大井町線",
-      "fromStation": "odpt.Station:Tokyu.DenEnToshi.FutakoTamagawa",
-      "toStation": "odpt.Station:Tokyu.Oimachi.FutakoTamagawa",
-      "fromRailway": "odpt.Railway:Tokyu.DenEnToshi",
-      "toRailway": "odpt.Railway:Tokyu.Oimachi",
       "minutes": 5,
       "bidirectional": true,
       "label": "暫定・安全側乗換",
