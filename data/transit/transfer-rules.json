@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T01:11:46.918Z",
+  "generatedAt": "2026-09-04T01:12:15.354Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -53,6 +53,7 @@
     "transfer-rule-sources.d/2026-09-04-musashikosugi-hiyoshi.json",
     "transfer-rule-sources.d/2026-09-04-nishifunabashi.json",
     "transfer-rule-sources.d/2026-09-04-omiya-core.json",
+    "transfer-rule-sources.d/2026-09-04-osaki-yamanote.json",
     "transfer-rule-sources.d/2026-09-04-shimbashi-crossop-remaining.json",
     "transfer-rule-sources.d/2026-09-04-shinjuku-marunouchi-jr.json",
     "transfer-rule-sources.d/2026-09-04-shinjuku-remaining-direct.json",
@@ -5381,6 +5382,58 @@
       "label": "標準・実測乗換（安全側）",
       "source": "https://honnne.com/blog/norikae-omiya/",
       "sourceType": "current transfer guide / measured route",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "大崎-山手線-埼京線・川越線",
+      "fromStation": "odpt.Station:JR-East.Yamanote.Osaki",
+      "toStation": "odpt.Station:JR-East.SaikyoKawagoe.Osaki",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "ホーム間乗換",
+      "source": "https://wadattsu261.com/content/osaki-jryamanote-saikyo-shonanshinjuku-rinkailine-transfer-information/",
+      "sourceType": "current platform-to-platform transfer guide",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "大崎-山手線-湘南新宿ライン",
+      "fromStation": "odpt.Station:JR-East.Yamanote.Osaki",
+      "toStation": "odpt.Station:JR-East.ShonanShinjuku.Osaki",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:JR-East.ShonanShinjuku",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "ホーム間乗換",
+      "source": "https://wadattsu261.com/content/osaki-jryamanote-saikyo-shonanshinjuku-rinkailine-transfer-information/",
+      "sourceType": "current platform-to-platform transfer guide",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "大崎-山手線-りんかい線",
+      "fromStation": "odpt.Station:JR-East.Yamanote.Osaki",
+      "toStation": "odpt.Station:TWR.Rinkai.Osaki",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:TWR.Rinkai",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "ホーム間乗換",
+      "source": "https://wadattsu261.com/content/osaki-jryamanote-saikyo-shonanshinjuku-rinkailine-transfer-information/",
+      "sourceType": "current platform-to-platform transfer guide",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "大崎-山手線-相鉄直通線",
+      "fromStation": "odpt.Station:JR-East.Yamanote.Osaki",
+      "toStation": "odpt.Station:JR-East.SotetsuDirect.Osaki",
+      "fromRailway": "odpt.Railway:JR-East.Yamanote",
+      "toRailway": "odpt.Railway:JR-East.SotetsuDirect",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "ホーム間乗換",
+      "source": "https://norikaemap.com/osaki/0305/",
+      "sourceType": "current platform-to-platform transfer guide",
       "verifiedAt": "2026-09-04"
     },
     {
