@@ -16,6 +16,7 @@ on:
       - 'scripts/build_transit_v2.py'
       - 'scripts/finalize_transit_v2.py'
       - 'scripts/audit_transit_v2.py'
+      - 'scripts/test_route_runtime_same_train.js'
       - 'route-core.js'
       - 'route.js'
       - 'data/transit-sources/manual-topology.json'
@@ -54,6 +55,7 @@ jobs:
       - name: Test timetable importer and identity pipeline
         run: |
           node --check scripts/enrich-through-service-db.mjs
+          node --check scripts/test_route_runtime_same_train.js
           node --check route-core.js
           node --check route.js
           python -m py_compile \
@@ -67,6 +69,7 @@ jobs:
             scripts/audit_transit_v2.py
           node scripts/test_odpt_train_identity_db.mjs
           node scripts/test_cross_operator_through_service.js
+          node scripts/test_route_runtime_same_train.js
           python scripts/test_import_odpt_timetables.py
 
       - name: Import ODPT timetables
@@ -153,9 +156,18 @@ jobs:
           assert runtime_policy['unknownMayBePromotedToSameTrain'] is False
           assert runtime_policy['trainNumberAloneMayResolve'] is False
           assert runtime_policy['timeGapAloneMayResolve'] is False
-          assert len(runtime.get('edges') or []) > 0
+          runtime_edges = runtime.get('edges') or []
+          assert len(runtime_edges) > 100, len(runtime_edges)
+          expected_sotetsu = [
+              'tt:odpt.TrainTimetable:Sotetsu.Izumino.6752.Weekday',
+              'tt:odpt.TrainTimetable:Sotetsu.Main.6752.Weekday',
+              'odpt.Railway:Sotetsu.Izumino',
+              'odpt.Railway:Sotetsu.Main',
+          ]
+          assert expected_sotetsu in runtime_edges, 'authoritative Sotetsu 6752 continuation disappeared from runtime DB'
           print('strict transit-v2 unresolved:', audit['totalUnresolved'])
-          print('runtime strict same-train edges:', len(runtime.get('edges') or []))
+          print('runtime strict same-train edges:', len(runtime_edges))
+          print('verified runtime continuation:', expected_sotetsu)
           PY
 
       - name: Commit refreshed transit data
