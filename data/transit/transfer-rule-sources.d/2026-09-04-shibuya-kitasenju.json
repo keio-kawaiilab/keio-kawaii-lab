@@ -1,0 +1,62 @@
+{
+  "defaults": {
+    "bidirectional": true,
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "渋谷",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "minutes": 4,
+      "label": "標準乗換",
+      "sourceType": "Jorudan standard transfer time",
+      "sourceUrl": "https://mb.jorudan.co.jp/os/noritxt/shibuya/yamanote_line-saikyo_line.html"
+    },
+    {
+      "place": "渋谷",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
+      "minutes": 4,
+      "label": "標準乗換",
+      "sourceType": "Jorudan standard transfer time",
+      "sourceUrl": "https://mb.jorudan.co.jp/os/noritxt/shibuya/yamanote_line-saikyo_line.html"
+    },
+    {
+      "place": "渋谷",
+      "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
+      "minutes": 3,
+      "label": "標準乗換",
+      "sourceType": "Jorudan standard transfer time",
+      "sourceUrl": "https://mb.jorudan.co.jp/os/noritxt/shibuya/tokyo-metro_hanzomon_line-tokyo-metro_fukutoshin_line.html"
+    },
+    {
+      "place": "渋谷",
+      "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "railwayB": "odpt.Railway:Tokyu.DenEnToshi",
+      "minutes": 3,
+      "label": "標準乗換",
+      "sourceType": "Jorudan standard transfer time",
+      "sourceUrl": "https://mb.jorudan.co.jp/os/noritxt/shibuya/tokyo-metro_hanzomon_line-tokyo-metro_fukutoshin_line.html"
+    },
+    {
+      "place": "北千住",
+      "railwayA": "odpt.Railway:MIR.TsukubaExpress",
+      "railwayB": "odpt.Railway:Tobu.TobuSkytree",
+      "minutes": 5,
+      "label": "現在経路ベース乗換",
+      "sourceType": "Jorudan current route-planner transfer time",
+      "sourceUrl": "https://www.jorudan.co.jp/norikae/route/%E3%81%A4%E3%81%8F%E3%81%B0_%E6%9D%B1%E6%AD%A6%E6%97%A5%E5%85%89.html"
+    },
+    {
+      "place": "北千住",
+      "railwayA": "odpt.Railway:MIR.TsukubaExpress",
+      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+      "minutes": 4,
+      "label": "現在経路ベース乗換",
+      "sourceType": "Jorudan current route-planner transfer time",
+      "sourceUrl": "https://www.jorudan.co.jp/norikae/route/%E7%A0%94%E7%A9%B6%E5%AD%A6%E5%9C%92_%E9%8A%80%E5%BA%A7.html"
+    }
+  ]
+}
