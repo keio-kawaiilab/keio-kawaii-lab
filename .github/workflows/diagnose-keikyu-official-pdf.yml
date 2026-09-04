@@ -1,0 +1,75 @@
+name: Diagnose Keikyu official timetable PDF
+
+on:
+  push:
+    paths:
+      - '.github/workflows/diagnose-keikyu-official-pdf.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests==2.32.5 pdfplumber==0.11.7
+      - name: Download and inspect official full-line PDFs
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import requests, pdfplumber
+
+          urls={
+            'weekday':'https://www.keikyu.co.jp/ride/kakueki/pdf/mainline_weekday.pdf',
+            'holiday':'https://www.keikyu.co.jp/ride/kakueki/pdf/mainline_holiday.pdf',
+          }
+          s=requests.Session(); s.headers['User-Agent']='Mozilla/5.0 transit-audit/1.0'
+          for kind,url in urls.items():
+            r=s.get(url,timeout=(20,180)); print('DOWNLOAD',kind,r.status_code,len(r.content),r.headers.get('content-type'))
+            if r.status_code!=200 or not r.content.startswith(b'%PDF'):
+              continue
+            p=Path(f'/tmp/keikyu-{kind}.pdf'); p.write_bytes(r.content)
+            with pdfplumber.open(p) as pdf:
+              print('PDF',kind,'pages',len(pdf.pages))
+              hits=[]
+              for i,page in enumerate(pdf.pages):
+                text=page.extract_text(layout=True) or ''
+                labels=[x for x in ('京急蒲田','堀ノ内','新大津','平和島','京急川崎','神奈川新町','糀谷') if x in text]
+                if labels:
+                  hits.append((i+1,labels,len(text)))
+                  if len(hits)<=8:
+                    lines=text.splitlines()
+                    print('PAGE',kind,i+1,'LABELS',labels,'SIZE',page.width,page.height)
+                    for n,line in enumerate(lines):
+                      if any(label in line for label in labels):
+                        lo=max(0,n-4); hi=min(len(lines),n+7)
+                        print('CONTEXT_START',kind,i+1,n)
+                        for x in lines[lo:hi]: print(x)
+                        print('CONTEXT_END')
+              print('HITS',kind,hits[:30])
+          PY
+      - name: Print current unresolved Keikyu fragments
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          v2=Path('data/transit-v2')
+          c=json.loads((v2/'coverage.json').read_text(encoding='utf-8'))
+          fragments={}
+          for p in (v2/'fragments').glob('*.json'):
+            for f in json.loads(p.read_text(encoding='utf-8')).get('fragments') or []:
+              fragments[str(f.get('id') or '')]=f
+          rows=[]
+          for u in c.get('unresolved') or []:
+            src=fragments.get(str(u.get('fragment'))) or {}
+            if src.get('sourceOperator')!='keikyu': continue
+            rows.append({'source':src,'nextRailway':u.get('nextRailway'),'candidates':[fragments.get(str(x)) or {} for x in u.get('candidateFragments') or []]})
+          print('KEIKYU_UNRESOLVED',len(rows))
+          for i,row in enumerate(rows,1):
+            print('CASE',i,json.dumps(row,ensure_ascii=False,separators=(',',':')))
+          PY
