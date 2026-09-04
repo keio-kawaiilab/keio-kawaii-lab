@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T07:19:00.466Z",
+  "generatedAt": "2026-09-04T07:22:20.319Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -100,6 +100,7 @@
     "transfer-rule-sources.d/2026-09-04-ueno-totsuka-toride-soga-15.json",
     "transfer-rule-sources.d/2026-09-04-urban-links-5.json",
     "transfer-rule-sources.d/2026-09-04-verified-gaps-21.json",
+    "transfer-rule-sources.d/2026-09-04-verified-gaps-22.json",
     "transfer-rule-sources.d/2026-09-04-verified-junctions-9.json",
     "transfer-rule-sources.d/2026-09-04-verified-links-10.json",
     "transfer-rule-sources.d/2026-09-04-walk-links-9.json",
@@ -10354,6 +10355,32 @@
       "label": "標準・実測乗換（安全側）",
       "source": "https://www.jorudan.co.jp/norikae/route/%E5%B2%A9%E6%9C%AC%E7%94%BA_%E3%81%A4%E3%81%8F%E3%81%B0.html",
       "sourceType": "current Jorudan linked-station walk from Iwamotocho to Tsukuba Express Akihabara; 12 minutes",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "後楽園-丸ノ内線-南北線",
+      "fromStation": "odpt.Station:TokyoMetro.Marunouchi.Korakuen",
+      "toStation": "odpt.Station:TokyoMetro.Namboku.Korakuen",
+      "fromRailway": "odpt.Railway:TokyoMetro.Marunouchi",
+      "toRailway": "odpt.Railway:TokyoMetro.Namboku",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://wadattsu261.com/content/korakuen-metronamboku-marunouchiline-transfer-information/",
+      "sourceType": "current measured transfer guide updated 2026-05; shortest about 4-5 minutes, conservative upper bound",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "恵比寿-埼京線・川越線-湘南新宿ライン",
+      "fromStation": "odpt.Station:JR-East.SaikyoKawagoe.Ebisu",
+      "toStation": "odpt.Station:JR-East.ShonanShinjuku.Ebisu",
+      "fromRailway": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "toRailway": "odpt.Railway:JR-East.ShonanShinjuku",
+      "minutes": 1,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://norikaemap.com/ebisu/0103/",
+      "sourceType": "current photographed station guide updated 2026-08; both services share JR platforms 3/4, 1-minute safety buffer",
       "verifiedAt": "2026-09-04"
     },
     {
