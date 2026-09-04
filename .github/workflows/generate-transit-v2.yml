@@ -1,0 +1,100 @@
+name: Generate transit v2
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/build_transit_v2.py'
+      - 'scripts/test_transit_v2.py'
+      - 'scripts/import_odpt_timetables.py'
+      - 'scripts/collect_odpt_train_identity.py'
+      - 'data/transit-v2/spec.json'
+      - 'data/transit-v2/service-boundaries.json'
+      - 'data/transit/**'
+      - '.github/workflows/generate-transit-v2.yml'
+  schedule:
+    - cron: '50 18 * * 0'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: generate-transit-v2
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      ODPT_API_KEY: ${{ secrets.ODPT_API_KEY }}
+      ODPT_CHALLENGE_API_KEY: ${{ secrets.ODPT_CHALLENGE_API_KEY }}
+      ALLOW_JR_EAST_CHALLENGE_DATA: ${{ vars.ALLOW_JR_EAST_CHALLENGE_DATA }}
+      ODPT_IMPORT_TIMETABLES: ${{ vars.ODPT_IMPORT_TIMETABLES }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install requests==2.32.5
+
+      - name: Validate v2 builder
+        run: |
+          python -m py_compile scripts/build_transit_v2.py scripts/collect_odpt_train_identity.py
+          python scripts/test_transit_v2.py
+
+      - name: Refresh ODPT timetable snapshot with destinations
+        shell: bash
+        run: |
+          if [ -z "$ODPT_API_KEY" ]; then
+            echo "ODPT_API_KEY is unavailable; building from the checked-in snapshot."
+            exit 0
+          fi
+          python scripts/import_odpt_timetables.py
+          python scripts/collect_odpt_train_identity.py
+
+      - name: Build train-centric v2 database
+        run: python scripts/build_transit_v2.py
+
+      - name: Validate strict identity policy
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          spec=json.loads(Path('data/transit-v2/spec.json').read_text())
+          edges=json.loads(Path('data/transit-v2/same-train-edges.json').read_text())
+          coverage=json.loads(Path('data/transit-v2/coverage.json').read_text())
+          policy=spec['policy']
+          assert policy['runtimeInference'] is False
+          assert policy['timeGapMayEstablishTrainIdentity'] is False
+          assert policy['trainNumberMayEstablishTrainIdentity'] is False
+          assert policy['unresolvedMayBeShownAsThrough'] is False
+          assert edges['policy']['timeGapMayEstablishTrainIdentity'] is False
+          assert edges['policy']['trainNumberMayEstablishTrainIdentity'] is False
+          assert coverage['summary']['fragments'] > 0
+          print(json.dumps(coverage['summary'], ensure_ascii=False, indent=2))
+          PY
+
+      - name: Commit refreshed transit v1 and v2 snapshots
+        shell: bash
+        run: |
+          if git diff --quiet -- data/transit data/transit-v2; then
+            echo "No transit data changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/transit data/transit-v2
+          git commit -m "Generate train-centric transit v2 snapshot"
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            sleep $((attempt * 3))
+          done
+          echo "Failed to push transit v2 snapshot after 3 attempts." >&2
+          exit 1
