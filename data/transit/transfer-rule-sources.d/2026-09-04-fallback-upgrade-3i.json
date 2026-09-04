@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "乗換",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "id": "倉賀野-八高線-高崎線",
+      "place": "倉賀野",
+      "railwayA": "odpt.Railway:JR-East.Hachiko",
+      "railwayB": "odpt.Railway:JR-East.Takasaki",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%8C%97%E8%97%A4%E5%B2%A1_%E6%96%B0%E7%94%BA%EF%BC%88%E7%BE%A4%E9%A6%AC%EF%BC%89.html",
+      "sourceType": "current Jorudan route explicitly shows a 3-minute transfer at Kuragano from Hachiko Line platforms 1/2 to Takasaki Line platforms 3/4; reverse-direction route also shows 3 minutes"
+    },
+    {
+      "id": "浅野-鶴見線-海芝浦支線",
+      "place": "浅野",
+      "railwayA": "odpt.Railway:JR-East.Tsurumi",
+      "railwayB": "odpt.Railway:JR-East.TsurumiUmiShibauraBranch",
+      "minutes": 1,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%A4%A7%E5%B7%9D_%E6%B5%B7%E8%8A%9D%E6%B5%A6.html",
+      "sourceType": "current Jorudan route explicitly shows a 1-minute transfer at Asano from Tsurumi Line platform 2 to the Umi-Shibaura branch platform 3; other current branch-to-main examples also show 1 minute"
+    },
+    {
+      "id": "安善-鶴見線-大川支線",
+      "place": "安善",
+      "railwayA": "odpt.Railway:JR-East.Tsurumi",
+      "railwayB": "odpt.Railway:JR-East.TsurumiOkawaBranch",
+      "minutes": 1,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%89%87%E7%94%BA%EF%BC%88%E7%A5%9E%E5%A5%88%E5%B7%9D%EF%BC%89_%E5%A4%A7%E5%B7%9D.html",
+      "sourceType": "current Jorudan route explicitly shows a 1-minute transfer at Anzen from Tsurumi Line platform 2 to Okawa branch platform 1"
+    }
+  ]
+}
