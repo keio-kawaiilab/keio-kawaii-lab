@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-04T01:22:06.163Z",
+  "generatedAt": "2026-09-04T01:22:37.469Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T01:21:50.460Z",
+  "rulesGeneratedAt": "2026-09-04T01:22:19.567Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 495,
-    "uncuratedPairs": 458,
+    "curatedPairs": 497,
+    "uncuratedPairs": 456,
     "blockedPairs": 7,
-    "curatedSourceRules": 495,
+    "curatedSourceRules": 497,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -94,16 +94,6 @@
     },
     {
       "place": "拝島",
-      "totalPairs": 6,
-      "curatedPairs": 0,
-      "uncuratedPairs": 6,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 3,
-      "railwayCount": 4,
-      "priorityScore": 10.5
-    },
-    {
-      "place": "練馬",
       "totalPairs": 6,
       "curatedPairs": 0,
       "uncuratedPairs": 6,
@@ -330,6 +320,16 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 1,
       "railwayCount": 5,
+      "priorityScore": 5.5
+    },
+    {
+      "place": "練馬",
+      "totalPairs": 6,
+      "curatedPairs": 2,
+      "uncuratedPairs": 4,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 4,
       "priorityScore": 5.5
     },
     {
@@ -2127,98 +2127,6 @@
       ]
     },
     {
-      "place": "練馬",
-      "totalPairs": 6,
-      "curatedPairs": 0,
-      "uncuratedPairs": 6,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 3,
-      "railwayCount": 4,
-      "priorityScore": 10.5,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Seibu.SeibuYurakucho",
-          "railwayAName": "西武有楽町線",
-          "railwayB": "odpt.Railway:Toei.Oedo",
-          "railwayBName": "大江戸線",
-          "sameOperator": false,
-          "distanceMeters": 118,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Seibu.Ikebukuro",
-          "railwayAName": "池袋線",
-          "railwayB": "odpt.Railway:Toei.Oedo",
-          "railwayBName": "大江戸線",
-          "sameOperator": false,
-          "distanceMeters": 118,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Seibu.Toshima",
-          "railwayAName": "豊島線",
-          "railwayB": "odpt.Railway:Toei.Oedo",
-          "railwayBName": "大江戸線",
-          "sameOperator": false,
-          "distanceMeters": 118,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Seibu.SeibuYurakucho",
-          "railwayAName": "西武有楽町線",
-          "railwayB": "odpt.Railway:Seibu.Toshima",
-          "railwayBName": "豊島線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Seibu.Ikebukuro",
-          "railwayAName": "池袋線",
-          "railwayB": "odpt.Railway:Seibu.SeibuYurakucho",
-          "railwayBName": "西武有楽町線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Seibu.Ikebukuro",
-          "railwayAName": "池袋線",
-          "railwayB": "odpt.Railway:Seibu.Toshima",
-          "railwayBName": "豊島線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
       "place": "上野",
       "totalPairs": 21,
       "curatedPairs": 11,
@@ -3831,6 +3739,59 @@
           "railwayAName": "丸ノ内線",
           "railwayB": "odpt.Railway:TokyoMetro.MarunouchiBranch",
           "railwayBName": "丸ノ内線支線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ]
+    },
+    {
+      "place": "和光市",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 2,
+      "railwayCount": 3,
+      "priorityScore": 6,
+      "crossOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:Tobu.Tojo",
+          "railwayAName": "東上線",
+          "railwayB": "odpt.Railway:TokyoMetro.Fukutoshin",
+          "railwayBName": "副都心線",
+          "sameOperator": false,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:Tobu.Tojo",
+          "railwayAName": "東上線",
+          "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+          "railwayBName": "有楽町線",
+          "sameOperator": false,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
+          "railwayAName": "副都心線",
+          "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+          "railwayBName": "有楽町線",
           "sameOperator": true,
           "distanceMeters": 0,
           "fallbackMinutes": 5,
@@ -10022,20 +9983,6 @@
       "place": "練馬",
       "railwayA": "odpt.Railway:Seibu.SeibuYurakucho",
       "railwayAName": "西武有楽町線",
-      "railwayB": "odpt.Railway:Toei.Oedo",
-      "railwayBName": "大江戸線",
-      "sameOperator": false,
-      "distanceMeters": 118,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "練馬",
-      "railwayA": "odpt.Railway:Seibu.SeibuYurakucho",
-      "railwayAName": "西武有楽町線",
       "railwayB": "odpt.Railway:Seibu.Toshima",
       "railwayBName": "豊島線",
       "sameOperator": true,
@@ -10054,20 +10001,6 @@
       "railwayBName": "西武有楽町線",
       "sameOperator": true,
       "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "練馬",
-      "railwayA": "odpt.Railway:Seibu.Ikebukuro",
-      "railwayAName": "池袋線",
-      "railwayB": "odpt.Railway:Toei.Oedo",
-      "railwayBName": "大江戸線",
-      "sameOperator": false,
-      "distanceMeters": 118,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
