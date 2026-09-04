@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "乗換",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "id": "田端-京浜東北線根岸線-山手線",
+      "place": "田端",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.Yamanote",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%B7%9D%E5%8F%A3_%E9%A7%92%E8%BE%BC.html",
+      "sourceType": "current route planner; Keihin-Tohoku Line to Yamanote Line transfer at Tabata shown as 3 minutes (4th platform arrival to 2nd platform departure)"
+    },
+    {
+      "id": "調布-京王線-相模原線",
+      "place": "調布",
+      "railwayA": "odpt.Railway:Keio.Keio",
+      "railwayB": "odpt.Railway:Keio.Sagamihara",
+      "minutes": 2,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%A5%BF%E8%AA%BF%E5%B8%83_%E4%BA%AC%E7%8E%8B%E5%A4%9A%E6%91%A9%E3%82%BB%E3%83%B3%E3%82%BF%E3%83%BC.html",
+      "sourceType": "current route planner; Keio Line to Sagamihara Line transfer at Chofu shown as 2 minutes; reverse direction also shown as 2 minutes"
+    },
+    {
+      "id": "二俣川-相鉄いずみ野線-相鉄本線",
+      "place": "二俣川",
+      "railwayA": "odpt.Railway:Sotetsu.Izumino",
+      "railwayB": "odpt.Railway:Sotetsu.Main",
+      "minutes": 1,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%A8%AA%E6%B5%9C_%E6%B9%98%E5%8D%97%E5%8F%B0.html",
+      "sourceType": "current route planner; Sotetsu Main Line to Izumino Line transfer at Futamatagawa shown as 1 minute"
+    },
+    {
+      "id": "堀ノ内-京急久里浜線-京急本線",
+      "place": "堀ノ内",
+      "railwayA": "odpt.Railway:Keikyu.Kurihama",
+      "railwayB": "odpt.Railway:Keikyu.Main",
+      "minutes": 2,
+      "source": "https://ekitan.com/transit/route/sf-1950/st-2053",
+      "sourceType": "current route planner; Kurihama Line arrival at Horinouchi 05:04 and Keikyu Main Line departure 05:06; same 2-minute connection also observed in the opposite line direction"
+    },
+    {
+      "id": "多摩湖-西武多摩湖線-西武山口線",
+      "place": "多摩湖",
+      "railwayA": "odpt.Railway:Seibu.Tamako",
+      "railwayB": "odpt.Railway:Seibu.Yamaguchi",
+      "minutes": 1,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%90%A9%E5%B1%B1_%E8%A5%BF%E6%AD%A6%E7%90%83%E5%A0%B4%E5%89%8D.html",
+      "sourceType": "current route planner; Tamako Line to Yamaguchi Line transfer at Tamako shown as 1 minute"
+    },
+    {
+      "id": "西武球場前-西武狭山線-西武山口線",
+      "place": "西武球場前",
+      "railwayA": "odpt.Railway:Seibu.Sayama",
+      "railwayB": "odpt.Railway:Seibu.Yamaguchi",
+      "minutes": 2,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%A5%BF%E6%AD%A6%E5%9C%92%E3%82%86%E3%81%86%E3%81%88%E3%82%93%E3%81%A1_%E8%A5%BF%E6%89%80%E6%B2%A2.html",
+      "sourceType": "current route planner; Yamaguchi Line to Sayama Line transfer at Seibukyujo-mae shown as 2 minutes; reverse-direction current route also shows 2 minutes"
+    },
+    {
+      "id": "萩山-西武拝島線-西武多摩湖線",
+      "place": "萩山",
+      "railwayA": "odpt.Railway:Seibu.Haijima",
+      "railwayB": "odpt.Railway:Seibu.Tamako",
+      "minutes": 2,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%A5%BF%E6%AD%A6%E5%9C%92_%E8%A5%BF%E6%AD%A6%E5%9C%92%E3%82%86%E3%81%86%E3%81%88%E3%82%93%E3%81%A1.html",
+      "sourceType": "current route planner; Haijima Line to Tamako Line transfer at Hagiyama shown as 2 minutes"
+    },
+    {
+      "id": "新栃木-東武日光線-東武宇都宮線",
+      "place": "新栃木",
+      "railwayA": "odpt.Railway:Tobu.Nikko",
+      "railwayB": "odpt.Railway:Tobu.Utsunomiya",
+      "minutes": 1,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%96%B0%E9%B9%BF%E6%B2%BC_%E6%9D%B1%E6%AD%A6%E5%AE%87%E9%83%BD%E5%AE%AE.html",
+      "sourceType": "current route planner; Nikko Line to Utsunomiya Line transfer at Shin-Tochigi shown as 1 minute; reverse-direction route also shows 1 minute"
+    }
+  ]
+}
