@@ -1,0 +1,191 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "乗換",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "id": "荻窪-中央線快速-中央総武各駅停車",
+      "place": "荻窪",
+      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "minutes": 1,
+      "source": "https://norikaemap.com/ogikubo/0103/",
+      "sourceType": "current measured transfer guide; Chuo-Sobu Local to Chuo Rapid shown as about 1 minute"
+    },
+    {
+      "id": "神田-京浜東北線-山手線",
+      "place": "神田",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.Yamanote",
+      "minutes": 1,
+      "source": "https://norikaemap.com/kanda/0501/",
+      "sourceType": "current photographed station guide confirms Yamanote and Keihin-Tohoku use opposite sides of the same platform islands by direction; 1-minute safety buffer"
+    },
+    {
+      "id": "春日-三田線-大江戸線",
+      "place": "春日",
+      "railwayA": "odpt.Railway:Toei.Mita",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "minutes": 3,
+      "source": "https://wadattsu261.com/content/kasuga-toeimita-oedoline-transfer-information/",
+      "sourceType": "current measured transfer guide; Mita Line to Oedo Line shown as about 3 minutes from either Mita Line platform"
+    },
+    {
+      "id": "船橋-中央総武各駅停車-総武快速線",
+      "place": "船橋",
+      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayB": "odpt.Railway:JR-East.SobuRapid",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%88%B9%E6%A9%8B%E6%B3%95%E5%85%B8_%E5%9B%9B%E8%A1%97%E9%81%93.html",
+      "sourceType": "current route planner; Funabashi local-to-rapid transfer shown as 3 minutes"
+    },
+    {
+      "id": "新松戸-常磐線各駅停車-武蔵野線",
+      "place": "新松戸",
+      "railwayA": "odpt.Railway:JR-East.JobanLocal",
+      "railwayB": "odpt.Railway:JR-East.Musashino",
+      "minutes": 2,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%8C%97%E5%B0%8F%E9%87%91_%E5%8D%97%E6%B5%81%E5%B1%B1.html",
+      "sourceType": "current route planner; Shin-Matsudo Joban Local to Musashino transfer shown as 2 minutes"
+    },
+    {
+      "id": "代々木-中央総武各駅停車-山手線",
+      "place": "代々木",
+      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayB": "odpt.Railway:JR-East.Yamanote",
+      "minutes": 1,
+      "reverseMinutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%8D%83%E9%A7%84%E3%83%B6%E8%B0%B7_%E6%B8%8B%E8%B0%B7.html",
+      "sourceType": "current route planner; Chuo-Sobu Local to Yamanote shown as 1 minute; reverse-direction example from Shibuya toward Sendagaya shows 3 minutes"
+    },
+    {
+      "id": "新百合ヶ丘-小田原線-多摩線",
+      "place": "新百合ヶ丘",
+      "railwayA": "odpt.Railway:Odakyu.Odawara",
+      "railwayB": "odpt.Railway:Odakyu.Tama",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E7%94%BA%E7%94%B0_%E6%A0%97%E5%B9%B3.html",
+      "sourceType": "current route planner; Shin-Yurigaoka Odawara Line to Tama Line transfer shown as 3 minutes; reverse route also shows 3 minutes"
+    },
+    {
+      "id": "相模大野-江ノ島線-小田原線",
+      "place": "相模大野",
+      "railwayA": "odpt.Railway:Odakyu.Enoshima",
+      "railwayB": "odpt.Railway:Odakyu.Odawara",
+      "minutes": 1,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%9D%B1%E6%9E%97%E9%96%93_%E7%94%BA%E7%94%B0.html",
+      "sourceType": "current route planner; Enoshima Line to Odawara Line transfer at Sagami-Ono shown as 1 minute; opposite direction also observed at 1 minute"
+    },
+    {
+      "id": "東府中-競馬場線-京王線",
+      "place": "東府中",
+      "railwayA": "odpt.Railway:Keio.Keibajo",
+      "railwayB": "odpt.Railway:Keio.Keio",
+      "minutes": 2,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%96%B0%E5%AE%BF_%E5%BA%9C%E4%B8%AD%E7%AB%B6%E9%A6%AC%E6%AD%A3%E9%96%80%E5%89%8D.html",
+      "sourceType": "current route planner; Keio Line to Keibajo Line transfer at Higashi-Fuchu shown as 2 minutes"
+    },
+    {
+      "id": "西新井-大師線-東武スカイツリーライン",
+      "place": "西新井",
+      "railwayA": "odpt.Railway:Tobu.Daishi",
+      "railwayB": "odpt.Railway:Tobu.TobuSkytree",
+      "minutes": 2,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%A4%A7%E5%B8%AB%E5%89%8D_%E5%8C%97%E5%8D%83%E4%BD%8F.html",
+      "sourceType": "current route planner; Daishi Line to Tobu Skytree Line transfer at Nishi-Arai shown as 2 minutes"
+    },
+    {
+      "id": "北野-京王線-高尾線",
+      "place": "北野",
+      "railwayA": "odpt.Railway:Keio.Keio",
+      "railwayB": "odpt.Railway:Keio.Takao",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E9%AB%98%E5%B0%BE%E5%B1%B1%E5%8F%A3_%E4%BA%AC%E7%8E%8B%E5%85%AB%E7%8E%8B%E5%AD%90.html",
+      "sourceType": "current route planner; Takao Line to Keio Line transfer at Kitano shown as 3 minutes; conservative common value"
+    },
+    {
+      "id": "中野坂上-丸ノ内線-丸ノ内線支線",
+      "place": "中野坂上",
+      "railwayA": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayB": "odpt.Railway:TokyoMetro.MarunouchiBranch",
+      "minutes": 1,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%8D%BB%E7%AA%AA_%E6%96%B9%E5%8D%97%E7%94%BA.html",
+      "sourceType": "current route planner; Marunouchi main line to branch transfer at Nakano-sakaue shown as 1 minute"
+    },
+    {
+      "id": "大網-外房線-東金線",
+      "place": "大網",
+      "railwayA": "odpt.Railway:JR-East.Sotobo",
+      "railwayB": "odpt.Railway:JR-East.Togane",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%9C%9F%E6%B0%97_%E6%9D%B1%E9%87%91.html",
+      "sourceType": "current route planner; Sotobo Line to Togane Line transfer at Oami shown as 3 minutes; through trains also confirm the junction relationship"
+    },
+    {
+      "id": "熱海-伊東線-東海道線",
+      "place": "熱海",
+      "railwayA": "odpt.Railway:JR-East.Ito",
+      "railwayB": "odpt.Railway:JR-East.Tokaido",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%B0%8F%E7%94%B0%E5%8E%9F_%E4%BC%8A%E6%9D%B1.html?Ddd=04&Dym=202609",
+      "sourceType": "current route planner; Tokaido Line to Ito Line transfer at Atami shown as 3 minutes; used as conservative common value"
+    },
+    {
+      "id": "東小泉-小泉線-小泉線支線",
+      "place": "東小泉",
+      "railwayA": "odpt.Railway:Tobu.Koizumi",
+      "railwayB": "odpt.Railway:Tobu.KoizumiBranch",
+      "minutes": 1,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%A4%AA%E7%94%B0%EF%BC%88%E7%BE%A4%E9%A6%AC%EF%BC%89_%E8%A5%BF%E5%B0%8F%E6%B3%89.html",
+      "sourceType": "current route planner; Koizumi branch/main transfer at Higashi-Koizumi shown as 1 minute"
+    },
+    {
+      "id": "新川崎-湘南新宿ライン-横須賀線",
+      "place": "新川崎",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:JR-East.Yokosuka",
+      "minutes": 1,
+      "source": "https://timetables.jreast.co.jp/timetable/list0858.html",
+      "sourceType": "official current JR East timetable confirms both service families use the same Yokosuka-line station/platform group by direction; 1-minute safety buffer for the service-label boundary"
+    },
+    {
+      "id": "東戸塚-湘南新宿ライン-横須賀線",
+      "place": "東戸塚",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:JR-East.Yokosuka",
+      "minutes": 1,
+      "source": "https://timetables.jreast.co.jp/timetable/list1292.html",
+      "sourceType": "official current JR East timetable confirms both service families use the same Yokosuka-line station/platform group by direction; 1-minute safety buffer for the service-label boundary"
+    },
+    {
+      "id": "保土ケ谷-湘南新宿ライン-横須賀線",
+      "place": "保土ケ谷",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:JR-East.Yokosuka",
+      "minutes": 1,
+      "source": "https://timetables.jreast.co.jp/timetable/list1404.html",
+      "sourceType": "official current JR East timetable confirms both service families use the same Yokosuka-line station/platform group by direction; 1-minute safety buffer for the service-label boundary"
+    },
+    {
+      "id": "尾久-高崎線-宇都宮線",
+      "place": "尾久",
+      "railwayA": "odpt.Railway:JR-East.Takasaki",
+      "railwayB": "odpt.Railway:JR-East.Utsunomiya",
+      "minutes": 1,
+      "source": "https://timetables.jreast.co.jp/timetable/list0367.html",
+      "sourceType": "official current JR East timetable groups Utsunomiya and Takasaki services together on the common Ueno-Tokyo Line platform group; 1-minute safety buffer for service-label switching"
+    },
+    {
+      "id": "本千葉-外房線-内房線",
+      "place": "本千葉",
+      "railwayA": "odpt.Railway:JR-East.Sotobo",
+      "railwayB": "odpt.Railway:JR-East.Uchibo",
+      "minutes": 1,
+      "source": "https://timetables.jreast.co.jp/timetable/list1410.html",
+      "sourceType": "official current JR East timetable explicitly groups Uchibo and Sotobo services on the common Chiba-bound platform group; 1-minute safety buffer for the shared-track service boundary"
+    }
+  ]
+}
