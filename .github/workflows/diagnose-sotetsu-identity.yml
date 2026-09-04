@@ -1,0 +1,62 @@
+name: Diagnose Sotetsu identity-only links
+
+on:
+  push:
+    paths:
+      - '.github/workflows/diagnose-sotetsu-identity.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Inspect authoritative links and compact fragments
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          side=json.loads(Path('data/transit/odpt-train-identities.json').read_text(encoding='utf-8'))
+          records={r['timetableId']:r for r in side.get('records',[]) if r.get('timetableId')}
+          samples=[
+            'odpt.TrainTimetable:Sotetsu.Izumino.6752.Weekday',
+            'odpt.TrainTimetable:Sotetsu.Main.6752.Weekday',
+            'odpt.TrainTimetable:Sotetsu.Izumino.6756.Weekday',
+            'odpt.TrainTimetable:Sotetsu.Main.6756.Weekday',
+          ]
+          for tt in samples:
+            print('IDENTITY',tt,json.dumps(records.get(tt),ensure_ascii=False,sort_keys=True))
+
+          compact=json.loads(Path('data/transit/sotetsu/timetables/8a08ffd62d0e42.json').read_text(encoding='utf-8'))
+          by_tt={str(t[6]):t for t in compact.get('trips',[]) if len(t)>6 and t[6]}
+          for tt in samples:
+            print('COMPACT',tt,json.dumps(by_tt.get(tt),ensure_ascii=False))
+
+          missing=[]
+          for row in records.values():
+            if row.get('sourceOperator')!='sotetsu':
+              continue
+            for nxt in row.get('nextTrainTimetables') or []:
+              if str(nxt).startswith('odpt.TrainTimetable:Sotetsu.Main.') and str(nxt) not in by_tt:
+                target=records.get(str(nxt)) or {}
+                missing.append({
+                  'from':row.get('timetableId'),'to':nxt,
+                  'targetFirst':target.get('firstStop'),'targetLast':target.get('lastStop'),
+                  'targetNext':target.get('nextTrainTimetables'),'targetPrevious':target.get('previousTrainTimetables'),
+                  'targetDestination':target.get('destination'),'targetOrigin':target.get('origin'),
+                })
+          print('MISSING_COUNT',len(missing))
+          print('MISSING_SAMPLE',json.dumps(missing[:12],ensure_ascii=False,sort_keys=True))
+          signature={}
+          for item in missing:
+            first=item['targetFirst']; last=item['targetLast']
+            key=(bool(first),bool(last),(first or {}).get('station'),(last or {}).get('station'),len(item['targetNext'] or []))
+            signature[key]=signature.get(key,0)+1
+          print('MISSING_SIGNATURES',json.dumps([{'signature':list(k),'count':v} for k,v in sorted(signature.items(),key=lambda x:-x[1])],ensure_ascii=False))
+          PY
