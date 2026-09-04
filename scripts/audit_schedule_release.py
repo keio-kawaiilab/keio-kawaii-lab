@@ -172,6 +172,17 @@ def stable_keys(event: dict) -> list[str]:
     return result
 
 
+def preferred_match_keys(event: dict) -> list[str]:
+    """Prefer exact row identities before generic URLs shared by many sale rounds."""
+    keys = stable_keys(event)
+    rank = lambda key: (
+        0 if key.startswith("id:") else
+        1 if key.startswith(("pia:", "sukisuki:", "lawson:", "eplus:")) else
+        2
+    )
+    return sorted(keys, key=rank)
+
+
 def future_or_active(event: dict, today: date) -> bool:
     dates = [parse_day(value) for value in event_days(event)]
     dates = [value for value in dates if value]
@@ -452,7 +463,7 @@ def audit(previous: dict, candidate: dict, now: datetime) -> tuple[list[str], li
         protected += 1
         match = None
         match_key = None
-        for key in stable_keys(old):
+        for key in preferred_match_keys(old):
             if key in cand_index:
                 match = cand_index[key]
                 match_key = key

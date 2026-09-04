@@ -114,6 +114,27 @@ class AuditScheduleReleaseTests(unittest.TestCase):
         self.assertEqual([], errors)
         self.assertTrue(any("deadline extended" in warning for warning in warnings))
 
+    def test_shared_official_feature_prefers_exact_id_before_shared_url(self):
+        shared = "https://cutiestreet.asobisystem.com/feature/autumntour"
+        later = {
+            "id": "upgrade-later", "group": "CUTIE STREET", "eventScope": "kawaii-lab",
+            "title": "CUTIE STREET JAPAN TOUR 2026", "ticketType": "アップグレード抽選受付",
+            "applyStart": "2026-09-03T20:00", "applyEnd": "2026-09-08T23:59",
+            "eventDate": "2026-10-03", "url": shared, "urls": [shared],
+            "sourceType": "official", "primarySource": "official", "applicationStatus": "open",
+        }
+        earlier = {
+            "id": "upgrade-earlier", "group": "CUTIE STREET", "eventScope": "kawaii-lab",
+            "title": "CUTIE STREET JAPAN TOUR 2026", "ticketType": "アップグレード抽選受付",
+            "applyStart": "2026-09-01T20:00", "applyEnd": "2026-09-06T23:59",
+            "eventDate": "2026-09-23", "url": shared, "urls": [shared],
+            "sourceType": "official", "primarySource": "official", "applicationStatus": "open",
+        }
+        old = payload([later, earlier])
+        new = payload([copy.deepcopy(earlier), copy.deepcopy(later)])
+        errors, _, _ = audit(old, new, NOW)
+        self.assertEqual([], errors)
+
     def test_duplicate_pia_lot_is_blocked(self):
         first = base_pia(id="a")
         second = base_pia(id="b")
