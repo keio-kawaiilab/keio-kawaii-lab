@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T07:22:20.319Z",
+  "generatedAt": "2026-09-04T07:23:38.048Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -89,6 +89,7 @@
     "transfer-rule-sources.d/2026-09-04-singletons-11.json",
     "transfer-rule-sources.d/2026-09-04-singletons-7b.json",
     "transfer-rule-sources.d/2026-09-04-singletons-7c.json",
+    "transfer-rule-sources.d/2026-09-04-sobu-local-rapid-3.json",
     "transfer-rule-sources.d/2026-09-04-three-pair-batch-18.json",
     "transfer-rule-sources.d/2026-09-04-tobu-haijima-9.json",
     "transfer-rule-sources.d/2026-09-04-tokyo-final-25.json",
@@ -9016,6 +9017,45 @@
       "label": "標準・実測乗換（安全側）",
       "source": "https://www.tokyometro.jp/ticket/particularcase/meguro_shiroganetakanawa/index.html",
       "sourceType": "official Mita/Namboku shared-track segment between Meguro and Shirokane-Takanawa; no platform change, 1-minute safety buffer",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "市川-中央・総武各駅停車-総武快速線",
+      "fromStation": "odpt.Station:JR-East.ChuoSobuLocal.Ichikawa",
+      "toStation": "odpt.Station:JR-East.SobuRapid.Ichikawa",
+      "fromRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "toRailway": "odpt.Railway:JR-East.SobuRapid",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%9C%AC%E5%85%AB%E5%B9%A1_%E6%9D%B1%E4%BA%AC.html",
+      "sourceType": "current Jorudan route via Ichikawa; 3-minute transfer",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "稲毛-中央・総武各駅停車-総武快速線",
+      "fromStation": "odpt.Station:JR-East.ChuoSobuLocal.Inage",
+      "toStation": "odpt.Station:JR-East.SobuRapid.Inage",
+      "fromRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "toRailway": "odpt.Railway:JR-East.SobuRapid",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%A5%BF%E5%8D%83%E8%91%89_%E6%9D%B1%E4%BA%AC.html",
+      "sourceType": "current Jorudan route via Inage; 3-minute transfer",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "新小岩-中央・総武各駅停車-総武快速線",
+      "fromStation": "odpt.Station:JR-East.ChuoSobuLocal.ShinKoiwa",
+      "toStation": "odpt.Station:JR-East.SobuRapid.ShinKoiwa",
+      "fromRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "toRailway": "odpt.Railway:JR-East.SobuRapid",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%B0%8F%E5%B2%A9_%E6%9D%B1%E4%BA%AC.html",
+      "sourceType": "current Jorudan route via Shin-Koiwa; 3-minute transfer",
       "verifiedAt": "2026-09-04"
     },
     {
