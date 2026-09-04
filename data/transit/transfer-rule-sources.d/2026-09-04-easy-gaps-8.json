@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準・実測乗換（安全側）",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {"place":"永田町 ↔ 赤坂見附","railwayA":"odpt.Railway:TokyoMetro.Hanzomon","railwayB":"odpt.Railway:TokyoMetro.Marunouchi","railwayAName":"半蔵門線","railwayBName":"丸ノ内線","minutes":5,"source":"https://mb.jorudan.co.jp/os/noritxt/akasakamitsuke/tokyo-metro_marunouchi_line-tokyo-metro_hanzomon_line.html","sourceType":"Jorudan standard transfer time"},
+    {"place":"国会議事堂前","railwayA":"odpt.Railway:TokyoMetro.Chiyoda","railwayB":"odpt.Railway:TokyoMetro.Marunouchi","railwayAName":"千代田線","railwayBName":"丸ノ内線","minutes":4,"source":"https://mb.jorudan.co.jp/os/noritxt/tameikesanno/tokyo-metro_chiyoda_line-tokyo-metro_marunouchi_line.html","sourceType":"Jorudan standard transfer time"},
+    {"place":"京急川崎","railwayA":"odpt.Railway:Keikyu.Daishi","railwayB":"odpt.Railway:Keikyu.Main","railwayAName":"大師線","railwayBName":"京急本線","minutes":2,"source":"https://www.jorudan.co.jp/norikae/route/%E4%BA%AC%E6%80%A5%E7%94%B0%E6%B5%A6_%E5%B7%9D%E5%B4%8E%E5%A4%A7%E5%B8%AB.html","sourceType":"current Jorudan route explicitly shows 2-minute transfer at Keikyu-Kawasaki"},
+    {"place":"京急蒲田","railwayA":"odpt.Railway:Keikyu.Airport","railwayB":"odpt.Railway:Keikyu.Main","railwayAName":"空港線","railwayBName":"京急本線","minutes":3,"source":"https://www.jorudan.co.jp/norikae/route/%E8%92%B2%E7%94%B0_%E7%BE%BD%E7%94%B0%E7%A9%BA%E6%B8%AF%E7%AC%AC%EF%BC%91%E3%83%BB%E7%AC%AC%EF%BC%92%E3%82%BF%E3%83%BC%E3%83%9F%E3%83%8A%E3%83%AB.html","sourceType":"current Jorudan route explicitly shows 3-minute transfer at Keikyu-Kamata"},
+    {"place":"茅場町","railwayA":"odpt.Railway:TokyoMetro.Hibiya","railwayB":"odpt.Railway:TokyoMetro.Tozai","railwayAName":"日比谷線","railwayBName":"東西線","minutes":3,"source":"https://www.jorudan.co.jp/norikae/route/%E7%A7%8B%E8%91%89%E5%8E%9F_%E8%A5%BF%E8%88%B9%E6%A9%8B.html","sourceType":"current Jorudan route explicitly shows 3-minute transfer at Kayabacho"},
+    {"place":"御茶ノ水","railwayA":"odpt.Railway:JR-East.ChuoRapid","railwayB":"odpt.Railway:JR-East.ChuoSobuLocal","railwayAName":"中央線快速","railwayBName":"中央・総武各駅停車","minutes":1,"source":"https://www.jorudan.co.jp/norikae/route/%E6%9D%B1%E4%BA%AC_%E9%A3%AF%E7%94%B0%E6%A9%8B.html","sourceType":"current Jorudan route explicitly shows 1-minute cross-platform transfer at Ochanomizu"},
+    {"place":"金沢八景","railwayA":"odpt.Railway:Keikyu.Main","railwayB":"odpt.Railway:Keikyu.Zushi","railwayAName":"京急本線","railwayBName":"逗子線","minutes":2,"source":"https://www.jorudan.co.jp/norikae/route/%E8%BF%BD%E6%B5%9C_%E9%80%97%E5%AD%90%E3%83%BB%E8%91%89%E5%B1%B1.html","sourceType":"current Jorudan route explicitly shows 2-minute transfer at Kanazawa-hakkei"},
+    {"place":"京成成田","railwayA":"odpt.Railway:Keisei.HigashiNarita","railwayB":"odpt.Railway:Keisei.Main","railwayAName":"東成田線","railwayBName":"京成本線","minutes":1,"source":"https://www.jorudan.co.jp/norikae/route/%E6%9D%B1%E4%B8%AD%E5%B1%B1_%E8%8A%9D%E5%B1%B1%E5%8D%83%E4%BB%A3%E7%94%B0.html","sourceType":"current Jorudan route explicitly shows 1-minute transfer at Keisei-Narita"}
+  ]
+}
