@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-09-04T08:28:35.662Z",
+  "generatedAt": "2026-09-04T08:32:24.102Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T08:28:22.514Z",
+  "rulesGeneratedAt": "2026-09-04T08:32:11.768Z",
   "methodology": "Candidate railway pairs are classified as curated when backed by an explicit transfer rule, fallback when covered by conservative fallbackMinutes, blocked for false same-name/nearby links, and uncurated only when no usable rule exists.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 929,
-    "fallbackPairs": 24,
+    "curatedPairs": 932,
+    "fallbackPairs": 21,
     "uncuratedPairs": 0,
     "blockedPairs": 7,
-    "curatedSourceRules": 929,
-    "fallbackGeneratedRules": 24,
+    "curatedSourceRules": 932,
+    "fallbackGeneratedRules": 21,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -27,17 +27,6 @@
     },
     {
       "place": "阿佐ケ谷",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "安善",
       "totalPairs": 1,
       "curatedPairs": 0,
       "fallbackPairs": 1,
@@ -180,28 +169,6 @@
       "priorityScore": 0
     },
     {
-      "place": "浅野",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "倉賀野",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
       "place": "銚子",
       "totalPairs": 1,
       "curatedPairs": 0,
@@ -302,6 +269,17 @@
     },
     {
       "place": "綾瀬",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
+      "place": "安善",
       "totalPairs": 1,
       "curatedPairs": 1,
       "fallbackPairs": 0,
@@ -1113,6 +1091,28 @@
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 4,
       "priorityScore": 0
+    },
+    {
+      "place": "高麗川",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
+      "place": "豪徳寺 ↔ 山下",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
     }
   ],
   "priorityDetails": [],
@@ -1124,20 +1124,6 @@
       "railwayAName": "中央線快速",
       "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
       "railwayBName": "中央・総武各駅停車",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "安善",
-      "railwayA": "odpt.Railway:JR-East.Tsurumi",
-      "railwayAName": "鶴見線",
-      "railwayB": "odpt.Railway:JR-East.TsurumiOkawaBranch",
-      "railwayBName": "鶴見線大川支線",
       "sameOperator": true,
       "distanceMeters": 0,
       "fallbackMinutes": 5,
@@ -1347,34 +1333,6 @@
       "railwayAName": "京葉線",
       "railwayB": "odpt.Railway:JR-East.Musashino",
       "railwayBName": "武蔵野線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "浅野",
-      "railwayA": "odpt.Railway:JR-East.Tsurumi",
-      "railwayAName": "鶴見線",
-      "railwayB": "odpt.Railway:JR-East.TsurumiUmiShibauraBranch",
-      "railwayBName": "鶴見線海芝浦支線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "倉賀野",
-      "railwayA": "odpt.Railway:JR-East.Hachiko",
-      "railwayAName": "八高線",
-      "railwayB": "odpt.Railway:JR-East.Takasaki",
-      "railwayBName": "高崎線",
       "sameOperator": true,
       "distanceMeters": 0,
       "fallbackMinutes": 5,
