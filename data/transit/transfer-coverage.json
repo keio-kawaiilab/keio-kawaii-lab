@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-04T07:04:54.544Z",
+  "generatedAt": "2026-09-04T07:05:37.554Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T07:04:40.978Z",
+  "rulesGeneratedAt": "2026-09-04T07:05:21.372Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 843,
-    "uncuratedPairs": 110,
+    "curatedPairs": 847,
+    "uncuratedPairs": 106,
     "blockedPairs": 7,
-    "curatedSourceRules": 843,
+    "curatedSourceRules": 847,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -133,16 +133,6 @@
       "priorityScore": 1
     },
     {
-      "place": "安房鴨川",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1
-    },
-    {
       "place": "稲毛",
       "totalPairs": 1,
       "curatedPairs": 0,
@@ -253,16 +243,6 @@
       "priorityScore": 1
     },
     {
-      "place": "香取",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1
-    },
-    {
       "place": "高円寺",
       "totalPairs": 1,
       "curatedPairs": 0,
@@ -274,26 +254,6 @@
     },
     {
       "place": "高輪ゲートウェイ",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1
-    },
-    {
-      "place": "高麗川",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1
-    },
-    {
-      "place": "佐倉",
       "totalPairs": 1,
       "curatedPairs": 0,
       "uncuratedPairs": 1,
@@ -1011,6 +971,46 @@
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
       "priorityScore": 1
+    },
+    {
+      "place": "木更津",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 1
+    },
+    {
+      "place": "要町",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 1
+    },
+    {
+      "place": "溜池山王",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 1
+    },
+    {
+      "place": "溜池山王 ↔ 国会議事堂前",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 1
     }
   ],
   "priorityDetails": [
@@ -1383,32 +1383,6 @@
       ]
     },
     {
-      "place": "安房鴨川",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.Sotobo",
-          "railwayAName": "外房線",
-          "railwayB": "odpt.Railway:JR-East.Uchibo",
-          "railwayBName": "内房線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
       "place": "稲毛",
       "totalPairs": 1,
       "curatedPairs": 0,
@@ -1694,32 +1668,6 @@
       ]
     },
     {
-      "place": "香取",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.Kashima",
-          "railwayAName": "鹿島線",
-          "railwayB": "odpt.Railway:JR-East.Narita",
-          "railwayBName": "成田線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
       "place": "高円寺",
       "totalPairs": 1,
       "curatedPairs": 0,
@@ -1772,58 +1720,6 @@
       ]
     },
     {
-      "place": "高麗川",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.Hachiko",
-          "railwayAName": "八高線",
-          "railwayB": "odpt.Railway:JR-East.Kawagoe",
-          "railwayBName": "川越線(川越-高麗川間)",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "佐倉",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.Narita",
-          "railwayAName": "成田線",
-          "railwayB": "odpt.Railway:JR-East.Sobu",
-          "railwayBName": "総武本線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
       "place": "三鷹",
       "totalPairs": 1,
       "curatedPairs": 0,
@@ -1841,6 +1737,110 @@
           "railwayBName": "中央・総武各駅停車",
           "sameOperator": true,
           "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ]
+    },
+    {
+      "place": "市川",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 1,
+      "crossOperatorPairs": [],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+          "railwayAName": "中央・総武各駅停車",
+          "railwayB": "odpt.Railway:JR-East.SobuRapid",
+          "railwayBName": "総武快速線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ]
+    },
+    {
+      "place": "秋葉原",
+      "totalPairs": 10,
+      "curatedPairs": 9,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 5,
+      "priorityScore": 1,
+      "crossOperatorPairs": [],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+          "railwayAName": "京浜東北線・根岸線",
+          "railwayB": "odpt.Railway:JR-East.Yamanote",
+          "railwayBName": "山手線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ]
+    },
+    {
+      "place": "渋川",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 1,
+      "crossOperatorPairs": [],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:JR-East.Agatsuma",
+          "railwayAName": "吾妻線",
+          "railwayB": "odpt.Railway:JR-East.Joetsu",
+          "railwayBName": "上越線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ]
+    },
+    {
+      "place": "春日",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 1,
+      "crossOperatorPairs": [],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:Toei.Mita",
+          "railwayAName": "三田線",
+          "railwayB": "odpt.Railway:Toei.Oedo",
+          "railwayBName": "大江戸線",
+          "sameOperator": true,
+          "distanceMeters": 136,
           "fallbackMinutes": 5,
           "sources": [
             "connecting-station",
@@ -1871,20 +1871,6 @@
       "railwayAName": "鶴見線",
       "railwayB": "odpt.Railway:JR-East.TsurumiOkawaBranch",
       "railwayBName": "鶴見線大川支線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "安房鴨川",
-      "railwayA": "odpt.Railway:JR-East.Sotobo",
-      "railwayAName": "外房線",
-      "railwayB": "odpt.Railway:JR-East.Uchibo",
-      "railwayBName": "内房線",
       "sameOperator": true,
       "distanceMeters": 0,
       "fallbackMinutes": 5,
@@ -2165,20 +2151,6 @@
       ]
     },
     {
-      "place": "香取",
-      "railwayA": "odpt.Railway:JR-East.Kashima",
-      "railwayAName": "鹿島線",
-      "railwayB": "odpt.Railway:JR-East.Narita",
-      "railwayBName": "成田線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
       "place": "高円寺",
       "railwayA": "odpt.Railway:JR-East.ChuoRapid",
       "railwayAName": "中央線快速",
@@ -2198,34 +2170,6 @@
       "railwayAName": "京浜東北線・根岸線",
       "railwayB": "odpt.Railway:JR-East.Yamanote",
       "railwayBName": "山手線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "高麗川",
-      "railwayA": "odpt.Railway:JR-East.Hachiko",
-      "railwayAName": "八高線",
-      "railwayB": "odpt.Railway:JR-East.Kawagoe",
-      "railwayBName": "川越線(川越-高麗川間)",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "佐倉",
-      "railwayA": "odpt.Railway:JR-East.Narita",
-      "railwayAName": "成田線",
-      "railwayB": "odpt.Railway:JR-East.Sobu",
-      "railwayBName": "総武本線",
       "sameOperator": true,
       "distanceMeters": 0,
       "fallbackMinutes": 5,
