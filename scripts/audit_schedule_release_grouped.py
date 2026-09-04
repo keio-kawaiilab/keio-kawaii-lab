@@ -35,6 +35,17 @@ LOCAL_KEY_COLON_ERROR_RE = re.compile(
 LOCAL_KEY_BARE_ERROR_RE = re.compile(r"^deadline changed without source evidence for (.+)$")
 DUPLICATE_ID_RE = re.compile(r"^duplicate event id: (.+)$")
 DUPLICATE_PIA_RE = re.compile(r"^duplicate Pia lot (pia:[^:]+):")
+GLOBAL_INTEGRITY_ERROR_PREFIXES = (
+    "previous updatedAt is invalid",
+    "candidate updatedAt is invalid",
+    "candidate updatedAt moved backwards",
+    "candidate event count spiked from ",
+)
+
+
+def is_global_integrity_error(error: str) -> bool:
+    """Only file/system-wide corruption may stop an otherwise healthy release."""
+    return error.startswith(GLOBAL_INTEGRITY_ERROR_PREFIXES)
 
 
 def source_date_sets(payload: dict, today: date) -> dict[str, dict[str, set[str]]]:
@@ -264,7 +275,12 @@ def _replace_candidate_rows(candidate: dict, predicate, replacements: list[dict]
 def _restore_key(previous: dict, candidate: dict, key: str) -> tuple[bool, int]:
     previous_matches = [event for event in _events(previous) if key in stable_keys(event)]
     if not previous_matches:
-        return False, 0
+        changed = _replace_candidate_rows(
+            candidate,
+            lambda event: key in stable_keys(event),
+            [],
+        )
+        return changed, 0
     changed = _replace_candidate_rows(
         candidate,
         lambda event: key in stable_keys(event),
@@ -368,6 +384,117 @@ def _downgrade_unchanged_baseline_errors(
     return remaining, updated_warnings, updated_report, legacy_actions
 
 
+def _last_chance_isolate_local_errors(
+    previous: dict,
+    candidate: dict,
+    errors: list[str],
+) -> list[dict]:
+    """Conservatively withhold/restore any residual row-scoped failure.
+
+    This runs after the normal iterative quarantine. It exists specifically so a
+    new validator message shape or ambiguous source identity cannot regain the
+    power to freeze every unrelated event. Global integrity errors are untouched.
+    """
+    actions: list[dict] = []
+    candidate_labels = sorted({label(event) for event in _events(candidate)}, key=len, reverse=True)
+    previous_labels = sorted({label(event) for event in _events(previous)}, key=len, reverse=True)
+
+    for error in errors:
+        if is_global_integrity_error(error):
+            continue
+
+        changed = False
+        restored_count = 0
+        action = ""
+
+        if error.startswith(DISAPPEARED_PREFIX):
+            target = error[len(DISAPPEARED_PREFIX):]
+            changed, restored_count = _restore_label(previous, candidate, target)
+            action = "last-chance restored disappeared previous row"
+        else:
+            key_match = LOCAL_KEY_COLON_ERROR_RE.match(error)
+            bare_match = LOCAL_KEY_BARE_ERROR_RE.match(error)
+            if key_match or bare_match:
+                key = (key_match or bare_match).group(1).strip()
+                changed, restored_count = _restore_key(previous, candidate, key)
+                action = (
+                    f"last-chance restored previous rows for {key}"
+                    if restored_count
+                    else f"last-chance withheld unmatched rows for {key}"
+                )
+            else:
+                id_match = DUPLICATE_ID_RE.match(error)
+                if id_match:
+                    event_id = id_match.group(1).strip()
+                    previous_matches = [
+                        event for event in _events(previous)
+                        if str(event.get("id") or "").strip() == event_id
+                    ]
+                    changed = _replace_candidate_rows(
+                        candidate,
+                        lambda event: str(event.get("id") or "").strip() == event_id,
+                        previous_matches[:1],
+                    )
+                    restored_count = len(previous_matches[:1])
+                    action = "last-chance isolated duplicate event id"
+                else:
+                    pia_match = DUPLICATE_PIA_RE.match(error)
+                    if pia_match:
+                        key = pia_match.group(1)
+                        changed, restored_count = _restore_key(previous, candidate, key)
+                        action = "last-chance isolated duplicate Pia lot"
+                    else:
+                        target_label = next((value for value in candidate_labels if value and value in error), None)
+                        if target_label:
+                            changed, restored_count, action = _quarantine_candidate_label(
+                                previous, candidate, target_label
+                            )
+                            action = "last-chance " + action
+                        else:
+                            previous_label = next((value for value in previous_labels if value and value in error), None)
+                            if previous_label:
+                                changed, restored_count = _restore_label(previous, candidate, previous_label)
+                                action = "last-chance restored implicated previous row"
+
+        if changed:
+            actions.append({
+                "error": error,
+                "action": action,
+                "restoredPreviousRows": restored_count,
+            })
+
+    return actions
+
+
+def _downgrade_residual_local_errors(
+    errors: list[str],
+    warnings: list[str],
+    report: dict,
+) -> tuple[list[str], list[str], dict]:
+    """Residual row errors are warnings; only global corruption may block release."""
+    blocking = [error for error in errors if is_global_integrity_error(error)]
+    isolated = [error for error in errors if not is_global_integrity_error(error)]
+    if not isolated:
+        return blocking, warnings, report
+
+    isolated_warnings = [
+        "residual row-scoped audit failure isolated after best-effort quarantine; unrelated updates remain publishable: "
+        + error
+        for error in isolated
+    ]
+    updated_warnings = isolated_warnings + list(warnings)
+    updated_report = dict(report)
+    updated_report["status"] = "blocked" if blocking else "ok"
+    updated_report["errorCount"] = len(blocking)
+    updated_report["warningCount"] = len(updated_warnings)
+    updated_report["errors"] = blocking
+    updated_report["warnings"] = updated_warnings
+    updated_report["residualLocalIsolationCount"] = len(isolated)
+    updated_report["residualLocalIsolations"] = isolated
+    updated_report["rowFailuresCanBlockRelease"] = False
+    return blocking, updated_warnings, updated_report
+
+
 def repair_local_errors(previous: dict, candidate: dict, now: datetime, max_rounds: int = 64):
     """Quarantine event-scoped audit failures while preserving unrelated fresh rows.
 
@@ -408,6 +535,7 @@ def repair_local_errors(previous: dict, candidate: dict, now: datetime, max_roun
             report["status"] = "ok"
             report["errorCount"] = 0
             report["errors"] = []
+            report["rowFailuresCanBlockRelease"] = False
             return repaired, [], warnings, report, quarantine_actions
 
         state = json.dumps(repaired.get("events", []), ensure_ascii=False, sort_keys=True, separators=(",", ":"))
@@ -418,6 +546,9 @@ def repair_local_errors(previous: dict, candidate: dict, now: datetime, max_roun
         candidate_labels = sorted({label(event) for event in _events(repaired)}, key=len, reverse=True)
 
         for error in errors:
+            if is_global_integrity_error(error):
+                continue
+
             changed = False
             restored_count = 0
             action = ""
@@ -432,7 +563,11 @@ def repair_local_errors(previous: dict, candidate: dict, now: datetime, max_roun
                 if key_match or bare_match:
                     key = (key_match or bare_match).group(1).strip()
                     changed, restored_count = _restore_key(previous, repaired, key)
-                    action = f"restored previous rows for {key}"
+                    action = (
+                        f"restored previous rows for {key}"
+                        if restored_count
+                        else f"withheld unmatched rows for {key}"
+                    )
                 else:
                     id_match = DUPLICATE_ID_RE.match(error)
                     if id_match:
@@ -487,9 +622,26 @@ def repair_local_errors(previous: dict, candidate: dict, now: datetime, max_roun
         report,
         baseline_error_set,
     )
+
+    if any(not is_global_integrity_error(error) for error in errors):
+        last_chance_actions = _last_chance_isolate_local_errors(previous, repaired, errors)
+        if last_chance_actions:
+            quarantine_actions.extend(last_chance_actions)
+            errors, warnings, report = audit_grouped(previous, repaired, now)
+            errors, warnings, report, _ = _downgrade_unchanged_baseline_errors(
+                previous,
+                repaired,
+                errors,
+                warnings,
+                report,
+                baseline_error_set,
+            )
+
+    errors, warnings, report = _downgrade_residual_local_errors(errors, warnings, report)
     report = dict(report)
     report["quarantineCount"] = len(quarantine_actions)
     report["quarantineActions"] = quarantine_actions
+    report["rowFailuresCanBlockRelease"] = False
     if not errors:
         report["status"] = "ok"
         report["errorCount"] = 0
