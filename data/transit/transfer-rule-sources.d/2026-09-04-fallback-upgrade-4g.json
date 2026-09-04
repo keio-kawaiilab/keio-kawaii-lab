@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "乗換",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "id": "木更津-久留里線-内房線",
+      "place": "木更津",
+      "railwayA": "odpt.Railway:JR-East.Kururi",
+      "railwayB": "odpt.Railway:JR-East.Uchibo",
+      "minutes": 3,
+      "source": "https://ekitan.com/d-norikae/transit/route/sf-1826/st-2826",
+      "sourceType": "recent Ekitan route explicitly shows 3-minute platform movement at Kisarazu from Kururi Line platform 4 to Uchibo Line platform 2; reverse-direction examples also show 3 minutes"
+    },
+    {
+      "id": "溜池山王-国会議事堂前-銀座線-丸ノ内線",
+      "place": "溜池山王 ↔ 国会議事堂前",
+      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "minutes": 6,
+      "source": "https://transit.yahoo.co.jp/search/result/%E6%BA%9C%E6%B1%A0%E5%B1%B1%E7%8E%8B-%E5%9B%BD%E4%BC%9A%E8%AD%B0%E4%BA%8B%E5%A0%82%E5%89%8D",
+      "sourceType": "current Yahoo Transit direct same-station walking route; 6 minutes and 0 fare"
+    },
+    {
+      "id": "青砥-京成本線-押上線",
+      "place": "青砥",
+      "railwayA": "odpt.Railway:Keisei.Main",
+      "railwayB": "odpt.Railway:Keisei.Oshiage",
+      "minutes": 3,
+      "reverseMinutes": 1,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E4%BA%AC%E6%88%90%E4%B8%8A%E9%87%8E_%E6%8A%BC%E4%B8%8A.html",
+      "sourceType": "current Jorudan route; Keisei Main platform 4 to Oshiage-bound platform 1 at Aoto shown as 3-minute transfer; reverse Oshiage Line platform 3 to Main Line platforms 2/4 shown as 1 minute in current routes"
+    },
+    {
+      "id": "千葉中央-千葉線-千原線",
+      "place": "千葉中央",
+      "railwayA": "odpt.Railway:Keisei.Chiba",
+      "railwayB": "odpt.Railway:Keisei.Chihara",
+      "minutes": 1,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E4%BA%AC%E6%88%90%E6%B4%A5%E7%94%B0%E6%B2%BC_%E3%81%A1%E3%81%AF%E3%82%89%E5%8F%B0.html",
+      "sourceType": "current Jorudan route explicitly shows a 1-minute transfer at Chiba-chuo, platform 2 arrival to platform 2 departure"
+    }
+  ]
+}
