@@ -1,0 +1,191 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換",
+    "sourceType": "current transfer guide",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:Keikyu.Main",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "京急本線",
+      "minutes": 2,
+      "source": "https://eki-kara-access.yokohama/yokohama-eki-norikae-jr/"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:Tokyu.Toyoko",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "東横線",
+      "minutes": 4,
+      "source": "https://eki-kara-access.yokohama/yokohama-eki-norikae-jr/"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "manual.Railway:YokohamaMinatomirai.Minatomirai",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "みなとみらい線",
+      "minutes": 4,
+      "source": "https://eki-kara-access.yokohama/yokohama-eki-norikae-jr/"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "ブルーライン",
+      "minutes": 3,
+      "source": "https://eki-kara-access.yokohama/yokohama-eki-norikae-jr/"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:Sotetsu.Main",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "相鉄本線",
+      "minutes": 3,
+      "source": "https://eki-kara-access.yokohama/yokohama-eki-norikae-jr/"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.Tokaido",
+      "railwayB": "odpt.Railway:Keikyu.Main",
+      "railwayAName": "東海道線",
+      "railwayBName": "京急本線",
+      "minutes": 2,
+      "source": "https://eki-kara-access.yokohama/yokohama-eki-norikae-jr/"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.Tokaido",
+      "railwayB": "odpt.Railway:Tokyu.Toyoko",
+      "railwayAName": "東海道線",
+      "railwayBName": "東横線",
+      "minutes": 4,
+      "source": "https://eki-kara-access.yokohama/yokohama-eki-norikae-jr/"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.Tokaido",
+      "railwayB": "manual.Railway:YokohamaMinatomirai.Minatomirai",
+      "railwayAName": "東海道線",
+      "railwayBName": "みなとみらい線",
+      "minutes": 4,
+      "source": "https://eki-kara-access.yokohama/yokohama-eki-norikae-jr/"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.Tokaido",
+      "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
+      "railwayAName": "東海道線",
+      "railwayBName": "ブルーライン",
+      "minutes": 3,
+      "source": "https://eki-kara-access.yokohama/yokohama-eki-norikae-jr/"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.Tokaido",
+      "railwayB": "odpt.Railway:Sotetsu.Main",
+      "railwayAName": "東海道線",
+      "railwayBName": "相鉄本線",
+      "minutes": 3,
+      "source": "https://eki-kara-access.yokohama/yokohama-eki-norikae-jr/"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.Yokosuka",
+      "railwayB": "odpt.Railway:Keikyu.Main",
+      "railwayAName": "横須賀線",
+      "railwayBName": "京急本線",
+      "minutes": 2,
+      "source": "https://eki-kara-access.yokohama/yokohama-eki-norikae-jr/"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.Yokosuka",
+      "railwayB": "odpt.Railway:Tokyu.Toyoko",
+      "railwayAName": "横須賀線",
+      "railwayBName": "東横線",
+      "minutes": 4,
+      "source": "https://eki-kara-access.yokohama/yokohama-eki-norikae-jr/"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.Yokosuka",
+      "railwayB": "manual.Railway:YokohamaMinatomirai.Minatomirai",
+      "railwayAName": "横須賀線",
+      "railwayBName": "みなとみらい線",
+      "minutes": 4,
+      "source": "https://eki-kara-access.yokohama/yokohama-eki-norikae-jr/"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.Yokosuka",
+      "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
+      "railwayAName": "横須賀線",
+      "railwayBName": "ブルーライン",
+      "minutes": 3,
+      "source": "https://eki-kara-access.yokohama/yokohama-eki-norikae-jr/"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.Yokosuka",
+      "railwayB": "odpt.Railway:Sotetsu.Main",
+      "railwayAName": "横須賀線",
+      "railwayBName": "相鉄本線",
+      "minutes": 3,
+      "source": "https://eki-kara-access.yokohama/yokohama-eki-norikae-jr/"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:Keikyu.Main",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "京急本線",
+      "minutes": 2,
+      "source": "https://eki-kara-access.yokohama/yokohama-eki-norikae-jr/"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:Tokyu.Toyoko",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "東横線",
+      "minutes": 4,
+      "source": "https://eki-kara-access.yokohama/yokohama-eki-norikae-jr/"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "manual.Railway:YokohamaMinatomirai.Minatomirai",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "みなとみらい線",
+      "minutes": 4,
+      "source": "https://eki-kara-access.yokohama/yokohama-eki-norikae-jr/"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "ブルーライン",
+      "minutes": 3,
+      "source": "https://eki-kara-access.yokohama/yokohama-eki-norikae-jr/"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:Sotetsu.Main",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "相鉄本線",
+      "minutes": 3,
+      "source": "https://eki-kara-access.yokohama/yokohama-eki-norikae-jr/"
+    }
+  ]
+}
