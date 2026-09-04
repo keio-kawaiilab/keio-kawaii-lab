@@ -1,0 +1,94 @@
+{
+  "defaults": {
+    "bidirectional": true,
+    "label": "駅間徒歩乗換",
+    "sourceType": "current route-planner station-to-station walking time",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "王子 ↔ 王子駅前",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:Toei.Arakawa",
+      "minutes": 7,
+      "sourceUrl": "https://ekitan.com/transit/route/sf-1677/st-9259"
+    },
+    {
+      "place": "王子 ↔ 王子駅前",
+      "railwayA": "odpt.Railway:Toei.Arakawa",
+      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
+      "minutes": 7,
+      "sourceUrl": "https://ekitan.com/transit/route/sf-1677/st-9259"
+    },
+    {
+      "place": "京成船橋 ↔ 船橋",
+      "railwayA": "odpt.Railway:JR-East.SobuRapid",
+      "railwayB": "odpt.Railway:Keisei.Main",
+      "minutes": 5,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E8%88%B9%E6%A9%8B-%E4%BA%AC%E6%88%90%E8%88%B9%E6%A9%8B"
+    },
+    {
+      "place": "京成船橋 ↔ 船橋",
+      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayB": "odpt.Railway:Keisei.Main",
+      "minutes": 5,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E8%88%B9%E6%A9%8B-%E4%BA%AC%E6%88%90%E8%88%B9%E6%A9%8B"
+    },
+    {
+      "place": "原宿 ↔ 明治神宮前〈原宿〉",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
+      "minutes": 5,
+      "sourceUrl": "https://ekitan.com/transit/route/sf-2832/st-3168"
+    },
+    {
+      "place": "原宿 ↔ 明治神宮前〈原宿〉",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "minutes": 5,
+      "sourceUrl": "https://ekitan.com/transit/route/sf-2832/st-3168"
+    },
+    {
+      "place": "御徒町 ↔ 上野御徒町",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "minutes": 8,
+      "sourceUrl": "https://ekitan.com/transit/route/sf-1736/st-8932"
+    },
+    {
+      "place": "御徒町 ↔ 上野御徒町",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "minutes": 8,
+      "sourceUrl": "https://ekitan.com/transit/route/sf-1736/st-8932"
+    },
+    {
+      "place": "鶴見 ↔ 京急鶴見",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:Keikyu.Main",
+      "minutes": 7,
+      "sourceUrl": "https://www.jorudan.co.jp/norikae/route/%E9%B6%B4%E8%A6%8B_%E4%BA%AC%E6%80%A5%E9%B6%B4%E8%A6%8B.html"
+    },
+    {
+      "place": "鶴見 ↔ 京急鶴見",
+      "railwayA": "odpt.Railway:JR-East.Tsurumi",
+      "railwayB": "odpt.Railway:Keikyu.Main",
+      "minutes": 7,
+      "sourceUrl": "https://www.jorudan.co.jp/norikae/route/%E9%B6%B4%E8%A6%8B_%E4%BA%AC%E6%80%A5%E9%B6%B4%E8%A6%8B.html"
+    },
+    {
+      "place": "東神奈川 ↔ 京急東神奈川",
+      "railwayA": "odpt.Railway:JR-East.Yokohama",
+      "railwayB": "odpt.Railway:Keikyu.Main",
+      "minutes": 5,
+      "sourceUrl": "https://ekitan.com/transit/route/sf-2856/st-2650"
+    },
+    {
+      "place": "東神奈川 ↔ 京急東神奈川",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:Keikyu.Main",
+      "minutes": 5,
+      "sourceUrl": "https://ekitan.com/transit/route/sf-2856/st-2650"
+    }
+  ]
+}
