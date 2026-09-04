@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T07:04:40.978Z",
+  "generatedAt": "2026-09-04T07:05:21.372Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -50,6 +50,7 @@
     "transfer-rule-sources.d/2026-09-04-ikebukuro-remaining.json",
     "transfer-rule-sources.d/2026-09-04-jr-clean-4.json",
     "transfer-rule-sources.d/2026-09-04-jr-hubs-22.json",
+    "transfer-rule-sources.d/2026-09-04-jr-junctions-4.json",
     "transfer-rule-sources.d/2026-09-04-junction-batch-15.json",
     "transfer-rule-sources.d/2026-09-04-kanagawa-batch-i.json",
     "transfer-rule-sources.d/2026-09-04-kawagoe-akasakamitsuke.json",
@@ -4461,6 +4462,58 @@
       "label": "標準・実測乗換（安全側）",
       "source": "https://wadattsu261.com/content/chiba-sobuslowhome-no1-2-info/",
       "sourceType": "current Chiba platform layout; conservative 4-minute standard",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "安房鴨川-外房線-内房線",
+      "fromStation": "odpt.Station:JR-East.Sotobo.AwaKamogawa",
+      "toStation": "odpt.Station:JR-East.Uchibo.AwaKamogawa",
+      "fromRailway": "odpt.Railway:JR-East.Sotobo",
+      "toRailway": "odpt.Railway:JR-East.Uchibo",
+      "minutes": 1,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%9D%B1%E4%BA%AC_%E9%A4%A8%E5%B1%B1.html",
+      "sourceType": "current Jorudan route explicitly shows 1-minute transfer at Awa-Kamogawa",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "香取-鹿島線-成田線",
+      "fromStation": "odpt.Station:JR-East.Kashima.Katori",
+      "toStation": "odpt.Station:JR-East.Narita.Katori",
+      "fromRailway": "odpt.Railway:JR-East.Kashima",
+      "toRailway": "odpt.Railway:JR-East.Narita",
+      "minutes": 1,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E9%8A%9A%E5%AD%90_%E9%B9%BF%E5%B3%B6%E7%A5%9E%E5%AE%AE.html",
+      "sourceType": "current Jorudan route explicitly shows 1-minute transfer at Katori",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "高麗川-八高線-川越線(川越-高麗川間)",
+      "fromStation": "odpt.Station:JR-East.Hachiko.Komagawa",
+      "toStation": "odpt.Station:JR-East.Kawagoe.Komagawa",
+      "fromRailway": "odpt.Railway:JR-East.Hachiko",
+      "toRailway": "odpt.Railway:JR-East.Kawagoe",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%B7%9D%E8%B6%8A_%E9%AB%98%E5%B4%8E.html",
+      "sourceType": "current Jorudan route explicitly shows 3-minute transfer at Komagawa",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "佐倉-成田線-総武本線",
+      "fromStation": "odpt.Station:JR-East.Narita.Sakura",
+      "toStation": "odpt.Station:JR-East.Sobu.Sakura",
+      "fromRailway": "odpt.Railway:JR-East.Narita",
+      "toRailway": "odpt.Railway:JR-East.Sobu",
+      "minutes": 2,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E9%8A%9A%E5%AD%90_%E6%88%90%E7%94%B0.html",
+      "sourceType": "current Jorudan route explicitly shows 2-minute transfer at Sakura",
       "verifiedAt": "2026-09-04"
     },
     {
