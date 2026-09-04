@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T07:05:21.372Z",
+  "generatedAt": "2026-09-04T07:19:00.466Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -99,6 +99,7 @@
     "transfer-rule-sources.d/2026-09-04-ueno-joban-jr-4.json",
     "transfer-rule-sources.d/2026-09-04-ueno-totsuka-toride-soga-15.json",
     "transfer-rule-sources.d/2026-09-04-urban-links-5.json",
+    "transfer-rule-sources.d/2026-09-04-verified-gaps-21.json",
     "transfer-rule-sources.d/2026-09-04-verified-junctions-9.json",
     "transfer-rule-sources.d/2026-09-04-verified-links-10.json",
     "transfer-rule-sources.d/2026-09-04-walk-links-9.json",
@@ -10314,6 +10315,45 @@
       "label": "標準・実測乗換（安全側）",
       "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/oedonishi-seibu-shinjuku_line.html",
       "sourceType": "current Jorudan standard transfer guide; 6 minutes",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "立川-中央線快速-青梅線",
+      "fromStation": "odpt.Station:JR-East.ChuoRapid.Tachikawa",
+      "toStation": "odpt.Station:JR-East.Ome.Tachikawa",
+      "fromRailway": "odpt.Railway:JR-East.ChuoRapid",
+      "toRailway": "odpt.Railway:JR-East.Ome",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://ekitan.com/d-norikae/transit/route/sf-2731/st-2011",
+      "sourceType": "current route-planner transfer at Tachikawa; observed 2-3 minutes, conservative upper bound",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "立川-南武線-青梅線",
+      "fromStation": "odpt.Station:JR-East.Nambu.Tachikawa",
+      "toStation": "odpt.Station:JR-East.Ome.Tachikawa",
+      "fromRailway": "odpt.Railway:JR-East.Nambu",
+      "toRailway": "odpt.Railway:JR-East.Ome",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%A5%BF%E5%9B%BD%E7%AB%8B_%E8%A5%BF%E7%AB%8B%E5%B7%9D.html",
+      "sourceType": "current Jorudan route via Tachikawa; 4-minute transfer",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "岩本町 ↔ 秋葉原-つくばエクスプレス-新宿線",
+      "fromStation": "odpt.Station:MIR.TsukubaExpress.Akihabara",
+      "toStation": "odpt.Station:Toei.Shinjuku.Iwamotocho",
+      "fromRailway": "odpt.Railway:MIR.TsukubaExpress",
+      "toRailway": "odpt.Railway:Toei.Shinjuku",
+      "minutes": 12,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%B2%A9%E6%9C%AC%E7%94%BA_%E3%81%A4%E3%81%8F%E3%81%B0.html",
+      "sourceType": "current Jorudan linked-station walk from Iwamotocho to Tsukuba Express Akihabara; 12 minutes",
       "verifiedAt": "2026-09-04"
     },
     {
