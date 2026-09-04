@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-04T06:29:10.040Z",
+  "generatedAt": "2026-09-04T06:29:55.382Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T06:28:55.674Z",
+  "rulesGeneratedAt": "2026-09-04T06:29:41.860Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 782,
-    "uncuratedPairs": 171,
+    "curatedPairs": 789,
+    "uncuratedPairs": 164,
     "blockedPairs": 7,
-    "curatedSourceRules": 782,
+    "curatedSourceRules": 789,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -153,36 +153,6 @@
       "priorityScore": 2.5
     },
     {
-      "place": "栗橋",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5
-    },
-    {
-      "place": "厚木",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5
-    },
-    {
-      "place": "高尾",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5
-    },
-    {
       "place": "雑司が谷 ↔ 鬼子母神前",
       "totalPairs": 1,
       "curatedPairs": 0,
@@ -194,16 +164,6 @@
     },
     {
       "place": "三ノ輪 ↔ 三ノ輪橋",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5
-    },
-    {
-      "place": "汐留",
       "totalPairs": 1,
       "curatedPairs": 0,
       "uncuratedPairs": 1,
@@ -334,36 +294,6 @@
     },
     {
       "place": "東飯能",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5
-    },
-    {
-      "place": "藤沢",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5
-    },
-    {
-      "place": "南越谷 ↔ 新越谷",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5
-    },
-    {
-      "place": "南流山",
       "totalPairs": 1,
       "curatedPairs": 0,
       "uncuratedPairs": 1,
@@ -1011,6 +941,76 @@
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
       "priorityScore": 1
+    },
+    {
+      "place": "新丸子",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 1
+    },
+    {
+      "place": "新橋",
+      "totalPairs": 28,
+      "curatedPairs": 27,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 8,
+      "priorityScore": 1
+    },
+    {
+      "place": "新庚申塚 ↔ 西巣鴨",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 1
+    },
+    {
+      "place": "新小岩",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 1
+    },
+    {
+      "place": "新松戸",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 1
+    },
+    {
+      "place": "新川崎",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 1
+    },
+    {
+      "place": "新栃木",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 1
     }
   ],
   "priorityDetails": [
@@ -1448,84 +1448,6 @@
       "sameOperatorPairs": []
     },
     {
-      "place": "栗橋",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.Utsunomiya",
-          "railwayAName": "宇都宮線",
-          "railwayB": "odpt.Railway:Tobu.Nikko",
-          "railwayBName": "日光線",
-          "sameOperator": false,
-          "distanceMeters": 237,
-          "fallbackMinutes": 6,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": []
-    },
-    {
-      "place": "厚木",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.Sagami",
-          "railwayAName": "相模線",
-          "railwayB": "odpt.Railway:Odakyu.Odawara",
-          "railwayBName": "小田原線",
-          "sameOperator": false,
-          "distanceMeters": 109,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": []
-    },
-    {
-      "place": "高尾",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-          "railwayAName": "中央線快速",
-          "railwayB": "odpt.Railway:Keio.Takao",
-          "railwayBName": "高尾線",
-          "sameOperator": false,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": []
-    },
-    {
       "place": "雑司が谷 ↔ 鬼子母神前",
       "totalPairs": 1,
       "curatedPairs": 0,
@@ -1570,32 +1492,6 @@
           "fallbackMinutes": 7,
           "sources": [
             "connecting-station"
-          ]
-        }
-      ],
-      "sameOperatorPairs": []
-    },
-    {
-      "place": "汐留",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Toei.Oedo",
-          "railwayAName": "大江戸線",
-          "railwayB": "odpt.Railway:Yurikamome.Yurikamome",
-          "railwayBName": "ゆりかもめ",
-          "sameOperator": false,
-          "distanceMeters": 56,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
           ]
         }
       ],
@@ -1851,6 +1747,109 @@
           "fallbackMinutes": 5,
           "sources": [
             "connecting-station"
+          ]
+        }
+      ],
+      "sameOperatorPairs": []
+    },
+    {
+      "place": "東新宿",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 2,
+      "priorityScore": 2.5,
+      "crossOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:Toei.Oedo",
+          "railwayAName": "大江戸線",
+          "railwayB": "odpt.Railway:TokyoMetro.Fukutoshin",
+          "railwayBName": "副都心線",
+          "sameOperator": false,
+          "distanceMeters": 211,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ],
+      "sameOperatorPairs": []
+    },
+    {
+      "place": "東池袋 ↔ 東池袋四丁目",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 2,
+      "priorityScore": 2.5,
+      "crossOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:Toei.Arakawa",
+          "railwayAName": "東京さくらトラム（都電荒川線）",
+          "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+          "railwayBName": "有楽町線",
+          "sameOperator": false,
+          "distanceMeters": 152,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station"
+          ]
+        }
+      ],
+      "sameOperatorPairs": []
+    },
+    {
+      "place": "東飯能",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 2,
+      "priorityScore": 2.5,
+      "crossOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:JR-East.Hachiko",
+          "railwayAName": "八高線",
+          "railwayB": "odpt.Railway:Seibu.Ikebukuro",
+          "railwayBName": "池袋線",
+          "sameOperator": false,
+          "distanceMeters": 48,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ],
+      "sameOperatorPairs": []
+    },
+    {
+      "place": "白金高輪",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 2,
+      "priorityScore": 2.5,
+      "crossOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:Toei.Mita",
+          "railwayAName": "三田線",
+          "railwayB": "odpt.Railway:TokyoMetro.Namboku",
+          "railwayBName": "南北線",
+          "sameOperator": false,
+          "distanceMeters": 16,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
           ]
         }
       ],
@@ -2281,20 +2280,6 @@
       ]
     },
     {
-      "place": "栗橋",
-      "railwayA": "odpt.Railway:JR-East.Utsunomiya",
-      "railwayAName": "宇都宮線",
-      "railwayB": "odpt.Railway:Tobu.Nikko",
-      "railwayBName": "日光線",
-      "sameOperator": false,
-      "distanceMeters": 237,
-      "fallbackMinutes": 6,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
       "place": "恵比寿",
       "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
       "railwayAName": "埼京線・川越線",
@@ -2392,20 +2377,6 @@
       ]
     },
     {
-      "place": "厚木",
-      "railwayA": "odpt.Railway:JR-East.Sagami",
-      "railwayAName": "相模線",
-      "railwayB": "odpt.Railway:Odakyu.Odawara",
-      "railwayBName": "小田原線",
-      "sameOperator": false,
-      "distanceMeters": 109,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
       "place": "溝の口",
       "railwayA": "odpt.Railway:Tokyu.DenEnToshi",
       "railwayAName": "田園都市線",
@@ -2457,20 +2428,6 @@
       "distanceMeters": 0,
       "fallbackMinutes": 5,
       "sources": [
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "高尾",
-      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-      "railwayAName": "中央線快速",
-      "railwayB": "odpt.Railway:Keio.Takao",
-      "railwayBName": "高尾線",
-      "sameOperator": false,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
         "same-place-group"
       ]
     },
@@ -2633,20 +2590,6 @@
       "railwayBName": "総武快速線",
       "sameOperator": true,
       "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "汐留",
-      "railwayA": "odpt.Railway:Toei.Oedo",
-      "railwayAName": "大江戸線",
-      "railwayB": "odpt.Railway:Yurikamome.Yurikamome",
-      "railwayBName": "ゆりかもめ",
-      "sameOperator": false,
-      "distanceMeters": 56,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
@@ -3671,47 +3614,6 @@
       "distanceMeters": 0,
       "fallbackMinutes": 5,
       "sources": [
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "藤沢",
-      "railwayA": "odpt.Railway:JR-East.Tokaido",
-      "railwayAName": "東海道線",
-      "railwayB": "odpt.Railway:Odakyu.Enoshima",
-      "railwayBName": "江ノ島線",
-      "sameOperator": false,
-      "distanceMeters": 114,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "南越谷 ↔ 新越谷",
-      "railwayA": "odpt.Railway:JR-East.Musashino",
-      "railwayAName": "武蔵野線",
-      "railwayB": "odpt.Railway:Tobu.TobuSkytree",
-      "railwayBName": "東武スカイツリーライン",
-      "sameOperator": false,
-      "distanceMeters": 132,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "南流山",
-      "railwayA": "odpt.Railway:JR-East.Musashino",
-      "railwayAName": "武蔵野線",
-      "railwayB": "odpt.Railway:MIR.TsukubaExpress",
-      "railwayBName": "つくばエクスプレス",
-      "sameOperator": false,
-      "distanceMeters": 9,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
         "same-place-group"
       ]
     },
