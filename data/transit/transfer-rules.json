@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T02:11:50.462Z",
+  "generatedAt": "2026-09-04T02:12:25.283Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -68,6 +68,7 @@
     "transfer-rule-sources.d/2026-09-04-shibuya-kitasenju.json",
     "transfer-rule-sources.d/2026-09-04-shimbashi-crossop-remaining.json",
     "transfer-rule-sources.d/2026-09-04-shimbashi-jr-remaining-7.json",
+    "transfer-rule-sources.d/2026-09-04-shinagawa-jr-remaining-5.json",
     "transfer-rule-sources.d/2026-09-04-shinjuku-linked-remaining.json",
     "transfer-rule-sources.d/2026-09-04-shinjuku-marunouchi-jr.json",
     "transfer-rule-sources.d/2026-09-04-shinjuku-remaining-direct.json",
@@ -6605,6 +6606,71 @@
       "label": "標準乗換（共用ホーム適用）",
       "source": "",
       "sourceType": "current standard transfer guide / shared-platform verification",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "品川-odpt.Railway:JR-East.KeihinTohokuNegishi-odpt.Railway:JR-East.Yokosuka",
+      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Shinagawa",
+      "toStation": "odpt.Station:JR-East.Yokosuka.Shinagawa",
+      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "toRailway": "odpt.Railway:JR-East.Yokosuka",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "品川-odpt.Railway:JR-East.KeihinTohokuNegishi-odpt.Railway:JR-East.Tokaido",
+      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Shinagawa",
+      "toStation": "odpt.Station:JR-East.Tokaido.Shinagawa",
+      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "toRailway": "odpt.Railway:JR-East.Tokaido",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "品川-odpt.Railway:JR-East.JobanRapid-odpt.Railway:JR-East.Yamanote",
+      "fromStation": "odpt.Station:JR-East.JobanRapid.Shinagawa",
+      "toStation": "odpt.Station:JR-East.Yamanote.Shinagawa",
+      "fromRailway": "odpt.Railway:JR-East.JobanRapid",
+      "toRailway": "odpt.Railway:JR-East.Yamanote",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "経路検索乗換",
+      "source": "",
+      "sourceType": "Jorudan current route-planner transfer time",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "品川-odpt.Railway:JR-East.JobanRapid-odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "fromStation": "odpt.Station:JR-East.JobanRapid.Shinagawa",
+      "toStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Shinagawa",
+      "fromRailway": "odpt.Railway:JR-East.JobanRapid",
+      "toRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "経路検索乗換",
+      "source": "",
+      "sourceType": "Jorudan current route-planner transfer time",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "品川-odpt.Railway:JR-East.JobanRapid-odpt.Railway:JR-East.Yokosuka",
+      "fromStation": "odpt.Station:JR-East.JobanRapid.Shinagawa",
+      "toStation": "odpt.Station:JR-East.Yokosuka.Shinagawa",
+      "fromRailway": "odpt.Railway:JR-East.JobanRapid",
+      "toRailway": "odpt.Railway:JR-East.Yokosuka",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "経路検索乗換",
+      "source": "",
+      "sourceType": "Jorudan current route-planner transfer time",
       "verifiedAt": "2026-09-04"
     },
     {
