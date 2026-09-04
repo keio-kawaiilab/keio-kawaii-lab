@@ -1,0 +1,109 @@
+name: Collect Keisei transit v2
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '20 17 * * 6'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: collect-keisei-transit-v2
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    env:
+      KEISEI_REQUEST_INTERVAL_SECONDS: '0.35'
+      KEISEI_WORKERS: '6'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install requests==2.32.5 beautifulsoup4==4.13.5
+
+      - name: Validate collector and v2 builder
+        run: |
+          python -m py_compile scripts/collect_keisei_timetables.py scripts/build_keisei_official_timetables.py scripts/build_keisei_network_timetable.py scripts/build_transit_v2.py
+          python scripts/test_transit_v2.py
+
+      - name: Discover every official Keisei train reference
+        run: python scripts/collect_keisei_timetables.py --discover
+
+      - name: Collect official one-train timetables
+        shell: bash
+        run: |
+          CHUNK_SIZE=300
+          CHUNK_COUNT=$(python - <<'PY'
+          import json, math
+          from pathlib import Path
+          state=json.loads(Path('data/transit/keisei/collector-state.json').read_text(encoding='utf-8'))
+          refs=state.get('trainRefs') or []
+          print(math.ceil(len(refs)/300))
+          PY
+          )
+          if [ "$CHUNK_COUNT" -le 0 ]; then
+            echo "No Keisei train references discovered." >&2
+            exit 1
+          fi
+          echo "Collecting $CHUNK_COUNT chunks"
+          for ((i=0; i<CHUNK_COUNT; i++)); do
+            python scripts/collect_keisei_timetables.py --collect-chunk "$i" --chunk-size "$CHUNK_SIZE" --workers 6
+          done
+          python scripts/collect_keisei_timetables.py --merge-chunks --chunk-size "$CHUNK_SIZE"
+
+      - name: Build Keisei exact timetable network
+        run: |
+          python scripts/build_keisei_official_timetables.py
+          python scripts/build_keisei_network_timetable.py
+
+      - name: Rebuild train-centric v2 database
+        run: python scripts/build_transit_v2.py
+
+      - name: Validate Keisei collection
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          raw=json.loads(Path('data/transit/keisei/official-train-details.json').read_text(encoding='utf-8'))
+          index=json.loads(Path('data/transit/keisei/timetable-index.json').read_text(encoding='utf-8'))
+          coverage=json.loads(Path('data/transit-v2/coverage.json').read_text(encoding='utf-8'))
+          assert int(raw.get('trainCount') or 0) > 0
+          assert len(index.get('lines') or {}) > 0
+          print(json.dumps({
+            'officialKeiseiTrains': raw.get('trainCount'),
+            'officialKeiseiStopRows': raw.get('stopRowCount'),
+            'keiseiTimetableLines': len(index.get('lines') or {}),
+            'v2Fragments': coverage['summary']['fragments'],
+            'v2SameTrainEdges': coverage['summary']['sameTrainEdges'],
+            'v2Unresolved': coverage['summary']['unresolved']
+          }, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Commit Keisei and v2 snapshots
+        shell: bash
+        run: |
+          if git diff --quiet -- data/transit/keisei data/transit-v2; then
+            echo "No Keisei/v2 data changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/transit/keisei data/transit-v2
+          git commit -m "Collect official Keisei train timetables for transit v2"
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            sleep $((attempt * 3))
+          done
+          exit 1
