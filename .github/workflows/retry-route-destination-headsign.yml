@@ -52,13 +52,12 @@ jobs:
           node --check route.js
           node scripts/test_route_destination_display.js
 
-      - name: Commit implementation
+      - name: Commit implementation code only
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git rm .github/workflows/add-route-destination-headsign.yml .github/workflows/retry-route-destination-headsign.yml
-          git add route-core.js route.js scripts/import_odpt_timetables.py scripts/build_minatomirai_routing_timetable.py scripts/test_import_odpt_timetables.py scripts/test_route_core.js scripts/test_route_destination_display.js .github/workflows/validate-route-search.yml
+          git add route-core.js route.js scripts/import_odpt_timetables.py scripts/build_minatomirai_routing_timetable.py scripts/test_import_odpt_timetables.py scripts/test_route_core.js scripts/test_route_destination_display.js
           git commit -m "Show train destinations in route guidance"
           git pull --rebase origin main
           git push origin HEAD:main
