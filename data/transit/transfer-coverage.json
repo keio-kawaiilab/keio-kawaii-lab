@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-09-04T08:10:42.830Z",
+  "generatedAt": "2026-09-04T08:13:12.851Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T08:10:28.697Z",
+  "rulesGeneratedAt": "2026-09-04T08:12:56.253Z",
   "methodology": "Candidate railway pairs are classified as curated when backed by an explicit transfer rule, fallback when covered by conservative fallbackMinutes, blocked for false same-name/nearby links, and uncurated only when no usable rule exists.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 908,
-    "fallbackPairs": 45,
+    "curatedPairs": 912,
+    "fallbackPairs": 41,
     "uncuratedPairs": 0,
     "blockedPairs": 7,
-    "curatedSourceRules": 908,
-    "fallbackGeneratedRules": 45,
+    "curatedSourceRules": 912,
+    "fallbackGeneratedRules": 41,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -104,17 +104,6 @@
     },
     {
       "place": "御徒町",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "溝の口",
       "totalPairs": 1,
       "curatedPairs": 0,
       "fallbackPairs": 1,
@@ -356,17 +345,6 @@
       "priorityScore": 0
     },
     {
-      "place": "津田沼",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
       "place": "鶴見",
       "totalPairs": 1,
       "curatedPairs": 0,
@@ -379,28 +357,6 @@
     },
     {
       "place": "天王台",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "田園調布",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "二子玉川",
       "totalPairs": 1,
       "curatedPairs": 0,
       "fallbackPairs": 1,
@@ -1113,6 +1069,50 @@
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
       "priorityScore": 0
+    },
+    {
+      "place": "原宿 ↔ 明治神宮前〈原宿〉",
+      "totalPairs": 2,
+      "curatedPairs": 2,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 0
+    },
+    {
+      "place": "戸越 ↔ 戸越銀座",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
+      "place": "戸塚",
+      "totalPairs": 6,
+      "curatedPairs": 6,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 4,
+      "priorityScore": 0
+    },
+    {
+      "place": "虎ノ門 ↔ 虎ノ門ヒルズ",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
     }
   ],
   "priorityDetails": [],
@@ -1221,20 +1221,6 @@
       "railwayAName": "京浜東北線・根岸線",
       "railwayB": "odpt.Railway:JR-East.Yamanote",
       "railwayBName": "山手線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "溝の口",
-      "railwayA": "odpt.Railway:Tokyu.DenEnToshi",
-      "railwayAName": "田園都市線",
-      "railwayB": "odpt.Railway:Tokyu.Oimachi",
-      "railwayBName": "大井町線",
       "sameOperator": true,
       "distanceMeters": 0,
       "fallbackMinutes": 5,
@@ -1573,20 +1559,6 @@
       ]
     },
     {
-      "place": "津田沼",
-      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-      "railwayAName": "中央・総武各駅停車",
-      "railwayB": "odpt.Railway:JR-East.SobuRapid",
-      "railwayBName": "総武快速線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
       "place": "鶴見",
       "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
       "railwayAName": "京浜東北線・根岸線",
@@ -1606,34 +1578,6 @@
       "railwayAName": "常磐線各駅停車",
       "railwayB": "odpt.Railway:JR-East.JobanRapid",
       "railwayBName": "常磐線快速",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "田園調布",
-      "railwayA": "odpt.Railway:Tokyu.Meguro",
-      "railwayAName": "目黒線",
-      "railwayB": "odpt.Railway:Tokyu.Toyoko",
-      "railwayBName": "東横線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "二子玉川",
-      "railwayA": "odpt.Railway:Tokyu.DenEnToshi",
-      "railwayAName": "田園都市線",
-      "railwayB": "odpt.Railway:Tokyu.Oimachi",
-      "railwayBName": "大井町線",
       "sameOperator": true,
       "distanceMeters": 0,
       "fallbackMinutes": 5,
