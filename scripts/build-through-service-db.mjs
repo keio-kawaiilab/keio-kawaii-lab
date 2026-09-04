@@ -252,7 +252,7 @@ unresolved.sort((a,b)=>`${a.operator}:${a.railway}:${a.sourceTripIndex}`.localeC
 const tripDb={
   version:2,
   generatedAt:new Date().toISOString(),
-  policy:{runtimeInference:false,timeGapMayEstablishIdentity:false,genericBoundaryChaining:false},
+  policy:{runtimeInference:false,timeGapMayEstablishTrainIdentity:false,genericBoundaryChaining:false},
   records
 };
 writeJson('data/transit/through-service-trips.json',tripDb);
