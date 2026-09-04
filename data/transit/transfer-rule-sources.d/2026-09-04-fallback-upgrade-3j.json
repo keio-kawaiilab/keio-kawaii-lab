@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "乗換",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "id": "三鷹-中央線快速-中央総武各駅停車",
+      "place": "三鷹",
+      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E3%81%A4%E3%81%8D%E3%81%AE%E3%82%8F_%E8%A5%BF%E8%8D%BB%E7%AA%AA.html",
+      "sourceType": "current Jorudan route explicitly shows a 3-minute transfer at Mitaka from Chuo Rapid platforms 5/6 to Chuo-Sobu Local platforms 1/2"
+    },
+    {
+      "id": "吉祥寺-中央線快速-中央総武各駅停車",
+      "place": "吉祥寺",
+      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%A5%BF%E8%8D%BB%E7%AA%AA_%E6%96%B0%E5%BA%A7.html",
+      "sourceType": "current Jorudan route explicitly shows a 3-minute transfer at Kichijoji from Chuo-Sobu Local platform 1 to Chuo Rapid platform 3"
+    },
+    {
+      "id": "浜川崎-南武線浜川崎支線-鶴見線",
+      "place": "浜川崎",
+      "railwayA": "odpt.Railway:JR-East.NambuBranch",
+      "railwayB": "odpt.Railway:JR-East.Tsurumi",
+      "minutes": 5,
+      "source": "https://trip.awaisora.com/2025/07/23/c7c303ca-d5a4-42aa-a1c4-e906ed37dde3/",
+      "sourceType": "measured transfer guide: station buildings are separated and about 3 minutes apart on foot, recommending at least 5 minutes; official Kanagawa tourism information independently confirms the two lines use separate station buildings across a road and require exiting the gate"
+    }
+  ]
+}
