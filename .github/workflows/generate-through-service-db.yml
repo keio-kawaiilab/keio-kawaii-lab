@@ -1,5 +1,6 @@
 name: Generate through-service database
 
+# Strict: no timetable-gap inference and no generic through-boundary chaining.
 on:
   workflow_dispatch:
   push:
