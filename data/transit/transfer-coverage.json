@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-04T04:45:27.377Z",
+  "generatedAt": "2026-09-04T04:45:59.767Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T04:45:13.514Z",
+  "rulesGeneratedAt": "2026-09-04T04:45:41.555Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 594,
-    "uncuratedPairs": 359,
+    "curatedPairs": 598,
+    "uncuratedPairs": 355,
     "blockedPairs": 7,
-    "curatedSourceRules": 594,
+    "curatedSourceRules": 598,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -423,16 +423,6 @@
       "priorityScore": 3
     },
     {
-      "place": "立川",
-      "totalPairs": 3,
-      "curatedPairs": 0,
-      "uncuratedPairs": 3,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 3,
-      "priorityScore": 3
-    },
-    {
       "place": "綾瀬",
       "totalPairs": 1,
       "curatedPairs": 0,
@@ -673,16 +663,6 @@
       "priorityScore": 2.5
     },
     {
-      "place": "小田急多摩センター ↔ 京王多摩センター",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5
-    },
-    {
       "place": "小田原",
       "totalPairs": 1,
       "curatedPairs": 0,
@@ -724,16 +704,6 @@
     },
     {
       "place": "逗子 ↔ 逗子・葉山",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5
-    },
-    {
-      "place": "水道橋",
       "totalPairs": 1,
       "curatedPairs": 0,
       "uncuratedPairs": 1,
@@ -1004,6 +974,36 @@
     },
     {
       "place": "本八幡",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 2,
+      "priorityScore": 2.5
+    },
+    {
+      "place": "本八幡 ↔ 京成八幡",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 2,
+      "priorityScore": 2.5
+    },
+    {
+      "place": "流山おおたかの森",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 2,
+      "priorityScore": 2.5
+    },
+    {
+      "place": "両国",
       "totalPairs": 1,
       "curatedPairs": 0,
       "uncuratedPairs": 1,
@@ -4857,19 +4857,6 @@
       ]
     },
     {
-      "place": "小田急多摩センター ↔ 京王多摩センター",
-      "railwayA": "odpt.Railway:Keio.Sagamihara",
-      "railwayAName": "相模原線",
-      "railwayB": "odpt.Railway:Odakyu.Tama",
-      "railwayBName": "多摩線",
-      "sameOperator": false,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
       "place": "小田原",
       "railwayA": "odpt.Railway:JR-East.Tokaido",
       "railwayAName": "東海道線",
@@ -5293,20 +5280,6 @@
       "fallbackMinutes": 7,
       "sources": [
         "connecting-station"
-      ]
-    },
-    {
-      "place": "水道橋",
-      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-      "railwayAName": "中央・総武各駅停車",
-      "railwayB": "odpt.Railway:Toei.Mita",
-      "railwayBName": "三田線",
-      "sameOperator": false,
-      "distanceMeters": 206,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
       ]
     },
     {
@@ -7688,20 +7661,6 @@
       ]
     },
     {
-      "place": "府中本町",
-      "railwayA": "odpt.Railway:JR-East.Musashino",
-      "railwayAName": "武蔵野線",
-      "railwayB": "odpt.Railway:JR-East.Nambu",
-      "railwayBName": "南武線",
-      "sameOperator": true,
-      "distanceMeters": 12,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
       "place": "武蔵境",
       "railwayA": "odpt.Railway:JR-East.ChuoRapid",
       "railwayAName": "中央線快速",
@@ -8083,20 +8042,6 @@
       "railwayBName": "青梅線",
       "sameOperator": true,
       "distanceMeters": 33,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "立川",
-      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-      "railwayAName": "中央線快速",
-      "railwayB": "odpt.Railway:JR-East.Nambu",
-      "railwayBName": "南武線",
-      "sameOperator": true,
-      "distanceMeters": 62,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
