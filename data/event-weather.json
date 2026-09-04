@@ -1,7 +1,7 @@
 {
   "date": "2026-09-04",
   "horizonDays": 7,
-  "generatedAt": "2026-09-04T16:24+09:00",
+  "generatedAt": "2026-09-04T21:54+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -17,12 +17,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "雨 時々 くもり",
-      "max": 26.0,
-      "min": 26.0,
-      "pop": "50",
-      "popLabel": "12〜18時",
-      "issuedAt": "2026-09-04T11:00:00+09:00",
+      "label": "雨",
+      "max": null,
+      "min": null,
+      "pop": "70",
+      "popLabel": "18〜00時",
+      "issuedAt": "2026-09-04T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -33,40 +33,24 @@
       "venueKey": "カルッツかわさき",
       "eventIds": [
         "54a369497f59ce96",
-        "a659348f628e2ac5",
-        "faaedb9fa4408d6e",
-        "0e9184c1333d3c2b",
-        "e4e0246476c2e42e",
-        "834b04f24d38d0ac"
+        "faaedb9fa4408d6e"
       ],
       "areaCode": "140010",
       "areaName": "東部",
       "precision": "mesh5km",
-      "label": "くもり",
-      "max": 27.0,
-      "min": 27.0,
+      "label": "雨",
+      "max": null,
+      "min": null,
       "pop": "60",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-09-04T11:00:00+09:00",
-      "meshTime": "18:00",
+      "issuedAt": "2026-09-04T17:00:00+09:00",
+      "meshTime": "21:00",
       "meshTempBand": "20〜24℃",
       "coordinates": {
         "lat": 35.529778,
         "lon": 139.71022
       },
       "meshTimeline": [
-        {
-          "time": "15:00",
-          "label": "雨",
-          "validAt": "2026-09-04T15:00+09:00",
-          "temp": 25
-        },
-        {
-          "time": "18:00",
-          "label": "くもり",
-          "validAt": "2026-09-04T18:00+09:00",
-          "temp": 23
-        },
         {
           "time": "21:00",
           "label": "雨",
@@ -82,19 +66,19 @@
       ],
       "hourlyRain": [
         {
-          "time": "18:00",
+          "time": "17:30",
           "rain": true,
-          "validAt": "2026-09-04T18:00+09:00"
+          "validAt": "2026-09-04T17:30+09:00"
         },
         {
-          "time": "19:00",
+          "time": "18:30",
           "rain": true,
-          "validAt": "2026-09-04T19:00+09:00"
+          "validAt": "2026-09-04T18:30+09:00"
         },
         {
-          "time": "20:00",
+          "time": "19:30",
           "rain": true,
-          "validAt": "2026-09-04T20:00+09:00"
+          "validAt": "2026-09-04T19:30+09:00"
         }
       ]
     },
@@ -109,11 +93,11 @@
       "areaName": "南部",
       "precision": "area",
       "label": "くもり 明け方 まで 雨",
-      "max": 25.0,
-      "min": 21.0,
+      "max": 26.0,
+      "min": 20.0,
       "pop": "20",
       "popLabel": "12〜18時",
-      "issuedAt": "2026-09-04T11:00:00+09:00",
+      "issuedAt": "2026-09-04T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -128,12 +112,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "雨 昼前 から くもり",
-      "max": 25.0,
+      "label": "くもり 明け方 まで 雨",
+      "max": 26.0,
       "min": 20.0,
-      "pop": "50",
+      "pop": "30",
       "popLabel": "06〜12時",
-      "issuedAt": "2026-09-04T11:00:00+09:00",
+      "issuedAt": "2026-09-04T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -143,17 +127,18 @@
       "venue": "ベルサール汐留",
       "venueKey": "ベルサール汐留",
       "eventIds": [
+        "special-9eeecc44fadaa65a",
         "special-88fbc286e6995c1d"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "雨 時々 くもり",
+      "label": "くもり 後 雨",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
-      "issuedAt": "2026-09-04T11:00:00+09:00",
+      "issuedAt": "2026-09-04T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -173,7 +158,7 @@
       "min": 21.0,
       "pop": "80",
       "popLabel": "1日",
-      "issuedAt": "2026-09-04T11:00:00+09:00",
+      "issuedAt": "2026-09-04T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -184,11 +169,7 @@
       "venueKey": "グランキューブ大阪メインホール",
       "eventIds": [
         "54a369497f59ce96",
-        "84787797cc4cbcb3",
-        "0e9184c1333d3c2b",
-        "e4e0246476c2e42e",
-        "834b04f24d38d0ac",
-        "b39ab0fb53c29e22"
+        "84787797cc4cbcb3"
       ],
       "areaCode": "270000",
       "areaName": "大阪府",
@@ -198,7 +179,7 @@
       "min": 26.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-09-04T11:00:00+09:00",
+      "issuedAt": "2026-09-04T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -209,11 +190,7 @@
       "venueKey": "グランキューブ大阪メインホール",
       "eventIds": [
         "54a369497f59ce96",
-        "84787797cc4cbcb3",
-        "0e9184c1333d3c2b",
-        "e4e0246476c2e42e",
-        "834b04f24d38d0ac",
-        "b39ab0fb53c29e22"
+        "84787797cc4cbcb3"
       ],
       "areaCode": "270000",
       "areaName": "大阪府",
@@ -223,7 +200,7 @@
       "min": 25.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-09-04T11:00:00+09:00",
+      "issuedAt": "2026-09-04T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -243,28 +220,23 @@
       "min": 21.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-09-04T11:00:00+09:00",
+      "issuedAt": "2026-09-04T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
     }
   ],
   "stats": {
-    "occurrencesInRange": 26,
-    "uniqueVenueDates": 11,
+    "occurrencesInRange": 14,
+    "uniqueVenueDates": 10,
     "weatherEntries": 9,
     "meshEntries": 1,
-    "failures": 2,
+    "failures": 1,
     "meshTimelineEntries": 1,
-    "meshExactTempSlots": 4,
+    "meshExactTempSlots": 2,
     "hourlyRainEntries": 1
   },
   "failures": [
-    {
-      "date": "2026-09-06",
-      "venue": "オンライン（SUKISUKI）",
-      "reason": "都道府県を解決できません"
-    },
     {
       "date": "2026-09-11",
       "venue": "神戸ハーバーランド スペースシアター",
