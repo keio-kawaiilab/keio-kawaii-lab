@@ -8,13 +8,18 @@ on:
       - 'route-core.js'
       - 'preview/transfer-guide/**'
       - 'scripts/test_keisei_route_ui.js'
+      - 'scripts/test_route_core.js'
       - 'scripts/test_route_preview_smoke.js'
       - 'scripts/test_route_preview_ui.js'
       - 'scripts/test_route_destination_display.js'
+      - 'scripts/test_route_runtime_same_train.js'
       - 'data/transit/**/entities.json'
       - 'data/transit/**/timetable-index.json'
       - 'data/transit/**/timetables/**'
       - 'data/transit/manifest.json'
+      - 'data/transit-v2/runtime-same-train.json'
+      - 'data/transit-v2/same-train-edges.json'
+      - 'data/transit-v2/coverage.json'
       - '.github/workflows/validate-route-search.yml'
 
 permissions:
@@ -37,9 +42,15 @@ jobs:
           node --check preview/transfer-guide/preview.js
           node --check preview/transfer-guide/preview-compare.js
           node --check scripts/test_keisei_route_ui.js
+          node --check scripts/test_route_core.js
           node --check scripts/test_route_preview_smoke.js
           node --check scripts/test_route_preview_ui.js
           node --check scripts/test_route_destination_display.js
+          node --check scripts/test_route_runtime_same_train.js
+      - name: Exercise strict route-core transfer identity
+        run: node scripts/test_route_core.js
+      - name: Exercise strict runtime same-train DB
+        run: node scripts/test_route_runtime_same_train.js
       - name: Exercise destination/headsign propagation
         run: node scripts/test_route_destination_display.js
       - name: Exercise exact Keisei through route in the browser logic
