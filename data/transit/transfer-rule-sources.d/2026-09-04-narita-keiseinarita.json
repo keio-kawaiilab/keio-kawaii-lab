@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "駅間徒歩乗換",
+    "sourceType": "current measured inter-station transfer guide",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "成田 ↔ 京成成田",
+      "railwayA": "odpt.Railway:JR-East.Narita",
+      "railwayB": "odpt.Railway:Keisei.Main",
+      "railwayAName": "成田線",
+      "railwayBName": "京成本線",
+      "minutes": 6,
+      "source": "https://rekichiri.com/keisei-narita-jr-narita-transfer/"
+    },
+    {
+      "place": "成田 ↔ 京成成田",
+      "railwayA": "odpt.Railway:JR-East.Narita",
+      "railwayB": "odpt.Railway:Keisei.HigashiNarita",
+      "railwayAName": "成田線",
+      "railwayBName": "東成田線",
+      "minutes": 6,
+      "source": "https://rekichiri.com/keisei-narita-jr-narita-transfer/"
+    },
+    {
+      "place": "成田 ↔ 京成成田",
+      "railwayA": "odpt.Railway:JR-East.NaritaAbikoBranch",
+      "railwayB": "odpt.Railway:Keisei.Main",
+      "railwayAName": "成田線我孫子支線",
+      "railwayBName": "京成本線",
+      "minutes": 6,
+      "source": "https://rekichiri.com/keisei-narita-jr-narita-transfer/"
+    },
+    {
+      "place": "成田 ↔ 京成成田",
+      "railwayA": "odpt.Railway:JR-East.NaritaAbikoBranch",
+      "railwayB": "odpt.Railway:Keisei.HigashiNarita",
+      "railwayAName": "成田線我孫子支線",
+      "railwayBName": "東成田線",
+      "minutes": 6,
+      "source": "https://rekichiri.com/keisei-narita-jr-narita-transfer/"
+    },
+    {
+      "place": "成田 ↔ 京成成田",
+      "railwayA": "odpt.Railway:JR-East.NaritaAirportBranch",
+      "railwayB": "odpt.Railway:Keisei.Main",
+      "railwayAName": "成田線空港支線",
+      "railwayBName": "京成本線",
+      "minutes": 6,
+      "source": "https://rekichiri.com/keisei-narita-jr-narita-transfer/"
+    },
+    {
+      "place": "成田 ↔ 京成成田",
+      "railwayA": "odpt.Railway:JR-East.NaritaAirportBranch",
+      "railwayB": "odpt.Railway:Keisei.HigashiNarita",
+      "railwayAName": "成田線空港支線",
+      "railwayBName": "東成田線",
+      "minutes": 6,
+      "source": "https://rekichiri.com/keisei-narita-jr-narita-transfer/"
+    }
+  ]
+}
