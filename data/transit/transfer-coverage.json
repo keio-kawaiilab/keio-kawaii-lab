@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-04T01:23:37.174Z",
+  "generatedAt": "2026-09-04T01:24:12.594Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T01:23:23.960Z",
+  "rulesGeneratedAt": "2026-09-04T01:23:53.914Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 497,
-    "uncuratedPairs": 456,
+    "curatedPairs": 500,
+    "uncuratedPairs": 453,
     "blockedPairs": 7,
-    "curatedSourceRules": 497,
+    "curatedSourceRules": 500,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -90,16 +90,6 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 3,
       "railwayCount": 5,
-      "priorityScore": 10.5
-    },
-    {
-      "place": "拝島",
-      "totalPairs": 6,
-      "curatedPairs": 0,
-      "uncuratedPairs": 6,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 3,
-      "railwayCount": 4,
       "priorityScore": 10.5
     },
     {
@@ -624,6 +614,16 @@
     },
     {
       "place": "日吉",
+      "totalPairs": 6,
+      "curatedPairs": 3,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 4,
+      "priorityScore": 3
+    },
+    {
+      "place": "拝島",
       "totalPairs": 6,
       "curatedPairs": 3,
       "uncuratedPairs": 3,
@@ -2026,98 +2026,6 @@
           "railwayBName": "相鉄直通線",
           "sameOperator": true,
           "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "拝島",
-      "totalPairs": 6,
-      "curatedPairs": 0,
-      "uncuratedPairs": 6,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 3,
-      "railwayCount": 4,
-      "priorityScore": 10.5,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.Itsukaichi",
-          "railwayAName": "五日市線",
-          "railwayB": "odpt.Railway:Seibu.Haijima",
-          "railwayBName": "拝島線",
-          "sameOperator": false,
-          "distanceMeters": 80,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Ome",
-          "railwayAName": "青梅線",
-          "railwayB": "odpt.Railway:Seibu.Haijima",
-          "railwayBName": "拝島線",
-          "sameOperator": false,
-          "distanceMeters": 80,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Hachiko",
-          "railwayAName": "八高線",
-          "railwayB": "odpt.Railway:Seibu.Haijima",
-          "railwayBName": "拝島線",
-          "sameOperator": false,
-          "distanceMeters": 59,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.Itsukaichi",
-          "railwayAName": "五日市線",
-          "railwayB": "odpt.Railway:JR-East.Ome",
-          "railwayBName": "青梅線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Hachiko",
-          "railwayAName": "八高線",
-          "railwayB": "odpt.Railway:JR-East.Itsukaichi",
-          "railwayBName": "五日市線",
-          "sameOperator": true,
-          "distanceMeters": 28,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Hachiko",
-          "railwayAName": "八高線",
-          "railwayB": "odpt.Railway:JR-East.Ome",
-          "railwayBName": "青梅線",
-          "sameOperator": true,
-          "distanceMeters": 28,
           "fallbackMinutes": 5,
           "sources": [
             "connecting-station",
@@ -3794,6 +3702,72 @@
           "railwayBName": "有楽町線",
           "sameOperator": true,
           "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ]
+    },
+    {
+      "place": "秋葉原",
+      "totalPairs": 10,
+      "curatedPairs": 6,
+      "uncuratedPairs": 4,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 5,
+      "priorityScore": 5.5,
+      "crossOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:MIR.TsukubaExpress",
+          "railwayAName": "つくばエクスプレス",
+          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+          "railwayBName": "日比谷線",
+          "sameOperator": false,
+          "distanceMeters": 156,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+          "railwayAName": "京浜東北線・根岸線",
+          "railwayB": "odpt.Railway:JR-East.Yamanote",
+          "railwayBName": "山手線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+          "railwayAName": "中央・総武各駅停車",
+          "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+          "railwayBName": "京浜東北線・根岸線",
+          "sameOperator": true,
+          "distanceMeters": 29,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+          "railwayAName": "中央・総武各駅停車",
+          "railwayB": "odpt.Railway:JR-East.Yamanote",
+          "railwayBName": "山手線",
+          "sameOperator": true,
+          "distanceMeters": 29,
           "fallbackMinutes": 5,
           "sources": [
             "connecting-station",
@@ -9091,34 +9065,6 @@
     },
     {
       "place": "拝島",
-      "railwayA": "odpt.Railway:JR-East.Itsukaichi",
-      "railwayAName": "五日市線",
-      "railwayB": "odpt.Railway:Seibu.Haijima",
-      "railwayBName": "拝島線",
-      "sameOperator": false,
-      "distanceMeters": 80,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "拝島",
-      "railwayA": "odpt.Railway:JR-East.Ome",
-      "railwayAName": "青梅線",
-      "railwayB": "odpt.Railway:Seibu.Haijima",
-      "railwayBName": "拝島線",
-      "sameOperator": false,
-      "distanceMeters": 80,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "拝島",
       "railwayA": "odpt.Railway:JR-East.Hachiko",
       "railwayAName": "八高線",
       "railwayB": "odpt.Railway:JR-East.Itsukaichi",
@@ -9139,20 +9085,6 @@
       "railwayBName": "青梅線",
       "sameOperator": true,
       "distanceMeters": 28,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "拝島",
-      "railwayA": "odpt.Railway:JR-East.Hachiko",
-      "railwayAName": "八高線",
-      "railwayB": "odpt.Railway:Seibu.Haijima",
-      "railwayBName": "拝島線",
-      "sameOperator": false,
-      "distanceMeters": 59,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
