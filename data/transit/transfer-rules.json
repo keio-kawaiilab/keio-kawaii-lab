@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T00:53:04.383Z",
+  "generatedAt": "2026-09-04T00:53:48.345Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -38,6 +38,7 @@
     "transfer-rule-sources.d/2026-09-03-tokyo-marunouchi.json",
     "transfer-rule-sources.d/2026-09-03-yotsuya.json",
     "transfer-rule-sources.d/2026-09-03-yurakucho-hibiya.json",
+    "transfer-rule-sources.d/2026-09-04-akihabara-core.json",
     "transfer-rule-sources.d/2026-09-04-ikebukuro-remaining.json",
     "transfer-rule-sources.d/2026-09-04-kanagawa-batch-i.json",
     "transfer-rule-sources.d/2026-09-04-kitasenju-core.json",
@@ -3184,6 +3185,58 @@
       "source": "https://mb.jorudan.co.jp/os/noritxt/yurakucho/tokyo-metro_yurakucho_line-toei_subway-mita_line.html",
       "sourceType": "Jorudan standard transfer time",
       "verifiedAt": "2026-09-03"
+    },
+    {
+      "id": "秋葉原-つくばエクスプレス-山手線",
+      "fromStation": "odpt.Station:MIR.TsukubaExpress.Akihabara",
+      "toStation": "odpt.Station:JR-East.Yamanote.Akihabara",
+      "fromRailway": "odpt.Railway:MIR.TsukubaExpress",
+      "toRailway": "odpt.Railway:JR-East.Yamanote",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "標準・現行乗換（安全側）",
+      "source": "https://wadattsu261.com/content/akihabara-tx-jryamanote-keihinline-transfer-information/",
+      "sourceType": "current transfer guide / Jorudan standard transfer time",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "秋葉原-つくばエクスプレス-京浜東北線・根岸線",
+      "fromStation": "odpt.Station:MIR.TsukubaExpress.Akihabara",
+      "toStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Akihabara",
+      "fromRailway": "odpt.Railway:MIR.TsukubaExpress",
+      "toRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "標準・現行乗換（安全側）",
+      "source": "https://wadattsu261.com/content/akihabara-tx-jryamanote-keihinline-transfer-information/",
+      "sourceType": "current transfer guide / Jorudan standard transfer time",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "秋葉原-つくばエクスプレス-中央・総武各駅停車",
+      "fromStation": "odpt.Station:MIR.TsukubaExpress.Akihabara",
+      "toStation": "odpt.Station:JR-East.ChuoSobuLocal.Akihabara",
+      "fromRailway": "odpt.Railway:MIR.TsukubaExpress",
+      "toRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "標準・現行乗換（安全側）",
+      "source": "https://wadattsu261.com/content/akihabara-tx-jrchuo-sobuslowline-transfer-information/",
+      "sourceType": "current transfer guide / Jorudan standard transfer time",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "秋葉原-京浜東北線・根岸線-日比谷線",
+      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Akihabara",
+      "toStation": "odpt.Station:TokyoMetro.Hibiya.Akihabara",
+      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "toRailway": "odpt.Railway:TokyoMetro.Hibiya",
+      "minutes": 8,
+      "bidirectional": true,
+      "label": "標準・現行乗換（安全側）",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/akihabara/keihintohoku_line-tokyo-metro_hibiya_line.html",
+      "sourceType": "current transfer guide / Jorudan standard transfer time",
+      "verifiedAt": "2026-09-04"
     },
     {
       "id": "池袋-丸ノ内線-有楽町線",
