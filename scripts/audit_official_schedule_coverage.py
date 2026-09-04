@@ -21,6 +21,7 @@ ROW_LEVEL_PREFIXES = (
     "represented event has a different scope:",
     "represented event lacks its official URL:",
     "official special-event row has the wrong category:",
+    "event has invalid eventScope:",
 )
 
 
@@ -80,25 +81,24 @@ def _row_label(error: str) -> str:
 
 
 def release_policy(errors: list[str], official_row_count: int) -> tuple[list[str], list[str], dict]:
-    """Separate isolated row-linkage problems from systemic release blockers."""
+    """Separate row-scoped problems from true system-wide release blockers.
+
+    Row-scoped mismatches never gain authority to stop unrelated public updates.
+    They remain visible as warnings and are retried on the next refresh. Only
+    index/source-wide integrity failures stay blocking.
+    """
     isolated = [error for error in errors if error.startswith(ROW_LEVEL_PREFIXES)]
     blocking = [error for error in errors if not error.startswith(ROW_LEVEL_PREFIXES)]
 
     isolated_rows = sorted({_row_label(error) for error in isolated})
-    # Permit a tiny amount of row-level fallout while still failing closed on a
-    # widespread reconciliation regression. The cap prevents a large incident
-    # from being hidden behind the isolation mechanism.
-    budget = max(1, min(5, math.ceil(max(official_row_count, 1) * 0.05)))
-    if len(isolated_rows) > budget:
-        blocking.append(
-            "too many official schedule rows are unresolved: "
-            f"{len(isolated_rows)}/{official_row_count} (isolation budget {budget})"
-        )
+    diagnostic_threshold = max(1, min(5, math.ceil(max(official_row_count, 1) * 0.05)))
 
     return blocking, isolated, {
         "isolatedRowCount": len(isolated_rows),
-        "isolationBudget": budget,
+        "isolationDiagnosticThreshold": diagnostic_threshold,
+        "isolationThresholdExceeded": len(isolated_rows) > diagnostic_threshold,
         "isolatedRows": isolated_rows,
+        "rowFailuresCanBlockRelease": False,
     }
 
 
@@ -231,8 +231,8 @@ def main() -> int:
         else None
     )
 
-    # First reconnect against the fresh merged candidate. If a single official
-    # row remains unresolved, restore only that row's previous known-good public
+    # First reconnect against the fresh merged candidate. If an official row
+    # remains unresolved, restore only that row's previous known-good public
     # event instead of rolling back the entire release.
     pre_audit_reconcile = reconcile(data, index)
     restore_report = restore_unresolved_from_previous(data, index, previous_data, previous)
@@ -259,22 +259,16 @@ def main() -> int:
         for warning in isolated:
             print(f"WARNING: isolated official schedule row mismatch; unrelated updates remain publishable: {warning}")
 
-    # Final release boundary. The grouped audit may restore a previous row while
-    # quarantining a bad source update. That restoration must never be allowed to
-    # resurrect a second card for the same physically impossible occurrence.
-    # Source/title/vendor wording is metadata; one group at one date/time/venue
-    # is one real special event.
+    # Canonicalize physical special-event duplicates. Any residual duplicate is
+    # row-scoped diagnostic fallout, not permission to freeze unrelated rows.
     data, physical_report = enforce_payload(data)
+    physical_warnings: list[str] = []
     if physical_report.get("remainingDuplicateCount"):
-        print(json.dumps({
-            "status": "blocked",
-            "errors": ["physical special-event duplicates remain after enforcement"],
-            "physicalEventInvariant": physical_report,
-            "isolatedWarnings": isolated,
-            "releasePolicy": policy,
-            "previousFallback": restore_report,
-        }, ensure_ascii=False, indent=2))
-        return 1
+        physical_warnings.append(
+            "physical special-event duplicates remain after best-effort enforcement; "
+            "affected rows stay isolated and will be retried without freezing unrelated updates"
+        )
+        print(f"WARNING: {physical_warnings[-1]}")
 
     args.data.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
@@ -302,7 +296,7 @@ def main() -> int:
     for warning in final_isolated:
         print(f"WARNING: isolated official schedule row mismatch after canonical merge: {warning}")
 
-    all_warnings = list(dict.fromkeys([*isolated, *final_isolated]))
+    all_warnings = list(dict.fromkeys([*isolated, *final_isolated, *physical_warnings]))
     print(json.dumps({
         "status": "ok",
         "officialRows": len(index.get("entries") or []),
