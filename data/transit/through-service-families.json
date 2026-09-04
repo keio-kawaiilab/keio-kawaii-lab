@@ -1,0 +1,172 @@
+{
+  "version": 1,
+  "policy": {
+    "purpose": "Enumerate actual same-train operating families. These are not generic connectivity paths.",
+    "runtimeInference": false,
+    "timeGapMayEstablishTrainIdentity": false,
+    "genericBoundaryChaining": false,
+    "destinationRequiresPublishedTrainData": true,
+    "unmatchedTrainIsThrough": false
+  },
+  "updatedAt": "2026-09-04",
+  "families": [
+    {
+      "id": "minatomirai-toyoko-fukutoshin-tobu",
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.mm21railway.co.jp/info/faq05.html",
+        "https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"
+      ],
+      "paths": [
+        ["manual.Railway:YokohamaMinatomirai.Minatomirai", "odpt.Railway:Tokyu.Toyoko", "odpt.Railway:TokyoMetro.Fukutoshin", "odpt.Railway:Tobu.Tojo"]
+      ],
+      "notes": "みなとみらい線―東横線―副都心線―東武東上線系統。"
+    },
+    {
+      "id": "minatomirai-toyoko-fukutoshin-seibu",
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.mm21railway.co.jp/info/faq05.html",
+        "https://www.mm21railway.co.jp/lp/",
+        "https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"
+      ],
+      "paths": [
+        ["manual.Railway:YokohamaMinatomirai.Minatomirai", "odpt.Railway:Tokyu.Toyoko", "odpt.Railway:TokyoMetro.Fukutoshin", "odpt.Railway:Seibu.SeibuYurakucho", "odpt.Railway:Seibu.Ikebukuro"],
+        ["manual.Railway:YokohamaMinatomirai.Minatomirai", "odpt.Railway:Tokyu.Toyoko", "odpt.Railway:TokyoMetro.Fukutoshin", "odpt.Railway:Seibu.SeibuYurakucho", "odpt.Railway:Seibu.Ikebukuro", "odpt.Railway:Seibu.SeibuChichibu"]
+      ],
+      "notes": "通常の西武池袋線直通と、公式に明記されるS-TRAIN西武秩父直通を含む。"
+    },
+    {
+      "id": "yurakucho-tobu",
+      "status": "verified",
+      "sourceUrls": ["https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"],
+      "paths": [["odpt.Railway:TokyoMetro.Yurakucho", "odpt.Railway:Tobu.Tojo"]]
+    },
+    {
+      "id": "yurakucho-seibu",
+      "status": "verified",
+      "sourceUrls": ["https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"],
+      "paths": [["odpt.Railway:TokyoMetro.Yurakucho", "odpt.Railway:Seibu.SeibuYurakucho", "odpt.Railway:Seibu.Ikebukuro"]]
+    },
+    {
+      "id": "odakyu-chiyoda-jobanlocal",
+      "status": "verified",
+      "sourceUrls": ["https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"],
+      "paths": [
+        ["odpt.Railway:Odakyu.Odawara", "odpt.Railway:TokyoMetro.Chiyoda", "odpt.Railway:JR-East.JobanLocal"],
+        ["odpt.Railway:Odakyu.Tama", "odpt.Railway:Odakyu.Odawara", "odpt.Railway:TokyoMetro.Chiyoda", "odpt.Railway:JR-East.JobanLocal"]
+      ],
+      "notes": "小田急―千代田線―常磐線各駅停車の3社直通を包含。"
+    },
+    {
+      "id": "denentoshi-hanzomon-tobu",
+      "status": "verified",
+      "sourceUrls": ["https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"],
+      "paths": [
+        ["odpt.Railway:Tokyu.DenEnToshi", "odpt.Railway:TokyoMetro.Hanzomon", "odpt.Railway:Tobu.TobuSkytree"],
+        ["odpt.Railway:Tokyu.DenEnToshi", "odpt.Railway:TokyoMetro.Hanzomon", "odpt.Railway:Tobu.TobuSkytree", "odpt.Railway:Tobu.Isesaki"],
+        ["odpt.Railway:Tokyu.DenEnToshi", "odpt.Railway:TokyoMetro.Hanzomon", "odpt.Railway:Tobu.TobuSkytree", "odpt.Railway:Tobu.Nikko"]
+      ]
+    },
+    {
+      "id": "hibiya-tobu",
+      "status": "verified",
+      "sourceUrls": ["https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"],
+      "paths": [
+        ["odpt.Railway:TokyoMetro.Hibiya", "odpt.Railway:Tobu.TobuSkytree"],
+        ["odpt.Railway:TokyoMetro.Hibiya", "odpt.Railway:Tobu.TobuSkytree", "odpt.Railway:Tobu.Nikko"]
+      ]
+    },
+    {
+      "id": "tozai-jr-chuosobu",
+      "status": "verified",
+      "sourceUrls": ["https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"],
+      "paths": [["odpt.Railway:JR-East.ChuoSobuLocal", "odpt.Railway:TokyoMetro.Tozai", "odpt.Railway:JR-East.ChuoSobuLocal"]],
+      "notes": "中野側の中央線各駅停車・西船橋側の総武線各駅停車の両方向を1系統として表現。"
+    },
+    {
+      "id": "meguro-namboku",
+      "status": "verified",
+      "sourceUrls": ["https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"],
+      "paths": [["odpt.Railway:Tokyu.Meguro", "odpt.Railway:TokyoMetro.Namboku"]]
+    },
+    {
+      "id": "meguro-mita",
+      "status": "verified",
+      "sourceUrls": ["https://www.kotsu.metro.tokyo.jp/about/service/subway.html"],
+      "paths": [["odpt.Railway:Tokyu.Meguro", "odpt.Railway:Toei.Mita"]]
+    },
+    {
+      "id": "sotetsu-tokyushinyokohama-meguro-namboku",
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf",
+        "https://www.kotsu.metro.tokyo.jp/about/service/subway.html"
+      ],
+      "paths": [
+        ["odpt.Railway:Sotetsu.Main", "odpt.Railway:Sotetsu.SotetsuShinYokohama", "odpt.Railway:Tokyu.TokyuShinYokohama", "odpt.Railway:Tokyu.Meguro", "odpt.Railway:TokyoMetro.Namboku"],
+        ["odpt.Railway:Sotetsu.Izumino", "odpt.Railway:Sotetsu.Main", "odpt.Railway:Sotetsu.SotetsuShinYokohama", "odpt.Railway:Tokyu.TokyuShinYokohama", "odpt.Railway:Tokyu.Meguro", "odpt.Railway:TokyoMetro.Namboku"]
+      ]
+    },
+    {
+      "id": "sotetsu-tokyushinyokohama-meguro-mita",
+      "status": "verified",
+      "sourceUrls": ["https://www.kotsu.metro.tokyo.jp/about/service/subway.html"],
+      "paths": [
+        ["odpt.Railway:Sotetsu.Main", "odpt.Railway:Sotetsu.SotetsuShinYokohama", "odpt.Railway:Tokyu.TokyuShinYokohama", "odpt.Railway:Tokyu.Meguro", "odpt.Railway:Toei.Mita"],
+        ["odpt.Railway:Sotetsu.Izumino", "odpt.Railway:Sotetsu.Main", "odpt.Railway:Sotetsu.SotetsuShinYokohama", "odpt.Railway:Tokyu.TokyuShinYokohama", "odpt.Railway:Tokyu.Meguro", "odpt.Railway:Toei.Mita"]
+      ]
+    },
+    {
+      "id": "sotetsu-tokyushinyokohama-toyoko-fukutoshin-tobu",
+      "status": "verified",
+      "sourceUrls": ["https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"],
+      "paths": [
+        ["odpt.Railway:Sotetsu.Main", "odpt.Railway:Sotetsu.SotetsuShinYokohama", "odpt.Railway:Tokyu.TokyuShinYokohama", "odpt.Railway:Tokyu.Toyoko", "odpt.Railway:TokyoMetro.Fukutoshin", "odpt.Railway:Tobu.Tojo"],
+        ["odpt.Railway:Sotetsu.Izumino", "odpt.Railway:Sotetsu.Main", "odpt.Railway:Sotetsu.SotetsuShinYokohama", "odpt.Railway:Tokyu.TokyuShinYokohama", "odpt.Railway:Tokyu.Toyoko", "odpt.Railway:TokyoMetro.Fukutoshin", "odpt.Railway:Tobu.Tojo"]
+      ],
+      "exclusions": ["odpt.Railway:Seibu.SeibuYurakucho", "odpt.Railway:Seibu.Ikebukuro"],
+      "notes": "相鉄・東急新横浜線系統から西武線への同一列車直通は対象外。"
+    },
+    {
+      "id": "asakusa-keisei-keikyu",
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.kotsu.metro.tokyo.jp/subway/schedule/",
+        "https://www.kotsu.metro.tokyo.jp/about/service/subway.html"
+      ],
+      "paths": [
+        ["odpt.Railway:Keisei.Main", "odpt.Railway:Keisei.Oshiage", "odpt.Railway:Toei.Asakusa", "odpt.Railway:Keikyu.Main"],
+        ["odpt.Railway:Keisei.NaritaSkyAccess", "odpt.Railway:Keisei.Oshiage", "odpt.Railway:Toei.Asakusa", "odpt.Railway:Keikyu.Main"],
+        ["odpt.Railway:Keisei.Main", "odpt.Railway:Keisei.Oshiage", "odpt.Railway:Toei.Asakusa", "odpt.Railway:Keikyu.Main", "odpt.Railway:Keikyu.Airport"],
+        ["odpt.Railway:Keisei.NaritaSkyAccess", "odpt.Railway:Keisei.Oshiage", "odpt.Railway:Toei.Asakusa", "odpt.Railway:Keikyu.Main", "odpt.Railway:Keikyu.Airport"],
+        ["odpt.Railway:Keisei.Main", "odpt.Railway:Keisei.Oshiage", "odpt.Railway:Toei.Asakusa", "odpt.Railway:Keikyu.Main", "odpt.Railway:Keikyu.Kurihama"],
+        ["odpt.Railway:Keisei.NaritaSkyAccess", "odpt.Railway:Keisei.Oshiage", "odpt.Railway:Toei.Asakusa", "odpt.Railway:Keikyu.Main", "odpt.Railway:Keikyu.Kurihama"]
+      ]
+    },
+    {
+      "id": "keio-toei-shinjuku",
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.keio.co.jp/unkou/unkou_pc.html",
+        "https://www.kotsu.metro.tokyo.jp/about/service/subway.html"
+      ],
+      "paths": [["odpt.Railway:Keio.Keio", "odpt.Railway:Toei.Shinjuku"]]
+    },
+    {
+      "id": "jr-saikyo-rinkai",
+      "status": "verified",
+      "sourceUrls": ["https://www.twr.co.jp/route/tabid/120/Default.aspx"],
+      "paths": [["odpt.Railway:JR-East.SaikyoKawagoe", "odpt.Railway:TWR.Rinkai"]]
+    },
+    {
+      "id": "jr-sotetsu-direct",
+      "status": "verified",
+      "sourceUrls": ["https://www.sotetsu.co.jp/train/services/jr/"],
+      "paths": [
+        ["odpt.Railway:Sotetsu.Main", "odpt.Railway:Sotetsu.SotetsuShinYokohama", "odpt.Railway:JR-East.SotetsuDirect", "odpt.Railway:JR-East.SaikyoKawagoe"],
+        ["odpt.Railway:Sotetsu.Izumino", "odpt.Railway:Sotetsu.Main", "odpt.Railway:Sotetsu.SotetsuShinYokohama", "odpt.Railway:JR-East.SotetsuDirect", "odpt.Railway:JR-East.SaikyoKawagoe"]
+      ]
+    }
+  ]
+}
