@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T08:03:21.859Z",
+  "generatedAt": "2026-09-04T08:07:29.212Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -45,6 +45,7 @@
     "transfer-rule-sources.d/2026-09-04-ebisu-core.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-11.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-20.json",
+    "transfer-rule-sources.d/2026-09-04-fallback-upgrade-8b.json",
     "transfer-rule-sources.d/2026-09-04-final-exact-3.json",
     "transfer-rule-sources.d/2026-09-04-haijima-crossop.json",
     "transfer-rule-sources.d/2026-09-04-hibiya-yurakucho.json",
@@ -115,7 +116,7 @@
     "transfer-rule-sources.d/2026-09-04-yokohama-private-remaining.json"
   ],
   "description": "Station/railway-specific transfer times. Explicit curated rules are preferred; any remaining unblocked candidate pair receives a conservative fallbackMinutes rule until an external standard time is added.",
-  "fallbackCandidatePairs": 62,
+  "fallbackCandidatePairs": 54,
   "rules": [
     {
       "id": "東京-山手線-丸ノ内線",
@@ -3964,6 +3965,110 @@
       "label": "乗換",
       "source": "https://timetables.jreast.co.jp/timetable/list1410.html",
       "sourceType": "official current JR East timetable explicitly groups Uchibo and Sotobo services on the common Chiba-bound platform group; 1-minute safety buffer for the shared-track service boundary",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "田端-京浜東北線根岸線-山手線",
+      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Tabata",
+      "toStation": "odpt.Station:JR-East.Yamanote.Tabata",
+      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "toRailway": "odpt.Railway:JR-East.Yamanote",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%B7%9D%E5%8F%A3_%E9%A7%92%E8%BE%BC.html",
+      "sourceType": "current route planner; Keihin-Tohoku Line to Yamanote Line transfer at Tabata shown as 3 minutes (4th platform arrival to 2nd platform departure)",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "調布-京王線-相模原線",
+      "fromStation": "odpt.Station:Keio.Sagamihara.Chofu",
+      "toStation": "odpt.Station:Keio.Sagamihara.Chofu",
+      "fromRailway": "odpt.Railway:Keio.Keio",
+      "toRailway": "odpt.Railway:Keio.Sagamihara",
+      "minutes": 2,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%A5%BF%E8%AA%BF%E5%B8%83_%E4%BA%AC%E7%8E%8B%E5%A4%9A%E6%91%A9%E3%82%BB%E3%83%B3%E3%82%BF%E3%83%BC.html",
+      "sourceType": "current route planner; Keio Line to Sagamihara Line transfer at Chofu shown as 2 minutes; reverse direction also shown as 2 minutes",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "二俣川-相鉄いずみ野線-相鉄本線",
+      "fromStation": "odpt.Station:Sotetsu.Izumino.Futamatagawa",
+      "toStation": "odpt.Station:Sotetsu.Main.Futamatagawa",
+      "fromRailway": "odpt.Railway:Sotetsu.Izumino",
+      "toRailway": "odpt.Railway:Sotetsu.Main",
+      "minutes": 1,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%A8%AA%E6%B5%9C_%E6%B9%98%E5%8D%97%E5%8F%B0.html",
+      "sourceType": "current route planner; Sotetsu Main Line to Izumino Line transfer at Futamatagawa shown as 1 minute",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "堀ノ内-京急久里浜線-京急本線",
+      "fromStation": "odpt.Station:Keikyu.Kurihama.Horinouchi",
+      "toStation": "odpt.Station:Keikyu.Main.Horinouchi",
+      "fromRailway": "odpt.Railway:Keikyu.Kurihama",
+      "toRailway": "odpt.Railway:Keikyu.Main",
+      "minutes": 2,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://ekitan.com/transit/route/sf-1950/st-2053",
+      "sourceType": "current route planner; Kurihama Line arrival at Horinouchi 05:04 and Keikyu Main Line departure 05:06; same 2-minute connection also observed in the opposite line direction",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "多摩湖-西武多摩湖線-西武山口線",
+      "fromStation": "odpt.Station:Seibu.Tamako.Tamako",
+      "toStation": "odpt.Station:Seibu.Yamaguchi.Tamako",
+      "fromRailway": "odpt.Railway:Seibu.Tamako",
+      "toRailway": "odpt.Railway:Seibu.Yamaguchi",
+      "minutes": 1,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%90%A9%E5%B1%B1_%E8%A5%BF%E6%AD%A6%E7%90%83%E5%A0%B4%E5%89%8D.html",
+      "sourceType": "current route planner; Tamako Line to Yamaguchi Line transfer at Tamako shown as 1 minute",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "西武球場前-西武狭山線-西武山口線",
+      "fromStation": "odpt.Station:Seibu.Sayama.SeibukyujoMae",
+      "toStation": "odpt.Station:Seibu.Yamaguchi.SeibukyujoMae",
+      "fromRailway": "odpt.Railway:Seibu.Sayama",
+      "toRailway": "odpt.Railway:Seibu.Yamaguchi",
+      "minutes": 2,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%A5%BF%E6%AD%A6%E5%9C%92%E3%82%86%E3%81%86%E3%81%88%E3%82%93%E3%81%A1_%E8%A5%BF%E6%89%80%E6%B2%A2.html",
+      "sourceType": "current route planner; Yamaguchi Line to Sayama Line transfer at Seibukyujo-mae shown as 2 minutes; reverse-direction current route also shows 2 minutes",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "萩山-西武拝島線-西武多摩湖線",
+      "fromStation": "odpt.Station:Seibu.Haijima.Hagiyama",
+      "toStation": "odpt.Station:Seibu.Tamako.Hagiyama",
+      "fromRailway": "odpt.Railway:Seibu.Haijima",
+      "toRailway": "odpt.Railway:Seibu.Tamako",
+      "minutes": 2,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%A5%BF%E6%AD%A6%E5%9C%92_%E8%A5%BF%E6%AD%A6%E5%9C%92%E3%82%86%E3%81%86%E3%81%88%E3%82%93%E3%81%A1.html",
+      "sourceType": "current route planner; Haijima Line to Tamako Line transfer at Hagiyama shown as 2 minutes",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "新栃木-東武日光線-東武宇都宮線",
+      "fromStation": "odpt.Station:Tobu.Nikko.ShinTochigi",
+      "toStation": "odpt.Station:Tobu.Utsunomiya.ShinTochigi",
+      "fromRailway": "odpt.Railway:Tobu.Nikko",
+      "toRailway": "odpt.Railway:Tobu.Utsunomiya",
+      "minutes": 1,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%96%B0%E9%B9%BF%E6%B2%BC_%E6%9D%B1%E6%AD%A6%E5%AE%87%E9%83%BD%E5%AE%AE.html",
+      "sourceType": "current route planner; Nikko Line to Utsunomiya Line transfer at Shin-Tochigi shown as 1 minute; reverse-direction route also shows 1 minute",
       "verifiedAt": "2026-09-04"
     },
     {
@@ -11964,19 +12069,6 @@
       "verifiedAt": ""
     },
     {
-      "id": "fallback-新栃木-日光線-宇都宮線",
-      "fromStation": "odpt.Station:Tobu.Nikko.ShinTochigi",
-      "toStation": "odpt.Station:Tobu.Utsunomiya.ShinTochigi",
-      "fromRailway": "odpt.Railway:Tobu.Nikko",
-      "toRailway": "odpt.Railway:Tobu.Utsunomiya",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
       "id": "fallback-成田空港-京成本線-成田スカイアクセス線",
       "fromStation": "odpt.Station:Keisei.NaritaSkyAccess.NaritaAirportTerminal1",
       "toStation": "odpt.Station:Keisei.NaritaSkyAccess.NaritaAirportTerminal1",
@@ -12068,19 +12160,6 @@
       "verifiedAt": ""
     },
     {
-      "id": "fallback-西武球場前-狭山線-山口線",
-      "fromStation": "odpt.Station:Seibu.Sayama.SeibukyujoMae",
-      "toStation": "odpt.Station:Seibu.Yamaguchi.SeibukyujoMae",
-      "fromRailway": "odpt.Railway:Seibu.Sayama",
-      "toRailway": "odpt.Railway:Seibu.Yamaguchi",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
       "id": "fallback-青砥-京成本線-押上線",
       "fromStation": "odpt.Station:Keisei.Oshiage.Aoto",
       "toStation": "odpt.Station:Keisei.Oshiage.Aoto",
@@ -12159,19 +12238,6 @@
       "verifiedAt": ""
     },
     {
-      "id": "fallback-多摩湖-多摩湖線-山口線",
-      "fromStation": "odpt.Station:Seibu.Tamako.Tamako",
-      "toStation": "odpt.Station:Seibu.Yamaguchi.Tamako",
-      "fromRailway": "odpt.Railway:Seibu.Tamako",
-      "toRailway": "odpt.Railway:Seibu.Yamaguchi",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
       "id": "fallback-大門-浅草線-大江戸線",
       "fromStation": "odpt.Station:Toei.Asakusa.Daimon",
       "toStation": "odpt.Station:Toei.Oedo.Daimon",
@@ -12230,19 +12296,6 @@
       "fromRailway": "odpt.Railway:TokyoMetro.Hibiya",
       "toRailway": "odpt.Railway:TokyoMetro.Yurakucho",
       "minutes": 7,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-調布-京王線-相模原線",
-      "fromStation": "odpt.Station:Keio.Sagamihara.Chofu",
-      "toStation": "odpt.Station:Keio.Sagamihara.Chofu",
-      "fromRailway": "odpt.Railway:Keio.Keio",
-      "toRailway": "odpt.Railway:Keio.Sagamihara",
-      "minutes": 5,
       "bidirectional": true,
       "label": "暫定・安全側乗換",
       "source": "data/transit/transfer-candidates.json",
@@ -12315,50 +12368,11 @@
       "verifiedAt": ""
     },
     {
-      "id": "fallback-田端-京浜東北線・根岸線-山手線",
-      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Tabata",
-      "toStation": "odpt.Station:JR-East.Yamanote.Tabata",
-      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "toRailway": "odpt.Railway:JR-East.Yamanote",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
       "id": "fallback-二子玉川-田園都市線-大井町線",
       "fromStation": "odpt.Station:Tokyu.DenEnToshi.FutakoTamagawa",
       "toStation": "odpt.Station:Tokyu.Oimachi.FutakoTamagawa",
       "fromRailway": "odpt.Railway:Tokyu.DenEnToshi",
       "toRailway": "odpt.Railway:Tokyu.Oimachi",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-二俣川-いずみ野線-相鉄本線",
-      "fromStation": "odpt.Station:Sotetsu.Izumino.Futamatagawa",
-      "toStation": "odpt.Station:Sotetsu.Main.Futamatagawa",
-      "fromRailway": "odpt.Railway:Sotetsu.Izumino",
-      "toRailway": "odpt.Railway:Sotetsu.Main",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-萩山-拝島線-多摩湖線",
-      "fromStation": "odpt.Station:Seibu.Haijima.Hagiyama",
-      "toStation": "odpt.Station:Seibu.Tamako.Hagiyama",
-      "fromRailway": "odpt.Railway:Seibu.Haijima",
-      "toRailway": "odpt.Railway:Seibu.Tamako",
       "minutes": 5,
       "bidirectional": true,
       "label": "暫定・安全側乗換",
@@ -12424,19 +12438,6 @@
       "toStation": "odpt.Station:Toei.Oedo.Toshimaen",
       "fromRailway": "odpt.Railway:Seibu.Toshima",
       "toRailway": "odpt.Railway:Toei.Oedo",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-堀ノ内-久里浜線-京急本線",
-      "fromStation": "odpt.Station:Keikyu.Kurihama.Horinouchi",
-      "toStation": "odpt.Station:Keikyu.Main.Horinouchi",
-      "fromRailway": "odpt.Railway:Keikyu.Kurihama",
-      "toRailway": "odpt.Railway:Keikyu.Main",
       "minutes": 5,
       "bidirectional": true,
       "label": "暫定・安全側乗換",
