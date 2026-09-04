@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T04:45:13.514Z",
+  "generatedAt": "2026-09-04T04:45:41.555Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -50,6 +50,7 @@
     "transfer-rule-sources.d/2026-09-04-kawagoe-akasakamitsuke.json",
     "transfer-rule-sources.d/2026-09-04-kitasenju-core.json",
     "transfer-rule-sources.d/2026-09-04-linked-stations-batch.json",
+    "transfer-rule-sources.d/2026-09-04-measured-4.json",
     "transfer-rule-sources.d/2026-09-04-medium-stations-batch-a.json",
     "transfer-rule-sources.d/2026-09-04-medium-stations-batch-b.json",
     "transfer-rule-sources.d/2026-09-04-medium-stations-batch-c.json",
@@ -4334,6 +4335,58 @@
       "label": "駅間徒歩乗換",
       "source": "",
       "sourceType": "current route-planner station-to-station walking time",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "立川-odpt.Railway:JR-East.ChuoRapid-odpt.Railway:JR-East.Nambu",
+      "fromStation": "odpt.Station:JR-East.ChuoRapid.Tachikawa",
+      "toStation": "odpt.Station:JR-East.Nambu.Tachikawa",
+      "fromRailway": "odpt.Railway:JR-East.ChuoRapid",
+      "toRailway": "odpt.Railway:JR-East.Nambu",
+      "minutes": 1,
+      "bidirectional": true,
+      "label": "ホーム間実測（安全側）",
+      "source": "",
+      "sourceType": "2026 measured platform-to-platform transfer; rounded up",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "府中本町-odpt.Railway:JR-East.Musashino-odpt.Railway:JR-East.Nambu",
+      "fromStation": "odpt.Station:JR-East.Musashino.Fuchuhommachi",
+      "toStation": "odpt.Station:JR-East.Nambu.Fuchuhommachi",
+      "fromRailway": "odpt.Railway:JR-East.Musashino",
+      "toRailway": "odpt.Railway:JR-East.Nambu",
+      "minutes": 2,
+      "bidirectional": true,
+      "label": "ホーム間実測（安全側）",
+      "source": "",
+      "sourceType": "2026 measured platform-to-platform transfer; rounded up",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "水道橋-odpt.Railway:JR-East.ChuoSobuLocal-odpt.Railway:Toei.Mita",
+      "fromStation": "odpt.Station:JR-East.ChuoSobuLocal.Suidobashi",
+      "toStation": "odpt.Station:Toei.Mita.Suidobashi",
+      "fromRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "toRailway": "odpt.Railway:Toei.Mita",
+      "minutes": 7,
+      "bidirectional": true,
+      "label": "ホーム間実測（安全側）",
+      "source": "",
+      "sourceType": "2026 measured platform-to-platform transfer; rounded up",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "小田急多摩センター ↔ 京王多摩センター-odpt.Railway:Keio.Sagamihara-odpt.Railway:Odakyu.Tama",
+      "fromStation": "odpt.Station:Keio.Sagamihara.KeioTamaCenter",
+      "toStation": "odpt.Station:Odakyu.Tama.OdakyuTamaCenter",
+      "fromRailway": "odpt.Railway:Keio.Sagamihara",
+      "toRailway": "odpt.Railway:Odakyu.Tama",
+      "minutes": 1,
+      "bidirectional": true,
+      "label": "ホーム間実測（安全側）",
+      "source": "",
+      "sourceType": "2026 measured platform-to-platform transfer; rounded up",
       "verifiedAt": "2026-09-04"
     },
     {
