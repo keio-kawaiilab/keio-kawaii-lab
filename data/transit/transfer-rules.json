@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T01:21:50.460Z",
+  "generatedAt": "2026-09-04T01:22:19.567Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -54,6 +54,7 @@
     "transfer-rule-sources.d/2026-09-04-medium-stations-batch-j.json",
     "transfer-rule-sources.d/2026-09-04-musashikosugi-hiyoshi.json",
     "transfer-rule-sources.d/2026-09-04-narita-keiseinarita.json",
+    "transfer-rule-sources.d/2026-09-04-nerima-crossop.json",
     "transfer-rule-sources.d/2026-09-04-nishifunabashi.json",
     "transfer-rule-sources.d/2026-09-04-omiya-core.json",
     "transfer-rule-sources.d/2026-09-04-osaki-yamanote.json",
@@ -5476,6 +5477,32 @@
       "label": "駅間徒歩乗換",
       "source": "https://rekichiri.com/keisei-narita-jr-narita-transfer/",
       "sourceType": "current measured inter-station transfer guide",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "練馬-池袋線-大江戸線",
+      "fromStation": "odpt.Station:Seibu.Ikebukuro.Nerima",
+      "toStation": "odpt.Station:Toei.Oedo.Nerima",
+      "fromRailway": "odpt.Railway:Seibu.Ikebukuro",
+      "toRailway": "odpt.Railway:Toei.Oedo",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "ホーム間乗換",
+      "source": "https://wadattsu261.com/content/nerima-seibuikebukuro-yurakucho-toeioedoline-transfer-information/",
+      "sourceType": "current platform-to-platform transfer guide",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "練馬-西武有楽町線-大江戸線",
+      "fromStation": "odpt.Station:Seibu.SeibuYurakucho.Nerima",
+      "toStation": "odpt.Station:Toei.Oedo.Nerima",
+      "fromRailway": "odpt.Railway:Seibu.SeibuYurakucho",
+      "toRailway": "odpt.Railway:Toei.Oedo",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "ホーム間乗換",
+      "source": "https://wadattsu261.com/content/nerima-seibuikebukuro-yurakucho-toeioedoline-transfer-information/",
+      "sourceType": "current platform-to-platform transfer guide",
       "verifiedAt": "2026-09-04"
     },
     {
