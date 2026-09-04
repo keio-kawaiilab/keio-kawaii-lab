@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換（同一ホーム・安全側）",
+    "sourceType": "current same-island directional platform guidance; 1-minute safety buffer",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "id": "秋葉原-京浜東北線・根岸線-山手線",
+      "place": "秋葉原",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.Yamanote",
+      "minutes": 1,
+      "source": "https://wadattsu261.com/content/akihabara-yamanote-keihinhome-info/"
+    },
+    {
+      "id": "御徒町-京浜東北線・根岸線-山手線",
+      "place": "御徒町",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.Yamanote",
+      "minutes": 1,
+      "source": "https://wadattsu261.com/content/okachimachi-yamanote-keihinhome-info/"
+    },
+    {
+      "id": "鶯谷-京浜東北線・根岸線-山手線",
+      "place": "鶯谷",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.Yamanote",
+      "minutes": 1,
+      "source": "https://wadattsu261.com/content/uguisudani-yamanote-keihinhome-info/"
+    }
+  ]
+}
