@@ -1,0 +1,78 @@
+name: Diagnose remaining strict transit ambiguities
+
+on:
+  push:
+    paths:
+      - '.github/workflows/diagnose-remaining-transit-ambiguities.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Classify ambiguous candidate pairs
+        run: |
+          python - <<'PY'
+          import json
+          from collections import Counter, defaultdict
+          from pathlib import Path
+
+          v2=Path('data/transit-v2')
+          coverage=json.loads((v2/'coverage.json').read_text(encoding='utf-8'))
+          fragments={}
+          for path in (v2/'fragments').glob('*.json'):
+            payload=json.loads(path.read_text(encoding='utf-8'))
+            for row in payload.get('fragments') or []:
+              if isinstance(row,dict) and row.get('id'):
+                fragments[str(row['id'])]=row
+
+          def sig(row):
+            return {
+              'railway':row.get('railway'), 'calendar':row.get('calendar'), 'direction':row.get('direction'),
+              'type':row.get('trainType'), 'destination':row.get('destination'), 'confidence':row.get('confidence'),
+              'stops':row.get('stops'),
+            }
+          def boundary(row, first):
+            stops=row.get('stops') or []
+            if not stops:return None
+            stop=stops[0] if first else stops[-1]
+            return stop
+          amb=[u for u in coverage.get('unresolved') or [] if u.get('kind')=='ambiguous-boundary-fragment-alignment']
+          stats=Counter(); byop=defaultdict(Counter)
+          samples=[]
+          for u in amb:
+            src=fragments.get(str(u.get('fragment'))) or {}
+            candidates=[fragments.get(str(x)) or {} for x in u.get('candidateFragments') or []]
+            exact_dupe=len(candidates)>=2 and len({json.dumps(sig(c),ensure_ascii=False,sort_keys=True,separators=(',',':')) for c in candidates})==1
+            same_stops=len(candidates)>=2 and len({json.dumps(c.get('stops'),ensure_ascii=False,separators=(',',':')) for c in candidates})==1
+            same_type=len({str(c.get('trainType') or '') for c in candidates})<=1
+            same_direction=len({str(c.get('direction') or '') for c in candidates})<=1
+            same_boundary=len({json.dumps(boundary(c,True),ensure_ascii=False,separators=(',',':')) for c in candidates})<=1
+            key=('exact-dupe' if exact_dupe else 'same-stops' if same_stops else 'distinct')
+            stats[key]+=1
+            op=str(src.get('sourceOperator') or '')
+            byop[op][key]+=1
+            if len(samples)<50:
+              samples.append({
+                'kind':key,'operator':op,'sourceId':src.get('id'),'sourceRailway':src.get('railway'),
+                'sourceCalendar':src.get('calendar'),'sourceDirection':src.get('direction'),'sourceType':src.get('trainType'),
+                'sourceDestination':src.get('destination'),'sourceBoundary':boundary(src,False),
+                'nextRailway':u.get('nextRailway'),'sameType':same_type,'sameDirection':same_direction,'sameBoundary':same_boundary,
+                'candidates':[{
+                  'id':c.get('id'),'calendar':c.get('calendar'),'direction':c.get('direction'),'type':c.get('trainType'),
+                  'destination':c.get('destination'),'confidence':c.get('confidence'),'first':boundary(c,True),
+                  'last':boundary(c,False),'stopCount':len(c.get('stops') or [])
+                } for c in candidates]
+              })
+          print('AMBIGUOUS_TOTAL',len(amb))
+          print('PAIR_CLASSIFICATION',json.dumps(stats,ensure_ascii=False,sort_keys=True))
+          print('BY_OPERATOR',json.dumps({k:dict(v) for k,v in sorted(byop.items())},ensure_ascii=False,sort_keys=True))
+          for sample in samples:
+            print('CASE',json.dumps(sample,ensure_ascii=False,sort_keys=True))
+          PY
