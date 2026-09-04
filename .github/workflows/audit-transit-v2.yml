@@ -1,0 +1,56 @@
+name: Audit transit v2 unresolved identity
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/audit_transit_v2.py'
+      - '.github/workflows/audit-transit-v2.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: audit-transit-v2
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build unresolved audit
+        run: |
+          python -m py_compile scripts/audit_transit_v2.py
+          python scripts/audit_transit_v2.py
+
+      - name: Validate strict audit policy
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path('data/transit-v2/unresolved-summary.json').read_text(encoding='utf-8'))
+          assert data['policy']['unknownMayBePromotedToSameTrain'] is False
+          assert data['policy']['trainNumberAloneMayResolve'] is False
+          assert data['policy']['timeGapAloneMayResolve'] is False
+          assert data['totalUnresolved'] == int(data['coverageSummary'].get('unresolved') or 0)
+          PY
+
+      - name: Commit audit snapshot
+        shell: bash
+        run: |
+          if git diff --quiet -- data/transit-v2/unresolved-summary.json; then
+            echo "No audit changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/transit-v2/unresolved-summary.json
+          git commit -m "Audit unresolved transit v2 identities"
+          git pull --rebase origin main
+          git push origin HEAD:main
