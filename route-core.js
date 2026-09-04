@@ -257,7 +257,7 @@
       if(service==="weekday")return text.indexOf("weekday")>=0||text.indexOf("平日")>=0;
       return text.indexOf("saturdayholiday")>=0||text.indexOf("saturdayandholiday")>=0||text.indexOf("weekend")>=0||text.indexOf("saturday")>=0||text.indexOf("sunday")>=0||text.indexOf("holiday")>=0||text.indexOf("土休日")>=0||text.indexOf("土曜")>=0||text.indexOf("休日")>=0;
     }
-    function timetableTrip(timetable,fromNodes,toNodes,earliest,service){
+    function timetableTrip(timetable,fromNodes,toNodes,earliest,service,latest){
       if(!timetable||!Array.isArray(timetable.trips))return null;
       var stations=timetable.stations||[],calendars=timetable.calendars||[],types=timetable.trainTypes||[];
       var fromSet=new Set(fromNodes),toSet=new Set(toNodes),best=null;
@@ -266,20 +266,21 @@
         var stops=trip[3]||[],boarding=-1,departure=null;
         for(var i=0;i<stops.length;i++){
           var stop=stops[i]||[],stationId=stations[stop[0]],dep=stop[2]!=null?Number(stop[2]):Number(stop[1]);
-          if(fromSet.has(stationId)&&Number.isFinite(dep)&&dep>=earliest){boarding=i;departure=dep;break;}
+          if(fromSet.has(stationId)&&Number.isFinite(dep)&&dep>=earliest&&(!Number.isFinite(latest)||dep<=latest)){boarding=i;departure=dep;break;}
         }
         if(boarding<0)return;
         for(var j=boarding+1;j<stops.length;j++){
           var next=stops[j]||[],nextStation=stations[next[0]],arrival=next[1]!=null?Number(next[1]):Number(next[2]);
           if(!toSet.has(nextStation)||!Number.isFinite(arrival)||arrival<departure)continue;
           var candidate={departure:departure,arrival:arrival,trainType:types[trip[1]]||"",trainNumber:String(trip[2]||""),timeBasis:timetable.timeBasis||"train-timetable"};
-          if(!best||candidate.arrival<best.arrival||(candidate.arrival===best.arrival&&candidate.departure<best.departure))best=candidate;
+          var windowed=Number.isFinite(latest);
+          if(!best||(windowed&&(candidate.departure<best.departure||(candidate.departure===best.departure&&candidate.arrival<best.arrival)))||(!windowed&&(candidate.arrival<best.arrival||(candidate.arrival===best.arrival&&candidate.departure<best.departure))))best=candidate;
           break;
         }
       });
       return best;
     }
-    function stationDepartureTrip(table,fromNodes,toNodes,earliest,service){
+    function stationDepartureTrip(table,fromNodes,toNodes,earliest,service,latest,requiredDestination){
       if(!table||table.timeBasis!=="station-departure-only"||!Array.isArray(table.boards))return null;
       var order=table.order||[],fromOrder=-1,toOrder=-1;
       for(var i=0;i<order.length;i++){
@@ -298,7 +299,7 @@
         var stops=trip[5]||[],boarding=-1,departure=null;
         for(var stopIndex=0;stopIndex<stops.length;stopIndex++){
           var stop=stops[stopIndex]||[],stationId=stations[stop[0]],dep=Number(stop[2]);
-          if(fromNodes.indexOf(stationId)>=0&&Number.isFinite(dep)&&dep>=earliest){boarding=stopIndex;departure=dep;break;}
+          if(fromNodes.indexOf(stationId)>=0&&Number.isFinite(dep)&&dep>=earliest&&(!Number.isFinite(latest)||dep<=latest)){boarding=stopIndex;departure=dep;break;}
         }
         if(boarding<0)return;
         for(var destinationStop=boarding+1;destinationStop<stops.length;destinationStop++){
@@ -306,6 +307,7 @@
           if(toNodes.indexOf(nextStation)<0||!Number.isFinite(arrival)||arrival<departure)continue;
           var key=[trip[0],trip[1],trip[2],trip[3],departure].join("\u0001");
           var candidate={departure:departure,arrival:arrival,trainType:types[trip[2]]||"",destination:destinations[trip[3]]||"",trainNumber:"",confidence:Number(trip[4])||0,timeBasis:"inferred-station-trip"};
+          if(requiredDestination&&candidate.destination!==requiredDestination)continue;
           var existing=observedTrips.get(key);
           if(!existing||candidate.arrival<existing.arrival)observedTrips.set(key,candidate);
           break;
@@ -398,7 +400,7 @@
         var direction=directions[board[2]]||"";
         if(desiredDirection&&direction&&direction!==desiredDirection)return;
         (board[3]||[]).forEach(function(row){
-          var minute=Number(row&&row[0]);if(!Number.isFinite(minute)||minute<earliest)return;
+          var minute=Number(row&&row[0]);if(!Number.isFinite(minute)||minute<earliest||(Number.isFinite(latest)&&minute>latest))return;
           var typeIndex=Number(row[1]),destinationIndex=row.length>2?Number(row[2]):-1;
           var observedKey=[board[1],board[2],typeIndex,destinationIndex,minute].join("\u0001");
           var candidate=observedTrips.get(observedKey);
@@ -406,10 +408,36 @@
             var duration=journeyMinutes(typeIndex,destinationIndex);
             candidate={departure:minute,arrival:Number.isFinite(duration)?minute+duration:null,trainType:types[typeIndex]||"",destination:destinations[destinationIndex]||"",trainNumber:"",timeBasis:"estimated-edge-duration"};
           }
-          if(!best||(Number.isFinite(candidate.arrival)&&(!Number.isFinite(best.arrival)||candidate.arrival<best.arrival))||(candidate.arrival===best.arrival&&candidate.departure<best.departure)||(!Number.isFinite(candidate.arrival)&&!Number.isFinite(best.arrival)&&candidate.departure<best.departure))best=candidate;
+          if(requiredDestination&&candidate.destination!==requiredDestination)return;
+          var windowed=Number.isFinite(latest);
+          if(!best||(windowed&&(candidate.departure<best.departure||(candidate.departure===best.departure&&Number.isFinite(candidate.arrival)&&(!Number.isFinite(best.arrival)||candidate.arrival<best.arrival))))||(!windowed&&((Number.isFinite(candidate.arrival)&&(!Number.isFinite(best.arrival)||candidate.arrival<best.arrival))||(candidate.arrival===best.arrival&&candidate.departure<best.departure)||(!Number.isFinite(candidate.arrival)&&!Number.isFinite(best.arrival)&&candidate.departure<best.departure))))best=candidate;
         });
       });
       return best;
+    }
+    var destinationGroupCache=new Map(),destinationRailwayCache=new Map();
+    function destinationGroupFor(reference){
+      reference=String(reference||"");if(!reference)return null;
+      if(destinationGroupCache.has(reference))return destinationGroupCache.get(reference);
+      var direct=groupByNode.get(reference);if(direct){destinationGroupCache.set(reference,direct);return direct;}
+      var suffix=reference.split(".").pop(),matched=null,ambiguous=false;
+      stationById.forEach(function(station,stationId){
+        if(String(stationId).split(".").pop()!==suffix)return;
+        var group=groupByNode.get(stationId);if(!group)return;
+        if(!matched)matched=group;else if(matched.key!==group.key)ambiguous=true;
+      });
+      var result=ambiguous?null:matched;destinationGroupCache.set(reference,result);return result;
+    }
+    function destinationUsesRailway(destinationId,boundaryGroup,railwayId){
+      if(!destinationId||!boundaryGroup||!railwayId)return false;
+      var cacheKey=[destinationId,boundaryGroup.key,railwayId].join("\u0001");
+      if(destinationRailwayCache.has(cacheKey))return destinationRailwayCache.get(cacheKey);
+      var destinationGroup=destinationGroupFor(destinationId),result=false;
+      if(destinationGroup&&destinationGroup.key!==boundaryGroup.key){
+        var onward=shortestPath(boundaryGroup,destinationGroup),onwardSegments=onward?segmentsFrom(onward):[];
+        result=Boolean(onwardSegments.length&&onwardSegments[0].railway===railwayId);
+      }
+      destinationRailwayCache.set(cacheKey,result);return result;
     }
     function timedItinerary(path,timetablesByRailway,departureMinutes,service,transferMinutes,transferResolver){
       var segments=segmentsFrom(path),current=Number(departureMinutes),buffer=Number(transferMinutes==null?5:transferMinutes),timed=[];
@@ -420,7 +448,8 @@
         var fromNodes=fromGroup?fromGroup.nodes:[segment.from],toNodes=toGroup?toGroup.nodes:[segment.to];
         var previous=i>0?timed[i-1]:null;
         var sameCompany=previous&&sameOperator(railwayById.get(previous.railway),railwayById.get(segment.railway));
-        var throughCandidate=Boolean(sameCompany&&previous.destination&&fromNodes.indexOf(previous.destination)<0);
+        var destinationContinues=Boolean(previous&&previous.destination&&fromNodes.indexOf(previous.destination)<0);
+        var throughCandidate=Boolean(destinationContinues&&(sameCompany||destinationUsesRailway(previous.destination,fromGroup,segment.railway)));
         var interchangeBuffer=buffer,transferRule=null;
         if(previous){
           var interchangeMeters=distanceMeters(stationById.get(previous.to),stationById.get(segment.from));
@@ -441,12 +470,19 @@
           }
         }
         var earliest=current+(i>0&&!throughCandidate?interchangeBuffer:0);
-        var trip=table&&table.timeBasis==="station-departure-only"?stationDepartureTrip(table,fromNodes,toNodes,earliest,service):timetableTrip(table,fromNodes,toNodes,earliest,service);
-        if(throughCandidate&&trip){
-          var sameDestination=trip.destination&&trip.destination===previous.destination;
-          var sameType=!previous.trainType||!trip.trainType||previous.trainType===trip.trainType;
-          if(trip.departure>=current&&trip.departure-current<=3&&sameDestination&&sameType)trip.throughFromPrevious=true;
-          else{
+        var throughLatest=throughCandidate?current+3:null;
+        var requiredDestination=throughCandidate&&table&&table.timeBasis==="station-departure-only"?previous.destination:"";
+        var trip=table&&table.timeBasis==="station-departure-only"?stationDepartureTrip(table,fromNodes,toNodes,earliest,service,throughLatest,requiredDestination):timetableTrip(table,fromNodes,toNodes,earliest,service,throughLatest);
+        if(throughCandidate){
+          if(trip){
+            var sameDestination=!trip.destination||trip.destination===previous.destination;
+            var sameType=!sameCompany||!previous.trainType||!trip.trainType||previous.trainType===trip.trainType;
+            if(trip.departure>=current&&trip.departure-current<=3&&sameDestination&&sameType){
+              trip.throughFromPrevious=true;trip.throughByDestination=true;
+              if(!trip.destination)trip.destination=previous.destination;
+            }else trip=null;
+          }
+          if(!trip){
             earliest=current+interchangeBuffer;
             trip=table&&table.timeBasis==="station-departure-only"?stationDepartureTrip(table,fromNodes,toNodes,earliest,service):timetableTrip(table,fromNodes,toNodes,earliest,service);
           }
