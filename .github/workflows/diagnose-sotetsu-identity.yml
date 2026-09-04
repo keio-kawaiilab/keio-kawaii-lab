@@ -11,52 +11,63 @@ permissions:
 jobs:
   diagnose:
     runs-on: ubuntu-latest
+    env:
+      ODPT_API_KEY: ${{ secrets.ODPT_API_KEY }}
+      ODPT_CHALLENGE_API_KEY: ${{ secrets.ODPT_CHALLENGE_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Inspect authoritative links and compact fragments
+      - run: pip install requests==2.32.5
+      - name: Inspect authoritative links and original ODPT target
         run: |
           python - <<'PY'
-          import json
+          import json, os
           from pathlib import Path
+          import requests
 
           side=json.loads(Path('data/transit/odpt-train-identities.json').read_text(encoding='utf-8'))
           records={r['timetableId']:r for r in side.get('records',[]) if r.get('timetableId')}
-          samples=[
-            'odpt.TrainTimetable:Sotetsu.Izumino.6752.Weekday',
-            'odpt.TrainTimetable:Sotetsu.Main.6752.Weekday',
-            'odpt.TrainTimetable:Sotetsu.Izumino.6756.Weekday',
-            'odpt.TrainTimetable:Sotetsu.Main.6756.Weekday',
-          ]
-          for tt in samples:
-            print('IDENTITY',tt,json.dumps(records.get(tt),ensure_ascii=False,sort_keys=True))
+          target='odpt.TrainTimetable:Sotetsu.Main.6752.Weekday'
+          source='odpt.TrainTimetable:Sotetsu.Izumino.6752.Weekday'
+          print('SIDECAR_SOURCE',json.dumps(records.get(source),ensure_ascii=False,sort_keys=True))
+          print('SIDECAR_TARGET',json.dumps(records.get(target),ensure_ascii=False,sort_keys=True))
 
           compact=json.loads(Path('data/transit/sotetsu/timetables/8a08ffd62d0e42.json').read_text(encoding='utf-8'))
           by_tt={str(t[6]):t for t in compact.get('trips',[]) if len(t)>6 and t[6]}
-          for tt in samples:
-            print('COMPACT',tt,json.dumps(by_tt.get(tt),ensure_ascii=False))
+          print('COMPACT_TARGET',json.dumps(by_tt.get(target),ensure_ascii=False))
 
-          missing=[]
+          manifest=json.loads(Path('data/transit/manifest.json').read_text(encoding='utf-8'))
+          meta=manifest['operators']['sotetsu']
+          base=str(meta.get('api') or manifest.get('api') or '').rstrip('/')
+          operator=str(meta['operator'])
+          key=os.environ['ODPT_CHALLENGE_API_KEY'] if 'challenge' in base else os.environ['ODPT_API_KEY']
+          response=requests.get(base+'/odpt:TrainTimetable',params={'acl:consumerKey':key,'odpt:operator':operator},timeout=90)
+          response.raise_for_status()
+          rows=response.json()
+          print('API_ROWS',len(rows),'BASE',base)
+          targets={str(r.get('owl:sameAs') or ''):r for r in rows}
+          raw=targets.get(target)
+          print('API_TARGET_EXISTS',bool(raw))
+          if raw:
+            print('API_TARGET_META',json.dumps({k:raw.get(k) for k in ['owl:sameAs','odpt:railway','odpt:train','odpt:trainNumber','odpt:calendar','odpt:originStation','odpt:destinationStation','odpt:previousTrainTimetable','odpt:nextTrainTimetable']},ensure_ascii=False,sort_keys=True))
+            objects=raw.get('odpt:trainTimetableObject') or []
+            print('API_TARGET_OBJECT_COUNT',len(objects))
+            print('API_TARGET_OBJECTS',json.dumps(objects[:8],ensure_ascii=False,sort_keys=True))
+
+          missing_targets=[]
+          main_compact=set(by_tt)
           for row in records.values():
-            if row.get('sourceOperator')!='sotetsu':
-              continue
+            if row.get('sourceOperator')!='sotetsu': continue
             for nxt in row.get('nextTrainTimetables') or []:
-              if str(nxt).startswith('odpt.TrainTimetable:Sotetsu.Main.') and str(nxt) not in by_tt:
-                target=records.get(str(nxt)) or {}
-                missing.append({
-                  'from':row.get('timetableId'),'to':nxt,
-                  'targetFirst':target.get('firstStop'),'targetLast':target.get('lastStop'),
-                  'targetNext':target.get('nextTrainTimetables'),'targetPrevious':target.get('previousTrainTimetables'),
-                  'targetDestination':target.get('destination'),'targetOrigin':target.get('origin'),
-                })
-          print('MISSING_COUNT',len(missing))
-          print('MISSING_SAMPLE',json.dumps(missing[:12],ensure_ascii=False,sort_keys=True))
-          signature={}
-          for item in missing:
-            first=item['targetFirst']; last=item['targetLast']
-            key=(bool(first),bool(last),(first or {}).get('station'),(last or {}).get('station'),len(item['targetNext'] or []))
-            signature[key]=signature.get(key,0)+1
-          print('MISSING_SIGNATURES',json.dumps([{'signature':list(k),'count':v} for k,v in sorted(signature.items(),key=lambda x:-x[1])],ensure_ascii=False))
+              nxt=str(nxt)
+              if nxt.startswith('odpt.TrainTimetable:Sotetsu.Main.') and nxt not in main_compact:
+                raw_target=targets.get(nxt)
+                objects=(raw_target or {}).get('odpt:trainTimetableObject') or []
+                timed=sum(1 for obj in objects if isinstance(obj,dict) and (obj.get('odpt:arrivalTime') or obj.get('odpt:departureTime')))
+                missing_targets.append((nxt,bool(raw_target),len(objects),timed))
+          from collections import Counter
+          print('MISSING_TARGET_SIGNATURES',json.dumps(Counter((exists,count,timed) for _,exists,count,timed in missing_targets),ensure_ascii=False))
+          print('MISSING_TARGETS',len(missing_targets))
           PY
