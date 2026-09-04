@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T08:32:11.768Z",
+  "generatedAt": "2026-09-04T08:37:51.548Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -47,6 +47,7 @@
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-20.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-2f.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-3i.json",
+    "transfer-rule-sources.d/2026-09-04-fallback-upgrade-3j.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-4d.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-4g.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-4h.json",
@@ -123,7 +124,7 @@
     "transfer-rule-sources.d/2026-09-04-yokohama-private-remaining.json"
   ],
   "description": "Station/railway-specific transfer times. Explicit curated rules are preferred; any remaining unblocked candidate pair receives a conservative fallbackMinutes rule until an external standard time is added.",
-  "fallbackCandidatePairs": 21,
+  "fallbackCandidatePairs": 18,
   "rules": [
     {
       "id": "東京-山手線-丸ノ内線",
@@ -4037,6 +4038,45 @@
       "label": "乗換",
       "source": "https://www.jorudan.co.jp/norikae/route/%E6%89%87%E7%94%BA%EF%BC%88%E7%A5%9E%E5%A5%88%E5%B7%9D%EF%BC%89_%E5%A4%A7%E5%B7%9D.html",
       "sourceType": "current Jorudan route explicitly shows a 1-minute transfer at Anzen from Tsurumi Line platform 2 to Okawa branch platform 1",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "三鷹-中央線快速-中央総武各駅停車",
+      "fromStation": "odpt.Station:JR-East.ChuoRapid.Mitaka",
+      "toStation": "odpt.Station:JR-East.ChuoSobuLocal.Mitaka",
+      "fromRailway": "odpt.Railway:JR-East.ChuoRapid",
+      "toRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E3%81%A4%E3%81%8D%E3%81%AE%E3%82%8F_%E8%A5%BF%E8%8D%BB%E7%AA%AA.html",
+      "sourceType": "current Jorudan route explicitly shows a 3-minute transfer at Mitaka from Chuo Rapid platforms 5/6 to Chuo-Sobu Local platforms 1/2",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "吉祥寺-中央線快速-中央総武各駅停車",
+      "fromStation": "odpt.Station:JR-East.ChuoRapid.Kichijoji",
+      "toStation": "odpt.Station:JR-East.ChuoSobuLocal.Kichijoji",
+      "fromRailway": "odpt.Railway:JR-East.ChuoRapid",
+      "toRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%A5%BF%E8%8D%BB%E7%AA%AA_%E6%96%B0%E5%BA%A7.html",
+      "sourceType": "current Jorudan route explicitly shows a 3-minute transfer at Kichijoji from Chuo-Sobu Local platform 1 to Chuo Rapid platform 3",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "浜川崎-南武線浜川崎支線-鶴見線",
+      "fromStation": "odpt.Station:JR-East.NambuBranch.HamaKawasaki",
+      "toStation": "odpt.Station:JR-East.Tsurumi.HamaKawasaki",
+      "fromRailway": "odpt.Railway:JR-East.NambuBranch",
+      "toRailway": "odpt.Railway:JR-East.Tsurumi",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://trip.awaisora.com/2025/07/23/c7c303ca-d5a4-42aa-a1c4-e906ed37dde3/",
+      "sourceType": "measured transfer guide: station buildings are separated and about 3 minutes apart on foot, recommending at least 5 minutes; official Kanagawa tourism information independently confirms the two lines use separate station buildings across a road and require exiting the gate",
       "verifiedAt": "2026-09-04"
     },
     {
@@ -12261,19 +12301,6 @@
       "verifiedAt": ""
     },
     {
-      "id": "fallback-吉祥寺-中央線快速-中央・総武各駅停車",
-      "fromStation": "odpt.Station:JR-East.ChuoRapid.Kichijoji",
-      "toStation": "odpt.Station:JR-East.ChuoSobuLocal.Kichijoji",
-      "fromRailway": "odpt.Railway:JR-East.ChuoRapid",
-      "toRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
       "id": "fallback-元住吉-目黒線-東横線",
       "fromStation": "odpt.Station:Tokyu.Meguro.Motosumiyoshi",
       "toStation": "odpt.Station:Tokyu.Toyoko.Motosumiyoshi",
@@ -12331,19 +12358,6 @@
       "toStation": "odpt.Station:JR-East.Yamanote.TakanawaGateway",
       "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
       "toRailway": "odpt.Railway:JR-East.Yamanote",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-三鷹-中央線快速-中央・総武各駅停車",
-      "fromStation": "odpt.Station:JR-East.ChuoRapid.Mitaka",
-      "toStation": "odpt.Station:JR-East.ChuoSobuLocal.Mitaka",
-      "fromRailway": "odpt.Railway:JR-East.ChuoRapid",
-      "toRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
       "minutes": 5,
       "bidirectional": true,
       "label": "暫定・安全側乗換",
@@ -12474,19 +12488,6 @@
       "toStation": "odpt.Station:JR-East.JobanRapid.Tennodai",
       "fromRailway": "odpt.Railway:JR-East.JobanLocal",
       "toRailway": "odpt.Railway:JR-East.JobanRapid",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-浜川崎-南武線浜川崎支線-鶴見線",
-      "fromStation": "odpt.Station:JR-East.NambuBranch.HamaKawasaki",
-      "toStation": "odpt.Station:JR-East.Tsurumi.HamaKawasaki",
-      "fromRailway": "odpt.Railway:JR-East.NambuBranch",
-      "toRailway": "odpt.Railway:JR-East.Tsurumi",
       "minutes": 5,
       "bidirectional": true,
       "label": "暫定・安全側乗換",
