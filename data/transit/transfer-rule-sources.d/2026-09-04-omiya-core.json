@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準・実測乗換（安全側）",
+    "sourceType": "current transfer guide / measured route",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "大宮",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayAName": "埼京線・川越線",
+      "railwayBName": "京浜東北線・根岸線",
+      "minutes": 6,
+      "source": "https://wadattsu261.com/content/omiya-saikyo-kawagoe-keihinn-negishiline-transfer-information/"
+    },
+    {
+      "place": "大宮",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:JR-East.Utsunomiya",
+      "railwayAName": "埼京線・川越線",
+      "railwayBName": "宇都宮線",
+      "minutes": 6,
+      "source": "https://wadattsu261.com/content/omiya-saikyo-kawagoe-utsunomiya-takasakiline-transfer-information/"
+    },
+    {
+      "place": "大宮",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:JR-East.Takasaki",
+      "railwayAName": "埼京線・川越線",
+      "railwayBName": "高崎線",
+      "minutes": 6,
+      "source": "https://wadattsu261.com/content/omiya-saikyo-kawagoe-utsunomiya-takasakiline-transfer-information/"
+    },
+    {
+      "place": "大宮",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayAName": "埼京線・川越線",
+      "railwayBName": "湘南新宿ライン",
+      "minutes": 6,
+      "source": "https://wadattsu261.com/content/omiya-saikyo-kawagoe-utsunomiya-takasakiline-transfer-information/"
+    },
+    {
+      "place": "大宮",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:Tobu.TobuUrbanPark",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "東武アーバンパークライン",
+      "minutes": 5,
+      "source": "https://honnne.com/blog/norikae-omiya/"
+    }
+  ]
+}
