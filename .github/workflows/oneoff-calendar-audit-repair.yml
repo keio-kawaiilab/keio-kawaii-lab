@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: oneoff-calendar-audit-repair
@@ -28,7 +29,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Raise quarantine convergence budget
+      - name: Confirm quarantine convergence budget
         shell: bash
         run: |
           set -euo pipefail
@@ -39,20 +40,21 @@ jobs:
           text = path.read_text(encoding="utf-8")
           old = "def repair_local_errors(previous: dict, candidate: dict, now: datetime, max_rounds: int = 6):"
           new = "def repair_local_errors(previous: dict, candidate: dict, now: datetime, max_rounds: int = 64):"
-          if old not in text:
-              raise SystemExit("expected repair_local_errors signature not found")
-          path.write_text(text.replace(old, new, 1), encoding="utf-8")
+          if new not in text:
+              if old not in text:
+                  raise SystemExit("expected repair_local_errors signature not found")
+              path.write_text(text.replace(old, new, 1), encoding="utf-8")
           PY
 
       - name: Run grouped release tests
         run: python scripts/test_audit_schedule_release_grouped.py
 
-      - name: Commit repair
+      - name: Commit repair if needed
         shell: bash
         run: |
           set -euo pipefail
           if git diff --quiet -- scripts/audit_schedule_release_grouped.py; then
-            echo "No repair needed"
+            echo "Repair already present"
             exit 0
           fi
           git config user.name "github-actions[bot]"
@@ -67,3 +69,8 @@ jobs:
             git rebase origin/main
           done
           exit 1
+
+      - name: Dispatch distributed calendar refresh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run update-live-calendar-distributed.yml --ref main
