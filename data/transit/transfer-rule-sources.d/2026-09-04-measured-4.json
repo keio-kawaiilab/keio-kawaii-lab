@@ -1,0 +1,38 @@
+{
+  "defaults": {
+    "bidirectional": true,
+    "label": "ホーム間実測（安全側）",
+    "sourceType": "2026 measured platform-to-platform transfer; rounded up",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "立川",
+      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayB": "odpt.Railway:JR-East.Nambu",
+      "minutes": 1,
+      "sourceUrl": "https://honnne.com/blog/norikae-tachikawa/"
+    },
+    {
+      "place": "府中本町",
+      "railwayA": "odpt.Railway:JR-East.Musashino",
+      "railwayB": "odpt.Railway:JR-East.Nambu",
+      "minutes": 2,
+      "sourceUrl": "https://honnne.com/blog/norikae-fuchuhommachi/"
+    },
+    {
+      "place": "水道橋",
+      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayB": "odpt.Railway:Toei.Mita",
+      "minutes": 7,
+      "sourceUrl": "https://honnne.com/blog/norikae-suidobashi/"
+    },
+    {
+      "place": "小田急多摩センター ↔ 京王多摩センター",
+      "railwayA": "odpt.Railway:Keio.Sagamihara",
+      "railwayB": "odpt.Railway:Odakyu.Tama",
+      "minutes": 1,
+      "sourceUrl": "https://honnne.com/blog/norikae-odakyutamacenter-keio/"
+    }
+  ]
+}
