@@ -94,13 +94,13 @@ jobs:
       - name: Commit Keisei and v2 snapshots
         shell: bash
         run: |
-          if git diff --quiet -- data/transit/keisei data/transit-v2; then
+          if [ -z "$(git status --porcelain -- data/transit data/transit-v2)" ]; then
             echo "No Keisei/v2 data changes."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/transit/keisei data/transit-v2
+          git add data/transit data/transit-v2
           git commit -m "Collect official Keisei train timetables for transit v2"
           for attempt in 1 2 3; do
             git fetch origin main
