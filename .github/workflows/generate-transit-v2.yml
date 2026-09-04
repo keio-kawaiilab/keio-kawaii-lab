@@ -8,6 +8,12 @@ on:
       - 'scripts/test_transit_v2.py'
       - 'scripts/import_odpt_timetables.py'
       - 'scripts/collect_odpt_train_identity.py'
+      - 'scripts/build_minatomirai_routing_timetable.py'
+      - 'scripts/build_minatomirai_routing_timetable_v2.py'
+      - 'scripts/enrich_minatomirai_destinations.py'
+      - 'scripts/test_minatomirai_destination_alignment.py'
+      - 'scripts/build_keisei_official_timetables.py'
+      - 'scripts/build_keisei_network_timetable.py'
       - 'data/transit-v2/spec.json'
       - 'data/transit-v2/service-boundaries.json'
       - 'data/transit/**'
@@ -40,10 +46,14 @@ jobs:
       - name: Install dependencies
         run: pip install requests==2.32.5
 
-      - name: Validate v2 builder
+      - name: Validate v2 builders
         run: |
-          python -m py_compile scripts/build_transit_v2.py scripts/collect_odpt_train_identity.py
+          python -m py_compile \
+            scripts/build_transit_v2.py \
+            scripts/collect_odpt_train_identity.py \
+            scripts/enrich_minatomirai_destinations.py
           python scripts/test_transit_v2.py
+          python scripts/test_minatomirai_destination_alignment.py
 
       - name: Refresh ODPT timetable snapshot with destinations
         shell: bash
@@ -54,6 +64,35 @@ jobs:
           fi
           python scripts/import_odpt_timetables.py
           python scripts/collect_odpt_train_identity.py
+
+      - name: Restore and enrich Minatomirai official timetable
+        shell: bash
+        run: |
+          if [ ! -f data/transit/yokohama-minatomirai/downbound-trips-candidate.json ]; then
+            echo "Minatomirai audited source snapshot is unavailable; skip."
+            exit 0
+          fi
+          python scripts/build_minatomirai_routing_timetable_v2.py
+          python scripts/enrich_minatomirai_destinations.py
+
+      - name: Restore Keisei official train timetable when collected
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, pathlib, sys
+          p=pathlib.Path('data/transit/keisei/official-train-details.json')
+          if not p.exists() or not p.read_text(encoding='utf-8').strip():
+              sys.exit(1)
+          data=json.loads(p.read_text(encoding='utf-8'))
+          sys.exit(0 if int(data.get('trainCount') or 0) > 0 else 1)
+          PY
+          status=$?
+          if [ "$status" -ne 0 ]; then
+            echo "Keisei official train details are not populated yet; skip reconstruction."
+            exit 0
+          fi
+          python scripts/build_keisei_official_timetables.py
+          python scripts/build_keisei_network_timetable.py
 
       - name: Build train-centric v2 database
         run: python scripts/build_transit_v2.py
@@ -74,6 +113,7 @@ jobs:
           assert edges['policy']['timeGapMayEstablishTrainIdentity'] is False
           assert edges['policy']['trainNumberMayEstablishTrainIdentity'] is False
           assert coverage['summary']['fragments'] > 0
+          assert coverage['summary']['fragmentsWithDestination'] > 0
           print(json.dumps(coverage['summary'], ensure_ascii=False, indent=2))
           PY
 
