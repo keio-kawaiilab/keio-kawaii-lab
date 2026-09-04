@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "verifiedAt": "2026-09-04",
+  "note": "Cross-operator through-service is permitted only for listed railway boundaries. Timetable proximity alone must never establish through-service identity.",
+  "pairs": [
+    ["manual.Railway:YokohamaMinatomirai.Minatomirai", "odpt.Railway:Tokyu.Toyoko"],
+    ["odpt.Railway:Tokyu.Toyoko", "odpt.Railway:TokyoMetro.Fukutoshin"],
+    ["odpt.Railway:TokyoMetro.Fukutoshin", "odpt.Railway:Seibu.SeibuYurakucho"],
+    ["odpt.Railway:TokyoMetro.Yurakucho", "odpt.Railway:Seibu.SeibuYurakucho"],
+    ["odpt.Railway:TokyoMetro.Fukutoshin", "odpt.Railway:Tobu.Tojo"],
+    ["odpt.Railway:TokyoMetro.Yurakucho", "odpt.Railway:Tobu.Tojo"],
+    ["odpt.Railway:Keisei.Oshiage", "odpt.Railway:Toei.Asakusa"],
+    ["odpt.Railway:Toei.Asakusa", "odpt.Railway:Keikyu.Main"],
+    ["odpt.Railway:Tokyu.DenEnToshi", "odpt.Railway:TokyoMetro.Hanzomon"],
+    ["odpt.Railway:TokyoMetro.Hanzomon", "odpt.Railway:Tobu.TobuSkytree"],
+    ["odpt.Railway:Odakyu.Odawara", "odpt.Railway:TokyoMetro.Chiyoda"],
+    ["odpt.Railway:TokyoMetro.Chiyoda", "odpt.Railway:JR-East.JobanLocal"],
+    ["odpt.Railway:Tokyu.Meguro", "odpt.Railway:TokyoMetro.Namboku"],
+    ["odpt.Railway:Tokyu.Meguro", "odpt.Railway:Toei.Mita"],
+    ["odpt.Railway:Tokyu.TokyuShinYokohama", "odpt.Railway:Sotetsu.SotetsuShinYokohama"],
+    ["odpt.Railway:JR-East.SotetsuDirect", "odpt.Railway:Sotetsu.SotetsuShinYokohama"],
+    ["odpt.Railway:JR-East.SaikyoKawagoe", "odpt.Railway:TWR.Rinkai"],
+    ["odpt.Railway:Keio.Keio", "odpt.Railway:Toei.Shinjuku"],
+    ["odpt.Railway:TokyoMetro.Tozai", "odpt.Railway:JR-East.ChuoSobuLocal"]
+  ]
+}
