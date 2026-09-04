@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T07:44:52.335Z",
+  "generatedAt": "2026-09-04T07:47:16.586Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -112,8 +112,8 @@
     "transfer-rule-sources.d/2026-09-04-yokohama-private-direct.json",
     "transfer-rule-sources.d/2026-09-04-yokohama-private-remaining.json"
   ],
-  "description": "Station/railway-specific transfer times. Explicit curated rules are preferred; any remaining candidate pair receives a conservative fallbackMinutes rule until an external standard time is added.",
-  "fallbackCandidatePairs": 98,
+  "description": "Station/railway-specific transfer times. Explicit curated rules are preferred; any remaining unblocked candidate pair receives a conservative fallbackMinutes rule until an external standard time is added.",
+  "fallbackCandidatePairs": 91,
   "rules": [
     {
       "id": "東京-山手線-丸ノ内線",
@@ -11532,19 +11532,6 @@
       "verifiedAt": ""
     },
     {
-      "id": "fallback-弘明寺-京急本線-ブルーライン",
-      "fromStation": "odpt.Station:Keikyu.Main.Gumyoji",
-      "toStation": "odpt.Station:YokohamaMunicipal.Blue.Gumyoji",
-      "fromRailway": "odpt.Railway:Keikyu.Main",
-      "toRailway": "odpt.Railway:YokohamaMunicipal.Blue",
-      "minutes": 9,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
       "id": "fallback-溝の口-田園都市線-大井町線",
       "fromStation": "odpt.Station:Tokyu.DenEnToshi.Mizonokuchi",
       "toStation": "odpt.Station:Tokyu.Oimachi.Mizonokuchi",
@@ -11733,32 +11720,6 @@
       "fromRailway": "odpt.Railway:Toei.Arakawa",
       "toRailway": "odpt.Railway:Toei.Mita",
       "minutes": 7,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-新宿-新宿線-丸ノ内線",
-      "fromStation": "odpt.Station:Toei.Shinjuku.Shinjuku",
-      "toStation": "odpt.Station:TokyoMetro.Marunouchi.Shinjuku",
-      "fromRailway": "odpt.Railway:Toei.Shinjuku",
-      "toRailway": "odpt.Railway:TokyoMetro.Marunouchi",
-      "minutes": 9,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-新宿-大江戸線-丸ノ内線",
-      "fromStation": "odpt.Station:Toei.Oedo.Shinjuku",
-      "toStation": "odpt.Station:TokyoMetro.Marunouchi.Shinjuku",
-      "fromRailway": "odpt.Railway:Toei.Oedo",
-      "toRailway": "odpt.Railway:TokyoMetro.Marunouchi",
-      "minutes": 9,
       "bidirectional": true,
       "label": "暫定・安全側乗換",
       "source": "data/transit/transfer-candidates.json",
@@ -12000,45 +11961,6 @@
       "verifiedAt": ""
     },
     {
-      "id": "fallback-浅草-つくばエクスプレス-銀座線",
-      "fromStation": "odpt.Station:MIR.TsukubaExpress.Asakusa",
-      "toStation": "odpt.Station:TokyoMetro.Ginza.Asakusa",
-      "fromRailway": "odpt.Railway:MIR.TsukubaExpress",
-      "toRailway": "odpt.Railway:TokyoMetro.Ginza",
-      "minutes": 11,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-浅草-つくばエクスプレス-浅草線",
-      "fromStation": "odpt.Station:MIR.TsukubaExpress.Asakusa",
-      "toStation": "odpt.Station:Toei.Asakusa.Asakusa",
-      "fromRailway": "odpt.Railway:MIR.TsukubaExpress",
-      "toRailway": "odpt.Railway:Toei.Asakusa",
-      "minutes": 12,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-浅草-つくばエクスプレス-東武スカイツリーライン",
-      "fromStation": "odpt.Station:MIR.TsukubaExpress.Asakusa",
-      "toStation": "odpt.Station:Tobu.TobuSkytree.Asakusa",
-      "fromRailway": "odpt.Railway:MIR.TsukubaExpress",
-      "toRailway": "odpt.Railway:Tobu.TobuSkytree",
-      "minutes": 10,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
       "id": "fallback-浅野-鶴見線-鶴見線海芝浦支線",
       "fromStation": "odpt.Station:JR-East.Tsurumi.Asano",
       "toStation": "odpt.Station:JR-East.TsurumiUmiShibauraBranch.Asano",
@@ -12071,19 +11993,6 @@
       "fromRailway": "odpt.Railway:JR-East.Hachiko",
       "toRailway": "odpt.Railway:JR-East.Takasaki",
       "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-早稲田-東京さくらトラム（都電荒川線）-東西線",
-      "fromStation": "odpt.Station:Toei.Arakawa.Waseda",
-      "toStation": "odpt.Station:TokyoMetro.Tozai.Waseda",
-      "fromRailway": "odpt.Railway:Toei.Arakawa",
-      "toRailway": "odpt.Railway:TokyoMetro.Tozai",
-      "minutes": 12,
       "bidirectional": true,
       "label": "暫定・安全側乗換",
       "source": "data/transit/transfer-candidates.json",
