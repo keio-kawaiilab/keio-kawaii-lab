@@ -1,27 +1,17 @@
 {
-  "generatedAt": "2026-09-04T00:06:52.438Z",
+  "generatedAt": "2026-09-04T00:10:01.527Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T00:06:38.297Z",
+  "rulesGeneratedAt": "2026-09-04T00:09:40.038Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 380,
-    "uncuratedPairs": 573,
+    "curatedPairs": 400,
+    "uncuratedPairs": 553,
     "blockedPairs": 7,
-    "curatedSourceRules": 380,
+    "curatedSourceRules": 400,
     "transferPlaces": 329
   },
   "priorityPlaces": [
-    {
-      "place": "横浜",
-      "totalPairs": 36,
-      "curatedPairs": 0,
-      "uncuratedPairs": 36,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 30,
-      "railwayCount": 9,
-      "priorityScore": 81
-    },
     {
       "place": "東京",
       "totalPairs": 55,
@@ -41,6 +31,16 @@
       "crossOperatorUncuratedPairs": 12,
       "railwayCount": 11,
       "priorityScore": 32
+    },
+    {
+      "place": "横浜",
+      "totalPairs": 36,
+      "curatedPairs": 20,
+      "uncuratedPairs": 16,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 10,
+      "railwayCount": 9,
+      "priorityScore": 31
     },
     {
       "place": "池袋",
@@ -1015,488 +1015,6 @@
   ],
   "priorityDetails": [
     {
-      "place": "横浜",
-      "totalPairs": 36,
-      "curatedPairs": 0,
-      "uncuratedPairs": 36,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 30,
-      "railwayCount": 9,
-      "priorityScore": 81,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "manual.Railway:YokohamaMinatomirai.Minatomirai",
-          "railwayAName": "みなとみらい線",
-          "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
-          "railwayBName": "ブルーライン",
-          "sameOperator": false,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "manual.Railway:YokohamaMinatomirai.Minatomirai",
-          "railwayAName": "みなとみらい線",
-          "railwayB": "odpt.Railway:JR-East.Yokosuka",
-          "railwayBName": "横須賀線",
-          "sameOperator": false,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "manual.Railway:YokohamaMinatomirai.Minatomirai",
-          "railwayAName": "みなとみらい線",
-          "railwayB": "odpt.Railway:Keikyu.Main",
-          "railwayBName": "京急本線",
-          "sameOperator": false,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "manual.Railway:YokohamaMinatomirai.Minatomirai",
-          "railwayAName": "みなとみらい線",
-          "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayBName": "京浜東北線・根岸線",
-          "sameOperator": false,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "manual.Railway:YokohamaMinatomirai.Minatomirai",
-          "railwayAName": "みなとみらい線",
-          "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
-          "railwayBName": "湘南新宿ライン",
-          "sameOperator": false,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "manual.Railway:YokohamaMinatomirai.Minatomirai",
-          "railwayAName": "みなとみらい線",
-          "railwayB": "odpt.Railway:Sotetsu.Main",
-          "railwayBName": "相鉄本線",
-          "sameOperator": false,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "manual.Railway:YokohamaMinatomirai.Minatomirai",
-          "railwayAName": "みなとみらい線",
-          "railwayB": "odpt.Railway:Tokyu.Toyoko",
-          "railwayBName": "東横線",
-          "sameOperator": false,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "manual.Railway:YokohamaMinatomirai.Minatomirai",
-          "railwayAName": "みなとみらい線",
-          "railwayB": "odpt.Railway:JR-East.Tokaido",
-          "railwayBName": "東海道線",
-          "sameOperator": false,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Yokosuka",
-          "railwayAName": "横須賀線",
-          "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
-          "railwayBName": "ブルーライン",
-          "sameOperator": false,
-          "distanceMeters": 223,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Yokosuka",
-          "railwayAName": "横須賀線",
-          "railwayB": "odpt.Railway:Keikyu.Main",
-          "railwayBName": "京急本線",
-          "sameOperator": false,
-          "distanceMeters": 71,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Yokosuka",
-          "railwayAName": "横須賀線",
-          "railwayB": "odpt.Railway:Sotetsu.Main",
-          "railwayBName": "相鉄本線",
-          "sameOperator": false,
-          "distanceMeters": 23,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Yokosuka",
-          "railwayAName": "横須賀線",
-          "railwayB": "odpt.Railway:Tokyu.Toyoko",
-          "railwayBName": "東横線",
-          "sameOperator": false,
-          "distanceMeters": 72,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Keikyu.Main",
-          "railwayAName": "京急本線",
-          "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
-          "railwayBName": "ブルーライン",
-          "sameOperator": false,
-          "distanceMeters": 266,
-          "fallbackMinutes": 6,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Keikyu.Main",
-          "railwayAName": "京急本線",
-          "railwayB": "odpt.Railway:Sotetsu.Main",
-          "railwayBName": "相鉄本線",
-          "sameOperator": false,
-          "distanceMeters": 60,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Keikyu.Main",
-          "railwayAName": "京急本線",
-          "railwayB": "odpt.Railway:Tokyu.Toyoko",
-          "railwayBName": "東横線",
-          "sameOperator": false,
-          "distanceMeters": 141,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
-          "railwayBName": "ブルーライン",
-          "sameOperator": false,
-          "distanceMeters": 233,
-          "fallbackMinutes": 6,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:Keikyu.Main",
-          "railwayBName": "京急本線",
-          "sameOperator": false,
-          "distanceMeters": 61,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:Sotetsu.Main",
-          "railwayBName": "相鉄本線",
-          "sameOperator": false,
-          "distanceMeters": 25,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:Tokyu.Toyoko",
-          "railwayBName": "東横線",
-          "sameOperator": false,
-          "distanceMeters": 81,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
-          "railwayAName": "湘南新宿ライン",
-          "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
-          "railwayBName": "ブルーライン",
-          "sameOperator": false,
-          "distanceMeters": 223,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
-          "railwayAName": "湘南新宿ライン",
-          "railwayB": "odpt.Railway:Keikyu.Main",
-          "railwayBName": "京急本線",
-          "sameOperator": false,
-          "distanceMeters": 71,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
-          "railwayAName": "湘南新宿ライン",
-          "railwayB": "odpt.Railway:Sotetsu.Main",
-          "railwayBName": "相鉄本線",
-          "sameOperator": false,
-          "distanceMeters": 23,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
-          "railwayAName": "湘南新宿ライン",
-          "railwayB": "odpt.Railway:Tokyu.Toyoko",
-          "railwayBName": "東横線",
-          "sameOperator": false,
-          "distanceMeters": 72,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Sotetsu.Main",
-          "railwayAName": "相鉄本線",
-          "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
-          "railwayBName": "ブルーライン",
-          "sameOperator": false,
-          "distanceMeters": 215,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Sotetsu.Main",
-          "railwayAName": "相鉄本線",
-          "railwayB": "odpt.Railway:Tokyu.Toyoko",
-          "railwayBName": "東横線",
-          "sameOperator": false,
-          "distanceMeters": 93,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Tokyu.Toyoko",
-          "railwayAName": "東横線",
-          "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
-          "railwayBName": "ブルーライン",
-          "sameOperator": false,
-          "distanceMeters": 223,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Tokaido",
-          "railwayAName": "東海道線",
-          "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
-          "railwayBName": "ブルーライン",
-          "sameOperator": false,
-          "distanceMeters": 223,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Tokaido",
-          "railwayAName": "東海道線",
-          "railwayB": "odpt.Railway:Keikyu.Main",
-          "railwayBName": "京急本線",
-          "sameOperator": false,
-          "distanceMeters": 71,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Tokaido",
-          "railwayAName": "東海道線",
-          "railwayB": "odpt.Railway:Sotetsu.Main",
-          "railwayBName": "相鉄本線",
-          "sameOperator": false,
-          "distanceMeters": 23,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Tokaido",
-          "railwayAName": "東海道線",
-          "railwayB": "odpt.Railway:Tokyu.Toyoko",
-          "railwayBName": "東横線",
-          "sameOperator": false,
-          "distanceMeters": 72,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:JR-East.Yokosuka",
-          "railwayBName": "横須賀線",
-          "sameOperator": true,
-          "distanceMeters": 12,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
-          "railwayBName": "湘南新宿ライン",
-          "sameOperator": true,
-          "distanceMeters": 12,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:JR-East.Tokaido",
-          "railwayBName": "東海道線",
-          "sameOperator": true,
-          "distanceMeters": 12,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
-          "railwayAName": "湘南新宿ライン",
-          "railwayB": "odpt.Railway:JR-East.Yokosuka",
-          "railwayBName": "横須賀線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
-          "railwayAName": "湘南新宿ライン",
-          "railwayB": "odpt.Railway:JR-East.Tokaido",
-          "railwayBName": "東海道線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Tokaido",
-          "railwayAName": "東海道線",
-          "railwayB": "odpt.Railway:JR-East.Yokosuka",
-          "railwayBName": "横須賀線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
       "place": "東京",
       "totalPairs": 55,
       "curatedPairs": 22,
@@ -2124,6 +1642,228 @@
           "railwayAName": "埼京線・川越線",
           "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
           "railwayBName": "湘南新宿ライン",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ]
+    },
+    {
+      "place": "横浜",
+      "totalPairs": 36,
+      "curatedPairs": 20,
+      "uncuratedPairs": 16,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 10,
+      "railwayCount": 9,
+      "priorityScore": 31,
+      "crossOperatorPairs": [
+        {
+          "railwayA": "manual.Railway:YokohamaMinatomirai.Minatomirai",
+          "railwayAName": "みなとみらい線",
+          "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
+          "railwayBName": "ブルーライン",
+          "sameOperator": false,
+          "distanceMeters": null,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "manual.Railway:YokohamaMinatomirai.Minatomirai",
+          "railwayAName": "みなとみらい線",
+          "railwayB": "odpt.Railway:Keikyu.Main",
+          "railwayBName": "京急本線",
+          "sameOperator": false,
+          "distanceMeters": null,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "manual.Railway:YokohamaMinatomirai.Minatomirai",
+          "railwayAName": "みなとみらい線",
+          "railwayB": "odpt.Railway:Sotetsu.Main",
+          "railwayBName": "相鉄本線",
+          "sameOperator": false,
+          "distanceMeters": null,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "manual.Railway:YokohamaMinatomirai.Minatomirai",
+          "railwayAName": "みなとみらい線",
+          "railwayB": "odpt.Railway:Tokyu.Toyoko",
+          "railwayBName": "東横線",
+          "sameOperator": false,
+          "distanceMeters": null,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:Keikyu.Main",
+          "railwayAName": "京急本線",
+          "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
+          "railwayBName": "ブルーライン",
+          "sameOperator": false,
+          "distanceMeters": 266,
+          "fallbackMinutes": 6,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:Keikyu.Main",
+          "railwayAName": "京急本線",
+          "railwayB": "odpt.Railway:Sotetsu.Main",
+          "railwayBName": "相鉄本線",
+          "sameOperator": false,
+          "distanceMeters": 60,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:Keikyu.Main",
+          "railwayAName": "京急本線",
+          "railwayB": "odpt.Railway:Tokyu.Toyoko",
+          "railwayBName": "東横線",
+          "sameOperator": false,
+          "distanceMeters": 141,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:Sotetsu.Main",
+          "railwayAName": "相鉄本線",
+          "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
+          "railwayBName": "ブルーライン",
+          "sameOperator": false,
+          "distanceMeters": 215,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:Sotetsu.Main",
+          "railwayAName": "相鉄本線",
+          "railwayB": "odpt.Railway:Tokyu.Toyoko",
+          "railwayBName": "東横線",
+          "sameOperator": false,
+          "distanceMeters": 93,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:Tokyu.Toyoko",
+          "railwayAName": "東横線",
+          "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
+          "railwayBName": "ブルーライン",
+          "sameOperator": false,
+          "distanceMeters": 223,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+          "railwayAName": "京浜東北線・根岸線",
+          "railwayB": "odpt.Railway:JR-East.Yokosuka",
+          "railwayBName": "横須賀線",
+          "sameOperator": true,
+          "distanceMeters": 12,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+          "railwayAName": "京浜東北線・根岸線",
+          "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
+          "railwayBName": "湘南新宿ライン",
+          "sameOperator": true,
+          "distanceMeters": 12,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+          "railwayAName": "京浜東北線・根岸線",
+          "railwayB": "odpt.Railway:JR-East.Tokaido",
+          "railwayBName": "東海道線",
+          "sameOperator": true,
+          "distanceMeters": 12,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+          "railwayAName": "湘南新宿ライン",
+          "railwayB": "odpt.Railway:JR-East.Yokosuka",
+          "railwayBName": "横須賀線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+          "railwayAName": "湘南新宿ライン",
+          "railwayB": "odpt.Railway:JR-East.Tokaido",
+          "railwayBName": "東海道線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.Tokaido",
+          "railwayAName": "東海道線",
+          "railwayB": "odpt.Railway:JR-East.Yokosuka",
+          "railwayBName": "横須賀線",
           "sameOperator": true,
           "distanceMeters": 0,
           "fallbackMinutes": 5,
@@ -5548,50 +5288,8 @@
       "place": "横浜",
       "railwayA": "manual.Railway:YokohamaMinatomirai.Minatomirai",
       "railwayAName": "みなとみらい線",
-      "railwayB": "odpt.Railway:JR-East.Yokosuka",
-      "railwayBName": "横須賀線",
-      "sameOperator": false,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "横浜",
-      "railwayA": "manual.Railway:YokohamaMinatomirai.Minatomirai",
-      "railwayAName": "みなとみらい線",
       "railwayB": "odpt.Railway:Keikyu.Main",
       "railwayBName": "京急本線",
-      "sameOperator": false,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "横浜",
-      "railwayA": "manual.Railway:YokohamaMinatomirai.Minatomirai",
-      "railwayAName": "みなとみらい線",
-      "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayBName": "京浜東北線・根岸線",
-      "sameOperator": false,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "横浜",
-      "railwayA": "manual.Railway:YokohamaMinatomirai.Minatomirai",
-      "railwayAName": "みなとみらい線",
-      "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
-      "railwayBName": "湘南新宿ライン",
       "sameOperator": false,
       "distanceMeters": null,
       "fallbackMinutes": 5,
@@ -5622,76 +5320,6 @@
       "railwayBName": "東横線",
       "sameOperator": false,
       "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "横浜",
-      "railwayA": "manual.Railway:YokohamaMinatomirai.Minatomirai",
-      "railwayAName": "みなとみらい線",
-      "railwayB": "odpt.Railway:JR-East.Tokaido",
-      "railwayBName": "東海道線",
-      "sameOperator": false,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "横浜",
-      "railwayA": "odpt.Railway:JR-East.Yokosuka",
-      "railwayAName": "横須賀線",
-      "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
-      "railwayBName": "ブルーライン",
-      "sameOperator": false,
-      "distanceMeters": 223,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "横浜",
-      "railwayA": "odpt.Railway:JR-East.Yokosuka",
-      "railwayAName": "横須賀線",
-      "railwayB": "odpt.Railway:Keikyu.Main",
-      "railwayBName": "京急本線",
-      "sameOperator": false,
-      "distanceMeters": 71,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "横浜",
-      "railwayA": "odpt.Railway:JR-East.Yokosuka",
-      "railwayAName": "横須賀線",
-      "railwayB": "odpt.Railway:Sotetsu.Main",
-      "railwayBName": "相鉄本線",
-      "sameOperator": false,
-      "distanceMeters": 23,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "横浜",
-      "railwayA": "odpt.Railway:JR-East.Yokosuka",
-      "railwayAName": "横須賀線",
-      "railwayB": "odpt.Railway:Tokyu.Toyoko",
-      "railwayBName": "東横線",
-      "sameOperator": false,
-      "distanceMeters": 72,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
@@ -5744,38 +5372,10 @@
       "place": "横浜",
       "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
       "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
-      "railwayBName": "ブルーライン",
-      "sameOperator": false,
-      "distanceMeters": 233,
-      "fallbackMinutes": 6,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "横浜",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
       "railwayB": "odpt.Railway:JR-East.Yokosuka",
       "railwayBName": "横須賀線",
       "sameOperator": true,
       "distanceMeters": 12,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "横浜",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:Keikyu.Main",
-      "railwayBName": "京急本線",
-      "sameOperator": false,
-      "distanceMeters": 61,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
@@ -5800,34 +5400,6 @@
       "place": "横浜",
       "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
       "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:Sotetsu.Main",
-      "railwayBName": "相鉄本線",
-      "sameOperator": false,
-      "distanceMeters": 25,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "横浜",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:Tokyu.Toyoko",
-      "railwayBName": "東横線",
-      "sameOperator": false,
-      "distanceMeters": 81,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "横浜",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
       "railwayB": "odpt.Railway:JR-East.Tokaido",
       "railwayBName": "東海道線",
       "sameOperator": true,
@@ -5842,66 +5414,10 @@
       "place": "横浜",
       "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
       "railwayAName": "湘南新宿ライン",
-      "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
-      "railwayBName": "ブルーライン",
-      "sameOperator": false,
-      "distanceMeters": 223,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "横浜",
-      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
-      "railwayAName": "湘南新宿ライン",
       "railwayB": "odpt.Railway:JR-East.Yokosuka",
       "railwayBName": "横須賀線",
       "sameOperator": true,
       "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "横浜",
-      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
-      "railwayAName": "湘南新宿ライン",
-      "railwayB": "odpt.Railway:Keikyu.Main",
-      "railwayBName": "京急本線",
-      "sameOperator": false,
-      "distanceMeters": 71,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "横浜",
-      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
-      "railwayAName": "湘南新宿ライン",
-      "railwayB": "odpt.Railway:Sotetsu.Main",
-      "railwayBName": "相鉄本線",
-      "sameOperator": false,
-      "distanceMeters": 23,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "横浜",
-      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
-      "railwayAName": "湘南新宿ライン",
-      "railwayB": "odpt.Railway:Tokyu.Toyoko",
-      "railwayBName": "東横線",
-      "sameOperator": false,
-      "distanceMeters": 72,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
@@ -5968,66 +5484,10 @@
       "place": "横浜",
       "railwayA": "odpt.Railway:JR-East.Tokaido",
       "railwayAName": "東海道線",
-      "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
-      "railwayBName": "ブルーライン",
-      "sameOperator": false,
-      "distanceMeters": 223,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "横浜",
-      "railwayA": "odpt.Railway:JR-East.Tokaido",
-      "railwayAName": "東海道線",
       "railwayB": "odpt.Railway:JR-East.Yokosuka",
       "railwayBName": "横須賀線",
       "sameOperator": true,
       "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "横浜",
-      "railwayA": "odpt.Railway:JR-East.Tokaido",
-      "railwayAName": "東海道線",
-      "railwayB": "odpt.Railway:Keikyu.Main",
-      "railwayBName": "京急本線",
-      "sameOperator": false,
-      "distanceMeters": 71,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "横浜",
-      "railwayA": "odpt.Railway:JR-East.Tokaido",
-      "railwayAName": "東海道線",
-      "railwayB": "odpt.Railway:Sotetsu.Main",
-      "railwayBName": "相鉄本線",
-      "sameOperator": false,
-      "distanceMeters": 23,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "横浜",
-      "railwayA": "odpt.Railway:JR-East.Tokaido",
-      "railwayAName": "東海道線",
-      "railwayB": "odpt.Railway:Tokyu.Toyoko",
-      "railwayBName": "東横線",
-      "sameOperator": false,
-      "distanceMeters": 72,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
