@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-04T05:28:16.553Z",
+  "generatedAt": "2026-09-04T05:28:52.647Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T05:28:04.717Z",
+  "rulesGeneratedAt": "2026-09-04T05:28:37.143Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 643,
-    "uncuratedPairs": 310,
+    "curatedPairs": 649,
+    "uncuratedPairs": 304,
     "blockedPairs": 7,
-    "curatedSourceRules": 643,
+    "curatedSourceRules": 649,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -164,26 +164,6 @@
     },
     {
       "place": "館林",
-      "totalPairs": 3,
-      "curatedPairs": 0,
-      "uncuratedPairs": 3,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 3,
-      "priorityScore": 3
-    },
-    {
-      "place": "京成高砂",
-      "totalPairs": 3,
-      "curatedPairs": 0,
-      "uncuratedPairs": 3,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 3,
-      "priorityScore": 3
-    },
-    {
-      "place": "京成津田沼",
       "totalPairs": 3,
       "curatedPairs": 0,
       "uncuratedPairs": 3,
@@ -1010,6 +990,26 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
+      "priorityScore": 1
+    },
+    {
+      "place": "茅場町",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 1
+    },
+    {
+      "place": "吉祥寺",
+      "totalPairs": 3,
+      "curatedPairs": 2,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
       "priorityScore": 1
     }
   ],
@@ -2384,104 +2384,6 @@
       ]
     },
     {
-      "place": "京成高砂",
-      "totalPairs": 3,
-      "curatedPairs": 0,
-      "uncuratedPairs": 3,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 3,
-      "priorityScore": 3,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Keisei.Main",
-          "railwayAName": "京成本線",
-          "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
-          "railwayBName": "成田スカイアクセス線",
-          "sameOperator": true,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Keisei.Kanamachi",
-          "railwayAName": "金町線",
-          "railwayB": "odpt.Railway:Keisei.Main",
-          "railwayBName": "京成本線",
-          "sameOperator": true,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Keisei.Kanamachi",
-          "railwayAName": "金町線",
-          "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
-          "railwayBName": "成田スカイアクセス線",
-          "sameOperator": true,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "京成津田沼",
-      "totalPairs": 3,
-      "curatedPairs": 0,
-      "uncuratedPairs": 3,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 3,
-      "priorityScore": 3,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Keisei.Main",
-          "railwayAName": "京成本線",
-          "railwayB": "odpt.Railway:Keisei.Matsudo",
-          "railwayBName": "松戸線",
-          "sameOperator": true,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Keisei.Chiba",
-          "railwayAName": "千葉線",
-          "railwayB": "odpt.Railway:Keisei.Main",
-          "railwayBName": "京成本線",
-          "sameOperator": true,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Keisei.Chiba",
-          "railwayAName": "千葉線",
-          "railwayB": "odpt.Railway:Keisei.Matsudo",
-          "railwayBName": "松戸線",
-          "sameOperator": true,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
       "place": "銀座 ↔ 銀座一丁目",
       "totalPairs": 3,
       "curatedPairs": 0,
@@ -3101,6 +3003,110 @@
           ]
         }
       ]
+    },
+    {
+      "place": "八王子",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 3,
+      "crossOperatorPairs": [],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+          "railwayAName": "中央線快速",
+          "railwayB": "odpt.Railway:JR-East.Yokohama",
+          "railwayBName": "横浜線",
+          "sameOperator": true,
+          "distanceMeters": 139,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+          "railwayAName": "中央線快速",
+          "railwayB": "odpt.Railway:JR-East.Hachiko",
+          "railwayBName": "八高線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.Hachiko",
+          "railwayAName": "八高線",
+          "railwayB": "odpt.Railway:JR-East.Yokohama",
+          "railwayBName": "横浜線",
+          "sameOperator": true,
+          "distanceMeters": 139,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ]
+    },
+    {
+      "place": "表参道",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 3,
+      "crossOperatorPairs": [],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:TokyoMetro.Ginza",
+          "railwayAName": "銀座線",
+          "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
+          "railwayBName": "半蔵門線",
+          "sameOperator": true,
+          "distanceMeters": 14,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
+          "railwayAName": "千代田線",
+          "railwayB": "odpt.Railway:TokyoMetro.Ginza",
+          "railwayBName": "銀座線",
+          "sameOperator": true,
+          "distanceMeters": 122,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
+          "railwayAName": "千代田線",
+          "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
+          "railwayBName": "半蔵門線",
+          "sameOperator": true,
+          "distanceMeters": 109,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ]
     }
   ],
   "uncurated": [
@@ -3588,89 +3594,11 @@
       ]
     },
     {
-      "place": "京成高砂",
-      "railwayA": "odpt.Railway:Keisei.Main",
-      "railwayAName": "京成本線",
-      "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
-      "railwayBName": "成田スカイアクセス線",
-      "sameOperator": true,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "京成高砂",
-      "railwayA": "odpt.Railway:Keisei.Kanamachi",
-      "railwayAName": "金町線",
-      "railwayB": "odpt.Railway:Keisei.Main",
-      "railwayBName": "京成本線",
-      "sameOperator": true,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "京成高砂",
-      "railwayA": "odpt.Railway:Keisei.Kanamachi",
-      "railwayAName": "金町線",
-      "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
-      "railwayBName": "成田スカイアクセス線",
-      "sameOperator": true,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "same-place-group"
-      ]
-    },
-    {
       "place": "京成成田",
       "railwayA": "odpt.Railway:Keisei.HigashiNarita",
       "railwayAName": "東成田線",
       "railwayB": "odpt.Railway:Keisei.Main",
       "railwayBName": "京成本線",
-      "sameOperator": true,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "京成津田沼",
-      "railwayA": "odpt.Railway:Keisei.Main",
-      "railwayAName": "京成本線",
-      "railwayB": "odpt.Railway:Keisei.Matsudo",
-      "railwayBName": "松戸線",
-      "sameOperator": true,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "京成津田沼",
-      "railwayA": "odpt.Railway:Keisei.Chiba",
-      "railwayAName": "千葉線",
-      "railwayB": "odpt.Railway:Keisei.Main",
-      "railwayBName": "京成本線",
-      "sameOperator": true,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "京成津田沼",
-      "railwayA": "odpt.Railway:Keisei.Chiba",
-      "railwayAName": "千葉線",
-      "railwayB": "odpt.Railway:Keisei.Matsudo",
-      "railwayBName": "松戸線",
       "sameOperator": true,
       "distanceMeters": null,
       "fallbackMinutes": 5,
