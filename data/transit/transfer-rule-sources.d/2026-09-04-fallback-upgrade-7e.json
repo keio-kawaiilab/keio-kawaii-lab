@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "乗換",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "id": "大門-浅草線-大江戸線",
+      "place": "大門",
+      "railwayA": "odpt.Railway:Toei.Asakusa",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "minutes": 3,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/hamamatsucho/toei_subway-asakusa_line-toei_subway-oedo_line.html",
+      "sourceType": "Jorudan standard transfer guide; explicitly states 3-minute standard transfer time in both directions"
+    },
+    {
+      "id": "築地-新富町-日比谷線-有楽町線",
+      "place": "築地 ↔ 新富町",
+      "railwayA": "odpt.Railway:TokyoMetro.Hibiya",
+      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+      "minutes": 9,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E7%AF%89%E5%9C%B0_%E6%96%B0%E5%AF%8C%E7%94%BA%EF%BC%88%E6%9D%B1%E4%BA%AC%EF%BC%89.html",
+      "sourceType": "current Jorudan direct station-to-station walking route; 9 minutes"
+    },
+    {
+      "id": "明治神宮前-千代田線-副都心線",
+      "place": "明治神宮前〈原宿〉",
+      "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayB": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "minutes": 3,
+      "source": "https://xn--cck0a4ah6349a9b5a.com/archives/6739",
+      "sourceType": "current measured transfer guide; about 2 min 50 sec, rounded up to 3 minutes"
+    },
+    {
+      "id": "霞ケ関-千代田線-丸ノ内線",
+      "place": "霞ケ関",
+      "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "minutes": 5,
+      "source": "https://diyisheng.seesaa.net/article/133673098.html",
+      "sourceType": "transfer guide explicitly cites official transfer time of about 5 minutes"
+    },
+    {
+      "id": "鶴見-京浜東北線-鶴見線",
+      "place": "鶴見",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.Tsurumi",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%BE%BB%E5%A0%82_%E6%B5%B7%E8%8A%9D%E6%B5%A6.html",
+      "sourceType": "current Jorudan route explicitly shows 3-minute transfer at Tsurumi between Keihin-Tohoku and Tsurumi Line"
+    },
+    {
+      "id": "新庚申塚-西巣鴨-荒川線-三田線",
+      "place": "新庚申塚 ↔ 西巣鴨",
+      "railwayA": "odpt.Railway:Toei.Arakawa",
+      "railwayB": "odpt.Railway:Toei.Mita",
+      "minutes": 7,
+      "source": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E5%BA%9A%E7%94%B3%E5%A1%9A-%E8%A5%BF%E5%B7%A3%E9%B4%A8",
+      "sourceType": "current Yahoo Transit direct walking route; 7 minutes"
+    },
+    {
+      "id": "上野広小路-仲御徒町-銀座線-日比谷線",
+      "place": "上野広小路 ↔ 仲御徒町",
+      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+      "minutes": 14,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E4%B8%8A%E9%87%8E%E5%BA%83%E5%B0%8F%E8%B7%AF_%E4%BB%B2%E5%BE%A1%E5%BE%92%E7%94%BA.html",
+      "sourceType": "current Jorudan direct station-to-station walking route; 14 minutes, used conservatively"
+    }
+  ]
+}
