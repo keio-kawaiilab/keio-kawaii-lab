@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準・実測乗換（安全側）",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {"place":"東村山","railwayA":"odpt.Railway:Seibu.Kokubunji","railwayB":"odpt.Railway:Seibu.Shinjuku","railwayAName":"国分寺線","railwayBName":"新宿線","minutes":2,"source":"https://www.jorudan.co.jp/norikae/route/%E5%9B%BD%E5%88%86%E5%AF%BA_%E8%A5%BF%E6%AD%A6%E6%96%B0%E5%AE%BF.html","sourceType":"current Jorudan route explicitly shows 2-minute transfer at Higashimurayama"},
+    {"place":"東村山","railwayA":"odpt.Railway:Seibu.Kokubunji","railwayB":"odpt.Railway:Seibu.Seibuen","railwayAName":"国分寺線","railwayBName":"西武園線","minutes":2,"source":"https://www.jorudan.co.jp/norikae/route/%E8%A5%BF%E6%AD%A6%E5%9C%92_%E5%9B%BD%E5%88%86%E5%AF%BA.html","sourceType":"current Jorudan route explicitly shows 2-minute transfer at Higashimurayama"},
+    {"place":"東村山","railwayA":"odpt.Railway:Seibu.Seibuen","railwayB":"odpt.Railway:Seibu.Shinjuku","railwayAName":"西武園線","railwayBName":"新宿線","minutes":2,"source":"https://www.jorudan.co.jp/norikae/route/%E8%A5%BF%E6%AD%A6%E6%96%B0%E5%AE%BF_%E8%A5%BF%E6%AD%A6%E5%9C%92.html?Cway=3","sourceType":"current Jorudan route explicitly shows 2-minute transfer at Higashimurayama"},
+    {"place":"越生","railwayA":"odpt.Railway:JR-East.Hachiko","railwayB":"odpt.Railway:Tobu.Ogose","railwayAName":"八高線","railwayBName":"越生線","minutes":4,"source":"https://www.jorudan.co.jp/norikae/route/%E5%9D%82%E6%88%B8%EF%BC%88%E5%9F%BC%E7%8E%89%EF%BC%89_%E9%AB%98%E9%BA%97%E5%B7%9D.html","sourceType":"current Jorudan route explicitly shows 4-minute transfer at Ogose"},
+    {"place":"日比谷 ↔ 有楽町","railwayA":"odpt.Railway:TokyoMetro.Hibiya","railwayB":"odpt.Railway:TokyoMetro.Yurakucho","railwayAName":"日比谷線","railwayBName":"有楽町線","minutes":5,"source":"https://mb.jorudan.co.jp/os/noritxt/yurakucho/tokyo-metro_hibiya_line-tokyo-metro_yurakucho_line.html","sourceType":"Jorudan standard transfer time"},
+    {"place":"日比谷 ↔ 有楽町","railwayA":"odpt.Railway:TokyoMetro.Chiyoda","railwayB":"odpt.Railway:TokyoMetro.Yurakucho","railwayAName":"千代田線","railwayBName":"有楽町線","minutes":6,"source":"https://mb.jorudan.co.jp/os/noritxt/yurakucho/tokyo-metro_chiyoda_line-tokyo-metro_yurakucho_line.html","sourceType":"Jorudan standard transfer time"}
+  ]
+}
