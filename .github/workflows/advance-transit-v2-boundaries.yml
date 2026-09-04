@@ -83,6 +83,7 @@ jobs:
           PY
       - name: Validate importer behavior
         run: |
+          pip install requests==2.32.5
           python -m py_compile scripts/import_odpt_timetables.py scripts/test_import_odpt_timetables.py
           python scripts/test_import_odpt_timetables.py
       - name: Commit importer fix
