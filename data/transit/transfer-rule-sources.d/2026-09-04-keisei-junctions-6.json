@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準・実測乗換（安全側）",
+    "sourceType": "current official station layout / route-planner transfer time",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "京成高砂",
+      "railwayA": "odpt.Railway:Keisei.Main",
+      "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
+      "railwayAName": "京成本線",
+      "railwayBName": "成田スカイアクセス線",
+      "minutes": 1,
+      "source": "https://new-www.keisei.co.jp/keisei/tetudou/stationmap/pdf/jp/111.pdf",
+      "sourceType": "official shared 3/4 platform group; 1-minute safety buffer"
+    },
+    {
+      "place": "京成高砂",
+      "railwayA": "odpt.Railway:Keisei.Kanamachi",
+      "railwayB": "odpt.Railway:Keisei.Main",
+      "railwayAName": "金町線",
+      "railwayBName": "京成本線",
+      "minutes": 3,
+      "source": "https://tren.hatenablog.com/entry/ks10-kanamachi",
+      "sourceType": "current measured/photographed transfer guide; 2-3 minutes, conservative upper bound"
+    },
+    {
+      "place": "京成高砂",
+      "railwayA": "odpt.Railway:Keisei.Kanamachi",
+      "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
+      "railwayAName": "金町線",
+      "railwayBName": "成田スカイアクセス線",
+      "minutes": 3,
+      "source": "https://tren.hatenablog.com/entry/ks10",
+      "sourceType": "current measured/photographed transfer guide to main platform group; 2-3 minutes, conservative upper bound"
+    },
+    {
+      "place": "京成津田沼",
+      "railwayA": "odpt.Railway:Keisei.Main",
+      "railwayB": "odpt.Railway:Keisei.Matsudo",
+      "railwayAName": "京成本線",
+      "railwayBName": "松戸線",
+      "minutes": 3,
+      "source": "https://ekitan.com/d-norikae/transit/route/sf-2560/st-3214",
+      "sourceType": "current route-planner platform transfer; observed 2-3 minutes, conservative upper bound"
+    },
+    {
+      "place": "京成津田沼",
+      "railwayA": "odpt.Railway:Keisei.Chiba",
+      "railwayB": "odpt.Railway:Keisei.Main",
+      "railwayAName": "千葉線",
+      "railwayBName": "京成本線",
+      "minutes": 2,
+      "source": "https://www.keisei.co.jp/keisei/tetudou/stationmap/pdf/jp/127.pdf",
+      "sourceType": "official shared/adjacent 3/4 platform layout plus current 2-minute route-planner transfers"
+    },
+    {
+      "place": "京成津田沼",
+      "railwayA": "odpt.Railway:Keisei.Chiba",
+      "railwayB": "odpt.Railway:Keisei.Matsudo",
+      "railwayAName": "千葉線",
+      "railwayBName": "松戸線",
+      "minutes": 2,
+      "source": "https://www.keisei.co.jp/cms/files/keisei/MASTER/0110/9J9od6Vy.pdf",
+      "sourceType": "official through-service plus current non-through platform transfer examples at 1-2 minutes; conservative 2 minutes"
+    }
+  ]
+}
