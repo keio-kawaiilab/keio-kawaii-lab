@@ -486,6 +486,22 @@ def align_inferred_edges(fragments: list[dict[str, Any]], indexes: dict[str, Any
             if not physical_station_match(source_stops[-1][0], target_stops[0][0], indexes, edge_meta.get('station') or ''):
                 continue
             ok, delta = candidate_alignment(source, target)
+            if ok and delta == 0:
+                # A train cannot move between two different physical stations
+                # in zero minutes.  Reject only that impossible candidate; this
+                # does not use elapsed time to establish train identity.  Zero
+                # minutes remains valid when the two line-scoped Station IDs
+                # represent the same physical boundary station.
+                source_station = str(source_stops[-1][0] or '')
+                target_station = str(target_stops[0][0] or '')
+                source_title = str(indexes['stationTitle'].get(source_station) or '')
+                target_title = str(indexes['stationTitle'].get(target_station) or '')
+                same_physical_station = (
+                    source_station == target_station
+                    or bool(source_title and target_title and source_title == target_title)
+                )
+                if not same_physical_station:
+                    continue
             if ok:
                 candidates.append((target, delta))
         if len(candidates) == 1:
