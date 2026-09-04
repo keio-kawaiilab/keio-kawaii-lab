@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "ホーム間乗換",
+    "sourceType": "current platform-to-platform transfer guide",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "大崎",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayAName": "山手線",
+      "railwayBName": "埼京線・川越線",
+      "minutes": 3,
+      "source": "https://wadattsu261.com/content/osaki-jryamanote-saikyo-shonanshinjuku-rinkailine-transfer-information/"
+    },
+    {
+      "place": "大崎",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayAName": "山手線",
+      "railwayBName": "湘南新宿ライン",
+      "minutes": 3,
+      "source": "https://wadattsu261.com/content/osaki-jryamanote-saikyo-shonanshinjuku-rinkailine-transfer-information/"
+    },
+    {
+      "place": "大崎",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:TWR.Rinkai",
+      "railwayAName": "山手線",
+      "railwayBName": "りんかい線",
+      "minutes": 3,
+      "source": "https://wadattsu261.com/content/osaki-jryamanote-saikyo-shonanshinjuku-rinkailine-transfer-information/"
+    },
+    {
+      "place": "大崎",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:JR-East.SotetsuDirect",
+      "railwayAName": "山手線",
+      "railwayBName": "相鉄直通線",
+      "minutes": 3,
+      "source": "https://norikaemap.com/osaki/0305/"
+    }
+  ]
+}
