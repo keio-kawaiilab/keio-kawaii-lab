@@ -1,0 +1,191 @@
+name: Advance strict transit v2 boundaries
+
+on:
+  push:
+    paths:
+      - '.github/workflows/advance-transit-v2-boundaries.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  advance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Patch physical-station destination resolution and verified boundaries
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          script = Path('scripts/build_transit_v2.py')
+          text = script.read_text(encoding='utf-8')
+          old = '''def destination_railways(destination: str, indexes: dict[str, Any]) -> set[str]:
+              result = set(indexes['stationRailways'].get(destination, set()))
+              if result:
+                  return result
+              suffix = destination.rsplit('.', 1)[-1] if destination else ''
+              for sid, railways in indexes['stationRailways'].items():
+                  if sid.rsplit('.', 1)[-1] == suffix:
+                      result.update(railways)
+              return result
+          '''
+          new = '''def destination_railways(destination: str, indexes: dict[str, Any]) -> set[str]:
+              # ODPT station IDs are railway-scoped.  A published destination can
+              # therefore carry (for example) the Kodomonokuni-line Nagatsuta ID
+              # even when the train actually reaches physical Nagatsuta via the
+              # Den-en-toshi line.  Resolve the physical station first, then let
+              # the verified operational graph choose the reachable railway.
+              result = set(indexes['stationRailways'].get(destination, set()))
+              station_name = str(indexes['stationTitle'].get(destination) or '')
+              if station_name:
+                  for sid, name in indexes['stationTitle'].items():
+                      if name == station_name:
+                          result.update(indexes['stationRailways'].get(sid, set()))
+                  return result
+              suffix = destination.rsplit('.', 1)[-1] if destination else ''
+              for sid, railways in indexes['stationRailways'].items():
+                  if sid.rsplit('.', 1)[-1] == suffix:
+                      result.update(railways)
+              return result
+          '''
+          if old not in text:
+              raise SystemExit('destination_railways source block not found')
+          script.write_text(text.replace(old, new), encoding='utf-8')
+
+          path = Path('data/transit-v2/service-boundaries.json')
+          data = json.loads(path.read_text(encoding='utf-8'))
+          rows = data.setdefault('boundaries', [])
+          known = {row.get('id') for row in rows if isinstance(row, dict)}
+          additions = [
+            {
+              'id':'seibu-ikebukuro-toshima-nerima','station':'練馬',
+              'fromRailway':'odpt.Railway:Seibu.Ikebukuro','toRailway':'odpt.Railway:Seibu.Toshima',
+              'fromStation':'odpt.Station:Seibu.Ikebukuro.Nerima','toStation':'odpt.Station:Seibu.Toshima.Nerima',
+              'bidirectional':True,'status':'verified',
+              'sourceUrls':['https://www.seiburailway.jp/railway/station/nerima/']
+            },
+            {
+              'id':'seibu-ikebukuro-chichibu-agano','station':'吾野',
+              'fromRailway':'odpt.Railway:Seibu.Ikebukuro','toRailway':'odpt.Railway:Seibu.SeibuChichibu',
+              'fromStation':'odpt.Station:Seibu.Ikebukuro.Agano','toStation':'odpt.Station:Seibu.SeibuChichibu.Agano',
+              'bidirectional':True,'status':'verified',
+              'sourceUrls':['https://www.seiburailway.jp/railway/station/agano/']
+            },
+            {
+              'id':'seibu-ikebukuro-sayama-nishitokorozawa','station':'西所沢',
+              'fromRailway':'odpt.Railway:Seibu.Ikebukuro','toRailway':'odpt.Railway:Seibu.Sayama',
+              'fromStation':'odpt.Station:Seibu.Ikebukuro.NishiTokorozawa','toStation':'odpt.Station:Seibu.Sayama.NishiTokorozawa',
+              'bidirectional':True,'status':'verified',
+              'sourceUrls':['https://www.seiburailway.jp/railway/station/nishi-tokorozawa/']
+            },
+            {
+              'id':'tobu-skytreebranch-skytree-hikifune','station':'曳舟',
+              'fromRailway':'odpt.Railway:Tobu.TobuSkytreeBranch','toRailway':'odpt.Railway:Tobu.TobuSkytree',
+              'fromStation':'odpt.Station:Tobu.TobuSkytreeBranch.Hikifune','toStation':'odpt.Station:Tobu.TobuSkytree.Hikifune',
+              'bidirectional':True,'status':'verified',
+              'sourceUrls':['https://www.tobu.co.jp/railway/women/skytree_line/']
+            },
+            {
+              'id':'tobu-skytree-isesaki-dobutsukoen','station':'東武動物公園',
+              'fromRailway':'odpt.Railway:Tobu.TobuSkytree','toRailway':'odpt.Railway:Tobu.Isesaki',
+              'fromStation':'odpt.Station:Tobu.TobuSkytree.TobuDobutsuKoen','toStation':'odpt.Station:Tobu.Isesaki.TobuDobutsuKoen',
+              'bidirectional':True,'status':'verified',
+              'sourceUrls':['https://www.tobu.co.jp/railway/women/skytree_line/']
+            },
+            {
+              'id':'tobu-skytree-nikko-dobutsukoen','station':'東武動物公園',
+              'fromRailway':'odpt.Railway:Tobu.TobuSkytree','toRailway':'odpt.Railway:Tobu.Nikko',
+              'fromStation':'odpt.Station:Tobu.TobuSkytree.TobuDobutsuKoen','toStation':'odpt.Station:Tobu.Nikko.TobuDobutsuKoen',
+              'bidirectional':True,'status':'verified',
+              'sourceUrls':['https://www.tobu.co.jp/railway/women/skytree_line/']
+            },
+            {
+              'id':'sotetsu-main-shinyokohama-nishiya','station':'西谷',
+              'fromRailway':'odpt.Railway:Sotetsu.Main','toRailway':'odpt.Railway:Sotetsu.SotetsuShinYokohama',
+              'fromStation':'odpt.Station:Sotetsu.Main.Nishiya','toStation':'odpt.Station:Sotetsu.SotetsuShinYokohama.Nishiya',
+              'bidirectional':True,'status':'verified',
+              'sourceUrls':['https://www.sotetsu.co.jp/train/stations/nishiya/']
+            },
+            {
+              'id':'sotetsu-main-izumino-futamatagawa','station':'二俣川',
+              'fromRailway':'odpt.Railway:Sotetsu.Main','toRailway':'odpt.Railway:Sotetsu.Izumino',
+              'fromStation':'odpt.Station:Sotetsu.Main.Futamatagawa','toStation':'odpt.Station:Sotetsu.Izumino.Futamatagawa',
+              'bidirectional':True,'status':'verified',
+              'sourceUrls':['https://www.sotetsu.co.jp/train/railway/']
+            },
+            {
+              'id':'keisei-oshiage-main-aoto','station':'青砥',
+              'fromRailway':'odpt.Railway:Keisei.Oshiage','toRailway':'odpt.Railway:Keisei.Main',
+              'fromStation':'odpt.Station:Keisei.Oshiage.Aoto','toStation':'odpt.Station:Keisei.Main.Aoto',
+              'bidirectional':True,'status':'verified',
+              'sourceUrls':['https://www.keisei.co.jp/keisei/tetudou/accessj/']
+            },
+            {
+              'id':'keisei-main-access-takasago','station':'京成高砂',
+              'fromRailway':'odpt.Railway:Keisei.Main','toRailway':'odpt.Railway:Keisei.NaritaSkyAccess',
+              'fromStation':'odpt.Station:Keisei.Main.KeiseiTakasago','toStation':'odpt.Station:Keisei.NaritaSkyAccess.KeiseiTakasago',
+              'bidirectional':True,'status':'verified',
+              'sourceUrls':['https://www.keisei.co.jp/keisei/tetudou/accessj/']
+            }
+          ]
+          for row in additions:
+              if row['id'] not in known:
+                  rows.append(row)
+          data['updatedAt'] = '2026-09-04'
+          path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          print('added boundaries:', [r['id'] for r in additions if r['id'] not in known])
+          PY
+      - name: Validate physical destination expansion
+        run: |
+          python -m py_compile scripts/build_transit_v2.py scripts/finalize_transit_v2.py scripts/audit_transit_v2.py
+          python - <<'PY'
+          import json
+          import scripts.build_transit_v2 as base
+          from pathlib import Path
+          manifest=json.loads(Path('data/transit/manifest.json').read_text(encoding='utf-8'))
+          indexes=base.index_entities(manifest)
+          targets=base.destination_railways('odpt.Station:Tokyu.Kodomonokuni.Nagatsuta', indexes)
+          assert 'odpt.Railway:Tokyu.DenEnToshi' in targets, targets
+          registry=json.loads(Path('data/transit-v2/service-boundaries.json').read_text(encoding='utf-8'))
+          ids={r['id'] for r in registry['boundaries']}
+          assert 'seibu-ikebukuro-toshima-nerima' in ids
+          assert 'keisei-oshiage-main-aoto' in ids
+          assert registry['policy']['boundaryAloneMayEstablishTrainIdentity'] is False
+          PY
+      - name: Regenerate strict transit v2 and audit
+        run: |
+          python scripts/finalize_transit_v2.py
+          python scripts/audit_transit_v2.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          c=json.loads(Path('data/transit-v2/coverage.json').read_text(encoding='utf-8'))['summary']
+          a=json.loads(Path('data/transit-v2/unresolved-summary.json').read_text(encoding='utf-8'))
+          print('coverage', json.dumps(c, ensure_ascii=False))
+          print('unresolved', a['totalUnresolved'])
+          assert a['policy']['unknownMayBePromotedToSameTrain'] is False
+          assert a['policy']['trainNumberAloneMayResolve'] is False
+          assert a['policy']['timeGapAloneMayResolve'] is False
+          assert a['totalUnresolved'] < 1394, a['totalUnresolved']
+          PY
+      - name: Commit improved strict transit v2
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/build_transit_v2.py data/transit-v2
+          if git diff --cached --quiet; then
+            echo "No changes."
+            exit 0
+          fi
+          git commit -m "Expand verified transit v2 operational paths"
+          git pull --rebase origin main
+          git push origin HEAD:main
