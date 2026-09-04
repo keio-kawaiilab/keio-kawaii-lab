@@ -368,7 +368,7 @@ def _downgrade_unchanged_baseline_errors(
     return remaining, updated_warnings, updated_report, legacy_actions
 
 
-def repair_local_errors(previous: dict, candidate: dict, now: datetime, max_rounds: int = 6):
+def repair_local_errors(previous: dict, candidate: dict, now: datetime, max_rounds: int = 64):
     """Quarantine event-scoped audit failures while preserving unrelated fresh rows.
 
     Global integrity failures (for example an invalid top-level timestamp or a
