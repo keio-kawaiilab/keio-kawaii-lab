@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "defaults": {"bidirectional": true, "label": "標準・実測乗換（安全側）", "verifiedAt": "2026-09-04"},
+  "rules": [
+    {"place":"久喜","railwayA":"odpt.Railway:JR-East.Utsunomiya","railwayB":"odpt.Railway:Tobu.Isesaki","railwayAName":"宇都宮線","railwayBName":"伊勢崎線","minutes":4,"source":"https://www.jorudan.co.jp/norikae/route/鷲宮_南栗橋.html","sourceType":"current Jorudan transfer at Kuki; 4 minutes"},
+    {"place":"東飯能","railwayA":"odpt.Railway:JR-East.Hachiko","railwayB":"odpt.Railway:Seibu.Ikebukuro","railwayAName":"八高線","railwayBName":"池袋線","minutes":4,"source":"https://www.jorudan.co.jp/norikae/route/高麗川_飯能.html","sourceType":"current Jorudan transfer at Higashi-Hanno; 4 minutes"},
+    {"place":"中目黒","railwayA":"odpt.Railway:TokyoMetro.Hibiya","railwayB":"odpt.Railway:Tokyu.Toyoko","railwayAName":"日比谷線","railwayBName":"東横線","minutes":2,"source":"https://tren.hatenablog.com/entry/h-ty","sourceType":"2026-04-22 updated guide: same-direction cross-platform is under 1 minute, opposite platform movement at least 2 minutes; stored as conservative 2 minutes"},
+    {"place":"八丁堀","railwayA":"odpt.Railway:JR-East.Keiyo","railwayB":"odpt.Railway:TokyoMetro.Hibiya","railwayAName":"京葉線","railwayBName":"日比谷線","minutes":5,"source":"https://www.jorudan.co.jp/norikae/route/日比谷_新木場.html","sourceType":"current Jorudan transfer at Hatchobori; 5 minutes"},
+    {"place":"東新宿","railwayA":"odpt.Railway:Toei.Oedo","railwayB":"odpt.Railway:TokyoMetro.Fukutoshin","railwayAName":"大江戸線","railwayBName":"副都心線","minutes":4,"source":"https://norikaemap.com/higashi-shinjuku/0111/","sourceType":"current platform-to-platform guide; about 4 minutes"},
+    {"place":"白金高輪","railwayA":"odpt.Railway:Toei.Mita","railwayB":"odpt.Railway:TokyoMetro.Namboku","railwayAName":"三田線","railwayBName":"南北線","minutes":1,"source":"https://www.tokyometro.jp/ticket/particularcase/meguro_shiroganetakanawa/index.html","sourceType":"official shared-facility segment; same-direction cross-platform interchange at Shirokane-Takanawa; 1-minute safety buffer"},
+    {"place":"白金台","railwayA":"odpt.Railway:Toei.Mita","railwayB":"odpt.Railway:TokyoMetro.Namboku","railwayAName":"三田線","railwayBName":"南北線","minutes":1,"source":"https://www.tokyometro.jp/ticket/particularcase/meguro_shiroganetakanawa/index.html","sourceType":"official Mita/Namboku shared-track segment between Meguro and Shirokane-Takanawa; no platform change, 1-minute safety buffer"}
+  ]
+}
