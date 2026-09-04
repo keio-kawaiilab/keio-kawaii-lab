@@ -20,6 +20,7 @@
   var timetableNetworks=[];
   var timetableNetworkCache=new Map();
   var transferRulesByKey=new Map();
+  var sameTrainNextByKey=new Map();
   var blockedStationPairs=[];
 
   function esc(value){return String(value==null?"":value).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
@@ -59,6 +60,22 @@
     if(!context)return null;
     return transferRulesByKey.get(transferRuleKey(context.fromStationId,context.toStationId,context.fromRailway,context.toRailway))||null;
   }
+  function sameTrainLookupKey(identityKey,fromRailway,toRailway){return[identityKey,fromRailway,toRailway].join("\u0001");}
+  function indexSameTrainRuntime(payload){
+    sameTrainNextByKey.clear();
+    var edges=payload&&Array.isArray(payload.edges)?payload.edges:[];
+    edges.forEach(function(row){
+      if(!Array.isArray(row)||row.length<4)return;
+      var fromIdentity=String(row[0]||""),toIdentity=String(row[1]||""),fromRailway=String(row[2]||""),toRailway=String(row[3]||"");
+      if(!fromIdentity||!toIdentity||!fromRailway||!toRailway)return;
+      var key=sameTrainLookupKey(fromIdentity,fromRailway,toRailway);
+      if(!sameTrainNextByKey.has(key))sameTrainNextByKey.set(key,new Set());
+      sameTrainNextByKey.get(key).add(toIdentity);
+    });
+  }
+  function resolveSameTrain(identityKey,fromRailway,toRailway){
+    return sameTrainNextByKey.get(sameTrainLookupKey(identityKey,fromRailway,toRailway))||null;
+  }
   function indexTransferBlocks(payload){
     blockedStationPairs=payload&&Array.isArray(payload.blockedStationPairs)?payload.blockedStationPairs.map(String):[];
   }
@@ -93,9 +110,10 @@
         var dataVersion=encodeURIComponent(manifest.fetchedAt||Date.now());
         return Promise.all([
           fetchJson("./data/transit/transfer-rules.json?v="+dataVersion).catch(function(error){console.warn(error);return{rules:[]};}),
-          fetchJson("./data/transit/transfer-blocks.json?v="+dataVersion).catch(function(error){console.warn(error);return{blockedStationPairs:[]};})
+          fetchJson("./data/transit/transfer-blocks.json?v="+dataVersion).catch(function(error){console.warn(error);return{blockedStationPairs:[]};}),
+          fetchJson("./data/transit-v2/runtime-same-train.json?v="+dataVersion).catch(function(error){console.warn(error);return{edges:[]};})
         ]).then(function(payloads){
-          indexTransferRules(payloads[0]);indexTransferBlocks(payloads[1]);return bundles;
+          indexTransferRules(payloads[0]);indexTransferBlocks(payloads[1]);indexSameTrainRuntime(payloads[2]);return bundles;
         });
       }).then(function(bundles){
         model=core.createModel(bundles.map(function(bundle){return bundle.entities;}).filter(Boolean),{blockedStationPairs:blockedStationPairs});
@@ -236,7 +254,7 @@
     return best;
   }
   function bestTimedItinerary(path,fromGroup,toGroup,timetables,earliest,service){
-    var normal=model.timedItinerary(path,timetables,earliest,service,5,resolveTransferRule);
+    var normal=model.timedItinerary(path,timetables,earliest,service,5,resolveTransferRule,resolveSameTrain);
     var direct=networkTimedItinerary(path,fromGroup,toGroup,timetables,earliest,service);
     if(!normal)return direct;if(!direct)return normal;
     if(direct.arrival<normal.arrival)return direct;

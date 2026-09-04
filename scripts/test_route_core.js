@@ -105,6 +105,7 @@ assert.equal(model.timedItinerary(path, weekdayTimetables, 475, "holiday", 5), n
 
 const throughTimetables = {
   [lineA]: {
+    railway: lineA,
     timeBasis: "station-departure-only",
     stations: ["station:a1", "station:a2"], calendars: ["odpt.Calendar:Weekday"], directions: ["direction:ascending"],
     trainTypes: ["odpt.TrainType:Test.Local"], destinations: ["station:b2"], order: ["station:a1", "station:a2"],
@@ -112,6 +113,7 @@ const throughTimetables = {
     boards: [[0, 0, 0, [[480, 0, 0]]]], inferredTrips: [[0, 0, 0, 0, 100, [[0, null, 480], [1, null, 490]]]],
   },
   [lineB]: {
+    railway: lineB,
     timeBasis: "station-departure-only",
     stations: ["station:b1", "station:b2"], calendars: ["odpt.Calendar:Weekday"], directions: ["direction:ascending"],
     trainTypes: ["odpt.TrainType:Test.Local"], destinations: ["station:b2"], order: ["station:b1", "station:b2"],
@@ -119,8 +121,15 @@ const throughTimetables = {
     boards: [[0, 0, 0, [[492, 0, 0]]]], inferredTrips: [[0, 0, 0, 0, 100, [[0, 490, 492], [1, null, 502]]]],
   },
 };
-const throughTimed = model.timedItinerary(path, throughTimetables, 475, "weekday", 5);
-assert.equal(throughTimed.arrival, 502, "a matching same-operator continuation must preserve dwell without a fictitious transfer wait");
+const throughWithoutIdentity = model.timedItinerary(path, throughTimetables, 475, "weekday", 5);
+assert.equal(throughWithoutIdentity, null, "same operator, destination, and short dwell must not establish same-train identity");
+const strictSameTrainResolver = (identityKey, fromRailway, toRailway) => {
+  if (identityKey === `inf:${lineA}:0` && fromRailway === lineA && toRailway === lineB) return new Set([`inf:${lineB}:0`]);
+  return null;
+};
+const throughTimed = model.timedItinerary(path, throughTimetables, 475, "weekday", 5, null, strictSameTrainResolver);
+assert.ok(throughTimed, "an explicit same-train edge must preserve the continuation");
+assert.equal(throughTimed.arrival, 502, "an explicit same-train continuation must preserve dwell without a fictitious transfer wait");
 assert.equal(throughTimed.transfers, 0);
 assert.equal(throughTimed.segments[1].throughFromPrevious, true);
 

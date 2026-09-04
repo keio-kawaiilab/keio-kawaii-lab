@@ -277,6 +277,47 @@ def write_outputs(
         'edges': edges,
     })
 
+    fragment_by_id = {str(fragment.get('id') or ''): fragment for fragment in fragments if fragment.get('id')}
+
+    def runtime_ref(fragment: dict[str, Any] | None) -> str:
+        if not fragment:
+            return ''
+        if fragment.get('sourceKind') == 'exact-train-timetable':
+            timetable_id = str(fragment.get('timetableId') or '')
+            return f'tt:{timetable_id}' if timetable_id else ''
+        if fragment.get('sourceKind') == 'station-timetable-reconstruction':
+            trip_index = fragment.get('sourceTripIndex')
+            railway = str(fragment.get('railway') or '')
+            if isinstance(trip_index, int) and railway:
+                return f'inf:{railway}:{trip_index}'
+        return ''
+
+    runtime_edges: list[list[str]] = []
+    runtime_seen: set[tuple[str, str, str, str]] = set()
+    for edge in edges:
+        source = fragment_by_id.get(str(edge.get('fromFragment') or ''))
+        target = fragment_by_id.get(str(edge.get('toFragment') or ''))
+        source_ref = runtime_ref(source)
+        target_ref = runtime_ref(target)
+        from_railway = str((source or {}).get('railway') or '')
+        to_railway = str((target or {}).get('railway') or '')
+        key = (source_ref, target_ref, from_railway, to_railway)
+        if not source_ref or not target_ref or not from_railway or not to_railway or key in runtime_seen:
+            continue
+        runtime_seen.add(key)
+        runtime_edges.append(list(key))
+    write_json(V2 / 'runtime-same-train.json', {
+        'version': 1,
+        'generatedAt': generated,
+        'policy': {
+            'runtimeInference': False,
+            'unknownMayBePromotedToSameTrain': False,
+            'trainNumberAloneMayResolve': False,
+            'timeGapAloneMayResolve': False,
+        },
+        'edges': runtime_edges,
+    })
+
     coverage = {
         'version': 2,
         'generatedAt': generated,
@@ -306,6 +347,7 @@ def write_outputs(
     updated_index['generatedAt'] = generated
     updated_index['fragmentFiles'] = fragment_files
     updated_index['finalizer'] = 'strict-train-identity-v2'
+    updated_index['runtimeSameTrain'] = 'runtime-same-train.json'
     write_json(V2 / 'index.json', updated_index)
     print(json.dumps(coverage['summary'], ensure_ascii=False, indent=2))
     return coverage

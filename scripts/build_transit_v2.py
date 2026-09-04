@@ -298,6 +298,7 @@ def load_all_fragments(manifest: dict[str, Any], indexes: dict[str, Any]) -> tup
                     fragment_id = f'odpt:{timetable_id}' if timetable_id else stable_id('exact', slug, railway, calendar, trip_index, trip[2], stops)
                     fragments.append({
                         'id': fragment_id,
+                        'sourceTripIndex': trip_index,
                         'sourceKind': 'exact-train-timetable',
                         'sourceOperator': slug,
                         'operator': operator,
@@ -326,6 +327,7 @@ def load_all_fragments(manifest: dict[str, Any], indexes: dict[str, Any]) -> tup
                     stops = parse_stops(table, trip[5])
                     fragments.append({
                         'id': stable_id('inferred', slug, railway, calendar, direction, train_type, destination, trip_index, stops),
+                        'sourceTripIndex': trip_index,
                         'sourceKind': 'station-timetable-reconstruction',
                         'sourceOperator': slug,
                         'operator': operator,
