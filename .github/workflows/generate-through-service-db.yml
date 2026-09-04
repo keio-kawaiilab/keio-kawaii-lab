@@ -1,0 +1,45 @@
+name: Generate through-service database
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'data/transit/**/timetable-index.json'
+      - 'data/transit/**/timetables/**'
+      - 'data/transit/**/entities.json'
+      - 'data/transit/manifest.json'
+      - 'data/transit/through-service-boundaries.json'
+      - 'scripts/build-through-service-db.mjs'
+      - '.github/workflows/generate-through-service-db.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build deterministic through-service DB
+        run: node scripts/build-through-service-db.mjs
+      - name: Validate generated JSON
+        run: |
+          node -e "JSON.parse(require('fs').readFileSync('data/transit/through-service-trips.json','utf8')); JSON.parse(require('fs').readFileSync('data/transit/through-service-coverage.json','utf8'));"
+      - name: Assert policy forbids time-gap identity inference
+        run: |
+          node - <<'NODE'
+          const b=require('./data/transit/through-service-boundaries.json');
+          if(b.policy.runtimeInference!==false)throw new Error('runtimeInference must be false');
+          if(b.policy.timeGapMayEstablishTrainIdentity!==false)throw new Error('time-gap identity inference must be false');
+          NODE
+      - name: Commit generated DB
+        run: |
+          if git diff --quiet -- data/transit/through-service-trips.json data/transit/through-service-coverage.json; then
+            echo 'No generated changes'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/transit/through-service-trips.json data/transit/through-service-coverage.json
+          git commit -m 'Generate deterministic through-service database'
+          git push
