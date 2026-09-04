@@ -16,7 +16,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Classify ambiguous candidate pairs
+      - name: Audit inferred same-train boundary evidence
         run: |
           python - <<'PY'
           import json
@@ -25,54 +25,60 @@ jobs:
 
           v2=Path('data/transit-v2')
           coverage=json.loads((v2/'coverage.json').read_text(encoding='utf-8'))
+          edge_payload=json.loads((v2/'same-train-edges.json').read_text(encoding='utf-8'))
           fragments={}
+          station_titles={}
           for path in (v2/'fragments').glob('*.json'):
             payload=json.loads(path.read_text(encoding='utf-8'))
             for row in payload.get('fragments') or []:
               if isinstance(row,dict) and row.get('id'):
                 fragments[str(row['id'])]=row
+          manifest=json.loads(Path('data/transit/manifest.json').read_text(encoding='utf-8'))
+          for slug in (manifest.get('operators') or {}):
+            p=Path('data/transit')/slug/'entities.json'
+            if not p.exists(): continue
+            entities=json.loads(p.read_text(encoding='utf-8'))
+            for st in entities.get('Station') or []:
+              sid=str(st.get('owl:sameAs') or '')
+              title=st.get('odpt:stationTitle') or st.get('dc:title') or ''
+              if isinstance(title,dict): title=title.get('ja') or title.get('en') or ''
+              if sid: station_titles[sid]=str(title)
 
-          def sig(row):
-            return {
-              'railway':row.get('railway'), 'calendar':row.get('calendar'), 'direction':row.get('direction'),
-              'type':row.get('trainType'), 'destination':row.get('destination'), 'confidence':row.get('confidence'),
-              'stops':row.get('stops'),
-            }
-          def boundary(row, first):
+          def stop(row, first):
             stops=row.get('stops') or []
-            if not stops:return None
-            stop=stops[0] if first else stops[-1]
-            return stop
-          amb=[u for u in coverage.get('unresolved') or [] if u.get('kind')=='ambiguous-boundary-fragment-alignment']
-          stats=Counter(); byop=defaultdict(Counter)
-          samples=[]
-          for u in amb:
-            src=fragments.get(str(u.get('fragment'))) or {}
-            candidates=[fragments.get(str(x)) or {} for x in u.get('candidateFragments') or []]
-            exact_dupe=len(candidates)>=2 and len({json.dumps(sig(c),ensure_ascii=False,sort_keys=True,separators=(',',':')) for c in candidates})==1
-            same_stops=len(candidates)>=2 and len({json.dumps(c.get('stops'),ensure_ascii=False,separators=(',',':')) for c in candidates})==1
-            same_type=len({str(c.get('trainType') or '') for c in candidates})<=1
-            same_direction=len({str(c.get('direction') or '') for c in candidates})<=1
-            same_boundary=len({json.dumps(boundary(c,True),ensure_ascii=False,separators=(',',':')) for c in candidates})<=1
-            key=('exact-dupe' if exact_dupe else 'same-stops' if same_stops else 'distinct')
-            stats[key]+=1
-            op=str(src.get('sourceOperator') or '')
-            byop[op][key]+=1
-            if len(samples)<50:
-              samples.append({
-                'kind':key,'operator':op,'sourceId':src.get('id'),'sourceRailway':src.get('railway'),
-                'sourceCalendar':src.get('calendar'),'sourceDirection':src.get('direction'),'sourceType':src.get('trainType'),
-                'sourceDestination':src.get('destination'),'sourceBoundary':boundary(src,False),
-                'nextRailway':u.get('nextRailway'),'sameType':same_type,'sameDirection':same_direction,'sameBoundary':same_boundary,
-                'candidates':[{
-                  'id':c.get('id'),'calendar':c.get('calendar'),'direction':c.get('direction'),'type':c.get('trainType'),
-                  'destination':c.get('destination'),'confidence':c.get('confidence'),'first':boundary(c,True),
-                  'last':boundary(c,False),'stopCount':len(c.get('stops') or [])
-                } for c in candidates]
+            return (stops[0] if first else stops[-1]) if stops else None
+          def stop_title(s):
+            return station_titles.get(str((s or [''])[0]) or '', str((s or [''])[0] or ''))
+
+          evidence=[e for e in edge_payload.get('edges') or [] if e.get('identityLevel')=='evidence-backed']
+          bad=[]
+          for e in evidence:
+            src=fragments.get(str(e.get('fromFragment'))) or {}
+            dst=fragments.get(str(e.get('toFragment'))) or {}
+            boundary=str((e.get('boundary') or {}).get('station') or '')
+            s=stop(src,False); d=stop(dst,True)
+            st=stop_title(s); dt=stop_title(d)
+            if boundary and not (st==boundary and dt==boundary):
+              bad.append({
+                'from':e.get('fromFragment'),'to':e.get('toFragment'),'operator':src.get('sourceOperator'),
+                'fromRailway':src.get('railway'),'toRailway':dst.get('railway'),'boundary':boundary,
+                'sourceLast':s,'sourceLastTitle':st,'targetFirst':d,'targetFirstTitle':dt,
+                'evidence':e.get('evidence'),'delta':e.get('alignmentDeltaMinutes')
               })
-          print('AMBIGUOUS_TOTAL',len(amb))
-          print('PAIR_CLASSIFICATION',json.dumps(stats,ensure_ascii=False,sort_keys=True))
-          print('BY_OPERATOR',json.dumps({k:dict(v) for k,v in sorted(byop.items())},ensure_ascii=False,sort_keys=True))
-          for sample in samples:
-            print('CASE',json.dumps(sample,ensure_ascii=False,sort_keys=True))
+          print('EVIDENCE_BACKED_TOTAL',len(evidence))
+          print('EVIDENCE_BACKED_NOT_BOTH_AT_BOUNDARY',len(bad))
+          print('BAD_BY_OPERATOR',json.dumps(Counter(x['operator'] for x in bad),ensure_ascii=False,sort_keys=True))
+          for row in bad[:80]: print('BAD_EDGE',json.dumps(row,ensure_ascii=False,sort_keys=True))
+
+          no_path=[u for u in coverage.get('unresolved') or [] if u.get('kind')=='published-destination-route-no-path']
+          print('NO_PATH_TOTAL',len(no_path))
+          for u in no_path:
+            src=fragments.get(str(u.get('fragment'))) or {}
+            print('NO_PATH',json.dumps({
+              'unresolved':u,'source':{
+                'id':src.get('id'),'operator':src.get('sourceOperator'),'railway':src.get('railway'),
+                'calendar':src.get('calendar'),'direction':src.get('direction'),'type':src.get('trainType'),
+                'destination':src.get('destination'),'stops':src.get('stops')
+              }
+            },ensure_ascii=False,sort_keys=True))
           PY
