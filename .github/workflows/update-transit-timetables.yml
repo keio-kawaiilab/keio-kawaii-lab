@@ -50,7 +50,7 @@ jobs:
       - name: Test timetable importer and identity pipeline
         run: |
           node --check scripts/enrich-through-service-db.mjs
-          python -m py_compile scripts/collect_odpt_train_identity.py scripts/finalize_transit_v2.py scripts/audit_transit_v2.py
+          python -m py_compile scripts/collect_odpt_train_identity.py scripts/build_transit_v2.py scripts/finalize_transit_v2.py scripts/audit_transit_v2.py
           node scripts/test_odpt_train_identity_db.mjs
           python scripts/test_import_odpt_timetables.py
 
@@ -77,6 +77,7 @@ jobs:
       - name: Rebuild and audit strict transit v2
         if: steps.import.outputs.ran == 'true'
         run: |
+          python scripts/build_transit_v2.py
           python scripts/finalize_transit_v2.py
           python scripts/audit_transit_v2.py
           python - <<'PY'
