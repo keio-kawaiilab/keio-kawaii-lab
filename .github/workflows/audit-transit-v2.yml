@@ -44,7 +44,7 @@ jobs:
       - name: Commit audit snapshot
         shell: bash
         run: |
-          if git diff --quiet -- data/transit-v2/unresolved-summary.json; then
+          if [ -z "$(git status --porcelain -- data/transit-v2/unresolved-summary.json)" ]; then
             echo "No audit changes."
             exit 0
           fi
