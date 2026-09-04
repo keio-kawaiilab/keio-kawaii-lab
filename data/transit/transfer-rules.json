@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T06:39:11.863Z",
+  "generatedAt": "2026-09-04T06:39:46.432Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -95,6 +95,7 @@
     "transfer-rule-sources.d/2026-09-04-ueno-hibiya.json",
     "transfer-rule-sources.d/2026-09-04-ueno-joban-jr-4.json",
     "transfer-rule-sources.d/2026-09-04-ueno-totsuka-toride-soga-15.json",
+    "transfer-rule-sources.d/2026-09-04-urban-links-5.json",
     "transfer-rule-sources.d/2026-09-04-walk-links-9.json",
     "transfer-rule-sources.d/2026-09-04-yokohama-jr-internal-5.json",
     "transfer-rule-sources.d/2026-09-04-yokohama-jr.json",
@@ -10009,6 +10010,71 @@
       "label": "標準・実測乗換（安全側）",
       "source": "https://wadattsu261.com/content/soga-keiyohome-no3-4-5-info/",
       "sourceType": "current dedicated transfer-stair layout; same geometry as Keiyo-to-Sotobo, conservative 3 minutes",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "三ノ輪 ↔ 三ノ輪橋-東京さくらトラム（都電荒川線）-日比谷線",
+      "fromStation": "odpt.Station:Toei.Arakawa.Minowabashi",
+      "toStation": "odpt.Station:TokyoMetro.Hibiya.Minowa",
+      "fromRailway": "odpt.Railway:Toei.Arakawa",
+      "toRailway": "odpt.Railway:TokyoMetro.Hibiya",
+      "minutes": 8,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://www.jorudan.co.jp/norikae/route/三ノ輪_三ノ輪橋.html",
+      "sourceType": "current Jorudan direct walking transfer; 8 minutes",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "本八幡-中央・総武各駅停車-新宿線",
+      "fromStation": "odpt.Station:JR-East.ChuoSobuLocal.MotoYawata",
+      "toStation": "odpt.Station:Toei.Shinjuku.Motoyawata",
+      "fromRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "toRailway": "odpt.Railway:Toei.Shinjuku",
+      "minutes": 7,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://www.jorudan.co.jp/norikae/route/市川_篠崎.html",
+      "sourceType": "current Jorudan transfer at Motoyawata; JR 2nd platform to Toei 1/2 platforms, 7 minutes",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "豊洲-有楽町線-ゆりかもめ",
+      "fromStation": "odpt.Station:TokyoMetro.Yurakucho.Toyosu",
+      "toStation": "odpt.Station:Yurikamome.Yurikamome.Toyosu",
+      "fromRailway": "odpt.Railway:TokyoMetro.Yurakucho",
+      "toRailway": "odpt.Railway:Yurikamome.Yurikamome",
+      "minutes": 6,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://tren.hatenablog.com/entry/y22-u16",
+      "sourceType": "2026-06 updated platform-to-platform guide: about 4.5 minutes walking, recommends 5-6 minutes; stored as safe-side 6",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "久里浜 ↔ 京急久里浜-横須賀線-久里浜線",
+      "fromStation": "odpt.Station:JR-East.Yokosuka.Kurihama",
+      "toStation": "odpt.Station:Keikyu.Kurihama.KeikyuKurihama",
+      "fromRailway": "odpt.Railway:JR-East.Yokosuka",
+      "toRailway": "odpt.Railway:Keikyu.Kurihama",
+      "minutes": 7,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://ekitan.com/d-norikae/transit/route/sf-2024/st-2051",
+      "sourceType": "current direct walking transfer between JR Kurihama and Keikyu Kurihama; 7 minutes",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "新宿西口 ↔ 西武新宿-新宿線-大江戸線",
+      "fromStation": "odpt.Station:Seibu.Shinjuku.SeibuShinjuku",
+      "toStation": "odpt.Station:Toei.Oedo.ShinjukuNishiguchi",
+      "fromRailway": "odpt.Railway:Seibu.Shinjuku",
+      "toRailway": "odpt.Railway:Toei.Oedo",
+      "minutes": 6,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/oedonishi-seibu-shinjuku_line.html",
+      "sourceType": "current Jorudan standard transfer guide; 6 minutes",
       "verifiedAt": "2026-09-04"
     },
     {
