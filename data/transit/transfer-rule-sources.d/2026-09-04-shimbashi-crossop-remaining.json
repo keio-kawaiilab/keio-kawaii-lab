@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換（共用ホーム適用）",
+    "sourceType": "current standard transfer guide / shared-platform verification",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "新橋",
+      "railwayA": "odpt.Railway:JR-East.JobanRapid",
+      "railwayB": "odpt.Railway:Yurikamome.Yurikamome",
+      "railwayAName": "常磐線快速",
+      "railwayBName": "ゆりかもめ",
+      "minutes": 6,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shimbashi/tokaido_line_jr_east-yurikamome.html"
+    },
+    {
+      "place": "新橋",
+      "railwayA": "odpt.Railway:JR-East.JobanRapid",
+      "railwayB": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayAName": "常磐線快速",
+      "railwayBName": "銀座線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shimbashi/tokaido_line_jr_east-tokyo-metro_ginza_line.html"
+    },
+    {
+      "place": "新橋",
+      "railwayA": "odpt.Railway:JR-East.JobanRapid",
+      "railwayB": "odpt.Railway:Toei.Asakusa",
+      "railwayAName": "常磐線快速",
+      "railwayBName": "浅草線",
+      "minutes": 6,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shimbashi/tokaido_line_jr_east-toei_subway-asakusa_line.html"
+    },
+    {
+      "place": "新橋",
+      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayB": "odpt.Railway:Toei.Asakusa",
+      "railwayAName": "銀座線",
+      "railwayBName": "浅草線",
+      "minutes": 6,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shimbashi/tokyo-metro_ginza_line-toei_subway-asakusa_line.html"
+    }
+  ]
+}
