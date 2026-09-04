@@ -1,0 +1,25 @@
+{
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換（安全側）",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "分倍河原",
+      "railwayA": "odpt.Railway:JR-East.Nambu",
+      "railwayB": "odpt.Railway:Keio.Keio",
+      "minutes": 1,
+      "sourceUrl": "https://honnne.com/blog/norikae-bubaigawara/",
+      "sourceType": "2026 measured platform-to-platform transfer"
+    },
+    {
+      "place": "稲田堤 ↔ 京王稲田堤",
+      "railwayA": "odpt.Railway:JR-East.Nambu",
+      "railwayB": "odpt.Railway:Keio.Sagamihara",
+      "minutes": 7,
+      "sourceUrl": "https://wadattsu261.com/content/inadazutsumi-keioinadazutsumi-jrnambu-keioline-transfer-information/",
+      "sourceType": "current platform-to-platform transfer guide; conservative upper bound"
+    }
+  ]
+}
