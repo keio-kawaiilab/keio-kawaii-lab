@@ -10,6 +10,7 @@ on:
       - 'scripts/test_keisei_route_ui.js'
       - 'scripts/test_route_preview_smoke.js'
       - 'scripts/test_route_preview_ui.js'
+      - 'scripts/test_route_destination_display.js'
       - 'data/transit/**/entities.json'
       - 'data/transit/**/timetable-index.json'
       - 'data/transit/**/timetables/**'
@@ -38,6 +39,9 @@ jobs:
           node --check scripts/test_keisei_route_ui.js
           node --check scripts/test_route_preview_smoke.js
           node --check scripts/test_route_preview_ui.js
+          node --check scripts/test_route_destination_display.js
+      - name: Exercise destination/headsign propagation
+        run: node scripts/test_route_destination_display.js
       - name: Exercise exact Keisei through route in the browser logic
         run: node scripts/test_keisei_route_ui.js
       - name: Exercise preview routes across operators
