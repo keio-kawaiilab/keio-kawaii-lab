@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-04T00:53:23.026Z",
+  "generatedAt": "2026-09-04T00:54:03.268Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T00:53:04.383Z",
+  "rulesGeneratedAt": "2026-09-04T00:53:48.345Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 470,
-    "uncuratedPairs": 483,
+    "curatedPairs": 474,
+    "uncuratedPairs": 479,
     "blockedPairs": 7,
-    "curatedSourceRules": 470,
+    "curatedSourceRules": 474,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -41,16 +41,6 @@
       "crossOperatorUncuratedPairs": 4,
       "railwayCount": 5,
       "priorityScore": 16
-    },
-    {
-      "place": "秋葉原",
-      "totalPairs": 10,
-      "curatedPairs": 2,
-      "uncuratedPairs": 8,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 5,
-      "railwayCount": 5,
-      "priorityScore": 15.5
     },
     {
       "place": "新宿 ↔ 新宿西口",
@@ -371,6 +361,16 @@
       "crossOperatorUncuratedPairs": 2,
       "railwayCount": 3,
       "priorityScore": 6
+    },
+    {
+      "place": "秋葉原",
+      "totalPairs": 10,
+      "curatedPairs": 6,
+      "uncuratedPairs": 4,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 5,
+      "priorityScore": 5.5
     },
     {
       "place": "赤坂見附 ↔ 永田町",
@@ -1632,124 +1632,6 @@
           "railwayBName": "山手線",
           "sameOperator": true,
           "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "秋葉原",
-      "totalPairs": 10,
-      "curatedPairs": 2,
-      "uncuratedPairs": 8,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 5,
-      "railwayCount": 5,
-      "priorityScore": 15.5,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:MIR.TsukubaExpress",
-          "railwayAName": "つくばエクスプレス",
-          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-          "railwayBName": "日比谷線",
-          "sameOperator": false,
-          "distanceMeters": 156,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:MIR.TsukubaExpress",
-          "railwayBName": "つくばエクスプレス",
-          "sameOperator": false,
-          "distanceMeters": 120,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-          "railwayBName": "日比谷線",
-          "sameOperator": false,
-          "distanceMeters": 234,
-          "fallbackMinutes": 6,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Yamanote",
-          "railwayAName": "山手線",
-          "railwayB": "odpt.Railway:MIR.TsukubaExpress",
-          "railwayBName": "つくばエクスプレス",
-          "sameOperator": false,
-          "distanceMeters": 120,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-          "railwayAName": "中央・総武各駅停車",
-          "railwayB": "odpt.Railway:MIR.TsukubaExpress",
-          "railwayBName": "つくばエクスプレス",
-          "sameOperator": false,
-          "distanceMeters": 118,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:JR-East.Yamanote",
-          "railwayBName": "山手線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-          "railwayAName": "中央・総武各駅停車",
-          "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayBName": "京浜東北線・根岸線",
-          "sameOperator": true,
-          "distanceMeters": 29,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-          "railwayAName": "中央・総武各駅停車",
-          "railwayB": "odpt.Railway:JR-East.Yamanote",
-          "railwayBName": "山手線",
-          "sameOperator": true,
-          "distanceMeters": 29,
           "fallbackMinutes": 5,
           "sources": [
             "connecting-station",
@@ -4028,6 +3910,59 @@
           ]
         }
       ]
+    },
+    {
+      "place": "船橋",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 2,
+      "railwayCount": 3,
+      "priorityScore": 6,
+      "crossOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:JR-East.SobuRapid",
+          "railwayAName": "総武快速線",
+          "railwayB": "odpt.Railway:Tobu.TobuUrbanPark",
+          "railwayBName": "東武アーバンパークライン",
+          "sameOperator": false,
+          "distanceMeters": 49,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+          "railwayAName": "中央・総武各駅停車",
+          "railwayB": "odpt.Railway:Tobu.TobuUrbanPark",
+          "railwayBName": "東武アーバンパークライン",
+          "sameOperator": false,
+          "distanceMeters": 49,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+          "railwayAName": "中央・総武各駅停車",
+          "railwayB": "odpt.Railway:JR-East.SobuRapid",
+          "railwayBName": "総武快速線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ]
     }
   ],
   "uncurated": [
@@ -5832,66 +5767,10 @@
       "place": "秋葉原",
       "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
       "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:MIR.TsukubaExpress",
-      "railwayBName": "つくばエクスプレス",
-      "sameOperator": false,
-      "distanceMeters": 120,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "秋葉原",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
       "railwayB": "odpt.Railway:JR-East.Yamanote",
       "railwayBName": "山手線",
       "sameOperator": true,
       "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "秋葉原",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-      "railwayBName": "日比谷線",
-      "sameOperator": false,
-      "distanceMeters": 234,
-      "fallbackMinutes": 6,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "秋葉原",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:MIR.TsukubaExpress",
-      "railwayBName": "つくばエクスプレス",
-      "sameOperator": false,
-      "distanceMeters": 120,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "秋葉原",
-      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-      "railwayAName": "中央・総武各駅停車",
-      "railwayB": "odpt.Railway:MIR.TsukubaExpress",
-      "railwayBName": "つくばエクスプレス",
-      "sameOperator": false,
-      "distanceMeters": 118,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
