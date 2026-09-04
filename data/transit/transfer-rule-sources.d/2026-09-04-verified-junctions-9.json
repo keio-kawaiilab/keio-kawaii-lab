@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準・実測乗換（安全側）",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {"place":"高幡不動","railwayA":"odpt.Railway:Keio.Dobutsuen","railwayB":"odpt.Railway:Keio.Keio","railwayAName":"動物園線","railwayBName":"京王線","minutes":3,"source":"https://www.jorudan.co.jp/norikae/route/%E5%9B%BD%E9%A0%98_%E5%A4%9A%E6%91%A9%E5%8B%95%E7%89%A9%E5%85%AC%E5%9C%92.html","sourceType":"current Jorudan route explicitly shows 3-minute transfer at Takahatafudo"},
+    {"place":"茅ケ崎","railwayA":"odpt.Railway:JR-East.Sagami","railwayB":"odpt.Railway:JR-East.Tokaido","railwayAName":"相模線","railwayBName":"東海道線","minutes":3,"source":"https://www.jorudan.co.jp/norikae/route/%E5%AF%92%E5%B7%9D_%E5%A4%A7%E8%88%B9.html","sourceType":"current Jorudan route explicitly shows 3-minute transfer at Chigasaki"},
+    {"place":"熊野前","railwayA":"odpt.Railway:Toei.Arakawa","railwayB":"odpt.Railway:Toei.NipporiToneri","railwayAName":"東京さくらトラム（都電荒川線）","railwayBName":"日暮里・舎人ライナー","minutes":5,"source":"https://transit.yahoo.co.jp/search/result/%E7%86%8A%E9%87%8E%E5%89%8D-%E6%97%A5%E6%9A%AE%E9%87%8C%28%E8%88%8E%E4%BA%BA%E3%83%A9%E3%82%A4%E3%83%8A%E3%83%BC%29","sourceType":"current Yahoo linked-station walk explicitly shows 5 minutes"},
+    {"place":"下今市","railwayA":"odpt.Railway:Tobu.Kinugawa","railwayB":"odpt.Railway:Tobu.Nikko","railwayAName":"鬼怒川線","railwayBName":"日光線","minutes":2,"source":"https://www.jorudan.co.jp/norikae/route/%E6%9D%B1%E6%AD%A6%E6%97%A5%E5%85%89_%E9%AC%BC%E6%80%92%E5%B7%9D%E6%B8%A9%E6%B3%89.html","sourceType":"current Jorudan route explicitly shows 2-minute transfer at Shimo-imaichi"},
+    {"place":"佐原","railwayA":"odpt.Railway:JR-East.Kashima","railwayB":"odpt.Railway:JR-East.Narita","railwayAName":"鹿島線","railwayBName":"成田線","minutes":1,"source":"https://www.jorudan.co.jp/norikae/route/%E6%9F%8F_%E9%B9%BF%E5%B3%B6%E7%A5%9E%E5%AE%AE.html","sourceType":"current Jorudan route explicitly shows 1-minute transfer at Sawara"},
+    {"place":"坂戸","railwayA":"odpt.Railway:Tobu.Ogose","railwayB":"odpt.Railway:Tobu.Tojo","railwayAName":"越生線","railwayBName":"東上線","minutes":2,"source":"https://www.jorudan.co.jp/norikae/route/%E8%B6%8A%E7%94%9F_%E6%B1%A0%E8%A2%8B.html","sourceType":"current Jorudan route explicitly shows 2-minute transfer at Sakado"},
+    {"place":"笹塚","railwayA":"odpt.Railway:Keio.Keio","railwayB":"odpt.Railway:Keio.KeioNew","railwayAName":"京王線","railwayBName":"京王新線","minutes":1,"source":"https://www.jorudan.co.jp/norikae/route/%E6%96%B0%E7%B7%9A%E6%96%B0%E5%AE%BF_%E6%98%8E%E5%A4%A7%E5%89%8D.html","sourceType":"current Jorudan route explicitly shows 1-minute transfer at Sasazuka"},
+    {"place":"三越前","railwayA":"odpt.Railway:TokyoMetro.Ginza","railwayB":"odpt.Railway:TokyoMetro.Hanzomon","railwayAName":"銀座線","railwayBName":"半蔵門線","minutes":7,"source":"https://www.jorudan.co.jp/norikae/route/%E6%B5%85%E8%8D%89_%E5%8D%8A%E8%94%B5%E9%96%80.html","sourceType":"current Jorudan route explicitly shows 7-minute transfer at Mitsukoshimae"},
+    {"place":"虎ノ門 ↔ 虎ノ門ヒルズ","railwayA":"odpt.Railway:TokyoMetro.Ginza","railwayB":"odpt.Railway:TokyoMetro.Hibiya","railwayAName":"銀座線","railwayBName":"日比谷線","minutes":9,"source":"https://www.jorudan.co.jp/norikae/route/%E8%99%8E%E3%83%8E%E9%96%80_%E8%99%8E%E3%83%8E%E9%96%80%E3%83%92%E3%83%AB%E3%82%BA.html","sourceType":"current Jorudan linked-station walk; 9 minutes"}
+  ]
+}
