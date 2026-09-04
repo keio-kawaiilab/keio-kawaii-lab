@@ -1,0 +1,44 @@
+name: Apply ODPT TrainTimetable cap fix
+
+on:
+  push:
+    paths:
+      - 'scripts/patch_odpt_train_timetable_cap.py'
+      - '.github/workflows/apply-odpt-cap-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests==2.32.5
+      - name: Apply cap-safe timetable patch
+        run: python scripts/patch_odpt_train_timetable_cap.py
+      - name: Validate importer and identity collector
+        run: |
+          python -m py_compile scripts/import_odpt_timetables.py scripts/collect_odpt_train_identity.py
+          python scripts/test_import_odpt_timetables.py
+          node scripts/test_odpt_train_identity_db.mjs
+      - name: Commit implementation
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/import_odpt_timetables.py scripts/collect_odpt_train_identity.py scripts/test_import_odpt_timetables.py
+          git commit -m "Fetch complete ODPT train timetables beyond 1000-row cap"
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            sleep $((attempt * 3))
+          done
+          exit 1
