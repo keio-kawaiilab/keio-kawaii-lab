@@ -1,0 +1,56 @@
+name: Diagnose official train detail links
+
+on:
+  push:
+    paths:
+      - '.github/workflows/diagnose-official-train-detail-links.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests==2.32.5 beautifulsoup4==4.13.4
+      - name: Probe official station timetable HTML for per-train links
+        run: |
+          python - <<'PY'
+          import re, json
+          from urllib.parse import urljoin
+          import requests
+          from bs4 import BeautifulSoup
+
+          probes = {
+            'odakyu-machida': 'https://transfer.navitime.biz/odakyu-transit/smart/diagram/Search?direction=down&initDispWeekdayTab=weekday&linkId=00000686&nodeType=station&startId=00006194',
+            'tokyu-mizonokuchi': 'https://transfer.navitime.biz/tokyu/pc/diagram/TrainDiagram?rrCd=00000787&stCd=00001924&updown=0',
+            'seibu-shinsakuradai': 'https://seibu.ekitan.com/norikae/timetable/station/232-1/d2?dw=0',
+            'keikyu-heiwajima': 'https://norikae.keikyu.co.jp/transit/norikae/T5?USR=PC&d=1&dw=0&slCode=250-8',
+          }
+          s=requests.Session(); s.headers['User-Agent']='Mozilla/5.0 transit-audit/1.0'
+          for name,url in probes.items():
+            r=s.get(url,timeout=(15,60)); print('PROBE',name,r.status_code,r.url,'bytes',len(r.content))
+            r.raise_for_status()
+            soup=BeautifulSoup(r.text,'html.parser')
+            links=[]
+            for a in soup.find_all('a', href=True):
+              text=' '.join(a.get_text(' ',strip=True).split())
+              href=urljoin(r.url,a['href'])
+              low=href.lower()
+              if any(k in low for k in ('trainroute','train','diagram','timetable','jikoku','route')):
+                links.append((text,href))
+            print('LINK_COUNT',name,len(links))
+            for text,href in links[:120]:
+              print('LINK',name,json.dumps({'text':text,'href':href},ensure_ascii=False))
+            # Also expose input/button data attributes around known ambiguous times.
+            for tag in soup.find_all(['a','button','input','span','td','li']):
+              text=' '.join(tag.get_text(' ',strip=True).split())
+              attrs={k:v for k,v in tag.attrs.items() if k in ('href','onclick','data-url','data-href','value','name','id','class')}
+              blob=text+' '+json.dumps(attrs,ensure_ascii=False,default=str)
+              if any(t in blob for t in ('21:03','21:43','15:29','15:48','9:10','09:10','07:16','7:16')):
+                print('MATCH',name,tag.name,json.dumps({'text':text,'attrs':attrs},ensure_ascii=False,default=str))
+          PY
