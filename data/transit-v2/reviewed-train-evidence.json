@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "policy": {
+    "purpose": "Operator-official per-train evidence for timetable sources that do not publish stable train IDs in ODPT StationTimetable.",
+    "selectorMustMatchExactlyOneSourceAndTarget": true,
+    "verifiedOperationalBoundaryRequired": true,
+    "timeProximityAloneMayEstablishIdentity": false,
+    "trainNumberAloneMayEstablishIdentity": false,
+    "staleSelectorMustFailClosed": true
+  },
+  "entries": [
+    {
+      "id": "tokyu-denentoshi-oimachi-0520-weekday",
+      "status": "verified-current",
+      "operator": "tokyu",
+      "boundaryId": "tokyu-oimachi-denentoshi-mizonokuchi",
+      "from": {
+        "railway": "odpt.Railway:Tokyu.DenEnToshi",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:Tokyu.Local",
+        "destination": "odpt.Station:Tokyu.Oimachi.Oimachi",
+        "containsStop": {
+          "station": "odpt.Station:Tokyu.DenEnToshi.Kajigaya",
+          "departure": 326
+        }
+      },
+      "to": {
+        "railway": "odpt.Railway:Tokyu.Oimachi",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:Tokyu.Local",
+        "destination": "odpt.Station:Tokyu.Oimachi.Oimachi",
+        "firstStop": {
+          "station": "odpt.Station:Tokyu.Oimachi.Mizonokuchi",
+          "departure": 328
+        }
+      },
+      "sourceUrls": [
+        "https://transfer.navitime.biz/tokyu/pc/diagram/TrainRouteTimetable?day=13&hour=05&kind=%E6%9D%B1%E6%80%A5%E7%94%B0%E5%9C%92%E9%83%BD%E5%B8%82%E7%B7%9A%E5%90%84%E5%81%9C&minutes=20&month=08&posType=1&rrCd=00000789&stCd=00002875&trCd=01a90007&updown=0&year=2026",
+        "https://transfer.navitime.biz/tokyu/pc/diagram/TrainDiagram?rrCd=00000787&stCd=00002454&updown=0"
+      ],
+      "note": "Official Tokyu per-train page continues the 05:20 Saginuma departure through Mizonokuchi toward Oimachi; the 05:27 Oimachi-line departure is explicitly marked as originating at Mizonokuchi, so the continuing fragment is the 05:28 departure."
+    },
+    {
+      "id": "tokyu-denentoshi-oimachi-1508-weekday",
+      "status": "verified-current",
+      "operator": "tokyu",
+      "boundaryId": "tokyu-oimachi-denentoshi-mizonokuchi",
+      "from": {
+        "railway": "odpt.Railway:Tokyu.DenEnToshi",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:Tokyu.Express",
+        "destination": "odpt.Station:Tokyu.Oimachi.Oimachi",
+        "containsStop": {
+          "station": "odpt.Station:Tokyu.DenEnToshi.Saginuma",
+          "departure": 929
+        }
+      },
+      "to": {
+        "railway": "odpt.Railway:Tokyu.Oimachi",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:Tokyu.Express",
+        "destination": "odpt.Station:Tokyu.Oimachi.Oimachi",
+        "firstStop": {
+          "station": "odpt.Station:Tokyu.Oimachi.Mizonokuchi",
+          "departure": 933
+        }
+      },
+      "sourceUrls": [
+        "https://transfer.navitime.biz/tokyu/pc/diagram/TrainRouteTimetable?day=10&hour=15&kind=%E6%9D%B1%E6%80%A5%E7%94%B0%E5%9C%92%E9%83%BD%E5%B8%82%E7%B7%9A%E6%80%A5%E8%A1%8C&minutes=29&month=08&posType=1&rrCd=00000789&stCd=00002875&trCd=01a900c7&updown=0&year=2026"
+      ],
+      "note": "Tokyu official Saginuma timetable links the 15:29 express Oimachi service to a per-train route page; the same service reaches Mizonokuchi at 15:33 and continues on the Oimachi Line."
+    }
+  ]
+}
