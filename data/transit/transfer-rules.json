@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T08:22:45.309Z",
+  "generatedAt": "2026-09-04T08:26:32.939Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -47,6 +47,7 @@
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-20.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-2f.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-4d.json",
+    "transfer-rule-sources.d/2026-09-04-fallback-upgrade-4g.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-7e.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-8b.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-9c.json",
@@ -120,7 +121,7 @@
     "transfer-rule-sources.d/2026-09-04-yokohama-private-remaining.json"
   ],
   "description": "Station/railway-specific transfer times. Explicit curated rules are preferred; any remaining unblocked candidate pair receives a conservative fallbackMinutes rule until an external standard time is added.",
-  "fallbackCandidatePairs": 32,
+  "fallbackCandidatePairs": 28,
   "rules": [
     {
       "id": "東京-山手線-丸ノ内線",
@@ -4048,6 +4049,59 @@
       "label": "乗換",
       "source": "https://www.jorudan.co.jp/norikae/route/%E5%8D%83%E8%91%89_%E6%9D%B1%E8%88%B9%E6%A9%8B.html",
       "sourceType": "current route planner; Sobu Rapid to Chuo-Sobu Local transfer at Tsudanuma shown as 3 minutes; used as conservative common station transfer value",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "木更津-久留里線-内房線",
+      "fromStation": "odpt.Station:JR-East.Kururi.Kisarazu",
+      "toStation": "odpt.Station:JR-East.Uchibo.Kisarazu",
+      "fromRailway": "odpt.Railway:JR-East.Kururi",
+      "toRailway": "odpt.Railway:JR-East.Uchibo",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://ekitan.com/d-norikae/transit/route/sf-1826/st-2826",
+      "sourceType": "recent Ekitan route explicitly shows 3-minute platform movement at Kisarazu from Kururi Line platform 4 to Uchibo Line platform 2; reverse-direction examples also show 3 minutes",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "溜池山王-国会議事堂前-銀座線-丸ノ内線",
+      "fromStation": "odpt.Station:TokyoMetro.Ginza.TameikeSanno",
+      "toStation": "odpt.Station:TokyoMetro.Marunouchi.KokkaiGijidomae",
+      "fromRailway": "odpt.Railway:TokyoMetro.Ginza",
+      "toRailway": "odpt.Railway:TokyoMetro.Marunouchi",
+      "minutes": 6,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://transit.yahoo.co.jp/search/result/%E6%BA%9C%E6%B1%A0%E5%B1%B1%E7%8E%8B-%E5%9B%BD%E4%BC%9A%E8%AD%B0%E4%BA%8B%E5%A0%82%E5%89%8D",
+      "sourceType": "current Yahoo Transit direct same-station walking route; 6 minutes and 0 fare",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "青砥-京成本線-押上線",
+      "fromStation": "odpt.Station:Keisei.Oshiage.Aoto",
+      "toStation": "odpt.Station:Keisei.Oshiage.Aoto",
+      "fromRailway": "odpt.Railway:Keisei.Main",
+      "toRailway": "odpt.Railway:Keisei.Oshiage",
+      "minutes": 3,
+      "bidirectional": true,
+      "reverseMinutes": 1,
+      "label": "乗換",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E4%BA%AC%E6%88%90%E4%B8%8A%E9%87%8E_%E6%8A%BC%E4%B8%8A.html",
+      "sourceType": "current Jorudan route; Keisei Main platform 4 to Oshiage-bound platform 1 at Aoto shown as 3-minute transfer; reverse Oshiage Line platform 3 to Main Line platforms 2/4 shown as 1 minute in current routes",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "千葉中央-千葉線-千原線",
+      "fromStation": "manual.Station:keisei.千葉中央",
+      "toStation": "manual.Station:keisei.千葉中央",
+      "fromRailway": "odpt.Railway:Keisei.Chiba",
+      "toRailway": "odpt.Railway:Keisei.Chihara",
+      "minutes": 1,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E4%BA%AC%E6%88%90%E6%B4%A5%E7%94%B0%E6%B2%BC_%E3%81%A1%E3%81%AF%E3%82%89%E5%8F%B0.html",
+      "sourceType": "current Jorudan route explicitly shows a 1-minute transfer at Chiba-chuo, platform 2 arrival to platform 2 departure",
       "verifiedAt": "2026-09-04"
     },
     {
@@ -12347,32 +12401,6 @@
       "verifiedAt": ""
     },
     {
-      "id": "fallback-青砥-京成本線-押上線",
-      "fromStation": "odpt.Station:Keisei.Oshiage.Aoto",
-      "toStation": "odpt.Station:Keisei.Oshiage.Aoto",
-      "fromRailway": "odpt.Railway:Keisei.Main",
-      "toRailway": "odpt.Railway:Keisei.Oshiage",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-千葉中央-千葉線-千原線",
-      "fromStation": "manual.Station:keisei.千葉中央",
-      "toStation": "manual.Station:keisei.千葉中央",
-      "fromRailway": "odpt.Railway:Keisei.Chiba",
-      "toRailway": "odpt.Railway:Keisei.Chihara",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
       "id": "fallback-浅野-鶴見線-鶴見線海芝浦支線",
       "fromStation": "odpt.Station:JR-East.Tsurumi.Asano",
       "toStation": "odpt.Station:JR-East.TsurumiUmiShibauraBranch.Asano",
@@ -12470,32 +12498,6 @@
       "fromRailway": "odpt.Railway:Seibu.Toshima",
       "toRailway": "odpt.Railway:Toei.Oedo",
       "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-木更津-久留里線-内房線",
-      "fromStation": "odpt.Station:JR-East.Kururi.Kisarazu",
-      "toStation": "odpt.Station:JR-East.Uchibo.Kisarazu",
-      "fromRailway": "odpt.Railway:JR-East.Kururi",
-      "toRailway": "odpt.Railway:JR-East.Uchibo",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-溜池山王 ↔ 国会議事堂前-銀座線-丸ノ内線",
-      "fromStation": "odpt.Station:TokyoMetro.Ginza.TameikeSanno",
-      "toStation": "odpt.Station:TokyoMetro.Marunouchi.KokkaiGijidomae",
-      "fromRailway": "odpt.Railway:TokyoMetro.Ginza",
-      "toRailway": "odpt.Railway:TokyoMetro.Marunouchi",
-      "minutes": 9,
       "bidirectional": true,
       "label": "暫定・安全側乗換",
       "source": "data/transit/transfer-candidates.json",
