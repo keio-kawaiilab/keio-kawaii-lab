@@ -1,3 +1,4 @@
+// Permanent regression guard: only evidence-backed same-physical-train edges may suppress a transfer.
 const assert = require('assert');
 const fs = require('fs');
 
