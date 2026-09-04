@@ -1,63 +1,19 @@
 {
-  "generatedAt": "2026-09-04T09:59:25.665Z",
+  "generatedAt": "2026-09-04T10:00:09.153Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T09:59:10.749Z",
+  "rulesGeneratedAt": "2026-09-04T09:59:55.350Z",
   "methodology": "Candidate railway pairs are classified as curated when backed by an explicit transfer rule, fallback when covered by conservative fallbackMinutes, blocked for false same-name/nearby links, and uncurated only when no usable rule exists.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 947,
-    "fallbackPairs": 6,
+    "curatedPairs": 953,
+    "fallbackPairs": 0,
     "uncuratedPairs": 0,
     "blockedPairs": 7,
-    "curatedSourceRules": 947,
-    "fallbackGeneratedRules": 6,
+    "curatedSourceRules": 953,
+    "fallbackGeneratedRules": 0,
     "transferPlaces": 329
   },
   "priorityPlaces": [
-    {
-      "place": "成田空港",
-      "totalPairs": 3,
-      "curatedPairs": 0,
-      "fallbackPairs": 3,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 3,
-      "priorityScore": 0
-    },
-    {
-      "place": "松岸",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "銚子",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "豊島園",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
     {
       "place": "あざみ野",
       "totalPairs": 1,
@@ -1113,92 +1069,53 @@
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
       "priorityScore": 0
+    },
+    {
+      "place": "笹塚",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
+      "place": "雑司が谷 ↔ 鬼子母神前",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
+      "place": "三ノ輪 ↔ 三ノ輪橋",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
+      "place": "三越前",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
     }
   ],
   "priorityDetails": [],
   "uncurated": [],
-  "fallback": [
-    {
-      "place": "松岸",
-      "railwayA": "odpt.Railway:JR-East.Narita",
-      "railwayAName": "成田線",
-      "railwayB": "odpt.Railway:JR-East.Sobu",
-      "railwayBName": "総武本線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "成田空港",
-      "railwayA": "odpt.Railway:Keisei.Main",
-      "railwayAName": "京成本線",
-      "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
-      "railwayBName": "成田スカイアクセス線",
-      "sameOperator": true,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "成田空港",
-      "railwayA": "odpt.Railway:JR-East.NaritaAirportBranch",
-      "railwayAName": "成田線空港支線",
-      "railwayB": "odpt.Railway:Keisei.Main",
-      "railwayBName": "京成本線",
-      "sameOperator": false,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "成田空港",
-      "railwayA": "odpt.Railway:JR-East.NaritaAirportBranch",
-      "railwayAName": "成田線空港支線",
-      "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
-      "railwayBName": "成田スカイアクセス線",
-      "sameOperator": false,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "銚子",
-      "railwayA": "odpt.Railway:JR-East.Narita",
-      "railwayAName": "成田線",
-      "railwayB": "odpt.Railway:JR-East.Sobu",
-      "railwayBName": "総武本線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "豊島園",
-      "railwayA": "odpt.Railway:Seibu.Toshima",
-      "railwayAName": "豊島線",
-      "railwayB": "odpt.Railway:Toei.Oedo",
-      "railwayBName": "大江戸線",
-      "sameOperator": false,
-      "distanceMeters": 111,
-      "fallbackMinutes": 5,
-      "sources": [
-        "same-place-group"
-      ]
-    }
-  ]
+  "fallback": []
 }
