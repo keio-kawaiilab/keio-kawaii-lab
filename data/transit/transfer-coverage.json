@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-04T00:34:54.207Z",
+  "generatedAt": "2026-09-04T00:35:21.539Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T00:34:40.788Z",
+  "rulesGeneratedAt": "2026-09-04T00:35:07.048Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 442,
-    "uncuratedPairs": 511,
+    "curatedPairs": 448,
+    "uncuratedPairs": 505,
     "blockedPairs": 7,
-    "curatedSourceRules": 442,
+    "curatedSourceRules": 448,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -40,16 +40,6 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 5,
       "railwayCount": 7,
-      "priorityScore": 23.5
-    },
-    {
-      "place": "北千住",
-      "totalPairs": 10,
-      "curatedPairs": 0,
-      "uncuratedPairs": 10,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 9,
-      "railwayCount": 5,
       "priorityScore": 23.5
     },
     {
@@ -199,6 +189,16 @@
       "uncuratedPairs": 10,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 5,
+      "priorityScore": 10
+    },
+    {
+      "place": "北千住",
+      "totalPairs": 10,
+      "curatedPairs": 6,
+      "uncuratedPairs": 4,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 4,
       "railwayCount": 5,
       "priorityScore": 10
     },
@@ -1762,150 +1762,6 @@
           "railwayBName": "山手線",
           "sameOperator": true,
           "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "北千住",
-      "totalPairs": 10,
-      "curatedPairs": 0,
-      "uncuratedPairs": 10,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 9,
-      "railwayCount": 5,
-      "priorityScore": 23.5,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:MIR.TsukubaExpress",
-          "railwayAName": "つくばエクスプレス",
-          "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
-          "railwayBName": "千代田線",
-          "sameOperator": false,
-          "distanceMeters": 104,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:MIR.TsukubaExpress",
-          "railwayAName": "つくばエクスプレス",
-          "railwayB": "odpt.Railway:Tobu.TobuSkytree",
-          "railwayBName": "東武スカイツリーライン",
-          "sameOperator": false,
-          "distanceMeters": 22,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:MIR.TsukubaExpress",
-          "railwayAName": "つくばエクスプレス",
-          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-          "railwayBName": "日比谷線",
-          "sameOperator": false,
-          "distanceMeters": 29,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.JobanRapid",
-          "railwayAName": "常磐線快速",
-          "railwayB": "odpt.Railway:MIR.TsukubaExpress",
-          "railwayBName": "つくばエクスプレス",
-          "sameOperator": false,
-          "distanceMeters": 119,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.JobanRapid",
-          "railwayAName": "常磐線快速",
-          "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
-          "railwayBName": "千代田線",
-          "sameOperator": false,
-          "distanceMeters": 45,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.JobanRapid",
-          "railwayAName": "常磐線快速",
-          "railwayB": "odpt.Railway:Tobu.TobuSkytree",
-          "railwayBName": "東武スカイツリーライン",
-          "sameOperator": false,
-          "distanceMeters": 136,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.JobanRapid",
-          "railwayAName": "常磐線快速",
-          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-          "railwayBName": "日比谷線",
-          "sameOperator": false,
-          "distanceMeters": 146,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Tobu.TobuSkytree",
-          "railwayAName": "東武スカイツリーライン",
-          "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
-          "railwayBName": "千代田線",
-          "sameOperator": false,
-          "distanceMeters": 125,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Tobu.TobuSkytree",
-          "railwayAName": "東武スカイツリーライン",
-          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-          "railwayBName": "日比谷線",
-          "sameOperator": false,
-          "distanceMeters": 11,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
-          "railwayAName": "千代田線",
-          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-          "railwayBName": "日比谷線",
-          "sameOperator": true,
-          "distanceMeters": 133,
           "fallbackMinutes": 5,
           "sources": [
             "connecting-station",
@@ -3647,6 +3503,71 @@
           ]
         }
       ]
+    },
+    {
+      "place": "北千住",
+      "totalPairs": 10,
+      "curatedPairs": 6,
+      "uncuratedPairs": 4,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 4,
+      "railwayCount": 5,
+      "priorityScore": 10,
+      "crossOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:MIR.TsukubaExpress",
+          "railwayAName": "つくばエクスプレス",
+          "railwayB": "odpt.Railway:Tobu.TobuSkytree",
+          "railwayBName": "東武スカイツリーライン",
+          "sameOperator": false,
+          "distanceMeters": 22,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:MIR.TsukubaExpress",
+          "railwayAName": "つくばエクスプレス",
+          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+          "railwayBName": "日比谷線",
+          "sameOperator": false,
+          "distanceMeters": 29,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.JobanRapid",
+          "railwayAName": "常磐線快速",
+          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+          "railwayBName": "日比谷線",
+          "sameOperator": false,
+          "distanceMeters": 146,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:Tobu.TobuSkytree",
+          "railwayAName": "東武スカイツリーライン",
+          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+          "railwayBName": "日比谷線",
+          "sameOperator": false,
+          "distanceMeters": 11,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ],
+      "sameOperatorPairs": []
     },
     {
       "place": "品川",
@@ -10869,20 +10790,6 @@
       "place": "北千住",
       "railwayA": "odpt.Railway:MIR.TsukubaExpress",
       "railwayAName": "つくばエクスプレス",
-      "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
-      "railwayBName": "千代田線",
-      "sameOperator": false,
-      "distanceMeters": 104,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "北千住",
-      "railwayA": "odpt.Railway:MIR.TsukubaExpress",
-      "railwayAName": "つくばエクスプレス",
       "railwayB": "odpt.Railway:Tobu.TobuSkytree",
       "railwayBName": "東武スカイツリーライン",
       "sameOperator": false,
@@ -10911,80 +10818,10 @@
       "place": "北千住",
       "railwayA": "odpt.Railway:JR-East.JobanRapid",
       "railwayAName": "常磐線快速",
-      "railwayB": "odpt.Railway:MIR.TsukubaExpress",
-      "railwayBName": "つくばエクスプレス",
-      "sameOperator": false,
-      "distanceMeters": 119,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "北千住",
-      "railwayA": "odpt.Railway:JR-East.JobanRapid",
-      "railwayAName": "常磐線快速",
-      "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
-      "railwayBName": "千代田線",
-      "sameOperator": false,
-      "distanceMeters": 45,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "北千住",
-      "railwayA": "odpt.Railway:JR-East.JobanRapid",
-      "railwayAName": "常磐線快速",
-      "railwayB": "odpt.Railway:Tobu.TobuSkytree",
-      "railwayBName": "東武スカイツリーライン",
-      "sameOperator": false,
-      "distanceMeters": 136,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "北千住",
-      "railwayA": "odpt.Railway:JR-East.JobanRapid",
-      "railwayAName": "常磐線快速",
       "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
       "railwayBName": "日比谷線",
       "sameOperator": false,
       "distanceMeters": 146,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "北千住",
-      "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
-      "railwayAName": "千代田線",
-      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-      "railwayBName": "日比谷線",
-      "sameOperator": true,
-      "distanceMeters": 133,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "北千住",
-      "railwayA": "odpt.Railway:Tobu.TobuSkytree",
-      "railwayAName": "東武スカイツリーライン",
-      "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
-      "railwayBName": "千代田線",
-      "sameOperator": false,
-      "distanceMeters": 125,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
