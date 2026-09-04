@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "ホーム間乗換",
+    "sourceType": "current platform-to-platform transfer guide",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "練馬",
+      "railwayA": "odpt.Railway:Seibu.Ikebukuro",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "railwayAName": "池袋線",
+      "railwayBName": "大江戸線",
+      "minutes": 4,
+      "source": "https://wadattsu261.com/content/nerima-seibuikebukuro-yurakucho-toeioedoline-transfer-information/"
+    },
+    {
+      "place": "練馬",
+      "railwayA": "odpt.Railway:Seibu.SeibuYurakucho",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "railwayAName": "西武有楽町線",
+      "railwayBName": "大江戸線",
+      "minutes": 4,
+      "source": "https://wadattsu261.com/content/nerima-seibuikebukuro-yurakucho-toeioedoline-transfer-information/"
+    }
+  ]
+}
