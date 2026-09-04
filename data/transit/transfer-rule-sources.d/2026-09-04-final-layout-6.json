@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換（構内図・現行案内ベース／安全側）",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "id": "松岸-成田線-総武本線",
+      "place": "松岸",
+      "railwayA": "odpt.Railway:JR-East.Narita",
+      "railwayB": "odpt.Railway:JR-East.Sobu",
+      "minutes": 3,
+      "source": "https://timetables.jreast.co.jp/timetable/list1436.html",
+      "sourceType": "JR East current timetable identifies Matsugishi as the Sobu Main/Narita Line junction and combines both lines toward Choshi; station is a compact 2-platform/3-track junction; conservative 3-minute minimum when an actual train change is required"
+    },
+    {
+      "id": "銚子-成田線-総武本線",
+      "place": "銚子",
+      "railwayA": "odpt.Railway:JR-East.Narita",
+      "railwayB": "odpt.Railway:JR-East.Sobu",
+      "minutes": 3,
+      "source": "https://www.jreast.co.jp/estation/stations/993.html",
+      "sourceType": "JR East station layout plus current platform usage: Sobu and Narita services share the compact 1-3 platform group, with a footbridge required for some assignments; conservative 3-minute minimum"
+    },
+    {
+      "id": "豊島園-豊島線-大江戸線",
+      "place": "豊島園",
+      "railwayA": "odpt.Railway:Seibu.Toshima",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "minutes": 5,
+      "source": "https://map.yahoo.co.jp/v3/place/U0pjAujcH-U",
+      "sourceType": "current map guidance places Toei Toshimaen about 2 minutes on foot from the Seibu exit; 5 minutes retained as conservative platform-to-platform transfer including gates and vertical circulation"
+    },
+    {
+      "id": "成田空港-京成本線-成田スカイアクセス線",
+      "place": "成田空港",
+      "railwayA": "odpt.Railway:Keisei.Main",
+      "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
+      "minutes": 5,
+      "source": "https://www.keisei.co.jp/keisei/tetudou/stationmap/pdf/jp/145.pdf",
+      "sourceType": "official Keisei Narita Airport station map; Main Line and Narita Sky Access use dedicated platform/concourse zones separated by an intermediate gate; conservative 5-minute minimum"
+    },
+    {
+      "id": "成田空港-成田線空港支線-京成本線",
+      "place": "成田空港",
+      "railwayA": "odpt.Railway:JR-East.NaritaAirportBranch",
+      "railwayB": "odpt.Railway:Keisei.Main",
+      "minutes": 5,
+      "source": "https://www.jreast.co.jp/multi/customer_support/service_center.html",
+      "sourceType": "official JR East Terminal 1 guidance states JR and Keisei ticket gates are both on B1 facing the same service-center area; 5-minute conservative platform-to-platform minimum"
+    },
+    {
+      "id": "成田空港-成田線空港支線-成田スカイアクセス線",
+      "place": "成田空港",
+      "railwayA": "odpt.Railway:JR-East.NaritaAirportBranch",
+      "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
+      "minutes": 5,
+      "source": "https://www.jreast.co.jp/multi/customer_support/service_center.html",
+      "sourceType": "official JR East Terminal 1 guidance states JR and Keisei ticket gates are both on B1 facing the same service-center area; 5-minute conservative platform-to-platform minimum"
+    }
+  ]
+}
