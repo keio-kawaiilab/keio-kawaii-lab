@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準・実測乗換（安全側）",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "後楽園",
+      "railwayA": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
+      "railwayAName": "丸ノ内線",
+      "railwayBName": "南北線",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/korakuen-metronamboku-marunouchiline-transfer-information/",
+      "sourceType": "current measured transfer guide updated 2026-05; shortest about 4-5 minutes, conservative upper bound"
+    },
+    {
+      "place": "恵比寿",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayAName": "埼京線・川越線",
+      "railwayBName": "湘南新宿ライン",
+      "minutes": 1,
+      "source": "https://norikaemap.com/ebisu/0103/",
+      "sourceType": "current photographed station guide updated 2026-08; both services share JR platforms 3/4, 1-minute safety buffer"
+    }
+  ]
+}
