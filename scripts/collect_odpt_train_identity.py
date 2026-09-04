@@ -21,6 +21,8 @@ from typing import Any
 
 import requests
 
+from import_odpt_timetables import api_get_complete_train_timetables
+
 ROOT = Path("data/transit")
 MANIFEST = ROOT / "manifest.json"
 OUT = ROOT / "odpt-train-identities.json"
@@ -166,7 +168,27 @@ def main() -> int:
         if not key:
             sources.append({"slug": slug, "operator": operator, "status": "missing-key", "records": 0})
             continue
-        rows = api_get(f"{base_url}/odpt:TrainTimetable", key, operator)
+        entities_path = ROOT / slug / "entities.json"
+        try:
+            entities = json.loads(entities_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            entities = {}
+        railways = [row for row in entities.get("Railway") or [] if isinstance(row, dict) and row.get("owl:sameAs")]
+        session = requests.Session()
+        rows_by_id: dict[str, dict[str, Any]] = {}
+        for railway in railways:
+            railway_rows = api_get_complete_train_timetables(
+                session,
+                key,
+                operator,
+                railway,
+                base_url=base_url,
+            )
+            for item in railway_rows:
+                timetable_id = str(item.get("owl:sameAs") or "")
+                if timetable_id:
+                    rows_by_id[timetable_id] = item
+        rows = list(rows_by_id.values())
         kept = 0
         for item in rows:
             railway = str(item.get("odpt:railway") or "")

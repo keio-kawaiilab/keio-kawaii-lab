@@ -75,6 +75,52 @@ class ImportOdptTimetablesTests(unittest.TestCase):
             rows = importer.api_get(Session(), "odpt:Station", "secret", "odpt.Operator:A")
         self.assertEqual([row["owl:sameAs"] for row in rows], ["station:a"])
 
+    def test_complete_train_timetable_fetch_splits_a_saturated_railway_by_direction(self):
+        railway_id = "odpt.Railway:Test.Main"
+        inbound = "odpt.RailDirection:Inbound"
+        outbound = "odpt.RailDirection:Outbound"
+        inbound_rows = [
+            {"owl:sameAs": f"tt:in:{index}", "odpt:operator": "odpt.Operator:Test", "odpt:railDirection": inbound}
+            for index in range(700)
+        ]
+        outbound_rows = [
+            {"owl:sameAs": f"tt:out:{index}", "odpt:operator": "odpt.Operator:Test", "odpt:railDirection": outbound}
+            for index in range(650)
+        ]
+        missing = {"owl:sameAs": "tt:out:missing", "odpt:operator": "odpt.Operator:Test", "odpt:railDirection": outbound}
+        outbound_rows.append(missing)
+        # The broad API response is a capped subset of the same underlying
+        # direction rows. The missing outbound row exists only beyond the cap.
+        initial = inbound_rows + outbound_rows[:300]
+
+        calls = []
+        def fake_api_get(_session, rdf_type, _key, operator=None, base_url=None, extra_params=None):
+            self.assertEqual(rdf_type, "odpt:TrainTimetable")
+            self.assertEqual(operator, "odpt.Operator:Test")
+            params = dict(extra_params or {})
+            calls.append(params)
+            direction = params.get("odpt:railDirection")
+            if direction == inbound:
+                return inbound_rows
+            if direction == outbound:
+                return outbound_rows
+            return initial
+
+        railway = {
+            "owl:sameAs": railway_id,
+            "odpt:ascendingRailDirection": inbound,
+            "odpt:descendingRailDirection": outbound,
+        }
+        with patch.object(importer, "api_get", side_effect=fake_api_get):
+            rows = importer.api_get_complete_train_timetables(
+                object(), "secret", "odpt.Operator:Test", railway, base_url="https://example.test/api/v4"
+            )
+        ids = {row["owl:sameAs"] for row in rows}
+        self.assertIn("tt:out:missing", ids)
+        self.assertEqual(len(rows), 1351)
+        self.assertTrue(any(call.get("odpt:railDirection") == inbound for call in calls))
+        self.assertTrue(any(call.get("odpt:railDirection") == outbound for call in calls))
+
     def test_compact_entity_keeps_route_fields(self):
         compact = importer.compact_entity({
             "owl:sameAs": "odpt.Station:Test.A",

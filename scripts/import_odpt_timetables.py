@@ -223,6 +223,119 @@ def api_get(
     raise RuntimeError(f"ODPT request failed for {rdf_type} / {operator}: {last_error}")
 
 
+ODPT_RESULT_CAP = int(os.environ.get("ODPT_RESULT_CAP", "1000"))
+
+
+def api_get_complete_train_timetables(
+    session: requests.Session,
+    key: str,
+    operator: str,
+    railway: dict[str, Any] | str,
+    base_url: str = BASE_URL,
+) -> list[dict[str, Any]]:
+    """Fetch every TrainTimetable row for one railway without silent cap loss.
+
+    The Challenge API can return exactly 1000 rows for a broad query even when
+    more rows exist. A saturated railway query is therefore partitioned by the
+    railway's published directions. If one direction is still saturated, it is
+    partitioned again by the calendar values visible in that direction. Any
+    still-saturated leaf fails closed instead of being mistaken for complete
+    data.
+    """
+    railway_id = str(railway.get("owl:sameAs") or "") if isinstance(railway, dict) else str(railway or "")
+    if not railway_id:
+        return []
+    base_params = {"odpt:railway": railway_id}
+    first = api_get(session, "odpt:TrainTimetable", key, operator, base_url=base_url, extra_params=base_params)
+    if len(first) < ODPT_RESULT_CAP:
+        return first
+
+    directions: list[str] = []
+    if isinstance(railway, dict):
+        for field in ("odpt:ascendingRailDirection", "odpt:descendingRailDirection"):
+            value = str(railway.get(field) or "")
+            if value and value not in directions:
+                directions.append(value)
+    for row in first:
+        value = str(row.get("odpt:railDirection") or "")
+        if value and value not in directions:
+            directions.append(value)
+    if not directions:
+        raise RuntimeError(f"Saturated TrainTimetable query has no direction partition: {railway_id}")
+
+    merged: dict[str, dict[str, Any]] = {}
+
+    def add(rows: list[dict[str, Any]]) -> None:
+        for row in rows:
+            row_id = str(row.get("owl:sameAs") or "")
+            if row_id:
+                merged[row_id] = row
+
+    for direction in directions:
+        direction_params = {**base_params, "odpt:railDirection": direction}
+        rows = api_get(session, "odpt:TrainTimetable", key, operator, base_url=base_url, extra_params=direction_params)
+        if len(rows) < ODPT_RESULT_CAP:
+            add(rows)
+            continue
+
+        calendars: list[str] = []
+        for row in rows:
+            raw = row.get("odpt:calendar")
+            values = raw if isinstance(raw, list) else [raw]
+            for value in values:
+                text = str(value or "")
+                if text and text not in calendars:
+                    calendars.append(text)
+        # Standard railway service calendars are included as defensive probes
+        # in case one calendar happens to be absent from the capped first page.
+        for value in (
+            "odpt.Calendar:Weekday",
+            "odpt.Calendar:Saturday",
+            "odpt.Calendar:Holiday",
+            "odpt.Calendar:SaturdayHoliday",
+        ):
+            if value not in calendars:
+                calendars.append(value)
+
+        direction_merged: dict[str, dict[str, Any]] = {}
+        successful_calendar_probe = False
+        for calendar in calendars:
+            calendar_rows = api_get(
+                session,
+                "odpt:TrainTimetable",
+                key,
+                operator,
+                base_url=base_url,
+                extra_params={**direction_params, "odpt:calendar": calendar},
+            )
+            if not calendar_rows:
+                continue
+            successful_calendar_probe = True
+            if len(calendar_rows) >= ODPT_RESULT_CAP:
+                raise RuntimeError(
+                    f"TrainTimetable partition is still saturated after railway/direction/calendar split: "
+                    f"{railway_id} / {direction} / {calendar}"
+                )
+            for row in calendar_rows:
+                row_id = str(row.get("owl:sameAs") or "")
+                if row_id:
+                    direction_merged[row_id] = row
+        if not successful_calendar_probe:
+            raise RuntimeError(f"Could not split saturated TrainTimetable direction: {railway_id} / {direction}")
+        merged.update(direction_merged)
+
+    original_ids = {str(row.get("owl:sameAs") or "") for row in first if row.get("owl:sameAs")}
+    if not original_ids.issubset(merged):
+        missing = sorted(original_ids - set(merged))[:5]
+        raise RuntimeError(f"Partitioned TrainTimetable fetch lost rows for {railway_id}: {missing}")
+    if len(merged) <= len(first):
+        raise RuntimeError(
+            f"Saturated TrainTimetable query did not expand after partitioning: {railway_id} ({len(first)} rows)"
+        )
+    print(f"{railway_id}: expanded saturated TrainTimetable query {len(first)} -> {len(merged)}")
+    return list(merged.values())
+
+
 def api_base_for(config: dict[str, Any]) -> str:
     """Route challenge-only operators to the Challenge 2026 API host."""
     return CHALLENGE_BASE_URL if config.get("license") == "challenge-2026" else BASE_URL
@@ -1466,13 +1579,12 @@ def main() -> int:
                     railway_id = str(railway.get("owl:sameAs") or "")
                     if not railway_id:
                         continue
-                    train_raw = api_get(
+                    train_raw = api_get_complete_train_timetables(
                         session,
-                        "odpt:TrainTimetable",
                         key,
                         operator_uri,
+                        railway,
                         base_url=base_url,
-                        extra_params={"odpt:railway": railway_id},
                     )
                     total_train_timetables += len(train_raw)
                     compact_timetable, connection_count = compact_line_timetable(
