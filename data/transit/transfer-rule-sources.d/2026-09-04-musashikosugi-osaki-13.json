@@ -1,0 +1,141 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準・実測乗換（安全側）",
+    "sourceType": "current platform guidance / measured transfer route",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "武蔵小杉",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:JR-East.Yokosuka",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "横須賀線",
+      "minutes": 1,
+      "source": "https://wadattsu261.com/content/musashikosugi-yokosuka-shonanshinjukuline-sotetsudirecthome-info/",
+      "sourceType": "shared 3/4 platform by direction; 1-minute safety buffer"
+    },
+    {
+      "place": "武蔵小杉",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:JR-East.SotetsuDirect",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "相鉄直通線",
+      "minutes": 1,
+      "source": "https://wadattsu261.com/content/musashikosugi-yokosuka-shonanshinjukuline-sotetsudirecthome-info/",
+      "sourceType": "shared 3/4 platform by direction; 1-minute safety buffer"
+    },
+    {
+      "place": "武蔵小杉",
+      "railwayA": "odpt.Railway:JR-East.SotetsuDirect",
+      "railwayB": "odpt.Railway:JR-East.Yokosuka",
+      "railwayAName": "相鉄直通線",
+      "railwayBName": "横須賀線",
+      "minutes": 1,
+      "source": "https://wadattsu261.com/content/musashikosugi-yokosuka-shonanshinjukuline-sotetsudirecthome-info/",
+      "sourceType": "shared 3/4 platform by direction; 1-minute safety buffer"
+    },
+    {
+      "place": "武蔵小杉",
+      "railwayA": "odpt.Railway:JR-East.Nambu",
+      "railwayB": "odpt.Railway:JR-East.Yokosuka",
+      "railwayAName": "南武線",
+      "railwayBName": "横須賀線",
+      "minutes": 6,
+      "source": "https://honnne.com/blog/norikae-musashikosugi/",
+      "sourceType": "2026 measured transfer 5m23s to shared Yokosuka/Shonan platform; rounded up"
+    },
+    {
+      "place": "武蔵小杉",
+      "railwayA": "odpt.Railway:JR-East.Nambu",
+      "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayAName": "南武線",
+      "railwayBName": "湘南新宿ライン",
+      "minutes": 6,
+      "source": "https://honnne.com/blog/norikae-musashikosugi/",
+      "sourceType": "2026 measured platform-to-platform transfer 5m23s; rounded up"
+    },
+    {
+      "place": "武蔵小杉",
+      "railwayA": "odpt.Railway:JR-East.Nambu",
+      "railwayB": "odpt.Railway:JR-East.SotetsuDirect",
+      "railwayAName": "南武線",
+      "railwayBName": "相鉄直通線",
+      "minutes": 6,
+      "source": "https://honnne.com/blog/norikae-musashikosugi/",
+      "sourceType": "2026 measured transfer 5m23s to shared Yokosuka/Shonan/Sotetsu platform; rounded up"
+    },
+    {
+      "place": "武蔵小杉",
+      "railwayA": "odpt.Railway:Tokyu.Meguro",
+      "railwayB": "odpt.Railway:Tokyu.Toyoko",
+      "railwayAName": "目黒線",
+      "railwayBName": "東横線",
+      "minutes": 1,
+      "source": "https://www.tokyu.co.jp/special/commuter-passes-and-life/",
+      "sourceType": "official opposite-platform transfer guidance; 1-minute safety buffer"
+    },
+    {
+      "place": "大崎",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:TWR.Rinkai",
+      "railwayAName": "埼京線・川越線",
+      "railwayBName": "りんかい線",
+      "minutes": 1,
+      "source": "https://www.twr.co.jp/route/tabid/120/Default.aspx",
+      "sourceType": "official mutual through-service/no-transfer guidance; 1-minute safety buffer"
+    },
+    {
+      "place": "大崎",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayAName": "埼京線・川越線",
+      "railwayBName": "湘南新宿ライン",
+      "minutes": 1,
+      "source": "https://wadattsu261.com/content/ja-saikyo-kawagoehome-all-info/5/",
+      "sourceType": "shared 5/8 platform by direction; 1-minute safety buffer"
+    },
+    {
+      "place": "大崎",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:JR-East.SotetsuDirect",
+      "railwayAName": "埼京線・川越線",
+      "railwayBName": "相鉄直通線",
+      "minutes": 1,
+      "source": "https://wadattsu261.com/content/ja-saikyo-kawagoehome-all-info/5/",
+      "sourceType": "shared Saikyo/Sotetsu platform group; 1-minute safety buffer"
+    },
+    {
+      "place": "大崎",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:TWR.Rinkai",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "りんかい線",
+      "minutes": 1,
+      "source": "https://www.twr.co.jp/tabid/101/Default.aspx?dispmid=860&itemid=396",
+      "sourceType": "official same-platform opposite-side connection guidance; 1-minute safety buffer"
+    },
+    {
+      "place": "大崎",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:JR-East.SotetsuDirect",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "相鉄直通線",
+      "minutes": 1,
+      "source": "https://wadattsu261.com/content/ja-saikyo-kawagoehome-all-info/5/",
+      "sourceType": "shared 5/8 platform by direction; 1-minute safety buffer"
+    },
+    {
+      "place": "大崎",
+      "railwayA": "odpt.Railway:JR-East.SotetsuDirect",
+      "railwayB": "odpt.Railway:TWR.Rinkai",
+      "railwayAName": "相鉄直通線",
+      "railwayBName": "りんかい線",
+      "minutes": 1,
+      "source": "https://wadattsu261.com/content/ja-saikyo-kawagoehome-all-info/5/",
+      "sourceType": "shared 5-8 platform group with same-island transfers; 1-minute safety buffer"
+    }
+  ]
+}
