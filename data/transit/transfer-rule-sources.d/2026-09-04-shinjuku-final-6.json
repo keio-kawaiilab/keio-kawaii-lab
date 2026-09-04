@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準・実測乗換（安全側）",
+    "sourceType": "current transfer guide / official station layout",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:Keio.KeioNew",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayAName": "京王新線",
+      "railwayBName": "丸ノ内線",
+      "minutes": 8,
+      "source": "https://eki-kara-access.tokyo/shinjukueki-marunouchisen-kounai-info/",
+      "sourceType": "current guide gives about 7 minutes / 457 m between Marunouchi and Toei-Shinjuku/Keio-New area; rounded up to 8 minutes"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:Keio.KeioNew",
+      "railwayB": "odpt.Railway:Toei.Shinjuku",
+      "railwayAName": "京王新線",
+      "railwayBName": "新宿線",
+      "minutes": 1,
+      "source": "https://www.kotsu.metro.tokyo.jp/subway/timetable/shinjuku/S01WD.html",
+      "sourceType": "official shared through-service station/platform boundary; 1-minute safety buffer"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:Keio.Keio",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayAName": "京王線",
+      "railwayBName": "丸ノ内線",
+      "minutes": 4,
+      "source": "https://eki-kara-access.tokyo/shinjukueki-norikae-keio-marunouchisen/",
+      "sourceType": "current guide gives 3 minutes / 224 m from Keio west gate to Marunouchi; rounded up to 4 minutes"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:Keio.Keio",
+      "railwayB": "odpt.Railway:Keio.KeioNew",
+      "railwayAName": "京王線",
+      "railwayBName": "京王新線",
+      "minutes": 10,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/keio_line-toei_subway-shinjuku_line.html",
+      "sourceType": "Jorudan standard 10 minutes from Keio Line to the shared Toei-Shinjuku/Keio-New platform area"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayAName": "埼京線・川越線",
+      "railwayBName": "湘南新宿ライン",
+      "minutes": 1,
+      "source": "https://www.jreast.co.jp/estation/stations/866.html",
+      "sourceType": "official shared 1-4 platform group for Saikyo and Shonan-Shinjuku; 1-minute safety buffer"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:Odakyu.Odawara",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayAName": "小田原線",
+      "railwayBName": "丸ノ内線",
+      "minutes": 4,
+      "source": "https://eki-kara-access.tokyo/shinjukueki-norikae-odakyu-marunouchisen/",
+      "sourceType": "current guide gives 2-3 minutes from Odakyu west gates to Marunouchi; rounded up to 4 minutes"
+    }
+  ]
+}
