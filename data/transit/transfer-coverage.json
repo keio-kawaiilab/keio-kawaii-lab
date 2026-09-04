@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-09-04T08:19:44.410Z",
+  "generatedAt": "2026-09-04T08:23:00.452Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T08:19:30.127Z",
+  "rulesGeneratedAt": "2026-09-04T08:22:45.309Z",
   "methodology": "Candidate railway pairs are classified as curated when backed by an explicit transfer rule, fallback when covered by conservative fallbackMinutes, blocked for false same-name/nearby links, and uncurated only when no usable rule exists.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 919,
-    "fallbackPairs": 34,
+    "curatedPairs": 921,
+    "fallbackPairs": 32,
     "uncuratedPairs": 0,
     "blockedPairs": 7,
-    "curatedSourceRules": 919,
-    "fallbackGeneratedRules": 34,
+    "curatedSourceRules": 921,
+    "fallbackGeneratedRules": 32,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -202,17 +202,6 @@
       "priorityScore": 0
     },
     {
-      "place": "西谷",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
       "place": "青砥",
       "totalPairs": 1,
       "curatedPairs": 0,
@@ -232,17 +221,6 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "川越",
-      "totalPairs": 3,
-      "curatedPairs": 2,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 3,
       "priorityScore": 0
     },
     {
@@ -1113,6 +1091,28 @@
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 3,
       "priorityScore": 0
+    },
+    {
+      "place": "厚木",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
+      "place": "弘明寺",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 1,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
     }
   ],
   "priorityDetails": [],
@@ -1382,20 +1382,6 @@
       ]
     },
     {
-      "place": "西谷",
-      "railwayA": "odpt.Railway:Sotetsu.Main",
-      "railwayAName": "相鉄本線",
-      "railwayB": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
-      "railwayBName": "相鉄新横浜線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
       "place": "青砥",
       "railwayA": "odpt.Railway:Keisei.Main",
       "railwayAName": "京成本線",
@@ -1418,20 +1404,6 @@
       "distanceMeters": null,
       "fallbackMinutes": 5,
       "sources": [
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "川越",
-      "railwayA": "odpt.Railway:JR-East.Kawagoe",
-      "railwayAName": "川越線(川越-高麗川間)",
-      "railwayB": "odpt.Railway:JR-East.SaikyoKawagoe",
-      "railwayBName": "埼京線・川越線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
         "same-place-group"
       ]
     },
