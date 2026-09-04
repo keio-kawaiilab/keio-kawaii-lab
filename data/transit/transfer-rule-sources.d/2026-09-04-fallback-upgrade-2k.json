@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換（安全側）",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "id": "元住吉-目黒線-東横線",
+      "place": "元住吉",
+      "railwayA": "odpt.Railway:Tokyu.Meguro",
+      "railwayB": "odpt.Railway:Tokyu.Toyoko",
+      "minutes": 1,
+      "source": "https://www.ecomo-rakuraku.jp/ja/station/%E5%85%83%E4%BD%8F%E5%90%89/",
+      "sourceType": "same-platform transfer guidance for both directions; 1-minute safety buffer consistent with existing project rules"
+    },
+    {
+      "id": "新丸子-目黒線-東横線",
+      "place": "新丸子",
+      "railwayA": "odpt.Railway:Tokyu.Meguro",
+      "railwayB": "odpt.Railway:Tokyu.Toyoko",
+      "minutes": 1,
+      "source": "https://www.ecomo-rakuraku.jp/ja/station/%E6%96%B0%E4%B8%B8%E5%AD%90/",
+      "sourceType": "same-platform transfer guidance for both directions; 1-minute safety buffer consistent with existing project rules"
+    }
+  ]
+}
