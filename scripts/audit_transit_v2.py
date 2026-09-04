@@ -75,6 +75,9 @@ def main() -> int:
     kind_operator: dict[str, Counter[str]] = defaultdict(Counter)
     kind_railway: dict[str, Counter[str]] = defaultdict(Counter)
     examples: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    route_demands: Counter[tuple[str, str]] = Counter()
+    route_demand_destinations: dict[tuple[str, str], Counter[str]] = defaultdict(Counter)
+    missing_link_prefixes: Counter[tuple[str, str]] = Counter()
 
     for row in unresolved:
         kind = str(row.get('kind') or 'unknown')
@@ -93,6 +96,24 @@ def main() -> int:
             sample['_context'] = context
             examples[kind].append(sample)
 
+        if kind == 'published-destination-route-no-path':
+            source = str(row.get('railway') or railway or 'unknown')
+            targets = [str(value) for value in row.get('targetRailways') or [] if value]
+            destinations = [str(value) for value in row.get('destination') or [] if value]
+            for target in targets or ['unknown']:
+                key = (source, target)
+                route_demands[key] += 1
+                for destination in destinations:
+                    route_demand_destinations[key][destination] += 1
+
+        if kind.startswith('missing-authoritative-linked-timetable'):
+            source_tt = str(row.get('fromTimetable') or '')
+            target_tt = str(row.get('toTimetable') or '')
+            def prefix(value: str) -> str:
+                parts = value.split('.')
+                return '.'.join(parts[:3]) if len(parts) >= 3 else value or 'unknown'
+            missing_link_prefixes[(prefix(source_tt), prefix(target_tt))] += 1
+
     def sorted_counter(counter: Counter[str]) -> list[dict[str, Any]]:
         return [{'key': key, 'count': count} for key, count in counter.most_common()]
 
@@ -106,8 +127,20 @@ def main() -> int:
             'examples': examples[kind],
         })
 
+    route_demand_rows = []
+    for (source, target), count in route_demands.most_common():
+        route_demand_rows.append({
+            'fromRailway': source,
+            'targetRailway': target,
+            'count': count,
+            'topDestinations': [
+                {'station': station, 'count': station_count}
+                for station, station_count in route_demand_destinations[(source, target)].most_common(8)
+            ],
+        })
+
     result = {
-        'version': 1,
+        'version': 2,
         'generatedAt': datetime.now(timezone.utc).isoformat(),
         'totalUnresolved': len(unresolved),
         'coverageSummary': coverage.get('summary') or {},
@@ -115,6 +148,11 @@ def main() -> int:
         'byOperator': sorted_counter(by_operator),
         'byRailway': sorted_counter(by_railway),
         'bySourceKind': sorted_counter(by_source_kind),
+        'missingRouteDemands': route_demand_rows,
+        'missingAuthoritativeLinkPrefixes': [
+            {'from': source, 'to': target, 'count': count}
+            for (source, target), count in missing_link_prefixes.most_common()
+        ],
         'policy': {
             'unknownMayBePromotedToSameTrain': False,
             'trainNumberAloneMayResolve': False,
@@ -126,6 +164,8 @@ def main() -> int:
         'totalUnresolved': result['totalUnresolved'],
         'topReasons': result['byReason'][:10],
         'topOperators': result['byOperator'][:10],
+        'topMissingRouteDemands': result['missingRouteDemands'][:20],
+        'topMissingAuthoritativeLinks': result['missingAuthoritativeLinkPrefixes'][:20],
     }, ensure_ascii=False, indent=2))
     return 0
 
