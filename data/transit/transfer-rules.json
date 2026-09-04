@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T00:51:04.872Z",
+  "generatedAt": "2026-09-04T00:51:37.371Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -52,6 +52,7 @@
     "transfer-rule-sources.d/2026-09-04-musashikosugi-hiyoshi.json",
     "transfer-rule-sources.d/2026-09-04-nishifunabashi.json",
     "transfer-rule-sources.d/2026-09-04-omiya-core.json",
+    "transfer-rule-sources.d/2026-09-04-shimbashi-crossop-remaining.json",
     "transfer-rule-sources.d/2026-09-04-shinjuku-marunouchi-jr.json",
     "transfer-rule-sources.d/2026-09-04-shinjuku-remaining-direct.json",
     "transfer-rule-sources.d/2026-09-04-tokyo-jr-core.json",
@@ -5327,6 +5328,58 @@
       "label": "標準・実測乗換（安全側）",
       "source": "https://honnne.com/blog/norikae-omiya/",
       "sourceType": "current transfer guide / measured route",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "新橋-常磐線快速-ゆりかもめ",
+      "fromStation": "odpt.Station:JR-East.JobanRapid.Shimbashi",
+      "toStation": "odpt.Station:Yurikamome.Yurikamome.Shimbashi",
+      "fromRailway": "odpt.Railway:JR-East.JobanRapid",
+      "toRailway": "odpt.Railway:Yurikamome.Yurikamome",
+      "minutes": 6,
+      "bidirectional": true,
+      "label": "標準乗換（共用ホーム適用）",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shimbashi/tokaido_line_jr_east-yurikamome.html",
+      "sourceType": "current standard transfer guide / shared-platform verification",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "新橋-常磐線快速-銀座線",
+      "fromStation": "odpt.Station:JR-East.JobanRapid.Shimbashi",
+      "toStation": "odpt.Station:TokyoMetro.Ginza.Shimbashi",
+      "fromRailway": "odpt.Railway:JR-East.JobanRapid",
+      "toRailway": "odpt.Railway:TokyoMetro.Ginza",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準乗換（共用ホーム適用）",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shimbashi/tokaido_line_jr_east-tokyo-metro_ginza_line.html",
+      "sourceType": "current standard transfer guide / shared-platform verification",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "新橋-常磐線快速-浅草線",
+      "fromStation": "odpt.Station:JR-East.JobanRapid.Shimbashi",
+      "toStation": "odpt.Station:Toei.Asakusa.Shimbashi",
+      "fromRailway": "odpt.Railway:JR-East.JobanRapid",
+      "toRailway": "odpt.Railway:Toei.Asakusa",
+      "minutes": 6,
+      "bidirectional": true,
+      "label": "標準乗換（共用ホーム適用）",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shimbashi/tokaido_line_jr_east-toei_subway-asakusa_line.html",
+      "sourceType": "current standard transfer guide / shared-platform verification",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "新橋-銀座線-浅草線",
+      "fromStation": "odpt.Station:TokyoMetro.Ginza.Shimbashi",
+      "toStation": "odpt.Station:Toei.Asakusa.Shimbashi",
+      "fromRailway": "odpt.Railway:TokyoMetro.Ginza",
+      "toRailway": "odpt.Railway:Toei.Asakusa",
+      "minutes": 6,
+      "bidirectional": true,
+      "label": "標準乗換（共用ホーム適用）",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shimbashi/tokyo-metro_ginza_line-toei_subway-asakusa_line.html",
+      "sourceType": "current standard transfer guide / shared-platform verification",
       "verifiedAt": "2026-09-04"
     },
     {
