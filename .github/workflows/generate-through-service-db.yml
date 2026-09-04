@@ -9,6 +9,7 @@ on:
       - 'data/transit/**/entities.json'
       - 'data/transit/manifest.json'
       - 'data/transit/through-service-boundaries.json'
+      - 'data/transit/through-service-families.json'
       - 'scripts/build-through-service-db.mjs'
       - '.github/workflows/generate-through-service-db.yml'
 
@@ -25,12 +26,18 @@ jobs:
       - name: Validate generated JSON
         run: |
           node -e "JSON.parse(require('fs').readFileSync('data/transit/through-service-trips.json','utf8')); JSON.parse(require('fs').readFileSync('data/transit/through-service-coverage.json','utf8'));"
-      - name: Assert policy forbids time-gap identity inference
+      - name: Assert strict identity policy
         run: |
           node - <<'NODE'
           const b=require('./data/transit/through-service-boundaries.json');
-          if(b.policy.runtimeInference!==false)throw new Error('runtimeInference must be false');
-          if(b.policy.timeGapMayEstablishTrainIdentity!==false)throw new Error('time-gap identity inference must be false');
+          const f=require('./data/transit/through-service-families.json');
+          const t=require('./data/transit/through-service-trips.json');
+          for(const policy of [b.policy,f.policy,t.policy]){
+            if(policy.runtimeInference!==false)throw new Error('runtimeInference must be false');
+            if(policy.timeGapMayEstablishTrainIdentity!==false)throw new Error('time-gap identity inference must be false');
+          }
+          if(f.policy.genericBoundaryChaining!==false)throw new Error('generic boundary chaining must be false');
+          if(t.policy.genericBoundaryChaining!==false)throw new Error('generated DB must forbid generic boundary chaining');
           NODE
       - name: Commit generated DB
         run: |
