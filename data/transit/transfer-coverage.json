@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-04T02:12:05.995Z",
+  "generatedAt": "2026-09-04T02:12:39.299Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T02:11:50.462Z",
+  "rulesGeneratedAt": "2026-09-04T02:12:25.283Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 580,
-    "uncuratedPairs": 373,
+    "curatedPairs": 585,
+    "uncuratedPairs": 368,
     "blockedPairs": 7,
-    "curatedSourceRules": 580,
+    "curatedSourceRules": 585,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -130,16 +130,6 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 4,
-      "priorityScore": 6
-    },
-    {
-      "place": "品川",
-      "totalPairs": 15,
-      "curatedPairs": 9,
-      "uncuratedPairs": 6,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 6,
       "priorityScore": 6
     },
     {
@@ -1004,6 +994,16 @@
     },
     {
       "place": "北朝霞 ↔ 朝霞台",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 2,
+      "priorityScore": 2.5
+    },
+    {
+      "place": "本八幡",
       "totalPairs": 1,
       "curatedPairs": 0,
       "uncuratedPairs": 1,
@@ -2499,97 +2499,6 @@
       ]
     },
     {
-      "place": "品川",
-      "totalPairs": 15,
-      "curatedPairs": 9,
-      "uncuratedPairs": 6,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 6,
-      "priorityScore": 6,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:JR-East.Yokosuka",
-          "railwayBName": "横須賀線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:JR-East.Tokaido",
-          "railwayBName": "東海道線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.JobanRapid",
-          "railwayAName": "常磐線快速",
-          "railwayB": "odpt.Railway:JR-East.Yokosuka",
-          "railwayBName": "横須賀線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.JobanRapid",
-          "railwayAName": "常磐線快速",
-          "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayBName": "京浜東北線・根岸線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.JobanRapid",
-          "railwayAName": "常磐線快速",
-          "railwayB": "odpt.Railway:JR-East.Yamanote",
-          "railwayBName": "山手線",
-          "sameOperator": true,
-          "distanceMeters": 82,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.JobanRapid",
-          "railwayAName": "常磐線快速",
-          "railwayB": "odpt.Railway:JR-East.Tokaido",
-          "railwayBName": "東海道線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
       "place": "渋谷",
       "totalPairs": 36,
       "curatedPairs": 33,
@@ -3459,6 +3368,58 @@
           "railwayAName": "常磐線各駅停車",
           "railwayB": "odpt.Railway:JR-East.JobanRapid",
           "railwayBName": "常磐線快速",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ]
+    },
+    {
+      "place": "成田",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 3,
+      "crossOperatorPairs": [],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:JR-East.Narita",
+          "railwayAName": "成田線",
+          "railwayB": "odpt.Railway:JR-East.NaritaAbikoBranch",
+          "railwayBName": "成田線我孫子支線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.Narita",
+          "railwayAName": "成田線",
+          "railwayB": "odpt.Railway:JR-East.NaritaAirportBranch",
+          "railwayBName": "成田線空港支線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.NaritaAbikoBranch",
+          "railwayAName": "成田線我孫子支線",
+          "railwayB": "odpt.Railway:JR-East.NaritaAirportBranch",
+          "railwayBName": "成田線空港支線",
           "sameOperator": true,
           "distanceMeters": 0,
           "fallbackMinutes": 5,
@@ -7935,76 +7896,6 @@
       "railwayBName": "半蔵門線",
       "sameOperator": true,
       "distanceMeters": 109,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "品川",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:JR-East.Yokosuka",
-      "railwayBName": "横須賀線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "品川",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:JR-East.Tokaido",
-      "railwayBName": "東海道線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "品川",
-      "railwayA": "odpt.Railway:JR-East.JobanRapid",
-      "railwayAName": "常磐線快速",
-      "railwayB": "odpt.Railway:JR-East.Yokosuka",
-      "railwayBName": "横須賀線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "品川",
-      "railwayA": "odpt.Railway:JR-East.JobanRapid",
-      "railwayAName": "常磐線快速",
-      "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayBName": "京浜東北線・根岸線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "品川",
-      "railwayA": "odpt.Railway:JR-East.JobanRapid",
-      "railwayAName": "常磐線快速",
-      "railwayB": "odpt.Railway:JR-East.Yamanote",
-      "railwayBName": "山手線",
-      "sameOperator": true,
-      "distanceMeters": 82,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
