@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-04T01:44:23.739Z",
+  "generatedAt": "2026-09-04T01:44:58.819Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T01:44:08.789Z",
+  "rulesGeneratedAt": "2026-09-04T01:44:44.278Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 543,
-    "uncuratedPairs": 410,
+    "curatedPairs": 549,
+    "uncuratedPairs": 404,
     "blockedPairs": 7,
-    "curatedSourceRules": 543,
+    "curatedSourceRules": 549,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -41,16 +41,6 @@
       "crossOperatorUncuratedPairs": 4,
       "railwayCount": 11,
       "priorityScore": 12
-    },
-    {
-      "place": "渋谷",
-      "totalPairs": 36,
-      "curatedPairs": 29,
-      "uncuratedPairs": 7,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 3,
-      "railwayCount": 9,
-      "priorityScore": 11.5
     },
     {
       "place": "戸塚",
@@ -99,16 +89,6 @@
       "uncuratedPairs": 10,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 5,
-      "priorityScore": 10
-    },
-    {
-      "place": "北千住",
-      "totalPairs": 10,
-      "curatedPairs": 6,
-      "uncuratedPairs": 4,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 4,
       "railwayCount": 5,
       "priorityScore": 10
     },
@@ -180,6 +160,16 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 4,
+      "priorityScore": 6
+    },
+    {
+      "place": "渋谷",
+      "totalPairs": 36,
+      "curatedPairs": 33,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 2,
+      "railwayCount": 9,
       "priorityScore": 6
     },
     {
@@ -271,6 +261,16 @@
       "crossOperatorUncuratedPairs": 1,
       "railwayCount": 4,
       "priorityScore": 5.5
+    },
+    {
+      "place": "北千住",
+      "totalPairs": 10,
+      "curatedPairs": 8,
+      "uncuratedPairs": 2,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 2,
+      "railwayCount": 5,
+      "priorityScore": 5
     },
     {
       "place": "さいたま新都心",
@@ -1588,111 +1588,6 @@
       ]
     },
     {
-      "place": "渋谷",
-      "totalPairs": 36,
-      "curatedPairs": 29,
-      "uncuratedPairs": 7,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 3,
-      "railwayCount": 9,
-      "priorityScore": 11.5,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Hanzomon",
-          "railwayAName": "半蔵門線",
-          "railwayB": "odpt.Railway:Tokyu.DenEnToshi",
-          "railwayBName": "田園都市線",
-          "sameOperator": false,
-          "distanceMeters": 17,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
-          "railwayAName": "副都心線",
-          "railwayB": "odpt.Railway:Tokyu.DenEnToshi",
-          "railwayBName": "田園都市線",
-          "sameOperator": false,
-          "distanceMeters": 142,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
-          "railwayAName": "副都心線",
-          "railwayB": "odpt.Railway:Tokyu.Toyoko",
-          "railwayBName": "東横線",
-          "sameOperator": false,
-          "distanceMeters": 142,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
-          "railwayAName": "埼京線・川越線",
-          "railwayB": "odpt.Railway:JR-East.Yamanote",
-          "railwayBName": "山手線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
-          "railwayAName": "埼京線・川越線",
-          "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
-          "railwayBName": "湘南新宿ライン",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
-          "railwayAName": "湘南新宿ライン",
-          "railwayB": "odpt.Railway:JR-East.Yamanote",
-          "railwayBName": "山手線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
-          "railwayAName": "副都心線",
-          "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
-          "railwayBName": "半蔵門線",
-          "sameOperator": true,
-          "distanceMeters": 144,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
       "place": "戸塚",
       "totalPairs": 6,
       "curatedPairs": 0,
@@ -2304,71 +2199,6 @@
           ]
         }
       ]
-    },
-    {
-      "place": "北千住",
-      "totalPairs": 10,
-      "curatedPairs": 6,
-      "uncuratedPairs": 4,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 4,
-      "railwayCount": 5,
-      "priorityScore": 10,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:MIR.TsukubaExpress",
-          "railwayAName": "つくばエクスプレス",
-          "railwayB": "odpt.Railway:Tobu.TobuSkytree",
-          "railwayBName": "東武スカイツリーライン",
-          "sameOperator": false,
-          "distanceMeters": 22,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:MIR.TsukubaExpress",
-          "railwayAName": "つくばエクスプレス",
-          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-          "railwayBName": "日比谷線",
-          "sameOperator": false,
-          "distanceMeters": 29,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.JobanRapid",
-          "railwayAName": "常磐線快速",
-          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-          "railwayBName": "日比谷線",
-          "sameOperator": false,
-          "distanceMeters": 146,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Tobu.TobuSkytree",
-          "railwayAName": "東武スカイツリーライン",
-          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-          "railwayBName": "日比谷線",
-          "sameOperator": false,
-          "distanceMeters": 11,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": []
     },
     {
       "place": "横浜",
@@ -3036,6 +2866,59 @@
       ]
     },
     {
+      "place": "渋谷",
+      "totalPairs": 36,
+      "curatedPairs": 33,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 2,
+      "railwayCount": 9,
+      "priorityScore": 6,
+      "crossOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:TokyoMetro.Hanzomon",
+          "railwayAName": "半蔵門線",
+          "railwayB": "odpt.Railway:Tokyu.DenEnToshi",
+          "railwayBName": "田園都市線",
+          "sameOperator": false,
+          "distanceMeters": 17,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
+          "railwayAName": "副都心線",
+          "railwayB": "odpt.Railway:Tokyu.Toyoko",
+          "railwayBName": "東横線",
+          "sameOperator": false,
+          "distanceMeters": 142,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+          "railwayAName": "埼京線・川越線",
+          "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
+          "railwayBName": "湘南新宿ライン",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ]
+    },
+    {
       "place": "小竹向原",
       "totalPairs": 3,
       "curatedPairs": 0,
@@ -3536,6 +3419,45 @@
           ]
         }
       ]
+    },
+    {
+      "place": "北千住",
+      "totalPairs": 10,
+      "curatedPairs": 8,
+      "uncuratedPairs": 2,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 2,
+      "railwayCount": 5,
+      "priorityScore": 5,
+      "crossOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:JR-East.JobanRapid",
+          "railwayAName": "常磐線快速",
+          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+          "railwayBName": "日比谷線",
+          "sameOperator": false,
+          "distanceMeters": 146,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:Tobu.TobuSkytree",
+          "railwayAName": "東武スカイツリーライン",
+          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+          "railwayBName": "日比谷線",
+          "sameOperator": false,
+          "distanceMeters": 11,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ],
+      "sameOperatorPairs": []
     },
     {
       "place": "さいたま新都心",
@@ -5349,36 +5271,8 @@
       "place": "渋谷",
       "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
       "railwayAName": "埼京線・川越線",
-      "railwayB": "odpt.Railway:JR-East.Yamanote",
-      "railwayBName": "山手線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "渋谷",
-      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
-      "railwayAName": "埼京線・川越線",
       "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
       "railwayBName": "湘南新宿ライン",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "渋谷",
-      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
-      "railwayAName": "湘南新宿ライン",
-      "railwayB": "odpt.Railway:JR-East.Yamanote",
-      "railwayBName": "山手線",
       "sameOperator": true,
       "distanceMeters": 0,
       "fallbackMinutes": 5,
@@ -5405,38 +5299,10 @@
       "place": "渋谷",
       "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
       "railwayAName": "副都心線",
-      "railwayB": "odpt.Railway:Tokyu.DenEnToshi",
-      "railwayBName": "田園都市線",
-      "sameOperator": false,
-      "distanceMeters": 142,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "渋谷",
-      "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
-      "railwayAName": "副都心線",
       "railwayB": "odpt.Railway:Tokyu.Toyoko",
       "railwayBName": "東横線",
       "sameOperator": false,
       "distanceMeters": 142,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "渋谷",
-      "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
-      "railwayAName": "副都心線",
-      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
-      "railwayBName": "半蔵門線",
-      "sameOperator": true,
-      "distanceMeters": 144,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
@@ -8997,34 +8863,6 @@
       "distanceMeters": 111,
       "fallbackMinutes": 5,
       "sources": [
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "北千住",
-      "railwayA": "odpt.Railway:MIR.TsukubaExpress",
-      "railwayAName": "つくばエクスプレス",
-      "railwayB": "odpt.Railway:Tobu.TobuSkytree",
-      "railwayBName": "東武スカイツリーライン",
-      "sameOperator": false,
-      "distanceMeters": 22,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "北千住",
-      "railwayA": "odpt.Railway:MIR.TsukubaExpress",
-      "railwayAName": "つくばエクスプレス",
-      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-      "railwayBName": "日比谷線",
-      "sameOperator": false,
-      "distanceMeters": 29,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
         "same-place-group"
       ]
     },
