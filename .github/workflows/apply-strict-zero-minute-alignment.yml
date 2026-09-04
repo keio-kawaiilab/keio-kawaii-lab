@@ -1,0 +1,67 @@
+name: Apply strict zero-minute boundary alignment
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-strict-zero-minute-alignment.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Patch physically impossible zero-minute cross-station candidates
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path=Path('scripts/build_transit_v2.py')
+          text=path.read_text(encoding='utf-8')
+          old="""            ok, delta = candidate_alignment(source, target)\n            if ok:\n                candidates.append((target, delta))\n"""
+          new="""            ok, delta = candidate_alignment(source, target)\n            if ok and delta == 0:\n                # A train cannot move between two different physical stations\n                # in zero minutes.  Reject only that impossible candidate; this\n                # does not use elapsed time to establish train identity.  Zero\n                # minutes remains valid when the two line-scoped Station IDs\n                # represent the same physical boundary station.\n                source_station = str(source_stops[-1][0] or '')\n                target_station = str(target_stops[0][0] or '')\n                source_title = str(indexes['stationTitle'].get(source_station) or '')\n                target_title = str(indexes['stationTitle'].get(target_station) or '')\n                same_physical_station = (\n                    source_station == target_station\n                    or bool(source_title and target_title and source_title == target_title)\n                )\n                if not same_physical_station:\n                    continue\n            if ok:\n                candidates.append((target, delta))\n"""
+          if old not in text:
+              raise SystemExit('alignment patch target not found')
+          path.write_text(text.replace(old,new,1),encoding='utf-8')
+          PY
+      - name: Run strict alignment regression tests
+        run: |
+          python scripts/test_transit_v2_alignment.py
+      - name: Re-finalize current transit v2 and audit
+        run: |
+          python scripts/finalize_transit_v2.py
+          python scripts/audit_transit_v2.py
+          python - <<'PY'
+          import json
+          from collections import Counter
+          from pathlib import Path
+          c=json.loads(Path('data/transit-v2/coverage.json').read_text(encoding='utf-8'))
+          unresolved=c.get('unresolved') or []
+          ambiguous=[u for u in unresolved if u.get('kind')=='ambiguous-boundary-fragment-alignment']
+          fragments={}
+          for p in Path('data/transit-v2/fragments').glob('*.json'):
+              for f in json.loads(p.read_text(encoding='utf-8')).get('fragments') or []:
+                  fragments[str(f.get('id') or '')]=f
+          byop=Counter(str((fragments.get(str(u.get('fragment'))) or {}).get('sourceOperator') or '') for u in ambiguous)
+          total=int((c.get('summary') or {}).get('unresolved') or 0)
+          print('UNRESOLVED_TOTAL',total)
+          print('AMBIGUOUS_BY_OPERATOR',dict(sorted(byop.items())))
+          assert total < 38, total
+          assert byop.get('seibu',0) == 0, byop
+          assert byop.get('odakyu',0) == 0, byop
+          PY
+      - name: Commit strict alignment fix and regenerated runtime DB
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/build_transit_v2.py scripts/test_transit_v2_alignment.py data/transit-v2
+          git commit -m "Reject impossible zero-minute cross-station through matches"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
