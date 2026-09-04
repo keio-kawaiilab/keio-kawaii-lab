@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "押上",
+      "railwayA": "odpt.Railway:Keisei.Oshiage",
+      "railwayB": "odpt.Railway:Toei.Asakusa",
+      "railwayAName": "押上線",
+      "railwayBName": "浅草線",
+      "minutes": 1,
+      "label": "直通境界・安全側",
+      "source": "https://www.keisei.co.jp/keisei/tetudou/accessj/oshiage.php",
+      "sourceType": "京成公式が都営浅草線との直通運転を明記。直通列車以外で同一境界の乗継を扱うため1分の安全バッファ"
+    },
+    {
+      "place": "赤坂見附",
+      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayAName": "銀座線",
+      "railwayBName": "丸ノ内線",
+      "minutes": 2,
+      "label": "標準乗換（安全側）",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/akasakamitsuke/tokyo-metro_ginza_line-tokyo-metro_marunouchi_line.html",
+      "sourceType": "ジョルダン標準乗換時間は方向により1～2分。方向非依存DBのため安全側の2分"
+    },
+    {
+      "place": "溜池山王",
+      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
+      "railwayAName": "銀座線",
+      "railwayBName": "南北線",
+      "minutes": 3,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tameikesanno/tokyo-metro_ginza_line-tokyo-metro_nanboku_line.html",
+      "sourceType": "ジョルダン標準乗換時間3分"
+    }
+  ]
+}
