@@ -1,0 +1,71 @@
+{
+  "defaults": {
+    "bidirectional": true,
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "銀座",
+      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+      "minutes": 3,
+      "label": "標準乗換",
+      "sourceUrl": "https://wadattsu261.com/content/ginza-metroginza-hibiyaline-transfer-information/",
+      "sourceType": "current platform-to-platform transfer guide"
+    },
+    {
+      "place": "銀座",
+      "railwayA": "odpt.Railway:TokyoMetro.Hibiya",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "minutes": 3,
+      "label": "標準乗換",
+      "sourceUrl": "https://wadattsu261.com/content/ginza-metrohibiya-marunouchiline-transfer-information/",
+      "sourceType": "current platform-to-platform transfer guide"
+    },
+    {
+      "place": "銀座",
+      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "minutes": 6,
+      "label": "標準乗換（安全側）",
+      "sourceUrl": "https://norikae-annai.jp/ginza/ginza-line-to-marunouchi-line.html",
+      "sourceType": "measured platform-to-platform transfer; conservative upper bound"
+    },
+    {
+      "place": "霞ケ関",
+      "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+      "minutes": 5,
+      "label": "標準乗換（安全側）",
+      "sourceUrl": "https://wadattsu261.com/content/kasumigaseki-metrochiyoda-hibiyaline-transfer-information/",
+      "sourceType": "current platform-to-platform transfer guide; conservative upper bound"
+    },
+    {
+      "place": "霞ケ関",
+      "railwayA": "odpt.Railway:TokyoMetro.Hibiya",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "minutes": 3,
+      "label": "標準乗換",
+      "sourceUrl": "https://wadattsu261.com/content/kasumigaseki-metrohibiya-marunouchiline-transfer-information/",
+      "sourceType": "current platform-to-platform transfer guide"
+    },
+    {
+      "place": "中野坂上",
+      "railwayA": "odpt.Railway:Toei.Oedo",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "minutes": 5,
+      "label": "標準乗換",
+      "sourceUrl": "https://wadattsu261.com/content/nakanosakaue-toeioedo-metromarunouchiline-transfer-information/",
+      "sourceType": "current platform-to-platform transfer guide"
+    },
+    {
+      "place": "中野坂上",
+      "railwayA": "odpt.Railway:Toei.Oedo",
+      "railwayB": "odpt.Railway:TokyoMetro.MarunouchiBranch",
+      "minutes": 5,
+      "label": "標準乗換",
+      "sourceUrl": "https://wadattsu261.com/content/nakanosakaue-toeioedo-metromarunouchiline-transfer-information/",
+      "sourceType": "current platform-to-platform transfer guide"
+    }
+  ]
+}
