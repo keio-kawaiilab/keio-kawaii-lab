@@ -78,7 +78,7 @@ jobs:
       - name: Restore Keisei official train timetable when collected
         shell: bash
         run: |
-          python - <<'PY'
+          if python - <<'PY'
           import json, pathlib, sys
           p=pathlib.Path('data/transit/keisei/official-train-details.json')
           if not p.exists() or not p.read_text(encoding='utf-8').strip():
@@ -86,13 +86,12 @@ jobs:
           data=json.loads(p.read_text(encoding='utf-8'))
           sys.exit(0 if int(data.get('trainCount') or 0) > 0 else 1)
           PY
-          status=$?
-          if [ "$status" -ne 0 ]; then
+          then
+            python scripts/build_keisei_official_timetables.py
+            python scripts/build_keisei_network_timetable.py
+          else
             echo "Keisei official train details are not populated yet; skip reconstruction."
-            exit 0
           fi
-          python scripts/build_keisei_official_timetables.py
-          python scripts/build_keisei_network_timetable.py
 
       - name: Build train-centric v2 database
         run: python scripts/build_transit_v2.py
