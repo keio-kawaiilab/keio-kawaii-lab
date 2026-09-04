@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-04T01:28:02.481Z",
+  "generatedAt": "2026-09-04T01:29:56.820Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T01:27:46.618Z",
+  "rulesGeneratedAt": "2026-09-04T01:29:38.152Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 500,
-    "uncuratedPairs": 453,
+    "curatedPairs": 512,
+    "uncuratedPairs": 441,
     "blockedPairs": 7,
-    "curatedSourceRules": 500,
+    "curatedSourceRules": 512,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -330,66 +330,6 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 5,
-      "priorityScore": 5
-    },
-    {
-      "place": "王子 ↔ 王子駅前",
-      "totalPairs": 2,
-      "curatedPairs": 0,
-      "uncuratedPairs": 2,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 2,
-      "railwayCount": 3,
-      "priorityScore": 5
-    },
-    {
-      "place": "京成船橋 ↔ 船橋",
-      "totalPairs": 2,
-      "curatedPairs": 0,
-      "uncuratedPairs": 2,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 2,
-      "railwayCount": 3,
-      "priorityScore": 5
-    },
-    {
-      "place": "原宿 ↔ 明治神宮前〈原宿〉",
-      "totalPairs": 2,
-      "curatedPairs": 0,
-      "uncuratedPairs": 2,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 2,
-      "railwayCount": 3,
-      "priorityScore": 5
-    },
-    {
-      "place": "御徒町 ↔ 上野御徒町",
-      "totalPairs": 2,
-      "curatedPairs": 0,
-      "uncuratedPairs": 2,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 2,
-      "railwayCount": 3,
-      "priorityScore": 5
-    },
-    {
-      "place": "鶴見 ↔ 京急鶴見",
-      "totalPairs": 2,
-      "curatedPairs": 0,
-      "uncuratedPairs": 2,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 2,
-      "railwayCount": 3,
-      "priorityScore": 5
-    },
-    {
-      "place": "東神奈川 ↔ 京急東神奈川",
-      "totalPairs": 2,
-      "curatedPairs": 0,
-      "uncuratedPairs": 2,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 2,
-      "railwayCount": 3,
       "priorityScore": 5
     },
     {
@@ -1004,6 +944,66 @@
     },
     {
       "place": "大塚 ↔ 大塚駅前",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 2,
+      "priorityScore": 2.5
+    },
+    {
+      "place": "中央林間",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 2,
+      "priorityScore": 2.5
+    },
+    {
+      "place": "中目黒",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 2,
+      "priorityScore": 2.5
+    },
+    {
+      "place": "仲御徒町 ↔ 上野御徒町",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 2,
+      "priorityScore": 2.5
+    },
+    {
+      "place": "町屋",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 2,
+      "priorityScore": 2.5
+    },
+    {
+      "place": "町屋 ↔ 町屋駅前",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 2,
+      "priorityScore": 2.5
+    },
+    {
+      "place": "町屋駅前 ↔ 町屋",
       "totalPairs": 1,
       "curatedPairs": 0,
       "uncuratedPairs": 1,
@@ -4277,32 +4277,6 @@
       ]
     },
     {
-      "place": "王子 ↔ 王子駅前",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:Toei.Arakawa",
-      "railwayBName": "東京さくらトラム（都電荒川線）",
-      "sameOperator": false,
-      "distanceMeters": 75,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "王子 ↔ 王子駅前",
-      "railwayA": "odpt.Railway:Toei.Arakawa",
-      "railwayAName": "東京さくらトラム（都電荒川線）",
-      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
-      "railwayBName": "南北線",
-      "sameOperator": false,
-      "distanceMeters": 177,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
       "place": "荻窪",
       "railwayA": "odpt.Railway:JR-East.ChuoRapid",
       "railwayAName": "中央線快速",
@@ -4647,32 +4621,6 @@
       ]
     },
     {
-      "place": "京成船橋 ↔ 船橋",
-      "railwayA": "odpt.Railway:JR-East.SobuRapid",
-      "railwayAName": "総武快速線",
-      "railwayB": "odpt.Railway:Keisei.Main",
-      "railwayBName": "京成本線",
-      "sameOperator": false,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "京成船橋 ↔ 船橋",
-      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
-      "railwayAName": "中央・総武各駅停車",
-      "railwayB": "odpt.Railway:Keisei.Main",
-      "railwayBName": "京成本線",
-      "sameOperator": false,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
       "place": "京成津田沼",
       "railwayA": "odpt.Railway:Keisei.Main",
       "railwayAName": "京成本線",
@@ -4876,32 +4824,6 @@
       ]
     },
     {
-      "place": "原宿 ↔ 明治神宮前〈原宿〉",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
-      "railwayBName": "千代田線",
-      "sameOperator": false,
-      "distanceMeters": 267,
-      "fallbackMinutes": 6,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "原宿 ↔ 明治神宮前〈原宿〉",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:TokyoMetro.Fukutoshin",
-      "railwayBName": "副都心線",
-      "sameOperator": false,
-      "distanceMeters": 413,
-      "fallbackMinutes": 8,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
       "place": "戸塚",
       "railwayA": "odpt.Railway:JR-East.Yokosuka",
       "railwayAName": "横須賀線",
@@ -5052,32 +4974,6 @@
       "sources": [
         "connecting-station",
         "same-place-group"
-      ]
-    },
-    {
-      "place": "御徒町 ↔ 上野御徒町",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:Toei.Oedo",
-      "railwayBName": "大江戸線",
-      "sameOperator": false,
-      "distanceMeters": 149,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "御徒町 ↔ 上野御徒町",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:Toei.Oedo",
-      "railwayBName": "大江戸線",
-      "sameOperator": false,
-      "distanceMeters": 149,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station"
       ]
     },
     {
@@ -8289,32 +8185,6 @@
       ]
     },
     {
-      "place": "鶴見 ↔ 京急鶴見",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:Keikyu.Main",
-      "railwayBName": "京急本線",
-      "sameOperator": false,
-      "distanceMeters": 215,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "鶴見 ↔ 京急鶴見",
-      "railwayA": "odpt.Railway:JR-East.Tsurumi",
-      "railwayAName": "鶴見線",
-      "railwayB": "odpt.Railway:Keikyu.Main",
-      "railwayBName": "京急本線",
-      "sameOperator": false,
-      "distanceMeters": 217,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
       "place": "天王台",
       "railwayA": "odpt.Railway:JR-East.JobanLocal",
       "railwayAName": "常磐線各駅停車",
@@ -8746,32 +8616,6 @@
       "sources": [
         "connecting-station",
         "same-place-group"
-      ]
-    },
-    {
-      "place": "東神奈川 ↔ 京急東神奈川",
-      "railwayA": "odpt.Railway:JR-East.Yokohama",
-      "railwayAName": "横浜線",
-      "railwayB": "odpt.Railway:Keikyu.Main",
-      "railwayBName": "京急本線",
-      "sameOperator": false,
-      "distanceMeters": 127,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "東神奈川 ↔ 京急東神奈川",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:Keikyu.Main",
-      "railwayBName": "京急本線",
-      "sameOperator": false,
-      "distanceMeters": 127,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station"
       ]
     },
     {
