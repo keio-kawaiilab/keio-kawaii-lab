@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T07:24:47.672Z",
+  "generatedAt": "2026-09-04T07:44:25.354Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -43,6 +43,7 @@
     "transfer-rule-sources.d/2026-09-04-crossop-batch-k.json",
     "transfer-rule-sources.d/2026-09-04-easy-gaps-8.json",
     "transfer-rule-sources.d/2026-09-04-ebisu-core.json",
+    "transfer-rule-sources.d/2026-09-04-final-exact-3.json",
     "transfer-rule-sources.d/2026-09-04-haijima-crossop.json",
     "transfer-rule-sources.d/2026-09-04-hibiya-yurakucho.json",
     "transfer-rule-sources.d/2026-09-04-higashimurayama-hibiya-6.json",
@@ -3582,6 +3583,45 @@
       "label": "ホーム間乗換",
       "source": "https://norikaemap.com/ebisu/0103/",
       "sourceType": "current platform-to-platform transfer guide",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "押上-押上線-浅草線",
+      "fromStation": "odpt.Station:Keisei.Oshiage.Oshiage",
+      "toStation": "odpt.Station:Toei.Asakusa.Oshiage",
+      "fromRailway": "odpt.Railway:Keisei.Oshiage",
+      "toRailway": "odpt.Railway:Toei.Asakusa",
+      "minutes": 1,
+      "bidirectional": true,
+      "label": "直通境界・安全側",
+      "source": "https://www.keisei.co.jp/keisei/tetudou/accessj/oshiage.php",
+      "sourceType": "京成公式が都営浅草線との直通運転を明記。直通列車以外で同一境界の乗継を扱うため1分の安全バッファ",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "赤坂見附-銀座線-丸ノ内線",
+      "fromStation": "odpt.Station:TokyoMetro.Ginza.AkasakaMitsuke",
+      "toStation": "odpt.Station:TokyoMetro.Marunouchi.AkasakaMitsuke",
+      "fromRailway": "odpt.Railway:TokyoMetro.Ginza",
+      "toRailway": "odpt.Railway:TokyoMetro.Marunouchi",
+      "minutes": 2,
+      "bidirectional": true,
+      "label": "標準乗換（安全側）",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/akasakamitsuke/tokyo-metro_ginza_line-tokyo-metro_marunouchi_line.html",
+      "sourceType": "ジョルダン標準乗換時間は方向により1～2分。方向非依存DBのため安全側の2分",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "溜池山王-銀座線-南北線",
+      "fromStation": "odpt.Station:TokyoMetro.Ginza.TameikeSanno",
+      "toStation": "odpt.Station:TokyoMetro.Namboku.TameikeSanno",
+      "fromRailway": "odpt.Railway:TokyoMetro.Ginza",
+      "toRailway": "odpt.Railway:TokyoMetro.Namboku",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tameikesanno/tokyo-metro_ginza_line-tokyo-metro_nanboku_line.html",
+      "sourceType": "ジョルダン標準乗換時間3分",
       "verifiedAt": "2026-09-04"
     },
     {
