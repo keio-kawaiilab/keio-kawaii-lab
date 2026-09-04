@@ -37,6 +37,8 @@ jobs:
       ODPT_IMPORT_TIMETABLES: ${{ vars.ODPT_IMPORT_TIMETABLES }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
@@ -48,7 +50,7 @@ jobs:
       - name: Test timetable importer and identity pipeline
         run: |
           node --check scripts/enrich-through-service-db.mjs
-          python -m py_compile scripts/collect_odpt_train_identity.py
+          python -m py_compile scripts/collect_odpt_train_identity.py scripts/finalize_transit_v2.py scripts/audit_transit_v2.py
           node scripts/test_odpt_train_identity_db.mjs
           python scripts/test_import_odpt_timetables.py
 
@@ -72,17 +74,35 @@ jobs:
         if: steps.import.outputs.ran == 'true'
         run: node scripts/test_transit_snapshot.js
 
+      - name: Rebuild and audit strict transit v2
+        if: steps.import.outputs.ran == 'true'
+        run: |
+          python scripts/finalize_transit_v2.py
+          python scripts/audit_transit_v2.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          coverage = json.loads(Path('data/transit-v2/coverage.json').read_text(encoding='utf-8'))
+          audit = json.loads(Path('data/transit-v2/unresolved-summary.json').read_text(encoding='utf-8'))
+          policy = audit['policy']
+          assert policy['unknownMayBePromotedToSameTrain'] is False
+          assert policy['trainNumberAloneMayResolve'] is False
+          assert policy['timeGapAloneMayResolve'] is False
+          assert audit['totalUnresolved'] == int(coverage['summary'].get('unresolved') or 0)
+          print('strict transit-v2 unresolved:', audit['totalUnresolved'])
+          PY
+
       - name: Commit refreshed transit data
         if: steps.import.outputs.ran == 'true'
         shell: bash
         run: |
-          if git diff --quiet -- data/transit; then
+          if git diff --quiet -- data/transit data/transit-v2; then
             echo "No transit data changes."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/transit
+          git add data/transit data/transit-v2
           git commit -m "Update transit timetable snapshot"
           for attempt in 1 2 3; do
             git fetch origin main
