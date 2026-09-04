@@ -40,8 +40,8 @@ jobs:
           new = '''def destination_railways(destination: str, indexes: dict[str, Any]) -> set[str]:
               # Station IDs are railway-scoped. Expand a physical station only
               # inside the same operator as the published destination. This
-              # fixes line-specific IDs (e.g. Tokyu Nagatsuta) without turning
-              # ordinary interchanges such as Shinjuku into through services.
+              # fixes line-specific IDs without turning ordinary interchange
+              # stations into through-service evidence.
               result = set(indexes['stationRailways'].get(destination, set()))
               if result:
                   station_name = str(indexes['stationTitle'].get(destination) or '')
@@ -76,112 +76,73 @@ jobs:
           script.write_text(text.replace(old, new), encoding='utf-8')
 
           finalizer = Path('scripts/finalize_transit_v2.py')
-          ftext = finalizer.read_text(encoding='utf-8')
-          fold = '''        target_railways: set[str] = set()
-              for destination in destinations:
-                  target_railways.update(base.destination_railways(destination, indexes))
-              target_railways.discard(str(fragment.get('railway') or ''))
-              if not target_railways:
+          lines = finalizer.read_text(encoding='utf-8').splitlines(keepends=True)
+          marker = "        target_railways: set[str] = set()\n"
+          replacement = [
+              "        current_railway = str(fragment.get('railway') or '')\n",
+              "        target_railways: set[str] = set()\n",
+              "        external_destinations: list[str] = []\n",
+              "        for destination in destinations:\n",
+              "            resolved = base.destination_railways(destination, indexes)\n",
+              "            # If this physical destination exists on the current railway,\n",
+              "            # the fragment terminates there; a different line-scoped ID\n",
+              "            # must not manufacture a through train.\n",
+              "            if current_railway in resolved:\n",
+              "                continue\n",
+              "            external_destinations.append(destination)\n",
+              "            target_railways.update(resolved)\n",
+              "        target_railways.discard(current_railway)\n",
+              "        if not target_railways:\n",
+              "            continue\n",
+          ]
+          patched = False
+          for i, line in enumerate(lines):
+              if line != marker:
                   continue
-          '''
-          fnew = '''        current_railway = str(fragment.get('railway') or '')
-              target_railways: set[str] = set()
-              external_destinations: list[str] = []
-              for destination in destinations:
-                  resolved = base.destination_railways(destination, indexes)
-                  # If the published physical destination exists on the current
-                  # railway, this fragment simply terminates there. A different
-                  # line-scoped Station ID must not manufacture a through train.
-                  if current_railway in resolved:
-                      continue
-                  external_destinations.append(destination)
-                  target_railways.update(resolved)
-              target_railways.discard(current_railway)
-              if not target_railways:
+              expected = [
+                  "        for destination in destinations:\n",
+                  "            target_railways.update(base.destination_railways(destination, indexes))\n",
+                  "        target_railways.discard(str(fragment.get('railway') or ''))\n",
+                  "        if not target_railways:\n",
+                  "            continue\n",
+              ]
+              if lines[i+1:i+6] != expected:
                   continue
-          '''
-          if fold not in ftext:
+              lines[i:i+6] = replacement
+              patched = True
+              break
+          if not patched:
               raise SystemExit('classify_inferred_routes target block not found')
-          ftext = ftext.replace(fold, fnew)
-          # Report only destinations that actually require leaving the current railway.
-          ftext = ftext.replace("                'destination': destinations,\n", "                'destination': external_destinations,\n", 1)
-          finalizer.write_text(ftext, encoding='utf-8')
+
+          # Change only this function's unresolved diagnostic to report the
+          # destinations that genuinely require leaving the current railway.
+          start = next(i for i, line in enumerate(lines) if line.startswith('def classify_inferred_routes('))
+          end = next(i for i in range(start + 1, len(lines)) if lines[i].startswith('def identity_adjacency('))
+          changed_diag = False
+          for i in range(start, end):
+              if "'destination': destinations," in lines[i]:
+                  lines[i] = lines[i].replace("'destination': destinations,", "'destination': external_destinations,")
+                  changed_diag = True
+                  break
+          if not changed_diag:
+              raise SystemExit('classify diagnostic destination field not found')
+          finalizer.write_text(''.join(lines), encoding='utf-8')
 
           path = Path('data/transit-v2/service-boundaries.json')
           data = json.loads(path.read_text(encoding='utf-8'))
           rows = data.setdefault('boundaries', [])
           known = {row.get('id') for row in rows if isinstance(row, dict)}
           additions = [
-            {
-              'id':'seibu-ikebukuro-toshima-nerima','station':'練馬',
-              'fromRailway':'odpt.Railway:Seibu.Ikebukuro','toRailway':'odpt.Railway:Seibu.Toshima',
-              'fromStation':'odpt.Station:Seibu.Ikebukuro.Nerima','toStation':'odpt.Station:Seibu.Toshima.Nerima',
-              'bidirectional':True,'status':'verified',
-              'sourceUrls':['https://www.seiburailway.jp/railway/station/nerima/']
-            },
-            {
-              'id':'seibu-ikebukuro-chichibu-agano','station':'吾野',
-              'fromRailway':'odpt.Railway:Seibu.Ikebukuro','toRailway':'odpt.Railway:Seibu.SeibuChichibu',
-              'fromStation':'odpt.Station:Seibu.Ikebukuro.Agano','toStation':'odpt.Station:Seibu.SeibuChichibu.Agano',
-              'bidirectional':True,'status':'verified',
-              'sourceUrls':['https://www.seiburailway.jp/railway/station/agano/']
-            },
-            {
-              'id':'seibu-ikebukuro-sayama-nishitokorozawa','station':'西所沢',
-              'fromRailway':'odpt.Railway:Seibu.Ikebukuro','toRailway':'odpt.Railway:Seibu.Sayama',
-              'fromStation':'odpt.Station:Seibu.Ikebukuro.NishiTokorozawa','toStation':'odpt.Station:Seibu.Sayama.NishiTokorozawa',
-              'bidirectional':True,'status':'verified',
-              'sourceUrls':['https://www.seiburailway.jp/railway/station/nishi-tokorozawa/']
-            },
-            {
-              'id':'tobu-skytreebranch-skytree-hikifune','station':'曳舟',
-              'fromRailway':'odpt.Railway:Tobu.TobuSkytreeBranch','toRailway':'odpt.Railway:Tobu.TobuSkytree',
-              'fromStation':'odpt.Station:Tobu.TobuSkytreeBranch.Hikifune','toStation':'odpt.Station:Tobu.TobuSkytree.Hikifune',
-              'bidirectional':True,'status':'verified',
-              'sourceUrls':['https://www.tobu.co.jp/railway/women/skytree_line/']
-            },
-            {
-              'id':'tobu-skytree-isesaki-dobutsukoen','station':'東武動物公園',
-              'fromRailway':'odpt.Railway:Tobu.TobuSkytree','toRailway':'odpt.Railway:Tobu.Isesaki',
-              'fromStation':'odpt.Station:Tobu.TobuSkytree.TobuDobutsuKoen','toStation':'odpt.Station:Tobu.Isesaki.TobuDobutsuKoen',
-              'bidirectional':True,'status':'verified',
-              'sourceUrls':['https://www.tobu.co.jp/railway/women/skytree_line/']
-            },
-            {
-              'id':'tobu-skytree-nikko-dobutsukoen','station':'東武動物公園',
-              'fromRailway':'odpt.Railway:Tobu.TobuSkytree','toRailway':'odpt.Railway:Tobu.Nikko',
-              'fromStation':'odpt.Station:Tobu.TobuSkytree.TobuDobutsuKoen','toStation':'odpt.Station:Tobu.Nikko.TobuDobutsuKoen',
-              'bidirectional':True,'status':'verified',
-              'sourceUrls':['https://www.tobu.co.jp/railway/women/skytree_line/']
-            },
-            {
-              'id':'sotetsu-main-shinyokohama-nishiya','station':'西谷',
-              'fromRailway':'odpt.Railway:Sotetsu.Main','toRailway':'odpt.Railway:Sotetsu.SotetsuShinYokohama',
-              'fromStation':'odpt.Station:Sotetsu.Main.Nishiya','toStation':'odpt.Station:Sotetsu.SotetsuShinYokohama.Nishiya',
-              'bidirectional':True,'status':'verified',
-              'sourceUrls':['https://www.sotetsu.co.jp/train/stations/nishiya/']
-            },
-            {
-              'id':'sotetsu-main-izumino-futamatagawa','station':'二俣川',
-              'fromRailway':'odpt.Railway:Sotetsu.Main','toRailway':'odpt.Railway:Sotetsu.Izumino',
-              'fromStation':'odpt.Station:Sotetsu.Main.Futamatagawa','toStation':'odpt.Station:Sotetsu.Izumino.Futamatagawa',
-              'bidirectional':True,'status':'verified',
-              'sourceUrls':['https://www.sotetsu.co.jp/train/railway/']
-            },
-            {
-              'id':'keisei-oshiage-main-aoto','station':'青砥',
-              'fromRailway':'odpt.Railway:Keisei.Oshiage','toRailway':'odpt.Railway:Keisei.Main',
-              'fromStation':'odpt.Station:Keisei.Oshiage.Aoto','toStation':'odpt.Station:Keisei.Main.Aoto',
-              'bidirectional':True,'status':'verified',
-              'sourceUrls':['https://www.keisei.co.jp/keisei/tetudou/accessj/']
-            },
-            {
-              'id':'keisei-main-access-takasago','station':'京成高砂',
-              'fromRailway':'odpt.Railway:Keisei.Main','toRailway':'odpt.Railway:Keisei.NaritaSkyAccess',
-              'fromStation':'odpt.Station:Keisei.Main.KeiseiTakasago','toStation':'odpt.Station:Keisei.NaritaSkyAccess.KeiseiTakasago',
-              'bidirectional':True,'status':'verified',
-              'sourceUrls':['https://www.keisei.co.jp/keisei/tetudou/accessj/']
-            }
+            {'id':'seibu-ikebukuro-toshima-nerima','station':'練馬','fromRailway':'odpt.Railway:Seibu.Ikebukuro','toRailway':'odpt.Railway:Seibu.Toshima','fromStation':'odpt.Station:Seibu.Ikebukuro.Nerima','toStation':'odpt.Station:Seibu.Toshima.Nerima','bidirectional':True,'status':'verified','sourceUrls':['https://www.seiburailway.jp/railway/station/nerima/']},
+            {'id':'seibu-ikebukuro-chichibu-agano','station':'吾野','fromRailway':'odpt.Railway:Seibu.Ikebukuro','toRailway':'odpt.Railway:Seibu.SeibuChichibu','fromStation':'odpt.Station:Seibu.Ikebukuro.Agano','toStation':'odpt.Station:Seibu.SeibuChichibu.Agano','bidirectional':True,'status':'verified','sourceUrls':['https://www.seiburailway.jp/railway/station/agano/']},
+            {'id':'seibu-ikebukuro-sayama-nishitokorozawa','station':'西所沢','fromRailway':'odpt.Railway:Seibu.Ikebukuro','toRailway':'odpt.Railway:Seibu.Sayama','fromStation':'odpt.Station:Seibu.Ikebukuro.NishiTokorozawa','toStation':'odpt.Station:Seibu.Sayama.NishiTokorozawa','bidirectional':True,'status':'verified','sourceUrls':['https://www.seiburailway.jp/railway/station/nishi-tokorozawa/']},
+            {'id':'tobu-skytreebranch-skytree-hikifune','station':'曳舟','fromRailway':'odpt.Railway:Tobu.TobuSkytreeBranch','toRailway':'odpt.Railway:Tobu.TobuSkytree','fromStation':'odpt.Station:Tobu.TobuSkytreeBranch.Hikifune','toStation':'odpt.Station:Tobu.TobuSkytree.Hikifune','bidirectional':True,'status':'verified','sourceUrls':['https://www.tobu.co.jp/railway/women/skytree_line/']},
+            {'id':'tobu-skytree-isesaki-dobutsukoen','station':'東武動物公園','fromRailway':'odpt.Railway:Tobu.TobuSkytree','toRailway':'odpt.Railway:Tobu.Isesaki','fromStation':'odpt.Station:Tobu.TobuSkytree.TobuDobutsuKoen','toStation':'odpt.Station:Tobu.Isesaki.TobuDobutsuKoen','bidirectional':True,'status':'verified','sourceUrls':['https://www.tobu.co.jp/railway/women/skytree_line/']},
+            {'id':'tobu-skytree-nikko-dobutsukoen','station':'東武動物公園','fromRailway':'odpt.Railway:Tobu.TobuSkytree','toRailway':'odpt.Railway:Tobu.Nikko','fromStation':'odpt.Station:Tobu.TobuSkytree.TobuDobutsuKoen','toStation':'odpt.Station:Tobu.Nikko.TobuDobutsuKoen','bidirectional':True,'status':'verified','sourceUrls':['https://www.tobu.co.jp/railway/women/skytree_line/']},
+            {'id':'sotetsu-main-shinyokohama-nishiya','station':'西谷','fromRailway':'odpt.Railway:Sotetsu.Main','toRailway':'odpt.Railway:Sotetsu.SotetsuShinYokohama','fromStation':'odpt.Station:Sotetsu.Main.Nishiya','toStation':'odpt.Station:Sotetsu.SotetsuShinYokohama.Nishiya','bidirectional':True,'status':'verified','sourceUrls':['https://www.sotetsu.co.jp/train/stations/nishiya/']},
+            {'id':'sotetsu-main-izumino-futamatagawa','station':'二俣川','fromRailway':'odpt.Railway:Sotetsu.Main','toRailway':'odpt.Railway:Sotetsu.Izumino','fromStation':'odpt.Station:Sotetsu.Main.Futamatagawa','toStation':'odpt.Station:Sotetsu.Izumino.Futamatagawa','bidirectional':True,'status':'verified','sourceUrls':['https://www.sotetsu.co.jp/train/railway/']},
+            {'id':'keisei-oshiage-main-aoto','station':'青砥','fromRailway':'odpt.Railway:Keisei.Oshiage','toRailway':'odpt.Railway:Keisei.Main','fromStation':'odpt.Station:Keisei.Oshiage.Aoto','toStation':'odpt.Station:Keisei.Main.Aoto','bidirectional':True,'status':'verified','sourceUrls':['https://www.keisei.co.jp/keisei/tetudou/accessj/']},
+            {'id':'keisei-main-access-takasago','station':'京成高砂','fromRailway':'odpt.Railway:Keisei.Main','toRailway':'odpt.Railway:Keisei.NaritaSkyAccess','fromStation':'odpt.Station:Keisei.Main.KeiseiTakasago','toStation':'odpt.Station:Keisei.NaritaSkyAccess.KeiseiTakasago','bidirectional':True,'status':'verified','sourceUrls':['https://www.keisei.co.jp/keisei/tetudou/accessj/']}
           ]
           for row in additions:
               if row['id'] not in known:
