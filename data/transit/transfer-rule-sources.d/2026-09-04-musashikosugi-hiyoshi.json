@@ -1,0 +1,110 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換（安全側）",
+    "sourceType": "current transfer guide",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "武蔵小杉",
+      "railwayA": "odpt.Railway:JR-East.Nambu",
+      "railwayB": "odpt.Railway:Tokyu.Toyoko",
+      "railwayAName": "南武線",
+      "railwayBName": "東横線",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/musashikosugi-tokyutoyoko-meguro-jrline-transfer-information/"
+    },
+    {
+      "place": "武蔵小杉",
+      "railwayA": "odpt.Railway:JR-East.Nambu",
+      "railwayB": "odpt.Railway:Tokyu.Meguro",
+      "railwayAName": "南武線",
+      "railwayBName": "目黒線",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/musashikosugi-tokyutoyoko-meguro-jrline-transfer-information/"
+    },
+    {
+      "place": "武蔵小杉",
+      "railwayA": "odpt.Railway:JR-East.Yokosuka",
+      "railwayB": "odpt.Railway:Tokyu.Toyoko",
+      "railwayAName": "横須賀線",
+      "railwayBName": "東横線",
+      "minutes": 10,
+      "source": "https://wadattsu261.com/content/musashikosugi-tokyutoyoko-meguro-jrline-transfer-information/"
+    },
+    {
+      "place": "武蔵小杉",
+      "railwayA": "odpt.Railway:JR-East.Yokosuka",
+      "railwayB": "odpt.Railway:Tokyu.Meguro",
+      "railwayAName": "横須賀線",
+      "railwayBName": "目黒線",
+      "minutes": 10,
+      "source": "https://wadattsu261.com/content/musashikosugi-tokyutoyoko-meguro-jrline-transfer-information/"
+    },
+    {
+      "place": "武蔵小杉",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:Tokyu.Toyoko",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "東横線",
+      "minutes": 10,
+      "source": "https://wadattsu261.com/content/musashikosugi-tokyutoyoko-meguro-jrline-transfer-information/"
+    },
+    {
+      "place": "武蔵小杉",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:Tokyu.Meguro",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "目黒線",
+      "minutes": 10,
+      "source": "https://wadattsu261.com/content/musashikosugi-tokyutoyoko-meguro-jrline-transfer-information/"
+    },
+    {
+      "place": "武蔵小杉",
+      "railwayA": "odpt.Railway:JR-East.SotetsuDirect",
+      "railwayB": "odpt.Railway:Tokyu.Toyoko",
+      "railwayAName": "相鉄直通線",
+      "railwayBName": "東横線",
+      "minutes": 10,
+      "source": "https://wadattsu261.com/content/musashikosugi-tokyutoyoko-meguro-jrline-transfer-information/"
+    },
+    {
+      "place": "武蔵小杉",
+      "railwayA": "odpt.Railway:JR-East.SotetsuDirect",
+      "railwayB": "odpt.Railway:Tokyu.Meguro",
+      "railwayAName": "相鉄直通線",
+      "railwayBName": "目黒線",
+      "minutes": 10,
+      "source": "https://wadattsu261.com/content/musashikosugi-tokyutoyoko-meguro-jrline-transfer-information/"
+    },
+    {
+      "place": "日吉",
+      "railwayA": "odpt.Railway:YokohamaMunicipal.Green",
+      "railwayB": "odpt.Railway:Tokyu.Toyoko",
+      "railwayAName": "グリーンライン",
+      "railwayBName": "東横線",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/hiyoshi-yokohamagreenline-tokyuline-transfer-information/"
+    },
+    {
+      "place": "日吉",
+      "railwayA": "odpt.Railway:YokohamaMunicipal.Green",
+      "railwayB": "odpt.Railway:Tokyu.Meguro",
+      "railwayAName": "グリーンライン",
+      "railwayBName": "目黒線",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/hiyoshi-yokohamagreenline-tokyuline-transfer-information/"
+    },
+    {
+      "place": "日吉",
+      "railwayA": "odpt.Railway:YokohamaMunicipal.Green",
+      "railwayB": "odpt.Railway:Tokyu.TokyuShinYokohama",
+      "railwayAName": "グリーンライン",
+      "railwayBName": "東急新横浜線",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/hiyoshi-yokohamagreenline-tokyuline-transfer-information/"
+    }
+  ]
+}
