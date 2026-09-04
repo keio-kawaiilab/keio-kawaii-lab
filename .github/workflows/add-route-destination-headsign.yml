@@ -1,0 +1,199 @@
+name: Add route destination headsign
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/add-route-destination-headsign.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Preserve and display train destinations
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_once(path, old, new):
+              p = Path(path)
+              text = p.read_text(encoding='utf-8')
+              if old not in text:
+                  raise SystemExit(f'expected text not found in {path}: {old[:120]!r}')
+              p.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+          # Exact ODPT TrainTimetable: keep the published destination and stable
+          # identifiers in each compact trip. The first four tuple fields are
+          # unchanged, so old readers remain compatible.
+          replace_once(
+              'scripts/import_odpt_timetables.py',
+              '''        train_type = str(item.get("odpt:trainType") or "")\n        train_number = str(item.get("odpt:trainNumber") or "")\n        stops: list[list[int | None]] = []\n''',
+              '''        train_type = str(item.get("odpt:trainType") or "")\n        train_number = str(item.get("odpt:trainNumber") or "")\n        raw_destinations = item.get("odpt:destinationStation")\n        if isinstance(raw_destinations, list):\n            destination_values = [str(value) for value in raw_destinations if value]\n        elif raw_destinations:\n            destination_values = [str(raw_destinations)]\n        else:\n            destination_values = []\n        destination_values = [station_aliases.get(value, value) for value in destination_values]\n        destination: str | list[str] = (\n            destination_values[0] if len(destination_values) == 1 else destination_values\n        )\n        train_id = str(item.get("odpt:train") or "")\n        timetable_id = str(item.get("owl:sameAs") or "")\n        stops: list[list[int | None]] = []\n'''
+          )
+          replace_once(
+              'scripts/import_odpt_timetables.py',
+              '            trips.append([calendar_index, type_index, train_number, stops])',
+              '            trips.append([calendar_index, type_index, train_number, stops, destination, train_id, timetable_id])'
+          )
+          replace_once(
+              'scripts/import_odpt_timetables.py',
+              '''        "trainTypes": train_type_values,\n        "trips": trips,\n''',
+              '''        "trainTypes": train_type_values,\n        "tripSchema": ["calendarIndex", "trainTypeIndex", "trainNumber", "stops", "destination", "trainId", "timetableId"],\n        "trips": trips,\n'''
+          )
+
+          # Route core: carry exact destinations into the itinerary, and never
+          # expose a source-declared placeholder destination as a real headsign.
+          replace_once(
+              'route-core.js',
+              '          var candidate={departure:departure,arrival:arrival,trainType:types[trip[1]]||"",trainNumber:String(trip[2]||""),timeBasis:timetable.timeBasis||"train-timetable"};',
+              '          var candidate={departure:departure,arrival:arrival,trainType:types[trip[1]]||"",trainNumber:String(trip[2]||""),destination:timetable.destinationAuthoritative===false?"":(trip.length>4?trip[4]:""),destinationAuthoritative:timetable.destinationAuthoritative!==false,timeBasis:timetable.timeBasis||"train-timetable"};'
+          )
+          replace_once(
+              'route-core.js',
+              '      var stations=table.stations||[],calendars=table.calendars||[],directions=table.directions||[],types=table.trainTypes||[],destinations=table.destinations||[],best=null;',
+              '      var stations=table.stations||[],calendars=table.calendars||[],directions=table.directions||[],types=table.trainTypes||[],destinations=table.destinations||[],destinationAuthoritative=table.destinationAuthoritative!==false,best=null;'
+          )
+          replace_once(
+              'route-core.js',
+              '          var candidate={departure:departure,arrival:arrival,trainType:types[trip[2]]||"",destination:destinations[trip[3]]||"",trainNumber:"",confidence:Number(trip[4])||0,timeBasis:"inferred-station-trip"};',
+              '          var candidate={departure:departure,arrival:arrival,trainType:types[trip[2]]||"",destination:destinationAuthoritative?(destinations[trip[3]]||""):"",destinationAuthoritative:destinationAuthoritative,trainNumber:"",confidence:Number(trip[4])||0,timeBasis:"inferred-station-trip"};'
+          )
+          replace_once(
+              'route-core.js',
+              '            candidate={departure:minute,arrival:Number.isFinite(duration)?minute+duration:null,trainType:types[typeIndex]||"",destination:destinations[destinationIndex]||"",trainNumber:"",timeBasis:"estimated-edge-duration"};',
+              '            candidate={departure:minute,arrival:Number.isFinite(duration)?minute+duration:null,trainType:types[typeIndex]||"",destination:destinationAuthoritative?(destinations[destinationIndex]||""):"",destinationAuthoritative:destinationAuthoritative,trainNumber:"",timeBasis:"estimated-edge-duration"};'
+          )
+
+          # Browser UI: destination first, followed by type and train number.
+          replace_once(
+              'route.js',
+              '''  function trainLabel(segment){\n    var parts=[],type=model.displayTrainType(segment.trainType);\n    if(type)parts.push(type);if(segment.trainNumber)parts.push(segment.trainNumber+"列車");\n    return parts.join("・");\n  }\n''',
+              '''  function destinationLabel(segment){\n    if(!segment||segment.destinationAuthoritative===false)return "";\n    var raw=segment.destination,values=Array.isArray(raw)?raw:[raw],labels=[];\n    values.forEach(function(value){\n      if(!value)return;\n      var label=model.displayStation(value);\n      if(label&&labels.indexOf(label)<0)labels.push(label);\n    });\n    return labels.length?labels.join("・")+"行":"";\n  }\n  function trainLabel(segment){\n    var parts=[],destination=destinationLabel(segment),type=model.displayTrainType(segment.trainType);\n    if(destination)parts.push(destination);if(type)parts.push(type);if(segment.trainNumber)parts.push(segment.trainNumber+"列車");\n    return parts.join("・");\n  }\n'''
+          )
+          replace_once(
+              'route.js',
+              '          var type=model.displayTrainType(departure.trainType),copy=departure.label+"は "+formatTime(departure.departure)+" 発"+(type?"（"+type+"）":"")+"です。ODPTの提供データに到着時刻がないため、経路と次の発車時刻を表示しています。";',
+              '          var detail=trainLabel(departure),copy=departure.label+"は "+formatTime(departure.departure)+" 発"+(detail?"（"+detail+"）":"")+"です。ODPTの提供データに到着時刻がないため、経路と次の発車時刻を表示しています。";'
+          )
+
+          # The current Minatomirai reconstruction only knows the in-line
+          # terminal, not the advertised through-service destination. Mark it
+          # explicitly so the UI does not lie with a fake "Yokohama-bound" label.
+          replace_once(
+              'scripts/build_minatomirai_routing_timetable.py',
+              '''        "destinations": DESTINATIONS,\n        "order": STATION_IDS,\n''',
+              '''        "destinations": DESTINATIONS,\n        "destinationAuthoritative": False,\n        "destinationBasis": "line-local-placeholder",\n        "order": STATION_IDS,\n'''
+          )
+
+          # Importer regression coverage.
+          replace_once(
+              'scripts/test_import_odpt_timetables.py',
+              '''            "odpt:trainNumber": "101",\n            "odpt:trainTimetableObject": [\n''',
+              '''            "odpt:trainNumber": "101",\n            "owl:sameAs": "timetable:101",\n            "odpt:train": "train:101",\n            "odpt:destinationStation": ["station:c"],\n            "odpt:trainTimetableObject": [\n'''
+          )
+          replace_once(
+              'scripts/test_import_odpt_timetables.py',
+              '''        self.assertEqual(compact["trips"][0][3][1], [1, 1447, 1448])\n        self.assertEqual(connections, 2)\n''',
+              '''        self.assertEqual(compact["trips"][0][3][1], [1, 1447, 1448])\n        self.assertEqual(compact["trips"][0][4], "station:c")\n        self.assertEqual(compact["trips"][0][5], "train:101")\n        self.assertEqual(compact["trips"][0][6], "timetable:101")\n        self.assertEqual(connections, 2)\n'''
+          )
+
+          # Route-core regression: an exact TrainTimetable destination reaches
+          # the selected itinerary unchanged.
+          replace_once(
+              'scripts/test_route_core.js',
+              '      [0, 0, "101", [[0, null, 480], [1, 490, null]]],',
+              '      [0, 0, "101", [[0, null, 480], [1, 490, null]], "station:b2"],'
+          )
+          replace_once(
+              'scripts/test_route_core.js',
+              'assert.deepEqual(timed.segments.map((item) => item.trainNumber), ["101", "203"]);',
+              'assert.deepEqual(timed.segments.map((item) => item.trainNumber), ["101", "203"]);\nassert.equal(timed.segments[0].destination, "station:b2", "exact timetable destination must reach the itinerary");'
+          )
+
+          # Make the normal route validator exercise destination rendering.
+          replace_once(
+              '.github/workflows/validate-route-search.yml',
+              "      - 'scripts/test_route_preview_ui.js'\n",
+              "      - 'scripts/test_route_preview_ui.js'\n      - 'scripts/test_route_destination_display.js'\n"
+          )
+          replace_once(
+              '.github/workflows/validate-route-search.yml',
+              '          node --check scripts/test_route_preview_ui.js\n',
+              '          node --check scripts/test_route_preview_ui.js\n          node --check scripts/test_route_destination_display.js\n'
+          )
+          replace_once(
+              '.github/workflows/validate-route-search.yml',
+              '''      - name: Exercise exact Keisei through route in the browser logic\n        run: node scripts/test_keisei_route_ui.js\n''',
+              '''      - name: Exercise destination/headsign propagation\n        run: node scripts/test_route_destination_display.js\n      - name: Exercise exact Keisei through route in the browser logic\n        run: node scripts/test_keisei_route_ui.js\n'''
+          )
+          PY
+
+          cat > scripts/test_route_destination_display.js <<'JS'
+          "use strict";
+          const assert = require("node:assert/strict");
+          const fs = require("node:fs");
+          const path = require("node:path");
+          const core = require("../route-core.js");
+
+          const line = "odpt.Railway:Test.Headsign";
+          const payload = {
+            Station: [
+              {"owl:sameAs":"station:a","odpt:stationTitle":{"ja":"A"},"odpt:railway":line,"odpt:operator":"odpt.Operator:Test","geo:lat":35.0,"geo:long":139.0},
+              {"owl:sameAs":"station:b","odpt:stationTitle":{"ja":"B"},"odpt:railway":line,"odpt:operator":"odpt.Operator:Test","geo:lat":35.01,"geo:long":139.01},
+              {"owl:sameAs":"station:c","odpt:stationTitle":{"ja":"C"},"odpt:railway":line,"odpt:operator":"odpt.Operator:Test","geo:lat":35.02,"geo:long":139.02}
+            ],
+            Railway: [{"owl:sameAs":line,"odpt:operator":"odpt.Operator:Test","odpt:railwayTitle":{"ja":"テスト線"},"odpt:stationOrder":[{"odpt:index":1,"odpt:station":"station:a"},{"odpt:index":2,"odpt:station":"station:b"},{"odpt:index":3,"odpt:station":"station:c"}]}]
+          };
+          const model = core.createModel([payload]);
+          const from = model.resolveInput("A").group;
+          const to = model.resolveInput("B").group;
+          const route = model.shortestPath(from, to);
+          const timetable = {
+            timeBasis:"train-timetable",
+            stations:["station:a","station:b"],
+            calendars:["odpt.Calendar:Weekday"],
+            trainTypes:["odpt.TrainType:Test.Local"],
+            trips:[[0,0,"101",[[0,null,480],[1,490,null]],"station:c","train:101","timetable:101"]]
+          };
+          const timed = model.timedItinerary(route,{[line]:timetable},475,"weekday",5);
+          assert.ok(timed);
+          assert.equal(timed.segments[0].destination,"station:c");
+          assert.equal(timed.segments[0].trainNumber,"101");
+
+          const ui = fs.readFileSync(path.join(__dirname,"..","route.js"),"utf8");
+          assert.match(ui,/function destinationLabel\(segment\)/);
+          assert.match(ui,/labels\.join\("・"\)\+"行"/);
+          assert.match(ui,/if\(destination\)parts\.push\(destination\)/);
+          console.log("route destination display test passed");
+          JS
+
+      - name: Validate patched code
+        run: |
+          python -m py_compile scripts/import_odpt_timetables.py scripts/build_minatomirai_routing_timetable.py
+          python scripts/test_import_odpt_timetables.py
+          node --check route-core.js
+          node --check route.js
+          node scripts/test_route_destination_display.js
+
+      - name: Commit implementation
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/add-route-destination-headsign.yml
+          git add route-core.js route.js scripts/import_odpt_timetables.py scripts/build_minatomirai_routing_timetable.py scripts/test_import_odpt_timetables.py scripts/test_route_core.js scripts/test_route_destination_display.js .github/workflows/validate-route-search.yml
+          git commit -m "Show train destinations in route guidance"
+          git pull --rebase origin main
+          git push origin HEAD:main
