@@ -2,6 +2,22 @@ from pathlib import Path
 
 path = Path("scripts/test_route_core.js")
 text = path.read_text(encoding="utf-8")
+text = text.replace(
+    '''  [lineA]: {
+    timeBasis: "station-departure-only",''',
+    '''  [lineA]: {
+    railway: lineA,
+    timeBasis: "station-departure-only",''',
+    1,
+)
+text = text.replace(
+    '''  [lineB]: {
+    timeBasis: "station-departure-only",''',
+    '''  [lineB]: {
+    railway: lineB,
+    timeBasis: "station-departure-only",''',
+    1,
+)
 old = '''const throughTimed = model.timedItinerary(path, throughTimetables, 475, "weekday", 5);
 assert.equal(throughTimed.arrival, 502, "a matching same-operator continuation must preserve dwell without a fictitious transfer wait");
 assert.equal(throughTimed.transfers, 0);
