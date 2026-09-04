@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T00:18:45.059Z",
+  "generatedAt": "2026-09-04T00:19:12.223Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -49,6 +49,7 @@
     "transfer-rule-sources.d/2026-09-04-medium-stations-batch-j.json",
     "transfer-rule-sources.d/2026-09-04-musashikosugi-hiyoshi.json",
     "transfer-rule-sources.d/2026-09-04-nishifunabashi.json",
+    "transfer-rule-sources.d/2026-09-04-shinjuku-remaining-direct.json",
     "transfer-rule-sources.d/2026-09-04-tokyo-jr-core.json",
     "transfer-rule-sources.d/2026-09-04-tokyo-marunouchi-remaining.json",
     "transfer-rule-sources.d/2026-09-04-yokohama-jr.json"
@@ -4993,6 +4994,45 @@
       "label": "標準乗換",
       "source": "https://www.jorudan.co.jp/norikae/route/%E8%8C%85%E5%A0%B4%E7%94%BA_%E5%8D%97%E8%88%B9%E6%A9%8B.html",
       "sourceType": "Jorudan current route-planner transfer time",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "新宿-京王線-中央・総武各駅停車",
+      "fromStation": "odpt.Station:Keio.KeioNew.Shinjuku",
+      "toStation": "odpt.Station:JR-East.ChuoSobuLocal.Shinjuku",
+      "fromRailway": "odpt.Railway:Keio.Keio",
+      "toRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/keio_line-sobu_line_local.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "新宿-京王線-中央線快速",
+      "fromStation": "odpt.Station:Keio.KeioNew.Shinjuku",
+      "toStation": "odpt.Station:JR-East.ChuoRapid.Shinjuku",
+      "fromRailway": "odpt.Railway:Keio.Keio",
+      "toRailway": "odpt.Railway:JR-East.ChuoRapid",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/keio_line-chuo_line.html",
+      "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "新宿-小田原線-大江戸線",
+      "fromStation": "odpt.Station:Odakyu.Odawara.Shinjuku",
+      "toStation": "odpt.Station:Toei.Oedo.Shinjuku",
+      "fromRailway": "odpt.Railway:Odakyu.Odawara",
+      "toRailway": "odpt.Railway:Toei.Oedo",
+      "minutes": 7,
+      "bidirectional": true,
+      "label": "標準乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/odakyu_line-toei_subway-oedo_line.html",
+      "sourceType": "Jorudan standard transfer time",
       "verifiedAt": "2026-09-04"
     },
     {
