@@ -1,0 +1,77 @@
+name: Apply verified Seibu Hagiyama boundary
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-seibu-hagiyama-boundary.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Add verified Hagiyama operational boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path('data/transit-v2/service-boundaries.json')
+          data = json.loads(path.read_text(encoding='utf-8'))
+          boundary_id = 'seibu-tamako-haijima-hagiyama'
+          rows = data.setdefault('boundaries', [])
+          if not any(row.get('id') == boundary_id for row in rows):
+              rows.append({
+                  'id': boundary_id,
+                  'station': '萩山',
+                  'fromRailway': 'odpt.Railway:Seibu.Tamako',
+                  'toRailway': 'odpt.Railway:Seibu.Haijima',
+                  'fromStation': 'odpt.Station:Seibu.Tamako.Hagiyama',
+                  'toStation': 'odpt.Station:Seibu.Haijima.Hagiyama',
+                  'bidirectional': True,
+                  'status': 'verified',
+                  'sourceUrls': [
+                      'https://www.seiburailway.jp/railway/station/hagiyama/',
+                      'https://www.seiburailway.jp/railway/station/tamako/',
+                      'https://seibu.ekitan.com/norikae/timetable/station/234-2/d1?dw=1',
+                  ],
+              })
+          data['updatedAt'] = '2026-09-05'
+          path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          PY
+      - name: Rebuild strict identity outputs from current fragments
+        run: |
+          python scripts/finalize_transit_v2.py
+          python scripts/audit_transit_v2.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          coverage = json.loads(Path('data/transit-v2/coverage.json').read_text(encoding='utf-8'))
+          unresolved = coverage.get('unresolved') or []
+          bad = [u for u in unresolved if u.get('kind') == 'published-destination-route-no-path' and u.get('railway') == 'odpt.Railway:Seibu.Tamako' and 'odpt.Railway:Seibu.Shinjuku' in (u.get('targetRailways') or [])]
+          assert not bad, bad
+          total = int((coverage.get('summary') or {}).get('unresolved') or 0)
+          assert total <= 39, total
+          print('strict unresolved after Hagiyama boundary:', total)
+          PY
+      - name: Commit verified boundary and regenerated strict DB
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/transit-v2
+          if git diff --cached --quiet; then
+            echo "No changes"
+            exit 0
+          fi
+          git commit -m "Verify Seibu Tamako-Haijima boundary at Hagiyama"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
