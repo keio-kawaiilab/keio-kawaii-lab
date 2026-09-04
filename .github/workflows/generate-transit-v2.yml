@@ -16,7 +16,6 @@ on:
       - 'scripts/build_keisei_network_timetable.py'
       - 'data/transit-v2/spec.json'
       - 'data/transit-v2/service-boundaries.json'
-      - 'data/transit/**'
       - '.github/workflows/generate-transit-v2.yml'
   schedule:
     - cron: '50 18 * * 0'
