@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換",
+    "sourceType": "Jorudan standard transfer time",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "日比谷",
+      "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+      "railwayAName": "千代田線",
+      "railwayBName": "日比谷線",
+      "minutes": 3,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/yurakucho/tokyo-metro_chiyoda_line-tokyo-metro_hibiya_line.html"
+    },
+    {
+      "place": "日比谷",
+      "railwayA": "odpt.Railway:Toei.Mita",
+      "railwayB": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayAName": "三田線",
+      "railwayBName": "千代田線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/yurakucho/toei_subway-mita_line-tokyo-metro_chiyoda_line.html"
+    },
+    {
+      "place": "日比谷",
+      "railwayA": "odpt.Railway:Toei.Mita",
+      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+      "railwayAName": "三田線",
+      "railwayBName": "日比谷線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/yurakucho/toei_subway-mita_line-tokyo-metro_hibiya_line.html"
+    }
+  ]
+}
