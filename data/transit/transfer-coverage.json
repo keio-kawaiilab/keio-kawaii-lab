@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-09-04T08:32:24.102Z",
+  "generatedAt": "2026-09-04T08:38:14.428Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T08:32:11.768Z",
+  "rulesGeneratedAt": "2026-09-04T08:37:51.548Z",
   "methodology": "Candidate railway pairs are classified as curated when backed by an explicit transfer rule, fallback when covered by conservative fallbackMinutes, blocked for false same-name/nearby links, and uncurated only when no usable rule exists.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 932,
-    "fallbackPairs": 21,
+    "curatedPairs": 935,
+    "fallbackPairs": 18,
     "uncuratedPairs": 0,
     "blockedPairs": 7,
-    "curatedSourceRules": 932,
-    "fallbackGeneratedRules": 21,
+    "curatedSourceRules": 935,
+    "fallbackGeneratedRules": 18,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -34,17 +34,6 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "吉祥寺",
-      "totalPairs": 3,
-      "curatedPairs": 2,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 3,
       "priorityScore": 0
     },
     {
@@ -93,17 +82,6 @@
     },
     {
       "place": "高輪ゲートウェイ",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "三鷹",
       "totalPairs": 1,
       "curatedPairs": 0,
       "fallbackPairs": 1,
@@ -181,17 +159,6 @@
     },
     {
       "place": "天王台",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "浜川崎",
       "totalPairs": 1,
       "curatedPairs": 0,
       "fallbackPairs": 1,
@@ -664,6 +631,17 @@
       "priorityScore": 0
     },
     {
+      "place": "吉祥寺",
+      "totalPairs": 3,
+      "curatedPairs": 3,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 0
+    },
+    {
       "place": "久喜",
       "totalPairs": 1,
       "curatedPairs": 1,
@@ -1113,6 +1091,28 @@
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
       "priorityScore": 0
+    },
+    {
+      "place": "国会議事堂前",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
+      "place": "国会議事堂前 ↔ 溜池山王",
+      "totalPairs": 3,
+      "curatedPairs": 3,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 4,
+      "priorityScore": 0
     }
   ],
   "priorityDetails": [],
@@ -1120,20 +1120,6 @@
   "fallback": [
     {
       "place": "阿佐ケ谷",
-      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-      "railwayAName": "中央線快速",
-      "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
-      "railwayBName": "中央・総武各駅停車",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "吉祥寺",
       "railwayA": "odpt.Railway:JR-East.ChuoRapid",
       "railwayAName": "中央線快速",
       "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
@@ -1208,20 +1194,6 @@
       "railwayAName": "京浜東北線・根岸線",
       "railwayB": "odpt.Railway:JR-East.Yamanote",
       "railwayBName": "山手線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "三鷹",
-      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-      "railwayAName": "中央線快速",
-      "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
-      "railwayBName": "中央・総武各駅停車",
       "sameOperator": true,
       "distanceMeters": 0,
       "fallbackMinutes": 5,
@@ -1363,20 +1335,6 @@
       "railwayBName": "常磐線快速",
       "sameOperator": true,
       "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "浜川崎",
-      "railwayA": "odpt.Railway:JR-East.NambuBranch",
-      "railwayAName": "南武線浜川崎支線",
-      "railwayB": "odpt.Railway:JR-East.Tsurumi",
-      "railwayBName": "鶴見線",
-      "sameOperator": true,
-      "distanceMeters": 83,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
