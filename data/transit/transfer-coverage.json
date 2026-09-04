@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-09-04T08:40:06.493Z",
+  "generatedAt": "2026-09-04T09:54:45.535Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T08:39:51.825Z",
+  "rulesGeneratedAt": "2026-09-04T09:54:31.721Z",
   "methodology": "Candidate railway pairs are classified as curated when backed by an explicit transfer rule, fallback when covered by conservative fallbackMinutes, blocked for false same-name/nearby links, and uncurated only when no usable rule exists.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 937,
-    "fallbackPairs": 16,
+    "curatedPairs": 940,
+    "fallbackPairs": 13,
     "uncuratedPairs": 0,
     "blockedPairs": 7,
-    "curatedSourceRules": 937,
-    "fallbackGeneratedRules": 16,
+    "curatedSourceRules": 940,
+    "fallbackGeneratedRules": 13,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -48,17 +48,6 @@
       "priorityScore": 0
     },
     {
-      "place": "御徒町",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
       "place": "高円寺",
       "totalPairs": 1,
       "curatedPairs": 0,
@@ -78,17 +67,6 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "秋葉原",
-      "totalPairs": 10,
-      "curatedPairs": 9,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 5,
       "priorityScore": 0
     },
     {
@@ -148,17 +126,6 @@
     },
     {
       "place": "豊島園",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "鶯谷",
       "totalPairs": 1,
       "curatedPairs": 0,
       "fallbackPairs": 1,
@@ -950,6 +917,17 @@
       "priorityScore": 0
     },
     {
+      "place": "御徒町",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
       "place": "御徒町 ↔ 上野御徒町",
       "totalPairs": 2,
       "curatedPairs": 2,
@@ -1113,6 +1091,28 @@
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
       "priorityScore": 0
+    },
+    {
+      "place": "国分寺",
+      "totalPairs": 3,
+      "curatedPairs": 3,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 0
+    },
+    {
+      "place": "佐原",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
     }
   ],
   "priorityDetails": [],
@@ -1147,20 +1147,6 @@
       ]
     },
     {
-      "place": "御徒町",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:JR-East.Yamanote",
-      "railwayBName": "山手線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
       "place": "高円寺",
       "railwayA": "odpt.Railway:JR-East.ChuoRapid",
       "railwayAName": "中央線快速",
@@ -1176,20 +1162,6 @@
     },
     {
       "place": "高輪ゲートウェイ",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:JR-East.Yamanote",
-      "railwayBName": "山手線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "秋葉原",
       "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
       "railwayAName": "京浜東北線・根岸線",
       "railwayB": "odpt.Railway:JR-East.Yamanote",
@@ -1323,20 +1295,6 @@
       "distanceMeters": 111,
       "fallbackMinutes": 5,
       "sources": [
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "鶯谷",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:JR-East.Yamanote",
-      "railwayBName": "山手線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
         "same-place-group"
       ]
     }
