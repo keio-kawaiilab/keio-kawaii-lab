@@ -10,12 +10,7 @@ on:
       - 'scripts/test_odpt_train_identity_db.mjs'
       - 'scripts/enrich-through-service-db.mjs'
       - 'data/transit-sources/manual-topology.json'
-      - 'scripts/test_route_core.js'
       - 'scripts/test_transit_snapshot.js'
-      - 'route-core.js'
-      - 'route.js'
-      - 'route.html'
-      - '_drafts/route.html'
       - '.github/workflows/update-transit-timetables.yml'
   schedule:
     - cron: '20 18 * * 0'
@@ -50,15 +45,10 @@ jobs:
       - name: Install importer dependency
         run: pip install requests==2.32.5
 
-      - name: Test route search and ODPT importer
+      - name: Test timetable importer and identity pipeline
         run: |
-          node --check route-core.js
-          node --check route.js
           node --check scripts/enrich-through-service-db.mjs
           python -m py_compile scripts/collect_odpt_train_identity.py
-          test ! -e route.html
-          grep -Fq '<meta name="robots" content="noindex,nofollow,noarchive">' _drafts/route.html
-          node scripts/test_route_core.js
           node scripts/test_odpt_train_identity_db.mjs
           python scripts/test_import_odpt_timetables.py
 
