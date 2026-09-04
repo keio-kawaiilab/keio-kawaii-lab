@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "ホーム間乗換",
+    "sourceType": "current platform-to-platform transfer guide",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "拝島",
+      "railwayA": "odpt.Railway:JR-East.Hachiko",
+      "railwayB": "odpt.Railway:Seibu.Haijima",
+      "railwayAName": "八高線",
+      "railwayBName": "拝島線",
+      "minutes": 4,
+      "source": "https://wadattsu261.com/content/haijima-jr-seibuhaijimaline-transfer-information/"
+    },
+    {
+      "place": "拝島",
+      "railwayA": "odpt.Railway:JR-East.Ome",
+      "railwayB": "odpt.Railway:Seibu.Haijima",
+      "railwayAName": "青梅線",
+      "railwayBName": "拝島線",
+      "minutes": 4,
+      "source": "https://wadattsu261.com/content/haijima-jr-seibuhaijimaline-transfer-information/"
+    },
+    {
+      "place": "拝島",
+      "railwayA": "odpt.Railway:JR-East.Itsukaichi",
+      "railwayB": "odpt.Railway:Seibu.Haijima",
+      "railwayAName": "五日市線",
+      "railwayBName": "拝島線",
+      "minutes": 4,
+      "source": "https://wadattsu261.com/content/haijima-jr-seibuhaijimaline-transfer-information/"
+    }
+  ]
+}
