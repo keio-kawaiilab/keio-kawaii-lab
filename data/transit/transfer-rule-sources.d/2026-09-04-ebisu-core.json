@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "ホーム間乗換",
+    "sourceType": "current platform-to-platform transfer guide",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "恵比寿",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+      "railwayAName": "山手線",
+      "railwayBName": "日比谷線",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/ebisu-jryamanote-saikyo-shonanshinjukuline-metrohibiyaline-transfer-information/"
+    },
+    {
+      "place": "恵比寿",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+      "railwayAName": "埼京線・川越線",
+      "railwayBName": "日比谷線",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/ebisu-jryamanote-saikyo-shonanshinjukuline-metrohibiyaline-transfer-information/"
+    },
+    {
+      "place": "恵比寿",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "日比谷線",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/ebisu-jryamanote-saikyo-shonanshinjukuline-metrohibiyaline-transfer-information/"
+    },
+    {
+      "place": "恵比寿",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayAName": "山手線",
+      "railwayBName": "埼京線・川越線",
+      "minutes": 1,
+      "source": "https://norikaemap.com/ebisu/0103/"
+    },
+    {
+      "place": "恵比寿",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayAName": "山手線",
+      "railwayBName": "湘南新宿ライン",
+      "minutes": 1,
+      "source": "https://norikaemap.com/ebisu/0103/"
+    }
+  ]
+}
