@@ -1,0 +1,21 @@
+name: Fix through-service policy key
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/fix-through-service-policy-key.py'
+      - '.github/workflows/fix-through-service-policy-key.yml'
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python scripts/fix-through-service-policy-key.py
+      - run: node --check scripts/build-through-service-db.mjs
+      - run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/build-through-service-db.mjs
+          git diff --cached --quiet || (git commit -m 'Standardize through-service policy key' && git push)
