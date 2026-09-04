@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-04T04:48:41.249Z",
+  "generatedAt": "2026-09-04T04:49:02.140Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T04:48:24.240Z",
+  "rulesGeneratedAt": "2026-09-04T04:48:42.707Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 598,
-    "uncuratedPairs": 355,
+    "curatedPairs": 600,
+    "uncuratedPairs": 353,
     "blockedPairs": 7,
-    "curatedSourceRules": 598,
+    "curatedSourceRules": 600,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -424,16 +424,6 @@
     },
     {
       "place": "綾瀬",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5
-    },
-    {
-      "place": "稲田堤 ↔ 京王稲田堤",
       "totalPairs": 1,
       "curatedPairs": 0,
       "uncuratedPairs": 1,
@@ -933,16 +923,6 @@
       "priorityScore": 2.5
     },
     {
-      "place": "分倍河原",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5
-    },
-    {
       "place": "豊洲",
       "totalPairs": 1,
       "curatedPairs": 0,
@@ -1011,6 +991,26 @@
       "crossOperatorUncuratedPairs": 1,
       "railwayCount": 2,
       "priorityScore": 2.5
+    },
+    {
+      "place": "日比谷 ↔ 有楽町",
+      "totalPairs": 2,
+      "curatedPairs": 0,
+      "uncuratedPairs": 2,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 2
+    },
+    {
+      "place": "立川",
+      "totalPairs": 3,
+      "curatedPairs": 1,
+      "uncuratedPairs": 2,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 2
     }
   ],
   "priorityDetails": [
@@ -3411,19 +3411,6 @@
       "sources": [
         "connecting-station",
         "same-place-group"
-      ]
-    },
-    {
-      "place": "稲田堤 ↔ 京王稲田堤",
-      "railwayA": "odpt.Railway:JR-East.Nambu",
-      "railwayAName": "南武線",
-      "railwayB": "odpt.Railway:Keio.Sagamihara",
-      "railwayBName": "相模原線",
-      "sameOperator": false,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station"
       ]
     },
     {
@@ -7766,20 +7753,6 @@
       "railwayBName": "東横線",
       "sameOperator": true,
       "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "分倍河原",
-      "railwayA": "odpt.Railway:JR-East.Nambu",
-      "railwayAName": "南武線",
-      "railwayB": "odpt.Railway:Keio.Keio",
-      "railwayBName": "京王線",
-      "sameOperator": false,
-      "distanceMeters": null,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
