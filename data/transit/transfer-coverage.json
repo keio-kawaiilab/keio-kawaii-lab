@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-04T06:50:01.553Z",
+  "generatedAt": "2026-09-04T06:50:42.624Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T06:49:49.150Z",
+  "rulesGeneratedAt": "2026-09-04T06:50:24.536Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 820,
-    "uncuratedPairs": 133,
+    "curatedPairs": 826,
+    "uncuratedPairs": 127,
     "blockedPairs": 7,
-    "curatedSourceRules": 820,
+    "curatedSourceRules": 826,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -31,26 +31,6 @@
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 4,
       "priorityScore": 3
-    },
-    {
-      "place": "東村山",
-      "totalPairs": 3,
-      "curatedPairs": 0,
-      "uncuratedPairs": 3,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 3,
-      "priorityScore": 3
-    },
-    {
-      "place": "越生",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5
     },
     {
       "place": "押上",
@@ -121,16 +101,6 @@
       "crossOperatorUncuratedPairs": 1,
       "railwayCount": 2,
       "priorityScore": 2.5
-    },
-    {
-      "place": "日比谷 ↔ 有楽町",
-      "totalPairs": 2,
-      "curatedPairs": 0,
-      "uncuratedPairs": 2,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 3,
-      "priorityScore": 2
     },
     {
       "place": "立川",
@@ -1011,6 +981,36 @@
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
       "priorityScore": 1
+    },
+    {
+      "place": "天王台",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 1
+    },
+    {
+      "place": "田園調布",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 1
+    },
+    {
+      "place": "田端",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 1
     }
   ],
   "priorityDetails": [
@@ -1114,84 +1114,6 @@
           ]
         }
       ]
-    },
-    {
-      "place": "東村山",
-      "totalPairs": 3,
-      "curatedPairs": 0,
-      "uncuratedPairs": 3,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 3,
-      "priorityScore": 3,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Seibu.Kokubunji",
-          "railwayAName": "国分寺線",
-          "railwayB": "odpt.Railway:Seibu.Shinjuku",
-          "railwayBName": "新宿線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Seibu.Kokubunji",
-          "railwayAName": "国分寺線",
-          "railwayB": "odpt.Railway:Seibu.Seibuen",
-          "railwayBName": "西武園線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Seibu.Seibuen",
-          "railwayAName": "西武園線",
-          "railwayB": "odpt.Railway:Seibu.Shinjuku",
-          "railwayBName": "新宿線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "越生",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.Hachiko",
-          "railwayAName": "八高線",
-          "railwayB": "odpt.Railway:Tobu.Ogose",
-          "railwayBName": "越生線",
-          "sameOperator": false,
-          "distanceMeters": 33,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": []
     },
     {
       "place": "押上",
@@ -1368,43 +1290,6 @@
         }
       ],
       "sameOperatorPairs": []
-    },
-    {
-      "place": "日比谷 ↔ 有楽町",
-      "totalPairs": 2,
-      "curatedPairs": 0,
-      "uncuratedPairs": 2,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 3,
-      "priorityScore": 2,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
-          "railwayAName": "千代田線",
-          "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
-          "railwayBName": "有楽町線",
-          "sameOperator": true,
-          "distanceMeters": 389,
-          "fallbackMinutes": 8,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Hibiya",
-          "railwayAName": "日比谷線",
-          "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
-          "railwayBName": "有楽町線",
-          "sameOperator": true,
-          "distanceMeters": 243,
-          "fallbackMinutes": 6,
-          "sources": [
-            "connecting-station"
-          ]
-        }
-      ]
     },
     {
       "place": "立川",
@@ -1883,6 +1768,83 @@
           ]
         }
       ]
+    },
+    {
+      "place": "恵比寿",
+      "totalPairs": 6,
+      "curatedPairs": 5,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 4,
+      "priorityScore": 1,
+      "crossOperatorPairs": [],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+          "railwayAName": "埼京線・川越線",
+          "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
+          "railwayBName": "湘南新宿ライン",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ]
+    },
+    {
+      "place": "元住吉",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 1,
+      "crossOperatorPairs": [],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:Tokyu.Meguro",
+          "railwayAName": "目黒線",
+          "railwayB": "odpt.Railway:Tokyu.Toyoko",
+          "railwayBName": "東横線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ]
+    },
+    {
+      "place": "虎ノ門 ↔ 虎ノ門ヒルズ",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 1,
+      "crossOperatorPairs": [],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:TokyoMetro.Ginza",
+          "railwayAName": "銀座線",
+          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+          "railwayBName": "日比谷線",
+          "sameOperator": true,
+          "distanceMeters": 383,
+          "fallbackMinutes": 8,
+          "sources": [
+            "connecting-station"
+          ]
+        }
+      ]
     }
   ],
   "uncurated": [
@@ -1953,20 +1915,6 @@
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station"
-      ]
-    },
-    {
-      "place": "越生",
-      "railwayA": "odpt.Railway:JR-East.Hachiko",
-      "railwayAName": "八高線",
-      "railwayB": "odpt.Railway:Tobu.Ogose",
-      "railwayBName": "越生線",
-      "sameOperator": false,
-      "distanceMeters": 33,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
       ]
     },
     {
@@ -3335,48 +3283,6 @@
       ]
     },
     {
-      "place": "東村山",
-      "railwayA": "odpt.Railway:Seibu.Kokubunji",
-      "railwayAName": "国分寺線",
-      "railwayB": "odpt.Railway:Seibu.Shinjuku",
-      "railwayBName": "新宿線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "東村山",
-      "railwayA": "odpt.Railway:Seibu.Kokubunji",
-      "railwayAName": "国分寺線",
-      "railwayB": "odpt.Railway:Seibu.Seibuen",
-      "railwayBName": "西武園線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "東村山",
-      "railwayA": "odpt.Railway:Seibu.Seibuen",
-      "railwayAName": "西武園線",
-      "railwayB": "odpt.Railway:Seibu.Shinjuku",
-      "railwayBName": "新宿線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
       "place": "東府中",
       "railwayA": "odpt.Railway:Keio.Keibajo",
       "railwayAName": "競馬場線",
@@ -3415,32 +3321,6 @@
       "sources": [
         "connecting-station",
         "same-place-group"
-      ]
-    },
-    {
-      "place": "日比谷 ↔ 有楽町",
-      "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
-      "railwayAName": "千代田線",
-      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
-      "railwayBName": "有楽町線",
-      "sameOperator": true,
-      "distanceMeters": 389,
-      "fallbackMinutes": 8,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "日比谷 ↔ 有楽町",
-      "railwayA": "odpt.Railway:TokyoMetro.Hibiya",
-      "railwayAName": "日比谷線",
-      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
-      "railwayBName": "有楽町線",
-      "sameOperator": true,
-      "distanceMeters": 243,
-      "fallbackMinutes": 6,
-      "sources": [
-        "connecting-station"
       ]
     },
     {
