@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T04:48:24.240Z",
+  "generatedAt": "2026-09-04T04:48:42.707Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -61,6 +61,7 @@
     "transfer-rule-sources.d/2026-09-04-medium-stations-batch-j.json",
     "transfer-rule-sources.d/2026-09-04-metro-clean-7.json",
     "transfer-rule-sources.d/2026-09-04-metro-complexes.json",
+    "transfer-rule-sources.d/2026-09-04-milestone-600.json",
     "transfer-rule-sources.d/2026-09-04-musashikosugi-hiyoshi.json",
     "transfer-rule-sources.d/2026-09-04-narita-keiseinarita.json",
     "transfer-rule-sources.d/2026-09-04-nerima-crossop.json",
@@ -6012,6 +6013,32 @@
       "label": "標準乗換",
       "source": "",
       "sourceType": "Jorudan standard transfer time",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "分倍河原-odpt.Railway:JR-East.Nambu-odpt.Railway:Keio.Keio",
+      "fromStation": "odpt.Station:JR-East.Nambu.Bubaigawara",
+      "toStation": "odpt.Station:Keio.Keio.Bubaigawara",
+      "fromRailway": "odpt.Railway:JR-East.Nambu",
+      "toRailway": "odpt.Railway:Keio.Keio",
+      "minutes": 1,
+      "bidirectional": true,
+      "label": "標準乗換（安全側）",
+      "source": "",
+      "sourceType": "2026 measured platform-to-platform transfer",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "稲田堤 ↔ 京王稲田堤-odpt.Railway:JR-East.Nambu-odpt.Railway:Keio.Sagamihara",
+      "fromStation": "odpt.Station:JR-East.Nambu.Inadazutsumi",
+      "toStation": "odpt.Station:Keio.Sagamihara.KeioInadazutsumi",
+      "fromRailway": "odpt.Railway:JR-East.Nambu",
+      "toRailway": "odpt.Railway:Keio.Sagamihara",
+      "minutes": 7,
+      "bidirectional": true,
+      "label": "標準乗換（安全側）",
+      "source": "",
+      "sourceType": "current platform-to-platform transfer guide; conservative upper bound",
       "verifiedAt": "2026-09-04"
     },
     {
