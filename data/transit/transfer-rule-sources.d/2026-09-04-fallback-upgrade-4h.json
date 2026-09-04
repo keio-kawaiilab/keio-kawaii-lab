@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "乗換",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "id": "新鎌ヶ谷-松戸線-成田スカイアクセス線",
+      "place": "新鎌ヶ谷",
+      "railwayA": "odpt.Railway:Keisei.Matsudo",
+      "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
+      "minutes": 4,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%9D%BE%E6%88%B8_%E6%88%90%E7%94%B0%E7%A9%BA%E6%B8%AF%EF%BC%88%E6%88%90%E7%94%B0%E7%AC%AC%EF%BC%91%E3%82%BF%E3%83%BC%E3%83%9F%E3%83%8A%E3%83%AB%EF%BC%89.html?Cway=2",
+      "sourceType": "current Jorudan route explicitly shows 4-minute transfer at Shin-Kamagaya from Keisei Matsudo Line to Narita Sky Access; current reverse airport-to-Matsudo routes also show 4 minutes"
+    },
+    {
+      "id": "品川-常磐線快速-東海道線",
+      "place": "品川",
+      "railwayA": "odpt.Railway:JR-East.JobanRapid",
+      "railwayB": "odpt.Railway:JR-East.Tokaido",
+      "minutes": 3,
+      "reverseMinutes": 5,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%9C%9F%E6%B5%A6_%E4%BA%AC%E6%80%A5%E5%B7%9D%E5%B4%8E.html",
+      "sourceType": "current Jorudan route explicitly shows 3-minute transfer at Shinagawa from a Joban Line train arriving platform 10 to Tokaido Line platform 12; reverse Tokaido platform 6 to a Joban-direction Tokiwa departure platform 9 is shown as 5 minutes and is used conservatively"
+    },
+    {
+      "id": "池袋-埼京線川越線-湘南新宿ライン",
+      "place": "池袋",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
+      "minutes": 1,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%8C%97%E4%B8%8E%E9%87%8E_%E6%A8%AA%E6%B5%9C.html",
+      "sourceType": "current Jorudan route explicitly shows 1-minute transfer at Ikebukuro from Saikyo platform 1 to Shonan-Shinjuku platform 2; reverse Shonan-Shinjuku platform 3 to Saikyo platform 4 also shown as 1 minute"
+    },
+    {
+      "id": "空港第2ビル-京成本線-成田スカイアクセス線",
+      "place": "空港第２ビル",
+      "railwayA": "odpt.Railway:Keisei.Main",
+      "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
+      "minutes": 5,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%88%90%E7%94%B0_%E6%88%90%E7%94%B0%E6%B9%AF%E5%B7%9D.html",
+      "sourceType": "current Jorudan route explicitly shows a 5-minute transfer at Airport Terminal 2 between Keisei Main Line and Narita Sky Access trains"
+    }
+  ]
+}
