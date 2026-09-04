@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-09-04T08:38:14.428Z",
+  "generatedAt": "2026-09-04T08:40:06.493Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T08:37:51.548Z",
+  "rulesGeneratedAt": "2026-09-04T08:39:51.825Z",
   "methodology": "Candidate railway pairs are classified as curated when backed by an explicit transfer rule, fallback when covered by conservative fallbackMinutes, blocked for false same-name/nearby links, and uncurated only when no usable rule exists.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 935,
-    "fallbackPairs": 18,
+    "curatedPairs": 937,
+    "fallbackPairs": 16,
     "uncuratedPairs": 0,
     "blockedPairs": 7,
-    "curatedSourceRules": 935,
-    "fallbackGeneratedRules": 18,
+    "curatedSourceRules": 937,
+    "fallbackGeneratedRules": 16,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -27,17 +27,6 @@
     },
     {
       "place": "阿佐ケ谷",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "元住吉",
       "totalPairs": 1,
       "curatedPairs": 0,
       "fallbackPairs": 1,
@@ -104,17 +93,6 @@
     },
     {
       "place": "松岸",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "新丸子",
       "totalPairs": 1,
       "curatedPairs": 0,
       "fallbackPairs": 1,
@@ -862,6 +840,17 @@
       "priorityScore": 0
     },
     {
+      "place": "元住吉",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
       "place": "原宿 ↔ 明治神宮前〈原宿〉",
       "totalPairs": 2,
       "curatedPairs": 2,
@@ -1113,6 +1102,17 @@
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 4,
       "priorityScore": 0
+    },
+    {
+      "place": "国際展示場 ↔ 有明",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
     }
   ],
   "priorityDetails": [],
@@ -1124,20 +1124,6 @@
       "railwayAName": "中央線快速",
       "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
       "railwayBName": "中央・総武各駅停車",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "元住吉",
-      "railwayA": "odpt.Railway:Tokyu.Meguro",
-      "railwayAName": "目黒線",
-      "railwayB": "odpt.Railway:Tokyu.Toyoko",
-      "railwayBName": "東横線",
       "sameOperator": true,
       "distanceMeters": 0,
       "fallbackMinutes": 5,
@@ -1222,20 +1208,6 @@
       "railwayAName": "成田線",
       "railwayB": "odpt.Railway:JR-East.Sobu",
       "railwayBName": "総武本線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "新丸子",
-      "railwayA": "odpt.Railway:Tokyu.Meguro",
-      "railwayAName": "目黒線",
-      "railwayB": "odpt.Railway:Tokyu.Toyoko",
-      "railwayBName": "東横線",
       "sameOperator": true,
       "distanceMeters": 0,
       "fallbackMinutes": 5,
