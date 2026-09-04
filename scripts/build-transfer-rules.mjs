@@ -18,6 +18,7 @@ for(const doc of sourceDocs){
   for(const rule of doc.data.rules||[])sourceEntries.push({source:rule,defaults,file:doc.file});
 }
 const output=[];
+const explicitlyResolvedCandidates=new Set();
 
 function hasRailwayIds(rule){return Boolean(rule&&rule.railwayA&&rule.railwayB);}
 function samePair(row,rule){
@@ -38,6 +39,29 @@ function placeDiagnostics(place){
   for(const row of rows){railways.set(row.railwayA,row.railwayAName);railways.set(row.railwayB,row.railwayBName);}
   return [...railways.entries()].map(([id,name])=>`${name}=${id}`).sort().join(', ');
 }
+function candidateKey(row){
+  return [String(row.placeKey||row.placeLabel||''),...([String(row.railwayA||''),String(row.railwayB||'')].sort())].join('\u0001');
+}
+function pushResolvedRule({id,fromRailway,toRailway,fromStations,toStations,minutes,bidirectional=true,reverseMinutes,label='',source='',sourceType='',verifiedAt=''}){
+  for(const fromStation of fromStations||[]){
+    for(const toStation of toStations||[]){
+      output.push({
+        id:String(id||''),
+        fromStation,
+        toStation,
+        fromRailway,
+        toRailway,
+        minutes,
+        bidirectional,
+        ...(reverseMinutes==null?{}:{reverseMinutes:Number(reverseMinutes)}),
+        label:String(label||''),
+        source:String(source||''),
+        sourceType:String(sourceType||''),
+        verifiedAt:String(verifiedAt||'')
+      });
+    }
+  }
+}
 
 for(const entry of sourceEntries){
   const source=entry.source,defaults=entry.defaults;
@@ -46,6 +70,7 @@ for(const entry of sourceEntries){
     throw new Error(`${entry.file}: ${source.place} ${sourceLabel(source,'railwayA')} / ${sourceLabel(source,'railwayB')}: expected 1 candidate, got ${matches.length}. Available railways at place: ${placeDiagnostics(source.place)}`);
   }
   const row=matches[0];
+  explicitlyResolvedCandidates.add(candidateKey(row));
   const aIsRowA=sourceAIsRowA(row,source);
   const fromRailway=aIsRowA?row.railwayA:row.railwayB;
   const toRailway=aIsRowA?row.railwayB:row.railwayA;
@@ -53,24 +78,37 @@ for(const entry of sourceEntries){
   const toStations=aIsRowA?row.stationIdsB:row.stationIdsA;
   const minutes=Number(source.minutes);
   if(!Number.isFinite(minutes)||minutes<0)throw new Error(`Invalid minutes for ${source.place}`);
-  for(const fromStation of fromStations){
-    for(const toStation of toStations){
-      output.push({
-        id:String(source.id||`${source.place}-${sourceLabel(source,'railwayA')}-${sourceLabel(source,'railwayB')}`),
-        fromStation,
-        toStation,
-        fromRailway,
-        toRailway,
-        minutes,
-        bidirectional:source.bidirectional??defaults.bidirectional??true,
-        ...(source.reverseMinutes==null?{}:{reverseMinutes:Number(source.reverseMinutes)}),
-        label:String(source.label??defaults.label??''),
-        source:String(source.source||''),
-        sourceType:String(source.sourceType??defaults.sourceType??''),
-        verifiedAt:String(source.verifiedAt??defaults.verifiedAt??'')
-      });
-    }
-  }
+  pushResolvedRule({
+    id:String(source.id||`${source.place}-${sourceLabel(source,'railwayA')}-${sourceLabel(source,'railwayB')}`),
+    fromRailway,toRailway,fromStations,toStations,minutes,
+    bidirectional:source.bidirectional??defaults.bidirectional??true,
+    reverseMinutes:source.reverseMinutes,
+    label:String(source.label??defaults.label??''),
+    source:String(source.source||''),
+    sourceType:String(source.sourceType??defaults.sourceType??''),
+    verifiedAt:String(source.verifiedAt??defaults.verifiedAt??'')
+  });
+}
+
+let fallbackCandidatePairs=0;
+for(const row of candidates.candidates||[]){
+  if(explicitlyResolvedCandidates.has(candidateKey(row)))continue;
+  const minutes=Number(row.fallbackMinutes);
+  if(!Number.isFinite(minutes)||minutes<0)throw new Error(`Invalid fallbackMinutes for ${row.placeLabel}`);
+  fallbackCandidatePairs++;
+  pushResolvedRule({
+    id:`fallback-${row.placeLabel}-${row.railwayAName}-${row.railwayBName}`,
+    fromRailway:row.railwayA,
+    toRailway:row.railwayB,
+    fromStations:row.stationIdsA,
+    toStations:row.stationIdsB,
+    minutes,
+    bidirectional:true,
+    label:'暫定・安全側乗換',
+    source:'data/transit/transfer-candidates.json',
+    sourceType:'fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）',
+    verifiedAt:''
+  });
 }
 
 const seen=new Set();
@@ -85,8 +123,9 @@ const payload={
   generatedAt:new Date().toISOString(),
   sourceCandidatesGeneratedAt:candidates.generatedAt||null,
   sourceFiles:sourceDocs.map(doc=>doc.file),
-  description:'Curated station/railway-specific transfer times. Generated from transfer-rule source files and resolved against transfer-candidates.json.',
+  description:'Station/railway-specific transfer times. Explicit curated rules are preferred; any remaining candidate pair receives a conservative fallbackMinutes rule until an external standard time is added.',
+  fallbackCandidatePairs,
   rules:output
 };
 fs.writeFileSync(path.join(transit,'transfer-rules.json'),JSON.stringify(payload,null,2)+'\n');
-console.log(JSON.stringify({sourceFiles:sourceDocs.length,sourceRules:sourceEntries.length,resolvedRules:output.length}));
+console.log(JSON.stringify({sourceFiles:sourceDocs.length,sourceRules:sourceEntries.length,fallbackCandidatePairs,resolvedRules:output.length}));
