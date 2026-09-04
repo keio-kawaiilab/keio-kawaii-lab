@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換",
+    "sourceType": "Jorudan standard transfer time",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "東京",
+      "railwayA": "odpt.Railway:JR-East.Yokosuka",
+      "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayAName": "横須賀線",
+      "railwayBName": "京浜東北線・根岸線",
+      "minutes": 8,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/yokosuka_line-keihintohoku_line.html"
+    },
+    {
+      "place": "東京",
+      "railwayA": "odpt.Railway:JR-East.SobuRapid",
+      "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayAName": "総武快速線",
+      "railwayBName": "京浜東北線・根岸線",
+      "minutes": 8,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/yokosuka_line-keihintohoku_line.html"
+    },
+    {
+      "place": "東京",
+      "railwayA": "odpt.Railway:JR-East.Yokosuka",
+      "railwayB": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayAName": "横須賀線",
+      "railwayBName": "中央線快速",
+      "minutes": 9,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/yokosuka_line-chuo_line.html"
+    },
+    {
+      "place": "東京",
+      "railwayA": "odpt.Railway:JR-East.SobuRapid",
+      "railwayB": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayAName": "総武快速線",
+      "railwayBName": "中央線快速",
+      "minutes": 9,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/yokosuka_line-chuo_line.html"
+    },
+    {
+      "place": "東京",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "中央線快速",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/tokyo/chuo_line-keihintohoku_line.html"
+    }
+  ]
+}
