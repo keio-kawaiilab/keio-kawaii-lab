@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T08:12:56.253Z",
+  "generatedAt": "2026-09-04T08:19:30.127Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -46,6 +46,7 @@
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-11.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-20.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-4d.json",
+    "transfer-rule-sources.d/2026-09-04-fallback-upgrade-7e.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-8b.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-9c.json",
     "transfer-rule-sources.d/2026-09-04-final-exact-3.json",
@@ -118,7 +119,7 @@
     "transfer-rule-sources.d/2026-09-04-yokohama-private-remaining.json"
   ],
   "description": "Station/railway-specific transfer times. Explicit curated rules are preferred; any remaining unblocked candidate pair receives a conservative fallbackMinutes rule until an external standard time is added.",
-  "fallbackCandidatePairs": 41,
+  "fallbackCandidatePairs": 34,
   "rules": [
     {
       "id": "東京-山手線-丸ノ内線",
@@ -4020,6 +4021,97 @@
       "label": "乗換",
       "source": "https://www.jorudan.co.jp/norikae/route/%E5%8D%83%E8%91%89_%E6%9D%B1%E8%88%B9%E6%A9%8B.html",
       "sourceType": "current route planner; Sobu Rapid to Chuo-Sobu Local transfer at Tsudanuma shown as 3 minutes; used as conservative common station transfer value",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "大門-浅草線-大江戸線",
+      "fromStation": "odpt.Station:Toei.Asakusa.Daimon",
+      "toStation": "odpt.Station:Toei.Oedo.Daimon",
+      "fromRailway": "odpt.Railway:Toei.Asakusa",
+      "toRailway": "odpt.Railway:Toei.Oedo",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://mb.jorudan.co.jp/os/noritxt/hamamatsucho/toei_subway-asakusa_line-toei_subway-oedo_line.html",
+      "sourceType": "Jorudan standard transfer guide; explicitly states 3-minute standard transfer time in both directions",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "築地-新富町-日比谷線-有楽町線",
+      "fromStation": "odpt.Station:TokyoMetro.Hibiya.Tsukiji",
+      "toStation": "odpt.Station:TokyoMetro.Yurakucho.Shintomicho",
+      "fromRailway": "odpt.Railway:TokyoMetro.Hibiya",
+      "toRailway": "odpt.Railway:TokyoMetro.Yurakucho",
+      "minutes": 9,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E7%AF%89%E5%9C%B0_%E6%96%B0%E5%AF%8C%E7%94%BA%EF%BC%88%E6%9D%B1%E4%BA%AC%EF%BC%89.html",
+      "sourceType": "current Jorudan direct station-to-station walking route; 9 minutes",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "明治神宮前-千代田線-副都心線",
+      "fromStation": "odpt.Station:TokyoMetro.Chiyoda.MeijiJingumae",
+      "toStation": "odpt.Station:TokyoMetro.Fukutoshin.MeijiJingumae",
+      "fromRailway": "odpt.Railway:TokyoMetro.Chiyoda",
+      "toRailway": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://xn--cck0a4ah6349a9b5a.com/archives/6739",
+      "sourceType": "current measured transfer guide; about 2 min 50 sec, rounded up to 3 minutes",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "霞ケ関-千代田線-丸ノ内線",
+      "fromStation": "odpt.Station:TokyoMetro.Chiyoda.Kasumigaseki",
+      "toStation": "odpt.Station:TokyoMetro.Marunouchi.Kasumigaseki",
+      "fromRailway": "odpt.Railway:TokyoMetro.Chiyoda",
+      "toRailway": "odpt.Railway:TokyoMetro.Marunouchi",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://diyisheng.seesaa.net/article/133673098.html",
+      "sourceType": "transfer guide explicitly cites official transfer time of about 5 minutes",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "鶴見-京浜東北線-鶴見線",
+      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Tsurumi",
+      "toStation": "odpt.Station:JR-East.Tsurumi.Tsurumi",
+      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "toRailway": "odpt.Railway:JR-East.Tsurumi",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%BE%BB%E5%A0%82_%E6%B5%B7%E8%8A%9D%E6%B5%A6.html",
+      "sourceType": "current Jorudan route explicitly shows 3-minute transfer at Tsurumi between Keihin-Tohoku and Tsurumi Line",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "新庚申塚-西巣鴨-荒川線-三田線",
+      "fromStation": "odpt.Station:Toei.Arakawa.ShinKoshinzuka",
+      "toStation": "odpt.Station:Toei.Mita.NishiSugamo",
+      "fromRailway": "odpt.Railway:Toei.Arakawa",
+      "toRailway": "odpt.Railway:Toei.Mita",
+      "minutes": 7,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E5%BA%9A%E7%94%B3%E5%A1%9A-%E8%A5%BF%E5%B7%A3%E9%B4%A8",
+      "sourceType": "current Yahoo Transit direct walking route; 7 minutes",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "上野広小路-仲御徒町-銀座線-日比谷線",
+      "fromStation": "odpt.Station:TokyoMetro.Ginza.UenoHirokoji",
+      "toStation": "odpt.Station:TokyoMetro.Hibiya.NakaOkachimachi",
+      "fromRailway": "odpt.Railway:TokyoMetro.Ginza",
+      "toRailway": "odpt.Railway:TokyoMetro.Hibiya",
+      "minutes": 14,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E4%B8%8A%E9%87%8E%E5%BA%83%E5%B0%8F%E8%B7%AF_%E4%BB%B2%E5%BE%A1%E5%BE%92%E7%94%BA.html",
+      "sourceType": "current Jorudan direct station-to-station walking route; 14 minutes, used conservatively",
       "verifiedAt": "2026-09-04"
     },
     {
@@ -12007,19 +12099,6 @@
       "verifiedAt": ""
     },
     {
-      "id": "fallback-霞ケ関-千代田線-丸ノ内線",
-      "fromStation": "odpt.Station:TokyoMetro.Chiyoda.Kasumigaseki",
-      "toStation": "odpt.Station:TokyoMetro.Marunouchi.Kasumigaseki",
-      "fromRailway": "odpt.Railway:TokyoMetro.Chiyoda",
-      "toRailway": "odpt.Railway:TokyoMetro.Marunouchi",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
       "id": "fallback-吉祥寺-中央線快速-中央・総武各駅停車",
       "fromStation": "odpt.Station:JR-East.ChuoRapid.Kichijoji",
       "toStation": "odpt.Station:JR-East.ChuoSobuLocal.Kichijoji",
@@ -12150,19 +12229,6 @@
       "verifiedAt": ""
     },
     {
-      "id": "fallback-上野広小路 ↔ 仲御徒町-銀座線-日比谷線",
-      "fromStation": "odpt.Station:TokyoMetro.Ginza.UenoHirokoji",
-      "toStation": "odpt.Station:TokyoMetro.Hibiya.NakaOkachimachi",
-      "fromRailway": "odpt.Railway:TokyoMetro.Ginza",
-      "toRailway": "odpt.Railway:TokyoMetro.Hibiya",
-      "minutes": 7,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
       "id": "fallback-新鎌ヶ谷-松戸線-成田スカイアクセス線",
       "fromStation": "manual.Station:keisei.新鎌ヶ谷",
       "toStation": "manual.Station:keisei.新鎌ヶ谷",
@@ -12182,19 +12248,6 @@
       "fromRailway": "odpt.Railway:Tokyu.Meguro",
       "toRailway": "odpt.Railway:Tokyu.Toyoko",
       "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-新庚申塚 ↔ 西巣鴨-東京さくらトラム（都電荒川線）-三田線",
-      "fromStation": "odpt.Station:Toei.Arakawa.ShinKoshinzuka",
-      "toStation": "odpt.Station:Toei.Mita.NishiSugamo",
-      "fromRailway": "odpt.Railway:Toei.Arakawa",
-      "toRailway": "odpt.Railway:Toei.Mita",
-      "minutes": 7,
       "bidirectional": true,
       "label": "暫定・安全側乗換",
       "source": "data/transit/transfer-candidates.json",
@@ -12345,19 +12398,6 @@
       "verifiedAt": ""
     },
     {
-      "id": "fallback-大門-浅草線-大江戸線",
-      "fromStation": "odpt.Station:Toei.Asakusa.Daimon",
-      "toStation": "odpt.Station:Toei.Oedo.Daimon",
-      "fromRailway": "odpt.Railway:Toei.Asakusa",
-      "toRailway": "odpt.Railway:Toei.Oedo",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
       "id": "fallback-池袋-埼京線・川越線-湘南新宿ライン",
       "fromStation": "odpt.Station:JR-East.SaikyoKawagoe.Ikebukuro",
       "toStation": "odpt.Station:JR-East.ShonanShinjuku.Ikebukuro",
@@ -12371,37 +12411,11 @@
       "verifiedAt": ""
     },
     {
-      "id": "fallback-築地 ↔ 新富町-日比谷線-有楽町線",
-      "fromStation": "odpt.Station:TokyoMetro.Hibiya.Tsukiji",
-      "toStation": "odpt.Station:TokyoMetro.Yurakucho.Shintomicho",
-      "fromRailway": "odpt.Railway:TokyoMetro.Hibiya",
-      "toRailway": "odpt.Railway:TokyoMetro.Yurakucho",
-      "minutes": 7,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
       "id": "fallback-銚子-成田線-総武本線",
       "fromStation": "odpt.Station:JR-East.Narita.Choshi",
       "toStation": "odpt.Station:JR-East.Sobu.Choshi",
       "fromRailway": "odpt.Railway:JR-East.Narita",
       "toRailway": "odpt.Railway:JR-East.Sobu",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-鶴見-京浜東北線・根岸線-鶴見線",
-      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Tsurumi",
-      "toStation": "odpt.Station:JR-East.Tsurumi.Tsurumi",
-      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "toRailway": "odpt.Railway:JR-East.Tsurumi",
       "minutes": 5,
       "bidirectional": true,
       "label": "暫定・安全側乗換",
@@ -12454,19 +12468,6 @@
       "toStation": "odpt.Station:Toei.Oedo.Toshimaen",
       "fromRailway": "odpt.Railway:Seibu.Toshima",
       "toRailway": "odpt.Railway:Toei.Oedo",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-明治神宮前〈原宿〉-千代田線-副都心線",
-      "fromStation": "odpt.Station:TokyoMetro.Chiyoda.MeijiJingumae",
-      "toStation": "odpt.Station:TokyoMetro.Fukutoshin.MeijiJingumae",
-      "fromRailway": "odpt.Railway:TokyoMetro.Chiyoda",
-      "toRailway": "odpt.Railway:TokyoMetro.Fukutoshin",
       "minutes": 5,
       "bidirectional": true,
       "label": "暫定・安全側乗換",
