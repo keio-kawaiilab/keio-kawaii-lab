@@ -1,0 +1,91 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "乗換",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "id": "尻手-南武線-南武線浜川崎支線",
+      "place": "尻手",
+      "railwayA": "odpt.Railway:JR-East.Nambu",
+      "railwayB": "odpt.Railway:JR-East.NambuBranch",
+      "minutes": 1,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%B7%9D%E5%B4%8E_%E6%B5%9C%E5%B7%9D%E5%B4%8E.html",
+      "sourceType": "current route planner; Nambu Line to Nambu Branch transfer at Shitte shown as 1 minute (platform 2 to platform 3)"
+    },
+    {
+      "id": "成東-総武本線-東金線",
+      "place": "成東",
+      "railwayA": "odpt.Railway:JR-East.Sobu",
+      "railwayB": "odpt.Railway:JR-East.Togane",
+      "minutes": 1,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%9D%B1%E9%87%91_%E5%85%AB%E8%A1%97.html",
+      "sourceType": "current route planner; Togane Line to Sobu Main Line transfer at Naruto shown as 1 minute; reverse direction also shown as 1 minute"
+    },
+    {
+      "id": "渋川-吾妻線-上越線",
+      "place": "渋川",
+      "railwayA": "odpt.Railway:JR-East.Agatsuma",
+      "railwayB": "odpt.Railway:JR-East.Joetsu",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%96%B0%E6%BD%9F_%E9%95%B7%E9%87%8E%E5%8E%9F%E8%8D%89%E6%B4%A5%E5%8F%A3.html",
+      "sourceType": "current route planner; Joetsu Line to Agatsuma Line transfer at Shibukawa shown as 3 minutes; some Agatsuma trains also run through toward Takasaki"
+    },
+    {
+      "id": "要町-副都心線-有楽町線",
+      "place": "要町",
+      "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+      "minutes": 1,
+      "source": "https://www.tokyometro.jp/station/kanamecho/timetable/index.html",
+      "sourceType": "official Tokyo Metro station information lists Yurakucho and Fukutoshin services at the same station in the same directional platform system; 1-minute safety buffer for changing trains"
+    },
+    {
+      "id": "千川-副都心線-有楽町線",
+      "place": "千川",
+      "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+      "minutes": 1,
+      "source": "https://www.tokyometro.jp/station/senkawa/timetable/index.html",
+      "sourceType": "official Tokyo Metro station information lists Yurakucho and Fukutoshin services at the same station in the same directional platform system; 1-minute safety buffer for changing trains"
+    },
+    {
+      "id": "氷川台-副都心線-有楽町線",
+      "place": "氷川台",
+      "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+      "minutes": 1,
+      "source": "https://www.tokyometro.jp/station/hikawadai/accessibility/index.html",
+      "sourceType": "official Tokyo Metro station information shows both lines at Hikawadai and only directional platforms 1 and 2; 1-minute safety buffer for changing trains"
+    },
+    {
+      "id": "平和台-副都心線-有楽町線",
+      "place": "平和台",
+      "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+      "minutes": 1,
+      "source": "https://www.tokyometro.jp/station/heiwadai/accessibility/index.html",
+      "sourceType": "official Tokyo Metro station information lists both lines using the common platform system; 1-minute safety buffer for changing trains"
+    },
+    {
+      "id": "地下鉄赤塚-副都心線-有楽町線",
+      "place": "地下鉄赤塚",
+      "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+      "minutes": 1,
+      "source": "https://www.tokyometro.jp/station/chikatetsu-akatsuka/timetable/index.html",
+      "sourceType": "official Tokyo Metro station information lists Yurakucho and Fukutoshin services at the same station in the same directional platform system; 1-minute safety buffer for changing trains"
+    },
+    {
+      "id": "地下鉄成増-副都心線-有楽町線",
+      "place": "地下鉄成増",
+      "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+      "minutes": 1,
+      "source": "https://www.tokyometro.jp/station/chikatetsu-narimasu/timetable/index.html",
+      "sourceType": "official Tokyo Metro station information lists Yurakucho and Fukutoshin services at the same station in the same directional platform system; 1-minute safety buffer for changing trains"
+    }
+  ]
+}
