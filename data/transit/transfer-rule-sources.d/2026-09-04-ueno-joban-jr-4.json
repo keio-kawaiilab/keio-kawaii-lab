@@ -1,0 +1,38 @@
+{
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換（安全側）",
+    "sourceType": "current platform-to-platform transfer guide; conservative upper bound",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "上野",
+      "railwayA": "odpt.Railway:JR-East.JobanRapid",
+      "railwayB": "odpt.Railway:JR-East.Yamanote",
+      "minutes": 5,
+      "sourceUrl": "https://wadattsu261.com/content/ueno-jrjoban-yamanote-keihinline-transfer-information/"
+    },
+    {
+      "place": "上野",
+      "railwayA": "odpt.Railway:JR-East.JobanRapid",
+      "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "minutes": 5,
+      "sourceUrl": "https://wadattsu261.com/content/ueno-jrjoban-yamanote-keihinline-transfer-information/"
+    },
+    {
+      "place": "上野",
+      "railwayA": "odpt.Railway:JR-East.JobanRapid",
+      "railwayB": "odpt.Railway:JR-East.Utsunomiya",
+      "minutes": 5,
+      "sourceUrl": "https://wadattsu261.com/content/ueno-jrjoban-utsunomiya-takasaki-uenotokyoline-transfer-information/"
+    },
+    {
+      "place": "上野",
+      "railwayA": "odpt.Railway:JR-East.JobanRapid",
+      "railwayB": "odpt.Railway:JR-East.Takasaki",
+      "minutes": 5,
+      "sourceUrl": "https://wadattsu261.com/content/ueno-jrjoban-utsunomiya-takasaki-uenotokyoline-transfer-information/"
+    }
+  ]
+}
