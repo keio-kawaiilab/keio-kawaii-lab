@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T08:37:51.548Z",
+  "generatedAt": "2026-09-04T08:39:51.825Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -46,6 +46,7 @@
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-11.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-20.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-2f.json",
+    "transfer-rule-sources.d/2026-09-04-fallback-upgrade-2k.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-3i.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-3j.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-4d.json",
@@ -124,7 +125,7 @@
     "transfer-rule-sources.d/2026-09-04-yokohama-private-remaining.json"
   ],
   "description": "Station/railway-specific transfer times. Explicit curated rules are preferred; any remaining unblocked candidate pair receives a conservative fallbackMinutes rule until an external standard time is added.",
-  "fallbackCandidatePairs": 18,
+  "fallbackCandidatePairs": 16,
   "rules": [
     {
       "id": "東京-山手線-丸ノ内線",
@@ -3999,6 +4000,32 @@
       "label": "乗換",
       "source": "https://www.jorudan.co.jp/norikae/route/%E7%80%AC%E8%B0%B7_%E6%96%B0%E6%A8%AA%E6%B5%9C.html",
       "sourceType": "current Jorudan route explicitly shows a 1-minute transfer at Nishiya, platform 3 arrival to platform 4 departure",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "元住吉-目黒線-東横線",
+      "fromStation": "odpt.Station:Tokyu.Meguro.Motosumiyoshi",
+      "toStation": "odpt.Station:Tokyu.Toyoko.Motosumiyoshi",
+      "fromRailway": "odpt.Railway:Tokyu.Meguro",
+      "toRailway": "odpt.Railway:Tokyu.Toyoko",
+      "minutes": 1,
+      "bidirectional": true,
+      "label": "標準乗換（安全側）",
+      "source": "https://www.ecomo-rakuraku.jp/ja/station/%E5%85%83%E4%BD%8F%E5%90%89/",
+      "sourceType": "same-platform transfer guidance for both directions; 1-minute safety buffer consistent with existing project rules",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "新丸子-目黒線-東横線",
+      "fromStation": "odpt.Station:Tokyu.Meguro.ShinMaruko",
+      "toStation": "odpt.Station:Tokyu.Toyoko.ShinMaruko",
+      "fromRailway": "odpt.Railway:Tokyu.Meguro",
+      "toRailway": "odpt.Railway:Tokyu.Toyoko",
+      "minutes": 1,
+      "bidirectional": true,
+      "label": "標準乗換（安全側）",
+      "source": "https://www.ecomo-rakuraku.jp/ja/station/%E6%96%B0%E4%B8%B8%E5%AD%90/",
+      "sourceType": "same-platform transfer guidance for both directions; 1-minute safety buffer consistent with existing project rules",
       "verifiedAt": "2026-09-04"
     },
     {
@@ -12301,19 +12328,6 @@
       "verifiedAt": ""
     },
     {
-      "id": "fallback-元住吉-目黒線-東横線",
-      "fromStation": "odpt.Station:Tokyu.Meguro.Motosumiyoshi",
-      "toStation": "odpt.Station:Tokyu.Toyoko.Motosumiyoshi",
-      "fromRailway": "odpt.Railway:Tokyu.Meguro",
-      "toRailway": "odpt.Railway:Tokyu.Toyoko",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
       "id": "fallback-吾野-池袋線-西武秩父線",
       "fromStation": "odpt.Station:Seibu.Ikebukuro.Agano",
       "toStation": "odpt.Station:Seibu.SeibuChichibu.Agano",
@@ -12384,19 +12398,6 @@
       "toStation": "odpt.Station:JR-East.Sobu.Matsugishi",
       "fromRailway": "odpt.Railway:JR-East.Narita",
       "toRailway": "odpt.Railway:JR-East.Sobu",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-新丸子-目黒線-東横線",
-      "fromStation": "odpt.Station:Tokyu.Meguro.ShinMaruko",
-      "toStation": "odpt.Station:Tokyu.Toyoko.ShinMaruko",
-      "fromRailway": "odpt.Railway:Tokyu.Meguro",
-      "toRailway": "odpt.Railway:Tokyu.Toyoko",
       "minutes": 5,
       "bidirectional": true,
       "label": "暫定・安全側乗換",
