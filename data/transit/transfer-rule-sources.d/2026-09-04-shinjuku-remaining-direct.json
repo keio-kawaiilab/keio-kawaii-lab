@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換",
+    "sourceType": "Jorudan standard transfer time",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:Keio.Keio",
+      "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayAName": "京王線",
+      "railwayBName": "中央・総武各駅停車",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/keio_line-sobu_line_local.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:Keio.Keio",
+      "railwayB": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayAName": "京王線",
+      "railwayBName": "中央線快速",
+      "minutes": 5,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/keio_line-chuo_line.html"
+    },
+    {
+      "place": "新宿",
+      "railwayA": "odpt.Railway:Odakyu.Odawara",
+      "railwayB": "odpt.Railway:Toei.Oedo",
+      "railwayAName": "小田原線",
+      "railwayBName": "大江戸線",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/shinjuku/odakyu_line-toei_subway-oedo_line.html"
+    }
+  ]
+}
