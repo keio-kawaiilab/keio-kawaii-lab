@@ -1,0 +1,52 @@
+{
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換",
+    "sourceType": "Jorudan standard transfer time",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "永田町",
+      "railwayA": "odpt.Railway:TokyoMetro.Namboku",
+      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+      "minutes": 4,
+      "sourceUrl": "https://mb.jorudan.co.jp/os/noritxt/akasakamitsuke/tokyo-metro_nanboku_line-tokyo-metro_yurakucho_line.html"
+    },
+    {
+      "place": "永田町",
+      "railwayA": "odpt.Railway:TokyoMetro.Hanzomon",
+      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
+      "minutes": 4,
+      "sourceUrl": "https://mb.jorudan.co.jp/os/noritxt/akasakamitsuke/tokyo-metro_hanzomon_line-tokyo-metro_nanboku_line.html"
+    },
+    {
+      "place": "永田町",
+      "railwayA": "odpt.Railway:TokyoMetro.Hanzomon",
+      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+      "minutes": 4,
+      "sourceUrl": "https://mb.jorudan.co.jp/os/noritxt/akasakamitsuke/tokyo-metro_hanzomon_line-tokyo-metro_yurakucho_line.html"
+    },
+    {
+      "place": "国会議事堂前 ↔ 溜池山王",
+      "railwayA": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
+      "minutes": 8,
+      "sourceUrl": "https://mb.jorudan.co.jp/os/noritxt/tameikesanno/tokyo-metro_marunouchi_line-tokyo-metro_nanboku_line.html"
+    },
+    {
+      "place": "国会議事堂前 ↔ 溜池山王",
+      "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayB": "odpt.Railway:TokyoMetro.Ginza",
+      "minutes": 6,
+      "sourceUrl": "https://mb.jorudan.co.jp/os/noritxt/tameikesanno/tokyo-metro_chiyoda_line-tokyo-metro_ginza_line.html"
+    },
+    {
+      "place": "国会議事堂前 ↔ 溜池山王",
+      "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
+      "minutes": 4,
+      "sourceUrl": "https://mb.jorudan.co.jp/os/noritxt/tameikesanno/tokyo-metro_chiyoda_line-tokyo-metro_nanboku_line.html"
+    }
+  ]
+}
