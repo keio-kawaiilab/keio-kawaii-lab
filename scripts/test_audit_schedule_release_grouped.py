@@ -5,7 +5,11 @@ import copy
 import unittest
 from datetime import datetime, timezone
 
-from audit_schedule_release_grouped import audit_grouped, repair_local_errors
+from audit_schedule_release_grouped import (
+    audit_grouped,
+    is_global_integrity_error,
+    repair_local_errors,
+)
 
 NOW = datetime(2026, 8, 27, 4, 0, tzinfo=timezone.utc)
 SOURCE = "https://x.com/MORE_STAR_/status/2092567739969966299"
@@ -131,6 +135,33 @@ class GroupedReleaseAuditTests(unittest.TestCase):
         self.assertEqual({"stable"}, ids)
         self.assertGreaterEqual(len(actions), 1)
 
+    def test_last_chance_isolation_prevents_row_error_from_freezing_release(self):
+        stable = event("stable", "2026-09-24", "既存公演")
+        bad = event("bad-new", "2026-10-01", "壊れた新規公演")
+        bad["eventScope"] = ""
+        bad_source = "https://morestar.asobisystem.com/live_information/detail/last-chance"
+        bad["url"] = bad_source
+        bad["urls"] = [bad_source]
+        fresh = event("fresh", "2026-12-20", "正常な新規公演")
+        fresh_source = "https://morestar.asobisystem.com/live_information/detail/fresh"
+        fresh["url"] = fresh_source
+        fresh["urls"] = [fresh_source]
+
+        repaired, errors, _, report, actions = repair_local_errors(
+            payload([stable]),
+            payload([copy.deepcopy(stable), bad, fresh]),
+            NOW,
+            max_rounds=0,
+        )
+
+        ids = {row["id"] for row in repaired["events"]}
+        self.assertEqual([], errors)
+        self.assertEqual({"stable", "fresh"}, ids)
+        self.assertNotIn("bad-new", ids)
+        self.assertGreaterEqual(len(actions), 1)
+        self.assertEqual("ok", report["status"])
+        self.assertFalse(report.get("rowFailuresCanBlockRelease", True))
+
     def test_release_repair_downgrades_unchanged_legacy_special_row(self):
         title = "『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント"
         legacy = event("legacy-special", "2026-09-10", title)
@@ -169,6 +200,12 @@ class GroupedReleaseAuditTests(unittest.TestCase):
         self.assertTrue(any("candidate updatedAt is invalid" in item for item in errors))
         self.assertEqual([], actions)
         self.assertEqual("blocked", report["status"])
+
+    def test_only_system_wide_errors_are_classified_as_global(self):
+        self.assertTrue(is_global_integrity_error("candidate updatedAt is invalid"))
+        self.assertTrue(is_global_integrity_error("candidate event count spiked from 10 to 99"))
+        self.assertFalse(is_global_integrity_error("missing title: MORE STAR / ? / 現在受付なし"))
+        self.assertFalse(is_global_integrity_error("deadline moved earlier for id:x: old -> new"))
 
 
 if __name__ == "__main__":
