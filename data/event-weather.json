@@ -1,86 +1,31 @@
 {
-  "date": "2026-09-04",
+  "date": "2026-09-05",
   "horizonDays": 7,
-  "generatedAt": "2026-09-04T21:54+09:00",
+  "generatedAt": "2026-09-05T03:20+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
     {
-      "date": "2026-09-04",
-      "venue": "東京都 KAWAII MONSTER LAND -HARAJUKU-",
-      "venueKey": "kawaiimonsterland-harajuku-",
+      "date": "2026-09-05",
+      "venue": "東京都 Veats Shibuya",
+      "venueKey": "veatsshibuya",
       "eventIds": [
-        "50755b3284cb17e4"
+        "f9915fcb23fb364e"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "雨",
-      "max": null,
-      "min": null,
-      "pop": "70",
-      "popLabel": "18〜00時",
+      "label": "くもり 明け方 まで 雨",
+      "max": 26.0,
+      "min": 20.0,
+      "pop": "60",
+      "popLabel": "当日最大",
       "issuedAt": "2026-09-04T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
-    },
-    {
-      "date": "2026-09-04",
-      "venue": "神奈川県 カルッツかわさき 大ホール",
-      "venueKey": "カルッツかわさき",
-      "eventIds": [
-        "54a369497f59ce96",
-        "faaedb9fa4408d6e"
-      ],
-      "areaCode": "140010",
-      "areaName": "東部",
-      "precision": "mesh5km",
-      "label": "雨",
-      "max": null,
-      "min": null,
-      "pop": "60",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-09-04T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "20〜24℃",
-      "coordinates": {
-        "lat": 35.529778,
-        "lon": 139.71022
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "雨",
-          "validAt": "2026-09-04T21:00+09:00",
-          "temp": 22
-        },
-        {
-          "time": "24:00",
-          "label": "雨",
-          "validAt": "2026-09-05T00:00+09:00",
-          "temp": 22
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "17:30",
-          "rain": true,
-          "validAt": "2026-09-04T17:30+09:00"
-        },
-        {
-          "time": "18:30",
-          "rain": true,
-          "validAt": "2026-09-04T18:30+09:00"
-        },
-        {
-          "time": "19:30",
-          "rain": true,
-          "validAt": "2026-09-04T19:30+09:00"
-        }
-      ]
     },
     {
       "date": "2026-09-05",
@@ -169,7 +114,12 @@
       "venueKey": "グランキューブ大阪メインホール",
       "eventIds": [
         "54a369497f59ce96",
-        "84787797cc4cbcb3"
+        "7f83450aa2a98b9e",
+        "b3e0fafa37dc60a4",
+        "84787797cc4cbcb3",
+        "9a117c2e21632619",
+        "c06ce2ef470dc1d6",
+        "cde44a8b736a9620"
       ],
       "areaCode": "270000",
       "areaName": "大阪府",
@@ -185,12 +135,37 @@
       "coordinates": null
     },
     {
+      "date": "2026-09-09",
+      "venue": "神奈川・横浜赤レンガ倉庫イベント広場B",
+      "venueKey": "神奈川横浜赤レンガ倉庫イベント広場b",
+      "eventIds": [
+        "a68c1d5158db37a3"
+      ],
+      "areaCode": "140010",
+      "areaName": "神奈川県",
+      "precision": "area",
+      "label": "くもり一時雨",
+      "max": 30.0,
+      "min": 24.0,
+      "pop": "60",
+      "popLabel": "1日",
+      "issuedAt": "2026-09-04T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
       "date": "2026-09-10",
       "venue": "大阪府 グランキューブ大阪 メインホール",
       "venueKey": "グランキューブ大阪メインホール",
       "eventIds": [
         "54a369497f59ce96",
-        "84787797cc4cbcb3"
+        "7f83450aa2a98b9e",
+        "b3e0fafa37dc60a4",
+        "84787797cc4cbcb3",
+        "9a117c2e21632619",
+        "cde44a8b736a9620",
+        "e1d8758eb33627e4"
       ],
       "areaCode": "270000",
       "areaName": "大阪府",
@@ -227,19 +202,29 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 14,
-    "uniqueVenueDates": 10,
+    "occurrencesInRange": 25,
+    "uniqueVenueDates": 12,
     "weatherEntries": 9,
-    "meshEntries": 1,
-    "failures": 1,
-    "meshTimelineEntries": 1,
-    "meshExactTempSlots": 2,
-    "hourlyRainEntries": 1
+    "meshEntries": 0,
+    "failures": 3,
+    "meshTimelineEntries": 0,
+    "meshExactTempSlots": 0,
+    "hourlyRainEntries": 0
   },
   "failures": [
     {
+      "date": "2026-09-06",
+      "venue": "青森・青い海公園・アスパム",
+      "reason": "都道府県を解決できません"
+    },
+    {
       "date": "2026-09-11",
       "venue": "神戸ハーバーランド スペースシアター",
+      "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-09-12",
+      "venue": "北海道 苫小牧・キラキラ公園",
       "reason": "都道府県を解決できません"
     }
   ]
