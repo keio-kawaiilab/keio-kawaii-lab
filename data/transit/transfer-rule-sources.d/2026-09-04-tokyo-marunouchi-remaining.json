@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "現在経路ベース乗換",
+    "sourceType": "current route-planner transfer window",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "東京",
+      "railwayA": "odpt.Railway:JR-East.Utsunomiya",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayAName": "宇都宮線",
+      "railwayBName": "丸ノ内線",
+      "minutes": 11,
+      "source": "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E6%B5%A6%E5%92%8C&s=0&stype=&ticket=ic&to=%E9%8A%80%E5%BA%A7&ws=3"
+    },
+    {
+      "place": "東京",
+      "railwayA": "odpt.Railway:JR-East.Takasaki",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayAName": "高崎線",
+      "railwayBName": "丸ノ内線",
+      "minutes": 11,
+      "source": "https://transit.yahoo.co.jp/search/result?all=1&from=%E5%A4%A7%E5%AE%AE%28%E5%9F%BC%E7%8E%89%E7%9C%8C%29&stype=&to=%E9%8A%80%E5%BA%A7"
+    },
+    {
+      "place": "東京",
+      "railwayA": "odpt.Railway:JR-East.JobanRapid",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayAName": "常磐線快速",
+      "railwayBName": "丸ノ内線",
+      "minutes": 13,
+      "source": "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E6%9F%8F&s=2&stype=&ticket=ic&to=%E9%8A%80%E5%BA%A7&ws=3"
+    }
+  ]
+}
