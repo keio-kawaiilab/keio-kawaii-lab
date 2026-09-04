@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T08:19:30.127Z",
+  "generatedAt": "2026-09-04T08:22:45.309Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -45,6 +45,7 @@
     "transfer-rule-sources.d/2026-09-04-ebisu-core.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-11.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-20.json",
+    "transfer-rule-sources.d/2026-09-04-fallback-upgrade-2f.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-4d.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-7e.json",
     "transfer-rule-sources.d/2026-09-04-fallback-upgrade-8b.json",
@@ -119,7 +120,7 @@
     "transfer-rule-sources.d/2026-09-04-yokohama-private-remaining.json"
   ],
   "description": "Station/railway-specific transfer times. Explicit curated rules are preferred; any remaining unblocked candidate pair receives a conservative fallbackMinutes rule until an external standard time is added.",
-  "fallbackCandidatePairs": 34,
+  "fallbackCandidatePairs": 32,
   "rules": [
     {
       "id": "東京-山手線-丸ノ内線",
@@ -3968,6 +3969,32 @@
       "label": "乗換",
       "source": "https://timetables.jreast.co.jp/timetable/list1410.html",
       "sourceType": "official current JR East timetable explicitly groups Uchibo and Sotobo services on the common Chiba-bound platform group; 1-minute safety buffer for the shared-track service boundary",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "川越-川越線-埼京線川越線",
+      "fromStation": "odpt.Station:JR-East.Kawagoe.Kawagoe",
+      "toStation": "odpt.Station:JR-East.SaikyoKawagoe.Kawagoe",
+      "fromRailway": "odpt.Railway:JR-East.Kawagoe",
+      "toRailway": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "minutes": 1,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E9%AB%98%E9%BA%97%E5%B7%9D_%E5%A4%A7%E5%AE%AE%EF%BC%88%E5%9F%BC%E7%8E%89%EF%BC%89.html",
+      "sourceType": "current Jorudan route explicitly shows a 1-minute transfer at Kawagoe between the Komagawa-side Kawagoe Line train and the Omiya-side through Saikyo/Kawagoe Line train; reverse-direction example also shows 1 minute",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "西谷-相鉄本線-相鉄新横浜線",
+      "fromStation": "odpt.Station:Sotetsu.Main.Nishiya",
+      "toStation": "odpt.Station:Sotetsu.SotetsuShinYokohama.Nishiya",
+      "fromRailway": "odpt.Railway:Sotetsu.Main",
+      "toRailway": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
+      "minutes": 1,
+      "bidirectional": true,
+      "label": "乗換",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E7%80%AC%E8%B0%B7_%E6%96%B0%E6%A8%AA%E6%B5%9C.html",
+      "sourceType": "current Jorudan route explicitly shows a 1-minute transfer at Nishiya, platform 3 arrival to platform 4 departure",
       "verifiedAt": "2026-09-04"
     },
     {
@@ -12320,19 +12347,6 @@
       "verifiedAt": ""
     },
     {
-      "id": "fallback-西谷-相鉄本線-相鉄新横浜線",
-      "fromStation": "odpt.Station:Sotetsu.Main.Nishiya",
-      "toStation": "odpt.Station:Sotetsu.SotetsuShinYokohama.Nishiya",
-      "fromRailway": "odpt.Railway:Sotetsu.Main",
-      "toRailway": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
       "id": "fallback-青砥-京成本線-押上線",
       "fromStation": "odpt.Station:Keisei.Oshiage.Aoto",
       "toStation": "odpt.Station:Keisei.Oshiage.Aoto",
@@ -12351,19 +12365,6 @@
       "toStation": "manual.Station:keisei.千葉中央",
       "fromRailway": "odpt.Railway:Keisei.Chiba",
       "toRailway": "odpt.Railway:Keisei.Chihara",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-川越-川越線(川越-高麗川間)-埼京線・川越線",
-      "fromStation": "odpt.Station:JR-East.Kawagoe.Kawagoe",
-      "toStation": "odpt.Station:JR-East.SaikyoKawagoe.Kawagoe",
-      "fromRailway": "odpt.Railway:JR-East.Kawagoe",
-      "toRailway": "odpt.Railway:JR-East.SaikyoKawagoe",
       "minutes": 5,
       "bidirectional": true,
       "label": "暫定・安全側乗換",
