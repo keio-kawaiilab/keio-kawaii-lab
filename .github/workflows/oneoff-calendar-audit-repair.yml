@@ -1,4 +1,4 @@
-name: One-off calendar audit repair
+name: One-off calendar self-healing repair
 
 on:
   push:
@@ -24,75 +24,83 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Prefer exact row identity before shared source URLs
+      - name: Patch calendar trigger isolation and one-shot recovery
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
           from pathlib import Path
 
-          path = Path("scripts/audit_schedule_release.py")
-          text = path.read_text(encoding="utf-8")
-          marker = "    return result\n\n\ndef future_or_active(event: dict, today: date) -> bool:\n"
-          helper = '''    return result\n\n\ndef preferred_match_keys(event: dict) -> list[str]:\n    \"\"\"Prefer exact row identities before generic URLs shared by many sale rounds.\"\"\"\n    keys = stable_keys(event)\n    rank = lambda key: (\n        0 if key.startswith(\"id:\") else\n        1 if key.startswith((\"pia:\", \"sukisuki:\", \"lawson:\", \"eplus:\")) else\n        2\n    )\n    return sorted(keys, key=rank)\n\n\ndef future_or_active(event: dict, today: date) -> bool:\n'''
-          if "def preferred_match_keys(event: dict)" not in text:
-              if marker not in text:
-                  raise SystemExit("stable_keys insertion marker not found")
-              text = text.replace(marker, helper, 1)
-          old_loop = "        for key in stable_keys(old):\n"
-          new_loop = "        for key in preferred_match_keys(old):\n"
-          if new_loop not in text:
-              if old_loop not in text:
-                  raise SystemExit("protected-item match loop not found")
-              text = text.replace(old_loop, new_loop, 1)
-          path.write_text(text, encoding="utf-8")
+          path = Path('.github/workflows/update-live-calendar-distributed.yml')
+          text = path.read_text(encoding='utf-8')
 
-          test_path = Path("scripts/test_audit_schedule_release.py")
-          test_text = test_path.read_text(encoding="utf-8")
-          test_name = "test_shared_official_feature_prefers_exact_id_before_shared_url"
-          if test_name not in test_text:
-              insert_before = "    def test_duplicate_pia_lot_is_blocked(self):\n"
-              test = '''    def test_shared_official_feature_prefers_exact_id_before_shared_url(self):\n        shared = \"https://cutiestreet.asobisystem.com/feature/autumntour\"\n        later = {\n            \"id\": \"upgrade-later\", \"group\": \"CUTIE STREET\", \"eventScope\": \"kawaii-lab\",\n            \"title\": \"CUTIE STREET JAPAN TOUR 2026\", \"ticketType\": \"アップグレード抽選受付\",\n            \"applyStart\": \"2026-09-03T20:00\", \"applyEnd\": \"2026-09-08T23:59\",\n            \"eventDate\": \"2026-10-03\", \"url\": shared, \"urls\": [shared],\n            \"sourceType\": \"official\", \"primarySource\": \"official\", \"applicationStatus\": \"open\",\n        }\n        earlier = {\n            \"id\": \"upgrade-earlier\", \"group\": \"CUTIE STREET\", \"eventScope\": \"kawaii-lab\",\n            \"title\": \"CUTIE STREET JAPAN TOUR 2026\", \"ticketType\": \"アップグレード抽選受付\",\n            \"applyStart\": \"2026-09-01T20:00\", \"applyEnd\": \"2026-09-06T23:59\",\n            \"eventDate\": \"2026-09-23\", \"url\": shared, \"urls\": [shared],\n            \"sourceType\": \"official\", \"primarySource\": \"official\", \"applicationStatus\": \"open\",\n        }\n        old = payload([later, earlier])\n        new = payload([copy.deepcopy(earlier), copy.deepcopy(later)])\n        errors, _, _ = audit(old, new, NOW)\n        self.assertEqual([], errors)\n\n'''
-              if insert_before not in test_text:
-                  raise SystemExit("test insertion marker not found")
-              test_text = test_text.replace(insert_before, test + insert_before, 1)
-              test_path.write_text(test_text, encoding="utf-8")
+          # Unrelated transit work under scripts/ must not start/queue calendar refreshes.
+          text = text.replace('      - "scripts/**"\n', '')
+
+          # A failed refresh gets one immediate retry. Further failures are left to
+          # the watchdog so a deterministic bug cannot create an infinite retry loop.
+          if 'recovery_attempt:' not in text:
+              text = text.replace(
+                  '  workflow_dispatch:\n',
+                  '  workflow_dispatch:\n'
+                  '    inputs:\n'
+                  '      recovery_attempt:\n'
+                  '        description: "Internal one-shot recovery attempt"\n'
+                  '        required: false\n'
+                  '        default: "0"\n',
+                  1,
+              )
+
+          permissions = 'permissions:\n  contents: write\n  issues: write\n'
+          hardened_permissions = 'permissions:\n  contents: write\n  issues: write\n  actions: write\n'
+          if hardened_permissions not in text:
+              if permissions not in text:
+                  raise SystemExit('calendar permissions block not found')
+              text = text.replace(permissions, hardened_permissions, 1)
+
+          retry_step = '''\n      - name: Retry failed refresh once\n        if: ${{ github.event_name != 'workflow_dispatch' || inputs.recovery_attempt != '1' }}\n        env:\n          GH_TOKEN: ${{ github.token }}\n        shell: bash\n        run: |\n          echo "Current refresh failed; queueing one immediate recovery attempt on latest main."\n          gh workflow run update-live-calendar-distributed.yml --ref main -f recovery_attempt=1\n'''
+          if 'name: Retry failed refresh once' not in text:
+              needle = '''          else\n            gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body "$body"\n          fi\n'''
+              pos = text.rfind(needle)
+              if pos == -1:
+                  raise SystemExit('report-failure insertion point not found')
+              end = pos + len(needle)
+              text = text[:end] + retry_step + text[end:]
+
+          path.write_text(text, encoding='utf-8')
           PY
 
-      - name: Run release audit tests
+      - name: Verify workflow patch
         shell: bash
         run: |
           set -euo pipefail
-          cd scripts
-          python -m unittest -v test_audit_schedule_release.py test_audit_schedule_release_grouped.py
+          python - <<'PY'
+          from pathlib import Path
+          text = Path('.github/workflows/update-live-calendar-distributed.yml').read_text(encoding='utf-8')
+          assert '- "scripts/**"' not in text
+          assert 'recovery_attempt:' in text
+          assert 'name: Retry failed refresh once' in text
+          assert 'actions: write' in text
+          print('calendar self-healing workflow patch verified')
+          PY
 
-      - name: Commit root-cause repair
+      - name: Commit self-healing repair
         shell: bash
         run: |
           set -euo pipefail
-          if git diff --quiet -- scripts/audit_schedule_release.py scripts/test_audit_schedule_release.py; then
-            echo "Repair already present"
-          else
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add scripts/audit_schedule_release.py scripts/test_audit_schedule_release.py
-            git commit -m "Fix shared-source ticket audit matching"
-            for attempt in 1 2 3; do
-              if git push origin HEAD:main; then
-                break
-              fi
-              git fetch origin main
-              git rebase origin/main
-              if [ "$attempt" -eq 3 ]; then exit 1; fi
-            done
+          if git diff --quiet -- .github/workflows/update-live-calendar-distributed.yml; then
+            echo "Self-healing repair already present"
+            exit 0
           fi
-
-      - name: Dispatch distributed calendar refresh
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run update-live-calendar-distributed.yml --ref main
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/workflows/update-live-calendar-distributed.yml
+          git commit -m "Harden calendar refresh self-recovery"
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            git fetch origin main
+            git rebase origin/main
+          done
+          exit 1
