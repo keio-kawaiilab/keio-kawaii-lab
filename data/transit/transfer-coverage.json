@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-09-04T11:47:25.772Z",
-  "candidateGeneratedAt": "2026-09-04T11:47:09.699Z",
-  "rulesGeneratedAt": "2026-09-04T09:59:55.350Z",
+  "generatedAt": "2026-09-04T15:32:25.572Z",
+  "candidateGeneratedAt": "2026-09-04T15:31:29.131Z",
+  "rulesGeneratedAt": "2026-09-04T15:31:54.969Z",
   "methodology": "Candidate railway pairs are classified as curated when backed by an explicit transfer rule, fallback when covered by conservative fallbackMinutes, blocked for false same-name/nearby links, and uncurated only when no usable rule exists.",
   "summary": {
-    "candidatePairs": 911,
-    "curatedPairs": 904,
+    "candidatePairs": 960,
+    "curatedPairs": 953,
     "fallbackPairs": 0,
     "uncuratedPairs": 0,
     "blockedPairs": 7,
     "curatedSourceRules": 953,
     "fallbackGeneratedRules": 0,
-    "transferPlaces": 313
+    "transferPlaces": 329
   },
   "priorityPlaces": [
     {
@@ -191,6 +191,17 @@
       "priorityScore": 0
     },
     {
+      "place": "押上",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
       "place": "押上 ↔ 押上(スカイツリー前)",
       "totalPairs": 1,
       "curatedPairs": 1,
@@ -202,7 +213,7 @@
       "priorityScore": 0
     },
     {
-      "place": "押上〈スカイツリー前〉 ↔ 押上",
+      "place": "押上(スカイツリー前) ↔ 押上",
       "totalPairs": 1,
       "curatedPairs": 1,
       "fallbackPairs": 0,
@@ -210,6 +221,17 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
+      "place": "押上〈スカイツリー前〉 ↔ 押上",
+      "totalPairs": 2,
+      "curatedPairs": 2,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
       "priorityScore": 0
     },
     {
@@ -225,13 +247,13 @@
     },
     {
       "place": "横浜",
-      "totalPairs": 28,
-      "curatedPairs": 28,
+      "totalPairs": 36,
+      "curatedPairs": 36,
       "fallbackPairs": 0,
       "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 8,
+      "railwayCount": 9,
       "priorityScore": 0
     },
     {
@@ -499,6 +521,50 @@
       "priorityScore": 0
     },
     {
+      "place": "京成高砂",
+      "totalPairs": 3,
+      "curatedPairs": 3,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 0
+    },
+    {
+      "place": "京成成田",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
+      "place": "京成船橋 ↔ 船橋",
+      "totalPairs": 2,
+      "curatedPairs": 2,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 0
+    },
+    {
+      "place": "京成津田沼",
+      "totalPairs": 3,
+      "curatedPairs": 3,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 0
+    },
+    {
       "place": "橋本",
       "totalPairs": 3,
       "curatedPairs": 3,
@@ -566,6 +632,17 @@
     },
     {
       "place": "駒込",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
+      "place": "空港第２ビル",
       "totalPairs": 1,
       "curatedPairs": 1,
       "fallbackPairs": 0,
@@ -1028,83 +1105,6 @@
     },
     {
       "place": "三越前",
-      "totalPairs": 1,
-      "curatedPairs": 1,
-      "fallbackPairs": 0,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "三軒茶屋",
-      "totalPairs": 1,
-      "curatedPairs": 1,
-      "fallbackPairs": 0,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "三鷹",
-      "totalPairs": 1,
-      "curatedPairs": 1,
-      "fallbackPairs": 0,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "三田",
-      "totalPairs": 1,
-      "curatedPairs": 1,
-      "fallbackPairs": 0,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "四ツ谷",
-      "totalPairs": 6,
-      "curatedPairs": 6,
-      "fallbackPairs": 0,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 4,
-      "priorityScore": 0
-    },
-    {
-      "place": "市ケ谷",
-      "totalPairs": 3,
-      "curatedPairs": 3,
-      "fallbackPairs": 0,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 3,
-      "priorityScore": 0
-    },
-    {
-      "place": "市ケ谷 ↔ 市ヶ谷",
-      "totalPairs": 3,
-      "curatedPairs": 3,
-      "fallbackPairs": 0,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 4,
-      "priorityScore": 0
-    },
-    {
-      "place": "市川",
       "totalPairs": 1,
       "curatedPairs": 1,
       "fallbackPairs": 0,
