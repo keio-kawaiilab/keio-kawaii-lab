@@ -1,0 +1,163 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準・実測乗換（安全側）",
+    "sourceType": "current official station layout / route-planner transfer time",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "小竹向原",
+      "railwayA": "odpt.Railway:Seibu.SeibuYurakucho",
+      "railwayB": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "railwayAName": "西武有楽町線",
+      "railwayBName": "副都心線",
+      "minutes": 1,
+      "source": "https://www.tokyometro.jp/station/kotake-mukaihara/index.html",
+      "sourceType": "official shared directional platform / through-service interchange; 1-minute safety buffer"
+    },
+    {
+      "place": "小竹向原",
+      "railwayA": "odpt.Railway:Seibu.SeibuYurakucho",
+      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+      "railwayAName": "西武有楽町線",
+      "railwayBName": "有楽町線",
+      "minutes": 1,
+      "source": "https://www.seiburailway.jp/railway/station/",
+      "sourceType": "official through-service interchange; 1-minute safety buffer"
+    },
+    {
+      "place": "小竹向原",
+      "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+      "railwayAName": "副都心線",
+      "railwayBName": "有楽町線",
+      "minutes": 1,
+      "source": "https://www.tokyometro.jp/station/kotake-mukaihara/timetable/index.html",
+      "sourceType": "official shared directional platform groups; 1-minute safety buffer"
+    },
+    {
+      "place": "中野",
+      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayB": "odpt.Railway:TokyoMetro.Tozai",
+      "railwayAName": "中央・総武各駅停車",
+      "railwayBName": "東西線",
+      "minutes": 3,
+      "source": "https://www.jreast-timetable.jp/timetable/list1104.html",
+      "sourceType": "official through-service plus conservative non-through station interchange time"
+    },
+    {
+      "place": "中野",
+      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayAName": "中央線快速",
+      "railwayBName": "中央・総武各駅停車",
+      "minutes": 3,
+      "source": "https://ekitan.com/d-norikae/transit/route/sf-2654/st-2865",
+      "sourceType": "current route-planner platform transfer time; conservative 3 minutes"
+    },
+    {
+      "place": "中野",
+      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayB": "odpt.Railway:TokyoMetro.Tozai",
+      "railwayAName": "中央線快速",
+      "railwayBName": "東西線",
+      "minutes": 3,
+      "source": "https://ekitan.com/d-norikae/transit/route/sf-2840/st-1481",
+      "sourceType": "current route-planner platform transfer time; conservative 3 minutes"
+    },
+    {
+      "place": "多摩川",
+      "railwayA": "odpt.Railway:Tokyu.TokyuTamagawa",
+      "railwayB": "odpt.Railway:Tokyu.Toyoko",
+      "railwayAName": "東急多摩川線",
+      "railwayBName": "東横線",
+      "minutes": 5,
+      "reverseMinutes": 3,
+      "source": "https://wadattsu261.com/content/tamagawa-tokyutamagawa-meguro-toyokoline-transfer-information/",
+      "sourceType": "current directional transfer guide: Tamagawa-line to Toyoko about 5m, reverse about 2-3m"
+    },
+    {
+      "place": "多摩川",
+      "railwayA": "odpt.Railway:Tokyu.Meguro",
+      "railwayB": "odpt.Railway:Tokyu.Toyoko",
+      "railwayAName": "目黒線",
+      "railwayBName": "東横線",
+      "minutes": 1,
+      "source": "https://wadattsu261.com/content/tamagawa-tokyutoyoko-megurohome-info/",
+      "sourceType": "same-island platform by direction; 1-minute safety buffer"
+    },
+    {
+      "place": "多摩川",
+      "railwayA": "odpt.Railway:Tokyu.TokyuTamagawa",
+      "railwayB": "odpt.Railway:Tokyu.Meguro",
+      "railwayAName": "東急多摩川線",
+      "railwayBName": "目黒線",
+      "minutes": 5,
+      "reverseMinutes": 3,
+      "source": "https://wadattsu261.com/content/tamagawa-tokyutamagawa-meguro-toyokoline-transfer-information/",
+      "sourceType": "current directional transfer guide: Tamagawa-line to Meguro about 5m, reverse about 2-3m"
+    },
+    {
+      "place": "東武動物公園",
+      "railwayA": "odpt.Railway:Tobu.Isesaki",
+      "railwayB": "odpt.Railway:Tobu.TobuSkytree",
+      "railwayAName": "伊勢崎線",
+      "railwayBName": "東武スカイツリーライン",
+      "minutes": 1,
+      "source": "https://www.tobu.co.jp/railway/guide/station/info/1509/",
+      "sourceType": "official continuous route at Skytree Line / Isesaki boundary; 1-minute safety buffer"
+    },
+    {
+      "place": "東武動物公園",
+      "railwayA": "odpt.Railway:Tobu.Isesaki",
+      "railwayB": "odpt.Railway:Tobu.Nikko",
+      "railwayAName": "伊勢崎線",
+      "railwayBName": "日光線",
+      "minutes": 1,
+      "source": "https://www.tobu.co.jp/railway/guide/station/info/1509/",
+      "sourceType": "official junction/platform interchange; 1-minute safety buffer"
+    },
+    {
+      "place": "東武動物公園",
+      "railwayA": "odpt.Railway:Tobu.Nikko",
+      "railwayB": "odpt.Railway:Tobu.TobuSkytree",
+      "railwayAName": "日光線",
+      "railwayBName": "東武スカイツリーライン",
+      "minutes": 1,
+      "source": "https://www.tobu.co.jp/railway/guide/station/info/1509/",
+      "sourceType": "official through-service junction; 1-minute safety buffer"
+    },
+    {
+      "place": "曳舟",
+      "railwayA": "odpt.Railway:Tobu.Kameido",
+      "railwayB": "odpt.Railway:Tobu.TobuSkytree",
+      "railwayAName": "亀戸線",
+      "railwayBName": "東武スカイツリーライン",
+      "minutes": 2,
+      "source": "https://www.tobu.co.jp/railway/guide/station/info/1104.html",
+      "sourceType": "official station interchange plus current route-planner platform movement; 2 minutes"
+    },
+    {
+      "place": "曳舟",
+      "railwayA": "odpt.Railway:Tobu.Kameido",
+      "railwayB": "odpt.Railway:Tobu.TobuSkytreeBranch",
+      "railwayAName": "亀戸線",
+      "railwayBName": "東武スカイツリーライン(押上-曳舟)",
+      "minutes": 2,
+      "source": "https://www.tobu.co.jp/railway/guide/station/info/1104.html",
+      "sourceType": "same Hikifune Kameido-to-Skytree/branch platform interchange; conservative 2 minutes"
+    },
+    {
+      "place": "曳舟",
+      "railwayA": "odpt.Railway:Tobu.TobuSkytree",
+      "railwayB": "odpt.Railway:Tobu.TobuSkytreeBranch",
+      "railwayAName": "東武スカイツリーライン",
+      "railwayBName": "東武スカイツリーライン(押上-曳舟)",
+      "minutes": 1,
+      "source": "https://www.tobu.co.jp/railway/guide/station/info/1104.html",
+      "sourceType": "official continuous branch/main through-service at Hikifune; 1-minute safety buffer"
+    }
+  ]
+}
