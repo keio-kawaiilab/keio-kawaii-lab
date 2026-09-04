@@ -1,0 +1,137 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換",
+    "sourceType": "Jorudan standard transfer time",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "池袋",
+      "railwayA": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+      "railwayAName": "丸ノ内線",
+      "railwayBName": "有楽町線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/ikebukuro/tokyo-metro_marunouchi_line-tokyo-metro_yurakucho_line.html"
+    },
+    {
+      "place": "池袋",
+      "railwayA": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayB": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "railwayAName": "丸ノ内線",
+      "railwayBName": "副都心線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/ikebukuro/tokyo-metro_marunouchi_line-tokyo-metro_fukutoshin_line.html"
+    },
+    {
+      "place": "池袋",
+      "railwayA": "odpt.Railway:TokyoMetro.Yurakucho",
+      "railwayB": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "railwayAName": "有楽町線",
+      "railwayBName": "副都心線",
+      "minutes": 6,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/ikebukuro/tokyo-metro_yurakucho_line-tokyo-metro_fukutoshin_line.html"
+    },
+    {
+      "place": "池袋",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:JR-East.Yamanote",
+      "railwayAName": "埼京線・川越線",
+      "railwayBName": "山手線",
+      "minutes": 3,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/ikebukuro/saikyo_line-yamanote_line.html"
+    },
+    {
+      "place": "池袋",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:JR-East.Yamanote",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "山手線",
+      "minutes": 3,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/ikebukuro/saikyo_line-yamanote_line.html"
+    },
+    {
+      "place": "池袋",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:Tobu.Tojo",
+      "railwayAName": "埼京線・川越線",
+      "railwayBName": "東上線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/ikebukuro/saikyo_line-tobu-tojo_line.html"
+    },
+    {
+      "place": "池袋",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:Tobu.Tojo",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "東上線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/ikebukuro/saikyo_line-tobu-tojo_line.html"
+    },
+    {
+      "place": "池袋",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "railwayAName": "埼京線・川越線",
+      "railwayBName": "副都心線",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/ikebukuro/saikyo_line-tokyo-metro_fukutoshin_line.html"
+    },
+    {
+      "place": "池袋",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "副都心線",
+      "minutes": 7,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/ikebukuro/saikyo_line-tokyo-metro_fukutoshin_line.html"
+    },
+    {
+      "place": "池袋",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+      "railwayAName": "埼京線・川越線",
+      "railwayBName": "有楽町線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/ikebukuro/tokyo-metro_yurakucho_line-saikyo_line.html"
+    },
+    {
+      "place": "池袋",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "有楽町線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/ikebukuro/tokyo-metro_yurakucho_line-saikyo_line.html"
+    },
+    {
+      "place": "池袋",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayAName": "埼京線・川越線",
+      "railwayBName": "丸ノ内線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/ikebukuro/saikyo_line-tokyo-metro_marunouchi_line.html"
+    },
+    {
+      "place": "池袋",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "丸ノ内線",
+      "minutes": 4,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/ikebukuro/saikyo_line-tokyo-metro_marunouchi_line.html"
+    },
+    {
+      "place": "池袋",
+      "railwayA": "odpt.Railway:Seibu.Ikebukuro",
+      "railwayB": "odpt.Railway:Tobu.Tojo",
+      "railwayAName": "池袋線",
+      "railwayBName": "東上線",
+      "minutes": 5,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/ikebukuro/seibu-ikebukuro_line-tobu-tojo_line.html"
+    }
+  ]
+}
