@@ -1,0 +1,102 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換（安全側）",
+    "sourceType": "current route planner transfer time",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "赤羽",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.Utsunomiya",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "宇都宮線",
+      "minutes": 3,
+      "source": "https://ekitan.com/d-norikae/transit/route/sf-2866/st-1744"
+    },
+    {
+      "place": "赤羽",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.Takasaki",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "高崎線",
+      "minutes": 3,
+      "source": "https://ekitan.com/d-norikae/transit/route/sf-2866/st-1744"
+    },
+    {
+      "place": "赤羽",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "埼京線・川越線",
+      "minutes": 3,
+      "source": "https://ekitan.com/d-norikae/transit/route/sf-1908/st-1541"
+    },
+    {
+      "place": "赤羽",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "湘南新宿ライン",
+      "minutes": 3,
+      "source": "https://ekitan.com/d-norikae/transit/route/sf-1908/st-2334"
+    },
+    {
+      "place": "赤羽",
+      "railwayA": "odpt.Railway:JR-East.Takasaki",
+      "railwayB": "odpt.Railway:JR-East.Utsunomiya",
+      "railwayAName": "高崎線",
+      "railwayBName": "宇都宮線",
+      "minutes": 1,
+      "source": "https://transit.yahoo.co.jp/search/result/%E5%B0%BE%E4%B9%85-%E6%9D%B1%E9%B7%B2%E5%AE%AE",
+      "sourceType": "current route planner; same-platform transfer at Akabane platform 4"
+    },
+    {
+      "place": "赤羽",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:JR-East.Utsunomiya",
+      "railwayAName": "埼京線・川越線",
+      "railwayBName": "宇都宮線",
+      "minutes": 3,
+      "source": "https://ekitan.com/d-norikae/transit/route/sf-1938/st-2901"
+    },
+    {
+      "place": "赤羽",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:JR-East.Takasaki",
+      "railwayAName": "埼京線・川越線",
+      "railwayBName": "高崎線",
+      "minutes": 3,
+      "source": "https://ekitan.com/d-norikae/transit/route/sf-1938/st-1975"
+    },
+    {
+      "place": "赤羽",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayAName": "埼京線・川越線",
+      "railwayBName": "湘南新宿ライン",
+      "minutes": 2,
+      "source": "https://ekitan.com/d-norikae/transit/route/sf-1938/st-3272"
+    },
+    {
+      "place": "赤羽",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:JR-East.Utsunomiya",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "宇都宮線",
+      "minutes": 3,
+      "source": "https://ekitan.com/d-norikae/transit/route/sf-1744/st-1541"
+    },
+    {
+      "place": "赤羽",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:JR-East.Takasaki",
+      "railwayAName": "湘南新宿ライン",
+      "railwayBName": "高崎線",
+      "minutes": 3,
+      "source": "https://ekitan.com/d-norikae/transit/route/sf-1744/st-1541"
+    }
+  ]
+}
