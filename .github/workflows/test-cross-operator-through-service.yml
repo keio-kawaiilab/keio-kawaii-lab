@@ -1,0 +1,22 @@
+name: Test cross-operator through-service
+
+on:
+  push:
+    paths:
+      - 'route-core.js'
+      - 'scripts/test_cross_operator_through_service.js'
+      - 'scripts/test_real_cross_operator_through_service.js'
+      - '.github/workflows/test-cross-operator-through-service.yml'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Syntax check
+        run: node --check route-core.js
+      - name: Synthetic cross-operator regression
+        run: node scripts/test_cross_operator_through_service.js
+      - name: Real Toyoko to Seibu through-service smoke test
+        run: node scripts/test_real_cross_operator_through_service.js
