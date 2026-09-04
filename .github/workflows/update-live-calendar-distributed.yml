@@ -5,7 +5,6 @@ on:
   push:
     paths:
       - ".github/workflows/update-live-calendar-distributed.yml"
-      - "scripts/**"
       - "data/live-events.json"
       - "data/official-schedule-index.json"
   schedule:
@@ -333,7 +332,7 @@ jobs:
 
   merge-publish:
     needs: [prepare, collect-core, collect-playguide, collect-sukisuki, collect-special]
-    if: always() && needs.prepare.result == 'success' && needs.prepare.outputs.frozen != 'true' && needs.collect-core.result == 'success' && needs.collect-playguide.result == 'success' && needs.collect-sukisuki.result == 'success' && needs.collect-special.result == 'success'
+    if: always() && needs.prepare.result == 'success' && needs.prepare.outputs.frozen != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 7
     steps:
@@ -359,39 +358,74 @@ jobs:
           if [ -f data/official-schedule-index.json ]; then
             cp data/official-schedule-index.json /tmp/official-schedule-index-last-good.json
           else
-            echo '{"rows":[]}' > /tmp/official-schedule-index-last-good.json
+            echo '{"entries":[],"groups":{}}' > /tmp/official-schedule-index-last-good.json
           fi
 
-      - name: Download core snapshot
+      - name: Seed last-known-good fallback for every collector
+        shell: bash
+        run: |
+          set -euo pipefail
+          for source in core playguide sukisuki special; do
+            mkdir -p "/tmp/calendar-${source}"
+            cp /tmp/live-events-last-good.json "/tmp/calendar-${source}/live-events.json"
+          done
+          cp /tmp/official-schedule-index-last-good.json /tmp/calendar-core/official-schedule-index.json
+
+      - name: Download core snapshot when available
+        continue-on-error: true
         uses: actions/download-artifact@v4
         with:
           name: calendar-core-snapshot
           path: /tmp/calendar-core
 
-      - name: Download playguide snapshot
+      - name: Download playguide snapshot when available
+        continue-on-error: true
         uses: actions/download-artifact@v4
         with:
           name: calendar-playguide-snapshot
           path: /tmp/calendar-playguide
 
-      - name: Download SUKISUKI snapshot
+      - name: Download SUKISUKI snapshot when available
+        continue-on-error: true
         uses: actions/download-artifact@v4
         with:
           name: calendar-sukisuki-snapshot
           path: /tmp/calendar-sukisuki
 
-      - name: Download special-event snapshot
+      - name: Download special-event snapshot when available
+        continue-on-error: true
         uses: actions/download-artifact@v4
         with:
           name: calendar-special-snapshot
           path: /tmp/calendar-special
+
+      - name: Report collector isolation boundary
+        shell: bash
+        env:
+          CORE_RESULT: ${{ needs.collect-core.result }}
+          PLAYGUIDE_RESULT: ${{ needs.collect-playguide.result }}
+          SUKISUKI_RESULT: ${{ needs.collect-sukisuki.result }}
+          SPECIAL_RESULT: ${{ needs.collect-special.result }}
+        run: |
+          set -euo pipefail
+          for item in \
+            "core:$CORE_RESULT" \
+            "playguide:$PLAYGUIDE_RESULT" \
+            "sukisuki:$SUKISUKI_RESULT" \
+            "special:$SPECIAL_RESULT"; do
+            source="${item%%:*}"
+            result="${item#*:}"
+            if [ "$result" != "success" ]; then
+              echo "::warning::Collector ${source} ended as ${result}; only that source uses the last-known-good fallback."
+            fi
+          done
 
       - name: Merge source snapshots and reconnect official index
         shell: bash
         run: |
           set -euo pipefail
           cd scripts
-          python -m unittest -v test_merge_distributed_schedule_snapshots.py test_reconcile_official_schedule_index.py test_audit_schedule_release_grouped.py test_prepare_release_candidate.py test_schedule_scope.py
+          python -m unittest -v test_merge_distributed_schedule_snapshots.py test_reconcile_official_schedule_index.py test_audit_schedule_release_grouped.py test_prepare_release_candidate.py test_schedule_scope.py test_audit_official_schedule_coverage.py
           cd ..
           cp /tmp/calendar-core/official-schedule-index.json data/official-schedule-index.json
           python scripts/merge_distributed_schedule_snapshots.py \
@@ -410,11 +444,11 @@ jobs:
             --index data/official-schedule-index.json \
             --report /tmp/official-index-reconcile.json
 
-      - name: Integrated release audit with row-level quarantine
+      - name: Integrated release audit with event-level isolation
         shell: bash
         run: |
           if ! python scripts/audit_playguide_collection.py; then
-            echo "::warning::Merged playguide source-health is degraded; row-level release audit remains authoritative for public data."
+            echo "::warning::Merged playguide source-health is degraded; event-level release isolation remains authoritative for public data."
           fi
           python scripts/audit_schedule_release_grouped.py \
             --previous /tmp/live-events-last-good.json \
@@ -440,7 +474,7 @@ jobs:
           title="🚨 Distributed schedule refresh blocked"
           existing="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
           if [ -n "$existing" ]; then
-            gh issue close "$existing" --repo "$GITHUB_REPOSITORY" --comment "並列取得・統合監査・公開が正常に通過したため、自動更新を再開しました。"
+            gh issue close "$existing" --repo "$GITHUB_REPOSITORY" --comment "統合処理と公開が正常に通過しました。個別取得元・個別イベントの異常は局所隔離されます。"
           fi
 
       - name: Commit one audited integrated release
@@ -479,6 +513,10 @@ jobs:
           PLAYGUIDE_DEGRADED: ${{ needs.collect-playguide.outputs.degraded }}
           SUKISUKI_DEGRADED: ${{ needs.collect-sukisuki.outputs.degraded }}
           SPECIAL_DEGRADED: ${{ needs.collect-special.outputs.degraded }}
+          CORE_RESULT: ${{ needs.collect-core.result }}
+          PLAYGUIDE_RESULT: ${{ needs.collect-playguide.result }}
+          SUKISUKI_RESULT: ${{ needs.collect-sukisuki.result }}
+          SPECIAL_RESULT: ${{ needs.collect-special.result }}
         shell: bash
         run: |
           set -euo pipefail
@@ -488,11 +526,20 @@ jobs:
             "$SUKISUKI_DEGRADED" \
             "$SPECIAL_DEGRADED" \
             | sed '/^$/d' | paste -sd, -)"
+
+          append_degraded() {
+            degraded="${degraded}${degraded:+,}$1"
+          }
+          [ "$CORE_RESULT" = "success" ] || append_degraded "collector-core-job"
+          [ "$PLAYGUIDE_RESULT" = "success" ] || append_degraded "collector-playguide-job"
+          [ "$SUKISUKI_RESULT" = "success" ] || append_degraded "collector-sukisuki-job"
+          [ "$SPECIAL_RESULT" = "success" ] || append_degraded "collector-special-job"
+
           title="⚠️ Calendar source fallback active"
           existing="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
 
           if [ -n "$degraded" ]; then
-            body="一部の取得元が一時的に失敗したため、その取得元だけ前回正常データを維持し、取得できた他の最新情報は公開しました。次回以降も15分ごとに自動再試行します。\n\ndegraded sources: ${degraded}\nrun: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            body="一部の取得元または取得ジョブが失敗したため、その範囲だけ前回正常データを維持し、取得できた他の最新情報は公開しました。個別障害は全体公開を止めません。次回以降も15分ごとに自動再試行します。\n\ndegraded sources: ${degraded}\nrun: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
             if [ -n "$existing" ]; then
               gh issue edit "$existing" --repo "$GITHUB_REPOSITORY" --body "$body"
             else
@@ -504,7 +551,7 @@ jobs:
 
   report-failure:
     needs: [prepare, collect-core, collect-playguide, collect-sukisuki, collect-special, merge-publish]
-    if: always() && needs.prepare.outputs.frozen != 'true' && (needs.collect-core.result == 'failure' || needs.collect-playguide.result == 'failure' || needs.collect-sukisuki.result == 'failure' || needs.collect-special.result == 'failure' || needs.merge-publish.result == 'failure')
+    if: always() && (needs.prepare.result == 'failure' || needs.merge-publish.result == 'failure')
     runs-on: ubuntu-latest
     steps:
       - name: Open or update incident issue
@@ -514,7 +561,7 @@ jobs:
         run: |
           set -euo pipefail
           title="🚨 Distributed schedule refresh blocked"
-          body="自動カレンダー更新のどこかが失敗しました。Actions run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          body="個別データではなく、統合・生成・公開などシステム全体の処理が失敗しました。Actions run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           existing="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
           if [ -n "$existing" ]; then
             gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body "$body"
