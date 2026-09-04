@@ -384,6 +384,8 @@ def main() -> int:
         "directions": DIRECTIONS,
         "trainTypes": TYPE_IDS,
         "destinations": DESTINATIONS,
+        "destinationAuthoritative": False,
+        "destinationBasis": "line-local-placeholder",
         "order": STATION_IDS,
         "ascendingDirection": OUTBOUND,
         "descendingDirection": INBOUND,

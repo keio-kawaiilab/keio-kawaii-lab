@@ -245,9 +245,19 @@
     return normal;
   }
 
+  function destinationLabel(segment){
+    if(!segment||segment.destinationAuthoritative===false)return "";
+    var raw=segment.destination,values=Array.isArray(raw)?raw:[raw],labels=[];
+    values.forEach(function(value){
+      if(!value)return;
+      var label=model.displayStation(value);
+      if(label&&labels.indexOf(label)<0)labels.push(label);
+    });
+    return labels.length?labels.join("・")+"行":"";
+  }
   function trainLabel(segment){
-    var parts=[],type=model.displayTrainType(segment.trainType);
-    if(type)parts.push(type);if(segment.trainNumber)parts.push(segment.trainNumber+"列車");
+    var parts=[],destination=destinationLabel(segment),type=model.displayTrainType(segment.trainType);
+    if(destination)parts.push(destination);if(type)parts.push(type);if(segment.trainNumber)parts.push(segment.trainNumber+"列車");
     return parts.join("・");
   }
   function renderPath(fromGroup,toGroup,path,timed,warning){
@@ -292,7 +302,7 @@
       else{
         var departure=model.nextDeparture(timedPath,timetables,startMinutes,service);
         if(departure){
-          var type=model.displayTrainType(departure.trainType),copy=departure.label+"は "+formatTime(departure.departure)+" 発"+(type?"（"+type+"）":"")+"です。ODPTの提供データに到着時刻がないため、経路と次の発車時刻を表示しています。";
+          var detail=trainLabel(departure),copy=departure.label+"は "+formatTime(departure.departure)+" 発"+(detail?"（"+detail+"）":"")+"です。ODPTの提供データに到着時刻がないため、経路と次の発車時刻を表示しています。";
           renderPath(fromResolved.group,toResolved.group,timedPath,null,copy);
         }else renderPath(fromResolved.group,toResolved.group,timedPath,null,"選んだ時刻・運行日の列車を見つけられませんでした。時刻や平日／土休日を変えて試してください。");
       }

@@ -272,7 +272,7 @@
         for(var j=boarding+1;j<stops.length;j++){
           var next=stops[j]||[],nextStation=stations[next[0]],arrival=next[1]!=null?Number(next[1]):Number(next[2]);
           if(!toSet.has(nextStation)||!Number.isFinite(arrival)||arrival<departure)continue;
-          var candidate={departure:departure,arrival:arrival,trainType:types[trip[1]]||"",trainNumber:String(trip[2]||""),timeBasis:timetable.timeBasis||"train-timetable"};
+          var candidate={departure:departure,arrival:arrival,trainType:types[trip[1]]||"",trainNumber:String(trip[2]||""),destination:timetable.destinationAuthoritative===false?"":(trip.length>4?trip[4]:""),destinationAuthoritative:timetable.destinationAuthoritative!==false,timeBasis:timetable.timeBasis||"train-timetable"};
           var windowed=Number.isFinite(latest);
           if(!best||(windowed&&(candidate.departure<best.departure||(candidate.departure===best.departure&&candidate.arrival<best.arrival)))||(!windowed&&(candidate.arrival<best.arrival||(candidate.arrival===best.arrival&&candidate.departure<best.departure))))best=candidate;
           break;
@@ -289,7 +289,7 @@
       }
       var desiredDirection="";
       if(fromOrder>=0&&toOrder>=0&&fromOrder!==toOrder)desiredDirection=toOrder>fromOrder?table.ascendingDirection:table.descendingDirection;
-      var stations=table.stations||[],calendars=table.calendars||[],directions=table.directions||[],types=table.trainTypes||[],destinations=table.destinations||[],best=null;
+      var stations=table.stations||[],calendars=table.calendars||[],directions=table.directions||[],types=table.trainTypes||[],destinations=table.destinations||[],destinationAuthoritative=table.destinationAuthoritative!==false,best=null;
       var stationIndexes=new Map();stations.forEach(function(station,index){stationIndexes.set(station,index);});
       var observedTrips=new Map();
       (table.inferredTrips||[]).forEach(function(trip){
@@ -306,7 +306,7 @@
           var next=stops[destinationStop]||[],nextStation=stations[next[0]],arrival=next[1]!=null?Number(next[1]):Number(next[2]);
           if(toNodes.indexOf(nextStation)<0||!Number.isFinite(arrival)||arrival<departure)continue;
           var key=[trip[0],trip[1],trip[2],trip[3],departure].join("\u0001");
-          var candidate={departure:departure,arrival:arrival,trainType:types[trip[2]]||"",destination:destinations[trip[3]]||"",trainNumber:"",confidence:Number(trip[4])||0,timeBasis:"inferred-station-trip"};
+          var candidate={departure:departure,arrival:arrival,trainType:types[trip[2]]||"",destination:destinationAuthoritative?(destinations[trip[3]]||""):"",destinationAuthoritative:destinationAuthoritative,trainNumber:"",confidence:Number(trip[4])||0,timeBasis:"inferred-station-trip"};
           if(requiredDestination&&candidate.destination!==requiredDestination)continue;
           var existing=observedTrips.get(key);
           if(!existing||candidate.arrival<existing.arrival)observedTrips.set(key,candidate);
@@ -406,7 +406,7 @@
           var candidate=observedTrips.get(observedKey);
           if(!candidate){
             var duration=journeyMinutes(typeIndex,destinationIndex);
-            candidate={departure:minute,arrival:Number.isFinite(duration)?minute+duration:null,trainType:types[typeIndex]||"",destination:destinations[destinationIndex]||"",trainNumber:"",timeBasis:"estimated-edge-duration"};
+            candidate={departure:minute,arrival:Number.isFinite(duration)?minute+duration:null,trainType:types[typeIndex]||"",destination:destinationAuthoritative?(destinations[destinationIndex]||""):"",destinationAuthoritative:destinationAuthoritative,trainNumber:"",timeBasis:"estimated-edge-duration"};
           }
           if(requiredDestination&&candidate.destination!==requiredDestination)return;
           var windowed=Number.isFinite(latest);

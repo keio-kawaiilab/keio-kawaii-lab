@@ -92,6 +92,9 @@ class ImportOdptTimetablesTests(unittest.TestCase):
             "odpt:calendar": "odpt.Calendar:Weekday",
             "odpt:trainType": "odpt.TrainType:Test.Local",
             "odpt:trainNumber": "101",
+            "owl:sameAs": "timetable:101",
+            "odpt:train": "train:101",
+            "odpt:destinationStation": ["station:c"],
             "odpt:trainTimetableObject": [
                 {"odpt:departureStation": "station:a-old", "odpt:departureTime": "23:58"},
                 {"odpt:arrivalStation": "station:b", "odpt:arrivalTime": "24:07"},
@@ -106,6 +109,9 @@ class ImportOdptTimetablesTests(unittest.TestCase):
         self.assertEqual(compact["calendars"], ["odpt.Calendar:Weekday"])
         self.assertEqual(compact["trips"][0][3][0], [0, None, 1438])
         self.assertEqual(compact["trips"][0][3][1], [1, 1447, 1448])
+        self.assertEqual(compact["trips"][0][4], "station:c")
+        self.assertEqual(compact["trips"][0][5], "train:101")
+        self.assertEqual(compact["trips"][0][6], "timetable:101")
         self.assertEqual(connections, 2)
 
     def test_station_timetables_are_joined_into_trips(self):

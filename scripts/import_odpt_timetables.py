@@ -519,6 +519,19 @@ def compact_line_timetable(
             calendars = [""]
         train_type = str(item.get("odpt:trainType") or "")
         train_number = str(item.get("odpt:trainNumber") or "")
+        raw_destinations = item.get("odpt:destinationStation")
+        if isinstance(raw_destinations, list):
+            destination_values = [str(value) for value in raw_destinations if value]
+        elif raw_destinations:
+            destination_values = [str(raw_destinations)]
+        else:
+            destination_values = []
+        destination_values = [station_aliases.get(value, value) for value in destination_values]
+        destination: str | list[str] = (
+            destination_values[0] if len(destination_values) == 1 else destination_values
+        )
+        train_id = str(item.get("odpt:train") or "")
+        timetable_id = str(item.get("owl:sameAs") or "")
         stops: list[list[int | None]] = []
 
         def add_stop(station_value: Any, arrival: int | None, departure: int | None) -> None:
@@ -562,7 +575,7 @@ def compact_line_timetable(
         type_index = index_of(train_type, train_type_values, train_type_indexes)
         for calendar in calendars:
             calendar_index = index_of(calendar, calendar_values, calendar_indexes)
-            trips.append([calendar_index, type_index, train_number, stops])
+            trips.append([calendar_index, type_index, train_number, stops, destination, train_id, timetable_id])
 
     return {
         "version": 1,
@@ -571,6 +584,7 @@ def compact_line_timetable(
         "stations": station_values,
         "calendars": calendar_values,
         "trainTypes": train_type_values,
+        "tripSchema": ["calendarIndex", "trainTypeIndex", "trainNumber", "stops", "destination", "trainId", "timetableId"],
         "trips": trips,
     }, connections
 

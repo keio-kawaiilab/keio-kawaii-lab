@@ -80,7 +80,7 @@ const weekdayTimetables = {
     calendars: ["odpt.Calendar:Weekday", "odpt.Calendar:SaturdayHoliday"],
     trainTypes: ["odpt.TrainType:Test.Local"],
     trips: [
-      [0, 0, "101", [[0, null, 480], [1, 490, null]]],
+      [0, 0, "101", [[0, null, 480], [1, 490, null]], "station:b2"],
       [0, 0, "103", [[0, null, 500], [1, 510, null]]],
       [1, 0, "休日101", [[0, null, 485], [1, 495, null]]],
     ],
@@ -100,6 +100,7 @@ assert.ok(timed, "a timetable-aware itinerary must be found");
 assert.equal(timed.departure, 480);
 assert.equal(timed.arrival, 506, "the five-minute transfer buffer must reject train 201");
 assert.deepEqual(timed.segments.map((item) => item.trainNumber), ["101", "203"]);
+assert.equal(timed.segments[0].destination, "station:b2", "exact timetable destination must reach the itinerary");
 assert.equal(model.timedItinerary(path, weekdayTimetables, 475, "holiday", 5), null, "missing holiday service on the second line must not invent a time");
 
 const throughTimetables = {
