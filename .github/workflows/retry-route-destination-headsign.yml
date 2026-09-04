@@ -1,0 +1,64 @@
+name: Retry route destination headsign
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/retry-route-destination-headsign.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install importer dependency
+        run: pip install requests==2.32.5
+
+      - name: Reuse the reviewed destination patch
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import textwrap
+
+          source = Path('.github/workflows/add-route-destination-headsign.yml').read_text(encoding='utf-8')
+          start_marker = '      - name: Preserve and display train destinations\n'
+          end_marker = '      - name: Validate patched code\n'
+          start = source.index(start_marker) + len(start_marker)
+          end = source.index(end_marker, start)
+          block = source[start:end]
+          run_marker = '        run: |\n'
+          run_start = block.index(run_marker) + len(run_marker)
+          script = textwrap.dedent(block[run_start:])
+          Path('/tmp/apply-route-destination.sh').write_text(script, encoding='utf-8')
+          PY
+          bash /tmp/apply-route-destination.sh
+
+      - name: Validate patched code
+        run: |
+          python -m py_compile scripts/import_odpt_timetables.py scripts/build_minatomirai_routing_timetable.py
+          python scripts/test_import_odpt_timetables.py
+          node --check route-core.js
+          node --check route.js
+          node scripts/test_route_destination_display.js
+
+      - name: Commit implementation
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/add-route-destination-headsign.yml .github/workflows/retry-route-destination-headsign.yml
+          git add route-core.js route.js scripts/import_odpt_timetables.py scripts/build_minatomirai_routing_timetable.py scripts/test_import_odpt_timetables.py scripts/test_route_core.js scripts/test_route_destination_display.js .github/workflows/validate-route-search.yml
+          git commit -m "Show train destinations in route guidance"
+          git pull --rebase origin main
+          git push origin HEAD:main
