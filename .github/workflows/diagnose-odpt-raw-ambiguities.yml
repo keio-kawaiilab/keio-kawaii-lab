@@ -1,0 +1,139 @@
+name: Diagnose raw ODPT identity for remaining ambiguities
+
+on:
+  push:
+    paths:
+      - '.github/workflows/diagnose-odpt-raw-ambiguities.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    env:
+      ODPT_CHALLENGE_API_KEY: ${{ secrets.ODPT_CHALLENGE_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests==2.32.5
+      - name: Match unresolved fragments against raw StationTimetable objects
+        run: |
+          python - <<'PY'
+          import json, os, time
+          from pathlib import Path
+          from collections import defaultdict
+          import requests
+
+          key=os.environ.get('ODPT_CHALLENGE_API_KEY','')
+          if not key:
+              raise SystemExit('ODPT_CHALLENGE_API_KEY missing')
+          v2=Path('data/transit-v2')
+          coverage=json.loads((v2/'coverage.json').read_text(encoding='utf-8'))
+          index=json.loads((v2/'index.json').read_text(encoding='utf-8'))
+          fragments={}
+          for rel in (index.get('fragmentFiles') or {}).values():
+              payload=json.loads((v2/rel).read_text(encoding='utf-8'))
+              for row in payload.get('fragments') or []:
+                  if isinstance(row,dict) and row.get('id'):
+                      fragments[str(row['id'])]=row
+          boundaries=json.loads((v2/'service-boundaries.json').read_text(encoding='utf-8')).get('boundaries') or []
+          boundary_by_pair={}
+          for b in boundaries:
+              if b.get('status')!='verified': continue
+              a=str(b.get('fromRailway') or ''); c=str(b.get('toRailway') or '')
+              boundary_by_pair[(a,c)]=b
+              if b.get('bidirectional',True): boundary_by_pair[(c,a)]=b
+
+          unresolved=[u for u in coverage.get('unresolved') or [] if u.get('kind')=='ambiguous-boundary-fragment-alignment']
+          railways=sorted({str((fragments.get(str(u.get('fragment'))) or {}).get('railway') or '') for u in unresolved} | {str(u.get('nextRailway') or '') for u in unresolved})
+          base='https://api-challenge.odpt.org/api/v4/odpt:StationTimetable'
+          raw_by_railway={}
+          s=requests.Session()
+          for i,rw in enumerate(railways):
+              if not rw: continue
+              if i: time.sleep(0.8)
+              resp=s.get(base,params={'acl:consumerKey':key,'odpt:railway':rw},timeout=(15,180))
+              print('FETCH',rw,resp.status_code)
+              resp.raise_for_status()
+              rows=resp.json()
+              raw_by_railway[rw]=rows if isinstance(rows,list) else []
+              print('ROWS',rw,len(raw_by_railway[rw]))
+
+          def mins(text):
+              if not text or ':' not in str(text): return None
+              h,m=map(int,str(text).split(':')[:2]);
+              if h<3: h+=24
+              return h*60+m
+          def calendar_values(row):
+              x=row.get('odpt:calendar'); return x if isinstance(x,list) else [x]
+          def destination_values(obj):
+              x=obj.get('odpt:destinationStation'); return [str(v) for v in (x if isinstance(x,list) else [x]) if v]
+          def raw_objects_for(rw, station_id, calendar, direction, minute, destination, train_type):
+              out=[]
+              for board in raw_by_railway.get(rw,[]):
+                  st=str(board.get('odpt:station') or '')
+                  if station_id and st!=station_id: continue
+                  if calendar and calendar not in [str(v) for v in calendar_values(board) if v]: continue
+                  rd=str(board.get('odpt:railDirection') or '')
+                  if direction and rd and rd!=direction: continue
+                  for obj in board.get('odpt:stationTimetableObject') or []:
+                      if not isinstance(obj,dict): continue
+                      dep=mins(obj.get('odpt:departureTime'))
+                      arr=mins(obj.get('odpt:arrivalTime'))
+                      if minute is not None and dep!=minute and arr!=minute: continue
+                      dests=destination_values(obj)
+                      if destination and dests and not set(destination)&set(dests): continue
+                      typ=str(obj.get('odpt:trainType') or '')
+                      if train_type and typ and typ!=train_type: continue
+                      out.append({
+                          'boardStation':st,'boardDirection':rd,'calendar':board.get('odpt:calendar'),
+                          'departureTime':obj.get('odpt:departureTime'),'arrivalTime':obj.get('odpt:arrivalTime'),
+                          'train':obj.get('odpt:train'),'trainNumber':obj.get('odpt:trainNumber'),
+                          'trainType':obj.get('odpt:trainType'),'destination':obj.get('odpt:destinationStation'),
+                          'origin':obj.get('odpt:originStation'),'note':obj.get('odpt:note')
+                      })
+              return out
+          def endpoint(fragment, first):
+              stops=fragment.get('stops') or []
+              if not stops: return ('',None)
+              st=stops[0] if first else stops[-1]
+              station=str(st[0] or '')
+              minute=st[2] if first else (st[2] if st[2] is not None else st[1])
+              if minute is None: minute=st[1]
+              return station,minute
+
+          summary=defaultdict(int)
+          for n,u in enumerate(unresolved,1):
+              src=fragments.get(str(u.get('fragment'))) or {}
+              cands=[fragments.get(str(x)) or {} for x in u.get('candidateFragments') or []]
+              src_station,src_min=endpoint(src,False)
+              src_raw=raw_objects_for(str(src.get('railway') or ''),src_station,str(src.get('calendar') or ''),str(src.get('direction') or ''),src_min,set(str(x) for x in src.get('destination') or []),str(src.get('trainType') or ''))
+              cand_rows=[]
+              for c in cands:
+                  st,m=endpoint(c,True)
+                  rr=raw_objects_for(str(c.get('railway') or ''),st,str(c.get('calendar') or ''),str(c.get('direction') or ''),m,set(str(x) for x in c.get('destination') or []),str(c.get('trainType') or ''))
+                  cand_rows.append({'id':c.get('id'),'station':st,'minute':m,'raw':rr})
+              src_ids={(str(x.get('train') or ''),str(x.get('trainNumber') or '')) for x in src_raw if x.get('train') or x.get('trainNumber')}
+              candidate_matches=[]
+              for item in cand_rows:
+                  ids={(str(x.get('train') or ''),str(x.get('trainNumber') or '')) for x in item['raw'] if x.get('train') or x.get('trainNumber')}
+                  inter={p for p in src_ids & ids if p != ('','')}
+                  if inter: candidate_matches.append((item['id'],sorted(inter)))
+              if len(candidate_matches)==1:
+                  cls='raw-id-unique'
+              elif src_ids:
+                  cls='raw-id-no-unique-match'
+              else:
+                  cls='raw-id-absent'
+              summary[(str(src.get('sourceOperator') or ''),cls)]+=1
+              print('CASE',json.dumps({
+                  'n':n,'class':cls,'operator':src.get('sourceOperator'),'sourceId':src.get('id'),'sourceRailway':src.get('railway'),
+                  'sourceStation':src_station,'sourceMinute':src_min,'sourceType':src.get('trainType'),'sourceDestination':src.get('destination'),
+                  'sourceRaw':src_raw,'nextRailway':u.get('nextRailway'),'candidates':cand_rows,'uniqueMatches':candidate_matches,
+                  'boundary':boundary_by_pair.get((str(src.get('railway') or ''),str(u.get('nextRailway') or '')))
+              },ensure_ascii=False,separators=(',',':')))
+          print('SUMMARY',json.dumps([{'operator':k[0],'class':k[1],'count':v} for k,v in sorted(summary.items())],ensure_ascii=False))
+          PY
