@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "defaults": {"bidirectional": true, "label": "標準・実測乗換（安全側）", "verifiedAt": "2026-09-04"},
+  "rules": [
+    {"place":"三ノ輪 ↔ 三ノ輪橋","railwayA":"odpt.Railway:Toei.Arakawa","railwayB":"odpt.Railway:TokyoMetro.Hibiya","railwayAName":"東京さくらトラム（都電荒川線）","railwayBName":"日比谷線","minutes":8,"source":"https://www.jorudan.co.jp/norikae/route/三ノ輪_三ノ輪橋.html","sourceType":"current Jorudan direct walking transfer; 8 minutes"},
+    {"place":"本八幡","railwayA":"odpt.Railway:JR-East.ChuoSobuLocal","railwayB":"odpt.Railway:Toei.Shinjuku","railwayAName":"中央・総武各駅停車","railwayBName":"新宿線","minutes":7,"source":"https://www.jorudan.co.jp/norikae/route/市川_篠崎.html","sourceType":"current Jorudan transfer at Motoyawata; JR 2nd platform to Toei 1/2 platforms, 7 minutes"},
+    {"place":"豊洲","railwayA":"odpt.Railway:TokyoMetro.Yurakucho","railwayB":"odpt.Railway:Yurikamome.Yurikamome","railwayAName":"有楽町線","railwayBName":"ゆりかもめ","minutes":6,"source":"https://tren.hatenablog.com/entry/y22-u16","sourceType":"2026-06 updated platform-to-platform guide: about 4.5 minutes walking, recommends 5-6 minutes; stored as safe-side 6"},
+    {"place":"久里浜 ↔ 京急久里浜","railwayA":"odpt.Railway:JR-East.Yokosuka","railwayB":"odpt.Railway:Keikyu.Kurihama","railwayAName":"横須賀線","railwayBName":"久里浜線","minutes":7,"source":"https://ekitan.com/d-norikae/transit/route/sf-2024/st-2051","sourceType":"current direct walking transfer between JR Kurihama and Keikyu Kurihama; 7 minutes"},
+    {"place":"新宿西口 ↔ 西武新宿","railwayA":"odpt.Railway:Seibu.Shinjuku","railwayB":"odpt.Railway:Toei.Oedo","railwayAName":"新宿線","railwayBName":"大江戸線","minutes":6,"source":"https://mb.jorudan.co.jp/os/noritxt/shinjuku/oedonishi-seibu-shinjuku_line.html","sourceType":"current Jorudan standard transfer guide; 6 minutes"}
+  ]
+}
