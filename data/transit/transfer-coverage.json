@@ -1,921 +1,981 @@
 {
-  "generatedAt": "2026-09-04T07:25:03.322Z",
+  "generatedAt": "2026-09-04T07:45:07.309Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T07:24:47.672Z",
-  "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
+  "rulesGeneratedAt": "2026-09-04T07:44:52.335Z",
+  "methodology": "Candidate railway pairs are classified as curated when backed by an explicit transfer rule, fallback when covered by conservative fallbackMinutes, blocked for false same-name/nearby links, and uncurated only when no usable rule exists.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 859,
-    "uncuratedPairs": 94,
+    "curatedPairs": 862,
+    "fallbackPairs": 91,
+    "uncuratedPairs": 0,
     "blockedPairs": 7,
-    "curatedSourceRules": 859,
+    "curatedSourceRules": 862,
+    "fallbackGeneratedRules": 98,
     "transferPlaces": 329
   },
   "priorityPlaces": [
     {
-      "place": "成田空港",
-      "totalPairs": 3,
-      "curatedPairs": 0,
-      "uncuratedPairs": 3,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 2,
-      "railwayCount": 3,
-      "priorityScore": 6
-    },
-    {
       "place": "銀座 ↔ 銀座一丁目",
       "totalPairs": 3,
       "curatedPairs": 0,
-      "uncuratedPairs": 3,
+      "fallbackPairs": 3,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 4,
-      "priorityScore": 3
+      "priorityScore": 0
     },
     {
-      "place": "押上",
-      "totalPairs": 1,
+      "place": "成田空港",
+      "totalPairs": 3,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 3,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5
-    },
-    {
-      "place": "押上 ↔ 押上(スカイツリー前)",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5
-    },
-    {
-      "place": "押上(スカイツリー前) ↔ 押上",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5
-    },
-    {
-      "place": "押上〈スカイツリー前〉 ↔ 押上",
-      "totalPairs": 2,
-      "curatedPairs": 1,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
+      "crossOperatorUncuratedPairs": 0,
       "railwayCount": 3,
-      "priorityScore": 2.5
-    },
-    {
-      "place": "押上〈スカイツリー前〉 ↔ 押上(スカイツリー前)",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5
-    },
-    {
-      "place": "豊島園",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5
+      "priorityScore": 0
     },
     {
       "place": "阿佐ケ谷",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "安善",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
+    },
+    {
+      "place": "押上 ↔ 押上(スカイツリー前)",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
+      "place": "押上(スカイツリー前) ↔ 押上",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
+      "place": "押上〈スカイツリー前〉 ↔ 押上",
+      "totalPairs": 2,
+      "curatedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 0
+    },
+    {
+      "place": "押上〈スカイツリー前〉 ↔ 押上(スカイツリー前)",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
     },
     {
       "place": "荻窪",
       "totalPairs": 3,
       "curatedPairs": 2,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 3,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "霞ケ関",
       "totalPairs": 3,
       "curatedPairs": 2,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 3,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "吉祥寺",
       "totalPairs": 3,
       "curatedPairs": 2,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 3,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "空港第２ビル",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "元住吉",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "吾野",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "御徒町",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "溝の口",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "高円寺",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "高輪ゲートウェイ",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "三鷹",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "秋葉原",
       "totalPairs": 10,
       "curatedPairs": 9,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 5,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "渋川",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "春日",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "春日部",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "小川",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "松岸",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "上野広小路 ↔ 仲御徒町",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "尻手",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "新鎌ヶ谷",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "新丸子",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "新庚申塚 ↔ 西巣鴨",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "新松戸",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "新川崎",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "新栃木",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "新百合ヶ丘",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "神田",
       "totalPairs": 6,
       "curatedPairs": 5,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 4,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "成東",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "西荻窪",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "西新井",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "西船橋",
       "totalPairs": 6,
       "curatedPairs": 5,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 4,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "西谷",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "西武球場前",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "青砥",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
-    },
-    {
-      "place": "赤坂見附",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "千川",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "千葉中央",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "川越",
       "totalPairs": 3,
       "curatedPairs": 2,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 3,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "浅野",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "船橋",
       "totalPairs": 3,
       "curatedPairs": 2,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 3,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "倉賀野",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "相模大野",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "多摩湖",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "代々木",
       "totalPairs": 3,
       "curatedPairs": 2,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 3,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "大網",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "大門",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "地下鉄成増",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "地下鉄赤塚",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "池袋",
       "totalPairs": 28,
       "curatedPairs": 27,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 8,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "築地 ↔ 新富町",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "中野坂上",
       "totalPairs": 3,
       "curatedPairs": 2,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 3,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "調布",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "銚子",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "津田沼",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "鶴見",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "天王台",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "田園調布",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "田端",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "東戸塚",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "東小泉",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "東府中",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "二子玉川",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "二俣川",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "熱海",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "萩山",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "尾久",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "氷川台",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "品川",
       "totalPairs": 15,
       "curatedPairs": 14,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 6,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "浜川崎",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "平和台",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "保土ケ谷",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
+    },
+    {
+      "place": "豊島園",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
     },
     {
       "place": "北野",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "堀ノ内",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "本千葉",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "明治神宮前〈原宿〉",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "木更津",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "要町",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
-    },
-    {
-      "place": "溜池山王",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "溜池山王 ↔ 国会議事堂前",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "鶯谷",
       "totalPairs": 1,
       "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
+      "priorityScore": 0
     },
     {
       "place": "あざみ野",
       "totalPairs": 1,
       "curatedPairs": 1,
+      "fallbackPairs": 0,
       "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
@@ -926,6 +986,7 @@
       "place": "さいたま新都心",
       "totalPairs": 3,
       "curatedPairs": 3,
+      "fallbackPairs": 0,
       "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
@@ -936,6 +997,7 @@
       "place": "センター南",
       "totalPairs": 1,
       "curatedPairs": 1,
+      "fallbackPairs": 0,
       "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
@@ -946,6 +1008,7 @@
       "place": "センター北",
       "totalPairs": 1,
       "curatedPairs": 1,
+      "fallbackPairs": 0,
       "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
@@ -956,6 +1019,7 @@
       "place": "綾瀬",
       "totalPairs": 1,
       "curatedPairs": 1,
+      "fallbackPairs": 0,
       "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
@@ -966,6 +1030,7 @@
       "place": "安房鴨川",
       "totalPairs": 1,
       "curatedPairs": 1,
+      "fallbackPairs": 0,
       "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
@@ -976,6 +1041,7 @@
       "place": "稲田堤 ↔ 京王稲田堤",
       "totalPairs": 1,
       "curatedPairs": 1,
+      "fallbackPairs": 0,
       "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
@@ -986,6 +1052,7 @@
       "place": "稲毛",
       "totalPairs": 1,
       "curatedPairs": 1,
+      "fallbackPairs": 0,
       "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
@@ -996,6 +1063,7 @@
       "place": "羽沢横浜国大",
       "totalPairs": 1,
       "curatedPairs": 1,
+      "fallbackPairs": 0,
       "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
@@ -1006,837 +1074,50 @@
       "place": "浦和",
       "totalPairs": 6,
       "curatedPairs": 6,
+      "fallbackPairs": 0,
       "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 4,
       "priorityScore": 0
-    }
-  ],
-  "priorityDetails": [
-    {
-      "place": "成田空港",
-      "totalPairs": 3,
-      "curatedPairs": 0,
-      "uncuratedPairs": 3,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 2,
-      "railwayCount": 3,
-      "priorityScore": 6,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.NaritaAirportBranch",
-          "railwayAName": "成田線空港支線",
-          "railwayB": "odpt.Railway:Keisei.Main",
-          "railwayBName": "京成本線",
-          "sameOperator": false,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.NaritaAirportBranch",
-          "railwayAName": "成田線空港支線",
-          "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
-          "railwayBName": "成田スカイアクセス線",
-          "sameOperator": false,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Keisei.Main",
-          "railwayAName": "京成本線",
-          "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
-          "railwayBName": "成田スカイアクセス線",
-          "sameOperator": true,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "same-place-group"
-          ]
-        }
-      ]
     },
     {
-      "place": "銀座 ↔ 銀座一丁目",
+      "place": "曳舟",
       "totalPairs": 3,
-      "curatedPairs": 0,
-      "uncuratedPairs": 3,
+      "curatedPairs": 3,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 4,
-      "priorityScore": 3,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Marunouchi",
-          "railwayAName": "丸ノ内線",
-          "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
-          "railwayBName": "有楽町線",
-          "sameOperator": true,
-          "distanceMeters": 303,
-          "fallbackMinutes": 7,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Ginza",
-          "railwayAName": "銀座線",
-          "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
-          "railwayBName": "有楽町線",
-          "sameOperator": true,
-          "distanceMeters": 359,
-          "fallbackMinutes": 7,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Hibiya",
-          "railwayAName": "日比谷線",
-          "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
-          "railwayBName": "有楽町線",
-          "sameOperator": true,
-          "distanceMeters": 378,
-          "fallbackMinutes": 8,
-          "sources": [
-            "connecting-station"
-          ]
-        }
-      ]
+      "railwayCount": 3,
+      "priorityScore": 0
     },
     {
-      "place": "押上",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "place": "永田町",
+      "totalPairs": 3,
+      "curatedPairs": 3,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Keisei.Oshiage",
-          "railwayAName": "押上線",
-          "railwayB": "odpt.Railway:Toei.Asakusa",
-          "railwayBName": "浅草線",
-          "sameOperator": false,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": []
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 0
     },
     {
-      "place": "押上 ↔ 押上(スカイツリー前)",
+      "place": "永田町 ↔ 赤坂見附",
       "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Tobu.TobuSkytreeBranch",
-          "railwayAName": "東武スカイツリーライン(押上-曳舟)",
-          "railwayB": "odpt.Railway:Toei.Asakusa",
-          "railwayBName": "浅草線",
-          "sameOperator": false,
-          "distanceMeters": 85,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station"
-          ]
-        }
-      ],
-      "sameOperatorPairs": []
-    },
-    {
-      "place": "押上(スカイツリー前) ↔ 押上",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Keisei.Oshiage",
-          "railwayAName": "押上線",
-          "railwayB": "odpt.Railway:Tobu.TobuSkytreeBranch",
-          "railwayBName": "東武スカイツリーライン(押上-曳舟)",
-          "sameOperator": false,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station"
-          ]
-        }
-      ],
-      "sameOperatorPairs": []
-    },
-    {
-      "place": "押上〈スカイツリー前〉 ↔ 押上",
-      "totalPairs": 2,
       "curatedPairs": 1,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 3,
-      "priorityScore": 2.5,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Keisei.Oshiage",
-          "railwayAName": "押上線",
-          "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
-          "railwayBName": "半蔵門線",
-          "sameOperator": false,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station"
-          ]
-        }
-      ],
-      "sameOperatorPairs": []
-    },
-    {
-      "place": "押上〈スカイツリー前〉 ↔ 押上(スカイツリー前)",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Tobu.TobuSkytreeBranch",
-          "railwayAName": "東武スカイツリーライン(押上-曳舟)",
-          "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
-          "railwayBName": "半蔵門線",
-          "sameOperator": false,
-          "distanceMeters": 229,
-          "fallbackMinutes": 6,
-          "sources": [
-            "connecting-station"
-          ]
-        }
-      ],
-      "sameOperatorPairs": []
-    },
-    {
-      "place": "豊島園",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 1,
-      "railwayCount": 2,
-      "priorityScore": 2.5,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Seibu.Toshima",
-          "railwayAName": "豊島線",
-          "railwayB": "odpt.Railway:Toei.Oedo",
-          "railwayBName": "大江戸線",
-          "sameOperator": false,
-          "distanceMeters": 111,
-          "fallbackMinutes": 5,
-          "sources": [
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": []
-    },
-    {
-      "place": "阿佐ケ谷",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-          "railwayAName": "中央線快速",
-          "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
-          "railwayBName": "中央・総武各駅停車",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "安善",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.Tsurumi",
-          "railwayAName": "鶴見線",
-          "railwayB": "odpt.Railway:JR-East.TsurumiOkawaBranch",
-          "railwayBName": "鶴見線大川支線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "荻窪",
-      "totalPairs": 3,
-      "curatedPairs": 2,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 3,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-          "railwayAName": "中央線快速",
-          "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
-          "railwayBName": "中央・総武各駅停車",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "霞ケ関",
-      "totalPairs": 3,
-      "curatedPairs": 2,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 3,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
-          "railwayAName": "千代田線",
-          "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
-          "railwayBName": "丸ノ内線",
-          "sameOperator": true,
-          "distanceMeters": 204,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "吉祥寺",
-      "totalPairs": 3,
-      "curatedPairs": 2,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 3,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-          "railwayAName": "中央線快速",
-          "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
-          "railwayBName": "中央・総武各駅停車",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "空港第２ビル",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Keisei.Main",
-          "railwayAName": "京成本線",
-          "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
-          "railwayBName": "成田スカイアクセス線",
-          "sameOperator": true,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "元住吉",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Tokyu.Meguro",
-          "railwayAName": "目黒線",
-          "railwayB": "odpt.Railway:Tokyu.Toyoko",
-          "railwayBName": "東横線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "吾野",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Seibu.Ikebukuro",
-          "railwayAName": "池袋線",
-          "railwayB": "odpt.Railway:Seibu.SeibuChichibu",
-          "railwayBName": "西武秩父線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "御徒町",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:JR-East.Yamanote",
-          "railwayBName": "山手線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "溝の口",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Tokyu.DenEnToshi",
-          "railwayAName": "田園都市線",
-          "railwayB": "odpt.Railway:Tokyu.Oimachi",
-          "railwayBName": "大井町線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "高円寺",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-          "railwayAName": "中央線快速",
-          "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
-          "railwayBName": "中央・総武各駅停車",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "高輪ゲートウェイ",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:JR-East.Yamanote",
-          "railwayBName": "山手線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "三鷹",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.ChuoRapid",
-          "railwayAName": "中央線快速",
-          "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
-          "railwayBName": "中央・総武各駅停車",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "秋葉原",
-      "totalPairs": 10,
-      "curatedPairs": 9,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 5,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:JR-East.Yamanote",
-          "railwayBName": "山手線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "渋川",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.Agatsuma",
-          "railwayAName": "吾妻線",
-          "railwayB": "odpt.Railway:JR-East.Joetsu",
-          "railwayBName": "上越線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "春日",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Toei.Mita",
-          "railwayAName": "三田線",
-          "railwayB": "odpt.Railway:Toei.Oedo",
-          "railwayBName": "大江戸線",
-          "sameOperator": true,
-          "distanceMeters": 136,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "春日部",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Tobu.TobuSkytree",
-          "railwayAName": "東武スカイツリーライン",
-          "railwayB": "odpt.Railway:Tobu.TobuUrbanPark",
-          "railwayBName": "東武アーバンパークライン",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "小川",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Seibu.Haijima",
-          "railwayAName": "拝島線",
-          "railwayB": "odpt.Railway:Seibu.Kokubunji",
-          "railwayBName": "国分寺線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "松岸",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.Narita",
-          "railwayAName": "成田線",
-          "railwayB": "odpt.Railway:JR-East.Sobu",
-          "railwayBName": "総武本線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "上野広小路 ↔ 仲御徒町",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Ginza",
-          "railwayAName": "銀座線",
-          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-          "railwayBName": "日比谷線",
-          "sameOperator": true,
-          "distanceMeters": 312,
-          "fallbackMinutes": 7,
-          "sources": [
-            "connecting-station"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "尻手",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.Nambu",
-          "railwayAName": "南武線",
-          "railwayB": "odpt.Railway:JR-East.NambuBranch",
-          "railwayBName": "南武線浜川崎支線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "新鎌ヶ谷",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Keisei.Matsudo",
-          "railwayAName": "松戸線",
-          "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
-          "railwayBName": "成田スカイアクセス線",
-          "sameOperator": true,
-          "distanceMeters": null,
-          "fallbackMinutes": 5,
-          "sources": [
-            "same-place-group"
-          ]
-        }
-      ]
+      "priorityScore": 0
     }
   ],
-  "uncurated": [
+  "priorityDetails": [],
+  "uncurated": [],
+  "fallback": [
     {
       "place": "阿佐ケ谷",
       "railwayA": "odpt.Railway:JR-East.ChuoRapid",
@@ -1859,20 +1140,6 @@
       "railwayBName": "鶴見線大川支線",
       "sameOperator": true,
       "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "押上",
-      "railwayA": "odpt.Railway:Keisei.Oshiage",
-      "railwayAName": "押上線",
-      "railwayB": "odpt.Railway:Toei.Asakusa",
-      "railwayBName": "浅草線",
-      "sameOperator": false,
-      "distanceMeters": null,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
@@ -2483,20 +1750,6 @@
       ]
     },
     {
-      "place": "赤坂見附",
-      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
-      "railwayAName": "銀座線",
-      "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
-      "railwayBName": "丸ノ内線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
       "place": "千川",
       "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
       "railwayAName": "副都心線",
@@ -3086,20 +2339,6 @@
       "railwayBName": "有楽町線",
       "sameOperator": true,
       "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "溜池山王",
-      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
-      "railwayAName": "銀座線",
-      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
-      "railwayBName": "南北線",
-      "sameOperator": true,
-      "distanceMeters": 185,
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
