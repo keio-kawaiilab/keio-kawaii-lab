@@ -13,6 +13,11 @@ on:
       - 'scripts/build_keisei_network_timetable.py'
       - 'scripts/build_minatomirai_routing_timetable.py'
       - 'scripts/build_minatomirai_routing_timetable_v2.py'
+      - 'scripts/build_transit_v2.py'
+      - 'scripts/finalize_transit_v2.py'
+      - 'scripts/audit_transit_v2.py'
+      - 'route-core.js'
+      - 'route.js'
       - 'data/transit-sources/manual-topology.json'
       - 'scripts/test_transit_snapshot.js'
       - '.github/workflows/update-transit-timetables.yml'
@@ -31,13 +36,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ODPT_API_KEY: ${{ secrets.ODPT_API_KEY }}
-      # Challenge 2026 has a separate access token on the ODPT developer site.
       ODPT_CHALLENGE_API_KEY: ${{ secrets.ODPT_CHALLENGE_API_KEY }}
-      # JR East Challenge 2026 topology is included by default. Set the
-      # repository variable to 0 only when the limited feed must be paused.
       ALLOW_JR_EAST_CHALLENGE_DATA: ${{ vars.ALLOW_JR_EAST_CHALLENGE_DATA }}
-      # Timetables are enabled by default. Set the repository variable to 0
-      # only when a temporary API or data-size issue requires pausing them.
       ODPT_IMPORT_TIMETABLES: ${{ vars.ODPT_IMPORT_TIMETABLES }}
     steps:
       - uses: actions/checkout@v4
@@ -54,6 +54,8 @@ jobs:
       - name: Test timetable importer and identity pipeline
         run: |
           node --check scripts/enrich-through-service-db.mjs
+          node --check route-core.js
+          node --check route.js
           python -m py_compile \
             scripts/collect_odpt_train_identity.py \
             scripts/build_keisei_official_timetables.py \
@@ -64,6 +66,7 @@ jobs:
             scripts/finalize_transit_v2.py \
             scripts/audit_transit_v2.py
           node scripts/test_odpt_train_identity_db.mjs
+          node scripts/test_cross_operator_through_service.js
           python scripts/test_import_odpt_timetables.py
 
       - name: Import ODPT timetables
@@ -78,6 +81,24 @@ jobs:
           python scripts/import_odpt_timetables.py
           echo "ran=true" >> "$GITHUB_OUTPUT"
 
+      - name: Verify saturated Sotetsu Main timetable was fully recovered
+        if: steps.import.outputs.ran == 'true'
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path('data/transit/sotetsu')
+          index = json.loads((root / 'timetable-index.json').read_text(encoding='utf-8'))
+          line = index['lines']['odpt.Railway:Sotetsu.Main']
+          table = json.loads((root / line['file']).read_text(encoding='utf-8'))
+          target = 'odpt.TrainTimetable:Sotetsu.Main.6752.Weekday'
+          ids = {str(trip[6]) for trip in table.get('trips', []) if len(trip) > 6 and trip[6]}
+          assert target in ids, 'Sotetsu Main is still truncated at the ODPT 1000-row result cap'
+          assert len(table.get('trips', [])) > 1000, len(table.get('trips', []))
+          print('Sotetsu Main complete trips:', len(table.get('trips', [])), 'target:', target)
+          PY
+
       - name: Collect authoritative ODPT train identity
         if: steps.import.outputs.ran == 'true'
         run: python scripts/collect_odpt_train_identity.py
@@ -85,9 +106,6 @@ jobs:
       - name: Restore reviewed special timetable sources
         if: steps.import.outputs.ran == 'true'
         run: |
-          # The generic importer deliberately rebuilds operator timetable
-          # directories. Keisei and Minatomirai use retained reviewed official
-          # snapshots, so reconstruct their app tables before v2 is built.
           python scripts/build_keisei_official_timetables.py
           python scripts/build_keisei_network_timetable.py
           python scripts/build_minatomirai_routing_timetable_v2.py
@@ -124,12 +142,20 @@ jobs:
           from pathlib import Path
           coverage = json.loads(Path('data/transit-v2/coverage.json').read_text(encoding='utf-8'))
           audit = json.loads(Path('data/transit-v2/unresolved-summary.json').read_text(encoding='utf-8'))
+          runtime = json.loads(Path('data/transit-v2/runtime-same-train.json').read_text(encoding='utf-8'))
           policy = audit['policy']
           assert policy['unknownMayBePromotedToSameTrain'] is False
           assert policy['trainNumberAloneMayResolve'] is False
           assert policy['timeGapAloneMayResolve'] is False
           assert audit['totalUnresolved'] == int(coverage['summary'].get('unresolved') or 0)
+          runtime_policy = runtime['policy']
+          assert runtime_policy['runtimeInference'] is False
+          assert runtime_policy['unknownMayBePromotedToSameTrain'] is False
+          assert runtime_policy['trainNumberAloneMayResolve'] is False
+          assert runtime_policy['timeGapAloneMayResolve'] is False
+          assert len(runtime.get('edges') or []) > 0
           print('strict transit-v2 unresolved:', audit['totalUnresolved'])
+          print('runtime strict same-train edges:', len(runtime.get('edges') or []))
           PY
 
       - name: Commit refreshed transit data
