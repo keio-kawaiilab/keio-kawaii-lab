@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準・実測乗換（安全側）",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {"place":"逗子 ↔ 逗子・葉山","railwayA":"odpt.Railway:JR-East.Yokosuka","railwayB":"odpt.Railway:Keikyu.Zushi","railwayAName":"横須賀線","railwayBName":"逗子線","minutes":6,"source":"https://transit.yahoo.co.jp/search/result/逗子-逗子・葉山","sourceType":"current linked-station route; conservative 6-minute station-to-station transfer"},
+    {"place":"板橋 ↔ 新板橋","railwayA":"odpt.Railway:JR-East.SaikyoKawagoe","railwayB":"odpt.Railway:Toei.Mita","railwayAName":"埼京線・川越線","railwayBName":"三田線","minutes":7,"source":"https://transit.yahoo.co.jp/search/result/板橋-新板橋","sourceType":"current linked-station route; 7-minute transfer"},
+    {"place":"北朝霞 ↔ 朝霞台","railwayA":"odpt.Railway:JR-East.Musashino","railwayB":"odpt.Railway:Tobu.Tojo","railwayAName":"武蔵野線","railwayBName":"東上線","minutes":4,"source":"https://rekichiri.com/kita-asaka-asakadai-station-transfer/","sourceType":"current measured platform-to-platform guide about 3m30s; rounded up to 4 minutes"},
+    {"place":"本八幡 ↔ 京成八幡","railwayA":"odpt.Railway:Keisei.Main","railwayB":"odpt.Railway:Toei.Shinjuku","railwayAName":"京成本線","railwayBName":"新宿線","minutes":7,"source":"https://www.jorudan.co.jp/norikae/route/京成八幡_瑞江.html","sourceType":"current Jorudan transfer between Keisei-Yawata and Toei Motoyawata; 7 minutes"},
+    {"place":"雑司が谷 ↔ 鬼子母神前","railwayA":"odpt.Railway:Toei.Arakawa","railwayB":"odpt.Railway:TokyoMetro.Fukutoshin","railwayAName":"東京さくらトラム（都電荒川線）","railwayBName":"副都心線","minutes":9,"source":"https://www.jorudan.co.jp/norikae/route/雑司が谷（東京メトロ）_鬼子母神前.html","sourceType":"current Jorudan linked-station transfer; conservative 9 minutes"},
+    {"place":"東池袋 ↔ 東池袋四丁目","railwayA":"odpt.Railway:Toei.Arakawa","railwayB":"odpt.Railway:TokyoMetro.Yurakucho","railwayAName":"東京さくらトラム（都電荒川線）","railwayBName":"有楽町線","minutes":5,"source":"https://www.jorudan.co.jp/norikae/route/東池袋四丁目_東池袋.html","sourceType":"current Jorudan linked-station transfer; conservative 5 minutes"},
+    {"place":"町屋","railwayA":"odpt.Railway:Keisei.Main","railwayB":"odpt.Railway:TokyoMetro.Chiyoda","railwayAName":"京成本線","railwayBName":"千代田線","minutes":5,"source":"https://www.jorudan.co.jp/norikae/route/千駄木_青砥.html","sourceType":"current Jorudan transfer at Machiya; 5 minutes"},
+    {"place":"町屋 ↔ 町屋駅前","railwayA":"odpt.Railway:Toei.Arakawa","railwayB":"odpt.Railway:TokyoMetro.Chiyoda","railwayAName":"東京さくらトラム（都電荒川線）","railwayBName":"千代田線","minutes":4,"source":"https://www.jorudan.co.jp/norikae/route/千駄木_町屋駅前.html","sourceType":"current Jorudan linked-station transfer; 4 minutes"},
+    {"place":"町屋駅前 ↔ 町屋","railwayA":"odpt.Railway:Keisei.Main","railwayB":"odpt.Railway:Toei.Arakawa","railwayAName":"京成本線","railwayBName":"東京さくらトラム（都電荒川線）","minutes":4,"source":"https://www.jorudan.co.jp/norikae/route/青砥_町屋駅前.html","sourceType":"current Jorudan linked-station transfer; 4 minutes"}
+  ]
+}
