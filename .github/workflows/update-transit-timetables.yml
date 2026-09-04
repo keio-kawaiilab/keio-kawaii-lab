@@ -5,7 +5,10 @@ on:
   push:
     paths:
       - 'scripts/import_odpt_timetables.py'
+      - 'scripts/collect_odpt_train_identity.py'
       - 'scripts/test_import_odpt_timetables.py'
+      - 'scripts/test_odpt_train_identity_db.mjs'
+      - 'scripts/enrich-through-service-db.mjs'
       - 'data/transit-sources/manual-topology.json'
       - 'scripts/test_route_core.js'
       - 'scripts/test_transit_snapshot.js'
@@ -51,9 +54,12 @@ jobs:
         run: |
           node --check route-core.js
           node --check route.js
+          node --check scripts/enrich-through-service-db.mjs
+          python -m py_compile scripts/collect_odpt_train_identity.py
           test ! -e route.html
           grep -Fq '<meta name="robots" content="noindex,nofollow,noarchive">' _drafts/route.html
           node scripts/test_route_core.js
+          node scripts/test_odpt_train_identity_db.mjs
           python scripts/test_import_odpt_timetables.py
 
       - name: Import ODPT timetables
@@ -67,6 +73,10 @@ jobs:
           fi
           python scripts/import_odpt_timetables.py
           echo "ran=true" >> "$GITHUB_OUTPUT"
+
+      - name: Collect authoritative ODPT train identity
+        if: steps.import.outputs.ran == 'true'
+        run: python scripts/collect_odpt_train_identity.py
 
       - name: Test generated transit snapshot
         if: steps.import.outputs.ran == 'true'
