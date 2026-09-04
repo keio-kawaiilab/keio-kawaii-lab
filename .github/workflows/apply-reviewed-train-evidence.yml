@@ -1,0 +1,78 @@
+name: Apply reviewed train identity evidence
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-reviewed-train-evidence.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Wire reviewed evidence into strict finalizer
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path=Path('scripts/finalize_transit_v2.py')
+          text=path.read_text(encoding='utf-8')
+          import_anchor='import build_transit_v2 as base\n'
+          import_line='import reviewed_train_evidence as reviewed\n'
+          if import_line not in text:
+              if import_anchor not in text:
+                  raise SystemExit('import anchor missing')
+              text=text.replace(import_anchor, import_anchor + import_line, 1)
+          old="""    edges = authoritative_edges(fragments, unresolved)\n    edges = base.align_inferred_edges(fragments, indexes, edges, unresolved)\n\n    coverage = write_outputs(fragments, networks, edges, unresolved, index)\n"""
+          new="""    edges = authoritative_edges(fragments, unresolved)\n    edges = base.align_inferred_edges(fragments, indexes, edges, unresolved)\n    edges = reviewed.apply_reviewed_train_evidence(\n        fragments,\n        edges,\n        unresolved,\n        indexes,\n        V2 / 'reviewed-train-evidence.json',\n    )\n\n    coverage = write_outputs(fragments, networks, edges, unresolved, index)\n"""
+          if old not in text:
+              raise SystemExit('finalizer call anchor missing')
+          text=text.replace(old,new,1)
+          path.write_text(text,encoding='utf-8')
+          PY
+      - name: Test reviewed evidence logic
+        run: |
+          python scripts/test_reviewed_train_evidence.py
+          python scripts/test_transit_v2_alignment.py
+      - name: Re-finalize and require Tokyu ambiguity resolution
+        run: |
+          python scripts/finalize_transit_v2.py
+          python scripts/audit_transit_v2.py
+          python - <<'PY'
+          import json
+          from collections import Counter
+          from pathlib import Path
+          v2=Path('data/transit-v2')
+          c=json.loads((v2/'coverage.json').read_text(encoding='utf-8'))
+          fragments={}
+          for p in (v2/'fragments').glob('*.json'):
+              for f in json.loads(p.read_text(encoding='utf-8')).get('fragments') or []:
+                  fragments[str(f.get('id') or '')]=f
+          ambiguous=[u for u in c.get('unresolved') or [] if u.get('kind')=='ambiguous-boundary-fragment-alignment']
+          byop=Counter(str((fragments.get(str(u.get('fragment'))) or {}).get('sourceOperator') or '') for u in ambiguous)
+          total=int((c.get('summary') or {}).get('unresolved') or 0)
+          print('UNRESOLVED_TOTAL',total)
+          print('AMBIGUOUS_BY_OPERATOR',dict(sorted(byop.items())))
+          assert total == 13, total
+          assert byop == Counter({'keikyu':13}), byop
+          edges=json.loads((v2/'same-train-edges.json').read_text(encoding='utf-8')).get('edges') or []
+          reviewed_edges=[e for e in edges if 'operator-official-per-train-timetable' in (e.get('evidence') or [])]
+          assert len(reviewed_edges) == 2, reviewed_edges
+          print('REVIEWED_EDGES',[(e['fromFragment'],e['toFragment']) for e in reviewed_edges])
+          PY
+      - name: Commit finalizer and regenerated strict DB
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/finalize_transit_v2.py scripts/reviewed_train_evidence.py scripts/test_reviewed_train_evidence.py data/transit-v2
+          git commit -m "Use reviewed operator train evidence for ID-less timetables"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
