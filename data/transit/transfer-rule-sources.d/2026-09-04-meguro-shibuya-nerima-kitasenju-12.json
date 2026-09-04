@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準・実測乗換（安全側）",
+    "sourceType": "current official station/through-service guidance and transfer guide",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {"place":"目黒","railwayA":"odpt.Railway:Toei.Mita","railwayB":"odpt.Railway:Tokyu.Meguro","railwayAName":"三田線","railwayBName":"目黒線","minutes":1,"source":"https://www.tokyu.co.jp/area/meguro/station/","sourceType":"official Tokyu through-service boundary; 1-minute safety buffer"},
+    {"place":"目黒","railwayA":"odpt.Railway:TokyoMetro.Namboku","railwayB":"odpt.Railway:Tokyu.Meguro","railwayAName":"南北線","railwayBName":"目黒線","minutes":1,"source":"https://www.tokyu.co.jp/area/meguro/station/","sourceType":"official Tokyu through-service boundary; 1-minute safety buffer"},
+    {"place":"目黒","railwayA":"odpt.Railway:Toei.Mita","railwayB":"odpt.Railway:TokyoMetro.Namboku","railwayAName":"三田線","railwayBName":"南北線","minutes":1,"source":"https://www.tokyu.co.jp/railway/timetable/","sourceType":"shared Meguro underground platform/track section; 1-minute same-platform safety buffer"},
+    {"place":"渋谷","railwayA":"odpt.Railway:JR-East.SaikyoKawagoe","railwayB":"odpt.Railway:JR-East.ShonanShinjuku","railwayAName":"埼京線・川越線","railwayBName":"湘南新宿ライン","minutes":1,"source":"https://www.jreast.co.jp/estation/stations/808.html","sourceType":"shared JR Saikyo/Shonan platform group; 1-minute safety buffer"},
+    {"place":"渋谷","railwayA":"odpt.Railway:TokyoMetro.Hanzomon","railwayB":"odpt.Railway:Tokyu.DenEnToshi","railwayAName":"半蔵門線","railwayBName":"田園都市線","minutes":1,"source":"https://www.tokyu.co.jp/area/shibuya/station/","sourceType":"official mutual through-service boundary; 1-minute safety buffer"},
+    {"place":"渋谷","railwayA":"odpt.Railway:TokyoMetro.Fukutoshin","railwayB":"odpt.Railway:Tokyu.Toyoko","railwayAName":"副都心線","railwayBName":"東横線","minutes":1,"source":"https://www.tokyu.co.jp/area/shibuya/station/","sourceType":"official mutual through-service boundary; 1-minute safety buffer"},
+    {"place":"練馬","railwayA":"odpt.Railway:Seibu.SeibuYurakucho","railwayB":"odpt.Railway:Seibu.Toshima","railwayAName":"西武有楽町線","railwayBName":"豊島線","minutes":2,"source":"https://www.seiburailway.jp/railway/station/nerima/","sourceType":"official shared Seibu station platform group; conservative 2-minute interchange"},
+    {"place":"練馬","railwayA":"odpt.Railway:Seibu.Ikebukuro","railwayB":"odpt.Railway:Seibu.SeibuYurakucho","railwayAName":"池袋線","railwayBName":"西武有楽町線","minutes":2,"source":"https://www.seiburailway.jp/railway/station/nerima/","sourceType":"official shared Seibu station / through-service junction; conservative 2 minutes"},
+    {"place":"練馬","railwayA":"odpt.Railway:Seibu.Ikebukuro","railwayB":"odpt.Railway:Seibu.Toshima","railwayAName":"池袋線","railwayBName":"豊島線","minutes":2,"source":"https://www.seiburailway.jp/railway/station/nerima/","sourceType":"official branch junction and shared platform group; conservative 2 minutes"},
+    {"place":"練馬","railwayA":"odpt.Railway:Seibu.Toshima","railwayB":"odpt.Railway:Toei.Oedo","railwayAName":"豊島線","railwayBName":"大江戸線","minutes":4,"source":"https://wadattsu261.com/content/nerima-seibuikebukuro-yurakucho-toeioedoline-transfer-information/","sourceType":"current Seibu-to-Oedo transfer guide; about 3-4 minutes, rounded to 4 minutes"},
+    {"place":"北千住","railwayA":"odpt.Railway:JR-East.JobanRapid","railwayB":"odpt.Railway:TokyoMetro.Hibiya","railwayAName":"常磐線快速","railwayBName":"日比谷線","minutes":5,"source":"https://wadattsu261.com/content/kitasenju-jobanrapidhome-info/","sourceType":"current JR and Hibiya platform/concourse guidance; conservative 5-minute standard"},
+    {"place":"北千住","railwayA":"odpt.Railway:Tobu.TobuSkytree","railwayB":"odpt.Railway:TokyoMetro.Hibiya","railwayAName":"東武スカイツリーライン","railwayBName":"日比谷線","minutes":1,"source":"https://wadattsu261.com/content/kitasenju-metrohibiyahome-info/","sourceType":"shared through-service platform at Kita-senju; 1-minute safety buffer"}
+  ]
+}
