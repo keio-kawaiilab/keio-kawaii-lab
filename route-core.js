@@ -415,30 +415,6 @@
       });
       return best;
     }
-    var destinationGroupCache=new Map(),destinationRailwayCache=new Map();
-    function destinationGroupFor(reference){
-      reference=String(reference||"");if(!reference)return null;
-      if(destinationGroupCache.has(reference))return destinationGroupCache.get(reference);
-      var direct=groupByNode.get(reference);if(direct){destinationGroupCache.set(reference,direct);return direct;}
-      var suffix=reference.split(".").pop(),matched=null,ambiguous=false;
-      stationById.forEach(function(station,stationId){
-        if(String(stationId).split(".").pop()!==suffix)return;
-        var group=groupByNode.get(stationId);if(!group)return;
-        if(!matched)matched=group;else if(matched.key!==group.key)ambiguous=true;
-      });
-      var result=ambiguous?null:matched;destinationGroupCache.set(reference,result);return result;
-    }
-    function destinationUsesRailway(destinationId,boundaryGroup,railwayId){
-      if(!destinationId||!boundaryGroup||!railwayId)return false;
-      var cacheKey=[destinationId,boundaryGroup.key,railwayId].join("\u0001");
-      if(destinationRailwayCache.has(cacheKey))return destinationRailwayCache.get(cacheKey);
-      var destinationGroup=destinationGroupFor(destinationId),result=false;
-      if(destinationGroup&&destinationGroup.key!==boundaryGroup.key){
-        var onward=shortestPath(boundaryGroup,destinationGroup),onwardSegments=onward?segmentsFrom(onward):[];
-        result=Boolean(onwardSegments.length&&onwardSegments[0].railway===railwayId);
-      }
-      destinationRailwayCache.set(cacheKey,result);return result;
-    }
     function timedItinerary(path,timetablesByRailway,departureMinutes,service,transferMinutes,transferResolver){
       var segments=segmentsFrom(path),current=Number(departureMinutes),buffer=Number(transferMinutes==null?5:transferMinutes),timed=[];
       if(!Number.isFinite(current)||!segments.length)return null;
@@ -447,9 +423,8 @@
         var table=timetablesByRailway&&timetablesByRailway[segment.railway];
         var fromNodes=fromGroup?fromGroup.nodes:[segment.from],toNodes=toGroup?toGroup.nodes:[segment.to];
         var previous=i>0?timed[i-1]:null;
-        var sameCompany=previous&&sameOperator(railwayById.get(previous.railway),railwayById.get(segment.railway));
-        var destinationContinues=Boolean(previous&&previous.destination&&fromNodes.indexOf(previous.destination)<0);
-        var throughCandidate=Boolean(destinationContinues&&(sameCompany||destinationUsesRailway(previous.destination,fromGroup,segment.railway)));
+        // Through-service identity must come from precomputed train identity data.
+        // Destination similarity or a short timetable gap is never sufficient proof.
         var interchangeBuffer=buffer,transferRule=null;
         if(previous){
           var interchangeMeters=distanceMeters(stationById.get(previous.to),stationById.get(segment.from));
@@ -469,24 +444,8 @@
             }
           }
         }
-        var earliest=current+(i>0&&!throughCandidate?interchangeBuffer:0);
-        var throughLatest=throughCandidate?current+3:null;
-        var requiredDestination=throughCandidate&&table&&table.timeBasis==="station-departure-only"?previous.destination:"";
-        var trip=table&&table.timeBasis==="station-departure-only"?stationDepartureTrip(table,fromNodes,toNodes,earliest,service,throughLatest,requiredDestination):timetableTrip(table,fromNodes,toNodes,earliest,service,throughLatest);
-        if(throughCandidate){
-          if(trip){
-            var sameDestination=!trip.destination||trip.destination===previous.destination;
-            var sameType=!sameCompany||!previous.trainType||!trip.trainType||previous.trainType===trip.trainType;
-            if(trip.departure>=current&&trip.departure-current<=3&&sameDestination&&sameType){
-              trip.throughFromPrevious=true;trip.throughByDestination=true;
-              if(!trip.destination)trip.destination=previous.destination;
-            }else trip=null;
-          }
-          if(!trip){
-            earliest=current+interchangeBuffer;
-            trip=table&&table.timeBasis==="station-departure-only"?stationDepartureTrip(table,fromNodes,toNodes,earliest,service):timetableTrip(table,fromNodes,toNodes,earliest,service);
-          }
-        }
+        var earliest=current+(i>0?interchangeBuffer:0);
+        var trip=table&&table.timeBasis==="station-departure-only"?stationDepartureTrip(table,fromNodes,toNodes,earliest,service):timetableTrip(table,fromNodes,toNodes,earliest,service);
         if(!trip||!Number.isFinite(trip.arrival))return null;
         if(i>0&&!trip.throughFromPrevious){
           trip.transferMinutes=interchangeBuffer;
