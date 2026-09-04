@@ -1,0 +1,80 @@
+{
+  "defaults": {
+    "bidirectional": true,
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "川越 ↔ 本川越",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:Seibu.Shinjuku",
+      "minutes": 15,
+      "label": "駅間徒歩乗換",
+      "sourceType": "current route-planner station-to-station walking time",
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E5%B7%9D%E8%B6%8A-%E6%9C%AC%E5%B7%9D%E8%B6%8A"
+    },
+    {
+      "place": "川越 ↔ 本川越",
+      "railwayA": "odpt.Railway:Seibu.Shinjuku",
+      "railwayB": "odpt.Railway:Tobu.Tojo",
+      "minutes": 15,
+      "label": "駅間徒歩乗換",
+      "sourceType": "current route-planner station-to-station walking time",
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E5%B7%9D%E8%B6%8A-%E6%9C%AC%E5%B7%9D%E8%B6%8A"
+    },
+    {
+      "place": "川越 ↔ 本川越",
+      "railwayA": "odpt.Railway:JR-East.Kawagoe",
+      "railwayB": "odpt.Railway:Seibu.Shinjuku",
+      "minutes": 15,
+      "label": "駅間徒歩乗換",
+      "sourceType": "current route-planner station-to-station walking time",
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E5%B7%9D%E8%B6%8A-%E6%9C%AC%E5%B7%9D%E8%B6%8A"
+    },
+    {
+      "place": "赤坂見附 ↔ 永田町",
+      "railwayA": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
+      "minutes": 10,
+      "label": "標準乗換",
+      "sourceType": "Jorudan standard transfer time",
+      "sourceUrl": "https://mb.jorudan.co.jp/os/noritxt/akasakamitsuke/tokyo-metro_marunouchi_line-tokyo-metro_nanboku_line.html"
+    },
+    {
+      "place": "赤坂見附 ↔ 永田町",
+      "railwayA": "odpt.Railway:TokyoMetro.Marunouchi",
+      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+      "minutes": 10,
+      "label": "標準乗換",
+      "sourceType": "Jorudan standard transfer time",
+      "sourceUrl": "https://mb.jorudan.co.jp/os/noritxt/akasakamitsuke/tokyo-metro_marunouchi_line-tokyo-metro_yurakucho_line.html"
+    },
+    {
+      "place": "赤坂見附 ↔ 永田町",
+      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
+      "minutes": 10,
+      "label": "標準乗換",
+      "sourceType": "Jorudan standard transfer time",
+      "sourceUrl": "https://mb.jorudan.co.jp/os/noritxt/akasakamitsuke/tokyo-metro_ginza_line-tokyo-metro_nanboku_line.html"
+    },
+    {
+      "place": "赤坂見附 ↔ 永田町",
+      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
+      "minutes": 5,
+      "label": "標準乗換",
+      "sourceType": "Jorudan standard transfer time",
+      "sourceUrl": "https://mb.jorudan.co.jp/os/noritxt/akasakamitsuke/tokyo-metro_ginza_line-tokyo-metro_hanzomon_line.html"
+    },
+    {
+      "place": "赤坂見附 ↔ 永田町",
+      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
+      "minutes": 10,
+      "label": "標準乗換",
+      "sourceType": "Jorudan standard transfer time",
+      "sourceUrl": "https://mb.jorudan.co.jp/os/noritxt/akasakamitsuke/tokyo-metro_ginza_line-tokyo-metro_yurakucho_line.html"
+    }
+  ]
+}
