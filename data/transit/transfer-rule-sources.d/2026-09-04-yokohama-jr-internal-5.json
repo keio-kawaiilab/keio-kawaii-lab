@@ -1,0 +1,45 @@
+{
+  "defaults": {
+    "bidirectional": true,
+    "label": "経路検索乗換",
+    "sourceType": "Jorudan current route-planner transfer time",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.Tokaido",
+      "minutes": 3,
+      "sourceUrl": "https://www.jorudan.co.jp/norikae/route/%E5%A4%A7%E4%BA%95%E7%94%BA_%E6%88%B8%E5%A1%9A.html"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.Yokosuka",
+      "minutes": 3,
+      "sourceUrl": "https://www.jorudan.co.jp/norikae/route/%E8%92%B2%E7%94%B0_%E6%88%B8%E5%A1%9A.html"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
+      "minutes": 3,
+      "sourceUrl": "https://www.jorudan.co.jp/norikae/route/%E8%92%B2%E7%94%B0_%E4%BF%9D%E5%9C%9F%E3%83%B6%E8%B0%B7.html"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.Tokaido",
+      "railwayB": "odpt.Railway:JR-East.Yokosuka",
+      "minutes": 3,
+      "sourceUrl": "https://www.jorudan.co.jp/norikae/route/%E5%B7%9D%E5%B4%8E_%E4%BF%9D%E5%9C%9F%E3%83%B6%E8%B0%B7.html"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:JR-East.Tokaido",
+      "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
+      "minutes": 3,
+      "sourceUrl": "https://www.jorudan.co.jp/norikae/route/%E5%B7%9D%E5%B4%8E_%E4%BF%9D%E5%9C%9F%E3%83%B6%E8%B0%B7.html"
+    }
+  ]
+}
