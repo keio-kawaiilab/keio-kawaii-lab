@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-04T23:58:28.357597+09:00",
-  "candidateUpdatedAt": "2026-09-04T23:58:28+09:00",
+  "generatedAt": "2026-09-05T00:12:49.751724+09:00",
+  "candidateUpdatedAt": "2026-09-05T00:12:49+09:00",
   "previousEventCount": 264,
-  "candidateEventCount": 264,
-  "protectedPreviousCount": 264,
+  "candidateEventCount": 234,
+  "protectedPreviousCount": 261,
   "errorCount": 0,
-  "warningCount": 14,
+  "warningCount": 22,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -16,6 +16,14 @@
     "quarantined one event/source update and kept the previous known-good data: special event has no verified purchase/ticket window: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+    "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for id:special-9332aaf17a50c3a8: 2026-09-14",
+    "quarantined one event/source update and kept the previous known-good data: deadline moved earlier for url:https://cutiestreet.asobisystem.com/feature/autumntour: 2026-09-06T23:59 -> 2026-07-26T23:59 (manual review required)",
+    "quarantined one event/source update and kept the previous known-good data: protected future/active item disappeared: CANDY TUNE / 2026.08.26 2026年10月1日(木) 「CANDY TUNE 小川奈々子 生誕祭 2026」開催決定！FC会員先行実施決定！ / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for pia:35165: 2026-10-26, 2026-10-27, 2026-10-29",
+    "quarantined one event/source update and kept the previous known-good data: deadline moved earlier for url:https://cutiestreet.asobisystem.com/feature/autumntour: 2026-09-08T23:59 -> 2026-07-26T23:59 (manual review required)",
+    "quarantined one event/source update and kept the previous known-good data: deadline moved earlier for url:https://cutiestreet.asobisystem.com/feature/autumntour: 2026-09-08T23:59 -> 2026-07-26T23:59 (manual review required)",
+    "quarantined one event/source update and kept the previous known-good data: protected future/active item disappeared: MORE STAR / ? / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: protected future/active item disappeared: MORE STAR / ? / FC先行",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event is not marked as official-source data: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no participation method: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -24,7 +32,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
   ],
-  "candidateSha256": "1c404e4f9ae4650087f8406c83a557ec4244027ed81459f03f16acbadaf777b6",
+  "candidateSha256": "4d7bf49d7bfd8e39f2c60a0bd3e1b9b52fcda6837accde0d72b18a6ac314a8ce",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -171,7 +179,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 7,
+  "quarantineCount": 15,
   "quarantineActions": [
     {
       "error": "special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -207,15 +215,63 @@
       "error": "special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
       "action": "restored previous row",
       "restoredPreviousRows": 1
+    },
+    {
+      "error": "future performance dates disappeared for id:special-9332aaf17a50c3a8: 2026-09-14",
+      "action": "restored previous rows for id:special-9332aaf17a50c3a8",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "deadline moved earlier for url:https://cutiestreet.asobisystem.com/feature/autumntour: 2026-09-06T23:59 -> 2026-07-26T23:59 (manual review required)",
+      "action": "restored previous rows for url:https://cutiestreet.asobisystem.com/feature/autumntour",
+      "restoredPreviousRows": 37
+    },
+    {
+      "error": "protected future/active item disappeared: CANDY TUNE / 2026.08.26 2026年10月1日(木) 「CANDY TUNE 小川奈々子 生誕祭 2026」開催決定！FC会員先行実施決定！ / FC先行",
+      "action": "restored disappeared previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "future performance dates disappeared for pia:35165: 2026-10-26, 2026-10-27, 2026-10-29",
+      "action": "restored previous rows for pia:35165",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "deadline moved earlier for url:https://cutiestreet.asobisystem.com/feature/autumntour: 2026-09-08T23:59 -> 2026-07-26T23:59 (manual review required)",
+      "action": "restored previous rows for url:https://cutiestreet.asobisystem.com/feature/autumntour",
+      "restoredPreviousRows": 37
+    },
+    {
+      "error": "deadline moved earlier for url:https://cutiestreet.asobisystem.com/feature/autumntour: 2026-09-08T23:59 -> 2026-07-26T23:59 (manual review required)",
+      "action": "restored previous rows for url:https://cutiestreet.asobisystem.com/feature/autumntour",
+      "restoredPreviousRows": 37
+    },
+    {
+      "error": "protected future/active item disappeared: MORE STAR / ? / FC先行",
+      "action": "restored disappeared previous row",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "protected future/active item disappeared: MORE STAR / ? / FC先行",
+      "action": "restored disappeared previous row",
+      "restoredPreviousRows": 2
     }
   ],
   "rowFailuresCanBlockRelease": false,
   "officialIndexReconciledAfterQuarantine": {
-    "reassignedCount": 0,
+    "reassignedCount": 1,
     "hydratedCount": 0,
     "ambiguousCount": 0,
     "unresolvedCount": 4,
-    "reassigned": [],
+    "reassigned": [
+      {
+        "group": "SWEET STEADY",
+        "date": "2026-09-14",
+        "url": "https://sweetsteady.asobisystem.com/live_information/detail/44456",
+        "from": "b84092c8d69077b6",
+        "to": "special-9332aaf17a50c3a8"
+      }
+    ],
     "hydrated": [],
     "ambiguous": [],
     "unresolved": [
