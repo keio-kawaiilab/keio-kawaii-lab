@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - 'scripts/finalize_transit_v2.py'
+      - 'scripts/normalize_transit_v2_physical_destinations.py'
       - 'scripts/audit_transit_v2.py'
       - 'data/transit-v2/service-boundaries.json'
       - '.github/workflows/finalize-transit-v2.yml'
@@ -28,8 +29,9 @@ jobs:
 
       - name: Finalize strict train identity database
         run: |
-          python -m py_compile scripts/build_transit_v2.py scripts/finalize_transit_v2.py scripts/audit_transit_v2.py
+          python -m py_compile scripts/build_transit_v2.py scripts/finalize_transit_v2.py scripts/normalize_transit_v2_physical_destinations.py scripts/audit_transit_v2.py
           python scripts/finalize_transit_v2.py
+          python scripts/normalize_transit_v2_physical_destinations.py
           python scripts/audit_transit_v2.py
 
       - name: Validate strict identity invariants
@@ -48,6 +50,7 @@ jobs:
           assert coverage['summary']['fragments'] > 0
           assert coverage['summary']['fragmentsWithDestination'] > 0
           assert audit['totalUnresolved'] == coverage['summary']['unresolved']
+          assert coverage.get('physicalDestinationNormalization', {}).get('resolvedFalseThroughCandidates', 0) >= 0
           for edge in edges['edges']:
               evidence='|'.join(edge.get('evidence') or []).lower()
               assert 'train-number' not in evidence
