@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'scripts/apply_runtime_same_train_patch.py'
+      - 'scripts/patch_strict_route_core_test.py'
       - '.github/workflows/apply-runtime-same-train.yml'
 
 permissions:
@@ -20,7 +21,9 @@ jobs:
         with:
           python-version: '3.12'
       - name: Apply patch
-        run: python scripts/apply_runtime_same_train_patch.py
+        run: |
+          python scripts/apply_runtime_same_train_patch.py
+          python scripts/patch_strict_route_core_test.py
       - name: Validate implementation
         run: |
           python -m py_compile scripts/build_transit_v2.py scripts/finalize_transit_v2.py
@@ -33,7 +36,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add scripts/build_transit_v2.py scripts/finalize_transit_v2.py route-core.js route.js scripts/test_cross_operator_through_service.js
+          git add scripts/build_transit_v2.py scripts/finalize_transit_v2.py route-core.js route.js scripts/test_cross_operator_through_service.js scripts/test_route_core.js
           git commit -m "Use strict same-train identity in route search"
           for attempt in 1 2 3; do
             git fetch origin main
