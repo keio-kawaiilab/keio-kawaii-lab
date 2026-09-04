@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T08:39:51.825Z",
+  "generatedAt": "2026-09-04T09:54:31.721Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -119,13 +119,14 @@
     "transfer-rule-sources.d/2026-09-04-verified-junctions-9.json",
     "transfer-rule-sources.d/2026-09-04-verified-links-10.json",
     "transfer-rule-sources.d/2026-09-04-walk-links-9.json",
+    "transfer-rule-sources.d/2026-09-04-yamanote-keihin-remaining-3.json",
     "transfer-rule-sources.d/2026-09-04-yokohama-jr-internal-5.json",
     "transfer-rule-sources.d/2026-09-04-yokohama-jr.json",
     "transfer-rule-sources.d/2026-09-04-yokohama-private-direct.json",
     "transfer-rule-sources.d/2026-09-04-yokohama-private-remaining.json"
   ],
   "description": "Station/railway-specific transfer times. Explicit curated rules are preferred; any remaining unblocked candidate pair receives a conservative fallbackMinutes rule until an external standard time is added.",
-  "fallbackCandidatePairs": 16,
+  "fallbackCandidatePairs": 13,
   "rules": [
     {
       "id": "東京-山手線-丸ノ内線",
@@ -11873,6 +11874,45 @@
       "verifiedAt": "2026-09-04"
     },
     {
+      "id": "秋葉原-京浜東北線・根岸線-山手線",
+      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Akihabara",
+      "toStation": "odpt.Station:JR-East.Yamanote.Akihabara",
+      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "toRailway": "odpt.Railway:JR-East.Yamanote",
+      "minutes": 1,
+      "bidirectional": true,
+      "label": "標準乗換（同一ホーム・安全側）",
+      "source": "https://wadattsu261.com/content/akihabara-yamanote-keihinhome-info/",
+      "sourceType": "current same-island directional platform guidance; 1-minute safety buffer",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "御徒町-京浜東北線・根岸線-山手線",
+      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Okachimachi",
+      "toStation": "odpt.Station:JR-East.Yamanote.Okachimachi",
+      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "toRailway": "odpt.Railway:JR-East.Yamanote",
+      "minutes": 1,
+      "bidirectional": true,
+      "label": "標準乗換（同一ホーム・安全側）",
+      "source": "https://wadattsu261.com/content/okachimachi-yamanote-keihinhome-info/",
+      "sourceType": "current same-island directional platform guidance; 1-minute safety buffer",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "鶯谷-京浜東北線・根岸線-山手線",
+      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Uguisudani",
+      "toStation": "odpt.Station:JR-East.Yamanote.Uguisudani",
+      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "toRailway": "odpt.Railway:JR-East.Yamanote",
+      "minutes": 1,
+      "bidirectional": true,
+      "label": "標準乗換（同一ホーム・安全側）",
+      "source": "https://wadattsu261.com/content/uguisudani-yamanote-keihinhome-info/",
+      "sourceType": "current same-island directional platform guidance; 1-minute safety buffer",
+      "verifiedAt": "2026-09-04"
+    },
+    {
       "id": "横浜-odpt.Railway:JR-East.KeihinTohokuNegishi-odpt.Railway:JR-East.Tokaido",
       "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Yokohama",
       "toStation": "odpt.Station:JR-East.Tokaido.Yokohama",
@@ -12341,19 +12381,6 @@
       "verifiedAt": ""
     },
     {
-      "id": "fallback-御徒町-京浜東北線・根岸線-山手線",
-      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Okachimachi",
-      "toStation": "odpt.Station:JR-East.Yamanote.Okachimachi",
-      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "toRailway": "odpt.Railway:JR-East.Yamanote",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
       "id": "fallback-高円寺-中央線快速-中央・総武各駅停車",
       "fromStation": "odpt.Station:JR-East.ChuoRapid.Koenji",
       "toStation": "odpt.Station:JR-East.ChuoSobuLocal.Koenji",
@@ -12370,19 +12397,6 @@
       "id": "fallback-高輪ゲートウェイ-京浜東北線・根岸線-山手線",
       "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.TakanawaGateway",
       "toStation": "odpt.Station:JR-East.Yamanote.TakanawaGateway",
-      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "toRailway": "odpt.Railway:JR-East.Yamanote",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-秋葉原-京浜東北線・根岸線-山手線",
-      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Akihabara",
-      "toStation": "odpt.Station:JR-East.Yamanote.Akihabara",
       "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
       "toRailway": "odpt.Railway:JR-East.Yamanote",
       "minutes": 5,
@@ -12502,19 +12516,6 @@
       "toStation": "odpt.Station:Toei.Oedo.Toshimaen",
       "fromRailway": "odpt.Railway:Seibu.Toshima",
       "toRailway": "odpt.Railway:Toei.Oedo",
-      "minutes": 5,
-      "bidirectional": true,
-      "label": "暫定・安全側乗換",
-      "source": "data/transit/transfer-candidates.json",
-      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
-      "verifiedAt": ""
-    },
-    {
-      "id": "fallback-鶯谷-京浜東北線・根岸線-山手線",
-      "fromStation": "odpt.Station:JR-East.KeihinTohokuNegishi.Uguisudani",
-      "toStation": "odpt.Station:JR-East.Yamanote.Uguisudani",
-      "fromRailway": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "toRailway": "odpt.Railway:JR-East.Yamanote",
       "minutes": 5,
       "bidirectional": true,
       "label": "暫定・安全側乗換",
