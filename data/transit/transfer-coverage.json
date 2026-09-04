@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-04T01:37:42.019Z",
+  "generatedAt": "2026-09-04T01:38:10.781Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T01:37:28.430Z",
+  "rulesGeneratedAt": "2026-09-04T01:37:58.992Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 529,
-    "uncuratedPairs": 424,
+    "curatedPairs": 543,
+    "uncuratedPairs": 410,
     "blockedPairs": 7,
-    "curatedSourceRules": 529,
+    "curatedSourceRules": 543,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -143,16 +143,6 @@
       "priorityScore": 8
     },
     {
-      "place": "川越 ↔ 本川越",
-      "totalPairs": 3,
-      "curatedPairs": 0,
-      "uncuratedPairs": 3,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 3,
-      "railwayCount": 4,
-      "priorityScore": 7.5
-    },
-    {
       "place": "目黒",
       "totalPairs": 6,
       "curatedPairs": 3,
@@ -283,16 +273,6 @@
       "priorityScore": 5.5
     },
     {
-      "place": "赤坂見附 ↔ 永田町",
-      "totalPairs": 5,
-      "curatedPairs": 0,
-      "uncuratedPairs": 5,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 5,
-      "priorityScore": 5
-    },
-    {
       "place": "さいたま新都心",
       "totalPairs": 3,
       "curatedPairs": 0,
@@ -304,16 +284,6 @@
     },
     {
       "place": "曳舟",
-      "totalPairs": 3,
-      "curatedPairs": 0,
-      "uncuratedPairs": 3,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 3,
-      "priorityScore": 3
-    },
-    {
-      "place": "永田町",
       "totalPairs": 3,
       "curatedPairs": 0,
       "uncuratedPairs": 3,
@@ -400,16 +370,6 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 3,
-      "priorityScore": 3
-    },
-    {
-      "place": "国会議事堂前 ↔ 溜池山王",
-      "totalPairs": 3,
-      "curatedPairs": 0,
-      "uncuratedPairs": 3,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 4,
       "priorityScore": 3
     },
     {
@@ -1004,6 +964,46 @@
     },
     {
       "place": "藤沢",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 2,
+      "priorityScore": 2.5
+    },
+    {
+      "place": "南越谷 ↔ 新越谷",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 2,
+      "priorityScore": 2.5
+    },
+    {
+      "place": "南流山",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 2,
+      "priorityScore": 2.5
+    },
+    {
+      "place": "白金高輪",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 1,
+      "railwayCount": 2,
+      "priorityScore": 2.5
+    },
+    {
+      "place": "白金台",
       "totalPairs": 1,
       "curatedPairs": 0,
       "uncuratedPairs": 1,
@@ -2698,55 +2698,6 @@
       ]
     },
     {
-      "place": "川越 ↔ 本川越",
-      "totalPairs": 3,
-      "curatedPairs": 0,
-      "uncuratedPairs": 3,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 3,
-      "railwayCount": 4,
-      "priorityScore": 7.5,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
-          "railwayAName": "埼京線・川越線",
-          "railwayB": "odpt.Railway:Seibu.Shinjuku",
-          "railwayBName": "新宿線",
-          "sameOperator": false,
-          "distanceMeters": 841,
-          "fallbackMinutes": 14,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:Seibu.Shinjuku",
-          "railwayAName": "新宿線",
-          "railwayB": "odpt.Railway:Tobu.Tojo",
-          "railwayBName": "東上線",
-          "sameOperator": false,
-          "distanceMeters": 764,
-          "fallbackMinutes": 13,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Kawagoe",
-          "railwayAName": "川越線(川越-高麗川間)",
-          "railwayB": "odpt.Railway:Seibu.Shinjuku",
-          "railwayBName": "新宿線",
-          "sameOperator": false,
-          "distanceMeters": 841,
-          "fallbackMinutes": 14,
-          "sources": [
-            "connecting-station"
-          ]
-        }
-      ],
-      "sameOperatorPairs": []
-    },
-    {
       "place": "目黒",
       "totalPairs": 6,
       "curatedPairs": 3,
@@ -3587,79 +3538,6 @@
       ]
     },
     {
-      "place": "赤坂見附 ↔ 永田町",
-      "totalPairs": 5,
-      "curatedPairs": 0,
-      "uncuratedPairs": 5,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 5,
-      "priorityScore": 5,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Marunouchi",
-          "railwayAName": "丸ノ内線",
-          "railwayB": "odpt.Railway:TokyoMetro.Namboku",
-          "railwayBName": "南北線",
-          "sameOperator": true,
-          "distanceMeters": 241,
-          "fallbackMinutes": 6,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Marunouchi",
-          "railwayAName": "丸ノ内線",
-          "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
-          "railwayBName": "有楽町線",
-          "sameOperator": true,
-          "distanceMeters": 416,
-          "fallbackMinutes": 8,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Ginza",
-          "railwayAName": "銀座線",
-          "railwayB": "odpt.Railway:TokyoMetro.Namboku",
-          "railwayBName": "南北線",
-          "sameOperator": true,
-          "distanceMeters": 241,
-          "fallbackMinutes": 6,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Ginza",
-          "railwayAName": "銀座線",
-          "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
-          "railwayBName": "半蔵門線",
-          "sameOperator": true,
-          "distanceMeters": 221,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Ginza",
-          "railwayAName": "銀座線",
-          "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
-          "railwayBName": "有楽町線",
-          "sameOperator": true,
-          "distanceMeters": 416,
-          "fallbackMinutes": 8,
-          "sources": [
-            "connecting-station"
-          ]
-        }
-      ]
-    },
-    {
       "place": "さいたま新都心",
       "totalPairs": 3,
       "curatedPairs": 0,
@@ -3753,6 +3631,110 @@
           "railwayAName": "東武スカイツリーライン",
           "railwayB": "odpt.Railway:Tobu.TobuSkytreeBranch",
           "railwayBName": "東武スカイツリーライン(押上-曳舟)",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ]
+    },
+    {
+      "place": "霞ケ関",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 3,
+      "crossOperatorPairs": [],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
+          "railwayAName": "千代田線",
+          "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+          "railwayBName": "丸ノ内線",
+          "sameOperator": true,
+          "distanceMeters": 204,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
+          "railwayAName": "千代田線",
+          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+          "railwayBName": "日比谷線",
+          "sameOperator": true,
+          "distanceMeters": 160,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:TokyoMetro.Hibiya",
+          "railwayAName": "日比谷線",
+          "railwayB": "odpt.Railway:TokyoMetro.Marunouchi",
+          "railwayBName": "丸ノ内線",
+          "sameOperator": true,
+          "distanceMeters": 152,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ]
+    },
+    {
+      "place": "我孫子",
+      "totalPairs": 3,
+      "curatedPairs": 0,
+      "uncuratedPairs": 3,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 3,
+      "crossOperatorPairs": [],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:JR-East.JobanRapid",
+          "railwayAName": "常磐線快速",
+          "railwayB": "odpt.Railway:JR-East.NaritaAbikoBranch",
+          "railwayBName": "成田線我孫子支線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.JobanLocal",
+          "railwayAName": "常磐線各駅停車",
+          "railwayB": "odpt.Railway:JR-East.JobanRapid",
+          "railwayBName": "常磐線快速",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.JobanLocal",
+          "railwayAName": "常磐線各駅停車",
+          "railwayB": "odpt.Railway:JR-East.NaritaAbikoBranch",
+          "railwayBName": "成田線我孫子支線",
           "sameOperator": true,
           "distanceMeters": 0,
           "fallbackMinutes": 5,
@@ -4025,48 +4007,6 @@
       "sameOperator": true,
       "distanceMeters": 0,
       "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "永田町",
-      "railwayA": "odpt.Railway:TokyoMetro.Namboku",
-      "railwayAName": "南北線",
-      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
-      "railwayBName": "有楽町線",
-      "sameOperator": true,
-      "distanceMeters": 230,
-      "fallbackMinutes": 6,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "永田町",
-      "railwayA": "odpt.Railway:TokyoMetro.Hanzomon",
-      "railwayAName": "半蔵門線",
-      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
-      "railwayBName": "南北線",
-      "sameOperator": true,
-      "distanceMeters": 39,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "永田町",
-      "railwayA": "odpt.Railway:TokyoMetro.Hanzomon",
-      "railwayAName": "半蔵門線",
-      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
-      "railwayBName": "有楽町線",
-      "sameOperator": true,
-      "distanceMeters": 269,
-      "fallbackMinutes": 6,
       "sources": [
         "connecting-station",
         "same-place-group"
@@ -5141,45 +5081,6 @@
       "sources": [
         "connecting-station",
         "same-place-group"
-      ]
-    },
-    {
-      "place": "国会議事堂前 ↔ 溜池山王",
-      "railwayA": "odpt.Railway:TokyoMetro.Marunouchi",
-      "railwayAName": "丸ノ内線",
-      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
-      "railwayBName": "南北線",
-      "sameOperator": true,
-      "distanceMeters": 429,
-      "fallbackMinutes": 8,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "国会議事堂前 ↔ 溜池山王",
-      "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
-      "railwayAName": "千代田線",
-      "railwayB": "odpt.Railway:TokyoMetro.Ginza",
-      "railwayBName": "銀座線",
-      "sameOperator": true,
-      "distanceMeters": 255,
-      "fallbackMinutes": 6,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "国会議事堂前 ↔ 溜池山王",
-      "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
-      "railwayAName": "千代田線",
-      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
-      "railwayBName": "南北線",
-      "sameOperator": true,
-      "distanceMeters": 179,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station"
       ]
     },
     {
@@ -6693,71 +6594,6 @@
       ]
     },
     {
-      "place": "赤坂見附 ↔ 永田町",
-      "railwayA": "odpt.Railway:TokyoMetro.Marunouchi",
-      "railwayAName": "丸ノ内線",
-      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
-      "railwayBName": "南北線",
-      "sameOperator": true,
-      "distanceMeters": 241,
-      "fallbackMinutes": 6,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "赤坂見附 ↔ 永田町",
-      "railwayA": "odpt.Railway:TokyoMetro.Marunouchi",
-      "railwayAName": "丸ノ内線",
-      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
-      "railwayBName": "有楽町線",
-      "sameOperator": true,
-      "distanceMeters": 416,
-      "fallbackMinutes": 8,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "赤坂見附 ↔ 永田町",
-      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
-      "railwayAName": "銀座線",
-      "railwayB": "odpt.Railway:TokyoMetro.Namboku",
-      "railwayBName": "南北線",
-      "sameOperator": true,
-      "distanceMeters": 241,
-      "fallbackMinutes": 6,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "赤坂見附 ↔ 永田町",
-      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
-      "railwayAName": "銀座線",
-      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
-      "railwayBName": "半蔵門線",
-      "sameOperator": true,
-      "distanceMeters": 221,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "赤坂見附 ↔ 永田町",
-      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
-      "railwayAName": "銀座線",
-      "railwayB": "odpt.Railway:TokyoMetro.Yurakucho",
-      "railwayBName": "有楽町線",
-      "sameOperator": true,
-      "distanceMeters": 416,
-      "fallbackMinutes": 8,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
       "place": "千川",
       "railwayA": "odpt.Railway:TokyoMetro.Fukutoshin",
       "railwayAName": "副都心線",
@@ -6964,45 +6800,6 @@
       "sources": [
         "connecting-station",
         "same-place-group"
-      ]
-    },
-    {
-      "place": "川越 ↔ 本川越",
-      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
-      "railwayAName": "埼京線・川越線",
-      "railwayB": "odpt.Railway:Seibu.Shinjuku",
-      "railwayBName": "新宿線",
-      "sameOperator": false,
-      "distanceMeters": 841,
-      "fallbackMinutes": 14,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "川越 ↔ 本川越",
-      "railwayA": "odpt.Railway:Seibu.Shinjuku",
-      "railwayAName": "新宿線",
-      "railwayB": "odpt.Railway:Tobu.Tojo",
-      "railwayBName": "東上線",
-      "sameOperator": false,
-      "distanceMeters": 764,
-      "fallbackMinutes": 13,
-      "sources": [
-        "connecting-station"
-      ]
-    },
-    {
-      "place": "川越 ↔ 本川越",
-      "railwayA": "odpt.Railway:JR-East.Kawagoe",
-      "railwayAName": "川越線(川越-高麗川間)",
-      "railwayB": "odpt.Railway:Seibu.Shinjuku",
-      "railwayBName": "新宿線",
-      "sameOperator": false,
-      "distanceMeters": 841,
-      "fallbackMinutes": 14,
-      "sources": [
-        "connecting-station"
       ]
     },
     {
