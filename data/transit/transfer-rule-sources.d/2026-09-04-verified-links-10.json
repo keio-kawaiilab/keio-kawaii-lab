@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準・実測乗換（安全側）",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {"place":"中央林間","railwayA":"odpt.Railway:Odakyu.Enoshima","railwayB":"odpt.Railway:Tokyu.DenEnToshi","railwayAName":"江ノ島線","railwayBName":"田園都市線","minutes":4,"source":"https://www.jorudan.co.jp/norikae/route/%E6%9D%B1%E6%9E%97%E9%96%93_%E6%96%B0%E5%AE%BF.html","sourceType":"current Jorudan route explicitly shows 4-minute transfer at Chuo-rinkan"},
+    {"place":"武蔵境","railwayA":"odpt.Railway:JR-East.ChuoRapid","railwayB":"odpt.Railway:Seibu.Tamagawa","railwayAName":"中央線快速","railwayBName":"多摩川線","minutes":4,"source":"https://www.jorudan.co.jp/norikae/route/%E6%98%AF%E6%94%BF_%E7%A5%9E%E7%94%B0%EF%BC%88%E6%9D%B1%E4%BA%AC%EF%BC%89.html","sourceType":"current Jorudan route explicitly shows 4-minute transfer at Musashi-sakai"},
+    {"place":"流山おおたかの森","railwayA":"odpt.Railway:MIR.TsukubaExpress","railwayB":"odpt.Railway:Tobu.TobuUrbanPark","railwayAName":"つくばエクスプレス","railwayBName":"東武アーバンパークライン","minutes":4,"source":"https://www.jorudan.co.jp/norikae/route/%E8%B1%8A%E5%9B%9B%E5%AD%A3_%E7%A7%8B%E8%91%89%E5%8E%9F.html","sourceType":"current Jorudan route explicitly shows 4-minute transfer at Nagareyama-otakanomori"},
+    {"place":"寄居","railwayA":"odpt.Railway:JR-East.Hachiko","railwayB":"odpt.Railway:Tobu.Tojo","railwayAName":"八高線","railwayBName":"東上線","minutes":4,"source":"https://www.jorudan.co.jp/norikae/route/%E9%AB%98%E5%B4%8E_%E5%B7%9D%E8%B6%8A.html","sourceType":"current Jorudan route explicitly shows 4-minute transfer at Yorii"},
+    {"place":"八丁畷","railwayA":"odpt.Railway:JR-East.NambuBranch","railwayB":"odpt.Railway:Keikyu.Main","railwayAName":"南武線浜川崎支線","railwayBName":"京急本線","minutes":4,"source":"https://www.jorudan.co.jp/norikae/route/%E9%B9%BF%E5%B3%B6%E7%94%B0_%E4%BA%AC%E6%80%A5%E5%B7%9D%E5%B4%8E.html","sourceType":"current Jorudan route explicitly shows 4-minute transfer at Hatchonawate"},
+    {"place":"両国","railwayA":"odpt.Railway:JR-East.ChuoSobuLocal","railwayB":"odpt.Railway:Toei.Oedo","railwayAName":"中央・総武各駅停車","railwayBName":"大江戸線","minutes":10,"source":"https://www.navitime.co.jp/transfer/searchlist?dnvStationCode=00018469&dnvStationName=%E6%B8%8B%E8%B0%B7%E9%A7%85&orvStationCode=00009226&orvStationName=%E4%B8%A1%E5%9B%BD%E3%80%94%E5%A4%A7%E6%B1%9F%E6%88%B8%E7%B7%9A%E3%80%95","sourceType":"current NAVITIME linked-station route explicitly shows 10-minute walk between Toei and JR Ryogoku"},
+    {"place":"仲御徒町 ↔ 上野御徒町","railwayA":"odpt.Railway:Toei.Oedo","railwayB":"odpt.Railway:TokyoMetro.Hibiya","railwayAName":"大江戸線","railwayBName":"日比谷線","minutes":4,"source":"https://transit.yahoo.co.jp/search/result/%E4%BB%B2%E5%BE%A1%E5%BE%92%E7%94%BA-%E4%B8%8A%E9%87%8E%E5%BE%A1%E5%BE%92%E7%94%BA/","sourceType":"current Yahoo route explicitly shows 4-minute same-station walk"},
+    {"place":"小田原","railwayA":"odpt.Railway:JR-East.Tokaido","railwayB":"odpt.Railway:Odakyu.Odawara","railwayAName":"東海道線","railwayBName":"小田原線","minutes":4,"source":"https://www.jorudan.co.jp/norikae/route/%E7%86%B1%E6%B5%B7_%E6%96%B0%E5%AE%BF.html","sourceType":"current Jorudan route explicitly shows 4-minute JR/Odakyu transfer at Odawara"},
+    {"place":"下高井戸","railwayA":"odpt.Railway:Keio.Keio","railwayB":"odpt.Railway:Tokyu.Setagaya","railwayAName":"京王線","railwayBName":"世田谷線","minutes":4,"source":"https://www.jorudan.co.jp/norikae/route/%E6%A1%9C%E4%B8%8A%E6%B0%B4_%E4%B8%8A%E7%94%BA.html","sourceType":"current Jorudan route explicitly shows 4-minute transfer at Shimo-takaido"},
+    {"place":"小川町","railwayA":"odpt.Railway:JR-East.Hachiko","railwayB":"odpt.Railway:Tobu.Tojo","railwayAName":"八高線","railwayBName":"東上線","minutes":4,"source":"https://www.jorudan.co.jp/norikae/route/%E9%AB%98%E5%B4%8E_%E5%B7%9D%E8%B6%8A.html","sourceType":"current Jorudan route explicitly shows 4-minute transfer at Ogawamachi"}
+  ]
+}
