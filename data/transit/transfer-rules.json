@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T07:23:38.048Z",
+  "generatedAt": "2026-09-04T07:24:47.672Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -52,6 +52,7 @@
     "transfer-rule-sources.d/2026-09-04-jr-hubs-22.json",
     "transfer-rule-sources.d/2026-09-04-jr-junctions-4.json",
     "transfer-rule-sources.d/2026-09-04-junction-batch-15.json",
+    "transfer-rule-sources.d/2026-09-04-junctions-safe-4.json",
     "transfer-rule-sources.d/2026-09-04-kanagawa-batch-i.json",
     "transfer-rule-sources.d/2026-09-04-kawagoe-akasakamitsuke.json",
     "transfer-rule-sources.d/2026-09-04-keisei-junctions-6.json",
@@ -4714,6 +4715,58 @@
       "label": "標準・実測乗換（安全側）",
       "source": "https://www.tobu.co.jp/railway/guide/station/info/1104.html",
       "sourceType": "official continuous branch/main through-service at Hikifune; 1-minute safety buffer",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "新橋-常磐線快速-東海道線",
+      "fromStation": "odpt.Station:JR-East.JobanRapid.Shimbashi",
+      "toStation": "odpt.Station:JR-East.Tokaido.Shimbashi",
+      "fromRailway": "odpt.Railway:JR-East.JobanRapid",
+      "toRailway": "odpt.Railway:JR-East.Tokaido",
+      "minutes": 1,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%9D%BE%E6%88%B8_%E5%B7%9D%E5%B4%8E.html",
+      "sourceType": "current Jorudan routes transfer on same Shimbashi platform; 1 minute in both directions",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "所沢-池袋線-新宿線",
+      "fromStation": "odpt.Station:Seibu.Ikebukuro.Tokorozawa",
+      "toStation": "odpt.Station:Seibu.Shinjuku.Tokorozawa",
+      "fromRailway": "odpt.Railway:Seibu.Ikebukuro",
+      "toRailway": "odpt.Railway:Seibu.Shinjuku",
+      "minutes": 3,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%A5%BF%E6%89%80%E6%B2%A2_%E6%9D%B1%E6%9D%91%E5%B1%B1.html",
+      "sourceType": "current Jorudan routes via Tokorozawa; 1-3 minutes depending direction/platform, conservative upper bound",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "小平-拝島線-新宿線",
+      "fromStation": "odpt.Station:Seibu.Haijima.Kodaira",
+      "toStation": "odpt.Station:Seibu.Shinjuku.Kodaira",
+      "fromRailway": "odpt.Railway:Seibu.Haijima",
+      "toRailway": "odpt.Railway:Seibu.Shinjuku",
+      "minutes": 1,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E6%AD%A6%E8%94%B5%E5%A4%A7%E5%92%8C_%E8%8A%B1%E5%B0%8F%E9%87%91%E4%BA%95.html",
+      "sourceType": "current Jorudan route via Kodaira; 1-minute transfer",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "西所沢-池袋線-狭山線",
+      "fromStation": "odpt.Station:Seibu.Ikebukuro.NishiTokorozawa",
+      "toStation": "odpt.Station:Seibu.Sayama.NishiTokorozawa",
+      "fromRailway": "odpt.Railway:Seibu.Ikebukuro",
+      "toRailway": "odpt.Railway:Seibu.Sayama",
+      "minutes": 2,
+      "bidirectional": true,
+      "label": "標準・実測乗換（安全側）",
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%A5%BF%E6%AD%A6%E7%90%83%E5%A0%B4%E5%89%8D_%E6%89%80%E6%B2%A2.html?Cway=2",
+      "sourceType": "current Jorudan routes via Nishi-Tokorozawa; 1-2 minutes depending direction, conservative upper bound",
       "verifiedAt": "2026-09-04"
     },
     {
