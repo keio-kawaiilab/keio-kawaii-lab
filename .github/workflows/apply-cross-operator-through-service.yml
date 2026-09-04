@@ -1,0 +1,196 @@
+name: Apply cross-operator through-service support
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-cross-operator-through-service.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch destination-aware through-service logic
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('route-core.js')
+          text = path.read_text(encoding='utf-8')
+
+          replacements = [
+            (
+              'function timetableTrip(timetable,fromNodes,toNodes,earliest,service){',
+              'function timetableTrip(timetable,fromNodes,toNodes,earliest,service,latest){'
+            ),
+            (
+              'if(fromSet.has(stationId)&&Number.isFinite(dep)&&dep>=earliest){boarding=i;departure=dep;break;}',
+              'if(fromSet.has(stationId)&&Number.isFinite(dep)&&dep>=earliest&&(!Number.isFinite(latest)||dep<=latest)){boarding=i;departure=dep;break;}'
+            ),
+            (
+              'if(!best||candidate.arrival<best.arrival||(candidate.arrival===best.arrival&&candidate.departure<best.departure))best=candidate;',
+              'var windowed=Number.isFinite(latest);\n          if(!best||(windowed&&(candidate.departure<best.departure||(candidate.departure===best.departure&&candidate.arrival<best.arrival)))||(!windowed&&(candidate.arrival<best.arrival||(candidate.arrival===best.arrival&&candidate.departure<best.departure))))best=candidate;'
+            ),
+            (
+              'function stationDepartureTrip(table,fromNodes,toNodes,earliest,service){',
+              'function stationDepartureTrip(table,fromNodes,toNodes,earliest,service,latest,requiredDestination){'
+            ),
+            (
+              'if(fromNodes.indexOf(stationId)>=0&&Number.isFinite(dep)&&dep>=earliest){boarding=stopIndex;departure=dep;break;}',
+              'if(fromNodes.indexOf(stationId)>=0&&Number.isFinite(dep)&&dep>=earliest&&(!Number.isFinite(latest)||dep<=latest)){boarding=stopIndex;departure=dep;break;}'
+            ),
+            (
+              'var candidate={departure:departure,arrival:arrival,trainType:types[trip[2]]||"",destination:destinations[trip[3]]||"",trainNumber:"",confidence:Number(trip[4])||0,timeBasis:"inferred-station-trip"};\n          var existing=observedTrips.get(key);',
+              'var candidate={departure:departure,arrival:arrival,trainType:types[trip[2]]||"",destination:destinations[trip[3]]||"",trainNumber:"",confidence:Number(trip[4])||0,timeBasis:"inferred-station-trip"};\n          if(requiredDestination&&candidate.destination!==requiredDestination)continue;\n          var existing=observedTrips.get(key);'
+            ),
+            (
+              'var minute=Number(row&&row[0]);if(!Number.isFinite(minute)||minute<earliest)return;',
+              'var minute=Number(row&&row[0]);if(!Number.isFinite(minute)||minute<earliest||(Number.isFinite(latest)&&minute>latest))return;'
+            ),
+            (
+              'if(!best||(Number.isFinite(candidate.arrival)&&(!Number.isFinite(best.arrival)||candidate.arrival<best.arrival))||(candidate.arrival===best.arrival&&candidate.departure<best.departure)||(!Number.isFinite(candidate.arrival)&&!Number.isFinite(best.arrival)&&candidate.departure<best.departure))best=candidate;',
+              'if(requiredDestination&&candidate.destination!==requiredDestination)return;\n          var windowed=Number.isFinite(latest);\n          if(!best||(windowed&&(candidate.departure<best.departure||(candidate.departure===best.departure&&Number.isFinite(candidate.arrival)&&(!Number.isFinite(best.arrival)||candidate.arrival<best.arrival))))||(!windowed&&((Number.isFinite(candidate.arrival)&&(!Number.isFinite(best.arrival)||candidate.arrival<best.arrival))||(candidate.arrival===best.arrival&&candidate.departure<best.departure)||(!Number.isFinite(candidate.arrival)&&!Number.isFinite(best.arrival)&&candidate.departure<best.departure))))best=candidate;'
+            )
+          ]
+
+          for old, new in replacements:
+            count = text.count(old)
+            if count != 1:
+              raise SystemExit(f'Expected exactly one match, found {count}: {old[:90]}')
+            text = text.replace(old, new, 1)
+
+          marker = '    function timedItinerary(path,timetablesByRailway,departureMinutes,service,transferMinutes,transferResolver){'
+          helper = '''    var destinationGroupCache=new Map(),destinationRailwayCache=new Map();
+    function destinationGroupFor(reference){
+      reference=String(reference||"");if(!reference)return null;
+      if(destinationGroupCache.has(reference))return destinationGroupCache.get(reference);
+      var direct=groupByNode.get(reference);if(direct){destinationGroupCache.set(reference,direct);return direct;}
+      var suffix=reference.split(".").pop(),matched=null,ambiguous=false;
+      stationById.forEach(function(station,stationId){
+        if(String(stationId).split(".").pop()!==suffix)return;
+        var group=groupByNode.get(stationId);if(!group)return;
+        if(!matched)matched=group;else if(matched.key!==group.key)ambiguous=true;
+      });
+      var result=ambiguous?null:matched;destinationGroupCache.set(reference,result);return result;
+    }
+    function destinationUsesRailway(destinationId,boundaryGroup,railwayId){
+      if(!destinationId||!boundaryGroup||!railwayId)return false;
+      var cacheKey=[destinationId,boundaryGroup.key,railwayId].join("\\u0001");
+      if(destinationRailwayCache.has(cacheKey))return destinationRailwayCache.get(cacheKey);
+      var destinationGroup=destinationGroupFor(destinationId),result=false;
+      if(destinationGroup&&destinationGroup.key!==boundaryGroup.key){
+        var onward=shortestPath(boundaryGroup,destinationGroup),onwardSegments=onward?segmentsFrom(onward):[];
+        result=Boolean(onwardSegments.length&&onwardSegments[0].railway===railwayId);
+      }
+      destinationRailwayCache.set(cacheKey,result);return result;
+    }
+'''
+          if marker not in text:
+            raise SystemExit('timedItinerary marker not found')
+          text = text.replace(marker, helper + marker, 1)
+
+          old_candidate = '''        var previous=i>0?timed[i-1]:null;
+        var sameCompany=previous&&sameOperator(railwayById.get(previous.railway),railwayById.get(segment.railway));
+        var throughCandidate=Boolean(sameCompany&&previous.destination&&fromNodes.indexOf(previous.destination)<0);'''
+          new_candidate = '''        var previous=i>0?timed[i-1]:null;
+        var sameCompany=previous&&sameOperator(railwayById.get(previous.railway),railwayById.get(segment.railway));
+        var destinationContinues=Boolean(previous&&previous.destination&&fromNodes.indexOf(previous.destination)<0);
+        var throughCandidate=Boolean(destinationContinues&&(sameCompany||destinationUsesRailway(previous.destination,fromGroup,segment.railway)));'''
+          if text.count(old_candidate) != 1:
+            raise SystemExit('throughCandidate block mismatch')
+          text = text.replace(old_candidate, new_candidate, 1)
+
+          old_trip = '''        var earliest=current+(i>0&&!throughCandidate?interchangeBuffer:0);
+        var trip=table&&table.timeBasis==="station-departure-only"?stationDepartureTrip(table,fromNodes,toNodes,earliest,service):timetableTrip(table,fromNodes,toNodes,earliest,service);
+        if(throughCandidate&&trip){
+          var sameDestination=trip.destination&&trip.destination===previous.destination;
+          var sameType=!previous.trainType||!trip.trainType||previous.trainType===trip.trainType;
+          if(trip.departure>=current&&trip.departure-current<=3&&sameDestination&&sameType)trip.throughFromPrevious=true;
+          else{
+            earliest=current+interchangeBuffer;
+            trip=table&&table.timeBasis==="station-departure-only"?stationDepartureTrip(table,fromNodes,toNodes,earliest,service):timetableTrip(table,fromNodes,toNodes,earliest,service);
+          }
+        }'''
+          new_trip = '''        var earliest=current+(i>0&&!throughCandidate?interchangeBuffer:0);
+        var throughLatest=throughCandidate?current+3:null;
+        var requiredDestination=throughCandidate&&table&&table.timeBasis==="station-departure-only"?previous.destination:"";
+        var trip=table&&table.timeBasis==="station-departure-only"?stationDepartureTrip(table,fromNodes,toNodes,earliest,service,throughLatest,requiredDestination):timetableTrip(table,fromNodes,toNodes,earliest,service,throughLatest);
+        if(throughCandidate){
+          if(trip){
+            var sameDestination=!trip.destination||trip.destination===previous.destination;
+            var sameType=!sameCompany||!previous.trainType||!trip.trainType||previous.trainType===trip.trainType;
+            if(trip.departure>=current&&trip.departure-current<=3&&sameDestination&&sameType){
+              trip.throughFromPrevious=true;trip.throughByDestination=true;
+              if(!trip.destination)trip.destination=previous.destination;
+            }else trip=null;
+          }
+          if(!trip){
+            earliest=current+interchangeBuffer;
+            trip=table&&table.timeBasis==="station-departure-only"?stationDepartureTrip(table,fromNodes,toNodes,earliest,service):timetableTrip(table,fromNodes,toNodes,earliest,service);
+          }
+        }'''
+          if text.count(old_trip) != 1:
+            raise SystemExit('through trip block mismatch')
+          text = text.replace(old_trip, new_trip, 1)
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Syntax check
+        run: node --check route-core.js
+
+      - name: Cross-operator through-service regression test
+        shell: bash
+        run: |
+          node <<'NODE'
+          const core=require('./route-core.js');
+          const S=(id,name,railways)=>({'owl:sameAs':id,'odpt:stationTitle':{ja:name},'odpt:railway':railways});
+          const R=(id,name,operator,stations)=>({'owl:sameAs':id,'odpt:railwayTitle':{ja:name},'odpt:operator':operator,'odpt:stationOrder':stations.map((station,index)=>({'odpt:index':index,'odpt:station':station}))});
+          const A='odpt.Railway:Test.A',B='odpt.Railway:Test.B',C='odpt.Railway:Test.C';
+          const A0='odpt.Station:Test.A.A0',X='odpt.Station:Test.X.X',Y='odpt.Station:Test.Y.Y',D='odpt.Station:Test.C.D';
+          const payload={
+            Station:[S(A0,'A0',[A]),S(X,'X',[A,B]),S(Y,'Y',[B,C]),S(D,'D',[C])],
+            Railway:[R(A,'A線','op:A',[A0,X]),R(B,'B線','op:B',[X,Y]),R(C,'C線','op:C',[Y,D])],
+            TrainType:[]
+          };
+          const model=core.createModel([payload]);
+          const path=model.shortestPath(model.resolveInput('A0').group,model.resolveInput('D').group);
+          const stationTable=(railway,order,fromIndex,destination,departure)=>({
+            version:2,railway,timeBasis:'station-departure-only',stations:order,order,
+            calendars:['weekday'],directions:['out'],trainTypes:['odpt.TrainType:Test.Local'],destinations:[destination],
+            ascendingDirection:'out',descendingDirection:'in',boards:[[fromIndex,0,0,[[departure,0,0]]]],
+            inferredTrips:[],edgeMinutes:[[0,1,5]],typeDurations:[]
+          });
+          const tables={};
+          tables[A]=stationTable(A,[A0,X],0,D,600);
+          tables[B]={version:1,railway:B,timeBasis:'train-timetable',stations:[X,Y],calendars:['weekday'],trainTypes:['odpt.TrainType:Test.Local'],trips:[[0,0,'B1',[[0,null,605],[1,610,null]]]]};
+          tables[C]=stationTable(C,[Y,D],0,D,610);
+          const timed=model.timedItinerary(path,tables,600,'weekday',5);
+          if(!timed)throw new Error('No itinerary returned');
+          if(timed.transfers!==0)throw new Error('Expected 0 transfers, got '+timed.transfers);
+          if(timed.segments.length!==3)throw new Error('Expected 3 railway segments');
+          if(!timed.segments[1].throughFromPrevious||!timed.segments[2].throughFromPrevious)throw new Error('Cross-operator boundaries were not marked through');
+          if(timed.segments[1].destination!==D)throw new Error('Destination was not propagated across destination-less train timetable');
+          console.log('cross-operator through-service test passed');
+          NODE
+
+      - name: Commit route-core update
+        shell: bash
+        run: |
+          if git diff --quiet -- route-core.js; then
+            echo 'No route-core change needed.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add route-core.js
+          git commit -m 'Support destination-aware cross-operator through trains'
+          git push
