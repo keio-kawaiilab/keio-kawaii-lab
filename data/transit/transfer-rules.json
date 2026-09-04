@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T00:25:25.345Z",
+  "generatedAt": "2026-09-04T00:25:43.416Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -53,7 +53,8 @@
     "transfer-rule-sources.d/2026-09-04-shinjuku-remaining-direct.json",
     "transfer-rule-sources.d/2026-09-04-tokyo-jr-core.json",
     "transfer-rule-sources.d/2026-09-04-tokyo-marunouchi-remaining.json",
-    "transfer-rule-sources.d/2026-09-04-yokohama-jr.json"
+    "transfer-rule-sources.d/2026-09-04-yokohama-jr.json",
+    "transfer-rule-sources.d/2026-09-04-yokohama-private-direct.json"
   ],
   "description": "Curated station/railway-specific transfer times. Generated from transfer-rule source files and resolved against transfer-candidates.json.",
   "rules": [
@@ -5463,6 +5464,32 @@
       "label": "標準乗換",
       "source": "https://eki-kara-access.yokohama/yokohama-eki-norikae-jr/",
       "sourceType": "current transfer guide",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "横浜-京急本線-相鉄本線",
+      "fromStation": "odpt.Station:Keikyu.Main.Yokohama",
+      "toStation": "odpt.Station:Sotetsu.Main.Yokohama",
+      "fromRailway": "odpt.Railway:Keikyu.Main",
+      "toRailway": "odpt.Railway:Sotetsu.Main",
+      "minutes": 6,
+      "bidirectional": true,
+      "label": "標準乗換（安全側）",
+      "source": "https://tren.hatenablog.com/entry/kk37-so01",
+      "sourceType": "current platform-to-platform transfer guide",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "横浜-京急本線-ブルーライン",
+      "fromStation": "odpt.Station:Keikyu.Main.Yokohama",
+      "toStation": "odpt.Station:YokohamaMunicipal.Blue.Yokohama",
+      "fromRailway": "odpt.Railway:Keikyu.Main",
+      "toRailway": "odpt.Railway:YokohamaMunicipal.Blue",
+      "minutes": 6,
+      "bidirectional": true,
+      "label": "標準乗換（安全側）",
+      "source": "https://tren.hatenablog.com/entry/kk37-b20",
+      "sourceType": "current platform-to-platform transfer guide",
       "verifiedAt": "2026-09-04"
     }
   ]
