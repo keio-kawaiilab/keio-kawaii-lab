@@ -1,0 +1,125 @@
+{
+  "defaults": {
+    "bidirectional": true,
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "品川",
+      "railwayA": "odpt.Railway:JR-East.JobanRapid",
+      "railwayB": "odpt.Railway:Keikyu.Main",
+      "minutes": 5,
+      "label": "経路検索乗換",
+      "sourceUrl": "https://www.jorudan.co.jp/norikae/route/%E6%9D%BE%E6%88%B8_%E4%BA%AC%E6%80%A5%E8%92%B2%E7%94%B0.html",
+      "sourceType": "Jorudan current route-planner transfer time"
+    },
+    {
+      "place": "秋葉原",
+      "railwayA": "odpt.Railway:MIR.TsukubaExpress",
+      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+      "minutes": 11,
+      "label": "経路検索乗換",
+      "sourceUrl": "https://www.jorudan.co.jp/norikae/route/%E6%97%A5%E6%AF%94%E8%B0%B7_%E6%B5%85%E8%8D%89%EF%BC%BB%E3%81%A4%E3%81%8F%E3%81%B0%EF%BC%A5%EF%BC%B8%EF%BC%B0%EF%BC%BD.html",
+      "sourceType": "Jorudan current route-planner transfer time"
+    },
+    {
+      "place": "船橋",
+      "railwayA": "odpt.Railway:JR-East.SobuRapid",
+      "railwayB": "odpt.Railway:Tobu.TobuUrbanPark",
+      "minutes": 6,
+      "label": "経路検索移動",
+      "sourceUrl": "https://ekitan.com/d-norikae/transit/route/sf-2357/st-2321",
+      "sourceType": "Ekitan current route-planner movement time"
+    },
+    {
+      "place": "船橋",
+      "railwayA": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayB": "odpt.Railway:Tobu.TobuUrbanPark",
+      "minutes": 6,
+      "label": "経路検索移動",
+      "sourceUrl": "https://ekitan.com/d-norikae/transit/route/sf-2357/st-3028",
+      "sourceType": "Ekitan current route-planner movement time"
+    },
+    {
+      "place": "川越",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:Tobu.Tojo",
+      "minutes": 3,
+      "label": "標準乗換",
+      "sourceUrl": "https://wadattsu261.com/content/kawagoe-tobutojo-jrkawagoeline-transfer-information/",
+      "sourceType": "current platform-to-platform transfer guide"
+    },
+    {
+      "place": "川越",
+      "railwayA": "odpt.Railway:JR-East.Kawagoe",
+      "railwayB": "odpt.Railway:Tobu.Tojo",
+      "minutes": 3,
+      "label": "標準乗換",
+      "sourceUrl": "https://wadattsu261.com/content/kawagoe-tobutojo-jrkawagoeline-transfer-information/",
+      "sourceType": "current platform-to-platform transfer guide"
+    },
+    {
+      "place": "戸塚",
+      "railwayA": "odpt.Railway:JR-East.Yokosuka",
+      "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
+      "minutes": 4,
+      "label": "経路検索移動",
+      "sourceUrl": "https://ekitan.com/d-norikae/transit/route/sf-2293/st-2872",
+      "sourceType": "Ekitan current route-planner movement time"
+    },
+    {
+      "place": "戸塚",
+      "railwayA": "odpt.Railway:JR-East.ShonanShinjuku",
+      "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
+      "minutes": 4,
+      "label": "経路検索移動",
+      "sourceUrl": "https://ekitan.com/d-norikae/transit/route/sf-1875/st-1721",
+      "sourceType": "Ekitan current route-planner movement time"
+    },
+    {
+      "place": "戸塚",
+      "railwayA": "odpt.Railway:JR-East.Tokaido",
+      "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
+      "minutes": 4,
+      "label": "経路検索移動",
+      "sourceUrl": "https://ekitan.com/d-norikae/transit/route/sf-2293/st-2756",
+      "sourceType": "Ekitan current route-planner movement time"
+    },
+    {
+      "place": "大宮",
+      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "railwayB": "odpt.Railway:Tobu.TobuUrbanPark",
+      "minutes": 9,
+      "label": "経路検索移動",
+      "sourceUrl": "https://ekitan.com/d-norikae/transit/route/sf-1729/st-2615",
+      "sourceType": "Ekitan current route-planner movement time"
+    },
+    {
+      "place": "大宮",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:Tobu.TobuUrbanPark",
+      "minutes": 7,
+      "label": "経路検索移動",
+      "sourceUrl": "https://ekitan.com/d-norikae/transit/route/sf-1729/st-3272",
+      "sourceType": "Ekitan current route-planner movement time"
+    },
+    {
+      "place": "大宮",
+      "railwayA": "odpt.Railway:JR-East.Utsunomiya",
+      "railwayB": "odpt.Railway:Tobu.TobuUrbanPark",
+      "minutes": 7,
+      "label": "経路検索移動",
+      "sourceUrl": "https://ekitan.com/d-norikae/transit/route/sf-1729/st-2165",
+      "sourceType": "Ekitan current route-planner movement time"
+    },
+    {
+      "place": "大宮",
+      "railwayA": "odpt.Railway:JR-East.Takasaki",
+      "railwayB": "odpt.Railway:Tobu.TobuUrbanPark",
+      "minutes": 7,
+      "label": "経路検索移動",
+      "sourceUrl": "https://ekitan.com/d-norikae/transit/route/sf-1729/st-2448",
+      "sourceType": "Ekitan current route-planner movement time"
+    }
+  ]
+}
