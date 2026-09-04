@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換（安全側）",
+    "sourceType": "current platform-to-platform transfer guide",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:Keikyu.Main",
+      "railwayB": "odpt.Railway:Sotetsu.Main",
+      "railwayAName": "京急本線",
+      "railwayBName": "相鉄本線",
+      "minutes": 6,
+      "source": "https://tren.hatenablog.com/entry/kk37-so01"
+    },
+    {
+      "place": "横浜",
+      "railwayA": "odpt.Railway:Keikyu.Main",
+      "railwayB": "odpt.Railway:YokohamaMunicipal.Blue",
+      "railwayAName": "京急本線",
+      "railwayBName": "ブルーライン",
+      "minutes": 6,
+      "source": "https://tren.hatenablog.com/entry/kk37-b20"
+    }
+  ]
+}
