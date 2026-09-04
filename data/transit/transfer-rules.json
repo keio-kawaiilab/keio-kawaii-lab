@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-04T01:23:23.960Z",
+  "generatedAt": "2026-09-04T01:23:53.914Z",
   "sourceCandidatesGeneratedAt": "2026-09-03T12:17:33.274Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
@@ -40,6 +40,7 @@
     "transfer-rule-sources.d/2026-09-03-yurakucho-hibiya.json",
     "transfer-rule-sources.d/2026-09-04-akihabara-core.json",
     "transfer-rule-sources.d/2026-09-04-ebisu-core.json",
+    "transfer-rule-sources.d/2026-09-04-haijima-crossop.json",
     "transfer-rule-sources.d/2026-09-04-hibiya-yurakucho.json",
     "transfer-rule-sources.d/2026-09-04-ikebukuro-remaining.json",
     "transfer-rule-sources.d/2026-09-04-kanagawa-batch-i.json",
@@ -3305,6 +3306,45 @@
       "bidirectional": true,
       "label": "ホーム間乗換",
       "source": "https://norikaemap.com/ebisu/0103/",
+      "sourceType": "current platform-to-platform transfer guide",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "拝島-八高線-拝島線",
+      "fromStation": "odpt.Station:JR-East.Hachiko.Haijima",
+      "toStation": "odpt.Station:Seibu.Haijima.Haijima",
+      "fromRailway": "odpt.Railway:JR-East.Hachiko",
+      "toRailway": "odpt.Railway:Seibu.Haijima",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "ホーム間乗換",
+      "source": "https://wadattsu261.com/content/haijima-jr-seibuhaijimaline-transfer-information/",
+      "sourceType": "current platform-to-platform transfer guide",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "拝島-青梅線-拝島線",
+      "fromStation": "odpt.Station:JR-East.Ome.Haijima",
+      "toStation": "odpt.Station:Seibu.Haijima.Haijima",
+      "fromRailway": "odpt.Railway:JR-East.Ome",
+      "toRailway": "odpt.Railway:Seibu.Haijima",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "ホーム間乗換",
+      "source": "https://wadattsu261.com/content/haijima-jr-seibuhaijimaline-transfer-information/",
+      "sourceType": "current platform-to-platform transfer guide",
+      "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "拝島-五日市線-拝島線",
+      "fromStation": "odpt.Station:JR-East.Itsukaichi.Haijima",
+      "toStation": "odpt.Station:Seibu.Haijima.Haijima",
+      "fromRailway": "odpt.Railway:JR-East.Itsukaichi",
+      "toRailway": "odpt.Railway:Seibu.Haijima",
+      "minutes": 4,
+      "bidirectional": true,
+      "label": "ホーム間乗換",
+      "source": "https://wadattsu261.com/content/haijima-jr-seibuhaijimaline-transfer-information/",
       "sourceType": "current platform-to-platform transfer guide",
       "verifiedAt": "2026-09-04"
     },
