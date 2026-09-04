@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "乗換",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "id": "川越-川越線-埼京線川越線",
+      "place": "川越",
+      "railwayA": "odpt.Railway:JR-East.Kawagoe",
+      "railwayB": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "minutes": 1,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E9%AB%98%E9%BA%97%E5%B7%9D_%E5%A4%A7%E5%AE%AE%EF%BC%88%E5%9F%BC%E7%8E%89%EF%BC%89.html",
+      "sourceType": "current Jorudan route explicitly shows a 1-minute transfer at Kawagoe between the Komagawa-side Kawagoe Line train and the Omiya-side through Saikyo/Kawagoe Line train; reverse-direction example also shows 1 minute"
+    },
+    {
+      "id": "西谷-相鉄本線-相鉄新横浜線",
+      "place": "西谷",
+      "railwayA": "odpt.Railway:Sotetsu.Main",
+      "railwayB": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
+      "minutes": 1,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E7%80%AC%E8%B0%B7_%E6%96%B0%E6%A8%AA%E6%B5%9C.html",
+      "sourceType": "current Jorudan route explicitly shows a 1-minute transfer at Nishiya, platform 3 arrival to platform 4 departure"
+    }
+  ]
+}
