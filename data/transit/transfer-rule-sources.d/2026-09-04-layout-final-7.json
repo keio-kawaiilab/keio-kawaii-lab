@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準乗換（構内図ベース・安全側）",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "id": "阿佐ケ谷-中央線快速-中央・総武各駅停車",
+      "place": "阿佐ケ谷",
+      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "minutes": 3,
+      "source": "https://wadattsu261.com/content/asagaya-chuorapid-chuoslowhome-info/",
+      "sourceType": "current platform layout; local 1/2 and rapid 3/4 are separate adjacent island platforms connected by stairs/escalators; conservative 3-minute minimum"
+    },
+    {
+      "id": "高円寺-中央線快速-中央・総武各駅停車",
+      "place": "高円寺",
+      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "minutes": 3,
+      "source": "https://wadattsu261.com/content/koenji-chuorapid-chuoslowhome-info/",
+      "sourceType": "current platform layout; local 1/2 and rapid 3/4 are separate adjacent island platforms connected by stairs/escalators; conservative 3-minute minimum"
+    },
+    {
+      "id": "西荻窪-中央線快速-中央・総武各駅停車",
+      "place": "西荻窪",
+      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "minutes": 3,
+      "source": "https://wadattsu261.com/content/nishiogikubo-chuorapid-chuoslowhome-info/",
+      "sourceType": "current platform layout; local 1/2 and rapid 3/4 are separate adjacent island platforms with stairs/escalators; conservative 3-minute minimum consistent with neighboring Chuo transfer stations"
+    },
+    {
+      "id": "高輪ゲートウェイ-京浜東北線・根岸線-山手線",
+      "place": "高輪ゲートウェイ",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.Yamanote",
+      "minutes": 4,
+      "source": "https://wadattsu261.com/content/takanawagateway-yamanote-keihinhome-info/",
+      "sourceType": "current platform layout; Yamanote 1/2 and Keihin-Tohoku 3/4 are separate ground-level island platforms linked through the second-floor concourse; conservative 4-minute minimum"
+    },
+    {
+      "id": "天王台-常磐線各駅停車-常磐線快速",
+      "place": "天王台",
+      "railwayA": "odpt.Railway:JR-East.JobanLocal",
+      "railwayB": "odpt.Railway:JR-East.JobanRapid",
+      "minutes": 4,
+      "source": "https://wadattsu261.com/content/tennodai-jobanrapid-slowhome-info/",
+      "sourceType": "current platform layout; rapid 1/2 and local 3/4 are separate ground-level island platforms with the common concourse on level 2; conservative 4-minute minimum"
+    },
+    {
+      "id": "西船橋-京葉線-武蔵野線",
+      "place": "西船橋",
+      "railwayA": "odpt.Railway:JR-East.Keiyo",
+      "railwayB": "odpt.Railway:JR-East.Musashino",
+      "minutes": 3,
+      "source": "https://wadattsu261.com/content/nishifunabashi-musashinohome-info/",
+      "sourceType": "current platform guidance for shared Keiyo/Musashino high-level platform group 9-12; conservative 3-minute minimum for possible platform change"
+    },
+    {
+      "id": "吾野-池袋線-西武秩父線",
+      "place": "吾野",
+      "railwayA": "odpt.Railway:Seibu.Ikebukuro",
+      "railwayB": "odpt.Railway:Seibu.SeibuChichibu",
+      "minutes": 1,
+      "source": "https://www.seiburailway.jp/railway/station/agano/",
+      "sourceType": "official station/line-boundary guidance; Ikebukuro Line ends and Seibu Chichibu Line begins at the same compact station; 1-minute safety buffer when an actual train change is required"
+    }
+  ]
+}
