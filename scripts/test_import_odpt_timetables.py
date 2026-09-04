@@ -114,6 +114,26 @@ class ImportOdptTimetablesTests(unittest.TestCase):
         self.assertEqual(compact["trips"][0][6], "timetable:101")
         self.assertEqual(connections, 2)
 
+    def test_compact_line_timetable_keeps_single_stop_identity_fragment(self):
+        item = {
+            "odpt:calendar": "odpt.Calendar:Weekday",
+            "odpt:trainType": "odpt.TrainType:Test.Local",
+            "odpt:trainNumber": "6752",
+            "owl:sameAs": "odpt.TrainTimetable:Test.Main.6752.Weekday",
+            "odpt:train": "odpt.Train:Test.6752",
+            "odpt:destinationStation": ["station:through-destination"],
+            "odpt:trainTimetableObject": [
+                {"odpt:departureStation": "station:boundary", "odpt:departureTime": "10:00"},
+            ],
+        }
+        compact, connections = importer.compact_line_timetable("railway:test", [item])
+        self.assertEqual(connections, 0)
+        self.assertEqual(len(compact["trips"]), 1)
+        self.assertEqual(compact["trips"][0][3], [[0, None, 600]])
+        self.assertEqual(compact["trips"][0][4], "station:through-destination")
+        self.assertEqual(compact["trips"][0][5], "odpt.Train:Test.6752")
+        self.assertEqual(compact["trips"][0][6], "odpt.TrainTimetable:Test.Main.6752.Weekday")
+
     def test_station_timetables_are_joined_into_trips(self):
         items = [
             {

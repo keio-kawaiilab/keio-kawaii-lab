@@ -561,7 +561,10 @@ def compact_line_timetable(
             else:
                 add_stop(arrival_station, arrival, None)
                 add_stop(departure_station, None, departure)
-        if len(stops) < 2:
+        # Keep one-stop exact timetable fragments. They cannot provide a
+        # ride edge by themselves, but ODPT previous/nextTrainTimetable
+        # can use them as authoritative same-train identity bridges.
+        if not stops:
             continue
         usable_connections = sum(
             1
@@ -569,8 +572,6 @@ def compact_line_timetable(
             if (current[2] if current[2] is not None else current[1]) is not None
             and (following[1] if following[1] is not None else following[2]) is not None
         )
-        if not usable_connections:
-            continue
         connections += usable_connections * len(calendars)
         type_index = index_of(train_type, train_type_values, train_type_indexes)
         for calendar in calendars:
