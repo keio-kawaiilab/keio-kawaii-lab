@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-04T07:23:52.450Z",
+  "generatedAt": "2026-09-04T07:25:03.322Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T07:23:38.048Z",
+  "rulesGeneratedAt": "2026-09-04T07:24:47.672Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 855,
-    "uncuratedPairs": 98,
+    "curatedPairs": 859,
+    "uncuratedPairs": 94,
     "blockedPairs": 7,
-    "curatedSourceRules": 855,
+    "curatedSourceRules": 859,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -263,27 +263,7 @@
       "priorityScore": 1
     },
     {
-      "place": "所沢",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1
-    },
-    {
       "place": "小川",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1
-    },
-    {
-      "place": "小平",
       "totalPairs": 1,
       "curatedPairs": 0,
       "uncuratedPairs": 1,
@@ -340,16 +320,6 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 1
-    },
-    {
-      "place": "新橋",
-      "totalPairs": 28,
-      "curatedPairs": 27,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 8,
       "priorityScore": 1
     },
     {
@@ -424,16 +394,6 @@
     },
     {
       "place": "西荻窪",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1
-    },
-    {
-      "place": "西所沢",
       "totalPairs": 1,
       "curatedPairs": 0,
       "uncuratedPairs": 1,
@@ -1010,6 +970,46 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
+      "place": "稲田堤 ↔ 京王稲田堤",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
+      "place": "稲毛",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
+      "place": "羽沢横浜国大",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
+      "place": "浦和",
+      "totalPairs": 6,
+      "curatedPairs": 6,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 4,
       "priorityScore": 0
     }
   ],
@@ -1708,32 +1708,6 @@
       ]
     },
     {
-      "place": "所沢",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Seibu.Ikebukuro",
-          "railwayAName": "池袋線",
-          "railwayB": "odpt.Railway:Seibu.Shinjuku",
-          "railwayBName": "新宿線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
       "place": "小川",
       "totalPairs": 1,
       "curatedPairs": 0,
@@ -1749,32 +1723,6 @@
           "railwayAName": "拝島線",
           "railwayB": "odpt.Railway:Seibu.Kokubunji",
           "railwayBName": "国分寺線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "小平",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "uncuratedPairs": 1,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 1,
-      "crossOperatorPairs": [],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:Seibu.Haijima",
-          "railwayAName": "拝島線",
-          "railwayB": "odpt.Railway:Seibu.Shinjuku",
-          "railwayBName": "新宿線",
           "sameOperator": true,
           "distanceMeters": 0,
           "fallbackMinutes": 5,
@@ -1832,6 +1780,57 @@
           "fallbackMinutes": 7,
           "sources": [
             "connecting-station"
+          ]
+        }
+      ]
+    },
+    {
+      "place": "尻手",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 1,
+      "crossOperatorPairs": [],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:JR-East.Nambu",
+          "railwayAName": "南武線",
+          "railwayB": "odpt.Railway:JR-East.NambuBranch",
+          "railwayBName": "南武線浜川崎支線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ]
+    },
+    {
+      "place": "新鎌ヶ谷",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "uncuratedPairs": 1,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 1,
+      "crossOperatorPairs": [],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:Keisei.Matsudo",
+          "railwayAName": "松戸線",
+          "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
+          "railwayBName": "成田スカイアクセス線",
+          "sameOperator": true,
+          "distanceMeters": null,
+          "fallbackMinutes": 5,
+          "sources": [
+            "same-place-group"
           ]
         }
       ]
@@ -2181,39 +2180,11 @@
       ]
     },
     {
-      "place": "所沢",
-      "railwayA": "odpt.Railway:Seibu.Ikebukuro",
-      "railwayAName": "池袋線",
-      "railwayB": "odpt.Railway:Seibu.Shinjuku",
-      "railwayBName": "新宿線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
       "place": "小川",
       "railwayA": "odpt.Railway:Seibu.Haijima",
       "railwayAName": "拝島線",
       "railwayB": "odpt.Railway:Seibu.Kokubunji",
       "railwayBName": "国分寺線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "小平",
-      "railwayA": "odpt.Railway:Seibu.Haijima",
-      "railwayAName": "拝島線",
-      "railwayB": "odpt.Railway:Seibu.Shinjuku",
-      "railwayBName": "新宿線",
       "sameOperator": true,
       "distanceMeters": 0,
       "fallbackMinutes": 5,
@@ -2282,20 +2253,6 @@
       "railwayAName": "目黒線",
       "railwayB": "odpt.Railway:Tokyu.Toyoko",
       "railwayBName": "東横線",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "新橋",
-      "railwayA": "odpt.Railway:JR-East.JobanRapid",
-      "railwayAName": "常磐線快速",
-      "railwayB": "odpt.Railway:JR-East.Tokaido",
-      "railwayBName": "東海道線",
       "sameOperator": true,
       "distanceMeters": 0,
       "fallbackMinutes": 5,
@@ -2448,20 +2405,6 @@
       "railwayAName": "中央線快速",
       "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
       "railwayBName": "中央・総武各駅停車",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "西所沢",
-      "railwayA": "odpt.Railway:Seibu.Ikebukuro",
-      "railwayAName": "池袋線",
-      "railwayB": "odpt.Railway:Seibu.Sayama",
-      "railwayBName": "狭山線",
       "sameOperator": true,
       "distanceMeters": 0,
       "fallbackMinutes": 5,
