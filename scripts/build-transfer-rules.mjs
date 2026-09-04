@@ -4,6 +4,9 @@ import path from 'node:path';
 const root=process.cwd();
 const transit=path.join(root,'data','transit');
 const candidates=JSON.parse(fs.readFileSync(path.join(transit,'transfer-candidates.json'),'utf8'));
+const blockPayload=fs.existsSync(path.join(transit,'transfer-blocks.json'))
+  ?JSON.parse(fs.readFileSync(path.join(transit,'transfer-blocks.json'),'utf8'))
+  :{blockedStationPairs:[]};
 const baseSources=JSON.parse(fs.readFileSync(path.join(transit,'transfer-rule-sources.json'),'utf8'));
 const sourceDocs=[{file:'transfer-rule-sources.json',data:baseSources}];
 const batchDir=path.join(transit,'transfer-rule-sources.d');
@@ -20,6 +23,17 @@ for(const doc of sourceDocs){
 const output=[];
 const explicitlyResolvedCandidates=new Set();
 
+function stationPairKey(a,b){return [String(a||''),String(b||'')].sort().join('\u0001');}
+const blockedStationPairs=new Set((blockPayload.blockedStationPairs||[]).map(value=>{
+  const parts=String(value).split('\u0001');
+  return stationPairKey(parts[0],parts[1]);
+}));
+function candidateIsBlocked(row){
+  if((row.sources||[]).includes('connecting-station'))return false;
+  const pairs=[];
+  for(const a of row.stationIdsA||[])for(const b of row.stationIdsB||[])pairs.push(stationPairKey(a,b));
+  return pairs.length>0&&pairs.every(key=>blockedStationPairs.has(key));
+}
 function hasRailwayIds(rule){return Boolean(rule&&rule.railwayA&&rule.railwayB);}
 function samePair(row,rule){
   if(hasRailwayIds(rule)){
@@ -92,7 +106,7 @@ for(const entry of sourceEntries){
 
 let fallbackCandidatePairs=0;
 for(const row of candidates.candidates||[]){
-  if(explicitlyResolvedCandidates.has(candidateKey(row)))continue;
+  if(explicitlyResolvedCandidates.has(candidateKey(row))||candidateIsBlocked(row))continue;
   const minutes=Number(row.fallbackMinutes);
   if(!Number.isFinite(minutes)||minutes<0)throw new Error(`Invalid fallbackMinutes for ${row.placeLabel}`);
   fallbackCandidatePairs++;
@@ -123,7 +137,7 @@ const payload={
   generatedAt:new Date().toISOString(),
   sourceCandidatesGeneratedAt:candidates.generatedAt||null,
   sourceFiles:sourceDocs.map(doc=>doc.file),
-  description:'Station/railway-specific transfer times. Explicit curated rules are preferred; any remaining candidate pair receives a conservative fallbackMinutes rule until an external standard time is added.',
+  description:'Station/railway-specific transfer times. Explicit curated rules are preferred; any remaining unblocked candidate pair receives a conservative fallbackMinutes rule until an external standard time is added.',
   fallbackCandidatePairs,
   rules:output
 };
