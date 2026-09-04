@@ -1,0 +1,191 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準・実測乗換（安全側）",
+    "sourceType": "current official station layout / route-planner transfer time",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "表参道",
+      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
+      "railwayAName": "銀座線",
+      "railwayBName": "半蔵門線",
+      "minutes": 1,
+      "source": "https://www.tokyometro.jp/station/omote-sando/index.html",
+      "sourceType": "current official station layout; Ginza/Hanzomon shared platform arrangement; 1-minute safety buffer"
+    },
+    {
+      "place": "表参道",
+      "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayB": "odpt.Railway:TokyoMetro.Ginza",
+      "railwayAName": "千代田線",
+      "railwayBName": "銀座線",
+      "minutes": 4,
+      "source": "https://wadattsu261.com/content/omotesando-metrochiyoda-ginza-hanzomonline-transfer-information/",
+      "sourceType": "current transfer guide; approximately 4 minutes by stairs/escalator"
+    },
+    {
+      "place": "表参道",
+      "railwayA": "odpt.Railway:TokyoMetro.Chiyoda",
+      "railwayB": "odpt.Railway:TokyoMetro.Hanzomon",
+      "railwayAName": "千代田線",
+      "railwayBName": "半蔵門線",
+      "minutes": 4,
+      "source": "https://wadattsu261.com/content/omotesando-metrochiyoda-ginza-hanzomonline-transfer-information/",
+      "sourceType": "current transfer guide; approximately 4 minutes by stairs/escalator"
+    },
+    {
+      "place": "八王子",
+      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayB": "odpt.Railway:JR-East.Yokohama",
+      "railwayAName": "中央線快速",
+      "railwayBName": "横浜線",
+      "minutes": 3,
+      "source": "https://wadattsu261.com/content/hachioji-jryokohama-jrchuo-hachiko-kawagoeline-transfer-information/",
+      "sourceType": "current platform-to-platform guide; 2-3 minutes, rounded to 3 minutes"
+    },
+    {
+      "place": "八王子",
+      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayB": "odpt.Railway:JR-East.Hachiko",
+      "railwayAName": "中央線快速",
+      "railwayBName": "八高線",
+      "minutes": 3,
+      "source": "https://wadattsu261.com/content/hachioji-jrchuo-hachiko-kawagoe-jryokohamaline-transfer-information/",
+      "sourceType": "current platform-to-platform guide / route-planner interchange; conservative 3 minutes"
+    },
+    {
+      "place": "八王子",
+      "railwayA": "odpt.Railway:JR-East.Hachiko",
+      "railwayB": "odpt.Railway:JR-East.Yokohama",
+      "railwayAName": "八高線",
+      "railwayBName": "横浜線",
+      "minutes": 3,
+      "source": "https://wadattsu261.com/content/hachioji-jryokohama-jrchuo-hachiko-kawagoeline-transfer-information/",
+      "sourceType": "current platform-to-platform guide; 2-3 minutes, rounded to 3 minutes"
+    },
+    {
+      "place": "川崎",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.Tokaido",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "東海道線",
+      "minutes": 3,
+      "source": "https://wadattsu261.com/content/kawasaki-tokaido-keihin-nambuhome-info/",
+      "sourceType": "current platform layout and internal stairs/escalators; conservative 3-minute platform transfer"
+    },
+    {
+      "place": "川崎",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.Nambu",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "南武線",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/新川崎_鶴見.html",
+      "sourceType": "current route-planner transfer at Kawasaki; 3 minutes"
+    },
+    {
+      "place": "川崎",
+      "railwayA": "odpt.Railway:JR-East.Nambu",
+      "railwayB": "odpt.Railway:JR-East.Tokaido",
+      "railwayAName": "南武線",
+      "railwayBName": "東海道線",
+      "minutes": 3,
+      "source": "https://ekitan.com/d-norikae/transit/route/sf-2319/st-3150",
+      "sourceType": "current route-planner platform movement at Kawasaki; 3 minutes"
+    },
+    {
+      "place": "高崎",
+      "railwayA": "odpt.Railway:JR-East.Joetsu",
+      "railwayB": "odpt.Railway:JR-East.Takasaki",
+      "railwayAName": "上越線",
+      "railwayBName": "高崎線",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/水上_鴻巣.html",
+      "sourceType": "current route-planner platform transfer at Takasaki; 3 minutes"
+    },
+    {
+      "place": "高崎",
+      "railwayA": "odpt.Railway:JR-East.Hachiko",
+      "railwayB": "odpt.Railway:JR-East.Takasaki",
+      "railwayAName": "八高線",
+      "railwayBName": "高崎線",
+      "minutes": 4,
+      "source": "https://www.jorudan.co.jp/norikae/route/渋川_高坂.html",
+      "sourceType": "current Takasaki platform-group evidence; conservative 4-minute transfer"
+    },
+    {
+      "place": "高崎",
+      "railwayA": "odpt.Railway:JR-East.Hachiko",
+      "railwayB": "odpt.Railway:JR-East.Joetsu",
+      "railwayAName": "八高線",
+      "railwayBName": "上越線",
+      "minutes": 4,
+      "source": "https://www.jorudan.co.jp/norikae/route/渋川_高坂.html",
+      "sourceType": "current route-planner transfer at Takasaki; 4 minutes"
+    },
+    {
+      "place": "成田",
+      "railwayA": "odpt.Railway:JR-East.Narita",
+      "railwayB": "odpt.Railway:JR-East.NaritaAbikoBranch",
+      "railwayAName": "成田線",
+      "railwayBName": "成田線我孫子支線",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/北柏_成田空港.html",
+      "sourceType": "current route-planner branch interchange at Narita; conservative 3 minutes"
+    },
+    {
+      "place": "成田",
+      "railwayA": "odpt.Railway:JR-East.Narita",
+      "railwayB": "odpt.Railway:JR-East.NaritaAirportBranch",
+      "railwayAName": "成田線",
+      "railwayBName": "成田線空港支線",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/北柏_成田空港.html",
+      "sourceType": "current route-planner branch interchange / continuous-service boundary; 3-minute safe-side value"
+    },
+    {
+      "place": "成田",
+      "railwayA": "odpt.Railway:JR-East.NaritaAbikoBranch",
+      "railwayB": "odpt.Railway:JR-East.NaritaAirportBranch",
+      "railwayAName": "成田線我孫子支線",
+      "railwayBName": "成田線空港支線",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/我孫子_成田空港（空港）.html?Cway=2",
+      "sourceType": "current route-planner transfer at Narita; 3 minutes"
+    },
+    {
+      "place": "我孫子",
+      "railwayA": "odpt.Railway:JR-East.JobanRapid",
+      "railwayB": "odpt.Railway:JR-East.NaritaAbikoBranch",
+      "railwayAName": "常磐線快速",
+      "railwayBName": "成田線我孫子支線",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/取手_香取.html",
+      "sourceType": "current route-planner transfer at Abiko; 3 minutes"
+    },
+    {
+      "place": "我孫子",
+      "railwayA": "odpt.Railway:JR-East.JobanLocal",
+      "railwayB": "odpt.Railway:JR-East.JobanRapid",
+      "railwayAName": "常磐線各駅停車",
+      "railwayBName": "常磐線快速",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/取手_北柏.html",
+      "sourceType": "current route-planner transfer at Abiko; 3 minutes"
+    },
+    {
+      "place": "我孫子",
+      "railwayA": "odpt.Railway:JR-East.JobanLocal",
+      "railwayB": "odpt.Railway:JR-East.NaritaAbikoBranch",
+      "railwayAName": "常磐線各駅停車",
+      "railwayBName": "成田線我孫子支線",
+      "minutes": 3,
+      "source": "https://www.jorudan.co.jp/norikae/route/北柏_成田空港.html",
+      "sourceType": "current route-planner transfer at Abiko; 3 minutes"
+    }
+  ]
+}
