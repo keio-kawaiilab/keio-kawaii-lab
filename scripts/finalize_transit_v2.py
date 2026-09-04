@@ -13,6 +13,7 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 import build_transit_v2 as base
+import reviewed_train_evidence as reviewed
 
 ROOT = Path('.')
 V1 = ROOT / 'data/transit'
@@ -368,6 +369,13 @@ def main() -> int:
     classify_inferred_routes(fragments, indexes, unresolved)
     edges = authoritative_edges(fragments, unresolved)
     edges = base.align_inferred_edges(fragments, indexes, edges, unresolved)
+    edges = reviewed.apply_reviewed_train_evidence(
+        fragments,
+        edges,
+        unresolved,
+        indexes,
+        V2 / 'reviewed-train-evidence.json',
+    )
 
     coverage = write_outputs(fragments, networks, edges, unresolved, index)
     policy = registry.get('policy') or {}
