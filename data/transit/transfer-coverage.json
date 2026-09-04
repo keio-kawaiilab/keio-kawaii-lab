@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-04T00:37:57.807Z",
+  "generatedAt": "2026-09-04T00:38:17.921Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T00:37:40.803Z",
+  "rulesGeneratedAt": "2026-09-04T00:38:04.496Z",
   "methodology": "Candidate railway pairs are matched against resolved exact transfer rules. False same-name/nearby station pairs are classified as blocked unless ODPT explicitly declares connectingStation.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 448,
-    "uncuratedPairs": 505,
+    "curatedPairs": 454,
+    "uncuratedPairs": 499,
     "blockedPairs": 7,
-    "curatedSourceRules": 448,
+    "curatedSourceRules": 454,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -31,16 +31,6 @@
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 11,
       "priorityScore": 25
-    },
-    {
-      "place": "上野",
-      "totalPairs": 21,
-      "curatedPairs": 5,
-      "uncuratedPairs": 16,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 5,
-      "railwayCount": 7,
-      "priorityScore": 23.5
     },
     {
       "place": "大宮",
@@ -171,6 +161,16 @@
       "crossOperatorUncuratedPairs": 3,
       "railwayCount": 4,
       "priorityScore": 10.5
+    },
+    {
+      "place": "上野",
+      "totalPairs": 21,
+      "curatedPairs": 11,
+      "uncuratedPairs": 10,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 7,
+      "priorityScore": 10
     },
     {
       "place": "赤羽",
@@ -1540,228 +1540,6 @@
           "railwayBName": "宇都宮線",
           "sameOperator": true,
           "distanceMeters": 55,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ]
-    },
-    {
-      "place": "上野",
-      "totalPairs": 21,
-      "curatedPairs": 5,
-      "uncuratedPairs": 16,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 5,
-      "railwayCount": 7,
-      "priorityScore": 23.5,
-      "crossOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.Utsunomiya",
-          "railwayAName": "宇都宮線",
-          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-          "railwayBName": "日比谷線",
-          "sameOperator": false,
-          "distanceMeters": 245,
-          "fallbackMinutes": 6,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-          "railwayBName": "日比谷線",
-          "sameOperator": false,
-          "distanceMeters": 245,
-          "fallbackMinutes": 6,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Takasaki",
-          "railwayAName": "高崎線",
-          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-          "railwayBName": "日比谷線",
-          "sameOperator": false,
-          "distanceMeters": 245,
-          "fallbackMinutes": 6,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Yamanote",
-          "railwayAName": "山手線",
-          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-          "railwayBName": "日比谷線",
-          "sameOperator": false,
-          "distanceMeters": 245,
-          "fallbackMinutes": 6,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.JobanRapid",
-          "railwayAName": "常磐線快速",
-          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-          "railwayBName": "日比谷線",
-          "sameOperator": false,
-          "distanceMeters": 245,
-          "fallbackMinutes": 6,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        }
-      ],
-      "sameOperatorPairs": [
-        {
-          "railwayA": "odpt.Railway:JR-East.Utsunomiya",
-          "railwayAName": "宇都宮線",
-          "railwayB": "odpt.Railway:JR-East.Yamanote",
-          "railwayBName": "山手線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:JR-East.Utsunomiya",
-          "railwayBName": "宇都宮線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:JR-East.Takasaki",
-          "railwayBName": "高崎線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayAName": "京浜東北線・根岸線",
-          "railwayB": "odpt.Railway:JR-East.Yamanote",
-          "railwayBName": "山手線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:TokyoMetro.Ginza",
-          "railwayAName": "銀座線",
-          "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-          "railwayBName": "日比谷線",
-          "sameOperator": true,
-          "distanceMeters": 133,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Takasaki",
-          "railwayAName": "高崎線",
-          "railwayB": "odpt.Railway:JR-East.Utsunomiya",
-          "railwayBName": "宇都宮線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.Takasaki",
-          "railwayAName": "高崎線",
-          "railwayB": "odpt.Railway:JR-East.Yamanote",
-          "railwayBName": "山手線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.JobanRapid",
-          "railwayAName": "常磐線快速",
-          "railwayB": "odpt.Railway:JR-East.Utsunomiya",
-          "railwayBName": "宇都宮線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.JobanRapid",
-          "railwayAName": "常磐線快速",
-          "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-          "railwayBName": "京浜東北線・根岸線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.JobanRapid",
-          "railwayAName": "常磐線快速",
-          "railwayB": "odpt.Railway:JR-East.Takasaki",
-          "railwayBName": "高崎線",
-          "sameOperator": true,
-          "distanceMeters": 0,
-          "fallbackMinutes": 5,
-          "sources": [
-            "connecting-station",
-            "same-place-group"
-          ]
-        },
-        {
-          "railwayA": "odpt.Railway:JR-East.JobanRapid",
-          "railwayAName": "常磐線快速",
-          "railwayB": "odpt.Railway:JR-East.Yamanote",
-          "railwayBName": "山手線",
-          "sameOperator": true,
-          "distanceMeters": 0,
           "fallbackMinutes": 5,
           "sources": [
             "connecting-station",
@@ -3208,6 +2986,149 @@
           "railwayAName": "池袋線",
           "railwayB": "odpt.Railway:Seibu.Toshima",
           "railwayBName": "豊島線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        }
+      ]
+    },
+    {
+      "place": "上野",
+      "totalPairs": 21,
+      "curatedPairs": 11,
+      "uncuratedPairs": 10,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 7,
+      "priorityScore": 10,
+      "crossOperatorPairs": [],
+      "sameOperatorPairs": [
+        {
+          "railwayA": "odpt.Railway:JR-East.Utsunomiya",
+          "railwayAName": "宇都宮線",
+          "railwayB": "odpt.Railway:JR-East.Yamanote",
+          "railwayBName": "山手線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+          "railwayAName": "京浜東北線・根岸線",
+          "railwayB": "odpt.Railway:JR-East.Utsunomiya",
+          "railwayBName": "宇都宮線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+          "railwayAName": "京浜東北線・根岸線",
+          "railwayB": "odpt.Railway:JR-East.Takasaki",
+          "railwayBName": "高崎線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+          "railwayAName": "京浜東北線・根岸線",
+          "railwayB": "odpt.Railway:JR-East.Yamanote",
+          "railwayBName": "山手線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.Takasaki",
+          "railwayAName": "高崎線",
+          "railwayB": "odpt.Railway:JR-East.Utsunomiya",
+          "railwayBName": "宇都宮線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.Takasaki",
+          "railwayAName": "高崎線",
+          "railwayB": "odpt.Railway:JR-East.Yamanote",
+          "railwayBName": "山手線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.JobanRapid",
+          "railwayAName": "常磐線快速",
+          "railwayB": "odpt.Railway:JR-East.Utsunomiya",
+          "railwayBName": "宇都宮線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.JobanRapid",
+          "railwayAName": "常磐線快速",
+          "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+          "railwayBName": "京浜東北線・根岸線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.JobanRapid",
+          "railwayAName": "常磐線快速",
+          "railwayB": "odpt.Railway:JR-East.Takasaki",
+          "railwayBName": "高崎線",
+          "sameOperator": true,
+          "distanceMeters": 0,
+          "fallbackMinutes": 5,
+          "sources": [
+            "connecting-station",
+            "same-place-group"
+          ]
+        },
+        {
+          "railwayA": "odpt.Railway:JR-East.JobanRapid",
+          "railwayAName": "常磐線快速",
+          "railwayB": "odpt.Railway:JR-East.Yamanote",
+          "railwayBName": "山手線",
           "sameOperator": true,
           "distanceMeters": 0,
           "fallbackMinutes": 5,
@@ -6620,20 +6541,6 @@
     },
     {
       "place": "上野",
-      "railwayA": "odpt.Railway:JR-East.Utsunomiya",
-      "railwayAName": "宇都宮線",
-      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-      "railwayBName": "日比谷線",
-      "sameOperator": false,
-      "distanceMeters": 245,
-      "fallbackMinutes": 6,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "上野",
       "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
       "railwayAName": "京浜東北線・根岸線",
       "railwayB": "odpt.Railway:JR-East.Utsunomiya",
@@ -6676,34 +6583,6 @@
     },
     {
       "place": "上野",
-      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
-      "railwayAName": "京浜東北線・根岸線",
-      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-      "railwayBName": "日比谷線",
-      "sameOperator": false,
-      "distanceMeters": 245,
-      "fallbackMinutes": 6,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "上野",
-      "railwayA": "odpt.Railway:TokyoMetro.Ginza",
-      "railwayAName": "銀座線",
-      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-      "railwayBName": "日比谷線",
-      "sameOperator": true,
-      "distanceMeters": 133,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "上野",
       "railwayA": "odpt.Railway:JR-East.Takasaki",
       "railwayAName": "高崎線",
       "railwayB": "odpt.Railway:JR-East.Utsunomiya",
@@ -6725,34 +6604,6 @@
       "sameOperator": true,
       "distanceMeters": 0,
       "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "上野",
-      "railwayA": "odpt.Railway:JR-East.Takasaki",
-      "railwayAName": "高崎線",
-      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-      "railwayBName": "日比谷線",
-      "sameOperator": false,
-      "distanceMeters": 245,
-      "fallbackMinutes": 6,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "上野",
-      "railwayA": "odpt.Railway:JR-East.Yamanote",
-      "railwayAName": "山手線",
-      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-      "railwayBName": "日比谷線",
-      "sameOperator": false,
-      "distanceMeters": 245,
-      "fallbackMinutes": 6,
       "sources": [
         "connecting-station",
         "same-place-group"
@@ -6809,20 +6660,6 @@
       "sameOperator": true,
       "distanceMeters": 0,
       "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "上野",
-      "railwayA": "odpt.Railway:JR-East.JobanRapid",
-      "railwayAName": "常磐線快速",
-      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
-      "railwayBName": "日比谷線",
-      "sameOperator": false,
-      "distanceMeters": 245,
-      "fallbackMinutes": 6,
       "sources": [
         "connecting-station",
         "same-place-group"
