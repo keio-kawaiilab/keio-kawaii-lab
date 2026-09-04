@@ -1,0 +1,71 @@
+{
+  "defaults": {
+    "bidirectional": true,
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "新橋",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:JR-East.Yokosuka",
+      "minutes": 4,
+      "label": "標準乗換",
+      "sourceUrl": "https://mb.jorudan.co.jp/os/noritxt/shimbashi/yamanote_line-yokosuka_line.html",
+      "sourceType": "Jorudan standard transfer time"
+    },
+    {
+      "place": "新橋",
+      "railwayA": "odpt.Railway:JR-East.Yamanote",
+      "railwayB": "odpt.Railway:JR-East.Tokaido",
+      "minutes": 3,
+      "label": "標準乗換",
+      "sourceUrl": "https://mb.jorudan.co.jp/os/noritxt/shimbashi/yamanote_line-tokaido_line_jr_east.html",
+      "sourceType": "Jorudan standard transfer time"
+    },
+    {
+      "place": "新橋",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.Yokosuka",
+      "minutes": 4,
+      "label": "標準乗換",
+      "sourceUrl": "https://mb.jorudan.co.jp/os/noritxt/shimbashi/keihintohoku_line-yokosuka_line.html",
+      "sourceType": "Jorudan standard transfer time"
+    },
+    {
+      "place": "新橋",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:JR-East.Tokaido",
+      "minutes": 3,
+      "label": "標準乗換",
+      "sourceUrl": "https://mb.jorudan.co.jp/os/noritxt/shimbashi/keihintohoku_line-tokaido_line_jr_east.html",
+      "sourceType": "Jorudan standard transfer time"
+    },
+    {
+      "place": "新橋",
+      "railwayA": "odpt.Railway:JR-East.JobanRapid",
+      "railwayB": "odpt.Railway:JR-East.Yokosuka",
+      "minutes": 4,
+      "label": "標準乗換（共用ホーム適用）",
+      "sourceUrl": "https://mb.jorudan.co.jp/os/noritxt/shimbashi/tokaido_line_jr_east-yokosuka_line.html",
+      "sourceType": "current standard transfer guide / shared-platform verification"
+    },
+    {
+      "place": "新橋",
+      "railwayA": "odpt.Railway:JR-East.JobanRapid",
+      "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "minutes": 3,
+      "label": "標準乗換（共用ホーム適用）",
+      "sourceUrl": "https://mb.jorudan.co.jp/os/noritxt/shimbashi/tokaido_line_jr_east-keihintohoku_line.html",
+      "sourceType": "current standard transfer guide / shared-platform verification"
+    },
+    {
+      "place": "新橋",
+      "railwayA": "odpt.Railway:JR-East.JobanRapid",
+      "railwayB": "odpt.Railway:JR-East.Yamanote",
+      "minutes": 3,
+      "label": "標準乗換（共用ホーム適用）",
+      "sourceUrl": "https://mb.jorudan.co.jp/os/noritxt/shimbashi/tokaido_line_jr_east-yamanote_line.html",
+      "sourceType": "current standard transfer guide / shared-platform verification"
+    }
+  ]
+}
