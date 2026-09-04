@@ -9,6 +9,10 @@ on:
       - 'scripts/test_import_odpt_timetables.py'
       - 'scripts/test_odpt_train_identity_db.mjs'
       - 'scripts/enrich-through-service-db.mjs'
+      - 'scripts/build_keisei_official_timetables.py'
+      - 'scripts/build_keisei_network_timetable.py'
+      - 'scripts/build_minatomirai_routing_timetable.py'
+      - 'scripts/build_minatomirai_routing_timetable_v2.py'
       - 'data/transit-sources/manual-topology.json'
       - 'scripts/test_transit_snapshot.js'
       - '.github/workflows/update-transit-timetables.yml'
@@ -50,7 +54,15 @@ jobs:
       - name: Test timetable importer and identity pipeline
         run: |
           node --check scripts/enrich-through-service-db.mjs
-          python -m py_compile scripts/collect_odpt_train_identity.py scripts/build_transit_v2.py scripts/finalize_transit_v2.py scripts/audit_transit_v2.py
+          python -m py_compile \
+            scripts/collect_odpt_train_identity.py \
+            scripts/build_keisei_official_timetables.py \
+            scripts/build_keisei_network_timetable.py \
+            scripts/build_minatomirai_routing_timetable.py \
+            scripts/build_minatomirai_routing_timetable_v2.py \
+            scripts/build_transit_v2.py \
+            scripts/finalize_transit_v2.py \
+            scripts/audit_transit_v2.py
           node scripts/test_odpt_train_identity_db.mjs
           python scripts/test_import_odpt_timetables.py
 
@@ -69,6 +81,33 @@ jobs:
       - name: Collect authoritative ODPT train identity
         if: steps.import.outputs.ran == 'true'
         run: python scripts/collect_odpt_train_identity.py
+
+      - name: Restore reviewed special timetable sources
+        if: steps.import.outputs.ran == 'true'
+        run: |
+          # The generic importer deliberately rebuilds operator timetable
+          # directories. Keisei and Minatomirai use retained reviewed official
+          # snapshots, so reconstruct their app tables before v2 is built.
+          python scripts/build_keisei_official_timetables.py
+          python scripts/build_keisei_network_timetable.py
+          python scripts/build_minatomirai_routing_timetable_v2.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          keisei_details = json.loads(Path('data/transit/keisei/official-train-details.json').read_text(encoding='utf-8'))
+          keisei_network = json.loads(Path('data/transit/keisei/timetables/official-network.json').read_text(encoding='utf-8'))
+          mm = json.loads(Path('data/transit/yokohama-minatomirai/timetables/minatomirai.json').read_text(encoding='utf-8'))
+
+          source_trains = int(keisei_details.get('trainCount') or len(keisei_details.get('trains') or []))
+          network_trips = len(keisei_network.get('trips') or [])
+          mm_trips = len(mm.get('inferredTrips') or [])
+          assert 3000 <= source_trains <= 7000, source_trains
+          assert network_trips >= 3000, network_trips
+          assert mm_trips >= 1000, mm_trips
+          assert mm.get('destinationAuthoritative') is False
+          print('special-source guard:', {'keiseiSourceTrains': source_trains, 'keiseiNetworkTrips': network_trips, 'minatomiraiTrips': mm_trips})
+          PY
 
       - name: Test generated transit snapshot
         if: steps.import.outputs.ran == 'true'
