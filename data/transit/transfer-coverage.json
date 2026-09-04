@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-09-04T08:27:07.707Z",
+  "generatedAt": "2026-09-04T08:28:35.662Z",
   "candidateGeneratedAt": "2026-09-03T12:17:33.274Z",
-  "rulesGeneratedAt": "2026-09-04T08:26:32.939Z",
+  "rulesGeneratedAt": "2026-09-04T08:28:22.514Z",
   "methodology": "Candidate railway pairs are classified as curated when backed by an explicit transfer rule, fallback when covered by conservative fallbackMinutes, blocked for false same-name/nearby links, and uncurated only when no usable rule exists.",
   "summary": {
     "candidatePairs": 960,
-    "curatedPairs": 925,
-    "fallbackPairs": 28,
+    "curatedPairs": 929,
+    "fallbackPairs": 24,
     "uncuratedPairs": 0,
     "blockedPairs": 7,
-    "curatedSourceRules": 925,
-    "fallbackGeneratedRules": 28,
+    "curatedSourceRules": 929,
+    "fallbackGeneratedRules": 24,
     "transferPlaces": 329
   },
   "priorityPlaces": [
@@ -56,17 +56,6 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 3,
-      "priorityScore": 0
-    },
-    {
-      "place": "空港第２ビル",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
       "priorityScore": 0
     },
     {
@@ -158,17 +147,6 @@
       "priorityScore": 0
     },
     {
-      "place": "新鎌ヶ谷",
-      "totalPairs": 1,
-      "curatedPairs": 0,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
       "place": "新丸子",
       "totalPairs": 1,
       "curatedPairs": 0,
@@ -224,17 +202,6 @@
       "priorityScore": 0
     },
     {
-      "place": "池袋",
-      "totalPairs": 28,
-      "curatedPairs": 27,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 8,
-      "priorityScore": 0
-    },
-    {
       "place": "銚子",
       "totalPairs": 1,
       "curatedPairs": 0,
@@ -254,17 +221,6 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "品川",
-      "totalPairs": 15,
-      "curatedPairs": 14,
-      "fallbackPairs": 1,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 6,
       "priorityScore": 0
     },
     {
@@ -895,6 +851,17 @@
       "priorityScore": 0
     },
     {
+      "place": "空港第２ビル",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
       "place": "熊野前",
       "totalPairs": 1,
       "curatedPairs": 1,
@@ -1113,6 +1080,39 @@
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 3,
       "priorityScore": 0
+    },
+    {
+      "place": "高幡不動",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
+      "place": "高尾",
+      "totalPairs": 1,
+      "curatedPairs": 1,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
+      "place": "高輪ゲートウェイ ↔ 泉岳寺",
+      "totalPairs": 4,
+      "curatedPairs": 4,
+      "fallbackPairs": 0,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 4,
+      "priorityScore": 0
     }
   ],
   "priorityDetails": [],
@@ -1157,19 +1157,6 @@
       "fallbackMinutes": 5,
       "sources": [
         "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "空港第２ビル",
-      "railwayA": "odpt.Railway:Keisei.Main",
-      "railwayAName": "京成本線",
-      "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
-      "railwayBName": "成田スカイアクセス線",
-      "sameOperator": true,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
         "same-place-group"
       ]
     },
@@ -1286,19 +1273,6 @@
       ]
     },
     {
-      "place": "新鎌ヶ谷",
-      "railwayA": "odpt.Railway:Keisei.Matsudo",
-      "railwayAName": "松戸線",
-      "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
-      "railwayBName": "成田スカイアクセス線",
-      "sameOperator": true,
-      "distanceMeters": null,
-      "fallbackMinutes": 5,
-      "sources": [
-        "same-place-group"
-      ]
-    },
-    {
       "place": "新丸子",
       "railwayA": "odpt.Railway:Tokyu.Meguro",
       "railwayAName": "目黒線",
@@ -1410,20 +1384,6 @@
       ]
     },
     {
-      "place": "池袋",
-      "railwayA": "odpt.Railway:JR-East.SaikyoKawagoe",
-      "railwayAName": "埼京線・川越線",
-      "railwayB": "odpt.Railway:JR-East.ShonanShinjuku",
-      "railwayBName": "湘南新宿ライン",
-      "sameOperator": true,
-      "distanceMeters": 25,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
       "place": "銚子",
       "railwayA": "odpt.Railway:JR-East.Narita",
       "railwayAName": "成田線",
@@ -1443,20 +1403,6 @@
       "railwayAName": "常磐線各駅停車",
       "railwayB": "odpt.Railway:JR-East.JobanRapid",
       "railwayBName": "常磐線快速",
-      "sameOperator": true,
-      "distanceMeters": 0,
-      "fallbackMinutes": 5,
-      "sources": [
-        "connecting-station",
-        "same-place-group"
-      ]
-    },
-    {
-      "place": "品川",
-      "railwayA": "odpt.Railway:JR-East.JobanRapid",
-      "railwayAName": "常磐線快速",
-      "railwayB": "odpt.Railway:JR-East.Tokaido",
-      "railwayBName": "東海道線",
       "sameOperator": true,
       "distanceMeters": 0,
       "fallbackMinutes": 5,
