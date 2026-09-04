@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準・現行乗換（安全側）",
+    "sourceType": "current transfer guide / Jorudan standard transfer time",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "秋葉原",
+      "railwayA": "odpt.Railway:MIR.TsukubaExpress",
+      "railwayB": "odpt.Railway:JR-East.Yamanote",
+      "railwayAName": "つくばエクスプレス",
+      "railwayBName": "山手線",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/akihabara-tx-jryamanote-keihinline-transfer-information/"
+    },
+    {
+      "place": "秋葉原",
+      "railwayA": "odpt.Railway:MIR.TsukubaExpress",
+      "railwayB": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayAName": "つくばエクスプレス",
+      "railwayBName": "京浜東北線・根岸線",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/akihabara-tx-jryamanote-keihinline-transfer-information/"
+    },
+    {
+      "place": "秋葉原",
+      "railwayA": "odpt.Railway:MIR.TsukubaExpress",
+      "railwayB": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "railwayAName": "つくばエクスプレス",
+      "railwayBName": "中央・総武各駅停車",
+      "minutes": 5,
+      "source": "https://wadattsu261.com/content/akihabara-tx-jrchuo-sobuslowline-transfer-information/"
+    },
+    {
+      "place": "秋葉原",
+      "railwayA": "odpt.Railway:JR-East.KeihinTohokuNegishi",
+      "railwayB": "odpt.Railway:TokyoMetro.Hibiya",
+      "railwayAName": "京浜東北線・根岸線",
+      "railwayBName": "日比谷線",
+      "minutes": 8,
+      "source": "https://mb.jorudan.co.jp/os/noritxt/akihabara/keihintohoku_line-tokyo-metro_hibiya_line.html"
+    }
+  ]
+}
