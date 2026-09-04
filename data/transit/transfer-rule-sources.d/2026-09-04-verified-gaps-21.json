@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "defaults": {
+    "bidirectional": true,
+    "label": "標準・実測乗換（安全側）",
+    "verifiedAt": "2026-09-04"
+  },
+  "rules": [
+    {
+      "place": "立川",
+      "railwayA": "odpt.Railway:JR-East.ChuoRapid",
+      "railwayB": "odpt.Railway:JR-East.Ome",
+      "railwayAName": "中央線快速",
+      "railwayBName": "青梅線",
+      "minutes": 3,
+      "source": "https://ekitan.com/d-norikae/transit/route/sf-2731/st-2011",
+      "sourceType": "current route-planner transfer at Tachikawa; observed 2-3 minutes, conservative upper bound"
+    },
+    {
+      "place": "立川",
+      "railwayA": "odpt.Railway:JR-East.Nambu",
+      "railwayB": "odpt.Railway:JR-East.Ome",
+      "railwayAName": "南武線",
+      "railwayBName": "青梅線",
+      "minutes": 4,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E8%A5%BF%E5%9B%BD%E7%AB%8B_%E8%A5%BF%E7%AB%8B%E5%B7%9D.html",
+      "sourceType": "current Jorudan route via Tachikawa; 4-minute transfer"
+    },
+    {
+      "place": "岩本町 ↔ 秋葉原",
+      "railwayA": "odpt.Railway:MIR.TsukubaExpress",
+      "railwayB": "odpt.Railway:Toei.Shinjuku",
+      "railwayAName": "つくばエクスプレス",
+      "railwayBName": "新宿線",
+      "minutes": 12,
+      "source": "https://www.jorudan.co.jp/norikae/route/%E5%B2%A9%E6%9C%AC%E7%94%BA_%E3%81%A4%E3%81%8F%E3%81%B0.html",
+      "sourceType": "current Jorudan linked-station walk from Iwamotocho to Tsukuba Express Akihabara; 12 minutes"
+    }
+  ]
+}
