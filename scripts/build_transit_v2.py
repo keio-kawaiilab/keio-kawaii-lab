@@ -210,13 +210,37 @@ def index_entities(manifest: dict[str, Any]) -> dict[str, Any]:
 
 
 def destination_railways(destination: str, indexes: dict[str, Any]) -> set[str]:
+    # Station IDs are railway-scoped. Expand a physical station only
+    # inside the same operator as the published destination. This
+    # fixes line-specific IDs without turning ordinary interchange
+    # stations into through-service evidence.
     result = set(indexes['stationRailways'].get(destination, set()))
     if result:
+        station_name = str(indexes['stationTitle'].get(destination) or '')
+        operators = {
+            str(indexes['railwayOperator'].get(rid) or '')
+            for rid in result
+            if indexes['railwayOperator'].get(rid)
+        }
+        if station_name and operators:
+            for sid, name in indexes['stationTitle'].items():
+                if name != station_name:
+                    continue
+                for rid in indexes['stationRailways'].get(sid, set()):
+                    if str(indexes['railwayOperator'].get(rid) or '') in operators:
+                        result.add(rid)
         return result
     suffix = destination.rsplit('.', 1)[-1] if destination else ''
+    operator_token = ''
+    if destination.startswith('odpt.Station:'):
+        operator_token = destination.split(':', 1)[1].split('.', 1)[0]
     for sid, railways in indexes['stationRailways'].items():
-        if sid.rsplit('.', 1)[-1] == suffix:
-            result.update(railways)
+        if sid.rsplit('.', 1)[-1] != suffix:
+            continue
+        for rid in railways:
+            if operator_token and not rid.startswith(f'odpt.Railway:{operator_token}.'):
+                continue
+            result.add(rid)
     return result
 
 

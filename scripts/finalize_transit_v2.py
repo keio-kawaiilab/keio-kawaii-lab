@@ -92,10 +92,19 @@ def classify_inferred_routes(
         destinations = [str(value) for value in fragment.get('destination') or [] if value]
         if not destinations:
             continue
+        current_railway = str(fragment.get('railway') or '')
         target_railways: set[str] = set()
+        external_destinations: list[str] = []
         for destination in destinations:
-            target_railways.update(base.destination_railways(destination, indexes))
-        target_railways.discard(str(fragment.get('railway') or ''))
+            resolved = base.destination_railways(destination, indexes)
+            # If this physical destination exists on the current railway,
+            # the fragment terminates there; a different line-scoped ID
+            # must not manufacture a through train.
+            if current_railway in resolved:
+                continue
+            external_destinations.append(destination)
+            target_railways.update(resolved)
+        target_railways.discard(current_railway)
         if not target_railways:
             continue
         fragment['publishedDestinationRailways'] = sorted(target_railways)
@@ -119,7 +128,7 @@ def classify_inferred_routes(
                 'kind': 'published-destination-route-' + str(path.get('status') or 'unknown'),
                 'fragment': fragment['id'],
                 'railway': fragment.get('railway'),
-                'destination': destinations,
+                'destination': external_destinations,
                 'targetRailways': sorted(target_railways),
                 'matches': path.get('matches') or [],
                 'strictOperationalGraph': True,

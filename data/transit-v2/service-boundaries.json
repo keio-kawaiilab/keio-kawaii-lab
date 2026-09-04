@@ -9,37 +9,545 @@
     "genericSameOperatorSharedStationMayEstablishPath": false
   },
   "boundaries": [
-    {"id":"minatomirai-toyoko-yokohama","station":"横浜","fromRailway":"manual.Railway:YokohamaMinatomirai.Minatomirai","toRailway":"odpt.Railway:Tokyu.Toyoko","fromStation":"manual.Station:yokohama-minatomirai.横浜","toStation":"odpt.Station:Tokyu.Toyoko.Yokohama","bidirectional":true,"status":"verified","sourceUrls":["https://www.mm21railway.co.jp/info/faq05.html"]},
-    {"id":"toyoko-fukutoshin-shibuya","station":"渋谷","fromRailway":"odpt.Railway:Tokyu.Toyoko","toRailway":"odpt.Railway:TokyoMetro.Fukutoshin","fromStation":"odpt.Station:Tokyu.Toyoko.Shibuya","toStation":"odpt.Station:TokyoMetro.Fukutoshin.Shibuya","bidirectional":true,"status":"verified","sourceUrls":["https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"]},
-    {"id":"fukutoshin-tobu-wakoshi","station":"和光市","fromRailway":"odpt.Railway:TokyoMetro.Fukutoshin","toRailway":"odpt.Railway:Tobu.Tojo","fromStation":"odpt.Station:TokyoMetro.Fukutoshin.Wakoshi","toStation":"odpt.Station:Tobu.Tojo.Wakoshi","bidirectional":true,"status":"verified","sourceUrls":["https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"]},
-    {"id":"yurakucho-tobu-wakoshi","station":"和光市","fromRailway":"odpt.Railway:TokyoMetro.Yurakucho","toRailway":"odpt.Railway:Tobu.Tojo","fromStation":"odpt.Station:TokyoMetro.Yurakucho.Wakoshi","toStation":"odpt.Station:Tobu.Tojo.Wakoshi","bidirectional":true,"status":"verified","sourceUrls":["https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"]},
-    {"id":"fukutoshin-seibu-kotakemukaihara","station":"小竹向原","fromRailway":"odpt.Railway:TokyoMetro.Fukutoshin","toRailway":"odpt.Railway:Seibu.SeibuYurakucho","fromStation":"odpt.Station:TokyoMetro.Fukutoshin.KotakeMukaihara","toStation":"odpt.Station:Seibu.SeibuYurakucho.KotakeMukaihara","bidirectional":true,"status":"verified","sourceUrls":["https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"]},
-    {"id":"yurakucho-seibu-kotakemukaihara","station":"小竹向原","fromRailway":"odpt.Railway:TokyoMetro.Yurakucho","toRailway":"odpt.Railway:Seibu.SeibuYurakucho","fromStation":"odpt.Station:TokyoMetro.Yurakucho.KotakeMukaihara","toStation":"odpt.Station:Seibu.SeibuYurakucho.KotakeMukaihara","bidirectional":true,"status":"verified","sourceUrls":["https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"]},
-    {"id":"odakyu-chiyoda-yoyogiuehara","station":"代々木上原","fromRailway":"odpt.Railway:Odakyu.Odawara","toRailway":"odpt.Railway:TokyoMetro.Chiyoda","fromStation":"odpt.Station:Odakyu.Odawara.YoyogiUehara","toStation":"odpt.Station:TokyoMetro.Chiyoda.YoyogiUehara","bidirectional":true,"status":"verified","sourceUrls":["https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"]},
-    {"id":"chiyoda-jobanlocal-ayase","station":"綾瀬","fromRailway":"odpt.Railway:TokyoMetro.Chiyoda","toRailway":"odpt.Railway:JR-East.JobanLocal","fromStation":"odpt.Station:TokyoMetro.Chiyoda.Ayase","toStation":"odpt.Station:JR-East.JobanLocal.Ayase","bidirectional":true,"status":"verified","sourceUrls":["https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf","https://www.jreast.co.jp/estation/stations/55.html"]},
-    {"id":"denentoshi-hanzomon-shibuya","station":"渋谷","fromRailway":"odpt.Railway:Tokyu.DenEnToshi","toRailway":"odpt.Railway:TokyoMetro.Hanzomon","fromStation":"odpt.Station:Tokyu.DenEnToshi.Shibuya","toStation":"odpt.Station:TokyoMetro.Hanzomon.Shibuya","bidirectional":true,"status":"verified","sourceUrls":["https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"]},
-    {"id":"hanzomon-tobu-oshiage","station":"押上","fromRailway":"odpt.Railway:TokyoMetro.Hanzomon","toRailway":"odpt.Railway:Tobu.TobuSkytreeBranch","fromStation":"odpt.Station:TokyoMetro.Hanzomon.Oshiage","toStation":"odpt.Station:Tobu.TobuSkytreeBranch.Oshiage","bidirectional":true,"status":"verified","sourceUrls":["https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf","https://www.tobu.co.jp/railway/guide/station/info/1304.html"]},
-    {"id":"hibiya-tobu-kitasenju","station":"北千住","fromRailway":"odpt.Railway:TokyoMetro.Hibiya","toRailway":"odpt.Railway:Tobu.TobuSkytree","fromStation":"odpt.Station:TokyoMetro.Hibiya.KitaSenju","toStation":"odpt.Station:Tobu.TobuSkytree.KitaSenju","bidirectional":true,"status":"verified","sourceUrls":["https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf","https://www.tobu.co.jp/railway/th/timetable/"]},
-    {"id":"meguro-namboku-meguro","station":"目黒","fromRailway":"odpt.Railway:Tokyu.Meguro","toRailway":"odpt.Railway:TokyoMetro.Namboku","fromStation":"odpt.Station:Tokyu.Meguro.Meguro","toStation":"odpt.Station:TokyoMetro.Namboku.Meguro","bidirectional":true,"status":"verified","sourceUrls":["https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"]},
-    {"id":"meguro-mita-meguro","station":"目黒","fromRailway":"odpt.Railway:Tokyu.Meguro","toRailway":"odpt.Railway:Toei.Mita","fromStation":"odpt.Station:Tokyu.Meguro.Meguro","toStation":"odpt.Station:Toei.Mita.Meguro","bidirectional":true,"status":"verified","sourceUrls":["https://www.kotsu.metro.tokyo.jp/about/service/subway.html"]},
-    {"id":"tokyu-sotetsu-shinyokohama","station":"新横浜","fromRailway":"odpt.Railway:Tokyu.TokyuShinYokohama","toRailway":"odpt.Railway:Sotetsu.SotetsuShinYokohama","fromStation":"odpt.Station:Tokyu.TokyuShinYokohama.ShinYokohama","toStation":"odpt.Station:Sotetsu.SotetsuShinYokohama.ShinYokohama","bidirectional":true,"status":"verified","sourceUrls":["https://www.tokyu.co.jp/railway/service/activity/network/chokutsuu/","https://www.sotetsu.co.jp/train/services/tokyu/"]},
-    {"id":"jr-sotetsu-hazawa","station":"羽沢横浜国大","fromRailway":"odpt.Railway:JR-East.SotetsuDirect","toRailway":"odpt.Railway:Sotetsu.SotetsuShinYokohama","fromStation":"odpt.Station:JR-East.SotetsuDirect.HazawaYokohamaKokudai","toStation":"odpt.Station:Sotetsu.SotetsuShinYokohama.HazawaYokohamaKokudai","bidirectional":true,"status":"verified","sourceUrls":["https://www.sotetsu.co.jp/train/services/jr/"]},
-    {"id":"saikyo-rinkai-osaki","station":"大崎","fromRailway":"odpt.Railway:JR-East.SaikyoKawagoe","toRailway":"odpt.Railway:TWR.Rinkai","fromStation":"odpt.Station:JR-East.SaikyoKawagoe.Osaki","toStation":"odpt.Station:TWR.Rinkai.Osaki","bidirectional":true,"status":"verified","sourceUrls":["https://www.twr.co.jp/route/tabid/120/Default.aspx"]},
-    {"id":"toei-shinjuku-keio-new-shinjuku","station":"新宿","fromRailway":"odpt.Railway:Toei.Shinjuku","toRailway":"odpt.Railway:Keio.KeioNew","fromStation":"odpt.Station:Toei.Shinjuku.Shinjuku","toStation":"odpt.Station:Keio.KeioNew.Shinjuku","bidirectional":true,"status":"verified","sourceUrls":["https://www.kotsu.metro.tokyo.jp/subway/timetable/shinjuku.html","https://www.keio.co.jp/train/station/ko01_shinjuku/"]},
-    {"id":"keisei-toei-oshiage","station":"押上","fromRailway":"odpt.Railway:Keisei.Oshiage","toRailway":"odpt.Railway:Toei.Asakusa","fromStation":"odpt.Station:Keisei.Oshiage.Oshiage","toStation":"odpt.Station:Toei.Asakusa.Oshiage","bidirectional":true,"status":"verified","sourceUrls":["https://www.kotsu.metro.tokyo.jp/about/service/subway.html","https://www.keisei.co.jp/keisei/tetudou/accessj/"]},
-    {"id":"toei-keikyu-sengakuji","station":"泉岳寺","fromRailway":"odpt.Railway:Toei.Asakusa","toRailway":"odpt.Railway:Keikyu.Main","fromStation":"odpt.Station:Toei.Asakusa.Sengakuji","toStation":"odpt.Station:Keikyu.Main.Sengakuji","bidirectional":true,"status":"verified","sourceUrls":["https://www.kotsu.metro.tokyo.jp/about/service/subway.html","https://www.keikyu.co.jp/ride/train/rosenzu.html"]},
-    {"id":"tozai-jr-nakano","station":"中野","fromRailway":"odpt.Railway:TokyoMetro.Tozai","toRailway":"odpt.Railway:JR-East.ChuoSobuLocal","fromStation":"odpt.Station:TokyoMetro.Tozai.Nakano","toStation":"odpt.Station:JR-East.ChuoSobuLocal.Nakano","bidirectional":true,"status":"verified","sourceUrls":["https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"]},
-    {"id":"tozai-jr-nishifunabashi","station":"西船橋","fromRailway":"odpt.Railway:TokyoMetro.Tozai","toRailway":"odpt.Railway:JR-East.ChuoSobuLocal","fromStation":"odpt.Station:TokyoMetro.Tozai.NishiFunabashi","toStation":"odpt.Station:JR-East.ChuoSobuLocal.NishiFunabashi","bidirectional":true,"status":"verified","sourceUrls":["https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"]},
-
-    {"id":"tokyu-toyoko-shinyokohama-hiyoshi","station":"日吉","fromRailway":"odpt.Railway:Tokyu.Toyoko","toRailway":"odpt.Railway:Tokyu.TokyuShinYokohama","fromStation":"odpt.Station:Tokyu.Toyoko.Hiyoshi","toStation":"odpt.Station:Tokyu.TokyuShinYokohama.Hiyoshi","bidirectional":true,"status":"verified","sourceUrls":["https://www.tokyu.co.jp/railway/service/activity/network/chokutsuu/"]},
-    {"id":"tokyu-meguro-shinyokohama-hiyoshi","station":"日吉","fromRailway":"odpt.Railway:Tokyu.Meguro","toRailway":"odpt.Railway:Tokyu.TokyuShinYokohama","fromStation":"odpt.Station:Tokyu.Meguro.Hiyoshi","toStation":"odpt.Station:Tokyu.TokyuShinYokohama.Hiyoshi","bidirectional":true,"status":"verified","sourceUrls":["https://www.tokyu.co.jp/railway/service/activity/network/chokutsuu/"]},
-    {"id":"tokyu-oimachi-denentoshi-mizonokuchi","station":"溝の口","fromRailway":"odpt.Railway:Tokyu.Oimachi","toRailway":"odpt.Railway:Tokyu.DenEnToshi","fromStation":"odpt.Station:Tokyu.Oimachi.Mizonokuchi","toStation":"odpt.Station:Tokyu.DenEnToshi.Mizonokuchi","bidirectional":true,"status":"verified","sourceUrls":["https://www.tokyu.co.jp/railway/ticket/types/q_seat/"]},
-    {"id":"odakyu-odawara-enoshima-sagamiono","station":"相模大野","fromRailway":"odpt.Railway:Odakyu.Odawara","toRailway":"odpt.Railway:Odakyu.Enoshima","fromStation":"odpt.Station:Odakyu.Odawara.SagamiOno","toStation":"odpt.Station:Odakyu.Enoshima.SagamiOno","bidirectional":true,"status":"verified","sourceUrls":["https://www.odakyu.jp/rail/"]},
-    {"id":"odakyu-odawara-tama-shinyurigaoka","station":"新百合ヶ丘","fromRailway":"odpt.Railway:Odakyu.Odawara","toRailway":"odpt.Railway:Odakyu.Tama","fromStation":"odpt.Station:Odakyu.Odawara.ShinYurigaoka","toStation":"odpt.Station:Odakyu.Tama.ShinYurigaoka","bidirectional":true,"status":"verified","sourceUrls":["https://www.odakyu.jp/rail/"]},
-    {"id":"keikyu-main-airport-kamata","station":"京急蒲田","fromRailway":"odpt.Railway:Keikyu.Main","toRailway":"odpt.Railway:Keikyu.Airport","fromStation":"odpt.Station:Keikyu.Main.KeikyuKamata","toStation":"odpt.Station:Keikyu.Airport.KeikyuKamata","bidirectional":true,"status":"verified","sourceUrls":["https://www.keikyu.co.jp/ride/train/rosenzu.html"]},
-    {"id":"keikyu-main-kurihama-horinouchi","station":"堀ノ内","fromRailway":"odpt.Railway:Keikyu.Main","toRailway":"odpt.Railway:Keikyu.Kurihama","fromStation":"odpt.Station:Keikyu.Main.Horinouchi","toStation":"odpt.Station:Keikyu.Kurihama.Horinouchi","bidirectional":true,"status":"verified","sourceUrls":["https://www.keikyu.co.jp/ride/train/rosenzu.html"]},
-    {"id":"keikyu-main-zushi-kanazawahakkei","station":"金沢八景","fromRailway":"odpt.Railway:Keikyu.Main","toRailway":"odpt.Railway:Keikyu.Zushi","fromStation":"odpt.Station:Keikyu.Main.KanazawaHakkei","toStation":"odpt.Station:Keikyu.Zushi.KanazawaHakkei","bidirectional":true,"status":"verified","sourceUrls":["https://www.keikyu.co.jp/ride/train/rosenzu.html"]},
-    {"id":"seibu-ikebukuro-yurakucho-nerima","station":"練馬","fromRailway":"odpt.Railway:Seibu.Ikebukuro","toRailway":"odpt.Railway:Seibu.SeibuYurakucho","fromStation":"odpt.Station:Seibu.Ikebukuro.Nerima","toStation":"odpt.Station:Seibu.SeibuYurakucho.Nerima","bidirectional":true,"status":"verified","sourceUrls":["https://www.seiburailway.jp/railway/station/nerima/"]},
-    {"id":"seibu-shinjuku-haijima-kodaira","station":"小平","fromRailway":"odpt.Railway:Seibu.Shinjuku","toRailway":"odpt.Railway:Seibu.Haijima","fromStation":"odpt.Station:Seibu.Shinjuku.Kodaira","toStation":"odpt.Station:Seibu.Haijima.Kodaira","bidirectional":true,"status":"verified","sourceUrls":["https://www.seiburailway.jp/railway/haijima-liner/"]}
+    {
+      "id": "minatomirai-toyoko-yokohama",
+      "station": "横浜",
+      "fromRailway": "manual.Railway:YokohamaMinatomirai.Minatomirai",
+      "toRailway": "odpt.Railway:Tokyu.Toyoko",
+      "fromStation": "manual.Station:yokohama-minatomirai.横浜",
+      "toStation": "odpt.Station:Tokyu.Toyoko.Yokohama",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.mm21railway.co.jp/info/faq05.html"
+      ]
+    },
+    {
+      "id": "toyoko-fukutoshin-shibuya",
+      "station": "渋谷",
+      "fromRailway": "odpt.Railway:Tokyu.Toyoko",
+      "toRailway": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "fromStation": "odpt.Station:Tokyu.Toyoko.Shibuya",
+      "toStation": "odpt.Station:TokyoMetro.Fukutoshin.Shibuya",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"
+      ]
+    },
+    {
+      "id": "fukutoshin-tobu-wakoshi",
+      "station": "和光市",
+      "fromRailway": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "toRailway": "odpt.Railway:Tobu.Tojo",
+      "fromStation": "odpt.Station:TokyoMetro.Fukutoshin.Wakoshi",
+      "toStation": "odpt.Station:Tobu.Tojo.Wakoshi",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"
+      ]
+    },
+    {
+      "id": "yurakucho-tobu-wakoshi",
+      "station": "和光市",
+      "fromRailway": "odpt.Railway:TokyoMetro.Yurakucho",
+      "toRailway": "odpt.Railway:Tobu.Tojo",
+      "fromStation": "odpt.Station:TokyoMetro.Yurakucho.Wakoshi",
+      "toStation": "odpt.Station:Tobu.Tojo.Wakoshi",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"
+      ]
+    },
+    {
+      "id": "fukutoshin-seibu-kotakemukaihara",
+      "station": "小竹向原",
+      "fromRailway": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "toRailway": "odpt.Railway:Seibu.SeibuYurakucho",
+      "fromStation": "odpt.Station:TokyoMetro.Fukutoshin.KotakeMukaihara",
+      "toStation": "odpt.Station:Seibu.SeibuYurakucho.KotakeMukaihara",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"
+      ]
+    },
+    {
+      "id": "yurakucho-seibu-kotakemukaihara",
+      "station": "小竹向原",
+      "fromRailway": "odpt.Railway:TokyoMetro.Yurakucho",
+      "toRailway": "odpt.Railway:Seibu.SeibuYurakucho",
+      "fromStation": "odpt.Station:TokyoMetro.Yurakucho.KotakeMukaihara",
+      "toStation": "odpt.Station:Seibu.SeibuYurakucho.KotakeMukaihara",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"
+      ]
+    },
+    {
+      "id": "odakyu-chiyoda-yoyogiuehara",
+      "station": "代々木上原",
+      "fromRailway": "odpt.Railway:Odakyu.Odawara",
+      "toRailway": "odpt.Railway:TokyoMetro.Chiyoda",
+      "fromStation": "odpt.Station:Odakyu.Odawara.YoyogiUehara",
+      "toStation": "odpt.Station:TokyoMetro.Chiyoda.YoyogiUehara",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"
+      ]
+    },
+    {
+      "id": "chiyoda-jobanlocal-ayase",
+      "station": "綾瀬",
+      "fromRailway": "odpt.Railway:TokyoMetro.Chiyoda",
+      "toRailway": "odpt.Railway:JR-East.JobanLocal",
+      "fromStation": "odpt.Station:TokyoMetro.Chiyoda.Ayase",
+      "toStation": "odpt.Station:JR-East.JobanLocal.Ayase",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf",
+        "https://www.jreast.co.jp/estation/stations/55.html"
+      ]
+    },
+    {
+      "id": "denentoshi-hanzomon-shibuya",
+      "station": "渋谷",
+      "fromRailway": "odpt.Railway:Tokyu.DenEnToshi",
+      "toRailway": "odpt.Railway:TokyoMetro.Hanzomon",
+      "fromStation": "odpt.Station:Tokyu.DenEnToshi.Shibuya",
+      "toStation": "odpt.Station:TokyoMetro.Hanzomon.Shibuya",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"
+      ]
+    },
+    {
+      "id": "hanzomon-tobu-oshiage",
+      "station": "押上",
+      "fromRailway": "odpt.Railway:TokyoMetro.Hanzomon",
+      "toRailway": "odpt.Railway:Tobu.TobuSkytreeBranch",
+      "fromStation": "odpt.Station:TokyoMetro.Hanzomon.Oshiage",
+      "toStation": "odpt.Station:Tobu.TobuSkytreeBranch.Oshiage",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf",
+        "https://www.tobu.co.jp/railway/guide/station/info/1304.html"
+      ]
+    },
+    {
+      "id": "hibiya-tobu-kitasenju",
+      "station": "北千住",
+      "fromRailway": "odpt.Railway:TokyoMetro.Hibiya",
+      "toRailway": "odpt.Railway:Tobu.TobuSkytree",
+      "fromStation": "odpt.Station:TokyoMetro.Hibiya.KitaSenju",
+      "toStation": "odpt.Station:Tobu.TobuSkytree.KitaSenju",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf",
+        "https://www.tobu.co.jp/railway/th/timetable/"
+      ]
+    },
+    {
+      "id": "meguro-namboku-meguro",
+      "station": "目黒",
+      "fromRailway": "odpt.Railway:Tokyu.Meguro",
+      "toRailway": "odpt.Railway:TokyoMetro.Namboku",
+      "fromStation": "odpt.Station:Tokyu.Meguro.Meguro",
+      "toStation": "odpt.Station:TokyoMetro.Namboku.Meguro",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"
+      ]
+    },
+    {
+      "id": "meguro-mita-meguro",
+      "station": "目黒",
+      "fromRailway": "odpt.Railway:Tokyu.Meguro",
+      "toRailway": "odpt.Railway:Toei.Mita",
+      "fromStation": "odpt.Station:Tokyu.Meguro.Meguro",
+      "toStation": "odpt.Station:Toei.Mita.Meguro",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.kotsu.metro.tokyo.jp/about/service/subway.html"
+      ]
+    },
+    {
+      "id": "tokyu-sotetsu-shinyokohama",
+      "station": "新横浜",
+      "fromRailway": "odpt.Railway:Tokyu.TokyuShinYokohama",
+      "toRailway": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
+      "fromStation": "odpt.Station:Tokyu.TokyuShinYokohama.ShinYokohama",
+      "toStation": "odpt.Station:Sotetsu.SotetsuShinYokohama.ShinYokohama",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.tokyu.co.jp/railway/service/activity/network/chokutsuu/",
+        "https://www.sotetsu.co.jp/train/services/tokyu/"
+      ]
+    },
+    {
+      "id": "jr-sotetsu-hazawa",
+      "station": "羽沢横浜国大",
+      "fromRailway": "odpt.Railway:JR-East.SotetsuDirect",
+      "toRailway": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
+      "fromStation": "odpt.Station:JR-East.SotetsuDirect.HazawaYokohamaKokudai",
+      "toStation": "odpt.Station:Sotetsu.SotetsuShinYokohama.HazawaYokohamaKokudai",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.sotetsu.co.jp/train/services/jr/"
+      ]
+    },
+    {
+      "id": "saikyo-rinkai-osaki",
+      "station": "大崎",
+      "fromRailway": "odpt.Railway:JR-East.SaikyoKawagoe",
+      "toRailway": "odpt.Railway:TWR.Rinkai",
+      "fromStation": "odpt.Station:JR-East.SaikyoKawagoe.Osaki",
+      "toStation": "odpt.Station:TWR.Rinkai.Osaki",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.twr.co.jp/route/tabid/120/Default.aspx"
+      ]
+    },
+    {
+      "id": "toei-shinjuku-keio-new-shinjuku",
+      "station": "新宿",
+      "fromRailway": "odpt.Railway:Toei.Shinjuku",
+      "toRailway": "odpt.Railway:Keio.KeioNew",
+      "fromStation": "odpt.Station:Toei.Shinjuku.Shinjuku",
+      "toStation": "odpt.Station:Keio.KeioNew.Shinjuku",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.kotsu.metro.tokyo.jp/subway/timetable/shinjuku.html",
+        "https://www.keio.co.jp/train/station/ko01_shinjuku/"
+      ]
+    },
+    {
+      "id": "keisei-toei-oshiage",
+      "station": "押上",
+      "fromRailway": "odpt.Railway:Keisei.Oshiage",
+      "toRailway": "odpt.Railway:Toei.Asakusa",
+      "fromStation": "odpt.Station:Keisei.Oshiage.Oshiage",
+      "toStation": "odpt.Station:Toei.Asakusa.Oshiage",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.kotsu.metro.tokyo.jp/about/service/subway.html",
+        "https://www.keisei.co.jp/keisei/tetudou/accessj/"
+      ]
+    },
+    {
+      "id": "toei-keikyu-sengakuji",
+      "station": "泉岳寺",
+      "fromRailway": "odpt.Railway:Toei.Asakusa",
+      "toRailway": "odpt.Railway:Keikyu.Main",
+      "fromStation": "odpt.Station:Toei.Asakusa.Sengakuji",
+      "toStation": "odpt.Station:Keikyu.Main.Sengakuji",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.kotsu.metro.tokyo.jp/about/service/subway.html",
+        "https://www.keikyu.co.jp/ride/train/rosenzu.html"
+      ]
+    },
+    {
+      "id": "tozai-jr-nakano",
+      "station": "中野",
+      "fromRailway": "odpt.Railway:TokyoMetro.Tozai",
+      "toRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "fromStation": "odpt.Station:TokyoMetro.Tozai.Nakano",
+      "toStation": "odpt.Station:JR-East.ChuoSobuLocal.Nakano",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"
+      ]
+    },
+    {
+      "id": "tozai-jr-nishifunabashi",
+      "station": "西船橋",
+      "fromRailway": "odpt.Railway:TokyoMetro.Tozai",
+      "toRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
+      "fromStation": "odpt.Station:TokyoMetro.Tozai.NishiFunabashi",
+      "toStation": "odpt.Station:JR-East.ChuoSobuLocal.NishiFunabashi",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.tokyometro.jp/corporate/ir/library/factbook/pdf/factbook_2025.pdf"
+      ]
+    },
+    {
+      "id": "tokyu-toyoko-shinyokohama-hiyoshi",
+      "station": "日吉",
+      "fromRailway": "odpt.Railway:Tokyu.Toyoko",
+      "toRailway": "odpt.Railway:Tokyu.TokyuShinYokohama",
+      "fromStation": "odpt.Station:Tokyu.Toyoko.Hiyoshi",
+      "toStation": "odpt.Station:Tokyu.TokyuShinYokohama.Hiyoshi",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.tokyu.co.jp/railway/service/activity/network/chokutsuu/"
+      ]
+    },
+    {
+      "id": "tokyu-meguro-shinyokohama-hiyoshi",
+      "station": "日吉",
+      "fromRailway": "odpt.Railway:Tokyu.Meguro",
+      "toRailway": "odpt.Railway:Tokyu.TokyuShinYokohama",
+      "fromStation": "odpt.Station:Tokyu.Meguro.Hiyoshi",
+      "toStation": "odpt.Station:Tokyu.TokyuShinYokohama.Hiyoshi",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.tokyu.co.jp/railway/service/activity/network/chokutsuu/"
+      ]
+    },
+    {
+      "id": "tokyu-oimachi-denentoshi-mizonokuchi",
+      "station": "溝の口",
+      "fromRailway": "odpt.Railway:Tokyu.Oimachi",
+      "toRailway": "odpt.Railway:Tokyu.DenEnToshi",
+      "fromStation": "odpt.Station:Tokyu.Oimachi.Mizonokuchi",
+      "toStation": "odpt.Station:Tokyu.DenEnToshi.Mizonokuchi",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.tokyu.co.jp/railway/ticket/types/q_seat/"
+      ]
+    },
+    {
+      "id": "odakyu-odawara-enoshima-sagamiono",
+      "station": "相模大野",
+      "fromRailway": "odpt.Railway:Odakyu.Odawara",
+      "toRailway": "odpt.Railway:Odakyu.Enoshima",
+      "fromStation": "odpt.Station:Odakyu.Odawara.SagamiOno",
+      "toStation": "odpt.Station:Odakyu.Enoshima.SagamiOno",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.odakyu.jp/rail/"
+      ]
+    },
+    {
+      "id": "odakyu-odawara-tama-shinyurigaoka",
+      "station": "新百合ヶ丘",
+      "fromRailway": "odpt.Railway:Odakyu.Odawara",
+      "toRailway": "odpt.Railway:Odakyu.Tama",
+      "fromStation": "odpt.Station:Odakyu.Odawara.ShinYurigaoka",
+      "toStation": "odpt.Station:Odakyu.Tama.ShinYurigaoka",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.odakyu.jp/rail/"
+      ]
+    },
+    {
+      "id": "keikyu-main-airport-kamata",
+      "station": "京急蒲田",
+      "fromRailway": "odpt.Railway:Keikyu.Main",
+      "toRailway": "odpt.Railway:Keikyu.Airport",
+      "fromStation": "odpt.Station:Keikyu.Main.KeikyuKamata",
+      "toStation": "odpt.Station:Keikyu.Airport.KeikyuKamata",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.keikyu.co.jp/ride/train/rosenzu.html"
+      ]
+    },
+    {
+      "id": "keikyu-main-kurihama-horinouchi",
+      "station": "堀ノ内",
+      "fromRailway": "odpt.Railway:Keikyu.Main",
+      "toRailway": "odpt.Railway:Keikyu.Kurihama",
+      "fromStation": "odpt.Station:Keikyu.Main.Horinouchi",
+      "toStation": "odpt.Station:Keikyu.Kurihama.Horinouchi",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.keikyu.co.jp/ride/train/rosenzu.html"
+      ]
+    },
+    {
+      "id": "keikyu-main-zushi-kanazawahakkei",
+      "station": "金沢八景",
+      "fromRailway": "odpt.Railway:Keikyu.Main",
+      "toRailway": "odpt.Railway:Keikyu.Zushi",
+      "fromStation": "odpt.Station:Keikyu.Main.KanazawaHakkei",
+      "toStation": "odpt.Station:Keikyu.Zushi.KanazawaHakkei",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.keikyu.co.jp/ride/train/rosenzu.html"
+      ]
+    },
+    {
+      "id": "seibu-ikebukuro-yurakucho-nerima",
+      "station": "練馬",
+      "fromRailway": "odpt.Railway:Seibu.Ikebukuro",
+      "toRailway": "odpt.Railway:Seibu.SeibuYurakucho",
+      "fromStation": "odpt.Station:Seibu.Ikebukuro.Nerima",
+      "toStation": "odpt.Station:Seibu.SeibuYurakucho.Nerima",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.seiburailway.jp/railway/station/nerima/"
+      ]
+    },
+    {
+      "id": "seibu-shinjuku-haijima-kodaira",
+      "station": "小平",
+      "fromRailway": "odpt.Railway:Seibu.Shinjuku",
+      "toRailway": "odpt.Railway:Seibu.Haijima",
+      "fromStation": "odpt.Station:Seibu.Shinjuku.Kodaira",
+      "toStation": "odpt.Station:Seibu.Haijima.Kodaira",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.seiburailway.jp/railway/haijima-liner/"
+      ]
+    },
+    {
+      "id": "seibu-ikebukuro-toshima-nerima",
+      "station": "練馬",
+      "fromRailway": "odpt.Railway:Seibu.Ikebukuro",
+      "toRailway": "odpt.Railway:Seibu.Toshima",
+      "fromStation": "odpt.Station:Seibu.Ikebukuro.Nerima",
+      "toStation": "odpt.Station:Seibu.Toshima.Nerima",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.seiburailway.jp/railway/station/nerima/"
+      ]
+    },
+    {
+      "id": "seibu-ikebukuro-chichibu-agano",
+      "station": "吾野",
+      "fromRailway": "odpt.Railway:Seibu.Ikebukuro",
+      "toRailway": "odpt.Railway:Seibu.SeibuChichibu",
+      "fromStation": "odpt.Station:Seibu.Ikebukuro.Agano",
+      "toStation": "odpt.Station:Seibu.SeibuChichibu.Agano",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.seiburailway.jp/railway/station/agano/"
+      ]
+    },
+    {
+      "id": "seibu-ikebukuro-sayama-nishitokorozawa",
+      "station": "西所沢",
+      "fromRailway": "odpt.Railway:Seibu.Ikebukuro",
+      "toRailway": "odpt.Railway:Seibu.Sayama",
+      "fromStation": "odpt.Station:Seibu.Ikebukuro.NishiTokorozawa",
+      "toStation": "odpt.Station:Seibu.Sayama.NishiTokorozawa",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.seiburailway.jp/railway/station/nishi-tokorozawa/"
+      ]
+    },
+    {
+      "id": "tobu-skytreebranch-skytree-hikifune",
+      "station": "曳舟",
+      "fromRailway": "odpt.Railway:Tobu.TobuSkytreeBranch",
+      "toRailway": "odpt.Railway:Tobu.TobuSkytree",
+      "fromStation": "odpt.Station:Tobu.TobuSkytreeBranch.Hikifune",
+      "toStation": "odpt.Station:Tobu.TobuSkytree.Hikifune",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.tobu.co.jp/railway/women/skytree_line/"
+      ]
+    },
+    {
+      "id": "tobu-skytree-isesaki-dobutsukoen",
+      "station": "東武動物公園",
+      "fromRailway": "odpt.Railway:Tobu.TobuSkytree",
+      "toRailway": "odpt.Railway:Tobu.Isesaki",
+      "fromStation": "odpt.Station:Tobu.TobuSkytree.TobuDobutsuKoen",
+      "toStation": "odpt.Station:Tobu.Isesaki.TobuDobutsuKoen",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.tobu.co.jp/railway/women/skytree_line/"
+      ]
+    },
+    {
+      "id": "tobu-skytree-nikko-dobutsukoen",
+      "station": "東武動物公園",
+      "fromRailway": "odpt.Railway:Tobu.TobuSkytree",
+      "toRailway": "odpt.Railway:Tobu.Nikko",
+      "fromStation": "odpt.Station:Tobu.TobuSkytree.TobuDobutsuKoen",
+      "toStation": "odpt.Station:Tobu.Nikko.TobuDobutsuKoen",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.tobu.co.jp/railway/women/skytree_line/"
+      ]
+    },
+    {
+      "id": "sotetsu-main-shinyokohama-nishiya",
+      "station": "西谷",
+      "fromRailway": "odpt.Railway:Sotetsu.Main",
+      "toRailway": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
+      "fromStation": "odpt.Station:Sotetsu.Main.Nishiya",
+      "toStation": "odpt.Station:Sotetsu.SotetsuShinYokohama.Nishiya",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.sotetsu.co.jp/train/stations/nishiya/"
+      ]
+    },
+    {
+      "id": "sotetsu-main-izumino-futamatagawa",
+      "station": "二俣川",
+      "fromRailway": "odpt.Railway:Sotetsu.Main",
+      "toRailway": "odpt.Railway:Sotetsu.Izumino",
+      "fromStation": "odpt.Station:Sotetsu.Main.Futamatagawa",
+      "toStation": "odpt.Station:Sotetsu.Izumino.Futamatagawa",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.sotetsu.co.jp/train/railway/"
+      ]
+    },
+    {
+      "id": "keisei-oshiage-main-aoto",
+      "station": "青砥",
+      "fromRailway": "odpt.Railway:Keisei.Oshiage",
+      "toRailway": "odpt.Railway:Keisei.Main",
+      "fromStation": "odpt.Station:Keisei.Oshiage.Aoto",
+      "toStation": "odpt.Station:Keisei.Main.Aoto",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.keisei.co.jp/keisei/tetudou/accessj/"
+      ]
+    },
+    {
+      "id": "keisei-main-access-takasago",
+      "station": "京成高砂",
+      "fromRailway": "odpt.Railway:Keisei.Main",
+      "toRailway": "odpt.Railway:Keisei.NaritaSkyAccess",
+      "fromStation": "odpt.Station:Keisei.Main.KeiseiTakasago",
+      "toStation": "odpt.Station:Keisei.NaritaSkyAccess.KeiseiTakasago",
+      "bidirectional": true,
+      "status": "verified",
+      "sourceUrls": [
+        "https://www.keisei.co.jp/keisei/tetudou/accessj/"
+      ]
+    }
   ]
 }
