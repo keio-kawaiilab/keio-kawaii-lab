@@ -1,0 +1,73 @@
+name: Complete Line 8 and Line 13 exact through-service audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - fix/line8-line13-exact-corridors
+    paths:
+      - 'scripts/probe_seibu_line8_line13_exact.py'
+      - 'scripts/apply_line8_line13_seibu_evidence.mjs'
+      - 'scripts/apply_yurakucho_wakoshi_endpoint_evidence.mjs'
+      - 'scripts/verify_line8_line13_boundaries.mjs'
+      - 'scripts/report_line8_line13_identity_coverage.mjs'
+      - 'scripts/audit_line8_line13_bidirectional_exact.mjs'
+      - '.github/workflows/complete-line8-line13.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install collector dependencies
+        run: pip install requests==2.32.5 beautifulsoup4==4.13.4 pdfplumber==0.11.7
+      - name: Verify full route boundaries
+        run: node scripts/verify_line8_line13_boundaries.mjs
+      - name: Collect exact separated Seibu evidence
+        run: python scripts/probe_seibu_line8_line13_exact.py --output data/transit/line8-line13/seibu-official-exact-through-trains.json
+      - name: Collect exact Sotetsu Line 13 evidence
+        run: python scripts/collect_sotetsu_official_line13_columns.py --output data/transit/fukutoshin/sotetsu-official-line13-columns.json
+      - name: Static checks
+        run: |
+          node --check scripts/apply_line8_line13_seibu_evidence.mjs
+          node --check scripts/apply_fukutoshin_sotetsu_pdf_evidence.mjs
+          node --check scripts/apply_fukutoshin_wakoshi_endpoint_evidence.mjs
+          node --check scripts/apply_yurakucho_wakoshi_endpoint_evidence.mjs
+          node --check scripts/report_line8_line13_identity_coverage.mjs
+          node --check scripts/audit_line8_line13_bidirectional_exact.mjs
+          node scripts/test_odpt_train_identity_db.mjs
+      - name: Rebuild deterministic through-service DB
+        run: |
+          node scripts/build-through-service-db.mjs
+          node scripts/enrich-through-service-db.mjs
+          node scripts/apply_line8_line13_seibu_evidence.mjs
+          node scripts/apply_fukutoshin_sotetsu_pdf_evidence.mjs
+          node scripts/apply_fukutoshin_wakoshi_endpoint_evidence.mjs
+          node scripts/apply_yurakucho_wakoshi_endpoint_evidence.mjs
+      - name: Report complete Line 8 and Line 13 coverage
+        run: node scripts/report_line8_line13_identity_coverage.mjs
+      - name: Audit every boundary in both directions
+        run: node scripts/audit_line8_line13_bidirectional_exact.mjs
+      - name: Assert both systems complete
+        run: |
+          node - <<'NODE'
+          const l13=require('./data/transit/fukutoshin/identity-coverage-report.json');
+          const l8=require('./data/transit/line8/identity-coverage-report.json');
+          const e=require('./data/transit/line8-line13/seibu-official-exact-through-trains.json');
+          console.log('LINE13',JSON.stringify(l13.summary,null,2));
+          console.log('LINE8',JSON.stringify(l8.summary,null,2));
+          console.log('SEIBU',JSON.stringify(e.summary,null,2));
+          if(l13.summary.boundaryPairs!==10||l13.summary.exactIdentityReadyPairs!==10||l13.summary.complete!==true)throw new Error('Full Line 13 not complete');
+          if(l8.summary.boundaryPairs!==3||l8.summary.exactIdentityReadyPairs!==3||l8.summary.complete!==true)throw new Error('Full Line 8 not complete');
+          if(e.identityPolicy.ambiguousMetroBranchMayEstablishLineIdentity!==false)throw new Error('Ambiguous Metro branch must remain fail-closed');
+          NODE
+      - name: Validate JSON
+        run: |
+          node -e "for(const f of ['data/transit/through-service-boundaries.json','data/transit/through-service-trips.json','data/transit/through-service-coverage.json','data/transit/fukutoshin/identity-coverage-report.json','data/transit/line8/identity-coverage-report.json','data/transit/line8-line13/seibu-official-exact-through-trains.json'])JSON.parse(require('fs').readFileSync(f,'utf8'));"
