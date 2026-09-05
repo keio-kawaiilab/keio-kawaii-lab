@@ -9,6 +9,7 @@ on:
       - 'scripts/keikyu_generated_evidence.py'
       - 'scripts/reviewed_train_evidence.py'
       - '.github/workflows/collect-keikyu-official-through-evidence.yml'
+      - '.github/workflows/update-keikyu-official-through-evidence.yml'
   workflow_dispatch:
 
 permissions:
@@ -63,8 +64,33 @@ jobs:
               assert row.get('boundaryId') == 'toei-keikyu-sengakuji', row
               assert 'same-printed-column-spans-both-sides-of-sengakuji' in (row.get('evidence') or []), row
           PY
+      - name: Validate production evidence in strict finalizer
+        run: |
+          cp /tmp/keikyu-official-train-evidence.json data/transit-v2/keikyu-official-train-evidence.json
+          python scripts/finalize_transit_v2.py
+          python scripts/audit_transit_v2.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          v2=Path('data/transit-v2')
+          edges=json.loads((v2/'same-train-edges.json').read_text(encoding='utf-8')).get('edges') or []
+          generated=[e for e in edges if 'keikyu-official-connection-timetable-same-column' in (e.get('evidence') or [])]
+          coverage=json.loads((v2/'coverage.json').read_text(encoding='utf-8'))
+          unresolved=json.loads((v2/'unresolved-summary.json').read_text(encoding='utf-8'))
+          print('KEIKYU_GENERATED_EDGES', len(generated))
+          print('COVERAGE_SUMMARY', json.dumps(coverage.get('summary') or {}, ensure_ascii=False, indent=2))
+          print('UNRESOLVED_TOTAL', unresolved.get('totalUnresolved'))
+          assert len(generated) > 0, 'generated official evidence produced no same-train edges'
+          assert all(e.get('identityLevel') == 'evidence-backed' for e in generated), generated[:3]
+          assert all((e.get('boundary') or {}).get('station') == '泉岳寺' for e in generated), generated[:3]
+          PY
       - uses: actions/upload-artifact@v4
         with:
           name: keikyu-official-through-evidence
-          path: /tmp/keikyu-official-train-evidence.json
+          path: |
+            /tmp/keikyu-official-train-evidence.json
+            data/transit-v2/same-train-edges.json
+            data/transit-v2/runtime-same-train.json
+            data/transit-v2/coverage.json
+            data/transit-v2/unresolved-summary.json
           if-no-files-found: error
