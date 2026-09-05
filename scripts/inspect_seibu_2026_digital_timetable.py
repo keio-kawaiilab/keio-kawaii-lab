@@ -170,7 +170,6 @@ def main() -> None:
         except Exception as exc:
             errors.append({"url": url, "error": str(exc)})
 
-    # Inspect only a small number of JS files discovered from the official viewer.
     script_rows = []
     seen = set()
     for url in discovered_scripts:
@@ -191,7 +190,7 @@ def main() -> None:
     config_reachable = len(config_rows)
     searchable_config = [row["url"] for row in config_rows if row["keywordHits"] or row["trainNumberLikeTokenCount"]]
     report = {
-        "version": 2,
+        "version": 3,
         "generatedAt": datetime.now(timezone.utc).isoformat(),
         "source": "Seibu Railway official Digital Seibu Timetable 2026",
         "sourceBase": BASE,
@@ -212,8 +211,10 @@ def main() -> None:
         "inspectedScripts": script_rows,
         "errors": errors,
         "searchableConfigResources": searchable_config,
-        "sourceUsableForFurtherParsing": reachable >= 2 and config_reachable >= 1,
-        "note": "Discovery only. No same-train edge is emitted until a single current official published train column is parsed exactly.",
+        "viewerReachable": reachable >= 2,
+        "configLocationStillUnresolved": config_reachable == 0,
+        "sourceUsableForFurtherParsing": reachable >= 2,
+        "note": "Discovery report is retained even when guessed config paths miss. No same-train edge is emitted until a single current official published train column is parsed exactly.",
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -224,10 +225,10 @@ def main() -> None:
         "discoveredScripts": len(seen),
         "inspectedScripts": len(script_rows),
         "errors": len(errors),
-        "sourceUsableForFurtherParsing": report["sourceUsableForFurtherParsing"],
+        "viewerReachable": report["viewerReachable"],
     }, ensure_ascii=False, indent=2))
-    if reachable < 2 or config_reachable < 1:
-        raise SystemExit("Current Seibu official digital timetable could not be structurally inspected from this runner")
+    if reachable < 2:
+        raise SystemExit("Current Seibu official digital timetable viewer is not reachable from this runner")
 
 
 if __name__ == "__main__":
