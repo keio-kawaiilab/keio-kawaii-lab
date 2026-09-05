@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
-"""Exhaustively audit the retained Keisei-led exact timetable network.
+"""Exhaustively audit the retained Keisei-led exact timetable database.
 
-This is deliberately stricter than the coverage regression test.  It proves
-that every retained official one-train page maps one-for-one to the generated
-network, that every stop/time survives unchanged after normalization, that no
-segment is left without a physical railway assignment, and that Hokusō /
-Shibayama projections point back to exact network segments rather than being
-reconstructed from nearby times or shared station IDs.
+This checks the source-to-network mapping one stop at a time and then proves
+that every per-line Keisei/Hokusō/Shibayama timetable is merely a projection
+of exact network segments. Nothing may be reconstructed from a nearby time,
+matching train number, or a station that happens to be shared by two lines.
 """
 from __future__ import annotations
 
@@ -25,6 +23,16 @@ BASE_SCRIPT = ROOT / 'scripts/build_keisei_network_timetable.py'
 
 HOKUSO = 'manual.Railway:Hokuso.Hokuso'
 SHIBAYAMA = 'manual.Railway:Shibayama.Shibayama'
+KEISEI_FILES = {
+    'odpt.Railway:Keisei.Main': 'official-main.json',
+    'odpt.Railway:Keisei.Oshiage': 'official-oshiage.json',
+    'odpt.Railway:Keisei.Kanamachi': 'official-kanamachi.json',
+    'odpt.Railway:Keisei.Chiba': 'official-chiba.json',
+    'odpt.Railway:Keisei.Chihara': 'official-chihara.json',
+    'odpt.Railway:Keisei.HigashiNarita': 'official-higashinarita.json',
+    'odpt.Railway:Keisei.NaritaSkyAccess': 'official-narita-sky-access.json',
+    'odpt.Railway:Keisei.Matsudo': 'official-matsudo.json',
+}
 EXPECTED_EXTERNAL_CROSSINGS = {
     frozenset(('odpt.Railway:Keisei.Oshiage', 'odpt.Railway:Toei.Asakusa')),
     frozenset(('odpt.Railway:Toei.Asakusa', 'odpt.Railway:Keikyu.Main')),
@@ -70,7 +78,7 @@ def source_times(module, stops: list[dict[str, Any]]) -> list[tuple[int | None, 
     return result
 
 
-def station_name_map(module, extension) -> tuple[dict[str, str], dict[str, dict[str, Any]]]:
+def station_name_map(module) -> tuple[dict[str, str], dict[str, dict[str, Any]]]:
     keisei = load_json(ROOT / 'data/transit/keisei/entities.json')
     toei = load_json(ROOT / 'data/transit/toei/entities.json')
     keikyu = load_json(ROOT / 'data/transit/keikyu/entities.json')
@@ -87,12 +95,12 @@ def station_name_map(module, extension) -> tuple[dict[str, str], dict[str, dict[
     return by_id, lines
 
 
-def audit_source_and_network() -> dict[str, int]:
-    module, extension = exact_builder()
+def audit_source_and_network() -> tuple[dict[str, int], Any, dict[str, str]]:
+    module, _ = exact_builder()
     details = load_json(DETAILS)
     network = load_json(NETWORK)
     report = load_json(REPORT)
-    names_by_station_id, lines = station_name_map(module, extension)
+    names_by_station_id, _ = station_name_map(module)
 
     trains = details.get('trains') or []
     trips = network.get('trips') or []
@@ -175,9 +183,7 @@ def audit_source_and_network() -> dict[str, int]:
     assert observed_crossings == EXPECTED_EXTERNAL_CROSSINGS, (observed_crossings, EXPECTED_EXTERNAL_CROSSINGS)
 
     required_railways = {
-        'odpt.Railway:Keisei.Main', 'odpt.Railway:Keisei.Oshiage', 'odpt.Railway:Keisei.Kanamachi',
-        'odpt.Railway:Keisei.Chiba', 'odpt.Railway:Keisei.Chihara', 'odpt.Railway:Keisei.HigashiNarita',
-        'odpt.Railway:Keisei.NaritaSkyAccess', 'odpt.Railway:Keisei.Matsudo',
+        *KEISEI_FILES.keys(),
         'odpt.Railway:Toei.Asakusa', 'odpt.Railway:Keikyu.Main', 'odpt.Railway:Keikyu.Airport',
         'odpt.Railway:Keikyu.Kurihama', 'odpt.Railway:Keikyu.Zushi', 'odpt.Railway:Keikyu.Daishi',
         HOKUSO, SHIBAYAMA,
@@ -185,72 +191,151 @@ def audit_source_and_network() -> dict[str, int]:
     assert required_railways.issubset(set(railways)), required_railways - set(railways)
     assert int(report.get('supportedRailwayCount') or 0) == len(railways)
 
-    return {
+    return ({
         'sourceTrains': len(trains),
         'sourceStops': total_stops,
         'networkLinks': total_links,
         'networkRailways': len(railways),
-    }
+    }, module, names_by_station_id)
 
 
-def audit_projection(slug: str, railway_id: str) -> int:
+def projection_connection_count(table: dict[str, Any]) -> int:
+    return sum(max(0, len(trip[3] or []) - 1) for trip in table.get('trips') or [] if isinstance(trip, list) and len(trip) >= 4)
+
+
+def audit_projection_table(
+    module,
+    names_by_station_id: dict[str, str],
+    railway_id: str,
+    table_path: Path,
+    index_row: dict[str, Any],
+    label: str,
+) -> tuple[int, int]:
     network = load_json(NETWORK)
-    table = load_json(ROOT / f'data/transit/{slug}/timetables/official-{slug}.json')
-    index = load_json(ROOT / f'data/transit/{slug}/timetable-index.json')
-    coverage = load_json(ROOT / f'data/transit/{slug}/coverage-report.json')
+    table = load_json(table_path)
     stations = table.get('stations') or []
     network_stations = network.get('stations') or []
     network_railways = network.get('railways') or []
     target_index = network_railways.index(railway_id)
 
-    assert table.get('railway') == railway_id
-    assert table.get('timeBasis') == 'train-timetable'
-    assert table.get('destinationAuthoritative') is False
-    rows = list((index.get('lines') or {}).values())
-    assert len(rows) == 1
-    assert int(rows[0].get('trips') or -1) == len(table.get('trips') or [])
-    assert int(coverage.get('trips') or -1) == len(table.get('trips') or [])
-    assert coverage.get('identityBasis') == 'same official one-train page'
+    assert table.get('version') >= 3, (label, table.get('version'))
+    assert table.get('railway') == railway_id, (label, table.get('railway'))
+    assert table.get('timeBasis') == 'train-timetable', label
+    assert table.get('destinationAuthoritative') is False, label
+    assert 'exact railway-link projection' in str(table.get('identityBasis') or ''), (label, table.get('identityBasis'))
+    trips = table.get('trips') or []
+    connections = projection_connection_count(table)
+    assert int(index_row.get('trips') or -1) == len(trips), (label, index_row.get('trips'), len(trips))
+    assert int(index_row.get('connections') or -1) == connections, (label, index_row.get('connections'), connections)
+    assert index_row.get('status') == 'official-exact-network-projection', (label, index_row.get('status'))
+    assert index_row.get('identityBasis') == 'official-one-train-page', (label, index_row.get('identityBasis'))
 
-    for projected_index, trip in enumerate(table.get('trips') or []):
-        assert isinstance(trip, list) and len(trip) >= 7, (slug, projected_index)
-        assert trip[5] == trip[6], (slug, projected_index, trip[5:7])
+    table_names: list[str] = []
+    for station_id in stations:
+        name = names_by_station_id.get(station_id)
+        assert name, (label, 'unknown projected station', station_id)
+        table_names.append(name)
+
+    for projected_index, trip in enumerate(trips):
+        assert isinstance(trip, list) and len(trip) >= 7, (label, projected_index)
+        assert trip[5] == trip[6], (label, projected_index, trip[5:7])
         prefix = 'keisei-official-network:'
         identity = str(trip[6] or '')
-        assert identity.startswith(prefix), (slug, projected_index, identity)
+        assert identity.startswith(prefix), (label, projected_index, identity)
         source_index = int(identity[len(prefix):])
-        assert 0 <= source_index < len(network.get('trips') or []), (slug, projected_index, source_index)
+        assert 0 <= source_index < len(network.get('trips') or []), (label, projected_index, source_index)
         source = network['trips'][source_index]
-        assert network['calendars'][source[0]] == table['calendars'][trip[0]], (slug, projected_index)
-        assert network['trainTypes'][source[1]] == table['trainTypes'][trip[1]], (slug, projected_index)
-        assert str(source[2] or '') == str(trip[2] or ''), (slug, projected_index)
+        assert network['calendars'][source[0]] == table['calendars'][trip[0]], (label, projected_index)
+        assert network['trainTypes'][source[1]] == table['trainTypes'][trip[1]], (label, projected_index)
+        assert str(source[2] or '') == str(trip[2] or ''), (label, projected_index)
 
-        projected_ids = []
-        for stop in trip[3] or []:
-            assert isinstance(stop, list) and len(stop) >= 3, (slug, projected_index, stop)
+        source_names: list[str] = []
+        for row in source[3] or []:
+            station_id = network_stations[row[0]]
+            name = names_by_station_id.get(station_id)
+            assert name, (label, 'unknown network station', station_id)
+            source_names.append(name)
+
+        projected_names: list[str] = []
+        projected_rows = trip[3] or []
+        for stop in projected_rows:
+            assert isinstance(stop, list) and len(stop) >= 3, (label, projected_index, stop)
             station_index = stop[0]
-            assert isinstance(station_index, int) and 0 <= station_index < len(stations), (slug, projected_index, station_index)
-            projected_ids.append(stations[station_index])
-        assert len(projected_ids) >= 2, (slug, projected_index)
+            assert isinstance(station_index, int) and 0 <= station_index < len(stations), (label, projected_index, station_index)
+            projected_names.append(table_names[station_index])
+        assert len(projected_names) >= 2, (label, projected_index)
 
-        source_ids = [network_stations[row[0]] for row in source[3] or []]
         cursor = -1
         source_positions: list[int] = []
-        for station_id in projected_ids:
+        for name in projected_names:
             try:
-                position = source_ids.index(station_id, cursor + 1)
+                position = source_names.index(name, cursor + 1)
             except ValueError as exc:
-                raise AssertionError((slug, projected_index, station_id, source_index)) from exc
+                raise AssertionError((label, projected_index, name, source_index, source_names)) from exc
             source_positions.append(position)
             cursor = position
+
+        for local_index, source_position in enumerate(source_positions):
+            projected_stop = projected_rows[local_index]
+            source_stop = source[3][source_position]
+            assert (projected_stop[1], projected_stop[2]) == (source_stop[1], source_stop[2]), (
+                label, projected_index, projected_names[local_index], projected_stop, source_stop
+            )
         for first, second in zip(source_positions, source_positions[1:]):
-            assert second == first + 1, (slug, projected_index, source_positions)
-            assert target_index in (source[4][first] or []), (slug, projected_index, source_index, first)
+            assert second == first + 1, (label, projected_index, source_positions)
+            assert target_index in (source[4][first] or []), (label, projected_index, source_index, first, railway_id)
 
-    return len(table.get('trips') or [])
+        destination_index = projected_rows[-1][0]
+        assert trip[4] == stations[destination_index], (label, projected_index, trip[4], stations[destination_index])
+
+    return len(trips), connections
 
 
-def audit_manifest(hokuso_trips: int, shibayama_trips: int) -> None:
+def audit_all_projections(module, names_by_station_id: dict[str, str]) -> tuple[dict[str, dict[str, int]], int, int]:
+    keisei_index = load_json(ROOT / 'data/transit/keisei/timetable-index.json')
+    assert int(keisei_index.get('version') or 0) >= 3
+    assert 'exact railway-link projection' in str(keisei_index.get('source') or '')
+    network_descriptor = keisei_index.get('network') or {}
+    assert network_descriptor.get('identityBasis') == 'official-one-train-page'
+    assert int(network_descriptor.get('trips') or 0) == len(load_json(NETWORK).get('trips') or [])
+
+    keisei_summary: dict[str, dict[str, int]] = {}
+    for railway_id, filename in KEISEI_FILES.items():
+        row = (keisei_index.get('lines') or {}).get(railway_id)
+        assert isinstance(row, dict), railway_id
+        trips, connections = audit_projection_table(
+            module,
+            names_by_station_id,
+            railway_id,
+            ROOT / 'data/transit/keisei/timetables' / filename,
+            row,
+            railway_id,
+        )
+        keisei_summary[railway_id] = {'trips': trips, 'connections': connections}
+
+    external_counts: dict[str, int] = {}
+    for slug, railway_id in (('hokuso', HOKUSO), ('shibayama', SHIBAYAMA)):
+        index = load_json(ROOT / f'data/transit/{slug}/timetable-index.json')
+        row = (index.get('lines') or {}).get(railway_id)
+        assert isinstance(row, dict), slug
+        trips, connections = audit_projection_table(
+            module,
+            names_by_station_id,
+            railway_id,
+            ROOT / f'data/transit/{slug}/timetables/official-{slug}.json',
+            row,
+            slug,
+        )
+        coverage = load_json(ROOT / f'data/transit/{slug}/coverage-report.json')
+        assert int(coverage.get('trips') or -1) == trips, (slug, coverage.get('trips'), trips)
+        assert int(coverage.get('connections') or -1) == connections, (slug, coverage.get('connections'), connections)
+        assert coverage.get('identityBasis') == 'same official one-train page', slug
+        external_counts[slug] = trips
+
+    return keisei_summary, external_counts['hokuso'], external_counts['shibayama']
+
+
+def audit_manifest(keisei_summary: dict[str, dict[str, int]], hokuso_trips: int, shibayama_trips: int) -> None:
     manifest = load_json(MANIFEST)
     operators = manifest.get('operators') or {}
     keisei = operators.get('keisei') or {}
@@ -260,17 +345,27 @@ def audit_manifest(hokuso_trips: int, shibayama_trips: int) -> None:
 
     assert keisei.get('status') == 'ok'
     assert int(keisei.get('trainTimetables') or 0) == int(details.get('trainCount') or 0)
+    assert int(keisei.get('timetableLines') or 0) == len(KEISEI_FILES)
+    expected_connections = sum(row['connections'] for row in keisei_summary.values())
+    assert int(keisei.get('timetableConnections') or -1) == expected_connections, (keisei.get('timetableConnections'), expected_connections)
+    assert int(keisei.get('departures') or -1) == expected_connections
+    assert int(keisei.get('inferredConnections') or -1) == 0
+    assert keisei.get('identityBasis') == 'official-one-train-page'
+    assert 'exact railway-link projection' in str(keisei.get('timetableSource') or '')
+
     assert hokuso.get('status') == 'ok' and int(hokuso.get('stations') or 0) == 15
     assert shibayama.get('status') == 'ok' and int(shibayama.get('stations') or 0) == 2
     assert int(hokuso.get('trainTimetables') or 0) == hokuso_trips, (hokuso.get('trainTimetables'), hokuso_trips)
     assert int(shibayama.get('trainTimetables') or 0) == shibayama_trips, (shibayama.get('trainTimetables'), shibayama_trips)
+    assert hokuso.get('identityBasis') == 'official-one-train-page'
+    assert shibayama.get('identityBasis') == 'official-one-train-page'
 
     boundaries = load_json(ROOT / 'data/transit/keisei/external-through-boundaries.json')
     rows = boundaries.get('boundaries') or []
     assert len(rows) == 2, rows
     expected = {
-        frozenset(('manual.Railway:Hokuso.Hokuso', 'odpt.Railway:Keisei.Main')): '京成高砂',
-        frozenset(('manual.Railway:Shibayama.Shibayama', 'odpt.Railway:Keisei.HigashiNarita')): '東成田',
+        frozenset((HOKUSO, 'odpt.Railway:Keisei.Main')): '京成高砂',
+        frozenset((SHIBAYAMA, 'odpt.Railway:Keisei.HigashiNarita')): '東成田',
     }
     for row in rows:
         pair = frozenset((str(row.get('fromRailway') or ''), str(row.get('toRailway') or '')))
@@ -281,14 +376,26 @@ def audit_manifest(hokuso_trips: int, shibayama_trips: int) -> None:
         assert len(row.get('sourceUrls') or []) >= 2, row
 
 
+def audit_report_projection(keisei_summary: dict[str, dict[str, int]], hokuso_trips: int, shibayama_trips: int) -> None:
+    report = load_json(REPORT)
+    assert report.get('keiseiLineProjection') == keisei_summary, (report.get('keiseiLineProjection'), keisei_summary)
+    external = report.get('externalLineProjection') or {}
+    assert int(external.get('hokusoTrips') or -1) == hokuso_trips
+    assert int(external.get('shibayamaTrips') or -1) == shibayama_trips
+    assert int(external.get('unsupportedStopRowsAfterExtension') or 0) == 0
+    assert external.get('unsupportedStationsAfterExtension') == {}
+
+
 def main() -> int:
-    summary = audit_source_and_network()
-    hokuso = audit_projection('hokuso', HOKUSO)
-    shibayama = audit_projection('shibayama', SHIBAYAMA)
-    audit_manifest(hokuso, shibayama)
+    summary, module, names_by_station_id = audit_source_and_network()
+    keisei_summary, hokuso, shibayama = audit_all_projections(module, names_by_station_id)
+    audit_report_projection(keisei_summary, hokuso, shibayama)
+    audit_manifest(keisei_summary, hokuso, shibayama)
+    summary['keiseiProjectedTrips'] = sum(row['trips'] for row in keisei_summary.values())
+    summary['keiseiProjectedConnections'] = sum(row['connections'] for row in keisei_summary.values())
     summary['hokusoProjectedTrips'] = hokuso
     summary['shibayamaProjectedTrips'] = shibayama
-    print('Exhaustive Keisei exact-network audit passed')
+    print('Exhaustive Keisei exact-network and per-line projection audit passed')
     print(json.dumps(summary, ensure_ascii=False, indent=2))
     return 0
 
