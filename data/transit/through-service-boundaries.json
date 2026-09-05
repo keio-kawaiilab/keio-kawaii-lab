@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "policy": {
     "runtimeInference": false,
     "timeGapMayEstablishTrainIdentity": false,
@@ -20,6 +20,54 @@
       "status": "verified",
       "source": "https://www.mm21railway.co.jp/station/yokohama/yokohama_wy.html",
       "note": "横浜高速鉄道公式が東急東横線との直通運転を明記。"
+    },
+    {
+      "id": "toyoko-tokyushinyokohama-hiyoshi",
+      "station": "日吉",
+      "fromRailway": "odpt.Railway:Tokyu.Toyoko",
+      "toRailway": "odpt.Railway:Tokyu.TokyuShinYokohama",
+      "fromStation": "odpt.Station:Tokyu.Toyoko.Hiyoshi",
+      "toStation": "odpt.Station:Tokyu.TokyuShinYokohama.Hiyoshi",
+      "bidirectional": true,
+      "status": "verified",
+      "source": "https://www.tokyu.co.jp/railway/ty/",
+      "note": "東急公式が東横線から日吉経由で東急新横浜線・新横浜方面へ直通する列車を明記。"
+    },
+    {
+      "id": "tokyushinyokohama-sotetsushinyokohama-shinyokohama",
+      "station": "新横浜",
+      "fromRailway": "odpt.Railway:Tokyu.TokyuShinYokohama",
+      "toRailway": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
+      "fromStation": "odpt.Station:Tokyu.TokyuShinYokohama.ShinYokohama",
+      "toStation": "odpt.Station:Sotetsu.SotetsuShinYokohama.ShinYokohama",
+      "bidirectional": true,
+      "status": "verified",
+      "source": "https://www.sotetsu.co.jp/train/stations/shinyokohama/",
+      "note": "相鉄公式の新横浜駅案内が東急東横線直通列車を掲載し、東急線方面行時刻表を案内。"
+    },
+    {
+      "id": "sotetsushinyokohama-main-nishiya",
+      "station": "西谷",
+      "fromRailway": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
+      "toRailway": "odpt.Railway:Sotetsu.Main",
+      "fromStation": "odpt.Station:Sotetsu.SotetsuShinYokohama.Nishiya",
+      "toStation": "odpt.Station:Sotetsu.Main.Nishiya",
+      "bidirectional": true,
+      "status": "verified",
+      "source": "https://www.sotetsu.co.jp/train/stations/nishiya/",
+      "note": "相鉄公式の西谷駅案内が相鉄本線と相鉄新横浜線を同駅で接続し、東急線直通列車を掲載。"
+    },
+    {
+      "id": "sotetsu-main-izumino-futamatagawa",
+      "station": "二俣川",
+      "fromRailway": "odpt.Railway:Sotetsu.Main",
+      "toRailway": "odpt.Railway:Sotetsu.Izumino",
+      "fromStation": "odpt.Station:Sotetsu.Main.Futamatagawa",
+      "toStation": "odpt.Station:Sotetsu.Izumino.Futamatagawa",
+      "bidirectional": true,
+      "status": "verified",
+      "source": "https://www.sotetsu.co.jp/train/stations/futamatagawa/",
+      "note": "相鉄公式の二俣川駅案内が本線・いずみ野線を掲載し、東急東横線直通列車がいずみ野線へ運転されることを示す。"
     },
     {
       "id": "toyoko-fukutoshin-shibuya",
@@ -154,16 +202,6 @@
       "toRailway": "odpt.Railway:Toei.Mita",
       "fromStation": "odpt.Station:Tokyu.Meguro.Meguro",
       "toStation": "odpt.Station:Toei.Mita.Meguro",
-      "bidirectional": true,
-      "status": "source-audit-required"
-    },
-    {
-      "id": "tokyushinyokohama-sotetsushinyokohama-shinyokohama",
-      "station": "新横浜",
-      "fromRailway": "odpt.Railway:Tokyu.TokyuShinYokohama",
-      "toRailway": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
-      "fromStation": "odpt.Station:Tokyu.TokyuShinYokohama.ShinYokohama",
-      "toStation": "odpt.Station:Sotetsu.SotetsuShinYokohama.ShinYokohama",
       "bidirectional": true,
       "status": "source-audit-required"
     },
