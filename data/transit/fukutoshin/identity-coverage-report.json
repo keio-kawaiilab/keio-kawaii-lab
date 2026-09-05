@@ -1,0 +1,143 @@
+{
+  "version": 1,
+  "generatedAt": "2026-09-05T11:32:31.575Z",
+  "system": "Fukutoshin Line / former Line 13 through-service corridor",
+  "policy": {
+    "runtimeInference": false,
+    "timeGapMayEstablishTrainIdentity": false,
+    "trainNumberMayEstablishTrainIdentity": false,
+    "publishedDestinationAloneMayEstablishIdentity": false
+  },
+  "sourceIdentityRecords": 25163,
+  "relevantIdentityRecords": {
+    "manual.Railway:YokohamaMinatomirai.Minatomirai": 0,
+    "odpt.Railway:Tokyu.Toyoko": 0,
+    "odpt.Railway:TokyoMetro.Fukutoshin": 719,
+    "odpt.Railway:Seibu.SeibuYurakucho": 0,
+    "odpt.Railway:Seibu.Ikebukuro": 0,
+    "odpt.Railway:Tobu.Tojo": 178
+  },
+  "pairs": [
+    {
+      "id": "minatomirai-toyoko-yokohama",
+      "label": "みなとみらい線↔東急東横線（横浜）",
+      "fromRailway": "manual.Railway:YokohamaMinatomirai.Minatomirai",
+      "toRailway": "odpt.Railway:Tokyu.Toyoko",
+      "boundaryStatus": "verified",
+      "boundarySource": "https://www.mm21railway.co.jp/station/yokohama/yokohama_wy.html",
+      "authoritativeResolvedLinks": 0,
+      "authoritativeUnresolvedReferences": 0,
+      "generatedExactThroughRecords": 0,
+      "generatedPublishedDestinationRecords": 0,
+      "referenceDirections": {},
+      "exactIdentityReady": false,
+      "sourceA": {
+        "slug": "yokohama-minatomirai",
+        "label": "横浜高速鉄道（みなとみらい線）",
+        "operator": "odpt.Operator:Minatomirai",
+        "timetableStatus": "departure-only",
+        "trainTimetables": 0
+      },
+      "sourceB": {
+        "slug": "tokyu",
+        "label": "東急電鉄",
+        "operator": "odpt.Operator:Tokyu",
+        "timetableStatus": "departure-only",
+        "trainTimetables": 0
+      }
+    },
+    {
+      "id": "toyoko-fukutoshin-shibuya",
+      "label": "東急東横線↔副都心線（渋谷）",
+      "fromRailway": "odpt.Railway:Tokyu.Toyoko",
+      "toRailway": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "boundaryStatus": "verified",
+      "boundarySource": "https://www.tokyu.co.jp/area/shibuya/station/",
+      "authoritativeResolvedLinks": 0,
+      "authoritativeUnresolvedReferences": 0,
+      "generatedExactThroughRecords": 0,
+      "generatedPublishedDestinationRecords": 831,
+      "referenceDirections": {},
+      "exactIdentityReady": false,
+      "sourceA": {
+        "slug": "tokyu",
+        "label": "東急電鉄",
+        "operator": "odpt.Operator:Tokyu",
+        "timetableStatus": "departure-only",
+        "trainTimetables": 0
+      },
+      "sourceB": {
+        "slug": "tokyo-metro",
+        "label": "東京メトロ",
+        "operator": "odpt.Operator:TokyoMetro",
+        "timetableStatus": "ok",
+        "trainTimetables": 9774
+      }
+    },
+    {
+      "id": "fukutoshin-seibuyurakucho-kotakemukaihara",
+      "label": "副都心線↔西武有楽町線（小竹向原）",
+      "fromRailway": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "toRailway": "odpt.Railway:Seibu.SeibuYurakucho",
+      "boundaryStatus": "verified",
+      "boundarySource": "https://www.seiburailway.jp/railway/station/",
+      "authoritativeResolvedLinks": 0,
+      "authoritativeUnresolvedReferences": 0,
+      "generatedExactThroughRecords": 0,
+      "generatedPublishedDestinationRecords": 298,
+      "referenceDirections": {},
+      "exactIdentityReady": false,
+      "sourceA": {
+        "slug": "tokyo-metro",
+        "label": "東京メトロ",
+        "operator": "odpt.Operator:TokyoMetro",
+        "timetableStatus": "ok",
+        "trainTimetables": 9774
+      },
+      "sourceB": {
+        "slug": "seibu",
+        "label": "西武鉄道",
+        "operator": "odpt.Operator:Seibu",
+        "timetableStatus": "departure-only",
+        "trainTimetables": 0
+      }
+    },
+    {
+      "id": "fukutoshin-tojo-wakoshi",
+      "label": "副都心線↔東武東上線（和光市）",
+      "fromRailway": "odpt.Railway:TokyoMetro.Fukutoshin",
+      "toRailway": "odpt.Railway:Tobu.Tojo",
+      "boundaryStatus": "verified",
+      "boundarySource": "https://www.tobu.co.jp/corporation/rail/route/",
+      "authoritativeResolvedLinks": 0,
+      "authoritativeUnresolvedReferences": 0,
+      "generatedExactThroughRecords": 0,
+      "generatedPublishedDestinationRecords": 359,
+      "referenceDirections": {},
+      "exactIdentityReady": false,
+      "sourceA": {
+        "slug": "tokyo-metro",
+        "label": "東京メトロ",
+        "operator": "odpt.Operator:TokyoMetro",
+        "timetableStatus": "ok",
+        "trainTimetables": 9774
+      },
+      "sourceB": {
+        "slug": "tobu",
+        "label": "東武鉄道",
+        "operator": "odpt.Operator:Tobu",
+        "timetableStatus": "ok",
+        "trainTimetables": 8536
+      }
+    }
+  ],
+  "summary": {
+    "boundaryPairs": 4,
+    "verifiedBoundaries": 4,
+    "exactIdentityReadyPairs": 0,
+    "resolvedAuthoritativeLinks": 0,
+    "unresolvedAuthoritativeReferences": 0,
+    "generatedExactThroughRecords": 0,
+    "complete": false
+  }
+}
