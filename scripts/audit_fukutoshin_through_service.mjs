@@ -14,8 +14,8 @@ const TJ='odpt.Railway:Tobu.Tojo';
 
 const PAIRS=[
   {id:'minatomirai-toyoko-yokohama',label:'みなとみらい線↔東急東横線（横浜）',a:MM,b:TY,patterns:[['反町','横浜','新高島'],['新高島','横浜','反町']]},
-  {id:'toyoko-tokyushinyokohama-hiyoshi',label:'東急東横線↔東急新横浜線（日吉）',a:TY,b:TSH,patterns:[['日吉','新綱島'],['新綱島','日吉']]},
-  {id:'tokyushinyokohama-sotetsushinyokohama-shinyokohama',label:'東急新横浜線↔相鉄新横浜線（新横浜）',a:TSH,b:SSH,patterns:[['新綱島','新横浜','羽沢横浜国大'],['羽沢横浜国大','新横浜','新綱島']]},
+  {id:'toyoko-tokyushinyokohama-hiyoshi',label:'東急東横線↔東急新横浜線（日吉）',a:TY,b:TSH,patterns:[['自由が丘','日吉','新綱島'],['新綱島','日吉','自由が丘']]},
+  {id:'tokyushinyokohama-sotetsushinyokohama-shinyokohama',label:'東急新横浜線↔相鉄新横浜線（新横浜）',a:TSH,b:SSH,patterns:[['新綱島','新横浜','西谷'],['西谷','新横浜','新綱島']]},
   {id:'sotetsushinyokohama-main-nishiya',label:'相鉄新横浜線↔相鉄本線（西谷）',a:SSH,b:SM,patterns:[]},
   {id:'sotetsu-main-izumino-futamatagawa',label:'相鉄本線↔相鉄いずみ野線（二俣川）',a:SM,b:SIZ,patterns:[]},
   {id:'toyoko-fukutoshin-shibuya',label:'東急東横線↔副都心線（渋谷）',a:TY,b:F,patterns:[['明治神宮前','渋谷','代官山'],['代官山','渋谷','明治神宮前']]},
@@ -35,9 +35,7 @@ if(through?.policy?.runtimeInference!==false||through?.policy?.timeGapMayEstabli
 
 const rows=Array.isArray(identities.records)?identities.records:[];
 const byId=new Map();
-for(const row of rows){
-  for(const id of [row.timetableId,row.id,row.canonicalId,row['owl:sameAs']].filter(Boolean))byId.set(String(id),row);
-}
+for(const row of rows)for(const id of [row.timetableId,row.id,row.canonicalId,row['owl:sameAs']].filter(Boolean))byId.set(String(id),row);
 const odptLinks=new Map(PAIRS.map((row)=>[row.id,new Set()]));
 for(const source of rows){
   for(const targetId of [...(source.previousTrainTimetables||[]),...(source.nextTrainTimetables||[])]){
@@ -54,14 +52,10 @@ for(const source of rows){
 function recordMentionsPair(row,spec){
   const route=Array.isArray(row.routeRailways)?row.routeRailways:[];
   for(let i=0;i+1<route.length;i++)if(pairKey(route[i],route[i+1])===pairKey(spec.a,spec.b))return true;
-  const a=String(row.fromRailway||'');
-  const b=String(row.toRailway||'');
-  return pairKey(a,b)===pairKey(spec.a,spec.b);
+  return pairKey(row.fromRailway,row.toRailway)===pairKey(spec.a,spec.b);
 }
-function exactType(row){return String(row.identityType||row.evidenceType||'');}
-function samePattern(value,patterns){
-  return patterns.some((pattern)=>Array.isArray(value)&&value.length===pattern.length&&pattern.every((name,i)=>String(value[i])===name));
-}
+const exactType=(row)=>String(row.identityType||row.evidenceType||'');
+const samePattern=(value,patterns)=>patterns.some((pattern)=>Array.isArray(value)&&value.length===pattern.length&&pattern.every((name,i)=>String(value[i])===name));
 
 const generated=new Map(PAIRS.map((row)=>[row.id,new Set()]));
 const officialEvidence=new Map(PAIRS.map((row)=>[row.id,new Set()]));
@@ -72,10 +66,8 @@ for(const row of through.records||[]){
     if(!recordMentionsPair(row,spec))continue;
     const id=String(row.identityKey||row.id||'');
     if(!id)throw new Error(`Exact record lacks identity key on ${spec.label}`);
-
     if(type==='official-single-train-page'){
-      if(row.status!=='verified')throw new Error(`Official page record is not verified on ${spec.label}`);
-      if(String(row.canonicalBoundaryId||'')!==spec.id)continue;
+      if(row.status!=='verified'||String(row.canonicalBoundaryId||'')!==spec.id)continue;
       if(!String(row.sourceUrl||'').startsWith('https://'))throw new Error(`Official page record lacks source URL on ${spec.label}`);
       for(const key of ['tx','sf','date','time','dw'])if(!String(row.sourceParameters?.[key]??''))throw new Error(`Official page record lacks ${key} on ${spec.label}`);
       if(spec.patterns.length&&!samePattern(row.publishedBoundaryStops,spec.patterns))throw new Error(`Official page record lacks exact adjacent boundary stops on ${spec.label}`);
@@ -83,14 +75,15 @@ for(const row of through.records||[]){
       for(const field of ['identityKey','fromRailway','toRailway'])if(!required.includes(field))throw new Error(`Official page record lacks ${field} runtime guard on ${spec.label}`);
       officialEvidence.get(spec.id).add(id);
     }else if(type==='official-same-printed-column'){
-      if(row.status!=='verified')throw new Error(`Official column record is not verified on ${spec.label}`);
-      if(String(row.canonicalBoundaryId||'')!==spec.id)continue;
+      if(row.status!=='verified'||String(row.canonicalBoundaryId||'')!==spec.id)continue;
       if(!String(row.sourceUrl||'').startsWith('https://cdn.sotetsu.co.jp/'))throw new Error(`Unexpected official column source on ${spec.label}`);
       if(!Number.isInteger(Number(row.pdfPage))||Number(row.pdfPage)<2)throw new Error(`Official column record lacks PDF page on ${spec.label}`);
       if(!(Number(row.columnX)>0))throw new Error(`Official column record lacks column X on ${spec.label}`);
       if(spec.patterns.length&&!samePattern(row.publishedBoundaryStops,spec.patterns))throw new Error(`Official column record lacks exact boundary pattern on ${spec.label}`);
-      if(row.matchPolicy?.officialSamePrintedColumnRequired!==true)throw new Error(`Official column record must require same printed column on ${spec.label}`);
+      if(row.matchPolicy?.officialSamePrintedColumnRequired!==true||row.matchPolicy?.exactPrintedStationTimesRequired!==true)throw new Error(`Official column record lacks strict same-column requirements on ${spec.label}`);
       if(row.matchPolicy?.timeProximityAloneMayEstablishIdentity!==false||row.matchPolicy?.trainNumberAloneMayEstablishIdentity!==false||row.matchPolicy?.destinationAloneMayEstablishIdentity!==false)throw new Error(`Official column record weakens identity policy on ${spec.label}`);
+      const required=row.runtimeRule?.requiredMatch||[];
+      for(const field of ['identityKey','fromRailway','toRailway'])if(!required.includes(field))throw new Error(`Official column record lacks ${field} runtime guard on ${spec.label}`);
       officialEvidence.get(spec.id).add(id);
     }else if(type==='odpt-train-timetable-link'){
       if(!String(row.sourceTimetableId||'')||!String(row.targetTimetableId||''))throw new Error(`ODPT exact record lacks source/target timetable ids on ${spec.label}`);
