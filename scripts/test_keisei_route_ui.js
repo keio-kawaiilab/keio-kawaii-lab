@@ -18,7 +18,8 @@ function normalizeName(value){
     "新鎌ケ谷":"新鎌ヶ谷",
     "羽田空港第1・第2ターミナル駅":"羽田空港第1・第2ターミナル",
     "羽田空港第3ターミナル駅":"羽田空港第3ターミナル",
-    "逗子・葉山駅":"逗子・葉山"
+    "逗子・葉山駅":"逗子・葉山",
+    "井土ケ谷":"井土ヶ谷"
   };
   return aliases[text]||text;
 }
@@ -57,24 +58,31 @@ function displayName(name){return displayNameByNormalized.get(normalizeName(name
 function findFixture(fromName,toName,desired){
   const fromIndexes=indexesForName(fromName),toIndexes=indexesForName(toName);
   if(!fromIndexes.size||!toIndexes.size)throw new Error(`Network station indexes are missing for ${fromName} -> ${toName}`);
-  for(const trip of network.trips||[]){
-    if(network.calendars[trip[0]]!=="weekday")continue;
-    const stops=trip[3]||[],links=trip[4]||[];
-    for(let i=0;i<stops.length;i++){
-      if(!fromIndexes.has(stops[i][0]))continue;
-      const departure=stops[i][2]!=null?Number(stops[i][2]):Number(stops[i][1]);
-      if(!Number.isFinite(departure))continue;
-      for(let j=i+1;j<stops.length;j++){
-        if(!toIndexes.has(stops[j][0]))continue;
-        const used=[];
-        for(let k=i;k<j;k++)for(const railwayIndex of links[k]||[]){const railway=network.railways[railwayIndex];if(railway)used.push(railway);}
-        if(!same(used,desired))continue;
-        const arrival=stops[j][1]!=null?Number(stops[j][1]):Number(stops[j][2]);
-        if(Number.isFinite(arrival))return {departure,arrival,trainNumber:String(trip[2]||""),desired};
+  for(const desiredCalendar of ["weekday","holiday"]){
+    const candidates=[];
+    for(const trip of network.trips||[]){
+      if(network.calendars[trip[0]]!==desiredCalendar)continue;
+      const stops=trip[3]||[],links=trip[4]||[];
+      for(let i=0;i<stops.length;i++){
+        if(!fromIndexes.has(stops[i][0]))continue;
+        const departure=stops[i][2]!=null?Number(stops[i][2]):Number(stops[i][1]);
+        if(!Number.isFinite(departure))continue;
+        for(let j=i+1;j<stops.length;j++){
+          if(!toIndexes.has(stops[j][0]))continue;
+          const used=[];
+          for(let k=i;k<j;k++)for(const railwayIndex of links[k]||[]){const railway=network.railways[railwayIndex];if(railway)used.push(railway);}
+          if(!same(used,desired))continue;
+          const arrival=stops[j][1]!=null?Number(stops[j][1]):Number(stops[j][2]);
+          if(Number.isFinite(arrival))candidates.push({departure,arrival,trainNumber:String(trip[2]||""),desired,calendar:desiredCalendar,singleLine:desired.length===1});
+        }
       }
     }
+    if(candidates.length){
+      candidates.sort((a,b)=>a.departure-b.departure||a.arrival-b.arrival||a.trainNumber.localeCompare(b.trainNumber,"ja"));
+      return candidates[0];
+    }
   }
-  throw new Error(`No weekday ${fromName} -> ${toName} direct network fixture found for ${desired.join(" -> ")}`);
+  throw new Error(`No ${fromName} -> ${toName} direct network fixture found for ${desired.join(" -> ")}`);
 }
 
 function element(initial){
@@ -87,13 +95,14 @@ function element(initial){
 
 async function runRouteCase(fromName,toName,fixture){
   const fromLabel=displayName(fromName),toLabel=displayName(toName);
+  const baseDate=fixture.calendar==="holiday"?"2026-09-06":"2026-09-02";
   const elements={
     "route-status":element(),
     "route-form":element(),
     "route-from":element({value:fromLabel}),
     "route-to":element({value:toLabel}),
-    "route-datetime":element({value:"2026-09-02T00:00"}),
-    "route-calendar":element({value:"weekday"}),
+    "route-datetime":element({value:baseDate+"T00:00"}),
+    "route-calendar":element({value:fixture.calendar||"weekday"}),
     "route-swap":element(),
     "route-submit":element({textContent:"時刻を検索"}),
     "route-stations":element(),
@@ -101,7 +110,7 @@ async function runRouteCase(fromName,toName,fixture){
   };
   const requestedMinute=Math.max(0,fixture.departure-1);
   const hour=Math.floor(requestedMinute/60)%24,minute=requestedMinute%60;
-  elements["route-datetime"].value=`2026-09-02T${String(hour).padStart(2,"0")}:${String(minute).padStart(2,"0")}`;
+  elements["route-datetime"].value=`${baseDate}T${String(hour).padStart(2,"0")}:${String(minute).padStart(2,"0")}`;
 
   function fakeFetch(url){
     const clean=String(url).split("?")[0].replace(/^\.\//,"");
@@ -152,24 +161,27 @@ async function runRouteCase(fromName,toName,fixture){
   if(!html.includes("乗換 0回"))throw new Error(`Expected zero-transfer ${fromName} -> ${toName} result: `+html);
   if(!html.includes("（直通）")&&!fixture.singleLine)throw new Error(`Expected direct label for ${fromName} -> ${toName}: `+html);
   if(fixture.trainNumber&&!html.includes(fixture.trainNumber+"列車"))throw new Error("Expected exact direct train number "+fixture.trainNumber+": "+html);
-  console.log("Exact route UI OK",{fromName,toName,departure:fixture.departure,arrival:fixture.arrival,trainNumber:fixture.trainNumber,railways:fixture.desired});
+  console.log("Exact route UI OK",{fromName,toName,calendar:fixture.calendar,departure:fixture.departure,arrival:fixture.arrival,trainNumber:fixture.trainNumber,railways:fixture.desired});
+}
+
+async function directCase(fromName,toName,desired){
+  const fixture=findFixture(fromName,toName,desired);
+  await runRouteCase(fromName,toName,fixture);
 }
 
 (async()=>{
-  const internal=findFixture("青砥","新鎌ヶ谷",[
+  await directCase("青砥","新鎌ヶ谷",[
     "odpt.Railway:Keisei.Main",
     "odpt.Railway:Keisei.NaritaSkyAccess"
   ]);
-  await runRouteCase("青砥","新鎌ヶ谷",internal);
 
-  const crossOperator=findFixture("青砥","品川",[
+  await directCase("青砥","品川",[
     "odpt.Railway:Keisei.Oshiage",
     "odpt.Railway:Toei.Asakusa",
     "odpt.Railway:Keikyu.Main"
   ]);
-  await runRouteCase("青砥","品川",crossOperator);
 
-  const naritaToHaneda=findFixture("成田空港","羽田空港第1・第2ターミナル",[
+  await directCase("成田空港","羽田空港第1・第2ターミナル",[
     "odpt.Railway:Keisei.NaritaSkyAccess",
     "odpt.Railway:Keisei.Main",
     "odpt.Railway:Keisei.Oshiage",
@@ -177,9 +189,8 @@ async function runRouteCase(fromName,toName,fixture){
     "odpt.Railway:Keikyu.Main",
     "odpt.Railway:Keikyu.Airport"
   ]);
-  await runRouteCase("成田空港","羽田空港第1・第2ターミナル",naritaToHaneda);
 
-  const hanedaToNarita=findFixture("羽田空港第1・第2ターミナル","成田空港",[
+  await directCase("羽田空港第1・第2ターミナル","成田空港",[
     "odpt.Railway:Keikyu.Airport",
     "odpt.Railway:Keikyu.Main",
     "odpt.Railway:Toei.Asakusa",
@@ -187,9 +198,8 @@ async function runRouteCase(fromName,toName,fixture){
     "odpt.Railway:Keisei.Main",
     "odpt.Railway:Keisei.NaritaSkyAccess"
   ]);
-  await runRouteCase("羽田空港第1・第2ターミナル","成田空港",hanedaToNarita);
 
-  const hokusoToHaneda=findFixture("印西牧の原","羽田空港第1・第2ターミナル",[
+  await directCase("印西牧の原","羽田空港第1・第2ターミナル",[
     "manual.Railway:Hokuso.Hokuso",
     "odpt.Railway:Keisei.Main",
     "odpt.Railway:Keisei.Oshiage",
@@ -197,9 +207,8 @@ async function runRouteCase(fromName,toName,fixture){
     "odpt.Railway:Keikyu.Main",
     "odpt.Railway:Keikyu.Airport"
   ]);
-  await runRouteCase("印西牧の原","羽田空港第1・第2ターミナル",hokusoToHaneda);
 
-  const hanedaToHokuso=findFixture("羽田空港第1・第2ターミナル","印西牧の原",[
+  await directCase("羽田空港第1・第2ターミナル","印西牧の原",[
     "odpt.Railway:Keikyu.Airport",
     "odpt.Railway:Keikyu.Main",
     "odpt.Railway:Toei.Asakusa",
@@ -207,17 +216,55 @@ async function runRouteCase(fromName,toName,fixture){
     "odpt.Railway:Keisei.Main",
     "manual.Railway:Hokuso.Hokuso"
   ]);
-  await runRouteCase("羽田空港第1・第2ターミナル","印西牧の原",hanedaToHokuso);
 
-  const shibayamaToKeisei=findFixture("芝山千代田","京成成田",[
+  await directCase("芝山千代田","京成成田",[
     "manual.Railway:Shibayama.Shibayama",
     "odpt.Railway:Keisei.HigashiNarita"
   ]);
-  await runRouteCase("芝山千代田","京成成田",shibayamaToKeisei);
 
-  const keiseiToShibayama=findFixture("京成成田","芝山千代田",[
+  await directCase("京成成田","芝山千代田",[
     "odpt.Railway:Keisei.HigashiNarita",
     "manual.Railway:Shibayama.Shibayama"
   ]);
-  await runRouteCase("京成成田","芝山千代田",keiseiToShibayama);
+
+  // Keisei's internal branches also need exact no-transfer coverage.
+  await directCase("松戸","京成千葉",[
+    "odpt.Railway:Keisei.Matsudo",
+    "odpt.Railway:Keisei.Chiba"
+  ]);
+
+  await directCase("ちはら台","京成千葉",[
+    "odpt.Railway:Keisei.Chihara",
+    "odpt.Railway:Keisei.Chiba"
+  ]);
+
+  // Long cross-operator branches beyond the airports.
+  await directCase("芝山千代田","羽田空港第1・第2ターミナル",[
+    "manual.Railway:Shibayama.Shibayama",
+    "odpt.Railway:Keisei.HigashiNarita",
+    "odpt.Railway:Keisei.Main",
+    "odpt.Railway:Keisei.Oshiage",
+    "odpt.Railway:Toei.Asakusa",
+    "odpt.Railway:Keikyu.Main",
+    "odpt.Railway:Keikyu.Airport"
+  ]);
+
+  await directCase("青砥","京急久里浜",[
+    "odpt.Railway:Keisei.Oshiage",
+    "odpt.Railway:Toei.Asakusa",
+    "odpt.Railway:Keikyu.Main",
+    "odpt.Railway:Keikyu.Kurihama"
+  ]);
+
+  await directCase("青砥","逗子・葉山",[
+    "odpt.Railway:Keisei.Oshiage",
+    "odpt.Railway:Toei.Asakusa",
+    "odpt.Railway:Keikyu.Main",
+    "odpt.Railway:Keikyu.Zushi"
+  ]);
+
+  // Explicitly protect the official spelling mismatch normalized by the exact builder.
+  await directCase("井土ヶ谷","品川",[
+    "odpt.Railway:Keikyu.Main"
+  ]);
 })().catch(error=>{console.error(error);process.exit(1);});
