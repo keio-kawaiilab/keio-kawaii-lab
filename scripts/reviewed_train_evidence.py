@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+import keikyu_generated_evidence as keikyu_generated
+
 
 def load_json(path: Path, default: Any = None) -> Any:
     try:
@@ -60,7 +62,6 @@ def apply_reviewed_train_evidence(
 ) -> list[dict[str, Any]]:
     registry = load_json(registry_path, {}) or {}
     entries = [row for row in registry.get('entries') or [] if isinstance(row, dict) and row.get('status') == 'verified-current']
-    by_id = {str(fragment.get('id') or ''): fragment for fragment in fragments if fragment.get('id')}
     output = list(edges)
     seen = {(str(edge.get('fromFragment') or ''), str(edge.get('toFragment') or '')) for edge in output}
     resolved_sources: set[str] = set()
@@ -123,4 +124,11 @@ def apply_reviewed_train_evidence(
                 and str(row.get('fragment') or '') in resolved_sources
             )
         ]
-    return output
+
+    return keikyu_generated.apply_generated_evidence(
+        fragments,
+        output,
+        unresolved,
+        indexes,
+        registry_path.parent / 'keikyu-official-train-evidence.json',
+    )

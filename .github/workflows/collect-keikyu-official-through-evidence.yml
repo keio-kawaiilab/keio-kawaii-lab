@@ -1,0 +1,96 @@
+name: Collect Keikyu official through-train evidence
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/keikyu_official_train_evidence.py'
+      - 'scripts/test_keikyu_official_train_evidence.py'
+      - 'scripts/merge_keikyu_official_evidence.py'
+      - 'scripts/keikyu_generated_evidence.py'
+      - 'scripts/reviewed_train_evidence.py'
+      - '.github/workflows/collect-keikyu-official-through-evidence.yml'
+      - '.github/workflows/update-keikyu-official-through-evidence.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PDF parser
+        run: pip install pdfplumber==0.11.7 requests==2.32.5
+      - name: Test fail-closed extraction rules
+        run: python scripts/test_keikyu_official_train_evidence.py
+      - name: Extract weekday Sengakuji evidence
+        run: |
+          python scripts/keikyu_official_train_evidence.py \
+            --calendar weekday \
+            --output /tmp/keikyu-weekday.json
+      - name: Extract holiday Sengakuji evidence
+        run: |
+          python scripts/keikyu_official_train_evidence.py \
+            --calendar holiday \
+            --output /tmp/keikyu-holiday.json
+      - name: Build production projection
+        run: |
+          python scripts/merge_keikyu_official_evidence.py \
+            /tmp/keikyu-weekday.json \
+            /tmp/keikyu-holiday.json \
+            --output /tmp/keikyu-official-train-evidence.json
+      - name: Audit production projection
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path('/tmp/keikyu-official-train-evidence.json').read_text(encoding='utf-8'))
+          summary=data.get('summary') or {}
+          calendars=summary.get('calendars') or {}
+          entries=data.get('entries') or []
+          print('SUMMARY', json.dumps(summary, ensure_ascii=False, indent=2))
+          assert int((calendars.get('weekday') or {}).get('officialColumnCandidates') or 0) > 0, calendars
+          assert int((calendars.get('holiday') or {}).get('officialColumnCandidates') or 0) > 0, calendars
+          assert entries, 'no production evidence entries'
+          for row in entries:
+              assert row.get('matchStatus') == 'matched-singleton', row
+              assert row.get('fromFragment') and row.get('toFragment'), row
+              assert row.get('sourceMatches') == [row.get('fromFragment')], row
+              assert row.get('targetMatches') == [row.get('toFragment')], row
+              assert row.get('boundaryId') == 'toei-keikyu-sengakuji', row
+              assert 'same-printed-column-spans-both-sides-of-sengakuji' in (row.get('evidence') or []), row
+          PY
+      - name: Validate production evidence in strict finalizer
+        run: |
+          cp /tmp/keikyu-official-train-evidence.json data/transit-v2/keikyu-official-train-evidence.json
+          python scripts/finalize_transit_v2.py
+          python scripts/audit_transit_v2.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          v2=Path('data/transit-v2')
+          edges=json.loads((v2/'same-train-edges.json').read_text(encoding='utf-8')).get('edges') or []
+          generated=[e for e in edges if 'keikyu-official-connection-timetable-same-column' in (e.get('evidence') or [])]
+          coverage=json.loads((v2/'coverage.json').read_text(encoding='utf-8'))
+          unresolved=json.loads((v2/'unresolved-summary.json').read_text(encoding='utf-8'))
+          print('KEIKYU_GENERATED_EDGES', len(generated))
+          print('COVERAGE_SUMMARY', json.dumps(coverage.get('summary') or {}, ensure_ascii=False, indent=2))
+          print('UNRESOLVED_TOTAL', unresolved.get('totalUnresolved'))
+          assert len(generated) > 0, 'generated official evidence produced no same-train edges'
+          assert all(e.get('identityLevel') == 'evidence-backed' for e in generated), generated[:3]
+          assert all((e.get('boundary') or {}).get('station') == '泉岳寺' for e in generated), generated[:3]
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keikyu-official-through-evidence
+          path: |
+            /tmp/keikyu-official-train-evidence.json
+            data/transit-v2/same-train-edges.json
+            data/transit-v2/runtime-same-train.json
+            data/transit-v2/coverage.json
+            data/transit-v2/unresolved-summary.json
+          if-no-files-found: error

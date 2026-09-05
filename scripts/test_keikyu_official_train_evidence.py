@@ -1,0 +1,80 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import copy
+import keikyu_official_train_evidence as parser
+
+
+def word(text, x0, x1, y):
+    return {"text": text, "x0": x0, "x1": x1, "top": y - 1.5, "bottom": y + 1.5}
+
+
+def extract(direction):
+    if direction == "keikyu-to-toei":
+        upper = [word("泉岳寺", 10, 60, 500), word("着", 62, 72, 500), word("0524", 296, 304, 500)]
+        lower = [word("泉岳寺", 10, 60, 520), word("発", 62, 72, 520), word("0525", 296, 304, 520)]
+        number = "514T"
+    else:
+        upper = [word("泉岳寺", 10, 60, 500), word("着", 62, 72, 500), word("0459", 296, 304, 500)]
+        lower = [word("泉岳寺", 10, 60, 520), word("〃", 62, 72, 520), word("0500", 296, 304, 520)]
+        number = "521T"
+    words = upper + [word("列車番号", 10, 75, 510), word(number, 296, 304, 510)] + lower
+    rows = parser.extract_page_candidates(words, page_number=1, calendar="weekday", source_url="https://example.test/other_weekday.pdf")
+    assert len(rows) == 1, rows
+    return rows[0]
+
+
+def test_extract_both_directions():
+    north = extract("keikyu-to-toei")
+    assert north["direction"] == "keikyu-to-toei"
+    assert north["sourceBoundaryMinute"] == 324 and north["targetBoundaryMinute"] == 325
+    assert north["boundaryTrainNumber"] == "514T"
+    south = extract("toei-to-keikyu")
+    assert south["direction"] == "toei-to-keikyu"
+    assert south["sourceBoundaryMinute"] == 299 and south["targetBoundaryMinute"] == 300
+
+
+def fragments():
+    return [
+        {"id":"keikyu:source","railway":parser.KEIKYU_MAIN,"calendar":"odpt.Calendar:Weekday","trainNumber":"","stops":[["odpt.Station:Keikyu.Main.Shinagawa",321,321],["odpt.Station:Keikyu.Main.Sengakuji",324,324]]},
+        {"id":"toei:target","railway":parser.TOEI_ASAKUSA,"calendar":"odpt.Calendar:Weekday","trainNumber":"DIFFERENT","stops":[["odpt.Station:Toei.Asakusa.Sengakuji",325,325],["odpt.Station:Toei.Asakusa.Mita",328,328]]},
+    ]
+
+
+def candidate():
+    return {"id":"candidate:1","calendar":"weekday","direction":"keikyu-to-toei","sourceBoundaryMinute":324,"targetBoundaryMinute":325,"boundaryTrainNumber":"514T","boundaryId":parser.BOUNDARY_ID,"evidence":["operator-official-connection-timetable","same-printed-column-spans-both-sides-of-sengakuji"]}
+
+
+def test_singleton_and_train_number_not_identity():
+    rows = parser.match_candidates_to_fragments([candidate()], fragments(), minute_tolerance=1)
+    assert rows[0]["matchStatus"] == "matched-singleton", rows
+    assert rows[0]["fromFragment"] == "keikyu:source" and rows[0]["toFragment"] == "toei:target"
+
+
+def test_ambiguity_fails_closed():
+    data = fragments()
+    duplicate = copy.deepcopy(data[1]); duplicate["id"] = "toei:duplicate"; data.append(duplicate)
+    rows = parser.match_candidates_to_fragments([candidate()], data, minute_tolerance=1)
+    assert rows[0]["matchStatus"] == "ambiguous", rows
+    assert rows[0]["toFragment"] is None and len(rows[0]["targetMatches"]) == 2
+
+
+def test_time_only_never_creates_candidate():
+    words = [word("泉岳寺",10,60,500),word("着",62,72,500),word("0524",296,304,500),word("泉岳寺",10,60,520),word("発",62,72,520),word("0525",296,304,520)]
+    assert parser.extract_page_candidates(words,page_number=1,calendar="weekday",source_url="x") == []
+
+
+def test_same_column_required():
+    words = [word("泉岳寺",10,60,500),word("着",62,72,500),word("0524",296,304,500),word("列車番号",10,75,510),word("514T",296,304,510),word("泉岳寺",10,60,520),word("発",62,72,520),word("0525",350,358,520)]
+    assert parser.extract_page_candidates(words,page_number=1,calendar="weekday",source_url="x") == []
+
+
+def main():
+    tests = [test_extract_both_directions,test_singleton_and_train_number_not_identity,test_ambiguity_fails_closed,test_time_only_never_creates_candidate,test_same_column_required]
+    for test in tests:
+        test(); print("PASS", test.__name__)
+    print("all Keikyu connection timetable tests passed")
+
+
+if __name__ == "__main__":
+    main()
