@@ -14,8 +14,9 @@ from typing import Any
 
 import requests
 
-BASE = 'https://www.seiburailway.jp/railways/2026digitaltimetable/'
-BOOK_XML = BASE + 'book.xml'
+BOOK_INDEX_BASE = 'https://www.seiburailway.jp/railways/2026digitaltimetable/'
+BOOK_XML = BOOK_INDEX_BASE + 'book.xml'
+FLIPPER_BOOK_BASE = 'https://www.seiburailway.jp/railway/2026digitaltimetable/book_other/'
 KEYWORDS = (
     '小竹向原', '新桜台', '練馬', '池袋', '西武有楽町線', '副都心線',
     '元町・中華街', '横浜', '渋谷', '新木場', '和光市',
@@ -76,7 +77,7 @@ def xml_diagnostics(content: bytes) -> tuple[str, dict[str, int], list[dict[str,
         for value in elem.attrib.values():
             if value and str(value).strip():
                 pieces.append(str(value).strip())
-        if len(sample) < 40:
+        if len(sample) < 80:
             sample.append({
                 'tag': name,
                 'attrs': dict(elem.attrib),
@@ -86,20 +87,27 @@ def xml_diagnostics(content: bytes) -> tuple[str, dict[str, int], list[dict[str,
 
 
 def probe_page(page: int, folder: str) -> dict[str, Any]:
+    # Existing viewer diagnostics prove that pageFolderNum() uses the opaque
+    # folder id from book.xml under /book_other/page{folder}/textpoint.xml.
+    # Keep page-number fallback only as a diagnostic, never as identity evidence.
     candidates = [
-        BASE + f'page{folder}/textpoint.xml',
-        BASE + f'page{page}/textpoint.xml',
+        FLIPPER_BOOK_BASE + f'page{folder}/textpoint.xml',
+        FLIPPER_BOOK_BASE + f'page{page}/textpoint.xml',
     ]
     errors: list[str] = []
     for url in candidates:
         try:
             content = get(url)
             root_tag, tag_counts, element_sample, flat = xml_diagnostics(content)
+            # Reject the known empty shell returned by the alternate /railways/
+            # route: production discovery needs actual glyph/font payload.
+            has_payload = any(tag not in ('TET', 'Page') and count > 0 for tag, count in tag_counts.items())
             hits = [keyword for keyword in KEYWORDS if norm(keyword) in flat]
             return {
                 'page': page,
                 'folder': folder,
                 'reachable': True,
+                'hasGlyphPayload': has_payload,
                 'url': url,
                 'bytes': len(content),
                 'rootTag': root_tag,
@@ -107,7 +115,7 @@ def probe_page(page: int, folder: str) -> dict[str, Any]:
                 'elementSample': element_sample,
                 'keywordHits': hits,
                 'flattenedLength': len(flat),
-                'flattenedSample': flat[:800],
+                'flattenedSample': flat[:1200],
             }
         except Exception as exc:
             errors.append(f'{url}: {type(exc).__name__}: {exc}')
@@ -115,6 +123,7 @@ def probe_page(page: int, folder: str) -> dict[str, Any]:
         'page': page,
         'folder': folder,
         'reachable': False,
+        'hasGlyphPayload': False,
         'errors': errors,
         'keywordHits': [],
     }
@@ -132,7 +141,8 @@ def build_report() -> dict[str, Any]:
         for future in as_completed(futures):
             rows.append(future.result())
     rows.sort(key=lambda row: int(row.get('page') or 0))
-    matched = [row for row in rows if row.get('keywordHits')]
+    payload_rows = [row for row in rows if row.get('hasGlyphPayload')]
+    matched = [row for row in payload_rows if row.get('keywordHits')]
     counts = Counter(hit for row in matched for hit in row.get('keywordHits') or [])
     schema_samples = [
         {
@@ -144,14 +154,14 @@ def build_report() -> dict[str, Any]:
             'elementSample': row.get('elementSample'),
             'flattenedSample': row.get('flattenedSample'),
         }
-        for row in rows[:3]
-        if row.get('reachable')
+        for row in payload_rows[:3]
     ]
     return {
-        'version': 2,
+        'version': 3,
         'generatedAt': datetime.now(timezone.utc).isoformat(),
         'source': 'Seibu Railway official Digital Seibu Timetable 2026',
-        'sourceBase': BASE,
+        'bookIndexSource': BOOK_XML,
+        'flipperBookBase': FLIPPER_BOOK_BASE,
         'bookPublishDate': publish_date,
         'identityPolicy': {
             'pageDiscoveryMayEstablishTrainIdentity': False,
@@ -165,6 +175,7 @@ def build_report() -> dict[str, Any]:
         'summary': {
             'pages': len(rows),
             'reachableTextpointPages': sum(bool(row.get('reachable')) for row in rows),
+            'glyphPayloadPages': len(payload_rows),
             'matchedPages': len(matched),
             'keywordCounts': dict(counts),
         },
@@ -186,6 +197,8 @@ def main() -> int:
     print('SCHEMA_SAMPLES', json.dumps(report.get('schemaSamples') or [], ensure_ascii=False))
     if int(report['summary']['reachableTextpointPages']) == 0:
         raise RuntimeError('No official Seibu textpoint pages were reachable')
+    if int(report['summary']['glyphPayloadPages']) == 0:
+        raise RuntimeError('Official Seibu textpoints were reachable but contained no glyph/font payload')
     return 0
 
 
