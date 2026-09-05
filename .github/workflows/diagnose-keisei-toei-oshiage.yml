@@ -7,6 +7,7 @@ on:
       - 'scripts/keisei_generated_evidence.py'
       - 'scripts/test_keisei_official_oshiage_evidence.py'
       - 'scripts/test_keisei_generated_evidence.py'
+      - 'scripts/diagnose_keisei_oshiage_duplicate_fragments.py'
       - 'scripts/reviewed_train_evidence.py'
       - '.github/workflows/diagnose-keisei-toei-oshiage.yml'
   workflow_dispatch:
@@ -28,7 +29,8 @@ jobs:
             scripts/keisei_official_oshiage_evidence.py \
             scripts/keisei_generated_evidence.py \
             scripts/test_keisei_official_oshiage_evidence.py \
-            scripts/test_keisei_generated_evidence.py
+            scripts/test_keisei_generated_evidence.py \
+            scripts/diagnose_keisei_oshiage_duplicate_fragments.py
           python scripts/test_keisei_official_oshiage_evidence.py
           python scripts/test_keisei_generated_evidence.py
       - name: Extract and attach official Oshiage evidence
@@ -52,6 +54,9 @@ jobs:
           assert summary['matchedDirections'].get('toei-to-keisei', 0) > 0
           assert all(row.get('matchStatus') == 'matched-singleton' for row in payload.get('entries') or [])
           PY
+      - name: Diagnose duplicate Keisei fragment groups
+        run: |
+          python scripts/diagnose_keisei_oshiage_duplicate_fragments.py
       - name: Materialize strict same-train edges
         run: |
           python scripts/finalize_transit_v2.py
@@ -98,5 +103,7 @@ jobs:
         if: always()
         with:
           name: keisei-oshiage-evidence-diagnostic
-          path: data/transit-v2/keisei-official-oshiage-evidence.json
+          path: |
+            data/transit-v2/keisei-official-oshiage-evidence.json
+            /tmp/keisei-oshiage-duplicate-fragments.json
           if-no-files-found: warn
