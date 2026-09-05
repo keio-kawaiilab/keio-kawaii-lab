@@ -4,12 +4,20 @@ import fs from 'node:fs';
 const readJson=(file)=>JSON.parse(fs.readFileSync(file,'utf8'));
 const MM='manual.Railway:YokohamaMinatomirai.Minatomirai';
 const TY='odpt.Railway:Tokyu.Toyoko';
+const TSH='odpt.Railway:Tokyu.TokyuShinYokohama';
+const SSH='odpt.Railway:Sotetsu.SotetsuShinYokohama';
+const SM='odpt.Railway:Sotetsu.Main';
+const SIZ='odpt.Railway:Sotetsu.Izumino';
 const F='odpt.Railway:TokyoMetro.Fukutoshin';
 const SI='odpt.Railway:Seibu.SeibuYurakucho';
 const TJ='odpt.Railway:Tobu.Tojo';
 
 const PAIRS=[
   {id:'minatomirai-toyoko-yokohama',label:'みなとみらい線↔東急東横線（横浜）',a:MM,b:TY,patterns:[['反町','横浜','新高島'],['新高島','横浜','反町']]},
+  {id:'toyoko-tokyushinyokohama-hiyoshi',label:'東急東横線↔東急新横浜線（日吉）',a:TY,b:TSH,patterns:[]},
+  {id:'tokyushinyokohama-sotetsushinyokohama-shinyokohama',label:'東急新横浜線↔相鉄新横浜線（新横浜）',a:TSH,b:SSH,patterns:[]},
+  {id:'sotetsushinyokohama-main-nishiya',label:'相鉄新横浜線↔相鉄本線（西谷）',a:SSH,b:SM,patterns:[]},
+  {id:'sotetsu-main-izumino-futamatagawa',label:'相鉄本線↔相鉄いずみ野線（二俣川）',a:SM,b:SIZ,patterns:[]},
   {id:'toyoko-fukutoshin-shibuya',label:'東急東横線↔副都心線（渋谷）',a:TY,b:F,patterns:[['明治神宮前','渋谷','代官山'],['代官山','渋谷','明治神宮前']]},
   {id:'fukutoshin-seibuyurakucho-kotakemukaihara',label:'副都心線↔西武有楽町線（小竹向原）',a:F,b:SI,patterns:[['新桜台','小竹向原','千川'],['千川','小竹向原','新桜台']]},
   {id:'fukutoshin-tojo-wakoshi',label:'副都心線↔東武東上線（和光市）',a:F,b:TJ,patterns:[]},
@@ -56,27 +64,33 @@ function sameTriple(value,patterns){
 const generated=new Map(PAIRS.map((row)=>[row.id,new Set()]));
 const officialPages=new Map(PAIRS.map((row)=>[row.id,new Set()]));
 for(const row of through.records||[]){
-  const [a,b]=recordRailways(row);
-  const spec=wanted.get(pairKey(a,b));
-  if(!spec)continue;
+  const route=Array.isArray(row.routeRailways)?row.routeRailways:[];
   const type=exactType(row);
   if(!['odpt-train-timetable-link','train-timetable-network','official-single-train-page'].includes(type))continue;
-  const id=String(row.identityKey||row.id||'');
-  if(!id)throw new Error(`Exact record lacks identity key on ${spec.label}`);
-
-  if(type==='official-single-train-page'){
-    if(row.status!=='verified')throw new Error(`Official page record is not verified on ${spec.label}`);
-    if(String(row.canonicalBoundaryId||'')!==spec.id)throw new Error(`Official page record has wrong boundary id on ${spec.label}`);
-    if(!String(row.sourceUrl||'').startsWith('https://'))throw new Error(`Official page record lacks source URL on ${spec.label}`);
-    for(const key of ['tx','sf','date','time','dw'])if(!String(row.sourceParameters?.[key]??''))throw new Error(`Official page record lacks ${key} on ${spec.label}`);
-    if(spec.patterns.length&&!sameTriple(row.publishedBoundaryStops,spec.patterns))throw new Error(`Official page record lacks exact adjacent boundary stops on ${spec.label}`);
-    const required=row.runtimeRule?.requiredMatch||[];
-    for(const field of ['identityKey','fromRailway','toRailway'])if(!required.includes(field))throw new Error(`Official page record lacks ${field} runtime guard on ${spec.label}`);
-    officialPages.get(spec.id).add(id);
-  }else if(type==='odpt-train-timetable-link'){
-    if(!String(row.sourceTimetableId||'')||!String(row.targetTimetableId||''))throw new Error(`ODPT exact record lacks source/target timetable ids on ${spec.label}`);
+  for(const spec of PAIRS){
+    let mentions=false;
+    for(let i=0;i+1<route.length;i++)if(pairKey(route[i],route[i+1])===pairKey(spec.a,spec.b)){mentions=true;break;}
+    if(!mentions){
+      const [a,b]=recordRailways(row);
+      mentions=pairKey(a,b)===pairKey(spec.a,spec.b);
+    }
+    if(!mentions)continue;
+    const id=String(row.identityKey||row.id||'');
+    if(!id)throw new Error(`Exact record lacks identity key on ${spec.label}`);
+    if(type==='official-single-train-page'){
+      if(row.status!=='verified')throw new Error(`Official page record is not verified on ${spec.label}`);
+      if(String(row.canonicalBoundaryId||'')!==spec.id)continue;
+      if(!String(row.sourceUrl||'').startsWith('https://'))throw new Error(`Official page record lacks source URL on ${spec.label}`);
+      for(const key of ['tx','sf','date','time','dw'])if(!String(row.sourceParameters?.[key]??''))throw new Error(`Official page record lacks ${key} on ${spec.label}`);
+      if(spec.patterns.length&&!sameTriple(row.publishedBoundaryStops,spec.patterns))throw new Error(`Official page record lacks exact adjacent boundary stops on ${spec.label}`);
+      const required=row.runtimeRule?.requiredMatch||[];
+      for(const field of ['identityKey','fromRailway','toRailway'])if(!required.includes(field))throw new Error(`Official page record lacks ${field} runtime guard on ${spec.label}`);
+      officialPages.get(spec.id).add(id);
+    }else if(type==='odpt-train-timetable-link'){
+      if(!String(row.sourceTimetableId||'')||!String(row.targetTimetableId||''))throw new Error(`ODPT exact record lacks source/target timetable ids on ${spec.label}`);
+    }
+    generated.get(spec.id).add(id);
   }
-  generated.get(spec.id).add(id);
 }
 
 const boundaryById=new Map((boundaries.boundaries||[]).map((row)=>[row.id,row]));
@@ -98,4 +112,4 @@ for(const spec of PAIRS){
 console.log('Fukutoshin through-service identity evidence audit');
 console.log(JSON.stringify(summary,null,2));
 if(missing.length)throw new Error(`Authoritative exact same-train identity is still missing for: ${missing.join(' / ')}`);
-console.log('Fukutoshin exact through-service audit passed for all four boundaries');
+console.log('Fukutoshin exact through-service audit passed for all eight corridor boundaries');
