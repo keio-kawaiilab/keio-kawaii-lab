@@ -6,7 +6,11 @@ on:
       - 'scripts/diagnose_keikyu_reverse_through.py'
       - 'scripts/repair_keikyu_sengakuji_terminal.py'
       - 'scripts/inspect_keikyu_sengakuji_raw.py'
+      - 'scripts/keikyu_generated_evidence.py'
+      - 'scripts/test_keikyu_generated_evidence.py'
       - '.github/workflows/diagnose-keikyu-reverse-through.yml'
+      - '.github/workflows/update-transit-timetables.yml'
+      - '.github/workflows/update-keikyu-official-through-evidence.yml'
   workflow_dispatch:
 
 permissions:
@@ -22,6 +26,8 @@ jobs:
           python-version: '3.12'
       - name: Install PDF parser
         run: pip install pdfplumber==0.11.7 requests==2.32.5
+      - name: Test generated evidence fail-closed rules
+        run: python scripts/test_keikyu_generated_evidence.py
       - name: Diagnose Keikyu to Toei candidates
         run: python scripts/diagnose_keikyu_reverse_through.py
       - uses: actions/upload-artifact@v4
@@ -62,8 +68,10 @@ jobs:
           python-version: '3.12'
       - name: Install dependencies
         run: pip install pdfplumber==0.11.7 requests==2.32.5
-      - name: Compile strict repair
-        run: python -m py_compile scripts/repair_keikyu_sengakuji_terminal.py
+      - name: Compile and test strict repair path
+        run: |
+          python -m py_compile scripts/repair_keikyu_sengakuji_terminal.py scripts/keikyu_generated_evidence.py
+          python scripts/test_keikyu_generated_evidence.py
       - name: Repair Keikyu northbound Sengakuji terminal rows
         id: repair
         continue-on-error: true
