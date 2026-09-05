@@ -1,0 +1,21 @@
+name: Audit partial-origin through services
+on:
+  push:
+    branches:
+      - audit/partial-origin-through-services-live
+    paths:
+      - 'scripts/audit_partial_origin_through_services.mjs'
+      - '.github/workflows/audit-partial-origin-through-services.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Audit concrete partial-origin examples
+        run: node scripts/audit_partial_origin_through_services.mjs
