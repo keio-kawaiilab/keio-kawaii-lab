@@ -23,6 +23,8 @@ SHIBAYAMA = 'manual.Railway:Shibayama.Shibayama'
 KEISEI_MAIN = 'odpt.Railway:Keisei.Main'
 KEISEI_NSA = 'odpt.Railway:Keisei.NaritaSkyAccess'
 KEISEI_HIGASHI_NARITA = 'odpt.Railway:Keisei.HigashiNarita'
+NARITA_AIRPORT = 'odpt.Station:Keisei.NaritaSkyAccess.NaritaAirportTerminal1'
+HANEDA_T12 = 'odpt.Station:Keikyu.Airport.HanedaAirportTerminal1and2'
 
 HOKUSO_STATIONS = [
     ('京成高砂', 'odpt.Station:Keisei.Main.KeiseiTakasago'),
@@ -97,9 +99,6 @@ def install_extensions(module) -> None:
                 if station_id not in values:
                     values.append(station_id)
 
-        # Register after Keisei so ties on the shared Narita-Sky-Access section
-        # can be resolved by the global route DP without changing the proven
-        # airport chain unless a Hokuso-only stop is actually observed.
         register(HOKUSO, HOKUSO_STATIONS)
         register(SHIBAYAMA, SHIBAYAMA_STATIONS)
         return lines, ids_by_name
@@ -126,10 +125,11 @@ def install_extensions(module) -> None:
 
     def shortest_line_paths(start, goal, graph, common_lines, allowed_cross_operator, limit=4):
         result = original_shortest(start, goal, graph, common_lines, allowed_cross_operator, limit)
-        # Hokuso and Narita Sky Access share the corridor from Keisei-Takasago
-        # to Inba-Nihon-Idai. Prefer Hokuso only for an otherwise exact tie.
-        # Airport trains contain a Narita-Sky-Access-only link (Narita-Yukawa
-        # side), so the base global DP still keeps those trains on NSA end-to-end.
+        # Hokusō and Narita Sky Access share the corridor from Keisei-Takasago
+        # to Inba-Nihon-Idai. If a stop pair is otherwise indistinguishable,
+        # prefer the physical Hokusō line. Trains that reach Narita-Yukawa or
+        # Narita Airport still require Narita Sky Access elsewhere in the same
+        # exact one-train journey and remain correctly classified by the DP.
         def tie_key(route: list[str]):
             if route == [HOKUSO]:
                 return (0, route)
@@ -188,7 +188,7 @@ def project_line(network: dict[str, Any], railway_id: str, station_pairs: list[t
                 stop[1] if len(stop) > 1 else None,
                 stop[2] if len(stop) > 2 else None,
             ])
-        for run_number, run in enumerate(monotonic_runs(rows)):
+        for run in monotonic_runs(rows):
             destination = line_stations[run[-1][0]]
             identity = f'keisei-official-network:{trip_index}'
             projected.append([
@@ -238,6 +238,30 @@ def write_operator_projection(slug: str, railway_id: str, station_pairs: list[tu
     return trip_count
 
 
+def endpoint_through_counts(network: dict[str, Any]) -> dict[str, int]:
+    stations = network.get('stations') or []
+    by_id = {str(station_id): index for index, station_id in enumerate(stations)}
+    narita_index = by_id.get(NARITA_AIRPORT)
+    haneda_index = by_id.get(HANEDA_T12)
+    if narita_index is None or haneda_index is None:
+        raise RuntimeError('airport endpoint IDs are missing from exact network')
+    counts = {'naritaToHaneda': 0, 'hanedaToNarita': 0}
+    for trip in network.get('trips') or []:
+        if not isinstance(trip, list) or len(trip) < 4:
+            continue
+        sequence = [row[0] for row in trip[3] or [] if isinstance(row, list) and row]
+        try:
+            narita_pos = sequence.index(narita_index)
+            haneda_pos = sequence.index(haneda_index)
+        except ValueError:
+            continue
+        if narita_pos < haneda_pos:
+            counts['naritaToHaneda'] += 1
+        elif haneda_pos < narita_pos:
+            counts['hanedaToNarita'] += 1
+    return counts
+
+
 def main() -> int:
     module = load_base()
     install_extensions(module)
@@ -249,6 +273,7 @@ def main() -> int:
     report = load_json(REPORT_PATH)
     hokuso_trips = write_operator_projection('hokuso', HOKUSO, HOKUSO_STATIONS, network)
     shibayama_trips = write_operator_projection('shibayama', SHIBAYAMA, SHIBAYAMA_STATIONS, network)
+    endpoint_counts = endpoint_through_counts(network)
 
     report['externalLineProjection'] = {
         'hokusoTrips': hokuso_trips,
@@ -256,8 +281,12 @@ def main() -> int:
         'unsupportedStopRowsAfterExtension': report.get('unsupportedStopRows'),
         'unsupportedStationsAfterExtension': report.get('unsupportedStations'),
     }
+    report['endpointThroughCounts'] = endpoint_counts
     dump_json(REPORT_PATH, report)
-    print(json.dumps(report['externalLineProjection'], ensure_ascii=False, indent=2))
+    print(json.dumps({
+        'externalLineProjection': report['externalLineProjection'],
+        'endpointThroughCounts': endpoint_counts,
+    }, ensure_ascii=False, indent=2))
     return 0
 
 
