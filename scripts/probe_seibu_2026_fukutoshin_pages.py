@@ -7,6 +7,7 @@ import re
 import unicodedata
 import xml.etree.ElementTree as ET
 from collections import Counter
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -108,7 +109,17 @@ def probe_page(page: int, folder: str) -> dict[str, Any]:
 def build_report() -> dict[str, Any]:
     book = get(BOOK_XML)
     publish_date, folders = parse_book(book)
-    rows = [probe_page(page, folder) for page, folder in enumerate(folders, start=1)]
+    rows: list[dict[str, Any]] = []
+    # Eight workers keeps the official-source request rate modest while avoiding
+    # a 240-page serial crawl. This changes only discovery speed, never identity rules.
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        futures = {
+            pool.submit(probe_page, page, folder): page
+            for page, folder in enumerate(folders, start=1)
+        }
+        for future in as_completed(futures):
+            rows.append(future.result())
+    rows.sort(key=lambda row: int(row.get('page') or 0))
     matched = [row for row in rows if row.get('keywordHits')]
     counts = Counter(hit for row in matched for hit in row.get('keywordHits') or [])
     return {
