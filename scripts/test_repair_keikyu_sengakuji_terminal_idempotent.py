@@ -34,9 +34,9 @@ class IdempotentRepairTests(unittest.TestCase):
         self.assertTrue(target.idempotent_report_is_safe(strict_meta(), Counter(before), report(before, before)))
         self.assertFalse(target.idempotent_report_is_safe({}, Counter(before), report(before, before)))
 
-    def test_service_regression_fails_closed(self) -> None:
+    def test_service_regression_fails_closed_even_if_total_grows(self) -> None:
         before = {'weekday': 184, 'holiday': 155}
-        after = {'weekday': 183, 'holiday': 156}
+        after = {'weekday': 183, 'holiday': 157}
         self.assertFalse(target.idempotent_report_is_safe(strict_meta(), Counter(before), report(before, after)))
 
     def test_stale_report_fails_closed(self) -> None:
