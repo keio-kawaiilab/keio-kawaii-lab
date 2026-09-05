@@ -28,11 +28,14 @@ function same(first,second){first=collapse(first);second=collapse(second);return
 const keiseiEntities=readJson("data/transit/keisei/entities.json");
 const toeiEntities=readJson("data/transit/toei/entities.json");
 const keikyuEntities=readJson("data/transit/keikyu/entities.json");
+const hokusoEntities=readJson("data/transit/hokuso/entities.json");
+const shibayamaEntities=readJson("data/transit/shibayama/entities.json");
+const allEntities=[keiseiEntities,toeiEntities,keikyuEntities,hokusoEntities,shibayamaEntities];
 const index=readJson("data/transit/keisei/timetable-index.json");
 const network=readJson("data/transit/keisei/"+index.network.file);
 const stationIdsByName=new Map();
 const displayNameByNormalized=new Map();
-for(const entities of [keiseiEntities,toeiEntities,keikyuEntities]){
+for(const entities of allEntities){
   for(const item of entities.Station||[]){
     const rawName=title(item),name=normalizeName(rawName),id=item["owl:sameAs"];
     if(!name||!id)continue;
@@ -104,7 +107,13 @@ async function runRouteCase(fromName,toName,fixture){
     const clean=String(url).split("?")[0].replace(/^\.\//,"");
     if(clean==="data/transit/manifest.json"){
       const manifest=readJson(clean);
-      manifest.operators={keisei:manifest.operators.keisei,toei:manifest.operators.toei,keikyu:manifest.operators.keikyu};
+      manifest.operators={
+        keisei:manifest.operators.keisei,
+        toei:manifest.operators.toei,
+        keikyu:manifest.operators.keikyu,
+        hokuso:manifest.operators.hokuso,
+        shibayama:manifest.operators.shibayama
+      };
       return Promise.resolve({ok:true,status:200,json:()=>Promise.resolve(manifest)});
     }
     const file=path.join(root,clean);
@@ -141,9 +150,9 @@ async function runRouteCase(fromName,toName,fixture){
   await waitFor(()=>elements["route-submit"].textContent==="時刻を検索","route search completion");
   const html=elements["route-result"].innerHTML;
   if(!html.includes("乗換 0回"))throw new Error(`Expected zero-transfer ${fromName} -> ${toName} result: `+html);
-  if(!html.includes("（直通）"))throw new Error(`Expected direct label for ${fromName} -> ${toName}: `+html);
+  if(!html.includes("（直通）")&&!fixture.singleLine)throw new Error(`Expected direct label for ${fromName} -> ${toName}: `+html);
   if(fixture.trainNumber&&!html.includes(fixture.trainNumber+"列車"))throw new Error("Expected exact direct train number "+fixture.trainNumber+": "+html);
-  console.log("Keisei through route UI OK",{fromName,toName,departure:fixture.departure,arrival:fixture.arrival,trainNumber:fixture.trainNumber,railways:fixture.desired});
+  console.log("Exact route UI OK",{fromName,toName,departure:fixture.departure,arrival:fixture.arrival,trainNumber:fixture.trainNumber,railways:fixture.desired});
 }
 
 (async()=>{
@@ -179,4 +188,38 @@ async function runRouteCase(fromName,toName,fixture){
     "odpt.Railway:Keisei.NaritaSkyAccess"
   ]);
   await runRouteCase("羽田空港第1・第2ターミナル","成田空港",hanedaToNarita);
+
+  const hokusoToHaneda=findFixture("印西牧の原","羽田空港第1・第2ターミナル",[
+    "manual.Railway:Hokuso.Hokuso",
+    "odpt.Railway:Keisei.Main",
+    "odpt.Railway:Keisei.Oshiage",
+    "odpt.Railway:Toei.Asakusa",
+    "odpt.Railway:Keikyu.Main",
+    "odpt.Railway:Keikyu.Airport"
+  ]);
+  await runRouteCase("印西牧の原","羽田空港第1・第2ターミナル",hokusoToHaneda);
+
+  const hanedaToHokuso=findFixture("羽田空港第1・第2ターミナル","印西牧の原",[
+    "odpt.Railway:Keikyu.Airport",
+    "odpt.Railway:Keikyu.Main",
+    "odpt.Railway:Toei.Asakusa",
+    "odpt.Railway:Keisei.Oshiage",
+    "odpt.Railway:Keisei.Main",
+    "manual.Railway:Hokuso.Hokuso"
+  ]);
+  await runRouteCase("羽田空港第1・第2ターミナル","印西牧の原",hanedaToHokuso);
+
+  const shibayamaToKeisei=findFixture("芝山千代田","京成成田",[
+    "manual.Railway:Shibayama.Shibayama",
+    "odpt.Railway:Keisei.HigashiNarita",
+    "odpt.Railway:Keisei.Main"
+  ]);
+  await runRouteCase("芝山千代田","京成成田",shibayamaToKeisei);
+
+  const keiseiToShibayama=findFixture("京成成田","芝山千代田",[
+    "odpt.Railway:Keisei.Main",
+    "odpt.Railway:Keisei.HigashiNarita",
+    "manual.Railway:Shibayama.Shibayama"
+  ]);
+  await runRouteCase("京成成田","芝山千代田",keiseiToShibayama);
 })().catch(error=>{console.error(error);process.exit(1);});
