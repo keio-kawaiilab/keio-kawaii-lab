@@ -18,6 +18,7 @@ on:
       - 'scripts/build_keisei_network_timetable.py'
       - 'scripts/build_keisei_extended_network.py'
       - 'scripts/test_keisei_through_network.py'
+      - 'scripts/audit_keisei_exact_network.py'
       - 'scripts/test_keisei_route_ui.js'
       - 'data/transit/hokuso/**'
       - 'data/transit/shibayama/**'
@@ -71,7 +72,8 @@ jobs:
             scripts/build_keisei_official_timetables.py \
             scripts/build_keisei_network_timetable.py \
             scripts/build_keisei_extended_network.py \
-            scripts/test_keisei_through_network.py
+            scripts/test_keisei_through_network.py \
+            scripts/audit_keisei_exact_network.py
           node --check scripts/test_keisei_route_ui.js
 
       - name: Collect every detailed train timetable with checkpoints
@@ -179,10 +181,11 @@ jobs:
       - name: Build compact Keisei app timetables
         run: python scripts/build_keisei_official_timetables.py
 
-      - name: Build exact Keisei Hokusō Shibayama through network
+      - name: Build and exhaustively audit exact Keisei Hokusō Shibayama through network
         run: |
           python scripts/build_keisei_extended_network.py
           python scripts/test_keisei_through_network.py
+          python scripts/audit_keisei_exact_network.py
 
       - name: Validate and publish compact and exact timetable databases
         shell: bash
