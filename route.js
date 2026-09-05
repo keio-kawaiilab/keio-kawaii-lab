@@ -305,7 +305,7 @@
     if(!fromResolved.group||!toResolved.group){showInputError(fromResolved,toResolved);return;}
     if(fromResolved.group.key===toResolved.group.key){resultEl.innerHTML='<div class="route-empty">出発駅と到着駅が同じです。</div>';return;}
     submitBtn.disabled=true;submitBtn.textContent="検索中…";
-    var timedPaths=model.candidatePaths(fromResolved.group,toResolved.group,{allowedRailways:Array.from(timetableLines.keys()),limit:5});
+    var timedPaths=model.candidatePaths(fromResolved.group,toResolved.group,{allowedRailways:Array.from(timetableLines.keys()),limit:8});
     var timedPath=timedPaths[0]||null;
     var path=timedPath||model.shortestPath(fromResolved.group,toResolved.group);
     if(!path){resultEl.innerHTML='<div class="route-empty">この組み合わせの経路を見つけられませんでした。現在対応している路線の範囲内で試してください。</div>';finishSearch();return;}
