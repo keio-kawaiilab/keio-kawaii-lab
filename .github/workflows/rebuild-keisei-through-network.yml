@@ -9,6 +9,7 @@ on:
       - 'scripts/test_keisei_through_network.py'
       - 'scripts/audit_keisei_exact_network.py'
       - 'scripts/test_keisei_route_ui.js'
+      - 'scripts/test_keisei_identity_safety.js'
       - 'route.js'
       - 'route-core.js'
       - 'data/transit/hokuso/**'
@@ -51,6 +52,7 @@ jobs:
           node --check route-core.js
           node --check route.js
           node --check scripts/test_keisei_route_ui.js
+          node --check scripts/test_keisei_identity_safety.js
 
       - name: Require checked-in official Keisei train details
         run: |
@@ -70,10 +72,11 @@ jobs:
       - name: Rebuild exact cross-operator network
         run: python scripts/build_keisei_extended_network.py
 
-      - name: Validate identity and boundary policy
+      - name: Validate identity, boundaries, and every retained stop
         run: |
           python scripts/test_keisei_through_network.py
           python scripts/audit_keisei_exact_network.py
+          node scripts/test_keisei_identity_safety.js
 
       - name: Exercise real browser route logic
         run: node scripts/test_keisei_route_ui.js
