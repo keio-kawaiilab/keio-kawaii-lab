@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+import fs from 'node:fs';
+
+const file='data/transit/through-service-boundaries.json';
+const data=JSON.parse(fs.readFileSync(file,'utf8'));const list=data.boundaries||[];const byId=new Map(list.map(x=>[String(x.id||''),x]));
+const upsert=(s)=>{const c=byId.get(s.id);if(c)Object.assign(c,s);else{list.push(s);byId.set(s.id,s);}};
+upsert({id:'meguro-tokyushinyokohama-hiyoshi',station:'日吉',fromRailway:'odpt.Railway:Tokyu.Meguro',toRailway:'odpt.Railway:Tokyu.TokyuShinYokohama',fromStation:'odpt.Station:Tokyu.Meguro.Hiyoshi',toStation:'odpt.Station:Tokyu.TokyuShinYokohama.Hiyoshi',bidirectional:true,status:'verified',source:'https://www.tokyu.co.jp/railway/timetable/',note:'東急公式2026年3月14日改正時刻表が目黒線の日吉・新横浜方面直通を掲載。列車単位identityは相鉄公式full train timetableの同一印刷列で確認。'});
+upsert({id:'meguro-namboku-meguro',station:'目黒',fromRailway:'odpt.Railway:Tokyu.Meguro',toRailway:'odpt.Railway:TokyoMetro.Namboku',fromStation:'odpt.Station:Tokyu.Meguro.Meguro',toStation:'odpt.Station:TokyoMetro.Namboku.Meguro',bidirectional:true,status:'verified',source:'https://www.tokyu.co.jp/area/meguro/station/',note:'東急公式目黒駅情報が目黒線の直通路線として東京メトロ南北線を明記。列車単位identityはODPT exact endpointおよび公式同一列で確認。'});
+upsert({id:'meguro-mita-meguro',station:'目黒',fromRailway:'odpt.Railway:Tokyu.Meguro',toRailway:'odpt.Railway:Toei.Mita',fromStation:'odpt.Station:Tokyu.Meguro.Meguro',toStation:'odpt.Station:Toei.Mita.Meguro',bidirectional:true,status:'verified',source:'https://www.tokyu.co.jp/area/meguro/station/',note:'東急公式目黒駅情報が目黒線の直通路線として都営三田線を明記。列車単位identityはODPT exact endpointおよび相鉄公式同一印刷列で確認。'});
+upsert({id:'namboku-saitamarailway-akabaneiwabuchi',station:'赤羽岩淵',fromRailway:'odpt.Railway:TokyoMetro.Namboku',toRailway:'odpt.Railway:SaitamaRailway.SaitamaRailway',fromStation:'odpt.Station:TokyoMetro.Namboku.AkabaneIwabuchi',toStation:'odpt.Station:SaitamaRailway.SaitamaRailway.AkabaneIwabuchi',bidirectional:true,status:'verified',source:'https://www.s-rail.co.jp/line/new-timetable/new-urawamisono.pdf',note:'埼玉高速鉄道公式時刻表が南北線・東急目黒線・相鉄線への直通列車を掲載。列車単位identityは東京メトロNamboku TrainTimetableの赤羽岩淵exact endpoint＋埼玉高速外部駅で確認。'});
+data.version=Math.max(Number(data.version)||0,5);data.updatedAt=new Date().toISOString().slice(0,10);data.boundaries=list;fs.writeFileSync(file,JSON.stringify(data,null,2)+'\n');
+console.log(JSON.stringify({verified:['meguro-tokyushinyokohama-hiyoshi','meguro-namboku-meguro','meguro-mita-meguro','namboku-saitamarailway-akabaneiwabuchi'],boundaryCount:list.length},null,2));
