@@ -23,21 +23,43 @@ const PAIRS=[
 ];
 const exactTypes=new Set(['odpt-train-timetable-link','train-timetable-network','official-single-train-page','official-same-printed-column','odpt-explicit-boundary-endpoint']);
 const counts=Object.fromEntries(PAIRS.map(p=>[p.id,{ab:0,ba:0,other:0,types:{}}]));
-const pairById=new Map(PAIRS.map(p=>[p.id,p]));
+
+function directionForPair(row,p){
+  // ODPT link/network records can intentionally leave top-level
+  // fromRailway/toRailway blank and express direction in routeRailways.
+  // Inspect the exact adjacent route segment first.
+  const route=Array.isArray(row.routeRailways)?row.routeRailways.map(String):[];
+  for(let i=0;i+1<route.length;i++){
+    if(route[i]===p.a&&route[i+1]===p.b)return 'ab';
+    if(route[i]===p.b&&route[i+1]===p.a)return 'ba';
+  }
+  // Direct official evidence records use top-level endpoints.
+  const from=String(row.fromRailway||'');
+  const to=String(row.toRailway||'');
+  if(from===p.a&&to===p.b)return 'ab';
+  if(from===p.b&&to===p.a)return 'ba';
+  return '';
+}
+
 for(const row of trips.records||[]){
   const type=String(row.identityType||row.evidenceType||'');
   if(!exactTypes.has(type))continue;
-  const id=String(row.canonicalBoundaryId||'');
-  const p=pairById.get(id);
-  if(!p)continue;
-  const c=counts[id];
-  c.types[type]=(c.types[type]||0)+1;
-  const from=String(row.fromRailway||'');
-  const to=String(row.toRailway||'');
-  if(from===p.a&&to===p.b)c.ab++;
-  else if(from===p.b&&to===p.a)c.ba++;
-  else c.other++;
+  for(const p of PAIRS){
+    const direction=directionForPair(row,p);
+    if(!direction)continue;
+    const c=counts[p.id];
+    c[direction]++;
+    c.types[type]=(c.types[type]||0)+1;
+  }
+
+  // If a record explicitly claims one of these canonical boundaries but does
+  // not encode the claimed adjacent railway direction, flag it instead of
+  // silently accepting malformed evidence.
+  const canonical=String(row.canonicalBoundaryId||'');
+  const p=PAIRS.find(candidate=>candidate.id===canonical);
+  if(p&&!directionForPair(row,p))counts[p.id].other++;
 }
+
 let failed=false;
 const result={};
 for(const p of PAIRS){
