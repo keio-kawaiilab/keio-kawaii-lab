@@ -15,6 +15,11 @@ on:
       - 'scripts/test_keikyu_official_train_evidence.py'
       - 'scripts/test_keikyu_generated_evidence.py'
       - 'scripts/verify_keikyu_through_materialization.py'
+      - 'scripts/keikyu_internal_official_evidence.py'
+      - 'scripts/keikyu_internal_generated_evidence.py'
+      - 'scripts/test_keikyu_internal_official_evidence.py'
+      - 'scripts/test_keikyu_internal_generated_evidence.py'
+      - 'scripts/verify_keikyu_internal_materialization.py'
       - 'scripts/reviewed_train_evidence.py'
       - '.github/workflows/update-keikyu-official-through-evidence.yml'
   schedule:
@@ -46,10 +51,15 @@ jobs:
         run: |
           python -m py_compile \
             scripts/verify_keikyu_through_materialization.py \
-            scripts/repair_keikyu_sengakuji_terminal_idempotent.py
+            scripts/repair_keikyu_sengakuji_terminal_idempotent.py \
+            scripts/keikyu_internal_official_evidence.py \
+            scripts/keikyu_internal_generated_evidence.py \
+            scripts/verify_keikyu_internal_materialization.py
           python scripts/test_keikyu_official_train_evidence.py
           python scripts/test_keikyu_generated_evidence.py
           python scripts/test_repair_keikyu_sengakuji_terminal_idempotent.py
+          python scripts/test_keikyu_internal_official_evidence.py
+          python scripts/test_keikyu_internal_generated_evidence.py
       - name: Repair missing Keikyu inbound Sengakuji board
         run: python scripts/repair_keikyu_sengakuji_terminal_idempotent.py
       - name: Rebuild strict transit v2 fragments
@@ -62,6 +72,7 @@ jobs:
             /tmp/keikyu-weekday.json \
             /tmp/keikyu-holiday.json \
             --output data/transit-v2/keikyu-official-train-evidence.json
+          python scripts/keikyu_internal_official_evidence.py
       - name: Re-finalize strict transit DB
         run: |
           python scripts/finalize_transit_v2.py
@@ -76,38 +87,22 @@ jobs:
           evidence = json.loads((v2 / 'keikyu-official-train-evidence.json').read_text(encoding='utf-8'))
           entries = evidence.get('entries') or []
           edges = json.loads((v2 / 'same-train-edges.json').read_text(encoding='utf-8')).get('edges') or []
-          generated = [
-              edge for edge in edges
-              if 'keikyu-official-connection-timetable-same-column' in (edge.get('evidence') or [])
-          ]
+          generated = [edge for edge in edges if 'keikyu-official-connection-timetable-same-column' in (edge.get('evidence') or [])]
           runtime = json.loads((v2 / 'runtime-same-train.json').read_text(encoding='utf-8')).get('edges') or []
           coverage = json.loads((v2 / 'coverage.json').read_text(encoding='utf-8'))
-
           directions = {}
           for row in entries:
               key = str(row.get('direction') or '')
               directions[key] = directions.get(key, 0) + 1
-
-          production_pairs = {
-              (str(row.get('fromFragment') or ''), str(row.get('toFragment') or ''))
-              for row in entries
-          }
-          generated_pairs = {
-              (str(row.get('fromFragment') or ''), str(row.get('toFragment') or ''))
-              for row in generated
-          }
-          pair_direction = {
-              (str(row.get('fromFragment') or ''), str(row.get('toFragment') or '')): str(row.get('direction') or '')
-              for row in entries
-          }
+          production_pairs = {(str(row.get('fromFragment') or ''), str(row.get('toFragment') or '')) for row in entries}
+          generated_pairs = {(str(row.get('fromFragment') or ''), str(row.get('toFragment') or '')) for row in generated}
+          pair_direction = {(str(row.get('fromFragment') or ''), str(row.get('toFragment') or '')): str(row.get('direction') or '') for row in entries}
           generated_directions = {'keikyu-to-toei': 0, 'toei-to-keikyu': 0}
           for pair in generated_pairs:
               direction = pair_direction.get(pair)
               if direction in generated_directions:
                   generated_directions[direction] += 1
-
           missing_pairs = production_pairs - generated_pairs
-
           print('PRODUCTION_EVIDENCE', len(entries))
           print('PRODUCTION_DIRECTIONS', directions)
           print('GENERATED_SAME_TRAIN_EDGES', len(generated))
@@ -115,19 +110,20 @@ jobs:
           print('MISSING_PRODUCTION_PAIRS', len(missing_pairs))
           print('RUNTIME_SAME_TRAIN_EDGES', len(runtime))
           print('COVERAGE', json.dumps(coverage.get('summary') or {}, ensure_ascii=False, indent=2))
-
-          assert entries, 'official production evidence is empty'
-          assert generated, 'official evidence did not reach same-train edges'
-          assert directions.get('keikyu-to-toei', 0) > 0, directions
-          assert directions.get('toei-to-keikyu', 0) > 0, directions
-          assert generated_directions['keikyu-to-toei'] > 0, generated_directions
-          assert generated_directions['toei-to-keikyu'] > 0, generated_directions
-          assert not missing_pairs, 'some production evidence did not reach same-train edges'
-          assert all(row.get('matchStatus') == 'matched-singleton' for row in entries), 'non-singleton evidence leaked into production'
-          assert all(edge.get('identityLevel') == 'evidence-backed' for edge in generated), 'unexpected identity level'
+          assert entries
+          assert generated
+          assert directions.get('keikyu-to-toei', 0) > 0
+          assert directions.get('toei-to-keikyu', 0) > 0
+          assert generated_directions['keikyu-to-toei'] > 0
+          assert generated_directions['toei-to-keikyu'] > 0
+          assert not missing_pairs
+          assert all(row.get('matchStatus') == 'matched-singleton' for row in entries)
+          assert all(edge.get('identityLevel') == 'evidence-backed' for edge in generated)
           PY
       - name: Verify route runtime materialization
-        run: python scripts/verify_keikyu_through_materialization.py
+        run: |
+          python scripts/verify_keikyu_through_materialization.py
+          python scripts/verify_keikyu_internal_materialization.py
       - name: Commit refreshed strict DB
         shell: bash
         run: |
@@ -137,6 +133,7 @@ jobs:
             data/transit/keikyu \
             data/transit-v2/fragments/keikyu.json \
             data/transit-v2/keikyu-official-train-evidence.json \
+            data/transit-v2/keikyu-internal-official-train-evidence.json \
             data/transit-v2/same-train-edges.json \
             data/transit-v2/runtime-same-train.json \
             data/transit-v2/coverage.json \
@@ -147,11 +144,6 @@ jobs:
             exit 0
           fi
           git commit -m "Refresh Keikyu official through-train evidence"
-
-          # build_transit_v2.py refreshes additional generated files that this
-          # workflow intentionally does not publish. Refuse to discard anything
-          # outside the generated transit trees, then clean only those leftovers
-          # so a concurrent main update can be rebased safely.
           unexpected="$(git status --porcelain | sed -E 's/^.. //' | grep -Ev '^data/transit(-v2)?/' || true)"
           if [ -n "$unexpected" ]; then
             echo "Unexpected non-transit working-tree changes after DB commit:"
