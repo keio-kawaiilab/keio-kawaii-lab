@@ -2,49 +2,58 @@
 from __future__ import annotations
 
 import json
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
 
 import keikyu_official_train_evidence as parser
 
-
-def endpoint_matches(fragment, railway, calendar, first, minute, tolerance=0):
-    return parser.fragment_matches(fragment, railway, calendar, first, minute, tolerance)
+SERVICES = ('weekday', 'holiday')
 
 
-def near_matches(fragments, railway, calendar, first, minute, tolerance):
-    return [
-        row for row in fragments
-        if endpoint_matches(row, railway, calendar, first, minute, tolerance)
-    ]
-
-
-def endpoint_inventory(fragments, railway, calendar, first):
-    out = []
+def build_endpoint_indexes(fragments):
+    indexes = defaultdict(lambda: defaultdict(dict))
+    inventory = Counter()
     for fragment in fragments:
-        if str(fragment.get('railway') or '') != railway:
+        railway = str(fragment.get('railway') or '')
+        if railway not in {parser.KEIKYU_MAIN, parser.TOEI_ASAKUSA}:
             continue
-        if not parser.calendar_matches(fragment.get('calendar'), calendar):
-            continue
-        stop = parser.endpoint(fragment, first)
-        if not stop or not str(stop[0] or '').endswith('.Sengakuji'):
-            continue
-        values = [int(value) for value in stop[1:3] if isinstance(value, (int, float))]
-        out.append((fragment.get('id'), values, fragment.get('sourceKind'), fragment.get('trainNumber')))
-    return out
+        for calendar in SERVICES:
+            if not parser.calendar_matches(fragment.get('calendar'), calendar):
+                continue
+            for first in (False, True):
+                stop = parser.endpoint(fragment, first)
+                if not stop or not str(stop[0] or '').endswith('.Sengakuji'):
+                    continue
+                key = (railway, calendar, first)
+                inventory[key] += 1
+                for value in stop[1:3]:
+                    if isinstance(value, (int, float)):
+                        minute = int(value) % 1440
+                        indexes[key][minute][str(fragment.get('id'))] = fragment
+    return indexes, inventory
 
 
-def classify(candidate, fragments):
+def indexed_matches(indexes, railway, calendar, first, minute, tolerance):
+    bucket = {}
+    table = indexes[(railway, calendar, first)]
+    center = int(minute) % 1440
+    for delta in range(-tolerance, tolerance + 1):
+        for fragment_id, fragment in table.get((center + delta) % 1440, {}).items():
+            bucket[fragment_id] = fragment
+    return list(bucket.values())
+
+
+def classify(candidate, indexes):
     calendar = str(candidate['calendar'])
     source_minute = int(candidate['sourceBoundaryMinute'])
     target_minute = int(candidate['targetBoundaryMinute'])
 
-    src0 = near_matches(fragments, parser.KEIKYU_MAIN, calendar, False, source_minute, 0)
-    dst0 = near_matches(fragments, parser.TOEI_ASAKUSA, calendar, True, target_minute, 0)
-    src1 = near_matches(fragments, parser.KEIKYU_MAIN, calendar, False, source_minute, 1)
-    dst1 = near_matches(fragments, parser.TOEI_ASAKUSA, calendar, True, target_minute, 1)
-    src2 = near_matches(fragments, parser.KEIKYU_MAIN, calendar, False, source_minute, 2)
-    dst2 = near_matches(fragments, parser.TOEI_ASAKUSA, calendar, True, target_minute, 2)
+    src0 = indexed_matches(indexes, parser.KEIKYU_MAIN, calendar, False, source_minute, 0)
+    dst0 = indexed_matches(indexes, parser.TOEI_ASAKUSA, calendar, True, target_minute, 0)
+    src1 = indexed_matches(indexes, parser.KEIKYU_MAIN, calendar, False, source_minute, 1)
+    dst1 = indexed_matches(indexes, parser.TOEI_ASAKUSA, calendar, True, target_minute, 1)
+    src2 = indexed_matches(indexes, parser.KEIKYU_MAIN, calendar, False, source_minute, 2)
+    dst2 = indexed_matches(indexes, parser.TOEI_ASAKUSA, calendar, True, target_minute, 2)
 
     if len(src0) == 1 and len(dst0) == 1:
         reason = 'exact-singleton-both'
@@ -80,6 +89,7 @@ def classify(candidate, fragments):
 
 def main():
     fragments = parser.load_fragments(Path('data/transit-v2/fragments'))
+    indexes, endpoint_inventory = build_endpoint_indexes(fragments)
     all_rows = []
     inventory = {}
     for calendar, url in (
@@ -88,27 +98,23 @@ def main():
     ):
         candidates = parser.extract_pdf(parser.fetch_pdf(url), calendar, url)
         reverse = [row for row in candidates if row.get('direction') == 'keikyu-to-toei']
-        rows = [classify(row, fragments) for row in reverse]
+        rows = [classify(row, indexes) for row in reverse]
         all_rows.extend(rows)
         inventory[calendar] = {
             'reverseCandidates': len(reverse),
-            'keikyuSengakujiEndFragments': len(endpoint_inventory(fragments, parser.KEIKYU_MAIN, calendar, False)),
-            'toeiSengakujiStartFragments': len(endpoint_inventory(fragments, parser.TOEI_ASAKUSA, calendar, True)),
+            'keikyuSengakujiEndFragments': endpoint_inventory[(parser.KEIKYU_MAIN, calendar, False)],
+            'toeiSengakujiStartFragments': endpoint_inventory[(parser.TOEI_ASAKUSA, calendar, True)],
         }
 
     reasons = Counter(row['reason'] for row in all_rows)
-    near_source_only = sum(1 for row in all_rows if not row['sourceExact'] and row['sourceWithin1'])
-    near_target_only = sum(1 for row in all_rows if not row['targetExact'] and row['targetWithin1'])
-    near_source2 = sum(1 for row in all_rows if not row['sourceExact'] and row['sourceWithin2'])
-    near_target2 = sum(1 for row in all_rows if not row['targetExact'] and row['targetWithin2'])
     payload = {
         'summary': {
             'totalReverseCandidates': len(all_rows),
             'reasons': dict(reasons),
-            'missingExactButSourceWithin1Minute': near_source_only,
-            'missingExactButTargetWithin1Minute': near_target_only,
-            'missingExactButSourceWithin2Minutes': near_source2,
-            'missingExactButTargetWithin2Minutes': near_target2,
+            'missingExactButSourceWithin1Minute': sum(1 for row in all_rows if not row['sourceExact'] and row['sourceWithin1']),
+            'missingExactButTargetWithin1Minute': sum(1 for row in all_rows if not row['targetExact'] and row['targetWithin1']),
+            'missingExactButSourceWithin2Minutes': sum(1 for row in all_rows if not row['sourceExact'] and row['sourceWithin2']),
+            'missingExactButTargetWithin2Minutes': sum(1 for row in all_rows if not row['targetExact'] and row['targetWithin2']),
             'inventory': inventory,
         },
         'examples': {
