@@ -16,8 +16,10 @@ on:
       - 'scripts/test_keikyu_generated_evidence.py'
       - 'scripts/verify_keikyu_through_materialization.py'
       - 'scripts/keikyu_internal_official_evidence.py'
+      - 'scripts/keikyu_kurihama_official_evidence.py'
       - 'scripts/keikyu_internal_generated_evidence.py'
       - 'scripts/test_keikyu_internal_official_evidence.py'
+      - 'scripts/test_keikyu_kurihama_official_evidence.py'
       - 'scripts/test_keikyu_internal_generated_evidence.py'
       - 'scripts/verify_keikyu_internal_materialization.py'
       - 'scripts/reviewed_train_evidence.py'
@@ -58,12 +60,14 @@ jobs:
             scripts/verify_keikyu_through_materialization.py \
             scripts/repair_keikyu_sengakuji_terminal_idempotent.py \
             scripts/keikyu_internal_official_evidence.py \
+            scripts/keikyu_kurihama_official_evidence.py \
             scripts/keikyu_internal_generated_evidence.py \
             scripts/verify_keikyu_internal_materialization.py
           python scripts/test_keikyu_official_train_evidence.py
           python scripts/test_keikyu_generated_evidence.py
           python scripts/test_repair_keikyu_sengakuji_terminal_idempotent.py
           python scripts/test_keikyu_internal_official_evidence.py
+          python scripts/test_keikyu_kurihama_official_evidence.py
           python scripts/test_keikyu_internal_generated_evidence.py
       - name: Repair missing Keikyu inbound Sengakuji board
         run: python scripts/repair_keikyu_sengakuji_terminal_idempotent.py

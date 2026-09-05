@@ -12,6 +12,7 @@ from typing import Any
 
 import pdfplumber
 
+import keikyu_kurihama_official_evidence as kurihama
 import keikyu_official_train_evidence as parser
 
 MAIN = 'odpt.Railway:Keikyu.Main'
@@ -71,6 +72,7 @@ def exact_column_time(words: list[dict[str, Any]], row: dict[str, Any] | None, x
 
 def airport_time(words: list[dict[str, Any]], page_rows: list[dict[str, Any]], source_y: float, target_y: float, x: float, direction: str) -> tuple[int | None, str, str]:
     low, high = sorted((source_y, target_y))
+
     def is_haneda(row: dict[str, Any]) -> bool:
         text = parser.norm(row.get('text'))
         return '羽田空港第１・第２ターミナル' in text or '羽田空港第3ターミナル' in text or '羽田空港第３ターミナル' in text
@@ -222,11 +224,25 @@ def main() -> int:
     ap.add_argument('--fragments', default='data/transit-v2/fragments')
     ap.add_argument('--output', default='data/transit-v2/keikyu-internal-official-train-evidence.json')
     args = ap.parse_args()
-    payload = build_payload(Path(args.fragments))
-    Path(args.output).write_text(json.dumps(payload, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-    print(json.dumps(payload['summary'], ensure_ascii=False, indent=2))
+    fragment_folder = Path(args.fragments)
+    output_path = Path(args.output)
+
+    payload = build_payload(fragment_folder)
+    output_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    print(json.dumps({'airport': payload['summary']}, ensure_ascii=False, indent=2))
     if not payload['entries']:
         raise RuntimeError('No strict Keikyu Main-Airport official same-column evidence matched')
+
+    kurihama_entries, kurihama_summary = kurihama.generate(fragment_folder)
+    if not kurihama_entries:
+        raise RuntimeError('No strict Keikyu Main-Kurihama official same-column evidence matched')
+    combined = kurihama.append_payload(output_path, kurihama_entries, kurihama_summary)
+    print(json.dumps({
+        'airportEntries': len(payload['entries']),
+        'kurihamaEntries': len(kurihama_entries),
+        'totalEntries': len(combined.get('entries') or []),
+        'kurihama': kurihama_summary,
+    }, ensure_ascii=False, indent=2))
     return 0
 
 
