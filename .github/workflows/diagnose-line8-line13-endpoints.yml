@@ -1,4 +1,4 @@
-name: Diagnose Line 8 and Line 13 ODPT endpoints
+name: Diagnose Line 8 and Line 13 exact sources
 
 on:
   workflow_dispatch:
@@ -7,6 +7,7 @@ on:
       - fix/line8-line13-exact-corridors
     paths:
       - 'scripts/diagnose_line8_line13_odpt_endpoints.mjs'
+      - 'scripts/diagnose_strain_pdf_layout.py'
       - '.github/workflows/diagnose-line8-line13-endpoints.yml'
 
 permissions:
@@ -17,5 +18,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests==2.32.5 pdfplumber==0.11.7
       - name: Inspect exact ODPT endpoint metadata
         run: node scripts/diagnose_line8_line13_odpt_endpoints.mjs
+      - name: Inspect S-TRAIN PDF text layout
+        run: python scripts/diagnose_strain_pdf_layout.py
