@@ -1,0 +1,21 @@
+name: Diagnose Line 8 and Line 13 ODPT endpoints
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - fix/line8-line13-exact-corridors
+    paths:
+      - 'scripts/diagnose_line8_line13_odpt_endpoints.mjs'
+      - '.github/workflows/diagnose-line8-line13-endpoints.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect exact ODPT endpoint metadata
+        run: node scripts/diagnose_line8_line13_odpt_endpoints.mjs
