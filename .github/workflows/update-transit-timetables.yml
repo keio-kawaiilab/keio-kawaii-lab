@@ -24,6 +24,12 @@ on:
       - 'scripts/test_keikyu_official_train_evidence.py'
       - 'scripts/test_keikyu_generated_evidence.py'
       - 'scripts/verify_keikyu_through_materialization.py'
+      - 'scripts/keikyu_internal_official_evidence.py'
+      - 'scripts/keikyu_internal_generated_evidence.py'
+      - 'scripts/test_keikyu_internal_official_evidence.py'
+      - 'scripts/test_keikyu_internal_generated_evidence.py'
+      - 'scripts/verify_keikyu_internal_materialization.py'
+      - 'scripts/reviewed_train_evidence.py'
       - 'scripts/test_route_runtime_same_train.js'
       - 'route-core.js'
       - 'route.js'
@@ -79,13 +85,18 @@ jobs:
             scripts/keikyu_official_train_evidence.py \
             scripts/merge_keikyu_official_evidence.py \
             scripts/keikyu_generated_evidence.py \
-            scripts/verify_keikyu_through_materialization.py
+            scripts/verify_keikyu_through_materialization.py \
+            scripts/keikyu_internal_official_evidence.py \
+            scripts/keikyu_internal_generated_evidence.py \
+            scripts/verify_keikyu_internal_materialization.py
           node scripts/test_odpt_train_identity_db.mjs
           node scripts/test_cross_operator_through_service.js
           node scripts/test_route_runtime_same_train.js
           python scripts/test_import_odpt_timetables.py
           python scripts/test_keikyu_official_train_evidence.py
           python scripts/test_keikyu_generated_evidence.py
+          python scripts/test_keikyu_internal_official_evidence.py
+          python scripts/test_keikyu_internal_generated_evidence.py
 
       - name: Import ODPT timetables
         id: import
@@ -163,6 +174,7 @@ jobs:
             /tmp/keikyu-weekday.json \
             /tmp/keikyu-holiday.json \
             --output data/transit-v2/keikyu-official-train-evidence.json
+          python scripts/keikyu_internal_official_evidence.py
           python scripts/finalize_transit_v2.py
           python scripts/audit_transit_v2.py
           python - <<'PY'
@@ -201,23 +213,10 @@ jobs:
           for row in entries:
               direction = str(row.get('direction') or '')
               directions[direction] = directions.get(direction, 0) + 1
-          official_edges = [
-              row for row in edge_payload.get('edges') or []
-              if 'keikyu-official-connection-timetable-same-column' in (row.get('evidence') or [])
-          ]
-          production_pairs = {
-              (str(row.get('fromFragment') or ''), str(row.get('toFragment') or ''))
-              for row in entries
-          }
-          edge_pairs = {
-              (str(row.get('fromFragment') or ''), str(row.get('toFragment') or ''))
-              for row in official_edges
-          }
-          reverse_edges = [
-              row for row in official_edges
-              if (row.get('boundary') or {}).get('fromRailway') == 'odpt.Railway:Keikyu.Main'
-              and (row.get('boundary') or {}).get('toRailway') == 'odpt.Railway:Toei.Asakusa'
-          ]
+          official_edges = [row for row in edge_payload.get('edges') or [] if 'keikyu-official-connection-timetable-same-column' in (row.get('evidence') or [])]
+          production_pairs = {(str(row.get('fromFragment') or ''), str(row.get('toFragment') or '')) for row in entries}
+          edge_pairs = {(str(row.get('fromFragment') or ''), str(row.get('toFragment') or '')) for row in official_edges}
+          reverse_edges = [row for row in official_edges if (row.get('boundary') or {}).get('fromRailway') == 'odpt.Railway:Keikyu.Main' and (row.get('boundary') or {}).get('toRailway') == 'odpt.Railway:Toei.Asakusa']
           assert directions.get('toei-to-keikyu', 0) > 0, directions
           assert directions.get('keikyu-to-toei', 0) > 0, directions
           assert reverse_edges, 'Keikyu -> Toei official same-train edges disappeared'
@@ -231,6 +230,7 @@ jobs:
           print('Keikyu -> Toei generated edges:', len(reverse_edges))
           PY
           python scripts/verify_keikyu_through_materialization.py --repair-report /tmp/keikyu-sengakuji-repair.json
+          python scripts/verify_keikyu_internal_materialization.py
 
       - name: Commit refreshed transit data
         if: steps.import.outputs.ran == 'true'
