@@ -7,6 +7,7 @@ on:
       - feat/complete-meguro-through-service
     paths:
       - 'scripts/diagnose_meguro_endpoint_identity.mjs'
+      - 'scripts/collect_sotetsu_official_meguro_columns.py'
       - '.github/workflows/diagnose-meguro-through-service.yml'
 
 permissions:
@@ -15,7 +16,15 @@ permissions:
 jobs:
   diagnose:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install collector dependencies
+        run: pip install requests==2.32.5 pdfplumber==0.11.7
       - name: Diagnose exact ODPT endpoints
         run: node scripts/diagnose_meguro_endpoint_identity.mjs
+      - name: Probe exact official Meguro printed columns
+        run: python scripts/collect_sotetsu_official_meguro_columns.py --output /tmp/meguro-columns.json
