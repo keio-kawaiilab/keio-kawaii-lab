@@ -1,0 +1,55 @@
+name: Track missing inferred train identity evidence
+
+on:
+  push:
+    paths:
+      - '.github/workflows/mark-missing-inferred-identity.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Patch finalizer audit
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/finalize_transit_v2.py')
+          s=p.read_text(encoding='utf-8')
+          old='''    edges = reviewed.apply_reviewed_train_evidence(\n        fragments,\n        edges,\n        unresolved,\n        indexes,\n        V2 / 'reviewed-train-evidence.json',\n    )\n\n    coverage = write_outputs(fragments, networks, edges, unresolved, index)\n'''
+          new='''    edges = reviewed.apply_reviewed_train_evidence(\n        fragments,\n        edges,\n        unresolved,\n        indexes,\n        V2 / 'reviewed-train-evidence.json',\n    )\n\n    # A published through destination and a verified operational path do not by\n    # themselves prove that a particular reconstructed station-timetable\n    # fragment is the same physical train after the boundary.  Surface every\n    # such gap explicitly so coverage cannot report a misleading zero.\n    linked_from = {str(edge.get('fromFragment') or '') for edge in edges if edge.get('classification') == 'same-train'}\n    already_noted = {str(row.get('fragment') or '') for row in unresolved if isinstance(row, dict)}\n    for fragment in fragments:\n        if fragment.get('sourceKind') != 'station-timetable-reconstruction':\n            continue\n        path = fragment.get('throughRailwayPath') or []\n        fid = str(fragment.get('id') or '')\n        if len(path) > 1 and fid and fid not in linked_from and fid not in already_noted:\n            unresolved.append({\n                'kind': 'missing-boundary-train-identity-evidence',\n                'fragment': fid,\n                'railway': fragment.get('railway'),\n                'nextRailway': path[1],\n                'destination': fragment.get('destination') or [],\n                'sourceKind': fragment.get('sourceKind'),\n            })\n\n    coverage = write_outputs(fragments, networks, edges, unresolved, index)\n'''
+          if old not in s:
+              raise SystemExit('finalizer insertion point not found')
+          p.write_text(s.replace(old,new),encoding='utf-8')
+          PY
+      - name: Rebuild and verify honest coverage
+        run: |
+          python scripts/finalize_transit_v2.py
+          python scripts/audit_transit_v2.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          c=json.loads(Path('data/transit-v2/coverage.json').read_text(encoding='utf-8'))
+          s=json.loads(Path('data/transit-v2/unresolved-summary.json').read_text(encoding='utf-8'))
+          assert c['summary']['unresolved'] > 0, c['summary']
+          assert any(r.get('kind')=='missing-boundary-train-identity-evidence' for r in c.get('unresolved') or [])
+          print('honest unresolved:',c['summary']['unresolved'])
+          print('summary:',json.dumps(s.get('topReasons') or [],ensure_ascii=False))
+          PY
+      - name: Commit coverage fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/finalize_transit_v2.py data/transit-v2
+          git commit -m "Expose missing train identity evidence in transit v2"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
