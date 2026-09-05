@@ -34,6 +34,11 @@ OCCURRENCE_PERFORMANCE_MARKERS = (
 )
 LEGACY_BAND_KEY_TAIL = "String(e.applyEnd||''),canon(e)].join('|')"
 BAND_KEY_TAIL = "String(e.applyEnd||''),performanceTitleKey(e)].join('|')"
+APPLICATION_BAND_MARKERS = (
+    "function applicationBandSubjectKey(e)",
+    "function applicationBandKey(e,index)",
+    "applicationBandSubjectKey(e)",
+)
 
 
 def ensure_past_performances_hidden(page: str) -> str:
@@ -48,6 +53,10 @@ def has_visible_title_performance_identity(page: str) -> bool:
     return PERFORMANCE_KEY in page or all(marker in page for marker in OCCURRENCE_PERFORMANCE_MARKERS)
 
 
+def has_application_band_identity(page: str) -> bool:
+    return BAND_KEY_TAIL in page or all(marker in page for marker in APPLICATION_BAND_MARKERS)
+
+
 def ensure_visible_title_performance_identity(page: str) -> str:
     if has_visible_title_performance_identity(page):
         fixed = page
@@ -59,7 +68,7 @@ def ensure_visible_title_performance_identity(page: str) -> str:
     # Application bands for the same provider/window should follow the same
     # normalized performance name too, otherwise a duplicate card can disappear
     # while duplicate bands remain above it.
-    if BAND_KEY_TAIL in fixed:
+    if has_application_band_identity(fixed):
         return fixed
     if LEGACY_BAND_KEY_TAIL not in fixed:
         raise RuntimeError("schedule application-band identity changed; title dedupe could not be installed")
@@ -104,7 +113,7 @@ def main() -> int:
 
     if CURRENT_OCCURRENCE_RENDERER not in page:
         raise RuntimeError("past-performance guard is missing from schedule detail renderer")
-    if not has_visible_title_performance_identity(page) or BAND_KEY_TAIL not in page:
+    if not has_visible_title_performance_identity(page) or not has_application_band_identity(page):
         raise RuntimeError("visible-title performance dedupe is missing from schedule renderer")
 
     PAGE.write_text(page, encoding="utf-8")
