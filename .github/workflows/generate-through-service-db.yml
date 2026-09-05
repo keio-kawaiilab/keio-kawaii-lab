@@ -1,8 +1,8 @@
 name: Generate through-service database
 
 # Strict: no timetable-gap inference, no train-number inference, no destination-only identity,
-# and no generic through-boundary chaining. Line 8 and Line 13 are complete only when every
-# audited boundary has exact evidence in both directions.
+# and no generic through-boundary chaining. Line 8, Line 13, and the Meguro corridor are complete
+# only when every audited boundary has exact evidence in both directions.
 on:
   workflow_dispatch:
   push:
@@ -21,12 +21,19 @@ on:
       - 'scripts/apply_fukutoshin_sotetsu_pdf_evidence.mjs'
       - 'scripts/apply_fukutoshin_wakoshi_endpoint_evidence.mjs'
       - 'scripts/apply_yurakucho_wakoshi_endpoint_evidence.mjs'
+      - 'scripts/apply_meguro_official_pdf_evidence.mjs'
+      - 'scripts/apply_meguro_odpt_endpoint_evidence.mjs'
       - 'scripts/probe_seibu_line8_line13_exact.py'
       - 'scripts/collect_seibu_strain_line13_columns.py'
       - 'scripts/collect_sotetsu_official_line13_columns.py'
+      - 'scripts/collect_sotetsu_official_meguro_columns.py'
       - 'scripts/verify_line8_line13_boundaries.mjs'
+      - 'scripts/verify_meguro_boundaries.mjs'
+      - 'scripts/verify_meguro_families.mjs'
       - 'scripts/report_line8_line13_identity_coverage.mjs'
       - 'scripts/audit_line8_line13_bidirectional_exact.mjs'
+      - 'scripts/report_meguro_identity_coverage.mjs'
+      - 'scripts/audit_meguro_bidirectional_exact.mjs'
       - 'scripts/test_odpt_train_identity_db.mjs'
       - '.github/workflows/generate-through-service-db.yml'
 
@@ -40,7 +47,7 @@ concurrency:
 jobs:
   generate:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -48,8 +55,11 @@ jobs:
           python-version: '3.12'
       - name: Install official timetable collector dependencies
         run: pip install requests==2.32.5 beautifulsoup4==4.13.4 pdfplumber==0.11.7
-      - name: Verify complete Line 8 and Line 13 boundary definitions
-        run: node scripts/verify_line8_line13_boundaries.mjs
+      - name: Verify complete through-service boundary and family definitions
+        run: |
+          node scripts/verify_line8_line13_boundaries.mjs
+          node scripts/verify_meguro_boundaries.mjs
+          node scripts/verify_meguro_families.mjs
       - name: Collect current separated Seibu Line 8 and Line 13 train evidence
         run: |
           python scripts/probe_seibu_line8_line13_exact.py \
@@ -62,16 +72,25 @@ jobs:
         run: |
           python scripts/collect_sotetsu_official_line13_columns.py \
             --output data/transit/fukutoshin/sotetsu-official-line13-columns.json
+      - name: Collect current exact Meguro printed-column evidence
+        run: |
+          python scripts/collect_sotetsu_official_meguro_columns.py \
+            --output data/transit/meguro/sotetsu-official-meguro-columns.json
       - name: Test authoritative identity rules
         run: |
+          node --check scripts/build-through-service-db.mjs
           node --check scripts/enrich-through-service-db.mjs
           node --check scripts/apply_line8_line13_seibu_evidence.mjs
           node --check scripts/apply_seibu_strain_line13_evidence.mjs
           node --check scripts/apply_fukutoshin_sotetsu_pdf_evidence.mjs
           node --check scripts/apply_fukutoshin_wakoshi_endpoint_evidence.mjs
           node --check scripts/apply_yurakucho_wakoshi_endpoint_evidence.mjs
+          node --check scripts/apply_meguro_official_pdf_evidence.mjs
+          node --check scripts/apply_meguro_odpt_endpoint_evidence.mjs
           node --check scripts/report_line8_line13_identity_coverage.mjs
           node --check scripts/audit_line8_line13_bidirectional_exact.mjs
+          node --check scripts/report_meguro_identity_coverage.mjs
+          node --check scripts/audit_meguro_bidirectional_exact.mjs
           node scripts/test_odpt_train_identity_db.mjs
       - name: Build deterministic through-service database
         run: |
@@ -82,70 +101,90 @@ jobs:
           node scripts/apply_fukutoshin_sotetsu_pdf_evidence.mjs
           node scripts/apply_fukutoshin_wakoshi_endpoint_evidence.mjs
           node scripts/apply_yurakucho_wakoshi_endpoint_evidence.mjs
-      - name: Write complete Line 8 and Line 13 coverage reports
-        run: node scripts/report_line8_line13_identity_coverage.mjs
+          node scripts/apply_meguro_official_pdf_evidence.mjs
+          node scripts/apply_meguro_odpt_endpoint_evidence.mjs
+      - name: Write complete coverage reports
+        run: |
+          node scripts/report_line8_line13_identity_coverage.mjs
+          node scripts/report_meguro_identity_coverage.mjs
       - name: Audit exact evidence in both directions at every boundary
-        run: node scripts/audit_line8_line13_bidirectional_exact.mjs
-      - name: Assert both systems complete under strict policy
+        run: |
+          node scripts/audit_line8_line13_bidirectional_exact.mjs
+          node scripts/audit_meguro_bidirectional_exact.mjs
+      - name: Assert all completed systems under strict policy
         run: |
           node - <<'NODE'
           const b=require('./data/transit/through-service-boundaries.json');
           const f=require('./data/transit/through-service-families.json');
           const t=require('./data/transit/through-service-trips.json');
+          const c=require('./data/transit/through-service-coverage.json');
           const l13=require('./data/transit/fukutoshin/identity-coverage-report.json');
           const l8=require('./data/transit/line8/identity-coverage-report.json');
+          const meguro=require('./data/transit/meguro/identity-coverage-report.json');
           const seibu=require('./data/transit/line8-line13/seibu-official-exact-through-trains.json');
           const strain=require('./data/transit/line8-line13/seibu-strain-line13-columns.json');
           const sotetsu=require('./data/transit/fukutoshin/sotetsu-official-line13-columns.json');
+          const meguroPdf=require('./data/transit/meguro/sotetsu-official-meguro-columns.json');
           for(const policy of [b.policy,f.policy,t.policy]){
             if(policy.runtimeInference!==false)throw new Error('runtimeInference must be false');
             if(policy.timeGapMayEstablishTrainIdentity!==false)throw new Error('time-gap identity inference must be false');
           }
           if(t.policy.trainNumberMayEstablishTrainIdentity!==false)throw new Error('train-number identity inference must be false');
           if(f.policy.genericBoundaryChaining!==false||t.policy.genericBoundaryChaining!==false)throw new Error('generic boundary chaining must be false');
-          for(const report of [l13,l8]){
+          for(const report of [l13,l8,meguro]){
             if(report.policy.runtimeInference!==false||report.policy.timeGapMayEstablishTrainIdentity!==false||report.policy.trainNumberMayEstablishTrainIdentity!==false||report.policy.publishedDestinationAloneMayEstablishIdentity!==false)throw new Error('Coverage report must remain fail-closed');
           }
           if(l13.summary.boundaryPairs!==10||l13.summary.verifiedBoundaries!==10||l13.summary.exactIdentityReadyPairs!==10||l13.summary.complete!==true)throw new Error(`Line 13 incomplete: ${JSON.stringify(l13.summary)}`);
           if(l8.summary.boundaryPairs!==3||l8.summary.verifiedBoundaries!==3||l8.summary.exactIdentityReadyPairs!==3||l8.summary.complete!==true)throw new Error(`Line 8 incomplete: ${JSON.stringify(l8.summary)}`);
+          if(meguro.summary.boundaryPairs!==7||meguro.summary.verifiedBoundaries!==7||meguro.summary.exactIdentityReadyPairs!==7||meguro.summary.complete!==true)throw new Error(`Meguro incomplete: ${JSON.stringify(meguro.summary)}`);
+          if(c.summary.unknownFamilyRailways!==0)throw new Error(`Unknown family railways remain: ${JSON.stringify(c.unknownFamilyRailways)}`);
           if(seibu.identityPolicy.ambiguousMetroBranchMayEstablishLineIdentity!==false)throw new Error('Ambiguous Metro branch must remain fail-closed');
           if(strain.identityPolicy.reviewedSourceHashRequired!==true)throw new Error('S-TRAIN reviewed source hash guard missing');
           for(const bid of ['seibu-ikebukuro-seibuchichibu-agano','seibuyurakucho-ikebukuro-nerima']){
-            const c=strain.summary?.boundaryDirectionCounts?.[bid]||{};
-            if(!((c['chichibu-to-fukutoshin']||0)>0&&(c['fukutoshin-to-chichibu']||0)>0))throw new Error(`S-TRAIN exact evidence not bidirectional: ${bid}`);
+            const x=strain.summary?.boundaryDirectionCounts?.[bid]||{};
+            if(!((x['chichibu-to-fukutoshin']||0)>0&&(x['fukutoshin-to-chichibu']||0)>0))throw new Error(`S-TRAIN exact evidence not bidirectional: ${bid}`);
           }
           const sd=sotetsu.summary?.boundaryDirectionCounts||{};
           for(const id of ['toyoko-tokyushinyokohama-hiyoshi','tokyushinyokohama-sotetsushinyokohama-shinyokohama']){
             if(!((sd[id]?.up||0)>0&&(sd[id]?.down||0)>0))throw new Error(`Sotetsu exact evidence not bidirectional: ${id}`);
           }
+          const md=meguroPdf.summary?.boundaryDirectionCounts||{};
+          for(const id of ['meguro-tokyushinyokohama-hiyoshi','meguro-namboku-meguro','meguro-mita-meguro']){
+            if(!((md[id]?.up||0)>0&&(md[id]?.down||0)>0))throw new Error(`Meguro printed-column evidence not bidirectional: ${id}`);
+          }
           const w13=t.wakoshiEndpointEvidence;
           if(!w13||!(w13.directions.tobuToFukutoshin>0)||!(w13.directions.fukutoshinToTobu>0))throw new Error('Line 13 Wakoshi exact evidence missing');
           const w8=t.yurakuchoWakoshiEndpointEvidence;
           if(!w8||!(w8.directions.tobuToYurakucho>0)||!(w8.directions.yurakuchoToTobu>0))throw new Error('Line 8 Wakoshi exact evidence missing');
+          const me=t.meguroEndpointEvidence;
+          if(!me||!(me.directions.nambokuSaitama.saitamaToNamboku>0)||!(me.directions.nambokuSaitama.nambokuToSaitama>0))throw new Error('Namboku-Saitama exact endpoint evidence missing');
           console.log('LINE13',JSON.stringify(l13.summary));
           console.log('LINE8',JSON.stringify(l8.summary));
+          console.log('MEGURO',JSON.stringify(meguro.summary));
           NODE
       - name: Validate generated JSON
         run: |
-          node -e "for(const f of ['data/transit/through-service-trips.json','data/transit/through-service-coverage.json','data/transit/fukutoshin/identity-coverage-report.json','data/transit/line8/identity-coverage-report.json','data/transit/line8-line13/seibu-official-exact-through-trains.json','data/transit/line8-line13/seibu-strain-line13-columns.json','data/transit/fukutoshin/sotetsu-official-line13-columns.json'])JSON.parse(require('fs').readFileSync(f,'utf8'));"
-      - name: Commit complete Line 8 and Line 13 generated database
+          node -e "for(const f of ['data/transit/through-service-boundaries.json','data/transit/through-service-families.json','data/transit/through-service-trips.json','data/transit/through-service-coverage.json','data/transit/fukutoshin/identity-coverage-report.json','data/transit/line8/identity-coverage-report.json','data/transit/meguro/identity-coverage-report.json','data/transit/line8-line13/seibu-official-exact-through-trains.json','data/transit/line8-line13/seibu-strain-line13-columns.json','data/transit/fukutoshin/sotetsu-official-line13-columns.json','data/transit/meguro/sotetsu-official-meguro-columns.json'])JSON.parse(require('fs').readFileSync(f,'utf8'));"
+      - name: Commit complete generated through-service database
         run: |
-          git add data/transit/through-service-trips.json \
+          git add data/transit/through-service-boundaries.json \
+                  data/transit/through-service-families.json \
+                  data/transit/through-service-trips.json \
                   data/transit/through-service-coverage.json \
                   data/transit/fukutoshin/identity-coverage-report.json \
                   data/transit/line8/identity-coverage-report.json \
+                  data/transit/meguro/identity-coverage-report.json \
                   data/transit/line8-line13/seibu-official-exact-through-trains.json \
                   data/transit/line8-line13/seibu-strain-line13-columns.json \
-                  data/transit/fukutoshin/sotetsu-official-line13-columns.json
+                  data/transit/fukutoshin/sotetsu-official-line13-columns.json \
+                  data/transit/meguro/sotetsu-official-meguro-columns.json
           if git diff --cached --quiet; then
             echo 'No generated changes'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'Generate complete Line 8 and Line 13 through-service database'
-          # Some legacy generators touch extra working-tree files. They are not
-          # part of this authoritative snapshot and must not block a safe rebase.
+          git commit -m 'Generate complete Line 8, Line 13, and Meguro through-service database'
           git status --short
           git restore --worktree -- .
           git clean -fd
