@@ -15,7 +15,7 @@ permissions:
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -23,11 +23,11 @@ jobs:
           python-version: '3.12'
       - name: Install dependencies
         run: pip install requests==2.32.5 beautifulsoup4==4.13.4
-      - name: Collect exact one-train timetable evidence
+      - name: Collect all exact one-train timetable evidence
         run: |
           python scripts/probe_seibu_2026_fukutoshin_pages.py \
             --output /tmp/seibu-line13-through-trains.json
-      - name: Audit strict identity policy
+      - name: Audit strict identity policy and current discovery
         run: |
           python - <<'PY'
           import json
@@ -41,36 +41,21 @@ jobs:
           assert p['trainNumberAloneMayEstablishIdentity'] is False
           assert p['destinationAloneMayEstablishIdentity'] is False
           assert p['boundaryRequiresAdjacentPublishedStopsOnSameTrainPage'] is True
+          assert p['sitePublishedDetailParametersMayConstructDetailUrl'] is True
+          assert s['sourcePagesFetched'] > 0
+          assert s['discoveredTrainDetailUrls'] > 0
+          assert s['usedKnownSampleFallback'] is False
           assert s['trainDetailPagesFetched'] > 0
           assert s['exactThroughTrainPages'] > 0
           assert s['boundaryCounts']['seibu-metro-kotake-mukaihara'] > 0
+          assert s['boundaryCounts']['metro-tokyu-shibuya'] > 0
+          assert s['boundaryCounts']['tokyu-minatomirai-yokohama'] > 0
           for row in data['authoritativeThroughTrains']:
               assert row['identityEvidence']=='single-published-one-train-page'
               assert row['stationCount'] >= 3
               assert row['boundaries']
-          PY
-      - name: Inspect timetable detail-link mechanics
-        run: python scripts/inspect_seibu_timetable_mechanics.py > /tmp/seibu-timetable-mechanics.json
-      - name: Show compact mechanics clues
-        run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          data=json.loads(Path('/tmp/seibu-timetable-mechanics.json').read_text(encoding='utf-8'))
-          for page in data['pages']:
-              print('MECHANICS_PAGE', page['url'])
-              for form in page['forms']:
-                  interesting=[i for i in form['inputs'] if i.get('name') or i.get('onclick') or i.get('data')]
-                  if interesting:
-                      print('FORM', json.dumps({'action':form['action'],'method':form['method'],'id':form['id'],'inputs':interesting[:35]}, ensure_ascii=False))
-              for row in page['clickable'][:120]:
-                  if row.get('onclick') or row.get('data') or ':' in row.get('text',''):
-                      print('CLICK', json.dumps(row, ensure_ascii=False))
-              for script in page['scripts']:
-                  if script.get('src') or script.get('needleHits'):
-                      print('SCRIPT', json.dumps(script, ensure_ascii=False))
-              for ctx in page['contexts'][:30]:
-                  print('CTX', json.dumps(ctx, ensure_ascii=False))
+              assert row['sourceParameters']['tx']
+              assert row['sourceParameters']['date']
           PY
       - name: Probe current Tobu Line 13 source
         run: python scripts/inspect_tobu_current_line13_source.py > /tmp/tobu-line13-source.json
@@ -81,6 +66,5 @@ jobs:
           name: seibu-line13-through-trains
           path: |
             /tmp/seibu-line13-through-trains.json
-            /tmp/seibu-timetable-mechanics.json
             /tmp/tobu-line13-source.json
           if-no-files-found: error
