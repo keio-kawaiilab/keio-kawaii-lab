@@ -5,6 +5,8 @@ on:
     paths:
       - 'scripts/keisei_official_oshiage_evidence.py'
       - 'scripts/keisei_generated_evidence.py'
+      - 'scripts/dedupe_keisei_official_timetables.py'
+      - 'scripts/test_dedupe_keisei_official_timetables.py'
       - 'scripts/test_keisei_official_oshiage_evidence.py'
       - 'scripts/test_keisei_generated_evidence.py'
       - 'scripts/diagnose_keisei_oshiage_duplicate_fragments.py'
@@ -23,17 +25,33 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Test strict Oshiage evidence rules
+      - name: Test strict Oshiage evidence and exact dedupe rules
         run: |
           python -m py_compile \
             scripts/keisei_official_oshiage_evidence.py \
             scripts/keisei_generated_evidence.py \
+            scripts/dedupe_keisei_official_timetables.py \
+            scripts/test_dedupe_keisei_official_timetables.py \
             scripts/test_keisei_official_oshiage_evidence.py \
             scripts/test_keisei_generated_evidence.py \
             scripts/diagnose_keisei_oshiage_duplicate_fragments.py
+          python scripts/test_dedupe_keisei_official_timetables.py
           python scripts/test_keisei_official_oshiage_evidence.py
           python scripts/test_keisei_generated_evidence.py
-      - name: Extract and attach official Oshiage evidence
+      - name: Capture pre-dedupe Oshiage ambiguity
+        run: |
+          python scripts/keisei_official_oshiage_evidence.py \
+            --output /tmp/keisei-oshiage-before-dedup.json
+          python scripts/diagnose_keisei_oshiage_duplicate_fragments.py \
+            --evidence /tmp/keisei-oshiage-before-dedup.json \
+            --output /tmp/keisei-oshiage-duplicate-fragments.json
+      - name: Deduplicate exact-identical Keisei compact trips
+        run: |
+          python scripts/dedupe_keisei_official_timetables.py --require-removal \
+            | tee /tmp/keisei-dedupe-summary.json.log
+      - name: Rebuild strict fragments after dedupe
+        run: python scripts/build_transit_v2.py
+      - name: Extract post-dedupe official Oshiage evidence
         run: |
           python scripts/keisei_official_oshiage_evidence.py \
             --output data/transit-v2/keisei-official-oshiage-evidence.json
@@ -43,20 +61,18 @@ jobs:
           import json
           from pathlib import Path
 
-          payload = json.loads(Path('data/transit-v2/keisei-official-oshiage-evidence.json').read_text(encoding='utf-8'))
-          summary = payload['summary']
-          print(json.dumps(summary, ensure_ascii=False, indent=2))
-          assert summary['officialBoundaryCandidates'] > 0
-          assert summary['candidateDirections'].get('keisei-to-toei', 0) > 0
-          assert summary['candidateDirections'].get('toei-to-keisei', 0) > 0
-          assert summary['matchedSingleton'] > 0
-          assert summary['matchedDirections'].get('keisei-to-toei', 0) > 0
-          assert summary['matchedDirections'].get('toei-to-keisei', 0) > 0
-          assert all(row.get('matchStatus') == 'matched-singleton' for row in payload.get('entries') or [])
+          before = json.loads(Path('/tmp/keisei-oshiage-before-dedup.json').read_text(encoding='utf-8'))['summary']
+          after = json.loads(Path('data/transit-v2/keisei-official-oshiage-evidence.json').read_text(encoding='utf-8'))['summary']
+          print('BEFORE_DEDUP', json.dumps(before, ensure_ascii=False, indent=2))
+          print('AFTER_DEDUP', json.dumps(after, ensure_ascii=False, indent=2))
+          assert after['officialBoundaryCandidates'] > 0
+          assert after['candidateDirections'].get('keisei-to-toei', 0) > 0
+          assert after['candidateDirections'].get('toei-to-keisei', 0) > 0
+          assert after['matchedSingleton'] > before['matchedSingleton'], (before, after)
+          assert after['matchedDirections'].get('keisei-to-toei', 0) > 0
+          assert after['matchedDirections'].get('toei-to-keisei', 0) > 0
+          assert all(row.get('matchStatus') == 'matched-singleton' for row in json.loads(Path('data/transit-v2/keisei-official-oshiage-evidence.json').read_text(encoding='utf-8')).get('entries') or [])
           PY
-      - name: Diagnose duplicate Keisei fragment groups
-        run: |
-          python scripts/diagnose_keisei_oshiage_duplicate_fragments.py
       - name: Materialize strict same-train edges
         run: |
           python scripts/finalize_transit_v2.py
@@ -104,6 +120,9 @@ jobs:
         with:
           name: keisei-oshiage-evidence-diagnostic
           path: |
-            data/transit-v2/keisei-official-oshiage-evidence.json
+            /tmp/keisei-oshiage-before-dedup.json
             /tmp/keisei-oshiage-duplicate-fragments.json
+            /tmp/keisei-dedupe-summary.json.log
+            data/transit-v2/keisei-official-oshiage-evidence.json
+            data/transit/keisei/official-conversion-report.json
           if-no-files-found: warn
