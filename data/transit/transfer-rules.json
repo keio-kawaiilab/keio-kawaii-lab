@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-05T08:44:36.465Z",
-  "sourceCandidatesGeneratedAt": "2026-09-05T08:44:17.116Z",
+  "generatedAt": "2026-09-05T08:50:08.506Z",
+  "sourceCandidatesGeneratedAt": "2026-09-05T08:49:48.429Z",
   "sourceFiles": [
     "transfer-rule-sources.json",
     "transfer-rule-sources.d/2026-09-03-akihabara-iwamotocho.json",
@@ -128,7 +128,7 @@
     "transfer-rule-sources.d/2026-09-04-yokohama-private-remaining.json"
   ],
   "description": "Station/railway-specific transfer times. Explicit curated rules are preferred; any remaining unblocked candidate pair receives a conservative fallbackMinutes rule until an external standard time is added.",
-  "fallbackCandidatePairs": 0,
+  "fallbackCandidatePairs": 9,
   "rules": [
     {
       "id": "東京-山手線-丸ノ内線",
@@ -12524,6 +12524,123 @@
       "source": "https://eki-kara-access.yokohama/norikae-tizu-blueline/",
       "sourceType": "current transfer guide",
       "verifiedAt": "2026-09-04"
+    },
+    {
+      "id": "fallback-印旛日本医大-北総線-成田スカイアクセス線",
+      "fromStation": "manual.Station:keisei.印旛日本医大",
+      "toStation": "manual.Station:keisei.印旛日本医大",
+      "fromRailway": "manual.Railway:Hokuso.Hokuso",
+      "toRailway": "odpt.Railway:Keisei.NaritaSkyAccess",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "暫定・安全側乗換",
+      "source": "data/transit/transfer-candidates.json",
+      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
+      "verifiedAt": ""
+    },
+    {
+      "id": "fallback-京成高砂-北総線-京成本線",
+      "fromStation": "odpt.Station:Keisei.Main.KeiseiTakasago",
+      "toStation": "odpt.Station:Keisei.Main.KeiseiTakasago",
+      "fromRailway": "manual.Railway:Hokuso.Hokuso",
+      "toRailway": "odpt.Railway:Keisei.Main",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "暫定・安全側乗換",
+      "source": "data/transit/transfer-candidates.json",
+      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
+      "verifiedAt": ""
+    },
+    {
+      "id": "fallback-京成高砂-北総線-金町線",
+      "fromStation": "odpt.Station:Keisei.Main.KeiseiTakasago",
+      "toStation": "odpt.Station:Keisei.Main.KeiseiTakasago",
+      "fromRailway": "manual.Railway:Hokuso.Hokuso",
+      "toRailway": "odpt.Railway:Keisei.Kanamachi",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "暫定・安全側乗換",
+      "source": "data/transit/transfer-candidates.json",
+      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
+      "verifiedAt": ""
+    },
+    {
+      "id": "fallback-京成高砂-北総線-成田スカイアクセス線",
+      "fromStation": "odpt.Station:Keisei.Main.KeiseiTakasago",
+      "toStation": "odpt.Station:Keisei.Main.KeiseiTakasago",
+      "fromRailway": "manual.Railway:Hokuso.Hokuso",
+      "toRailway": "odpt.Railway:Keisei.NaritaSkyAccess",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "暫定・安全側乗換",
+      "source": "data/transit/transfer-candidates.json",
+      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
+      "verifiedAt": ""
+    },
+    {
+      "id": "fallback-新鎌ヶ谷-北総線-松戸線",
+      "fromStation": "manual.Station:keisei.新鎌ヶ谷",
+      "toStation": "manual.Station:keisei.新鎌ヶ谷",
+      "fromRailway": "manual.Railway:Hokuso.Hokuso",
+      "toRailway": "odpt.Railway:Keisei.Matsudo",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "暫定・安全側乗換",
+      "source": "data/transit/transfer-candidates.json",
+      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
+      "verifiedAt": ""
+    },
+    {
+      "id": "fallback-新鎌ヶ谷-北総線-成田スカイアクセス線",
+      "fromStation": "manual.Station:keisei.新鎌ヶ谷",
+      "toStation": "manual.Station:keisei.新鎌ヶ谷",
+      "fromRailway": "manual.Railway:Hokuso.Hokuso",
+      "toRailway": "odpt.Railway:Keisei.NaritaSkyAccess",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "暫定・安全側乗換",
+      "source": "data/transit/transfer-candidates.json",
+      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
+      "verifiedAt": ""
+    },
+    {
+      "id": "fallback-千葉ニュータウン中央-北総線-成田スカイアクセス線",
+      "fromStation": "manual.Station:keisei.千葉ニュータウン中央",
+      "toStation": "manual.Station:keisei.千葉ニュータウン中央",
+      "fromRailway": "manual.Railway:Hokuso.Hokuso",
+      "toRailway": "odpt.Railway:Keisei.NaritaSkyAccess",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "暫定・安全側乗換",
+      "source": "data/transit/transfer-candidates.json",
+      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
+      "verifiedAt": ""
+    },
+    {
+      "id": "fallback-東松戸-北総線-成田スカイアクセス線",
+      "fromStation": "manual.Station:keisei.東松戸",
+      "toStation": "manual.Station:keisei.東松戸",
+      "fromRailway": "manual.Railway:Hokuso.Hokuso",
+      "toRailway": "odpt.Railway:Keisei.NaritaSkyAccess",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "暫定・安全側乗換",
+      "source": "data/transit/transfer-candidates.json",
+      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
+      "verifiedAt": ""
+    },
+    {
+      "id": "fallback-東成田-芝山鉄道線-東成田線",
+      "fromStation": "manual.Station:keisei.東成田",
+      "toStation": "manual.Station:keisei.東成田",
+      "fromRailway": "manual.Railway:Shibayama.Shibayama",
+      "toRailway": "odpt.Railway:Keisei.HigashiNarita",
+      "minutes": 5,
+      "bidirectional": true,
+      "label": "暫定・安全側乗換",
+      "source": "data/transit/transfer-candidates.json",
+      "sourceType": "fallbackMinutes（駅間距離・接続関係から生成した安全側の暫定値。外部標準時間が登録されると自動的に置換）",
+      "verifiedAt": ""
     }
   ]
 }
