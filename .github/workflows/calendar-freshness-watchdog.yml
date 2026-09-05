@@ -7,12 +7,13 @@ on:
     paths:
       - ".github/workflows/calendar-freshness-watchdog.yml"
   schedule:
-    # Keep a direct timer, but do not rely on this timer alone.
-    - cron: "14,44 * * * *"
+    # The calendar targets 15-minute refreshes. Check often enough that a
+    # missed refresh is recovered before the public timestamp can sit stale
+    # for a long period.
+    - cron: "*/10 * * * *"
   workflow_run:
-    # These are independent activity clocks. In particular, train status runs
-    # every 10 minutes and has continued firing even when this workflow's own
-    # schedule and the calendar schedule were not delivered.
+    # These are independent activity clocks. They give the watchdog extra
+    # chances to run even when GitHub delays a scheduled event.
     workflows:
       - "Distributed live ticket calendar"
       - "Update event-day train status"
@@ -34,47 +35,46 @@ concurrency:
 jobs:
   recover-stale-calendar:
     runs-on: ubuntu-latest
-    timeout-minutes: 4
+    timeout-minutes: 5
     steps:
       - name: Checkout latest main
         uses: actions/checkout@v4
         with:
           ref: main
 
-      - name: Check distributed ingestion freshness
+      - name: Check published calendar freshness
         id: freshness
-        env:
-          GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
-          runs="$(gh run list \
-            --repo "$GITHUB_REPOSITORY" \
-            --workflow update-live-calendar-distributed.yml \
-            --limit 30 \
-            --json databaseId,status,conclusion,createdAt,updatedAt,event)"
 
-          latest_success="$(jq -r '[.[] | select(.status == "completed" and .conclusion == "success")][0].updatedAt // empty' <<<"$runs")"
+          # The user-visible timestamp is the source of truth. Previously this
+          # watchdog only looked at the latest successful Actions run, which
+          # could report healthy even while data/live-events.json had stopped
+          # advancing.
+          published_at="$(jq -r '.checkedAt // .updatedAt // empty' data/live-events.json)"
           now="$(date -u +%s)"
           stale=true
           age_minutes="999999.0"
 
-          if [ -n "$latest_success" ]; then
-            success_epoch="$(date -u -d "$latest_success" +%s)"
-            age_seconds="$((now - success_epoch))"
+          if [ -n "$published_at" ]; then
+            published_epoch="$(date -u -d "$published_at" +%s)"
+            age_seconds="$((now - published_epoch))"
             if [ "$age_seconds" -lt 0 ]; then age_seconds=0; fi
             age_minutes="$(awk -v seconds="$age_seconds" 'BEGIN { printf "%.1f", seconds / 60 }')"
-            # The primary lane targets 15-minute starts. Thirty minutes means
-            # two expected cycles have elapsed without one completed success.
-            if [ "$age_seconds" -le 1800 ]; then
+
+            # Main ingestion targets 15-minute starts. Allow normal GitHub
+            # scheduling/runtime jitter, but recover before two full cycles
+            # can be missed.
+            if [ "$age_seconds" -le 1500 ]; then
               stale=false
             fi
           fi
 
           echo "stale=$stale" >> "$GITHUB_OUTPUT"
           echo "age_minutes=$age_minutes" >> "$GITHUB_OUTPUT"
-          echo "updated_at=${latest_success:-missing}" >> "$GITHUB_OUTPUT"
-          echo "Last successful distributed ingestion: ${latest_success:-missing} (${age_minutes} minutes ago)."
+          echo "updated_at=${published_at:-missing}" >> "$GITHUB_OUTPUT"
+          echo "Published calendar timestamp: ${published_at:-missing} (${age_minutes} minutes ago)."
 
       - name: Recover stale distributed calendar
         id: recovery
@@ -88,24 +88,29 @@ jobs:
           runs="$(gh run list \
             --repo "$GITHUB_REPOSITORY" \
             --workflow update-live-calendar-distributed.yml \
-            --limit 20 \
-            --json databaseId,status,conclusion,createdAt)"
+            --limit 30 \
+            --json databaseId,status,conclusion,createdAt,updatedAt,event)"
 
           now="$(date -u +%s)"
+
+          # Give a genuinely running/queued refresh a reasonable window to
+          # finish. After 20 minutes it is no longer allowed to suppress
+          # recovery indefinitely.
           fresh_active="$(jq --argjson now "$now" '[.[]
             | select(.status != "completed")
-            | select(($now - (.createdAt | fromdateiso8601)) < 1080)] | length' <<<"$runs")"
+            | select(($now - (.createdAt | fromdateiso8601)) < 1200)] | length' <<<"$runs")"
 
           if [ "$fresh_active" -gt 0 ]; then
-            echo "Calendar ingestion is ${AGE_MINUTES} minutes past its last success, but ${fresh_active} recent distributed refresh run(s) are active."
+            echo "Published calendar is ${AGE_MINUTES} minutes stale, but ${fresh_active} recent distributed refresh run(s) are active."
             echo "action=active" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          # A stale queued/running job must never suppress recovery forever.
+          # Cancel stale queued/running runs so an old run cannot hold the
+          # concurrency group forever and block every later scheduled refresh.
           mapfile -t stuck_ids < <(jq -r --argjson now "$now" '.[]
             | select(.status != "completed")
-            | select(($now - (.createdAt | fromdateiso8601)) >= 1080)
+            | select(($now - (.createdAt | fromdateiso8601)) >= 1200)
             | .databaseId' <<<"$runs")
           for run_id in "${stuck_ids[@]}"; do
             [ -n "$run_id" ] || continue
@@ -113,26 +118,44 @@ jobs:
             gh run cancel "$run_id" --repo "$GITHUB_REPOSITORY" || true
           done
 
-          # Avoid a retry storm when a deterministic audit error is being
-          # investigated. A failed refresh can be retried automatically once
-          # the newest attempt is at least 10 minutes old.
+          # Avoid dispatch storms if a deterministic failure is occurring.
+          # Eight minutes is shorter than the watchdog cadence, so a stale
+          # calendar still gets another recovery opportunity on the next tick.
           latest_created="$(jq -r '.[0].createdAt // empty' <<<"$runs")"
           if [ -n "$latest_created" ]; then
             latest_epoch="$(date -u -d "$latest_created" +%s)"
             latest_age="$((now - latest_epoch))"
-            if [ "$latest_age" -lt 600 ]; then
+            if [ "$latest_age" -lt 480 ]; then
               echo "Newest distributed attempt is only ${latest_age}s old; waiting for the next watchdog tick."
               echo "action=cooldown" >> "$GITHUB_OUTPUT"
               exit 0
             fi
           fi
 
-          echo "Distributed ingestion has not completed successfully for ${AGE_MINUTES} minutes; dispatching recovery refresh."
+          echo "Published calendar has been stale for ${AGE_MINUTES} minutes; dispatching recovery refresh."
           gh workflow run update-live-calendar-distributed.yml --repo "$GITHUB_REPOSITORY" --ref main
           echo "action=dispatched" >> "$GITHUB_OUTPUT"
 
+      - name: Summarize watchdog decision
+        if: always()
+        env:
+          STALE: ${{ steps.freshness.outputs.stale }}
+          AGE_MINUTES: ${{ steps.freshness.outputs.age_minutes }}
+          UPDATED_AT: ${{ steps.freshness.outputs.updated_at }}
+          RECOVERY_ACTION: ${{ steps.recovery.outputs.action }}
+        shell: bash
+        run: |
+          {
+            echo "## Calendar freshness watchdog"
+            echo "- published timestamp: ${UPDATED_AT:-missing}"
+            echo "- age: ${AGE_MINUTES:-unknown} minutes"
+            echo "- stale: ${STALE:-unknown}"
+            echo "- recovery action: ${RECOVERY_ACTION:-none}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Record stale-calendar incident
         if: steps.freshness.outputs.stale == 'true'
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
           AGE_MINUTES: ${{ steps.freshness.outputs.age_minutes }}
@@ -143,7 +166,7 @@ jobs:
           set -euo pipefail
           title="🚨 Calendar freshness watchdog active"
           existing="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
-          body="公演情報の自動収集Workflowが一定時間正常完了していないため、自動復旧を実行しています。\n\nlast successful ingestion: ${UPDATED_AT}\nage: ${AGE_MINUTES} minutes\naction: ${RECOVERY_ACTION:-unknown}\nwatchdog run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          body="公演情報の公開更新時刻が一定時間進んでいないため、自動復旧を実行しています。\n\npublished timestamp: ${UPDATED_AT}\nage: ${AGE_MINUTES} minutes\naction: ${RECOVERY_ACTION:-unknown}\nwatchdog run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
           if [ -n "$existing" ]; then
             gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body "$body"
           else
@@ -152,6 +175,7 @@ jobs:
 
       - name: Report healthy calendar and close watchdog incident
         if: steps.freshness.outputs.stale != 'true'
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
           AGE_MINUTES: ${{ steps.freshness.outputs.age_minutes }}
@@ -159,9 +183,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          echo "Distributed ingestion is healthy (${AGE_MINUTES} minutes since success at ${UPDATED_AT})."
+          echo "Published calendar is healthy (${AGE_MINUTES} minutes since ${UPDATED_AT})."
           title="🚨 Calendar freshness watchdog active"
           existing="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
           if [ -n "$existing" ]; then
-            gh issue close "$existing" --repo "$GITHUB_REPOSITORY" --comment "公演情報の自動収集Workflowの正常完了を確認したため、自動復旧監視を通常状態へ戻しました。"
+            gh issue close "$existing" --repo "$GITHUB_REPOSITORY" --comment "公演情報の公開更新時刻が正常に進んだことを確認したため、自動復旧監視を通常状態へ戻しました。"
           fi
