@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-06T07:38:45.202630+09:00",
-  "candidateUpdatedAt": "2026-09-06T07:38:45+09:00",
+  "generatedAt": "2026-09-06T07:40:05.438390+09:00",
+  "candidateUpdatedAt": "2026-09-06T07:40:05+09:00",
   "previousEventCount": 268,
-  "candidateEventCount": 268,
+  "candidateEventCount": 267,
   "protectedPreviousCount": 268,
   "errorCount": 0,
   "warningCount": 16,
@@ -26,7 +26,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
   ],
-  "candidateSha256": "96348c5c904f27dfffcad15507814e3ee7a2a47d84cf9b5750fd11f0733a3a79",
+  "candidateSha256": "0b27ae1198d9e144effcb79911b2fe56b56a55bd1f23b98d6554af3a4829e604",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -231,11 +231,21 @@
   "officialIndexReconciledAfterQuarantine": {
     "reassignedCount": 0,
     "hydratedCount": 0,
-    "ambiguousCount": 0,
+    "ambiguousCount": 1,
     "unresolvedCount": 2,
     "reassigned": [],
     "hydrated": [],
-    "ambiguous": [],
+    "ambiguous": [
+      {
+        "group": "CANDY TUNE",
+        "date": "2026-10-01",
+        "url": "https://candytune.asobisystem.com/live_information/detail/43376",
+        "candidateIds": [
+          "baa05c3930ff4d48",
+          "caf716aad3c566e4"
+        ]
+      }
+    ],
     "unresolved": [
       {
         "group": "CANDY TUNE",
