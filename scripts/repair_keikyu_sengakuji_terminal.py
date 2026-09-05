@@ -16,6 +16,8 @@ import keikyu_official_train_evidence as parser
 MAIN = parser.KEIKYU_MAIN
 INDEX_PATH = Path('data/transit/keikyu/timetable-index.json')
 MANIFEST_PATH = Path('data/transit/manifest.json')
+SENGAKUJI = 'odpt.Station:Keikyu.Main.Sengakuji'
+SHINAGAWA = 'odpt.Station:Keikyu.Main.Shinagawa'
 
 
 def as_list(value: Any) -> list[Any]:
@@ -37,6 +39,12 @@ def minute_of(value: Any) -> int | None:
     return hour * 60 + minute
 
 
+def clock_text(value: int) -> str:
+    value = int(value)
+    hour, minute = divmod(value, 60)
+    return f'{hour:02d}:{minute:02d}'
+
+
 def first_destination(row: dict[str, Any]) -> str:
     values = as_list(row.get('odpt:destinationStation'))
     return str(next((value for value in values if value), '') or '')
@@ -44,20 +52,6 @@ def first_destination(row: dict[str, Any]) -> str:
 
 def calendars_of(item: dict[str, Any]) -> list[str]:
     return [str(value or '') for value in as_list(item.get('odpt:calendar')) if value]
-
-
-def station_id_of(item: dict[str, Any]) -> str:
-    return str(item.get('odpt:station') or item.get('odpt:railway') or '')
-
-
-def row_train_key(row: dict[str, Any]) -> str:
-    return str(row.get('odpt:train') or row.get('odpt:trainNumber') or '')
-
-
-def same_train_type(a: dict[str, Any], b: dict[str, Any]) -> bool:
-    left = str(a.get('odpt:trainType') or '')
-    right = str(b.get('odpt:trainType') or '')
-    return not left or not right or left == right
 
 
 def service_for_calendar(calendar: str) -> str | None:
@@ -121,113 +115,140 @@ def official_reverse_candidates() -> list[dict[str, Any]]:
     return output
 
 
-def patch_raw_sengakuji_destinations(
+def destination_is_beyond_sengakuji(destination: str) -> bool:
+    if not destination or destination == SENGAKUJI:
+        return False
+    # A northbound Keikyu train published with another operator's station as
+    # destination necessarily continues past the Keikyu/Toei boundary.
+    return not destination.startswith('odpt.Station:Keikyu.')
+
+
+def build_official_inbound_sengakuji_boards(
     station_raw: list[dict[str, Any]],
     official: list[dict[str, Any]],
     expected_minutes: int,
-) -> dict[str, Any]:
-    arrivals = defaultdict(list)
-    departures = defaultdict(list)
-
-    for item_index, item in enumerate(station_raw):
+    operator: str,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    shinagawa_items: dict[str, dict[str, Any]] = {}
+    for item in station_raw:
         if str(item.get('odpt:railway') or '') != MAIN:
             continue
-        station = str(item.get('odpt:station') or '')
-        direction = str(item.get('odpt:railDirection') or '')
-        calendars = calendars_of(item)
-        if not calendars or not direction:
+        if str(item.get('odpt:station') or '') != SHINAGAWA:
             continue
-        for row_index, row in enumerate(item.get('odpt:stationTimetableObject') or []):
-            if not isinstance(row, dict):
-                continue
-            arrival = minute_of(row.get('odpt:arrivalTime'))
-            departure = minute_of(row.get('odpt:departureTime'))
-            destination = first_destination(row)
-            for calendar in calendars:
-                service = service_for_calendar(calendar)
-                if not service:
-                    continue
-                record = {
-                    'itemIndex': item_index,
-                    'rowIndex': row_index,
-                    'item': item,
-                    'row': row,
-                    'service': service,
-                    'calendar': calendar,
-                    'direction': direction,
-                    'arrival': arrival,
-                    'departure': departure,
-                    'destination': destination,
-                    'trainKey': row_train_key(row),
-                    'trainType': str(row.get('odpt:trainType') or ''),
-                }
-                if station.endswith('.Sengakuji') and arrival is not None and departure is None and not destination:
-                    arrivals[(service, arrival % 1440)].append(record)
-                if station.endswith('.Shinagawa') and departure is not None and destination:
-                    departures[(service, direction)].append(record)
+        direction = str(item.get('odpt:railDirection') or '')
+        if not direction.endswith(':Inbound'):
+            continue
+        for calendar in calendars_of(item):
+            service = service_for_calendar(calendar)
+            if service:
+                if service in shinagawa_items:
+                    raise RuntimeError(f'Multiple Shinagawa inbound boards for {service}')
+                shinagawa_items[service] = item
 
-    official_keys = defaultdict(list)
+    official_by_key: dict[tuple[str, int], list[dict[str, Any]]] = defaultdict(list)
     for candidate in official:
         service = str(candidate.get('calendar') or '')
-        source = int(candidate.get('sourceBoundaryMinute')) % 1440
-        official_keys[(service, source)].append(candidate)
+        minute = int(candidate.get('sourceBoundaryMinute'))
+        official_by_key[(service, minute % 1440)].append(candidate)
 
+    rows_by_service: dict[str, list[dict[str, Any]]] = defaultdict(list)
     report_rows = []
-    patched_row_keys = set()
-    reason_counts = Counter()
+    reasons = Counter()
+    used_shinagawa_rows = Counter()
 
-    for key, official_rows in sorted(official_keys.items()):
-        service, source_minute = key
-        arrival_rows = arrivals.get(key, [])
-        if len(official_rows) != 1:
+    for (service, source_mod), candidates in sorted(official_by_key.items()):
+        board = shinagawa_items.get(service)
+        matches = []
+        raw_source = int(candidates[0].get('sourceBoundaryMinute')) if candidates else source_mod
+        expected_departure_mod = (source_mod - expected_minutes) % 1440
+        if board:
+            for row_index, row in enumerate(board.get('odpt:stationTimetableObject') or []):
+                if not isinstance(row, dict):
+                    continue
+                departure = minute_of(row.get('odpt:departureTime'))
+                destination = first_destination(row)
+                if departure is None or departure % 1440 != expected_departure_mod:
+                    continue
+                if not destination_is_beyond_sengakuji(destination):
+                    continue
+                matches.append((row_index, row))
+
+        if len(candidates) != 1:
             reason = 'ambiguous-official-columns'
-            matches = []
-        elif len(arrival_rows) != 1:
-            reason = 'missing-arrival-row' if not arrival_rows else 'ambiguous-arrival-rows'
-            matches = []
+        elif not board:
+            reason = 'missing-shinagawa-inbound-board'
+        elif not matches:
+            reason = 'no-exact-shinagawa-through-match'
+        elif len(matches) > 1:
+            reason = 'ambiguous-shinagawa-through-match'
         else:
-            arrival = arrival_rows[0]
-            matches = []
-            for departure in departures.get((service, arrival['direction']), []):
-                if not same_train_type(arrival['row'], departure['row']):
-                    continue
-                gap = (source_minute - int(departure['departure']) % 1440) % 1440
-                if gap != expected_minutes:
-                    continue
-                arrival_key = arrival['trainKey']
-                departure_key = departure['trainKey']
-                if arrival_key and departure_key and arrival_key != departure_key:
-                    continue
-                matches.append(departure)
-            if len(matches) == 1:
-                reason = 'patched-singleton'
-                arrival_row = arrival['row']
-                departure_row = matches[0]['row']
-                arrival_row['odpt:destinationStation'] = copy.deepcopy(departure_row.get('odpt:destinationStation'))
-                patched_row_keys.add((arrival['itemIndex'], arrival['rowIndex']))
-            elif not matches:
-                reason = 'no-shinagawa-singleton'
-            else:
-                reason = 'ambiguous-shinagawa-match'
-        reason_counts[reason] += 1
+            row_index, source_row = matches[0]
+            claim_key = (service, row_index)
+            used_shinagawa_rows[claim_key] += 1
+            synthetic = {
+                'odpt:departureTime': clock_text(raw_source),
+                'odpt:destinationStation': copy.deepcopy(source_row.get('odpt:destinationStation')),
+                'odpt:trainType': source_row.get('odpt:trainType'),
+            }
+            rows_by_service[service].append(synthetic)
+            reason = 'strict-singleton-synthetic-board-row'
+        reasons[reason] += 1
         report_rows.append({
             'service': service,
-            'sourceBoundaryMinute': source_minute,
-            'officialColumns': len(official_rows),
-            'arrivalRows': len(arrival_rows),
+            'sourceBoundaryMinute': raw_source,
+            'expectedShinagawaDepartureMinute': expected_departure_mod,
+            'officialColumns': len(candidates),
             'shinagawaMatches': len(matches),
             'reason': reason,
-            'destination': first_destination(matches[0]['row']) if len(matches) == 1 else '',
+            'destination': first_destination(matches[0][1]) if len(matches) == 1 else '',
+            'trainType': str(matches[0][1].get('odpt:trainType') or '') if len(matches) == 1 else '',
         })
 
-    return {
-        'patchedRows': len(patched_row_keys),
-        'reasons': dict(reason_counts),
+    duplicated_claims = [key for key, count in used_shinagawa_rows.items() if count != 1]
+    if duplicated_claims:
+        raise RuntimeError(f'One Shinagawa departure was claimed by multiple official columns: {duplicated_claims[:8]}')
+
+    synthetic_items = []
+    for service in ('weekday', 'holiday'):
+        source_board = shinagawa_items.get(service)
+        rows = rows_by_service.get(service, [])
+        if not source_board or not rows:
+            continue
+        calendar_values = calendars_of(source_board)
+        if len(calendar_values) != 1:
+            raise RuntimeError(f'Unexpected Shinagawa calendar cardinality for {service}: {calendar_values}')
+        synthetic_items.append({
+            '@type': 'odpt:StationTimetable',
+            'owl:sameAs': f'manual.StationTimetable:Keikyu.Main.Sengakuji.Inbound.{service}',
+            'odpt:operator': operator,
+            'odpt:railway': MAIN,
+            'odpt:station': SENGAKUJI,
+            'odpt:railDirection': str(source_board.get('odpt:railDirection') or ''),
+            'odpt:calendar': calendar_values[0],
+            'odpt:stationTimetableObject': rows,
+            'x-officialSupplement': {
+                'source': 'Keikyu official connection timetable',
+                'policy': 'same printed through column + exact singleton adjacent Shinagawa departure',
+            },
+        })
+
+    return synthetic_items, {
+        'syntheticRows': sum(len(item.get('odpt:stationTimetableObject') or []) for item in synthetic_items),
+        'syntheticItems': len(synthetic_items),
+        'reasons': dict(reasons),
+        'byService': {service: len(rows_by_service.get(service, [])) for service in ('weekday', 'holiday')},
         'examples': {
             reason: [row for row in report_rows if row['reason'] == reason][:12]
-            for reason in reason_counts
+            for reason in reasons
         },
     }
+
+
+def write_report(report: dict[str, Any]) -> None:
+    Path('/tmp/keikyu-sengakuji-repair.json').write_text(
+        json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
+    )
+    print(json.dumps(report, ensure_ascii=False, indent=2))
 
 
 def main() -> int:
@@ -245,7 +266,7 @@ def main() -> int:
     manifest = json.loads(MANIFEST_PATH.read_text(encoding='utf-8'))
     operator = str(((manifest.get('operators') or {}).get('keikyu') or {}).get('operator') or importer.TARGETS['keikyu']['fallback'])
     session = requests.Session()
-    session.headers.update({'User-Agent': 'keio-kawaii-lab-keikyu-terminal-repair/1.0'})
+    session.headers.update({'User-Agent': 'keio-kawaii-lab-keikyu-terminal-repair/2.0'})
     base_url = importer.CHALLENGE_BASE_URL
 
     station_raw = importer.api_get(session, 'odpt:StationTimetable', challenge_key, operator, base_url=base_url)
@@ -254,34 +275,52 @@ def main() -> int:
     if not station_raw or not railway_raw or not station_entities_raw:
         raise RuntimeError('Keikyu ODPT source data is incomplete')
 
-    patch_report = patch_raw_sengakuji_destinations(station_raw, official, expected_minutes)
-    if patch_report['patchedRows'] <= 0:
-        raise RuntimeError(f'No strict Sengakuji terminal rows were repaired: {patch_report}')
+    synthetic_items, patch_report = build_official_inbound_sengakuji_boards(
+        station_raw, official, expected_minutes, operator
+    )
+    preliminary = {
+        'officialReverseCandidates': len(official),
+        'expectedShinagawaToSengakujiMinutes': expected_minutes,
+        'patch': patch_report,
+        'beforeSengakujiEnds': dict(before_ends),
+    }
+    if patch_report['syntheticRows'] <= 0:
+        write_report(preliminary)
+        raise RuntimeError('No strict synthetic Sengakuji inbound rows were generated')
 
+    augmented_raw = list(station_raw) + synthetic_items
     compact_stations = [importer.compact_entity(row) for row in station_entities_raw]
     aliases = importer.canonical_station_aliases(station_entities_raw, compact_stations)
-    rebuilt = importer.compact_station_timetables(station_raw, aliases, railway_raw)
+    rebuilt = importer.compact_station_timetables(augmented_raw, aliases, railway_raw)
     if MAIN not in rebuilt:
+        write_report(preliminary)
         raise RuntimeError('Rebuilt Keikyu Main timetable is missing')
     table, connection_count, departure_count = rebuilt[MAIN]
     after_ends = count_sengakuji_ends(table)
+
+    report = {
+        **preliminary,
+        'afterSengakujiEnds': dict(after_ends),
+        'inferredTrips': len(table.get('inferredTrips') or []),
+        'inferredConnections': int(table.get('inferredConnections') or 0),
+    }
+    write_report(report)
     if sum(after_ends.values()) <= sum(before_ends.values()):
         raise RuntimeError(f'Sengakuji terminal coverage did not improve: before={before_ends}, after={after_ends}')
 
     table['officialTerminalRepair'] = {
         'boundary': 'Sengakuji',
-        'source': 'Keikyu official connection timetable + ODPT adjacent station timetables',
+        'source': 'Keikyu official connection timetable + ODPT Shinagawa inbound station timetable',
         'policy': {
             'officialThroughColumnRequired': True,
-            'arrivalOnlyDestinationMissingRequired': True,
-            'sameDirectionRequired': True,
-            'sameTrainTypeWhenPublishedRequired': True,
-            'adjacentObservedMinutesExactRequired': expected_minutes,
-            'singletonMatchRequired': True,
+            'syntheticInboundBoundaryBoardOnly': True,
+            'exactObservedAdjacentMinutesRequired': expected_minutes,
+            'shinagawaDepartureSingletonRequired': True,
+            'publishedDestinationBeyondSengakujiRequired': True,
             'trainNumberAloneMayResolve': False,
             'timeProximityAloneMayResolve': False,
         },
-        'patchedRows': patch_report['patchedRows'],
+        'syntheticRows': patch_report['syntheticRows'],
         'beforeSengakujiEnds': dict(before_ends),
         'afterSengakujiEnds': dict(after_ends),
     }
@@ -293,20 +332,8 @@ def main() -> int:
     meta['inferredTrips'] = len(table.get('inferredTrips') or [])
     meta['inferredConnections'] = int(table.get('inferredConnections') or 0)
     meta['departures'] = departure_count
-    meta['source'] = 'station-timetable+official-sengakuji-repair'
+    meta['source'] = 'station-timetable+official-sengakuji-inbound-board'
     importer.dump_json(INDEX_PATH, index)
-
-    report = {
-        'officialReverseCandidates': len(official),
-        'expectedShinagawaToSengakujiMinutes': expected_minutes,
-        'patch': patch_report,
-        'beforeSengakujiEnds': dict(before_ends),
-        'afterSengakujiEnds': dict(after_ends),
-        'inferredTrips': len(table.get('inferredTrips') or []),
-        'inferredConnections': int(table.get('inferredConnections') or 0),
-    }
-    Path('/tmp/keikyu-sengakuji-repair.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-    print(json.dumps(report, ensure_ascii=False, indent=2))
     return 0
 
 
