@@ -1,0 +1,48 @@
+name: Probe Seibu 2026 Fukutoshin timetable pages
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/probe_seibu_2026_fukutoshin_pages.py'
+      - '.github/workflows/probe-seibu-2026-fukutoshin-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependency
+        run: pip install requests==2.32.5
+      - name: Probe all official timetable pages
+        run: |
+          python scripts/probe_seibu_2026_fukutoshin_pages.py \
+            --output /tmp/seibu-2026-fukutoshin-page-probe.json
+      - name: Show matched official pages
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path('/tmp/seibu-2026-fukutoshin-page-probe.json').read_text(encoding='utf-8'))
+          print('SUMMARY', json.dumps(data.get('summary') or {}, ensure_ascii=False, indent=2))
+          for row in data.get('matchedPages') or []:
+              print('MATCH', json.dumps({
+                  'page': row.get('page'),
+                  'folder': row.get('folder'),
+                  'url': row.get('url'),
+                  'keywordHits': row.get('keywordHits'),
+                  'textSample': row.get('textSample'),
+              }, ensure_ascii=False))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: seibu-2026-fukutoshin-page-probe
+          path: /tmp/seibu-2026-fukutoshin-page-probe.json
+          if-no-files-found: error
