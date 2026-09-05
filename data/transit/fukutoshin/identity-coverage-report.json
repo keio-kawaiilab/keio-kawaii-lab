@@ -1,12 +1,13 @@
 {
-  "version": 1,
-  "generatedAt": "2026-09-05T11:32:31.575Z",
+  "version": 2,
+  "generatedAt": "2026-09-05T14:50:03.163Z",
   "system": "Fukutoshin Line / former Line 13 through-service corridor",
   "policy": {
     "runtimeInference": false,
     "timeGapMayEstablishTrainIdentity": false,
     "trainNumberMayEstablishTrainIdentity": false,
-    "publishedDestinationAloneMayEstablishIdentity": false
+    "publishedDestinationAloneMayEstablishIdentity": false,
+    "singlePublishedOneTrainPageWithAdjacentBoundaryStopsMayEstablishIdentity": true
   },
   "sourceIdentityRecords": 25163,
   "relevantIdentityRecords": {
@@ -27,10 +28,12 @@
       "boundarySource": "https://www.mm21railway.co.jp/station/yokohama/yokohama_wy.html",
       "authoritativeResolvedLinks": 0,
       "authoritativeUnresolvedReferences": 0,
-      "generatedExactThroughRecords": 0,
+      "officialSingleTrainPageEvidence": 106,
+      "authoritativeExactEvidence": 106,
+      "generatedExactThroughRecords": 106,
       "generatedPublishedDestinationRecords": 0,
       "referenceDirections": {},
-      "exactIdentityReady": false,
+      "exactIdentityReady": true,
       "sourceA": {
         "slug": "yokohama-minatomirai",
         "label": "横浜高速鉄道（みなとみらい線）",
@@ -55,10 +58,12 @@
       "boundarySource": "https://www.tokyu.co.jp/area/shibuya/station/",
       "authoritativeResolvedLinks": 0,
       "authoritativeUnresolvedReferences": 0,
-      "generatedExactThroughRecords": 0,
+      "officialSingleTrainPageEvidence": 115,
+      "authoritativeExactEvidence": 115,
+      "generatedExactThroughRecords": 115,
       "generatedPublishedDestinationRecords": 831,
       "referenceDirections": {},
-      "exactIdentityReady": false,
+      "exactIdentityReady": true,
       "sourceA": {
         "slug": "tokyu",
         "label": "東急電鉄",
@@ -83,10 +88,12 @@
       "boundarySource": "https://www.seiburailway.jp/railway/station/",
       "authoritativeResolvedLinks": 0,
       "authoritativeUnresolvedReferences": 0,
-      "generatedExactThroughRecords": 0,
+      "officialSingleTrainPageEvidence": 424,
+      "authoritativeExactEvidence": 424,
+      "generatedExactThroughRecords": 424,
       "generatedPublishedDestinationRecords": 298,
       "referenceDirections": {},
-      "exactIdentityReady": false,
+      "exactIdentityReady": true,
       "sourceA": {
         "slug": "tokyo-metro",
         "label": "東京メトロ",
@@ -111,6 +118,8 @@
       "boundarySource": "https://www.tobu.co.jp/corporation/rail/route/",
       "authoritativeResolvedLinks": 0,
       "authoritativeUnresolvedReferences": 0,
+      "officialSingleTrainPageEvidence": 0,
+      "authoritativeExactEvidence": 0,
       "generatedExactThroughRecords": 0,
       "generatedPublishedDestinationRecords": 359,
       "referenceDirections": {},
@@ -134,10 +143,12 @@
   "summary": {
     "boundaryPairs": 4,
     "verifiedBoundaries": 4,
-    "exactIdentityReadyPairs": 0,
+    "exactIdentityReadyPairs": 3,
     "resolvedAuthoritativeLinks": 0,
     "unresolvedAuthoritativeReferences": 0,
-    "generatedExactThroughRecords": 0,
+    "officialSingleTrainPageEvidence": 645,
+    "authoritativeExactEvidence": 645,
+    "generatedExactThroughRecords": 645,
     "complete": false
   }
 }
