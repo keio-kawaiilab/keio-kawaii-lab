@@ -166,35 +166,78 @@ def monotonic_runs(rows: list[list[Any]]) -> list[list[list[Any]]]:
 
 
 def project_line(network: dict[str, Any], railway_id: str, station_pairs: list[tuple[str, str]]) -> dict[str, Any]:
+    """Project only segments the exact network explicitly assigns to railway_id.
+
+    Hokusō and Narita Sky Access share several station IDs. Looking only at
+    station membership would therefore mislabel an Access train as a Hokusō
+    train. The exact network's per-segment railway links are authoritative.
+    """
     line_stations = [station_id for _, station_id in station_pairs]
     line_index = {station_id: index for index, station_id in enumerate(line_stations)}
     network_stations = network.get('stations') or []
+    network_railways = network.get('railways') or []
     projected: list[list[Any]] = []
+
+    def stop_row(stop: list[Any]) -> list[Any] | None:
+        if not isinstance(stop, list) or not stop:
+            return None
+        source_index = stop[0]
+        if not isinstance(source_index, int) or not (0 <= source_index < len(network_stations)):
+            return None
+        station_id = network_stations[source_index]
+        if station_id not in line_index:
+            return None
+        return [
+            line_index[station_id],
+            stop[1] if len(stop) > 1 else None,
+            stop[2] if len(stop) > 2 else None,
+        ]
+
     for trip_index, trip in enumerate(network.get('trips') or []):
-        if not isinstance(trip, list) or len(trip) < 4:
+        if not isinstance(trip, list) or len(trip) < 5:
             continue
-        rows: list[list[Any]] = []
-        for stop in trip[3] or []:
-            if not isinstance(stop, list) or not stop:
+        stops = trip[3] or []
+        links = trip[4] or []
+        current: list[list[Any]] = []
+        exact_runs: list[list[list[Any]]] = []
+
+        def flush() -> None:
+            nonlocal current
+            if len(current) >= 2:
+                exact_runs.extend(monotonic_runs(current))
+            current = []
+
+        for segment_index in range(min(len(links), max(0, len(stops) - 1))):
+            linked_ids = {
+                network_railways[index]
+                for index in (links[segment_index] or [])
+                if isinstance(index, int) and 0 <= index < len(network_railways)
+            }
+            if railway_id not in linked_ids:
+                flush()
                 continue
-            source_index = stop[0]
-            if not isinstance(source_index, int) or not (0 <= source_index < len(network_stations)):
+            first = stop_row(stops[segment_index])
+            second = stop_row(stops[segment_index + 1])
+            if first is None or second is None:
+                flush()
                 continue
-            station_id = network_stations[source_index]
-            if station_id not in line_index:
-                continue
-            rows.append([
-                line_index[station_id],
-                stop[1] if len(stop) > 1 else None,
-                stop[2] if len(stop) > 2 else None,
-            ])
-        for run in monotonic_runs(rows):
+            if not current:
+                current = [first, second]
+            elif current[-1][0] == first[0]:
+                current.append(second)
+            else:
+                flush()
+                current = [first, second]
+        flush()
+
+        for run in exact_runs:
             destination = line_stations[run[-1][0]]
             identity = f'keisei-official-network:{trip_index}'
             projected.append([
                 trip[0], trip[1], str(trip[2] or ''), run,
                 destination, identity, identity,
             ])
+
     return {
         'version': 2,
         'timeBasis': 'train-timetable',
@@ -232,7 +275,7 @@ def write_operator_projection(slug: str, railway_id: str, station_pairs: list[tu
         'railway': railway_id,
         'stations': len(station_pairs),
         'trips': trip_count,
-        'note': 'Covers trains present in the retained Keisei official snapshot; no time-proximity joins are used.',
+        'note': 'Covers only exact-network segments explicitly assigned to this railway; no shared-station or time-proximity inference is used.',
     }
     dump_json(ROOT / f'data/transit/{slug}/coverage-report.json', coverage)
     return trip_count
