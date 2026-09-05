@@ -19,9 +19,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install dependency
-        run: pip install requests==2.32.5
-      - name: Probe all official timetable pages
+      - name: Install dependencies
+        run: pip install requests==2.32.5 PyMuPDF==1.26.4
+      - name: Probe all official timetable PDFs
         run: |
           python scripts/probe_seibu_2026_fukutoshin_pages.py \
             --output /tmp/seibu-2026-fukutoshin-page-probe.json
@@ -38,6 +38,7 @@ jobs:
                   'folder': row.get('folder'),
                   'url': row.get('url'),
                   'keywordHits': row.get('keywordHits'),
+                  'wordCount': row.get('wordCount'),
                   'textSample': row.get('textSample'),
               }, ensure_ascii=False))
           PY
