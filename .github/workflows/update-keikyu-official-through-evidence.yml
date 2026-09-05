@@ -1,0 +1,88 @@
+name: Update Keikyu official through-train DB
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/keikyu_official_train_evidence.py'
+      - 'scripts/merge_keikyu_official_evidence.py'
+      - 'scripts/keikyu_generated_evidence.py'
+      - 'scripts/reviewed_train_evidence.py'
+      - '.github/workflows/update-keikyu-official-through-evidence.yml'
+  schedule:
+    - cron: '17 20 * * 6'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-keikyu-official-through-evidence
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PDF parser
+        run: pip install pdfplumber==0.11.7 requests==2.32.5
+      - name: Test fail-closed extraction rules
+        run: python scripts/test_keikyu_official_train_evidence.py
+      - name: Extract official weekday and holiday evidence
+        run: |
+          python scripts/keikyu_official_train_evidence.py --calendar weekday --output /tmp/keikyu-weekday.json
+          python scripts/keikyu_official_train_evidence.py --calendar holiday --output /tmp/keikyu-holiday.json
+          python scripts/merge_keikyu_official_evidence.py \
+            /tmp/keikyu-weekday.json \
+            /tmp/keikyu-holiday.json \
+            --output data/transit-v2/keikyu-official-train-evidence.json
+      - name: Re-finalize strict transit DB
+        run: |
+          python scripts/finalize_transit_v2.py
+          python scripts/audit_transit_v2.py
+      - name: Validate generated same-train edges
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          v2=Path('data/transit-v2')
+          evidence=json.loads((v2/'keikyu-official-train-evidence.json').read_text(encoding='utf-8'))
+          entries=evidence.get('entries') or []
+          edges=json.loads((v2/'same-train-edges.json').read_text(encoding='utf-8')).get('edges') or []
+          generated=[e for e in edges if 'keikyu-official-connection-timetable-same-column' in (e.get('evidence') or [])]
+          runtime=json.loads((v2/'runtime-same-train.json').read_text(encoding='utf-8')).get('edges') or []
+          coverage=json.loads((v2/'coverage.json').read_text(encoding='utf-8'))
+          print('PRODUCTION_EVIDENCE', len(entries))
+          print('GENERATED_SAME_TRAIN_EDGES', len(generated))
+          print('RUNTIME_SAME_TRAIN_EDGES', len(runtime))
+          print('COVERAGE', json.dumps(coverage.get('summary') or {}, ensure_ascii=False, indent=2))
+          assert entries, 'official production evidence is empty'
+          assert generated, 'official evidence did not reach same-train edges'
+          assert all(row.get('matchStatus') == 'matched-singleton' for row in entries), 'non-singleton evidence leaked into production'
+          assert all(e.get('identityLevel') == 'evidence-backed' for e in generated), 'unexpected identity level'
+          PY
+      - name: Commit refreshed strict DB
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            data/transit-v2/keikyu-official-train-evidence.json \
+            data/transit-v2/same-train-edges.json \
+            data/transit-v2/runtime-same-train.json \
+            data/transit-v2/coverage.json \
+            data/transit-v2/index.json \
+            data/transit-v2/unresolved-summary.json
+          if [ -z "$(git status --porcelain -- data/transit-v2)" ]; then
+            echo "No Keikyu transit DB changes."
+            exit 0
+          fi
+          git commit -m "Refresh Keikyu official through-train evidence"
+          git pull --rebase origin main
+          git push origin HEAD:main
