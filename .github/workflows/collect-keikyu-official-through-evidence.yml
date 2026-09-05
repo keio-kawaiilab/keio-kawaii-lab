@@ -5,7 +5,9 @@ on:
     paths:
       - 'scripts/keikyu_official_train_evidence.py'
       - 'scripts/test_keikyu_official_train_evidence.py'
-      - 'scripts/diagnose_keikyu_connection_pdf.py'
+      - 'scripts/merge_keikyu_official_evidence.py'
+      - 'scripts/keikyu_generated_evidence.py'
+      - 'scripts/reviewed_train_evidence.py'
       - '.github/workflows/collect-keikyu-official-through-evidence.yml'
   workflow_dispatch:
 
@@ -24,32 +26,42 @@ jobs:
         run: pip install pdfplumber==0.11.7 requests==2.32.5
       - name: Test fail-closed extraction rules
         run: python scripts/test_keikyu_official_train_evidence.py
-      - name: Extract current weekday Sengakuji evidence
-        id: extract
-        continue-on-error: true
+      - name: Extract weekday Sengakuji evidence
         run: |
           python scripts/keikyu_official_train_evidence.py \
             --calendar weekday \
+            --output /tmp/keikyu-weekday.json
+      - name: Extract holiday Sengakuji evidence
+        run: |
+          python scripts/keikyu_official_train_evidence.py \
+            --calendar holiday \
+            --output /tmp/keikyu-holiday.json
+      - name: Build production projection
+        run: |
+          python scripts/merge_keikyu_official_evidence.py \
+            /tmp/keikyu-weekday.json \
+            /tmp/keikyu-holiday.json \
             --output /tmp/keikyu-official-train-evidence.json
-      - name: Diagnose official PDF token geometry
-        if: steps.extract.outcome == 'failure'
-        run: python scripts/diagnose_keikyu_connection_pdf.py
-      - name: Audit extraction result
+      - name: Audit production projection
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
-          p=Path('/tmp/keikyu-official-train-evidence.json')
-          data=json.loads(p.read_text(encoding='utf-8'))
+          data=json.loads(Path('/tmp/keikyu-official-train-evidence.json').read_text(encoding='utf-8'))
           summary=data.get('summary') or {}
+          calendars=summary.get('calendars') or {}
           entries=data.get('entries') or []
           print('SUMMARY', json.dumps(summary, ensure_ascii=False, indent=2))
-          print('SAMPLE', json.dumps(entries[:12], ensure_ascii=False, indent=2))
-          assert int(summary.get('officialColumnCandidates') or 0) > 0, summary
+          assert int((calendars.get('weekday') or {}).get('officialColumnCandidates') or 0) > 0, calendars
+          assert int((calendars.get('holiday') or {}).get('officialColumnCandidates') or 0) > 0, calendars
+          assert entries, 'no production evidence entries'
           for row in entries:
-              if row.get('matchStatus') == 'matched-singleton':
-                  assert row.get('fromFragment') and row.get('toFragment'), row
-                  assert row.get('boundaryId') == 'toei-keikyu-sengakuji', row
+              assert row.get('matchStatus') == 'matched-singleton', row
+              assert row.get('fromFragment') and row.get('toFragment'), row
+              assert row.get('sourceMatches') == [row.get('fromFragment')], row
+              assert row.get('targetMatches') == [row.get('toFragment')], row
+              assert row.get('boundaryId') == 'toei-keikyu-sengakuji', row
+              assert 'same-printed-column-spans-both-sides-of-sengakuji' in (row.get('evidence') or []), row
           PY
       - uses: actions/upload-artifact@v4
         with:
