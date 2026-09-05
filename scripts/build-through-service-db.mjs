@@ -64,6 +64,16 @@ for(const [slug,meta] of Object.entries(operators)){
   }
 }
 
+// A verified through-boundary is authoritative topology metadata, not train
+// identity. Registering its two railway/station endpoints lets a manually
+// sourced adjoining railway (for example Saitama Railway) participate in a
+// verified service-family path without weakening same-train inference rules.
+for(const boundary of boundaryRegistry.boundaries||[]){
+  if(!boundary||boundary.status!=='verified')continue;
+  addStationRailway(boundary.fromStation,boundary.fromRailway);
+  addStationRailway(boundary.toStation,boundary.toRailway);
+}
+
 function destinationRailways(destinationId){
   if(!destinationId)return[];
   const direct=stationToRailways.get(destinationId);

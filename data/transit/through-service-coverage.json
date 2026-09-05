@@ -1,14 +1,14 @@
 {
   "version": 11,
-  "generatedAt": "2026-09-05T16:40:04.088Z",
+  "generatedAt": "2026-09-05T17:04:27.457Z",
   "summary": {
-    "boundaries": 25,
-    "verifiedBoundaries": 12,
-    "serviceFamilies": 17,
-    "verifiedServiceFamilies": 17,
-    "familyPaths": 31,
+    "boundaries": 27,
+    "verifiedBoundaries": 16,
+    "serviceFamilies": 19,
+    "verifiedServiceFamilies": 19,
+    "familyPaths": 34,
     "unknownFamilyRailways": 0,
-    "throughRecords": 18459,
+    "throughRecords": 19848,
     "exactNetworkThroughRecords": 3048,
     "publishedDestinationThroughRecords": 3717,
     "unresolvedExternalDestinationTrips": 4618,
@@ -21,8 +21,8 @@
     "odptExactPublishedDestinationThroughRecords": 7692,
     "odptIdentityUnresolved": 25894,
     "officialSingleTrainPageThroughRecords": 1163,
-    "officialSamePrintedColumnThroughRecords": 548,
-    "odptExplicitBoundaryEndpointThroughRecords": 356
+    "officialSamePrintedColumnThroughRecords": 872,
+    "odptExplicitBoundaryEndpointThroughRecords": 1421
   },
   "families": [
     {
@@ -186,6 +186,26 @@
         "https://www.sotetsu.co.jp/train/services/jr/"
       ],
       "exclusions": []
+    },
+    {
+      "id": "meguro-namboku-saitamarailway",
+      "status": "verified",
+      "paths": 1,
+      "sourceUrls": [
+        "https://www.tokyu.co.jp/area/meguro/station/",
+        "https://www.s-rail.co.jp/line/new-timetable/new-urawamisono.pdf"
+      ],
+      "exclusions": []
+    },
+    {
+      "id": "sotetsu-tokyushinyokohama-meguro-namboku-saitamarailway",
+      "status": "verified",
+      "paths": 2,
+      "sourceUrls": [
+        "https://www.sotetsu.co.jp/train/stations/shinyokohama/",
+        "https://www.s-rail.co.jp/line/new-timetable/new-urawamisono.pdf"
+      ],
+      "exclusions": []
     }
   ],
   "unknownFamilyRailways": [],
@@ -323,16 +343,16 @@
       "station": "目黒",
       "fromRailway": "odpt.Railway:Tokyu.Meguro",
       "toRailway": "odpt.Railway:TokyoMetro.Namboku",
-      "status": "source-audit-required",
-      "source": ""
+      "status": "verified",
+      "source": "https://www.tokyu.co.jp/area/meguro/station/"
     },
     {
       "id": "meguro-mita-meguro",
       "station": "目黒",
       "fromRailway": "odpt.Railway:Tokyu.Meguro",
       "toRailway": "odpt.Railway:Toei.Mita",
-      "status": "source-audit-required",
-      "source": ""
+      "status": "verified",
+      "source": "https://www.tokyu.co.jp/area/meguro/station/"
     },
     {
       "id": "jrsotetsudirect-sotetsushinyokohama-hazawa",
@@ -389,6 +409,22 @@
       "toRailway": "odpt.Railway:Seibu.SeibuChichibu",
       "status": "verified",
       "source": "https://www.seiburailway.jp/railway/station/agano/"
+    },
+    {
+      "id": "meguro-tokyushinyokohama-hiyoshi",
+      "station": "日吉",
+      "fromRailway": "odpt.Railway:Tokyu.Meguro",
+      "toRailway": "odpt.Railway:Tokyu.TokyuShinYokohama",
+      "status": "verified",
+      "source": "https://www.tokyu.co.jp/railway/timetable/"
+    },
+    {
+      "id": "namboku-saitamarailway-akabaneiwabuchi",
+      "station": "赤羽岩淵",
+      "fromRailway": "odpt.Railway:TokyoMetro.Namboku",
+      "toRailway": "odpt.Railway:SaitamaRailway.SaitamaRailway",
+      "status": "verified",
+      "source": "https://www.s-rail.co.jp/line/new-timetable/new-urawamisono.pdf"
     }
   ],
   "sources": [
@@ -347216,7 +347252,7 @@
   },
   "sotetsuOfficialColumnEvidence": {
     "sourceFile": "data/transit/fukutoshin/sotetsu-official-line13-columns.json",
-    "sourceGeneratedAt": "2026-09-05T16:40:02.184418+00:00",
+    "sourceGeneratedAt": "2026-09-05T17:03:59.755115+00:00",
     "inputColumns": 538,
     "addedRecords": 538,
     "boundaries": {
@@ -347245,6 +347281,53 @@
       "yurakuchoToTobu": 93,
       "metroSource": 93,
       "tobuSource": 81
+    }
+  },
+  "meguroOfficialColumnEvidence": {
+    "sourceFile": "data/transit/meguro/sotetsu-official-meguro-columns.json",
+    "inputColumns": 324,
+    "addedRecords": 324,
+    "boundaries": {
+      "meguro-tokyushinyokohama-hiyoshi": 199,
+      "meguro-mita-meguro": 82,
+      "meguro-namboku-meguro": 43
+    },
+    "directions": {
+      "meguro-tokyushinyokohama-hiyoshi": {
+        "up": 97,
+        "down": 102
+      },
+      "meguro-mita-meguro": {
+        "up": 24,
+        "down": 58
+      },
+      "meguro-namboku-meguro": {
+        "up": 19,
+        "down": 24
+      }
+    }
+  },
+  "meguroEndpointEvidence": {
+    "evidenceRecords": 1065,
+    "addedRecords": 1065,
+    "boundaries": {
+      "meguro-mita-meguro": 234,
+      "meguro-namboku-meguro": 398,
+      "namboku-saitamarailway-akabaneiwabuchi": 433
+    },
+    "directions": {
+      "meguroNamboku": {
+        "tokyuToNamboku": 168,
+        "nambokuToTokyu": 230
+      },
+      "meguroMita": {
+        "tokyuToMita": 0,
+        "mitaToTokyu": 234
+      },
+      "nambokuSaitama": {
+        "saitamaToNamboku": 167,
+        "nambokuToSaitama": 266
+      }
     }
   }
 }

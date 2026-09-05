@@ -1,0 +1,129 @@
+name: Complete Meguro through-service exact audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feat/complete-meguro-through-service
+    paths:
+      - 'scripts/verify_meguro_boundaries.mjs'
+      - 'scripts/verify_meguro_families.mjs'
+      - 'scripts/collect_sotetsu_official_meguro_columns.py'
+      - 'scripts/apply_meguro_official_pdf_evidence.mjs'
+      - 'scripts/apply_meguro_odpt_endpoint_evidence.mjs'
+      - 'scripts/report_meguro_identity_coverage.mjs'
+      - 'scripts/audit_meguro_bidirectional_exact.mjs'
+      - 'scripts/build-through-service-db.mjs'
+      - '.github/workflows/complete-meguro-through-service.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: complete-meguro-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install collector dependencies
+        run: pip install requests==2.32.5 pdfplumber==0.11.7
+      - name: Verify complete boundary and family definitions
+        run: |
+          node scripts/verify_line8_line13_boundaries.mjs
+          node scripts/verify_meguro_boundaries.mjs
+          node scripts/verify_meguro_families.mjs
+      - name: Collect exact official Meguro printed-column evidence
+        run: |
+          python scripts/collect_sotetsu_official_meguro_columns.py \
+            --output data/transit/meguro/sotetsu-official-meguro-columns.json
+      - name: Static checks
+        run: |
+          node --check scripts/build-through-service-db.mjs
+          node --check scripts/enrich-through-service-db.mjs
+          node --check scripts/apply_line8_line13_seibu_evidence.mjs
+          node --check scripts/apply_seibu_strain_line13_evidence.mjs
+          node --check scripts/apply_fukutoshin_sotetsu_pdf_evidence.mjs
+          node --check scripts/apply_fukutoshin_wakoshi_endpoint_evidence.mjs
+          node --check scripts/apply_yurakucho_wakoshi_endpoint_evidence.mjs
+          node --check scripts/apply_meguro_official_pdf_evidence.mjs
+          node --check scripts/apply_meguro_odpt_endpoint_evidence.mjs
+          node --check scripts/report_line8_line13_identity_coverage.mjs
+          node --check scripts/audit_line8_line13_bidirectional_exact.mjs
+          node --check scripts/report_meguro_identity_coverage.mjs
+          node --check scripts/audit_meguro_bidirectional_exact.mjs
+          node scripts/test_odpt_train_identity_db.mjs
+      - name: Rebuild deterministic through-service database
+        run: |
+          node scripts/build-through-service-db.mjs
+          node scripts/enrich-through-service-db.mjs
+          node scripts/apply_line8_line13_seibu_evidence.mjs
+          node scripts/apply_seibu_strain_line13_evidence.mjs
+          node scripts/apply_fukutoshin_sotetsu_pdf_evidence.mjs
+          node scripts/apply_fukutoshin_wakoshi_endpoint_evidence.mjs
+          node scripts/apply_yurakucho_wakoshi_endpoint_evidence.mjs
+          node scripts/apply_meguro_official_pdf_evidence.mjs
+          node scripts/apply_meguro_odpt_endpoint_evidence.mjs
+      - name: Regenerate all exact coverage reports
+        run: |
+          node scripts/report_line8_line13_identity_coverage.mjs
+          node scripts/report_meguro_identity_coverage.mjs
+      - name: Audit Line 8 and Line 13 regression
+        run: node scripts/audit_line8_line13_bidirectional_exact.mjs
+      - name: Audit all seven Meguro boundaries bidirectionally
+        run: node scripts/audit_meguro_bidirectional_exact.mjs
+      - name: Assert strict completion
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const l13=require('./data/transit/fukutoshin/identity-coverage-report.json');
+          const l8=require('./data/transit/line8/identity-coverage-report.json');
+          const m=require('./data/transit/meguro/identity-coverage-report.json');
+          const c=require('./data/transit/through-service-coverage.json');
+          const t=require('./data/transit/through-service-trips.json');
+          if(l13.summary.boundaryPairs!==10||l13.summary.exactIdentityReadyPairs!==10||l13.summary.complete!==true)throw new Error('Line 13 regression');
+          if(l8.summary.boundaryPairs!==3||l8.summary.exactIdentityReadyPairs!==3||l8.summary.complete!==true)throw new Error('Line 8 regression');
+          if(m.summary.boundaryPairs!==7||m.summary.verifiedBoundaries!==7||m.summary.exactIdentityReadyPairs!==7||m.summary.complete!==true)throw new Error(`Meguro incomplete: ${JSON.stringify(m.summary)}`);
+          if(c.summary.unknownFamilyRailways!==0)throw new Error(`Unknown family railways remain: ${JSON.stringify(c.unknownFamilyRailways)}`);
+          if(t.policy.runtimeInference!==false||t.policy.timeGapMayEstablishTrainIdentity!==false||t.policy.trainNumberMayEstablishTrainIdentity!==false||t.policy.genericBoundaryChaining!==false)throw new Error('Through-service policy weakened');
+          const odpt=t.meguroEndpointEvidence;
+          if(!odpt||!(odpt.directions.nambokuSaitama.saitamaToNamboku>0)||!(odpt.directions.nambokuSaitama.nambokuToSaitama>0))throw new Error('Saitama Railway endpoint evidence incomplete');
+          const pdf=t.meguroOfficialColumnEvidence;
+          if(!pdf)throw new Error('Meguro official printed-column evidence missing');
+          for(const id of ['meguro-tokyushinyokohama-hiyoshi','meguro-namboku-meguro','meguro-mita-meguro']){
+            const d=pdf.directions?.[id]||{};
+            if(!(d.up>0&&d.down>0))throw new Error(`Meguro official column evidence not bidirectional: ${id}`);
+          }
+          console.log('MEGURO',JSON.stringify(m.summary));
+          NODE
+      - name: Validate generated JSON
+        run: |
+          node -e "for(const f of ['data/transit/through-service-boundaries.json','data/transit/through-service-families.json','data/transit/through-service-trips.json','data/transit/through-service-coverage.json','data/transit/fukutoshin/identity-coverage-report.json','data/transit/line8/identity-coverage-report.json','data/transit/meguro/identity-coverage-report.json','data/transit/meguro/sotetsu-official-meguro-columns.json'])JSON.parse(require('fs').readFileSync(f,'utf8'));"
+      - name: Commit verified Meguro DB to branch
+        run: |
+          git add data/transit/through-service-boundaries.json \
+                  data/transit/through-service-families.json \
+                  data/transit/through-service-trips.json \
+                  data/transit/through-service-coverage.json \
+                  data/transit/fukutoshin/identity-coverage-report.json \
+                  data/transit/line8/identity-coverage-report.json \
+                  data/transit/meguro/identity-coverage-report.json \
+                  data/transit/meguro/sotetsu-official-meguro-columns.json
+          if git diff --cached --quiet; then
+            echo 'No generated changes'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Generate complete Meguro through-service database'
+          git reset --hard HEAD
+          branch="${GITHUB_REF_NAME}"
+          git fetch origin "$branch"
+          git rebase "origin/$branch"
+          git push origin HEAD:"$branch"

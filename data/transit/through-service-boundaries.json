@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 5,
   "policy": {
     "runtimeInference": false,
     "timeGapMayEstablishTrainIdentity": false,
@@ -101,7 +101,9 @@
       "fromStation": "odpt.Station:TokyoMetro.Yurakucho.KotakeMukaihara",
       "toStation": "odpt.Station:Seibu.SeibuYurakucho.KotakeMukaihara",
       "bidirectional": true,
-      "status": "source-audit-required"
+      "status": "verified",
+      "source": "https://www.tokyometro.jp/station/line_yurakucho/index.html",
+      "note": "東京メトロ公式有楽町線路線情報が小竹向原の他社線として西武有楽町線を掲載。列車単位の直通可否は別途exact evidenceで判定。"
     },
     {
       "id": "fukutoshin-tojo-wakoshi",
@@ -123,7 +125,9 @@
       "fromStation": "odpt.Station:TokyoMetro.Yurakucho.Wakoshi",
       "toStation": "odpt.Station:Tobu.Tojo.Wakoshi",
       "bidirectional": true,
-      "status": "source-audit-required"
+      "status": "verified",
+      "source": "https://www.tobu.co.jp/corporation/rail/route/",
+      "note": "東武公式路線概要が有楽町線の相互乗入区間を森林公園〜新木場と明記。列車単位の直通可否はexact endpoint evidenceで判定。"
     },
     {
       "id": "keisei-toei-oshiage",
@@ -193,7 +197,9 @@
       "fromStation": "odpt.Station:Tokyu.Meguro.Meguro",
       "toStation": "odpt.Station:TokyoMetro.Namboku.Meguro",
       "bidirectional": true,
-      "status": "source-audit-required"
+      "status": "verified",
+      "source": "https://www.tokyu.co.jp/area/meguro/station/",
+      "note": "東急公式目黒駅情報が目黒線の直通路線として東京メトロ南北線を明記。列車単位identityはODPT exact endpointおよび公式同一列で確認。"
     },
     {
       "id": "meguro-mita-meguro",
@@ -203,7 +209,9 @@
       "fromStation": "odpt.Station:Tokyu.Meguro.Meguro",
       "toStation": "odpt.Station:Toei.Mita.Meguro",
       "bidirectional": true,
-      "status": "source-audit-required"
+      "status": "verified",
+      "source": "https://www.tokyu.co.jp/area/meguro/station/",
+      "note": "東急公式目黒駅情報が目黒線の直通路線として都営三田線を明記。列車単位identityはODPT exact endpointおよび相鉄公式同一印刷列で確認。"
     },
     {
       "id": "jrsotetsudirect-sotetsushinyokohama-hazawa",
@@ -254,6 +262,54 @@
       "toStation": "odpt.Station:JR-East.ChuoSobuLocal.NishiFunabashi",
       "bidirectional": true,
       "status": "source-audit-required"
+    },
+    {
+      "id": "seibuyurakucho-ikebukuro-nerima",
+      "station": "練馬",
+      "fromRailway": "odpt.Railway:Seibu.SeibuYurakucho",
+      "toRailway": "odpt.Railway:Seibu.Ikebukuro",
+      "fromStation": "odpt.Station:Seibu.SeibuYurakucho.Nerima",
+      "toStation": "odpt.Station:Seibu.Ikebukuro.Nerima",
+      "bidirectional": true,
+      "status": "verified",
+      "source": "https://www.seiburailway.jp/railway/station/",
+      "note": "西武公式路線情報は西武有楽町線を練馬〜小竹向原として掲載し、練馬を東京メトロ線直通電車の経路として示す。"
+    },
+    {
+      "id": "seibu-ikebukuro-seibuchichibu-agano",
+      "station": "吾野",
+      "fromRailway": "odpt.Railway:Seibu.Ikebukuro",
+      "toRailway": "odpt.Railway:Seibu.SeibuChichibu",
+      "fromStation": "odpt.Station:Seibu.Ikebukuro.Agano",
+      "toStation": "odpt.Station:Seibu.SeibuChichibu.Agano",
+      "bidirectional": true,
+      "status": "verified",
+      "source": "https://www.seiburailway.jp/railway/station/agano/",
+      "note": "西武公式吾野駅情報が池袋線と西武秩父線の双方を同駅に掲載。土休日S-TRAINの西武秩父〜元町・中華街直通は列車単位exact evidenceで別途確認する。"
+    },
+    {
+      "id": "meguro-tokyushinyokohama-hiyoshi",
+      "station": "日吉",
+      "fromRailway": "odpt.Railway:Tokyu.Meguro",
+      "toRailway": "odpt.Railway:Tokyu.TokyuShinYokohama",
+      "fromStation": "odpt.Station:Tokyu.Meguro.Hiyoshi",
+      "toStation": "odpt.Station:Tokyu.TokyuShinYokohama.Hiyoshi",
+      "bidirectional": true,
+      "status": "verified",
+      "source": "https://www.tokyu.co.jp/railway/timetable/",
+      "note": "東急公式2026年3月14日改正時刻表が目黒線の日吉・新横浜方面直通を掲載。列車単位identityは相鉄公式full train timetableの同一印刷列で確認。"
+    },
+    {
+      "id": "namboku-saitamarailway-akabaneiwabuchi",
+      "station": "赤羽岩淵",
+      "fromRailway": "odpt.Railway:TokyoMetro.Namboku",
+      "toRailway": "odpt.Railway:SaitamaRailway.SaitamaRailway",
+      "fromStation": "odpt.Station:TokyoMetro.Namboku.AkabaneIwabuchi",
+      "toStation": "odpt.Station:SaitamaRailway.SaitamaRailway.AkabaneIwabuchi",
+      "bidirectional": true,
+      "status": "verified",
+      "source": "https://www.s-rail.co.jp/line/new-timetable/new-urawamisono.pdf",
+      "note": "埼玉高速鉄道公式時刻表が南北線・東急目黒線・相鉄線への直通列車を掲載。列車単位identityは東京メトロNamboku TrainTimetableの赤羽岩淵exact endpoint＋埼玉高速外部駅で確認。"
     }
   ]
 }
