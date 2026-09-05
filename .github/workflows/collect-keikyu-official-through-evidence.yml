@@ -5,6 +5,7 @@ on:
     paths:
       - 'scripts/keikyu_official_train_evidence.py'
       - 'scripts/test_keikyu_official_train_evidence.py'
+      - 'scripts/diagnose_keikyu_connection_pdf.py'
       - '.github/workflows/collect-keikyu-official-through-evidence.yml'
   workflow_dispatch:
 
@@ -24,10 +25,15 @@ jobs:
       - name: Test fail-closed extraction rules
         run: python scripts/test_keikyu_official_train_evidence.py
       - name: Extract current weekday Sengakuji evidence
+        id: extract
+        continue-on-error: true
         run: |
           python scripts/keikyu_official_train_evidence.py \
             --calendar weekday \
             --output /tmp/keikyu-official-train-evidence.json
+      - name: Diagnose official PDF token geometry
+        if: steps.extract.outcome == 'failure'
+        run: python scripts/diagnose_keikyu_connection_pdf.py
       - name: Audit extraction result
         run: |
           python - <<'PY'
@@ -40,9 +46,6 @@ jobs:
           print('SUMMARY', json.dumps(summary, ensure_ascii=False, indent=2))
           print('SAMPLE', json.dumps(entries[:12], ensure_ascii=False, indent=2))
           assert int(summary.get('officialColumnCandidates') or 0) > 0, summary
-          # Matching may legitimately remain zero if the current compact fragment
-          # set does not expose a singleton on one side. That must fail closed,
-          # not be promoted from time or train number alone.
           for row in entries:
               if row.get('matchStatus') == 'matched-singleton':
                   assert row.get('fromFragment') and row.get('toFragment'), row
