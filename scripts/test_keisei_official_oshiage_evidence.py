@@ -7,6 +7,7 @@ import keisei_official_oshiage_evidence as subject
 
 YOTSU = "odpt.Station:Keisei.Oshiage.Yotsugi"
 HONJO = "odpt.Station:Toei.Asakusa.HonjoAzumabashi"
+OFFICIAL_NUMBER = "official-do-not-use-as-selector"
 
 
 def station_maps() -> tuple[dict[str, str], dict[str, str]]:
@@ -29,12 +30,7 @@ def fake_train(direction: str = "keisei-to-toei") -> dict:
             {"station": "押上", "arrival": "06:05", "departure": "06:06"},
             {"station": "四ツ木", "arrival": "06:10", "departure": "06:10"},
         ]
-    return {
-        "sourceTrainId": "official-do-not-use-as-selector",
-        "calendar": "weekday",
-        "url": "https://example.test/official-train",
-        "stops": stops,
-    }
+    return {"sourceTrainId": OFFICIAL_NUMBER, "calendar": "weekday", "url": "https://example.test/official-train", "stops": stops}
 
 
 def candidate(direction: str = "keisei-to-toei") -> dict:
@@ -42,12 +38,18 @@ def candidate(direction: str = "keisei-to-toei") -> dict:
     return subject.extract_candidates({"trains": [fake_train(direction)]}, keisei, toei)[0][0]
 
 
-def fragment(fid: str, railway: str, stops: list[list]) -> dict:
-    return {"id": fid, "railway": railway, "calendar": "weekday", "stops": stops}
+def fragment(fid: str, railway: str, stops: list[list], **extra) -> dict:
+    return {"id": fid, "railway": railway, "calendar": "weekday", "stops": stops, **extra}
 
 
-def keisei_source(fid: str, anchor_minute: int = 360) -> dict:
-    return fragment(fid, subject.KEISEI_OSHIAGE, [[YOTSU, anchor_minute, anchor_minute], [subject.KEISEI_STATION, 365, 366]])
+def keisei_source(fid: str, anchor_minute: int = 360, *, train_number: str = "", exact: bool = False) -> dict:
+    return fragment(
+        fid,
+        subject.KEISEI_OSHIAGE,
+        [[YOTSU, anchor_minute, anchor_minute], [subject.KEISEI_STATION, 365, 366]],
+        trainNumber=train_number,
+        sourceKind="exact-train-timetable" if exact else "test-fragment",
+    )
 
 
 def toei_target(fid: str, anchor_minute: int = 368) -> dict:
@@ -62,8 +64,7 @@ def test_extracts_both_directions() -> None:
     assert diagnostics["reasons"] == {}
     assert {row["direction"] for row in candidates} == {"keisei-to-toei", "toei-to-keisei"}
     assert all(subject.MARKER in row["evidence"] for row in candidates)
-    assert candidates[0]["sourceAdjacentAnchor"]["station"]
-    assert candidates[0]["targetAdjacentAnchor"]["station"]
+    assert all(row["officialTrainNumber"] == OFFICIAL_NUMBER for row in candidates)
 
 
 def test_same_operator_neighbours_do_not_claim_boundary() -> None:
@@ -90,29 +91,43 @@ def test_boundary_ambiguity_resolves_with_exact_adjacent_anchor() -> None:
     assert matched["sourceMatches"] == ["right"]
     assert matched["sourceMatchMethod"] == "resolved-by-adjacent-official-anchor"
     assert matched["matchStatus"] == "matched-singleton"
-    assert matched["resolvedByAdjacentOfficialAnchor"] is True
+    assert matched["resolvedByOfficialTrainNumberAfterExactAnchors"] is False
 
 
-def test_wrong_adjacent_minute_does_not_resolve() -> None:
-    fragments = [keisei_source("a", 359), keisei_source("b", 358), toei_target("t")]
+def test_train_number_disambiguates_only_after_exact_adjacent_anchor() -> None:
+    fragments = [
+        keisei_source("right", 360, train_number=OFFICIAL_NUMBER, exact=True),
+        keisei_source("other", 360, train_number="other-train", exact=True),
+        toei_target("t"),
+    ]
+    matched = subject.match_candidates([candidate()], fragments)[0]
+    assert matched["matchStatus"] == "matched-singleton"
+    assert matched["fromFragment"] == "right"
+    assert matched["sourceMatchMethod"] == "resolved-by-adjacent-anchor-and-official-train-number"
+    assert matched["resolvedByOfficialTrainNumberAfterExactAnchors"] is True
+
+
+def test_train_number_cannot_rescue_wrong_adjacent_minute() -> None:
+    fragments = [
+        keisei_source("number-match", 359, train_number=OFFICIAL_NUMBER, exact=True),
+        keisei_source("other", 358, train_number="other-train", exact=True),
+        toei_target("t"),
+    ]
     matched = subject.match_candidates([candidate()], fragments)[0]
     assert matched["matchStatus"] == "ambiguous"
     assert matched["sourceMatchMethod"] == "adjacent-anchor-no-exact-match"
-    assert len(matched["sourceMatches"]) == 2
+    assert matched["resolvedByOfficialTrainNumberAfterExactAnchors"] is False
 
 
-def test_nearby_adjacent_minute_is_not_accepted() -> None:
-    fragments = [keisei_source("near", 361), keisei_source("far", 358), toei_target("t")]
+def test_adjacent_and_train_number_still_ambiguous_fails_closed() -> None:
+    fragments = [
+        keisei_source("a", 360, train_number=OFFICIAL_NUMBER, exact=True),
+        keisei_source("b", 360, train_number=OFFICIAL_NUMBER, exact=True),
+        toei_target("t"),
+    ]
     matched = subject.match_candidates([candidate()], fragments)[0]
     assert matched["matchStatus"] == "ambiguous"
-    assert matched["sourceMatchMethod"] == "adjacent-anchor-no-exact-match"
-
-
-def test_adjacent_anchor_that_still_matches_two_fails_closed() -> None:
-    fragments = [keisei_source("a", 360), keisei_source("b", 360), toei_target("t")]
-    matched = subject.match_candidates([candidate()], fragments)[0]
-    assert matched["matchStatus"] == "ambiguous"
-    assert matched["sourceMatchMethod"] == "still-ambiguous-after-adjacent-anchor"
+    assert matched["sourceMatchMethod"] == "still-ambiguous-after-adjacent-anchor-and-train-number"
     assert matched["fromFragment"] is None
 
 
@@ -125,7 +140,7 @@ def test_nearby_boundary_minute_never_matches() -> None:
     assert matched["targetMatches"] == []
 
 
-def test_train_number_is_not_fragment_selector() -> None:
+def test_train_number_is_not_fragment_selector_when_boundary_is_singleton() -> None:
     first = candidate()
     changed_train = copy.deepcopy(fake_train())
     changed_train["sourceTrainId"] = "completely-different-number"
@@ -141,11 +156,11 @@ def main() -> int:
     test_same_operator_neighbours_do_not_claim_boundary()
     test_exact_singleton_only()
     test_boundary_ambiguity_resolves_with_exact_adjacent_anchor()
-    test_wrong_adjacent_minute_does_not_resolve()
-    test_nearby_adjacent_minute_is_not_accepted()
-    test_adjacent_anchor_that_still_matches_two_fails_closed()
+    test_train_number_disambiguates_only_after_exact_adjacent_anchor()
+    test_train_number_cannot_rescue_wrong_adjacent_minute()
+    test_adjacent_and_train_number_still_ambiguous_fails_closed()
     test_nearby_boundary_minute_never_matches()
-    test_train_number_is_not_fragment_selector()
+    test_train_number_is_not_fragment_selector_when_boundary_is_singleton()
     print("keisei Oshiage official evidence tests passed")
     return 0
 
