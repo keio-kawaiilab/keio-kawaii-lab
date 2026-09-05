@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'scripts/diagnose_line13_wakoshi.mjs'
+      - 'scripts/apply_fukutoshin_wakoshi_endpoint_evidence.mjs'
       - '.github/workflows/diagnose-line13-wakoshi.yml'
 permissions:
   contents: read
@@ -17,3 +18,26 @@ jobs:
           node-version: '24'
       - name: Inspect exact ODPT identity fields around Wakoshi
         run: node scripts/diagnose_line13_wakoshi.mjs
+      - name: Build strict bidirectional Wakoshi endpoint evidence
+        run: node scripts/apply_fukutoshin_wakoshi_endpoint_evidence.mjs
+      - name: Assert both directions are proven without inference
+        run: |
+          node - <<'NODE'
+          const t=require('./data/transit/through-service-trips.json');
+          const e=t.wakoshiEndpointEvidence;
+          if(!e)throw new Error('Wakoshi endpoint evidence summary missing');
+          if(!(e.directions.tobuToFukutoshin>0))throw new Error('Tobu -> Fukutoshin exact endpoint evidence missing');
+          if(!(e.directions.fukutoshinToTobu>0))throw new Error('Fukutoshin -> Tobu exact endpoint evidence missing');
+          if(e.policy.destinationAloneMayEstablishIdentity!==false)throw new Error('destination-only identity must remain disabled');
+          if(e.policy.timeProximityAloneMayEstablishIdentity!==false)throw new Error('time proximity must remain disabled');
+          if(e.policy.trainNumberAloneMayEstablishIdentity!==false)throw new Error('train-number identity must remain disabled');
+          const rows=(t.records||[]).filter(r=>r.identityType==='odpt-explicit-boundary-endpoint');
+          if(!rows.length)throw new Error('No Wakoshi endpoint records generated');
+          for(const r of rows){
+            if(r.canonicalBoundaryId!=='fukutoshin-tojo-wakoshi')throw new Error('Unexpected endpoint boundary');
+            if(r.boundaryEndpoint!=='odpt.Station:TokyoMetro.Fukutoshin.Wakoshi')throw new Error('Exact Wakoshi endpoint missing');
+            if(r.matchPolicy?.sameTrainTimetableRecordRequired!==true||r.matchPolicy?.exactBoundaryEndpointRequired!==true)throw new Error('Strict endpoint requirements missing');
+            if(r.matchPolicy?.destinationAloneMayEstablishIdentity!==false||r.matchPolicy?.timeProximityAloneMayEstablishIdentity!==false||r.matchPolicy?.trainNumberAloneMayEstablishIdentity!==false)throw new Error('Fail-closed rules weakened');
+          }
+          console.log(JSON.stringify(e,null,2));
+          NODE
