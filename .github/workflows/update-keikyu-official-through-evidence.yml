@@ -8,6 +8,8 @@ on:
       - 'scripts/keikyu_official_train_evidence.py'
       - 'scripts/merge_keikyu_official_evidence.py'
       - 'scripts/keikyu_generated_evidence.py'
+      - 'scripts/test_keikyu_official_train_evidence.py'
+      - 'scripts/test_keikyu_generated_evidence.py'
       - 'scripts/reviewed_train_evidence.py'
       - '.github/workflows/update-keikyu-official-through-evidence.yml'
   schedule:
@@ -32,8 +34,10 @@ jobs:
           python-version: '3.12'
       - name: Install PDF parser
         run: pip install pdfplumber==0.11.7 requests==2.32.5
-      - name: Test fail-closed extraction rules
-        run: python scripts/test_keikyu_official_train_evidence.py
+      - name: Test fail-closed extraction and consumer rules
+        run: |
+          python scripts/test_keikyu_official_train_evidence.py
+          python scripts/test_keikyu_generated_evidence.py
       - name: Extract official weekday and holiday evidence
         run: |
           python scripts/keikyu_official_train_evidence.py --calendar weekday --output /tmp/keikyu-weekday.json
@@ -46,26 +50,64 @@ jobs:
         run: |
           python scripts/finalize_transit_v2.py
           python scripts/audit_transit_v2.py
-      - name: Validate generated same-train edges
+      - name: Validate generated same-train edges in both directions
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
-          v2=Path('data/transit-v2')
-          evidence=json.loads((v2/'keikyu-official-train-evidence.json').read_text(encoding='utf-8'))
-          entries=evidence.get('entries') or []
-          edges=json.loads((v2/'same-train-edges.json').read_text(encoding='utf-8')).get('edges') or []
-          generated=[e for e in edges if 'keikyu-official-connection-timetable-same-column' in (e.get('evidence') or [])]
-          runtime=json.loads((v2/'runtime-same-train.json').read_text(encoding='utf-8')).get('edges') or []
-          coverage=json.loads((v2/'coverage.json').read_text(encoding='utf-8'))
+
+          v2 = Path('data/transit-v2')
+          evidence = json.loads((v2 / 'keikyu-official-train-evidence.json').read_text(encoding='utf-8'))
+          entries = evidence.get('entries') or []
+          edges = json.loads((v2 / 'same-train-edges.json').read_text(encoding='utf-8')).get('edges') or []
+          generated = [
+              edge for edge in edges
+              if 'keikyu-official-connection-timetable-same-column' in (edge.get('evidence') or [])
+          ]
+          runtime = json.loads((v2 / 'runtime-same-train.json').read_text(encoding='utf-8')).get('edges') or []
+          coverage = json.loads((v2 / 'coverage.json').read_text(encoding='utf-8'))
+
+          directions = {}
+          for row in entries:
+              key = str(row.get('direction') or '')
+              directions[key] = directions.get(key, 0) + 1
+
+          generated_directions = {'keikyu-to-toei': 0, 'toei-to-keikyu': 0}
+          for edge in generated:
+              boundary = edge.get('boundary') or {}
+              pair = (boundary.get('fromRailway'), boundary.get('toRailway'))
+              if pair == ('odpt.Railway:Keikyu.Main', 'odpt.Railway:Toei.Asakusa'):
+                  generated_directions['keikyu-to-toei'] += 1
+              elif pair == ('odpt.Railway:Toei.Asakusa', 'odpt.Railway:Keikyu.Main'):
+                  generated_directions['toei-to-keikyu'] += 1
+
+          production_pairs = {
+              (str(row.get('fromFragment') or ''), str(row.get('toFragment') or ''))
+              for row in entries
+          }
+          generated_pairs = {
+              (str(row.get('fromFragment') or ''), str(row.get('toFragment') or ''))
+              for row in generated
+          }
+          missing_pairs = production_pairs - generated_pairs
+
           print('PRODUCTION_EVIDENCE', len(entries))
+          print('PRODUCTION_DIRECTIONS', directions)
           print('GENERATED_SAME_TRAIN_EDGES', len(generated))
+          print('GENERATED_DIRECTIONS', generated_directions)
+          print('MISSING_PRODUCTION_PAIRS', len(missing_pairs))
           print('RUNTIME_SAME_TRAIN_EDGES', len(runtime))
           print('COVERAGE', json.dumps(coverage.get('summary') or {}, ensure_ascii=False, indent=2))
+
           assert entries, 'official production evidence is empty'
           assert generated, 'official evidence did not reach same-train edges'
+          assert directions.get('keikyu-to-toei', 0) > 0, directions
+          assert directions.get('toei-to-keikyu', 0) > 0, directions
+          assert generated_directions['keikyu-to-toei'] > 0, generated_directions
+          assert generated_directions['toei-to-keikyu'] > 0, generated_directions
+          assert not missing_pairs, 'some production evidence did not reach same-train edges'
           assert all(row.get('matchStatus') == 'matched-singleton' for row in entries), 'non-singleton evidence leaked into production'
-          assert all(e.get('identityLevel') == 'evidence-backed' for e in generated), 'unexpected identity level'
+          assert all(edge.get('identityLevel') == 'evidence-backed' for edge in generated), 'unexpected identity level'
           PY
       - name: Commit refreshed strict DB
         shell: bash
