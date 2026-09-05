@@ -1,50 +1,23 @@
-name: Inspect Tokyu through-train source
+name: Inspect Tokyu through-train source (manual probe)
 
+# transfer.navitime.biz/tokyu is linked from Tokyu's timetable experience and
+# exposes exact one-train stop sequences, but it currently returns HTTP 403 to
+# GitHub-hosted Azure runners. Keep this as an explicit diagnostic only; it must
+# not create recurring red CI or be treated as the automated production source.
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - 'scripts/inspect_tokyu_through_train_detail_source.py'
-      - '.github/workflows/inspect-tokyu-through-source.yml'
 
 permissions:
-  contents: write
-
-concurrency:
-  group: inspect-tokyu-through-source
-  cancel-in-progress: false
+  contents: read
 
 jobs:
   inspect:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Inspect exact per-train Tokyu timetable source
-        run: python scripts/inspect_tokyu_through_train_detail_source.py
-      - name: Validate strict identity policy
+      - name: Explain source status
         run: |
-          python - <<'PY'
-          import json
-          r=json.load(open('data/transit/fukutoshin/tokyu-through-source-report.json',encoding='utf-8'))
-          p=r['identityPolicy']
-          assert r['summary']['sampleFetched'] is True
-          assert r['summary']['sampleCrossesYokohamaShibuyaKotake'] is True
-          assert p['singleTrainDetailPageMayEstablishIdentity'] is True
-          assert p['timeProximityMayEstablishIdentity'] is False
-          assert p['trainNumberAloneMayEstablishIdentity'] is False
-          assert p['destinationAloneMayEstablishIdentity'] is False
-          assert p['listingLinkAloneMayEstablishIdentity'] is False
-          print(r['summary'])
-          PY
-      - name: Commit compact source report
-        run: |
-          git add data/transit/fukutoshin/tokyu-through-source-report.json
-          if git diff --cached --quiet; then
-            echo 'No source-inspection changes'
-            exit 0
-          fi
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'Inspect Tokyu exact through-train source'
-          git pull --rebase origin main
-          git push
+          echo 'Manual diagnostic only: Tokyu-linked per-train source blocks GitHub-hosted runners with HTTP 403.'
+          echo 'Current automated Line 13 collection therefore uses reachable current official sources.'
+      - name: Validate probe syntax
+        run: python -m py_compile scripts/inspect_tokyu_through_train_detail_source.py
