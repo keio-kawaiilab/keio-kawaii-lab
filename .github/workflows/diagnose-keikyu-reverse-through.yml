@@ -1,0 +1,29 @@
+name: Diagnose Keikyu reverse through attachment
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/diagnose_keikyu_reverse_through.py'
+      - '.github/workflows/diagnose-keikyu-reverse-through.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PDF parser
+        run: pip install pdfplumber==0.11.7 requests==2.32.5
+      - name: Diagnose Keikyu to Toei candidates
+        run: python scripts/diagnose_keikyu_reverse_through.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keikyu-reverse-through-diagnostic
+          path: /tmp/keikyu-reverse-diagnostic.json
+          if-no-files-found: error
