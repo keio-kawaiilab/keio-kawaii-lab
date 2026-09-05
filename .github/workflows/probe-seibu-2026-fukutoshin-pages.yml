@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'scripts/probe_seibu_2026_fukutoshin_pages.py'
+      - 'scripts/inspect_seibu_timetable_mechanics.py'
       - '.github/workflows/probe-seibu-2026-fukutoshin-pages.yml'
   workflow_dispatch:
 
@@ -47,8 +48,33 @@ jobs:
               assert row['stationCount'] >= 3
               assert row['boundaries']
           PY
+      - name: Inspect timetable detail-link mechanics
+        run: python scripts/inspect_seibu_timetable_mechanics.py > /tmp/seibu-timetable-mechanics.json
+      - name: Show compact mechanics clues
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path('/tmp/seibu-timetable-mechanics.json').read_text(encoding='utf-8'))
+          for page in data['pages']:
+              print('MECHANICS_PAGE', page['url'])
+              for form in page['forms']:
+                  interesting=[i for i in form['inputs'] if i.get('name') or i.get('onclick') or i.get('data')]
+                  if interesting:
+                      print('FORM', json.dumps({'action':form['action'],'method':form['method'],'id':form['id'],'inputs':interesting[:35]}, ensure_ascii=False))
+              for row in page['clickable'][:120]:
+                  if row.get('onclick') or row.get('data') or ':' in row.get('text',''):
+                      print('CLICK', json.dumps(row, ensure_ascii=False))
+              for script in page['scripts']:
+                  if script.get('src') or script.get('needleHits'):
+                      print('SCRIPT', json.dumps(script, ensure_ascii=False))
+              for ctx in page['contexts'][:30]:
+                  print('CTX', json.dumps(ctx, ensure_ascii=False))
+          PY
       - uses: actions/upload-artifact@v4
         with:
           name: seibu-line13-through-trains
-          path: /tmp/seibu-line13-through-trains.json
+          path: |
+            /tmp/seibu-line13-through-trains.json
+            /tmp/seibu-timetable-mechanics.json
           if-no-files-found: error
