@@ -9,13 +9,15 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
-from urllib.parse import urljoin
+from urllib.parse import parse_qs, urlencode, urljoin, urlparse
 
 import requests
 from bs4 import BeautifulSoup
 
 BASE = 'https://seibu.ekitan.com'
 # Seibu Railway's current official site links users to this timetable service.
+# The rendered station pages themselves contain the exact one-train parameters
+# for every departure in openOneTrainTimetable(...).
 SOURCE_PAGES = [
     f'{BASE}/norikae/timetable/station/232-1/d1?dw=0',  # Shin-Sakuradai -> Kotake / Metro
     f'{BASE}/norikae/timetable/station/232-1/d1?dw=1',
@@ -25,6 +27,12 @@ SOURCE_PAGES = [
 KNOWN_SAMPLE = (
     f'{BASE}/norikae/timetable/onetraintimetable/'
     '?date=20260530&dw=1&sf=2836&time=1926&tx=1050110-1809-4702'
+)
+ONE_TRAIN_CALL_RE = re.compile(
+    r"openOneTrainTimetable\(\s*['\"]([^'\"]+)['\"]\s*,\s*"
+    r"['\"]([^'\"]+)['\"]\s*,\s*['\"]([^'\"]+)['\"]\s*,\s*"
+    r"['\"]([^'\"]+)['\"]\s*,\s*['\"]([^'\"]+)['\"]\s*\)",
+    re.I,
 )
 BOUNDARIES = {
     'seibu-metro-kotake-mukaihara': (
@@ -43,7 +51,7 @@ BOUNDARIES = {
 
 SESSION = requests.Session()
 SESSION.headers.update({
-    'User-Agent': 'Mozilla/5.0 (compatible; KeioKawaiiLabTransitDB/6.0)',
+    'User-Agent': 'Mozilla/5.0 (compatible; KeioKawaiiLabTransitDB/7.0)',
     'Accept': 'text/html,application/xhtml+xml,*/*;q=0.8',
 })
 
@@ -59,19 +67,41 @@ def fetch(url: str) -> str:
     return response.text
 
 
+def one_train_url(tx: str, sf: str, date: str, time: str, dw: str) -> str:
+    query = urlencode({
+        'date': date,
+        'dw': dw,
+        'sf': sf,
+        'time': time,
+        'tx': tx,
+    })
+    return f'{BASE}/norikae/timetable/onetraintimetable/?{query}'
+
+
+def detail_url_metadata(url: str) -> dict[str, str]:
+    q = parse_qs(urlparse(url).query)
+    return {
+        key: (q.get(key) or [''])[0]
+        for key in ('date', 'dw', 'sf', 'time', 'tx')
+    }
+
+
 def discover_detail_urls(source_url: str, text: str) -> tuple[list[str], list[str]]:
     soup = BeautifulSoup(text, 'html.parser')
     urls: list[str] = []
+
+    # Current official-linked station pages publish every departure as a Vue
+    # click handler. These five arguments are the site's own exact identifiers;
+    # no time/destination similarity is used to manufacture identity.
+    for tx, sf, date, time, dw in ONE_TRAIN_CALL_RE.findall(text):
+        urls.append(one_train_url(tx, sf, date, time, dw))
+
+    # Retain ordinary-link discovery as a compatibility fallback if the site
+    # changes rendering while keeping direct one-train URLs.
     for tag in soup.find_all(['a', 'form']):
         target = tag.get('href') or tag.get('action') or ''
         if 'onetraintimetable' in target:
             urls.append(urljoin(source_url, html.unescape(target)))
-
-    # Some timetable rows are rendered by JS/forms rather than ordinary links.
-    for match in re.finditer(r'[^\"\'\s<>]*onetraintimetable[^\"\'\s<>]*', text, re.I):
-        token = html.unescape(match.group(0))
-        if token:
-            urls.append(urljoin(source_url, token))
 
     unique: list[str] = []
     seen: set[str] = set()
@@ -85,7 +115,7 @@ def discover_detail_urls(source_url: str, text: str) -> tuple[list[str], list[st
 
     snippets: list[str] = []
     if not unique:
-        for needle in ('onetraintimetable', 'tx=', 'oneTrain', 'trainDetail'):
+        for needle in ('openOneTrainTimetable', 'onetraintimetable', 'tx=', 'oneTrain', 'trainDetail'):
             pos = text.find(needle)
             if pos >= 0:
                 snippets.append(clean(text[max(0, pos - 350):pos + 650]))
@@ -102,7 +132,6 @@ def parse_detail(url: str, text: str) -> dict[str, Any]:
             continue
         if cells[0] in {'駅', '駅名'}:
             continue
-        # Published one-train pages use station / arrival / departure columns.
         station = cells[0]
         if not station or station in {'着時刻', '発時刻'}:
             continue
@@ -125,6 +154,7 @@ def parse_detail(url: str, text: str) -> dict[str, Any]:
 
     return {
         'url': url,
+        'sourceParameters': detail_url_metadata(url),
         'title': clean(soup.title.get_text(' ', strip=True) if soup.title else ''),
         'headings': headings[:8],
         'stops': stops,
@@ -138,15 +168,21 @@ def build_report() -> dict[str, Any]:
     source_rows: list[dict[str, Any]] = []
     detail_urls: list[str] = []
     seen: set[str] = set()
+    calendar_keys: set[tuple[str, str]] = set()
     for source_url in SOURCE_PAGES:
         try:
             text = fetch(source_url)
             urls, snippets = discover_detail_urls(source_url, text)
+            metas = [detail_url_metadata(url) for url in urls]
+            for meta in metas:
+                if meta.get('date') or meta.get('dw'):
+                    calendar_keys.add((meta.get('date', ''), meta.get('dw', '')))
             source_rows.append({
                 'url': source_url,
                 'fetched': True,
                 'bytes': len(text.encode('utf-8')),
                 'detailUrlCount': len(urls),
+                'calendarKeys': sorted({(m.get('date', ''), m.get('dw', '')) for m in metas}),
                 'diagnosticSnippets': snippets,
             })
             for url in urls:
@@ -156,15 +192,15 @@ def build_report() -> dict[str, Any]:
         except Exception as exc:
             source_rows.append({'url': source_url, 'fetched': False, 'error': f'{type(exc).__name__}: {exc}'})
 
-    # Always validate one independently known current-domain page. It proves the
-    # parser and source semantics even if the station listing changes rendering.
-    if KNOWN_SAMPLE not in seen:
-        seen.add(KNOWN_SAMPLE)
+    discovered_count = len(detail_urls)
+    used_known_sample_fallback = False
+    if not detail_urls:
+        used_known_sample_fallback = True
         detail_urls.append(KNOWN_SAMPLE)
 
     detail_rows: list[dict[str, Any]] = []
     errors: list[dict[str, str]] = []
-    with ThreadPoolExecutor(max_workers=8) as pool:
+    with ThreadPoolExecutor(max_workers=12) as pool:
         futures = {pool.submit(fetch, url): url for url in detail_urls}
         for future in as_completed(futures):
             url = futures[future]
@@ -180,8 +216,14 @@ def build_report() -> dict[str, Any]:
         for boundary_id in BOUNDARIES
     }
     triple = [row for row in exact_rows if len(row.get('boundaries') or []) == 3]
+    exact_calendar_counts: dict[str, int] = {}
+    for row in exact_rows:
+        meta = row.get('sourceParameters') or {}
+        key = f"{meta.get('date','')}|dw={meta.get('dw','')}"
+        exact_calendar_counts[key] = exact_calendar_counts.get(key, 0) + 1
+
     return {
-        'version': 6,
+        'version': 7,
         'generatedAt': datetime.now(timezone.utc).isoformat(),
         'source': 'Seibu Railway official-linked timetable service / one-train timetable pages',
         'officialEntryEvidence': 'https://www.seiburailway.jp/railway/station/shin-sakuradai/timetable/',
@@ -193,14 +235,18 @@ def build_report() -> dict[str, Any]:
             'trainNumberAloneMayEstablishIdentity': False,
             'destinationAloneMayEstablishIdentity': False,
             'boundaryRequiresAdjacentPublishedStopsOnSameTrainPage': True,
+            'sitePublishedDetailParametersMayConstructDetailUrl': True,
         },
         'summary': {
             'sourcePagesFetched': sum(bool(row.get('fetched')) for row in source_rows),
-            'discoveredTrainDetailUrls': max(0, len(detail_urls) - (1 if KNOWN_SAMPLE in detail_urls else 0)),
+            'discoveredTrainDetailUrls': discovered_count,
+            'usedKnownSampleFallback': used_known_sample_fallback,
+            'calendarKeys': [f'{date}|dw={dw}' for date, dw in sorted(calendar_keys)],
             'trainDetailPagesFetched': len(detail_rows),
             'exactThroughTrainPages': len(exact_rows),
             'allThreeBoundaryPages': len(triple),
             'boundaryCounts': boundary_counts,
+            'exactCalendarCounts': exact_calendar_counts,
             'errors': len(errors),
         },
         'authoritativeThroughTrains': exact_rows,
@@ -217,9 +263,10 @@ def main() -> int:
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     print('SUMMARY', json.dumps(report['summary'], ensure_ascii=False, indent=2))
-    for row in report.get('authoritativeThroughTrains') or []:
-        print('THROUGH', json.dumps({
+    for row in (report.get('authoritativeThroughTrains') or [])[:12]:
+        print('THROUGH_SAMPLE', json.dumps({
             'url': row.get('url'),
+            'sourceParameters': row.get('sourceParameters'),
             'stationCount': row.get('stationCount'),
             'boundaries': row.get('boundaries'),
             'headings': row.get('headings'),
@@ -228,6 +275,10 @@ def main() -> int:
         if source.get('diagnosticSnippets'):
             print('SOURCE_DIAGNOSTIC', json.dumps(source, ensure_ascii=False))
     summary = report['summary']
+    if int(summary['discoveredTrainDetailUrls']) == 0:
+        raise RuntimeError('No current one-train URL was discovered from the official-linked station timetable')
+    if summary['usedKnownSampleFallback']:
+        raise RuntimeError('Current collection fell back to a retained sample instead of station-published train parameters')
     if int(summary['trainDetailPagesFetched']) == 0:
         raise RuntimeError('No Seibu one-train timetable page was fetched')
     if int(summary['exactThroughTrainPages']) == 0:
