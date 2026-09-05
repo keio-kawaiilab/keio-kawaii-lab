@@ -1,0 +1,168 @@
+name: Diagnose Keikyu reverse through attachment
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/diagnose_keikyu_reverse_through.py'
+      - 'scripts/repair_keikyu_sengakuji_terminal.py'
+      - 'scripts/inspect_keikyu_sengakuji_raw.py'
+      - 'scripts/keikyu_generated_evidence.py'
+      - 'scripts/test_keikyu_generated_evidence.py'
+      - 'scripts/verify_keikyu_through_materialization.py'
+      - '.github/workflows/diagnose-keikyu-reverse-through.yml'
+      - '.github/workflows/update-transit-timetables.yml'
+      - '.github/workflows/update-keikyu-official-through-evidence.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PDF parser
+        run: pip install pdfplumber==0.11.7 requests==2.32.5
+      - name: Test generated evidence fail-closed rules
+        run: python scripts/test_keikyu_generated_evidence.py
+      - name: Diagnose Keikyu to Toei candidates
+        run: python scripts/diagnose_keikyu_reverse_through.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keikyu-reverse-through-diagnostic
+          path: /tmp/keikyu-reverse-diagnostic.json
+          if-no-files-found: error
+
+  raw-inspect:
+    runs-on: ubuntu-latest
+    env:
+      ODPT_API_KEY: ${{ secrets.ODPT_API_KEY }}
+      ODPT_CHALLENGE_API_KEY: ${{ secrets.ODPT_CHALLENGE_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependency
+        run: pip install requests==2.32.5
+      - name: Inspect raw Sengakuji and Shinagawa records
+        run: python scripts/inspect_keikyu_sengakuji_raw.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keikyu-sengakuji-raw
+          path: /tmp/keikyu-sengakuji-raw.json
+          if-no-files-found: error
+
+  repair-test:
+    runs-on: ubuntu-latest
+    env:
+      ODPT_API_KEY: ${{ secrets.ODPT_API_KEY }}
+      ODPT_CHALLENGE_API_KEY: ${{ secrets.ODPT_CHALLENGE_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install pdfplumber==0.11.7 requests==2.32.5
+      - name: Compile and test strict repair path
+        run: |
+          python -m py_compile \
+            scripts/repair_keikyu_sengakuji_terminal.py \
+            scripts/keikyu_generated_evidence.py \
+            scripts/verify_keikyu_through_materialization.py
+          python scripts/test_keikyu_generated_evidence.py
+      - name: Repair Keikyu northbound Sengakuji terminal rows
+        id: repair
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          python scripts/repair_keikyu_sengakuji_terminal.py 2>&1 | tee /tmp/keikyu-sengakuji-repair.log
+      - name: Rebuild strict transit v2
+        if: steps.repair.outcome == 'success'
+        run: python scripts/build_transit_v2.py
+      - name: Regenerate official Keikyu through evidence
+        if: steps.repair.outcome == 'success'
+        run: |
+          python scripts/keikyu_official_train_evidence.py --calendar weekday --output /tmp/keikyu-weekday.json
+          python scripts/keikyu_official_train_evidence.py --calendar holiday --output /tmp/keikyu-holiday.json
+          python scripts/merge_keikyu_official_evidence.py \
+            /tmp/keikyu-weekday.json \
+            /tmp/keikyu-holiday.json \
+            --output data/transit-v2/keikyu-official-train-evidence.json
+          python scripts/finalize_transit_v2.py
+          python scripts/audit_transit_v2.py
+      - name: Verify reverse official same-train recovery
+        if: steps.repair.outcome == 'success'
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path('data/transit-v2')
+          evidence = json.loads((root / 'keikyu-official-train-evidence.json').read_text(encoding='utf-8'))
+          entries = evidence.get('entries') or []
+          reverse = [row for row in entries if row.get('direction') == 'keikyu-to-toei']
+          forward = [row for row in entries if row.get('direction') == 'toei-to-keikyu']
+          edges = json.loads((root / 'same-train-edges.json').read_text(encoding='utf-8')).get('edges') or []
+
+          official_edges = [
+              row for row in edges
+              if 'keikyu-official-connection-timetable-same-column' in (row.get('evidence') or [])
+          ]
+          reverse_edges = []
+          for row in official_edges:
+              boundary = row.get('boundary') or {}
+              if (
+                  boundary.get('fromRailway') == 'odpt.Railway:Keikyu.Main'
+                  and boundary.get('toRailway') == 'odpt.Railway:Toei.Asakusa'
+              ):
+                  reverse_edges.append(row)
+
+          production_pairs = {
+              (str(row.get('fromFragment') or ''), str(row.get('toFragment') or ''))
+              for row in entries
+          }
+          edge_pairs = {
+              (str(row.get('fromFragment') or ''), str(row.get('toFragment') or ''))
+              for row in official_edges
+          }
+          missing_pairs = sorted(production_pairs - edge_pairs)
+
+          report = json.loads(Path('/tmp/keikyu-sengakuji-repair.json').read_text(encoding='utf-8'))
+          print('REPAIR_REPORT', json.dumps(report, ensure_ascii=False, indent=2))
+          print('OFFICIAL_TOEI_TO_KEIKYU', len(forward))
+          print('OFFICIAL_KEIKYU_TO_TOEI', len(reverse))
+          print('OFFICIAL_EDGE_COUNT', len(official_edges))
+          print('KEIKYU_TO_TOEI_EDGE_COUNT', len(reverse_edges))
+          print('MISSING_PRODUCTION_EDGE_PAIRS', len(missing_pairs))
+          if missing_pairs:
+              print('MISSING_PAIR_EXAMPLES', json.dumps(missing_pairs[:20], ensure_ascii=False, indent=2))
+
+          assert report['patch']['syntheticRows'] > 0
+          assert sum(report['afterSengakujiEnds'].values()) > sum(report['beforeSengakujiEnds'].values())
+          assert reverse, 'repair produced no strict Keikyu -> Toei official evidence'
+          assert reverse_edges, 'repair did not reach Keikyu -> Toei same-train edges'
+          assert all(row.get('matchStatus') == 'matched-singleton' for row in reverse)
+          assert not missing_pairs, 'some production Keikyu official evidence did not materialize as same-train edges'
+          PY
+      - name: Verify route runtime materialization
+        if: steps.repair.outcome == 'success'
+        run: python scripts/verify_keikyu_through_materialization.py --repair-report /tmp/keikyu-sengakuji-repair.json
+      - name: Upload repair diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keikyu-sengakuji-repair-test
+          path: |
+            /tmp/keikyu-sengakuji-repair.log
+            /tmp/keikyu-sengakuji-repair.json
+          if-no-files-found: warn
+      - name: Fail if repair failed
+        if: steps.repair.outcome == 'failure'
+        run: exit 1
