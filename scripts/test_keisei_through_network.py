@@ -15,20 +15,31 @@ KEISEI_TOEI_FLOOR = 1900
 TOEI_KEIKYU_FLOOR = 1150
 HOKUSO_KEISEI_FLOOR = 800
 SHIBAYAMA_KEISEI_FLOOR = 170
-# Exact-segment projection is 870 trips in the retained snapshot. Keep enough
-# headroom for timetable changes while still detecting a major regression.
 HOKUSO_PROJECTED_FLOOR = 820
 SHIBAYAMA_PROJECTED_FLOOR = 180
-# Protect trains that actually serve both airport endpoints. These are
-# direction-specific because the retained official timetable is asymmetric.
 NARITA_TO_HANEDA_ENDPOINT_FLOOR = 170
 HANEDA_TO_NARITA_ENDPOINT_FLOOR = 195
 HOKUSO_HANEDA_SIGNATURE_FLOOR = 120
+SHIBAYAMA_TO_HANEDA_SIGNATURE_FLOOR = 2
+HANEDA_TO_SHIBAYAMA_SIGNATURE_FLOOR = 7
+OSHIAGE_KURIHAMA_SIGNATURE_FLOOR = 70
+OSHIAGE_ZUSHI_SIGNATURE_FLOOR = 1
+MATSUDO_CHIBA_SIGNATURE_FLOOR = 100
+CHIHARA_CHIBA_SIGNATURE_FLOOR = 140
 
 HOKUSO = 'manual.Railway:Hokuso.Hokuso'
 SHIBAYAMA = 'manual.Railway:Shibayama.Shibayama'
 KEISEI_MAIN = 'odpt.Railway:Keisei.Main'
+KEISEI_OSHIAGE = 'odpt.Railway:Keisei.Oshiage'
 KEISEI_HIGASHI_NARITA = 'odpt.Railway:Keisei.HigashiNarita'
+KEISEI_MATSUDO = 'odpt.Railway:Keisei.Matsudo'
+KEISEI_CHIBA = 'odpt.Railway:Keisei.Chiba'
+KEISEI_CHIHARA = 'odpt.Railway:Keisei.Chihara'
+TOEI_ASAKUSA = 'odpt.Railway:Toei.Asakusa'
+KEIKYU_MAIN = 'odpt.Railway:Keikyu.Main'
+KEIKYU_AIRPORT = 'odpt.Railway:Keikyu.Airport'
+KEIKYU_KURIHAMA = 'odpt.Railway:Keikyu.Kurihama'
+KEIKYU_ZUSHI = 'odpt.Railway:Keikyu.Zushi'
 
 
 def load_module(path: Path, name: str):
@@ -50,25 +61,23 @@ def load_builder():
 def test_boundary_gate() -> None:
     module = load_builder()
 
-    # Existing cross-operator chain: Keisei -> Toei -> Keikyu.
     lines = {
-        'odpt.Railway:Keisei.Oshiage': {'names': ['青砥', '押上']},
-        'odpt.Railway:Toei.Asakusa': {'names': ['押上', '泉岳寺']},
-        'odpt.Railway:Keikyu.Main': {'names': ['泉岳寺', '品川']},
+        KEISEI_OSHIAGE: {'names': ['青砥', '押上']},
+        TOEI_ASAKUSA: {'names': ['押上', '泉岳寺']},
+        KEIKYU_MAIN: {'names': ['泉岳寺', '品川']},
     }
     graph, common = module.build_graph(lines)
     allowed = {
-        ('odpt.Railway:Keisei.Oshiage', 'odpt.Railway:Toei.Asakusa', '押上'),
-        ('odpt.Railway:Toei.Asakusa', 'odpt.Railway:Keisei.Oshiage', '押上'),
-        ('odpt.Railway:Toei.Asakusa', 'odpt.Railway:Keikyu.Main', '泉岳寺'),
-        ('odpt.Railway:Keikyu.Main', 'odpt.Railway:Toei.Asakusa', '泉岳寺'),
+        (KEISEI_OSHIAGE, TOEI_ASAKUSA, '押上'),
+        (TOEI_ASAKUSA, KEISEI_OSHIAGE, '押上'),
+        (TOEI_ASAKUSA, KEIKYU_MAIN, '泉岳寺'),
+        (KEIKYU_MAIN, TOEI_ASAKUSA, '泉岳寺'),
     }
     paths = module.shortest_line_paths('青砥', '品川', graph, common, allowed)
-    assert ['odpt.Railway:Keisei.Oshiage', 'odpt.Railway:Toei.Asakusa', 'odpt.Railway:Keikyu.Main'] in paths, paths
+    assert [KEISEI_OSHIAGE, TOEI_ASAKUSA, KEIKYU_MAIN] in paths, paths
     without_oshiage = {row for row in allowed if row[2] != '押上'}
     assert module.shortest_line_paths('青砥', '品川', graph, common, without_oshiage) == []
 
-    # New Hokusō boundary must require the verified Keisei-Takasago gate.
     hokuso_lines = {
         KEISEI_MAIN: {'names': ['青砥', '京成高砂']},
         HOKUSO: {'names': ['京成高砂', '新柴又']},
@@ -81,7 +90,6 @@ def test_boundary_gate() -> None:
     assert [KEISEI_MAIN, HOKUSO] in module.shortest_line_paths('青砥', '新柴又', graph, common, hokuso_allowed)
     assert module.shortest_line_paths('青砥', '新柴又', graph, common, set()) == []
 
-    # New Shibayama boundary must likewise require Higashi-Narita evidence.
     shibayama_lines = {
         KEISEI_HIGASHI_NARITA: {'names': ['京成成田', '東成田']},
         SHIBAYAMA: {'names': ['東成田', '芝山千代田']},
@@ -116,11 +124,12 @@ def test_materialized_snapshot() -> None:
         (row['fromRailway'], row['toRailway']): int(row['trains'])
         for row in report.get('crossOperatorTransitions') or []
     }
+
     def crossing_total(first: str, second: str) -> int:
         return crossings.get((first, second), 0) + crossings.get((second, first), 0)
 
-    assert crossing_total('odpt.Railway:Keisei.Oshiage', 'odpt.Railway:Toei.Asakusa') >= KEISEI_TOEI_FLOOR, crossings
-    assert crossing_total('odpt.Railway:Toei.Asakusa', 'odpt.Railway:Keikyu.Main') >= TOEI_KEIKYU_FLOOR, crossings
+    assert crossing_total(KEISEI_OSHIAGE, TOEI_ASAKUSA) >= KEISEI_TOEI_FLOOR, crossings
+    assert crossing_total(TOEI_ASAKUSA, KEIKYU_MAIN) >= TOEI_KEIKYU_FLOOR, crossings
     assert crossing_total(KEISEI_MAIN, HOKUSO) >= HOKUSO_KEISEI_FLOOR, crossings
     assert crossing_total(KEISEI_HIGASHI_NARITA, SHIBAYAMA) >= SHIBAYAMA_KEISEI_FLOOR, crossings
 
@@ -130,39 +139,64 @@ def test_materialized_snapshot() -> None:
     assert projection.get('unsupportedStopRowsAfterExtension') == 0, projection
     assert projection.get('unsupportedStationsAfterExtension') == {}, projection
 
-    # Count the physical endpoints directly. This intentionally replaces the
-    # previous route-signature assertion: before Hokusō existed, Hokusō trains
-    # were being mislabelled as Narita Sky Access even when they did not serve
-    # Narita Airport.
     endpoints = report.get('endpointThroughCounts') or {}
     assert int(endpoints.get('naritaToHaneda') or 0) >= NARITA_TO_HANEDA_ENDPOINT_FLOOR, endpoints
     assert int(endpoints.get('hanedaToNarita') or 0) >= HANEDA_TO_NARITA_ENDPOINT_FLOOR, endpoints
 
-    # Protect the newly-visible Hokusō <-> Haneda through family as well.
     signatures = {
         tuple(row.get('railways') or []): int(row.get('trains') or 0)
         for row in report.get('routeSignatures') or []
     }
+
+    def require_signature(signature: tuple[str, ...], minimum: int) -> None:
+        actual = signatures.get(signature, 0)
+        assert actual >= minimum, {'signature': signature, 'actual': actual, 'minimum': minimum}
+
     hokuso_to_haneda = (
-        HOKUSO,
-        KEISEI_MAIN,
-        'odpt.Railway:Keisei.Oshiage',
-        'odpt.Railway:Toei.Asakusa',
-        'odpt.Railway:Keikyu.Main',
-        'odpt.Railway:Keikyu.Airport',
+        HOKUSO, KEISEI_MAIN, KEISEI_OSHIAGE, TOEI_ASAKUSA, KEIKYU_MAIN, KEIKYU_AIRPORT,
     )
-    haneda_to_hokuso = tuple(reversed(hokuso_to_haneda))
-    assert signatures.get(hokuso_to_haneda, 0) >= HOKUSO_HANEDA_SIGNATURE_FLOOR, signatures.get(hokuso_to_haneda, 0)
-    assert signatures.get(haneda_to_hokuso, 0) >= HOKUSO_HANEDA_SIGNATURE_FLOOR, signatures.get(haneda_to_hokuso, 0)
+    require_signature(hokuso_to_haneda, HOKUSO_HANEDA_SIGNATURE_FLOOR)
+    require_signature(tuple(reversed(hokuso_to_haneda)), HOKUSO_HANEDA_SIGNATURE_FLOOR)
+
+    shibayama_to_haneda = (
+        SHIBAYAMA, KEISEI_HIGASHI_NARITA, KEISEI_MAIN, KEISEI_OSHIAGE,
+        TOEI_ASAKUSA, KEIKYU_MAIN, KEIKYU_AIRPORT,
+    )
+    require_signature(shibayama_to_haneda, SHIBAYAMA_TO_HANEDA_SIGNATURE_FLOOR)
+    require_signature(tuple(reversed(shibayama_to_haneda)), HANEDA_TO_SHIBAYAMA_SIGNATURE_FLOOR)
+
+    oshiage_to_kurihama = (KEISEI_OSHIAGE, TOEI_ASAKUSA, KEIKYU_MAIN, KEIKYU_KURIHAMA)
+    require_signature(oshiage_to_kurihama, OSHIAGE_KURIHAMA_SIGNATURE_FLOOR)
+    require_signature(tuple(reversed(oshiage_to_kurihama)), OSHIAGE_KURIHAMA_SIGNATURE_FLOOR)
+
+    oshiage_to_zushi = (KEISEI_MAIN, KEISEI_OSHIAGE, TOEI_ASAKUSA, KEIKYU_MAIN, KEIKYU_ZUSHI)
+    zushi_to_oshiage = (KEIKYU_ZUSHI, KEIKYU_MAIN, TOEI_ASAKUSA, KEISEI_OSHIAGE)
+    require_signature(oshiage_to_zushi, OSHIAGE_ZUSHI_SIGNATURE_FLOOR)
+    require_signature(zushi_to_oshiage, OSHIAGE_ZUSHI_SIGNATURE_FLOOR)
+
+    require_signature((KEISEI_MATSUDO, KEISEI_CHIBA), MATSUDO_CHIBA_SIGNATURE_FLOOR)
+    require_signature((KEISEI_CHIBA, KEISEI_MATSUDO), MATSUDO_CHIBA_SIGNATURE_FLOOR)
+    require_signature((KEISEI_CHIHARA, KEISEI_CHIBA), CHIHARA_CHIBA_SIGNATURE_FLOOR)
+    require_signature((KEISEI_CHIBA, KEISEI_CHIHARA), CHIHARA_CHIBA_SIGNATURE_FLOOR)
 
     assert network['timeBasis'] == 'train-timetable-network'
     assert network['identityBasis'] == 'Keisei official one-train timetable page'
     railways = set(network['railways'])
     for railway in (
-        'odpt.Railway:Keisei.Oshiage',
-        'odpt.Railway:Toei.Asakusa',
-        'odpt.Railway:Keikyu.Main',
-        'odpt.Railway:Keikyu.Airport',
+        'odpt.Railway:Keisei.Main',
+        KEISEI_OSHIAGE,
+        'odpt.Railway:Keisei.Kanamachi',
+        KEISEI_CHIBA,
+        KEISEI_CHIHARA,
+        KEISEI_HIGASHI_NARITA,
+        'odpt.Railway:Keisei.NaritaSkyAccess',
+        KEISEI_MATSUDO,
+        TOEI_ASAKUSA,
+        KEIKYU_MAIN,
+        KEIKYU_AIRPORT,
+        'odpt.Railway:Keikyu.Daishi',
+        KEIKYU_KURIHAMA,
+        KEIKYU_ZUSHI,
         HOKUSO,
         SHIBAYAMA,
     ):
