@@ -1,0 +1,295 @@
+{
+  "version": 1,
+  "generatedAt": "2026-09-05T04:55:13.993532+00:00",
+  "operator": "keikyu",
+  "boundaryId": "keikyu-main-airport-kamata",
+  "policy": {
+    "officialSamePrintedColumnRequired": true,
+    "twoExactPublishedStationTimesRequired": true,
+    "singletonFragmentMatchRequiredAtBothPoints": true,
+    "trainNumberAloneMayEstablishIdentity": false,
+    "timeProximityAloneMayEstablishIdentity": false
+  },
+  "summary": {
+    "officialTwoPointColumns": 33,
+    "matchedSingleton": 7,
+    "directions": {
+      "main-to-airport": 1,
+      "airport-to-main": 6
+    },
+    "reasons": {
+      "missing-main-exact": 15,
+      "ambiguous-exact": 7,
+      "matched-singleton-two-point": 7,
+      "missing-airport-exact": 4
+    }
+  },
+  "entries": [
+    {
+      "status": "official-column-evidence",
+      "matchStatus": "matched-singleton",
+      "id": "keikyu-internal-pdf:31d80da73c37b536c119e6a0",
+      "operator": "keikyu",
+      "calendar": "weekday",
+      "direction": "main-to-airport",
+      "boundaryId": "keikyu-main-airport-kamata",
+      "boundaryStation": "京急蒲田",
+      "fromRailway": "odpt.Railway:Keikyu.Main",
+      "toRailway": "odpt.Railway:Keikyu.Airport",
+      "fromFragment": "inferred:b677b05c660017709f81591d",
+      "toFragment": "inferred:bc3c2073021c97c07eff991e",
+      "sourceMatches": [
+        "inferred:b677b05c660017709f81591d"
+      ],
+      "targetMatches": [
+        "inferred:bc3c2073021c97c07eff991e"
+      ],
+      "shinagawaMinute": 414,
+      "hanedaMinute": 436,
+      "hanedaStationSuffix": ".HanedaAirportTerminal3",
+      "pdfPage": 1,
+      "columnX": 366.56,
+      "evidence": [
+        "operator-official-connection-timetable",
+        "same-printed-column-includes-shinagawa-and-haneda"
+      ],
+      "sourceUrl": "https://www.keikyu.co.jp/ride/kakueki/pdf/other_weekday.pdf",
+      "matchPolicy": {
+        "officialSamePrintedColumnRequired": true,
+        "exactShinagawaMinuteRequired": true,
+        "exactHanedaMinuteRequired": true,
+        "singletonFragmentMatchRequiredAtBothPoints": true,
+        "trainNumberAloneMayEstablishIdentity": false,
+        "timeProximityAloneMayEstablishIdentity": false
+      }
+    },
+    {
+      "status": "official-column-evidence",
+      "matchStatus": "matched-singleton",
+      "id": "keikyu-internal-pdf:741abc95a532f564b6d8228e",
+      "operator": "keikyu",
+      "calendar": "weekday",
+      "direction": "airport-to-main",
+      "boundaryId": "keikyu-main-airport-kamata",
+      "boundaryStation": "京急蒲田",
+      "fromRailway": "odpt.Railway:Keikyu.Airport",
+      "toRailway": "odpt.Railway:Keikyu.Main",
+      "fromFragment": "inferred:eb2801edaeccdf7967917398",
+      "toFragment": "inferred:f0590f285d073486caea2ba2",
+      "sourceMatches": [
+        "inferred:eb2801edaeccdf7967917398"
+      ],
+      "targetMatches": [
+        "inferred:f0590f285d073486caea2ba2"
+      ],
+      "shinagawaMinute": 346,
+      "hanedaMinute": 326,
+      "hanedaStationSuffix": ".HanedaAirportTerminal3",
+      "pdfPage": 1,
+      "columnX": 210.66,
+      "evidence": [
+        "operator-official-connection-timetable",
+        "same-printed-column-includes-shinagawa-and-haneda"
+      ],
+      "sourceUrl": "https://www.keikyu.co.jp/ride/kakueki/pdf/other_weekday.pdf",
+      "matchPolicy": {
+        "officialSamePrintedColumnRequired": true,
+        "exactShinagawaMinuteRequired": true,
+        "exactHanedaMinuteRequired": true,
+        "singletonFragmentMatchRequiredAtBothPoints": true,
+        "trainNumberAloneMayEstablishIdentity": false,
+        "timeProximityAloneMayEstablishIdentity": false
+      }
+    },
+    {
+      "status": "official-column-evidence",
+      "matchStatus": "matched-singleton",
+      "id": "keikyu-internal-pdf:a5001ca8834dcbc1042365d2",
+      "operator": "keikyu",
+      "calendar": "weekday",
+      "direction": "airport-to-main",
+      "boundaryId": "keikyu-main-airport-kamata",
+      "boundaryStation": "京急蒲田",
+      "fromRailway": "odpt.Railway:Keikyu.Airport",
+      "toRailway": "odpt.Railway:Keikyu.Main",
+      "fromFragment": "inferred:334c74622b729e95f9f303e2",
+      "toFragment": "inferred:7d8bb1ad126f9e3cffb9caed",
+      "sourceMatches": [
+        "inferred:334c74622b729e95f9f303e2"
+      ],
+      "targetMatches": [
+        "inferred:7d8bb1ad126f9e3cffb9caed"
+      ],
+      "shinagawaMinute": 371,
+      "hanedaMinute": 351,
+      "hanedaStationSuffix": ".HanedaAirportTerminal3",
+      "pdfPage": 1,
+      "columnX": 273.02,
+      "evidence": [
+        "operator-official-connection-timetable",
+        "same-printed-column-includes-shinagawa-and-haneda"
+      ],
+      "sourceUrl": "https://www.keikyu.co.jp/ride/kakueki/pdf/other_weekday.pdf",
+      "matchPolicy": {
+        "officialSamePrintedColumnRequired": true,
+        "exactShinagawaMinuteRequired": true,
+        "exactHanedaMinuteRequired": true,
+        "singletonFragmentMatchRequiredAtBothPoints": true,
+        "trainNumberAloneMayEstablishIdentity": false,
+        "timeProximityAloneMayEstablishIdentity": false
+      }
+    },
+    {
+      "status": "official-column-evidence",
+      "matchStatus": "matched-singleton",
+      "id": "keikyu-internal-pdf:eef70dfe3244f3d2f8470d7d",
+      "operator": "keikyu",
+      "calendar": "weekday",
+      "direction": "airport-to-main",
+      "boundaryId": "keikyu-main-airport-kamata",
+      "boundaryStation": "京急蒲田",
+      "fromRailway": "odpt.Railway:Keikyu.Airport",
+      "toRailway": "odpt.Railway:Keikyu.Main",
+      "fromFragment": "inferred:c5a8e043ef8166d969b62b31",
+      "toFragment": "inferred:4968077d53b7a1e16a75b6f0",
+      "sourceMatches": [
+        "inferred:c5a8e043ef8166d969b62b31"
+      ],
+      "targetMatches": [
+        "inferred:4968077d53b7a1e16a75b6f0"
+      ],
+      "shinagawaMinute": 393,
+      "hanedaMinute": 371,
+      "hanedaStationSuffix": ".HanedaAirportTerminal3",
+      "pdfPage": 1,
+      "columnX": 350.97,
+      "evidence": [
+        "operator-official-connection-timetable",
+        "same-printed-column-includes-shinagawa-and-haneda"
+      ],
+      "sourceUrl": "https://www.keikyu.co.jp/ride/kakueki/pdf/other_weekday.pdf",
+      "matchPolicy": {
+        "officialSamePrintedColumnRequired": true,
+        "exactShinagawaMinuteRequired": true,
+        "exactHanedaMinuteRequired": true,
+        "singletonFragmentMatchRequiredAtBothPoints": true,
+        "trainNumberAloneMayEstablishIdentity": false,
+        "timeProximityAloneMayEstablishIdentity": false
+      }
+    },
+    {
+      "status": "official-column-evidence",
+      "matchStatus": "matched-singleton",
+      "id": "keikyu-internal-pdf:ade3029be0be603c088102e3",
+      "operator": "keikyu",
+      "calendar": "holiday",
+      "direction": "airport-to-main",
+      "boundaryId": "keikyu-main-airport-kamata",
+      "boundaryStation": "京急蒲田",
+      "fromRailway": "odpt.Railway:Keikyu.Airport",
+      "toRailway": "odpt.Railway:Keikyu.Main",
+      "fromFragment": "inferred:afd1109bbde58fdb2c9966ba",
+      "toFragment": "inferred:ee480c760b11c2625ebea4dd",
+      "sourceMatches": [
+        "inferred:afd1109bbde58fdb2c9966ba"
+      ],
+      "targetMatches": [
+        "inferred:ee480c760b11c2625ebea4dd"
+      ],
+      "shinagawaMinute": 347,
+      "hanedaMinute": 326,
+      "hanedaStationSuffix": ".HanedaAirportTerminal3",
+      "pdfPage": 1,
+      "columnX": 195.06,
+      "evidence": [
+        "operator-official-connection-timetable",
+        "same-printed-column-includes-shinagawa-and-haneda"
+      ],
+      "sourceUrl": "https://www.keikyu.co.jp/ride/kakueki/pdf/other_holiday.pdf",
+      "matchPolicy": {
+        "officialSamePrintedColumnRequired": true,
+        "exactShinagawaMinuteRequired": true,
+        "exactHanedaMinuteRequired": true,
+        "singletonFragmentMatchRequiredAtBothPoints": true,
+        "trainNumberAloneMayEstablishIdentity": false,
+        "timeProximityAloneMayEstablishIdentity": false
+      }
+    },
+    {
+      "status": "official-column-evidence",
+      "matchStatus": "matched-singleton",
+      "id": "keikyu-internal-pdf:c9b18a1c9ff2a7ac49c2378a",
+      "operator": "keikyu",
+      "calendar": "holiday",
+      "direction": "airport-to-main",
+      "boundaryId": "keikyu-main-airport-kamata",
+      "boundaryStation": "京急蒲田",
+      "fromRailway": "odpt.Railway:Keikyu.Airport",
+      "toRailway": "odpt.Railway:Keikyu.Main",
+      "fromFragment": "inferred:c5aa01c619d3cbbb5f282710",
+      "toFragment": "inferred:08d1ed843b38795043d74ac1",
+      "sourceMatches": [
+        "inferred:c5aa01c619d3cbbb5f282710"
+      ],
+      "targetMatches": [
+        "inferred:08d1ed843b38795043d74ac1"
+      ],
+      "shinagawaMinute": 356,
+      "hanedaMinute": 336,
+      "hanedaStationSuffix": ".HanedaAirportTerminal3",
+      "pdfPage": 1,
+      "columnX": 210.66,
+      "evidence": [
+        "operator-official-connection-timetable",
+        "same-printed-column-includes-shinagawa-and-haneda"
+      ],
+      "sourceUrl": "https://www.keikyu.co.jp/ride/kakueki/pdf/other_holiday.pdf",
+      "matchPolicy": {
+        "officialSamePrintedColumnRequired": true,
+        "exactShinagawaMinuteRequired": true,
+        "exactHanedaMinuteRequired": true,
+        "singletonFragmentMatchRequiredAtBothPoints": true,
+        "trainNumberAloneMayEstablishIdentity": false,
+        "timeProximityAloneMayEstablishIdentity": false
+      }
+    },
+    {
+      "status": "official-column-evidence",
+      "matchStatus": "matched-singleton",
+      "id": "keikyu-internal-pdf:50919e9298997c648dde8b29",
+      "operator": "keikyu",
+      "calendar": "holiday",
+      "direction": "airport-to-main",
+      "boundaryId": "keikyu-main-airport-kamata",
+      "boundaryStation": "京急蒲田",
+      "fromRailway": "odpt.Railway:Keikyu.Airport",
+      "toRailway": "odpt.Railway:Keikyu.Main",
+      "fromFragment": "inferred:c832116b375ecf7184a442bf",
+      "toFragment": "inferred:c12b52170c5d0a3ab8453aaa",
+      "sourceMatches": [
+        "inferred:c832116b375ecf7184a442bf"
+      ],
+      "targetMatches": [
+        "inferred:c12b52170c5d0a3ab8453aaa"
+      ],
+      "shinagawaMinute": 417,
+      "hanedaMinute": 394,
+      "hanedaStationSuffix": ".HanedaAirportTerminal3",
+      "pdfPage": 1,
+      "columnX": 397.74,
+      "evidence": [
+        "operator-official-connection-timetable",
+        "same-printed-column-includes-shinagawa-and-haneda"
+      ],
+      "sourceUrl": "https://www.keikyu.co.jp/ride/kakueki/pdf/other_holiday.pdf",
+      "matchPolicy": {
+        "officialSamePrintedColumnRequired": true,
+        "exactShinagawaMinuteRequired": true,
+        "exactHanedaMinuteRequired": true,
+        "singletonFragmentMatchRequiredAtBothPoints": true,
+        "trainNumberAloneMayEstablishIdentity": false,
+        "timeProximityAloneMayEstablishIdentity": false
+      }
+    }
+  ]
+}
