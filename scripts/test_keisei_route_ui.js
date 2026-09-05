@@ -211,13 +211,11 @@ async function runRouteCase(fromName,toName,fixture){
 
   const shibayamaToKeisei=findFixture("芝山千代田","京成成田",[
     "manual.Railway:Shibayama.Shibayama",
-    "odpt.Railway:Keisei.HigashiNarita",
-    "odpt.Railway:Keisei.Main"
+    "odpt.Railway:Keisei.HigashiNarita"
   ]);
   await runRouteCase("芝山千代田","京成成田",shibayamaToKeisei);
 
   const keiseiToShibayama=findFixture("京成成田","芝山千代田",[
-    "odpt.Railway:Keisei.Main",
     "odpt.Railway:Keisei.HigashiNarita",
     "manual.Railway:Shibayama.Shibayama"
   ]);
