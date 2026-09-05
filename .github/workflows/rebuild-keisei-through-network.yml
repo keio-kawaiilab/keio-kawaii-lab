@@ -7,6 +7,7 @@ on:
       - 'scripts/build_keisei_network_timetable.py'
       - 'scripts/build_keisei_extended_network.py'
       - 'scripts/test_keisei_through_network.py'
+      - 'scripts/audit_keisei_exact_network.py'
       - 'scripts/test_keisei_route_ui.js'
       - 'route.js'
       - 'route-core.js'
@@ -45,7 +46,8 @@ jobs:
           python -m py_compile \
             scripts/build_keisei_network_timetable.py \
             scripts/build_keisei_extended_network.py \
-            scripts/test_keisei_through_network.py
+            scripts/test_keisei_through_network.py \
+            scripts/audit_keisei_exact_network.py
           node --check route-core.js
           node --check route.js
           node --check scripts/test_keisei_route_ui.js
@@ -69,7 +71,9 @@ jobs:
         run: python scripts/build_keisei_extended_network.py
 
       - name: Validate identity and boundary policy
-        run: python scripts/test_keisei_through_network.py
+        run: |
+          python scripts/test_keisei_through_network.py
+          python scripts/audit_keisei_exact_network.py
 
       - name: Exercise real browser route logic
         run: node scripts/test_keisei_route_ui.js
