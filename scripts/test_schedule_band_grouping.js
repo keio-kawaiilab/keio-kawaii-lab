@@ -114,6 +114,39 @@ const otherSweetTour = { ...sweetTourCommon, id: 'sweet-other-tour', title: 'SWE
 const separateSweetGrouped = context.__scheduleTest.groupedApplicationBands(context.__scheduleTest.prepare(sweetTitleVariants.concat([otherSweetTour])));
 assert.strictEqual(separateSweetGrouped.length, 2, 'different tours must remain separate even when provider and application window match');
 
+const candyTourUrl = 'https://candytune.asobisystem.com/feature/candytune_nationwide_tour2099';
+const candyPerformanceRows = [
+  {
+    id: 'candy-master', group: 'CANDY TUNE', title: 'CANDY TUNE JAPAN TOUR 2099 - AUTUMN -',
+    ticketType: '現在受付なし', applicationStatus: 'none', officialTourUrl: candyTourUrl,
+    schedule: [{ date: '2099-09-09', venue: '大阪府 グランキューブ大阪 メインホール', openTime: '17:30', startTime: '18:30' }],
+    eventDate: '2099-09-09', venue: '大阪府 グランキューブ大阪 メインホール',
+  },
+  {
+    id: 'candy-pia-derived', group: 'CANDY TUNE', title: 'CANDY TUNE JAPAN TOUR 2099 - AUTUMN -',
+    ticketType: '現在受付なし', applicationStatus: 'none', sourceType: 'pia', primarySource: 'pia',
+    schedule: [{ date: '2099-09-09', venue: '大阪府 グランキューブ大阪 メインホール' }],
+    eventDate: '2099-09-09', venue: '大阪府 グランキューブ大阪 メインホール',
+  },
+  {
+    id: 'candy-official-osaka', group: 'CANDY TUNE', title: '「CANDY TUNE JAPAN TOUR 2099 - AUTUMN -」大阪公演',
+    ticketType: '現在受付なし', applicationStatus: 'none', officialTourUrl: candyTourUrl,
+    schedule: [{ date: '2099-09-09', venue: '大阪府 グランキューブ大阪 メインホール' }],
+    eventDate: '2099-09-09', venue: '大阪府 グランキューブ大阪 メインホール',
+  },
+];
+const candyModels = context.__scheduleTest.performanceModels(context.__scheduleTest.prepare(candyPerformanceRows));
+assert.strictEqual(candyModels.length, 1, 'same Candy Tune performance must collapse timed and untimed source rows into one item');
+assert.strictEqual(candyModels[0].startTime, '18:30', 'the unique verified performance time must be inherited by untimed duplicate rows');
+
+const twoShowRows = [
+  { id: 'show-1', group: 'CANDY TUNE', title: 'CANDY TUNE DOUBLE SHOW', ticketType: '現在受付なし', applicationStatus: 'none', officialTourUrl: candyTourUrl, eventDate: '2099-10-01', venue: '東京都 同一会場', startTime: '13:00' },
+  { id: 'show-2', group: 'CANDY TUNE', title: 'CANDY TUNE DOUBLE SHOW', ticketType: '現在受付なし', applicationStatus: 'none', officialTourUrl: candyTourUrl, eventDate: '2099-10-01', venue: '東京都 同一会場', startTime: '18:00' },
+  { id: 'show-ambiguous-source', group: 'CANDY TUNE', title: 'CANDY TUNE DOUBLE SHOW', ticketType: '現在受付なし', applicationStatus: 'none', officialTourUrl: candyTourUrl, eventDate: '2099-10-01', venue: '東京都 同一会場' },
+];
+const twoShowModels = context.__scheduleTest.performanceModels(context.__scheduleTest.prepare(twoShowRows));
+assert.strictEqual(twoShowModels.length, 2, 'two genuinely different start times must stay as two performances without a third untimed duplicate');
+
 const release = {
   group: 'MORE STAR',
   title: 'MORE STAR リリースイベント',

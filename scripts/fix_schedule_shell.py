@@ -49,6 +49,17 @@ APPLICATION_BAND_KEY_LEGACY = "function applicationBandKey(e,index){if(!playguid
 APPLICATION_BAND_KEY_NEW = "function applicationBandSubjectKey(e){var u=String(e.officialTourUrl||'').trim();if(u)return'tour:'+u.toLowerCase().replace(/[?#].*$/,'').replace(/\\/$/,'');var t=String(title(e)||'').toLowerCase().replace(/^\\s*20\\d{2}[.\\/-]\\d{1,2}[.\\/-]\\d{1,2}\\s*/,'').replace(/\\s+/g,'').replace(/[!！・|｜\\-–—_\\[\\]()（）『』「」]/g,'');return'title:'+t}function applicationBandKey(e,index){var tour=String(e.officialTourUrl||'').trim();if(!playguide(e)&&!tour)return'event|'+index;return[String(e.group||''),parts(e).slice().sort().join(','),providerId(e),String(e.ticketType||''),String(e.applyStart||''),String(e.applyEnd||''),applicationBandSubjectKey(e)].join('|')}"
 
 
+PERFORMANCE_RECONCILE_JS = (
+    "function performanceTimeMatchKeys(e,o){var day=String((o&&o.date)||e.eventDate||'').slice(0,10),venue=performanceVenueKey(e,o),base=[String(e.group||''),day,eventKind(e),venue].join('|'),out=[],tour=String(e.officialTourUrl||'').trim().toLowerCase().replace(/[?#].*$/,'').replace(/\\/$/,'');if(tour)out.push(base+'|tour:'+tour);var t=performanceTitleKey(e);if(t)out.push(base+'|title:'+t);return out}"
+    "function reconcilePerformanceTimes(all){var tm={},om={};function add(map,k,v){if(!v)return;(map[k]||(map[k]={}))[String(v).replace(/\\s+/g,'')]=1}function vals(map,ks){var x={};ks.forEach(function(k){Object.keys(map[k]||{}).forEach(function(v){x[v]=1})});return Object.keys(x)};"
+    "(all||[]).forEach(function(e){occ(e).forEach(function(o){var ks=performanceTimeMatchKeys(e,o),st=String(o.startTime||e.startTime||'').replace(/\\s+/g,''),ot=String(o.openTime||e.openTime||'').replace(/\\s+/g,'');ks.forEach(function(k){add(tm,k,st);add(om,k,ot)})})});"
+    "return(all||[]).map(function(e){var c=Object.assign({},e),sched=Array.isArray(e.schedule)?e.schedule:null,suppressed=false;if(sched){var ns=[];sched.forEach(function(o){if(!o||!o.date)return;var x=Object.assign({},o),ks=performanceTimeMatchKeys(e,x),ts=vals(tm,ks),os=vals(om,ks),st=String(x.startTime||e.startTime||'').replace(/\\s+/g,'');if(!st&&ts.length===1)x.startTime=ts[0];if(!String(x.openTime||e.openTime||'').replace(/\\s+/g,'')&&os.length===1)x.openTime=os[0];if(!String(x.startTime||e.startTime||'').replace(/\\s+/g,'')&&ts.length>1&&family(e)==='schedule'){suppressed=true;return}ns.push(x)});c.schedule=ns;if(sched.length&&ns.length!==sched.length){c.eventDates=ns.map(function(x){return String(x.date).slice(0,10)});c.eventDate=c.eventDates[0]||null;c.eventEndDate=c.eventDates.length?c.eventDates[c.eventDates.length-1]:null}}else if(e.eventDate){var pseudo={date:e.eventDate,venue:e.venue||'',startTime:e.startTime||'',openTime:e.openTime||''},ks=performanceTimeMatchKeys(e,pseudo),ts=vals(tm,ks),os=vals(om,ks);if(!String(c.startTime||'').replace(/\\s+/g,'')&&ts.length===1)c.startTime=ts[0];if(!String(c.openTime||'').replace(/\\s+/g,'')&&os.length===1)c.openTime=os[0];if(!String(c.startTime||'').replace(/\\s+/g,'')&&ts.length>1&&family(e)==='schedule'){c.eventDate=null;c.eventDates=[];c.eventEndDate=null;suppressed=true}}if(suppressed)c.performanceDuplicateSuppressed=true;return c})}"
+)
+
+PREPARE_RECONCILE_OLD = "function prepare(raw){raw=expandCanonicalOffers(raw);var fixed=raw.map(function(e){return repair(e,raw)});fixed=mergePiaDuplicates(fixed);return fixed.filter(function(e){if(playguide(e)&&(family(e)==='fc'||family(e)==='upgrade'))return false;return currentEnough(e)})}"
+PREPARE_RECONCILE_NEW = "function prepare(raw){raw=expandCanonicalOffers(raw);var fixed=raw.map(function(e){return repair(e,raw)});fixed=reconcilePerformanceTimes(fixed);fixed=mergePiaDuplicates(fixed);return fixed.filter(function(e){if(playguide(e)&&(family(e)==='fc'||family(e)==='upgrade'))return false;return currentEnough(e)})}"
+
+
 
 def canonicalize_public_data() -> dict:
     payload = json.loads(DATA.read_text(encoding="utf-8"))
@@ -90,6 +101,19 @@ def install_offer_adapter(page: str) -> str:
     return page.replace(PREPARE_OLD, PREPARE_NEW, 1)
 
 
+def install_performance_reconcile(page: str) -> str:
+    if "function reconcilePerformanceTimes(all)" not in page:
+        anchor = page.find("function prepare(raw)")
+        if anchor < 0:
+            raise RuntimeError("could not locate prepare() for performance reconciliation")
+        page = page[:anchor] + PERFORMANCE_RECONCILE_JS + page[anchor:]
+    if PREPARE_RECONCILE_NEW in page:
+        return page
+    if PREPARE_RECONCILE_OLD not in page:
+        raise RuntimeError("schedule prepare() changed; performance reconciliation could not be installed")
+    return page.replace(PREPARE_RECONCILE_OLD, PREPARE_RECONCILE_NEW, 1)
+
+
 def install_application_band_identity(page: str) -> str:
     if APPLICATION_BAND_KEY_NEW in page:
         return page
@@ -120,6 +144,7 @@ def main() -> int:
     page = PAGE.read_text(encoding="utf-8")
     page = replace_identity_block(page)
     page = install_offer_adapter(page)
+    page = install_performance_reconcile(page)
     page = install_application_band_identity(page)
     page = install_truthful_status(page)
 
@@ -130,6 +155,8 @@ def main() -> int:
         "kind==='release'||kind==='benefit'",
         "function expandCanonicalOffers(raw)",
         "raw=expandCanonicalOffers(raw)",
+        "function reconcilePerformanceTimes(all)",
+        "fixed=reconcilePerformanceTimes(fixed)",
         "function applicationBandSubjectKey(e)",
         "e.officialTourUrl",
         "function performanceModels(vis)",
