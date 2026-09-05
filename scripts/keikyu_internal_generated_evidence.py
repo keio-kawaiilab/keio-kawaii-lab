@@ -5,11 +5,24 @@ import json
 from pathlib import Path
 from typing import Any
 
-BOUNDARY_ID = 'keikyu-main-airport-kamata'
-MARKER = 'same-printed-column-includes-shinagawa-and-haneda'
 MAIN = 'odpt.Railway:Keikyu.Main'
 AIRPORT = 'odpt.Railway:Keikyu.Airport'
-ALLOWED_PAIRS = {(MAIN, AIRPORT), (AIRPORT, MAIN)}
+KURIHAMA = 'odpt.Railway:Keikyu.Kurihama'
+BOUNDARY_ID = 'keikyu-main-airport-kamata'
+KURIHAMA_BOUNDARY_ID = 'keikyu-main-kurihama-horinouchi'
+LEGACY_MARKER = 'same-printed-column-includes-shinagawa-and-haneda'
+MARKER = 'same-printed-column-two-exact-station-times'
+
+BOUNDARY_SPECS: dict[str, dict[str, Any]] = {
+    BOUNDARY_ID: {
+        'station': '京急蒲田',
+        'pairs': {(MAIN, AIRPORT), (AIRPORT, MAIN)},
+    },
+    KURIHAMA_BOUNDARY_ID: {
+        'station': '堀ノ内',
+        'pairs': {(KURIHAMA, MAIN), (MAIN, KURIHAMA)},
+    },
+}
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -58,15 +71,17 @@ def apply_generated_evidence(
         source_matches = [str(value) for value in entry.get('sourceMatches') or []]
         target_matches = [str(value) for value in entry.get('targetMatches') or []]
         pair = (str(entry.get('fromRailway') or ''), str(entry.get('toRailway') or ''))
+        boundary_id = str(entry.get('boundaryId') or '')
+        spec = BOUNDARY_SPECS.get(boundary_id)
 
         reason = ''
-        if entry.get('boundaryId') != BOUNDARY_ID or MARKER not in evidence:
+        if not spec or not ({MARKER, LEGACY_MARKER} & set(evidence)):
             reason = 'missing-official-two-point-marker'
         elif source_matches != [source_id] or target_matches != [target_id]:
             reason = 'non-singleton-recorded-match'
         elif not source or not target:
             reason = 'stale-fragment-reference'
-        elif pair not in ALLOWED_PAIRS:
+        elif pair not in spec['pairs']:
             reason = 'unexpected-railway-pair'
         elif str(source.get('railway') or '') != pair[0] or str(target.get('railway') or '') != pair[1]:
             reason = 'fragment-railway-mismatch'
@@ -74,7 +89,7 @@ def apply_generated_evidence(
             boundary = next((
                 row for row in indexes.get('graph', {}).get(pair[0], [])
                 if str(row.get('toRailway') or '') == pair[1]
-                and str(row.get('boundaryId') or '') == BOUNDARY_ID
+                and str(row.get('boundaryId') or '') == boundary_id
             ), None)
             if not boundary:
                 reason = 'unverified-operational-boundary'
@@ -97,10 +112,10 @@ def apply_generated_evidence(
                 'toFragment': target_id,
                 'classification': 'same-train',
                 'identityLevel': 'evidence-backed',
-                'evidence': ['keikyu-official-main-airport-same-column-two-point', eid],
+                'evidence': ['keikyu-official-internal-same-column-two-point', eid],
                 'sourceUrls': [str(entry.get('sourceUrl'))] if entry.get('sourceUrl') else [],
                 'boundary': {
-                    'station': '京急蒲田',
+                    'station': spec['station'],
                     'fromRailway': pair[0],
                     'toRailway': pair[1],
                 },
