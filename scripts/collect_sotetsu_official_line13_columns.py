@@ -24,7 +24,7 @@ HIYOSHI_ANCHORS=('自由が丘','日吉','新綱島')
 SHINYOKOHAMA_ANCHORS=('新綱島','新横浜','羽沢横浜国大')
 TIME_RE=re.compile(r'^\d{3,4}$')
 SESSION=requests.Session()
-SESSION.headers.update({'User-Agent':'Mozilla/5.0 (compatible; KeioKawaiiLabTransitDB/8.0)','Accept':'application/pdf,*/*;q=0.8'})
+SESSION.headers.update({'User-Agent':'Mozilla/5.0 (compatible; KeioKawaiiLabTransitDB/8.1)','Accept':'application/pdf,*/*;q=0.8'})
 
 def norm(value:Any)->str:
     return re.sub(r'[\s\u3000]+','',str(value or '')).replace('ヶ','ケ')
@@ -43,7 +43,7 @@ def group_rows(words:list[dict[str,Any]],tolerance:float=1.7)->list[dict[str,Any
     groups:list[list[dict[str,Any]]]=[]; ys:list[float]=[]
     for word in ordered:
         y=(float(word.get('top',0))+float(word.get('bottom',word.get('top',0))))/2
-        candidates=[(abs(y,existing),i) for i,existing in enumerate(ys) if abs(y-existing)<=tolerance]
+        candidates=[(abs(y-existing),i) for i,existing in enumerate(ys) if abs(y-existing)<=tolerance]
         if candidates:
             _,i=min(candidates); groups[i].append(word); n=len(groups[i]); ys[i]=((ys[i]*(n-1))+y)/n
         else:
