@@ -1,19 +1,85 @@
 {
-  "generatedAt": "2026-09-05T08:44:56.626Z",
-  "candidateGeneratedAt": "2026-09-05T08:44:17.116Z",
-  "rulesGeneratedAt": "2026-09-05T08:44:36.465Z",
+  "generatedAt": "2026-09-05T08:50:25.535Z",
+  "candidateGeneratedAt": "2026-09-05T08:49:48.429Z",
+  "rulesGeneratedAt": "2026-09-05T08:50:08.506Z",
   "methodology": "Candidate railway pairs are classified as curated when backed by an explicit transfer rule, fallback when covered by conservative fallbackMinutes, blocked for false same-name/nearby links, and uncurated only when no usable rule exists.",
   "summary": {
-    "candidatePairs": 960,
+    "candidatePairs": 969,
     "curatedPairs": 953,
-    "fallbackPairs": 0,
+    "fallbackPairs": 9,
     "uncuratedPairs": 0,
     "blockedPairs": 7,
     "curatedSourceRules": 953,
-    "fallbackGeneratedRules": 0,
-    "transferPlaces": 329
+    "fallbackGeneratedRules": 9,
+    "transferPlaces": 333
   },
   "priorityPlaces": [
+    {
+      "place": "京成高砂",
+      "totalPairs": 6,
+      "curatedPairs": 3,
+      "fallbackPairs": 3,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 4,
+      "priorityScore": 0
+    },
+    {
+      "place": "新鎌ヶ谷",
+      "totalPairs": 3,
+      "curatedPairs": 1,
+      "fallbackPairs": 2,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 3,
+      "priorityScore": 0
+    },
+    {
+      "place": "印旛日本医大",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
+      "place": "千葉ニュータウン中央",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
+      "place": "東松戸",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
+    {
+      "place": "東成田",
+      "totalPairs": 1,
+      "curatedPairs": 0,
+      "fallbackPairs": 1,
+      "uncuratedPairs": 0,
+      "blockedPairs": 0,
+      "crossOperatorUncuratedPairs": 0,
+      "railwayCount": 2,
+      "priorityScore": 0
+    },
     {
       "place": "あざみ野",
       "totalPairs": 1,
@@ -518,17 +584,6 @@
       "blockedPairs": 0,
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "京成高砂",
-      "totalPairs": 3,
-      "curatedPairs": 3,
-      "fallbackPairs": 0,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 3,
       "priorityScore": 0
     },
     {
@@ -1058,64 +1113,127 @@
       "crossOperatorUncuratedPairs": 0,
       "railwayCount": 2,
       "priorityScore": 0
-    },
-    {
-      "place": "桜木町",
-      "totalPairs": 1,
-      "curatedPairs": 1,
-      "fallbackPairs": 0,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "笹塚",
-      "totalPairs": 1,
-      "curatedPairs": 1,
-      "fallbackPairs": 0,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "雑司が谷 ↔ 鬼子母神前",
-      "totalPairs": 1,
-      "curatedPairs": 1,
-      "fallbackPairs": 0,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "三ノ輪 ↔ 三ノ輪橋",
-      "totalPairs": 1,
-      "curatedPairs": 1,
-      "fallbackPairs": 0,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
-    },
-    {
-      "place": "三越前",
-      "totalPairs": 1,
-      "curatedPairs": 1,
-      "fallbackPairs": 0,
-      "uncuratedPairs": 0,
-      "blockedPairs": 0,
-      "crossOperatorUncuratedPairs": 0,
-      "railwayCount": 2,
-      "priorityScore": 0
     }
   ],
   "priorityDetails": [],
   "uncurated": [],
-  "fallback": []
+  "fallback": [
+    {
+      "place": "印旛日本医大",
+      "railwayA": "manual.Railway:Hokuso.Hokuso",
+      "railwayAName": "北総線",
+      "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
+      "railwayBName": "成田スカイアクセス線",
+      "sameOperator": false,
+      "distanceMeters": null,
+      "fallbackMinutes": 5,
+      "sources": [
+        "same-place-group"
+      ]
+    },
+    {
+      "place": "京成高砂",
+      "railwayA": "manual.Railway:Hokuso.Hokuso",
+      "railwayAName": "北総線",
+      "railwayB": "odpt.Railway:Keisei.Main",
+      "railwayBName": "京成本線",
+      "sameOperator": false,
+      "distanceMeters": null,
+      "fallbackMinutes": 5,
+      "sources": [
+        "same-place-group"
+      ]
+    },
+    {
+      "place": "京成高砂",
+      "railwayA": "manual.Railway:Hokuso.Hokuso",
+      "railwayAName": "北総線",
+      "railwayB": "odpt.Railway:Keisei.Kanamachi",
+      "railwayBName": "金町線",
+      "sameOperator": false,
+      "distanceMeters": null,
+      "fallbackMinutes": 5,
+      "sources": [
+        "same-place-group"
+      ]
+    },
+    {
+      "place": "京成高砂",
+      "railwayA": "manual.Railway:Hokuso.Hokuso",
+      "railwayAName": "北総線",
+      "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
+      "railwayBName": "成田スカイアクセス線",
+      "sameOperator": false,
+      "distanceMeters": null,
+      "fallbackMinutes": 5,
+      "sources": [
+        "same-place-group"
+      ]
+    },
+    {
+      "place": "新鎌ヶ谷",
+      "railwayA": "manual.Railway:Hokuso.Hokuso",
+      "railwayAName": "北総線",
+      "railwayB": "odpt.Railway:Keisei.Matsudo",
+      "railwayBName": "松戸線",
+      "sameOperator": false,
+      "distanceMeters": null,
+      "fallbackMinutes": 5,
+      "sources": [
+        "same-place-group"
+      ]
+    },
+    {
+      "place": "新鎌ヶ谷",
+      "railwayA": "manual.Railway:Hokuso.Hokuso",
+      "railwayAName": "北総線",
+      "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
+      "railwayBName": "成田スカイアクセス線",
+      "sameOperator": false,
+      "distanceMeters": null,
+      "fallbackMinutes": 5,
+      "sources": [
+        "same-place-group"
+      ]
+    },
+    {
+      "place": "千葉ニュータウン中央",
+      "railwayA": "manual.Railway:Hokuso.Hokuso",
+      "railwayAName": "北総線",
+      "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
+      "railwayBName": "成田スカイアクセス線",
+      "sameOperator": false,
+      "distanceMeters": null,
+      "fallbackMinutes": 5,
+      "sources": [
+        "same-place-group"
+      ]
+    },
+    {
+      "place": "東松戸",
+      "railwayA": "manual.Railway:Hokuso.Hokuso",
+      "railwayAName": "北総線",
+      "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
+      "railwayBName": "成田スカイアクセス線",
+      "sameOperator": false,
+      "distanceMeters": null,
+      "fallbackMinutes": 5,
+      "sources": [
+        "same-place-group"
+      ]
+    },
+    {
+      "place": "東成田",
+      "railwayA": "manual.Railway:Shibayama.Shibayama",
+      "railwayAName": "芝山鉄道線",
+      "railwayB": "odpt.Railway:Keisei.HigashiNarita",
+      "railwayBName": "東成田線",
+      "sameOperator": false,
+      "distanceMeters": null,
+      "fallbackMinutes": 5,
+      "sources": [
+        "same-place-group"
+      ]
+    }
+  ]
 }
