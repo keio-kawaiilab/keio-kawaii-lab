@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import copy
+import io
 import json
 import os
 from collections import Counter, defaultdict
@@ -40,8 +41,7 @@ def minute_of(value: Any) -> int | None:
 
 
 def clock_text(value: int) -> str:
-    value = int(value)
-    hour, minute = divmod(value, 60)
+    hour, minute = divmod(int(value), 60)
     return f'{hour:02d}:{minute:02d}'
 
 
@@ -68,7 +68,7 @@ def load_main_table() -> tuple[dict[str, Any], Path, dict[str, Any]]:
     return json.loads(path.read_text(encoding='utf-8')), path, index
 
 
-def adjacent_minutes(table: dict[str, Any]) -> int:
+def adjacent_minutes(table: dict[str, Any]) -> tuple[int, int]:
     stations = table.get('stations') or []
     shinagawa = [i for i, sid in enumerate(stations) if str(sid).endswith('.Shinagawa')]
     sengakuji = [i for i, sid in enumerate(stations) if str(sid).endswith('.Sengakuji')]
@@ -83,7 +83,7 @@ def adjacent_minutes(table: dict[str, Any]) -> int:
     minutes, support = int(matches[0][2]), int(matches[0][3])
     if not 1 <= minutes <= 6 or support < 20:
         raise RuntimeError(f'Unsafe Shinagawa -> Sengakuji duration evidence: {minutes}m / support={support}')
-    return minutes
+    return minutes, support
 
 
 def count_sengakuji_ends(table: dict[str, Any]) -> Counter:
@@ -104,29 +104,99 @@ def count_sengakuji_ends(table: dict[str, Any]) -> Counter:
     return out
 
 
+def enrich_reverse_candidate_with_shinagawa(
+    words: list[dict[str, Any]], candidate: dict[str, Any]
+) -> dict[str, Any]:
+    if candidate.get('direction') != 'keikyu-to-toei':
+        return candidate
+    source_y = float((candidate.get('rowGeometry') or {}).get('sourceBoundaryY') or 0)
+    if not source_y:
+        return {**candidate, 'officialShinagawaMatchStatus': 'missing-source-boundary-geometry'}
+    page_rows = parser.rows(words)
+    shinagawa_rows = [
+        row for row in page_rows
+        if '品川' in parser.norm(row.get('text')) and float(row.get('y', 0)) < source_y
+    ]
+    # The northbound Keikyu panel places 品川 immediately above 泉岳寺着.
+    nearby = [row for row in shinagawa_rows if 0 < source_y - float(row['y']) <= 45]
+    if not nearby:
+        return {**candidate, 'officialShinagawaMatchStatus': 'missing-shinagawa-row'}
+    row = max(nearby, key=lambda value: float(value['y']))
+    times = parser.time_cells(words, float(row['y']))
+    if not times:
+        return {**candidate, 'officialShinagawaMatchStatus': 'missing-shinagawa-times'}
+    tolerance = parser.column_tolerance(times)
+    cell = parser.nearest(times, float(candidate['columnX']), tolerance)
+    if not cell:
+        return {**candidate, 'officialShinagawaMatchStatus': 'missing-shinagawa-column-time'}
+    source_minute = int(candidate['sourceBoundaryMinute'])
+    shinagawa_minute = int(cell['minute'])
+    gap = (source_minute - shinagawa_minute) % 1440
+    if not 1 <= gap <= 6:
+        return {
+            **candidate,
+            'officialShinagawaMatchStatus': 'invalid-shinagawa-sengakuji-gap',
+            'officialShinagawaMinute': shinagawa_minute,
+            'officialShinagawaGapMinutes': gap,
+        }
+    return {
+        **candidate,
+        'officialShinagawaMatchStatus': 'matched-same-printed-column',
+        'officialShinagawaStation': '品川',
+        'officialShinagawaMinute': shinagawa_minute,
+        'officialShinagawaGapMinutes': gap,
+        'rowGeometry': {
+            **(candidate.get('rowGeometry') or {}),
+            'officialShinagawaText': row['text'],
+            'officialShinagawaY': round(float(row['y']), 2),
+        },
+        'evidence': list(dict.fromkeys([
+            *(candidate.get('evidence') or []),
+            'same-printed-column-includes-shinagawa-and-sengakuji',
+        ])),
+    }
+
+
 def official_reverse_candidates() -> list[dict[str, Any]]:
-    output = []
+    import pdfplumber
+
+    output: list[dict[str, Any]] = []
     for service, url in (
         ('weekday', parser.DEFAULT_WEEKDAY_URL),
         ('holiday', parser.DEFAULT_HOLIDAY_URL),
     ):
-        rows = parser.extract_pdf(parser.fetch_pdf(url), service, url)
-        output.extend(row for row in rows if row.get('direction') == 'keikyu-to-toei')
+        content = parser.fetch_pdf(url)
+        with pdfplumber.open(io.BytesIO(content)) as pdf:
+            for page_number, page in enumerate(pdf.pages, start=1):
+                words = page.extract_words(
+                    x_tolerance=1,
+                    y_tolerance=1,
+                    keep_blank_chars=False,
+                    use_text_flow=False,
+                )
+                candidates = parser.extract_page_candidates(
+                    words,
+                    page_number=page_number,
+                    calendar=service,
+                    source_url=url,
+                )
+                output.extend(
+                    enrich_reverse_candidate_with_shinagawa(words, row)
+                    for row in candidates
+                    if row.get('direction') == 'keikyu-to-toei'
+                )
     return output
 
 
 def destination_is_beyond_sengakuji(destination: str) -> bool:
     if not destination or destination == SENGAKUJI:
         return False
-    # A northbound Keikyu train published with another operator's station as
-    # destination necessarily continues past the Keikyu/Toei boundary.
     return not destination.startswith('odpt.Station:Keikyu.')
 
 
 def build_official_inbound_sengakuji_boards(
     station_raw: list[dict[str, Any]],
     official: list[dict[str, Any]],
-    expected_minutes: int,
     operator: str,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     shinagawa_items: dict[str, dict[str, Any]] = {}
@@ -145,29 +215,37 @@ def build_official_inbound_sengakuji_boards(
                     raise RuntimeError(f'Multiple Shinagawa inbound boards for {service}')
                 shinagawa_items[service] = item
 
-    official_by_key: dict[tuple[str, int], list[dict[str, Any]]] = defaultdict(list)
+    official_by_key: dict[tuple[str, int, int], list[dict[str, Any]]] = defaultdict(list)
     for candidate in official:
         service = str(candidate.get('calendar') or '')
-        minute = int(candidate.get('sourceBoundaryMinute'))
-        official_by_key[(service, minute % 1440)].append(candidate)
+        source_minute = int(candidate.get('sourceBoundaryMinute'))
+        shinagawa_minute = candidate.get('officialShinagawaMinute')
+        if not isinstance(shinagawa_minute, int):
+            continue
+        official_by_key[(service, source_minute % 1440, shinagawa_minute % 1440)].append(candidate)
 
     rows_by_service: dict[str, list[dict[str, Any]]] = defaultdict(list)
     report_rows = []
     reasons = Counter()
     used_shinagawa_rows = Counter()
 
-    for (service, source_mod), candidates in sorted(official_by_key.items()):
+    missing_preboundary = Counter(
+        str(row.get('officialShinagawaMatchStatus') or 'missing')
+        for row in official
+        if row.get('officialShinagawaMatchStatus') != 'matched-same-printed-column'
+    )
+
+    for (service, source_mod, official_shinagawa_mod), candidates in sorted(official_by_key.items()):
         board = shinagawa_items.get(service)
         matches = []
         raw_source = int(candidates[0].get('sourceBoundaryMinute')) if candidates else source_mod
-        expected_departure_mod = (source_mod - expected_minutes) % 1440
         if board:
             for row_index, row in enumerate(board.get('odpt:stationTimetableObject') or []):
                 if not isinstance(row, dict):
                     continue
                 departure = minute_of(row.get('odpt:departureTime'))
                 destination = first_destination(row)
-                if departure is None or departure % 1440 != expected_departure_mod:
+                if departure is None or departure % 1440 != official_shinagawa_mod:
                     continue
                 if not destination_is_beyond_sengakuji(destination):
                     continue
@@ -178,9 +256,9 @@ def build_official_inbound_sengakuji_boards(
         elif not board:
             reason = 'missing-shinagawa-inbound-board'
         elif not matches:
-            reason = 'no-exact-shinagawa-through-match'
+            reason = 'no-exact-official-shinagawa-through-match'
         elif len(matches) > 1:
-            reason = 'ambiguous-shinagawa-through-match'
+            reason = 'ambiguous-official-shinagawa-through-match'
         else:
             row_index, source_row = matches[0]
             claim_key = (service, row_index)
@@ -196,7 +274,7 @@ def build_official_inbound_sengakuji_boards(
         report_rows.append({
             'service': service,
             'sourceBoundaryMinute': raw_source,
-            'expectedShinagawaDepartureMinute': expected_departure_mod,
+            'officialShinagawaMinute': official_shinagawa_mod,
             'officialColumns': len(candidates),
             'shinagawaMatches': len(matches),
             'reason': reason,
@@ -228,11 +306,15 @@ def build_official_inbound_sengakuji_boards(
             'odpt:stationTimetableObject': rows,
             'x-officialSupplement': {
                 'source': 'Keikyu official connection timetable',
-                'policy': 'same printed through column + exact singleton adjacent Shinagawa departure',
+                'policy': 'same printed column Shinagawa+Sengakuji + exact singleton ODPT Shinagawa departure',
             },
         })
 
     return synthetic_items, {
+        'officialCandidatesWithShinagawaTime': sum(
+            1 for row in official if row.get('officialShinagawaMatchStatus') == 'matched-same-printed-column'
+        ),
+        'missingOfficialShinagawaTime': dict(missing_preboundary),
         'syntheticRows': sum(len(item.get('odpt:stationTimetableObject') or []) for item in synthetic_items),
         'syntheticItems': len(synthetic_items),
         'reasons': dict(reasons),
@@ -258,7 +340,7 @@ def main() -> int:
 
     current_table, table_path, index = load_main_table()
     before_ends = count_sengakuji_ends(current_table)
-    expected_minutes = adjacent_minutes(current_table)
+    modal_minutes, modal_support = adjacent_minutes(current_table)
     official = official_reverse_candidates()
     if not official:
         raise RuntimeError('No official Keikyu -> Toei candidates found')
@@ -266,21 +348,19 @@ def main() -> int:
     manifest = json.loads(MANIFEST_PATH.read_text(encoding='utf-8'))
     operator = str(((manifest.get('operators') or {}).get('keikyu') or {}).get('operator') or importer.TARGETS['keikyu']['fallback'])
     session = requests.Session()
-    session.headers.update({'User-Agent': 'keio-kawaii-lab-keikyu-terminal-repair/2.0'})
-    base_url = importer.CHALLENGE_BASE_URL
+    session.headers.update({'User-Agent': 'keio-kawaii-lab-keikyu-terminal-repair/3.0'})
 
-    station_raw = importer.api_get(session, 'odpt:StationTimetable', challenge_key, operator, base_url=base_url)
-    railway_raw = importer.api_get(session, 'odpt:Railway', challenge_key, operator, base_url=base_url)
-    station_entities_raw = importer.api_get(session, 'odpt:Station', challenge_key, operator, base_url=base_url)
+    station_raw = importer.api_get(session, 'odpt:StationTimetable', challenge_key, operator, base_url=importer.CHALLENGE_BASE_URL)
+    railway_raw = importer.api_get(session, 'odpt:Railway', challenge_key, operator, base_url=importer.CHALLENGE_BASE_URL)
+    station_entities_raw = importer.api_get(session, 'odpt:Station', challenge_key, operator, base_url=importer.CHALLENGE_BASE_URL)
     if not station_raw or not railway_raw or not station_entities_raw:
         raise RuntimeError('Keikyu ODPT source data is incomplete')
 
-    synthetic_items, patch_report = build_official_inbound_sengakuji_boards(
-        station_raw, official, expected_minutes, operator
-    )
+    synthetic_items, patch_report = build_official_inbound_sengakuji_boards(station_raw, official, operator)
     preliminary = {
         'officialReverseCandidates': len(official),
-        'expectedShinagawaToSengakujiMinutes': expected_minutes,
+        'existingModalShinagawaToSengakujiMinutes': modal_minutes,
+        'existingModalSupport': modal_support,
         'patch': patch_report,
         'beforeSengakujiEnds': dict(before_ends),
     }
@@ -313,8 +393,9 @@ def main() -> int:
         'source': 'Keikyu official connection timetable + ODPT Shinagawa inbound station timetable',
         'policy': {
             'officialThroughColumnRequired': True,
+            'officialSameColumnShinagawaTimeRequired': True,
             'syntheticInboundBoundaryBoardOnly': True,
-            'exactObservedAdjacentMinutesRequired': expected_minutes,
+            'exactShinagawaPublishedMinuteRequired': True,
             'shinagawaDepartureSingletonRequired': True,
             'publishedDestinationBeyondSengakujiRequired': True,
             'trainNumberAloneMayResolve': False,
