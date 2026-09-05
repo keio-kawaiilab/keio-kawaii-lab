@@ -3,6 +3,7 @@ name: Update transit timetables
 on:
   workflow_dispatch:
   push:
+    branches: [main]
     paths:
       - 'scripts/import_odpt_timetables.py'
       - 'scripts/collect_odpt_train_identity.py'
