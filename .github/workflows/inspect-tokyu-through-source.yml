@@ -1,0 +1,50 @@
+name: Inspect Tokyu through-train source
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/inspect_tokyu_through_train_detail_source.py'
+      - '.github/workflows/inspect-tokyu-through-source.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: inspect-tokyu-through-source
+  cancel-in-progress: false
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect exact per-train Tokyu timetable source
+        run: python scripts/inspect_tokyu_through_train_detail_source.py
+      - name: Validate strict identity policy
+        run: |
+          python - <<'PY'
+          import json
+          r=json.load(open('data/transit/fukutoshin/tokyu-through-source-report.json',encoding='utf-8'))
+          p=r['identityPolicy']
+          assert r['summary']['sampleFetched'] is True
+          assert r['summary']['sampleCrossesYokohamaShibuyaKotake'] is True
+          assert p['singleTrainDetailPageMayEstablishIdentity'] is True
+          assert p['timeProximityMayEstablishIdentity'] is False
+          assert p['trainNumberAloneMayEstablishIdentity'] is False
+          assert p['destinationAloneMayEstablishIdentity'] is False
+          assert p['listingLinkAloneMayEstablishIdentity'] is False
+          print(r['summary'])
+          PY
+      - name: Commit compact source report
+        run: |
+          git add data/transit/fukutoshin/tokyu-through-source-report.json
+          if git diff --cached --quiet; then
+            echo 'No source-inspection changes'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Inspect Tokyu exact through-train source'
+          git pull --rebase origin main
+          git push
