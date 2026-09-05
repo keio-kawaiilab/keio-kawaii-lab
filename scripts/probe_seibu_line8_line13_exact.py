@@ -28,9 +28,9 @@ ONE_TRAIN_CALL_RE = re.compile(
     re.I,
 )
 
-# The two Metro routes share Kotake-mukaihara-Senkawa-Kanamecho-Ikebukuro.
-# A train is assigned to a Metro line only when its published one-train page
-# contains at least one station unique to that line beyond the shared section.
+# The two Metro routes share Kotake-mukaihara through Ikebukuro. A published
+# one-train page is assigned to Line 8 or Line 13 only when it contains at least
+# one station unique to that Metro route beyond the shared section.
 YURAKUCHO_MARKERS = {
     '東池袋', '護国寺', '江戸川橋', '飯田橋', '市ケ谷', '市ヶ谷', '麹町',
     '永田町', '桜田門', '有楽町', '銀座一丁目', '新富町', '月島', '豊洲',
@@ -40,20 +40,15 @@ FUKUTOSHIN_MARKERS = {
     '雑司が谷', '西早稲田', '東新宿', '新宿三丁目', '北参道',
     '明治神宮前', '明治神宮前〈原宿〉', '渋谷',
 }
+SEIBU_YURAKUCHO_SIDE = {'新桜台', '練馬'}
+SEIBU_IKEBUKURO_WEST = {
+    '中村橋', '富士見台', '練馬高野台', '石神井公園', '大泉学園', '保谷',
+    'ひばりヶ丘', '東久留米', '清瀬', '秋津', '所沢', '西所沢', '小手指',
+    '狭山ヶ丘', '武蔵藤沢', '稲荷山公園', '入間市', '仏子', '元加治', '飯能',
+}
+SEIBU_CHICHIBU_SIDE = {'西吾野', '正丸', '芦ヶ久保', '横瀬', '西武秩父'}
 
-COMMON_KOTAKE_PATTERNS = (
-    ('新桜台', '小竹向原', '千川'),
-    ('千川', '小竹向原', '新桜台'),
-)
-BOUNDARY_PATTERNS = {
-    'seibuyurakucho-ikebukuro-nerima': (
-        ('新桜台', '練馬', '中村橋'),
-        ('中村橋', '練馬', '新桜台'),
-    ),
-    'seibu-ikebukuro-seibuchichibu-agano': (
-        ('東吾野', '吾野', '西吾野'),
-        ('西吾野', '吾野', '東吾野'),
-    ),
+BOUNDARY_ADJACENT_PATTERNS = {
     'metro-tokyu-shibuya': (
         ('明治神宮前', '渋谷', '代官山'),
         ('明治神宮前〈原宿〉', '渋谷', '代官山'),
@@ -68,7 +63,7 @@ BOUNDARY_PATTERNS = {
 
 SESSION = requests.Session()
 SESSION.headers.update({
-    'User-Agent': 'Mozilla/5.0 (compatible; KeioKawaiiLabTransitDB/8.0)',
+    'User-Agent': 'Mozilla/5.0 (compatible; KeioKawaiiLabTransitDB/9.0)',
     'Accept': 'text/html,application/xhtml+xml,*/*;q=0.8',
 })
 
@@ -129,6 +124,41 @@ def metro_branch(names: list[str]) -> tuple[str, list[str]]:
     return 'ambiguous', []
 
 
+def first_index(names: list[str], candidates: set[str]) -> tuple[int, str] | None:
+    hits = [(i, name) for i, name in enumerate(names) if name in candidates]
+    return min(hits) if hits else None
+
+
+def last_index(names: list[str], candidates: set[str]) -> tuple[int, str] | None:
+    hits = [(i, name) for i, name in enumerate(names) if name in candidates]
+    return max(hits) if hits else None
+
+
+def route_span_proof(names: list[str], left: set[str], right: set[str], boundary_station: str,
+                     forward_from: str, forward_to: str) -> dict[str, Any] | None:
+    left_hits = [(i, name) for i, name in enumerate(names) if name in left]
+    right_hits = [(i, name) for i, name in enumerate(names) if name in right]
+    if not left_hits or not right_hits:
+        return None
+    # Every station in each marker set belongs to a fixed side of the verified
+    # boundary. Compare the closest published markers across the boundary.
+    pairs = sorted((abs(li - ri), li, ln, ri, rn) for li, ln in left_hits for ri, rn in right_hits)
+    _, li, ln, ri, rn = pairs[0]
+    if li == ri:
+        return None
+    forward = li < ri
+    return {
+        'proofType': 'same-published-one-train-page+verified-unique-route-span',
+        'boundaryStation': boundary_station,
+        'fromRailway': forward_from if forward else forward_to,
+        'toRailway': forward_to if forward else forward_from,
+        'publishedSideMarkers': [ln, rn] if forward else [rn, ln],
+        'publishedMarkerIndexes': [li, ri] if forward else [ri, li],
+        'adjacentPublishedBoundaryStopsRequired': False,
+        'verifiedUniqueRouteSpanRequired': True,
+    }
+
+
 def parse_detail(url: str, text: str) -> dict[str, Any]:
     soup = BeautifulSoup(text, 'html.parser')
     headings = [clean(node.get_text(' ', strip=True)) for node in soup.find_all(['h1', 'h2', 'h3'])]
@@ -146,24 +176,91 @@ def parse_detail(url: str, text: str) -> dict[str, Any]:
         stops.append({'station': station, 'arrival': cells[1], 'departure': cells[2]})
 
     names = [row['station'] for row in stops]
+    name_set = set(names)
     branch, markers = metro_branch(names)
     boundaries: list[str] = []
+    proofs: dict[str, dict[str, Any]] = {}
 
-    if any(includes_adjacent(names, p) for p in COMMON_KOTAKE_PATTERNS):
-        if branch == 'yurakucho':
-            boundaries.append('yurakucho-seibu-kotake-mukaihara')
-        elif branch == 'fukutoshin':
-            boundaries.append('fukutoshin-seibu-kotake-mukaihara')
+    # Metro <-> Seibu at Kotake-mukaihara. The exact route is identified by a
+    # route-specific Metro station and a published Seibu-side station on this
+    # same one-train page. Intermediate stop-skipping is irrelevant.
+    if branch in {'yurakucho', 'fukutoshin'} and '小竹向原' in name_set:
+        metro_set = YURAKUCHO_MARKERS if branch == 'yurakucho' else FUKUTOSHIN_MARKERS
+        proof = route_span_proof(
+            names, metro_set, SEIBU_YURAKUCHO_SIDE, '小竹向原',
+            f'odpt.Railway:TokyoMetro.{"Yurakucho" if branch == "yurakucho" else "Fukutoshin"}',
+            'odpt.Railway:Seibu.SeibuYurakucho',
+        )
+        if proof:
+            bid = f'{branch}-seibu-kotake-mukaihara'
+            boundaries.append(bid)
+            proofs[bid] = proof
 
-    for boundary_id, patterns in BOUNDARY_PATTERNS.items():
-        if any(includes_adjacent(names, p) for p in patterns):
-            boundaries.append(boundary_id)
+    # Seibu Yurakucho <-> Ikebukuro at Nerima. Require a route-specific Metro
+    # station plus a published Ikebukuro-line station west of Nerima, all on the
+    # same one-train page. This captures express trains that skip intermediate
+    # stations without guessing from clock times.
+    if branch in {'yurakucho', 'fukutoshin'}:
+        metro_set = YURAKUCHO_MARKERS if branch == 'yurakucho' else FUKUTOSHIN_MARKERS
+        east = metro_set | {'小竹向原', '新桜台'}
+        proof = route_span_proof(
+            names, east, SEIBU_IKEBUKURO_WEST, '練馬',
+            'odpt.Railway:Seibu.SeibuYurakucho', 'odpt.Railway:Seibu.Ikebukuro',
+        )
+        if proof:
+            # route_span_proof's left side here is east-of-Nerima. For a train
+            # east -> west, the operational transition is SeibuYurakucho ->
+            # Ikebukuro, regardless of whether the left marker itself is Metro.
+            east_index = proof['publishedMarkerIndexes'][0]
+            west_index = proof['publishedMarkerIndexes'][1]
+            if east_index < west_index:
+                proof['fromRailway'] = 'odpt.Railway:Seibu.SeibuYurakucho'
+                proof['toRailway'] = 'odpt.Railway:Seibu.Ikebukuro'
+            else:
+                proof['fromRailway'] = 'odpt.Railway:Seibu.Ikebukuro'
+                proof['toRailway'] = 'odpt.Railway:Seibu.SeibuYurakucho'
+            bid = 'seibuyurakucho-ikebukuro-nerima'
+            boundaries.append(bid)
+            proofs[bid] = proof
 
-    # Shibuya/Yokohama and the Chichibu S-TRAIN path are Line 13-only in the
-    # current operating pattern. A contradictory Metro branch is rejected.
-    line13_only = {'metro-tokyu-shibuya', 'tokyu-minatomirai-yokohama', 'seibu-ikebukuro-seibuchichibu-agano'}
-    if any(x in boundaries for x in line13_only) and branch != 'fukutoshin':
-        raise RuntimeError(f'Line 13-only boundary found without exact Fukutoshin branch marker: {url}')
+    # Ordinary station pages usually do not discover S-TRAIN because it passes
+    # Shin-Sakuradai. If a current page does contain a Fukutoshin-specific and a
+    # Chichibu-line station, retain it as exact route-span evidence; the separate
+    # official S-TRAIN PDF collector provides the exhaustive special-train proof.
+    if branch == 'fukutoshin':
+        proof = route_span_proof(
+            names, FUKUTOSHIN_MARKERS, SEIBU_CHICHIBU_SIDE, '吾野',
+            'odpt.Railway:Seibu.Ikebukuro', 'odpt.Railway:Seibu.SeibuChichibu',
+        )
+        if proof:
+            # Metro is east of the boundary; normalize the operational direction.
+            f_idx = first_index(names, FUKUTOSHIN_MARKERS)
+            c_idx = first_index(names, SEIBU_CHICHIBU_SIDE)
+            if f_idx and c_idx and f_idx[0] < c_idx[0]:
+                proof['fromRailway'] = 'odpt.Railway:Seibu.Ikebukuro'
+                proof['toRailway'] = 'odpt.Railway:Seibu.SeibuChichibu'
+            else:
+                proof['fromRailway'] = 'odpt.Railway:Seibu.SeibuChichibu'
+                proof['toRailway'] = 'odpt.Railway:Seibu.Ikebukuro'
+            bid = 'seibu-ikebukuro-seibuchichibu-agano'
+            boundaries.append(bid)
+            proofs[bid] = proof
+
+    # South-side operator boundaries remain proven by adjacent published stops
+    # on the same one-train page.
+    for boundary_id, patterns in BOUNDARY_ADJACENT_PATTERNS.items():
+        matched = next((p for p in patterns if includes_adjacent(names, p)), None)
+        if not matched:
+            continue
+        if branch != 'fukutoshin':
+            raise RuntimeError(f'Line 13-only boundary found without exact Fukutoshin marker: {url}')
+        boundaries.append(boundary_id)
+        proofs[boundary_id] = {
+            'proofType': 'same-published-one-train-page+adjacent-published-boundary-stops',
+            'publishedSideMarkers': list(matched),
+            'adjacentPublishedBoundaryStopsRequired': True,
+            'verifiedUniqueRouteSpanRequired': False,
+        }
 
     return {
         'url': url,
@@ -175,6 +272,7 @@ def parse_detail(url: str, text: str) -> dict[str, Any]:
         'metroBranch': branch,
         'metroBranchPublishedMarkers': markers,
         'boundaries': boundaries,
+        'boundaryProofs': proofs,
         'identityEvidence': 'single-published-one-train-page',
     }
 
@@ -209,28 +307,28 @@ def build_report() -> dict[str, Any]:
 
     exact_rows = [row for row in detail_rows if row.get('boundaries')]
     all_boundary_ids = [
-        'yurakucho-seibu-kotake-mukaihara',
-        'fukutoshin-seibu-kotake-mukaihara',
-        'seibuyurakucho-ikebukuro-nerima',
-        'seibu-ikebukuro-seibuchichibu-agano',
-        'metro-tokyu-shibuya',
-        'tokyu-minatomirai-yokohama',
+        'yurakucho-seibu-kotake-mukaihara', 'fukutoshin-seibu-kotake-mukaihara',
+        'seibuyurakucho-ikebukuro-nerima', 'seibu-ikebukuro-seibuchichibu-agano',
+        'metro-tokyu-shibuya', 'tokyu-minatomirai-yokohama',
     ]
     boundary_counts = {bid: sum(bid in (row.get('boundaries') or []) for row in exact_rows) for bid in all_boundary_ids}
     branch_counts = {key: sum(row.get('metroBranch') == key for row in detail_rows) for key in ('yurakucho', 'fukutoshin', 'ambiguous', 'conflict')}
     exact_branch_counts = {key: sum(row.get('metroBranch') == key for row in exact_rows) for key in ('yurakucho', 'fukutoshin', 'ambiguous', 'conflict')}
+    branch_kotake_counts = {
+        'yurakucho': sum(row.get('metroBranch') == 'yurakucho' and 'yurakucho-seibu-kotake-mukaihara' in (row.get('boundaries') or []) for row in detail_rows),
+        'fukutoshin': sum(row.get('metroBranch') == 'fukutoshin' and 'fukutoshin-seibu-kotake-mukaihara' in (row.get('boundaries') or []) for row in detail_rows),
+    }
 
     return {
-        'version': 8,
+        'version': 9,
         'generatedAt': datetime.now(timezone.utc).isoformat(),
         'source': 'Seibu Railway official-linked timetable service / one-train timetable pages',
         'officialEntryEvidence': 'https://www.seiburailway.jp/railway/station/shin-sakuradai/timetable/',
         'identityPolicy': {
             'singlePublishedOneTrainPageMayEstablishIdentity': True,
-            'boundaryRequiresAdjacentPublishedStopsOnSameTrainPage': True,
+            'samePublishedTrainPageWithVerifiedUniqueRouteSpanMayEstablishInternalBoundary': True,
             'metroLineRequiresPublishedRouteSpecificStation': True,
             'ambiguousMetroBranchMayEstablishLineIdentity': False,
-            'stationListingAloneMayEstablishIdentity': False,
             'timeProximityMayEstablishIdentity': False,
             'trainNumberAloneMayEstablishIdentity': False,
             'destinationAloneMayEstablishIdentity': False,
@@ -242,6 +340,7 @@ def build_report() -> dict[str, Any]:
             'exactThroughTrainPages': len(exact_rows),
             'metroBranchCounts': branch_counts,
             'exactMetroBranchCounts': exact_branch_counts,
+            'branchKotakeCounts': branch_kotake_counts,
             'boundaryCounts': boundary_counts,
             'errors': len(errors),
         },
@@ -261,7 +360,7 @@ def main() -> int:
     out.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     print('SUMMARY', json.dumps(report['summary'], ensure_ascii=False, indent=2))
     for row in (report.get('authoritativeThroughTrains') or [])[:16]:
-        print('THROUGH_SAMPLE', json.dumps({k: row.get(k) for k in ('url', 'metroBranch', 'metroBranchPublishedMarkers', 'boundaries', 'headings')}, ensure_ascii=False))
+        print('THROUGH_SAMPLE', json.dumps({k: row.get(k) for k in ('url', 'metroBranch', 'metroBranchPublishedMarkers', 'boundaries', 'boundaryProofs', 'headings')}, ensure_ascii=False))
     s = report['summary']
     if s['discoveredTrainDetailUrls'] <= 0 or s['trainDetailPagesFetched'] <= 0:
         raise RuntimeError('No current Seibu one-train timetable pages were collected')
@@ -269,9 +368,13 @@ def main() -> int:
         raise RuntimeError(f"One-train page collection had {s['errors']} errors")
     if s['metroBranchCounts']['conflict']:
         raise RuntimeError('A one-train page contained conflicting Yurakucho and Fukutoshin route markers')
-    for bid in ('yurakucho-seibu-kotake-mukaihara', 'fukutoshin-seibu-kotake-mukaihara', 'seibuyurakucho-ikebukuro-nerima'):
-        if int(s['boundaryCounts'].get(bid, 0)) <= 0:
-            raise RuntimeError(f'No exact current evidence found for {bid}')
+    # Every branch-specific train discovered at Shin-Sakuradai must be classified
+    # across Kotake. If not, fail closed rather than silently dropping trains.
+    for branch in ('yurakucho', 'fukutoshin'):
+        if int(s['branchKotakeCounts'][branch]) != int(s['metroBranchCounts'][branch]):
+            raise RuntimeError(f'Not every {branch} one-train page was exactly classified at Kotake: {s["branchKotakeCounts"][branch]}/{s["metroBranchCounts"][branch]}')
+    if int(s['boundaryCounts'].get('seibuyurakucho-ikebukuro-nerima', 0)) <= 0:
+        raise RuntimeError('No exact current Seibu Yurakucho-Ikebukuro route-span evidence found')
     return 0
 
 
