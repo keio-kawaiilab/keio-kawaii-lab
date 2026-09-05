@@ -6,6 +6,8 @@ on:
     branches: [main]
     paths:
       - 'scripts/repair_keikyu_sengakuji_terminal.py'
+      - 'scripts/repair_keikyu_sengakuji_terminal_idempotent.py'
+      - 'scripts/test_repair_keikyu_sengakuji_terminal_idempotent.py'
       - 'scripts/build_transit_v2.py'
       - 'scripts/keikyu_official_train_evidence.py'
       - 'scripts/merge_keikyu_official_evidence.py'
@@ -42,11 +44,14 @@ jobs:
         run: pip install pdfplumber==0.11.7 requests==2.32.5
       - name: Test fail-closed extraction and consumer rules
         run: |
-          python -m py_compile scripts/verify_keikyu_through_materialization.py
+          python -m py_compile \
+            scripts/verify_keikyu_through_materialization.py \
+            scripts/repair_keikyu_sengakuji_terminal_idempotent.py
           python scripts/test_keikyu_official_train_evidence.py
           python scripts/test_keikyu_generated_evidence.py
+          python scripts/test_repair_keikyu_sengakuji_terminal_idempotent.py
       - name: Repair missing Keikyu inbound Sengakuji board
-        run: python scripts/repair_keikyu_sengakuji_terminal.py
+        run: python scripts/repair_keikyu_sengakuji_terminal_idempotent.py
       - name: Rebuild strict transit v2 fragments
         run: python scripts/build_transit_v2.py
       - name: Extract official weekday and holiday evidence
