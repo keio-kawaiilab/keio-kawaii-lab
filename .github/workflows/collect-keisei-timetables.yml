@@ -16,8 +16,13 @@ on:
       - 'scripts/collect_keisei_timetables.py'
       - 'scripts/build_keisei_official_timetables.py'
       - 'scripts/build_keisei_network_timetable.py'
+      - 'scripts/build_keisei_extended_network.py'
       - 'scripts/test_keisei_through_network.py'
       - 'scripts/test_keisei_route_ui.js'
+      - 'data/transit/hokuso/**'
+      - 'data/transit/shibayama/**'
+      - 'data/transit/keisei/external-through-boundaries.json'
+      - 'data/transit-v2/service-boundaries.json'
       - 'route.js'
       - 'route-core.js'
       - '.github/workflows/collect-keisei-timetables.yml'
@@ -65,7 +70,9 @@ jobs:
             scripts/collect_keisei_timetables.py \
             scripts/build_keisei_official_timetables.py \
             scripts/build_keisei_network_timetable.py \
+            scripts/build_keisei_extended_network.py \
             scripts/test_keisei_through_network.py
+          node --check scripts/test_keisei_route_ui.js
 
       - name: Collect every detailed train timetable with checkpoints
         shell: bash
@@ -172,12 +179,12 @@ jobs:
       - name: Build compact Keisei app timetables
         run: python scripts/build_keisei_official_timetables.py
 
-      - name: Build exact Keisei through network timetable
+      - name: Build exact Keisei Hokusō Shibayama through network
         run: |
-          python scripts/build_keisei_network_timetable.py
+          python scripts/build_keisei_extended_network.py
           python scripts/test_keisei_through_network.py
 
-      - name: Validate and publish compact Keisei timetable database
+      - name: Validate and publish compact and exact timetable databases
         shell: bash
         run: |
           python - <<'PY'
@@ -196,28 +203,48 @@ jobs:
           assert index.get('network', {}).get('timeBasis') == 'train-timetable-network', index
           assert index.get('network', {}).get('identityBasis') == 'official-one-train-page', index
           assert network['sourceTrainCount'] == expected, (network['sourceTrainCount'], expected)
-          assert network['networkTripCount'] + network['skippedUnderTwoMappedStops'] == expected, network
+          assert network['networkTripCount'] == expected, network
+          assert network['skippedUnderTwoMappedStops'] == 0, network
           assert network['unresolvedPairCount'] == 0, network
+          assert network['unsupportedStopRows'] == 0, network.get('unsupportedStations')
+          assert network['unsupportedStations'] == {}, network.get('unsupportedStations')
           assert network['identityPolicy']['trainNumberAloneMayEstablishIdentity'] is False
           assert network['identityPolicy']['timeProximityAloneMayEstablishIdentity'] is False
           assert (root/index['network']['file']).exists(), index['network']
           for railway_id, row in index['lines'].items():
               assert row['trips'] > 0, (railway_id, row)
               assert (root/row['file']).exists(), (railway_id, row['file'])
+
+          for slug, minimum in [('hokuso', 820), ('shibayama', 180)]:
+              op_root = Path('data/transit')/slug
+              op_index = json.loads((op_root/'timetable-index.json').read_text(encoding='utf-8'))
+              rows = list((op_index.get('lines') or {}).values())
+              assert len(rows) == 1, op_index
+              assert int(rows[0].get('trips') or 0) >= minimum, (slug, rows[0])
+              assert (op_root/rows[0]['file']).exists(), (slug, rows[0])
+
           print('Keisei compact trips:', report['compactTripCount'])
           print('Keisei compact connections:', report['compactConnectionCount'])
-          print('Keisei exact network trips:', network['networkTripCount'])
+          print('Exact network trips:', network['networkTripCount'])
+          print('Exact unsupported stop rows:', network['unsupportedStopRows'])
           print('Cross-operator transitions:', network.get('crossOperatorTransitions'))
+          print('Endpoint through counts:', network.get('endpointThroughCounts'))
           PY
           git add data/transit/keisei/timetable-index.json \
                   data/transit/keisei/timetables \
                   data/transit/keisei/official-conversion-report.json \
                   data/transit/keisei/official-network-report.json \
+                  data/transit/hokuso/timetable-index.json \
+                  data/transit/hokuso/coverage-report.json \
+                  data/transit/hokuso/timetables \
+                  data/transit/shibayama/timetable-index.json \
+                  data/transit/shibayama/coverage-report.json \
+                  data/transit/shibayama/timetables \
                   data/transit/manifest.json
           if git diff --cached --quiet; then
             echo "No compact timetable changes."
           else
-            git commit -m "Publish Keisei official timetable database"
+            git commit -m "Publish Keisei Hokusō Shibayama timetable database"
             for push_attempt in 1 2 3 4; do
               if git pull --rebase origin main && git push origin HEAD:main; then
                 break
@@ -227,7 +254,7 @@ jobs:
             done
           fi
 
-      - name: Exercise refreshed Keisei data through browser route logic
+      - name: Exercise refreshed data through browser route logic
         run: |
           node --check route-core.js
           node --check route.js
