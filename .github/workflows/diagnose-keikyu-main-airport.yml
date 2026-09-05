@@ -1,0 +1,32 @@
+name: Diagnose Keikyu Main-Airport through trains
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [diagnose/keikyu-internal-through]
+    paths:
+      - 'scripts/diagnose_keikyu_main_airport_through.py'
+      - '.github/workflows/diagnose-keikyu-main-airport.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install pdfplumber==0.11.7 requests==2.32.5
+      - name: Compile diagnostic
+        run: python -m py_compile scripts/diagnose_keikyu_main_airport_through.py
+      - name: Diagnose exact two-point same-column matches
+        run: python scripts/diagnose_keikyu_main_airport_through.py
+      - name: Upload diagnostic
+        uses: actions/upload-artifact@v4
+        with:
+          name: keikyu-main-airport-diagnostic
+          path: /tmp/keikyu-main-airport-diagnostic.json
