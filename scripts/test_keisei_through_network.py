@@ -15,11 +15,14 @@ KEISEI_TOEI_FLOOR = 1900
 TOEI_KEIKYU_FLOOR = 1150
 HOKUSO_KEISEI_FLOOR = 800
 SHIBAYAMA_KEISEI_FLOOR = 170
-HOKUSO_PROJECTED_FLOOR = 1100
+# Exact-segment projection is 870 trips in the retained snapshot. Keep enough
+# headroom for timetable changes while still detecting a major regression.
+HOKUSO_PROJECTED_FLOOR = 820
 SHIBAYAMA_PROJECTED_FLOOR = 180
-# This protects actual endpoint-serving trains, not the old line-signature count
-# that was inflated while Hokusō was absent from the topology.
-NARITA_HANEDA_ENDPOINT_FLOOR = 60
+# Protect trains that actually serve both airport endpoints. These are
+# direction-specific because the retained official timetable is asymmetric.
+NARITA_TO_HANEDA_ENDPOINT_FLOOR = 170
+HANEDA_TO_NARITA_ENDPOINT_FLOOR = 195
 HOKUSO_HANEDA_SIGNATURE_FLOOR = 120
 
 HOKUSO = 'manual.Railway:Hokuso.Hokuso'
@@ -128,12 +131,12 @@ def test_materialized_snapshot() -> None:
     assert projection.get('unsupportedStationsAfterExtension') == {}, projection
 
     # Count the physical endpoints directly. This intentionally replaces the
-    # previous exact-route-signature >=200 assertion: before Hokusō existed,
-    # Hokusō trains were being mislabelled as Narita Sky Access and inflated
-    # that signature even when they did not serve Narita Airport.
+    # previous route-signature assertion: before Hokusō existed, Hokusō trains
+    # were being mislabelled as Narita Sky Access even when they did not serve
+    # Narita Airport.
     endpoints = report.get('endpointThroughCounts') or {}
-    assert int(endpoints.get('naritaToHaneda') or 0) >= NARITA_HANEDA_ENDPOINT_FLOOR, endpoints
-    assert int(endpoints.get('hanedaToNarita') or 0) >= NARITA_HANEDA_ENDPOINT_FLOOR, endpoints
+    assert int(endpoints.get('naritaToHaneda') or 0) >= NARITA_TO_HANEDA_ENDPOINT_FLOOR, endpoints
+    assert int(endpoints.get('hanedaToNarita') or 0) >= HANEDA_TO_NARITA_ENDPOINT_FLOOR, endpoints
 
     # Protect the newly-visible Hokusō <-> Haneda through family as well.
     signatures = {
