@@ -1,0 +1,99 @@
+name: Collect exact Seibu Line 13 through-train evidence
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/probe_seibu_2026_fukutoshin_pages.py'
+      - 'scripts/inspect_seibu_timetable_mechanics.py'
+      - 'scripts/inspect_tobu_current_line13_source.py'
+      - 'scripts/apply_fukutoshin_official_one_train_evidence.mjs'
+      - 'scripts/report_fukutoshin_identity_coverage.mjs'
+      - 'scripts/audit_fukutoshin_through_service.mjs'
+      - '.github/workflows/generate-through-service-db.yml'
+      - '.github/workflows/probe-seibu-2026-fukutoshin-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install requests==2.32.5 beautifulsoup4==4.13.4
+      - name: Collect all exact one-train timetable evidence
+        run: |
+          python scripts/probe_seibu_2026_fukutoshin_pages.py \
+            --output data/transit/fukutoshin/seibu-official-linked-through-trains.json
+      - name: Audit strict source identity policy and current discovery
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path('data/transit/fukutoshin/seibu-official-linked-through-trains.json').read_text(encoding='utf-8'))
+          p=data['identityPolicy']; s=data['summary']
+          print('SOURCE_SUMMARY', json.dumps(s, ensure_ascii=False, indent=2))
+          assert p['singlePublishedOneTrainPageMayEstablishIdentity'] is True
+          assert p['stationListingAloneMayEstablishIdentity'] is False
+          assert p['timeProximityMayEstablishIdentity'] is False
+          assert p['trainNumberAloneMayEstablishIdentity'] is False
+          assert p['destinationAloneMayEstablishIdentity'] is False
+          assert p['boundaryRequiresAdjacentPublishedStopsOnSameTrainPage'] is True
+          assert s['sourcePagesFetched'] > 0
+          assert s['discoveredTrainDetailUrls'] > 0
+          assert s['usedKnownSampleFallback'] is False
+          assert s['trainDetailPagesFetched'] > 0
+          assert s['exactThroughTrainPages'] > 0
+          assert s['boundaryCounts']['seibu-metro-kotake-mukaihara'] > 0
+          assert s['boundaryCounts']['metro-tokyu-shibuya'] > 0
+          assert s['boundaryCounts']['tokyu-minatomirai-yokohama'] > 0
+          for row in data['authoritativeThroughTrains']:
+              assert row['identityEvidence']=='single-published-one-train-page'
+              assert row['stationCount'] >= 3
+              assert row['boundaries']
+              for key in ('tx','sf','date','time','dw'):
+                  assert str(row['sourceParameters'].get(key,''))
+          PY
+      - name: Run current evidence through production DB pipeline
+        run: |
+          node --check scripts/apply_fukutoshin_official_one_train_evidence.mjs
+          node --check scripts/report_fukutoshin_identity_coverage.mjs
+          node --check scripts/audit_fukutoshin_through_service.mjs
+          node scripts/build-through-service-db.mjs
+          node scripts/enrich-through-service-db.mjs
+          node scripts/apply_fukutoshin_official_one_train_evidence.mjs
+          node scripts/report_fukutoshin_identity_coverage.mjs
+      - name: Assert three exact western boundaries are production-ready and Wakoshi remains fail-closed
+        run: |
+          node - <<'NODE'
+          const r=require('./data/transit/fukutoshin/identity-coverage-report.json');
+          console.log('COVERAGE_SUMMARY',JSON.stringify(r.summary,null,2));
+          const byId=new Map(r.pairs.map(x=>[x.id,x]));
+          for(const id of ['minatomirai-toyoko-yokohama','toyoko-fukutoshin-shibuya','fukutoshin-seibuyurakucho-kotakemukaihara']){
+            const row=byId.get(id);
+            if(!row||row.officialSingleTrainPageEvidence<1||row.generatedExactThroughRecords<1||row.exactIdentityReady!==true)throw new Error(`Exact current evidence not integrated: ${id}`);
+          }
+          const wakoshi=byId.get('fukutoshin-tojo-wakoshi');
+          if(!wakoshi)throw new Error('Wakoshi boundary missing');
+          if(wakoshi.exactIdentityReady!==false)throw new Error('Wakoshi must remain fail-closed until exact current evidence exists');
+          if(r.summary.exactIdentityReadyPairs!==3)throw new Error(`Expected 3/4 exact-ready boundaries, got ${r.summary.exactIdentityReadyPairs}`);
+          if(r.summary.complete!==false)throw new Error('Line 13 must not be marked complete before Wakoshi exact identity is proved');
+          NODE
+      - name: Probe current Tobu Line 13 source
+        run: python scripts/inspect_tobu_current_line13_source.py > /tmp/tobu-line13-source.json
+      - name: Show Tobu source reachability
+        run: cat /tmp/tobu-line13-source.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: line13-current-exact-evidence
+          path: |
+            data/transit/fukutoshin/seibu-official-linked-through-trains.json
+            data/transit/fukutoshin/identity-coverage-report.json
+            /tmp/tobu-line13-source.json
+          if-no-files-found: error
