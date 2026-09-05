@@ -1,7 +1,7 @@
 {
   "date": "2026-09-06",
   "horizonDays": 7,
-  "generatedAt": "2026-09-06T02:17+09:00",
+  "generatedAt": "2026-09-06T07:14+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -18,12 +18,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "くもり 昼前 から 雨 所により 夜 雷を伴い 激しく 降る",
+      "label": "雨 所により 夕方 から 雷を伴い 激しく 降る",
       "max": 24.0,
-      "min": 20.0,
+      "min": 24.0,
       "pop": "50",
       "popLabel": "06〜12時",
-      "issuedAt": "2026-09-05T17:00:00+09:00",
+      "issuedAt": "2026-09-06T05:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -38,12 +38,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "雨 時々 くもり",
-      "max": null,
-      "min": null,
-      "pop": null,
-      "popLabel": "",
-      "issuedAt": "2026-09-05T17:00:00+09:00",
+      "label": "雨 所により 明け方 まで 雷を伴い 非常に 激しく 降る",
+      "max": 28.0,
+      "min": 22.0,
+      "pop": "70",
+      "popLabel": "12〜18時",
+      "issuedAt": "2026-09-06T05:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -58,12 +58,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "雨 時々 くもり",
-      "max": null,
-      "min": null,
-      "pop": null,
-      "popLabel": "",
-      "issuedAt": "2026-09-05T17:00:00+09:00",
+      "label": "雨 所により 明け方 まで 雷を伴い 非常に 激しく 降る",
+      "max": 28.0,
+      "min": 22.0,
+      "pop": "70",
+      "popLabel": "12〜18時",
+      "issuedAt": "2026-09-06T05:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -74,12 +74,9 @@
       "venueKey": "グランキューブ大阪メインホール",
       "eventIds": [
         "54a369497f59ce96",
-        "7f83450aa2a98b9e",
-        "b3e0fafa37dc60a4",
         "84787797cc4cbcb3",
         "9a117c2e21632619",
         "c06ce2ef470dc1d6",
-        "cde44a8b736a9620",
         "e8cd4bc32eeea723"
       ],
       "areaCode": "270000",
@@ -121,11 +118,8 @@
       "venueKey": "グランキューブ大阪メインホール",
       "eventIds": [
         "54a369497f59ce96",
-        "7f83450aa2a98b9e",
-        "b3e0fafa37dc60a4",
         "84787797cc4cbcb3",
         "9a117c2e21632619",
-        "cde44a8b736a9620",
         "e8cd4bc32eeea723",
         "e1d8758eb33627e4"
       ],
@@ -161,12 +155,32 @@
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
+    },
+    {
+      "date": "2026-09-12",
+      "venue": "神奈川県 アリオ橋本 1F 屋外イベント広場",
+      "venueKey": "アリオ橋本1f屋外イベント広場",
+      "eventIds": [
+        "special-fac6246cb6413d1d"
+      ],
+      "areaCode": "140010",
+      "areaName": "神奈川県",
+      "precision": "area",
+      "label": "くもり",
+      "max": 27.0,
+      "min": 21.0,
+      "pop": "40",
+      "popLabel": "1日",
+      "issuedAt": "2026-09-05T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
     }
   ],
   "stats": {
-    "occurrencesInRange": 27,
-    "uniqueVenueDates": 12,
-    "weatherEntries": 7,
+    "occurrencesInRange": 22,
+    "uniqueVenueDates": 13,
+    "weatherEntries": 8,
     "meshEntries": 0,
     "failures": 5,
     "meshTimelineEntries": 0,
