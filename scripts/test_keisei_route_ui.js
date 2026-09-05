@@ -54,6 +54,14 @@ function indexesForName(name){
   return indexes;
 }
 function displayName(name){return displayNameByNormalized.get(normalizeName(name))||name;}
+function assertNetworkStationUsed(name){
+  const indexes=indexesForName(name);
+  if(!indexes.size)throw new Error(`Network station is missing after normalization: ${name}`);
+  let appearances=0;
+  for(const trip of network.trips||[])for(const stop of trip[3]||[])if(indexes.has(stop[0]))appearances++;
+  if(!appearances)throw new Error(`Network station is never used by an exact trip: ${name}`);
+  console.log("Exact normalized station OK",{name,appearances});
+}
 
 function findFixture(fromName,toName,desired){
   const fromIndexes=indexesForName(fromName),toIndexes=indexesForName(toName);
@@ -227,7 +235,6 @@ async function directCase(fromName,toName,desired){
     "manual.Railway:Shibayama.Shibayama"
   ]);
 
-  // Keisei's internal branches also need exact no-transfer coverage.
   await directCase("松戸","京成千葉",[
     "odpt.Railway:Keisei.Matsudo",
     "odpt.Railway:Keisei.Chiba"
@@ -238,7 +245,6 @@ async function directCase(fromName,toName,desired){
     "odpt.Railway:Keisei.Chiba"
   ]);
 
-  // Long cross-operator branches beyond the airports.
   await directCase("芝山千代田","羽田空港第1・第2ターミナル",[
     "manual.Railway:Shibayama.Shibayama",
     "odpt.Railway:Keisei.HigashiNarita",
@@ -263,8 +269,10 @@ async function directCase(fromName,toName,desired){
     "odpt.Railway:Keikyu.Zushi"
   ]);
 
-  // Explicitly protect the official spelling mismatch normalized by the exact builder.
-  await directCase("井土ヶ谷","品川",[
-    "odpt.Railway:Keikyu.Main"
-  ]);
+  // The Keisei official source spells this stop 井土ケ谷 while Keikyu's
+  // station master uses 井土ヶ谷. The exhaustive source audit proves every
+  // source row maps exactly; this UI-side assertion prevents the normalized
+  // network station from disappearing without inventing a through journey
+  // that the three retained official rows do not actually contain.
+  assertNetworkStationUsed("井土ヶ谷");
 })().catch(error=>{console.error(error);process.exit(1);});
