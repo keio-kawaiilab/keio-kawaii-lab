@@ -44,10 +44,17 @@ jobs:
       - name: Compile strict repair
         run: python -m py_compile scripts/repair_keikyu_sengakuji_terminal.py
       - name: Repair Keikyu northbound Sengakuji terminal rows
-        run: python scripts/repair_keikyu_sengakuji_terminal.py
+        id: repair
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          python scripts/repair_keikyu_sengakuji_terminal.py 2>&1 | tee /tmp/keikyu-sengakuji-repair.log
       - name: Rebuild strict transit v2
+        if: steps.repair.outcome == 'success'
         run: python scripts/build_transit_v2.py
       - name: Regenerate official Keikyu through evidence
+        if: steps.repair.outcome == 'success'
         run: |
           python scripts/keikyu_official_train_evidence.py --calendar weekday --output /tmp/keikyu-weekday.json
           python scripts/keikyu_official_train_evidence.py --calendar holiday --output /tmp/keikyu-holiday.json
@@ -58,6 +65,7 @@ jobs:
           python scripts/finalize_transit_v2.py
           python scripts/audit_transit_v2.py
       - name: Verify reverse official same-train recovery
+        if: steps.repair.outcome == 'success'
         run: |
           python - <<'PY'
           import json
@@ -80,8 +88,15 @@ jobs:
           assert reverse_edges, 'repair did not reach same-train edges'
           assert all(row.get('matchStatus') == 'matched-singleton' for row in reverse)
           PY
-      - uses: actions/upload-artifact@v4
+      - name: Upload repair diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
           name: keikyu-sengakuji-repair-test
-          path: /tmp/keikyu-sengakuji-repair.json
-          if-no-files-found: error
+          path: |
+            /tmp/keikyu-sengakuji-repair.log
+            /tmp/keikyu-sengakuji-repair.json
+          if-no-files-found: warn
+      - name: Fail if repair failed
+        if: steps.repair.outcome == 'failure'
+        run: exit 1
