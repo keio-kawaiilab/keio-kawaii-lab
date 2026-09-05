@@ -7,7 +7,8 @@ import keisei_official_oshiage_evidence as subject
 
 YOTSU = "odpt.Station:Keisei.Oshiage.Yotsugi"
 HONJO = "odpt.Station:Toei.Asakusa.HonjoAzumabashi"
-OFFICIAL_NUMBER = "official-do-not-use-as-selector"
+OFFICIAL_SOURCE_ID = "official-do-not-use-as-selector"
+OFFICIAL_NUMBER = subject.official_train_number(OFFICIAL_SOURCE_ID)
 
 
 def station_maps() -> tuple[dict[str, str], dict[str, str]]:
@@ -30,7 +31,7 @@ def fake_train(direction: str = "keisei-to-toei") -> dict:
             {"station": "押上", "arrival": "06:05", "departure": "06:06"},
             {"station": "四ツ木", "arrival": "06:10", "departure": "06:10"},
         ]
-    return {"sourceTrainId": OFFICIAL_NUMBER, "calendar": "weekday", "url": "https://example.test/official-train", "stops": stops}
+    return {"sourceTrainId": OFFICIAL_SOURCE_ID, "calendar": "weekday", "url": "https://example.test/official-train", "stops": stops}
 
 
 def candidate(direction: str = "keisei-to-toei") -> dict:
