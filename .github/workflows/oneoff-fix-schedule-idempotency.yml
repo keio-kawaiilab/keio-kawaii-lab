@@ -1,0 +1,55 @@
+name: Fix schedule build idempotency
+
+on:
+  push:
+    paths:
+      - ".github/workflows/oneoff-fix-schedule-idempotency.yml"
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Patch idempotent schedule adapters
+        run: python scripts/oneoff_fix_schedule_idempotency.py
+
+      - name: Verify schedule build twice
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp data/live-events.json /tmp/live-events-before-idempotency.json
+          python scripts/fix_schedule_shell.py
+          node --check /tmp/schedule-inline.js
+          node scripts/test_schedule_band_grouping.js
+          python scripts/fix_schedule_shell.py
+          node --check /tmp/schedule-inline.js
+          node scripts/test_schedule_band_grouping.js
+          # The renderer may canonicalize its local working copy; the real
+          # distributed refresh remains authoritative for public JSON.
+          cp /tmp/live-events-before-idempotency.json data/live-events.json
+
+      - name: Commit tested build fix
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/fix_schedule_shell.py schedule.html
+          if ! git diff --cached --quiet; then
+            git commit -m "Make schedule generation idempotent"
+            git pull --rebase --autostash origin main
+            git push origin HEAD:main
+          fi
+          # Run the real collector/publisher after the tested fix is on main.
+          gh workflow run update-live-calendar-distributed.yml --ref main
