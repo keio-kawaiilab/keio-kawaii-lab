@@ -34,7 +34,7 @@ const SPECS={
   'tokyushinyokohama-sotetsushinyokohama-shinyokohama':{
     station:'新横浜',
     railways:new Set(['odpt.Railway:Tokyu.TokyuShinYokohama','odpt.Railway:Sotetsu.SotetsuShinYokohama']),
-    patterns:[['新綱島','新横浜','西谷'],['西谷','新横浜','新綱島']],
+    patterns:[['新綱島','新横浜','羽沢横浜国大'],['羽沢横浜国大','新横浜','新綱島']],
   },
 };
 const same=(a,b)=>Array.isArray(a)&&a.length===b.length&&b.every((v,i)=>String(a[i])===v);
