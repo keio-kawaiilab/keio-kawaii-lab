@@ -1,0 +1,54 @@
+name: Inspect Seibu 2026 digital timetable
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/inspect_seibu_2026_digital_timetable.py'
+      - '.github/workflows/inspect-seibu-2026-timetable.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: inspect-seibu-2026-digital-timetable
+  cancel-in-progress: false
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect official Seibu 2026 digital timetable viewer
+        run: python scripts/inspect_seibu_2026_digital_timetable.py
+      - name: Validate strict source policy
+        run: |
+          python - <<'PY'
+          import json
+          r=json.load(open('data/transit/fukutoshin/seibu-2026-source-report.json',encoding='utf-8'))
+          p=r['identityPolicy']
+          assert r['expectedEdition']=='2026'
+          assert r['reachableSamplePages'] >= 2
+          assert p['singlePublishedTrainColumnMayEstablishIdentity'] is True
+          assert p['timeProximityMayEstablishIdentity'] is False
+          assert p['trainNumberAloneMayEstablishIdentity'] is False
+          assert p['destinationAloneMayEstablishIdentity'] is False
+          assert p['viewerAssetDiscoveryMayEstablishIdentity'] is False
+          print({
+            'reachableSamplePages':r['reachableSamplePages'],
+            'inspectedScripts':len(r['inspectedScripts']),
+            'errors':len(r['errors'])
+          })
+          PY
+      - name: Commit compact source report
+        run: |
+          git add data/transit/fukutoshin/seibu-2026-source-report.json
+          if git diff --cached --quiet; then
+            echo 'No source-inspection changes'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Inspect current Seibu 2026 timetable source'
+          git pull --rebase origin main
+          git push
