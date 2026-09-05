@@ -2,198 +2,238 @@
 from __future__ import annotations
 
 import argparse
-import io
+import html
 import json
 import re
-import unicodedata
-import xml.etree.ElementTree as ET
-from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from urllib.parse import urljoin
 
-import fitz
 import requests
+from bs4 import BeautifulSoup
 
-BASE = 'https://www.seiburailway.jp/railways/2026digitaltimetable/'
-BOOK_XML = BASE + 'book.xml'
-PDF_BASE = BASE + 'pdf/'
-KEYWORDS = (
-    '小竹向原', '新桜台', '練馬', '池袋', '西武有楽町線', '副都心線',
-    '元町・中華街', '横浜', '渋谷', '新木場', '和光市',
+BASE = 'https://seibu.ekitan.com'
+# Seibu Railway's current official site links users to this timetable service.
+SOURCE_PAGES = [
+    f'{BASE}/norikae/timetable/station/232-1/d1?dw=0',  # Shin-Sakuradai -> Kotake / Metro
+    f'{BASE}/norikae/timetable/station/232-1/d1?dw=1',
+    f'{BASE}/norikae/timetable/station/232-1/d2?dw=0',  # Shin-Sakuradai -> Nerima
+    f'{BASE}/norikae/timetable/station/232-1/d2?dw=1',
+]
+KNOWN_SAMPLE = (
+    f'{BASE}/norikae/timetable/onetraintimetable/'
+    '?date=20260530&dw=1&sf=2836&time=1926&tx=1050110-1809-4702'
 )
+BOUNDARIES = {
+    'seibu-metro-kotake-mukaihara': (
+        ('新桜台', '小竹向原', '千川'),
+        ('千川', '小竹向原', '新桜台'),
+    ),
+    'metro-tokyu-shibuya': (
+        ('明治神宮前', '渋谷', '代官山'),
+        ('代官山', '渋谷', '明治神宮前'),
+    ),
+    'tokyu-minatomirai-yokohama': (
+        ('反町', '横浜', '新高島'),
+        ('新高島', '横浜', '反町'),
+    ),
+}
+
+SESSION = requests.Session()
+SESSION.headers.update({
+    'User-Agent': 'Mozilla/5.0 (compatible; KeioKawaiiLabTransitDB/6.0)',
+    'Accept': 'text/html,application/xhtml+xml,*/*;q=0.8',
+})
 
 
-def norm(value: Any) -> str:
-    return re.sub(r'[\s\u3000]+', '', unicodedata.normalize('NFKC', str(value or '')))
+def clean(value: Any) -> str:
+    return re.sub(r'\s+', ' ', str(value or '')).strip()
 
 
-def local_name(tag: str) -> str:
-    return str(tag).split('}', 1)[-1]
-
-
-def get(url: str, *, timeout: tuple[int, int] = (20, 90)) -> bytes:
-    response = requests.get(
-        url,
-        headers={
-            'User-Agent': 'Mozilla/5.0 (compatible; KeioKawaiiLabTransitDB/5.0)',
-            'Accept': 'application/pdf,application/xml,text/xml,*/*;q=0.8',
-        },
-        timeout=timeout,
-    )
+def fetch(url: str) -> str:
+    response = SESSION.get(url, timeout=(20, 60))
     response.raise_for_status()
-    return response.content
+    response.encoding = response.apparent_encoding or response.encoding or 'utf-8'
+    return response.text
 
 
-def parse_book(content: bytes) -> tuple[str, list[str]]:
-    root = ET.fromstring(content)
-    publish_date = ''
-    data_text = ''
-    total = 0
-    for elem in root.iter():
-        name = local_name(elem.tag)
-        text = (elem.text or '').strip()
-        if name == 'publishDate' and text:
-            publish_date = text
-        elif name == 'total' and text.isdigit():
-            total = max(total, int(text))
-        elif name == 'data' and ',' in text and len(text) > len(data_text):
-            data_text = text
-    folders = [value.strip() for value in data_text.split(',') if value.strip()]
-    if total < 200 or len(folders) < 200 or total != len(folders):
-        raise RuntimeError(f'unexpected Seibu book structure: total={total}, folders={len(folders)}')
-    return publish_date, folders
+def discover_detail_urls(source_url: str, text: str) -> tuple[list[str], list[str]]:
+    soup = BeautifulSoup(text, 'html.parser')
+    urls: list[str] = []
+    for tag in soup.find_all(['a', 'form']):
+        target = tag.get('href') or tag.get('action') or ''
+        if 'onetraintimetable' in target:
+            urls.append(urljoin(source_url, html.unescape(target)))
+
+    # Some timetable rows are rendered by JS/forms rather than ordinary links.
+    for match in re.finditer(r'[^\"\'\s<>]*onetraintimetable[^\"\'\s<>]*', text, re.I):
+        token = html.unescape(match.group(0))
+        if token:
+            urls.append(urljoin(source_url, token))
+
+    unique: list[str] = []
+    seen: set[str] = set()
+    for url in urls:
+        if not url.startswith(BASE + '/norikae/timetable/onetraintimetable'):
+            continue
+        if url in seen:
+            continue
+        seen.add(url)
+        unique.append(url)
+
+    snippets: list[str] = []
+    if not unique:
+        for needle in ('onetraintimetable', 'tx=', 'oneTrain', 'trainDetail'):
+            pos = text.find(needle)
+            if pos >= 0:
+                snippets.append(clean(text[max(0, pos - 350):pos + 650]))
+    return unique, snippets[:8]
 
 
-def pdf_text(raw: bytes) -> tuple[str, int, list[dict[str, Any]]]:
-    if not raw.startswith(b'%PDF'):
-        raise RuntimeError('response is not a PDF')
-    doc = fitz.open(stream=io.BytesIO(raw), filetype='pdf')
-    pieces: list[str] = []
-    word_count = 0
-    word_sample: list[dict[str, Any]] = []
-    try:
-        for pdf_page in doc:
-            text = pdf_page.get_text('text') or ''
-            pieces.append(text)
-            words = pdf_page.get_text('words') or []
-            word_count += len(words)
-            if len(word_sample) < 80:
-                for word in words[: 80 - len(word_sample)]:
-                    x0, y0, x1, y1, value = word[:5]
-                    word_sample.append({
-                        'text': str(value),
-                        'x0': round(float(x0), 2),
-                        'y0': round(float(y0), 2),
-                        'x1': round(float(x1), 2),
-                        'y1': round(float(y1), 2),
-                    })
-    finally:
-        doc.close()
-    return ''.join(pieces), word_count, word_sample
+def parse_detail(url: str, text: str) -> dict[str, Any]:
+    soup = BeautifulSoup(text, 'html.parser')
+    headings = [clean(node.get_text(' ', strip=True)) for node in soup.find_all(['h1', 'h2', 'h3'])]
+    stops: list[dict[str, str]] = []
+    for tr in soup.find_all('tr'):
+        cells = [clean(cell.get_text(' ', strip=True)) for cell in tr.find_all(['th', 'td'])]
+        if len(cells) < 3:
+            continue
+        if cells[0] in {'駅', '駅名'}:
+            continue
+        # Published one-train pages use station / arrival / departure columns.
+        station = cells[0]
+        if not station or station in {'着時刻', '発時刻'}:
+            continue
+        if not (re.search(r'\d{1,2}:\d{2}', ' '.join(cells[1:])) or any(c == '' for c in cells[1:3])):
+            continue
+        stops.append({
+            'station': station,
+            'arrival': cells[1] if len(cells) > 1 else '',
+            'departure': cells[2] if len(cells) > 2 else '',
+        })
 
+    names = [row['station'] for row in stops]
+    boundaries: list[str] = []
+    for boundary_id, patterns in BOUNDARIES.items():
+        for pattern in patterns:
+            n = len(pattern)
+            if any(tuple(names[i:i+n]) == pattern for i in range(max(0, len(names) - n + 1))):
+                boundaries.append(boundary_id)
+                break
 
-def probe_page(page: int, folder: str) -> dict[str, Any]:
-    url = PDF_BASE + f'{page}.pdf'
-    try:
-        raw = get(url)
-        text, word_count, word_sample = pdf_text(raw)
-        flat = norm(text)
-        hits = [keyword for keyword in KEYWORDS if norm(keyword) in flat]
-        return {
-            'page': page,
-            'folder': folder,
-            'reachable': True,
-            'textBearing': bool(flat),
-            'url': url,
-            'bytes': len(raw),
-            'wordCount': word_count,
-            'keywordHits': hits,
-            'textSample': re.sub(r'\s+', ' ', text).strip()[:1600],
-            'wordSample': word_sample if hits else [],
-        }
-    except Exception as exc:
-        return {
-            'page': page,
-            'folder': folder,
-            'reachable': False,
-            'textBearing': False,
-            'url': url,
-            'keywordHits': [],
-            'error': f'{type(exc).__name__}: {exc}',
-        }
+    return {
+        'url': url,
+        'title': clean(soup.title.get_text(' ', strip=True) if soup.title else ''),
+        'headings': headings[:8],
+        'stops': stops,
+        'stationCount': len(stops),
+        'boundaries': boundaries,
+        'identityEvidence': 'single-published-one-train-page',
+    }
 
 
 def build_report() -> dict[str, Any]:
-    publish_date, folders = parse_book(get(BOOK_XML))
-    rows: list[dict[str, Any]] = []
-    with ThreadPoolExecutor(max_workers=12) as pool:
-        futures = {
-            pool.submit(probe_page, page, folder): page
-            for page, folder in enumerate(folders, start=1)
-        }
-        for future in as_completed(futures):
-            rows.append(future.result())
-    rows.sort(key=lambda row: int(row.get('page') or 0))
+    source_rows: list[dict[str, Any]] = []
+    detail_urls: list[str] = []
+    seen: set[str] = set()
+    for source_url in SOURCE_PAGES:
+        try:
+            text = fetch(source_url)
+            urls, snippets = discover_detail_urls(source_url, text)
+            source_rows.append({
+                'url': source_url,
+                'fetched': True,
+                'bytes': len(text.encode('utf-8')),
+                'detailUrlCount': len(urls),
+                'diagnosticSnippets': snippets,
+            })
+            for url in urls:
+                if url not in seen:
+                    seen.add(url)
+                    detail_urls.append(url)
+        except Exception as exc:
+            source_rows.append({'url': source_url, 'fetched': False, 'error': f'{type(exc).__name__}: {exc}'})
 
-    text_rows = [row for row in rows if row.get('textBearing')]
-    matched = [row for row in text_rows if row.get('keywordHits')]
-    counts = Counter(hit for row in matched for hit in row.get('keywordHits') or [])
+    # Always validate one independently known current-domain page. It proves the
+    # parser and source semantics even if the station listing changes rendering.
+    if KNOWN_SAMPLE not in seen:
+        seen.add(KNOWN_SAMPLE)
+        detail_urls.append(KNOWN_SAMPLE)
+
+    detail_rows: list[dict[str, Any]] = []
+    errors: list[dict[str, str]] = []
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        futures = {pool.submit(fetch, url): url for url in detail_urls}
+        for future in as_completed(futures):
+            url = futures[future]
+            try:
+                detail_rows.append(parse_detail(url, future.result()))
+            except Exception as exc:
+                errors.append({'url': url, 'error': f'{type(exc).__name__}: {exc}'})
+    detail_rows.sort(key=lambda row: row['url'])
+
+    exact_rows = [row for row in detail_rows if row.get('boundaries')]
+    boundary_counts = {
+        boundary_id: sum(boundary_id in (row.get('boundaries') or []) for row in exact_rows)
+        for boundary_id in BOUNDARIES
+    }
+    triple = [row for row in exact_rows if len(row.get('boundaries') or []) == 3]
     return {
-        'version': 5,
+        'version': 6,
         'generatedAt': datetime.now(timezone.utc).isoformat(),
-        'source': 'Seibu Railway official Digital Seibu Timetable 2026 per-page PDFs',
-        'bookIndexSource': BOOK_XML,
-        'pdfSourceTemplate': PDF_BASE + '{page}.pdf',
-        'bookPublishDate': publish_date,
+        'source': 'Seibu Railway official-linked timetable service / one-train timetable pages',
+        'officialEntryEvidence': 'https://www.seiburailway.jp/railway/station/shin-sakuradai/timetable/',
+        'sourcePages': source_rows,
         'identityPolicy': {
-            'pdfPageDiscoveryMayEstablishTrainIdentity': False,
-            'keywordPresenceMayEstablishTrainIdentity': False,
-            'singlePublishedTrainColumnRequired': True,
-            'timeProximityMayEstablishTrainIdentity': False,
-            'trainNumberAloneMayEstablishTrainIdentity': False,
-            'destinationAloneMayEstablishTrainIdentity': False,
+            'singlePublishedOneTrainPageMayEstablishIdentity': True,
+            'stationListingAloneMayEstablishIdentity': False,
+            'timeProximityMayEstablishIdentity': False,
+            'trainNumberAloneMayEstablishIdentity': False,
+            'destinationAloneMayEstablishIdentity': False,
+            'boundaryRequiresAdjacentPublishedStopsOnSameTrainPage': True,
         },
         'summary': {
-            'pages': len(rows),
-            'reachablePdfPages': sum(bool(row.get('reachable')) for row in rows),
-            'textBearingPdfPages': len(text_rows),
-            'matchedPages': len(matched),
-            'keywordCounts': dict(counts),
+            'sourcePagesFetched': sum(bool(row.get('fetched')) for row in source_rows),
+            'discoveredTrainDetailUrls': max(0, len(detail_urls) - (1 if KNOWN_SAMPLE in detail_urls else 0)),
+            'trainDetailPagesFetched': len(detail_rows),
+            'exactThroughTrainPages': len(exact_rows),
+            'allThreeBoundaryPages': len(triple),
+            'boundaryCounts': boundary_counts,
+            'errors': len(errors),
         },
-        'matchedPages': matched,
-        'unreachablePages': [row for row in rows if not row.get('reachable')],
-        'nonTextPages': [
-            {'page': row.get('page'), 'folder': row.get('folder'), 'url': row.get('url')}
-            for row in rows if row.get('reachable') and not row.get('textBearing')
-        ],
+        'authoritativeThroughTrains': exact_rows,
+        'detailErrors': errors,
     }
 
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument('--output', default='data/transit/fukutoshin/seibu-2026-fukutoshin-page-probe.json')
+    ap.add_argument('--output', default='data/transit/fukutoshin/seibu-official-linked-through-trains.json')
     args = ap.parse_args()
     report = build_report()
     out = Path(args.output)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     print('SUMMARY', json.dumps(report['summary'], ensure_ascii=False, indent=2))
-    for row in report.get('matchedPages') or []:
-        print('MATCH', json.dumps({
-            'page': row.get('page'),
+    for row in report.get('authoritativeThroughTrains') or []:
+        print('THROUGH', json.dumps({
             'url': row.get('url'),
-            'keywordHits': row.get('keywordHits'),
-            'wordCount': row.get('wordCount'),
-            'textSample': row.get('textSample'),
+            'stationCount': row.get('stationCount'),
+            'boundaries': row.get('boundaries'),
+            'headings': row.get('headings'),
         }, ensure_ascii=False))
-    if int(report['summary']['reachablePdfPages']) == 0:
-        raise RuntimeError('No official Seibu per-page PDF was reachable')
-    if int(report['summary']['textBearingPdfPages']) == 0:
-        raise RuntimeError('Official Seibu per-page PDFs have no extractable text layer')
-    if int(report['summary']['matchedPages']) == 0:
-        raise RuntimeError('No Line 13 corridor keyword was found in official Seibu PDFs')
+    for source in report.get('sourcePages') or []:
+        if source.get('diagnosticSnippets'):
+            print('SOURCE_DIAGNOSTIC', json.dumps(source, ensure_ascii=False))
+    summary = report['summary']
+    if int(summary['trainDetailPagesFetched']) == 0:
+        raise RuntimeError('No Seibu one-train timetable page was fetched')
+    if int(summary['exactThroughTrainPages']) == 0:
+        raise RuntimeError('No exact Line 13 through train was proven by one published train page')
+    if int((summary['boundaryCounts'] or {}).get('seibu-metro-kotake-mukaihara') or 0) == 0:
+        raise RuntimeError('No exact Seibu-Metro Kotake-Mukaihara crossing was proven')
     return 0
 
 
