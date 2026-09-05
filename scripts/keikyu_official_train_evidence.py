@@ -103,9 +103,12 @@ def column_tolerance(items: list[dict[str, Any]]) -> float:
 
 def direction(above: str, below: str) -> str:
     above, below = norm(above), norm(below)
-    if "泉岳寺" in above and "発" in above:
+    # Real official connection PDF structure at the Keikyu/Toei boundary:
+    # Keikyu -> Toei: 泉岳寺着 / 列車番号 / 泉岳寺発
+    # Toei -> Keikyu: 泉岳寺着 / 列車番号 / 泉岳寺〃
+    if "泉岳寺" in above and "着" in above and "泉岳寺" in below and "発" in below:
         return "keikyu-to-toei"
-    if "泉岳寺" in below and "着" in below and "発" not in above:
+    if "泉岳寺" in above and "着" in above and "泉岳寺" in below and "〃" in below:
         return "toei-to-keikyu"
     return ""
 
