@@ -43,7 +43,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: update-transit-timetables
+  group: transit-db-writer
   cancel-in-progress: false
 
 jobs:
@@ -58,6 +58,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Sync checkout to latest main
+        shell: bash
+        run: |
+          git fetch origin main
+          git checkout -B main origin/main
 
       - uses: actions/setup-python@v5
         with:
