@@ -1,0 +1,2676 @@
+{
+  "version": 1,
+  "generatedAt": "2026-09-05T11:44:55.991643+00:00",
+  "sourceBase": "https://www.seiburailway.jp/railways/2026digitaltimetable/",
+  "sourceFiles": [
+    "book.xml",
+    "search.xml",
+    "menu.xml"
+  ],
+  "identityPolicy": {
+    "metadataMayEstablishIdentity": false,
+    "timeProximityMayEstablishIdentity": false,
+    "trainNumberAloneMayEstablishIdentity": false,
+    "destinationAloneMayEstablishIdentity": false,
+    "singlePublishedTrainColumnRequired": true
+  },
+  "resources": [
+    {
+      "file": "book.xml",
+      "bytes": 8556,
+      "rootTag": "setting",
+      "rootAttrs": {
+        "type": "Object"
+      },
+      "elementCount": 81,
+      "tagCounts": {
+        "color": 10,
+        "url": 3,
+        "thickness": 3,
+        "class": 3,
+        "twitter": 2,
+        "setting": 1,
+        "flipperVersion": 1,
+        "keycode": 1,
+        "publishDate": 1,
+        "bookInformation": 1,
+        "bookID": 1,
+        "bookTitle": 1,
+        "bookComment": 1,
+        "total": 1,
+        "maxMagnification": 1,
+        "bookDirection": 1,
+        "startPageSetting": 1,
+        "allowPrint": 1,
+        "allowMemo": 1,
+        "pageWidth": 1,
+        "pageHeight": 1,
+        "sliceWidth": 1,
+        "sliceHeight": 1,
+        "data": 1,
+        "label": 1,
+        "labelDisplay": 1,
+        "shadowDisplay": 1,
+        "thicknessDisplay": 1,
+        "speed": 1,
+        "sound": 1,
+        "skinOption": 1,
+        "visualIndex": 1,
+        "textIndex": 1,
+        "fusenIndex": 1,
+        "textSearch": 1,
+        "pdf": 1,
+        "embedHtml": 1,
+        "help": 1,
+        "pageIndicate": 1,
+        "textRectangularSelect": 1,
+        "dynamicSizing": 1,
+        "googleAnalytics": 1,
+        "sns": 1,
+        "mail": 1,
+        "line": 1,
+        "contentPasswordHash": 1,
+        "printOption": 1,
+        "changeMemoVisible": 1,
+        "weblio": 1,
+        "makeroption": 1,
+        "scormScoreType": 1,
+        "isOnlineStorage": 1,
+        "html5setting": 1,
+        "language": 1,
+        "flipButton": 1,
+        "header": 1,
+        "fusen": 1,
+        "bgColor": 1,
+        "tegaki": 1,
+        "penColor": 1,
+        "penThickness": 1,
+        "penThicknessClass": 1,
+        "mobile": 1,
+        "closeButton": 1,
+        "homepageButton": 1
+      },
+      "attributeCounts": {
+        "type": 28,
+        "visible": 17,
+        "label": 4,
+        "init": 3,
+        "enabled": 3,
+        "target": 2,
+        "htmlSkinType": 1,
+        "treeOpen": 1,
+        "mode": 1,
+        "dispUrl": 1,
+        "url": 1,
+        "total": 1,
+        "format": 1,
+        "tags": 1,
+        "timeline": 1,
+        "key": 1,
+        "multiplePagesPrint": 1,
+        "bgColor": 1
+      },
+      "firstElements": [
+        {
+          "tag": "setting",
+          "attrs": {
+            "type": "Object"
+          },
+          "text": ""
+        },
+        {
+          "tag": "flipperVersion",
+          "attrs": {
+            "type": "String"
+          },
+          "text": "5.0.9"
+        },
+        {
+          "tag": "keycode",
+          "attrs": {
+            "type": "String"
+          },
+          "text": "RbGmRgbK3LpEJU5ZGaQMZfUmM2BuYB/3R0TSOtTaAkoG6H6xnoH24ptOgvI9aLFZ1v3u3C5se5GMhMW8d1xKKE7h24Yz7T8m5Mey+gegwrM9LOHPt/hQ4k7HqpirIKhq3ry3i5s4smVvy7MSli4zyUSknyi+kOsO4ftJxYEfWn1mFVA/un6vkC8ngZNuVP3iaKUnTVIUWVUQYdFaATfkWHQhH5gyQa4S7TO63818gViO7eDULEwchSA8IS1OticovEmLvJ9PisQINrqeluMSEPKwkEC8jdnEM/7ztHk5jbEONWqsXP83x8LondVr4PWJCqLviCYEk0jdOhpOglBDenTpnAR58nrJXEs1rnkxGcMhGdxfT+BngGPpZiopoEJX8adR1Myyxu4="
+        },
+        {
+          "tag": "publishDate",
+          "attrs": {
+            "type": "String"
+          },
+          "text": "2026/03/12 14:08:28"
+        },
+        {
+          "tag": "bookInformation",
+          "attrs": {
+            "type": "Object"
+          },
+          "text": ""
+        },
+        {
+          "tag": "bookID",
+          "attrs": {
+            "type": "String"
+          },
+          "text": "UFL-24852A3C"
+        },
+        {
+          "tag": "bookTitle",
+          "attrs": {
+            "type": "String"
+          },
+          "text": "西武時刻表2026"
+        },
+        {
+          "tag": "bookComment",
+          "attrs": {
+            "type": "String"
+          },
+          "text": ""
+        },
+        {
+          "tag": "total",
+          "attrs": {
+            "type": "Number"
+          },
+          "text": "240"
+        },
+        {
+          "tag": "maxMagnification",
+          "attrs": {
+            "type": "Number"
+          },
+          "text": "2"
+        },
+        {
+          "tag": "bookDirection",
+          "attrs": {
+            "type": "String"
+          },
+          "text": "r2l"
+        },
+        {
+          "tag": "startPageSetting",
+          "attrs": {
+            "type": "Number"
+          },
+          "text": "1"
+        },
+        {
+          "tag": "allowPrint",
+          "attrs": {
+            "type": "Boolean"
+          },
+          "text": "false"
+        },
+        {
+          "tag": "allowMemo",
+          "attrs": {
+            "type": "Boolean"
+          },
+          "text": "false"
+        },
+        {
+          "tag": "pageWidth",
+          "attrs": {
+            "type": "Number"
+          },
+          "text": "637"
+        },
+        {
+          "tag": "pageHeight",
+          "attrs": {
+            "type": "Number"
+          },
+          "text": "900"
+        },
+        {
+          "tag": "sliceWidth",
+          "attrs": {
+            "type": "Number"
+          },
+          "text": "400"
+        },
+        {
+          "tag": "sliceHeight",
+          "attrs": {
+            "type": "Number"
+          },
+          "text": "400"
+        },
+        {
+          "tag": "data",
+          "attrs": {
+            "type": "String"
+          },
+          "text": "M7WNHFXRL94C1,M7WNHL4H6BKUQ,M7SH2RM0IFFDL,M7SH2RM3SEULC,M7SH2RM78WJNA,M7SH2RM90ZROK,M7SH2RMCHNUT2,M7SH2RMF73ZKK,M7SH2RMJ3O1JY,M7SH2RMNX37HF,M7SH2RMPQA6LH,M7SH2RYHZBUG4,M7SH2RYJ95W05,M7SH2RYL98M8Q,M7SH2RYNU373A,M7SH2RYOWLDZA,M7SH2RYQ4P8U3,M7SH2RYTAOEXG,M7SH2RYVZ2YW5,M7SH2RYZNH3SY,M7SH2RZ3END3S,M7SH2SASOFDSQ,M7SH2SAVGJVLE,M7SH2SAW8RAJ6,M7SH2SAZN5LZ0,M7SH2SB2G15PZ,M7SH2SB4UB4UB,M7SH2SB6YAFD7,M7SH2SB7MJ30Q,M7SH2SB8UTLAT,M7SH2SBBWPGF2,M7SH2SO23L83H,M7SH2SO4UX0W1,M7SH2SO6POA73,M7SH2SO7OKKYT,M7SH2SO9RR"
+        },
+        {
+          "tag": "label",
+          "attrs": {
+            "type": "String"
+          },
+          "text": ",,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,15"
+        },
+        {
+          "tag": "labelDisplay",
+          "attrs": {
+            "type": "Boolean"
+          },
+          "text": "false"
+        },
+        {
+          "tag": "shadowDisplay",
+          "attrs": {
+            "type": "Boolean"
+          },
+          "text": "true"
+        },
+        {
+          "tag": "thicknessDisplay",
+          "attrs": {
+            "type": "Boolean"
+          },
+          "text": "true"
+        },
+        {
+          "tag": "speed",
+          "attrs": {
+            "type": "String"
+          },
+          "text": "0.5"
+        },
+        {
+          "tag": "sound",
+          "attrs": {
+            "type": "Boolean"
+          },
+          "text": "false"
+        },
+        {
+          "tag": "skinOption",
+          "attrs": {
+            "htmlSkinType": "default"
+          },
+          "text": ""
+        },
+        {
+          "tag": "visualIndex",
+          "attrs": {
+            "label": "label",
+            "visible": "false",
+            "init": "close"
+          },
+          "text": ""
+        },
+        {
+          "tag": "textIndex",
+          "attrs": {
+            "label": "label",
+            "treeOpen": "false",
+            "visible": "true",
+            "init": "close"
+          },
+          "text": ""
+        },
+        {
+          "tag": "fusenIndex",
+          "attrs": {
+            "label": "label",
+            "visible": "false",
+            "init": "close"
+          },
+          "text": ""
+        },
+        {
+          "tag": "textSearch",
+          "attrs": {
+            "label": "label",
+            "visible": "false",
+            "mode": "glyph"
+          },
+          "text": ""
+        }
+      ],
+      "pageLikeElements": [],
+      "keywordElements": [],
+      "discoveredPageNumbers": [
+        1
+      ],
+      "pathLikeValues": []
+    },
+    {
+      "file": "search.xml",
+      "bytes": 10774,
+      "rootTag": "searchtext",
+      "rootAttrs": {
+        "version": "5.0.0"
+      },
+      "elementCount": 241,
+      "tagCounts": {
+        "text": 240,
+        "searchtext": 1
+      },
+      "attributeCounts": {
+        "page": 240,
+        "ext": 240,
+        "version": 1
+      },
+      "firstElements": [
+        {
+          "tag": "searchtext",
+          "attrs": {
+            "version": "5.0.0"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "1",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "2",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "3",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "4",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "5",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "6",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "7",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "8",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "9",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "10",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "11",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "12",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "13",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "14",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "15",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "16",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "17",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "18",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "19",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "20",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "21",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "22",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "23",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "24",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "25",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "26",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "27",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "28",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "29",
+            "ext": "f"
+          },
+          "text": ""
+        }
+      ],
+      "pageLikeElements": [
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "1",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "2",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "3",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "4",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "5",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "6",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "7",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "8",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "9",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "10",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "11",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "12",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "13",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "14",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "15",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "16",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "17",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "18",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "19",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "20",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "21",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "22",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "23",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "24",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "25",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "26",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "27",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "28",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "29",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "30",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "31",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "32",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "33",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "34",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "35",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "36",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "37",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "38",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "39",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "40",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "41",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "42",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "43",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "44",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "45",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "46",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "47",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "48",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "49",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "50",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "51",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "52",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "53",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "54",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "55",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "56",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "57",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "58",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "59",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "60",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "61",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "62",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "63",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "64",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "65",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "66",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "67",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "68",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "69",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "70",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "71",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "72",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "73",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "74",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "75",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "76",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "77",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "78",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "79",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "80",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "81",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "82",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "83",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "84",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "85",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "86",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "87",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "88",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "89",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "90",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "91",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "92",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "93",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "94",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "95",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "96",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "97",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "98",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "99",
+            "ext": "f"
+          },
+          "text": ""
+        },
+        {
+          "tag": "text",
+          "attrs": {
+            "page": "100",
+            "ext": "f"
+          },
+          "text": ""
+        }
+      ],
+      "keywordElements": [],
+      "discoveredPageNumbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        140,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150,
+        151,
+        152,
+        153,
+        154,
+        155,
+        156,
+        157,
+        158,
+        159,
+        160,
+        161,
+        162,
+        163,
+        164,
+        165,
+        166,
+        167,
+        168,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188,
+        189,
+        190,
+        191,
+        192,
+        193,
+        194,
+        195,
+        196,
+        197,
+        198,
+        199,
+        200,
+        201,
+        202,
+        203,
+        204,
+        205,
+        206,
+        207,
+        208,
+        209,
+        210,
+        211,
+        212,
+        213,
+        214,
+        215,
+        216,
+        217,
+        218,
+        219,
+        220,
+        221,
+        222,
+        223,
+        224,
+        225,
+        226,
+        227,
+        228,
+        229,
+        230,
+        231,
+        232,
+        233,
+        234,
+        235,
+        236,
+        237,
+        238,
+        239,
+        240
+      ],
+      "pathLikeValues": []
+    },
+    {
+      "file": "menu.xml",
+      "bytes": 2243,
+      "rootTag": "contents",
+      "rootAttrs": {
+        "version": "5.0.0"
+      },
+      "elementCount": 29,
+      "tagCounts": {
+        "menu": 28,
+        "contents": 1
+      },
+      "attributeCounts": {
+        "id": 28,
+        "name": 28,
+        "pagenum": 28,
+        "version": 1
+      },
+      "firstElements": [
+        {
+          "tag": "contents",
+          "attrs": {
+            "version": "5.0.0"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "24",
+            "name": "西武時刻表さくいん",
+            "pagenum": "3"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "25",
+            "name": "時刻表の見方",
+            "pagenum": "5"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "27",
+            "name": "特急列車・座席指定列車",
+            "pagenum": "6"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "2",
+            "name": "（池袋線）特急ラビュー〔ちちぶ〕〔むさし〕",
+            "pagenum": "6"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "3",
+            "name": "（新宿線）特急レッドアロー号〔小江戸〕",
+            "pagenum": "8"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "4",
+            "name": "（池袋線）S-TRAIN",
+            "pagenum": "9"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "5",
+            "name": "（新宿線・拝島線）拝島ライナー",
+            "pagenum": "9"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "28",
+            "name": "平日時刻表（月〜金）",
+            "pagenum": "11"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "6",
+            "name": "池袋線・豊島線・西武秩父線（下り）",
+            "pagenum": "11"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "7",
+            "name": "池袋線・豊島線・西武秩父線（上り）",
+            "pagenum": "37"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "8",
+            "name": "西武有楽町線",
+            "pagenum": "63"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "9",
+            "name": "新宿線・拝島線（下り）",
+            "pagenum": "81"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "10",
+            "name": "新宿線・拝島線（上り）",
+            "pagenum": "101"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "11",
+            "name": "狭山線・西武園線",
+            "pagenum": "120"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "12",
+            "name": "多摩湖線",
+            "pagenum": "122"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "13",
+            "name": "国分寺線",
+            "pagenum": "124"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "14",
+            "name": "山口線（レオライナー）・多摩川線",
+            "pagenum": "128"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "29",
+            "name": "土曜・休日時刻表",
+            "pagenum": "131"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "15",
+            "name": "池袋線・豊島線・西武秩父線（下り）",
+            "pagenum": "131"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "16",
+            "name": "池袋線・豊島線・西武秩父線（上り）",
+            "pagenum": "155"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "17",
+            "name": "西武有楽町線",
+            "pagenum": "179"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "18",
+            "name": "新宿線・拝島線（下り）",
+            "pagenum": "195"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "19",
+            "name": "新宿線・拝島線（上り）",
+            "pagenum": "213"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "20",
+            "name": "狭山線・西武園線",
+            "pagenum": "230"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "21",
+            "name": "多摩湖線",
+            "pagenum": "232"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "22",
+            "name": "国分寺線",
+            "pagenum": "234"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "23",
+            "name": "山口線（レオライナー）・多摩川線",
+            "pagenum": "238"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "26",
+            "name": "広告一覧",
+            "pagenum": "240"
+          },
+          "text": ""
+        }
+      ],
+      "pageLikeElements": [
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "24",
+            "name": "西武時刻表さくいん",
+            "pagenum": "3"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "25",
+            "name": "時刻表の見方",
+            "pagenum": "5"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "27",
+            "name": "特急列車・座席指定列車",
+            "pagenum": "6"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "2",
+            "name": "（池袋線）特急ラビュー〔ちちぶ〕〔むさし〕",
+            "pagenum": "6"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "3",
+            "name": "（新宿線）特急レッドアロー号〔小江戸〕",
+            "pagenum": "8"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "4",
+            "name": "（池袋線）S-TRAIN",
+            "pagenum": "9"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "5",
+            "name": "（新宿線・拝島線）拝島ライナー",
+            "pagenum": "9"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "28",
+            "name": "平日時刻表（月〜金）",
+            "pagenum": "11"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "6",
+            "name": "池袋線・豊島線・西武秩父線（下り）",
+            "pagenum": "11"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "7",
+            "name": "池袋線・豊島線・西武秩父線（上り）",
+            "pagenum": "37"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "8",
+            "name": "西武有楽町線",
+            "pagenum": "63"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "9",
+            "name": "新宿線・拝島線（下り）",
+            "pagenum": "81"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "10",
+            "name": "新宿線・拝島線（上り）",
+            "pagenum": "101"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "11",
+            "name": "狭山線・西武園線",
+            "pagenum": "120"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "12",
+            "name": "多摩湖線",
+            "pagenum": "122"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "13",
+            "name": "国分寺線",
+            "pagenum": "124"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "14",
+            "name": "山口線（レオライナー）・多摩川線",
+            "pagenum": "128"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "29",
+            "name": "土曜・休日時刻表",
+            "pagenum": "131"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "15",
+            "name": "池袋線・豊島線・西武秩父線（下り）",
+            "pagenum": "131"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "16",
+            "name": "池袋線・豊島線・西武秩父線（上り）",
+            "pagenum": "155"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "17",
+            "name": "西武有楽町線",
+            "pagenum": "179"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "18",
+            "name": "新宿線・拝島線（下り）",
+            "pagenum": "195"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "19",
+            "name": "新宿線・拝島線（上り）",
+            "pagenum": "213"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "20",
+            "name": "狭山線・西武園線",
+            "pagenum": "230"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "21",
+            "name": "多摩湖線",
+            "pagenum": "232"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "22",
+            "name": "国分寺線",
+            "pagenum": "234"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "23",
+            "name": "山口線（レオライナー）・多摩川線",
+            "pagenum": "238"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "26",
+            "name": "広告一覧",
+            "pagenum": "240"
+          },
+          "text": ""
+        }
+      ],
+      "keywordElements": [
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "2",
+            "name": "（池袋線）特急ラビュー〔ちちぶ〕〔むさし〕",
+            "pagenum": "6"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "4",
+            "name": "（池袋線）S-TRAIN",
+            "pagenum": "9"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "6",
+            "name": "池袋線・豊島線・西武秩父線（下り）",
+            "pagenum": "11"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "7",
+            "name": "池袋線・豊島線・西武秩父線（上り）",
+            "pagenum": "37"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "8",
+            "name": "西武有楽町線",
+            "pagenum": "63"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "15",
+            "name": "池袋線・豊島線・西武秩父線（下り）",
+            "pagenum": "131"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "16",
+            "name": "池袋線・豊島線・西武秩父線（上り）",
+            "pagenum": "155"
+          },
+          "text": ""
+        },
+        {
+          "tag": "menu",
+          "attrs": {
+            "id": "17",
+            "name": "西武有楽町線",
+            "pagenum": "179"
+          },
+          "text": ""
+        }
+      ],
+      "discoveredPageNumbers": [
+        3,
+        5,
+        6,
+        8,
+        9,
+        11,
+        37,
+        63,
+        81,
+        101,
+        120,
+        122,
+        124,
+        128,
+        131,
+        155,
+        179,
+        195,
+        213,
+        230,
+        232,
+        234,
+        238,
+        240
+      ],
+      "pathLikeValues": []
+    }
+  ],
+  "menuEntries": [
+    {
+      "name": "西武時刻表さくいん",
+      "pagenum": "3",
+      "id": "24"
+    },
+    {
+      "name": "時刻表の見方",
+      "pagenum": "5",
+      "id": "25"
+    },
+    {
+      "name": "特急列車・座席指定列車",
+      "pagenum": "6",
+      "id": "27"
+    },
+    {
+      "name": "（池袋線）特急ラビュー〔ちちぶ〕〔むさし〕",
+      "pagenum": "6",
+      "id": "2"
+    },
+    {
+      "name": "（新宿線）特急レッドアロー号〔小江戸〕",
+      "pagenum": "8",
+      "id": "3"
+    },
+    {
+      "name": "（池袋線）S-TRAIN",
+      "pagenum": "9",
+      "id": "4"
+    },
+    {
+      "name": "（新宿線・拝島線）拝島ライナー",
+      "pagenum": "9",
+      "id": "5"
+    },
+    {
+      "name": "平日時刻表（月〜金）",
+      "pagenum": "11",
+      "id": "28"
+    },
+    {
+      "name": "池袋線・豊島線・西武秩父線（下り）",
+      "pagenum": "11",
+      "id": "6"
+    },
+    {
+      "name": "池袋線・豊島線・西武秩父線（上り）",
+      "pagenum": "37",
+      "id": "7"
+    },
+    {
+      "name": "西武有楽町線",
+      "pagenum": "63",
+      "id": "8"
+    },
+    {
+      "name": "新宿線・拝島線（下り）",
+      "pagenum": "81",
+      "id": "9"
+    },
+    {
+      "name": "新宿線・拝島線（上り）",
+      "pagenum": "101",
+      "id": "10"
+    },
+    {
+      "name": "狭山線・西武園線",
+      "pagenum": "120",
+      "id": "11"
+    },
+    {
+      "name": "多摩湖線",
+      "pagenum": "122",
+      "id": "12"
+    },
+    {
+      "name": "国分寺線",
+      "pagenum": "124",
+      "id": "13"
+    },
+    {
+      "name": "山口線（レオライナー）・多摩川線",
+      "pagenum": "128",
+      "id": "14"
+    },
+    {
+      "name": "土曜・休日時刻表",
+      "pagenum": "131",
+      "id": "29"
+    },
+    {
+      "name": "池袋線・豊島線・西武秩父線（下り）",
+      "pagenum": "131",
+      "id": "15"
+    },
+    {
+      "name": "池袋線・豊島線・西武秩父線（上り）",
+      "pagenum": "155",
+      "id": "16"
+    },
+    {
+      "name": "西武有楽町線",
+      "pagenum": "179",
+      "id": "17"
+    },
+    {
+      "name": "新宿線・拝島線（下り）",
+      "pagenum": "195",
+      "id": "18"
+    },
+    {
+      "name": "新宿線・拝島線（上り）",
+      "pagenum": "213",
+      "id": "19"
+    },
+    {
+      "name": "狭山線・西武園線",
+      "pagenum": "230",
+      "id": "20"
+    },
+    {
+      "name": "多摩湖線",
+      "pagenum": "232",
+      "id": "21"
+    },
+    {
+      "name": "国分寺線",
+      "pagenum": "234",
+      "id": "22"
+    },
+    {
+      "name": "山口線（レオライナー）・多摩川線",
+      "pagenum": "238",
+      "id": "23"
+    },
+    {
+      "name": "広告一覧",
+      "pagenum": "240",
+      "id": "26"
+    }
+  ],
+  "errors": [],
+  "summary": {
+    "resourcesFetched": 3,
+    "errors": 0,
+    "menuEntries": 28,
+    "searchKeywordElements": 0,
+    "searchDiscoveredPageNumbers": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87,
+      88,
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108,
+      109,
+      110,
+      111,
+      112,
+      113,
+      114,
+      115,
+      116,
+      117,
+      118,
+      119,
+      120,
+      121,
+      122,
+      123,
+      124,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144,
+      145,
+      146,
+      147,
+      148,
+      149,
+      150,
+      151,
+      152,
+      153,
+      154,
+      155,
+      156,
+      157,
+      158,
+      159,
+      160,
+      161,
+      162,
+      163,
+      164,
+      165,
+      166,
+      167,
+      168,
+      169,
+      170,
+      171,
+      172,
+      173,
+      174,
+      175,
+      176,
+      177,
+      178,
+      179,
+      180,
+      181,
+      182,
+      183,
+      184,
+      185,
+      186,
+      187,
+      188,
+      189,
+      190,
+      191,
+      192,
+      193,
+      194,
+      195,
+      196,
+      197,
+      198,
+      199,
+      200,
+      201,
+      202,
+      203,
+      204,
+      205,
+      206,
+      207,
+      208,
+      209,
+      210,
+      211,
+      212,
+      213,
+      214,
+      215,
+      216,
+      217,
+      218,
+      219,
+      220,
+      221,
+      222,
+      223,
+      224,
+      225,
+      226,
+      227,
+      228,
+      229,
+      230,
+      231,
+      232,
+      233,
+      234,
+      235,
+      236,
+      237,
+      238,
+      239,
+      240
+    ],
+    "bookDiscoveredPageNumbers": [
+      1
+    ]
+  }
+}
