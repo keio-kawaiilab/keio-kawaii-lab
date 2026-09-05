@@ -37,6 +37,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          git restore data/live-events.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add scripts/fix_schedule_shell.py scripts/test_schedule_band_grouping.js schedule.html
@@ -48,4 +49,4 @@ jobs:
           git pull --rebase origin main
           git push origin HEAD:main
 
-# retry with official-FC tour grouping regression coverage
+# publish only the tested renderer, regression test, and generated page
