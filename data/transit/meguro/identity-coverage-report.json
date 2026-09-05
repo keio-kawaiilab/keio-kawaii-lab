@@ -1,0 +1,156 @@
+{
+  "version": 1,
+  "generatedAt": "2026-09-05T17:01:42.098Z",
+  "system": "Tokyu Meguro Line through-service corridor: Sotetsu/Tokyu Shin-Yokohama + Namboku/Mita + Saitama Railway",
+  "policy": {
+    "runtimeInference": false,
+    "timeGapMayEstablishTrainIdentity": false,
+    "trainNumberMayEstablishTrainIdentity": false,
+    "publishedDestinationAloneMayEstablishIdentity": false,
+    "bidirectionalExactEvidenceRequired": true
+  },
+  "pairs": [
+    {
+      "id": "meguro-tokyushinyokohama-hiyoshi",
+      "label": "東急目黒線↔東急新横浜線（日吉）",
+      "fromRailway": "odpt.Railway:Tokyu.Meguro",
+      "toRailway": "odpt.Railway:Tokyu.TokyuShinYokohama",
+      "boundaryStatus": "verified",
+      "boundarySource": "https://www.tokyu.co.jp/railway/timetable/",
+      "generatedExactThroughRecords": 199,
+      "directions": {
+        "ab": 102,
+        "ba": 97,
+        "other": 0
+      },
+      "exactBidirectional": true,
+      "exactIdentityReady": true,
+      "evidenceTypes": {
+        "official-same-printed-column": 199
+      }
+    },
+    {
+      "id": "tokyushinyokohama-sotetsushinyokohama-shinyokohama",
+      "label": "東急新横浜線↔相鉄新横浜線（新横浜）",
+      "fromRailway": "odpt.Railway:Tokyu.TokyuShinYokohama",
+      "toRailway": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
+      "boundaryStatus": "verified",
+      "boundarySource": "https://www.sotetsu.co.jp/train/stations/shinyokohama/",
+      "generatedExactThroughRecords": 376,
+      "directions": {
+        "ab": 188,
+        "ba": 188,
+        "other": 0
+      },
+      "exactBidirectional": true,
+      "exactIdentityReady": true,
+      "evidenceTypes": {
+        "official-same-printed-column": 376
+      }
+    },
+    {
+      "id": "sotetsushinyokohama-main-nishiya",
+      "label": "相鉄新横浜線↔相鉄本線（西谷）",
+      "fromRailway": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
+      "toRailway": "odpt.Railway:Sotetsu.Main",
+      "boundaryStatus": "verified",
+      "boundarySource": "https://www.sotetsu.co.jp/train/stations/nishiya/",
+      "generatedExactThroughRecords": 533,
+      "directions": {
+        "ab": 268,
+        "ba": 265,
+        "other": 0
+      },
+      "exactBidirectional": true,
+      "exactIdentityReady": true,
+      "evidenceTypes": {
+        "odpt-train-timetable-link": 533
+      }
+    },
+    {
+      "id": "sotetsu-main-izumino-futamatagawa",
+      "label": "相鉄本線↔相鉄いずみ野線（二俣川）",
+      "fromRailway": "odpt.Railway:Sotetsu.Main",
+      "toRailway": "odpt.Railway:Sotetsu.Izumino",
+      "boundaryStatus": "verified",
+      "boundarySource": "https://www.sotetsu.co.jp/train/stations/futamatagawa/",
+      "generatedExactThroughRecords": 450,
+      "directions": {
+        "ab": 226,
+        "ba": 224,
+        "other": 0
+      },
+      "exactBidirectional": true,
+      "exactIdentityReady": true,
+      "evidenceTypes": {
+        "odpt-train-timetable-link": 450
+      }
+    },
+    {
+      "id": "meguro-namboku-meguro",
+      "label": "東急目黒線↔東京メトロ南北線（目黒）",
+      "fromRailway": "odpt.Railway:Tokyu.Meguro",
+      "toRailway": "odpt.Railway:TokyoMetro.Namboku",
+      "boundaryStatus": "verified",
+      "boundarySource": "https://www.tokyu.co.jp/area/meguro/station/",
+      "generatedExactThroughRecords": 441,
+      "directions": {
+        "ab": 187,
+        "ba": 254,
+        "other": 0
+      },
+      "exactBidirectional": true,
+      "exactIdentityReady": true,
+      "evidenceTypes": {
+        "odpt-explicit-boundary-endpoint": 398,
+        "official-same-printed-column": 43
+      }
+    },
+    {
+      "id": "meguro-mita-meguro",
+      "label": "東急目黒線↔都営三田線（目黒）",
+      "fromRailway": "odpt.Railway:Tokyu.Meguro",
+      "toRailway": "odpt.Railway:Toei.Mita",
+      "boundaryStatus": "verified",
+      "boundarySource": "https://www.tokyu.co.jp/area/meguro/station/",
+      "generatedExactThroughRecords": 316,
+      "directions": {
+        "ab": 24,
+        "ba": 292,
+        "other": 0
+      },
+      "exactBidirectional": true,
+      "exactIdentityReady": true,
+      "evidenceTypes": {
+        "odpt-explicit-boundary-endpoint": 234,
+        "official-same-printed-column": 82
+      }
+    },
+    {
+      "id": "namboku-saitamarailway-akabaneiwabuchi",
+      "label": "東京メトロ南北線↔埼玉高速鉄道（赤羽岩淵）",
+      "fromRailway": "odpt.Railway:TokyoMetro.Namboku",
+      "toRailway": "odpt.Railway:SaitamaRailway.SaitamaRailway",
+      "boundaryStatus": "verified",
+      "boundarySource": "https://www.s-rail.co.jp/line/new-timetable/new-urawamisono.pdf",
+      "generatedExactThroughRecords": 433,
+      "directions": {
+        "ab": 266,
+        "ba": 167,
+        "other": 0
+      },
+      "exactBidirectional": true,
+      "exactIdentityReady": true,
+      "evidenceTypes": {
+        "odpt-explicit-boundary-endpoint": 433
+      }
+    }
+  ],
+  "summary": {
+    "boundaryPairs": 7,
+    "verifiedBoundaries": 7,
+    "exactIdentityReadyPairs": 7,
+    "generatedExactThroughRecords": 2748,
+    "complete": true
+  }
+}
