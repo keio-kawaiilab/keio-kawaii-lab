@@ -14,7 +14,11 @@ on:
       - 'scripts/test_minatomirai_destination_alignment.py'
       - 'scripts/build_keisei_official_timetables.py'
       - 'scripts/build_keisei_network_timetable.py'
+      - 'scripts/build_keisei_extended_network.py'
       - 'scripts/test_keisei_through_network.py'
+      - 'data/transit/hokuso/**'
+      - 'data/transit/shibayama/**'
+      - 'data/transit/keisei/external-through-boundaries.json'
       - 'data/transit-v2/spec.json'
       - 'data/transit-v2/service-boundaries.json'
       - '.github/workflows/generate-transit-v2.yml'
@@ -53,6 +57,7 @@ jobs:
             scripts/collect_odpt_train_identity.py \
             scripts/enrich_minatomirai_destinations.py \
             scripts/build_keisei_network_timetable.py \
+            scripts/build_keisei_extended_network.py \
             scripts/test_keisei_through_network.py
           python scripts/test_transit_v2.py
           python scripts/test_minatomirai_destination_alignment.py
@@ -90,7 +95,7 @@ jobs:
           PY
           then
             python scripts/build_keisei_official_timetables.py
-            python scripts/build_keisei_network_timetable.py
+            python scripts/build_keisei_extended_network.py
             python scripts/test_keisei_through_network.py
           else
             echo "Keisei official train details are not populated yet; skip reconstruction."
