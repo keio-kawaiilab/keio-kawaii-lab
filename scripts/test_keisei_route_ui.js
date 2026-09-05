@@ -142,4 +142,24 @@ async function runRouteCase(fromName,toName,fixture){
     "odpt.Railway:Keikyu.Main"
   ]);
   await runRouteCase("青砥","品川",crossOperator);
+
+  const naritaToHaneda=findFixture("成田空港","羽田空港第1・第2ターミナル",[
+    "odpt.Railway:Keisei.NaritaSkyAccess",
+    "odpt.Railway:Keisei.Main",
+    "odpt.Railway:Keisei.Oshiage",
+    "odpt.Railway:Toei.Asakusa",
+    "odpt.Railway:Keikyu.Main",
+    "odpt.Railway:Keikyu.Airport"
+  ]);
+  await runRouteCase("成田空港","羽田空港第1・第2ターミナル",naritaToHaneda);
+
+  const hanedaToNarita=findFixture("羽田空港第1・第2ターミナル","成田空港",[
+    "odpt.Railway:Keikyu.Airport",
+    "odpt.Railway:Keikyu.Main",
+    "odpt.Railway:Toei.Asakusa",
+    "odpt.Railway:Keisei.Oshiage",
+    "odpt.Railway:Keisei.Main",
+    "odpt.Railway:Keisei.NaritaSkyAccess"
+  ]);
+  await runRouteCase("羽田空港第1・第2ターミナル","成田空港",hanedaToNarita);
 })().catch(error=>{console.error(error);process.exit(1);});
