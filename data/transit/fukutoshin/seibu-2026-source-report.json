@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "generatedAt": "2026-09-05T11:36:31.646042+00:00",
+  "version": 3,
+  "generatedAt": "2026-09-05T11:39:50.080351+00:00",
   "source": "Seibu Railway official Digital Seibu Timetable 2026",
   "sourceBase": "https://www.seiburailway.jp/railways/2026digitaltimetable/",
   "expectedEdition": "2026",
@@ -18,13 +18,21 @@
     "pageindices/index120.html",
     "pageindices/index240.html"
   ],
+  "configTargets": [
+    "html5/js/book.xml",
+    "html5/js/search.xml",
+    "html5/js/t.xml",
+    "html5/js/html5setting.xml",
+    "html5/js/skinoption.xml"
+  ],
   "reachableSamplePages": 5,
+  "reachableConfigResources": 0,
   "fetched": [
     {
       "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/index.html",
       "bytes": 58386,
       "sha256": "c74d1ba7c6d6537733bf315b5aceaa94c9a66387f1f5a8356d65fc2d2d5b4e51",
-      "assetCount": 27,
+      "assetCount": 28,
       "assets": [
         "https://www.seiburailway.jp/railways/2026digitaltimetable/flipper3js/tcoredirector.js",
         "https://www.seiburailway.jp/railways/2026digitaltimetable/flipper3js/redirector.js",
@@ -52,7 +60,8 @@
         "https://www.seiburailway.jp/railways/2026digitaltimetable/weblioSrc",
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/flipper.js?c=20260312140828",
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/skin.js?c=20260312140828",
-        "https://www.seiburailway.jp/railways/2026digitaltimetable/pageindices/index.html"
+        "https://www.seiburailway.jp/railways/2026digitaltimetable/pageindices/index.html",
+        "https://www.seiburailway.jp/railways/2026digitaltimetable/{{words.Pdf"
       ],
       "scriptAssets": [
         "https://www.seiburailway.jp/railways/2026digitaltimetable/flipper3js/tcoredirector.js",
@@ -74,8 +83,17 @@
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/images/transparent.gif",
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/images/scormscorecheck.png"
       ],
+      "pdfAssets": [
+        "https://www.seiburailway.jp/railways/2026digitaltimetable/{{$root.bookpath}}pdf/{{model.page}}.pdf",
+        "https://www.seiburailway.jp/railways/2026digitaltimetable/{{$root.bookpath}}pdf/{{model.l.page}}.pdf",
+        "https://www.seiburailway.jp/railways/2026digitaltimetable/{{$root.bookpath}}pdf/{{model.r.page}}.pdf",
+        "https://www.seiburailway.jp/railways/2026digitaltimetable/{{words.Pdf"
+      ],
+      "trainNumberLikeTokenCount": 0,
       "trainNumberLikeTokens": [],
-      "containsTimetableKeywords": true
+      "keywordHits": [
+        "時刻"
+      ]
     },
     {
       "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/pageindices/index.html",
@@ -209,10 +227,14 @@
       "imageAssets": [
         "https://www.seiburailway.jp/railways/2026digitaltimetable/thumbnail.jpg"
       ],
+      "pdfAssets": [],
+      "trainNumberLikeTokenCount": 1,
       "trainNumberLikeTokens": [
         "D9752B"
       ],
-      "containsTimetableKeywords": true
+      "keywordHits": [
+        "時刻"
+      ]
     },
     {
       "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/pageindices/index1.html",
@@ -235,8 +257,12 @@
       ],
       "dataLikeAssets": [],
       "imageAssets": [],
+      "pdfAssets": [],
+      "trainNumberLikeTokenCount": 0,
       "trainNumberLikeTokens": [],
-      "containsTimetableKeywords": true
+      "keywordHits": [
+        "時刻"
+      ]
     },
     {
       "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/pageindices/index120.html",
@@ -259,8 +285,12 @@
       ],
       "dataLikeAssets": [],
       "imageAssets": [],
+      "pdfAssets": [],
+      "trainNumberLikeTokenCount": 0,
       "trainNumberLikeTokens": [],
-      "containsTimetableKeywords": true
+      "keywordHits": [
+        "時刻"
+      ]
     },
     {
       "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/pageindices/index240.html",
@@ -283,10 +313,15 @@
       ],
       "dataLikeAssets": [],
       "imageAssets": [],
+      "pdfAssets": [],
+      "trainNumberLikeTokenCount": 0,
       "trainNumberLikeTokens": [],
-      "containsTimetableKeywords": true
+      "keywordHits": [
+        "時刻"
+      ]
     }
   ],
+  "configResources": [],
   "inspectedScripts": [
     {
       "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/flipper3js/tcoredirector.js",
@@ -300,8 +335,10 @@
       "scriptAssets": [],
       "dataLikeAssets": [],
       "imageAssets": [],
+      "pdfAssets": [],
+      "trainNumberLikeTokenCount": 0,
       "trainNumberLikeTokens": [],
-      "containsTimetableKeywords": false,
+      "keywordHits": [],
       "mentionsPageData": true,
       "notablePathTokens": [
         "/index.html",
@@ -319,8 +356,10 @@
       "scriptAssets": [],
       "dataLikeAssets": [],
       "imageAssets": [],
+      "pdfAssets": [],
+      "trainNumberLikeTokenCount": 0,
       "trainNumberLikeTokens": [],
-      "containsTimetableKeywords": false,
+      "keywordHits": [],
       "mentionsPageData": true,
       "notablePathTokens": [
         "html5m.html"
@@ -335,8 +374,10 @@
       "scriptAssets": [],
       "dataLikeAssets": [],
       "imageAssets": [],
+      "pdfAssets": [],
+      "trainNumberLikeTokenCount": 0,
       "trainNumberLikeTokens": [],
-      "containsTimetableKeywords": false,
+      "keywordHits": [],
       "mentionsPageData": true,
       "notablePathTokens": []
     },
@@ -349,8 +390,10 @@
       "scriptAssets": [],
       "dataLikeAssets": [],
       "imageAssets": [],
+      "pdfAssets": [],
+      "trainNumberLikeTokenCount": 0,
       "trainNumberLikeTokens": [],
-      "containsTimetableKeywords": false,
+      "keywordHits": [],
       "mentionsPageData": false,
       "notablePathTokens": []
     },
@@ -424,8 +467,10 @@
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/C.XML"
       ],
       "imageAssets": [],
+      "pdfAssets": [],
+      "trainNumberLikeTokenCount": 0,
       "trainNumberLikeTokens": [],
-      "containsTimetableKeywords": false,
+      "keywordHits": [],
       "mentionsPageData": true,
       "notablePathTokens": [
         "C.XML",
@@ -447,8 +492,10 @@
       "scriptAssets": [],
       "dataLikeAssets": [],
       "imageAssets": [],
+      "pdfAssets": [],
+      "trainNumberLikeTokenCount": 0,
       "trainNumberLikeTokens": [],
-      "containsTimetableKeywords": false,
+      "keywordHits": [],
       "mentionsPageData": true,
       "notablePathTokens": []
     },
@@ -467,8 +514,10 @@
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/Microsoft.XML"
       ],
       "imageAssets": [],
+      "pdfAssets": [],
+      "trainNumberLikeTokenCount": 0,
       "trainNumberLikeTokens": [],
-      "containsTimetableKeywords": false,
+      "keywordHits": [],
       "mentionsPageData": true,
       "notablePathTokens": [
         "//www.kawa.net/works/js/xml/objtree-e.html",
@@ -487,8 +536,10 @@
       "scriptAssets": [],
       "dataLikeAssets": [],
       "imageAssets": [],
+      "pdfAssets": [],
+      "trainNumberLikeTokenCount": 0,
       "trainNumberLikeTokens": [],
-      "containsTimetableKeywords": false,
+      "keywordHits": [],
       "mentionsPageData": true,
       "notablePathTokens": []
     },
@@ -501,8 +552,10 @@
       "scriptAssets": [],
       "dataLikeAssets": [],
       "imageAssets": [],
+      "pdfAssets": [],
+      "trainNumberLikeTokenCount": 0,
       "trainNumberLikeTokens": [],
-      "containsTimetableKeywords": false,
+      "keywordHits": [],
       "mentionsPageData": false,
       "notablePathTokens": []
     },
@@ -515,8 +568,10 @@
       "scriptAssets": [],
       "dataLikeAssets": [],
       "imageAssets": [],
+      "pdfAssets": [],
+      "trainNumberLikeTokenCount": 0,
       "trainNumberLikeTokens": [],
-      "containsTimetableKeywords": false,
+      "keywordHits": [],
       "mentionsPageData": true,
       "notablePathTokens": []
     },
@@ -540,8 +595,10 @@
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/html5custom/language-custom.xml?c="
       ],
       "imageAssets": [],
+      "pdfAssets": [],
+      "trainNumberLikeTokenCount": 0,
       "trainNumberLikeTokens": [],
-      "containsTimetableKeywords": false,
+      "keywordHits": [],
       "mentionsPageData": true,
       "notablePathTokens": [
         "./flipper3js/scorm_score/InitScript_m.js",
@@ -554,7 +611,7 @@
       "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/flipper.js?c=20260312140828",
       "bytes": 951054,
       "sha256": "94493975f897564e8a3d9b256d1268a6ca003e77409abe6ef3564f875ea9cea3",
-      "assetCount": 122,
+      "assetCount": 124,
       "assets": [
         "https://www.seiburailway.jp/railways/2026digitaltimetable/index.html",
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/i.href",
@@ -582,6 +639,8 @@
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/===o.setting.bookInformation.sound._,t.allowPrint=h.allowPrint,t.allowMemo=h.allowMemo,c=o.setting.makeroption.scormScoreType._,a=t.decryptByDES(o.setting.keycode._,String.fromCharCode(70)+t.gl.toUpperCase().substr(4,1)+t.fb.toUpperCase().substr(0,1)+String.fromCharCode(76)+String.fromCharCode(70)+t.gl.toUpperCase().substr(4,1)+t.fb.toUpperCase().substr(0,1)+String.fromCharCode(76)),t.xml",
         "https://www.seiburailway.jp/settings/config.js",
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/skinoption.xml",
+        "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/o;t.soPdfType=r.setting.skinOption.pdf",
+        "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/===r.setting.skinOption.pdf",
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/===r.setting.skinOption.printOption.$.multiplePagesPrint}catch(t){}try{t.soHtmlSkinType=r.setting.skinOption.$.html",
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/html5setting.xml",
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/e.xmlParser.parseString(i,function(r,o){try{e.hsLanguage=o.setting.html",
@@ -673,9 +732,7 @@
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/])),e.call(this.vm,this.el,this.pendingJsCb))},ns.getCssTransitionType=function(t){if(!(!sn||document.hidden||this.hooks&&this.hooks.css",
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/t.webpackPolyfill||(t.deprecate=function(){},t.paths=[],t.children=[],t.webp",
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/n)t.options.cdata&&o(n)?e.raw(s(n)):e.txt",
-        "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/if(f===r)e=t.options.cdata&&o(c)?e.raw(s(c)):e.txt",
-        "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/e}}(this),u=t.create(c,this.options.xml",
-        "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/t)p.call(t,i)&&(o=t[i],this.options[i]=o);this.options.xmlns&&(this.options.xml"
+        "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/if(f===r)e=t.options.cdata&&o(c)?e.raw(s(c)):e.txt"
       ],
       "scriptAssets": [
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/flipper.js",
@@ -729,6 +786,10 @@
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/,i.SVG",
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/t.webpackPolyfill||(t.deprecate=function(){},t.paths=[],t.children=[],t.webp"
       ],
+      "pdfAssets": [
+        "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/===r.setting.skinOption.pdf"
+      ],
+      "trainNumberLikeTokenCount": 16,
       "trainNumberLikeTokens": [
         "000I",
         "036F",
@@ -747,7 +808,7 @@
         "989I",
         "X297Y"
       ],
-      "containsTimetableKeywords": false,
+      "keywordHits": [],
       "mentionsPageData": true,
       "notablePathTokens": [
         "../../index.html",
@@ -797,6 +858,8 @@
         "node.js",
         "o.setting.html",
         "r.opt.xml",
+        "r.setting.skinOption.$.html",
+        "r.setting.skinOption.pdf",
         "s.html",
         "search.xml",
         "skinoption.xml",
@@ -810,14 +873,15 @@
         "this.stringify.xml",
         "this.xml",
         "window.HTML",
-        "window.XML"
+        "window.XML",
+        "{}createjs.HTML"
       ]
     },
     {
       "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/skin.js?c=20260312140828",
       "bytes": 37958,
       "sha256": "11d04a0ed86eb49eacc6fa3f291af873ac72893bcd6891648aff636151f49f34",
-      "assetCount": 19,
+      "assetCount": 20,
       "assets": [
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/!==n?($(i).css",
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/),$(i).css",
@@ -829,6 +893,7 @@
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/),$(e).css",
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/,0),$(e).css",
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/,t),$(e).css",
+        "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/book.pdf",
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/help-custom.html?link=off",
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/html5print.html?start=",
         "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/html5custom/language-custom.xml?c=",
@@ -848,11 +913,17 @@
       "imageAssets": [
         "https://www.seiburailway.jp/thumbnail.jpg?c="
       ],
+      "pdfAssets": [
+        "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/book.pdf"
+      ],
+      "trainNumberLikeTokenCount": 0,
       "trainNumberLikeTokens": [],
-      "containsTimetableKeywords": false,
+      "keywordHits": [],
       "mentionsPageData": true,
       "notablePathTokens": [
+        "$.xml",
         "/thumbnail.jpg",
+        "book.pdf",
         "help-custom.html",
         "html5custom/language-custom.xml",
         "html5print.html",
@@ -878,8 +949,10 @@
         "https://www.seiburailway.jp/railways/2026digitaltimetable/pageindices/images/arrowLeft.png",
         "https://www.seiburailway.jp/railways/2026digitaltimetable/pageindices/images/arrowRight.png"
       ],
+      "pdfAssets": [],
+      "trainNumberLikeTokenCount": 0,
       "trainNumberLikeTokens": [],
-      "containsTimetableKeywords": false,
+      "keywordHits": [],
       "mentionsPageData": true,
       "notablePathTokens": [
         "images/arrowLeft.png",
@@ -888,7 +961,31 @@
       ]
     }
   ],
-  "errors": [],
+  "errors": [
+    {
+      "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/book.xml",
+      "error": "curl failed (22) for https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/book.xml: curl: (22) The requested URL returned error: 404\n"
+    },
+    {
+      "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/search.xml",
+      "error": "curl failed (22) for https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/search.xml: curl: (22) The requested URL returned error: 404\n"
+    },
+    {
+      "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/t.xml",
+      "error": "curl failed (22) for https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/t.xml: curl: (22) The requested URL returned error: 404\n"
+    },
+    {
+      "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/html5setting.xml",
+      "error": "curl failed (22) for https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/html5setting.xml: curl: (22) The requested URL returned error: 404\n"
+    },
+    {
+      "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/skinoption.xml",
+      "error": "curl failed (22) for https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/skinoption.xml: curl: (22) The requested URL returned error: 404\n"
+    }
+  ],
+  "searchableConfigResources": [],
+  "viewerReachable": true,
+  "configLocationStillUnresolved": true,
   "sourceUsableForFurtherParsing": true,
-  "note": "Discovery only. No same-train edge is emitted until a single current official published train column is parsed exactly."
+  "note": "Discovery report is retained even when guessed config paths miss. No same-train edge is emitted until a single current official published train column is parsed exactly."
 }
