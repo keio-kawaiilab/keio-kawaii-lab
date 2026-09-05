@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-09-05T08:44:17.116Z",
-  "sourceManifestFetchedAt": "2026-09-05T14:31:12+09:00",
+  "generatedAt": "2026-09-05T08:49:48.429Z",
+  "sourceManifestFetchedAt": "2026-09-05T17:50:00+09:00",
   "methodology": "Replicates route-planner same-name/850m grouping and explicit odpt:connectingStation edges; only timetable-supported railways are retained. Duplicate sources for the same place/railway pair are merged.",
   "summary": {
-    "supportedRailways": 124,
-    "transferPlaces": 409,
-    "transferRailwayPairs": 960,
+    "supportedRailways": 126,
+    "transferPlaces": 413,
+    "transferRailwayPairs": 969,
     "sameOperatorPairs": 424,
-    "crossOperatorPairs": 536
+    "crossOperatorPairs": 545
   },
   "operatorPairCounts": {
     "JR東日本 × JR東日本": 261,
@@ -29,6 +29,7 @@
     "JR東日本 × 小田急電鉄": 11,
     "東京都交通局 × 東京都交通局": 10,
     "東京メトロ × 東武鉄道": 9,
+    "京成電鉄 × 北総鉄道": 8,
     "東京メトロ × 東急電鉄": 8,
     "JR東日本 × 相模鉄道": 7,
     "京王電鉄 × 京王電鉄": 7,
@@ -74,6 +75,7 @@
     "京急電鉄 × 相模鉄道": 1,
     "京急電鉄 × 東急電鉄": 1,
     "京急電鉄 × 東京都交通局": 1,
+    "京成電鉄 × 芝山鉄道": 1,
     "京成電鉄 × 東武鉄道": 1,
     "小田急電鉄 × 横浜市営地下鉄": 1,
     "小田急電鉄 × 西武鉄道": 1,
@@ -328,6 +330,26 @@
       "distanceMeters": 0,
       "sources": [
         "connecting-station",
+        "same-place-group"
+      ]
+    },
+    {
+      "placeKey": "group:印旛日本医大:0",
+      "placeLabel": "印旛日本医大",
+      "railwayA": "manual.Railway:Hokuso.Hokuso",
+      "railwayAName": "北総線",
+      "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
+      "railwayBName": "成田スカイアクセス線",
+      "sameOperator": false,
+      "stationIdsA": [
+        "manual.Station:keisei.印旛日本医大"
+      ],
+      "stationIdsB": [
+        "manual.Station:keisei.印旛日本医大"
+      ],
+      "fallbackMinutes": 5,
+      "distanceMeters": null,
+      "sources": [
         "same-place-group"
       ]
     },
@@ -2385,6 +2407,66 @@
       "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
       "railwayBName": "成田スカイアクセス線",
       "sameOperator": true,
+      "stationIdsA": [
+        "odpt.Station:Keisei.Main.KeiseiTakasago"
+      ],
+      "stationIdsB": [
+        "odpt.Station:Keisei.Main.KeiseiTakasago"
+      ],
+      "fallbackMinutes": 5,
+      "distanceMeters": null,
+      "sources": [
+        "same-place-group"
+      ]
+    },
+    {
+      "placeKey": "group:京成高砂:0",
+      "placeLabel": "京成高砂",
+      "railwayA": "manual.Railway:Hokuso.Hokuso",
+      "railwayAName": "北総線",
+      "railwayB": "odpt.Railway:Keisei.Main",
+      "railwayBName": "京成本線",
+      "sameOperator": false,
+      "stationIdsA": [
+        "odpt.Station:Keisei.Main.KeiseiTakasago"
+      ],
+      "stationIdsB": [
+        "odpt.Station:Keisei.Main.KeiseiTakasago"
+      ],
+      "fallbackMinutes": 5,
+      "distanceMeters": null,
+      "sources": [
+        "same-place-group"
+      ]
+    },
+    {
+      "placeKey": "group:京成高砂:0",
+      "placeLabel": "京成高砂",
+      "railwayA": "manual.Railway:Hokuso.Hokuso",
+      "railwayAName": "北総線",
+      "railwayB": "odpt.Railway:Keisei.Kanamachi",
+      "railwayBName": "金町線",
+      "sameOperator": false,
+      "stationIdsA": [
+        "odpt.Station:Keisei.Main.KeiseiTakasago"
+      ],
+      "stationIdsB": [
+        "odpt.Station:Keisei.Main.KeiseiTakasago"
+      ],
+      "fallbackMinutes": 5,
+      "distanceMeters": null,
+      "sources": [
+        "same-place-group"
+      ]
+    },
+    {
+      "placeKey": "group:京成高砂:0",
+      "placeLabel": "京成高砂",
+      "railwayA": "manual.Railway:Hokuso.Hokuso",
+      "railwayAName": "北総線",
+      "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
+      "railwayBName": "成田スカイアクセス線",
+      "sameOperator": false,
       "stationIdsA": [
         "odpt.Station:Keisei.Main.KeiseiTakasago"
       ],
@@ -7131,6 +7213,46 @@
       ]
     },
     {
+      "placeKey": "group:新鎌ヶ谷:1",
+      "placeLabel": "新鎌ヶ谷",
+      "railwayA": "manual.Railway:Hokuso.Hokuso",
+      "railwayAName": "北総線",
+      "railwayB": "odpt.Railway:Keisei.Matsudo",
+      "railwayBName": "松戸線",
+      "sameOperator": false,
+      "stationIdsA": [
+        "manual.Station:keisei.新鎌ヶ谷"
+      ],
+      "stationIdsB": [
+        "manual.Station:keisei.新鎌ヶ谷"
+      ],
+      "fallbackMinutes": 5,
+      "distanceMeters": null,
+      "sources": [
+        "same-place-group"
+      ]
+    },
+    {
+      "placeKey": "group:新鎌ヶ谷:1",
+      "placeLabel": "新鎌ヶ谷",
+      "railwayA": "manual.Railway:Hokuso.Hokuso",
+      "railwayAName": "北総線",
+      "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
+      "railwayBName": "成田スカイアクセス線",
+      "sameOperator": false,
+      "stationIdsA": [
+        "manual.Station:keisei.新鎌ヶ谷"
+      ],
+      "stationIdsB": [
+        "manual.Station:keisei.新鎌ヶ谷"
+      ],
+      "fallbackMinutes": 5,
+      "distanceMeters": null,
+      "sources": [
+        "same-place-group"
+      ]
+    },
+    {
       "placeKey": "group:新丸子:0",
       "placeLabel": "新丸子",
       "railwayA": "odpt.Railway:Tokyu.Meguro",
@@ -11345,6 +11467,26 @@
       "distanceMeters": 66,
       "sources": [
         "connecting-station",
+        "same-place-group"
+      ]
+    },
+    {
+      "placeKey": "group:千葉ニュータウン中央:0",
+      "placeLabel": "千葉ニュータウン中央",
+      "railwayA": "manual.Railway:Hokuso.Hokuso",
+      "railwayAName": "北総線",
+      "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
+      "railwayBName": "成田スカイアクセス線",
+      "sameOperator": false,
+      "stationIdsA": [
+        "manual.Station:keisei.千葉ニュータウン中央"
+      ],
+      "stationIdsB": [
+        "manual.Station:keisei.千葉ニュータウン中央"
+      ],
+      "fallbackMinutes": 5,
+      "distanceMeters": null,
+      "sources": [
         "same-place-group"
       ]
     },
@@ -16162,6 +16304,26 @@
       ]
     },
     {
+      "placeKey": "group:東松戸:1",
+      "placeLabel": "東松戸",
+      "railwayA": "manual.Railway:Hokuso.Hokuso",
+      "railwayAName": "北総線",
+      "railwayB": "odpt.Railway:Keisei.NaritaSkyAccess",
+      "railwayBName": "成田スカイアクセス線",
+      "sameOperator": false,
+      "stationIdsA": [
+        "manual.Station:keisei.東松戸"
+      ],
+      "stationIdsB": [
+        "manual.Station:keisei.東松戸"
+      ],
+      "fallbackMinutes": 5,
+      "distanceMeters": null,
+      "sources": [
+        "same-place-group"
+      ]
+    },
+    {
       "placeKey": "group:東新宿:0",
       "placeLabel": "東新宿",
       "railwayA": "odpt.Railway:Toei.Oedo",
@@ -16241,6 +16403,26 @@
       "distanceMeters": 127,
       "sources": [
         "connecting-station"
+      ]
+    },
+    {
+      "placeKey": "group:東成田:0",
+      "placeLabel": "東成田",
+      "railwayA": "manual.Railway:Shibayama.Shibayama",
+      "railwayAName": "芝山鉄道線",
+      "railwayB": "odpt.Railway:Keisei.HigashiNarita",
+      "railwayBName": "東成田線",
+      "sameOperator": false,
+      "stationIdsA": [
+        "manual.Station:keisei.東成田"
+      ],
+      "stationIdsB": [
+        "manual.Station:keisei.東成田"
+      ],
+      "fallbackMinutes": 5,
+      "distanceMeters": null,
+      "sources": [
+        "same-place-group"
       ]
     },
     {
