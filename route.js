@@ -175,7 +175,7 @@
     });
     var networkPromises=timetableNetworks.filter(function(entry){
       var matching=ids.filter(function(railwayId){return entry.railways.has(railwayId);});
-      return matching.length>=2;
+      return matching.length>=1;
     }).map(function(entry){
       if(timetableNetworkCache.has(entry.id))return timetableNetworkCache.get(entry.id);
       var promise=fetchJson(entry.url+"?v="+encodeURIComponent(entry.info.trips||"")).then(function(data){return{entry:entry,data:data};});
@@ -204,10 +204,10 @@
     var fromSet=new Set(fromNodes||[]),toSet=new Set(toNodes||[]),best=null;
     table.trips.forEach(function(trip){
       if(!Array.isArray(trip)||!calendarMatches(calendars[trip[0]],service))return;
-      var stops=trip[3]||[],links=trip[4]||[],boarding=-1,departure=null;
+      var stops=trip[3]||[],links=trip[4]||[],boarding=-1,departure=null,boardingStation=null;
       for(var i=0;i<stops.length;i++){
         var stop=stops[i]||[],stationId=stations[stop[0]],dep=stop[2]!=null?Number(stop[2]):Number(stop[1]);
-        if(fromSet.has(stationId)&&Number.isFinite(dep)&&dep>=earliest){boarding=i;departure=dep;break;}
+        if(fromSet.has(stationId)&&Number.isFinite(dep)&&dep>=earliest){boarding=i;departure=dep;boardingStation=stationId;break;}
       }
       if(boarding<0)return;
       for(var j=boarding+1;j<stops.length;j++){
@@ -217,11 +217,49 @@
         for(var linkIndex=boarding;linkIndex<j;linkIndex++){
           (links[linkIndex]||[]).forEach(function(railwayIndex){var id=railways[railwayIndex];if(id)used.push(id);});
         }
-        used=collapseRailways(used);if(!sameRailwaySequence(used,desiredRailways))continue;
-        var candidate={departure:departure,arrival:arrival,trainType:types[trip[1]]||"",trainNumber:String(trip[2]||""),timeBasis:"train-timetable-network",routeRailways:used,observedStops:j-boarding+1};
+        used=collapseRailways(used);
+        if(desiredRailways&&desiredRailways.length&&!sameRailwaySequence(used,desiredRailways))continue;
+        var candidate={departure:departure,arrival:arrival,trainType:types[trip[1]]||"",trainNumber:String(trip[2]||""),timeBasis:"train-timetable-network",routeRailways:used,observedStops:j-boarding+1,fromStation:boardingStation,toStation:nextStation};
         if(!best||candidate.arrival<best.arrival||(candidate.arrival===best.arrival&&candidate.departure>best.departure))best=candidate;
         break;
       }
+    });
+    return best;
+  }
+  function railwayLabel(railwayId){
+    var item=model&&model.railwayById&&model.railwayById.get(railwayId),value=item&&item["odpt:railwayTitle"];
+    if(typeof value==="string"&&value)return value;
+    if(value&&typeof value==="object"&&(value.ja||value.en))return value.ja||value.en;
+    return String(item&&item["dc:title"]||railwayId||"");
+  }
+  function railwayColor(railwayId){
+    var item=model&&model.railwayById&&model.railwayById.get(railwayId);
+    return safeColor(item&&(item["odpt:color"]||item["odpt:lineColor"]||item.color));
+  }
+  function directNetworkTimedItinerary(fromGroup,toGroup,timetables,earliest,service){
+    var networks=timetables&&timetables.__networks||[],best=null;
+    networks.forEach(function(row){
+      if(!row||!row.data)return;
+      var trip=networkTrip(row.data,fromGroup.nodes,toGroup.nodes,earliest,service,null);if(!trip||!trip.routeRailways.length)return;
+      var labels=[];trip.routeRailways.forEach(function(railwayId){var label=railwayLabel(railwayId);if(label&&labels.indexOf(label)<0)labels.push(label);});
+      var firstRailway=trip.routeRailways[0];
+      var composite={
+        railway:firstRailway,
+        label:(labels.length?labels.join("・"):"直通列車")+"（直通）",
+        color:railwayColor(firstRailway),
+        from:trip.fromStation,
+        to:trip.toStation,
+        stops:Math.max(1,trip.observedStops-1),
+        transferBefore:false,
+        departure:trip.departure,
+        arrival:trip.arrival,
+        trainType:trip.trainType,
+        trainNumber:trip.trainNumber,
+        timeBasis:trip.timeBasis,
+        networkDirect:true
+      };
+      var timed={segments:[composite],departure:trip.departure,arrival:trip.arrival,duration:trip.arrival-trip.departure,transfers:0,estimatedArrival:false,networkDirect:true};
+      if(!best||timed.arrival<best.arrival||(timed.arrival===best.arrival&&timed.departure>best.departure))best=timed;
     });
     return best;
   }
@@ -314,6 +352,8 @@
     var date=selectedDate(),service=serviceType(date),startMinutes=departureMinutes(date);
     loadTimetables(segments).then(function(timetables){
       var choices=timedPaths.map(function(candidate){return{path:candidate,timed:bestTimedItinerary(candidate,fromResolved.group,toResolved.group,timetables,startMinutes,service)};}).filter(function(choice){return choice.timed;});
+      var exactDirect=directNetworkTimedItinerary(fromResolved.group,toResolved.group,timetables,startMinutes,service);
+      if(exactDirect)choices.push({path:timedPath,timed:exactDirect});
       choices.sort(function(first,second){return first.timed.arrival-second.timed.arrival||second.timed.departure-first.timed.departure||first.timed.transfers-second.timed.transfers;});
       var selected=choices[0],timed=selected&&selected.timed,selectedPath=selected&&selected.path||timedPath;
       if(timed)renderPath(fromResolved.group,toResolved.group,selectedPath,timed,timed.estimatedArrival?"一部路線の到着時刻は、ODPT駅時刻表を駅順に照合して待避・長時間停車を反映した目安です。":"");
