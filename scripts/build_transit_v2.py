@@ -447,13 +447,20 @@ def classify_published_routes(fragments: list[dict[str, Any]], indexes: dict[str
 
 
 def physical_station_match(a: str, b: str, indexes: dict[str, Any], station_name: str) -> bool:
+    """Require both fragments to actually meet at the verified boundary station.
+
+    A line-local reconstructed fragment that stops upstream of the junction must
+    never be aligned to a downstream fragment merely because its timestamp is
+    close.  That previously allowed physically impossible candidates such as
+    Seijogakuen-mae -> Sagami-Ono at the same minute.
+    """
+    ta = str(indexes['stationTitle'].get(a) or '')
+    tb = str(indexes['stationTitle'].get(b) or '')
+    if station_name:
+        return bool(ta == station_name and tb == station_name)
     if a == b:
         return True
-    ta = indexes['stationTitle'].get(a, '')
-    tb = indexes['stationTitle'].get(b, '')
-    if ta and tb and ta == tb:
-        return True
-    return bool(station_name and (ta == station_name or tb == station_name))
+    return bool(ta and tb and ta == tb)
 
 
 def align_inferred_edges(fragments: list[dict[str, Any]], indexes: dict[str, Any], existing_edges: list[dict[str, Any]], unresolved: list[dict[str, Any]]) -> list[dict[str, Any]]:
