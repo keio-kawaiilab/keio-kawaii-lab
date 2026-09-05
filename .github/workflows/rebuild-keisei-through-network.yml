@@ -5,10 +5,14 @@ on:
   push:
     paths:
       - 'scripts/build_keisei_network_timetable.py'
+      - 'scripts/build_keisei_extended_network.py'
       - 'scripts/test_keisei_through_network.py'
       - 'scripts/test_keisei_route_ui.js'
       - 'route.js'
       - 'route-core.js'
+      - 'data/transit/hokuso/**'
+      - 'data/transit/shibayama/**'
+      - 'data/transit/keisei/external-through-boundaries.json'
       - 'data/transit-v2/service-boundaries.json'
       - '.github/workflows/rebuild-keisei-through-network.yml'
 
@@ -40,6 +44,7 @@ jobs:
         run: |
           python -m py_compile \
             scripts/build_keisei_network_timetable.py \
+            scripts/build_keisei_extended_network.py \
             scripts/test_keisei_through_network.py
           node --check route-core.js
           node --check route.js
@@ -61,7 +66,7 @@ jobs:
           PY
 
       - name: Rebuild exact cross-operator network
-        run: python scripts/build_keisei_network_timetable.py
+        run: python scripts/build_keisei_extended_network.py
 
       - name: Validate identity and boundary policy
         run: python scripts/test_keisei_through_network.py
@@ -81,7 +86,10 @@ jobs:
             'skippedUnderTwoMappedStops': report.get('skippedUnderTwoMappedStops'),
             'unresolvedPairCount': report.get('unresolvedPairCount'),
             'supportedRailwayCount': report.get('supportedRailwayCount'),
+            'unsupportedStopRows': report.get('unsupportedStopRows'),
+            'unsupportedStations': report.get('unsupportedStations'),
             'crossOperatorTransitions': report.get('crossOperatorTransitions'),
+            'externalLineProjection': report.get('externalLineProjection'),
             'identityPolicy': report.get('identityPolicy')
           }, ensure_ascii=False, indent=2))
           PY
@@ -92,7 +100,13 @@ jobs:
           git add \
             data/transit/keisei/timetable-index.json \
             data/transit/keisei/timetables/official-network.json \
-            data/transit/keisei/official-network-report.json
+            data/transit/keisei/official-network-report.json \
+            data/transit/hokuso/timetable-index.json \
+            data/transit/hokuso/coverage-report.json \
+            data/transit/hokuso/timetables/official-hokuso.json \
+            data/transit/shibayama/timetable-index.json \
+            data/transit/shibayama/coverage-report.json \
+            data/transit/shibayama/timetables/official-shibayama.json
           if git diff --cached --quiet; then
             echo 'No Keisei through-network snapshot changes.'
             exit 0
