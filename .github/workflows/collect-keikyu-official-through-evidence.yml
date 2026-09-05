@@ -9,6 +9,7 @@ on:
       - 'scripts/keikyu_generated_evidence.py'
       - 'scripts/reviewed_train_evidence.py'
       - 'scripts/keikyu_internal_official_evidence.py'
+      - 'scripts/keikyu_internal_official_evidence_selective.py'
       - 'scripts/keikyu_internal_generated_evidence.py'
       - 'scripts/test_keikyu_internal_official_evidence.py'
       - 'scripts/test_keikyu_internal_generated_evidence.py'
@@ -52,7 +53,7 @@ jobs:
             --output /tmp/keikyu-official-train-evidence.json
       - name: Extract strict Keikyu internal evidence
         run: |
-          python scripts/keikyu_internal_official_evidence.py \
+          python scripts/keikyu_internal_official_evidence_selective.py \
             --output /tmp/keikyu-internal-official-train-evidence.json
       - name: Audit production projection
         run: |
