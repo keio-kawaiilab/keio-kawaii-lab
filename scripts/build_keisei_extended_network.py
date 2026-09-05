@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-"""Safely extend the proven Keisei exact-network builder to Hokuso/Shibayama.
+"""Build the complete Keisei-led exact timetable family.
 
-Identity still comes only from a retained Keisei official one-train page. This
-wrapper adds missing physical-line topology and verified operator boundaries;
-it never joins trains by number or by close times.
+The retained Keisei official one-train page is the sole train-identity source.
+The base builder materializes each physical train across Keisei, Toei Asakusa
+and Keikyu. This extension adds Hokusō and Shibayama topology/boundaries and
+then projects *every* Keisei/Hokusō/Shibayama per-line timetable back out of
+that exact network. No per-line file is allowed to re-infer railway assignment
+from a shared station ID, train number, or time proximity.
 """
 from __future__ import annotations
 
@@ -16,7 +19,13 @@ ROOT = Path('.')
 BASE_SCRIPT = ROOT / 'scripts/build_keisei_network_timetable.py'
 NETWORK_PATH = ROOT / 'data/transit/keisei/timetables/official-network.json'
 REPORT_PATH = ROOT / 'data/transit/keisei/official-network-report.json'
+KEISEI_INDEX_PATH = ROOT / 'data/transit/keisei/timetable-index.json'
+MANIFEST_PATH = ROOT / 'data/transit/manifest.json'
 EXTERNAL_BOUNDARIES = ROOT / 'data/transit/keisei/external-through-boundaries.json'
+KEISEI_ENTITIES = ROOT / 'data/transit/keisei/entities.json'
+TOEI_ENTITIES = ROOT / 'data/transit/toei/entities.json'
+KEIKYU_ENTITIES = ROOT / 'data/transit/keikyu/entities.json'
+TOPOLOGY = ROOT / 'data/transit-sources/manual-topology.json'
 
 HOKUSO = 'manual.Railway:Hokuso.Hokuso'
 SHIBAYAMA = 'manual.Railway:Shibayama.Shibayama'
@@ -25,6 +34,17 @@ KEISEI_NSA = 'odpt.Railway:Keisei.NaritaSkyAccess'
 KEISEI_HIGASHI_NARITA = 'odpt.Railway:Keisei.HigashiNarita'
 NARITA_AIRPORT = 'odpt.Station:Keisei.NaritaSkyAccess.NaritaAirportTerminal1'
 HANEDA_T12 = 'odpt.Station:Keikyu.Airport.HanedaAirportTerminal1and2'
+
+KEISEI_LINE_FILES = {
+    'odpt.Railway:Keisei.Main': 'timetables/official-main.json',
+    'odpt.Railway:Keisei.Oshiage': 'timetables/official-oshiage.json',
+    'odpt.Railway:Keisei.Kanamachi': 'timetables/official-kanamachi.json',
+    'odpt.Railway:Keisei.Chiba': 'timetables/official-chiba.json',
+    'odpt.Railway:Keisei.Chihara': 'timetables/official-chihara.json',
+    'odpt.Railway:Keisei.HigashiNarita': 'timetables/official-higashinarita.json',
+    'odpt.Railway:Keisei.NaritaSkyAccess': 'timetables/official-narita-sky-access.json',
+    'odpt.Railway:Keisei.Matsudo': 'timetables/official-matsudo.json',
+}
 
 HOKUSO_STATIONS = [
     ('京成高砂', 'odpt.Station:Keisei.Main.KeiseiTakasago'),
@@ -141,6 +161,30 @@ def install_extensions(module) -> None:
     module.shortest_line_paths = shortest_line_paths
 
 
+def load_lines(module) -> dict[str, dict[str, Any]]:
+    lines, _ = module.build_lines(
+        load_json(KEISEI_ENTITIES),
+        load_json(TOEI_ENTITIES),
+        load_json(KEIKYU_ENTITIES),
+        load_json(TOPOLOGY),
+    )
+    return lines
+
+
+def station_names_by_id(module, lines: dict[str, dict[str, Any]]) -> dict[str, str]:
+    result: dict[str, str] = {}
+    for line in lines.values():
+        for name, station_id in zip(line.get('names') or [], line.get('stationIds') or []):
+            normalized = module.normalize_name(name)
+            if not station_id or not normalized:
+                continue
+            previous = result.get(station_id)
+            if previous is not None and previous != normalized:
+                raise RuntimeError(f'conflicting physical station names for {station_id}: {previous} / {normalized}')
+            result[station_id] = normalized
+    return result
+
+
 def monotonic_runs(rows: list[list[Any]]) -> list[list[list[Any]]]:
     if len(rows) < 2:
         return []
@@ -165,15 +209,22 @@ def monotonic_runs(rows: list[list[Any]]) -> list[list[list[Any]]]:
     return runs
 
 
-def project_line(network: dict[str, Any], railway_id: str, station_pairs: list[tuple[str, str]]) -> dict[str, Any]:
-    """Project only segments the exact network explicitly assigns to railway_id.
+def project_line(
+    network: dict[str, Any],
+    railway_id: str,
+    station_pairs: list[tuple[str, str]],
+    names_by_network_station_id: dict[str, str] | None = None,
+) -> dict[str, Any]:
+    """Project only segments explicitly assigned to railway_id by exact network.
 
-    Hokusō and Narita Sky Access share several station IDs. Looking only at
-    station membership would therefore mislabel an Access train as a Hokusō
-    train. The exact network's per-segment railway links are authoritative.
+    Station names, not raw line-local IDs, bridge boundary stations that have a
+    different Station ID on the adjacent line. Railway assignment itself still
+    comes only from the exact network's per-segment link array.
     """
     line_stations = [station_id for _, station_id in station_pairs]
-    line_index = {station_id: index for index, station_id in enumerate(line_stations)}
+    line_names = [str(name) for name, _ in station_pairs]
+    line_index_by_id = {station_id: index for index, station_id in enumerate(line_stations)}
+    line_index_by_name = {name: index for index, name in enumerate(line_names)}
     network_stations = network.get('stations') or []
     network_railways = network.get('railways') or []
     projected: list[list[Any]] = []
@@ -185,10 +236,13 @@ def project_line(network: dict[str, Any], railway_id: str, station_pairs: list[t
         if not isinstance(source_index, int) or not (0 <= source_index < len(network_stations)):
             return None
         station_id = network_stations[source_index]
-        if station_id not in line_index:
+        target_index = line_index_by_id.get(station_id)
+        if target_index is None and names_by_network_station_id is not None:
+            target_index = line_index_by_name.get(names_by_network_station_id.get(station_id, ''))
+        if target_index is None:
             return None
         return [
-            line_index[station_id],
+            target_index,
             stop[1] if len(stop) > 1 else None,
             stop[2] if len(stop) > 2 else None,
         ]
@@ -239,10 +293,11 @@ def project_line(network: dict[str, Any], railway_id: str, station_pairs: list[t
             ])
 
     return {
-        'version': 2,
+        'version': 3,
         'timeBasis': 'train-timetable',
-        'source': 'Keisei official one-train timetable / keisei.ekitan.com',
+        'source': 'Keisei official one-train timetable / exact network projection',
         'destinationAuthoritative': False,
+        'identityBasis': 'same official one-train page / exact railway-link projection',
         'railway': railway_id,
         'stations': line_stations,
         'calendars': network.get('calendars') or [],
@@ -251,19 +306,81 @@ def project_line(network: dict[str, Any], railway_id: str, station_pairs: list[t
     }
 
 
-def write_operator_projection(slug: str, railway_id: str, station_pairs: list[tuple[str, str]], network: dict[str, Any]) -> int:
-    table = project_line(network, railway_id, station_pairs)
+def projection_connections(table: dict[str, Any]) -> int:
+    return sum(max(0, len(trip[3] or []) - 1) for trip in table.get('trips') or [] if isinstance(trip, list) and len(trip) >= 4)
+
+
+def write_keisei_projections(
+    module,
+    network: dict[str, Any],
+    lines: dict[str, dict[str, Any]],
+    names_by_id: dict[str, str],
+) -> dict[str, dict[str, int]]:
+    index = load_json(KEISEI_INDEX_PATH)
+    if not isinstance(index, dict):
+        raise RuntimeError('invalid Keisei timetable index')
+    existing_lines = index.get('lines') if isinstance(index.get('lines'), dict) else {}
+    output_lines: dict[str, Any] = {}
+    summary: dict[str, dict[str, int]] = {}
+
+    for railway_id, filename in KEISEI_LINE_FILES.items():
+        line = lines.get(railway_id)
+        if not line:
+            raise RuntimeError(f'missing exact topology for {railway_id}')
+        station_pairs = list(zip(line.get('names') or [], line.get('stationIds') or []))
+        if len(station_pairs) < 2:
+            raise RuntimeError(f'invalid station order for {railway_id}')
+        table = project_line(network, railway_id, station_pairs, names_by_id)
+        trip_count = len(table.get('trips') or [])
+        connections = projection_connections(table)
+        if trip_count <= 0 or connections <= 0:
+            raise RuntimeError(f'empty exact projection for {railway_id}: trips={trip_count} connections={connections}')
+        dump_json(ROOT / 'data/transit/keisei' / filename, table)
+        prior = existing_lines.get(railway_id) if isinstance(existing_lines, dict) else None
+        row = dict(prior) if isinstance(prior, dict) else {}
+        row.update({
+            'file': filename,
+            'trips': trip_count,
+            'connections': connections,
+            'timeBasis': 'train-timetable',
+            'status': 'official-exact-network-projection',
+            'identityBasis': 'official-one-train-page',
+        })
+        output_lines[railway_id] = row
+        summary[railway_id] = {'trips': trip_count, 'connections': connections}
+
+    index['version'] = max(3, int(index.get('version') or 0))
+    index['source'] = 'Keisei official one-train timetable / exact railway-link projection'
+    index['lines'] = output_lines
+    # Base builder owns the network descriptor; preserve it verbatim.
+    if not isinstance(index.get('network'), dict):
+        raise RuntimeError('exact network descriptor disappeared from Keisei timetable index')
+    dump_json(KEISEI_INDEX_PATH, index)
+    return summary
+
+
+def write_operator_projection(
+    slug: str,
+    railway_id: str,
+    station_pairs: list[tuple[str, str]],
+    network: dict[str, Any],
+    names_by_id: dict[str, str],
+) -> int:
+    table = project_line(network, railway_id, station_pairs, names_by_id)
     filename = f'timetables/official-{slug}.json'
     dump_json(ROOT / f'data/transit/{slug}/{filename}', table)
     trip_count = len(table['trips'])
+    connections = projection_connections(table)
     index = {
         'version': 3,
         'lines': {
             railway_id: {
                 'file': filename,
                 'timeBasis': 'train-timetable',
-                'status': 'official-through-snapshot',
+                'status': 'official-exact-network-projection',
+                'identityBasis': 'official-one-train-page',
                 'trips': trip_count,
+                'connections': connections,
             }
         },
     }
@@ -275,10 +392,49 @@ def write_operator_projection(slug: str, railway_id: str, station_pairs: list[tu
         'railway': railway_id,
         'stations': len(station_pairs),
         'trips': trip_count,
-        'note': 'Covers only exact-network segments explicitly assigned to this railway; no shared-station or time-proximity inference is used.',
+        'connections': connections,
+        'note': 'Covers only exact-network segments explicitly assigned to this railway; no shared-station, train-number, or time-proximity inference is used.',
     }
     dump_json(ROOT / f'data/transit/{slug}/coverage-report.json', coverage)
     return trip_count
+
+
+def update_manifest(report: dict[str, Any], keisei_projection: dict[str, dict[str, int]], hokuso_trips: int, shibayama_trips: int) -> None:
+    if not MANIFEST_PATH.exists():
+        return
+    manifest = load_json(MANIFEST_PATH)
+    operators = manifest.get('operators') if isinstance(manifest, dict) else None
+    if not isinstance(operators, dict):
+        return
+
+    keisei = operators.get('keisei')
+    if isinstance(keisei, dict):
+        connections = sum(int(row.get('connections') or 0) for row in keisei_projection.values())
+        keisei['timetableStatus'] = 'ok'
+        keisei['trainTimetables'] = int(report.get('sourceTrainCount') or 0)
+        keisei['timetableLines'] = len(keisei_projection)
+        keisei['timetableConnections'] = connections
+        keisei['inferredConnections'] = 0
+        keisei['departures'] = connections
+        keisei['timetableSource'] = 'Keisei official one-train timetable / exact railway-link projection'
+        keisei['identityBasis'] = 'official-one-train-page'
+
+    for slug, trips in (('hokuso', hokuso_trips), ('shibayama', shibayama_trips)):
+        row = operators.get(slug)
+        if not isinstance(row, dict):
+            continue
+        row['trainTimetables'] = int(trips)
+        row['timetableLines'] = 1
+        row['timetableSource'] = 'Keisei official one-train timetable snapshot / exact railway-link projection'
+        row['identityBasis'] = 'official-one-train-page'
+
+    notes = manifest.get('notes')
+    if isinstance(notes, list):
+        exact_note = 'Keisei, Hokusō and Shibayama per-line timetable files are projections of the exact one-train network; shared station IDs, train numbers, or close times never establish line assignment or same-train identity.'
+        notes[:] = [note for note in notes if not (isinstance(note, str) and note.startswith('Hokusō and Shibayama timetable coverage is projected'))]
+        if exact_note not in notes:
+            notes.append(exact_note)
+    dump_json(MANIFEST_PATH, manifest)
 
 
 def endpoint_through_counts(network: dict[str, Any]) -> dict[str, int]:
@@ -314,10 +470,15 @@ def main() -> int:
 
     network = load_json(NETWORK_PATH)
     report = load_json(REPORT_PATH)
-    hokuso_trips = write_operator_projection('hokuso', HOKUSO, HOKUSO_STATIONS, network)
-    shibayama_trips = write_operator_projection('shibayama', SHIBAYAMA, SHIBAYAMA_STATIONS, network)
+    lines = load_lines(module)
+    names_by_id = station_names_by_id(module, lines)
+
+    keisei_projection = write_keisei_projections(module, network, lines, names_by_id)
+    hokuso_trips = write_operator_projection('hokuso', HOKUSO, HOKUSO_STATIONS, network, names_by_id)
+    shibayama_trips = write_operator_projection('shibayama', SHIBAYAMA, SHIBAYAMA_STATIONS, network, names_by_id)
     endpoint_counts = endpoint_through_counts(network)
 
+    report['keiseiLineProjection'] = keisei_projection
     report['externalLineProjection'] = {
         'hokusoTrips': hokuso_trips,
         'shibayamaTrips': shibayama_trips,
@@ -326,7 +487,10 @@ def main() -> int:
     }
     report['endpointThroughCounts'] = endpoint_counts
     dump_json(REPORT_PATH, report)
+    update_manifest(report, keisei_projection, hokuso_trips, shibayama_trips)
+
     print(json.dumps({
+        'keiseiLineProjection': keisei_projection,
         'externalLineProjection': report['externalLineProjection'],
         'endpointThroughCounts': endpoint_counts,
     }, ensure_ascii=False, indent=2))
