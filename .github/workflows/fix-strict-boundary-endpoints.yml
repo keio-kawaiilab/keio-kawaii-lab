@@ -1,0 +1,65 @@
+name: Fix strict inferred boundary endpoint matching
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-strict-boundary-endpoints.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Patch boundary endpoint matching
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/build_transit_v2.py')
+          s=p.read_text(encoding='utf-8')
+          old='''def physical_station_match(a: str, b: str, indexes: dict[str, Any], station_name: str) -> bool:\n    if a == b:\n        return True\n    ta = indexes['stationTitle'].get(a, '')\n    tb = indexes['stationTitle'].get(b, '')\n    if ta and tb and ta == tb:\n        return True\n    return bool(station_name and (ta == station_name or tb == station_name))\n'''
+          new='''def physical_station_match(a: str, b: str, indexes: dict[str, Any], station_name: str) -> bool:\n    \"\"\"Require both fragments to actually meet at the verified boundary station.\n\n    A line-local reconstructed fragment that stops upstream of the junction must\n    never be aligned to a downstream fragment merely because its timestamp is\n    close.  That previously allowed physically impossible candidates such as\n    Seijogakuen-mae -> Sagami-Ono at the same minute.\n    \"\"\"\n    ta = str(indexes['stationTitle'].get(a) or '')\n    tb = str(indexes['stationTitle'].get(b) or '')\n    if station_name:\n        return bool(ta == station_name and tb == station_name)\n    if a == b:\n        return True\n    return bool(ta and tb and ta == tb)\n'''
+          if old not in s:
+              raise SystemExit('target function not found')
+          p.write_text(s.replace(old,new),encoding='utf-8')
+          PY
+      - name: Add regression test
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/test_transit_v2_boundary_matching.py')
+          p.write_text('''#!/usr/bin/env python3\nimport sys\nfrom pathlib import Path\nROOT=Path(__file__).resolve().parents[1]\nsys.path.insert(0,str(ROOT/'scripts'))\nimport build_transit_v2 as b\nidx={\"stationTitle\":{\"upstream\":\"成城学園前\",\"boundaryA\":\"相模大野\",\"boundaryB\":\"相模大野\"}}\nassert b.physical_station_match(\"boundaryA\",\"boundaryB\",idx,\"相模大野\")\nassert not b.physical_station_match(\"upstream\",\"boundaryB\",idx,\"相模大野\")\nprint(\"strict boundary endpoint regression passed\")\n''',encoding='utf-8')
+          PY
+          python scripts/test_transit_v2_boundary_matching.py
+      - name: Rebuild strict outputs
+        run: |
+          python scripts/finalize_transit_v2.py
+          python scripts/audit_transit_v2.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          c=json.loads(Path('data/transit-v2/coverage.json').read_text(encoding='utf-8'))
+          e=json.loads(Path('data/transit-v2/same-train-edges.json').read_text(encoding='utf-8'))
+          # Safety policies must remain fail-closed.
+          p=e['policy']
+          assert p['timeGapMayEstablishTrainIdentity'] is False
+          assert p['trainNumberMayEstablishTrainIdentity'] is False
+          print('strict unresolved after endpoint fix:',c['summary']['unresolved'])
+          print('evidence-backed edges after endpoint fix:',c['summary']['evidenceBackedSameTrainEdges'])
+          PY
+      - name: Commit fix and regenerated DB
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/build_transit_v2.py scripts/test_transit_v2_boundary_matching.py data/transit-v2
+          git commit -m "Require inferred trains to meet at verified boundaries"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
