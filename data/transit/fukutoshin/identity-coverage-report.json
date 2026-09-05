@@ -1,18 +1,24 @@
 {
-  "version": 2,
-  "generatedAt": "2026-09-05T14:50:03.163Z",
-  "system": "Fukutoshin Line / former Line 13 through-service corridor",
+  "version": 4,
+  "generatedAt": "2026-09-05T15:42:08.526Z",
+  "system": "Fukutoshin Line / former Line 13 through-service corridor including Minatomirai and Sotetsu branches",
   "policy": {
     "runtimeInference": false,
     "timeGapMayEstablishTrainIdentity": false,
     "trainNumberMayEstablishTrainIdentity": false,
     "publishedDestinationAloneMayEstablishIdentity": false,
-    "singlePublishedOneTrainPageWithAdjacentBoundaryStopsMayEstablishIdentity": true
+    "singlePublishedOneTrainPageWithAdjacentBoundaryStopsMayEstablishIdentity": true,
+    "sameOfficialPrintedColumnAcrossBoundaryMayEstablishIdentity": true,
+    "sameTrainTimetableWithExplicitOtherOperatorStationAndExactBoundaryEndpointMayEstablishIdentity": true
   },
   "sourceIdentityRecords": 25163,
   "relevantIdentityRecords": {
     "manual.Railway:YokohamaMinatomirai.Minatomirai": 0,
     "odpt.Railway:Tokyu.Toyoko": 0,
+    "odpt.Railway:Tokyu.TokyuShinYokohama": 0,
+    "odpt.Railway:Sotetsu.SotetsuShinYokohama": 551,
+    "odpt.Railway:Sotetsu.Main": 812,
+    "odpt.Railway:Sotetsu.Izumino": 450,
     "odpt.Railway:TokyoMetro.Fukutoshin": 719,
     "odpt.Railway:Seibu.SeibuYurakucho": 0,
     "odpt.Railway:Seibu.Ikebukuro": 0,
@@ -28,7 +34,9 @@
       "boundarySource": "https://www.mm21railway.co.jp/station/yokohama/yokohama_wy.html",
       "authoritativeResolvedLinks": 0,
       "authoritativeUnresolvedReferences": 0,
-      "officialSingleTrainPageEvidence": 106,
+      "officialPublishedTrainEvidence": 106,
+      "explicitBoundaryEndpointEvidence": 0,
+      "endpointDirections": {},
       "authoritativeExactEvidence": 106,
       "generatedExactThroughRecords": 106,
       "generatedPublishedDestinationRecords": 0,
@@ -50,6 +58,140 @@
       }
     },
     {
+      "id": "toyoko-tokyushinyokohama-hiyoshi",
+      "label": "東急東横線↔東急新横浜線（日吉）",
+      "fromRailway": "odpt.Railway:Tokyu.Toyoko",
+      "toRailway": "odpt.Railway:Tokyu.TokyuShinYokohama",
+      "boundaryStatus": "verified",
+      "boundarySource": "https://www.tokyu.co.jp/railway/ty/",
+      "authoritativeResolvedLinks": 0,
+      "authoritativeUnresolvedReferences": 0,
+      "officialPublishedTrainEvidence": 162,
+      "explicitBoundaryEndpointEvidence": 0,
+      "endpointDirections": {},
+      "authoritativeExactEvidence": 162,
+      "generatedExactThroughRecords": 162,
+      "generatedPublishedDestinationRecords": 405,
+      "referenceDirections": {},
+      "exactIdentityReady": true,
+      "sourceA": {
+        "slug": "tokyu",
+        "label": "東急電鉄",
+        "operator": "odpt.Operator:Tokyu",
+        "timetableStatus": "departure-only",
+        "trainTimetables": 0
+      },
+      "sourceB": {
+        "slug": "tokyu",
+        "label": "東急電鉄",
+        "operator": "odpt.Operator:Tokyu",
+        "timetableStatus": "departure-only",
+        "trainTimetables": 0
+      }
+    },
+    {
+      "id": "tokyushinyokohama-sotetsushinyokohama-shinyokohama",
+      "label": "東急新横浜線↔相鉄新横浜線（新横浜）",
+      "fromRailway": "odpt.Railway:Tokyu.TokyuShinYokohama",
+      "toRailway": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
+      "boundaryStatus": "verified",
+      "boundarySource": "https://www.sotetsu.co.jp/train/stations/shinyokohama/",
+      "authoritativeResolvedLinks": 0,
+      "authoritativeUnresolvedReferences": 0,
+      "officialPublishedTrainEvidence": 376,
+      "explicitBoundaryEndpointEvidence": 0,
+      "endpointDirections": {},
+      "authoritativeExactEvidence": 376,
+      "generatedExactThroughRecords": 376,
+      "generatedPublishedDestinationRecords": 785,
+      "referenceDirections": {},
+      "exactIdentityReady": true,
+      "sourceA": {
+        "slug": "tokyu",
+        "label": "東急電鉄",
+        "operator": "odpt.Operator:Tokyu",
+        "timetableStatus": "departure-only",
+        "trainTimetables": 0
+      },
+      "sourceB": {
+        "slug": "sotetsu",
+        "label": "相模鉄道",
+        "operator": "odpt.Operator:Sotetsu",
+        "timetableStatus": "ok",
+        "trainTimetables": 2499
+      }
+    },
+    {
+      "id": "sotetsushinyokohama-main-nishiya",
+      "label": "相鉄新横浜線↔相鉄本線（西谷）",
+      "fromRailway": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
+      "toRailway": "odpt.Railway:Sotetsu.Main",
+      "boundaryStatus": "verified",
+      "boundarySource": "https://www.sotetsu.co.jp/train/stations/nishiya/",
+      "authoritativeResolvedLinks": 533,
+      "authoritativeUnresolvedReferences": 0,
+      "officialPublishedTrainEvidence": 0,
+      "explicitBoundaryEndpointEvidence": 0,
+      "endpointDirections": {},
+      "authoritativeExactEvidence": 533,
+      "generatedExactThroughRecords": 533,
+      "generatedPublishedDestinationRecords": 1151,
+      "referenceDirections": {
+        "odpt.Railway:Sotetsu.Main -> odpt.Railway:Sotetsu.SotetsuShinYokohama": 533,
+        "odpt.Railway:Sotetsu.SotetsuShinYokohama -> odpt.Railway:Sotetsu.Main": 533
+      },
+      "exactIdentityReady": true,
+      "sourceA": {
+        "slug": "sotetsu",
+        "label": "相模鉄道",
+        "operator": "odpt.Operator:Sotetsu",
+        "timetableStatus": "ok",
+        "trainTimetables": 2499
+      },
+      "sourceB": {
+        "slug": "sotetsu",
+        "label": "相模鉄道",
+        "operator": "odpt.Operator:Sotetsu",
+        "timetableStatus": "ok",
+        "trainTimetables": 2499
+      }
+    },
+    {
+      "id": "sotetsu-main-izumino-futamatagawa",
+      "label": "相鉄本線↔相鉄いずみ野線（二俣川）",
+      "fromRailway": "odpt.Railway:Sotetsu.Main",
+      "toRailway": "odpt.Railway:Sotetsu.Izumino",
+      "boundaryStatus": "verified",
+      "boundarySource": "https://www.sotetsu.co.jp/train/stations/futamatagawa/",
+      "authoritativeResolvedLinks": 450,
+      "authoritativeUnresolvedReferences": 0,
+      "officialPublishedTrainEvidence": 0,
+      "explicitBoundaryEndpointEvidence": 0,
+      "endpointDirections": {},
+      "authoritativeExactEvidence": 450,
+      "generatedExactThroughRecords": 450,
+      "generatedPublishedDestinationRecords": 717,
+      "referenceDirections": {
+        "odpt.Railway:Sotetsu.Izumino -> odpt.Railway:Sotetsu.Main": 450,
+        "odpt.Railway:Sotetsu.Main -> odpt.Railway:Sotetsu.Izumino": 450
+      },
+      "exactIdentityReady": true,
+      "sourceA": {
+        "slug": "sotetsu",
+        "label": "相模鉄道",
+        "operator": "odpt.Operator:Sotetsu",
+        "timetableStatus": "ok",
+        "trainTimetables": 2499
+      },
+      "sourceB": {
+        "slug": "sotetsu",
+        "label": "相模鉄道",
+        "operator": "odpt.Operator:Sotetsu",
+        "timetableStatus": "ok",
+        "trainTimetables": 2499
+      }
+    },
+    {
       "id": "toyoko-fukutoshin-shibuya",
       "label": "東急東横線↔副都心線（渋谷）",
       "fromRailway": "odpt.Railway:Tokyu.Toyoko",
@@ -58,7 +200,9 @@
       "boundarySource": "https://www.tokyu.co.jp/area/shibuya/station/",
       "authoritativeResolvedLinks": 0,
       "authoritativeUnresolvedReferences": 0,
-      "officialSingleTrainPageEvidence": 115,
+      "officialPublishedTrainEvidence": 115,
+      "explicitBoundaryEndpointEvidence": 0,
+      "endpointDirections": {},
       "authoritativeExactEvidence": 115,
       "generatedExactThroughRecords": 115,
       "generatedPublishedDestinationRecords": 831,
@@ -88,7 +232,9 @@
       "boundarySource": "https://www.seiburailway.jp/railway/station/",
       "authoritativeResolvedLinks": 0,
       "authoritativeUnresolvedReferences": 0,
-      "officialSingleTrainPageEvidence": 424,
+      "officialPublishedTrainEvidence": 424,
+      "explicitBoundaryEndpointEvidence": 0,
+      "endpointDirections": {},
       "authoritativeExactEvidence": 424,
       "generatedExactThroughRecords": 424,
       "generatedPublishedDestinationRecords": 298,
@@ -118,12 +264,17 @@
       "boundarySource": "https://www.tobu.co.jp/corporation/rail/route/",
       "authoritativeResolvedLinks": 0,
       "authoritativeUnresolvedReferences": 0,
-      "officialSingleTrainPageEvidence": 0,
-      "authoritativeExactEvidence": 0,
-      "generatedExactThroughRecords": 0,
+      "officialPublishedTrainEvidence": 0,
+      "explicitBoundaryEndpointEvidence": 182,
+      "endpointDirections": {
+        "odpt.Railway:Tobu.Tojo -> odpt.Railway:TokyoMetro.Fukutoshin": 97,
+        "odpt.Railway:TokyoMetro.Fukutoshin -> odpt.Railway:Tobu.Tojo": 85
+      },
+      "authoritativeExactEvidence": 182,
+      "generatedExactThroughRecords": 182,
       "generatedPublishedDestinationRecords": 359,
       "referenceDirections": {},
-      "exactIdentityReady": false,
+      "exactIdentityReady": true,
       "sourceA": {
         "slug": "tokyo-metro",
         "label": "東京メトロ",
@@ -141,14 +292,15 @@
     }
   ],
   "summary": {
-    "boundaryPairs": 4,
-    "verifiedBoundaries": 4,
-    "exactIdentityReadyPairs": 3,
-    "resolvedAuthoritativeLinks": 0,
+    "boundaryPairs": 8,
+    "verifiedBoundaries": 8,
+    "exactIdentityReadyPairs": 8,
+    "resolvedAuthoritativeLinks": 983,
     "unresolvedAuthoritativeReferences": 0,
-    "officialSingleTrainPageEvidence": 645,
-    "authoritativeExactEvidence": 645,
-    "generatedExactThroughRecords": 645,
-    "complete": false
+    "officialPublishedTrainEvidence": 1183,
+    "explicitBoundaryEndpointEvidence": 182,
+    "authoritativeExactEvidence": 2348,
+    "generatedExactThroughRecords": 2348,
+    "complete": true
   }
 }

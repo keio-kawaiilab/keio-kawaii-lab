@@ -1,14 +1,14 @@
 {
-  "version": 4,
-  "generatedAt": "2026-09-05T14:50:01.525Z",
+  "version": 6,
+  "generatedAt": "2026-09-05T15:42:06.086Z",
   "summary": {
-    "boundaries": 20,
-    "verifiedBoundaries": 4,
+    "boundaries": 23,
+    "verifiedBoundaries": 8,
     "serviceFamilies": 17,
     "verifiedServiceFamilies": 17,
     "familyPaths": 31,
     "unknownFamilyRailways": 0,
-    "throughRecords": 17037,
+    "throughRecords": 17757,
     "exactNetworkThroughRecords": 3048,
     "publishedDestinationThroughRecords": 3717,
     "unresolvedExternalDestinationTrips": 4618,
@@ -20,7 +20,9 @@
     "odptAuthoritativeLinkThroughRecords": 1935,
     "odptExactPublishedDestinationThroughRecords": 7692,
     "odptIdentityUnresolved": 25894,
-    "officialSingleTrainPageThroughRecords": 645
+    "officialSingleTrainPageThroughRecords": 645,
+    "officialSamePrintedColumnThroughRecords": 538,
+    "odptExplicitBoundaryEndpointThroughRecords": 182
   },
   "families": [
     {
@@ -197,6 +199,38 @@
       "source": "https://www.mm21railway.co.jp/station/yokohama/yokohama_wy.html"
     },
     {
+      "id": "toyoko-tokyushinyokohama-hiyoshi",
+      "station": "日吉",
+      "fromRailway": "odpt.Railway:Tokyu.Toyoko",
+      "toRailway": "odpt.Railway:Tokyu.TokyuShinYokohama",
+      "status": "verified",
+      "source": "https://www.tokyu.co.jp/railway/ty/"
+    },
+    {
+      "id": "tokyushinyokohama-sotetsushinyokohama-shinyokohama",
+      "station": "新横浜",
+      "fromRailway": "odpt.Railway:Tokyu.TokyuShinYokohama",
+      "toRailway": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
+      "status": "verified",
+      "source": "https://www.sotetsu.co.jp/train/stations/shinyokohama/"
+    },
+    {
+      "id": "sotetsushinyokohama-main-nishiya",
+      "station": "西谷",
+      "fromRailway": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
+      "toRailway": "odpt.Railway:Sotetsu.Main",
+      "status": "verified",
+      "source": "https://www.sotetsu.co.jp/train/stations/nishiya/"
+    },
+    {
+      "id": "sotetsu-main-izumino-futamatagawa",
+      "station": "二俣川",
+      "fromRailway": "odpt.Railway:Sotetsu.Main",
+      "toRailway": "odpt.Railway:Sotetsu.Izumino",
+      "status": "verified",
+      "source": "https://www.sotetsu.co.jp/train/stations/futamatagawa/"
+    },
+    {
       "id": "toyoko-fukutoshin-shibuya",
       "station": "渋谷",
       "fromRailway": "odpt.Railway:Tokyu.Toyoko",
@@ -297,14 +331,6 @@
       "station": "目黒",
       "fromRailway": "odpt.Railway:Tokyu.Meguro",
       "toRailway": "odpt.Railway:Toei.Mita",
-      "status": "source-audit-required",
-      "source": ""
-    },
-    {
-      "id": "tokyushinyokohama-sotetsushinyokohama-shinyokohama",
-      "station": "新横浜",
-      "fromRailway": "odpt.Railway:Tokyu.TokyuShinYokohama",
-      "toRailway": "odpt.Railway:Sotetsu.SotetsuShinYokohama",
       "status": "source-audit-required",
       "source": ""
     },
@@ -347124,13 +347150,34 @@
   },
   "officialOneTrainEvidence": {
     "sourceFile": "data/transit/fukutoshin/seibu-official-linked-through-trains.json",
-    "sourceGeneratedAt": "2026-09-05T14:50:00.626173+00:00",
+    "sourceGeneratedAt": "2026-09-05T15:41:42.625059+00:00",
     "inputTrainPages": 424,
     "addedRecords": 645,
     "boundaries": {
       "fukutoshin-seibuyurakucho-kotakemukaihara": 424,
       "toyoko-fukutoshin-shibuya": 115,
       "minatomirai-toyoko-yokohama": 106
+    }
+  },
+  "sotetsuOfficialColumnEvidence": {
+    "sourceFile": "data/transit/fukutoshin/sotetsu-official-line13-columns.json",
+    "sourceGeneratedAt": "2026-09-05T15:42:04.608370+00:00",
+    "inputColumns": 538,
+    "addedRecords": 538,
+    "boundaries": {
+      "tokyushinyokohama-sotetsushinyokohama-shinyokohama": 376,
+      "toyoko-tokyushinyokohama-hiyoshi": 162
+    }
+  },
+  "wakoshiEndpointEvidence": {
+    "sourceFile": "data/transit/odpt-train-identities.json",
+    "sourceGeneratedAt": "2026-09-05T05:48:27.376019+00:00",
+    "boundaryId": "fukutoshin-tojo-wakoshi",
+    "evidenceRecords": 182,
+    "addedRecords": 182,
+    "directions": {
+      "tobuToFukutoshin": 97,
+      "fukutoshinToTobu": 85
     }
   }
 }
