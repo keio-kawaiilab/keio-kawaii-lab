@@ -75,6 +75,7 @@ def main() -> int:
 
     current_table, table_path, index = repair.load_main_table()
     prior_meta = current_table.get('officialTerminalRepair')
+    prior_valid = prior_strict_repair_is_valid(prior_meta)
     before_ends = repair.count_sengakuji_ends(current_table)
     modal_minutes, modal_support = repair.adjacent_minutes(current_table)
     official = repair.official_reverse_candidates()
@@ -148,20 +149,20 @@ def main() -> int:
 
     first_improvement = sum(after_ends.values()) > sum(before_ends.values())
     safe_rerun = idempotent_report_is_safe(prior_meta, before_ends, report)
-    if first_improvement:
-        mode = 'first-strict-improvement'
-    elif safe_rerun:
+    if prior_valid and safe_rerun:
         mode = 'idempotent-strict-rerun'
+    elif not prior_valid and first_improvement:
+        mode = 'first-strict-improvement'
     else:
         report['repairMode'] = 'rejected'
-        report['priorStrictRepair'] = prior_strict_repair_is_valid(prior_meta)
+        report['priorStrictRepair'] = prior_valid
         repair.write_report(report)
         raise RuntimeError(
             f'Sengakuji terminal coverage was not a safe strict update: before={before_ends}, after={after_ends}'
         )
 
     report['repairMode'] = mode
-    report['priorStrictRepair'] = prior_strict_repair_is_valid(prior_meta)
+    report['priorStrictRepair'] = prior_valid
     repair.write_report(report)
 
     table['officialTerminalRepair'] = {
