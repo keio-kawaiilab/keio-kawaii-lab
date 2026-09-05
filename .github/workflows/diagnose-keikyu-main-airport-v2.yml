@@ -1,19 +1,23 @@
-name: Diagnose Keikyu Main-Airport through trains v2
+name: Validate Keikyu Main-Airport through trains
 
 on:
   workflow_dispatch:
   push:
     branches: [diagnose/keikyu-internal-through]
     paths:
-      - 'scripts/diagnose_keikyu_main_airport_through.py'
-      - 'scripts/test_diagnose_keikyu_main_airport_through.py'
+      - 'scripts/keikyu_internal_official_evidence.py'
+      - 'scripts/keikyu_internal_generated_evidence.py'
+      - 'scripts/test_keikyu_internal_official_evidence.py'
+      - 'scripts/test_keikyu_internal_generated_evidence.py'
+      - 'scripts/reviewed_train_evidence.py'
+      - 'scripts/finalize_transit_v2.py'
       - '.github/workflows/diagnose-keikyu-main-airport-v2.yml'
 
 permissions:
   contents: read
 
 jobs:
-  diagnose:
+  validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,14 +26,78 @@ jobs:
           python-version: '3.12'
       - name: Install dependencies
         run: pip install pdfplumber==0.11.7 requests==2.32.5
-      - name: Compile and test diagnostic
+      - name: Test strict generator and consumer
         run: |
-          python -m py_compile scripts/diagnose_keikyu_main_airport_through.py
-          python scripts/test_diagnose_keikyu_main_airport_through.py
-      - name: Diagnose exact two-point same-column matches
-        run: python scripts/diagnose_keikyu_main_airport_through.py
-      - name: Upload diagnostic
+          python -m py_compile \
+            scripts/keikyu_internal_official_evidence.py \
+            scripts/keikyu_internal_generated_evidence.py \
+            scripts/reviewed_train_evidence.py \
+            scripts/finalize_transit_v2.py
+          python scripts/test_keikyu_internal_official_evidence.py
+          python scripts/test_keikyu_internal_generated_evidence.py
+          python scripts/test_keikyu_generated_evidence.py
+      - name: Generate strict Main-Airport evidence
+        run: python scripts/keikyu_internal_official_evidence.py
+      - name: Finalize and audit transit v2
+        run: |
+          python scripts/finalize_transit_v2.py
+          python scripts/audit_transit_v2.py
+          python scripts/verify_keikyu_through_materialization.py
+      - name: Verify Main-Airport evidence reached runtime
+        run: |
+          python - <<'PY'
+          import json
+          from collections import Counter
+          from pathlib import Path
+
+          root = Path('data/transit-v2')
+          evidence = json.loads((root / 'keikyu-internal-official-train-evidence.json').read_text(encoding='utf-8'))
+          entries = evidence.get('entries') or []
+          edges = json.loads((root / 'same-train-edges.json').read_text(encoding='utf-8')).get('edges') or []
+          runtime = json.loads((root / 'runtime-same-train.json').read_text(encoding='utf-8')).get('edges') or []
+          coverage = json.loads((root / 'coverage.json').read_text(encoding='utf-8')).get('summary') or {}
+          fragments = json.loads((root / 'fragments/keikyu.json').read_text(encoding='utf-8')).get('fragments') or []
+          by_id = {str(row.get('id') or ''): row for row in fragments}
+
+          pairs = {(str(row['fromFragment']), str(row['toFragment'])) for row in entries}
+          official_edges = [
+              row for row in edges
+              if any(str(x).startswith('keikyu-internal-pdf:') for x in row.get('evidence') or [])
+          ]
+          edge_pairs = {(str(row.get('fromFragment') or ''), str(row.get('toFragment') or '')) for row in official_edges}
+          missing_edges = pairs - edge_pairs
+
+          def runtime_ref(fragment):
+              if fragment.get('sourceKind') == 'station-timetable-reconstruction':
+                  return f"inf:{fragment.get('railway')}:{fragment.get('sourceTripIndex')}"
+              timetable = str(fragment.get('timetableId') or '')
+              return f'tt:{timetable}' if timetable else ''
+
+          expected_runtime = set()
+          for a, b in pairs:
+              fa, fb = by_id.get(a), by_id.get(b)
+              assert fa and fb, (a, b)
+              expected_runtime.add((runtime_ref(fa), runtime_ref(fb), str(fa.get('railway') or ''), str(fb.get('railway') or '')))
+          runtime_set = {tuple(row) for row in runtime if isinstance(row, list) and len(row) == 4}
+          missing_runtime = expected_runtime - runtime_set
+          directions = Counter(str(row.get('direction') or '') for row in entries)
+
+          print('INTERNAL_EVIDENCE', len(entries))
+          print('DIRECTIONS', dict(directions))
+          print('MISSING_EDGE_PAIRS', len(missing_edges))
+          print('MISSING_RUNTIME', len(missing_runtime))
+          print('COVERAGE', coverage)
+
+          assert entries, 'no Main-Airport official evidence generated'
+          assert directions['main-to-airport'] > 0, directions
+          assert directions['airport-to-main'] > 0, directions
+          assert not missing_edges, missing_edges
+          assert not missing_runtime, missing_runtime
+          assert all(row.get('matchStatus') == 'matched-singleton' for row in entries)
+          assert all(row.get('identityLevel') == 'evidence-backed' for row in official_edges)
+          PY
+      - name: Upload generated evidence
         uses: actions/upload-artifact@v4
         with:
-          name: keikyu-main-airport-diagnostic-v2
-          path: /tmp/keikyu-main-airport-diagnostic.json
+          name: keikyu-main-airport-production-evidence
+          path: data/transit-v2/keikyu-internal-official-train-evidence.json
