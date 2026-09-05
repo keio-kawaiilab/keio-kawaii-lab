@@ -1,6 +1,6 @@
 {
-  "version": 3,
-  "generatedAt": "2026-09-05T11:39:50.080351+00:00",
+  "version": 4,
+  "generatedAt": "2026-09-05T11:40:55.152821+00:00",
   "source": "Seibu Railway official Digital Seibu Timetable 2026",
   "sourceBase": "https://www.seiburailway.jp/railways/2026digitaltimetable/",
   "expectedEdition": "2026",
@@ -19,14 +19,20 @@
     "pageindices/index240.html"
   ],
   "configTargets": [
-    "html5/js/book.xml",
-    "html5/js/search.xml",
-    "html5/js/t.xml",
-    "html5/js/html5setting.xml",
-    "html5/js/skinoption.xml"
+    "book.xml",
+    "search.xml",
+    "pages_ext.xml",
+    "menu.xml",
+    "skinoption.xml",
+    "page1/page.xml",
+    "page1/textpoint.xml",
+    "page120/page.xml",
+    "page120/textpoint.xml",
+    "page240/page.xml",
+    "page240/textpoint.xml"
   ],
   "reachableSamplePages": 5,
-  "reachableConfigResources": 0,
+  "reachableConfigResources": 3,
   "fetched": [
     {
       "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/index.html",
@@ -321,7 +327,169 @@
       ]
     }
   ],
-  "configResources": [],
+  "configResources": [
+    {
+      "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/book.xml",
+      "bytes": 8556,
+      "sha256": "1620eb56f3786be3244723843be1487213d5deff2d214ca15614b012218d2b08",
+      "assetCount": 1,
+      "assets": [
+        "https://www.seiburailway.jp/railways/index.html"
+      ],
+      "scriptAssets": [],
+      "dataLikeAssets": [],
+      "imageAssets": [],
+      "pdfAssets": [],
+      "trainNumberLikeTokenCount": 0,
+      "trainNumberLikeTokens": [],
+      "keywordHits": [
+        "時刻"
+      ],
+      "notablePathTokens": [
+        "../index.html"
+      ],
+      "keywordFragments": [
+        {
+          "keyword": "時刻",
+          "fragment": "bject\"> <bookID type=\"String\"><![CDATA[UFL-24852A3C]]></bookID> <bookTitle type=\"String\"><![CDATA[西武時刻表2026]]></bookTitle> <bookComment type=\"String\"><![CDATA[]]></bookComment> <total type=\"Number\">240</total> <maxMagnification type=\"Number\">2</maxMagnification> <bookDirection type"
+        }
+      ],
+      "xml": {
+        "parseable": true,
+        "root": "setting",
+        "elementCount": 81,
+        "tagCounts": {
+          "color": 10,
+          "class": 3,
+          "thickness": 3,
+          "url": 3,
+          "twitter": 2,
+          "allowMemo": 1,
+          "allowPrint": 1,
+          "bgColor": 1,
+          "bookComment": 1,
+          "bookDirection": 1,
+          "bookID": 1,
+          "bookInformation": 1,
+          "bookTitle": 1,
+          "changeMemoVisible": 1,
+          "closeButton": 1,
+          "contentPasswordHash": 1,
+          "data": 1,
+          "dynamicSizing": 1,
+          "embedHtml": 1,
+          "flipButton": 1,
+          "flipperVersion": 1,
+          "fusen": 1,
+          "fusenIndex": 1,
+          "googleAnalytics": 1,
+          "header": 1,
+          "help": 1,
+          "homepageButton": 1,
+          "html5setting": 1,
+          "isOnlineStorage": 1,
+          "keycode": 1,
+          "label": 1,
+          "labelDisplay": 1,
+          "language": 1,
+          "line": 1,
+          "mail": 1,
+          "makeroption": 1,
+          "maxMagnification": 1,
+          "mobile": 1,
+          "pageHeight": 1,
+          "pageIndicate": 1,
+          "pageWidth": 1,
+          "pdf": 1,
+          "penColor": 1,
+          "penThickness": 1,
+          "penThicknessClass": 1,
+          "printOption": 1,
+          "publishDate": 1,
+          "scormScoreType": 1,
+          "setting": 1,
+          "shadowDisplay": 1,
+          "skinOption": 1,
+          "sliceHeight": 1,
+          "sliceWidth": 1,
+          "sns": 1,
+          "sound": 1,
+          "speed": 1,
+          "startPageSetting": 1,
+          "tegaki": 1,
+          "textIndex": 1,
+          "textRectangularSelect": 1
+        }
+      }
+    },
+    {
+      "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/search.xml",
+      "bytes": 10774,
+      "sha256": "1a77eae8f9112265d860b0e274d49f332bf0e2f3fdca1eba9ef66b935083f692",
+      "assetCount": 0,
+      "assets": [],
+      "scriptAssets": [],
+      "dataLikeAssets": [],
+      "imageAssets": [],
+      "pdfAssets": [],
+      "trainNumberLikeTokenCount": 0,
+      "trainNumberLikeTokens": [],
+      "keywordHits": [],
+      "notablePathTokens": [],
+      "keywordFragments": [],
+      "xml": {
+        "parseable": true,
+        "root": "searchtext",
+        "elementCount": 241,
+        "tagCounts": {
+          "text": 240,
+          "searchtext": 1
+        }
+      }
+    },
+    {
+      "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/menu.xml",
+      "bytes": 2243,
+      "sha256": "c8dc4c9d3bd09be2919e0581ecf0bd057a805df6597e7bc7d8453fd10ad57fa1",
+      "assetCount": 0,
+      "assets": [],
+      "scriptAssets": [],
+      "dataLikeAssets": [],
+      "imageAssets": [],
+      "pdfAssets": [],
+      "trainNumberLikeTokenCount": 0,
+      "trainNumberLikeTokens": [],
+      "keywordHits": [
+        "時刻",
+        "池袋線",
+        "有楽町線"
+      ],
+      "notablePathTokens": [],
+      "keywordFragments": [
+        {
+          "keyword": "時刻",
+          "fragment": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <contents version=\"5.0.0\"> <menu id=\"24\" name=\"西武時刻表さくいん\" pagenum=\"3\"></menu> <menu id=\"25\" name=\"時刻表の見方\" pagenum=\"5\"></menu> <menu id=\"27\" name=\"特急列車・座席指定列車\" pagenum=\"6\"> <menu id=\"2\" name=\"（池袋線）特急ラビュー〔ちちぶ〕〔むさし〕\" pagenum=\"6\"></men"
+        },
+        {
+          "keyword": "池袋線",
+          "fragment": "name=\"時刻表の見方\" pagenum=\"5\"></menu> <menu id=\"27\" name=\"特急列車・座席指定列車\" pagenum=\"6\"> <menu id=\"2\" name=\"（池袋線）特急ラビュー〔ちちぶ〕〔むさし〕\" pagenum=\"6\"></menu> <menu id=\"3\" name=\"（新宿線）特急レッドアロー号〔小江戸〕\" pagenum=\"8\"></menu> <menu id=\"4\" name=\"（池袋線）S-TRAIN\" pagenum=\"9\"></menu> <menu id=\"5\" name=\"（新宿線・拝島線）"
+        },
+        {
+          "keyword": "有楽町線",
+          "fragment": "agenum=\"11\"></menu> <menu id=\"7\" name=\"池袋線・豊島線・西武秩父線（上り）\" pagenum=\"37\"></menu> <menu id=\"8\" name=\"西武有楽町線\" pagenum=\"63\"></menu> <menu id=\"9\" name=\"新宿線・拝島線（下り）\" pagenum=\"81\"></menu> <menu id=\"10\" name=\"新宿線・拝島線（上り）\" pagenum=\"101\"></menu> <menu id=\"11\" name=\"狭山線・西武園線\" pagenum=\"120\"></men"
+        }
+      ],
+      "xml": {
+        "parseable": true,
+        "root": "contents",
+        "elementCount": 29,
+        "tagCounts": {
+          "menu": 28,
+          "contents": 1
+        }
+      }
+    }
+  ],
   "inspectedScripts": [
     {
       "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/flipper3js/tcoredirector.js",
@@ -963,29 +1131,44 @@
   ],
   "errors": [
     {
-      "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/book.xml",
-      "error": "curl failed (22) for https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/book.xml: curl: (22) The requested URL returned error: 404\n"
+      "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/pages_ext.xml",
+      "error": "curl failed (22) for https://www.seiburailway.jp/railways/2026digitaltimetable/pages_ext.xml: curl: (22) The requested URL returned error: 404\n"
     },
     {
-      "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/search.xml",
-      "error": "curl failed (22) for https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/search.xml: curl: (22) The requested URL returned error: 404\n"
+      "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/skinoption.xml",
+      "error": "curl failed (22) for https://www.seiburailway.jp/railways/2026digitaltimetable/skinoption.xml: curl: (22) The requested URL returned error: 404\n"
     },
     {
-      "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/t.xml",
-      "error": "curl failed (22) for https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/t.xml: curl: (22) The requested URL returned error: 404\n"
+      "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/page1/page.xml",
+      "error": "curl failed (22) for https://www.seiburailway.jp/railways/2026digitaltimetable/page1/page.xml: curl: (22) The requested URL returned error: 404\n"
     },
     {
-      "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/html5setting.xml",
-      "error": "curl failed (22) for https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/html5setting.xml: curl: (22) The requested URL returned error: 404\n"
+      "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/page1/textpoint.xml",
+      "error": "curl failed (22) for https://www.seiburailway.jp/railways/2026digitaltimetable/page1/textpoint.xml: curl: (22) The requested URL returned error: 404\n"
     },
     {
-      "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/skinoption.xml",
-      "error": "curl failed (22) for https://www.seiburailway.jp/railways/2026digitaltimetable/html5/js/skinoption.xml: curl: (22) The requested URL returned error: 404\n"
+      "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/page120/page.xml",
+      "error": "curl failed (22) for https://www.seiburailway.jp/railways/2026digitaltimetable/page120/page.xml: curl: (22) The requested URL returned error: 404\n"
+    },
+    {
+      "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/page120/textpoint.xml",
+      "error": "curl failed (22) for https://www.seiburailway.jp/railways/2026digitaltimetable/page120/textpoint.xml: curl: (22) The requested URL returned error: 404\n"
+    },
+    {
+      "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/page240/page.xml",
+      "error": "curl failed (22) for https://www.seiburailway.jp/railways/2026digitaltimetable/page240/page.xml: curl: (22) The requested URL returned error: 404\n"
+    },
+    {
+      "url": "https://www.seiburailway.jp/railways/2026digitaltimetable/page240/textpoint.xml",
+      "error": "curl failed (22) for https://www.seiburailway.jp/railways/2026digitaltimetable/page240/textpoint.xml: curl: (22) The requested URL returned error: 404\n"
     }
   ],
-  "searchableConfigResources": [],
+  "searchableConfigResources": [
+    "https://www.seiburailway.jp/railways/2026digitaltimetable/book.xml",
+    "https://www.seiburailway.jp/railways/2026digitaltimetable/menu.xml"
+  ],
   "viewerReachable": true,
-  "configLocationStillUnresolved": true,
+  "configLocationStillUnresolved": false,
   "sourceUsableForFurtherParsing": true,
-  "note": "Discovery report is retained even when guessed config paths miss. No same-train edge is emitted until a single current official published train column is parsed exactly."
+  "note": "Discovery report is retained even when some data paths miss. No same-train edge is emitted until a single current official published train column is parsed exactly."
 }
