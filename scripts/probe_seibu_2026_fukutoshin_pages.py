@@ -62,16 +62,27 @@ def parse_book(content: bytes) -> tuple[str, list[str]]:
     return publish_date, folders
 
 
-def flatten_xml_text(content: bytes) -> str:
+def xml_diagnostics(content: bytes) -> tuple[str, dict[str, int], list[dict[str, Any]], str]:
     root = ET.fromstring(content)
+    tags: Counter[str] = Counter()
+    sample: list[dict[str, Any]] = []
     pieces: list[str] = []
     for elem in root.iter():
-        if elem.text and elem.text.strip():
-            pieces.append(elem.text.strip())
+        name = local_name(elem.tag)
+        tags[name] += 1
+        text = (elem.text or '').strip()
+        if text:
+            pieces.append(text)
         for value in elem.attrib.values():
             if value and str(value).strip():
                 pieces.append(str(value).strip())
-    return norm(''.join(pieces))
+        if len(sample) < 40:
+            sample.append({
+                'tag': name,
+                'attrs': dict(elem.attrib),
+                'text': text[:120],
+            })
+    return local_name(root.tag), dict(tags), sample, norm(''.join(pieces))
 
 
 def probe_page(page: int, folder: str) -> dict[str, Any]:
@@ -83,19 +94,22 @@ def probe_page(page: int, folder: str) -> dict[str, Any]:
     for url in candidates:
         try:
             content = get(url)
-            text = flatten_xml_text(content)
-            hits = [keyword for keyword in KEYWORDS if norm(keyword) in text]
+            root_tag, tag_counts, element_sample, flat = xml_diagnostics(content)
+            hits = [keyword for keyword in KEYWORDS if norm(keyword) in flat]
             return {
                 'page': page,
                 'folder': folder,
                 'reachable': True,
                 'url': url,
                 'bytes': len(content),
+                'rootTag': root_tag,
+                'tagCounts': tag_counts,
+                'elementSample': element_sample,
                 'keywordHits': hits,
-                'textLength': len(text),
-                'textSample': text[:500],
+                'flattenedLength': len(flat),
+                'flattenedSample': flat[:800],
             }
-        except Exception as exc:  # diagnostics must preserve the failed URL too
+        except Exception as exc:
             errors.append(f'{url}: {type(exc).__name__}: {exc}')
     return {
         'page': page,
@@ -110,8 +124,6 @@ def build_report() -> dict[str, Any]:
     book = get(BOOK_XML)
     publish_date, folders = parse_book(book)
     rows: list[dict[str, Any]] = []
-    # Eight workers keeps the official-source request rate modest while avoiding
-    # a 240-page serial crawl. This changes only discovery speed, never identity rules.
     with ThreadPoolExecutor(max_workers=8) as pool:
         futures = {
             pool.submit(probe_page, page, folder): page
@@ -122,14 +134,28 @@ def build_report() -> dict[str, Any]:
     rows.sort(key=lambda row: int(row.get('page') or 0))
     matched = [row for row in rows if row.get('keywordHits')]
     counts = Counter(hit for row in matched for hit in row.get('keywordHits') or [])
+    schema_samples = [
+        {
+            'page': row.get('page'),
+            'folder': row.get('folder'),
+            'url': row.get('url'),
+            'rootTag': row.get('rootTag'),
+            'tagCounts': row.get('tagCounts'),
+            'elementSample': row.get('elementSample'),
+            'flattenedSample': row.get('flattenedSample'),
+        }
+        for row in rows[:3]
+        if row.get('reachable')
+    ]
     return {
-        'version': 1,
+        'version': 2,
         'generatedAt': datetime.now(timezone.utc).isoformat(),
         'source': 'Seibu Railway official Digital Seibu Timetable 2026',
         'sourceBase': BASE,
         'bookPublishDate': publish_date,
         'identityPolicy': {
             'pageDiscoveryMayEstablishTrainIdentity': False,
+            'glyphStructureMayEstablishTrainIdentity': False,
             'keywordPresenceMayEstablishTrainIdentity': False,
             'singlePublishedTrainColumnRequired': True,
             'timeProximityMayEstablishTrainIdentity': False,
@@ -142,6 +168,7 @@ def build_report() -> dict[str, Any]:
             'matchedPages': len(matched),
             'keywordCounts': dict(counts),
         },
+        'schemaSamples': schema_samples,
         'matchedPages': matched,
         'unreachablePages': [row for row in rows if not row.get('reachable')],
     }
@@ -156,10 +183,9 @@ def main() -> int:
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     print(json.dumps(report['summary'], ensure_ascii=False, indent=2))
+    print('SCHEMA_SAMPLES', json.dumps(report.get('schemaSamples') or [], ensure_ascii=False))
     if int(report['summary']['reachableTextpointPages']) == 0:
         raise RuntimeError('No official Seibu textpoint pages were reachable')
-    if int(report['summary']['matchedPages']) == 0:
-        raise RuntimeError('Official timetable pages were reachable but no Fukutoshin corridor keywords were found')
     return 0
 
 
