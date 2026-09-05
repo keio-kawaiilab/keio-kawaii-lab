@@ -1,4 +1,4 @@
-name: Probe Seibu 2026 Fukutoshin timetable pages
+name: Collect exact Seibu Line 13 through-train evidence
 
 on:
   pull_request:
@@ -20,30 +20,35 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: pip install requests==2.32.5 PyMuPDF==1.26.4
-      - name: Probe all official timetable PDFs
+        run: pip install requests==2.32.5 beautifulsoup4==4.13.4
+      - name: Collect exact one-train timetable evidence
         run: |
           python scripts/probe_seibu_2026_fukutoshin_pages.py \
-            --output /tmp/seibu-2026-fukutoshin-page-probe.json
-      - name: Show matched official pages
+            --output /tmp/seibu-line13-through-trains.json
+      - name: Audit strict identity policy
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
-          data=json.loads(Path('/tmp/seibu-2026-fukutoshin-page-probe.json').read_text(encoding='utf-8'))
-          print('SUMMARY', json.dumps(data.get('summary') or {}, ensure_ascii=False, indent=2))
-          for row in data.get('matchedPages') or []:
-              print('MATCH', json.dumps({
-                  'page': row.get('page'),
-                  'folder': row.get('folder'),
-                  'url': row.get('url'),
-                  'keywordHits': row.get('keywordHits'),
-                  'wordCount': row.get('wordCount'),
-                  'textSample': row.get('textSample'),
-              }, ensure_ascii=False))
+          data=json.loads(Path('/tmp/seibu-line13-through-trains.json').read_text(encoding='utf-8'))
+          p=data['identityPolicy']; s=data['summary']
+          print('SUMMARY', json.dumps(s, ensure_ascii=False, indent=2))
+          assert p['singlePublishedOneTrainPageMayEstablishIdentity'] is True
+          assert p['stationListingAloneMayEstablishIdentity'] is False
+          assert p['timeProximityMayEstablishIdentity'] is False
+          assert p['trainNumberAloneMayEstablishIdentity'] is False
+          assert p['destinationAloneMayEstablishIdentity'] is False
+          assert p['boundaryRequiresAdjacentPublishedStopsOnSameTrainPage'] is True
+          assert s['trainDetailPagesFetched'] > 0
+          assert s['exactThroughTrainPages'] > 0
+          assert s['boundaryCounts']['seibu-metro-kotake-mukaihara'] > 0
+          for row in data['authoritativeThroughTrains']:
+              assert row['identityEvidence']=='single-published-one-train-page'
+              assert row['stationCount'] >= 3
+              assert row['boundaries']
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: seibu-2026-fukutoshin-page-probe
-          path: /tmp/seibu-2026-fukutoshin-page-probe.json
+          name: seibu-line13-through-trains
+          path: /tmp/seibu-line13-through-trains.json
           if-no-files-found: error
