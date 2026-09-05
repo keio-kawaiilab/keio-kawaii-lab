@@ -1,15 +1,14 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-06T03:29:56.925916+09:00",
-  "candidateUpdatedAt": "2026-09-06T03:29:56+09:00",
+  "generatedAt": "2026-09-06T03:31:38.175827+09:00",
+  "candidateUpdatedAt": "2026-09-06T03:31:38+09:00",
   "previousEventCount": 272,
   "candidateEventCount": 272,
   "protectedPreviousCount": 272,
   "errorCount": 0,
-  "warningCount": 18,
+  "warningCount": 16,
   "errors": [],
   "warnings": [
-    "quarantined one event/source update and kept the previous known-good data: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: release event sales/gathering/start times are out of order: SWEET STEADY / 【SWEET STEADY】 3rdシングル『SWEET STEP』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event is not marked as official-source data: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -18,8 +17,7 @@
     "quarantined one event/source update and kept the previous known-good data: special event has no verified purchase/ticket window: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: missing or invalid eventScope: FRUITS ZIPPER / FRUITS ZIPPER / ぴあNICOSカード限定先行",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / ぴあNICOSカード限定先行",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event is not marked as official-source data: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no participation method: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -28,7 +26,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
   ],
-  "candidateSha256": "4b345c21a8244901d72dfcabbfd01a4b8667a1d1bc349c57657d3c535246787c",
+  "candidateSha256": "9dce88d0dc2059a47035d6dccdbd5a28c78419271a2d3d2c09a2067ccbc388de",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -140,16 +138,11 @@
   ],
   "reconciledBaseDateMessageCount": 0,
   "downgradedFalsePositiveCount": 0,
-  "legacyProtectedErrorCount": 9,
+  "legacyProtectedErrorCount": 8,
   "legacyProtectedErrors": [
     {
-      "error": "missing or invalid eventScope: FRUITS ZIPPER / FRUITS ZIPPER / ぴあNICOSカード限定先行",
-      "label": "FRUITS ZIPPER / FRUITS ZIPPER / ぴあNICOSカード限定先行",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
-      "error": "duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / ぴあNICOSカード限定先行",
-      "label": "FRUITS ZIPPER / FRUITS ZIPPER / ぴあNICOSカード限定先行",
+      "error": "duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
+      "label": "FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     },
     {
@@ -188,13 +181,8 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 9,
+  "quarantineCount": 8,
   "quarantineActions": [
-    {
-      "error": "duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
-      "action": "restored previous Pia lot rows",
-      "restoredPreviousRows": 2
-    },
     {
       "error": "release event sales/gathering/start times are out of order: SWEET STEADY / 【SWEET STEADY】 3rdシングル『SWEET STEP』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
       "action": "restored previous row",
