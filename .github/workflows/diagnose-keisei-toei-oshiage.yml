@@ -1,0 +1,50 @@
+name: Diagnose Keisei Toei Oshiage through evidence
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/keisei_official_oshiage_evidence.py'
+      - 'scripts/test_keisei_official_oshiage_evidence.py'
+      - '.github/workflows/diagnose-keisei-toei-oshiage.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test strict Oshiage evidence rules
+        run: |
+          python -m py_compile scripts/keisei_official_oshiage_evidence.py scripts/test_keisei_official_oshiage_evidence.py
+          python scripts/test_keisei_official_oshiage_evidence.py
+      - name: Extract and attach official Oshiage evidence
+        run: |
+          python scripts/keisei_official_oshiage_evidence.py --output /tmp/keisei-oshiage-evidence.json
+      - name: Summarize strict recovery
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          payload = json.loads(Path('/tmp/keisei-oshiage-evidence.json').read_text(encoding='utf-8'))
+          summary = payload['summary']
+          print(json.dumps(summary, ensure_ascii=False, indent=2))
+          assert summary['officialBoundaryCandidates'] > 0
+          assert summary['candidateDirections'].get('keisei-to-toei', 0) > 0
+          assert summary['candidateDirections'].get('toei-to-keisei', 0) > 0
+          assert summary['matchedSingleton'] > 0
+          assert summary['matchedDirections'].get('keisei-to-toei', 0) > 0
+          assert summary['matchedDirections'].get('toei-to-keisei', 0) > 0
+          assert all(row.get('matchStatus') == 'matched-singleton' for row in payload.get('entries') or [])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keisei-oshiage-evidence-diagnostic
+          path: /tmp/keisei-oshiage-evidence.json
+          if-no-files-found: error
