@@ -1,24 +1,24 @@
 name: Calendar freshness watchdog
 
 on:
+  # Do not rely on GitHub's scheduler alone. Any main-branch activity is an
+  # additional heartbeat that can notice a stale public calendar.
   push:
     branches:
       - main
-    paths:
-      - ".github/workflows/calendar-freshness-watchdog.yml"
   schedule:
-    # The calendar targets 15-minute refreshes. Check often enough that a
-    # missed refresh is recovered before the public timestamp can sit stale
-    # for a long period.
-    - cron: "*/10 * * * *"
+    # Offset away from the top-of-hour minute boundary to reduce scheduler
+    # contention while keeping a 10-minute target cadence.
+    - cron: "3,13,23,33,43,53 * * * *"
   workflow_run:
-    # These are independent activity clocks. They give the watchdog extra
-    # chances to run even when GitHub delays a scheduled event.
+    # Independent workflows provide extra wake-ups if this workflow's own
+    # scheduled event is delayed or omitted.
     workflows:
       - "Distributed live ticket calendar"
       - "Update event-day train status"
       - "Archive verified ticket history"
       - "Update upcoming event weather"
+      - "Update official resale tickets"
     types:
       - completed
   workflow_dispatch:
@@ -48,10 +48,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          # The user-visible timestamp is the source of truth. Previously this
-          # watchdog only looked at the latest successful Actions run, which
-          # could report healthy even while data/live-events.json had stopped
-          # advancing.
+          # The user-visible timestamp is the source of truth.
           published_at="$(jq -r '.checkedAt // .updatedAt // empty' data/live-events.json)"
           now="$(date -u +%s)"
           stale=true
@@ -63,9 +60,8 @@ jobs:
             if [ "$age_seconds" -lt 0 ]; then age_seconds=0; fi
             age_minutes="$(awk -v seconds="$age_seconds" 'BEGIN { printf "%.1f", seconds / 60 }')"
 
-            # Main ingestion targets 15-minute starts. Allow normal GitHub
-            # scheduling/runtime jitter, but recover before two full cycles
-            # can be missed.
+            # The primary ingestion targets 15-minute starts. Recover before
+            # two full expected cycles can pass without a public observation.
             if [ "$age_seconds" -le 1500 ]; then
               stale=false
             fi
@@ -85,51 +81,81 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          runs="$(gh run list \
-            --repo "$GITHUB_REPOSITORY" \
-            --workflow update-live-calendar-distributed.yml \
-            --limit 30 \
-            --json databaseId,status,conclusion,createdAt,updatedAt,event)"
 
+          load_runs() {
+            gh run list \
+              --repo "$GITHUB_REPOSITORY" \
+              --workflow update-live-calendar-distributed.yml \
+              --limit 30 \
+              --json databaseId,status,conclusion,createdAt,updatedAt,event
+          }
+
+          runs="$(load_runs)"
           now="$(date -u +%s)"
+          cancelled=0
 
-          # Give a genuinely running/queued refresh a reasonable window to
-          # finish. After 20 minutes it is no longer allowed to suppress
-          # recovery indefinitely.
-          fresh_active="$(jq --argjson now "$now" '[.[]
-            | select(.status != "completed")
+          # A queued run is not proof that ingestion is making progress. Old
+          # queued runs can otherwise keep the watchdog saying "active" while
+          # the public timestamp remains frozen.
+          mapfile -t old_queued_ids < <(jq -r --argjson now "$now" '.[]
+            | select(.status == "queued")
+            | select(($now - (.createdAt | fromdateiso8601)) >= 300)
+            | .databaseId' <<<"$runs")
+          for run_id in "${old_queued_ids[@]}"; do
+            [ -n "$run_id" ] || continue
+            echo "Cancelling queued distributed run ${run_id} older than 5 minutes."
+            gh run cancel "$run_id" --repo "$GITHUB_REPOSITORY" || true
+            cancelled=1
+          done
+
+          # The distributed workflow already has bounded collector/publish
+          # jobs. A run still in progress after 20 minutes is no longer allowed
+          # to block recovery indefinitely.
+          mapfile -t stuck_running_ids < <(jq -r --argjson now "$now" '.[]
+            | select(.status == "in_progress")
+            | select(($now - (.createdAt | fromdateiso8601)) >= 1200)
+            | .databaseId' <<<"$runs")
+          for run_id in "${stuck_running_ids[@]}"; do
+            [ -n "$run_id" ] || continue
+            echo "Cancelling stuck distributed run ${run_id} older than 20 minutes."
+            gh run cancel "$run_id" --repo "$GITHUB_REPOSITORY" || true
+            cancelled=1
+          done
+
+          if [ "$cancelled" = "1" ]; then
+            sleep 2
+            runs="$(load_runs)"
+            now="$(date -u +%s)"
+          fi
+
+          # Only a genuinely executing run may suppress a recovery dispatch.
+          # Queued work is tracked separately and receives only a short grace.
+          fresh_running="$(jq --argjson now "$now" '[.[]
+            | select(.status == "in_progress")
             | select(($now - (.createdAt | fromdateiso8601)) < 1200)] | length' <<<"$runs")"
-
-          if [ "$fresh_active" -gt 0 ]; then
-            echo "Published calendar is ${AGE_MINUTES} minutes stale, but ${fresh_active} recent distributed refresh run(s) are active."
-            echo "action=active" >> "$GITHUB_OUTPUT"
+          if [ "$fresh_running" -gt 0 ]; then
+            echo "Published calendar is ${AGE_MINUTES} minutes stale, but ${fresh_running} distributed refresh run(s) are genuinely executing."
+            echo "action=running" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          # Cancel stale queued/running runs so an old run cannot hold the
-          # concurrency group forever and block every later scheduled refresh.
-          mapfile -t stuck_ids < <(jq -r --argjson now "$now" '.[]
-            | select(.status != "completed")
-            | select(($now - (.createdAt | fromdateiso8601)) >= 1200)
-            | .databaseId' <<<"$runs")
-          for run_id in "${stuck_ids[@]}"; do
-            [ -n "$run_id" ] || continue
-            echo "Cancelling stuck distributed run ${run_id}."
-            gh run cancel "$run_id" --repo "$GITHUB_REPOSITORY" || true
-          done
+          very_fresh_queue="$(jq --argjson now "$now" '[.[]
+            | select(.status == "queued")
+            | select(($now - (.createdAt | fromdateiso8601)) < 180)] | length' <<<"$runs")"
+          if [ "$very_fresh_queue" -gt 0 ]; then
+            echo "A distributed refresh has just queued; allowing at most a 3-minute queue grace."
+            echo "action=queue-grace" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
 
-          # Avoid dispatch storms if a deterministic failure is occurring.
-          # Eight minutes is shorter than the watchdog cadence, so a stale
-          # calendar still gets another recovery opportunity on the next tick.
-          latest_created="$(jq -r '.[0].createdAt // empty' <<<"$runs")"
-          if [ -n "$latest_created" ]; then
-            latest_epoch="$(date -u -d "$latest_created" +%s)"
-            latest_age="$((now - latest_epoch))"
-            if [ "$latest_age" -lt 480 ]; then
-              echo "Newest distributed attempt is only ${latest_age}s old; waiting for the next watchdog tick."
-              echo "action=cooldown" >> "$GITHUB_OUTPUT"
-              exit 0
-            fi
+          # Avoid retry storms after a just-completed deterministic failure.
+          recent_completed="$(jq --argjson now "$now" '[.[]
+            | select(.status == "completed")
+            | select(($now - (.createdAt | fromdateiso8601)) < 300)] | length' <<<"$runs")"
+          if [ "$recent_completed" -gt 0 ]; then
+            echo "A distributed attempt completed within the last 5 minutes; allowing one short cooldown."
+            echo "action=cooldown" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
 
           echo "Published calendar has been stale for ${AGE_MINUTES} minutes; dispatching recovery refresh."
