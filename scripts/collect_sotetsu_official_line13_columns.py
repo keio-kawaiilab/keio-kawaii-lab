@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 import argparse,hashlib,io,json,re
-from collections import Counter
+from collections import Counter,defaultdict
 from datetime import datetime,timezone
 from pathlib import Path
 from typing import Any
@@ -16,7 +16,7 @@ PDFS=[
 HIYOSHI_ANCHORS=('自由が丘','日吉','新綱島')
 SHINYOKOHAMA_ANCHORS=('新綱島','新横浜','羽沢横浜国大')
 TIME_RE=re.compile(r'^\d{3,4}$')
-SESSION=requests.Session();SESSION.headers.update({'User-Agent':'Mozilla/5.0 (compatible; KeioKawaiiLabTransitDB/8.4)','Accept':'application/pdf,*/*;q=0.8'})
+SESSION=requests.Session();SESSION.headers.update({'User-Agent':'Mozilla/5.0 (compatible; KeioKawaiiLabTransitDB/8.5)','Accept':'application/pdf,*/*;q=0.8'})
 def norm(v:Any)->str:return re.sub(r'[\s\u3000]+','',str(v or '')).replace('ヶ','ケ')
 def stable_id(*parts:Any)->str:
  raw=json.dumps(parts,ensure_ascii=False,sort_keys=True,separators=(',',':'));return 'sotetsu-official-column:'+hashlib.sha256(raw.encode()).hexdigest()[:24]
@@ -52,19 +52,32 @@ def station_label_after(rows:list[dict[str,Any]],station:str,start:int)->int:
  for i in range(max(0,start),len(rows)):
   if matches(rows[i],station):return i
  return -1
+def station_label_before(rows:list[dict[str,Any]],station:str,start:int)->int:
+ for i in range(min(start,len(rows)-1),-1,-1):
+  if matches(rows[i],station):return i
+ return -1
 def time_row_at_or_after_label(rows:list[dict[str,Any]],label_i:int,lookahead:int=2)->dict[str,Any]|None:
  if label_i<0:return None
- # PDF text places some station labels and their visually aligned arrival/departure
- # digits on adjacent baselines. Restrict selection to the label plus the next
- # two baselines; never search the whole page or infer from similar times.
+ # Station names and their arrival/departure digits can be split over adjacent
+ # PDF baselines. Only the label baseline and immediately following baselines
+ # are eligible; we never search by clock similarity.
  candidates=[rows[i] for i in range(label_i,min(len(rows),label_i+lookahead+1)) if time_cells(rows[i])]
  return max(candidates,key=lambda r:len(time_cells(r))) if candidates else None
-def shin_yokohama_block(rows:list[dict[str,Any]])->dict[str,dict[str,Any]|None]:
+def shin_yokohama_block(rows:list[dict[str,Any]],direction:str)->dict[str,dict[str,Any]|None]:
  tsuna_candidates=[(i,r) for i,r in enumerate(rows) if matches(r,'新綱島') and time_cells(r)]
  if not tsuna_candidates:return {s:None for s in SHINYOKOHAMA_ANCHORS}
  i_tsuna,r_tsuna=max(tsuna_candidates,key=lambda p:len(time_cells(p[1])))
- i_shin=station_label_after(rows,'新横浜',i_tsuna+1);r_shin=time_row_at_or_after_label(rows,i_shin,2)
- i_haz=station_label_after(rows,'羽沢横浜国大',(i_shin+1 if i_shin>=0 else i_tsuna+1));r_haz=time_row_at_or_after_label(rows,i_haz,2)
+ if direction=='up':
+  # In Sotetsu's up timetable the printed vertical order is
+  # Hazawa-Yokohama-Kokudai -> Shin-Yokohama -> Shin-Tsunashima.
+  i_shin=station_label_before(rows,'新横浜',i_tsuna-1)
+  i_haz=station_label_before(rows,'羽沢横浜国大',(i_shin-1 if i_shin>=0 else i_tsuna-1))
+ else:
+  # Down timetable prints Shin-Tsunashima -> Shin-Yokohama -> Hazawa.
+  i_shin=station_label_after(rows,'新横浜',i_tsuna+1)
+  i_haz=station_label_after(rows,'羽沢横浜国大',(i_shin+1 if i_shin>=0 else i_tsuna+1))
+ r_shin=time_row_at_or_after_label(rows,i_shin,2)
+ r_haz=time_row_at_or_after_label(rows,i_haz,2)
  return {'新綱島':r_tsuna,'新横浜':r_shin,'羽沢横浜国大':r_haz}
 def column_tolerance(cell_rows:list[list[dict[str,Any]]])->float:
  xs=sorted({round(float(c['x']),2) for cells in cell_rows for c in cells});gaps=sorted(b-a for a,b in zip(xs,xs[1:]) if 3<b-a<60)
@@ -85,7 +98,7 @@ def common_columns(cells:dict[str,list[dict[str,Any]]],anchors:tuple[str,...])->
  return sorted(out,key=lambda x:x['columnX'])
 def orient(direction:str,anchors:tuple[str,...])->list[str]:return list(reversed(anchors)) if direction=='up' else list(anchors)
 def build_report()->dict[str,Any]:
- pdf_rows=[];evidence=[];diagnostics=[];counts=Counter()
+ pdf_rows=[];evidence=[];diagnostics=[];counts=Counter();direction_counts=defaultdict(Counter)
  for spec in PDFS:
   data=fetch_pdf(spec['url']);local=Counter();parsed=0
   with pdfplumber.open(io.BytesIO(data)) as pdf:
@@ -94,26 +107,28 @@ def build_report()->dict[str,Any]:
    for page_no,page in enumerate(pdf.pages,start=1):
     if page_no==1:continue
     rows=group_rows(page.extract_words(x_tolerance=1,y_tolerance=1,keep_blank_chars=False,use_text_flow=False));parsed+=1
-    hrows={s:best_station_row(rows,s) for s in HIYOSHI_ANCHORS};srows=shin_yokohama_block(rows)
+    hrows={s:best_station_row(rows,s) for s in HIYOSHI_ANCHORS};srows=shin_yokohama_block(rows,spec['direction'])
     for boundary,anchors,srows_for_boundary in [('toyoko-tokyushinyokohama-hiyoshi',HIYOSHI_ANCHORS,hrows),('tokyushinyokohama-sotetsushinyokohama-shinyokohama',SHINYOKOHAMA_ANCHORS,srows)]:
      cells={s:time_cells(r) for s,r in srows_for_boundary.items()};cols=common_columns(cells,anchors)
-     if boundary.endswith('shinyokohama') and not cols and len(diagnostics)<12:diagnostics.append({'url':spec['url'],'page':page_no,'cellCounts':{s:len(cells[s]) for s in anchors},'rowTexts':{s:norm((srows_for_boundary.get(s) or {}).get('text'))[:180] for s in anchors},'xSamples':{s:[round(float(c['x']),2) for c in cells[s][:10]] for s in anchors}})
+     if boundary.endswith('shinyokohama') and not cols and len(diagnostics)<16:diagnostics.append({'url':spec['url'],'direction':spec['direction'],'page':page_no,'cellCounts':{s:len(cells[s]) for s in anchors},'rowTexts':{s:norm((srows_for_boundary.get(s) or {}).get('text'))[:180] for s in anchors},'xSamples':{s:[round(float(c['x']),2) for c in cells[s][:10]] for s in anchors}})
      for col in cols:
       if boundary=='toyoko-tokyushinyokohama-hiyoshi':fr,to=(('odpt.Railway:Tokyu.TokyuShinYokohama','odpt.Railway:Tokyu.Toyoko') if spec['direction']=='up' else ('odpt.Railway:Tokyu.Toyoko','odpt.Railway:Tokyu.TokyuShinYokohama'))
       else:fr,to=(('odpt.Railway:Sotetsu.SotetsuShinYokohama','odpt.Railway:Tokyu.TokyuShinYokohama') if spec['direction']=='up' else ('odpt.Railway:Tokyu.TokyuShinYokohama','odpt.Railway:Sotetsu.SotetsuShinYokohama'))
       stops=orient(spec['direction'],anchors);row={'id':stable_id(spec['url'],page_no,col['columnX'],boundary,col['times']),'identityEvidence':'official-same-printed-column','status':'verified','canonicalBoundaryId':boundary,'calendar':spec['calendar'],'direction':spec['direction'],'sourceUrl':spec['url'],'pdfPage':page_no,'columnX':col['columnX'],'columnTolerance':col['tolerance'],'publishedBoundaryStops':stops,'printedTimes':col['times'],'fromRailway':fr,'toRailway':to,'matchPolicy':{'officialSamePrintedColumnRequired':True,'exactPrintedStationTimesRequired':True,'timeProximityAloneMayEstablishIdentity':False,'trainNumberAloneMayEstablishIdentity':False,'destinationAloneMayEstablishIdentity':False}}
-      evidence.append(row);counts[boundary]+=1;local[boundary]+=1
+      evidence.append(row);counts[boundary]+=1;local[boundary]+=1;direction_counts[boundary][spec['direction']]+=1
   pdf_rows.append({'url':spec['url'],'calendar':spec['calendar'],'direction':spec['direction'],'bytes':len(data),'pageCount':page_count,'parsedTimetablePages':parsed,'boundaryCounts':dict(local)})
  evidence=list({r['id']:r for r in evidence}.values());evidence.sort(key=lambda r:(r['calendar'],r['direction'],r['pdfPage'],r['columnX'],r['canonicalBoundaryId']))
- return {'version':3,'generatedAt':datetime.now(timezone.utc).isoformat(),'source':'Sotetsu official full train timetable PDFs effective 2026-03-14','officialEntryPage':'https://www.sotetsu.co.jp/train/stations/','identityPolicy':{'officialSamePrintedColumnMayEstablishIdentity':True,'exactPrintedStationTimesRequired':True,'timeProximityMayEstablishIdentity':False,'trainNumberAloneMayEstablishIdentity':False,'destinationAloneMayEstablishIdentity':False,'stationTimetableRowAloneMayEstablishIdentity':False},'pdfs':pdf_rows,'summary':{'pdfsFetched':len(pdf_rows),'evidenceRecords':len(evidence),'boundaryCounts':dict(counts),'diagnostics':len(diagnostics)},'authoritativeColumns':evidence,'diagnostics':diagnostics}
+ return {'version':4,'generatedAt':datetime.now(timezone.utc).isoformat(),'source':'Sotetsu official full train timetable PDFs effective 2026-03-14','officialEntryPage':'https://www.sotetsu.co.jp/train/stations/','identityPolicy':{'officialSamePrintedColumnMayEstablishIdentity':True,'exactPrintedStationTimesRequired':True,'timeProximityMayEstablishIdentity':False,'trainNumberAloneMayEstablishIdentity':False,'destinationAloneMayEstablishIdentity':False,'stationTimetableRowAloneMayEstablishIdentity':False},'pdfs':pdf_rows,'summary':{'pdfsFetched':len(pdf_rows),'evidenceRecords':len(evidence),'boundaryCounts':dict(counts),'boundaryDirectionCounts':{k:dict(v) for k,v in direction_counts.items()},'diagnostics':len(diagnostics)},'authoritativeColumns':evidence,'diagnostics':diagnostics}
 def main()->int:
  ap=argparse.ArgumentParser();ap.add_argument('--output',default='data/transit/fukutoshin/sotetsu-official-line13-columns.json');args=ap.parse_args();report=build_report();out=Path(args.output);out.parent.mkdir(parents=True,exist_ok=True);out.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
  print('SUMMARY',json.dumps(report['summary'],ensure_ascii=False,indent=2))
  for r in report['pdfs']:print('PDF',json.dumps(r,ensure_ascii=False))
  for r in report['authoritativeColumns'][:12]:print('SAMPLE',json.dumps(r,ensure_ascii=False))
- for r in report['diagnostics'][:12]:print('DIAGNOSTIC',json.dumps(r,ensure_ascii=False))
- c=report['summary']['boundaryCounts']
- if int(c.get('toyoko-tokyushinyokohama-hiyoshi',0))<1:raise RuntimeError('No exact Hiyoshi same-column evidence')
- if int(c.get('tokyushinyokohama-sotetsushinyokohama-shinyokohama',0))<1:raise RuntimeError('No exact Shin-Yokohama same-column evidence')
+ for r in report['diagnostics'][:16]:print('DIAGNOSTIC',json.dumps(r,ensure_ascii=False))
+ c=report['summary']['boundaryCounts'];d=report['summary']['boundaryDirectionCounts']
+ for boundary in ('toyoko-tokyushinyokohama-hiyoshi','tokyushinyokohama-sotetsushinyokohama-shinyokohama'):
+  if int(c.get(boundary,0))<1:raise RuntimeError(f'No exact same-column evidence for {boundary}')
+  if int((d.get(boundary) or {}).get('up',0))<1:raise RuntimeError(f'No exact up-direction same-column evidence for {boundary}')
+  if int((d.get(boundary) or {}).get('down',0))<1:raise RuntimeError(f'No exact down-direction same-column evidence for {boundary}')
  return 0
 if __name__=='__main__':raise SystemExit(main())
