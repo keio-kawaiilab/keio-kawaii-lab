@@ -144,6 +144,11 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git commit -m 'Generate complete Line 8 and Line 13 through-service database'
+          # Some legacy generators touch extra working-tree files. They are not
+          # part of this authoritative snapshot and must not block a safe rebase.
+          git status --short
+          git restore --worktree -- .
+          git clean -fd
           branch="${GITHUB_REF_NAME}"
           git fetch origin "$branch"
           git rebase "origin/$branch"
