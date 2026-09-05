@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "generatedAt": "2026-09-05T16:36:08.073Z",
+  "system": "Yurakucho Line / former Line 8 through-service corridor to Tobu Tojo and Seibu Yurakucho/Ikebukuro",
+  "policy": {
+    "runtimeInference": false,
+    "timeGapMayEstablishTrainIdentity": false,
+    "trainNumberMayEstablishTrainIdentity": false,
+    "publishedDestinationAloneMayEstablishIdentity": false,
+    "ambiguousMetroBranchMayEstablishLineIdentity": false,
+    "bidirectionalExactEvidenceRequired": true
+  },
+  "sourceIdentityRecords": 25163,
+  "pairs": [
+    {
+      "id": "yurakucho-seibuyurakucho-kotakemukaihara",
+      "label": "有楽町線↔西武有楽町線（小竹向原）",
+      "fromRailway": "odpt.Railway:TokyoMetro.Yurakucho",
+      "toRailway": "odpt.Railway:Seibu.SeibuYurakucho",
+      "requiredCorridor": "line8",
+      "boundaryStatus": "verified",
+      "boundarySource": "https://www.tokyometro.jp/station/line_yurakucho/index.html",
+      "authoritativeResolvedLinks": 0,
+      "authoritativeUnresolvedReferences": 0,
+      "officialPublishedTrainEvidence": 257,
+      "explicitBoundaryEndpointEvidence": 0,
+      "authoritativeExactEvidence": 257,
+      "generatedExactThroughRecords": 257,
+      "directions": {
+        "ab": 128,
+        "ba": 129,
+        "other": 0
+      },
+      "exactBidirectional": true,
+      "exactIdentityReady": true,
+      "evidenceTypes": {
+        "official-single-train-page": 257
+      }
+    },
+    {
+      "id": "seibuyurakucho-ikebukuro-nerima",
+      "label": "西武有楽町線↔西武池袋線（練馬）",
+      "fromRailway": "odpt.Railway:Seibu.SeibuYurakucho",
+      "toRailway": "odpt.Railway:Seibu.Ikebukuro",
+      "requiredCorridor": "line8",
+      "boundaryStatus": "verified",
+      "boundarySource": "https://www.seiburailway.jp/railway/station/",
+      "authoritativeResolvedLinks": 0,
+      "authoritativeUnresolvedReferences": 0,
+      "officialPublishedTrainEvidence": 257,
+      "explicitBoundaryEndpointEvidence": 0,
+      "authoritativeExactEvidence": 257,
+      "generatedExactThroughRecords": 257,
+      "directions": {
+        "ab": 128,
+        "ba": 129,
+        "other": 0
+      },
+      "exactBidirectional": true,
+      "exactIdentityReady": true,
+      "evidenceTypes": {
+        "official-single-train-page": 257
+      }
+    },
+    {
+      "id": "yurakucho-tojo-wakoshi",
+      "label": "有楽町線↔東武東上線（和光市）",
+      "fromRailway": "odpt.Railway:TokyoMetro.Yurakucho",
+      "toRailway": "odpt.Railway:Tobu.Tojo",
+      "requiredCorridor": "line8",
+      "boundaryStatus": "verified",
+      "boundarySource": "https://www.tobu.co.jp/corporation/rail/route/",
+      "authoritativeResolvedLinks": 0,
+      "authoritativeUnresolvedReferences": 0,
+      "officialPublishedTrainEvidence": 0,
+      "explicitBoundaryEndpointEvidence": 174,
+      "authoritativeExactEvidence": 174,
+      "generatedExactThroughRecords": 174,
+      "directions": {
+        "ab": 93,
+        "ba": 81,
+        "other": 0
+      },
+      "exactBidirectional": true,
+      "exactIdentityReady": true,
+      "evidenceTypes": {
+        "odpt-explicit-boundary-endpoint": 174
+      }
+    }
+  ],
+  "summary": {
+    "boundaryPairs": 3,
+    "verifiedBoundaries": 3,
+    "exactIdentityReadyPairs": 3,
+    "resolvedAuthoritativeLinks": 0,
+    "unresolvedAuthoritativeReferences": 0,
+    "officialPublishedTrainEvidence": 514,
+    "explicitBoundaryEndpointEvidence": 174,
+    "authoritativeExactEvidence": 688,
+    "generatedExactThroughRecords": 688,
+    "complete": true
+  }
+}
