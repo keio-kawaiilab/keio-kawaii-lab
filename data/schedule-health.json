@@ -1,15 +1,21 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-06T03:31:38.175827+09:00",
-  "candidateUpdatedAt": "2026-09-06T03:31:38+09:00",
+  "generatedAt": "2026-09-06T04:12:01.137945+09:00",
+  "candidateUpdatedAt": "2026-09-06T04:12:00+09:00",
   "previousEventCount": 272,
-  "candidateEventCount": 272,
+  "candidateEventCount": 300,
   "protectedPreviousCount": 272,
   "errorCount": 0,
-  "warningCount": 16,
+  "warningCount": 22,
   "errors": [],
   "warnings": [
-    "quarantined one event/source update and kept the previous known-good data: release event sales/gathering/start times are out of order: SWEET STEADY / 【SWEET STEADY】 3rdシングル『SWEET STEP』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
+    "quarantined one event/source update and kept the previous known-good data: missing title: SWEET STEADY / ? / チケット受付",
+    "quarantined one event/source update and kept the previous known-good data: missing title: CANDY TUNE / ? / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: missing title: CUTIE STREET / ? / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: missing title: FRUITS ZIPPER / ? / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: missing title: KAWAII LAB. MATES / ? / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: missing title: KAWAII LAB. SOUTH / ? / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: missing title: SWEET STEADY / ? / FC先行",
     "quarantined one event/source update and kept the previous known-good data: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event is not marked as official-source data: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event has no participation method: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -26,7 +32,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
   ],
-  "candidateSha256": "9dce88d0dc2059a47035d6dccdbd5a28c78419271a2d3d2c09a2067ccbc388de",
+  "candidateSha256": "c64465b6c4327b9d16636d62a2b32766c543db387a8eda8e594833613f296c13",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -106,13 +112,13 @@
     "url:https://kawaiilab.asobisystem.com/news/detail/85221",
     "url:https://kawaiilab.asobisystem.com/news/detail/87217",
     "url:https://kawaiilab.asobisystem.com/news/detail/87775",
-    "url:https://kawaiilab.asobisystem.com/news/detail/88102",
     "url:https://kawaiilab.asobisystem.com/news/detail/88140",
     "url:https://kawaiilab.asobisystem.com/news/detail/88214",
     "url:https://kawaiilab.asobisystem.com/news/detail/88893",
     "url:https://morestar.asobisystem.com/news/detail/85449",
     "url:https://morestar.asobisystem.com/news/detail/87772",
     "url:https://morestar.asobisystem.com/news/detail/87783",
+    "url:https://morestar.asobisystem.com/news/detail/88498",
     "url:https://sweetsteady.asobisystem.com/",
     "url:https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026",
     "url:https://sweetsteady.asobisystem.com/live_information/detail/43905",
@@ -181,12 +187,42 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 8,
+  "quarantineCount": 14,
   "quarantineActions": [
     {
-      "error": "release event sales/gathering/start times are out of order: SWEET STEADY / 【SWEET STEADY】 3rdシングル『SWEET STEP』発売記念リリースイベント @エミテラス所沢2F TOKOROZAWA e-CUBE｜ / 現在受付なし",
-      "action": "restored previous row",
-      "restoredPreviousRows": 1
+      "error": "missing title: SWEET STEADY / ? / チケット受付",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 10
+    },
+    {
+      "error": "missing title: CANDY TUNE / ? / FC先行",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "missing title: CUTIE STREET / ? / FC先行",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "missing title: FRUITS ZIPPER / ? / FC先行",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "missing title: KAWAII LAB. MATES / ? / FC先行",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "missing title: KAWAII LAB. SOUTH / ? / FC先行",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "missing title: SWEET STEADY / ? / FC先行",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 2
     },
     {
       "error": "special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
