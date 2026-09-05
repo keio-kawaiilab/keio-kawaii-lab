@@ -11,13 +11,13 @@ def word(text, x0, x1, y):
 
 def extract(direction):
     if direction == "keikyu-to-toei":
-        upper = [word("泉岳寺", 10, 60, 500), word("発", 62, 72, 500), word("0701", 296, 304, 500)]
-        lower = [word("泉岳寺", 10, 60, 520), word("着", 62, 72, 520), word("0702", 296, 304, 520)]
-        number = "701K"
+        upper = [word("泉岳寺", 10, 60, 500), word("着", 62, 72, 500), word("0524", 296, 304, 500)]
+        lower = [word("泉岳寺", 10, 60, 520), word("発", 62, 72, 520), word("0525", 296, 304, 520)]
+        number = "514T"
     else:
-        upper = [word("泉岳寺", 10, 60, 500), word("〃", 62, 72, 500), word("0700", 296, 304, 500)]
-        lower = [word("泉岳寺", 10, 60, 520), word("着", 62, 72, 520), word("0701", 296, 304, 520)]
-        number = "1200H"
+        upper = [word("泉岳寺", 10, 60, 500), word("着", 62, 72, 500), word("0459", 296, 304, 500)]
+        lower = [word("泉岳寺", 10, 60, 520), word("〃", 62, 72, 520), word("0500", 296, 304, 520)]
+        number = "521T"
     words = upper + [word("列車番号", 10, 75, 510), word(number, 296, 304, 510)] + lower
     rows = parser.extract_page_candidates(words, page_number=1, calendar="weekday", source_url="https://example.test/other_weekday.pdf")
     assert len(rows) == 1, rows
@@ -25,24 +25,24 @@ def extract(direction):
 
 
 def test_extract_both_directions():
-    south = extract("keikyu-to-toei")
-    assert south["direction"] == "keikyu-to-toei"
-    assert south["sourceBoundaryMinute"] == 421 and south["targetBoundaryMinute"] == 422
-    assert south["boundaryTrainNumber"] == "701K"
-    north = extract("toei-to-keikyu")
-    assert north["direction"] == "toei-to-keikyu"
-    assert north["sourceBoundaryMinute"] == 420 and north["targetBoundaryMinute"] == 421
+    north = extract("keikyu-to-toei")
+    assert north["direction"] == "keikyu-to-toei"
+    assert north["sourceBoundaryMinute"] == 324 and north["targetBoundaryMinute"] == 325
+    assert north["boundaryTrainNumber"] == "514T"
+    south = extract("toei-to-keikyu")
+    assert south["direction"] == "toei-to-keikyu"
+    assert south["sourceBoundaryMinute"] == 299 and south["targetBoundaryMinute"] == 300
 
 
 def fragments():
     return [
-        {"id":"keikyu:source","railway":parser.KEIKYU_MAIN,"calendar":"odpt.Calendar:Weekday","trainNumber":"","stops":[["odpt.Station:Keikyu.Main.Shinagawa",418,418],["odpt.Station:Keikyu.Main.Sengakuji",421,421]]},
-        {"id":"toei:target","railway":parser.TOEI_ASAKUSA,"calendar":"odpt.Calendar:Weekday","trainNumber":"DIFFERENT","stops":[["odpt.Station:Toei.Asakusa.Sengakuji",422,422],["odpt.Station:Toei.Asakusa.Mita",425,425]]},
+        {"id":"keikyu:source","railway":parser.KEIKYU_MAIN,"calendar":"odpt.Calendar:Weekday","trainNumber":"","stops":[["odpt.Station:Keikyu.Main.Shinagawa",321,321],["odpt.Station:Keikyu.Main.Sengakuji",324,324]]},
+        {"id":"toei:target","railway":parser.TOEI_ASAKUSA,"calendar":"odpt.Calendar:Weekday","trainNumber":"DIFFERENT","stops":[["odpt.Station:Toei.Asakusa.Sengakuji",325,325],["odpt.Station:Toei.Asakusa.Mita",328,328]]},
     ]
 
 
 def candidate():
-    return {"id":"candidate:1","calendar":"weekday","direction":"keikyu-to-toei","sourceBoundaryMinute":421,"targetBoundaryMinute":422,"boundaryTrainNumber":"701K","boundaryId":parser.BOUNDARY_ID,"evidence":["operator-official-connection-timetable","same-printed-column-spans-both-sides-of-sengakuji"]}
+    return {"id":"candidate:1","calendar":"weekday","direction":"keikyu-to-toei","sourceBoundaryMinute":324,"targetBoundaryMinute":325,"boundaryTrainNumber":"514T","boundaryId":parser.BOUNDARY_ID,"evidence":["operator-official-connection-timetable","same-printed-column-spans-both-sides-of-sengakuji"]}
 
 
 def test_singleton_and_train_number_not_identity():
@@ -60,12 +60,12 @@ def test_ambiguity_fails_closed():
 
 
 def test_time_only_never_creates_candidate():
-    words = [word("泉岳寺",10,60,500),word("発",62,72,500),word("0701",296,304,500),word("泉岳寺",10,60,520),word("着",62,72,520),word("0702",296,304,520)]
+    words = [word("泉岳寺",10,60,500),word("着",62,72,500),word("0524",296,304,500),word("泉岳寺",10,60,520),word("発",62,72,520),word("0525",296,304,520)]
     assert parser.extract_page_candidates(words,page_number=1,calendar="weekday",source_url="x") == []
 
 
 def test_same_column_required():
-    words = [word("泉岳寺",10,60,500),word("発",62,72,500),word("0701",296,304,500),word("列車番号",10,75,510),word("701K",296,304,510),word("泉岳寺",10,60,520),word("着",62,72,520),word("0702",350,358,520)]
+    words = [word("泉岳寺",10,60,500),word("着",62,72,500),word("0524",296,304,500),word("列車番号",10,75,510),word("514T",296,304,510),word("泉岳寺",10,60,520),word("発",62,72,520),word("0525",350,358,520)]
     assert parser.extract_page_candidates(words,page_number=1,calendar="weekday",source_url="x") == []
 
 
