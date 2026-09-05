@@ -20,6 +20,7 @@ on:
       - 'scripts/test_keisei_through_network.py'
       - 'scripts/audit_keisei_exact_network.py'
       - 'scripts/test_keisei_route_ui.js'
+      - 'scripts/test_keisei_identity_safety.js'
       - 'data/transit/hokuso/**'
       - 'data/transit/shibayama/**'
       - 'data/transit/keisei/external-through-boundaries.json'
@@ -75,6 +76,7 @@ jobs:
             scripts/test_keisei_through_network.py \
             scripts/audit_keisei_exact_network.py
           node --check scripts/test_keisei_route_ui.js
+          node --check scripts/test_keisei_identity_safety.js
 
       - name: Collect every detailed train timetable with checkpoints
         shell: bash
@@ -186,6 +188,7 @@ jobs:
           python scripts/build_keisei_extended_network.py
           python scripts/test_keisei_through_network.py
           python scripts/audit_keisei_exact_network.py
+          node scripts/test_keisei_identity_safety.js
 
       - name: Validate and publish compact and exact timetable databases
         shell: bash
