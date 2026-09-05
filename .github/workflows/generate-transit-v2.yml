@@ -23,7 +23,8 @@ on:
       - 'data/transit-v2/service-boundaries.json'
       - '.github/workflows/generate-transit-v2.yml'
   schedule:
-    - cron: '50 18 * * 0'
+    # 04:50 JST every Monday, after the 04:17 Keisei full refresh.
+    - cron: '50 19 * * 0'
 
 permissions:
   contents: write
