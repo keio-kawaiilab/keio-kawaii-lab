@@ -5,6 +5,8 @@ on:
   push:
     branches: [main]
     paths:
+      - 'scripts/repair_keikyu_sengakuji_terminal.py'
+      - 'scripts/build_transit_v2.py'
       - 'scripts/keikyu_official_train_evidence.py'
       - 'scripts/merge_keikyu_official_evidence.py'
       - 'scripts/keikyu_generated_evidence.py'
@@ -26,6 +28,9 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
+    env:
+      ODPT_API_KEY: ${{ secrets.ODPT_API_KEY }}
+      ODPT_CHALLENGE_API_KEY: ${{ secrets.ODPT_CHALLENGE_API_KEY }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -33,13 +38,17 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install PDF parser
+      - name: Install dependencies
         run: pip install pdfplumber==0.11.7 requests==2.32.5
       - name: Test fail-closed extraction and consumer rules
         run: |
           python -m py_compile scripts/verify_keikyu_through_materialization.py
           python scripts/test_keikyu_official_train_evidence.py
           python scripts/test_keikyu_generated_evidence.py
+      - name: Repair missing Keikyu inbound Sengakuji board
+        run: python scripts/repair_keikyu_sengakuji_terminal.py
+      - name: Rebuild strict transit v2 fragments
+        run: python scripts/build_transit_v2.py
       - name: Extract official weekday and holiday evidence
         run: |
           python scripts/keikyu_official_train_evidence.py --calendar weekday --output /tmp/keikyu-weekday.json
@@ -74,15 +83,6 @@ jobs:
               key = str(row.get('direction') or '')
               directions[key] = directions.get(key, 0) + 1
 
-          generated_directions = {'keikyu-to-toei': 0, 'toei-to-keikyu': 0}
-          for edge in generated:
-              boundary = edge.get('boundary') or {}
-              pair = (boundary.get('fromRailway'), boundary.get('toRailway'))
-              if pair == ('odpt.Railway:Keikyu.Main', 'odpt.Railway:Toei.Asakusa'):
-                  generated_directions['keikyu-to-toei'] += 1
-              elif pair == ('odpt.Railway:Toei.Asakusa', 'odpt.Railway:Keikyu.Main'):
-                  generated_directions['toei-to-keikyu'] += 1
-
           production_pairs = {
               (str(row.get('fromFragment') or ''), str(row.get('toFragment') or ''))
               for row in entries
@@ -91,6 +91,16 @@ jobs:
               (str(row.get('fromFragment') or ''), str(row.get('toFragment') or ''))
               for row in generated
           }
+          pair_direction = {
+              (str(row.get('fromFragment') or ''), str(row.get('toFragment') or '')): str(row.get('direction') or '')
+              for row in entries
+          }
+          generated_directions = {'keikyu-to-toei': 0, 'toei-to-keikyu': 0}
+          for pair in generated_pairs:
+              direction = pair_direction.get(pair)
+              if direction in generated_directions:
+                  generated_directions[direction] += 1
+
           missing_pairs = production_pairs - generated_pairs
 
           print('PRODUCTION_EVIDENCE', len(entries))
@@ -119,13 +129,15 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add \
+            data/transit/keikyu \
+            data/transit-v2/fragments/keikyu.json \
             data/transit-v2/keikyu-official-train-evidence.json \
             data/transit-v2/same-train-edges.json \
             data/transit-v2/runtime-same-train.json \
             data/transit-v2/coverage.json \
             data/transit-v2/index.json \
             data/transit-v2/unresolved-summary.json
-          if [ -z "$(git status --porcelain -- data/transit-v2)" ]; then
+          if [ -z "$(git status --porcelain -- data/transit data/transit-v2)" ]; then
             echo "No Keikyu transit DB changes."
             exit 0
           fi
