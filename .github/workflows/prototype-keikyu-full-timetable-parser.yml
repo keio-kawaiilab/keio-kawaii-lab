@@ -1,0 +1,41 @@
+name: Prototype Keikyu official full timetable parser
+
+on:
+  push:
+    paths:
+      - '.github/workflows/prototype-keikyu-full-timetable-parser.yml'
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pdfplumber==0.11.7 requests==2.32.5
+      - name: Inspect official weekday PDF geometry
+        run: |
+          python - <<'PY'
+          import io, requests, pdfplumber, collections
+          url='https://www.keikyu.co.jp/ride/kakueki/pdf/schedule_weekday.pdf'
+          r=requests.get(url,timeout=60); r.raise_for_status()
+          print('downloaded',len(r.content))
+          with pdfplumber.open(io.BytesIO(r.content)) as pdf:
+              print('pages',len(pdf.pages))
+              p=pdf.pages[1]
+              words=p.extract_words(x_tolerance=1,y_tolerance=2,keep_blank_chars=False)
+              print('page size',p.width,p.height,'words',len(words))
+              # print first train-header zone and a few station/time rows with coordinates
+              for w in words:
+                  text=w['text']
+                  if w['top'] < 180 or text in {'堀ノ内','金沢八景','京急蒲田','三崎口'}:
+                      print(f"W {w['x0']:.1f} {w['top']:.1f} {w['x1']:.1f} {w['bottom']:.1f} {text}")
+              # Detect vertical grid lines and report x coordinates; these define train columns.
+              xs=[]
+              for line in p.lines:
+                  if abs(line['x0']-line['x1']) < 0.5 and line['height'] > 50:
+                      xs.append(round(line['x0'],1))
+              counts=collections.Counter(xs)
+              print('vertical-grid-x',sorted(counts.items(), key=lambda kv:kv[0])[:120])
+          PY
