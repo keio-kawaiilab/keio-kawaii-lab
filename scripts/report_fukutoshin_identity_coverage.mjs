@@ -12,6 +12,10 @@ const writeJson=(file,value)=>{
 
 const MM='manual.Railway:YokohamaMinatomirai.Minatomirai';
 const TY='odpt.Railway:Tokyu.Toyoko';
+const TSH='odpt.Railway:Tokyu.TokyuShinYokohama';
+const SSH='odpt.Railway:Sotetsu.SotetsuShinYokohama';
+const SM='odpt.Railway:Sotetsu.Main';
+const SIZ='odpt.Railway:Sotetsu.Izumino';
 const F='odpt.Railway:TokyoMetro.Fukutoshin';
 const SY='odpt.Railway:Seibu.SeibuYurakucho';
 const SI='odpt.Railway:Seibu.Ikebukuro';
@@ -19,6 +23,10 @@ const TJ='odpt.Railway:Tobu.Tojo';
 
 const PAIRS=[
   {id:'minatomirai-toyoko-yokohama',label:'みなとみらい線↔東急東横線（横浜）',a:MM,b:TY},
+  {id:'toyoko-tokyushinyokohama-hiyoshi',label:'東急東横線↔東急新横浜線（日吉）',a:TY,b:TSH},
+  {id:'tokyushinyokohama-sotetsushinyokohama-shinyokohama',label:'東急新横浜線↔相鉄新横浜線（新横浜）',a:TSH,b:SSH},
+  {id:'sotetsushinyokohama-main-nishiya',label:'相鉄新横浜線↔相鉄本線（西谷）',a:SSH,b:SM},
+  {id:'sotetsu-main-izumino-futamatagawa',label:'相鉄本線↔相鉄いずみ野線（二俣川）',a:SM,b:SIZ},
   {id:'toyoko-fukutoshin-shibuya',label:'東急東横線↔副都心線（渋谷）',a:TY,b:F},
   {id:'fukutoshin-seibuyurakucho-kotakemukaihara',label:'副都心線↔西武有楽町線（小竹向原）',a:F,b:SY},
   {id:'fukutoshin-tojo-wakoshi',label:'副都心線↔東武東上線（和光市）',a:F,b:TJ},
@@ -150,11 +158,11 @@ for(const spec of PAIRS){
   });
 }
 
-const importantRailways=[MM,TY,F,SY,SI,TJ];
+const importantRailways=[MM,TY,TSH,SSH,SM,SIZ,F,SY,SI,TJ];
 const report={
-  version:2,
+  version:3,
   generatedAt:new Date().toISOString(),
-  system:'Fukutoshin Line / former Line 13 through-service corridor',
+  system:'Fukutoshin Line / former Line 13 through-service corridor including Minatomirai and Sotetsu branches',
   policy:{
     runtimeInference:false,
     timeGapMayEstablishTrainIdentity:false,
@@ -181,5 +189,5 @@ const report={
 writeJson('data/transit/fukutoshin/identity-coverage-report.json',report);
 console.log(JSON.stringify(report.summary,null,2));
 for(const row of resultPairs){
-  console.log(`${row.label}: boundary=${row.boundaryStatus} odpt=${row.authoritativeResolvedLinks} officialPage=${row.officialSingleTrainPageEvidence} generated=${row.generatedExactThroughRecords} ready=${row.exactIdentityReady}`);
+  console.log(`${row.label}: boundary=${row.boundaryStatus} odpt=${row.authoritativeResolvedLinks} unresolved=${row.authoritativeUnresolvedReferences} officialPage=${row.officialSingleTrainPageEvidence} generated=${row.generatedExactThroughRecords} ready=${row.exactIdentityReady}`);
 }
