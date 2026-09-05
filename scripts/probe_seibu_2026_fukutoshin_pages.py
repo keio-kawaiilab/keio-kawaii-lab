@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import html
 import json
 import re
 import unicodedata
@@ -11,12 +12,13 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from urllib.parse import urljoin
 
 import requests
 
-BOOK_INDEX_BASE = 'https://www.seiburailway.jp/railways/2026digitaltimetable/'
-BOOK_XML = BOOK_INDEX_BASE + 'book.xml'
-FLIPPER_BOOK_BASE = 'https://www.seiburailway.jp/railway/2026digitaltimetable/book_other/'
+BASE = 'https://www.seiburailway.jp/railways/2026digitaltimetable/'
+INDEX_URL = BASE + 'index.html'
+BOOK_XML = BASE + 'book.xml'
 KEYWORDS = (
     '小竹向原', '新桜台', '練馬', '池袋', '西武有楽町線', '副都心線',
     '元町・中華街', '横浜', '渋谷', '新木場', '和光市',
@@ -34,11 +36,20 @@ def local_name(tag: str) -> str:
 def get(url: str, *, timeout: tuple[int, int] = (20, 60)) -> bytes:
     response = requests.get(
         url,
-        headers={'User-Agent': 'keio-kawaiilab-transit-evidence/4.0'},
+        headers={'User-Agent': 'Mozilla/5.0 (compatible; KeioKawaiiLabTransitDB/4.1)'},
         timeout=timeout,
     )
     response.raise_for_status()
     return response.content
+
+
+def decode(raw: bytes) -> str:
+    for encoding in ('utf-8', 'cp932', 'shift_jis'):
+        try:
+            return raw.decode(encoding)
+        except UnicodeDecodeError:
+            continue
+    return raw.decode('utf-8', errors='replace')
 
 
 def parse_book(content: bytes) -> tuple[str, list[str]]:
@@ -63,6 +74,49 @@ def parse_book(content: bytes) -> tuple[str, list[str]]:
     return publish_date, folders
 
 
+def attr_values(text: str, name: str) -> list[str]:
+    pattern = re.compile(rf'\b{re.escape(name)}\s*=\s*["\']([^"\']*)["\']', re.I)
+    out: list[str] = []
+    for value in pattern.findall(text):
+        value = html.unescape(value.strip())
+        if value not in out:
+            out.append(value)
+    return out
+
+
+def viewer_data_bases(index_raw: bytes) -> tuple[list[str], dict[str, Any]]:
+    text = decode(index_raw)
+    bookpaths = attr_values(text, 'bookpath')
+    imagepaths = attr_values(text, 'imagepath')
+    candidates: list[str] = []
+    # FLIPPER3 itself uses imagepath first, otherwise bookpath. Preserve exactly
+    # that precedence, while retaining all literal values for diagnostics.
+    for value in [*imagepaths, *bookpaths]:
+        absolute = urljoin(INDEX_URL, value or './')
+        if not absolute.endswith('/'):
+            absolute += '/'
+        if absolute not in candidates:
+            candidates.append(absolute)
+    if not candidates:
+        candidates.append(BASE)
+
+    fragments: list[str] = []
+    for needle in ('imagepath', 'bookpath', 'flipper-app'):
+        start = 0
+        while len(fragments) < 12:
+            pos = text.lower().find(needle.lower(), start)
+            if pos < 0:
+                break
+            fragments.append(re.sub(r'\s+', ' ', text[max(0, pos - 180):pos + 420]))
+            start = pos + len(needle)
+    return candidates, {
+        'bookpathAttributes': bookpaths,
+        'imagepathAttributes': imagepaths,
+        'derivedDataBases': candidates,
+        'configFragments': fragments,
+    }
+
+
 def xml_diagnostics(content: bytes) -> tuple[str, dict[str, int], list[dict[str, Any]], str]:
     root = ET.fromstring(content)
     tags: Counter[str] = Counter()
@@ -78,36 +132,33 @@ def xml_diagnostics(content: bytes) -> tuple[str, dict[str, int], list[dict[str,
             if value and str(value).strip():
                 pieces.append(str(value).strip())
         if len(sample) < 80:
-            sample.append({
-                'tag': name,
-                'attrs': dict(elem.attrib),
-                'text': text[:120],
-            })
+            sample.append({'tag': name, 'attrs': dict(elem.attrib), 'text': text[:120]})
     return local_name(root.tag), dict(tags), sample, norm(''.join(pieces))
 
 
-def probe_page(page: int, folder: str) -> dict[str, Any]:
-    # Existing viewer diagnostics prove that pageFolderNum() uses the opaque
-    # folder id from book.xml under /book_other/page{folder}/textpoint.xml.
-    # Keep page-number fallback only as a diagnostic, never as identity evidence.
-    candidates = [
-        FLIPPER_BOOK_BASE + f'page{folder}/textpoint.xml',
-        FLIPPER_BOOK_BASE + f'page{page}/textpoint.xml',
-    ]
+def probe_page(page: int, folder: str, data_bases: list[str]) -> dict[str, Any]:
+    candidates: list[str] = []
+    for data_base in data_bases:
+        for token in (folder, str(page)):
+            url = urljoin(data_base, f'page{token}/textpoint.xml')
+            if url not in candidates:
+                candidates.append(url)
     errors: list[str] = []
+    shell_urls: list[str] = []
     for url in candidates:
         try:
             content = get(url)
             root_tag, tag_counts, element_sample, flat = xml_diagnostics(content)
-            # Reject the known empty shell returned by the alternate /railways/
-            # route: production discovery needs actual glyph/font payload.
             has_payload = any(tag not in ('TET', 'Page') and count > 0 for tag, count in tag_counts.items())
+            if not has_payload:
+                shell_urls.append(url)
+                continue
             hits = [keyword for keyword in KEYWORDS if norm(keyword) in flat]
             return {
                 'page': page,
                 'folder': folder,
                 'reachable': True,
-                'hasGlyphPayload': has_payload,
+                'hasGlyphPayload': True,
                 'url': url,
                 'bytes': len(content),
                 'rootTag': root_tag,
@@ -116,26 +167,29 @@ def probe_page(page: int, folder: str) -> dict[str, Any]:
                 'keywordHits': hits,
                 'flattenedLength': len(flat),
                 'flattenedSample': flat[:1200],
+                'shellUrls': shell_urls,
             }
         except Exception as exc:
             errors.append(f'{url}: {type(exc).__name__}: {exc}')
     return {
         'page': page,
         'folder': folder,
-        'reachable': False,
+        'reachable': bool(shell_urls),
         'hasGlyphPayload': False,
         'errors': errors,
+        'shellUrls': shell_urls,
         'keywordHits': [],
     }
 
 
 def build_report() -> dict[str, Any]:
-    book = get(BOOK_XML)
-    publish_date, folders = parse_book(book)
+    index_raw = get(INDEX_URL)
+    data_bases, viewer_config = viewer_data_bases(index_raw)
+    publish_date, folders = parse_book(get(BOOK_XML))
     rows: list[dict[str, Any]] = []
     with ThreadPoolExecutor(max_workers=8) as pool:
         futures = {
-            pool.submit(probe_page, page, folder): page
+            pool.submit(probe_page, page, folder, data_bases): page
             for page, folder in enumerate(folders, start=1)
         }
         for future in as_completed(futures):
@@ -146,23 +200,20 @@ def build_report() -> dict[str, Any]:
     counts = Counter(hit for row in matched for hit in row.get('keywordHits') or [])
     schema_samples = [
         {
-            'page': row.get('page'),
-            'folder': row.get('folder'),
-            'url': row.get('url'),
-            'rootTag': row.get('rootTag'),
-            'tagCounts': row.get('tagCounts'),
-            'elementSample': row.get('elementSample'),
-            'flattenedSample': row.get('flattenedSample'),
+            'page': row.get('page'), 'folder': row.get('folder'), 'url': row.get('url'),
+            'rootTag': row.get('rootTag'), 'tagCounts': row.get('tagCounts'),
+            'elementSample': row.get('elementSample'), 'flattenedSample': row.get('flattenedSample'),
         }
         for row in payload_rows[:3]
     ]
     return {
-        'version': 3,
+        'version': 4,
         'generatedAt': datetime.now(timezone.utc).isoformat(),
         'source': 'Seibu Railway official Digital Seibu Timetable 2026',
+        'viewerUrl': INDEX_URL,
         'bookIndexSource': BOOK_XML,
-        'flipperBookBase': FLIPPER_BOOK_BASE,
         'bookPublishDate': publish_date,
+        'viewerConfig': viewer_config,
         'identityPolicy': {
             'pageDiscoveryMayEstablishTrainIdentity': False,
             'glyphStructureMayEstablishTrainIdentity': False,
@@ -181,7 +232,7 @@ def build_report() -> dict[str, Any]:
         },
         'schemaSamples': schema_samples,
         'matchedPages': matched,
-        'unreachablePages': [row for row in rows if not row.get('reachable')],
+        'unresolvedPages': [row for row in rows if not row.get('hasGlyphPayload')],
     }
 
 
@@ -193,12 +244,11 @@ def main() -> int:
     out = Path(args.output)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-    print(json.dumps(report['summary'], ensure_ascii=False, indent=2))
+    print('VIEWER_CONFIG', json.dumps(report.get('viewerConfig') or {}, ensure_ascii=False))
+    print('SUMMARY', json.dumps(report['summary'], ensure_ascii=False, indent=2))
     print('SCHEMA_SAMPLES', json.dumps(report.get('schemaSamples') or [], ensure_ascii=False))
-    if int(report['summary']['reachableTextpointPages']) == 0:
-        raise RuntimeError('No official Seibu textpoint pages were reachable')
     if int(report['summary']['glyphPayloadPages']) == 0:
-        raise RuntimeError('Official Seibu textpoints were reachable but contained no glyph/font payload')
+        raise RuntimeError('No glyph-bearing Seibu textpoint page was found from the viewer-declared data paths')
     return 0
 
 
