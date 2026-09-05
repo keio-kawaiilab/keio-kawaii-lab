@@ -23,6 +23,7 @@ on:
       - 'scripts/keikyu_generated_evidence.py'
       - 'scripts/test_keikyu_official_train_evidence.py'
       - 'scripts/test_keikyu_generated_evidence.py'
+      - 'scripts/verify_keikyu_through_materialization.py'
       - 'scripts/test_route_runtime_same_train.js'
       - 'route-core.js'
       - 'route.js'
@@ -77,7 +78,8 @@ jobs:
             scripts/repair_keikyu_sengakuji_terminal.py \
             scripts/keikyu_official_train_evidence.py \
             scripts/merge_keikyu_official_evidence.py \
-            scripts/keikyu_generated_evidence.py
+            scripts/keikyu_generated_evidence.py \
+            scripts/verify_keikyu_through_materialization.py
           node scripts/test_odpt_train_identity_db.mjs
           node scripts/test_cross_operator_through_service.js
           node scripts/test_route_runtime_same_train.js
@@ -228,6 +230,7 @@ jobs:
           print('Keikyu official generated edges:', len(official_edges))
           print('Keikyu -> Toei generated edges:', len(reverse_edges))
           PY
+          python scripts/verify_keikyu_through_materialization.py --repair-report /tmp/keikyu-sengakuji-repair.json
 
       - name: Commit refreshed transit data
         if: steps.import.outputs.ran == 'true'
