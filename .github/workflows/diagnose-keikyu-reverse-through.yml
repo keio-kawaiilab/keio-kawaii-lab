@@ -91,23 +91,53 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
+
           root = Path('data/transit-v2')
           evidence = json.loads((root / 'keikyu-official-train-evidence.json').read_text(encoding='utf-8'))
           entries = evidence.get('entries') or []
           reverse = [row for row in entries if row.get('direction') == 'keikyu-to-toei']
           forward = [row for row in entries if row.get('direction') == 'toei-to-keikyu']
           edges = json.loads((root / 'same-train-edges.json').read_text(encoding='utf-8')).get('edges') or []
-          reverse_edges = [row for row in edges if row.get('fromRailway') == 'odpt.Railway:Keikyu.Main' and row.get('toRailway') == 'odpt.Railway:Toei.Asakusa' and 'keikyu-official-connection-timetable-same-column' in (row.get('evidence') or [])]
+
+          official_edges = [
+              row for row in edges
+              if 'keikyu-official-connection-timetable-same-column' in (row.get('evidence') or [])
+          ]
+          reverse_edges = []
+          for row in official_edges:
+              boundary = row.get('boundary') or {}
+              if (
+                  boundary.get('fromRailway') == 'odpt.Railway:Keikyu.Main'
+                  and boundary.get('toRailway') == 'odpt.Railway:Toei.Asakusa'
+              ):
+                  reverse_edges.append(row)
+
+          production_pairs = {
+              (str(row.get('fromFragment') or ''), str(row.get('toFragment') or ''))
+              for row in entries
+          }
+          edge_pairs = {
+              (str(row.get('fromFragment') or ''), str(row.get('toFragment') or ''))
+              for row in official_edges
+          }
+          missing_pairs = sorted(production_pairs - edge_pairs)
+
           report = json.loads(Path('/tmp/keikyu-sengakuji-repair.json').read_text(encoding='utf-8'))
           print('REPAIR_REPORT', json.dumps(report, ensure_ascii=False, indent=2))
-          print('OFFICIAL_FORWARD', len(forward))
-          print('OFFICIAL_REVERSE', len(reverse))
-          print('REVERSE_SAME_TRAIN_EDGES', len(reverse_edges))
-          assert report['patch']['patchedRows'] > 0
+          print('OFFICIAL_TOEI_TO_KEIKYU', len(forward))
+          print('OFFICIAL_KEIKYU_TO_TOEI', len(reverse))
+          print('OFFICIAL_EDGE_COUNT', len(official_edges))
+          print('KEIKYU_TO_TOEI_EDGE_COUNT', len(reverse_edges))
+          print('MISSING_PRODUCTION_EDGE_PAIRS', len(missing_pairs))
+          if missing_pairs:
+              print('MISSING_PAIR_EXAMPLES', json.dumps(missing_pairs[:20], ensure_ascii=False, indent=2))
+
+          assert report['patch']['syntheticRows'] > 0
           assert sum(report['afterSengakujiEnds'].values()) > sum(report['beforeSengakujiEnds'].values())
           assert reverse, 'repair produced no strict Keikyu -> Toei official evidence'
-          assert reverse_edges, 'repair did not reach same-train edges'
+          assert reverse_edges, 'repair did not reach Keikyu -> Toei same-train edges'
           assert all(row.get('matchStatus') == 'matched-singleton' for row in reverse)
+          assert not missing_pairs, 'some production Keikyu official evidence did not materialize as same-train edges'
           PY
       - name: Upload repair diagnostics
         if: always()
