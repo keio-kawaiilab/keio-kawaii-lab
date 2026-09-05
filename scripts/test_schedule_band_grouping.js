@@ -89,6 +89,31 @@ assert.strictEqual(eplus.location, '新潟・福島');
 assert.strictEqual(lawson.location, '新潟・福島');
 assert.strictEqual(lawson.events.length, 2);
 
+const sweetTourUrl = 'https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2099';
+const sweetTourCommon = {
+  group: 'SWEET STEADY',
+  ticketType: 'FC先行',
+  applyStart: '2099-08-23T20:00',
+  applyEnd: '2099-09-13T23:59',
+  applicationWindowVerified: true,
+  applicationStatus: 'open',
+  ticketProvider: 'official',
+  sourceType: 'auto',
+  officialTourUrl: sweetTourUrl,
+};
+const sweetTitleVariants = [
+  { ...sweetTourCommon, id: 'sweet-derived', title: '「SWEET STEADY JAPAN TOUR 2099 -WINTER-」 開催決定！FC先行開始！', eventDate: '2099-11-13', venue: '神奈川県 厚木市文化会館 大ホール', url: sweetTourUrl },
+  { ...sweetTourCommon, id: 'sweet-auto', title: '2099.08.23 「SWEET STEADY JAPAN TOUR 2099 -WINTER-」 開催決定！FC先行開始！', eventDate: '2099-11-13', venue: '神奈川県 厚木市文化会館 大ホール', url: sweetTourUrl },
+];
+const sweetGrouped = context.__scheduleTest.groupedApplicationBands(context.__scheduleTest.prepare(sweetTitleVariants));
+assert.strictEqual(sweetGrouped.length, 1, 'same official FC tour and same application window must render one band even when source titles have date-prefix variants');
+assert.strictEqual(sweetGrouped[0].events.length, 2, 'both duplicate official FC source rows must be represented by the one consolidated band');
+
+const otherSweetTourUrl = 'https://sweetsteady.asobisystem.com/feature/a_different_tour';
+const otherSweetTour = { ...sweetTourCommon, id: 'sweet-other-tour', title: 'SWEET STEADY JAPAN TOUR 2099 -WINTER-', officialTourUrl: otherSweetTourUrl, eventDate: '2099-11-14', venue: '神奈川県 別会場', url: otherSweetTourUrl };
+const separateSweetGrouped = context.__scheduleTest.groupedApplicationBands(context.__scheduleTest.prepare(sweetTitleVariants.concat([otherSweetTour])));
+assert.strictEqual(separateSweetGrouped.length, 2, 'different tours must remain separate even when provider and application window match');
+
 const release = {
   group: 'MORE STAR',
   title: 'MORE STAR リリースイベント',

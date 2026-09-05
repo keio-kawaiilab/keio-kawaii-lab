@@ -45,6 +45,10 @@ STATUS_LEGACY = "document.getElementById('status').textContent='最終データ�
 STATUS_DOUBLE = "document.getElementById('status').textContent='最終確認: '+(data.checkedAt||'不明')+' ／ 最終データ更新: '+(data.updatedAt||'不明');render()"
 STATUS_NEW = "document.getElementById('status').textContent='最終更新: '+(data.checkedAt||data.updatedAt||'不明');render()"
 
+APPLICATION_BAND_KEY_LEGACY = "function applicationBandKey(e,index){if(!playguide(e))return'event|'+index;return[String(e.group||''),parts(e).slice().sort().join(','),providerId(e),String(e.ticketType||''),String(e.applyStart||''),String(e.applyEnd||''),performanceTitleKey(e)].join('|')}"
+APPLICATION_BAND_KEY_NEW = "function applicationBandSubjectKey(e){var u=String(e.officialTourUrl||'').trim();if(u)return'tour:'+u.toLowerCase().replace(/[?#].*$/,'').replace(/\\/$/,'');var t=String(title(e)||'').toLowerCase().replace(/^\\s*20\\d{2}[.\\/-]\\d{1,2}[.\\/-]\\d{1,2}\\s*/,'').replace(/\\s+/g,'').replace(/[!！・|｜\\-–—_\\[\\]()（）『』「」]/g,'');return'title:'+t}function applicationBandKey(e,index){var tour=String(e.officialTourUrl||'').trim();if(!playguide(e)&&!tour)return'event|'+index;return[String(e.group||''),parts(e).slice().sort().join(','),providerId(e),String(e.ticketType||''),String(e.applyStart||''),String(e.applyEnd||''),applicationBandSubjectKey(e)].join('|')}"
+
+
 
 def canonicalize_public_data() -> dict:
     payload = json.loads(DATA.read_text(encoding="utf-8"))
@@ -86,6 +90,14 @@ def install_offer_adapter(page: str) -> str:
     return page.replace(PREPARE_OLD, PREPARE_NEW, 1)
 
 
+def install_application_band_identity(page: str) -> str:
+    if APPLICATION_BAND_KEY_NEW in page:
+        return page
+    if APPLICATION_BAND_KEY_LEGACY not in page:
+        raise RuntimeError("schedule applicationBandKey() changed; stable tour identity could not be installed")
+    return page.replace(APPLICATION_BAND_KEY_LEGACY, APPLICATION_BAND_KEY_NEW, 1)
+
+
 def install_truthful_status(page: str) -> str:
     if STATUS_NEW in page:
         return page
@@ -108,6 +120,7 @@ def main() -> int:
     page = PAGE.read_text(encoding="utf-8")
     page = replace_identity_block(page)
     page = install_offer_adapter(page)
+    page = install_application_band_identity(page)
     page = install_truthful_status(page)
 
     required = (
@@ -117,6 +130,8 @@ def main() -> int:
         "kind==='release'||kind==='benefit'",
         "function expandCanonicalOffers(raw)",
         "raw=expandCanonicalOffers(raw)",
+        "function applicationBandSubjectKey(e)",
+        "e.officialTourUrl",
         "function performanceModels(vis)",
         "perfSeen[pk]",
         "data-performance-key",
