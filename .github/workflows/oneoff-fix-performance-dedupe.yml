@@ -1,0 +1,50 @@
+name: Fix duplicate performance items
+
+on:
+  push:
+    paths:
+      - ".github/workflows/oneoff-fix-performance-dedupe.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: oneoff-fix-performance-dedupe
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Patch persistent performance reconciliation and tests
+        run: python scripts/oneoff_fix_performance_dedupe.py
+
+      - name: Rebuild page and run regression tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/fix_schedule_shell.py
+          node --check /tmp/schedule-inline.js
+          node scripts/test_schedule_band_grouping.js
+
+      - name: Commit tested fix
+        shell: bash
+        run: |
+          set -euo pipefail
+          git restore data/live-events.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/fix_schedule_shell.py scripts/test_schedule_band_grouping.js schedule.html
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "Fix duplicate performance items"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
