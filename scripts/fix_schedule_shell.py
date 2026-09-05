@@ -94,7 +94,10 @@ def install_offer_adapter(page: str) -> str:
             raise RuntimeError("could not locate prepare() for canonical special-event adapter")
         page = page[:anchor] + CANONICAL_OFFER_JS + page[anchor:]
 
-    if PREPARE_NEW in page:
+    # Idempotent: a page that already has the canonical expansion may also
+    # contain later reconciliation steps. Do not require the entire prepare()
+    # function to equal an older exact string.
+    if "raw=expandCanonicalOffers(raw)" in page:
         return page
     if PREPARE_OLD not in page:
         raise RuntimeError("schedule prepare() changed; canonical special-event offers could not be installed")
@@ -107,7 +110,11 @@ def install_performance_reconcile(page: str) -> str:
         if anchor < 0:
             raise RuntimeError("could not locate prepare() for performance reconciliation")
         page = page[:anchor] + PERFORMANCE_RECONCILE_JS + page[anchor:]
-    if PREPARE_RECONCILE_NEW in page:
+
+    # Idempotent for already-generated pages. This is intentionally token-based
+    # rather than an exact prepare() string match so future compatible steps can
+    # coexist without breaking the release pipeline.
+    if "fixed=reconcilePerformanceTimes(fixed)" in page:
         return page
     if PREPARE_RECONCILE_OLD not in page:
         raise RuntimeError("schedule prepare() changed; performance reconciliation could not be installed")
