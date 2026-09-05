@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-05T23:06:31.321146+09:00",
-  "candidateUpdatedAt": "2026-09-05T23:06:30+09:00",
-  "previousEventCount": 250,
+  "generatedAt": "2026-09-05T23:56:22.244639+09:00",
+  "candidateUpdatedAt": "2026-09-05T23:56:21+09:00",
+  "previousEventCount": 244,
   "candidateEventCount": 244,
-  "protectedPreviousCount": 250,
+  "protectedPreviousCount": 244,
   "errorCount": 0,
-  "warningCount": 29,
+  "warningCount": 24,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売",
@@ -32,14 +32,9 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no target product: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no verified purchase/ticket window: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
-    "performance dates added for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827: 2026-10-02, 2026-10-04, 2026-11-17, 2026-11-19",
-    "performance dates added for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827: 2026-09-09, 2026-09-10, 2026-10-02, 2026-10-04, 2026-11-17, 2026-11-19",
-    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827: 2026-09-19, 2026-10-08, 2026-10-09, 2026-10-26, 2026-10-27, 2026-10-29, 2026-11-10, 2026-11-12, 2026-11-24, 2026-11-26, 2026-11-30, 2026-12-01, 2026-12-08, 2026-12-09",
-    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827: 2026-09-19, 2026-10-08, 2026-10-09, 2026-10-26, 2026-10-27, 2026-10-29, 2026-11-10, 2026-11-12, 2026-11-24, 2026-11-26, 2026-11-30, 2026-12-01, 2026-12-08, 2026-12-09",
-    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827: 2026-10-08, 2026-10-09"
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
   ],
-  "candidateSha256": "c71e2def66b73b08256d8911c86f200a378845baae009477b637cbc62223cf1b",
+  "candidateSha256": "48131d716f05a3f5ea9eb6a0889c73dfce411092ac431eec68787a8e5d0f0ddc",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -121,6 +116,7 @@
     "url:https://sweetsteady.asobisystem.com/news/detail/87795",
     "url:https://sweetsteady.asobisystem.com/news/detail/88352",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209",
+    "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
     "url:https://tower.jp/article/feature_item/2026/08/28/0704",
@@ -134,7 +130,7 @@
     "url:https://x.com/MORE_STAR_/status/2092567739969966299"
   ],
   "reconciledBaseDateMessageCount": 0,
-  "downgradedFalsePositiveCount": 3,
+  "downgradedFalsePositiveCount": 0,
   "legacyProtectedErrorCount": 7,
   "legacyProtectedErrors": [
     {
