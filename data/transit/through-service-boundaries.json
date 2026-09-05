@@ -7,7 +7,7 @@
     "unresolvedMayBeShownAsThrough": false,
     "description": "A route boundary only describes where through operation is physically/operationally possible. Whether a specific scheduled train is through must be preclassified in through-service-trips.json."
   },
-  "updatedAt": "2026-09-05",
+  "updatedAt": "2026-09-06",
   "boundaries": [
     {
       "id": "minatomirai-toyoko-yokohama",
@@ -137,7 +137,9 @@
       "fromStation": "odpt.Station:Keisei.Oshiage.Oshiage",
       "toStation": "odpt.Station:Toei.Asakusa.Oshiage",
       "bidirectional": true,
-      "status": "source-audit-required"
+      "status": "verified",
+      "source": "https://www.kotsu.metro.tokyo.jp/about/ayumi/subway.html",
+      "note": "東京都交通局公式が押上開業時から京成線との相互直通運転を実施していることを明記。現在の相互直通運転案内でも京成電鉄を浅草線の相互直通先として掲載。列車単位identityは京成公式一列車時刻表由来のexact networkで判定。"
     },
     {
       "id": "toei-keikyu-sengakuji",
@@ -147,7 +149,9 @@
       "fromStation": "odpt.Station:Toei.Asakusa.Sengakuji",
       "toStation": "odpt.Station:Keikyu.Main.Sengakuji",
       "bidirectional": true,
-      "status": "source-audit-required"
+      "status": "verified",
+      "source": "https://www.kotsu.metro.tokyo.jp/about/ayumi/subway.html",
+      "note": "東京都交通局公式が泉岳寺開業時から京浜急行線との相互直通運転を実施していることを明記。現在の相互直通運転案内でも京急電鉄を浅草線の相互直通先として掲載。列車単位identityは公式時刻表由来のexact networkおよびevidence-backed same-train edgeで判定。"
     },
     {
       "id": "denentoshi-hanzomon-shibuya",
