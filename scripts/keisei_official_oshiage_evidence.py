@@ -73,6 +73,11 @@ def clock_minutes(value: Any) -> int | None:
     return hour * 60 + minute
 
 
+def official_train_number(source_train_id: Any) -> str:
+    text = str(source_train_id or "")
+    return text.rsplit("-", 1)[-1] if "-" in text else text
+
+
 def official_stop_anchor(stop: dict[str, Any], station_id: str) -> dict[str, Any]:
     arrival = clock_minutes(stop.get("arrival"))
     departure = clock_minutes(stop.get("departure"))
@@ -113,11 +118,8 @@ def extract_candidates(
         for index, stop in enumerate(stops):
             if norm(stop.get("station")) != BOUNDARY_NAME:
                 continue
-            sample = {
-                "sourceTrainId": str(train.get("sourceTrainId") or ""),
-                "calendar": str(train.get("calendar") or ""),
-                "index": index,
-            }
+            source_train_id = str(train.get("sourceTrainId") or "")
+            sample = {"sourceTrainId": source_train_id, "calendar": str(train.get("calendar") or ""), "index": index}
             if index == 0 or index + 1 >= len(stops):
                 note("oshiage-is-endpoint-not-through", sample)
                 continue
@@ -174,18 +176,16 @@ def extract_candidates(
                 "officialDepartureMinute": departure,
                 "sourceAdjacentAnchor": source_anchor,
                 "targetAdjacentAnchor": target_anchor,
-                "sourceTrainId": str(train.get("sourceTrainId") or ""),
+                "sourceTrainId": source_train_id,
+                "officialTrainNumber": official_train_number(source_train_id),
                 "sourceUrl": str(train.get("url") or ""),
                 "beforeBoundaryStation": before_name,
                 "afterBoundaryStation": after_name,
                 "evidence": ["operator-official-per-train-timetable", MARKER],
             }
             entry["id"] = stable_id(
-                entry["calendar"],
-                entry["direction"],
-                entry["sourceTrainId"],
-                entry["sourceBoundaryMinute"],
-                entry["targetBoundaryMinute"],
+                entry["calendar"], entry["direction"], source_train_id,
+                entry["sourceBoundaryMinute"], entry["targetBoundaryMinute"],
             )
             output.append(entry)
     unique = {str(row["id"]): row for row in output}
@@ -228,9 +228,7 @@ def endpoint_index(
         railway = str(fragment.get("railway") or "")
         service = calendar_key(fragment.get("calendar"))
         station = str(stop[0] or "")
-        if railway not in (KEISEI_OSHIAGE, TOEI_ASAKUSA):
-            continue
-        if station not in (KEISEI_STATION, TOEI_STATION):
+        if railway not in (KEISEI_OSHIAGE, TOEI_ASAKUSA) or station not in (KEISEI_STATION, TOEI_STATION):
             continue
         for value in stop[1:3]:
             if not isinstance(value, (int, float)):
@@ -257,18 +255,38 @@ def fragment_has_exact_anchor(fragment: dict[str, Any], anchor: dict[str, Any]) 
 
 
 def refine_if_ambiguous(
-    matches: list[dict[str, Any]], anchor: dict[str, Any],
-) -> tuple[list[dict[str, Any]], str]:
+    matches: list[dict[str, Any]],
+    anchor: dict[str, Any],
+    *,
+    official_number: str,
+    may_use_official_number: bool,
+) -> tuple[list[dict[str, Any]], str, bool]:
     if len(matches) <= 1:
-        return matches, "boundary-singleton" if len(matches) == 1 else "boundary-missing"
+        return matches, ("boundary-singleton" if len(matches) == 1 else "boundary-missing"), False
     if not str(anchor.get("station") or "") or not anchor.get("minutes"):
-        return matches, "adjacent-anchor-unavailable"
+        return matches, "adjacent-anchor-unavailable", False
+
     refined = [fragment for fragment in matches if fragment_has_exact_anchor(fragment, anchor)]
     if len(refined) == 1:
-        return refined, "resolved-by-adjacent-official-anchor"
+        return refined, "resolved-by-adjacent-official-anchor", False
     if not refined:
-        return matches, "adjacent-anchor-no-exact-match"
-    return refined, "still-ambiguous-after-adjacent-anchor"
+        return matches, "adjacent-anchor-no-exact-match", False
+
+    # Train number is never an identity source by itself.  It is allowed only
+    # as the final selector after the same official train page already supplied
+    # an exact Oshiage boundary anchor AND an exact adjacent-station anchor.
+    if may_use_official_number and official_number:
+        numbered = [
+            fragment for fragment in refined
+            if fragment.get("sourceKind") == "exact-train-timetable"
+            and str(fragment.get("trainNumber") or "") == official_number
+        ]
+        if len(numbered) == 1:
+            return numbered, "resolved-by-adjacent-anchor-and-official-train-number", True
+        if len(numbered) > 1:
+            return numbered, "still-ambiguous-after-adjacent-anchor-and-train-number", False
+        return refined, "official-train-number-no-exact-fragment-match", False
+    return refined, "still-ambiguous-after-adjacent-anchor", False
 
 
 def match_candidates(candidates: list[dict[str, Any]], fragments: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -285,19 +303,31 @@ def match_candidates(candidates: list[dict[str, Any]], fragments: list[dict[str,
         )
         boundary_sources = list(source_index.get(source_key, []))
         boundary_targets = list(target_index.get(target_key, []))
-        sources, source_method = refine_if_ambiguous(boundary_sources, candidate.get("sourceAdjacentAnchor") or {})
-        targets, target_method = refine_if_ambiguous(boundary_targets, candidate.get("targetAdjacentAnchor") or {})
+        number = str(candidate.get("officialTrainNumber") or "")
+        sources, source_method, source_number = refine_if_ambiguous(
+            boundary_sources,
+            candidate.get("sourceAdjacentAnchor") or {},
+            official_number=number,
+            may_use_official_number=str(candidate.get("fromRailway") or "") == KEISEI_OSHIAGE,
+        )
+        targets, target_method, target_number = refine_if_ambiguous(
+            boundary_targets,
+            candidate.get("targetAdjacentAnchor") or {},
+            official_number=number,
+            may_use_official_number=str(candidate.get("toRailway") or "") == KEISEI_OSHIAGE,
+        )
 
         if len(sources) == 1 and len(targets) == 1:
             status = "matched-singleton"
-        elif not sources or not targets or not boundary_sources or not boundary_targets:
+        elif not boundary_sources or not boundary_targets:
             status = "unmatched"
         else:
             status = "ambiguous"
         resolved_by_anchor = (
-            source_method == "resolved-by-adjacent-official-anchor"
-            or target_method == "resolved-by-adjacent-official-anchor"
+            source_method.startswith("resolved-by-adjacent-official-anchor")
+            or target_method.startswith("resolved-by-adjacent-official-anchor")
         )
+        resolved_by_number = source_number or target_number
         output.append({
             **candidate,
             "matchStatus": status,
@@ -310,10 +340,12 @@ def match_candidates(candidates: list[dict[str, Any]], fragments: list[dict[str,
             "sourceMatchMethod": source_method,
             "targetMatchMethod": target_method,
             "resolvedByAdjacentOfficialAnchor": resolved_by_anchor,
+            "resolvedByOfficialTrainNumberAfterExactAnchors": resolved_by_number,
             "matchPolicy": {
                 "sameOfficialPerTrainPageSpansBoundaryRequired": True,
                 "exactBoundaryAnchorRequired": True,
                 "ambiguousBoundaryEndpointRequiresExactAdjacentOfficialAnchor": True,
+                "officialTrainNumberMayDisambiguateOnlyAfterExactBoundaryAndAdjacentAnchor": True,
                 "verifiedBoundaryRequired": True,
                 "singletonFragmentMatchRequired": True,
                 "boundaryMinuteTolerance": 0,
@@ -332,10 +364,11 @@ def make_payload(candidates: list[dict[str, Any]], matched: list[dict[str, Any]]
         str(row.get("direction") or "unknown")
         for row in matched if row.get("matchStatus") == "matched-singleton"
     )
-    resolved_by_anchor = [
+    anchor_resolved = [
         row for row in matched
         if row.get("matchStatus") == "matched-singleton" and row.get("resolvedByAdjacentOfficialAnchor")
     ]
+    number_resolved = [row for row in anchor_resolved if row.get("resolvedByOfficialTrainNumberAfterExactAnchors")]
     boundary_singletons = [
         row for row in matched
         if row.get("matchStatus") == "matched-singleton" and not row.get("resolvedByAdjacentOfficialAnchor")
@@ -343,17 +376,14 @@ def make_payload(candidates: list[dict[str, Any]], matched: list[dict[str, Any]]
     still_ambiguous = [row for row in matched if row.get("matchStatus") == "ambiguous"]
     production = [row for row in matched if row.get("matchStatus") == "matched-singleton"]
     return {
-        "version": 2,
-        "source": {
-            "operator": "keisei",
-            "kind": "operator-official-per-train-timetable-snapshot",
-            "path": str(DETAILS_PATH),
-        },
+        "version": 3,
+        "source": {"operator": "keisei", "kind": "operator-official-per-train-timetable-snapshot", "path": str(DETAILS_PATH)},
         "policy": {
             "autoPromoteUnknown": False,
             "sameOfficialPerTrainPageSpansBoundaryRequired": True,
             "exactBoundaryAnchorRequired": True,
             "ambiguousBoundaryEndpointRequiresExactAdjacentOfficialAnchor": True,
+            "officialTrainNumberMayDisambiguateOnlyAfterExactBoundaryAndAdjacentAnchor": True,
             "verifiedOperationalBoundaryRequired": True,
             "singletonFragmentMatchRequired": True,
             "trainNumberAloneMayEstablishIdentity": False,
@@ -365,9 +395,10 @@ def make_payload(candidates: list[dict[str, Any]], matched: list[dict[str, Any]]
             "candidateDirections": dict(candidate_directions),
             "matchedSingleton": status_counts.get("matched-singleton", 0),
             "boundarySingleton": len(boundary_singletons),
-            "resolvedByAdjacentOfficialAnchor": len(resolved_by_anchor),
-            "resolvedByAdjacentOfficialAnchorDirections": dict(Counter(str(row.get("direction") or "unknown") for row in resolved_by_anchor)),
-            "stillAmbiguousAfterAdjacentAnchor": len(still_ambiguous),
+            "resolvedByAdjacentOfficialAnchor": len(anchor_resolved),
+            "resolvedByOfficialTrainNumberAfterExactAnchors": len(number_resolved),
+            "resolvedByOfficialTrainNumberDirections": dict(Counter(str(row.get("direction") or "unknown") for row in number_resolved)),
+            "stillAmbiguousAfterStrictDisambiguation": len(still_ambiguous),
             "ambiguous": status_counts.get("ambiguous", 0),
             "unmatched": status_counts.get("unmatched", 0),
             "matchedDirections": dict(matched_directions),
@@ -389,9 +420,11 @@ def main() -> int:
     args = parser.parse_args()
 
     details = load_json(Path(args.details))
-    keisei_entities = load_json(Path(args.keisei_entities))
-    toei_entities = load_json(Path(args.toei_entities))
-    candidates, extraction = extract_candidates(details, station_map(keisei_entities), station_map(toei_entities))
+    candidates, extraction = extract_candidates(
+        details,
+        station_map(load_json(Path(args.keisei_entities))),
+        station_map(load_json(Path(args.toei_entities))),
+    )
     matched = match_candidates(candidates, load_fragments(Path(args.fragment_dir)))
     payload = make_payload(candidates, matched, extraction)
     output = Path(args.output)
