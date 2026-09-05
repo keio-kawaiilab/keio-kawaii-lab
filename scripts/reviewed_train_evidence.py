@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 import keikyu_generated_evidence as keikyu_generated
+import keikyu_internal_generated_evidence as keikyu_internal_generated
 
 
 def load_json(path: Path, default: Any = None) -> Any:
@@ -71,64 +72,36 @@ def apply_reviewed_train_evidence(
         sources = [fragment for fragment in fragments if matches_fragment(fragment, entry.get('from') or {})]
         targets = [fragment for fragment in fragments if matches_fragment(fragment, entry.get('to') or {})]
         if len(sources) != 1 or len(targets) != 1:
-            unresolved.append({
-                'kind': 'reviewed-train-evidence-selector-mismatch',
-                'evidenceId': entry_id,
-                'sourceMatches': [fragment.get('id') for fragment in sources],
-                'targetMatches': [fragment.get('id') for fragment in targets],
-            })
+            unresolved.append({'kind': 'reviewed-train-evidence-selector-mismatch', 'evidenceId': entry_id, 'sourceMatches': [fragment.get('id') for fragment in sources], 'targetMatches': [fragment.get('id') for fragment in targets]})
             continue
         source, target = sources[0], targets[0]
         from_railway = str(source.get('railway') or '')
         to_railway = str(target.get('railway') or '')
         boundary_id = str(entry.get('boundaryId') or '')
-        boundary = next((
-            edge for edge in indexes.get('graph', {}).get(from_railway, [])
-            if str(edge.get('toRailway') or '') == to_railway
-            and (not boundary_id or str(edge.get('boundaryId') or '') == boundary_id)
-        ), None)
+        boundary = next((edge for edge in indexes.get('graph', {}).get(from_railway, []) if str(edge.get('toRailway') or '') == to_railway and (not boundary_id or str(edge.get('boundaryId') or '') == boundary_id)), None)
         if not boundary:
-            unresolved.append({
-                'kind': 'reviewed-train-evidence-unverified-boundary',
-                'evidenceId': entry_id,
-                'fromFragment': source.get('id'),
-                'toFragment': target.get('id'),
-                'fromRailway': from_railway,
-                'toRailway': to_railway,
-                'boundaryId': boundary_id,
-            })
+            unresolved.append({'kind': 'reviewed-train-evidence-unverified-boundary', 'evidenceId': entry_id, 'fromFragment': source.get('id'), 'toFragment': target.get('id'), 'fromRailway': from_railway, 'toRailway': to_railway, 'boundaryId': boundary_id})
             continue
         key = (str(source['id']), str(target['id']))
         if key not in seen:
             seen.add(key)
-            output.append({
-                'fromFragment': source['id'],
-                'toFragment': target['id'],
-                'classification': 'same-train',
-                'identityLevel': 'evidence-backed',
-                'evidence': ['operator-official-per-train-timetable', entry_id],
-                'sourceUrls': [str(url) for url in entry.get('sourceUrls') or [] if url],
-                'boundary': {
-                    'station': boundary.get('station') or '',
-                    'fromRailway': from_railway,
-                    'toRailway': to_railway,
-                },
-            })
+            output.append({'fromFragment': source['id'], 'toFragment': target['id'], 'classification': 'same-train', 'identityLevel': 'evidence-backed', 'evidence': ['operator-official-per-train-timetable', entry_id], 'sourceUrls': [str(url) for url in entry.get('sourceUrls') or [] if url], 'boundary': {'station': boundary.get('station') or '', 'fromRailway': from_railway, 'toRailway': to_railway}})
         resolved_sources.add(str(source['id']))
 
     if resolved_sources:
-        unresolved[:] = [
-            row for row in unresolved
-            if not (
-                row.get('kind') == 'ambiguous-boundary-fragment-alignment'
-                and str(row.get('fragment') or '') in resolved_sources
-            )
-        ]
+        unresolved[:] = [row for row in unresolved if not (row.get('kind') == 'ambiguous-boundary-fragment-alignment' and str(row.get('fragment') or '') in resolved_sources)]
 
-    return keikyu_generated.apply_generated_evidence(
+    output = keikyu_generated.apply_generated_evidence(
         fragments,
         output,
         unresolved,
         indexes,
         registry_path.parent / 'keikyu-official-train-evidence.json',
+    )
+    return keikyu_internal_generated.apply_generated_evidence(
+        fragments,
+        output,
+        unresolved,
+        indexes,
+        registry_path.parent / 'keikyu-internal-official-train-evidence.json',
     )

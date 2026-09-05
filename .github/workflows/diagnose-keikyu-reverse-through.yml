@@ -5,6 +5,8 @@ on:
     paths:
       - 'scripts/diagnose_keikyu_reverse_through.py'
       - 'scripts/repair_keikyu_sengakuji_terminal.py'
+      - 'scripts/repair_keikyu_sengakuji_terminal_idempotent.py'
+      - 'scripts/test_repair_keikyu_sengakuji_terminal_idempotent.py'
       - 'scripts/inspect_keikyu_sengakuji_raw.py'
       - 'scripts/keikyu_generated_evidence.py'
       - 'scripts/test_keikyu_generated_evidence.py'
@@ -73,16 +75,18 @@ jobs:
         run: |
           python -m py_compile \
             scripts/repair_keikyu_sengakuji_terminal.py \
+            scripts/repair_keikyu_sengakuji_terminal_idempotent.py \
             scripts/keikyu_generated_evidence.py \
             scripts/verify_keikyu_through_materialization.py
           python scripts/test_keikyu_generated_evidence.py
-      - name: Repair Keikyu northbound Sengakuji terminal rows
+          python scripts/test_repair_keikyu_sengakuji_terminal_idempotent.py
+      - name: Repair Keikyu northbound Sengakuji terminal rows idempotently
         id: repair
         continue-on-error: true
         shell: bash
         run: |
           set -o pipefail
-          python scripts/repair_keikyu_sengakuji_terminal.py 2>&1 | tee /tmp/keikyu-sengakuji-repair.log
+          python scripts/repair_keikyu_sengakuji_terminal_idempotent.py 2>&1 | tee /tmp/keikyu-sengakuji-repair.log
       - name: Rebuild strict transit v2
         if: steps.repair.outcome == 'success'
         run: python scripts/build_transit_v2.py
@@ -135,6 +139,9 @@ jobs:
           missing_pairs = sorted(production_pairs - edge_pairs)
 
           report = json.loads(Path('/tmp/keikyu-sengakuji-repair.json').read_text(encoding='utf-8'))
+          before_total = sum(int(value or 0) for value in (report.get('beforeSengakujiEnds') or {}).values())
+          after_total = sum(int(value or 0) for value in (report.get('afterSengakujiEnds') or {}).values())
+          mode = str(report.get('repairMode') or '')
           print('REPAIR_REPORT', json.dumps(report, ensure_ascii=False, indent=2))
           print('OFFICIAL_TOEI_TO_KEIKYU', len(forward))
           print('OFFICIAL_KEIKYU_TO_TOEI', len(reverse))
@@ -145,7 +152,13 @@ jobs:
               print('MISSING_PAIR_EXAMPLES', json.dumps(missing_pairs[:20], ensure_ascii=False, indent=2))
 
           assert report['patch']['syntheticRows'] > 0
-          assert sum(report['afterSengakujiEnds'].values()) > sum(report['beforeSengakujiEnds'].values())
+          assert mode in {'first-strict-improvement', 'idempotent-strict-rerun'}, mode
+          if mode == 'first-strict-improvement':
+              assert after_total > before_total
+          else:
+              assert report.get('priorStrictRepair') is True
+              assert after_total >= before_total
+              assert after_total > 0
           assert reverse, 'repair produced no strict Keikyu -> Toei official evidence'
           assert reverse_edges, 'repair did not reach Keikyu -> Toei same-train edges'
           assert all(row.get('matchStatus') == 'matched-singleton' for row in reverse)
@@ -153,7 +166,7 @@ jobs:
           PY
       - name: Verify route runtime materialization
         if: steps.repair.outcome == 'success'
-        run: python scripts/verify_keikyu_through_materialization.py --repair-report /tmp/keikyu-sengakuji-repair.json
+        run: python scripts/verify_keikyu_through_materialization.py
       - name: Upload repair diagnostics
         if: always()
         uses: actions/upload-artifact@v4

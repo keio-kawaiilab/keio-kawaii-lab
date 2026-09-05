@@ -1,0 +1,48 @@
+name: Test Keikyu Main-Airport through trains
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/keikyu_internal_official_evidence.py'
+      - 'scripts/keikyu_internal_generated_evidence.py'
+      - 'scripts/test_keikyu_internal_official_evidence.py'
+      - 'scripts/test_keikyu_internal_generated_evidence.py'
+      - 'scripts/verify_keikyu_internal_materialization.py'
+      - 'scripts/reviewed_train_evidence.py'
+      - '.github/workflows/update-keikyu-official-through-evidence.yml'
+      - '.github/workflows/update-transit-timetables.yml'
+      - '.github/workflows/test-keikyu-main-airport-through.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install pdfplumber==0.11.7 requests==2.32.5
+      - name: Test strict generator and consumer
+        run: |
+          python -m py_compile \
+            scripts/keikyu_internal_official_evidence.py \
+            scripts/keikyu_internal_generated_evidence.py \
+            scripts/verify_keikyu_internal_materialization.py \
+            scripts/reviewed_train_evidence.py \
+            scripts/finalize_transit_v2.py
+          python scripts/test_keikyu_internal_official_evidence.py
+          python scripts/test_keikyu_internal_generated_evidence.py
+          python scripts/test_keikyu_generated_evidence.py
+      - name: Generate strict Main-Airport evidence
+        run: python scripts/keikyu_internal_official_evidence.py
+      - name: Finalize and audit transit v2
+        run: |
+          python scripts/finalize_transit_v2.py
+          python scripts/audit_transit_v2.py
+          python scripts/verify_keikyu_through_materialization.py
+          python scripts/verify_keikyu_internal_materialization.py
