@@ -67,14 +67,16 @@ const pairStats=new Map(PAIRS.map((row)=>[row.id,{
   resolvedOdptLinks:new Set(),
   unresolvedOdptReferences:new Set(),
   referenceDirections:{},
-  officialSingleTrainPageEvidence:new Set(),
+  officialPublishedTrainEvidence:new Set(),
+  explicitBoundaryEndpointEvidence:new Set(),
+  endpointDirections:{},
   generatedExactRecords:new Set(),
   generatedPublishedDestinationRecords:new Set(),
 }]));
 
-function noteDirection(stats,a,b){
+function noteDirection(stats,a,b,target='referenceDirections'){
   const key=`${a} -> ${b}`;
-  stats.referenceDirections[key]=(stats.referenceDirections[key]||0)+1;
+  stats[target][key]=(stats[target][key]||0)+1;
 }
 
 function inspectReference(source,targetId){
@@ -108,8 +110,12 @@ for(const record of through.records||[]){
     const stats=pairStats.get(spec.id);
     const type=String(record.identityType||record.evidenceType||'');
     const id=String(record.identityKey||record.id||JSON.stringify(record));
-    if(type==='odpt-train-timetable-link'||type==='train-timetable-network'||type==='official-single-train-page'||type==='official-same-printed-column')stats.generatedExactRecords.add(id);
-    if((type==='official-single-train-page'||type==='official-same-printed-column')&&record.status==='verified'&&record.sourceUrl)stats.officialSingleTrainPageEvidence.add(id);
+    if(['odpt-train-timetable-link','train-timetable-network','official-single-train-page','official-same-printed-column','odpt-explicit-boundary-endpoint'].includes(type))stats.generatedExactRecords.add(id);
+    if((type==='official-single-train-page'||type==='official-same-printed-column')&&record.status==='verified'&&record.sourceUrl)stats.officialPublishedTrainEvidence.add(id);
+    if(type==='odpt-explicit-boundary-endpoint'&&record.status==='verified'&&String(record.canonicalBoundaryId||'')===spec.id){
+      stats.explicitBoundaryEndpointEvidence.add(id);
+      noteDirection(stats,String(record.fromRailway||''),String(record.toRailway||''),'endpointDirections');
+    }
     if(type==='odpt-exact-published-destination'||type==='published-destination')stats.generatedPublishedDestinationRecords.add(id);
   }
 }
@@ -135,9 +141,14 @@ for(const spec of PAIRS){
   const boundary=boundaryById.get(spec.id)||null;
   const odptResolved=stats.resolvedOdptLinks.size;
   const odptUnresolved=stats.unresolvedOdptReferences.size;
-  const official=stats.officialSingleTrainPageEvidence.size;
-  const authoritativeExact=odptResolved+official;
+  const official=stats.officialPublishedTrainEvidence.size;
+  const endpoint=stats.explicitBoundaryEndpointEvidence.size;
+  const authoritativeExact=odptResolved+official+endpoint;
   const generated=stats.generatedExactRecords.size;
+  const wakoshiBidirectional=spec.id!=='fukutoshin-tojo-wakoshi'||(
+    (stats.endpointDirections[`${TJ} -> ${F}`]||0)>0&&
+    (stats.endpointDirections[`${F} -> ${TJ}`]||0)>0
+  );
   resultPairs.push({
     id:spec.id,
     label:spec.label,
@@ -147,12 +158,14 @@ for(const spec of PAIRS){
     boundarySource:String(boundary?.source||''),
     authoritativeResolvedLinks:odptResolved,
     authoritativeUnresolvedReferences:odptUnresolved,
-    officialSingleTrainPageEvidence:official,
+    officialPublishedTrainEvidence:official,
+    explicitBoundaryEndpointEvidence:endpoint,
+    endpointDirections:stats.endpointDirections,
     authoritativeExactEvidence:authoritativeExact,
     generatedExactThroughRecords:generated,
     generatedPublishedDestinationRecords:stats.generatedPublishedDestinationRecords.size,
     referenceDirections:stats.referenceDirections,
-    exactIdentityReady:authoritativeExact>0&&generated>0,
+    exactIdentityReady:authoritativeExact>0&&generated>0&&wakoshiBidirectional,
     sourceA:operatorByRailway[spec.a]||null,
     sourceB:operatorByRailway[spec.b]||null,
   });
@@ -160,7 +173,7 @@ for(const spec of PAIRS){
 
 const importantRailways=[MM,TY,TSH,SSH,SM,SIZ,F,SY,SI,TJ];
 const report={
-  version:3,
+  version:4,
   generatedAt:new Date().toISOString(),
   system:'Fukutoshin Line / former Line 13 through-service corridor including Minatomirai and Sotetsu branches',
   policy:{
@@ -170,6 +183,7 @@ const report={
     publishedDestinationAloneMayEstablishIdentity:false,
     singlePublishedOneTrainPageWithAdjacentBoundaryStopsMayEstablishIdentity:true,
     sameOfficialPrintedColumnAcrossBoundaryMayEstablishIdentity:true,
+    sameTrainTimetableWithExplicitOtherOperatorStationAndExactBoundaryEndpointMayEstablishIdentity:true,
   },
   sourceIdentityRecords:rows.length,
   relevantIdentityRecords:Object.fromEntries(importantRailways.map((id)=>[id,railwayCounts[id]||0])),
@@ -180,7 +194,8 @@ const report={
     exactIdentityReadyPairs:resultPairs.filter((row)=>row.exactIdentityReady).length,
     resolvedAuthoritativeLinks:resultPairs.reduce((sum,row)=>sum+row.authoritativeResolvedLinks,0),
     unresolvedAuthoritativeReferences:resultPairs.reduce((sum,row)=>sum+row.authoritativeUnresolvedReferences,0),
-    officialSingleTrainPageEvidence:resultPairs.reduce((sum,row)=>sum+row.officialSingleTrainPageEvidence,0),
+    officialPublishedTrainEvidence:resultPairs.reduce((sum,row)=>sum+row.officialPublishedTrainEvidence,0),
+    explicitBoundaryEndpointEvidence:resultPairs.reduce((sum,row)=>sum+row.explicitBoundaryEndpointEvidence,0),
     authoritativeExactEvidence:resultPairs.reduce((sum,row)=>sum+row.authoritativeExactEvidence,0),
     generatedExactThroughRecords:resultPairs.reduce((sum,row)=>sum+row.generatedExactThroughRecords,0),
     complete:resultPairs.every((row)=>row.boundaryStatus==='verified'&&row.exactIdentityReady),
@@ -190,5 +205,5 @@ const report={
 writeJson('data/transit/fukutoshin/identity-coverage-report.json',report);
 console.log(JSON.stringify(report.summary,null,2));
 for(const row of resultPairs){
-  console.log(`${row.label}: boundary=${row.boundaryStatus} odpt=${row.authoritativeResolvedLinks} unresolved=${row.authoritativeUnresolvedReferences} official=${row.officialSingleTrainPageEvidence} generated=${row.generatedExactThroughRecords} ready=${row.exactIdentityReady}`);
+  console.log(`${row.label}: boundary=${row.boundaryStatus} odpt=${row.authoritativeResolvedLinks} unresolved=${row.authoritativeUnresolvedReferences} official=${row.officialPublishedTrainEvidence} endpoint=${row.explicitBoundaryEndpointEvidence} generated=${row.generatedExactThroughRecords} ready=${row.exactIdentityReady}`);
 }

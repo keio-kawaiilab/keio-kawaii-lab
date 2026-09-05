@@ -12,11 +12,13 @@ on:
       - 'data/transit/odpt-train-identities.json'
       - 'data/transit/through-service-boundaries.json'
       - 'data/transit/through-service-families.json'
-      - 'data/transit/fukutoshin/seibu-official-linked-through-trains.json'
       - 'scripts/build-through-service-db.mjs'
       - 'scripts/enrich-through-service-db.mjs'
       - 'scripts/apply_fukutoshin_official_one_train_evidence.mjs'
+      - 'scripts/apply_fukutoshin_sotetsu_pdf_evidence.mjs'
+      - 'scripts/apply_fukutoshin_wakoshi_endpoint_evidence.mjs'
       - 'scripts/probe_seibu_2026_fukutoshin_pages.py'
+      - 'scripts/collect_sotetsu_official_line13_columns.py'
       - 'scripts/test_odpt_train_identity_db.mjs'
       - 'scripts/audit_fukutoshin_through_service.mjs'
       - 'scripts/report_fukutoshin_identity_coverage.mjs'
@@ -25,25 +27,35 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: through-service-db-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   generate:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Install current official timetable collector dependencies
-        run: pip install requests==2.32.5 beautifulsoup4==4.13.4
+        run: pip install requests==2.32.5 beautifulsoup4==4.13.4 pdfplumber==0.11.7
       - name: Collect current exact Line 13 one-train evidence
         run: |
           python scripts/probe_seibu_2026_fukutoshin_pages.py \
             --output data/transit/fukutoshin/seibu-official-linked-through-trains.json
+      - name: Collect current exact Sotetsu Line 13 printed-column evidence
+        run: |
+          python scripts/collect_sotetsu_official_line13_columns.py \
+            --output data/transit/fukutoshin/sotetsu-official-line13-columns.json
       - name: Test authoritative identity rules
         run: |
           node --check scripts/enrich-through-service-db.mjs
           node --check scripts/apply_fukutoshin_official_one_train_evidence.mjs
+          node --check scripts/apply_fukutoshin_sotetsu_pdf_evidence.mjs
+          node --check scripts/apply_fukutoshin_wakoshi_endpoint_evidence.mjs
           node --check scripts/audit_fukutoshin_through_service.mjs
           node --check scripts/report_fukutoshin_identity_coverage.mjs
           node scripts/test_odpt_train_identity_db.mjs
@@ -52,23 +64,16 @@ jobs:
           node scripts/build-through-service-db.mjs
           node scripts/enrich-through-service-db.mjs
           node scripts/apply_fukutoshin_official_one_train_evidence.mjs
-      - name: Write Fukutoshin identity coverage
+          node scripts/apply_fukutoshin_sotetsu_pdf_evidence.mjs
+          node scripts/apply_fukutoshin_wakoshi_endpoint_evidence.mjs
+      - name: Write full Line 13 identity coverage
         run: node scripts/report_fukutoshin_identity_coverage.mjs
-      - name: Audit exact Fukutoshin through identities when complete
-        run: |
-          if node - <<'NODE'
-          const r=require('./data/transit/fukutoshin/identity-coverage-report.json');
-          process.exit(r.summary && r.summary.complete ? 0 : 1);
-          NODE
-          then
-            node scripts/audit_fukutoshin_through_service.mjs
-          else
-            echo 'Fukutoshin exact identity coverage is still partial; report retained for gap tracking.'
-          fi
+      - name: Audit all eight Line 13 corridor boundaries
+        run: node scripts/audit_fukutoshin_through_service.mjs
       - name: Validate generated JSON
         run: |
-          node -e "JSON.parse(require('fs').readFileSync('data/transit/through-service-trips.json','utf8')); JSON.parse(require('fs').readFileSync('data/transit/through-service-coverage.json','utf8')); JSON.parse(require('fs').readFileSync('data/transit/fukutoshin/identity-coverage-report.json','utf8')); JSON.parse(require('fs').readFileSync('data/transit/fukutoshin/seibu-official-linked-through-trains.json','utf8'));"
-      - name: Assert strict identity policy
+          node -e "for(const f of ['data/transit/through-service-trips.json','data/transit/through-service-coverage.json','data/transit/fukutoshin/identity-coverage-report.json','data/transit/fukutoshin/seibu-official-linked-through-trains.json','data/transit/fukutoshin/sotetsu-official-line13-columns.json'])JSON.parse(require('fs').readFileSync(f,'utf8'));"
+      - name: Assert strict identity policy and complete eight-boundary audit
         run: |
           node - <<'NODE'
           const b=require('./data/transit/through-service-boundaries.json');
@@ -76,25 +81,36 @@ jobs:
           const t=require('./data/transit/through-service-trips.json');
           const r=require('./data/transit/fukutoshin/identity-coverage-report.json');
           const e=require('./data/transit/fukutoshin/seibu-official-linked-through-trains.json');
+          const s=require('./data/transit/fukutoshin/sotetsu-official-line13-columns.json');
           for(const policy of [b.policy,f.policy,t.policy]){
             if(policy.runtimeInference!==false)throw new Error('runtimeInference must be false');
             if(policy.timeGapMayEstablishTrainIdentity!==false)throw new Error('time-gap identity inference must be false');
           }
           if(t.policy.trainNumberMayEstablishTrainIdentity!==false)throw new Error('train-number identity inference must be false');
-          if(f.policy.genericBoundaryChaining!==false)throw new Error('generic boundary chaining must be false');
-          if(t.policy.genericBoundaryChaining!==false)throw new Error('generated DB must forbid generic boundary chaining');
-          if(r.policy.runtimeInference!==false||r.policy.timeGapMayEstablishTrainIdentity!==false||r.policy.trainNumberMayEstablishTrainIdentity!==false)throw new Error('Fukutoshin report must preserve strict identity policy');
-          if(e.identityPolicy.timeProximityMayEstablishIdentity!==false||e.identityPolicy.trainNumberAloneMayEstablishIdentity!==false||e.identityPolicy.destinationAloneMayEstablishIdentity!==false)throw new Error('Current one-train evidence must remain fail-closed');
+          if(f.policy.genericBoundaryChaining!==false||t.policy.genericBoundaryChaining!==false)throw new Error('generic boundary chaining must be false');
+          if(r.policy.runtimeInference!==false||r.policy.timeGapMayEstablishTrainIdentity!==false||r.policy.trainNumberMayEstablishTrainIdentity!==false||r.policy.publishedDestinationAloneMayEstablishIdentity!==false)throw new Error('Line 13 report must preserve strict identity policy');
+          if(r.summary.boundaryPairs!==8||r.summary.verifiedBoundaries!==8||r.summary.exactIdentityReadyPairs!==8||r.summary.complete!==true)throw new Error(`Line 13 eight-boundary coverage incomplete: ${JSON.stringify(r.summary)}`);
+          if(e.identityPolicy.timeProximityMayEstablishIdentity!==false||e.identityPolicy.trainNumberAloneMayEstablishIdentity!==false||e.identityPolicy.destinationAloneMayEstablishIdentity!==false)throw new Error('One-train evidence must remain fail-closed');
+          if(s.identityPolicy.timeProximityMayEstablishIdentity!==false||s.identityPolicy.trainNumberAloneMayEstablishIdentity!==false||s.identityPolicy.destinationAloneMayEstablishIdentity!==false)throw new Error('Sotetsu printed-column evidence must remain fail-closed');
+          const w=t.wakoshiEndpointEvidence;
+          if(!w||!(w.directions.tobuToFukutoshin>0)||!(w.directions.fukutoshinToTobu>0))throw new Error('Wakoshi bidirectional exact evidence missing');
+          if(w.policy.destinationAloneMayEstablishIdentity!==false||w.policy.timeProximityAloneMayEstablishIdentity!==false||w.policy.trainNumberAloneMayEstablishIdentity!==false)throw new Error('Wakoshi endpoint evidence must remain fail-closed');
           NODE
-      - name: Commit generated DB
+      - name: Commit generated DB to current branch
         run: |
-          git add data/transit/through-service-trips.json data/transit/through-service-coverage.json data/transit/fukutoshin/identity-coverage-report.json data/transit/fukutoshin/seibu-official-linked-through-trains.json
+          git add data/transit/through-service-trips.json \
+                  data/transit/through-service-coverage.json \
+                  data/transit/fukutoshin/identity-coverage-report.json \
+                  data/transit/fukutoshin/seibu-official-linked-through-trains.json \
+                  data/transit/fukutoshin/sotetsu-official-line13-columns.json
           if git diff --cached --quiet; then
             echo 'No generated changes'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'Generate deterministic through-service database'
-          git pull --rebase origin main
-          git push
+          git commit -m 'Generate complete Line 13 through-service database'
+          branch="${GITHUB_REF_NAME}"
+          git fetch origin "$branch"
+          git rebase "origin/$branch"
+          git push origin HEAD:"$branch"
