@@ -2,9 +2,12 @@
 from __future__ import annotations
 
 import json
+import os
 from collections import Counter
 from pathlib import Path
 from typing import Any
+
+import requests
 
 import repair_keikyu_sengakuji_terminal as repair
 
@@ -65,39 +68,123 @@ def idempotent_report_is_safe(
     return True
 
 
-def mark_report(mode: str, prior_strict_repair: bool) -> None:
-    if not REPORT_PATH.exists():
-        return
-    report = json.loads(REPORT_PATH.read_text(encoding='utf-8'))
+def main() -> int:
+    challenge_key = os.environ.get('ODPT_CHALLENGE_API_KEY', '').strip() or os.environ.get('ODPT_API_KEY', '').strip()
+    if not challenge_key:
+        raise RuntimeError('ODPT_CHALLENGE_API_KEY is required for Keikyu repair')
+
+    current_table, table_path, index = repair.load_main_table()
+    prior_meta = current_table.get('officialTerminalRepair')
+    before_ends = repair.count_sengakuji_ends(current_table)
+    modal_minutes, modal_support = repair.adjacent_minutes(current_table)
+    official = repair.official_reverse_candidates()
+    if not official:
+        raise RuntimeError('No official Keikyu -> Toei candidates found')
+
+    manifest = json.loads(repair.MANIFEST_PATH.read_text(encoding='utf-8'))
+    operator = str(
+        ((manifest.get('operators') or {}).get('keikyu') or {}).get('operator')
+        or repair.importer.TARGETS['keikyu']['fallback']
+    )
+    session = requests.Session()
+    session.headers.update({'User-Agent': 'keio-kawaii-lab-keikyu-terminal-repair/4.0'})
+
+    station_raw = repair.importer.api_get(
+        session,
+        'odpt:StationTimetable',
+        challenge_key,
+        operator,
+        base_url=repair.importer.CHALLENGE_BASE_URL,
+    )
+    railway_raw = repair.importer.api_get(
+        session,
+        'odpt:Railway',
+        challenge_key,
+        operator,
+        base_url=repair.importer.CHALLENGE_BASE_URL,
+    )
+    station_entities_raw = repair.importer.api_get(
+        session,
+        'odpt:Station',
+        challenge_key,
+        operator,
+        base_url=repair.importer.CHALLENGE_BASE_URL,
+    )
+    if not station_raw or not railway_raw or not station_entities_raw:
+        raise RuntimeError('Keikyu ODPT source data is incomplete')
+
+    synthetic_items, patch_report = repair.build_official_inbound_sengakuji_boards(
+        station_raw,
+        official,
+        operator,
+    )
+    preliminary = {
+        'officialReverseCandidates': len(official),
+        'existingModalShinagawaToSengakujiMinutes': modal_minutes,
+        'existingModalSupport': modal_support,
+        'patch': patch_report,
+        'beforeSengakujiEnds': dict(before_ends),
+    }
+    if patch_report['syntheticRows'] <= 0:
+        repair.write_report(preliminary)
+        raise RuntimeError('No strict synthetic Sengakuji inbound rows were generated')
+
+    augmented_raw = list(station_raw) + synthetic_items
+    compact_stations = [repair.importer.compact_entity(row) for row in station_entities_raw]
+    aliases = repair.importer.canonical_station_aliases(station_entities_raw, compact_stations)
+    rebuilt = repair.importer.compact_station_timetables(augmented_raw, aliases, railway_raw)
+    if repair.MAIN not in rebuilt:
+        repair.write_report(preliminary)
+        raise RuntimeError('Rebuilt Keikyu Main timetable is missing')
+
+    table, connection_count, departure_count = rebuilt[repair.MAIN]
+    after_ends = repair.count_sengakuji_ends(table)
+    report = {
+        **preliminary,
+        'afterSengakujiEnds': dict(after_ends),
+        'inferredTrips': len(table.get('inferredTrips') or []),
+        'inferredConnections': int(table.get('inferredConnections') or 0),
+    }
+
+    first_improvement = sum(after_ends.values()) > sum(before_ends.values())
+    safe_rerun = idempotent_report_is_safe(prior_meta, before_ends, report)
+    if first_improvement:
+        mode = 'first-strict-improvement'
+    elif safe_rerun:
+        mode = 'idempotent-strict-rerun'
+    else:
+        report['repairMode'] = 'rejected'
+        report['priorStrictRepair'] = prior_strict_repair_is_valid(prior_meta)
+        repair.write_report(report)
+        raise RuntimeError(
+            f'Sengakuji terminal coverage was not a safe strict update: before={before_ends}, after={after_ends}'
+        )
+
     report['repairMode'] = mode
-    report['priorStrictRepair'] = prior_strict_repair
+    report['priorStrictRepair'] = prior_strict_repair_is_valid(prior_meta)
     repair.write_report(report)
 
+    table['officialTerminalRepair'] = {
+        'boundary': 'Sengakuji',
+        'source': STRICT_SOURCE,
+        'policy': dict(STRICT_POLICY),
+        'syntheticRows': patch_report['syntheticRows'],
+        'beforeSengakujiEnds': dict(before_ends),
+        'afterSengakujiEnds': dict(after_ends),
+        'repairMode': mode,
+    }
+    repair.importer.dump_json(table_path, table)
 
-def main() -> int:
-    try:
-        result = repair.main()
-    except RuntimeError as exc:
-        if not str(exc).startswith('Sengakuji terminal coverage did not improve:'):
-            raise
-        if not REPORT_PATH.exists():
-            raise
-
-        current_table, _, _ = repair.load_main_table()
-        current_ends = repair.count_sengakuji_ends(current_table)
-        report = json.loads(REPORT_PATH.read_text(encoding='utf-8'))
-        prior_meta = current_table.get('officialTerminalRepair')
-        if not idempotent_report_is_safe(prior_meta, current_ends, report):
-            raise
-
-        report['repairMode'] = 'idempotent-strict-rerun'
-        report['priorStrictRepair'] = True
-        repair.write_report(report)
-        print('Keikyu Sengakuji strict repair already materialized; idempotent rerun accepted.')
-        return 0
-
-    mark_report('first-strict-improvement', False)
-    return int(result or 0)
+    meta = index['lines'][repair.MAIN]
+    meta['trips'] = len(table.get('trips') or [])
+    meta['connections'] = connection_count
+    meta['inferredTrips'] = len(table.get('inferredTrips') or [])
+    meta['inferredConnections'] = int(table.get('inferredConnections') or 0)
+    meta['departures'] = departure_count
+    meta['source'] = 'station-timetable+official-sengakuji-inbound-board'
+    repair.importer.dump_json(repair.INDEX_PATH, index)
+    print(f'Keikyu Sengakuji repair mode: {mode}')
+    return 0
 
 
 if __name__ == '__main__':
