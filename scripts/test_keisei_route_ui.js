@@ -9,6 +9,19 @@ const root=path.resolve(__dirname,"..");
 
 function readJson(relative){return JSON.parse(fs.readFileSync(path.join(root,relative),"utf8"));}
 function title(item){const value=item&&item["odpt:stationTitle"];return typeof value==="string"?value:value&&typeof value==="object"?(value.ja||value.en||""):String(item&&item["dc:title"]||"");}
+function normalizeName(value){
+  const text=String(value||"").normalize("NFKC").replace(/\s+/g,"").trim();
+  const aliases={
+    "成田空港(成田第1ターミナル)":"成田空港",
+    "空港第2ビル(成田第2・第3ターミナル)":"空港第2ビル",
+    "空港第2ビル(成田第2・3ターミナル)":"空港第2ビル",
+    "新鎌ケ谷":"新鎌ヶ谷",
+    "羽田空港第1・第2ターミナル駅":"羽田空港第1・第2ターミナル",
+    "羽田空港第3ターミナル駅":"羽田空港第3ターミナル",
+    "逗子・葉山駅":"逗子・葉山"
+  };
+  return aliases[text]||text;
+}
 function collapse(values){const out=[];for(const value of values)if(value&&out[out.length-1]!==value)out.push(value);return out;}
 function same(first,second){first=collapse(first);second=collapse(second);return first.length===second.length&&first.every((value,index)=>value===second[index]);}
 
@@ -18,22 +31,25 @@ const keikyuEntities=readJson("data/transit/keikyu/entities.json");
 const index=readJson("data/transit/keisei/timetable-index.json");
 const network=readJson("data/transit/keisei/"+index.network.file);
 const stationIdsByName=new Map();
+const displayNameByNormalized=new Map();
 for(const entities of [keiseiEntities,toeiEntities,keikyuEntities]){
   for(const item of entities.Station||[]){
-    const name=title(item),id=item["owl:sameAs"];
+    const rawName=title(item),name=normalizeName(rawName),id=item["owl:sameAs"];
     if(!name||!id)continue;
     if(!stationIdsByName.has(name))stationIdsByName.set(name,new Set());
     stationIdsByName.get(name).add(id);
+    if(!displayNameByNormalized.has(name))displayNameByNormalized.set(name,rawName);
   }
 }
 const stationIndexes=new Map((network.stations||[]).map((value,index)=>[value,index]));
 
 function indexesForName(name){
-  const ids=stationIdsByName.get(name)||new Set();
+  const ids=stationIdsByName.get(normalizeName(name))||new Set();
   const indexes=new Set();
   for(const id of ids){const index=stationIndexes.get(id);if(index!=null)indexes.add(index);}
   return indexes;
 }
+function displayName(name){return displayNameByNormalized.get(normalizeName(name))||name;}
 
 function findFixture(fromName,toName,desired){
   const fromIndexes=indexesForName(fromName),toIndexes=indexesForName(toName);
@@ -67,11 +83,12 @@ function element(initial){
 }
 
 async function runRouteCase(fromName,toName,fixture){
+  const fromLabel=displayName(fromName),toLabel=displayName(toName);
   const elements={
     "route-status":element(),
     "route-form":element(),
-    "route-from":element({value:fromName}),
-    "route-to":element({value:toName}),
+    "route-from":element({value:fromLabel}),
+    "route-to":element({value:toLabel}),
     "route-datetime":element({value:"2026-09-02T00:00"}),
     "route-calendar":element({value:"weekday"}),
     "route-swap":element(),
