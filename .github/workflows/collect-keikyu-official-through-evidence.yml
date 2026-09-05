@@ -8,6 +8,11 @@ on:
       - 'scripts/merge_keikyu_official_evidence.py'
       - 'scripts/keikyu_generated_evidence.py'
       - 'scripts/reviewed_train_evidence.py'
+      - 'scripts/keikyu_internal_official_evidence.py'
+      - 'scripts/keikyu_internal_official_evidence_selective.py'
+      - 'scripts/keikyu_internal_generated_evidence.py'
+      - 'scripts/test_keikyu_internal_official_evidence.py'
+      - 'scripts/test_keikyu_internal_generated_evidence.py'
       - '.github/workflows/collect-keikyu-official-through-evidence.yml'
       - '.github/workflows/update-keikyu-official-through-evidence.yml'
   workflow_dispatch:
@@ -23,10 +28,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install PDF parser
-        run: pip install pdfplumber==0.11.7 requests==2.32.5
+      - name: Install PDF parsers
+        run: pip install pdfplumber==0.11.7 PyMuPDF==1.26.4 requests==2.32.5
       - name: Test fail-closed extraction rules
-        run: python scripts/test_keikyu_official_train_evidence.py
+        run: |
+          python scripts/test_keikyu_official_train_evidence.py
+          python scripts/test_keikyu_internal_official_evidence.py
+          python scripts/test_keikyu_internal_generated_evidence.py
       - name: Extract weekday Sengakuji evidence
         run: |
           python scripts/keikyu_official_train_evidence.py \
@@ -43,6 +51,10 @@ jobs:
             /tmp/keikyu-weekday.json \
             /tmp/keikyu-holiday.json \
             --output /tmp/keikyu-official-train-evidence.json
+      - name: Extract strict Keikyu internal evidence
+        run: |
+          python scripts/keikyu_internal_official_evidence_selective.py \
+            --output /tmp/keikyu-internal-official-train-evidence.json
       - name: Audit production projection
         run: |
           python - <<'PY'
@@ -63,10 +75,21 @@ jobs:
               assert row.get('targetMatches') == [row.get('toFragment')], row
               assert row.get('boundaryId') == 'toei-keikyu-sengakuji', row
               assert 'same-printed-column-spans-both-sides-of-sengakuji' in (row.get('evidence') or []), row
+          internal=json.loads(Path('/tmp/keikyu-internal-official-train-evidence.json').read_text(encoding='utf-8'))
+          internal_entries=internal.get('entries') or []
+          print('INTERNAL_SUMMARY', json.dumps(internal.get('summary') or {}, ensure_ascii=False, indent=2))
+          assert internal_entries, 'no internal official evidence entries'
+          for row in internal_entries:
+              assert row.get('matchStatus') == 'matched-singleton', row
+              assert row.get('sourceMatches') == [row.get('fromFragment')], row
+              assert row.get('targetMatches') == [row.get('toFragment')], row
+              assert row.get('boundaryId') in ('keikyu-main-airport-kamata', 'keikyu-main-kurihama-horinouchi'), row
+              assert ({'same-printed-column-includes-shinagawa-and-haneda', 'same-printed-column-two-exact-station-times'} & set(row.get('evidence') or [])), row
           PY
       - name: Validate production evidence in strict finalizer
         run: |
           cp /tmp/keikyu-official-train-evidence.json data/transit-v2/keikyu-official-train-evidence.json
+          cp /tmp/keikyu-internal-official-train-evidence.json data/transit-v2/keikyu-internal-official-train-evidence.json
           python scripts/finalize_transit_v2.py
           python scripts/audit_transit_v2.py
           python - <<'PY'
@@ -74,21 +97,24 @@ jobs:
           from pathlib import Path
           v2=Path('data/transit-v2')
           edges=json.loads((v2/'same-train-edges.json').read_text(encoding='utf-8')).get('edges') or []
-          generated=[e for e in edges if 'keikyu-official-connection-timetable-same-column' in (e.get('evidence') or [])]
+          sengakuji=[e for e in edges if 'keikyu-official-connection-timetable-same-column' in (e.get('evidence') or [])]
+          internal=[e for e in edges if 'keikyu-official-internal-same-column-two-point' in (e.get('evidence') or [])]
           coverage=json.loads((v2/'coverage.json').read_text(encoding='utf-8'))
-          unresolved=json.loads((v2/'unresolved-summary.json').read_text(encoding='utf-8'))
-          print('KEIKYU_GENERATED_EDGES', len(generated))
+          remaining=[u for u in coverage.get('unresolved') or [] if u.get('kind')=='ambiguous-boundary-fragment-alignment']
+          print('KEIKYU_SENGAKUJI_GENERATED_EDGES', len(sengakuji))
+          print('KEIKYU_INTERNAL_GENERATED_EDGES', len(internal))
+          print('AMBIGUOUS_BOUNDARY_REMAINING', len(remaining))
           print('COVERAGE_SUMMARY', json.dumps(coverage.get('summary') or {}, ensure_ascii=False, indent=2))
-          print('UNRESOLVED_TOTAL', unresolved.get('totalUnresolved'))
-          assert len(generated) > 0, 'generated official evidence produced no same-train edges'
-          assert all(e.get('identityLevel') == 'evidence-backed' for e in generated), generated[:3]
-          assert all((e.get('boundary') or {}).get('station') == '泉岳寺' for e in generated), generated[:3]
+          assert len(sengakuji) > 0, 'generated official evidence produced no Sengakuji same-train edges'
+          assert len(internal) > 0, 'generated official evidence produced no Keikyu internal same-train edges'
+          assert all(e.get('identityLevel') == 'evidence-backed' for e in sengakuji + internal), (sengakuji + internal)[:3]
           PY
       - uses: actions/upload-artifact@v4
         with:
           name: keikyu-official-through-evidence
           path: |
             /tmp/keikyu-official-train-evidence.json
+            /tmp/keikyu-internal-official-train-evidence.json
             data/transit-v2/same-train-edges.json
             data/transit-v2/runtime-same-train.json
             data/transit-v2/coverage.json
