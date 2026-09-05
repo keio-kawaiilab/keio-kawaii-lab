@@ -69,10 +69,10 @@ jobs:
           print('official Keisei source stop rows:', payload.get('stopRowCount'))
           PY
 
-      - name: Rebuild exact cross-operator network
+      - name: Rebuild exact cross-operator network and line projections
         run: python scripts/build_keisei_extended_network.py
 
-      - name: Validate identity, boundaries, and every retained stop
+      - name: Validate identity, boundaries, every stop, and every line projection
         run: |
           python scripts/test_keisei_through_network.py
           python scripts/audit_keisei_exact_network.py
@@ -95,32 +95,35 @@ jobs:
             'supportedRailwayCount': report.get('supportedRailwayCount'),
             'unsupportedStopRows': report.get('unsupportedStopRows'),
             'unsupportedStations': report.get('unsupportedStations'),
-            'crossOperatorTransitions': report.get('crossOperatorTransitions'),
+            'keiseiLineProjection': report.get('keiseiLineProjection'),
             'externalLineProjection': report.get('externalLineProjection'),
+            'crossOperatorTransitions': report.get('crossOperatorTransitions'),
+            'endpointThroughCounts': report.get('endpointThroughCounts'),
             'identityPolicy': report.get('identityPolicy')
           }, ensure_ascii=False, indent=2))
           PY
 
-      - name: Publish rebuilt through-network snapshot
+      - name: Publish rebuilt exact timetable family
         shell: bash
         run: |
           git add \
             data/transit/keisei/timetable-index.json \
-            data/transit/keisei/timetables/official-network.json \
+            data/transit/keisei/timetables \
             data/transit/keisei/official-network-report.json \
             data/transit/hokuso/timetable-index.json \
             data/transit/hokuso/coverage-report.json \
-            data/transit/hokuso/timetables/official-hokuso.json \
+            data/transit/hokuso/timetables \
             data/transit/shibayama/timetable-index.json \
             data/transit/shibayama/coverage-report.json \
-            data/transit/shibayama/timetables/official-shibayama.json
+            data/transit/shibayama/timetables \
+            data/transit/manifest.json
           if git diff --cached --quiet; then
-            echo 'No Keisei through-network snapshot changes.'
+            echo 'No Keisei exact timetable changes.'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'Rebuild exact Keisei through-network snapshot'
+          git commit -m 'Rebuild exact Keisei timetable family'
           for attempt in 1 2 3 4; do
             git fetch origin main
             git rebase origin/main
