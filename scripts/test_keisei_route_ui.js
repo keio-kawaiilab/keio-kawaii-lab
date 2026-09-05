@@ -17,29 +17,36 @@ const toeiEntities=readJson("data/transit/toei/entities.json");
 const keikyuEntities=readJson("data/transit/keikyu/entities.json");
 const index=readJson("data/transit/keisei/timetable-index.json");
 const network=readJson("data/transit/keisei/"+index.network.file);
-const stationIdByName=new Map();
+const stationIdsByName=new Map();
 for(const entities of [keiseiEntities,toeiEntities,keikyuEntities]){
   for(const item of entities.Station||[]){
     const name=title(item),id=item["owl:sameAs"];
-    if(name&&id&&!stationIdByName.has(name))stationIdByName.set(name,id);
+    if(!name||!id)continue;
+    if(!stationIdsByName.has(name))stationIdsByName.set(name,new Set());
+    stationIdsByName.get(name).add(id);
   }
 }
 const stationIndexes=new Map((network.stations||[]).map((value,index)=>[value,index]));
 
+function indexesForName(name){
+  const ids=stationIdsByName.get(name)||new Set();
+  const indexes=new Set();
+  for(const id of ids){const index=stationIndexes.get(id);if(index!=null)indexes.add(index);}
+  return indexes;
+}
+
 function findFixture(fromName,toName,desired){
-  const fromId=stationIdByName.get(fromName),toId=stationIdByName.get(toName);
-  if(!fromId||!toId)throw new Error(`Station IDs are missing for ${fromName} -> ${toName}`);
-  const fromIndex=stationIndexes.get(fromId),toIndex=stationIndexes.get(toId);
-  if(fromIndex==null||toIndex==null)throw new Error(`Network station indexes are missing for ${fromName} -> ${toName}`);
+  const fromIndexes=indexesForName(fromName),toIndexes=indexesForName(toName);
+  if(!fromIndexes.size||!toIndexes.size)throw new Error(`Network station indexes are missing for ${fromName} -> ${toName}`);
   for(const trip of network.trips||[]){
     if(network.calendars[trip[0]]!=="weekday")continue;
     const stops=trip[3]||[],links=trip[4]||[];
     for(let i=0;i<stops.length;i++){
-      if(stops[i][0]!==fromIndex)continue;
+      if(!fromIndexes.has(stops[i][0]))continue;
       const departure=stops[i][2]!=null?Number(stops[i][2]):Number(stops[i][1]);
       if(!Number.isFinite(departure))continue;
       for(let j=i+1;j<stops.length;j++){
-        if(stops[j][0]!==toIndex)continue;
+        if(!toIndexes.has(stops[j][0]))continue;
         const used=[];
         for(let k=i;k<j;k++)for(const railwayIndex of links[k]||[]){const railway=network.railways[railwayIndex];if(railway)used.push(railway);}
         if(!same(used,desired))continue;
