@@ -56,9 +56,10 @@ function railwayFromTimetableId(id){
 
 const pairStats=new Map(PAIRS.map((row)=>[row.id,{
   ...row,
-  resolvedAuthoritativeLinks:new Set(),
-  unresolvedAuthoritativeReferences:new Set(),
+  resolvedOdptLinks:new Set(),
+  unresolvedOdptReferences:new Set(),
   referenceDirections:{},
+  officialSingleTrainPageEvidence:new Set(),
   generatedExactRecords:new Set(),
   generatedPublishedDestinationRecords:new Set(),
 }]));
@@ -77,8 +78,8 @@ function inspectReference(source,targetId){
   const stats=pairStats.get(spec.id);
   const sourceId=String(source.timetableId||'');
   const signature=[sourceId,String(targetId||'')].sort().join('↔');
-  if(target)stats.resolvedAuthoritativeLinks.add(signature);
-  else stats.unresolvedAuthoritativeReferences.add(signature);
+  if(target)stats.resolvedOdptLinks.add(signature);
+  else stats.unresolvedOdptReferences.add(signature);
   noteDirection(stats,sourceRailway,targetRailway);
 }
 
@@ -88,9 +89,7 @@ for(const row of rows){
 }
 
 function adjacentPair(route,a,b){
-  for(let i=0;i+1<route.length;i++){
-    if(pairKey(route[i],route[i+1])===pairKey(a,b))return true;
-  }
+  for(let i=0;i+1<route.length;i++)if(pairKey(route[i],route[i+1])===pairKey(a,b))return true;
   return false;
 }
 
@@ -101,7 +100,8 @@ for(const record of through.records||[]){
     const stats=pairStats.get(spec.id);
     const type=String(record.identityType||record.evidenceType||'');
     const id=String(record.identityKey||record.id||JSON.stringify(record));
-    if(type==='odpt-train-timetable-link'||type==='train-timetable-network')stats.generatedExactRecords.add(id);
+    if(type==='odpt-train-timetable-link'||type==='train-timetable-network'||type==='official-single-train-page')stats.generatedExactRecords.add(id);
+    if(type==='official-single-train-page'&&record.status==='verified'&&record.sourceUrl)stats.officialSingleTrainPageEvidence.add(id);
     if(type==='odpt-exact-published-destination'||type==='published-destination')stats.generatedPublishedDestinationRecords.add(id);
   }
 }
@@ -125,8 +125,10 @@ const resultPairs=[];
 for(const spec of PAIRS){
   const stats=pairStats.get(spec.id);
   const boundary=boundaryById.get(spec.id)||null;
-  const resolved=stats.resolvedAuthoritativeLinks.size;
-  const unresolved=stats.unresolvedAuthoritativeReferences.size;
+  const odptResolved=stats.resolvedOdptLinks.size;
+  const odptUnresolved=stats.unresolvedOdptReferences.size;
+  const official=stats.officialSingleTrainPageEvidence.size;
+  const authoritativeExact=odptResolved+official;
   const generated=stats.generatedExactRecords.size;
   resultPairs.push({
     id:spec.id,
@@ -135,12 +137,14 @@ for(const spec of PAIRS){
     toRailway:spec.b,
     boundaryStatus:String(boundary?.status||'missing'),
     boundarySource:String(boundary?.source||''),
-    authoritativeResolvedLinks:resolved,
-    authoritativeUnresolvedReferences:unresolved,
+    authoritativeResolvedLinks:odptResolved,
+    authoritativeUnresolvedReferences:odptUnresolved,
+    officialSingleTrainPageEvidence:official,
+    authoritativeExactEvidence:authoritativeExact,
     generatedExactThroughRecords:generated,
     generatedPublishedDestinationRecords:stats.generatedPublishedDestinationRecords.size,
     referenceDirections:stats.referenceDirections,
-    exactIdentityReady:resolved>0&&generated>0,
+    exactIdentityReady:authoritativeExact>0&&generated>0,
     sourceA:operatorByRailway[spec.a]||null,
     sourceB:operatorByRailway[spec.b]||null,
   });
@@ -148,7 +152,7 @@ for(const spec of PAIRS){
 
 const importantRailways=[MM,TY,F,SY,SI,TJ];
 const report={
-  version:1,
+  version:2,
   generatedAt:new Date().toISOString(),
   system:'Fukutoshin Line / former Line 13 through-service corridor',
   policy:{
@@ -156,6 +160,7 @@ const report={
     timeGapMayEstablishTrainIdentity:false,
     trainNumberMayEstablishTrainIdentity:false,
     publishedDestinationAloneMayEstablishIdentity:false,
+    singlePublishedOneTrainPageWithAdjacentBoundaryStopsMayEstablishIdentity:true,
   },
   sourceIdentityRecords:rows.length,
   relevantIdentityRecords:Object.fromEntries(importantRailways.map((id)=>[id,railwayCounts[id]||0])),
@@ -166,6 +171,8 @@ const report={
     exactIdentityReadyPairs:resultPairs.filter((row)=>row.exactIdentityReady).length,
     resolvedAuthoritativeLinks:resultPairs.reduce((sum,row)=>sum+row.authoritativeResolvedLinks,0),
     unresolvedAuthoritativeReferences:resultPairs.reduce((sum,row)=>sum+row.authoritativeUnresolvedReferences,0),
+    officialSingleTrainPageEvidence:resultPairs.reduce((sum,row)=>sum+row.officialSingleTrainPageEvidence,0),
+    authoritativeExactEvidence:resultPairs.reduce((sum,row)=>sum+row.authoritativeExactEvidence,0),
     generatedExactThroughRecords:resultPairs.reduce((sum,row)=>sum+row.generatedExactThroughRecords,0),
     complete:resultPairs.every((row)=>row.boundaryStatus==='verified'&&row.exactIdentityReady),
   },
@@ -174,5 +181,5 @@ const report={
 writeJson('data/transit/fukutoshin/identity-coverage-report.json',report);
 console.log(JSON.stringify(report.summary,null,2));
 for(const row of resultPairs){
-  console.log(`${row.label}: boundary=${row.boundaryStatus} resolved=${row.authoritativeResolvedLinks} unresolved=${row.authoritativeUnresolvedReferences} generated=${row.generatedExactThroughRecords}`);
+  console.log(`${row.label}: boundary=${row.boundaryStatus} odpt=${row.authoritativeResolvedLinks} officialPage=${row.officialSingleTrainPageEvidence} generated=${row.generatedExactThroughRecords} ready=${row.exactIdentityReady}`);
 }
