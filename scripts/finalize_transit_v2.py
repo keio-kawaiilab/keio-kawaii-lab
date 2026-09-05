@@ -377,6 +377,27 @@ def main() -> int:
         V2 / 'reviewed-train-evidence.json',
     )
 
+    # A published through destination and a verified operational path do not by
+    # themselves prove that a particular reconstructed station-timetable
+    # fragment is the same physical train after the boundary.  Surface every
+    # such gap explicitly so coverage cannot report a misleading zero.
+    linked_from = {str(edge.get('fromFragment') or '') for edge in edges if edge.get('classification') == 'same-train'}
+    already_noted = {str(row.get('fragment') or '') for row in unresolved if isinstance(row, dict)}
+    for fragment in fragments:
+        if fragment.get('sourceKind') != 'station-timetable-reconstruction':
+            continue
+        path = fragment.get('throughRailwayPath') or []
+        fid = str(fragment.get('id') or '')
+        if len(path) > 1 and fid and fid not in linked_from and fid not in already_noted:
+            unresolved.append({
+                'kind': 'missing-boundary-train-identity-evidence',
+                'fragment': fid,
+                'railway': fragment.get('railway'),
+                'nextRailway': path[1],
+                'destination': fragment.get('destination') or [],
+                'sourceKind': fragment.get('sourceKind'),
+            })
+
     coverage = write_outputs(fragments, networks, edges, unresolved, index)
     policy = registry.get('policy') or {}
     if policy.get('genericSameOperatorSharedStationMayEstablishPath') is not False:
