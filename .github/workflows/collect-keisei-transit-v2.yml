@@ -155,9 +155,11 @@ jobs:
           }, ensure_ascii=False, indent=2))
           PY
 
-      - name: Commit refreshed snapshots only when manually refreshed or builders changed output
+      - name: Publish snapshots after an explicit full refresh
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.full_refresh == true }}
         shell: bash
         run: |
+          set -euo pipefail
           if [ -z "$(git status --porcelain -- data/transit data/transit-v2)" ]; then
             echo "No Keisei/v2 data changes."
             exit 0
@@ -165,13 +167,20 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/transit data/transit-v2
-          git commit -m "Validate exact Keisei Hokusō Shibayama transit v2 snapshot"
+          git commit -m "Refresh exact Keisei Hokusō Shibayama transit v2 snapshot"
           for attempt in 1 2 3; do
             git fetch origin main
-            git rebase origin/main
-            if git push origin HEAD:main; then
+            if git rebase origin/main && git push origin HEAD:main; then
               exit 0
             fi
-            sleep $((attempt * 3))
+            git rebase --abort 2>/dev/null || true
+            echo "Main changed while publishing; refusing to auto-resolve generated-data conflicts."
+            exit 1
           done
           exit 1
+
+      - name: Confirm push validation is read-only
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          echo "Push-triggered Keisei validation is intentionally read-only."
+          echo "Generated differences are validated in this runner but are published only by the designated rebuild/collector workflows or an explicit full refresh."
