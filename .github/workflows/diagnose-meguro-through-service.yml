@@ -1,0 +1,21 @@
+name: Diagnose Meguro through-service exact endpoints
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feat/complete-meguro-through-service
+    paths:
+      - 'scripts/diagnose_meguro_endpoint_identity.mjs'
+      - '.github/workflows/diagnose-meguro-through-service.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Diagnose exact ODPT endpoints
+        run: node scripts/diagnose_meguro_endpoint_identity.mjs
