@@ -4,7 +4,10 @@ on:
   pull_request:
     paths:
       - 'scripts/keisei_official_oshiage_evidence.py'
+      - 'scripts/keisei_generated_evidence.py'
       - 'scripts/test_keisei_official_oshiage_evidence.py'
+      - 'scripts/test_keisei_generated_evidence.py'
+      - 'scripts/reviewed_train_evidence.py'
       - '.github/workflows/diagnose-keisei-toei-oshiage.yml'
   workflow_dispatch:
 
@@ -21,18 +24,24 @@ jobs:
           python-version: '3.12'
       - name: Test strict Oshiage evidence rules
         run: |
-          python -m py_compile scripts/keisei_official_oshiage_evidence.py scripts/test_keisei_official_oshiage_evidence.py
+          python -m py_compile \
+            scripts/keisei_official_oshiage_evidence.py \
+            scripts/keisei_generated_evidence.py \
+            scripts/test_keisei_official_oshiage_evidence.py \
+            scripts/test_keisei_generated_evidence.py
           python scripts/test_keisei_official_oshiage_evidence.py
+          python scripts/test_keisei_generated_evidence.py
       - name: Extract and attach official Oshiage evidence
         run: |
-          python scripts/keisei_official_oshiage_evidence.py --output /tmp/keisei-oshiage-evidence.json
+          python scripts/keisei_official_oshiage_evidence.py \
+            --output data/transit-v2/keisei-official-oshiage-evidence.json
       - name: Summarize strict recovery
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
 
-          payload = json.loads(Path('/tmp/keisei-oshiage-evidence.json').read_text(encoding='utf-8'))
+          payload = json.loads(Path('data/transit-v2/keisei-official-oshiage-evidence.json').read_text(encoding='utf-8'))
           summary = payload['summary']
           print(json.dumps(summary, ensure_ascii=False, indent=2))
           assert summary['officialBoundaryCandidates'] > 0
@@ -43,8 +52,51 @@ jobs:
           assert summary['matchedDirections'].get('toei-to-keisei', 0) > 0
           assert all(row.get('matchStatus') == 'matched-singleton' for row in payload.get('entries') or [])
           PY
+      - name: Materialize strict same-train edges
+        run: |
+          python scripts/finalize_transit_v2.py
+          python scripts/audit_transit_v2.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path('data/transit-v2')
+          evidence = json.loads((root / 'keisei-official-oshiage-evidence.json').read_text(encoding='utf-8'))
+          entries = evidence.get('entries') or []
+          edges = json.loads((root / 'same-train-edges.json').read_text(encoding='utf-8')).get('edges') or []
+          generated = [
+              row for row in edges
+              if 'keisei-official-per-train-timetable-spans-oshiage' in (row.get('evidence') or [])
+          ]
+          production_pairs = {
+              (str(row.get('fromFragment') or ''), str(row.get('toFragment') or ''))
+              for row in entries
+          }
+          edge_pairs = {
+              (str(row.get('fromFragment') or ''), str(row.get('toFragment') or ''))
+              for row in generated
+          }
+          directions = {'keisei-to-toei': 0, 'toei-to-keisei': 0}
+          for edge in generated:
+              boundary = edge.get('boundary') or {}
+              pair = (boundary.get('fromRailway'), boundary.get('toRailway'))
+              if pair == ('odpt.Railway:Keisei.Oshiage', 'odpt.Railway:Toei.Asakusa'):
+                  directions['keisei-to-toei'] += 1
+              elif pair == ('odpt.Railway:Toei.Asakusa', 'odpt.Railway:Keisei.Oshiage'):
+                  directions['toei-to-keisei'] += 1
+          print('OSHIAGE_PRODUCTION_EVIDENCE', len(entries))
+          print('OSHIAGE_GENERATED_EDGES', len(generated))
+          print('OSHIAGE_GENERATED_DIRECTIONS', directions)
+          print('OSHIAGE_MISSING_EDGE_PAIRS', len(production_pairs - edge_pairs))
+          assert generated
+          assert directions['keisei-to-toei'] > 0
+          assert directions['toei-to-keisei'] > 0
+          assert production_pairs <= edge_pairs
+          assert all(row.get('identityLevel') == 'evidence-backed' for row in generated)
+          PY
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: keisei-oshiage-evidence-diagnostic
-          path: /tmp/keisei-oshiage-evidence.json
-          if-no-files-found: error
+          path: data/transit-v2/keisei-official-oshiage-evidence.json
+          if-no-files-found: warn
