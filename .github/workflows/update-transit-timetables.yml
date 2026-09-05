@@ -16,6 +16,12 @@ on:
       - 'scripts/build_transit_v2.py'
       - 'scripts/finalize_transit_v2.py'
       - 'scripts/audit_transit_v2.py'
+      - 'scripts/repair_keikyu_sengakuji_terminal.py'
+      - 'scripts/keikyu_official_train_evidence.py'
+      - 'scripts/merge_keikyu_official_evidence.py'
+      - 'scripts/keikyu_generated_evidence.py'
+      - 'scripts/test_keikyu_official_train_evidence.py'
+      - 'scripts/test_keikyu_generated_evidence.py'
       - 'scripts/test_route_runtime_same_train.js'
       - 'route-core.js'
       - 'route.js'
@@ -49,8 +55,8 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install importer dependency
-        run: pip install requests==2.32.5
+      - name: Install importer dependencies
+        run: pip install pdfplumber==0.11.7 requests==2.32.5
 
       - name: Test timetable importer and identity pipeline
         run: |
@@ -66,11 +72,17 @@ jobs:
             scripts/build_minatomirai_routing_timetable_v2.py \
             scripts/build_transit_v2.py \
             scripts/finalize_transit_v2.py \
-            scripts/audit_transit_v2.py
+            scripts/audit_transit_v2.py \
+            scripts/repair_keikyu_sengakuji_terminal.py \
+            scripts/keikyu_official_train_evidence.py \
+            scripts/merge_keikyu_official_evidence.py \
+            scripts/keikyu_generated_evidence.py
           node scripts/test_odpt_train_identity_db.mjs
           node scripts/test_cross_operator_through_service.js
           node scripts/test_route_runtime_same_train.js
           python scripts/test_import_odpt_timetables.py
+          python scripts/test_keikyu_official_train_evidence.py
+          python scripts/test_keikyu_generated_evidence.py
 
       - name: Import ODPT timetables
         id: import
@@ -83,6 +95,10 @@ jobs:
           fi
           python scripts/import_odpt_timetables.py
           echo "ran=true" >> "$GITHUB_OUTPUT"
+
+      - name: Repair missing Keikyu inbound Sengakuji board from official columns
+        if: steps.import.outputs.ran == 'true'
+        run: python scripts/repair_keikyu_sengakuji_terminal.py
 
       - name: Verify saturated Sotetsu Main timetable was fully recovered
         if: steps.import.outputs.ran == 'true'
@@ -138,14 +154,25 @@ jobs:
         if: steps.import.outputs.ran == 'true'
         run: |
           python scripts/build_transit_v2.py
+          python scripts/keikyu_official_train_evidence.py --calendar weekday --output /tmp/keikyu-weekday.json
+          python scripts/keikyu_official_train_evidence.py --calendar holiday --output /tmp/keikyu-holiday.json
+          python scripts/merge_keikyu_official_evidence.py \
+            /tmp/keikyu-weekday.json \
+            /tmp/keikyu-holiday.json \
+            --output data/transit-v2/keikyu-official-train-evidence.json
           python scripts/finalize_transit_v2.py
           python scripts/audit_transit_v2.py
           python - <<'PY'
           import json
           from pathlib import Path
-          coverage = json.loads(Path('data/transit-v2/coverage.json').read_text(encoding='utf-8'))
-          audit = json.loads(Path('data/transit-v2/unresolved-summary.json').read_text(encoding='utf-8'))
-          runtime = json.loads(Path('data/transit-v2/runtime-same-train.json').read_text(encoding='utf-8'))
+
+          root = Path('data/transit-v2')
+          coverage = json.loads((root / 'coverage.json').read_text(encoding='utf-8'))
+          audit = json.loads((root / 'unresolved-summary.json').read_text(encoding='utf-8'))
+          runtime = json.loads((root / 'runtime-same-train.json').read_text(encoding='utf-8'))
+          evidence = json.loads((root / 'keikyu-official-train-evidence.json').read_text(encoding='utf-8'))
+          edge_payload = json.loads((root / 'same-train-edges.json').read_text(encoding='utf-8'))
+
           policy = audit['policy']
           assert policy['unknownMayBePromotedToSameTrain'] is False
           assert policy['trainNumberAloneMayResolve'] is False
@@ -165,9 +192,40 @@ jobs:
               'odpt.Railway:Sotetsu.Main',
           ]
           assert expected_sotetsu in runtime_edges, 'authoritative Sotetsu 6752 continuation disappeared from runtime DB'
+
+          entries = evidence.get('entries') or []
+          directions = {}
+          for row in entries:
+              direction = str(row.get('direction') or '')
+              directions[direction] = directions.get(direction, 0) + 1
+          official_edges = [
+              row for row in edge_payload.get('edges') or []
+              if 'keikyu-official-connection-timetable-same-column' in (row.get('evidence') or [])
+          ]
+          production_pairs = {
+              (str(row.get('fromFragment') or ''), str(row.get('toFragment') or ''))
+              for row in entries
+          }
+          edge_pairs = {
+              (str(row.get('fromFragment') or ''), str(row.get('toFragment') or ''))
+              for row in official_edges
+          }
+          reverse_edges = [
+              row for row in official_edges
+              if (row.get('boundary') or {}).get('fromRailway') == 'odpt.Railway:Keikyu.Main'
+              and (row.get('boundary') or {}).get('toRailway') == 'odpt.Railway:Toei.Asakusa'
+          ]
+          assert directions.get('toei-to-keikyu', 0) > 0, directions
+          assert directions.get('keikyu-to-toei', 0) > 0, directions
+          assert reverse_edges, 'Keikyu -> Toei official same-train edges disappeared'
+          assert production_pairs <= edge_pairs, 'some Keikyu production evidence did not reach same-train edges'
+
           print('strict transit-v2 unresolved:', audit['totalUnresolved'])
           print('runtime strict same-train edges:', len(runtime_edges))
           print('verified runtime continuation:', expected_sotetsu)
+          print('Keikyu official evidence directions:', directions)
+          print('Keikyu official generated edges:', len(official_edges))
+          print('Keikyu -> Toei generated edges:', len(reverse_edges))
           PY
 
       - name: Commit refreshed transit data
