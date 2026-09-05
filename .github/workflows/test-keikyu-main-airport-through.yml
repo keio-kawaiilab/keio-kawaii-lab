@@ -4,8 +4,10 @@ on:
   pull_request:
     paths:
       - 'scripts/keikyu_internal_official_evidence.py'
+      - 'scripts/keikyu_kurihama_official_evidence.py'
       - 'scripts/keikyu_internal_generated_evidence.py'
       - 'scripts/test_keikyu_internal_official_evidence.py'
+      - 'scripts/test_keikyu_kurihama_official_evidence.py'
       - 'scripts/test_keikyu_internal_generated_evidence.py'
       - 'scripts/verify_keikyu_internal_materialization.py'
       - 'scripts/reviewed_train_evidence.py'
@@ -31,14 +33,16 @@ jobs:
         run: |
           python -m py_compile \
             scripts/keikyu_internal_official_evidence.py \
+            scripts/keikyu_kurihama_official_evidence.py \
             scripts/keikyu_internal_generated_evidence.py \
             scripts/verify_keikyu_internal_materialization.py \
             scripts/reviewed_train_evidence.py \
             scripts/finalize_transit_v2.py
           python scripts/test_keikyu_internal_official_evidence.py
+          python scripts/test_keikyu_kurihama_official_evidence.py
           python scripts/test_keikyu_internal_generated_evidence.py
           python scripts/test_keikyu_generated_evidence.py
-      - name: Generate strict Main-Airport evidence
+      - name: Generate strict Keikyu internal evidence
         run: python scripts/keikyu_internal_official_evidence.py
       - name: Finalize and audit transit v2
         run: |
