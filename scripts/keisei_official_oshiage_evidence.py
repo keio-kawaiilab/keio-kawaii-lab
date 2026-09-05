@@ -152,13 +152,17 @@ def extract_candidates(details: dict[str, Any], names: set[str]) -> tuple[list[d
     return list(unique.values()), {"reasons": dict(reasons), "examples": examples}
 
 
-def calendar_matches(raw: Any, service: str) -> bool:
+def calendar_key(raw: Any) -> str:
     text = norm(raw).lower()
-    if service == "weekday":
-        return "weekday" in text or "平日" in text
-    if service == "holiday":
-        return any(token in text for token in ("saturdayholiday", "holiday", "休日", "土休日"))
-    return text == norm(service).lower()
+    if "weekday" in text or "平日" in text:
+        return "weekday"
+    if any(token in text for token in ("saturdayholiday", "holiday", "休日", "土休日")):
+        return "holiday"
+    return text
+
+
+def calendar_matches(raw: Any, service: str) -> bool:
+    return calendar_key(raw) == calendar_key(service)
 
 
 def endpoint(fragment: dict[str, Any], first: bool) -> list[Any] | None:
@@ -197,32 +201,53 @@ def load_fragments(folder: Path) -> list[dict[str, Any]]:
     return output
 
 
+def endpoint_index(
+    fragments: list[dict[str, Any]],
+    *,
+    first: bool,
+) -> dict[tuple[str, str, str, int], list[dict[str, Any]]]:
+    index: dict[tuple[str, str, str, int], list[dict[str, Any]]] = {}
+    for fragment in fragments:
+        stop = endpoint(fragment, first)
+        if not stop:
+            continue
+        railway = str(fragment.get("railway") or "")
+        service = calendar_key(fragment.get("calendar"))
+        station = str(stop[0] or "")
+        if railway not in (KEISEI_OSHIAGE, TOEI_ASAKUSA):
+            continue
+        if station not in (KEISEI_STATION, TOEI_STATION):
+            continue
+        for value in stop[1:3]:
+            if not isinstance(value, (int, float)):
+                continue
+            key = (railway, service, station, int(value))
+            bucket = index.setdefault(key, [])
+            if fragment not in bucket:
+                bucket.append(fragment)
+    return index
+
+
 def match_candidates(candidates: list[dict[str, Any]], fragments: list[dict[str, Any]]) -> list[dict[str, Any]]:
     output: list[dict[str, Any]] = []
+    source_index = endpoint_index(fragments, first=False)
+    target_index = endpoint_index(fragments, first=True)
     for candidate in candidates:
-        service = str(candidate.get("calendar") or "")
-        sources = [
-            row for row in fragments
-            if fragment_matches(
-                row,
-                railway=str(candidate["fromRailway"]),
-                service=service,
-                first=False,
-                station=str(candidate["fromStation"]),
-                minute=int(candidate["sourceBoundaryMinute"]),
-            )
-        ]
-        targets = [
-            row for row in fragments
-            if fragment_matches(
-                row,
-                railway=str(candidate["toRailway"]),
-                service=service,
-                first=True,
-                station=str(candidate["toStation"]),
-                minute=int(candidate["targetBoundaryMinute"]),
-            )
-        ]
+        service = calendar_key(candidate.get("calendar"))
+        source_key = (
+            str(candidate["fromRailway"]),
+            service,
+            str(candidate["fromStation"]),
+            int(candidate["sourceBoundaryMinute"]),
+        )
+        target_key = (
+            str(candidate["toRailway"]),
+            service,
+            str(candidate["toStation"]),
+            int(candidate["targetBoundaryMinute"]),
+        )
+        sources = source_index.get(source_key, [])
+        targets = target_index.get(target_key, [])
         if len(sources) == 1 and len(targets) == 1:
             status = "matched-singleton"
         elif not sources or not targets:
