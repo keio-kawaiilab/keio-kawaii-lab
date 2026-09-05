@@ -1,14 +1,14 @@
 {
-  "version": 6,
-  "generatedAt": "2026-09-05T15:51:56.290Z",
+  "version": 11,
+  "generatedAt": "2026-09-05T16:36:04.306Z",
   "summary": {
-    "boundaries": 23,
-    "verifiedBoundaries": 8,
+    "boundaries": 25,
+    "verifiedBoundaries": 12,
     "serviceFamilies": 17,
     "verifiedServiceFamilies": 17,
     "familyPaths": 31,
     "unknownFamilyRailways": 0,
-    "throughRecords": 17757,
+    "throughRecords": 18459,
     "exactNetworkThroughRecords": 3048,
     "publishedDestinationThroughRecords": 3717,
     "unresolvedExternalDestinationTrips": 4618,
@@ -20,9 +20,9 @@
     "odptAuthoritativeLinkThroughRecords": 1935,
     "odptExactPublishedDestinationThroughRecords": 7692,
     "odptIdentityUnresolved": 25894,
-    "officialSingleTrainPageThroughRecords": 645,
-    "officialSamePrintedColumnThroughRecords": 538,
-    "odptExplicitBoundaryEndpointThroughRecords": 182
+    "officialSingleTrainPageThroughRecords": 1163,
+    "officialSamePrintedColumnThroughRecords": 548,
+    "odptExplicitBoundaryEndpointThroughRecords": 356
   },
   "families": [
     {
@@ -251,8 +251,8 @@
       "station": "小竹向原",
       "fromRailway": "odpt.Railway:TokyoMetro.Yurakucho",
       "toRailway": "odpt.Railway:Seibu.SeibuYurakucho",
-      "status": "source-audit-required",
-      "source": ""
+      "status": "verified",
+      "source": "https://www.tokyometro.jp/station/line_yurakucho/index.html"
     },
     {
       "id": "fukutoshin-tojo-wakoshi",
@@ -267,8 +267,8 @@
       "station": "和光市",
       "fromRailway": "odpt.Railway:TokyoMetro.Yurakucho",
       "toRailway": "odpt.Railway:Tobu.Tojo",
-      "status": "source-audit-required",
-      "source": ""
+      "status": "verified",
+      "source": "https://www.tobu.co.jp/corporation/rail/route/"
     },
     {
       "id": "keisei-toei-oshiage",
@@ -373,6 +373,22 @@
       "toRailway": "odpt.Railway:JR-East.ChuoSobuLocal",
       "status": "source-audit-required",
       "source": ""
+    },
+    {
+      "id": "seibuyurakucho-ikebukuro-nerima",
+      "station": "練馬",
+      "fromRailway": "odpt.Railway:Seibu.SeibuYurakucho",
+      "toRailway": "odpt.Railway:Seibu.Ikebukuro",
+      "status": "verified",
+      "source": "https://www.seiburailway.jp/railway/station/"
+    },
+    {
+      "id": "seibu-ikebukuro-seibuchichibu-agano",
+      "station": "吾野",
+      "fromRailway": "odpt.Railway:Seibu.Ikebukuro",
+      "toRailway": "odpt.Railway:Seibu.SeibuChichibu",
+      "status": "verified",
+      "source": "https://www.seiburailway.jp/railway/station/agano/"
     }
   ],
   "sources": [
@@ -347148,20 +347164,59 @@
       }
     ]
   },
-  "officialOneTrainEvidence": {
-    "sourceFile": "data/transit/fukutoshin/seibu-official-linked-through-trains.json",
-    "sourceGeneratedAt": "2026-09-05T15:51:30.225528+00:00",
-    "inputTrainPages": 424,
-    "addedRecords": 645,
+  "line8Line13SeibuEvidence": {
+    "sourceFile": "data/transit/line8-line13/seibu-official-exact-through-trains.json",
+    "inputTrainPages": 471,
+    "addedRecords": 1163,
     "boundaries": {
-      "fukutoshin-seibuyurakucho-kotakemukaihara": 424,
+      "yurakucho-seibuyurakucho-kotakemukaihara": 257,
+      "seibuyurakucho-ikebukuro-nerima": 471,
+      "fukutoshin-seibuyurakucho-kotakemukaihara": 214,
       "toyoko-fukutoshin-shibuya": 115,
       "minatomirai-toyoko-yokohama": 106
+    },
+    "corridors": {
+      "line8": 514,
+      "line13": 649
+    }
+  },
+  "seibuStrainLine13Evidence": {
+    "sourceFile": "data/transit/line8-line13/seibu-strain-line13-columns.json",
+    "sourceSha256": "d04ba82847797557e5ca22e5bc3a7f70eff18204f02a2fc017eaa3a131d8c66d",
+    "addedRecords": 10,
+    "boundaries": {
+      "seibu-ikebukuro-seibuchichibu-agano": 2,
+      "seibuyurakucho-ikebukuro-nerima": 2,
+      "fukutoshin-seibuyurakucho-kotakemukaihara": 2,
+      "toyoko-fukutoshin-shibuya": 2,
+      "minatomirai-toyoko-yokohama": 2
+    },
+    "directions": {
+      "seibu-ikebukuro-seibuchichibu-agano": {
+        "chichibu-to-fukutoshin": 1,
+        "fukutoshin-to-chichibu": 1
+      },
+      "seibuyurakucho-ikebukuro-nerima": {
+        "chichibu-to-fukutoshin": 1,
+        "fukutoshin-to-chichibu": 1
+      },
+      "fukutoshin-seibuyurakucho-kotakemukaihara": {
+        "chichibu-to-fukutoshin": 1,
+        "fukutoshin-to-chichibu": 1
+      },
+      "toyoko-fukutoshin-shibuya": {
+        "chichibu-to-fukutoshin": 1,
+        "fukutoshin-to-chichibu": 1
+      },
+      "minatomirai-toyoko-yokohama": {
+        "chichibu-to-fukutoshin": 1,
+        "fukutoshin-to-chichibu": 1
+      }
     }
   },
   "sotetsuOfficialColumnEvidence": {
     "sourceFile": "data/transit/fukutoshin/sotetsu-official-line13-columns.json",
-    "sourceGeneratedAt": "2026-09-05T15:51:52.565022+00:00",
+    "sourceGeneratedAt": "2026-09-05T16:36:02.895656+00:00",
     "inputColumns": 538,
     "addedRecords": 538,
     "boundaries": {
@@ -347178,6 +347233,18 @@
     "directions": {
       "tobuToFukutoshin": 97,
       "fukutoshinToTobu": 85
+    }
+  },
+  "yurakuchoWakoshiEndpointEvidence": {
+    "sourceFile": "data/transit/odpt-train-identities.json",
+    "boundaryId": "yurakucho-tojo-wakoshi",
+    "evidenceRecords": 174,
+    "addedRecords": 174,
+    "directions": {
+      "tobuToYurakucho": 81,
+      "yurakuchoToTobu": 93,
+      "metroSource": 93,
+      "tobuSource": 81
     }
   }
 }
