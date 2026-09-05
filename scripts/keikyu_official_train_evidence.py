@@ -51,7 +51,7 @@ def rows(words: list[dict[str, Any]], tolerance: float = 3.0) -> list[dict[str, 
             groups[-1].append(word)
         else:
             groups.append([word])
-    out = []
+    out: list[dict[str, Any]] = []
     for group in groups:
         group.sort(key=lambda w: float(w.get("x0", 0)))
         text = norm("".join(str(w.get("text") or "") for w in group))
@@ -61,7 +61,7 @@ def rows(words: list[dict[str, Any]], tolerance: float = 3.0) -> list[dict[str, 
 
 
 def cells(words: list[dict[str, Any]], y: float, tolerance: float = 3.7) -> list[dict[str, Any]]:
-    out = []
+    out: list[dict[str, Any]] = []
     for word in words:
         if float(word.get("x0", 0)) < data_start(words) or abs(cy(word) - y) > tolerance:
             continue
@@ -80,7 +80,7 @@ def hhmm(value: str) -> int | None:
 
 
 def time_cells(words: list[dict[str, Any]], y: float) -> list[dict[str, Any]]:
-    out = []
+    out: list[dict[str, Any]] = []
     for cell in cells(words, y):
         minute = hhmm(cell["text"])
         if minute is not None:
@@ -102,14 +102,23 @@ def column_tolerance(items: list[dict[str, Any]]) -> float:
 
 
 def direction(above: str, below: str) -> str:
+    """Classify the physical travel direction around Sengakuji.
+
+    Keikyu's official connection timetable has two stacked panels.  In the
+    upper panel, the route reaches Sengakuji from the Toei/Keisei side
+    (泉岳寺着), crosses the train-number row, then starts the Keikyu section at
+    泉岳寺発.  That is Toei -> Keikyu.  In the lower panel, the Keikyu section
+    reaches 泉岳寺着 and the following Toei-side row repeats Sengakuji with 〃;
+    that is Keikyu -> Toei.
+
+    This orientation is structural evidence from the operator timetable, not
+    inferred from train number or a small time gap.
+    """
     above, below = norm(above), norm(below)
-    # Real official connection PDF structure at the Keikyu/Toei boundary:
-    # Keikyu -> Toei: 泉岳寺着 / 列車番号 / 泉岳寺発
-    # Toei -> Keikyu: 泉岳寺着 / 列車番号 / 泉岳寺〃
     if "泉岳寺" in above and "着" in above and "泉岳寺" in below and "発" in below:
-        return "keikyu-to-toei"
-    if "泉岳寺" in above and "着" in above and "泉岳寺" in below and "〃" in below:
         return "toei-to-keikyu"
+    if "泉岳寺" in above and "着" in above and "泉岳寺" in below and "〃" in below:
+        return "keikyu-to-toei"
     return ""
 
 
@@ -164,7 +173,13 @@ def extract_page_candidates(words: list[dict[str, Any]], *, page_number: int, ca
                 "columnX": round(float(first["x"]), 2),
                 "evidence": ["operator-official-connection-timetable", "same-printed-column-spans-both-sides-of-sengakuji"],
                 "sourceUrl": source_url,
-                "rowGeometry": {"sourceBoundaryText": before["text"], "sourceBoundaryY": round(float(before["y"]), 2), "boundaryTrainNumberY": round(float(number_row["y"]), 2), "targetBoundaryText": after["text"], "targetBoundaryY": round(float(after["y"]), 2)},
+                "rowGeometry": {
+                    "sourceBoundaryText": before["text"],
+                    "sourceBoundaryY": round(float(before["y"]), 2),
+                    "boundaryTrainNumberY": round(float(number_row["y"]), 2),
+                    "targetBoundaryText": after["text"],
+                    "targetBoundaryY": round(float(after["y"]), 2),
+                },
             }
             item["id"] = stable_id(calendar, travel_direction, page_number, item["columnX"], item["sourceBoundaryMinute"], item["targetBoundaryMinute"], item["boundaryTrainNumber"])
             output.append(item)
@@ -198,8 +213,8 @@ def fragment_matches(fragment: dict[str, Any], railway: str, service: str, first
     return any(minute_distance(value, minute) <= tolerance for value in values)
 
 
-def match_candidates_to_fragments(candidates: list[dict[str, Any]], fragments: list[dict[str, Any]], *, minute_tolerance: int = 1) -> list[dict[str, Any]]:
-    output = []
+def match_candidates_to_fragments(candidates: list[dict[str, Any]], fragments: list[dict[str, Any]], *, minute_tolerance: int = 0) -> list[dict[str, Any]]:
+    output: list[dict[str, Any]] = []
     for candidate in candidates:
         travel_direction = str(candidate.get("direction") or "")
         if travel_direction == "keikyu-to-toei":
@@ -224,7 +239,14 @@ def match_candidates_to_fragments(candidates: list[dict[str, Any]], fragments: l
             "toFragment": targets[0].get("id") if len(targets) == 1 else None,
             "sourceMatches": [row.get("id") for row in sources],
             "targetMatches": [row.get("id") for row in targets],
-            "matchPolicy": {"officialColumnSpansBothBoundarySidesRequired": True, "verifiedBoundaryRequired": True, "singletonFragmentMatchRequired": True, "boundaryMinuteTolerance": minute_tolerance, "trainNumberAloneMayEstablishIdentity": False, "timeProximityAloneMayEstablishIdentity": False},
+            "matchPolicy": {
+                "officialColumnSpansBothBoundarySidesRequired": True,
+                "verifiedBoundaryRequired": True,
+                "singletonFragmentMatchRequired": True,
+                "boundaryMinuteTolerance": minute_tolerance,
+                "trainNumberAloneMayEstablishIdentity": False,
+                "timeProximityAloneMayEstablishIdentity": False,
+            },
         })
     return output
 
@@ -241,7 +263,7 @@ def load_fragments(folder: Path) -> list[dict[str, Any]]:
 
 def fetch_pdf(url: str) -> bytes:
     import requests
-    response = requests.get(url, headers={"User-Agent": "keio-kawaiilab-transit-evidence/2.0"}, timeout=(20, 180))
+    response = requests.get(url, headers={"User-Agent": "keio-kawaiilab-transit-evidence/3.0"}, timeout=(20, 180))
     response.raise_for_status()
     if not response.content.startswith(b"%PDF"):
         raise RuntimeError("official Keikyu source is not a PDF")
@@ -270,14 +292,33 @@ def diagnostics(content: bytes) -> None:
 
 def payload(candidates: list[dict[str, Any]], matched: list[dict[str, Any]], source_url: str, calendar: str) -> dict[str, Any]:
     counts: dict[str, int] = {}
+    direction_counts: dict[str, int] = {}
     for row in matched:
-        counts[row.get("matchStatus", "unknown")] = counts.get(row.get("matchStatus", "unknown"), 0) + 1
+        status = str(row.get("matchStatus") or "unknown")
+        counts[status] = counts.get(status, 0) + 1
+        if status == "matched-singleton":
+            key = str(row.get("direction") or "unknown")
+            direction_counts[key] = direction_counts.get(key, 0) + 1
     return {
-        "version": 2,
+        "version": 3,
         "generatedAt": datetime.now(timezone.utc).isoformat(),
         "source": {"operator": "keikyu", "calendar": calendar, "url": source_url, "kind": "operator-official-connection-timetable-pdf"},
-        "policy": {"autoPromoteUnknown": False, "officialColumnSpansBothBoundarySidesRequired": True, "verifiedOperationalBoundaryRequired": True, "singletonFragmentMatchRequired": True, "trainNumberAloneMayEstablishIdentity": False, "timeProximityAloneMayEstablishIdentity": False, "staleFragmentReferenceMustFailClosed": True},
-        "summary": {"officialColumnCandidates": len(candidates), "matchedSingleton": counts.get("matched-singleton", 0), "ambiguous": counts.get("ambiguous", 0), "unmatched": counts.get("unmatched", 0)},
+        "policy": {
+            "autoPromoteUnknown": False,
+            "officialColumnSpansBothBoundarySidesRequired": True,
+            "verifiedOperationalBoundaryRequired": True,
+            "singletonFragmentMatchRequired": True,
+            "trainNumberAloneMayEstablishIdentity": False,
+            "timeProximityAloneMayEstablishIdentity": False,
+            "staleFragmentReferenceMustFailClosed": True,
+        },
+        "summary": {
+            "officialColumnCandidates": len(candidates),
+            "matchedSingleton": counts.get("matched-singleton", 0),
+            "ambiguous": counts.get("ambiguous", 0),
+            "unmatched": counts.get("unmatched", 0),
+            "matchedDirections": direction_counts,
+        },
         "entries": matched,
     }
 
@@ -288,7 +329,7 @@ def main() -> int:
     cli.add_argument("--calendar", choices=("weekday", "holiday"), default="weekday")
     cli.add_argument("--fragment-dir", default="data/transit-v2/fragments")
     cli.add_argument("--output", default="data/transit-v2/keikyu-official-train-evidence.json")
-    cli.add_argument("--minute-tolerance", type=int, default=1)
+    cli.add_argument("--minute-tolerance", type=int, default=0)
     args = cli.parse_args()
     source_url = args.url or (DEFAULT_WEEKDAY_URL if args.calendar == "weekday" else DEFAULT_HOLIDAY_URL)
     content = fetch_pdf(source_url)
