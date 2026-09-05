@@ -8,6 +8,7 @@ on:
       - 'scripts/inspect_keikyu_sengakuji_raw.py'
       - 'scripts/keikyu_generated_evidence.py'
       - 'scripts/test_keikyu_generated_evidence.py'
+      - 'scripts/verify_keikyu_through_materialization.py'
       - '.github/workflows/diagnose-keikyu-reverse-through.yml'
       - '.github/workflows/update-transit-timetables.yml'
       - '.github/workflows/update-keikyu-official-through-evidence.yml'
@@ -70,7 +71,10 @@ jobs:
         run: pip install pdfplumber==0.11.7 requests==2.32.5
       - name: Compile and test strict repair path
         run: |
-          python -m py_compile scripts/repair_keikyu_sengakuji_terminal.py scripts/keikyu_generated_evidence.py
+          python -m py_compile \
+            scripts/repair_keikyu_sengakuji_terminal.py \
+            scripts/keikyu_generated_evidence.py \
+            scripts/verify_keikyu_through_materialization.py
           python scripts/test_keikyu_generated_evidence.py
       - name: Repair Keikyu northbound Sengakuji terminal rows
         id: repair
@@ -147,6 +151,9 @@ jobs:
           assert all(row.get('matchStatus') == 'matched-singleton' for row in reverse)
           assert not missing_pairs, 'some production Keikyu official evidence did not materialize as same-train edges'
           PY
+      - name: Verify route runtime materialization
+        if: steps.repair.outcome == 'success'
+        run: python scripts/verify_keikyu_through_materialization.py --repair-report /tmp/keikyu-sengakuji-repair.json
       - name: Upload repair diagnostics
         if: always()
         uses: actions/upload-artifact@v4
