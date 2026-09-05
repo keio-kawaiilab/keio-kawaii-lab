@@ -1,0 +1,111 @@
+name: Rebuild Keisei through network
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/build_keisei_network_timetable.py'
+      - 'scripts/test_keisei_through_network.py'
+      - 'scripts/test_keisei_route_ui.js'
+      - 'route.js'
+      - 'route-core.js'
+      - 'data/transit-v2/service-boundaries.json'
+      - '.github/workflows/rebuild-keisei-through-network.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rebuild-keisei-through-network
+  cancel-in-progress: true
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Validate code
+        run: |
+          python -m py_compile \
+            scripts/build_keisei_network_timetable.py \
+            scripts/test_keisei_through_network.py
+          node --check route-core.js
+          node --check route.js
+          node --check scripts/test_keisei_route_ui.js
+
+      - name: Require checked-in official Keisei train details
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path=Path('data/transit/keisei/official-train-details.json')
+          assert path.exists(), path
+          payload=json.loads(path.read_text(encoding='utf-8'))
+          count=int(payload.get('trainCount') or 0)
+          assert 3000 <= count <= 7000, count
+          assert len(payload.get('trains') or []) == count
+          print('official Keisei source trains:', count)
+          print('official Keisei source stop rows:', payload.get('stopRowCount'))
+          PY
+
+      - name: Rebuild exact cross-operator network
+        run: python scripts/build_keisei_network_timetable.py
+
+      - name: Validate identity and boundary policy
+        run: python scripts/test_keisei_through_network.py
+
+      - name: Exercise real browser route logic
+        run: node scripts/test_keisei_route_ui.js
+
+      - name: Print exact through-service coverage
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report=json.loads(Path('data/transit/keisei/official-network-report.json').read_text(encoding='utf-8'))
+          print(json.dumps({
+            'sourceTrainCount': report.get('sourceTrainCount'),
+            'networkTripCount': report.get('networkTripCount'),
+            'skippedUnderTwoMappedStops': report.get('skippedUnderTwoMappedStops'),
+            'unresolvedPairCount': report.get('unresolvedPairCount'),
+            'supportedRailwayCount': report.get('supportedRailwayCount'),
+            'crossOperatorTransitions': report.get('crossOperatorTransitions'),
+            'identityPolicy': report.get('identityPolicy')
+          }, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Publish rebuilt through-network snapshot
+        shell: bash
+        run: |
+          git add \
+            data/transit/keisei/timetable-index.json \
+            data/transit/keisei/timetables/official-network.json \
+            data/transit/keisei/official-network-report.json
+          if git diff --cached --quiet; then
+            echo 'No Keisei through-network snapshot changes.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Rebuild exact Keisei through-network snapshot'
+          for attempt in 1 2 3 4; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            sleep $((attempt * 2))
+          done
+          exit 1
