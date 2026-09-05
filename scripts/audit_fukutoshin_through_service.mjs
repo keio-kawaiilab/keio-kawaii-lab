@@ -11,6 +11,7 @@ const SIZ='odpt.Railway:Sotetsu.Izumino';
 const F='odpt.Railway:TokyoMetro.Fukutoshin';
 const SI='odpt.Railway:Seibu.SeibuYurakucho';
 const TJ='odpt.Railway:Tobu.Tojo';
+const WAKOSHI='odpt.Station:TokyoMetro.Fukutoshin.Wakoshi';
 
 const PAIRS=[
   {id:'minatomirai-toyoko-yokohama',label:'みなとみらい線↔東急東横線（横浜）',a:MM,b:TY,patterns:[['反町','横浜','新高島'],['新高島','横浜','反町']]},
@@ -59,9 +60,12 @@ const samePattern=(value,patterns)=>patterns.some((pattern)=>Array.isArray(value
 
 const generated=new Map(PAIRS.map((row)=>[row.id,new Set()]));
 const officialEvidence=new Map(PAIRS.map((row)=>[row.id,new Set()]));
+const endpointEvidence=new Map(PAIRS.map((row)=>[row.id,new Set()]));
+const endpointDirections=new Map(PAIRS.map((row)=>[row.id,{ab:0,ba:0}]));
+
 for(const row of through.records||[]){
   const type=exactType(row);
-  if(!['odpt-train-timetable-link','train-timetable-network','official-single-train-page','official-same-printed-column'].includes(type))continue;
+  if(!['odpt-train-timetable-link','train-timetable-network','official-single-train-page','official-same-printed-column','odpt-explicit-boundary-endpoint'].includes(type))continue;
   for(const spec of PAIRS){
     if(!recordMentionsPair(row,spec))continue;
     const id=String(row.identityKey||row.id||'');
@@ -87,6 +91,27 @@ for(const row of through.records||[]){
       officialEvidence.get(spec.id).add(id);
     }else if(type==='odpt-train-timetable-link'){
       if(!String(row.sourceTimetableId||'')||!String(row.targetTimetableId||''))throw new Error(`ODPT exact record lacks source/target timetable ids on ${spec.label}`);
+    }else if(type==='odpt-explicit-boundary-endpoint'){
+      if(spec.id!=='fukutoshin-tojo-wakoshi')throw new Error(`Explicit endpoint evidence is only approved for Wakoshi, not ${spec.label}`);
+      if(row.status!=='verified'||String(row.canonicalBoundaryId||'')!==spec.id)throw new Error('Wakoshi endpoint record is not verified against the canonical boundary');
+      if(String(row.boundaryEndpoint||'')!==WAKOSHI)throw new Error('Wakoshi endpoint record lacks exact Metro Wakoshi endpoint');
+      if(!String(row.sourceTimetableId||'').startsWith('odpt.TrainTimetable:TokyoMetro.Fukutoshin.'))throw new Error('Wakoshi endpoint record must come from an exact Metro Fukutoshin TrainTimetable');
+      const mp=row.matchPolicy||{};
+      if(mp.sameTrainTimetableRecordRequired!==true||mp.exactBoundaryEndpointRequired!==true||mp.explicitOtherOperatorStationRequired!==true)throw new Error('Wakoshi endpoint record lacks strict positive requirements');
+      if(mp.destinationAloneMayEstablishIdentity!==false||mp.originAloneMayEstablishIdentity!==false||mp.timeProximityAloneMayEstablishIdentity!==false||mp.trainNumberAloneMayEstablishIdentity!==false)throw new Error('Wakoshi endpoint record weakens fail-closed identity rules');
+      const required=row.runtimeRule?.requiredMatch||[];
+      for(const field of ['identityKey','fromRailway','toRailway'])if(!required.includes(field))throw new Error(`Wakoshi endpoint record lacks ${field} runtime guard`);
+      const direction=endpointDirections.get(spec.id);
+      if(row.fromRailway===TJ&&row.toRailway===F){
+        if(!(row.externalOriginStations||[]).some(value=>String(value).startsWith('odpt.Station:Tobu.Tojo.')))throw new Error('Tobu -> Fukutoshin endpoint record lacks explicit Tobu origin');
+        if(row.exactEndpointRole!=='firstStop')throw new Error('Tobu -> Fukutoshin endpoint must use Wakoshi as Metro firstStop');
+        direction.ba++;
+      }else if(row.fromRailway===F&&row.toRailway===TJ){
+        if(!(row.externalDestinationStations||[]).some(value=>String(value).startsWith('odpt.Station:Tobu.Tojo.')))throw new Error('Fukutoshin -> Tobu endpoint record lacks explicit Tobu destination');
+        if(row.exactEndpointRole!=='lastStop')throw new Error('Fukutoshin -> Tobu endpoint must use Wakoshi as Metro lastStop');
+        direction.ab++;
+      }else throw new Error('Unexpected Wakoshi endpoint railway direction');
+      endpointEvidence.get(spec.id).add(id);
     }
     generated.get(spec.id).add(id);
   }
@@ -102,10 +127,13 @@ for(const spec of PAIRS){
   if(!boundary.source)throw new Error(`Verified boundary has no official source: ${spec.id}`);
   const odpt=odptLinks.get(spec.id).size;
   const official=officialEvidence.get(spec.id).size;
+  const endpoint=endpointEvidence.get(spec.id).size;
   const exact=generated.get(spec.id).size;
-  const authoritative=odpt+official;
-  summary.boundaries[spec.id]={label:spec.label,authoritativeOdptLinks:odpt,officialExactEvidence:official,authoritativeExactEvidence:authoritative,generatedExactThroughRecords:exact};
-  if(authoritative<1||exact<1)missing.push(spec.label);
+  const authoritative=odpt+official+endpoint;
+  const directions=endpointDirections.get(spec.id);
+  const endpointBidirectional=spec.id!=='fukutoshin-tojo-wakoshi'||(directions.ab>0&&directions.ba>0);
+  summary.boundaries[spec.id]={label:spec.label,authoritativeOdptLinks:odpt,officialExactEvidence:official,explicitBoundaryEndpointEvidence:endpoint,endpointDirections:directions,authoritativeExactEvidence:authoritative,generatedExactThroughRecords:exact,endpointBidirectional};
+  if(authoritative<1||exact<1||!endpointBidirectional)missing.push(spec.label);
 }
 
 console.log('Fukutoshin through-service identity evidence audit');
