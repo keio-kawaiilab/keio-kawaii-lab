@@ -1,26 +1,36 @@
-name: Collect Keisei transit v2
+name: Validate Keisei transit v2
 
 on:
   workflow_dispatch:
+    inputs:
+      full_refresh:
+        description: 'Refetch every current Keisei official one-train timetable before validating v2'
+        required: false
+        type: boolean
+        default: false
   push:
     paths:
       - '.github/workflows/collect-keisei-transit-v2.yml'
-      - 'scripts/collect_keisei_timetables.py'
       - 'scripts/build_keisei_official_timetables.py'
       - 'scripts/build_keisei_network_timetable.py'
+      - 'scripts/build_keisei_extended_network.py'
       - 'scripts/test_keisei_through_network.py'
-  schedule:
-    - cron: '20 17 * * 6'
+      - 'scripts/test_keisei_route_ui.js'
+      - 'scripts/build_transit_v2.py'
+      - 'data/transit/hokuso/**'
+      - 'data/transit/shibayama/**'
+      - 'data/transit/keisei/external-through-boundaries.json'
+      - 'data/transit-v2/service-boundaries.json'
 
 permissions:
   contents: write
 
 concurrency:
-  group: collect-keisei-transit-v2
-  cancel-in-progress: false
+  group: validate-keisei-transit-v2
+  cancel-in-progress: true
 
 jobs:
-  collect:
+  validate:
     runs-on: ubuntu-latest
     timeout-minutes: 300
     env:
@@ -28,77 +38,110 @@ jobs:
       KEISEI_WORKERS: '6'
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
       - name: Install dependencies
         run: pip install requests==2.32.5 beautifulsoup4==4.13.5
 
-      - name: Validate collector and v2 builder
+      - name: Validate builders
         run: |
           python -m py_compile \
             scripts/collect_keisei_timetables.py \
             scripts/build_keisei_official_timetables.py \
             scripts/build_keisei_network_timetable.py \
+            scripts/build_keisei_extended_network.py \
             scripts/test_keisei_through_network.py \
             scripts/build_transit_v2.py
+          node --check route-core.js
+          node --check route.js
+          node --check scripts/test_keisei_route_ui.js
           python scripts/test_transit_v2.py
 
-      - name: Discover every official Keisei train reference
-        run: python scripts/collect_keisei_timetables.py --discover
-
-      - name: Collect official one-train timetables
+      - name: Optionally refresh official one-train source
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.full_refresh == true }}
         shell: bash
         run: |
+          set -euo pipefail
+          python scripts/collect_keisei_timetables.py --discover
           CHUNK_SIZE=300
           CHUNK_COUNT=$(python - <<'PY'
           import json, math
           from pathlib import Path
           state=json.loads(Path('data/transit/keisei/collector-state.json').read_text(encoding='utf-8'))
           refs=state.get('trainRefs') or []
+          assert 3000 <= len(refs) <= 7000, len(refs)
           print(math.ceil(len(refs)/300))
           PY
           )
-          if [ "$CHUNK_COUNT" -le 0 ]; then
-            echo "No Keisei train references discovered." >&2
-            exit 1
-          fi
-          echo "Collecting $CHUNK_COUNT chunks"
+          rm -f data/transit/keisei/train-detail-chunks/chunk-*.json
           for ((i=0; i<CHUNK_COUNT; i++)); do
             python scripts/collect_keisei_timetables.py --collect-chunk "$i" --chunk-size "$CHUNK_SIZE" --workers 6
           done
           python scripts/collect_keisei_timetables.py --merge-chunks --chunk-size "$CHUNK_SIZE"
 
-      - name: Build Keisei exact timetable network
-        run: |
-          python scripts/build_keisei_official_timetables.py
-          python scripts/build_keisei_network_timetable.py
-          python scripts/test_keisei_through_network.py
-
-      - name: Rebuild train-centric v2 database
-        run: python scripts/build_transit_v2.py
-
-      - name: Validate Keisei collection
+      - name: Require complete retained official source
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
           raw=json.loads(Path('data/transit/keisei/official-train-details.json').read_text(encoding='utf-8'))
-          index=json.loads(Path('data/transit/keisei/timetable-index.json').read_text(encoding='utf-8'))
+          count=int(raw.get('trainCount') or 0)
+          assert 3000 <= count <= 7000, count
+          assert len(raw.get('trains') or []) == count
+          assert all(len(train.get('stops') or []) >= 2 for train in raw.get('trains') or [])
+          print('Retained official trains:', count)
+          print('Retained official stop rows:', raw.get('stopRowCount'))
+          PY
+
+      - name: Build exact Keisei Hokusō Shibayama network
+        run: |
+          python scripts/build_keisei_official_timetables.py
+          python scripts/build_keisei_extended_network.py
+          python scripts/test_keisei_through_network.py
+          node scripts/test_keisei_route_ui.js
+
+      - name: Rebuild train-centric v2 database
+        run: python scripts/build_transit_v2.py
+
+      - name: Validate v2 and exact coverage
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          raw=json.loads(Path('data/transit/keisei/official-train-details.json').read_text(encoding='utf-8'))
           report=json.loads(Path('data/transit/keisei/official-network-report.json').read_text(encoding='utf-8'))
           coverage=json.loads(Path('data/transit-v2/coverage.json').read_text(encoding='utf-8'))
-          assert int(raw.get('trainCount') or 0) > 0
-          assert len(index.get('lines') or {}) > 0
-          assert index.get('network', {}).get('identityBasis') == 'official-one-train-page'
-          assert report.get('unresolvedPairCount') == 0
+          expected=int(raw.get('trainCount') or 0)
+          assert report['networkTripCount'] == expected, report
+          assert report['skippedUnderTwoMappedStops'] == 0, report
+          assert report['unresolvedPairCount'] == 0, report
+          assert report['unsupportedStopRows'] == 0, report.get('unsupportedStations')
+          assert report['unsupportedStations'] == {}, report.get('unsupportedStations')
           assert report['identityPolicy']['trainNumberAloneMayEstablishIdentity'] is False
           assert report['identityPolicy']['timeProximityAloneMayEstablishIdentity'] is False
+          projection=report.get('externalLineProjection') or {}
+          assert int(projection.get('hokusoTrips') or 0) >= 820, projection
+          assert int(projection.get('shibayamaTrips') or 0) >= 180, projection
+          endpoints=report.get('endpointThroughCounts') or {}
+          assert int(endpoints.get('naritaToHaneda') or 0) >= 170, endpoints
+          assert int(endpoints.get('hanedaToNarita') or 0) >= 195, endpoints
           print(json.dumps({
-            'officialKeiseiTrains': raw.get('trainCount'),
+            'officialKeiseiTrains': expected,
             'officialKeiseiStopRows': raw.get('stopRowCount'),
-            'keiseiTimetableLines': len(index.get('lines') or {}),
+            'exactNetworkTrips': report.get('networkTripCount'),
+            'unsupportedStopRows': report.get('unsupportedStopRows'),
+            'hokusoTrips': projection.get('hokusoTrips'),
+            'shibayamaTrips': projection.get('shibayamaTrips'),
+            'airportEndpointThrough': endpoints,
             'crossOperatorTransitions': report.get('crossOperatorTransitions'),
             'v2Fragments': coverage['summary']['fragments'],
             'v2SameTrainEdges': coverage['summary']['sameTrainEdges'],
@@ -106,7 +149,7 @@ jobs:
           }, ensure_ascii=False, indent=2))
           PY
 
-      - name: Commit Keisei and v2 snapshots
+      - name: Commit refreshed snapshots only when manually refreshed or builders changed output
         shell: bash
         run: |
           if [ -z "$(git status --porcelain -- data/transit data/transit-v2)" ]; then
@@ -116,7 +159,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/transit data/transit-v2
-          git commit -m "Collect official Keisei train timetables for transit v2"
+          git commit -m "Validate exact Keisei Hokusō Shibayama transit v2 snapshot"
           for attempt in 1 2 3; do
             git fetch origin main
             git rebase origin/main
