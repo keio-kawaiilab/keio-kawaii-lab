@@ -15,7 +15,7 @@ const TJ='odpt.Railway:Tobu.Tojo';
 const PAIRS=[
   {id:'minatomirai-toyoko-yokohama',label:'みなとみらい線↔東急東横線（横浜）',a:MM,b:TY,patterns:[['反町','横浜','新高島'],['新高島','横浜','反町']]},
   {id:'toyoko-tokyushinyokohama-hiyoshi',label:'東急東横線↔東急新横浜線（日吉）',a:TY,b:TSH,patterns:[['自由が丘','日吉','新綱島'],['新綱島','日吉','自由が丘']]},
-  {id:'tokyushinyokohama-sotetsushinyokohama-shinyokohama',label:'東急新横浜線↔相鉄新横浜線（新横浜）',a:TSH,b:SSH,patterns:[['新綱島','新横浜','西谷'],['西谷','新横浜','新綱島']]},
+  {id:'tokyushinyokohama-sotetsushinyokohama-shinyokohama',label:'東急新横浜線↔相鉄新横浜線（新横浜）',a:TSH,b:SSH,patterns:[['新綱島','新横浜','羽沢横浜国大'],['羽沢横浜国大','新横浜','新綱島']]},
   {id:'sotetsushinyokohama-main-nishiya',label:'相鉄新横浜線↔相鉄本線（西谷）',a:SSH,b:SM,patterns:[]},
   {id:'sotetsu-main-izumino-futamatagawa',label:'相鉄本線↔相鉄いずみ野線（二俣川）',a:SM,b:SIZ,patterns:[]},
   {id:'toyoko-fukutoshin-shibuya',label:'東急東横線↔副都心線（渋谷）',a:TY,b:F,patterns:[['明治神宮前','渋谷','代官山'],['代官山','渋谷','明治神宮前']]},
