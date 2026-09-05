@@ -15,6 +15,7 @@ on:
       - 'scripts/build-through-service-db.mjs'
       - 'scripts/enrich-through-service-db.mjs'
       - 'scripts/test_odpt_train_identity_db.mjs'
+      - 'scripts/audit_fukutoshin_through_service.mjs'
       - '.github/workflows/generate-through-service-db.yml'
 
 permissions:
@@ -28,11 +29,14 @@ jobs:
       - name: Test authoritative ODPT identity rules
         run: |
           node --check scripts/enrich-through-service-db.mjs
+          node --check scripts/audit_fukutoshin_through_service.mjs
           node scripts/test_odpt_train_identity_db.mjs
       - name: Build deterministic through-service DB
         run: |
           node scripts/build-through-service-db.mjs
           node scripts/enrich-through-service-db.mjs
+      - name: Audit exact Fukutoshin through identities
+        run: node scripts/audit_fukutoshin_through_service.mjs
       - name: Validate generated JSON
         run: |
           node -e "JSON.parse(require('fs').readFileSync('data/transit/through-service-trips.json','utf8')); JSON.parse(require('fs').readFileSync('data/transit/through-service-coverage.json','utf8'));"
