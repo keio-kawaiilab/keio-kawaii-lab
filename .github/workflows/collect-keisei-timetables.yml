@@ -16,6 +16,7 @@ on:
       - 'scripts/collect_keisei_timetables.py'
       - 'scripts/build_keisei_official_timetables.py'
       - 'scripts/build_keisei_network_timetable.py'
+      - 'scripts/test_keisei_through_network.py'
       - 'scripts/test_keisei_route_ui.js'
       - 'route.js'
       - 'route-core.js'
@@ -58,6 +59,14 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+      - name: Validate Keisei builders
+        run: |
+          python -m py_compile \
+            scripts/collect_keisei_timetables.py \
+            scripts/build_keisei_official_timetables.py \
+            scripts/build_keisei_network_timetable.py \
+            scripts/test_keisei_through_network.py
+
       - name: Collect every detailed train timetable with checkpoints
         shell: bash
         run: |
@@ -96,9 +105,6 @@ jobs:
           assert pages >= 150, pages
           print('Fresh discovery sanity check:', count, by_dw, 'pages=', pages)
           PY
-            # Once the new discovery is known-good, remove the previous generation's
-            # detail checkpoints. The already-published merged database is left intact
-            # until the entire new generation validates successfully.
             rm -f data/transit/keisei/train-detail-chunks/chunk-*.json
             checkpoint "Start fresh Keisei timetable generation"
           else
@@ -167,7 +173,9 @@ jobs:
         run: python scripts/build_keisei_official_timetables.py
 
       - name: Build exact Keisei through network timetable
-        run: python scripts/build_keisei_network_timetable.py
+        run: |
+          python scripts/build_keisei_network_timetable.py
+          python scripts/test_keisei_through_network.py
 
       - name: Validate and publish compact Keisei timetable database
         shell: bash
@@ -186,9 +194,12 @@ jobs:
           assert report['compactTripCount'] > 0, report
           assert report['compactConnectionCount'] > 0, report
           assert index.get('network', {}).get('timeBasis') == 'train-timetable-network', index
+          assert index.get('network', {}).get('identityBasis') == 'official-one-train-page', index
           assert network['sourceTrainCount'] == expected, (network['sourceTrainCount'], expected)
           assert network['networkTripCount'] + network['skippedUnderTwoMappedStops'] == expected, network
           assert network['unresolvedPairCount'] == 0, network
+          assert network['identityPolicy']['trainNumberAloneMayEstablishIdentity'] is False
+          assert network['identityPolicy']['timeProximityAloneMayEstablishIdentity'] is False
           assert (root/index['network']['file']).exists(), index['network']
           for railway_id, row in index['lines'].items():
               assert row['trips'] > 0, (railway_id, row)
@@ -196,7 +207,7 @@ jobs:
           print('Keisei compact trips:', report['compactTripCount'])
           print('Keisei compact connections:', report['compactConnectionCount'])
           print('Keisei exact network trips:', network['networkTripCount'])
-          print('Cross-line skipped pairs covered by network:', report['crossLineSkippedPairCount'])
+          print('Cross-operator transitions:', network.get('crossOperatorTransitions'))
           PY
           git add data/transit/keisei/timetable-index.json \
                   data/transit/keisei/timetables \
