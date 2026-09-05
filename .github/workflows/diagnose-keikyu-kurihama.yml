@@ -4,10 +4,15 @@ on:
   pull_request:
     paths:
       - 'scripts/diagnose_keikyu_kurihama_geometry.py'
+      - 'scripts/keikyu_internal_official_evidence.py'
       - 'scripts/keikyu_kurihama_official_evidence.py'
+      - 'scripts/test_keikyu_internal_official_evidence.py'
       - 'scripts/test_keikyu_kurihama_official_evidence.py'
       - 'scripts/keikyu_internal_generated_evidence.py'
       - 'scripts/test_keikyu_internal_generated_evidence.py'
+      - 'scripts/verify_keikyu_internal_materialization.py'
+      - 'scripts/finalize_transit_v2.py'
+      - 'scripts/reviewed_train_evidence.py'
       - '.github/workflows/diagnose-keikyu-kurihama.yml'
 
 permissions:
@@ -29,9 +34,18 @@ jobs:
       - name: Test strict Main-Kurihama rules
         run: |
           python -m py_compile \
+            scripts/keikyu_internal_official_evidence.py \
             scripts/keikyu_kurihama_official_evidence.py \
-            scripts/keikyu_internal_generated_evidence.py
+            scripts/keikyu_internal_generated_evidence.py \
+            scripts/verify_keikyu_internal_materialization.py
+          python scripts/test_keikyu_internal_official_evidence.py
           python scripts/test_keikyu_kurihama_official_evidence.py
           python scripts/test_keikyu_internal_generated_evidence.py
       - name: Measure official singleton matches
         run: python scripts/diagnose_keikyu_kurihama_geometry.py
+      - name: Materialize combined Keikyu internal evidence
+        run: |
+          python scripts/keikyu_internal_official_evidence.py
+          python scripts/finalize_transit_v2.py
+          python scripts/audit_transit_v2.py
+          python scripts/verify_keikyu_internal_materialization.py
