@@ -6,6 +6,7 @@ on:
     paths:
       - 'scripts/inspect_seibu_2026_digital_timetable.py'
       - 'scripts/extract_seibu_flipper_metadata.py'
+      - 'scripts/extract_seibu_flipper_js_paths.py'
       - '.github/workflows/inspect-seibu-2026-timetable.yml'
 
 permissions:
@@ -24,32 +25,37 @@ jobs:
         run: python scripts/inspect_seibu_2026_digital_timetable.py
       - name: Extract official FLIPPER3 metadata
         run: python scripts/extract_seibu_flipper_metadata.py
+      - name: Extract FLIPPER3 page path logic
+        run: python scripts/extract_seibu_flipper_js_paths.py
       - name: Validate strict source policy
         run: |
           python - <<'PY'
           import json
           r=json.load(open('data/transit/fukutoshin/seibu-2026-source-report.json',encoding='utf-8'))
           m=json.load(open('data/transit/fukutoshin/seibu-2026-flipper-metadata.json',encoding='utf-8'))
-          p=r['identityPolicy']
-          mp=m['identityPolicy']
+          j=json.load(open('data/transit/fukutoshin/seibu-2026-flipper-path-report.json',encoding='utf-8'))
+          p=r['identityPolicy']; mp=m['identityPolicy']; jp=j['identityPolicy']
           assert r['expectedEdition']=='2026'
           assert r['reachableSamplePages'] >= 2
           assert p['singlePublishedTrainColumnMayEstablishIdentity'] is True
           assert p['timeProximityMayEstablishIdentity'] is False
-          assert p['trainNumberAloneMayEstablishIdentity'] is False
+          assert p['trainNumberAloneMayEstablishTrainIdentity'] is False if 'trainNumberAloneMayEstablishTrainIdentity' in p else p['trainNumberAloneMayEstablishIdentity'] is False
           assert p['destinationAloneMayEstablishIdentity'] is False
           assert p['viewerAssetDiscoveryMayEstablishIdentity'] is False
           assert m['summary']['resourcesFetched'] == 3
+          assert m['summary']['pageDataIds'] == 240
           assert mp['metadataMayEstablishIdentity'] is False
           assert mp['timeProximityMayEstablishIdentity'] is False
           assert mp['trainNumberAloneMayEstablishIdentity'] is False
           assert mp['destinationAloneMayEstablishIdentity'] is False
           assert mp['singlePublishedTrainColumnRequired'] is True
-          print({'viewer':r['reachableSamplePages'],'metadata':m['summary']})
+          assert jp['viewerPathLogicMayEstablishIdentity'] is False
+          assert jp['singlePublishedTrainColumnRequired'] is True
+          print({'viewer':r['reachableSamplePages'],'metadata':m['summary'],'pathContexts':j['summary']})
           PY
       - name: Commit compact source reports
         run: |
-          git add data/transit/fukutoshin/seibu-2026-source-report.json data/transit/fukutoshin/seibu-2026-flipper-metadata.json
+          git add data/transit/fukutoshin/seibu-2026-source-report.json data/transit/fukutoshin/seibu-2026-flipper-metadata.json data/transit/fukutoshin/seibu-2026-flipper-path-report.json
           if git diff --cached --quiet; then
             echo 'No source-inspection changes'
             exit 0
