@@ -1,9 +1,9 @@
 {
   "version": 11,
-  "generatedAt": "2026-09-05T17:08:22.326Z",
+  "generatedAt": "2026-09-05T17:59:31.238Z",
   "summary": {
     "boundaries": 27,
-    "verifiedBoundaries": 16,
+    "verifiedBoundaries": 18,
     "serviceFamilies": 19,
     "verifiedServiceFamilies": 19,
     "familyPaths": 34,
@@ -295,16 +295,16 @@
       "station": "押上",
       "fromRailway": "odpt.Railway:Keisei.Oshiage",
       "toRailway": "odpt.Railway:Toei.Asakusa",
-      "status": "source-audit-required",
-      "source": ""
+      "status": "verified",
+      "source": "https://www.kotsu.metro.tokyo.jp/about/ayumi/subway.html"
     },
     {
       "id": "toei-keikyu-sengakuji",
       "station": "泉岳寺",
       "fromRailway": "odpt.Railway:Toei.Asakusa",
       "toRailway": "odpt.Railway:Keikyu.Main",
-      "status": "source-audit-required",
-      "source": ""
+      "status": "verified",
+      "source": "https://www.kotsu.metro.tokyo.jp/about/ayumi/subway.html"
     },
     {
       "id": "denentoshi-hanzomon-shibuya",
@@ -347252,7 +347252,7 @@
   },
   "sotetsuOfficialColumnEvidence": {
     "sourceFile": "data/transit/fukutoshin/sotetsu-official-line13-columns.json",
-    "sourceGeneratedAt": "2026-09-05T17:07:56.363246+00:00",
+    "sourceGeneratedAt": "2026-09-05T17:58:57.030355+00:00",
     "inputColumns": 538,
     "addedRecords": 538,
     "boundaries": {
