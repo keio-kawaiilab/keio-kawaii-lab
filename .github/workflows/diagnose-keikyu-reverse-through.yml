@@ -5,6 +5,7 @@ on:
     paths:
       - 'scripts/diagnose_keikyu_reverse_through.py'
       - 'scripts/repair_keikyu_sengakuji_terminal.py'
+      - 'scripts/inspect_keikyu_sengakuji_raw.py'
       - '.github/workflows/diagnose-keikyu-reverse-through.yml'
   workflow_dispatch:
 
@@ -27,6 +28,26 @@ jobs:
         with:
           name: keikyu-reverse-through-diagnostic
           path: /tmp/keikyu-reverse-diagnostic.json
+          if-no-files-found: error
+
+  raw-inspect:
+    runs-on: ubuntu-latest
+    env:
+      ODPT_API_KEY: ${{ secrets.ODPT_API_KEY }}
+      ODPT_CHALLENGE_API_KEY: ${{ secrets.ODPT_CHALLENGE_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependency
+        run: pip install requests==2.32.5
+      - name: Inspect raw Sengakuji and Shinagawa records
+        run: python scripts/inspect_keikyu_sengakuji_raw.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keikyu-sengakuji-raw
+          path: /tmp/keikyu-sengakuji-raw.json
           if-no-files-found: error
 
   repair-test:
