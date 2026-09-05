@@ -5,6 +5,7 @@ on:
     paths:
       - 'scripts/probe_seibu_2026_fukutoshin_pages.py'
       - 'scripts/inspect_seibu_timetable_mechanics.py'
+      - 'scripts/inspect_tobu_current_line13_source.py'
       - '.github/workflows/probe-seibu-2026-fukutoshin-pages.yml'
   workflow_dispatch:
 
@@ -71,10 +72,15 @@ jobs:
               for ctx in page['contexts'][:30]:
                   print('CTX', json.dumps(ctx, ensure_ascii=False))
           PY
+      - name: Probe current Tobu Line 13 source
+        run: python scripts/inspect_tobu_current_line13_source.py > /tmp/tobu-line13-source.json
+      - name: Show Tobu source reachability
+        run: cat /tmp/tobu-line13-source.json
       - uses: actions/upload-artifact@v4
         with:
           name: seibu-line13-through-trains
           path: |
             /tmp/seibu-line13-through-trains.json
             /tmp/seibu-timetable-mechanics.json
+            /tmp/tobu-line13-source.json
           if-no-files-found: error
