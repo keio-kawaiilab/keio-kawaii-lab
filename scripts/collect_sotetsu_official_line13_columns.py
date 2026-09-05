@@ -21,10 +21,15 @@ PDFS = [
     {'calendar':'holiday','direction':'down','url':'https://cdn.sotetsu.co.jp/media/2026/train/stations/download/timetable-04-260314-uH2.pdf'},
 ]
 HIYOSHI_ANCHORS=('自由が丘','日吉','新綱島')
-SHINYOKOHAMA_ANCHORS=('新綱島','新横浜','羽沢横浜国大')
+# Cross the operator boundary using one exact printed train column with a Tokyu
+# station before the boundary, Shin-Yokohama itself, and a Sotetsu station after
+# the boundary. Nishiya is used instead of Hazawa-Yokohama-Kokudai because its
+# printed time cells are vertically aligned with the through-train columns in
+# Sotetsu's official full timetable.
+SHINYOKOHAMA_ANCHORS=('新綱島','新横浜','西谷')
 TIME_RE=re.compile(r'^\d{3,4}$')
 SESSION=requests.Session()
-SESSION.headers.update({'User-Agent':'Mozilla/5.0 (compatible; KeioKawaiiLabTransitDB/8.1)','Accept':'application/pdf,*/*;q=0.8'})
+SESSION.headers.update({'User-Agent':'Mozilla/5.0 (compatible; KeioKawaiiLabTransitDB/8.2)','Accept':'application/pdf,*/*;q=0.8'})
 
 def norm(value:Any)->str:
     return re.sub(r'[\s\u3000]+','',str(value or '')).replace('ヶ','ケ')
