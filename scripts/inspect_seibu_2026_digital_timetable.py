@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Inspect the current official Seibu 2026 digital timetable without inferring train identity.
 
-This downloads only a small set of official viewer/config resources and writes a
+This downloads only a small set of official viewer/data resources and writes a
 compact report. Its purpose is source discovery: find an exact published train-column
 source that can later establish physical-train identity. Close times, train numbers
 alone, destinations alone, and viewer metadata alone must never establish identity.
@@ -25,12 +25,21 @@ TARGETS = [
     "pageindices/index120.html",
     "pageindices/index240.html",
 ]
+# FLIPPER3 publishes its core XML at the book root and per-page text/coordinate
+# data under pageXX/. These paths come from the publisher's documented package
+# structure, not from guessed html5/js-relative URLs.
 CONFIG_TARGETS = [
-    "html5/js/book.xml",
-    "html5/js/search.xml",
-    "html5/js/t.xml",
-    "html5/js/html5setting.xml",
-    "html5/js/skinoption.xml",
+    "book.xml",
+    "search.xml",
+    "pages_ext.xml",
+    "menu.xml",
+    "skinoption.xml",
+    "page1/page.xml",
+    "page1/textpoint.xml",
+    "page120/page.xml",
+    "page120/textpoint.xml",
+    "page240/page.xml",
+    "page240/textpoint.xml",
 ]
 OUT = Path("data/transit/fukutoshin/seibu-2026-source-report.json")
 ATTR_RE = re.compile(r"(?:href|src)\s*=\s*[\"']([^\"']+)[\"']", re.I)
@@ -190,7 +199,7 @@ def main() -> None:
     config_reachable = len(config_rows)
     searchable_config = [row["url"] for row in config_rows if row["keywordHits"] or row["trainNumberLikeTokenCount"]]
     report = {
-        "version": 3,
+        "version": 4,
         "generatedAt": datetime.now(timezone.utc).isoformat(),
         "source": "Seibu Railway official Digital Seibu Timetable 2026",
         "sourceBase": BASE,
@@ -213,8 +222,8 @@ def main() -> None:
         "searchableConfigResources": searchable_config,
         "viewerReachable": reachable >= 2,
         "configLocationStillUnresolved": config_reachable == 0,
-        "sourceUsableForFurtherParsing": reachable >= 2,
-        "note": "Discovery report is retained even when guessed config paths miss. No same-train edge is emitted until a single current official published train column is parsed exactly.",
+        "sourceUsableForFurtherParsing": reachable >= 2 and config_reachable >= 1,
+        "note": "Discovery report is retained even when some data paths miss. No same-train edge is emitted until a single current official published train column is parsed exactly.",
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -226,6 +235,7 @@ def main() -> None:
         "inspectedScripts": len(script_rows),
         "errors": len(errors),
         "viewerReachable": report["viewerReachable"],
+        "sourceUsableForFurtherParsing": report["sourceUsableForFurtherParsing"],
     }, ensure_ascii=False, indent=2))
     if reachable < 2:
         raise SystemExit("Current Seibu official digital timetable viewer is not reachable from this runner")
