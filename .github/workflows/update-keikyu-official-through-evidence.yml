@@ -137,10 +137,23 @@ jobs:
             data/transit-v2/coverage.json \
             data/transit-v2/index.json \
             data/transit-v2/unresolved-summary.json
-          if [ -z "$(git status --porcelain -- data/transit data/transit-v2)" ]; then
-            echo "No Keikyu transit DB changes."
+          if git diff --cached --quiet; then
+            echo "No intended Keikyu transit DB changes."
             exit 0
           fi
           git commit -m "Refresh Keikyu official through-train evidence"
+
+          # build_transit_v2.py refreshes additional generated files that this
+          # workflow intentionally does not publish. Refuse to discard anything
+          # outside the generated transit trees, then clean only those leftovers
+          # so a concurrent main update can be rebased safely.
+          unexpected="$(git status --porcelain | sed -E 's/^.. //' | grep -Ev '^data/transit(-v2)?/' || true)"
+          if [ -n "$unexpected" ]; then
+            echo "Unexpected non-transit working-tree changes after DB commit:"
+            echo "$unexpected"
+            exit 1
+          fi
+          git restore --worktree -- data/transit data/transit-v2
+          git clean -fd -- data/transit data/transit-v2
           git pull --rebase origin main
           git push origin HEAD:main
