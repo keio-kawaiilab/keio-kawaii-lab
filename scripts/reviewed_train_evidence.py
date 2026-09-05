@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 import keikyu_generated_evidence as keikyu_generated
+import keisei_generated_evidence as keisei_generated
 
 
 def load_json(path: Path, default: Any = None) -> Any:
@@ -125,10 +126,17 @@ def apply_reviewed_train_evidence(
             )
         ]
 
-    return keikyu_generated.apply_generated_evidence(
+    output = keikyu_generated.apply_generated_evidence(
         fragments,
         output,
         unresolved,
         indexes,
         registry_path.parent / 'keikyu-official-train-evidence.json',
+    )
+    return keisei_generated.apply_generated_evidence(
+        fragments,
+        output,
+        unresolved,
+        indexes,
+        registry_path.parent / 'keisei-official-oshiage-evidence.json',
     )

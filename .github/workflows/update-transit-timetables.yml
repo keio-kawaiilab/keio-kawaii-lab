@@ -11,7 +11,14 @@ on:
       - 'scripts/test_odpt_train_identity_db.mjs'
       - 'scripts/enrich-through-service-db.mjs'
       - 'scripts/build_keisei_official_timetables.py'
+      - 'scripts/dedupe_keisei_official_timetables.py'
+      - 'scripts/test_dedupe_keisei_official_timetables.py'
       - 'scripts/build_keisei_network_timetable.py'
+      - 'scripts/keisei_official_oshiage_evidence.py'
+      - 'scripts/keisei_generated_evidence.py'
+      - 'scripts/test_keisei_official_oshiage_evidence.py'
+      - 'scripts/test_keisei_generated_evidence.py'
+      - 'scripts/reviewed_train_evidence.py'
       - 'scripts/build_minatomirai_routing_timetable.py'
       - 'scripts/build_minatomirai_routing_timetable_v2.py'
       - 'scripts/build_transit_v2.py'
@@ -69,7 +76,10 @@ jobs:
           python -m py_compile \
             scripts/collect_odpt_train_identity.py \
             scripts/build_keisei_official_timetables.py \
+            scripts/dedupe_keisei_official_timetables.py \
             scripts/build_keisei_network_timetable.py \
+            scripts/keisei_official_oshiage_evidence.py \
+            scripts/keisei_generated_evidence.py \
             scripts/build_minatomirai_routing_timetable.py \
             scripts/build_minatomirai_routing_timetable_v2.py \
             scripts/build_transit_v2.py \
@@ -84,6 +94,9 @@ jobs:
           node scripts/test_cross_operator_through_service.js
           node scripts/test_route_runtime_same_train.js
           python scripts/test_import_odpt_timetables.py
+          python scripts/test_dedupe_keisei_official_timetables.py
+          python scripts/test_keisei_official_oshiage_evidence.py
+          python scripts/test_keisei_generated_evidence.py
           python scripts/test_keikyu_official_train_evidence.py
           python scripts/test_keikyu_generated_evidence.py
 
@@ -129,6 +142,7 @@ jobs:
         if: steps.import.outputs.ran == 'true'
         run: |
           python scripts/build_keisei_official_timetables.py
+          python scripts/dedupe_keisei_official_timetables.py
           python scripts/build_keisei_network_timetable.py
           python scripts/build_minatomirai_routing_timetable_v2.py
           python - <<'PY'
@@ -136,6 +150,7 @@ jobs:
           from pathlib import Path
 
           keisei_details = json.loads(Path('data/transit/keisei/official-train-details.json').read_text(encoding='utf-8'))
+          keisei_conversion = json.loads(Path('data/transit/keisei/official-conversion-report.json').read_text(encoding='utf-8'))
           keisei_network = json.loads(Path('data/transit/keisei/timetables/official-network.json').read_text(encoding='utf-8'))
           mm = json.loads(Path('data/transit/yokohama-minatomirai/timetables/minatomirai.json').read_text(encoding='utf-8'))
 
@@ -145,8 +160,17 @@ jobs:
           assert 3000 <= source_trains <= 7000, source_trains
           assert network_trips >= 3000, network_trips
           assert mm_trips >= 1000, mm_trips
+          assert keisei_conversion.get('deduplicationPolicy', {}).get('exactCompactTripEqualityOnly') is True
+          assert keisei_conversion.get('deduplicationPolicy', {}).get('timeTolerance') == 0
+          assert keisei_conversion.get('deduplicationPolicy', {}).get('trainNumberAloneMayMerge') is False
           assert mm.get('destinationAuthoritative') is False
-          print('special-source guard:', {'keiseiSourceTrains': source_trains, 'keiseiNetworkTrips': network_trips, 'minatomiraiTrips': mm_trips})
+          print('special-source guard:', {
+              'keiseiSourceTrains': source_trains,
+              'keiseiCompactTrips': keisei_conversion.get('compactTripCount'),
+              'keiseiDuplicateTripsRemoved': keisei_conversion.get('duplicateCompactTripsRemoved'),
+              'keiseiNetworkTrips': network_trips,
+              'minatomiraiTrips': mm_trips,
+          })
           PY
 
       - name: Test generated transit snapshot
@@ -163,6 +187,8 @@ jobs:
             /tmp/keikyu-weekday.json \
             /tmp/keikyu-holiday.json \
             --output data/transit-v2/keikyu-official-train-evidence.json
+          python scripts/keisei_official_oshiage_evidence.py \
+            --output data/transit-v2/keisei-official-oshiage-evidence.json
           python scripts/finalize_transit_v2.py
           python scripts/audit_transit_v2.py
           python - <<'PY'
@@ -173,7 +199,8 @@ jobs:
           coverage = json.loads((root / 'coverage.json').read_text(encoding='utf-8'))
           audit = json.loads((root / 'unresolved-summary.json').read_text(encoding='utf-8'))
           runtime = json.loads((root / 'runtime-same-train.json').read_text(encoding='utf-8'))
-          evidence = json.loads((root / 'keikyu-official-train-evidence.json').read_text(encoding='utf-8'))
+          keikyu_evidence = json.loads((root / 'keikyu-official-train-evidence.json').read_text(encoding='utf-8'))
+          oshiage_evidence = json.loads((root / 'keisei-official-oshiage-evidence.json').read_text(encoding='utf-8'))
           edge_payload = json.loads((root / 'same-train-edges.json').read_text(encoding='utf-8'))
 
           policy = audit['policy']
@@ -196,39 +223,63 @@ jobs:
           ]
           assert expected_sotetsu in runtime_edges, 'authoritative Sotetsu 6752 continuation disappeared from runtime DB'
 
-          entries = evidence.get('entries') or []
-          directions = {}
-          for row in entries:
+          keikyu_entries = keikyu_evidence.get('entries') or []
+          keikyu_directions = {}
+          for row in keikyu_entries:
               direction = str(row.get('direction') or '')
-              directions[direction] = directions.get(direction, 0) + 1
-          official_edges = [
+              keikyu_directions[direction] = keikyu_directions.get(direction, 0) + 1
+          keikyu_edges = [
               row for row in edge_payload.get('edges') or []
               if 'keikyu-official-connection-timetable-same-column' in (row.get('evidence') or [])
           ]
-          production_pairs = {
+          keikyu_pairs = {
               (str(row.get('fromFragment') or ''), str(row.get('toFragment') or ''))
-              for row in entries
+              for row in keikyu_entries
           }
-          edge_pairs = {
+          keikyu_edge_pairs = {
               (str(row.get('fromFragment') or ''), str(row.get('toFragment') or ''))
-              for row in official_edges
+              for row in keikyu_edges
           }
-          reverse_edges = [
-              row for row in official_edges
+          keikyu_reverse_edges = [
+              row for row in keikyu_edges
               if (row.get('boundary') or {}).get('fromRailway') == 'odpt.Railway:Keikyu.Main'
               and (row.get('boundary') or {}).get('toRailway') == 'odpt.Railway:Toei.Asakusa'
           ]
-          assert directions.get('toei-to-keikyu', 0) > 0, directions
-          assert directions.get('keikyu-to-toei', 0) > 0, directions
-          assert reverse_edges, 'Keikyu -> Toei official same-train edges disappeared'
-          assert production_pairs <= edge_pairs, 'some Keikyu production evidence did not reach same-train edges'
+          assert keikyu_directions.get('toei-to-keikyu', 0) > 0, keikyu_directions
+          assert keikyu_directions.get('keikyu-to-toei', 0) > 0, keikyu_directions
+          assert keikyu_reverse_edges, 'Keikyu -> Toei official same-train edges disappeared'
+          assert keikyu_pairs <= keikyu_edge_pairs, 'some Keikyu production evidence did not reach same-train edges'
+
+          oshiage_entries = oshiage_evidence.get('entries') or []
+          oshiage_directions = {}
+          for row in oshiage_entries:
+              direction = str(row.get('direction') or '')
+              oshiage_directions[direction] = oshiage_directions.get(direction, 0) + 1
+          oshiage_edges = [
+              row for row in edge_payload.get('edges') or []
+              if 'keisei-official-per-train-timetable-spans-oshiage' in (row.get('evidence') or [])
+          ]
+          oshiage_pairs = {
+              (str(row.get('fromFragment') or ''), str(row.get('toFragment') or ''))
+              for row in oshiage_entries
+          }
+          oshiage_edge_pairs = {
+              (str(row.get('fromFragment') or ''), str(row.get('toFragment') or ''))
+              for row in oshiage_edges
+          }
+          assert oshiage_directions.get('keisei-to-toei', 0) > 0, oshiage_directions
+          assert oshiage_directions.get('toei-to-keisei', 0) > 0, oshiage_directions
+          assert oshiage_pairs <= oshiage_edge_pairs, 'some Oshiage production evidence did not reach same-train edges'
+          assert all(row.get('identityLevel') == 'evidence-backed' for row in oshiage_edges)
 
           print('strict transit-v2 unresolved:', audit['totalUnresolved'])
           print('runtime strict same-train edges:', len(runtime_edges))
           print('verified runtime continuation:', expected_sotetsu)
-          print('Keikyu official evidence directions:', directions)
-          print('Keikyu official generated edges:', len(official_edges))
-          print('Keikyu -> Toei generated edges:', len(reverse_edges))
+          print('Keikyu official evidence directions:', keikyu_directions)
+          print('Keikyu official generated edges:', len(keikyu_edges))
+          print('Keikyu -> Toei generated edges:', len(keikyu_reverse_edges))
+          print('Oshiage official evidence directions:', oshiage_directions)
+          print('Oshiage official generated edges:', len(oshiage_edges))
           PY
           python scripts/verify_keikyu_through_materialization.py --repair-report /tmp/keikyu-sengakuji-repair.json
 
