@@ -1,0 +1,19 @@
+name: Diagnose Line 13 Wakoshi identities
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/diagnose_line13_wakoshi.mjs'
+      - '.github/workflows/diagnose-line13-wakoshi.yml'
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Inspect exact ODPT identity fields around Wakoshi
+        run: node scripts/diagnose_line13_wakoshi.mjs
