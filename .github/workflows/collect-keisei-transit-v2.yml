@@ -6,6 +6,9 @@ on:
     paths:
       - '.github/workflows/collect-keisei-transit-v2.yml'
       - 'scripts/collect_keisei_timetables.py'
+      - 'scripts/build_keisei_official_timetables.py'
+      - 'scripts/build_keisei_network_timetable.py'
+      - 'scripts/test_keisei_through_network.py'
   schedule:
     - cron: '20 17 * * 6'
 
@@ -35,7 +38,12 @@ jobs:
 
       - name: Validate collector and v2 builder
         run: |
-          python -m py_compile scripts/collect_keisei_timetables.py scripts/build_keisei_official_timetables.py scripts/build_keisei_network_timetable.py scripts/build_transit_v2.py
+          python -m py_compile \
+            scripts/collect_keisei_timetables.py \
+            scripts/build_keisei_official_timetables.py \
+            scripts/build_keisei_network_timetable.py \
+            scripts/test_keisei_through_network.py \
+            scripts/build_transit_v2.py
           python scripts/test_transit_v2.py
 
       - name: Discover every official Keisei train reference
@@ -67,6 +75,7 @@ jobs:
         run: |
           python scripts/build_keisei_official_timetables.py
           python scripts/build_keisei_network_timetable.py
+          python scripts/test_keisei_through_network.py
 
       - name: Rebuild train-centric v2 database
         run: python scripts/build_transit_v2.py
@@ -78,13 +87,19 @@ jobs:
           from pathlib import Path
           raw=json.loads(Path('data/transit/keisei/official-train-details.json').read_text(encoding='utf-8'))
           index=json.loads(Path('data/transit/keisei/timetable-index.json').read_text(encoding='utf-8'))
+          report=json.loads(Path('data/transit/keisei/official-network-report.json').read_text(encoding='utf-8'))
           coverage=json.loads(Path('data/transit-v2/coverage.json').read_text(encoding='utf-8'))
           assert int(raw.get('trainCount') or 0) > 0
           assert len(index.get('lines') or {}) > 0
+          assert index.get('network', {}).get('identityBasis') == 'official-one-train-page'
+          assert report.get('unresolvedPairCount') == 0
+          assert report['identityPolicy']['trainNumberAloneMayEstablishIdentity'] is False
+          assert report['identityPolicy']['timeProximityAloneMayEstablishIdentity'] is False
           print(json.dumps({
             'officialKeiseiTrains': raw.get('trainCount'),
             'officialKeiseiStopRows': raw.get('stopRowCount'),
             'keiseiTimetableLines': len(index.get('lines') or {}),
+            'crossOperatorTransitions': report.get('crossOperatorTransitions'),
             'v2Fragments': coverage['summary']['fragments'],
             'v2SameTrainEdges': coverage['summary']['sameTrainEdges'],
             'v2Unresolved': coverage['summary']['unresolved']
