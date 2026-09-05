@@ -6,7 +6,7 @@ text = fix.read_text(encoding="utf-8")
 status_anchor = '''STATUS_NEW = "document.getElementById('status').textContent='最終更新: '+(data.checkedAt||data.updatedAt||'不明');render()"\n'''
 constants = r'''
 APPLICATION_BAND_KEY_LEGACY = "function applicationBandKey(e,index){if(!playguide(e))return'event|'+index;return[String(e.group||''),parts(e).slice().sort().join(','),providerId(e),String(e.ticketType||''),String(e.applyStart||''),String(e.applyEnd||''),performanceTitleKey(e)].join('|')}"
-APPLICATION_BAND_KEY_NEW = "function applicationBandSubjectKey(e){var u=String(e.officialTourUrl||'').trim();if(u)return'tour:'+u.toLowerCase().replace(/[?#].*$/,'').replace(/\\/$/,'');var t=String(title(e)||'').toLowerCase().replace(/^\\s*20\\d{2}[.\\/-]\\d{1,2}[.\\/-]\\d{1,2}\\s*/,'').replace(/\\s+/g,'').replace(/[!！・|｜\\-–—_\\[\\]()（）『』「」]/g,'');return'title:'+t}function applicationBandKey(e,index){if(!playguide(e))return'event|'+index;return[String(e.group||''),parts(e).slice().sort().join(','),providerId(e),String(e.ticketType||''),String(e.applyStart||''),String(e.applyEnd||''),applicationBandSubjectKey(e)].join('|')}"
+APPLICATION_BAND_KEY_NEW = "function applicationBandSubjectKey(e){var u=String(e.officialTourUrl||'').trim();if(u)return'tour:'+u.toLowerCase().replace(/[?#].*$/,'').replace(/\\/$/,'');var t=String(title(e)||'').toLowerCase().replace(/^\\s*20\\d{2}[.\\/-]\\d{1,2}[.\\/-]\\d{1,2}\\s*/,'').replace(/\\s+/g,'').replace(/[!！・|｜\\-–—_\\[\\]()（）『』「」]/g,'');return'title:'+t}function applicationBandKey(e,index){var tour=String(e.officialTourUrl||'').trim();if(!playguide(e)&&!tour)return'event|'+index;return[String(e.group||''),parts(e).slice().sort().join(','),providerId(e),String(e.ticketType||''),String(e.applyStart||''),String(e.applyEnd||''),applicationBandSubjectKey(e)].join('|')}"
 '''
 if "APPLICATION_BAND_KEY_NEW" not in text:
     if status_anchor not in text:
@@ -49,6 +49,7 @@ t = test.read_text(encoding="utf-8")
 anchor = "assert.strictEqual(lawson.events.length, 2);\n\nconst release = {\n"
 regression = r'''assert.strictEqual(lawson.events.length, 2);
 
+const sweetTourUrl = 'https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2099';
 const sweetTourCommon = {
   group: 'SWEET STEADY',
   ticketType: 'FC先行',
@@ -56,25 +57,26 @@ const sweetTourCommon = {
   applyEnd: '2099-09-13T23:59',
   applicationWindowVerified: true,
   applicationStatus: 'open',
-  ticketProvider: 'eplus',
-  sourceType: 'eplus',
-  officialTourUrl: 'https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2099',
+  ticketProvider: 'official',
+  sourceType: 'auto',
+  officialTourUrl: sweetTourUrl,
 };
 const sweetTitleVariants = [
-  { ...sweetTourCommon, id: 'sweet-derived', title: '「SWEET STEADY JAPAN TOUR 2099 -WINTER-」 開催決定！FC先行開始！', eventDate: '2099-11-13', venue: '神奈川県 厚木市文化会館 大ホール', url: 'https://eplus.jp/sweet-derived' },
-  { ...sweetTourCommon, id: 'sweet-auto', title: '2099.08.23 「SWEET STEADY JAPAN TOUR 2099 -WINTER-」 開催決定！FC先行開始！', eventDate: '2099-11-13', venue: '神奈川県 厚木市文化会館 大ホール', url: 'https://eplus.jp/sweet-auto' },
+  { ...sweetTourCommon, id: 'sweet-derived', title: '「SWEET STEADY JAPAN TOUR 2099 -WINTER-」 開催決定！FC先行開始！', eventDate: '2099-11-13', venue: '神奈川県 厚木市文化会館 大ホール', url: sweetTourUrl },
+  { ...sweetTourCommon, id: 'sweet-auto', title: '2099.08.23 「SWEET STEADY JAPAN TOUR 2099 -WINTER-」 開催決定！FC先行開始！', eventDate: '2099-11-13', venue: '神奈川県 厚木市文化会館 大ホール', url: sweetTourUrl },
 ];
 const sweetGrouped = context.__scheduleTest.groupedApplicationBands(context.__scheduleTest.prepare(sweetTitleVariants));
-assert.strictEqual(sweetGrouped.length, 1, 'same tour and same application window must render one band even when source titles have date-prefix variants');
-assert.strictEqual(sweetGrouped[0].events.length, 2, 'both duplicate source rows must be represented by the one consolidated band');
+assert.strictEqual(sweetGrouped.length, 1, 'same official FC tour and same application window must render one band even when source titles have date-prefix variants');
+assert.strictEqual(sweetGrouped[0].events.length, 2, 'both duplicate official FC source rows must be represented by the one consolidated band');
 
-const otherSweetTour = { ...sweetTourCommon, id: 'sweet-other-tour', title: 'SWEET STEADY JAPAN TOUR 2099 -WINTER-', officialTourUrl: 'https://sweetsteady.asobisystem.com/feature/a_different_tour', eventDate: '2099-11-14', venue: '神奈川県 別会場', url: 'https://eplus.jp/sweet-other' };
+const otherSweetTourUrl = 'https://sweetsteady.asobisystem.com/feature/a_different_tour';
+const otherSweetTour = { ...sweetTourCommon, id: 'sweet-other-tour', title: 'SWEET STEADY JAPAN TOUR 2099 -WINTER-', officialTourUrl: otherSweetTourUrl, eventDate: '2099-11-14', venue: '神奈川県 別会場', url: otherSweetTourUrl };
 const separateSweetGrouped = context.__scheduleTest.groupedApplicationBands(context.__scheduleTest.prepare(sweetTitleVariants.concat([otherSweetTour])));
 assert.strictEqual(separateSweetGrouped.length, 2, 'different tours must remain separate even when provider and application window match');
 
 const release = {
 '''
-if "same tour and same application window must render one band" not in t:
+if "same official FC tour and same application window must render one band" not in t:
     if anchor not in t:
         raise SystemExit("test insertion anchor not found")
     t = t.replace(anchor, regression, 1)
