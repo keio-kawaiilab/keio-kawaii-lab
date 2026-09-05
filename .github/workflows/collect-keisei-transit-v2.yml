@@ -15,6 +15,7 @@ on:
       - 'scripts/build_keisei_network_timetable.py'
       - 'scripts/build_keisei_extended_network.py'
       - 'scripts/test_keisei_through_network.py'
+      - 'scripts/audit_keisei_exact_network.py'
       - 'scripts/test_keisei_route_ui.js'
       - 'scripts/build_transit_v2.py'
       - 'data/transit/hokuso/**'
@@ -60,6 +61,7 @@ jobs:
             scripts/build_keisei_network_timetable.py \
             scripts/build_keisei_extended_network.py \
             scripts/test_keisei_through_network.py \
+            scripts/audit_keisei_exact_network.py \
             scripts/build_transit_v2.py
           node --check route-core.js
           node --check route.js
@@ -107,6 +109,7 @@ jobs:
           python scripts/build_keisei_official_timetables.py
           python scripts/build_keisei_extended_network.py
           python scripts/test_keisei_through_network.py
+          python scripts/audit_keisei_exact_network.py
           node scripts/test_keisei_route_ui.js
 
       - name: Rebuild train-centric v2 database
