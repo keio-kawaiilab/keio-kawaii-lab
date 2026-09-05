@@ -1,0 +1,60 @@
+name: Probe exact Sotetsu Line 13 timetable columns
+
+on:
+  push:
+    branches:
+      - fix/line13-full-corridor
+    paths:
+      - 'scripts/collect_sotetsu_official_line13_columns.py'
+      - '.github/workflows/probe-sotetsu-line13-columns.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PDF collector dependencies
+        run: pip install requests==2.32.5 pdfplumber==0.11.7
+      - name: Collect exact same-printed-column evidence
+        run: |
+          python scripts/collect_sotetsu_official_line13_columns.py \
+            --output /tmp/sotetsu-official-line13-columns.json
+      - name: Assert strict identity policy
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path('/tmp/sotetsu-official-line13-columns.json').read_text(encoding='utf-8'))
+          p=data['identityPolicy']; s=data['summary']; counts=s['boundaryCounts']
+          print('FINAL_SUMMARY',json.dumps(s,ensure_ascii=False,indent=2))
+          assert p['officialSamePrintedColumnMayEstablishIdentity'] is True
+          assert p['exactPrintedStationTimesRequired'] is True
+          assert p['timeProximityMayEstablishIdentity'] is False
+          assert p['trainNumberAloneMayEstablishIdentity'] is False
+          assert p['destinationAloneMayEstablishIdentity'] is False
+          assert p['stationTimetableRowAloneMayEstablishIdentity'] is False
+          assert counts['toyoko-tokyushinyokohama-hiyoshi'] > 0
+          assert counts['tokyushinyokohama-sotetsushinyokohama-shinyokohama'] > 0
+          for row in data['authoritativeColumns']:
+              assert row['identityEvidence']=='official-same-printed-column'
+              assert row['status']=='verified'
+              assert row['pdfPage'] >= 2
+              assert row['columnX'] > 0
+              assert row['matchPolicy']['officialSamePrintedColumnRequired'] is True
+              assert row['matchPolicy']['timeProximityAloneMayEstablishIdentity'] is False
+              assert row['matchPolicy']['trainNumberAloneMayEstablishIdentity'] is False
+              assert row['matchPolicy']['destinationAloneMayEstablishIdentity'] is False
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sotetsu-line13-column-evidence
+          path: /tmp/sotetsu-official-line13-columns.json
+          if-no-files-found: error
