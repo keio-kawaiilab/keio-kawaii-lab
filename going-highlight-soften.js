@@ -23,9 +23,15 @@
   }
   if(!document.querySelector('script[data-schedule-card-dedupe-v2]')){
     var dedupe=document.createElement("script");
-    dedupe.src="./schedule-card-dedupe-v2.js?v=202608250220";
+    dedupe.src="./schedule-card-dedupe-v2.js?v=202609061930";
     dedupe.setAttribute("data-schedule-card-dedupe-v2","");
     document.body.appendChild(dedupe);
+  }
+  if(!document.querySelector('script[data-cutiestreet-tour-fix]')){
+    var cutieFix=document.createElement("script");
+    cutieFix.src="./schedule-cutiestreet-tour-fix.js?v=202609061930";
+    cutieFix.setAttribute("data-cutiestreet-tour-fix","");
+    document.body.appendChild(cutieFix);
   }
 })();
 
