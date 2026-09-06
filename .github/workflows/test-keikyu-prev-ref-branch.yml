@@ -61,6 +61,20 @@ jobs:
           assert refs['identityPolicy']['runtimeSameTrainPromotions'] == 0
           assert refs['identityPolicy']['crossPageIdentityEstablished'] is False
           assert refs['fragmentCount'] > 0
+          missing_printed = [row['pdfPage'] for row in refs['pages'] if row.get('printedPage') is None]
+          unresolved_refs = [
+              {
+                  'pdfPage': row['pdfPage'],
+                  'printedPage': row.get('printedPage'),
+                  'column': row['column'],
+                  'currentTrainNumber': row.get('currentTrainNumber'),
+                  'previousPrintedPage': row.get('previousPrintedPage'),
+                  'previousTrainNumber': row.get('previousTrainNumber'),
+                  'targetStatus': row.get('targetStatus'),
+              }
+              for row in refs['fragments']
+              if row.get('targetStatus') not in {'no-reference', 'unique-explicit-reference-candidate'}
+          ]
           summary = {
               'version': 1,
               'generatedAt': datetime.now(timezone.utc).isoformat(),
@@ -72,8 +86,10 @@ jobs:
               'completePreviousReferences': refs['completePreviousReferenceCount'],
               'uniqueExplicitReferenceCandidates': refs['uniqueExplicitReferenceCandidateCount'],
               'pagesWithoutPrintedPageNumber': refs['pagesWithoutDetectedPrintedPageNumber'],
+              'pagesWithoutPrintedPageNumberList': missing_printed,
               'duplicatePrintedPageMappings': refs['duplicatePrintedPageMappings'],
               'targetStatusCounts': refs['targetStatusCounts'],
+              'unresolvedReferenceDetails': unresolved_refs,
               'runtimeSameTrainPromotions': 0,
               'note': 'Audit-only snapshot. Unique explicit references are candidates, not runtime same-train promotions.'
           }
