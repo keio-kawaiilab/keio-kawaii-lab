@@ -1,0 +1,62 @@
+name: Apply strict Keikyu footer gutter fix
+
+on:
+  push:
+    branches:
+      - work/keikyu-prev-page-evidence-20260906
+    paths:
+      - '.github/workflows/apply-keikyu-footer-gutter-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch detector, regression tests, and branch push race
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          detector = Path('scripts/audit_keikyu_previous_publication_refs.py')
+          text = detector.read_text(encoding='utf-8')
+          old = '''    strict = _footer_page_candidates(\n        width,\n        height,\n        words,\n        min_y_fraction=0.94,\n        edge_fraction=0.12,\n    )\n    if len(strict) == 1:\n        return next(iter(strict))\n    if len(strict) > 1:\n        return None\n\n    fallback = _footer_page_candidates(\n        width,\n        height,\n        words,\n        min_y_fraction=0.88,\n        edge_fraction=0.20,\n    )\n    if len(fallback) == 1:\n        return next(iter(fallback))\n    return None\n'''
+          new = '''    # The printed publication number sits outside the timetable frame in the\n    # extreme outer gutter.  Check that gutter first, even slightly above the\n    # conventional footer, so special connection page 62 is not confused with\n    # integers printed inside the table.\n    outer_gutter = _footer_page_candidates(\n        width,\n        height,\n        words,\n        min_y_fraction=0.86,\n        edge_fraction=0.075,\n    )\n    if len(outer_gutter) == 1:\n        return next(iter(outer_gutter))\n    if len(outer_gutter) > 1:\n        return None\n\n    # Compatibility fallback for ordinary pages whose footer is a little more\n    # inward, but only in the very bottom strip.  Ambiguity still fails closed.\n    strict_bottom = _footer_page_candidates(\n        width,\n        height,\n        words,\n        min_y_fraction=0.94,\n        edge_fraction=0.12,\n    )\n    if len(strict_bottom) == 1:\n        return next(iter(strict_bottom))\n    return None\n'''
+          if old not in text:
+              raise SystemExit('detector snippet not found')
+          detector.write_text(text.replace(old, new), encoding='utf-8')
+
+          tests = Path('scripts/test_keikyu_previous_publication_refs.py')
+          text = tests.read_text(encoding='utf-8')
+          old = '''    def test_special_connection_page_can_use_broader_footer_fallback(self):\n        words = [word("62", 150.0, 910.0)]\n        self.assertEqual(detect_printed_page_number(1000.0, 1000.0, words), 62)\n\n    def test_broader_footer_fallback_does_not_accept_interior_number(self):\n        words = [word("62", 500.0, 910.0)]\n        self.assertIsNone(detect_printed_page_number(1000.0, 1000.0, words))\n'''
+          new = '''    def test_special_connection_page_uses_extreme_outer_gutter(self):\n        words = [word("62", 50.0, 910.0)]\n        self.assertEqual(detect_printed_page_number(1000.0, 1000.0, words), 62)\n\n    def test_table_side_integer_does_not_hide_outer_gutter_page_number(self):\n        words = [word("62", 50.0, 910.0), word("51", 100.0, 970.0)]\n        self.assertEqual(detect_printed_page_number(1000.0, 1000.0, words), 62)\n\n    def test_footer_detector_does_not_accept_interior_number(self):\n        words = [word("62", 500.0, 910.0)]\n        self.assertIsNone(detect_printed_page_number(1000.0, 1000.0, words))\n'''
+          if old not in text:
+              raise SystemExit('test snippet not found')
+          old2 = '''    def test_ambiguous_broader_footer_candidates_fail_closed(self):\n        words = [word("62", 150.0, 910.0), word("63", 850.0, 910.0)]\n        self.assertIsNone(detect_printed_page_number(1000.0, 1000.0, words))\n'''
+          new2 = '''    def test_ambiguous_outer_gutter_candidates_fail_closed(self):\n        words = [word("62", 50.0, 910.0), word("63", 950.0, 910.0)]\n        self.assertIsNone(detect_printed_page_number(1000.0, 1000.0, words))\n'''
+          if old2 not in text:
+              raise SystemExit('ambiguity test snippet not found')
+          tests.write_text(text.replace(old, new).replace(old2, new2), encoding='utf-8')
+
+          workflow = Path('.github/workflows/test-keikyu-prev-ref-branch.yml')
+          text = workflow.read_text(encoding='utf-8')
+          old = '          git commit -m "Record Keikyu previous-reference audit summary"\n          git push origin HEAD:work/keikyu-prev-page-evidence-20260906\n'
+          new = '          git commit -m "Record Keikyu previous-reference audit summary"\n          git pull --rebase origin work/keikyu-prev-page-evidence-20260906\n          git push origin HEAD:work/keikyu-prev-page-evidence-20260906\n'
+          if old not in text:
+              raise SystemExit('workflow push snippet not found')
+          workflow.write_text(text.replace(old, new), encoding='utf-8')
+          PY
+      - name: Commit patch
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/audit_keikyu_previous_publication_refs.py scripts/test_keikyu_previous_publication_refs.py .github/workflows/test-keikyu-prev-ref-branch.yml
+          git commit -m "Fix Keikyu printed page gutter detection"
+          git pull --rebase origin work/keikyu-prev-page-evidence-20260906
+          git push origin HEAD:work/keikyu-prev-page-evidence-20260906
