@@ -91,8 +91,20 @@ class KeikyuPreviousPublicationRefsTest(unittest.TestCase):
         words = [word("8", 970.0, 970.0)]
         self.assertEqual(detect_printed_page_number(1000.0, 1000.0, words), 8)
 
+    def test_special_connection_page_can_use_broader_footer_fallback(self):
+        words = [word("62", 150.0, 910.0)]
+        self.assertEqual(detect_printed_page_number(1000.0, 1000.0, words), 62)
+
+    def test_broader_footer_fallback_does_not_accept_interior_number(self):
+        words = [word("62", 500.0, 910.0)]
+        self.assertIsNone(detect_printed_page_number(1000.0, 1000.0, words))
+
     def test_ambiguous_bottom_edge_page_numbers_fail_closed(self):
         words = [word("7", 30.0, 970.0), word("63", 970.0, 970.0)]
+        self.assertIsNone(detect_printed_page_number(1000.0, 1000.0, words))
+
+    def test_ambiguous_broader_footer_candidates_fail_closed(self):
+        words = [word("62", 150.0, 910.0), word("63", 850.0, 910.0)]
         self.assertIsNone(detect_printed_page_number(1000.0, 1000.0, words))
 
 
