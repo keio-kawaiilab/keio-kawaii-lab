@@ -70,7 +70,6 @@ def _set_start(event: dict, row: dict | None, corrected: str) -> None:
     row["startTime"] = corrected
     schedule = event.get("schedule") if isinstance(event.get("schedule"), list) else []
     if len(schedule) == 1:
-        # Keep the one-performance parent summary consistent with its row.
         parent_open = clock(event.get("openTime"))
         parent_start = clock(event.get("startTime"))
         if not parent_start or (parent_open and parent_start == parent_open):
@@ -125,12 +124,7 @@ def reconcile_payload(payload: dict) -> tuple[dict, dict]:
                 "title": event.get("eventTitle") or event.get("title"),
             })
 
-    report = {
-        "fixedCount": len(fixes),
-        "fixes": fixes,
-    }
-    out["physicalPerformanceTimeReconciliation"] = report
-    return out, report
+    return out, {"fixedCount": len(fixes), "fixes": fixes}
 
 
 def main() -> int:
