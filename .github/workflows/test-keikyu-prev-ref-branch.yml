@@ -4,12 +4,21 @@ on:
   push:
     branches:
       - work/keikyu-prev-page-evidence-20260906
+    paths:
+      - 'scripts/audit_keikyu_previous_publication_refs.py'
+      - 'scripts/test_keikyu_previous_publication_refs.py'
+      - '.github/workflows/test-keikyu-prev-ref-branch.yml'
+
+permissions:
+  contents: write
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -39,20 +48,49 @@ jobs:
         run: python scripts/verify_keikyu_official_stop_times.py /tmp/keikyu-official-stop-times.json
       - name: Audit explicit previous-publication references
         run: python scripts/audit_keikyu_previous_publication_refs.py --output /tmp/keikyu-previous-publication-refs.json
-      - name: Enforce zero runtime promotion during audit
+      - name: Enforce zero runtime promotion and write summary
         run: |
           python - <<'PY'
           import json
+          from datetime import datetime, timezone
           from pathlib import Path
+
           stop_times = json.loads(Path('/tmp/keikyu-official-stop-times.json').read_text(encoding='utf-8'))
           refs = json.loads(Path('/tmp/keikyu-previous-publication-refs.json').read_text(encoding='utf-8'))
           assert stop_times['identityPolicy']['runtimeSameTrainPromotions'] == 0
           assert refs['identityPolicy']['runtimeSameTrainPromotions'] == 0
           assert refs['identityPolicy']['crossPageIdentityEstablished'] is False
           assert refs['fragmentCount'] > 0
-          print('STOP_TIME_TOTALS', json.dumps(stop_times['totals'], ensure_ascii=False, sort_keys=True))
-          print('PREVIOUS_REFERENCE_STATUS', json.dumps(refs['targetStatusCounts'], ensure_ascii=False, sort_keys=True))
-          print('PREVIOUS_REFERENCE_COMPLETE', refs['completePreviousReferenceCount'])
-          print('PREVIOUS_REFERENCE_UNIQUE_CANDIDATES', refs['uniqueExplicitReferenceCandidateCount'])
-          print('PAGES_WITHOUT_PRINTED_PAGE_NUMBER', refs['pagesWithoutDetectedPrintedPageNumber'])
+          summary = {
+              'version': 1,
+              'generatedAt': datetime.now(timezone.utc).isoformat(),
+              'sourceSha256': refs['source']['sha256'],
+              'pdfPages': refs['source']['pdfPages'],
+              'stopTimeTotals': stop_times['totals'],
+              'pagesAudited': refs['pagesAudited'],
+              'fragments': refs['fragmentCount'],
+              'completePreviousReferences': refs['completePreviousReferenceCount'],
+              'uniqueExplicitReferenceCandidates': refs['uniqueExplicitReferenceCandidateCount'],
+              'pagesWithoutPrintedPageNumber': refs['pagesWithoutDetectedPrintedPageNumber'],
+              'duplicatePrintedPageMappings': refs['duplicatePrintedPageMappings'],
+              'targetStatusCounts': refs['targetStatusCounts'],
+              'runtimeSameTrainPromotions': 0,
+              'note': 'Audit-only snapshot. Unique explicit references are candidates, not runtime same-train promotions.'
+          }
+          path = Path('docs/transit/keikyu-previous-publication-audit.json')
+          path.parent.mkdir(parents=True, exist_ok=True)
+          path.write_text(json.dumps(summary, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          print(json.dumps(summary, ensure_ascii=False, indent=2))
           PY
+      - name: Commit audit summary to branch
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/transit/keikyu-previous-publication-audit.json
+          if git diff --cached --quiet; then
+            echo "No audit summary change."
+            exit 0
+          fi
+          git commit -m "Record Keikyu previous-reference audit summary"
+          git push origin HEAD:work/keikyu-prev-page-evidence-20260906
