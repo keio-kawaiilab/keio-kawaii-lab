@@ -13,11 +13,14 @@ import keikyu_internal_official_evidence as target
 MAIN = target.MAIN
 AIRPORT = target.AIRPORT
 KURIHAMA = target.KURIHAMA
+ZUSHI = target.ZUSHI
 SUPPORTED_PAIRS = {
     (MAIN, AIRPORT),
     (AIRPORT, MAIN),
     (KURIHAMA, MAIN),
     (MAIN, KURIHAMA),
+    (ZUSHI, MAIN),
+    (MAIN, ZUSHI),
 }
 
 

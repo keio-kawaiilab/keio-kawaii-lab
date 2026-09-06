@@ -17,8 +17,10 @@ import keikyu_official_train_evidence as parser
 MAIN = 'odpt.Railway:Keikyu.Main'
 AIRPORT = 'odpt.Railway:Keikyu.Airport'
 KURIHAMA = 'odpt.Railway:Keikyu.Kurihama'
+ZUSHI = 'odpt.Railway:Keikyu.Zushi'
 BOUNDARY_ID = 'keikyu-main-airport-kamata'
 KURIHAMA_BOUNDARY_ID = 'keikyu-main-kurihama-horinouchi'
+ZUSHI_BOUNDARY_ID = 'keikyu-main-zushi-kanazawahakkei'
 LEGACY_MARKER = 'same-printed-column-includes-shinagawa-and-haneda'
 MARKER = 'same-printed-column-two-exact-station-times'
 SHINAGAWA_SUFFIX = '.Shinagawa'
@@ -32,6 +34,8 @@ BOUNDARIES: dict[tuple[str, str], dict[str, str]] = {
     (AIRPORT, MAIN): {'id': BOUNDARY_ID, 'station': '京急蒲田'},
     (KURIHAMA, MAIN): {'id': KURIHAMA_BOUNDARY_ID, 'station': '堀ノ内'},
     (MAIN, KURIHAMA): {'id': KURIHAMA_BOUNDARY_ID, 'station': '堀ノ内'},
+    (ZUSHI, MAIN): {'id': ZUSHI_BOUNDARY_ID, 'station': '金沢八景'},
+    (MAIN, ZUSHI): {'id': ZUSHI_BOUNDARY_ID, 'station': '金沢八景'},
 }
 
 STATION_LABELS: dict[str, tuple[str, ...]] = {
