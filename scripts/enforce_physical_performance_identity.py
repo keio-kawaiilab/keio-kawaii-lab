@@ -14,7 +14,9 @@ def main() -> None:
         r"function performanceKey\(e,o\)\{.*?return base\.concat\(\['fallback',venue,titleKey\]\)\.join\('\|'\)\}",
         re.S,
     )
-    updated, count = pattern.subn(NEW_FUNCTION, source, count=1)
+    # Use a callable replacement so the JavaScript regex literal /\s+/ is
+    # inserted verbatim rather than interpreted as a Python re replacement.
+    updated, count = pattern.subn(lambda _match: NEW_FUNCTION, source, count=1)
 
     if count == 0:
         # Idempotent success if the hardened function is already present.
@@ -22,8 +24,7 @@ def main() -> None:
             raise SystemExit("performanceKey target not found; refusing a silent no-op")
         updated = source
 
-    # Always make the active helper-loader URL change when this guard is applied,
-    # so browsers cannot keep an old dedupe helper behind a stale fixed query URL.
+    # Make the loader URL change as well, so clients do not keep an old helper.
     updated = re.sub(
         r"schedule-weather\.js\?v=[A-Za-z0-9_-]+",
         "schedule-weather.js?v=202609062135",
@@ -31,9 +32,10 @@ def main() -> None:
         count=1,
     )
 
-    if "kind=eventKind(e)" in re.search(
-        r"function performanceKey\(e,o\)\{.*?\}", updated, re.S
-    ).group(0):
+    function_match = re.search(r"function performanceKey\(e,o\)\{.*?\}", updated, re.S)
+    if not function_match:
+        raise SystemExit("performanceKey missing after patch")
+    if "kind=eventKind(e)" in function_match.group(0):
         raise SystemExit("eventKind is still part of performanceKey")
 
     if updated != source:
