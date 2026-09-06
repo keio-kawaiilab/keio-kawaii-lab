@@ -7,6 +7,7 @@ from typing import Any
 
 import keikyu_generated_evidence as keikyu_generated
 import keikyu_internal_generated_evidence as keikyu_internal_generated
+import sengakuji_destination_evidence as sengakuji
 
 
 def load_json(path: Path, default: Any = None) -> Any:
@@ -90,6 +91,15 @@ def apply_reviewed_train_evidence(
 
     if resolved_sources:
         unresolved[:] = [row for row in unresolved if not (row.get('kind') == 'ambiguous-boundary-fragment-alignment' and str(row.get('fragment') or '') in resolved_sources)]
+
+    relevant_railways = {str(fragment.get('railway') or '') for fragment in fragments}
+    if sengakuji.TOEI in relevant_railways and sengakuji.KEIKYU in relevant_railways:
+        output = sengakuji.apply_sengakuji_destination_evidence(
+            fragments,
+            output,
+            unresolved,
+            indexes,
+        )
 
     output = keikyu_generated.apply_generated_evidence(
         fragments,
