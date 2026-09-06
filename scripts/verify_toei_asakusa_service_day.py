@@ -43,9 +43,11 @@ def verify(payload: dict) -> dict:
             errors.append(f"trip has {len(wraps)} wraps: {row.get('timetableId')}")
             continue
         wrap = wraps[0]
-        if int(wrap.get("from") or -1) < 23 * 60:
+        from_value = wrap.get("from")
+        to_value = wrap.get("to")
+        if from_value is None or int(from_value) < 23 * 60:
             errors.append(f"wrap starts before 23:00: {row.get('timetableId')}")
-        if int(wrap.get("to") or 9999) > 2 * 60:
+        if to_value is None or int(to_value) > 2 * 60:
             errors.append(f"wrap ends after 02:00: {row.get('timetableId')}")
         first = row.get("firstServiceDayTime")
         last = row.get("lastServiceDayTime")
