@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "generatedAt": "2026-09-06T12:23:40.194476+00:00",
+  "railway": "odpt.Railway:Toei.Asakusa",
+  "timeBasis": "train-timetable",
+  "actualTripCount": 1260,
+  "uniqueTimetableIdCount": 1260,
+  "uniqueCalendarTrainIdCount": 1260,
+  "stationCount": 20,
+  "stopCount": 16826,
+  "connectionCount": 15566,
+  "calendarCounts": {
+    "odpt.Calendar:SaturdayHoliday": 609,
+    "odpt.Calendar:Weekday": 651
+  },
+  "internalDestinationTrips": 504,
+  "externalDestinationTrips": 756,
+  "externalDestinationBoundaryCounts": {
+    "Oshiage": 756,
+    "Sengakuji": 615
+  },
+  "rawNonMonotonicTripCount": 12,
+  "acceptedMidnightWrapTripCount": 12,
+  "unsafeTimeRegressionTripCount": 0,
+  "issues": [],
+  "runtimeSameTrainPromotions": 0,
+  "note": "All raw time regressions are strictly classified as one 23:xx→00-02:xx service-day wrap; raw values are preserved. Cross-operator identity remains fail-closed."
+}
