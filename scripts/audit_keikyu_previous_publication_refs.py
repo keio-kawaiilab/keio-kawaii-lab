@@ -165,34 +165,34 @@ def _footer_page_candidates(
 def detect_printed_page_number(width: float, height: float, words: list[Word]) -> int | None:
     """Detect the publication page number printed outside the timetable frame.
 
-    Normal pages put the publication number in the extreme bottom outer corner.
-    A few official connection-timetable pages (notably printed page 62) place the
-    same footer slightly higher/inward.  We therefore use a strict outer-footer
-    pass first, then a broader *footer-only* pass only when strict detection found
-    nothing.  Both passes require one unique value; ambiguity always fails closed.
-    No PDF-page offset is guessed or hard-coded.
+    The publication number lives in the extreme outer gutter, whereas operating
+    kilometres and timetable cells begin inside the ruled table.  We therefore
+    inspect that gutter first, including the slightly higher footer used by the
+    special connection timetable on printed page 62.  A conventional bottom-edge
+    pass is retained only as a compatibility fallback.  Ambiguity always fails
+    closed; no PDF-page offset is guessed or hard-coded.
     """
-    strict = _footer_page_candidates(
+    outer_gutter = _footer_page_candidates(
+        width,
+        height,
+        words,
+        min_y_fraction=0.86,
+        edge_fraction=0.075,
+    )
+    if len(outer_gutter) == 1:
+        return next(iter(outer_gutter))
+    if len(outer_gutter) > 1:
+        return None
+
+    strict_bottom = _footer_page_candidates(
         width,
         height,
         words,
         min_y_fraction=0.94,
         edge_fraction=0.12,
     )
-    if len(strict) == 1:
-        return next(iter(strict))
-    if len(strict) > 1:
-        return None
-
-    fallback = _footer_page_candidates(
-        width,
-        height,
-        words,
-        min_y_fraction=0.88,
-        edge_fraction=0.20,
-    )
-    if len(fallback) == 1:
-        return next(iter(fallback))
+    if len(strict_bottom) == 1:
+        return next(iter(strict_bottom))
     return None
 
 
