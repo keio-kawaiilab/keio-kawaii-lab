@@ -14,8 +14,45 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: pip install pdfplumber==0.11.7 requests==2.32.5
-      - name: Compile and run previous-publication parser tests
         run: |
-          python -m py_compile scripts/audit_keikyu_previous_publication_refs.py scripts/test_keikyu_previous_publication_refs.py
-          python scripts/test_keikyu_previous_publication_refs.py
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+          pip install pdfplumber==0.11.7 requests==2.32.5
+      - name: Compile parsers
+        run: |
+          python -m py_compile \
+            scripts/keikyu_official_pdf.py \
+            scripts/audit_keikyu_official_columns.py \
+            scripts/audit_keikyu_station_time_resolution.py \
+            scripts/build_keikyu_official_stop_times.py \
+            scripts/verify_keikyu_official_stop_times.py \
+            scripts/test_keikyu_official_stop_times.py \
+            scripts/audit_keikyu_previous_publication_refs.py \
+            scripts/test_keikyu_previous_publication_refs.py
+      - name: Run stop-time unit regressions
+        run: python scripts/test_keikyu_official_stop_times.py
+      - name: Run previous-publication unit regressions
+        run: python scripts/test_keikyu_previous_publication_refs.py
+      - name: Build full official stop-time audit dataset
+        run: python scripts/build_keikyu_official_stop_times.py --output /tmp/keikyu-official-stop-times.json
+      - name: Verify full official stop-time audit dataset
+        run: python scripts/verify_keikyu_official_stop_times.py /tmp/keikyu-official-stop-times.json
+      - name: Audit explicit previous-publication references
+        run: python scripts/audit_keikyu_previous_publication_refs.py --output /tmp/keikyu-previous-publication-refs.json
+      - name: Enforce zero runtime promotion during audit
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          stop_times = json.loads(Path('/tmp/keikyu-official-stop-times.json').read_text(encoding='utf-8'))
+          refs = json.loads(Path('/tmp/keikyu-previous-publication-refs.json').read_text(encoding='utf-8'))
+          assert stop_times['identityPolicy']['runtimeSameTrainPromotions'] == 0
+          assert refs['identityPolicy']['runtimeSameTrainPromotions'] == 0
+          assert refs['identityPolicy']['crossPageIdentityEstablished'] is False
+          assert refs['fragmentCount'] > 0
+          print('STOP_TIME_TOTALS', json.dumps(stop_times['totals'], ensure_ascii=False, sort_keys=True))
+          print('PREVIOUS_REFERENCE_STATUS', json.dumps(refs['targetStatusCounts'], ensure_ascii=False, sort_keys=True))
+          print('PREVIOUS_REFERENCE_COMPLETE', refs['completePreviousReferenceCount'])
+          print('PREVIOUS_REFERENCE_UNIQUE_CANDIDATES', refs['uniqueExplicitReferenceCandidateCount'])
+          print('PAGES_WITHOUT_PRINTED_PAGE_NUMBER', refs['pagesWithoutDetectedPrintedPageNumber'])
+          PY
