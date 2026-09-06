@@ -109,4 +109,5 @@ jobs:
             exit 0
           fi
           git commit -m "Record Keikyu previous-reference audit summary"
+          git pull --rebase origin work/keikyu-prev-page-evidence-20260906
           git push origin HEAD:work/keikyu-prev-page-evidence-20260906
