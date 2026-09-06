@@ -10,7 +10,30 @@
   function cardDate(card){
     var text=clean((card.querySelector(".performance-date")||{}).textContent||"");
     var match=text.match(/(\d{4})\/(\d{1,2})\/(\d{1,2})/);
-    return match?[match[1],String(match[2]).padStart(2,"0"),String(match[3]).padStart(2,"0")].join("-"):"";
+    if(match)return[match[1],String(match[2]).padStart(2,"0"),String(match[3]).padStart(2,"0")].join("-");
+    var key=clean(card.getAttribute("data-performance-key"));
+    match=key.match(/\|(20\d{2}-\d{2}-\d{2})\|/);
+    return match?match[1]:"";
+  }
+
+  function cardStartTime(card){
+    var key=clean(card.getAttribute("data-performance-key"));
+    var match=key.match(/\|time\|([^|]+)/);
+    if(match){
+      var kt=clean(match[1]).match(/(\d{1,2}):(\d{2})/);
+      if(kt)return String(Number(kt[1])).padStart(2,"0")+":"+kt[2];
+    }
+    var text=clean((card.querySelector(".meta")||{}).textContent||"");
+    match=text.match(/(?:開演|開始)\s*(\d{1,2}):(\d{2})/);
+    return match?String(Number(match[1])).padStart(2,"0")+":"+match[2]:"";
+  }
+
+  function cardIdentity(card){
+    var group=clean(card.getAttribute("data-group")).toUpperCase();
+    var date=cardDate(card);
+    var time=cardStartTime(card);
+    if(!group||!date||!time)return"";
+    return[group,date,time].join("|");
   }
 
   function provider(option){
@@ -52,7 +75,7 @@
     return[d,p,r,u].join("|");
   }
 
-  function dedupeCard(card){
+  function dedupeOptions(card){
     var seen={};
     [].slice.call(card.querySelectorAll(".ticket-option")).forEach(function(option){
       var key=strongIdentity(card,option);
@@ -62,9 +85,59 @@
     });
   }
 
+  function mergeCard(kept,duplicate){
+    var keptOptions=kept.querySelector(".ticket-options");
+    var duplicateOptions=duplicate.querySelector(".ticket-options");
+    if(duplicateOptions){
+      if(!keptOptions){
+        keptOptions=document.createElement("div");
+        keptOptions.className="ticket-options";
+        var noTicket=kept.querySelector(".no-ticket");
+        if(noTicket)noTicket.replaceWith(keptOptions);
+        else{
+          var source=kept.querySelector(".src");
+          if(source)kept.insertBefore(keptOptions,source);
+          else kept.appendChild(keptOptions);
+        }
+      }
+      [].slice.call(duplicateOptions.querySelectorAll(".ticket-option")).forEach(function(option){
+        keptOptions.appendChild(option.cloneNode(true));
+      });
+    }
+    if(!kept.querySelector(".src")){
+      var src=duplicate.querySelector(".src");
+      if(src)kept.appendChild(src.cloneNode(true));
+    }
+    dedupeOptions(kept);
+  }
+
+  function dedupePerformanceCards(){
+    var seen={};
+    [].slice.call(cards.querySelectorAll(".card")).forEach(function(card){
+      dedupeOptions(card);
+      var key=cardIdentity(card);
+      if(!key)return;
+      if(seen[key]){
+        mergeCard(seen[key],card);
+        card.remove();
+      }else{
+        seen[key]=card;
+      }
+    });
+  }
+
+  function updateSummary(){
+    var summary=document.getElementById("summary");
+    if(!summary)return;
+    var count=cards.querySelectorAll(".card").length;
+    var suffix=/（[^）]+）/.exec(summary.textContent||"");
+    summary.textContent=count+"イベントを掲載中"+(suffix?suffix[0]:"");
+  }
+
   function apply(){
     queued=false;
-    [].slice.call(cards.querySelectorAll(".card")).forEach(dedupeCard);
+    dedupePerformanceCards();
+    updateSummary();
   }
 
   function queue(){
