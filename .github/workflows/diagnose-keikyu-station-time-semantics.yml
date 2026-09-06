@@ -6,6 +6,7 @@ on:
     paths:
       - 'scripts/diagnose_keikyu_station_time_pages.py'
       - 'scripts/diagnose_keikyu_grid_edges.py'
+      - 'scripts/diagnose_keikyu_left_grid_candidates.py'
       - 'scripts/diagnose_keikyu_unresolved_classes.py'
       - 'scripts/audit_keikyu_station_time_resolution.py'
       - 'scripts/probe_keikyu_station_rows.py'
@@ -35,5 +36,7 @@ jobs:
         run: python scripts/diagnose_keikyu_station_time_pages.py
       - name: Classify unresolved time-cell structures
         run: python scripts/diagnose_keikyu_unresolved_classes.py
+      - name: Diagnose pitch-aligned train columns left of detected grid
+        run: python scripts/diagnose_keikyu_left_grid_candidates.py
       - name: Diagnose anonymous train columns outside detected grid
         run: python scripts/diagnose_keikyu_grid_edges.py
