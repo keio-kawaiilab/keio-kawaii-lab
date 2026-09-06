@@ -7,6 +7,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Callable
 
+import guard_birthday_year_consistency as birthday_guard
 import update_sukisuki_events as sukisuki
 import update_special_events as special
 
@@ -143,6 +144,12 @@ def merge_payloads(core: dict, playguide: dict, sukisuki_payload: dict, special_
     )
     official_links_preserved = preserve_core_official_links(core_rows, merged_events)
 
+    # This guard must run at the final distributed merge boundary. Individual
+    # collectors can otherwise reintroduce a stale birthday row after a source-
+    # specific cleanup (for example, a 2025 birthday title mapped to a 2026 date).
+    guarded_payload, birthday_guard_report = birthday_guard.filter_payload({"events": merged_events})
+    merged_events = events(guarded_payload)
+
     merged_events.sort(key=lambda event: (
         str(event.get("eventDate") or "9999"),
         str(event.get("applyEnd") or "9999"),
@@ -166,6 +173,7 @@ def merge_payloads(core: dict, playguide: dict, sukisuki_payload: dict, special_
         "mergedAt": out["updatedAt"],
         "sources": report,
         "officialLinksPreserved": official_links_preserved,
+        "birthdayYearGuard": birthday_guard_report,
         "eventCount": len(merged_events),
     }
     return out
