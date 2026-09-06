@@ -7,6 +7,7 @@ needed to build an exact column parser. Raw PDF bytes are never committed.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import shutil
@@ -76,6 +77,7 @@ def main() -> int:
         report = {
             "source": URL,
             "pdfBytes": len(data),
+            "pdfSha256": hashlib.sha256(data).hexdigest(),
             "pageCount": page_count,
             "samplePage": SAMPLE_PAGE,
             "sampleNonEmptyLineCount": len(nonempty),
