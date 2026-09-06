@@ -4,7 +4,7 @@ const TOEI = 'odpt.Railway:Toei.Asakusa';
 const KEIKYU = 'odpt.Railway:Keikyu.Main';
 const TOEI_SENGAKUJI = 'odpt.Station:Toei.Asakusa.Sengakuji';
 const KEIKYU_SENGAKUJI = 'odpt.Station:Keikyu.Main.Sengakuji';
-const MAX_DIAGNOSTIC_GAP = 3;
+const MAX_DIAGNOSTIC_GAP = 2;
 
 function rowsOf(value) {
   if (Array.isArray(value)) return value;
@@ -135,6 +135,15 @@ function candidateRows(sources, targets, direction) {
   return candidates;
 }
 
+function countsBy(rows, keyFn) {
+  const values = {};
+  for (const row of rows) {
+    const key = String(keyFn(row));
+    values[key] = (values[key] || 0) + 1;
+  }
+  return Object.fromEntries(Object.entries(values).sort(([a], [b]) => a.localeCompare(b)));
+}
+
 function summarizeCandidates(candidates) {
   const sourceCounts = new Map();
   const targetCounts = new Map();
@@ -150,6 +159,8 @@ function summarizeCandidates(candidates) {
     candidatePairs: candidates.length,
     uniqueOneToOneByBoundaryWindow: unique.length,
     destinationProvenUnique: destinationProven.length,
+    destinationProvenByGap: countsBy(destinationProven, (row) => row.gap),
+    destinationProvenByCalendar: countsBy(destinationProven, (row) => row.calendar),
     sharedDestinationButNotBeyond: sharedDestinationButNotBeyond.length,
     noSharedDestinationUnique: noSharedDestination.length,
     ambiguousPairs: candidates.length - unique.length,
