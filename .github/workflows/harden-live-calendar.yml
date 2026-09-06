@@ -7,6 +7,7 @@ on:
       - ".github/workflows/harden-live-calendar.yml"
       - "scripts/guard_birthday_year_consistency.py"
       - "scripts/harden_ticket_semantics.py"
+      - "scripts/enforce_physical_performance_identity.py"
 
 permissions:
   contents: write
@@ -22,25 +23,26 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      - name: Remove impossible birthday rows and correct ticket semantics
+      - name: Harden data and physical-performance identity
         shell: bash
         run: |
           set -euo pipefail
           python scripts/guard_birthday_year_consistency.py --data data/live-events.json
           python scripts/harden_ticket_semantics.py --data data/live-events.json
+          python scripts/enforce_physical_performance_identity.py
           python -m json.tool data/live-events.json >/dev/null
 
-      - name: Publish hardened data immediately
+      - name: Publish hardened calendar immediately
         shell: bash
         run: |
           set -euo pipefail
-          if git diff --quiet -- data/live-events.json; then
-            echo "No calendar data changes were needed."
+          if git diff --quiet -- data/live-events.json schedule.html; then
+            echo "No calendar changes were needed."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/live-events.json
-          git commit -m "Harden live calendar data"
+          git add data/live-events.json schedule.html
+          git commit -m "Enforce one physical schedule item per group date and time"
           git pull --rebase origin main
           git push origin HEAD:main
