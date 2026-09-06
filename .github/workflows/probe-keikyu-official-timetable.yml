@@ -10,6 +10,9 @@ on:
       - 'scripts/keikyu_official_pdf.py'
       - 'scripts/audit_keikyu_official_columns.py'
       - 'scripts/audit_keikyu_station_time_resolution.py'
+      - 'scripts/build_keikyu_official_stop_times.py'
+      - 'scripts/verify_keikyu_official_stop_times.py'
+      - 'scripts/test_keikyu_official_stop_times.py'
       - '.github/workflows/probe-keikyu-official-timetable.yml'
 
 permissions:
@@ -18,7 +21,7 @@ permissions:
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -40,3 +43,12 @@ jobs:
         run: python scripts/audit_keikyu_official_columns.py
       - name: Audit all station-time semantics
         run: python scripts/audit_keikyu_station_time_resolution.py
+      - name: Run stop-time fragment regressions
+        run: python scripts/test_keikyu_official_stop_times.py
+      - name: Build official page-local stop times
+        run: python scripts/build_keikyu_official_stop_times.py --output /tmp/keikyu-official-stop-times.json
+      - name: Verify official page-local stop times
+        run: python scripts/verify_keikyu_official_stop_times.py /tmp/keikyu-official-stop-times.json
+      - name: Remove raw generated timetable dataset
+        if: always()
+        run: rm -f /tmp/keikyu-official-stop-times.json
