@@ -38,7 +38,7 @@ from probe_keikyu_station_rows import (
 
 
 def resolve_page(words, grid, titles: list[str]) -> dict[str, Any]:
-    label_boundary = semantic_label_boundary(grid)
+    label_boundary = semantic_label_boundary(words, grid)
     raw_rows: list[dict[str, Any]] = []
 
     for row in cluster_by_y(words, tolerance=1.35):
@@ -46,11 +46,10 @@ def resolve_page(words, grid, titles: list[str]) -> dict[str, Any]:
         if y <= grid.header_y + 10:
             continue
 
-        # The station/着発 label band is not the train-grid edge. Keikyu can omit
-        # the first printed train number, which shifts the reconstructed first
-        # train center left without moving the station label band. Read labels
-        # slightly into the first train slot, but exclude time-shaped tokens from
-        # the label string. Grid cells are assigned independently below.
+        # The station/着発 label band is not the train-grid edge. Its right edge
+        # is proven from the repeated printed 着/発/〃 X cluster on this page.
+        # Time-shaped tokens are excluded from label text and are assigned to the
+        # train grid independently, so an anonymous first train column is kept.
         left_words = [
             word for word in row
             if word.x < label_boundary and not TIME_RE.fullmatch(word.text)
@@ -209,7 +208,7 @@ def main() -> int:
         resolution_rate = totals["resolvedTimeCells"] / totals["timeCells"] if totals["timeCells"] else 0.0
 
         output = {
-            "version": 4,
+            "version": 5,
             "scope": "Keisei/Asakusa/Keikyu connected component; Keikyu Daishi excluded",
             "sourceSha256": hashlib.sha256(data).hexdigest(),
             "canonicalStationTitleCount": len(titles),
@@ -235,6 +234,7 @@ def main() -> int:
                 "canonicalConnectedSystemStationRequired": True,
                 "printedArrivalDepartureStructureRequired": True,
                 "stationLabelBandIndependentOfTrainGridEdge": True,
+                "operationMarkerBandProvenFromRepeatedGeometry": True,
                 "stationAdjacentMarkerMayResolveRow": True,
                 "clockTimeProximityMayResolveStation": False,
                 "destinationMayResolveStation": False,
