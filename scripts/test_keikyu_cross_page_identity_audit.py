@@ -65,7 +65,8 @@ class KeikyuCrossPageIdentityAuditTest(unittest.TestCase):
         self.assertTrue(result["verified"])
         self.assertEqual(payload["materializedCandidateEdgeCount"], 2)
         self.assertEqual(payload["identityComponentCount"], 1)
-        self.assertEqual(payload["runtimeSameTrainPromotions"], 0 if "runtimeSameTrainPromotions" in payload else 0)
+        self.assertEqual(payload["identityPolicy"]["runtimeSameTrainPromotions"], 0)
+        self.assertFalse(payload["identityPolicy"]["crossPageIdentityEstablished"])
 
     def test_previous_train_number_mismatch_is_rejected(self):
         stops = stop_payload({(7, 0): "100A", (8, 0): "200A"})
