@@ -1,0 +1,130 @@
+name: Apply strict Sengakuji through-train evidence
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/reviewed_train_evidence.py'
+      - 'scripts/sengakuji_destination_evidence.py'
+      - 'scripts/test_sengakuji_destination_evidence.py'
+      - '.github/workflows/apply-sengakuji-destination-evidence.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: transit-v2-sengakuji-apply
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run Sengakuji evidence regression tests
+        run: |
+          python scripts/test_sengakuji_destination_evidence.py
+          python scripts/test_reviewed_train_evidence.py
+      - name: Re-finalize transit v2 and audit
+        run: |
+          python scripts/finalize_transit_v2.py
+          python scripts/audit_transit_v2.py
+      - name: Verify every strict Sengakuji candidate is same-train
+        run: |
+          python - <<'PY'
+          import json
+          import sys
+          from collections import Counter
+          from pathlib import Path
+
+          sys.path.insert(0, 'scripts')
+          import sengakuji_destination_evidence as evidence
+
+          def rows(path):
+              value = json.loads(Path(path).read_text(encoding='utf-8'))
+              if isinstance(value, list):
+                  return value
+              for key in ('fragments', 'items', 'rows', 'data'):
+                  if isinstance(value.get(key), list):
+                      return value[key]
+              return []
+
+          fragments = rows('data/transit-v2/fragments/toei.json') + rows('data/transit-v2/fragments/keikyu.json')
+          boundary = {'boundaryId': evidence.BOUNDARY_ID, 'station': '泉岳寺'}
+          indexes = {'graph': {
+              evidence.TOEI: [{**boundary, 'toRailway': evidence.KEIKYU}],
+              evidence.KEIKYU: [{**boundary, 'toRailway': evidence.TOEI}],
+          }}
+          candidates = evidence.candidate_pairs(fragments, indexes)
+          expected = {(row['fromFragment'], row['toFragment']) for row in candidates}
+          if len(candidates) != 411 or len(expected) != 411:
+              raise SystemExit(f'unexpected strict candidate count: {len(candidates)} / unique {len(expected)}')
+
+          payload = json.loads(Path('data/transit-v2/same-train-edges.json').read_text(encoding='utf-8'))
+          edges = payload.get('edges') or []
+          actual = {
+              (str(row.get('fromFragment') or ''), str(row.get('toFragment') or ''))
+              for row in edges
+              if row.get('classification') == 'same-train'
+          }
+          missing = sorted(expected - actual)
+          if missing:
+              raise SystemExit(f'{len(missing)} strict Sengakuji pairs missing from same-train DB; examples={missing[:5]}')
+
+          marker_edges = [
+              row for row in edges
+              if evidence.MARKER in [str(value) for value in row.get('evidence') or []]
+          ]
+          for row in marker_edges:
+              assert row.get('classification') == 'same-train', row
+              assert row.get('identityLevel') == 'evidence-backed', row
+              boundary = row.get('boundary') or {}
+              assert int(boundary.get('gapMinutes')) in (0, 1, 2), row
+              labels = ' '.join(str(value).lower() for value in row.get('evidence') or [])
+              assert 'train-number' not in labels and 'trainnumber' not in labels, row
+
+          print('STRICT_SENGAKUJI_CANDIDATES', len(candidates))
+          print('STRICT_SENGAKUJI_BY_DIRECTION', dict(sorted(Counter(row['direction'] for row in candidates).items())))
+          print('STRICT_SENGAKUJI_BY_CALENDAR', dict(sorted(Counter(row['calendar'] for row in candidates).items())))
+          print('STRICT_SENGAKUJI_MARKER_EDGES', len(marker_edges))
+          print('STRICT_SENGAKUJI_ALL_PRESENT', len(expected))
+          PY
+      - name: Report unresolved boundary state
+        run: |
+          python - <<'PY'
+          import json
+          from collections import Counter
+          from pathlib import Path
+          coverage=json.loads(Path('data/transit-v2/coverage.json').read_text(encoding='utf-8'))
+          unresolved=coverage.get('unresolved') or []
+          kinds=Counter(str(row.get('kind') or '') for row in unresolved)
+          summary=coverage.get('summary') or {}
+          print('UNRESOLVED_TOTAL', summary.get('unresolved'))
+          print('UNRESOLVED_KINDS', dict(sorted(kinds.items())))
+          PY
+      - name: Commit regenerated runtime DB
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/transit-v2
+          if git diff --cached --quiet; then
+            echo "Runtime DB already up to date"
+            exit 0
+          fi
+          git commit -m "Apply strict Sengakuji through-train evidence"
+          for attempt in 1 2 3; do
+            git fetch origin main
+            if git rebase origin/main && git push origin HEAD:main; then
+              exit 0
+            fi
+            git rebase --abort || true
+            sleep 2
+          done
+          echo "Failed to push regenerated runtime DB after retries"
+          exit 1
