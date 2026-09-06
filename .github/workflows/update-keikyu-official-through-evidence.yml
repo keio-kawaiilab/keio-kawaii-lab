@@ -29,6 +29,8 @@ on:
       - 'scripts/build_keikyu_official_stop_times.py'
       - 'scripts/verify_keikyu_official_stop_times.py'
       - 'scripts/test_keikyu_official_stop_times.py'
+      - 'scripts/audit_keikyu_previous_publication_refs.py'
+      - 'scripts/test_keikyu_previous_publication_refs.py'
       - '.github/workflows/update-keikyu-official-through-evidence.yml'
   schedule:
     - cron: '17 20 * * 6'
@@ -59,7 +61,10 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: pip install pdfplumber==0.11.7 requests==2.32.5
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+          pip install pdfplumber==0.11.7 requests==2.32.5
       - name: Gate on full official Keikyu timetable parse
         run: |
           python -m py_compile \
@@ -69,20 +74,27 @@ jobs:
             scripts/keikyu_connected_station_catalog.py \
             scripts/build_keikyu_official_stop_times.py \
             scripts/verify_keikyu_official_stop_times.py \
-            scripts/test_keikyu_official_stop_times.py
+            scripts/test_keikyu_official_stop_times.py \
+            scripts/audit_keikyu_previous_publication_refs.py \
+            scripts/test_keikyu_previous_publication_refs.py
           python scripts/test_keikyu_official_stop_times.py
+          python scripts/test_keikyu_previous_publication_refs.py
           python scripts/build_keikyu_official_stop_times.py \
             --output /tmp/keikyu-official-stop-times.json
           python scripts/verify_keikyu_official_stop_times.py \
             /tmp/keikyu-official-stop-times.json
+          python scripts/audit_keikyu_previous_publication_refs.py \
+            --output /tmp/keikyu-previous-publication-refs.json
           python - <<'PY'
           import json
           from pathlib import Path
 
-          payload = json.loads(Path('/tmp/keikyu-official-stop-times.json').read_text(encoding='utf-8'))
-          totals = payload.get('totals') or {}
-          policy = payload.get('identityPolicy') or {}
-          pages = payload.get('pages') or []
+          stop_times = json.loads(Path('/tmp/keikyu-official-stop-times.json').read_text(encoding='utf-8'))
+          refs = json.loads(Path('/tmp/keikyu-previous-publication-refs.json').read_text(encoding='utf-8'))
+          totals = stop_times.get('totals') or {}
+          policy = stop_times.get('identityPolicy') or {}
+          ref_policy = refs.get('identityPolicy') or {}
+          pages = stop_times.get('pages') or []
           source = int(totals.get('sourceTimeCells') or 0)
           resolved = int(totals.get('resolvedTimeCells') or 0)
           unresolved = int(totals.get('unresolvedTimeCells') or 0)
@@ -93,6 +105,9 @@ jobs:
           print('FULL_TIMETABLE_RESOLVED_CELLS', resolved)
           print('FULL_TIMETABLE_UNRESOLVED_CELLS', unresolved)
           print('FULL_TIMETABLE_RESOLUTION_RATE', round(resolved / source, 6) if source else 0)
+          print('COMPLETE_PREVIOUS_REFERENCES', refs.get('completePreviousReferenceCount'))
+          print('UNIQUE_PREVIOUS_REFERENCE_CANDIDATES', refs.get('uniqueExplicitReferenceCandidateCount'))
+          print('PREVIOUS_REFERENCE_STATUS', json.dumps(refs.get('targetStatusCounts') or {}, ensure_ascii=False, sort_keys=True))
           print('RUNTIME_SAME_TRAIN_PROMOTIONS', policy.get('runtimeSameTrainPromotions'))
           assert pages, 'no timetable pages parsed'
           assert fragments > 0, 'no train-column fragments parsed'
@@ -101,8 +116,12 @@ jobs:
           assert resolved + unresolved == source, 'source cell accounting mismatch'
           assert policy.get('crossPageIdentityEstablished') is False
           assert policy.get('runtimeSameTrainPromotions') == 0
+          assert int(refs.get('fragmentCount') or 0) > 0
+          assert int(refs.get('completePreviousReferenceCount') or 0) > 0
+          assert ref_policy.get('crossPageIdentityEstablished') is False
+          assert ref_policy.get('runtimeSameTrainPromotions') == 0
           PY
-          rm -f /tmp/keikyu-official-stop-times.json
+          rm -f /tmp/keikyu-official-stop-times.json /tmp/keikyu-previous-publication-refs.json
       - name: Test fail-closed extraction and consumer rules
         run: |
           python -m py_compile \
