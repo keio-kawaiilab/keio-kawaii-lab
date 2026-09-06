@@ -142,24 +142,57 @@ def extract_previous_publication_refs(words: list[Word], grid: TrainColumnGrid) 
     ]
 
 
-def detect_printed_page_number(width: float, height: float, words: list[Word]) -> int | None:
-    """Detect the publication page number printed outside the timetable frame.
-
-    Odd/even pages place the page number on opposite outer edges, so both edges
-    are accepted.  Ambiguity fails closed instead of guessing an offset between
-    PDF page numbers and publication page numbers.
-    """
+def _footer_page_candidates(
+    width: float,
+    height: float,
+    words: list[Word],
+    *,
+    min_y_fraction: float,
+    edge_fraction: float,
+) -> set[int]:
     candidates: set[int] = set()
     for word in words:
-        if word.y < height * 0.94:
+        if word.y < height * min_y_fraction:
             continue
-        if not (word.x < width * 0.12 or word.x > width * 0.88):
+        if not (word.x < width * edge_fraction or word.x > width * (1.0 - edge_fraction)):
             continue
         value = _parse_printed_page(word.text)
         if value is not None:
             candidates.add(value)
-    if len(candidates) == 1:
-        return next(iter(candidates))
+    return candidates
+
+
+def detect_printed_page_number(width: float, height: float, words: list[Word]) -> int | None:
+    """Detect the publication page number printed outside the timetable frame.
+
+    Normal pages put the publication number in the extreme bottom outer corner.
+    A few official connection-timetable pages (notably printed page 62) place the
+    same footer slightly higher/inward.  We therefore use a strict outer-footer
+    pass first, then a broader *footer-only* pass only when strict detection found
+    nothing.  Both passes require one unique value; ambiguity always fails closed.
+    No PDF-page offset is guessed or hard-coded.
+    """
+    strict = _footer_page_candidates(
+        width,
+        height,
+        words,
+        min_y_fraction=0.94,
+        edge_fraction=0.12,
+    )
+    if len(strict) == 1:
+        return next(iter(strict))
+    if len(strict) > 1:
+        return None
+
+    fallback = _footer_page_candidates(
+        width,
+        height,
+        words,
+        min_y_fraction=0.88,
+        edge_fraction=0.20,
+    )
+    if len(fallback) == 1:
+        return next(iter(fallback))
     return None
 
 
