@@ -1,29 +1,29 @@
 #!/usr/bin/env python3
-"""Validate Sengakuji boundary candidates with a multi-station Toei fingerprint.
+"""Validate Sengakuji candidates with a multi-station Toei fingerprint.
 
-A matching minute at Sengakuji is not enough to identify a train, and a reused
-printed x-position around the train-number row is not proof of continuation.
-This diagnostic therefore compares several Toei-side station times printed in
-one official Keikyu timetable column with the exact Toei TrainTimetable trip.
+This diagnostic deliberately reuses the already-generated and audited Keikyu
+boundary evidence.  It only re-opens the official PDFs on pages that actually
+contain boundary candidates, then compares several Toei-side station times in
+that printed column with the recorded Toei TrainTimetable candidates.
 
-The sequence is only an identity check on the Toei side.  It does not by itself
-promote any runtime same-train edge.
+The sequence is an identity check on the Toei side only.  It is never, by
+itself, evidence that the same physical train crosses the operator boundary.
 """
 from __future__ import annotations
 
 import io
 import json
 from collections import Counter
+from pathlib import Path
 from typing import Any
 
 import pdfplumber
 
-from audit_toei_sengakuji_official_columns import TOEI_FILE, audit, load
+from audit_toei_sengakuji_official_columns import TOEI_FILE, load
 from keikyu_official_train_evidence import (
     DEFAULT_HOLIDAY_URL,
     DEFAULT_WEEKDAY_URL,
     column_tolerance,
-    extract_pdf,
     fetch_pdf,
     nearest,
     norm,
@@ -31,6 +31,7 @@ from keikyu_official_train_evidence import (
     time_cells,
 )
 
+EVIDENCE_FILE = Path("data/transit-v2/keikyu-official-train-evidence.json")
 PDF_TO_ODPT_SUFFIX = {
     "泉岳寺": "Sengakuji",
     "三田": "Mita",
@@ -50,17 +51,21 @@ PDF_TO_ODPT_SUFFIX = {
 TOKENS = sorted(PDF_TO_ODPT_SUFFIX, key=len, reverse=True)
 
 
-def page_words(content: bytes) -> dict[int, list[dict[str, Any]]]:
+def page_words(content: bytes, page_numbers: set[int]) -> dict[int, list[dict[str, Any]]]:
+    """Extract words only from PDF pages referenced by audited candidates."""
+    output: dict[int, list[dict[str, Any]]] = {}
     with pdfplumber.open(io.BytesIO(content)) as pdf:
-        return {
-            number: page.extract_words(
+        for number in sorted(page_numbers):
+            if number < 1 or number > len(pdf.pages):
+                continue
+            page = pdf.pages[number - 1]
+            output[number] = page.extract_words(
                 x_tolerance=1,
                 y_tolerance=1,
                 keep_blank_chars=False,
                 use_text_flow=False,
             )
-            for number, page in enumerate(pdf.pages, start=1)
-        }
+    return output
 
 
 def station_name(text: object) -> str:
@@ -76,7 +81,6 @@ def minute_equal(a: int, b: int) -> bool:
 
 
 def build_page_cache(words: list[dict[str, Any]]) -> dict[str, Any]:
-    """Parse expensive row/time geometry once per PDF page, not per train."""
     page_rows = rows(words)
     time_by_y: dict[float, list[dict[str, Any]]] = {}
     all_time_cells: list[dict[str, Any]] = []
@@ -207,44 +211,64 @@ def score_trip(fingerprint: list[dict[str, Any]], trip: dict[str, Any]) -> dict[
     }
 
 
+def toei_candidate_ids(entry: dict[str, Any]) -> list[str]:
+    direction = str(entry.get("direction") or "")
+    key = "targetMatches" if direction == "keikyu-to-toei" else "sourceMatches"
+    return [str(value) for value in entry.get(key) or [] if value]
+
+
 def main() -> int:
+    evidence_payload = load(EVIDENCE_FILE)
+    entries = [entry for entry in evidence_payload.get("entries") or [] if isinstance(entry, dict)]
+    entries = [entry for entry in entries if entry.get("calendar") in {"weekday", "holiday"} and entry.get("pdfPage")]
+    print(f"loaded audited evidence entries: {len(entries)}", flush=True)
+
+    pages_needed: dict[str, set[int]] = {"weekday": set(), "holiday": set()}
+    for entry in entries:
+        pages_needed[str(entry["calendar"])].add(int(entry["pdfPage"]))
+    print(f"pages needed: { {k: sorted(v) for k, v in pages_needed.items()} }", flush=True)
+
     contents = {
         "weekday": fetch_pdf(DEFAULT_WEEKDAY_URL),
         "holiday": fetch_pdf(DEFAULT_HOLIDAY_URL),
     }
-    candidates: list[dict[str, Any]] = []
-    for calendar, content in contents.items():
-        url = DEFAULT_WEEKDAY_URL if calendar == "weekday" else DEFAULT_HOLIDAY_URL
-        candidates.extend(extract_pdf(content, calendar, url))
+    print("official PDFs downloaded", flush=True)
 
-    toei_payload = load(TOEI_FILE)
-    audited = audit(candidates, toei_payload)
-    originals = {row["id"]: row for row in candidates}
-    trip_index = build_trip_index(toei_payload)
-    words_by_calendar = {calendar: page_words(content) for calendar, content in contents.items()}
+    words_by_calendar = {
+        calendar: page_words(contents[calendar], pages_needed[calendar])
+        for calendar in ("weekday", "holiday")
+    }
+    print("required PDF pages extracted", flush=True)
+
     page_cache = {
         (calendar, page): build_page_cache(words)
         for calendar, pages in words_by_calendar.items()
         for page, words in pages.items()
     }
+    print(f"page caches built: {len(page_cache)}", flush=True)
+
+    toei_payload = load(TOEI_FILE)
+    trip_index = build_trip_index(toei_payload)
 
     counts: Counter[str] = Counter()
     details = []
-    for row in audited["results"]:
-        original = originals[row["candidateId"]]
-        cache = page_cache[(row["calendar"], int(row["pdfPage"]))]
-        fingerprint = extract_pdf_fingerprint(cache, original)
-        candidate_ids = [str(v) for v in row.get("toeiMatches") or []]
+    for entry in entries:
+        status = str(entry.get("matchStatus") or "")
+        counts[status] += 1
+        cache = page_cache.get((str(entry["calendar"]), int(entry["pdfPage"])))
+        if not cache:
+            counts[f"{status}:missing-page"] += 1
+            continue
+
+        fingerprint = extract_pdf_fingerprint(cache, entry)
         scored = []
-        for timetable_id in candidate_ids:
+        for timetable_id in toei_candidate_ids(entry):
             trip = trip_index.get(timetable_id)
             if not trip:
                 continue
             scored.append({"timetableId": timetable_id, **score_trip(fingerprint, trip)})
 
         strong = [item for item in scored if item["allMatched"] and item["totalPoints"] >= 3]
-        status = str(row.get("toeiMatchStatus") or "")
-        counts[status] += 1
         if len(fingerprint) < 3:
             counts[f"{status}:insufficient-fingerprint"] += 1
         elif len(strong) == 1:
@@ -256,13 +280,13 @@ def main() -> int:
 
         if status != "matched-singleton" or len(strong) != 1:
             details.append({
-                "candidateId": row["candidateId"],
-                "calendar": row["calendar"],
-                "direction": row["direction"],
-                "pdfPage": row["pdfPage"],
-                "columnX": row["columnX"],
-                "sourceBoundaryMinute": row["sourceBoundaryMinute"],
-                "targetBoundaryMinute": row["targetBoundaryMinute"],
+                "candidateId": entry.get("id"),
+                "calendar": entry.get("calendar"),
+                "direction": entry.get("direction"),
+                "pdfPage": entry.get("pdfPage"),
+                "columnX": entry.get("columnX"),
+                "sourceBoundaryMinute": entry.get("sourceBoundaryMinute"),
+                "targetBoundaryMinute": entry.get("targetBoundaryMinute"),
                 "auditStatus": status,
                 "fingerprint": fingerprint,
                 "toeiCandidates": scored,
