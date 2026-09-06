@@ -9,6 +9,7 @@ from typing import Callable
 
 import guard_birthday_year_consistency as birthday_guard
 import harden_ticket_semantics as ticket_semantics
+import reconcile_physical_performance_times as performance_times
 import update_sukisuki_events as sukisuki
 import update_special_events as special
 
@@ -150,7 +151,14 @@ def merge_payloads(core: dict, playguide: dict, sukisuki_payload: dict, special_
     # upgrade entitlement as an ordinary FC presale immediately before publish.
     guarded_payload, birthday_guard_report = birthday_guard.filter_payload({"events": merged_events})
     hardened_payload, ticket_semantics_report = ticket_semantics.harden_payload(guarded_payload)
-    merged_events = events(hardened_payload)
+
+    # An official detail page exposes OPEN/START as a paired field. The legacy
+    # parser can temporarily read the first value as both OPEN and START. Reconcile
+    # that suspicious row only when another source for the same group/date/venue
+    # provides one unambiguous different START. This happens before publication,
+    # so bad collector metadata can never create a second physical performance.
+    reconciled_payload, performance_time_report = performance_times.reconcile_payload(hardened_payload)
+    merged_events = events(reconciled_payload)
 
     merged_events.sort(key=lambda event: (
         str(event.get("eventDate") or "9999"),
@@ -177,6 +185,7 @@ def merge_payloads(core: dict, playguide: dict, sukisuki_payload: dict, special_
         "officialLinksPreserved": official_links_preserved,
         "birthdayYearGuard": birthday_guard_report,
         "ticketSemanticHardening": ticket_semantics_report,
+        "physicalPerformanceTimeReconciliation": performance_time_report,
         "eventCount": len(merged_events),
     }
     return out
