@@ -1,0 +1,25 @@
+name: Diagnose Sengakuji train-number geometry
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/diagnose_keikyu_sengakuji_number_geometry.py'
+      - '.github/workflows/diagnose-keikyu-sengakuji-number-geometry.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PDF dependencies
+        run: pip install pdfplumber==0.11.7 requests==2.32.5
+      - name: Dump raw number-row geometry for all unresolved columns
+        run: python scripts/diagnose_keikyu_sengakuji_number_geometry.py
