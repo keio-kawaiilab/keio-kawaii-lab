@@ -2,8 +2,8 @@
 """Print a compact diagnostic for Keikyu station/time semantic resolution.
 
 Unlike the strict audit, this command never treats unresolved pages as success
-criteria.  It exists only so CI logs clearly expose which printed page layouts
-still need parser support.  Same-train identity is deliberately out of scope.
+criteria. It exists only so CI logs clearly expose which printed page layouts
+still need parser support. Same-train identity is deliberately out of scope.
 """
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ from pathlib import Path
 
 from audit_keikyu_official_columns import FIRST_POSSIBLE_TIMETABLE_PAGE, page_scope_reason
 from audit_keikyu_station_time_resolution import resolve_page
+from keikyu_connected_station_catalog import station_titles
 from keikyu_official_pdf import (
     bbox_words,
     compact,
@@ -20,7 +21,6 @@ from keikyu_official_pdf import (
     download_official_pdf,
     page_count,
 )
-from probe_keikyu_station_rows import station_titles
 
 
 def main() -> int:
@@ -62,6 +62,7 @@ def main() -> int:
         resolved = sum(row["resolved"] for row in rows)
         unresolved = sum(row["unresolved"] for row in rows)
         summary = {
+            "stationCatalogTitles": len(titles),
             "pages": len(rows),
             "timeCells": total,
             "resolved": resolved,
@@ -70,7 +71,6 @@ def main() -> int:
             "zeroPages": [row["page"] for row in zero],
             "worstPages": worst,
         }
-        # Single compact JSON line on purpose: easy to retrieve from Actions logs.
         print("KEIKYU_SEMANTIC_DIAGNOSTIC=" + json.dumps(summary, ensure_ascii=False, separators=(",", ":")))
         return 0
 
