@@ -7,12 +7,8 @@ regular train-column grid can be proven from PDF geometry, including columns
 whose train number is intentionally omitted by the published timetable.
 Anonymous columns are never promoted to cross-page train identity.
 
-Two kinds of pages are deliberately excluded by semantic content rather than
-page number:
-- timetable-guide/index pages ("時刻表の見方")
-- Daishi-line-only pages, because Keikyu Daishi has no verified same-train
-  through-service edge to the in-scope network and is explicitly outside the
-  current system-scope definition.
+Pages are excluded by printed semantic content rather than fragile page-number
+ranges: guide/index sheets, blank MEMO sheets, and Daishi-line-only sheets.
 """
 from __future__ import annotations
 
@@ -37,6 +33,13 @@ def page_scope_reason(page_text: str) -> str | None:
     """Return why this page is outside the exact through-system column audit."""
     if "時刻表の見方" in page_text:
         return "guide-index"
+
+    # The official PDF inserts blank ruled sheets labelled MEMO between/after
+    # timetable sections.  They are not timetable pages and must never enter
+    # the denominator merely because page-number text happens to be numeric.
+    normalized = compact(page_text).upper()
+    if "MEMO" in normalized and "列車番号" not in normalized:
+        return "memo-page"
 
     # The Daishi-only sheets are a different multi-block table format. More
     # importantly, Daishi is not in the through-service connected component:
@@ -102,7 +105,7 @@ def main() -> int:
 
         pitches = [row["pitch"] for row in rows]
         report = {
-            "version": 2,
+            "version": 3,
             "scope": "Keisei/Asakusa/Keikyu through-service connected component; Daishi excluded",
             "sourceSha256": hashlib.sha256(data).hexdigest(),
             "pdfPages": total_pages,
