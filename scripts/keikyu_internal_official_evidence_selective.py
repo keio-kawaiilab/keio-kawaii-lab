@@ -10,6 +10,7 @@ import fitz
 
 import keikyu_internal_official_evidence as target
 
+# Keep the selective extractor aligned with every verified internal Keikyu boundary.
 MAIN = target.MAIN
 AIRPORT = target.AIRPORT
 KURIHAMA = target.KURIHAMA
