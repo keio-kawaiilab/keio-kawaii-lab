@@ -3,6 +3,7 @@
 
   var calendar=document.getElementById("calendar");
   if(!calendar)return;
+  var cards=document.getElementById("cards");
   var queued=false;
 
   function text(value){
@@ -96,12 +97,127 @@
     week.style.minHeight=Math.max(105,mbase+ml*30+10)+"px";
   }
 
+  function cardDate(card){
+    var dateText=text((card.querySelector(".performance-date")||{}).textContent||"");
+    var match=dateText.match(/(\d{4})\/(\d{1,2})\/(\d{1,2})/);
+    if(match)return match[1]+"-"+String(match[2]).padStart(2,"0")+"-"+String(match[3]).padStart(2,"0");
+    return"";
+  }
+
+  function cardTime(card){
+    var meta=text((card.querySelector(".meta")||{}).textContent||"");
+    var match=meta.match(/(?:開演|開始)\s*(\d{1,2}):(\d{2})/);
+    return match?String(Number(match[1])).padStart(2,"0")+":"+match[2]:"";
+  }
+
+  function cardTitle(card){
+    return text((card.querySelector("h3")||{}).textContent||"")
+      .toLowerCase()
+      .replace(/20\d{2}/g,"")
+      .replace(/candy tune|cutie street|sweet steady|fruits zipper|more star/g,"")
+      .replace(/アップグレード/g,"")
+      .replace(/抽選/g,"")
+      .replace(/受付/g,"")
+      .replace(/お知らせ/g,"")
+      .replace(/チケット/g,"")
+      .replace(/年会費コース会員先行|月会費コース会員先行|fc先行|ファンクラブ先行/g,"")
+      .replace(/[\s　!！・|｜\-–—_【】\[\]()（）『』「」<>＜＞:：./~〜～]/g,"");
+  }
+
+  function sameCard(a,b){
+    var ag=text(a.getAttribute("data-group")).toUpperCase();
+    var bg=text(b.getAttribute("data-group")).toUpperCase();
+    var ad=cardDate(a),bd=cardDate(b);
+    if(!ag||!ad||ag!==bg||ad!==bd)return false;
+    var at=cardTime(a),bt=cardTime(b);
+    if(at&&bt)return at===bt;
+    var aa=cardTitle(a),bb=cardTitle(b);
+    if(!aa||!bb)return false;
+    return aa===bb||(aa.length>=5&&bb.indexOf(aa)>=0)||(bb.length>=5&&aa.indexOf(bb)>=0);
+  }
+
+  function cardScore(card){
+    var score=0;
+    var title=text((card.querySelector("h3")||{}).textContent||"");
+    var date=cardDate(card);
+    var yearMatch=title.match(/20\d{2}/);
+    if(yearMatch&&date)score+=yearMatch[0]===date.slice(0,4)?100:-500;
+    if(!/アップグレード|先行|受付|チケット/.test(title))score+=60;
+    var source=card.querySelector("a.src");
+    if(source&&/\/live_information\/detail\//.test(source.href||""))score+=120;
+    if(cardTime(card))score+=20;
+    return score;
+  }
+
+  function ticketKey(option){
+    var provider=text((option.querySelector(".provider")||{}).textContent||"");
+    var copy=option.querySelector(".ticket-copy");
+    var period=text(copy&&copy.querySelector("small")?copy.querySelector("small").textContent:"");
+    var link=option.querySelector("a.ticket-link");
+    return(provider+"|"+period+"|"+text(link&&link.href)).toLowerCase();
+  }
+
+  function dedupeOptions(card){
+    var seen={};
+    [].slice.call(card.querySelectorAll(".ticket-option")).forEach(function(option){
+      var key=ticketKey(option);
+      if(seen[key])option.remove();
+      else seen[key]=true;
+    });
+  }
+
+  function mergeCard(target,source){
+    var targetOptions=target.querySelector(".ticket-options");
+    var sourceOptions=source.querySelector(".ticket-options");
+    if(sourceOptions){
+      if(!targetOptions){
+        targetOptions=document.createElement("div");
+        targetOptions.className="ticket-options";
+        var noTicket=target.querySelector(".no-ticket");
+        if(noTicket)noTicket.replaceWith(targetOptions);
+        else target.appendChild(targetOptions);
+      }
+      [].slice.call(sourceOptions.querySelectorAll(".ticket-option")).forEach(function(option){
+        targetOptions.appendChild(option.cloneNode(true));
+      });
+    }
+    dedupeOptions(target);
+  }
+
+  function dedupeCards(){
+    if(!cards)return;
+    var kept=[];
+    [].slice.call(cards.querySelectorAll(".card")).forEach(function(card){
+      dedupeOptions(card);
+      var found=-1;
+      for(var i=0;i<kept.length;i++){
+        if(sameCard(kept[i],card)){found=i;break;}
+      }
+      if(found<0){kept.push(card);return;}
+      var old=kept[found];
+      if(cardScore(card)>cardScore(old)){
+        mergeCard(card,old);
+        old.remove();
+        kept[found]=card;
+      }else{
+        mergeCard(old,card);
+        card.remove();
+      }
+    });
+    var summary=document.getElementById("summary");
+    if(summary){
+      var suffix=/（[^）]+）/.exec(summary.textContent||"");
+      summary.textContent=cards.querySelectorAll(".card").length+"イベントを掲載中"+(suffix?suffix[0]:"");
+    }
+  }
+
   function apply(){
     queued=false;
     [].slice.call(calendar.querySelectorAll(".week")).forEach(function(week){
       dedupeBands(week);
       repackWeek(week);
     });
+    dedupeCards();
   }
 
   function queue(){
@@ -112,5 +228,6 @@
 
   queue();
   new MutationObserver(queue).observe(calendar,{childList:true,subtree:true});
+  if(cards)new MutationObserver(queue).observe(cards,{childList:true,subtree:true});
   window.addEventListener("resize",queue,{passive:true});
 })();
