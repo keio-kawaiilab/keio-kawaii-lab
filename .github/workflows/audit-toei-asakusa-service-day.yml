@@ -1,0 +1,89 @@
+name: Audit Toei Asakusa service-day chronology
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'data/transit/toei/timetable-index.json'
+      - 'data/transit/toei/timetables/899209dea5fc3a.json'
+      - 'scripts/audit_toei_asakusa_independent_mother_set.py'
+      - 'scripts/audit_toei_asakusa_service_day.py'
+      - 'scripts/verify_toei_asakusa_service_day.py'
+      - 'scripts/test_toei_asakusa_service_day.py'
+      - '.github/workflows/audit-toei-asakusa-service-day.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile and unit test
+        run: |
+          python -m py_compile \
+            scripts/audit_toei_asakusa_independent_mother_set.py \
+            scripts/audit_toei_asakusa_service_day.py \
+            scripts/verify_toei_asakusa_service_day.py \
+            scripts/test_toei_asakusa_service_day.py
+          python scripts/test_toei_asakusa_service_day.py
+      - name: Audit all 1260 Toei Asakusa trips with strict midnight normalization
+        run: |
+          python scripts/audit_toei_asakusa_service_day.py \
+            --output /tmp/toei-asakusa-service-day.json
+          python scripts/verify_toei_asakusa_service_day.py \
+            /tmp/toei-asakusa-service-day.json
+      - name: Write compact verified summary
+        run: |
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+          p=json.loads(Path('/tmp/toei-asakusa-service-day.json').read_text(encoding='utf-8'))
+          s={
+            'version':2,
+            'generatedAt':datetime.now(timezone.utc).isoformat(),
+            'railway':p['railway'],
+            'timeBasis':p['timeBasis'],
+            'actualTripCount':p['actualTripCount'],
+            'uniqueTimetableIdCount':p['uniqueTimetableIdCount'],
+            'uniqueCalendarTrainIdCount':p['uniqueCalendarTrainIdCount'],
+            'stationCount':p['stationCount'],
+            'stopCount':p['stopCount'],
+            'connectionCount':p['connectionCount'],
+            'calendarCounts':p['calendarCounts'],
+            'internalDestinationTrips':p['internalDestinationTrips'],
+            'externalDestinationTrips':p['externalDestinationTrips'],
+            'externalDestinationBoundaryCounts':p['externalDestinationBoundaryCounts'],
+            'rawNonMonotonicTripCount':p['rawNonMonotonicTripCount'],
+            'acceptedMidnightWrapTripCount':p['acceptedMidnightWrapTripCount'],
+            'unsafeTimeRegressionTripCount':p['unsafeTimeRegressionTripCount'],
+            'issues':p['issues'],
+            'runtimeSameTrainPromotions':0,
+            'note':'All raw time regressions are strictly classified as one 23:xx→00-02:xx service-day wrap; raw values are preserved. Cross-operator identity remains fail-closed.'
+          }
+          path=Path('docs/transit/toei-asakusa-independent-mother-set-audit.json')
+          path.parent.mkdir(parents=True,exist_ok=True)
+          path.write_text(json.dumps(s,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(s,ensure_ascii=False,indent=2))
+          PY
+      - name: Commit verified summary
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/transit/toei-asakusa-independent-mother-set-audit.json
+          if git diff --cached --quiet; then
+            echo 'No summary change.'
+            exit 0
+          fi
+          git commit -m 'Record verified Toei Asakusa mother-set audit'
+          git pull --rebase origin main
+          git push origin HEAD:main
