@@ -83,7 +83,7 @@ jobs:
               assert row.get('matchStatus') == 'matched-singleton', row
               assert row.get('sourceMatches') == [row.get('fromFragment')], row
               assert row.get('targetMatches') == [row.get('toFragment')], row
-              assert row.get('boundaryId') in ('keikyu-main-airport-kamata', 'keikyu-main-kurihama-horinouchi'), row
+              assert row.get('boundaryId') in ('keikyu-main-airport-kamata', 'keikyu-main-kurihama-horinouchi', 'keikyu-main-zushi-kanazawahakkei'), row
               assert ({'same-printed-column-includes-shinagawa-and-haneda', 'same-printed-column-two-exact-station-times'} & set(row.get('evidence') or [])), row
           PY
       - name: Validate production evidence in strict finalizer
