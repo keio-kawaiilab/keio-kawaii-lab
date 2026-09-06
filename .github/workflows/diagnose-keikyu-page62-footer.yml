@@ -1,4 +1,4 @@
-name: Diagnose Keikyu printed page 62 footer geometry
+name: Diagnose Keikyu footer geometry
 
 on:
   push:
@@ -19,25 +19,35 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y poppler-utils
-      - name: Print PDF page 67 footer words and detector candidates
+      - name: Compare missing and normal footer geometry
         run: |
           python - <<'PY'
-          import tempfile
+          import re, statistics, tempfile
           from pathlib import Path
           import sys
           sys.path.insert(0, 'scripts')
           from keikyu_official_pdf import download_official_pdf, bbox_words
-          from audit_keikyu_previous_publication_refs import detect_printed_page_number, _footer_page_candidates
+          from audit_keikyu_previous_publication_refs import detect_printed_page_number
 
+          numeric = re.compile(r'^\d{1,3}$')
           with tempfile.TemporaryDirectory() as td:
               pdf = Path(td) / 'schedule_all.pdf'
               download_official_pdf(pdf)
-              width, height, words = bbox_words(pdf, 67)
-              print('PAGE_SIZE', width, height)
-              print('DETECTED', detect_printed_page_number(width, height, words))
-              print('OUTER_GUTTER', sorted(_footer_page_candidates(width, height, words, min_y_fraction=0.86, edge_fraction=0.075)))
-              print('STRICT_BOTTOM', sorted(_footer_page_candidates(width, height, words, min_y_fraction=0.94, edge_fraction=0.12)))
-              for w in sorted(words, key=lambda x: (x.y, x.x)):
-                  if w.y >= height * 0.82 and (w.x <= width * 0.18 or w.x >= width * 0.82):
-                      print(f'WORD text={w.text!r} x={w.x:.3f} y={w.y:.3f} xmin={w.x_min:.3f} xmax={w.x_max:.3f} ymin={w.y_min:.3f} ymax={w.y_max:.3f}')
+              for page in (8, 37, 67, 68, 100):
+                  width, height, words = bbox_words(pdf, page)
+                  print('=== PDF_PAGE', page, 'SIZE', width, height, 'DETECTED', detect_printed_page_number(width, height, words), '===')
+                  rows=[]
+                  for w in words:
+                      if not numeric.fullmatch(w.text):
+                          continue
+                      if w.y < height * 0.82:
+                          continue
+                      if not (w.x < width * 0.18 or w.x > width * 0.82):
+                          continue
+                      rows.append((w.text,w.x,w.y,w.y_max-w.y_min,w.x_min,w.x_max))
+                  for row in sorted(rows, key=lambda r:(r[2],r[1])):
+                      print('NUM', *row)
+                  heights=[r[3] for r in rows]
+                  if heights:
+                      print('HEIGHTS min/median/max', min(heights), statistics.median(heights), max(heights))
           PY
