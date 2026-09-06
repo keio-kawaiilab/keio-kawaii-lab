@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
-"""Probe station/arrival/departure row semantics on one Keikyu timetable page.
+"""Probe exact station/arrival/departure row semantics on one Keikyu PDF page.
 
-This is deliberately diagnostic. It proves whether PDF Y-coordinate rows can
-bind a strict train column to the published station row without using any time
-proximity between trains.
+The official timetable sometimes prints a station name on one Y row and its
+arrival/departure times on an adjacent Y row.  This probe resolves that printed
+structure spatially against the canonical Keikyu station list.  It never uses
+clock-time proximity between trains and never guesses a station from a train's
+destination.
 """
 from __future__ import annotations
 
 import json
+import re
 import tempfile
 from pathlib import Path
+from typing import Any
 
 from keikyu_official_pdf import (
     TIME_RE,
@@ -20,14 +24,62 @@ from keikyu_official_pdf import (
     nearest_column,
 )
 
+ROOT = Path(__file__).resolve().parents[1]
+ENTITIES = ROOT / "data/transit/keikyu/entities.json"
 PAGE = 7
+IN_SCOPE_RAILWAYS = {
+    "odpt.Railway:Keikyu.Main",
+    "odpt.Railway:Keikyu.Airport",
+    "odpt.Railway:Keikyu.Kurihama",
+    "odpt.Railway:Keikyu.Zushi",
+}
 
 
 def compact_join(words) -> str:
-    return "".join(word.text for word in sorted(words, key=lambda word: word.x))
+    return re.sub(r"\s+", "", "".join(word.text for word in sorted(words, key=lambda word: word.x)))
+
+
+def station_titles() -> list[str]:
+    payload = json.loads(ENTITIES.read_text(encoding="utf-8"))
+    titles: set[str] = set()
+    for row in payload.get("Station") or []:
+        if not isinstance(row, dict) or row.get("odpt:railway") not in IN_SCOPE_RAILWAYS:
+            continue
+        title: Any = row.get("dc:title")
+        station_title = row.get("odpt:stationTitle")
+        if isinstance(station_title, dict):
+            title = station_title.get("ja") or title
+        if title:
+            titles.add(re.sub(r"\s+", "", str(title)))
+    # Longer first prevents a hypothetical short name from shadowing a long one.
+    return sorted(titles, key=lambda value: (-len(value), value))
+
+
+def station_matches(left_text: str, titles: list[str]) -> list[str]:
+    matches = [title for title in titles if title in left_text]
+    if not matches:
+        return []
+    longest = len(matches[0])
+    return [title for title in matches if len(title) == longest]
+
+
+def marker(left_text: str) -> str | None:
+    # Ignore headings such as 発車番線; operational markers are printed at the
+    # right edge of the station-label area and therefore end the compact row.
+    if left_text.endswith("着"):
+        return "arrival"
+    if left_text.endswith("発"):
+        return "departure"
+    if left_text.endswith("〃"):
+        return "pass"
+    return None
 
 
 def main() -> int:
+    titles = station_titles()
+    if not titles:
+        raise RuntimeError("no in-scope Keikyu station titles loaded")
+
     with tempfile.TemporaryDirectory(prefix="keikyu-row-probe-") as temp_dir:
         pdf_path = Path(temp_dir) / "schedule_all.pdf"
         download_official_pdf(pdf_path)
@@ -37,8 +89,7 @@ def main() -> int:
             raise RuntimeError("could not prove train-column grid")
 
         left_boundary = grid.centers[0] - grid.pitch * 0.55
-        rows = []
-        inherited_station_label = None
+        raw_rows: list[dict[str, Any]] = []
         for row in cluster_by_y(words, tolerance=1.35):
             y = sum(word.y for word in row) / len(row)
             if y <= grid.header_y + 20:
@@ -58,46 +109,104 @@ def main() -> int:
                     continue
                 cells.append({"column": column, "text": word.text, "x": round(word.x, 2)})
 
-            # Rows with station labels but no time cells are still useful because
-            # some arrival/departure labels occupy a separate printed row.
-            looks_operational = any(token in left_text for token in ("発", "着", "〃"))
-            if not looks_operational and not cells:
+            matches = station_matches(left_text, titles)
+            row_marker = marker(left_text)
+            if not matches and row_marker is None and not cells:
                 continue
-
-            # Diagnostic inheritance only: do not yet publish this as station
-            # identity. A subsequent parser must resolve it against known station
-            # titles and validate row ordering.
-            if any(token in left_text for token in ("発", "着", "〃")) and len(left_text) > 1:
-                inherited_station_label = left_text
-
-            rows.append(
+            raw_rows.append(
                 {
-                    "y": round(y, 2),
+                    "y": y,
                     "left": left_text,
-                    "candidatePreviousOperationalRow": inherited_station_label,
-                    "cellCount": len(cells),
-                    "cells": cells[:20],
+                    "stationMatches": matches,
+                    "marker": row_marker,
+                    "cells": cells,
                 }
             )
 
+        station_anchors = [
+            {"y": row["y"], "station": row["stationMatches"][0], "marker": row["marker"]}
+            for row in raw_rows
+            if len(row["stationMatches"]) == 1
+        ]
+
+        resolved_rows = []
+        unresolved_timed_rows = []
+        for row in raw_rows:
+            if not row["cells"]:
+                continue
+
+            station = None
+            resolution = None
+            if len(row["stationMatches"]) == 1:
+                station = row["stationMatches"][0]
+                resolution = "same-row-station-title"
+            elif len(row["stationMatches"]) > 1:
+                resolution = "ambiguous-same-row-station-title"
+            elif row["marker"] == "arrival":
+                # Printed arrival rows can sit immediately above the station's
+                # named departure row.  Only use a following canonical label.
+                candidates = [anchor for anchor in station_anchors if 0 < anchor["y"] - row["y"] <= 10.5]
+                if candidates:
+                    closest = min(candidates, key=lambda anchor: anchor["y"] - row["y"])
+                    station = closest["station"]
+                    resolution = "arrival-row-to-following-station-title"
+            elif row["marker"] == "departure":
+                # Conversely, a station's named arrival row can be followed by
+                # a separate departure row.  Only use a preceding label.
+                candidates = [anchor for anchor in station_anchors if 0 < row["y"] - anchor["y"] <= 10.5]
+                if candidates:
+                    closest = min(candidates, key=lambda anchor: row["y"] - anchor["y"])
+                    station = closest["station"]
+                    resolution = "departure-row-to-preceding-station-title"
+
+            item = {
+                "y": round(row["y"], 2),
+                "left": row["left"],
+                "marker": row["marker"],
+                "station": station,
+                "resolution": resolution,
+                "cellCount": len(row["cells"]),
+                "cells": row["cells"][:20],
+            }
+            if station and row["marker"]:
+                resolved_rows.append(item)
+            else:
+                unresolved_timed_rows.append(item)
+
+        total_timed = len(resolved_rows) + len(unresolved_timed_rows)
+        resolved_cells = sum(row["cellCount"] for row in resolved_rows)
+        unresolved_cells = sum(row["cellCount"] for row in unresolved_timed_rows)
         report = {
             "page": PAGE,
             "columnCount": len(grid.centers),
-            "headerY": round(grid.header_y, 2),
-            "leftBoundary": round(left_boundary, 2),
-            "operationalOrTimedRows": len(rows),
-            "rows": rows[:140],
+            "canonicalStationTitleCount": len(titles),
+            "stationAnchorCount": len(station_anchors),
+            "timedOperationalRows": total_timed,
+            "resolvedTimedRows": len(resolved_rows),
+            "unresolvedTimedRows": len(unresolved_timed_rows),
+            "resolvedTimeCells": resolved_cells,
+            "unresolvedTimeCells": unresolved_cells,
+            "resolvedRows": resolved_rows,
+            "unresolvedSample": unresolved_timed_rows[:40],
             "policy": {
-                "sameYBindsTimeToPrintedRow": True,
-                "timeProximityBindsTrains": False,
-                "rowInheritanceMayPublishStationIdentity": False,
+                "sameYMayBindStation": True,
+                "adjacentSpatialArrivalDepartureMayBindStation": True,
+                "clockTimeProximityMayBindTrainOrStation": False,
+                "destinationMayBindTrainOrStation": False,
+                "ambiguousStationRowMayPublish": False,
             },
         }
         print(json.dumps(report, ensure_ascii=False, indent=2))
-        if not any(row["cellCount"] > 0 and "泉岳寺" in row["left"] for row in rows):
-            raise RuntimeError("did not bind any timetable cell to 泉岳寺 row")
-        if not any(row["cellCount"] > 0 and "三崎口" in row["left"] for row in rows):
-            raise RuntimeError("did not bind any timetable cell to 三崎口 row")
+
+        # Structural sanity checks only. 泉岳寺 is intentionally NOT required
+        # to have a same-Y time cell because the official page prints it as a
+        # header/continuation station on this page.
+        if not any(row["station"] == "三崎口" and row["cellCount"] > 0 for row in resolved_rows):
+            raise RuntimeError("did not resolve 三崎口 timed row")
+        if not any(row["resolution"] == "arrival-row-to-following-station-title" for row in resolved_rows):
+            raise RuntimeError("did not prove any split arrival/station row")
+        if not any(row["resolution"] == "departure-row-to-preceding-station-title" for row in resolved_rows):
+            raise RuntimeError("did not prove any split station/departure row")
         return 0
 
 
