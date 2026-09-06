@@ -32,7 +32,7 @@ def payload(entry: dict, *, safe: bool = True) -> dict:
     }
 
 
-def entry(**changes) -> dict:
+def entry(*, independently_verified: bool = True, **changes) -> dict:
     base = {
         "id": "official:test",
         "matchStatus": "matched-singleton",
@@ -45,10 +45,12 @@ def entry(**changes) -> dict:
         "targetMatches": ["t1"],
         "evidence": [
             "operator-official-connection-timetable",
-            generated.MARKER,
+            generated.SAFE_CONTINUATION_MARKER if independently_verified else generated.LEGACY_COLUMN_MARKER,
         ],
         "sourceUrl": "https://www.keikyu.co.jp/example.pdf",
     }
+    if independently_verified:
+        base["verification"] = {"crossBoundaryContinuationVerified": True}
     base.update(changes)
     return base
 
@@ -79,7 +81,7 @@ class GeneratedEvidenceTest(unittest.TestCase):
             )
         return edges, unresolved
 
-    def test_valid_singleton_adds_evidence_backed_edge(self):
+    def test_independently_verified_singleton_adds_evidence_backed_edge(self):
         edges, unresolved = self.apply(payload(entry()))
         self.assertEqual([], unresolved)
         self.assertEqual(1, len(edges))
@@ -88,7 +90,26 @@ class GeneratedEvidenceTest(unittest.TestCase):
         self.assertEqual("evidence-backed", edge["identityLevel"])
         self.assertEqual(KEIKYU, edge["boundary"]["fromRailway"])
         self.assertEqual(TOEI, edge["boundary"]["toRailway"])
-        self.assertIn("keikyu-official-connection-timetable-same-column", edge["evidence"])
+        self.assertIn("independently-verified-cross-boundary-continuation", edge["evidence"])
+        self.assertNotIn(generated.LEGACY_COLUMN_MARKER, edge["evidence"])
+
+    def test_legacy_same_column_candidate_never_promotes(self):
+        edges, unresolved = self.apply(payload(entry(independently_verified=False)))
+        self.assertEqual([], edges)
+        self.assertTrue(any(
+            row.get("kind") == "keikyu-generated-evidence-legacy-column-marker-disabled"
+            for row in unresolved
+        ))
+
+    def test_safe_marker_without_explicit_verification_fails_closed(self):
+        candidate = entry()
+        candidate.pop("verification", None)
+        edges, unresolved = self.apply(payload(candidate))
+        self.assertEqual([], edges)
+        self.assertTrue(any(
+            row.get("reason") == "cross-boundary-continuation-not-verified"
+            for row in unresolved
+        ))
 
     def test_unsafe_policy_fails_closed(self):
         edges, unresolved = self.apply(payload(entry(), safe=False))
@@ -108,12 +129,12 @@ class GeneratedEvidenceTest(unittest.TestCase):
         self.assertEqual([], edges)
         self.assertEqual("non-singleton-recorded-match", unresolved[0]["reason"])
 
-    def test_wrong_boundary_marker_fails_closed(self):
+    def test_wrong_boundary_fails_closed(self):
         edges, unresolved = self.apply(payload(entry(boundaryId="wrong-boundary")))
         self.assertEqual([], edges)
-        self.assertEqual("missing-official-column-marker", unresolved[0]["reason"])
+        self.assertEqual("missing-independent-cross-boundary-continuation-marker", unresolved[0]["reason"])
 
-    def test_unverified_boundary_fails_closed(self):
+    def test_unverified_operational_boundary_fails_closed(self):
         edges, unresolved = self.apply(payload(entry()), graph=indexes(verified=False))
         self.assertEqual([], edges)
         self.assertEqual("unverified-operational-boundary", unresolved[0]["reason"])
