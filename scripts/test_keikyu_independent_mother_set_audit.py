@@ -111,12 +111,15 @@ class KeikyuIndependentMotherSetAuditTest(unittest.TestCase):
             verify(payload)
 
     def test_empty_fragment_is_retained_not_silently_dropped(self):
-        a = fragment(7, 0, None, 0)
-        payload = build_audit(stop_payload([a]), graph([]))
+        normal = fragment(7, 0, "100A", 1)
+        empty = fragment(7, 1, None, 0)
+        payload = build_audit(stop_payload([normal, empty]), graph([]))
         result = verify(payload)
         self.assertTrue(result["verified"])
         self.assertEqual(payload["emptyLocalFragmentCount"], 1)
-        self.assertEqual(payload["candidatePhysicalTrainCount"], 1)
+        self.assertIn(empty["id"], payload["emptyLocalFragments"])
+        self.assertEqual(payload["candidatePhysicalTrainCount"], 2)
+        self.assertEqual(payload["sourceTimeCells"], 1)
 
 
 if __name__ == "__main__":
