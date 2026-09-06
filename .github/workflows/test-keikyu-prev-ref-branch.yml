@@ -7,6 +7,9 @@ on:
     paths:
       - 'scripts/audit_keikyu_previous_publication_refs.py'
       - 'scripts/test_keikyu_previous_publication_refs.py'
+      - 'scripts/build_keikyu_cross_page_identity_audit.py'
+      - 'scripts/verify_keikyu_cross_page_identity_audit.py'
+      - 'scripts/test_keikyu_cross_page_identity_audit.py'
       - '.github/workflows/test-keikyu-prev-ref-branch.yml'
 
 permissions:
@@ -27,7 +30,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y poppler-utils
           pip install pdfplumber==0.11.7 requests==2.32.5
-      - name: Compile parsers
+      - name: Compile parsers and identity audit
         run: |
           python -m py_compile \
             scripts/keikyu_official_pdf.py \
@@ -37,17 +40,29 @@ jobs:
             scripts/verify_keikyu_official_stop_times.py \
             scripts/test_keikyu_official_stop_times.py \
             scripts/audit_keikyu_previous_publication_refs.py \
-            scripts/test_keikyu_previous_publication_refs.py
-      - name: Run stop-time unit regressions
-        run: python scripts/test_keikyu_official_stop_times.py
-      - name: Run previous-publication unit regressions
-        run: python scripts/test_keikyu_previous_publication_refs.py
+            scripts/test_keikyu_previous_publication_refs.py \
+            scripts/build_keikyu_cross_page_identity_audit.py \
+            scripts/verify_keikyu_cross_page_identity_audit.py \
+            scripts/test_keikyu_cross_page_identity_audit.py
+      - name: Run unit regressions
+        run: |
+          python scripts/test_keikyu_official_stop_times.py
+          python scripts/test_keikyu_previous_publication_refs.py
+          python scripts/test_keikyu_cross_page_identity_audit.py
       - name: Build full official stop-time audit dataset
         run: python scripts/build_keikyu_official_stop_times.py --output /tmp/keikyu-official-stop-times.json
       - name: Verify full official stop-time audit dataset
         run: python scripts/verify_keikyu_official_stop_times.py /tmp/keikyu-official-stop-times.json
       - name: Audit explicit previous-publication references
         run: python scripts/audit_keikyu_previous_publication_refs.py --output /tmp/keikyu-previous-publication-refs.json
+      - name: Build cross-page identity candidate graph
+        run: |
+          python scripts/build_keikyu_cross_page_identity_audit.py \
+            /tmp/keikyu-official-stop-times.json \
+            /tmp/keikyu-previous-publication-refs.json \
+            --output /tmp/keikyu-cross-page-identity-audit.json
+      - name: Verify cross-page identity candidate graph
+        run: python scripts/verify_keikyu_cross_page_identity_audit.py /tmp/keikyu-cross-page-identity-audit.json
       - name: Enforce zero runtime promotion and write summary
         run: |
           python - <<'PY'
@@ -57,9 +72,12 @@ jobs:
 
           stop_times = json.loads(Path('/tmp/keikyu-official-stop-times.json').read_text(encoding='utf-8'))
           refs = json.loads(Path('/tmp/keikyu-previous-publication-refs.json').read_text(encoding='utf-8'))
+          graph = json.loads(Path('/tmp/keikyu-cross-page-identity-audit.json').read_text(encoding='utf-8'))
           assert stop_times['identityPolicy']['runtimeSameTrainPromotions'] == 0
           assert refs['identityPolicy']['runtimeSameTrainPromotions'] == 0
           assert refs['identityPolicy']['crossPageIdentityEstablished'] is False
+          assert graph['identityPolicy']['runtimeSameTrainPromotions'] == 0
+          assert graph['identityPolicy']['crossPageIdentityEstablished'] is False
           assert refs['fragmentCount'] > 0
           missing_printed = [row['pdfPage'] for row in refs['pages'] if row.get('printedPage') is None]
           unresolved_refs = [
@@ -76,7 +94,7 @@ jobs:
               if row.get('targetStatus') not in {'no-reference', 'unique-explicit-reference-candidate'}
           ]
           summary = {
-              'version': 1,
+              'version': 2,
               'generatedAt': datetime.now(timezone.utc).isoformat(),
               'sourceSha256': refs['source']['sha256'],
               'pdfPages': refs['source']['pdfPages'],
@@ -90,8 +108,18 @@ jobs:
               'duplicatePrintedPageMappings': refs['duplicatePrintedPageMappings'],
               'targetStatusCounts': refs['targetStatusCounts'],
               'unresolvedReferenceDetails': unresolved_refs,
+              'identityGraph': {
+                  'candidateEdges': graph['materializedCandidateEdgeCount'],
+                  'nodes': graph['nodeCount'],
+                  'components': graph['identityComponentCount'],
+                  'componentSizeHistogram': graph['componentSizeHistogram'],
+                  'branchingTargets': len(graph['branchingTargets']),
+                  'multiplePreviousSources': len(graph['multiplePreviousSources']),
+                  'cycles': len(graph['cycles']),
+                  'issues': len(graph['issues']),
+              },
               'runtimeSameTrainPromotions': 0,
-              'note': 'Audit-only snapshot. Unique explicit references are candidates, not runtime same-train promotions.'
+              'note': 'Audit-only snapshot. Official cross-page references must pass structural graph verification before any later runtime promotion.'
           }
           path = Path('docs/transit/keikyu-previous-publication-audit.json')
           path.parent.mkdir(parents=True, exist_ok=True)
