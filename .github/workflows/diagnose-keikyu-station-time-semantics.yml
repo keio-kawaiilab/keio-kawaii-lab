@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - 'scripts/diagnose_keikyu_station_time_pages.py'
+      - 'scripts/diagnose_keikyu_grid_edges.py'
       - 'scripts/audit_keikyu_station_time_resolution.py'
       - 'scripts/probe_keikyu_station_rows.py'
       - 'scripts/keikyu_official_pdf.py'
@@ -30,3 +31,5 @@ jobs:
           fi
       - name: Diagnose station-time semantic coverage
         run: python scripts/diagnose_keikyu_station_time_pages.py
+      - name: Diagnose anonymous train columns outside detected grid
+        run: python scripts/diagnose_keikyu_grid_edges.py
