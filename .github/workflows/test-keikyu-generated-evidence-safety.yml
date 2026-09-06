@@ -1,0 +1,99 @@
+name: Test Keikyu generated evidence safety gate
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/keikyu_generated_evidence.py'
+      - '.github/workflows/test-keikyu-generated-evidence-safety.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify legacy same-column evidence cannot promote same-train
+        run: |
+          python - <<'PY'
+          import json
+          import tempfile
+          from pathlib import Path
+          from scripts.keikyu_generated_evidence import (
+              BOUNDARY_ID,
+              LEGACY_COLUMN_MARKER,
+              SAFE_CONTINUATION_MARKER,
+              apply_generated_evidence,
+          )
+
+          source = {
+              'id': 'source',
+              'railway': 'odpt.Railway:Keikyu.Main',
+          }
+          target = {
+              'id': 'target',
+              'railway': 'odpt.Railway:Toei.Asakusa',
+          }
+          indexes = {
+              'graph': {
+                  'odpt.Railway:Keikyu.Main': [{
+                      'toRailway': 'odpt.Railway:Toei.Asakusa',
+                      'boundaryId': BOUNDARY_ID,
+                  }]
+              }
+          }
+
+          base = {
+              'policy': {
+                  'trainNumberAloneMayEstablishIdentity': False,
+                  'timeProximityAloneMayEstablishIdentity': False,
+              },
+              'entries': [{
+                  'id': 'candidate',
+                  'matchStatus': 'matched-singleton',
+                  'boundaryId': BOUNDARY_ID,
+                  'fromFragment': 'source',
+                  'toFragment': 'target',
+                  'sourceMatches': ['source'],
+                  'targetMatches': ['target'],
+                  'fromRailway': 'odpt.Railway:Keikyu.Main',
+                  'toRailway': 'odpt.Railway:Toei.Asakusa',
+                  'sourceUrl': 'https://www.keikyu.co.jp/',
+              }],
+          }
+
+          def run(payload):
+              with tempfile.TemporaryDirectory() as directory:
+                  path = Path(directory) / 'evidence.json'
+                  path.write_text(json.dumps(payload), encoding='utf-8')
+                  unresolved = []
+                  edges = apply_generated_evidence([source, target], [], unresolved, indexes, path)
+                  return edges, unresolved
+
+          legacy = json.loads(json.dumps(base))
+          legacy['entries'][0]['evidence'] = [LEGACY_COLUMN_MARKER]
+          edges, unresolved = run(legacy)
+          assert edges == [], edges
+          assert any(row.get('kind') == 'keikyu-generated-evidence-legacy-column-marker-disabled' for row in unresolved), unresolved
+
+          unverified = json.loads(json.dumps(base))
+          unverified['entries'][0]['evidence'] = [SAFE_CONTINUATION_MARKER]
+          edges, unresolved = run(unverified)
+          assert edges == [], edges
+          assert any(row.get('reason') == 'cross-boundary-continuation-not-verified' for row in unresolved), unresolved
+
+          verified = json.loads(json.dumps(base))
+          verified['entries'][0]['evidence'] = [SAFE_CONTINUATION_MARKER]
+          verified['entries'][0]['verification'] = {'crossBoundaryContinuationVerified': True}
+          edges, unresolved = run(verified)
+          assert len(edges) == 1, edges
+          assert edges[0]['classification'] == 'same-train', edges
+          assert edges[0]['identityLevel'] == 'evidence-backed', edges
+          print('PASS: legacy blocked; unverified blocked; independently verified continuation accepted')
+          PY
