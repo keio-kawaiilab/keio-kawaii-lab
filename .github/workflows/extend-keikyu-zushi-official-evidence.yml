@@ -68,18 +68,8 @@ jobs:
                   raise SystemExit(f'selective patch anchor missing: {old!r}')
               text = text.replace(old, new, 1)
           path.write_text(text, encoding='utf-8')
-
-          path = Path('.github/workflows/collect-keikyu-official-through-evidence.yml')
-          text = path.read_text(encoding='utf-8')
-          old = "assert row.get('boundaryId') in ('keikyu-main-airport-kamata', 'keikyu-main-kurihama-horinouchi'), row"
-          new = "assert row.get('boundaryId') in ('keikyu-main-airport-kamata', 'keikyu-main-kurihama-horinouchi', 'keikyu-main-zushi-kanazawahakkei'), row"
-          if old in text:
-              text = text.replace(old, new, 1)
-          elif new not in text:
-              raise SystemExit('collection workflow boundary allowlist anchor missing')
-          path.write_text(text, encoding='utf-8')
           PY
-      - name: Run strict consumer tests
+      - name: Run strict producer and consumer tests
         run: |
           pip install pdfplumber==0.11.7 PyMuPDF==1.26.4 requests==2.32.5
           python -m py_compile scripts/keikyu_internal_official_evidence.py scripts/keikyu_internal_official_evidence_selective.py
@@ -107,7 +97,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add scripts/keikyu_internal_official_evidence.py scripts/keikyu_internal_official_evidence_selective.py .github/workflows/collect-keikyu-official-through-evidence.yml
+          git add scripts/keikyu_internal_official_evidence.py scripts/keikyu_internal_official_evidence_selective.py
           if git diff --cached --quiet; then
             echo "Zushi support already present"
             exit 0
