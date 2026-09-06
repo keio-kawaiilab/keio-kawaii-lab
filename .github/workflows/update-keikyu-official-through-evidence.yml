@@ -34,6 +34,10 @@ on:
       - 'scripts/build_keikyu_cross_page_identity_audit.py'
       - 'scripts/verify_keikyu_cross_page_identity_audit.py'
       - 'scripts/test_keikyu_cross_page_identity_audit.py'
+      - 'scripts/audit_keikyu_empty_fragments.py'
+      - 'scripts/build_keikyu_independent_mother_set_audit.py'
+      - 'scripts/verify_keikyu_independent_mother_set_audit.py'
+      - 'scripts/test_keikyu_independent_mother_set_audit.py'
       - '.github/workflows/update-keikyu-official-through-evidence.yml'
   schedule:
     - cron: '17 20 * * 6'
@@ -68,7 +72,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y poppler-utils
           pip install pdfplumber==0.11.7 requests==2.32.5
-      - name: Gate on full official Keikyu timetable and cross-page identity audit
+      - name: Gate on full official Keikyu timetable, identity graph, and mother set
         run: |
           python -m py_compile \
             scripts/keikyu_official_pdf.py \
@@ -82,10 +86,15 @@ jobs:
             scripts/test_keikyu_previous_publication_refs.py \
             scripts/build_keikyu_cross_page_identity_audit.py \
             scripts/verify_keikyu_cross_page_identity_audit.py \
-            scripts/test_keikyu_cross_page_identity_audit.py
+            scripts/test_keikyu_cross_page_identity_audit.py \
+            scripts/audit_keikyu_empty_fragments.py \
+            scripts/build_keikyu_independent_mother_set_audit.py \
+            scripts/verify_keikyu_independent_mother_set_audit.py \
+            scripts/test_keikyu_independent_mother_set_audit.py
           python scripts/test_keikyu_official_stop_times.py
           python scripts/test_keikyu_previous_publication_refs.py
           python scripts/test_keikyu_cross_page_identity_audit.py
+          python scripts/test_keikyu_independent_mother_set_audit.py
           python scripts/build_keikyu_official_stop_times.py \
             --output /tmp/keikyu-official-stop-times.json
           python scripts/verify_keikyu_official_stop_times.py \
@@ -98,6 +107,16 @@ jobs:
             --output /tmp/keikyu-cross-page-identity-audit.json
           python scripts/verify_keikyu_cross_page_identity_audit.py \
             /tmp/keikyu-cross-page-identity-audit.json
+          python scripts/audit_keikyu_empty_fragments.py \
+            /tmp/keikyu-official-stop-times.json \
+            /tmp/keikyu-cross-page-identity-audit.json \
+            --output /tmp/keikyu-empty-fragments.json
+          python scripts/build_keikyu_independent_mother_set_audit.py \
+            /tmp/keikyu-official-stop-times.json \
+            /tmp/keikyu-cross-page-identity-audit.json \
+            --output /tmp/keikyu-independent-mother-set.json
+          python scripts/verify_keikyu_independent_mother_set_audit.py \
+            /tmp/keikyu-independent-mother-set.json
           python - <<'PY'
           import json
           from pathlib import Path
@@ -105,6 +124,8 @@ jobs:
           stop_times = json.loads(Path('/tmp/keikyu-official-stop-times.json').read_text(encoding='utf-8'))
           refs = json.loads(Path('/tmp/keikyu-previous-publication-refs.json').read_text(encoding='utf-8'))
           graph = json.loads(Path('/tmp/keikyu-cross-page-identity-audit.json').read_text(encoding='utf-8'))
+          empty = json.loads(Path('/tmp/keikyu-empty-fragments.json').read_text(encoding='utf-8'))
+          mother = json.loads(Path('/tmp/keikyu-independent-mother-set.json').read_text(encoding='utf-8'))
 
           totals = stop_times.get('totals') or {}
           stop_policy = stop_times.get('identityPolicy') or {}
@@ -118,9 +139,10 @@ jobs:
           missing_page_numbers = int(refs.get('pagesWithoutDetectedPrintedPageNumber') or 0)
           statuses = refs.get('targetStatusCounts') or {}
           graph_policy = graph.get('identityPolicy') or {}
+          mother_policy = mother.get('identityPolicy') or {}
 
           print('FULL_TIMETABLE_PAGES', len(pages))
-          print('FULL_TIMETABLE_FRAGMENTS', fragments)
+          print('FULL_TIMETABLE_GEOMETRY_FRAGMENTS', fragments)
           print('FULL_TIMETABLE_SOURCE_CELLS', source)
           print('FULL_TIMETABLE_RESOLVED_CELLS', resolved)
           print('FULL_TIMETABLE_UNRESOLVED_CELLS', unresolved)
@@ -136,10 +158,19 @@ jobs:
           print('IDENTITY_GRAPH_MULTIPLE_PREVIOUS', len(graph.get('multiplePreviousSources') or {}))
           print('IDENTITY_GRAPH_CYCLES', len(graph.get('cycles') or []))
           print('IDENTITY_GRAPH_ISSUES', len(graph.get('issues') or []))
-          print('NEW_RUNTIME_SAME_TRAIN_PROMOTIONS', graph_policy.get('runtimeSameTrainPromotions'))
+          print('MOTHER_GEOMETRY_FRAGMENTS', mother.get('geometryFragmentCount'))
+          print('MOTHER_TRAIN_BEARING_FRAGMENTS', mother.get('trainBearingFragmentCount'))
+          print('MOTHER_STRUCTURAL_BLANK_FRAGMENTS', mother.get('structuralBlankFragmentCount'))
+          print('MOTHER_CANDIDATE_PHYSICAL_TRAINS', mother.get('candidatePhysicalTrainCount'))
+          print('MOTHER_JOINED_CANDIDATES', mother.get('joinedPhysicalTrainCandidateCount'))
+          print('MOTHER_SINGLETONS', mother.get('singletonPhysicalTrainCandidateCount'))
+          print('MOTHER_COMPONENT_HISTOGRAM', json.dumps(mother.get('componentSizeHistogram') or {}, sort_keys=True))
+          print('MOTHER_ZERO_TIME_EVIDENCE_BEARING', mother.get('zeroTimeEvidenceBearingFragmentCount'))
+          print('MOTHER_ISSUES', len(mother.get('issues') or []))
+          print('NEW_RUNTIME_SAME_TRAIN_PROMOTIONS', mother_policy.get('runtimeSameTrainPromotions'))
 
           assert pages, 'no timetable pages parsed'
-          assert fragments > 0, 'no train-column fragments parsed'
+          assert fragments > 0, 'no train-column geometry fragments parsed'
           assert source > 0, 'no timetable cells parsed'
           assert resolved > 0, 'no timetable cells semantically resolved'
           assert resolved + unresolved == source, 'source cell accounting mismatch'
@@ -157,6 +188,23 @@ jobs:
           assert not graph.get('issues')
           assert graph_policy.get('crossPageIdentityEstablished') is False
           assert graph_policy.get('runtimeSameTrainPromotions') == 0
+
+          geometry = int(mother.get('geometryFragmentCount') or 0)
+          train_bearing = int(mother.get('trainBearingFragmentCount') or 0)
+          structural = int(mother.get('structuralBlankFragmentCount') or 0)
+          mother_edges = int(mother.get('officialCrossPageEdgeCount') or 0)
+          physical = int(mother.get('candidatePhysicalTrainCount') or 0)
+          assert geometry == fragments
+          assert geometry == train_bearing + structural
+          assert structural == int(empty.get('structuralBlankCandidateCount') or 0)
+          assert int(mother.get('zeroTimeEvidenceBearingFragmentCount') or 0) == int(empty.get('evidenceBearingEmptyFragmentCount') or 0)
+          assert mother_edges == complete_refs
+          assert physical == train_bearing - mother_edges
+          assert int(mother.get('sourceTimeCells') or 0) == source
+          assert int(mother.get('resolvedTimeCells') or 0) == resolved
+          assert int(mother.get('unresolvedTimeCells') or 0) == unresolved
+          assert not mother.get('issues')
+          assert mother_policy.get('runtimeSameTrainPromotions') == 0
           PY
       - name: Test fail-closed extraction and consumer rules
         run: |
