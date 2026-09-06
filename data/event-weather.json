@@ -1,33 +1,12 @@
 {
-  "date": "2026-09-06",
+  "date": "2026-09-07",
   "horizonDays": 7,
-  "generatedAt": "2026-09-06T16:17+09:00",
+  "generatedAt": "2026-09-07T02:35+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
-    {
-      "date": "2026-09-06",
-      "venue": "ベルサール汐留",
-      "venueKey": "ベルサール汐留",
-      "eventIds": [
-        "special-9eeecc44fadaa65a",
-        "special-88fbc286e6995c1d"
-      ],
-      "areaCode": "130010",
-      "areaName": "東京地方",
-      "precision": "area",
-      "label": "雨 所により 夜 雷を伴い 非常に 激しく 降る",
-      "max": 24.0,
-      "min": 24.0,
-      "pop": "100",
-      "popLabel": "12〜18時",
-      "issuedAt": "2026-09-06T11:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
     {
       "date": "2026-09-07",
       "venue": "東京都 池袋・サンシャインシティ 噴水広場",
@@ -40,10 +19,10 @@
       "precision": "area",
       "label": "雨 所により 明け方 まで 雷を伴い 非常に 激しく 降る",
       "max": 28.0,
-      "min": 22.0,
+      "min": 21.0,
       "pop": "70",
       "popLabel": "12〜18時",
-      "issuedAt": "2026-09-06T11:00:00+09:00",
+      "issuedAt": "2026-09-06T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -60,10 +39,10 @@
       "precision": "area",
       "label": "雨 所により 明け方 まで 雷を伴い 非常に 激しく 降る",
       "max": 28.0,
-      "min": 22.0,
+      "min": 21.0,
       "pop": "70",
       "popLabel": "12〜18時",
-      "issuedAt": "2026-09-06T11:00:00+09:00",
+      "issuedAt": "2026-09-06T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -74,6 +53,7 @@
       "venueKey": "グランキューブ大阪メインホール",
       "eventIds": [
         "54a369497f59ce96",
+        "834b04f24d38d0ac",
         "84787797cc4cbcb3",
         "9a117c2e21632619",
         "c06ce2ef470dc1d6",
@@ -88,7 +68,7 @@
       "min": 25.0,
       "pop": "70",
       "popLabel": "1日",
-      "issuedAt": "2026-09-06T11:00:00+09:00",
+      "issuedAt": "2026-09-06T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -108,7 +88,7 @@
       "min": 23.0,
       "pop": "60",
       "popLabel": "1日",
-      "issuedAt": "2026-09-06T11:00:00+09:00",
+      "issuedAt": "2026-09-06T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -119,6 +99,7 @@
       "venueKey": "グランキューブ大阪メインホール",
       "eventIds": [
         "54a369497f59ce96",
+        "834b04f24d38d0ac",
         "84787797cc4cbcb3",
         "9a117c2e21632619",
         "cde44a8b736a9620",
@@ -133,7 +114,7 @@
       "min": 24.0,
       "pop": "60",
       "popLabel": "1日",
-      "issuedAt": "2026-09-06T11:00:00+09:00",
+      "issuedAt": "2026-09-06T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -153,7 +134,7 @@
       "min": 21.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-09-06T11:00:00+09:00",
+      "issuedAt": "2026-09-06T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -173,7 +154,7 @@
       "min": 22.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-09-06T11:00:00+09:00",
+      "issuedAt": "2026-09-06T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -193,28 +174,23 @@
       "min": 23.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-09-06T11:00:00+09:00",
+      "issuedAt": "2026-09-06T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
     }
   ],
   "stats": {
-    "occurrencesInRange": 24,
+    "occurrencesInRange": 25,
     "uniqueVenueDates": 13,
-    "weatherEntries": 9,
+    "weatherEntries": 8,
     "meshEntries": 0,
-    "failures": 4,
+    "failures": 5,
     "meshTimelineEntries": 0,
     "meshExactTempSlots": 0,
     "hourlyRainEntries": 0
   },
   "failures": [
-    {
-      "date": "2026-09-06",
-      "venue": "青森・青い海公園・アスパム",
-      "reason": "都道府県を解決できません"
-    },
     {
       "date": "2026-09-11",
       "venue": "神戸ハーバーランド スペースシアター",
@@ -228,6 +204,16 @@
     {
       "date": "2026-09-13",
       "venue": "北海道 苫小牧・キラキラ公園",
+      "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-09-14",
+      "venue": "SGCホール有明",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-09-14",
+      "venue": "北海道 サッポロファクトリー アトリウム",
       "reason": "都道府県を解決できません"
     }
   ]
