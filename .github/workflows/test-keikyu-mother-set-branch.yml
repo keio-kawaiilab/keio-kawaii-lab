@@ -8,6 +8,7 @@ on:
       - 'scripts/build_keikyu_independent_mother_set_audit.py'
       - 'scripts/verify_keikyu_independent_mother_set_audit.py'
       - 'scripts/test_keikyu_independent_mother_set_audit.py'
+      - 'scripts/audit_keikyu_empty_fragments.py'
       - '.github/workflows/test-keikyu-mother-set-branch.yml'
 
 permissions:
@@ -37,7 +38,8 @@ jobs:
             scripts/verify_keikyu_cross_page_identity_audit.py \
             scripts/build_keikyu_independent_mother_set_audit.py \
             scripts/verify_keikyu_independent_mother_set_audit.py \
-            scripts/test_keikyu_independent_mother_set_audit.py
+            scripts/test_keikyu_independent_mother_set_audit.py \
+            scripts/audit_keikyu_empty_fragments.py
           python scripts/test_keikyu_independent_mother_set_audit.py
       - name: Build official page-local stop times
         run: python scripts/build_keikyu_official_stop_times.py --output /tmp/keikyu-stop-times.json
@@ -50,6 +52,12 @@ jobs:
             /tmp/keikyu-previous-refs.json \
             --output /tmp/keikyu-identity-graph.json
           python scripts/verify_keikyu_cross_page_identity_audit.py /tmp/keikyu-identity-graph.json
+      - name: Classify zero-time grid fragments
+        run: |
+          python scripts/audit_keikyu_empty_fragments.py \
+            /tmp/keikyu-stop-times.json \
+            /tmp/keikyu-identity-graph.json \
+            --output /tmp/keikyu-empty-fragments.json
       - name: Build and verify independent mother set
         run: |
           python scripts/build_keikyu_independent_mother_set_audit.py \
@@ -57,7 +65,7 @@ jobs:
             /tmp/keikyu-identity-graph.json \
             --output /tmp/keikyu-mother-set.json
           python scripts/verify_keikyu_independent_mother_set_audit.py /tmp/keikyu-mother-set.json
-      - name: Write compact audit summary
+      - name: Write compact audit summaries
         run: |
           python - <<'PY'
           import json
@@ -65,25 +73,34 @@ jobs:
           from pathlib import Path
 
           data = json.loads(Path('/tmp/keikyu-mother-set.json').read_text(encoding='utf-8'))
+          empty = json.loads(Path('/tmp/keikyu-empty-fragments.json').read_text(encoding='utf-8'))
           summary = {
-              'version': 1,
+              'version': 2,
               'generatedAt': datetime.now(timezone.utc).isoformat(),
               'sourceSha256': data['sourceSha256'],
               'localFragmentCount': data['localFragmentCount'],
               'officialCrossPageEdgeCount': data['officialCrossPageEdgeCount'],
-              'candidatePhysicalTrainCount': data['candidatePhysicalTrainCount'],
+              'candidatePhysicalTrainCountBeforeBlankClassification': data['candidatePhysicalTrainCount'],
               'joinedPhysicalTrainCandidateCount': data['joinedPhysicalTrainCandidateCount'],
-              'singletonPhysicalTrainCandidateCount': data['singletonPhysicalTrainCandidateCount'],
-              'componentSizeHistogram': data['componentSizeHistogram'],
+              'singletonPhysicalTrainCandidateCountBeforeBlankClassification': data['singletonPhysicalTrainCandidateCount'],
+              'componentSizeHistogramBeforeBlankClassification': data['componentSizeHistogram'],
               'resolvedTimeCells': data['resolvedTimeCells'],
               'unresolvedTimeCells': data['unresolvedTimeCells'],
               'sourceTimeCells': data['sourceTimeCells'],
               'emptyLocalFragmentCount': data['emptyLocalFragmentCount'],
-              'emptyLocalFragments': data['emptyLocalFragments'],
-              'emptyComponentCount': data['emptyComponentCount'],
+              'emptyClassification': {
+                  'counts': empty['emptyCounts'],
+                  'positions': empty['emptyPositionCounts'],
+                  'pagesWithEmptyFragments': empty['pagesWithEmptyFragments'],
+                  'nonemptyAnonymousFragmentCount': empty['nonemptyAnonymousFragmentCount'],
+                  'evidenceBearingEmptyFragmentCount': empty['evidenceBearingEmptyFragmentCount'],
+                  'structuralBlankCandidateCount': empty['structuralBlankCandidateCount'],
+                  'evidenceBearingExamples': empty['evidenceBearingEmptyFragments'][:50],
+                  'structuralBlankExamples': empty['structuralBlankCandidates'][:50],
+              },
               'issues': data['issues'],
               'runtimeSameTrainPromotions': data['identityPolicy']['runtimeSameTrainPromotions'],
-              'note': 'Audit-only independent Keikyu mother set; exact cross-page references are retained as candidate physical identity and do not yet promote runtime zero-transfer identity.'
+              'note': 'Audit-only. Zero-time anonymous unreferenced grid slots are classified separately and are not yet accepted as physical trains.'
           }
           path = Path('docs/transit/keikyu-independent-mother-set-audit.json')
           path.parent.mkdir(parents=True, exist_ok=True)
