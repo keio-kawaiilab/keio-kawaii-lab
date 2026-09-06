@@ -21,6 +21,14 @@ on:
       - 'scripts/test_keikyu_internal_generated_evidence.py'
       - 'scripts/verify_keikyu_internal_materialization.py'
       - 'scripts/reviewed_train_evidence.py'
+      - 'scripts/keikyu_official_pdf.py'
+      - 'scripts/audit_keikyu_official_columns.py'
+      - 'scripts/audit_keikyu_station_time_resolution.py'
+      - 'scripts/probe_keikyu_station_rows.py'
+      - 'scripts/keikyu_connected_station_catalog.py'
+      - 'scripts/build_keikyu_official_stop_times.py'
+      - 'scripts/verify_keikyu_official_stop_times.py'
+      - 'scripts/test_keikyu_official_stop_times.py'
       - '.github/workflows/update-keikyu-official-through-evidence.yml'
   schedule:
     - cron: '17 20 * * 6'
@@ -52,6 +60,49 @@ jobs:
           python-version: '3.12'
       - name: Install dependencies
         run: pip install pdfplumber==0.11.7 requests==2.32.5
+      - name: Gate on full official Keikyu timetable parse
+        run: |
+          python -m py_compile \
+            scripts/keikyu_official_pdf.py \
+            scripts/audit_keikyu_official_columns.py \
+            scripts/audit_keikyu_station_time_resolution.py \
+            scripts/keikyu_connected_station_catalog.py \
+            scripts/build_keikyu_official_stop_times.py \
+            scripts/verify_keikyu_official_stop_times.py \
+            scripts/test_keikyu_official_stop_times.py
+          python scripts/test_keikyu_official_stop_times.py
+          python scripts/build_keikyu_official_stop_times.py \
+            --output /tmp/keikyu-official-stop-times.json
+          python scripts/verify_keikyu_official_stop_times.py \
+            /tmp/keikyu-official-stop-times.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          payload = json.loads(Path('/tmp/keikyu-official-stop-times.json').read_text(encoding='utf-8'))
+          totals = payload.get('totals') or {}
+          policy = payload.get('identityPolicy') or {}
+          pages = payload.get('pages') or []
+          source = int(totals.get('sourceTimeCells') or 0)
+          resolved = int(totals.get('resolvedTimeCells') or 0)
+          unresolved = int(totals.get('unresolvedTimeCells') or 0)
+          fragments = int(totals.get('trainColumnFragments') or 0)
+          print('FULL_TIMETABLE_PAGES', len(pages))
+          print('FULL_TIMETABLE_FRAGMENTS', fragments)
+          print('FULL_TIMETABLE_SOURCE_CELLS', source)
+          print('FULL_TIMETABLE_RESOLVED_CELLS', resolved)
+          print('FULL_TIMETABLE_UNRESOLVED_CELLS', unresolved)
+          print('FULL_TIMETABLE_RESOLUTION_RATE', round(resolved / source, 6) if source else 0)
+          print('RUNTIME_SAME_TRAIN_PROMOTIONS', policy.get('runtimeSameTrainPromotions'))
+          assert pages, 'no timetable pages parsed'
+          assert fragments > 0, 'no train-column fragments parsed'
+          assert source > 0, 'no timetable cells parsed'
+          assert resolved > 0, 'no timetable cells semantically resolved'
+          assert resolved + unresolved == source, 'source cell accounting mismatch'
+          assert policy.get('crossPageIdentityEstablished') is False
+          assert policy.get('runtimeSameTrainPromotions') == 0
+          PY
+          rm -f /tmp/keikyu-official-stop-times.json
       - name: Test fail-closed extraction and consumer rules
         run: |
           python -m py_compile \
