@@ -1,0 +1,117 @@
+name: Extend strict Keikyu official evidence to Zushi Line
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/extend-keikyu-zushi-official-evidence.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Extend strict official-column extractor without weakening policy
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('scripts/keikyu_internal_official_evidence.py')
+          text = path.read_text(encoding='utf-8')
+          replacements = [
+              (
+                  "KURIHAMA = 'odpt.Railway:Keikyu.Kurihama'\nBOUNDARY_ID = 'keikyu-main-airport-kamata'",
+                  "KURIHAMA = 'odpt.Railway:Keikyu.Kurihama'\nZUSHI = 'odpt.Railway:Keikyu.Zushi'\nBOUNDARY_ID = 'keikyu-main-airport-kamata'",
+              ),
+              (
+                  "KURIHAMA_BOUNDARY_ID = 'keikyu-main-kurihama-horinouchi'\nLEGACY_MARKER",
+                  "KURIHAMA_BOUNDARY_ID = 'keikyu-main-kurihama-horinouchi'\nZUSHI_BOUNDARY_ID = 'keikyu-main-zushi-kanazawahakkei'\nLEGACY_MARKER",
+              ),
+              (
+                  "    (MAIN, KURIHAMA): {'id': KURIHAMA_BOUNDARY_ID, 'station': '堀ノ内'},\n}",
+                  "    (MAIN, KURIHAMA): {'id': KURIHAMA_BOUNDARY_ID, 'station': '堀ノ内'},\n    (ZUSHI, MAIN): {'id': ZUSHI_BOUNDARY_ID, 'station': '金沢八景'},\n    (MAIN, ZUSHI): {'id': ZUSHI_BOUNDARY_ID, 'station': '金沢八景'},\n}",
+              ),
+          ]
+          for old, new in replacements:
+              if old not in text:
+                  if new in text:
+                      continue
+                  raise SystemExit(f'generator patch anchor missing: {old!r}')
+              text = text.replace(old, new, 1)
+          path.write_text(text, encoding='utf-8')
+
+          path = Path('scripts/keikyu_internal_official_evidence_selective.py')
+          text = path.read_text(encoding='utf-8')
+          replacements = [
+              (
+                  "KURIHAMA = target.KURIHAMA\nSUPPORTED_PAIRS = {",
+                  "KURIHAMA = target.KURIHAMA\nZUSHI = target.ZUSHI\nSUPPORTED_PAIRS = {",
+              ),
+              (
+                  "    (MAIN, KURIHAMA),\n}",
+                  "    (MAIN, KURIHAMA),\n    (ZUSHI, MAIN),\n    (MAIN, ZUSHI),\n}",
+              ),
+          ]
+          for old, new in replacements:
+              if old not in text:
+                  if new in text:
+                      continue
+                  raise SystemExit(f'selective patch anchor missing: {old!r}')
+              text = text.replace(old, new, 1)
+          path.write_text(text, encoding='utf-8')
+
+          path = Path('.github/workflows/collect-keikyu-official-through-evidence.yml')
+          text = path.read_text(encoding='utf-8')
+          old = "assert row.get('boundaryId') in ('keikyu-main-airport-kamata', 'keikyu-main-kurihama-horinouchi'), row"
+          new = "assert row.get('boundaryId') in ('keikyu-main-airport-kamata', 'keikyu-main-kurihama-horinouchi', 'keikyu-main-zushi-kanazawahakkei'), row"
+          if old in text:
+              text = text.replace(old, new, 1)
+          elif new not in text:
+              raise SystemExit('collection workflow boundary allowlist anchor missing')
+          path.write_text(text, encoding='utf-8')
+          PY
+      - name: Run strict consumer tests
+        run: |
+          pip install pdfplumber==0.11.7 PyMuPDF==1.26.4 requests==2.32.5
+          python -m py_compile scripts/keikyu_internal_official_evidence.py scripts/keikyu_internal_official_evidence_selective.py
+          python scripts/test_keikyu_internal_official_evidence.py
+          python scripts/test_keikyu_internal_generated_evidence.py
+      - name: Verify Zushi strict policy is wired end to end
+        run: |
+          python - <<'PY'
+          import sys
+          sys.path.insert(0, 'scripts')
+          import keikyu_internal_official_evidence as producer
+          import keikyu_internal_generated_evidence as consumer
+          import keikyu_internal_official_evidence_selective as selective
+
+          pair1 = (producer.ZUSHI, producer.MAIN)
+          pair2 = (producer.MAIN, producer.ZUSHI)
+          assert producer.BOUNDARIES[pair1]['id'] == producer.ZUSHI_BOUNDARY_ID
+          assert producer.BOUNDARIES[pair2]['id'] == producer.ZUSHI_BOUNDARY_ID
+          assert pair1 in selective.SUPPORTED_PAIRS and pair2 in selective.SUPPORTED_PAIRS
+          assert consumer.ZUSHI_BOUNDARY_ID in consumer.BOUNDARY_SPECS
+          assert consumer.BOUNDARY_SPECS[consumer.ZUSHI_BOUNDARY_ID]['pairs'] == {pair1, pair2}
+          print('strict Zushi boundary support wired')
+          PY
+      - name: Commit strict Zushi extractor support
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/keikyu_internal_official_evidence.py scripts/keikyu_internal_official_evidence_selective.py .github/workflows/collect-keikyu-official-through-evidence.yml
+          if git diff --cached --quiet; then
+            echo "Zushi support already present"
+            exit 0
+          fi
+          git commit -m "Extend strict Keikyu official evidence to Zushi Line"
+          git pull --rebase origin main
+          git push origin HEAD:main
