@@ -1,0 +1,23 @@
+name: Diagnose explicit unmatched Sengakuji trains
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/diagnose_toei_sengakuji_explicit_unmatched.py'
+      - '.github/workflows/diagnose-toei-sengakuji-explicit-unmatched.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Inspect exact Toei rows for explicit official train numbers
+        run: python scripts/diagnose_toei_sengakuji_explicit_unmatched.py
