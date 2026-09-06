@@ -139,6 +139,10 @@ def cluster_by_y(words: Iterable[Word], tolerance: float = 1.2) -> list[list[Wor
 def _candidate_header_rows(words: list[Word]) -> list[list[Word]]:
     result: list[list[Word]] = []
     for row in cluster_by_y(words):
+        # x>165 is intentionally retained only for locating a reliable printed
+        # train-number header.  The physical grid is expanded afterwards using
+        # repeated vertical time-cell geometry, because Keikyu explicitly omits
+        # some train numbers at the table edges.
         numeric = [word for word in row if word.x > 165 and TRAIN_NUMBER_RE.fullmatch(word.text)]
         if len(numeric) < 6:
             continue
@@ -149,17 +153,116 @@ def _candidate_header_rows(words: list[Word]) -> list[list[Word]]:
     return result
 
 
+def _distinct_y_rows(words: list[Word], tolerance: float = 1.6) -> int:
+    """Count vertically distinct occurrences without interpreting their times."""
+    if not words:
+        return 0
+    ys = sorted(word.y for word in words)
+    groups = 1
+    anchor = ys[0]
+    for value in ys[1:]:
+        if value - anchor > tolerance:
+            groups += 1
+            anchor = value
+    return groups
+
+
+def _edge_slot_support(
+    words: list[Word],
+    *,
+    x: float,
+    pitch: float,
+    header_y: float,
+    max_fraction: float = 0.34,
+) -> tuple[int, int]:
+    """Return (time-like words, distinct Y rows) at one pitch-aligned slot.
+
+    A single page-reference number or isolated annotation is not enough to
+    create a column.  Requiring at least three separate timetable rows makes an
+    edge extension structural rather than a guess based on one token.
+    """
+    matched = [
+        word
+        for word in words
+        if word.y > header_y + 10
+        and TIME_RE.fullmatch(word.text)
+        and abs(word.x - x) <= pitch * max_fraction
+    ]
+    return len(matched), _distinct_y_rows(matched)
+
+
+def _extend_edge_columns(
+    words: list[Word],
+    grid: TrainColumnGrid,
+    *,
+    max_slots_each_side: int = 10,
+    min_distinct_rows: int = 3,
+) -> TrainColumnGrid:
+    """Recover omitted-number physical columns beyond the printed header run.
+
+    The initial header proves pitch and phase.  Keikyu's PDF can omit train
+    numbers at either edge, so the first/last printed number is not necessarily
+    the physical table edge.  We extend only to pitch-aligned slots containing
+    time-like values on at least ``min_distinct_rows`` separate Y rows.
+
+    Interior empty slots between the printed grid and the farthest supported
+    edge are preserved as anonymous local page columns.  This establishes only
+    page-local column geometry; every prepended/appended train number is None
+    and cannot establish cross-page or cross-operator train identity.
+    """
+    if not grid.centers:
+        return grid
+
+    left_supported: list[int] = []
+    right_supported: list[int] = []
+    first = grid.centers[0]
+    last = grid.centers[-1]
+    for offset in range(1, max_slots_each_side + 1):
+        _count, rows = _edge_slot_support(
+            words,
+            x=first - offset * grid.pitch,
+            pitch=grid.pitch,
+            header_y=grid.header_y,
+        )
+        if rows >= min_distinct_rows:
+            left_supported.append(offset)
+
+        _count, rows = _edge_slot_support(
+            words,
+            x=last + offset * grid.pitch,
+            pitch=grid.pitch,
+            header_y=grid.header_y,
+        )
+        if rows >= min_distinct_rows:
+            right_supported.append(offset)
+
+    prepend = max(left_supported, default=0)
+    append = max(right_supported, default=0)
+    if prepend == 0 and append == 0:
+        return grid
+
+    left_centers = tuple(first - offset * grid.pitch for offset in range(prepend, 0, -1))
+    right_centers = tuple(last + offset * grid.pitch for offset in range(1, append + 1))
+    return TrainColumnGrid(
+        header_y=grid.header_y,
+        centers=left_centers + grid.centers + right_centers,
+        pitch=grid.pitch,
+        explicit_numbers=(None,) * prepend + grid.explicit_numbers + (None,) * append,
+    )
+
+
 def detect_train_column_grid(words: list[Word]) -> TrainColumnGrid | None:
-    """Find the train-number header and reconstruct its regular column grid.
+    """Find the train-number header and reconstruct the physical page grid.
 
     Missing printed train numbers are represented as None.  They remain valid
     *local page columns*, but must never prove cross-page/cross-operator identity.
+    Edge columns omitted from the printed train-number header are recovered only
+    from repeated pitch-aligned vertical cell geometry.
     """
     candidates = _candidate_header_rows(words)
     if not candidates:
         return None
 
-    # Header rows sit near the top and normally contain the widest regular run.
     def score(row: list[Word]) -> tuple[int, float, float]:
         xs = [word.x for word in row]
         diffs = [b - a for a, b in zip(xs, xs[1:]) if b > a]
@@ -172,8 +275,6 @@ def detect_train_column_grid(words: list[Word]) -> TrainColumnGrid | None:
     if not raw_diffs:
         return None
 
-    # Some printed train numbers are omitted, making a gap 2x or 3x the base
-    # pitch.  Estimate the base pitch from the smallest regular half of gaps.
     sorted_diffs = sorted(raw_diffs)
     base_pool = sorted_diffs[: max(2, (len(sorted_diffs) + 1) // 2)]
     pitch = statistics.median(base_pool)
@@ -197,12 +298,13 @@ def detect_train_column_grid(words: list[Word]) -> TrainColumnGrid | None:
             return None
         numbers[index] = word.text
 
-    return TrainColumnGrid(
+    initial = TrainColumnGrid(
         header_y=statistics.median(word.y for word in header),
         centers=centers,
         pitch=pitch,
         explicit_numbers=tuple(numbers),
     )
+    return _extend_edge_columns(words, initial)
 
 
 def nearest_column(grid: TrainColumnGrid, x: float, max_fraction: float = 0.42) -> int | None:
