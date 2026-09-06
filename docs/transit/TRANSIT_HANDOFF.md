@@ -49,72 +49,120 @@ Known strict identity sources are exact network-trip identity and exact pre-gene
 
 ## 4. Keisei connected component status
 
-**京成系統: INCOMPLETE / 未完成。**
+**京成系統: INCOMPLETE / 未完成。** Do not call it complete.
 
-Do not call it complete.
+The Keisei-led exact network remains highly complete for trains whose mother source is the Keisei official one-train source, but whole-component completion requires independent all-train mother sets for every connected member railway and exact cross-boundary identities.
 
-The Keisei-led exact network is highly complete for trains whose mother source is the Keisei official one-train source, but the architecture historically used that Keisei source as the mother set. Therefore it does not by itself prove complete coverage of external-only services, such as trains wholly on the Keikyu side or other component-member services that never touch Keisei.
+Current scope truth is in:
 
-Important existing file:
+- `data/transit/keisei/system-scope.json`
 
-- `scripts/build_keisei_extended_network.py`
+The component currently includes Keisei core lines, Hokuso, Shibayama, Toei Asakusa, and Keikyu Main/Airport/Kurihama/Zushi. Keisei Kanamachi and Keikyu Daishi remain excluded because no same-train through edge to the component is verified.
 
-Its Keisei-led source architecture is the reason whole-component completion must not be inferred merely from supported railway counts or route signatures.
+## 5. Independent Keikyu official-PDF mother-set work
 
-## 5. Current active work: independent Keikyu mother set
+The Keikyu official full-line PDF is now parsed independently of the Keisei mother set.
 
-The current priority is to ingest **all current Keikyu official timetable columns independently of the Keisei mother set**.
+Verified audit facts from the current official PDF:
 
-Key files:
+- PDF pages: **145**
+- in-scope timetable pages: **132**
+- page-local column fragments: **3,336**
+- source time cells: **78,400**
+- resolved time cells: **74,073**
+- unresolved time cells: **4,327**, preserved rather than dropped
+- complete official `前の掲載ページ + 列車番号` references: **387**
+- uniquely resolved official references: **387 / 387**
+- missing printed page numbers: **0**
+- identity reference graph: 387 edges, 774 nodes, no branching, no multiple predecessors, no cycles, no issues
+- the new cross-page audit layer still has `runtimeSameTrainPromotions = 0`
+
+Key files include:
 
 - `scripts/keikyu_official_pdf.py`
-  - downloads the official full-line timetable PDF
-  - detects strict page-local physical train columns from PDF geometry
-  - anonymous published columns are valid local columns but never cross-page identity by themselves
-- `scripts/audit_keikyu_official_columns.py`
-  - page/column coverage audit
-- `scripts/audit_keikyu_station_time_resolution.py`
-  - resolves station + arrival/departure semantics without same-train inference
-  - `resolve_page(..., include_records=True)` is the semantic source for generation
 - `scripts/build_keikyu_official_stop_times.py`
-  - builds page-local stop-time fragments
-  - fragment identity = exact PDF `page + column`
-  - preserves `printedTrainNumber` only as metadata
-  - preserves unresolved cells
-  - full generated JSON is intended for ephemeral CI/research use, not checked into the public repo
 - `scripts/verify_keikyu_official_stop_times.py`
-  - fail-closed structural/accounting verifier
-- `scripts/test_keikyu_official_stop_times.py`
-  - regression tests for page-column grouping, anonymous columns, no cross-page train-number merge, unresolved preservation, printed row order, and unknown-column failure
+- `scripts/audit_keikyu_previous_publication_refs.py`
+- `scripts/build_keikyu_cross_page_identity_audit.py`
+- `scripts/verify_keikyu_cross_page_identity_audit.py`
+- `scripts/build_keikyu_independent_mother_set_audit.py`
+- `scripts/verify_keikyu_independent_mother_set_audit.py`
 
-The generated dataset explicitly requires:
+The production-like Keikyu workflow now contains the full official-PDF and identity/mother-set safety gate and installs Poppler. Do not infer final Keikyu independent-mother-set completion merely from the parser statistics; check the current workflow result and durable audit output first.
 
-- `printedTrainNumberMayJoinPages = false`
-- `anonymousColumnMayJoinPages = false`
-- `clockTimeProximityMayJoinFragments = false`
-- `destinationMayJoinFragments = false`
-- `crossPageIdentityEstablished = false`
-- `runtimeSameTrainPromotions = 0`
+## 6. Toei Asakusa independent mother set: VERIFIED
 
-Until a separate official-evidence identity layer proves continuation, these values must remain fail-closed.
+The Toei Asakusa train-timetable mother set has been audited independently of the Keisei mother set and verified by CI.
 
-## 6. Known correction from 2026-09-06
+Durable summary:
 
-An earlier assistant report claimed that the new full-PDF stop-time builder/verifier had already been wired into `.github/workflows/update-keikyu-official-through-evidence.yml`.
+- `docs/transit/toei-asakusa-independent-mother-set-audit.json`
 
-Repository inspection on 2026-09-06 showed that this was **not true**: the production-like Keikyu update workflow still ran the older official through-evidence pipeline and did not yet invoke `build_keikyu_official_stop_times.py` / `verify_keikyu_official_stop_times.py`.
+Verified counts:
 
-The repository is authoritative. Any future assistant must not repeat the earlier claim unless the workflow on `main` actually contains those quality-gate steps.
+- exact TrainTimetable trips: **1,260**
+- unique timetable IDs: **1,260**
+- unique calendar+train IDs: **1,260**
+- weekday trips: **651**
+- Saturday/holiday trips: **609**
+- stations: **20**
+- stop records: **16,826**
+- connections: **15,566**
+- internal-destination trips: **504**
+- external-destination trips: **756**
+- raw non-monotonic trips: **12**
+- all 12 are exactly one legitimate 23:xx -> 00:xx service-day midnight wrap
+- unsafe time regressions: **0**
+- audit issues: **0**
+- runtime same-train promotions from this audit: **0**
 
-## 7. Immediate next work
+Important time rule: the compact Toei source stores clock-of-day minutes modulo 1440. Chronology validation may add +1440 only for one tightly constrained 23:xx -> 00:00-02:00 wrap; raw values are preserved. Any other decrease remains a hard failure.
 
-1. Promote the full Keikyu PDF parser/builder/verifier from experiment-only tooling into a mandatory quality gate of the official Keikyu update workflow.
-2. Keep the full generated stop-time JSON under `/tmp` or another ephemeral CI path; do not add the raw full timetable DB/PDF to the public repository merely for convenience.
-3. Establish cross-page physical-train continuation only from explicit official evidence. Same train number + adjacent page + compatible time is only a candidate, never proof by itself.
-4. After Keikyu has an independent mother set, inventory the other railways in the same connected component (including Toei Asakusa and other connected member lines) so trains that never touch Keisei are not omitted.
-5. Add route regressions for proven external-only same-train cases and negative terminating/non-through cases before runtime promotion.
+Current scope metadata marks Toei Asakusa `lineTimetableCoverage` as `exact-independent-1260-verified`. Its cross-operator same-train coverage is still incomplete.
 
-## 8. Whole-component completion gate
+## 7. Current active work: exact Sengakuji reconciliation
+
+The immediate target is **Toei Asakusa <-> Keikyu at Sengakuji**.
+
+Existing Keikyu official connection-timetable PDFs contain an explicit printed column spanning both sides of Sengakuji. Historical production evidence reports:
+
+- weekday official through columns: **297**
+- Saturday/holiday official through columns: **284**
+- total official through columns: **581**
+- historical old-fragment matched-singleton production entries: **494**
+  - Toei -> Keikyu: 262
+  - Keikyu -> Toei: 232
+
+The old 494 figure is NOT whole-boundary completion; old transit-v2 fragment ambiguity/unavailability prevented all 581 official columns from being materialized.
+
+New work bypasses the historical fragment projection:
+
+- `scripts/audit_toei_sengakuji_official_columns.py`
+- `.github/workflows/audit-toei-sengakuji-official-columns.yml`
+
+Policy for this audit:
+
+1. The cross-boundary fact must come from Keikyu's official **same printed column spanning both sides of Sengakuji**.
+2. That official column is mapped to a local exact Toei `TrainTimetable` only if calendar + direction + exact boundary event resolve to a singleton.
+3. This mapping step does not use historical transit-v2 fragment identity.
+4. Time alone and train number alone may never establish cross-operator identity.
+5. The Keikyu side still must be linked to the independent Keikyu official-PDF mother-set component before runtime promotion.
+6. `runtimeSameTrainPromotions` remains 0 during this audit.
+
+After the Toei side of all official Sengakuji columns is inventoried, link those same official columns to the independent Keikyu mother-set components. Only exact singleton links on both sides may become runtime same-train evidence.
+
+## 8. Remaining component blockers
+
+Do not mark 京成系統 complete until at least these are resolved:
+
+1. Finish and durably verify the independent Keikyu mother set for Main/Airport/Kurihama/Zushi.
+2. Complete exact Sengakuji identity reconciliation between Toei's verified 1,260-trip mother set and the independent Keikyu mother set.
+3. Complete exact Oshiage identity reconciliation for the independently verified Toei mother set against the Keisei/Hokuso side.
+4. Verify all-train completeness for Hokuso from an independent Hokuso official mother source rather than only Keisei-led projection.
+5. Verify all-train completeness for Shibayama from the current official timetable.
+6. Add positive runtime regressions for exact external-only through trains and negative regressions for terminating/non-through trains.
+
+## 9. Whole-component completion gate
 
 Do not mark any 「○○系統」 complete until all of the following are true:
 
@@ -126,7 +174,7 @@ Do not mark any 「○○系統」 complete until all of the following are true:
 - route-search positive and negative regressions pass;
 - the relevant current CI run has been checked and is successful.
 
-## 9. Handoff maintenance rule
+## 10. Handoff maintenance rule
 
 Whenever substantial transit work is committed, update this file when any of these change:
 
