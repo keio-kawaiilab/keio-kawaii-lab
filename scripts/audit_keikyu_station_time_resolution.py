@@ -3,8 +3,9 @@
 
 This intentionally measures semantic parser coverage separately from train identity.
 A time cell is considered resolved only when PDF structure proves both a canonical
-Keikyu station and the operational row meaning. No clock-time proximity,
-destination matching, or cross-page inference is permitted here.
+station in the verified Keisei/Asakusa/Keikyu connected component and the
+operational row meaning. No clock-time proximity, destination matching, or
+cross-page inference is permitted here.
 """
 from __future__ import annotations
 
@@ -15,6 +16,7 @@ from pathlib import Path
 from typing import Any
 
 from audit_keikyu_official_columns import FIRST_POSSIBLE_TIMETABLE_PAGE, page_scope_reason
+from keikyu_connected_station_catalog import station_titles
 from keikyu_official_pdf import (
     TIME_RE,
     bbox_words,
@@ -26,7 +28,7 @@ from keikyu_official_pdf import (
     page_count,
     time_cells,
 )
-from probe_keikyu_station_rows import compact_join, marker, station_matches, station_titles
+from probe_keikyu_station_rows import compact_join, marker, station_matches
 
 
 def resolve_page(words, grid, titles: list[str]) -> dict[str, Any]:
@@ -128,7 +130,7 @@ def resolve_page(words, grid, titles: list[str]) -> dict[str, Any]:
 def main() -> int:
     titles = station_titles()
     if not titles:
-        raise RuntimeError("no canonical in-scope Keikyu station titles loaded")
+        raise RuntimeError("no canonical connected-system station titles loaded")
 
     with tempfile.TemporaryDirectory(prefix="keikyu-station-time-audit-") as temp_dir:
         pdf_path = Path(temp_dir) / "schedule_all.pdf"
@@ -189,7 +191,7 @@ def main() -> int:
         )
 
         output = {
-            "version": 1,
+            "version": 2,
             "scope": "Keisei/Asakusa/Keikyu connected component; Keikyu Daishi excluded",
             "sourceSha256": hashlib.sha256(data).hexdigest(),
             "canonicalStationTitleCount": len(titles),
@@ -215,7 +217,7 @@ def main() -> int:
                 for row in worst_pages
             ],
             "policy": {
-                "canonicalStationTitleRequired": True,
+                "canonicalConnectedSystemStationRequired": True,
                 "printedArrivalDepartureStructureRequired": True,
                 "clockTimeProximityMayResolveStation": False,
                 "destinationMayResolveStation": False,
@@ -224,9 +226,6 @@ def main() -> int:
         }
         print(json.dumps(output, ensure_ascii=False, indent=2))
 
-        # This is an audit, so unresolved cells are reported rather than silently
-        # discarded. But a whole parsed timetable page resolving nothing means the
-        # semantic parser has fundamentally missed a page format and must fail CI.
         if zero_resolution_pages:
             raise RuntimeError(
                 "in-scope timetable pages have zero semantically resolved time cells: "
