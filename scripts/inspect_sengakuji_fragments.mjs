@@ -72,13 +72,27 @@ function foreignReferences(row, key) {
   });
 }
 
+function intersection(left, right) {
+  const rightSet = new Set(right);
+  return [...new Set(left.filter((value) => rightSet.has(value)))];
+}
+
 function crossBoundaryHint(source, target) {
-  const sourceDestinations = foreignReferences(source, 'destination');
-  const targetOrigins = foreignReferences(target, 'origin');
+  const sourceDestinations = references(source, 'destination').filter((station) => !/\.Sengakuji$/.test(station));
+  const targetDestinations = references(target, 'destination').filter((station) => !/\.Sengakuji$/.test(station));
+  const sourceOrigins = references(source, 'origin').filter((station) => !/\.Sengakuji$/.test(station));
+  const targetOrigins = references(target, 'origin').filter((station) => !/\.Sengakuji$/.test(station));
+  const sharedDestination = intersection(sourceDestinations, targetDestinations);
+  const sharedOrigin = intersection(sourceOrigins, targetOrigins);
+  const sourceForeignDestination = foreignReferences(source, 'destination');
+  const targetForeignOrigin = foreignReferences(target, 'origin');
   return {
-    sourceDestinationBeyondOwnRailway: sourceDestinations,
-    targetOriginBeyondOwnRailway: targetOrigins,
-    hasIndependentPublishedEndpointHint: sourceDestinations.length > 0 || targetOrigins.length > 0,
+    sharedPublishedDestination: sharedDestination,
+    sharedPublishedOrigin: sharedOrigin,
+    sourceDestinationBeyondOwnRailway: sourceForeignDestination,
+    targetOriginBeyondOwnRailway: targetForeignOrigin,
+    sourceAdvertisesBeyondBoundary: sourceForeignDestination.length > 0,
+    sharedDestinationProvesContinuation: sourceForeignDestination.some((value) => sharedDestination.includes(value)),
   };
 }
 
@@ -102,6 +116,12 @@ function candidateRows(sources, targets, direction) {
         gap,
         sourceId: String(source.id || ''),
         targetId: String(target.id || ''),
+        sourceKind: String(source.sourceKind || ''),
+        targetKind: String(target.sourceKind || ''),
+        sourceOperator: String(source.sourceOperator || source.operator || ''),
+        targetOperator: String(target.sourceOperator || target.operator || ''),
+        sourceConfidence: Number(source.confidence || 0),
+        targetConfidence: Number(target.confidence || 0),
         sourceTrainNumber: String(source.trainNumber || ''),
         targetTrainNumber: String(target.trainNumber || ''),
         sourceOrigin: references(source, 'origin'),
@@ -123,16 +143,18 @@ function summarizeCandidates(candidates) {
     targetCounts.set(row.targetId, (targetCounts.get(row.targetId) || 0) + 1);
   }
   const unique = candidates.filter((row) => sourceCounts.get(row.sourceId) === 1 && targetCounts.get(row.targetId) === 1);
-  const independentlyHintedUnique = unique.filter((row) => row.hint.hasIndependentPublishedEndpointHint);
-  const timeOnlyUnique = unique.filter((row) => !row.hint.hasIndependentPublishedEndpointHint);
+  const destinationProven = unique.filter((row) => row.hint.sharedDestinationProvesContinuation);
+  const sharedDestinationButNotBeyond = unique.filter((row) => row.hint.sharedPublishedDestination.length > 0 && !row.hint.sharedDestinationProvesContinuation);
+  const noSharedDestination = unique.filter((row) => row.hint.sharedPublishedDestination.length === 0);
   return {
     candidatePairs: candidates.length,
     uniqueOneToOneByBoundaryWindow: unique.length,
-    independentlyHintedUnique: independentlyHintedUnique.length,
-    timeOnlyUnique: timeOnlyUnique.length,
+    destinationProvenUnique: destinationProven.length,
+    sharedDestinationButNotBeyond: sharedDestinationButNotBeyond.length,
+    noSharedDestinationUnique: noSharedDestination.length,
     ambiguousPairs: candidates.length - unique.length,
-    examplesWithIndependentHint: independentlyHintedUnique.slice(0, 20),
-    examplesTimeOnly: timeOnlyUnique.slice(0, 10),
+    examplesDestinationProven: destinationProven.slice(0, 20),
+    examplesNoSharedDestination: noSharedDestination.slice(0, 10),
   };
 }
 
@@ -175,6 +197,7 @@ const report = {
     maxBoundaryGapMinutes: MAX_DIAGNOSTIC_GAP,
     timeProximityAloneMayEstablishIdentity: false,
     publishedEndpointHintAloneMayEstablishIdentity: false,
+    proposedSafeSignal: 'source advertises a destination beyond its own railway; target advertises the exact same destination; boundary pairing is unique within the diagnostic window',
     productionMutation: false,
   },
   fragments: {
