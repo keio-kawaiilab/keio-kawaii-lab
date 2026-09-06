@@ -235,7 +235,7 @@ def main() -> int:
         "internalDestinations": payload["internalDestinationTrips"],
         "externalDestinations": payload["externalDestinationTrips"],
         "boundaryExternal": payload["externalDestinationBoundaryCounts"],
-        "issues": len(payload["issues"]),
+        "issues": payload["issues"],
         "runtimeSameTrainPromotions": 0,
     }, ensure_ascii=False, indent=2))
     return 0
