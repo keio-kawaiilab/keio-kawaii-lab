@@ -10,6 +10,7 @@ on:
       - "scripts/enforce_physical_performance_identity.py"
       - "scripts/reconcile_physical_performance_times.py"
       - "scripts/merge_distributed_schedule_snapshots.py"
+      - "scripts/build_schedule_snapshot.py"
 
 permissions:
   contents: write
@@ -35,6 +36,15 @@ jobs:
           python scripts/enforce_physical_performance_identity.py
           python -m json.tool data/live-events.json >/dev/null
 
+      - name: Rebuild public snapshot from the hardened JSON
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_schedule_snapshot.py
+          python scripts/fix_schedule_shell.py
+          python scripts/strip_schedule_explanations.py
+          node --check /tmp/schedule-inline.js
+
       - name: Publish hardened calendar immediately
         shell: bash
         run: |
@@ -46,6 +56,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/live-events.json schedule.html
-          git commit -m "Repair and enforce one physical schedule item"
+          git commit -m "Repair and synchronize physical schedule items"
           git pull --rebase origin main
           git push origin HEAD:main
