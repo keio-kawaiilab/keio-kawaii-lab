@@ -8,10 +8,6 @@ on:
       - "scripts/guard_birthday_year_consistency.py"
       - "scripts/harden_ticket_semantics.py"
 
-concurrency:
-  group: distributed-live-calendar
-  cancel-in-progress: true
-
 permissions:
   contents: write
 
