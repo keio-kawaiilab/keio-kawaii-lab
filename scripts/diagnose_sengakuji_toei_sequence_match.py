@@ -31,9 +31,6 @@ from keikyu_official_train_evidence import (
     time_cells,
 )
 
-# Stations shared by the Toei Asakusa main trunk north of Sengakuji.  Matching
-# is done by official station name/order + printed minute; train number and
-# destination are deliberately not used as identity evidence here.
 PDF_TO_ODPT_SUFFIX = {
     "泉岳寺": "Sengakuji",
     "三田": "Mita",
@@ -78,37 +75,49 @@ def minute_equal(a: int, b: int) -> bool:
     return int(a) % 1440 == int(b) % 1440
 
 
-def extract_pdf_fingerprint(words: list[dict[str, Any]], candidate: dict[str, Any], *, max_points: int = 7) -> list[dict[str, Any]]:
+def build_page_cache(words: list[dict[str, Any]]) -> dict[str, Any]:
+    """Parse expensive row/time geometry once per PDF page, not per train."""
+    page_rows = rows(words)
+    time_by_y: dict[float, list[dict[str, Any]]] = {}
+    all_time_cells: list[dict[str, Any]] = []
+    station_rows: list[dict[str, Any]] = []
+    for row in page_rows:
+        y = float(row["y"])
+        cells_for_row = time_cells(words, y)
+        time_by_y[y] = cells_for_row
+        all_time_cells.extend(cells_for_row)
+        name = station_name(row["text"])
+        if name:
+            station_rows.append({"station": name, "y": y})
+    return {
+        "stationRows": station_rows,
+        "timeByY": time_by_y,
+        "tolerance": max(5.0, min(10.5, column_tolerance(all_time_cells))),
+    }
+
+
+def extract_pdf_fingerprint(cache: dict[str, Any], candidate: dict[str, Any], *, max_points: int = 7) -> list[dict[str, Any]]:
     geometry = candidate.get("rowGeometry") or {}
     direction = str(candidate.get("direction") or "")
     x = float(candidate["columnX"])
     source_y = float(geometry["sourceBoundaryY"])
     target_y = float(geometry["targetBoundaryY"])
-
-    page_rows = rows(words)
-    all_time_cells = []
-    for row in page_rows:
-        all_time_cells.extend(time_cells(words, float(row["y"])))
-    tolerance = max(5.0, min(10.5, column_tolerance(all_time_cells)))
+    tolerance = float(cache["tolerance"])
+    time_by_y = cache["timeByY"]
 
     relevant: list[dict[str, Any]] = []
-    for row in page_rows:
-        name = station_name(row["text"])
-        if not name:
-            continue
+    for row in cache["stationRows"]:
+        name = str(row["station"])
         y = float(row["y"])
         if direction == "keikyu-to-toei":
-            # Toei portion begins at the lower Sengakuji row and continues
-            # downward toward Mita / Daimon / Shimbashi / Oshiage.
             if y < target_y - 2 or y > target_y + 230:
                 continue
         elif direction == "toei-to-keikyu":
-            # Toei portion approaches the upper Sengakuji row from above.
             if y > source_y + 2 or y < source_y - 230:
                 continue
         else:
             continue
-        cell = nearest(time_cells(words, y), x, tolerance)
+        cell = nearest(time_by_y.get(y, []), x, tolerance)
         if not cell:
             continue
         relevant.append({
@@ -119,8 +128,6 @@ def extract_pdf_fingerprint(words: list[dict[str, Any]], candidate: dict[str, An
             "dx": round(float(cell["x"]) - x, 2),
         })
 
-    # Keep only the contiguous Toei trunk around Sengakuji.  Page halves can
-    # repeat the same station labels, so anchor at the boundary occurrence.
     relevant.sort(key=lambda item: item["y"])
     boundary_positions = [i for i, item in enumerate(relevant) if item["station"] == "泉岳寺"]
     if not boundary_positions:
@@ -132,8 +139,6 @@ def extract_pdf_fingerprint(words: list[dict[str, Any]], candidate: dict[str, An
         anchor = min(boundary_positions, key=lambda i: abs(relevant[i]["y"] - source_y))
         seq = relevant[max(0, anchor - max_points + 1) : anchor + 1]
 
-    # Deduplicate accidental repeated labels by keeping the point closest to
-    # the boundary within this small local sequence.
     output: list[dict[str, Any]] = []
     seen: set[str] = set()
     iterable = seq if direction == "keikyu-to-toei" else list(reversed(seq))
@@ -217,13 +222,18 @@ def main() -> int:
     originals = {row["id"]: row for row in candidates}
     trip_index = build_trip_index(toei_payload)
     words_by_calendar = {calendar: page_words(content) for calendar, content in contents.items()}
+    page_cache = {
+        (calendar, page): build_page_cache(words)
+        for calendar, pages in words_by_calendar.items()
+        for page, words in pages.items()
+    }
 
     counts: Counter[str] = Counter()
     details = []
     for row in audited["results"]:
         original = originals[row["candidateId"]]
-        words = words_by_calendar[row["calendar"]][int(row["pdfPage"])]
-        fingerprint = extract_pdf_fingerprint(words, original)
+        cache = page_cache[(row["calendar"], int(row["pdfPage"]))]
+        fingerprint = extract_pdf_fingerprint(cache, original)
         candidate_ids = [str(v) for v in row.get("toeiMatches") or []]
         scored = []
         for timetable_id in candidate_ids:
@@ -244,8 +254,6 @@ def main() -> int:
         else:
             counts[f"{status}:sequence-ambiguous"] += 1
 
-        # Keep full detail for every unresolved row and for singleton rows that
-        # fail the independent multi-station check; those are the dangerous ones.
         if status != "matched-singleton" or len(strong) != 1:
             details.append({
                 "candidateId": row["candidateId"],
@@ -261,12 +269,11 @@ def main() -> int:
                 "strongMatches": [item["timetableId"] for item in strong],
             })
 
-    summary = {
+    print(json.dumps({
         "counts": dict(sorted(counts.items())),
         "detailCount": len(details),
         "details": details,
-    }
-    print(json.dumps(summary, ensure_ascii=False, indent=2))
+    }, ensure_ascii=False, indent=2))
     return 0
 
 
