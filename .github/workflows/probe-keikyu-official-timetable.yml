@@ -9,6 +9,7 @@ on:
       - 'scripts/probe_keikyu_station_rows.py'
       - 'scripts/keikyu_official_pdf.py'
       - 'scripts/audit_keikyu_official_columns.py'
+      - 'scripts/audit_keikyu_station_time_resolution.py'
       - '.github/workflows/probe-keikyu-official-timetable.yml'
 
 permissions:
@@ -37,3 +38,5 @@ jobs:
         run: python scripts/probe_keikyu_station_rows.py
       - name: Audit all official train-column pages
         run: python scripts/audit_keikyu_official_columns.py
+      - name: Audit all station-time semantics
+        run: python scripts/audit_keikyu_station_time_resolution.py
