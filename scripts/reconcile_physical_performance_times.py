@@ -37,13 +37,26 @@ def venue_key(value: object) -> str:
 
 
 def event_rows(event: dict) -> list[tuple[dict | None, str, str, str, str]]:
-    """Return (row, day, venue, open, start) occurrences.
+    """Return parent and schedule occurrences for reconciliation.
 
-    `row is None` means the occurrence lives on the event itself. Schedule rows
-    inherit missing venue/open/start metadata from the parent exactly like the UI.
+    Parent fields are deliberately included even when `schedule` exists. They are
+    used as summary/fallback fields by other code paths, so a stale bad parent
+    START must not survive after the schedule rows have been corrected.
     """
-    schedule = event.get("schedule") if isinstance(event.get("schedule"), list) else []
     rows: list[tuple[dict | None, str, str, str, str]] = []
+
+    parent_day = str(event.get("eventDate") or "")[:10]
+    parent_venue = venue_key(event.get("venue"))
+    if parent_day and parent_venue:
+        rows.append((
+            None,
+            parent_day,
+            parent_venue,
+            clock(event.get("openTime")),
+            clock(event.get("startTime")),
+        ))
+
+    schedule = event.get("schedule") if isinstance(event.get("schedule"), list) else []
     for row in schedule:
         if not isinstance(row, dict):
             continue
@@ -53,13 +66,6 @@ def event_rows(event: dict) -> list[tuple[dict | None, str, str, str, str]]:
         start_time = clock(row.get("startTime") or row.get("start") or event.get("startTime"))
         if day and venue:
             rows.append((row, day, venue, open_time, start_time))
-    if rows:
-        return rows
-
-    day = str(event.get("eventDate") or "")[:10]
-    venue = venue_key(event.get("venue"))
-    if day and venue:
-        rows.append((None, day, venue, clock(event.get("openTime")), clock(event.get("startTime"))))
     return rows
 
 
@@ -77,10 +83,10 @@ def _set_start(event: dict, row: dict | None, corrected: str) -> None:
 
 
 def reconcile_payload(payload: dict) -> tuple[dict, dict]:
-    """Repair a suspicious OPEN==START row only from unambiguous peer evidence.
+    """Repair a suspicious OPEN==START value only from unambiguous peer evidence.
 
     A real venue can host multiple same-day performances, so this never guesses.
-    For one group/date/venue, a suspicious row is rewritten only when every
+    For one group/date/venue, a suspicious value is rewritten only when every
     non-suspicious peer agrees on exactly one different START time. This catches
     the official SCHEDULE parser failure where the label `OPEN/START` caused the
     first value (OPEN) to be copied into START, while preserving genuine matinee /
@@ -122,6 +128,7 @@ def reconcile_payload(payload: dict) -> tuple[dict, dict]:
                 "correctedStartTime": corrected,
                 "sourceType": event.get("sourceType"),
                 "title": event.get("eventTitle") or event.get("title"),
+                "field": "parent" if row is None else "schedule",
             })
 
     return out, {"fixedCount": len(fixes), "fixes": fixes}
