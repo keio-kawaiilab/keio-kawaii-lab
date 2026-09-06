@@ -34,9 +34,6 @@ IN_SCOPE_RAILWAYS = {
     "odpt.Railway:Keikyu.Zushi",
 }
 
-# The official all-line PDF shortens these two long airport station names in
-# some continuation blocks.  This is a printed-name alias only; it must not be
-# used to infer train identity or destination continuity.
 STATION_ALIASES = {
     "羽田第１・第２": "羽田空港第１・第２ターミナル",
     "羽田第３": "羽田空港第３ターミナル",
@@ -59,7 +56,6 @@ def station_titles() -> list[str]:
             title = station_title.get("ja") or title
         if title:
             titles.add(re.sub(r"\s+", "", str(title)))
-    # Longer first prevents a hypothetical short name from shadowing a long one.
     return sorted(titles, key=lambda value: (-len(value), value))
 
 
@@ -76,23 +72,7 @@ def station_matches(left_text: str, titles: list[str]) -> list[str]:
 
 
 def operational_label_text(left_text: str) -> str:
-    """Remove only proven continuation-cell artifacts from the label area.
-
-    Keikyu prints a small 「前の掲載ページ」 continuation area immediately to
-    the left of the main train grid.  Depending on the page, its HHMM values and
-    ellipsis/symbol cells share the same PDF Y row as a station label, e.g.
-    ``三崎口発………1851…``.  Those values are not part of the station label and
-    must not prevent us from reading the printed 発/着/〃 marker.
-
-    ASCII digits may be concatenated by PDF extraction (for example three
-    adjacent continuation cells can become ``759810814``), so they must be
-    removed as one run instead of assuming 3-4 digit tokens. Full-width digits
-    in station names such as 羽田空港第１・第２ターミナル are intentionally
-    untouched.
-
-    This function does *not* move a time into another train column and does not
-    establish any train identity.
-    """
+    """Remove proven continuation-cell artifacts from the station-label area."""
     value = re.sub(r"[0-9.]+", "", left_text)
     value = re.sub(r"[…!#$\"'\\]+", "", value)
     return value
@@ -102,22 +82,12 @@ def _marker_value(token: str) -> str | None:
     if token == "着":
         return "arrival"
     if token in ("発", "〃"):
-        # In this timetable layout 〃 repeats the station row's departure label.
-        # It is a row-semantic marker only and never a train-identity shortcut.
         return "departure"
     return None
 
 
 def station_adjacent_marker(left_text: str, station: str) -> str | None:
-    """Read a printed 着/発/〃 immediately following a proven station title.
-
-    Some PDF rows contain continuation symbols or destination/branch annotations
-    to the right of the station marker, so requiring the entire extracted label
-    to *end* in 発/着/〃 loses valid rows (for example ``浦賀発%…`` or
-    ``梅屋敷〃#…羽…``).  Once the station title itself has already been proven,
-    an immediately adjacent marker is stronger evidence than the row suffix and
-    remains independent of clock times or destination matching.
-    """
+    """Read a printed 着/発/〃 immediately following a proven station title."""
     printed_names = [station]
     printed_names.extend(alias for alias, canonical in STATION_ALIASES.items() if canonical == station)
     for printed in sorted(set(printed_names), key=lambda value: (-len(value), value)):
@@ -134,15 +104,26 @@ def station_adjacent_marker(left_text: str, station: str) -> str | None:
 
 def marker(left_text: str) -> str | None:
     cleaned = operational_label_text(left_text)
-    # Explicitly reject table headings whose Japanese contains 発/着 but is not
-    # an operational arrival/departure row.
-    if any(token in cleaned for token in ("発車番線", "到着番線", "始発")):
+    # Reject headings/metadata before considering either a suffix or a leading
+    # marker.  The latter is needed because vertically printed destination or
+    # formation annotations can be extracted after a genuine row-leading 着/発.
+    if any(token in cleaned for token in ("発車", "到着番線", "始発")):
         return None
     if cleaned.endswith("着"):
         return "arrival"
     if cleaned.endswith("発"):
         return "departure"
     if cleaned.endswith("〃"):
+        return "departure"
+
+    # A row-leading marker is accepted only when the opposite marker does not
+    # also occur in the extracted text.  Thus ambiguous strings such as 発着
+    # remain fail-closed, while extraction collisions such as 着山 / 発川 keep
+    # their explicit printed row meaning. Station identity is still established
+    # separately from a nearby canonical station anchor.
+    if cleaned.startswith("着") and "発" not in cleaned[1:]:
+        return "arrival"
+    if cleaned.startswith("発") and "着" not in cleaned[1:]:
         return "departure"
     return None
 
@@ -166,12 +147,10 @@ def main() -> int:
             y = sum(word.y for word in row) / len(row)
             if y <= grid.header_y + 20:
                 continue
-
             left_words = [word for word in row if word.x < left_boundary]
             left_text = compact_join(left_words)
             if not left_text:
                 continue
-
             cells = []
             for word in row:
                 if word.x < left_boundary or not TIME_RE.fullmatch(word.text):
@@ -187,20 +166,11 @@ def main() -> int:
                 row_marker = station_adjacent_marker(left_text, matches[0]) or row_marker
             if not matches and row_marker is None and not cells:
                 continue
-            raw_rows.append(
-                {
-                    "y": y,
-                    "left": left_text,
-                    "stationMatches": matches,
-                    "marker": row_marker,
-                    "cells": cells,
-                }
-            )
+            raw_rows.append({"y": y, "left": left_text, "stationMatches": matches, "marker": row_marker, "cells": cells})
 
         station_anchors = [
             {"y": row["y"], "station": row["stationMatches"][0], "marker": row["marker"]}
-            for row in raw_rows
-            if len(row["stationMatches"]) == 1
+            for row in raw_rows if len(row["stationMatches"]) == 1
         ]
 
         resolved_rows = []
@@ -208,7 +178,6 @@ def main() -> int:
         for row in raw_rows:
             if not row["cells"]:
                 continue
-
             station = None
             resolution = None
             if len(row["stationMatches"]) == 1:
@@ -217,16 +186,12 @@ def main() -> int:
             elif len(row["stationMatches"]) > 1:
                 resolution = "ambiguous-same-row-station-title"
             elif row["marker"] == "arrival":
-                # Printed arrival rows can sit immediately above the station's
-                # named departure row.  Only use a following canonical label.
                 candidates = [anchor for anchor in station_anchors if 0 < anchor["y"] - row["y"] <= 10.5]
                 if candidates:
                     closest = min(candidates, key=lambda anchor: anchor["y"] - row["y"])
                     station = closest["station"]
                     resolution = "arrival-row-to-following-station-title"
             elif row["marker"] == "departure":
-                # Conversely, a station's named arrival row can be followed by
-                # a separate departure row.  Only use a preceding label.
                 candidates = [anchor for anchor in station_anchors if 0 < row["y"] - anchor["y"] <= 10.5]
                 if candidates:
                     closest = min(candidates, key=lambda anchor: row["y"] - anchor["y"])
@@ -234,38 +199,26 @@ def main() -> int:
                     resolution = "departure-row-to-preceding-station-title"
 
             item = {
-                "y": round(row["y"], 2),
-                "left": row["left"],
-                "marker": row["marker"],
-                "station": station,
-                "resolution": resolution,
-                "cellCount": len(row["cells"]),
-                "cells": row["cells"][:20],
+                "y": round(row["y"], 2), "left": row["left"], "marker": row["marker"],
+                "station": station, "resolution": resolution, "cellCount": len(row["cells"]), "cells": row["cells"][:20],
             }
             if station and row["marker"]:
                 resolved_rows.append(item)
             else:
                 unresolved_timed_rows.append(item)
 
-        total_timed = len(resolved_rows) + len(unresolved_timed_rows)
-        resolved_cells = sum(row["cellCount"] for row in resolved_rows)
-        unresolved_cells = sum(row["cellCount"] for row in unresolved_timed_rows)
         report = {
             "page": PAGE,
             "trainColumns": len(grid.centers),
             "canonicalStationTitles": len(titles),
-            "timedRows": total_timed,
+            "timedRows": len(resolved_rows) + len(unresolved_timed_rows),
             "resolvedTimedRows": len(resolved_rows),
             "unresolvedTimedRows": len(unresolved_timed_rows),
-            "resolvedTimeCells": resolved_cells,
-            "unresolvedTimeCells": unresolved_cells,
+            "resolvedTimeCells": sum(row["cellCount"] for row in resolved_rows),
+            "unresolvedTimeCells": sum(row["cellCount"] for row in unresolved_timed_rows),
             "sampleResolvedRows": resolved_rows[:24],
             "sampleUnresolvedRows": unresolved_timed_rows[:12],
-            "policy": {
-                "clockTimeProximityUsed": False,
-                "destinationUsedToInferStation": False,
-                "crossPageTrainIdentityEstablished": False,
-            },
+            "policy": {"clockTimeProximityUsed": False, "destinationUsedToInferStation": False, "crossPageTrainIdentityEstablished": False},
         }
         print(json.dumps(report, ensure_ascii=False, indent=2))
         if not resolved_rows:
