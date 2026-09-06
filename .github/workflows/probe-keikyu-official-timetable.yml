@@ -1,0 +1,29 @@
+name: Probe official Keikyu timetable layout
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/probe_keikyu_official_timetable.py'
+      - '.github/workflows/probe-keikyu-official-timetable.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Ensure PDF text tools
+        run: |
+          if ! command -v pdftotext >/dev/null || ! command -v pdfinfo >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y poppler-utils
+          fi
+      - name: Probe current official timetable
+        run: python scripts/probe_keikyu_official_timetable.py
