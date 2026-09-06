@@ -71,7 +71,10 @@ def marker(left_text: str) -> str | None:
     if left_text.endswith("発"):
         return "departure"
     if left_text.endswith("〃"):
-        return "pass"
+        # In this timetable layout 〃 repeats the preceding row-label meaning,
+        # which for ordinary single-time station rows is 発.  Calling it a
+        # pass-through row was semantically wrong and could poison stop_times.
+        return "departure"
     return None
 
 
