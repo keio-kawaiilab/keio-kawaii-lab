@@ -1,0 +1,25 @@
+name: Diagnose unresolved Sengakuji official columns
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/diagnose_toei_sengakuji_unresolved_columns.py'
+      - '.github/workflows/diagnose-toei-sengakuji-unresolved-columns.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PDF dependencies
+        run: pip install pdfplumber==0.11.7 requests==2.32.5
+      - name: Print every ambiguous or unmatched official column
+        run: python scripts/diagnose_toei_sengakuji_unresolved_columns.py
