@@ -1,0 +1,43 @@
+name: Diagnose Keikyu printed page 62 footer geometry
+
+on:
+  push:
+    branches:
+      - work/keikyu-prev-page-evidence-20260906
+    paths:
+      - '.github/workflows/diagnose-keikyu-page62-footer.yml'
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install poppler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+      - name: Print PDF page 67 footer words and detector candidates
+        run: |
+          python - <<'PY'
+          import tempfile
+          from pathlib import Path
+          import sys
+          sys.path.insert(0, 'scripts')
+          from keikyu_official_pdf import download_official_pdf, bbox_words
+          from audit_keikyu_previous_publication_refs import detect_printed_page_number, _footer_page_candidates
+
+          with tempfile.TemporaryDirectory() as td:
+              pdf = Path(td) / 'schedule_all.pdf'
+              download_official_pdf(pdf)
+              width, height, words = bbox_words(pdf, 67)
+              print('PAGE_SIZE', width, height)
+              print('DETECTED', detect_printed_page_number(width, height, words))
+              print('OUTER_GUTTER', sorted(_footer_page_candidates(width, height, words, min_y_fraction=0.86, edge_fraction=0.075)))
+              print('STRICT_BOTTOM', sorted(_footer_page_candidates(width, height, words, min_y_fraction=0.94, edge_fraction=0.12)))
+              for w in sorted(words, key=lambda x: (x.y, x.x)):
+                  if w.y >= height * 0.82 and (w.x <= width * 0.18 or w.x >= width * 0.82):
+                      print(f'WORD text={w.text!r} x={w.x:.3f} y={w.y:.3f} xmin={w.x_min:.3f} xmax={w.x_max:.3f} ymin={w.y_min:.3f} ymax={w.y_max:.3f}')
+          PY
