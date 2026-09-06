@@ -5,6 +5,8 @@ on:
   push:
     paths:
       - 'scripts/inspect_sengakuji_fragments.mjs'
+      - 'scripts/sengakuji_destination_evidence.py'
+      - 'scripts/test_sengakuji_destination_evidence.py'
       - '.github/workflows/inspect-sengakuji-fragments.yml'
 
 jobs:
@@ -16,5 +18,46 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - name: Inspect fragment schema and Sengakuji candidates
         run: node scripts/inspect_sengakuji_fragments.mjs
+      - name: Test strict destination-continuity evidence
+        run: python scripts/test_sengakuji_destination_evidence.py
+      - name: Count production-safe Sengakuji evidence pairs
+        run: |
+          python - <<'PY'
+          import json
+          import sys
+          from collections import Counter
+          from pathlib import Path
+
+          sys.path.insert(0, 'scripts')
+          import sengakuji_destination_evidence as evidence
+
+          def rows(path):
+              value = json.loads(Path(path).read_text(encoding='utf-8'))
+              if isinstance(value, list):
+                  return value
+              for key in ('fragments', 'items', 'rows', 'data'):
+                  if isinstance(value.get(key), list):
+                      return value[key]
+              return []
+
+          fragments = rows('data/transit-v2/fragments/toei.json') + rows('data/transit-v2/fragments/keikyu.json')
+          boundary = {'boundaryId': evidence.BOUNDARY_ID, 'station': '泉岳寺'}
+          indexes = {'graph': {
+              evidence.TOEI: [{**boundary, 'toRailway': evidence.KEIKYU}],
+              evidence.KEIKYU: [{**boundary, 'toRailway': evidence.TOEI}],
+          }}
+          pairs = evidence.candidate_pairs(fragments, indexes)
+          print(json.dumps({
+              'total': len(pairs),
+              'byDirection': dict(Counter(row['direction'] for row in pairs)),
+              'byGap': dict(Counter(row['gapMinutes'] for row in pairs)),
+              'byCalendar': dict(Counter(row['calendar'] for row in pairs)),
+          }, ensure_ascii=False, indent=2, sort_keys=True))
+          if not pairs:
+              raise SystemExit('no production-safe Sengakuji pairs found')
+          PY
