@@ -163,25 +163,31 @@ def _footer_page_candidates(
 
 
 def detect_printed_page_number(width: float, height: float, words: list[Word]) -> int | None:
-    """Detect the publication page number printed outside the timetable frame.
+    """Detect the printed publication page number from its official typography.
 
-    The publication number lives in the extreme outer gutter, whereas operating
-    kilometres and timetable cells begin inside the ruled table.  We therefore
-    inspect that gutter first, including the slightly higher footer used by the
-    special connection timetable on printed page 62.  A conventional bottom-edge
-    pass is retained only as a compatibility fallback.  Ambiguity always fails
-    closed; no PDF-page offset is guessed or hard-coded.
+    The current official PDF prints publication numbers in a visibly larger
+    footer font than timetable times and continuation metadata. Auditing normal
+    pages plus special printed pages 32 and 62 shows the publication glyph box at
+    about 12.9 pt high, while timetable integers are about 6.0 pt and special
+    continuation-page labels remain about 8.3 pt. We therefore require both the
+    outer footer geometry and the large official page-number typography first.
+    A narrow legacy bottom-edge fallback remains fail-closed. No PDF-page offset
+    or inferred sequence is ever used.
     """
-    outer_gutter = _footer_page_candidates(
-        width,
-        height,
-        words,
-        min_y_fraction=0.86,
-        edge_fraction=0.075,
-    )
-    if len(outer_gutter) == 1:
-        return next(iter(outer_gutter))
-    if len(outer_gutter) > 1:
+    large_values: set[int] = set()
+    for word in words:
+        if word.y < height * 0.82:
+            continue
+        if not (word.x < width * 0.12 or word.x > width * 0.88):
+            continue
+        if (word.y_max - word.y_min) < 10.0:
+            continue
+        value = _parse_printed_page(word.text)
+        if value is not None:
+            large_values.add(value)
+    if len(large_values) == 1:
+        return next(iter(large_values))
+    if len(large_values) > 1:
         return None
 
     strict_bottom = _footer_page_candidates(

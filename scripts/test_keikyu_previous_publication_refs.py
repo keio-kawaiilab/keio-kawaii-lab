@@ -99,6 +99,21 @@ class KeikyuPreviousPublicationRefsTest(unittest.TestCase):
         words = [word("62", 50.0, 910.0), word("51", 100.0, 970.0)]
         self.assertEqual(detect_printed_page_number(1000.0, 1000.0, words), 62)
 
+    def test_large_official_page_number_beats_smaller_table_integer(self):
+        words = [
+            word("62", 50.0, 960.0, height=13.0),
+            word("744", 950.0, 900.0, height=6.0),
+            word("807", 950.0, 970.0, height=6.0),
+        ]
+        self.assertEqual(detect_printed_page_number(1000.0, 1000.0, words), 62)
+
+    def test_special_page_32_ignores_smaller_previous_page_labels(self):
+        words = [
+            word("32", 50.0, 960.0, height=13.0),
+            word("62", 950.0, 970.0, height=8.3),
+        ]
+        self.assertEqual(detect_printed_page_number(1000.0, 1000.0, words), 32)
+
     def test_footer_detector_does_not_accept_interior_number(self):
         words = [word("62", 500.0, 910.0)]
         self.assertIsNone(detect_printed_page_number(1000.0, 1000.0, words))
