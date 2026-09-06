@@ -6,6 +6,10 @@ A time cell is considered resolved only when PDF structure proves both a canonic
 station in the verified Keisei/Asakusa/Keikyu connected component and the
 operational row meaning. No clock-time proximity, destination matching, or
 cross-page inference is permitted here.
+
+``resolve_page(..., include_records=True)`` is also the single semantic source for
+the structured stop-time builder. Keeping audit and generation on the same
+resolver prevents the generated dataset from silently using weaker rules.
 """
 from __future__ import annotations
 
@@ -37,7 +41,14 @@ from probe_keikyu_station_rows import (
 )
 
 
-def resolve_page(words, grid, titles: list[str]) -> dict[str, Any]:
+def resolve_page(words, grid, titles: list[str], *, include_records: bool = False) -> dict[str, Any]:
+    """Resolve printed timetable cells without establishing train identity.
+
+    When ``include_records`` is true, each semantically proven cell is returned
+    with its page-local physical column.  Callers must still treat that column as
+    local identity only; this function deliberately has no page number and no
+    cross-page joining logic.
+    """
     label_boundary = semantic_label_boundary(words, grid)
     raw_rows: list[dict[str, Any]] = []
 
@@ -46,10 +57,6 @@ def resolve_page(words, grid, titles: list[str]) -> dict[str, Any]:
         if y <= grid.header_y + 10:
             continue
 
-        # The station/着発 label band is not the train-grid edge. Its right edge
-        # is proven from the repeated printed 着/発/〃 X cluster on this page.
-        # Time-shaped tokens are excluded from label text and are assigned to the
-        # train grid independently, so an anonymous first train column is kept.
         left_words = [
             word for word in row
             if word.x < label_boundary and not TIME_RE.fullmatch(word.text)
@@ -92,6 +99,8 @@ def resolve_page(words, grid, titles: list[str]) -> dict[str, Any]:
     resolved_cells = 0
     unresolved_rows: list[dict[str, Any]] = []
     resolution_counts: dict[str, int] = {}
+    resolved_records: list[dict[str, Any]] = []
+    unresolved_records: list[dict[str, Any]] = []
 
     for row in raw_rows:
         if not row["cells"]:
@@ -121,6 +130,19 @@ def resolve_page(words, grid, titles: list[str]) -> dict[str, Any]:
             resolved_rows += 1
             resolved_cells += len(row["cells"])
             resolution_counts[resolution or "unknown"] = resolution_counts.get(resolution or "unknown", 0) + len(row["cells"])
+            if include_records:
+                for cell in row["cells"]:
+                    resolved_records.append(
+                        {
+                            "column": cell["column"],
+                            "station": station,
+                            "event": row["marker"],
+                            "time": cell["text"],
+                            "x": cell["x"],
+                            "y": round(row["y"], 2),
+                            "resolution": resolution,
+                        }
+                    )
         else:
             unresolved_rows.append(
                 {
@@ -132,10 +154,23 @@ def resolve_page(words, grid, titles: list[str]) -> dict[str, Any]:
                     "sampleCells": row["cells"][:6],
                 }
             )
+            if include_records:
+                for cell in row["cells"]:
+                    unresolved_records.append(
+                        {
+                            "column": cell["column"],
+                            "time": cell["text"],
+                            "x": cell["x"],
+                            "y": round(row["y"], 2),
+                            "left": row["left"],
+                            "marker": row["marker"],
+                            "stationMatches": row["stationMatches"],
+                        }
+                    )
 
     all_cells = time_cells(words, grid)
     unresolved_cells = len(all_cells) - resolved_cells
-    return {
+    result: dict[str, Any] = {
         "timeCells": len(all_cells),
         "resolvedTimeCells": resolved_cells,
         "unresolvedTimeCells": unresolved_cells,
@@ -144,6 +179,11 @@ def resolve_page(words, grid, titles: list[str]) -> dict[str, Any]:
         "resolutionCounts": resolution_counts,
         "unresolvedSample": unresolved_rows[:8],
     }
+    if include_records:
+        result["resolvedCellRecords"] = resolved_records
+        result["unresolvedCellRecords"] = unresolved_records
+        result["recordAccountingGap"] = unresolved_cells - len(unresolved_records)
+    return result
 
 
 def main() -> int:
@@ -208,7 +248,7 @@ def main() -> int:
         resolution_rate = totals["resolvedTimeCells"] / totals["timeCells"] if totals["timeCells"] else 0.0
 
         output = {
-            "version": 5,
+            "version": 6,
             "scope": "Keisei/Asakusa/Keikyu connected component; Keikyu Daishi excluded",
             "sourceSha256": hashlib.sha256(data).hexdigest(),
             "canonicalStationTitleCount": len(titles),
@@ -239,6 +279,7 @@ def main() -> int:
                 "clockTimeProximityMayResolveStation": False,
                 "destinationMayResolveStation": False,
                 "crossPageIdentityEstablishedHere": False,
+                "structuredBuilderUsesThisResolver": True,
             },
         }
         print(json.dumps(output, ensure_ascii=False, indent=2))
