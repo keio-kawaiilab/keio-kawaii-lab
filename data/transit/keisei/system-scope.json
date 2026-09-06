@@ -22,11 +22,11 @@
     {"id":"odpt.Railway:Keisei.Matsudo","label":"京成松戸線","lineTimetableCoverage":"exact","sameTrainCoverage":"exact-for-all-keisei-source-trains"},
     {"id":"manual.Railway:Hokuso.Hokuso","label":"北総線","lineTimetableCoverage":"partial-exact-projection","sameTrainCoverage":"keisei-led-exact-only"},
     {"id":"manual.Railway:Shibayama.Shibayama","label":"芝山鉄道線","lineTimetableCoverage":"partial-exact-projection","sameTrainCoverage":"keisei-led-exact-only"},
-    {"id":"odpt.Railway:Toei.Asakusa","label":"都営浅草線","lineTimetableCoverage":"exact","sameTrainCoverage":"keisei-led-exact-only"},
-    {"id":"odpt.Railway:Keikyu.Main","label":"京急本線","lineTimetableCoverage":"departure-only","sameTrainCoverage":"keisei-led-exact-only"},
-    {"id":"odpt.Railway:Keikyu.Airport","label":"京急空港線","lineTimetableCoverage":"departure-only","sameTrainCoverage":"keisei-led-exact-only"},
-    {"id":"odpt.Railway:Keikyu.Kurihama","label":"京急久里浜線","lineTimetableCoverage":"departure-only","sameTrainCoverage":"keisei-led-exact-only"},
-    {"id":"odpt.Railway:Keikyu.Zushi","label":"京急逗子線","lineTimetableCoverage":"departure-only","sameTrainCoverage":"keisei-led-exact-only"}
+    {"id":"odpt.Railway:Toei.Asakusa","label":"都営浅草線","lineTimetableCoverage":"exact-independent-1260-verified","sameTrainCoverage":"cross-boundary-reconciliation-incomplete"},
+    {"id":"odpt.Railway:Keikyu.Main","label":"京急本線","lineTimetableCoverage":"independent-official-pdf-audit-in-progress","sameTrainCoverage":"cross-boundary-reconciliation-incomplete"},
+    {"id":"odpt.Railway:Keikyu.Airport","label":"京急空港線","lineTimetableCoverage":"independent-official-pdf-audit-in-progress","sameTrainCoverage":"cross-boundary-reconciliation-incomplete"},
+    {"id":"odpt.Railway:Keikyu.Kurihama","label":"京急久里浜線","lineTimetableCoverage":"independent-official-pdf-audit-in-progress","sameTrainCoverage":"cross-boundary-reconciliation-incomplete"},
+    {"id":"odpt.Railway:Keikyu.Zushi","label":"京急逗子線","lineTimetableCoverage":"independent-official-pdf-audit-in-progress","sameTrainCoverage":"cross-boundary-reconciliation-incomplete"}
   ],
   "excludedBecauseNoVerifiedThroughEdge": [
     {"id":"odpt.Railway:Keisei.Kanamachi","label":"京成金町線","reason":"No same-train through-service edge to another in-scope railway is currently verified."},
@@ -34,14 +34,14 @@
   ],
   "officialSources": [
     {"operator":"Keisei","url":"https://keisei.ekitan.com/","use":"retained official one-train pages; exact Keisei-led physical train identity"},
-    {"operator":"Toei","url":"https://www.kotsu.metro.tokyo.jp/subway/timetable/","use":"full Asakusa Line train timetable coverage"},
-    {"operator":"Keikyu","url":"https://www.keikyu.co.jp/ride/kakueki/pdf/schedule_all.pdf","use":"official full-line timetable with train numbers and through-operation notation"},
+    {"operator":"Toei","url":"https://www.kotsu.metro.tokyo.jp/subway/timetable/","use":"independently verified full Asakusa Line train-timetable mother set: 1,260 trips"},
+    {"operator":"Keikyu","url":"https://www.keikyu.co.jp/ride/kakueki/pdf/schedule_all.pdf","use":"official full-line timetable with train numbers and explicit previous-publication references"},
     {"operator":"Hokuso","url":"https://www.hokuso-railway.co.jp/faq/","use":"official timetable and operating-range verification"},
     {"operator":"Shibayama","url":"https://www.sibatetu.co.jp/schedule.html","use":"official full station timetable and destinations"}
   ],
   "blockingItems": [
-    "Ingest the Keikyu official full-line timetable as exact train columns for Main/Airport/Kurihama/Zushi, including trains that never enter Keisei.",
-    "Reconcile all 1,260 Toei Asakusa exact timetable trips with exact cross-boundary identities at Sengakuji and Oshiage, including Toei-Keikyu trains that never enter Keisei.",
+    "Finish the independent Keikyu official-PDF mother-set verification for Main/Airport/Kurihama/Zushi, including trains that never enter Keisei.",
+    "Reconcile all 1,260 independently verified Toei Asakusa timetable trips with exact cross-boundary identities at Sengakuji and Oshiage, including Toei-Keikyu trains that never enter Keisei. The independent Toei mother set itself is already verified.",
     "Verify all-train completeness for Hokuso from Hokuso official timetable data rather than relying only on the Keisei-led snapshot.",
     "Verify all-train completeness for Shibayama against the current official timetable.",
     "Add regressions proving Keikyu-only/Toei-only and other non-Keisei trains are retained while false through-service matches fail closed."
