@@ -2,8 +2,8 @@
 """Probe exact station/arrival/departure row semantics on one Keikyu PDF page.
 
 The official timetable sometimes prints a station name on one Y row and its
-arrival/departure times on an adjacent Y row.  This probe resolves that printed
-structure spatially against the canonical Keikyu station list.  It never uses
+arrival/departure times on an adjacent Y row. This probe resolves that printed
+structure spatially against the canonical Keikyu station list. It never uses
 clock-time proximity between trains and never guesses a station from a train's
 destination.
 """
@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 import re
+import statistics
 import tempfile
 from pathlib import Path
 from typing import Any
@@ -38,6 +39,7 @@ STATION_ALIASES = {
     "羽田第１・第２": "羽田空港第１・第２ターミナル",
     "羽田第３": "羽田空港第３ターミナル",
 }
+OPERATION_MARKERS = {"着", "発", "〃"}
 
 
 def compact_join(words) -> str:
@@ -104,9 +106,6 @@ def station_adjacent_marker(left_text: str, station: str) -> str | None:
 
 def marker(left_text: str) -> str | None:
     cleaned = operational_label_text(left_text)
-    # Reject headings/metadata before considering either a suffix or a leading
-    # marker.  The latter is needed because vertically printed destination or
-    # formation annotations can be extracted after a genuine row-leading 着/発.
     if any(token in cleaned for token in ("発車", "到着番線", "始発")):
         return None
     if cleaned.endswith("着"):
@@ -115,12 +114,6 @@ def marker(left_text: str) -> str | None:
         return "departure"
     if cleaned.endswith("〃"):
         return "departure"
-
-    # A row-leading marker is accepted only when the opposite marker does not
-    # also occur in the extracted text.  Thus ambiguous strings such as 発着
-    # remain fail-closed, while extraction collisions such as 着山 / 発川 keep
-    # their explicit printed row meaning. Station identity is still established
-    # separately from a nearby canonical station anchor.
     if cleaned.startswith("着") and "発" not in cleaned[1:]:
         return "arrival"
     if cleaned.startswith("発") and "着" not in cleaned[1:]:
@@ -128,16 +121,46 @@ def marker(left_text: str) -> str | None:
     return None
 
 
-def semantic_label_boundary(grid) -> float:
-    """Right edge of the station/着発 label band, independent of train-grid edge.
+def semantic_marker_x(words, grid) -> float | None:
+    """Prove the repeated printed 着/発/〃 column from page geometry.
 
-    Keikyu omits some printed train numbers. Recovering an anonymous first train
-    column shifts ``grid.centers[0]`` left by one pitch, but the printed station
-    name / 着発 band does not move. The label reader therefore extends into the
-    left half of the first train slot. Time-shaped tokens are excluded from the
-    label text and are assigned independently to the proven train grid.
+    The operational marker column is a vertical band independent of train-number
+    omission. Exact marker glyphs are clustered by X below the true header; the
+    densest repeated cluster near the left edge of the train table is selected.
+    A singleton can never establish this boundary.
     """
-    return grid.centers[0] + grid.pitch * 0.45
+    right_limit = grid.centers[0] + grid.pitch * 2.0
+    candidates = sorted(
+        word.x
+        for word in words
+        if word.y > grid.header_y + 10
+        and word.text in OPERATION_MARKERS
+        and word.x < right_limit
+    )
+    if not candidates:
+        return None
+
+    groups: list[list[float]] = []
+    for value in candidates:
+        if groups and abs(value - statistics.median(groups[-1])) <= 1.8:
+            groups[-1].append(value)
+        else:
+            groups.append([value])
+    groups = [group for group in groups if len(group) >= 3]
+    if not groups:
+        return None
+    best = max(groups, key=lambda group: (len(group), statistics.median(group)))
+    return float(statistics.median(best))
+
+
+def semantic_label_boundary(words, grid) -> float:
+    """Right edge of station/着発 label band, independent of train-grid edge."""
+    marker_x = semantic_marker_x(words, grid)
+    if marker_x is not None:
+        return marker_x + grid.pitch * 0.18
+    # Fail-safe fallback keeps the old behavior local to this page; it never
+    # establishes identity and is intentionally conservative.
+    return grid.centers[0] + grid.pitch * 0.95
 
 
 def main() -> int:
@@ -153,25 +176,18 @@ def main() -> int:
         if grid is None:
             raise RuntimeError("could not prove train-column grid")
 
-        label_boundary = semantic_label_boundary(grid)
+        marker_x = semantic_marker_x(words, grid)
+        label_boundary = semantic_label_boundary(words, grid)
         raw_rows: list[dict[str, Any]] = []
         for row in cluster_by_y(words, tolerance=1.35):
             y = sum(word.y for word in row) / len(row)
             if y <= grid.header_y + 20:
                 continue
-            # Label geometry and train-column geometry are deliberately separate.
-            # A time token can sit left of label_boundary in the anonymous first
-            # train slot, so omit time-shaped tokens from the label string rather
-            # than dropping that train cell from the grid.
             left_words = [
                 word for word in row
                 if word.x < label_boundary and not TIME_RE.fullmatch(word.text)
             ]
-            left_text = compact_join(left_words)
-            if not left_text:
-                # Keep rows that have grid time cells even when the label is on
-                # an adjacent Y row; those are resolved spatially below.
-                left_text = ""
+            left_text = compact_join(left_words) if left_words else ""
             cells = []
             for word in row:
                 if not TIME_RE.fullmatch(word.text):
@@ -231,6 +247,8 @@ def main() -> int:
         report = {
             "page": PAGE,
             "trainColumns": len(grid.centers),
+            "operationalMarkerX": round(marker_x, 2) if marker_x is not None else None,
+            "semanticLabelBoundary": round(label_boundary, 2),
             "canonicalStationTitles": len(titles),
             "timedRows": len(resolved_rows) + len(unresolved_timed_rows),
             "resolvedTimedRows": len(resolved_rows),
