@@ -6,6 +6,8 @@ on:
     paths:
       - 'scripts/probe_keikyu_official_timetable.py'
       - 'scripts/probe_keikyu_timetable_geometry.py'
+      - 'scripts/keikyu_official_pdf.py'
+      - 'scripts/audit_keikyu_official_columns.py'
       - '.github/workflows/probe-keikyu-official-timetable.yml'
 
 permissions:
@@ -14,7 +16,7 @@ permissions:
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -30,3 +32,5 @@ jobs:
         run: python scripts/probe_keikyu_official_timetable.py
       - name: Probe train-column geometry
         run: python scripts/probe_keikyu_timetable_geometry.py
+      - name: Audit all official train-column pages
+        run: python scripts/audit_keikyu_official_columns.py
