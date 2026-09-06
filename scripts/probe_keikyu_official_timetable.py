@@ -64,10 +64,11 @@ def main() -> int:
         )
         lines = [line.rstrip() for line in text.splitlines()]
         nonempty = [line for line in lines if line.strip()]
-        if not any("列車番号" in line for line in nonempty):
-            raise RuntimeError("sample timetable page did not contain 列車番号")
-        if not any("泉岳寺" in line for line in nonempty):
-            raise RuntimeError("sample timetable page did not contain 泉岳寺")
+        compact = re.sub(r"\s+", "", text)
+        if "列車番号" not in compact:
+            raise RuntimeError("sample timetable page did not contain 列車番号 after whitespace normalization")
+        if "泉岳寺" not in compact:
+            raise RuntimeError("sample timetable page did not contain 泉岳寺 after whitespace normalization")
 
         # Print only a compact diagnostic; this is layout research, not a raw-PDF mirror.
         sample = nonempty[:80]
