@@ -35,6 +35,6 @@
   }
 
   placeCalendarReturnButtonAtCorner();
-  load("./schedule-shared-mark-dedupe.js?v=202609012251","data-schedule-shared-mark-dedupe");
+  load("./schedule-shared-mark-dedupe.js?v=2026090621","data-schedule-shared-mark-dedupe");
   load("./schedule-weather-original.js?v=202608282355","data-schedule-weather-original");
 })();
