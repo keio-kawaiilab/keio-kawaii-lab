@@ -34,6 +34,14 @@ IN_SCOPE_RAILWAYS = {
     "odpt.Railway:Keikyu.Zushi",
 }
 
+# The official all-line PDF shortens these two long airport station names in
+# some continuation blocks.  This is a printed-name alias only; it must not be
+# used to infer train identity or destination continuity.
+STATION_ALIASES = {
+    "羽田第１・第２": "羽田空港第１・第２ターミナル",
+    "羽田第３": "羽田空港第３ターミナル",
+}
+
 
 def compact_join(words) -> str:
     return re.sub(r"\s+", "", "".join(word.text for word in sorted(words, key=lambda word: word.x)))
@@ -57,8 +65,12 @@ def station_titles() -> list[str]:
 
 def station_matches(left_text: str, titles: list[str]) -> list[str]:
     matches = [title for title in titles if title in left_text]
+    for alias, canonical in STATION_ALIASES.items():
+        if alias in left_text and canonical in titles:
+            matches.append(canonical)
     if not matches:
         return []
+    matches = sorted(set(matches), key=lambda value: (-len(value), value))
     longest = len(matches[0])
     return [title for title in matches if len(title) == longest]
 
@@ -72,11 +84,16 @@ def operational_label_text(left_text: str) -> str:
     ``三崎口発………1851…``.  Those values are not part of the station label and
     must not prevent us from reading the printed 発/着/〃 marker.
 
+    ASCII digits may be concatenated by PDF extraction (for example three
+    adjacent continuation cells can become ``759810814``), so they must be
+    removed as one run instead of assuming 3-4 digit tokens. Full-width digits
+    in station names such as 羽田空港第１・第２ターミナル are intentionally
+    untouched.
+
     This function does *not* move a time into another train column and does not
-    establish any train identity.  Full-width digits in station names such as
-    羽田空港第１・第２ターミナル are intentionally untouched.
+    establish any train identity.
     """
-    value = re.sub(r"\d{3,4}", "", left_text)
+    value = re.sub(r"[0-9.]+", "", left_text)
     value = re.sub(r"[…!#$\"'\\]+", "", value)
     return value
 
