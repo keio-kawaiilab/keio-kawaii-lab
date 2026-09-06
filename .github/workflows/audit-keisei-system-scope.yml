@@ -1,0 +1,44 @@
+name: Audit whole Keisei through-system scope
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'data/transit/manifest.json'
+      - 'data/transit/keisei/system-scope.json'
+      - 'data/transit/keisei/timetable-index.json'
+      - 'data/transit/keisei/official-network-report.json'
+      - 'data/transit/toei/timetable-index.json'
+      - 'data/transit/keikyu/timetable-index.json'
+      - 'data/transit/hokuso/timetable-index.json'
+      - 'data/transit/shibayama/timetable-index.json'
+      - 'scripts/audit_keisei_system_scope.py'
+      - '.github/workflows/audit-keisei-system-scope.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate scope and print whole-system coverage
+        run: python scripts/audit_keisei_system_scope.py
+      - name: Assert we do not falsely claim completion yet
+        run: |
+          python scripts/audit_keisei_system_scope.py --write /tmp/keisei-system-coverage.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report=json.loads(Path('/tmp/keisei-system-coverage.json').read_text(encoding='utf-8'))
+          assert report['complete'] is False, 'Do not mark the Keisei system complete until every in-scope line and same-train identity is exact.'
+          print('whole-system complete:', report['complete'])
+          print('in-scope railways:', report['railwayCount'])
+          print('line timetables all exact:', report['allLineTimetablesExact'])
+          print('same-train identities all exact:', report['allSameTrainIdentitiesExact'])
+          PY
