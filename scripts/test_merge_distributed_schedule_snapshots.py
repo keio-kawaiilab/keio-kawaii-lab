@@ -81,6 +81,36 @@ class DistributedSnapshotMergerTests(unittest.TestCase):
         self.assertIn(official_url, event["urls"])
         self.assertEqual(1, result["distributedMergeDiagnostics"]["officialLinksPreserved"])
 
+    def test_final_merge_rejects_cross_year_birthday_row(self):
+        core = {"events": [
+            {
+                "id": "stale-2025-birthday",
+                "sourceType": "auto",
+                "group": "CANDY TUNE",
+                "title": "小川奈々子生誕祭2025",
+                "eventDate": "2026-10-01",
+                "eventDates": ["2026-10-01"],
+            },
+            {
+                "id": "correct-2026-birthday",
+                "sourceType": "auto",
+                "group": "CANDY TUNE",
+                "title": "小川奈々子生誕祭2026",
+                "eventDate": "2026-10-01",
+                "eventDates": ["2026-10-01"],
+            },
+        ]}
+        result = merger.merge_payloads(core, {"events": []}, {"events": []}, {"events": []})
+        ids = {row["id"] for row in result["events"]}
+        self.assertNotIn("stale-2025-birthday", ids)
+        self.assertIn("correct-2026-birthday", ids)
+        guard = result["distributedMergeDiagnostics"]["birthdayYearGuard"]
+        self.assertEqual(1, guard["removedCount"])
+        self.assertEqual(
+            "explicit-title-year-does-not-match-performance-year",
+            guard["removed"][0]["reason"],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
