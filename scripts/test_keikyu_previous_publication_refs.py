@@ -91,12 +91,15 @@ class KeikyuPreviousPublicationRefsTest(unittest.TestCase):
         words = [word("8", 970.0, 970.0)]
         self.assertEqual(detect_printed_page_number(1000.0, 1000.0, words), 8)
 
-    def test_special_connection_page_uses_extreme_outer_gutter(self):
-        words = [word("62", 50.0, 910.0)]
+    def test_special_connection_page_uses_large_outer_gutter_number(self):
+        words = [word("62", 50.0, 910.0, height=13.0)]
         self.assertEqual(detect_printed_page_number(1000.0, 1000.0, words), 62)
 
-    def test_table_side_integer_does_not_hide_outer_gutter_page_number(self):
-        words = [word("62", 50.0, 910.0), word("51", 100.0, 970.0)]
+    def test_table_side_integer_does_not_hide_large_outer_page_number(self):
+        words = [
+            word("62", 50.0, 910.0, height=13.0),
+            word("51", 100.0, 970.0, height=6.0),
+        ]
         self.assertEqual(detect_printed_page_number(1000.0, 1000.0, words), 62)
 
     def test_large_official_page_number_beats_smaller_table_integer(self):
@@ -122,8 +125,11 @@ class KeikyuPreviousPublicationRefsTest(unittest.TestCase):
         words = [word("7", 30.0, 970.0), word("63", 970.0, 970.0)]
         self.assertIsNone(detect_printed_page_number(1000.0, 1000.0, words))
 
-    def test_ambiguous_outer_gutter_candidates_fail_closed(self):
-        words = [word("62", 50.0, 910.0), word("63", 950.0, 910.0)]
+    def test_ambiguous_large_outer_page_numbers_fail_closed(self):
+        words = [
+            word("62", 50.0, 910.0, height=13.0),
+            word("63", 950.0, 910.0, height=13.0),
+        ]
         self.assertIsNone(detect_printed_page_number(1000.0, 1000.0, words))
 
 
