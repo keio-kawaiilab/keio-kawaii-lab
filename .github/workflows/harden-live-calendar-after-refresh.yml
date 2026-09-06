@@ -1,0 +1,43 @@
+name: Harden live calendar after refresh
+
+on:
+  workflow_run:
+    workflows: ["Distributed live ticket calendar"]
+    types: [completed]
+
+permissions:
+  contents: write
+
+jobs:
+  harden:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Reapply publication guards after collector refresh
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/guard_birthday_year_consistency.py --data data/live-events.json
+          python scripts/harden_ticket_semantics.py --data data/live-events.json
+          python -m json.tool data/live-events.json >/dev/null
+
+      - name: Publish only when guards changed the data
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- data/live-events.json; then
+            echo "Published calendar already satisfies hardening rules."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/live-events.json
+          git commit -m "Reapply live calendar publication guards"
+          git pull --rebase origin main
+          git push origin HEAD:main
