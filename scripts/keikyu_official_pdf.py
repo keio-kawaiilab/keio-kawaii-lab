@@ -141,6 +141,30 @@ def _row_text(row: list[Word]) -> str:
     return compact("".join(word.text for word in sorted(row, key=lambda word: word.x)))
 
 
+def _label_span(row: list[Word], needle: str = "列車番号") -> tuple[float, float] | None:
+    """Return the bbox span of a printed label even when PDF words split it.
+
+    ``pdftotext -bbox-layout`` can expose 「列 車 番 号」 as four separate Word
+    objects although compact row text is exactly ``列車番号``.  Header detection
+    must therefore prove the literal phrase as a consecutive word sequence,
+    rather than require one Word whose text contains the whole phrase.
+    """
+    ordered = sorted(row, key=lambda word: word.x)
+    for start in range(len(ordered)):
+        assembled = ""
+        start_x = ordered[start].x_min
+        for end in range(start, min(len(ordered), start + 8)):
+            token = compact(ordered[end].text)
+            if not token:
+                continue
+            assembled += token
+            if assembled == needle:
+                return start_x, max(word.x_max for word in ordered[start : end + 1])
+            if not needle.startswith(assembled):
+                break
+    return None
+
+
 def _printed_train_number_rows(words: list[Word]) -> list[list[Word]]:
     """Return literal printed 「列車番号」 rows near the top of the page."""
     result: list[list[Word]] = []
@@ -148,13 +172,13 @@ def _printed_train_number_rows(words: list[Word]) -> list[list[Word]]:
         row_y = statistics.median(word.y for word in row)
         if row_y > PRINTED_HEADER_Y_LIMIT:
             continue
-        if "列車番号" in _row_text(row):
+        if "列車番号" in _row_text(row) and _label_span(row) is not None:
             result.append(row)
     return result
 
 
-def _main_printed_header(words: list[Word]) -> tuple[list[Word], Word] | None:
-    """Return the lower printed train-number row and its label word.
+def _main_printed_header(words: list[Word]) -> tuple[list[Word], float] | None:
+    """Return the lower printed train-number row and label right edge.
 
     When two header bands exist, the upper one belongs to 「前の掲載ページ」;
     the lower one is the current page's main timetable. This rule was audited
@@ -164,23 +188,20 @@ def _main_printed_header(words: list[Word]) -> tuple[list[Word], Word] | None:
     if not rows:
         return None
     row = max(rows, key=lambda value: statistics.median(word.y for word in value))
-    label_words = [word for word in row if "列車番号" in word.text]
-    if not label_words:
-        # pdftotext can theoretically split the phrase across words. Fail closed
-        # rather than selecting a numeric station row as a substitute header.
+    span = _label_span(row)
+    if span is None:
         return None
-    label = max(label_words, key=lambda word: word.x_max)
-    return row, label
+    return row, span[1]
 
 
 def _candidate_header_rows(words: list[Word]) -> list[list[Word]]:
     """Compatibility helper: explicit train-number tokens from printed headers."""
     result: list[list[Word]] = []
     for row in _printed_train_number_rows(words):
-        label_words = [word for word in row if "列車番号" in word.text]
-        if not label_words:
+        span = _label_span(row)
+        if span is None:
             continue
-        label_x_max = max(word.x_max for word in label_words)
+        label_x_max = span[1]
         tokens = [
             word for word in row
             if word.x > label_x_max and TRAIN_NUMBER_RE.fullmatch(word.text)
@@ -193,8 +214,6 @@ def _candidate_header_rows(words: list[Word]) -> list[list[Word]]:
 def _infer_pitch(explicit: list[Word]) -> float | None:
     """Infer adjacent train-column pitch from explicit numbers on the true header."""
     xs = sorted(word.x for word in explicit)
-    # Explicit numbers can skip anonymous columns. Only gaps in the physically
-    # observed adjacent-column range are allowed to establish the base pitch.
     adjacent = [b - a for a, b in zip(xs, xs[1:]) if 10.0 <= b - a <= 22.0]
     if not adjacent:
         return None
@@ -284,13 +303,13 @@ def detect_train_column_grid(words: list[Word]) -> TrainColumnGrid | None:
     selected = _main_printed_header(words)
     if selected is None:
         return None
-    header_row, label = selected
+    header_row, label_x_max = selected
     header_y = statistics.median(word.y for word in header_row)
 
     explicit = sorted(
         [
             word for word in header_row
-            if word.x > label.x_max and TRAIN_NUMBER_RE.fullmatch(word.text)
+            if word.x > label_x_max and TRAIN_NUMBER_RE.fullmatch(word.text)
         ],
         key=lambda word: word.x,
     )
@@ -301,13 +320,10 @@ def detect_train_column_grid(words: list[Word]) -> TrainColumnGrid | None:
     if pitch is None:
         return None
 
-    # Reconstruct anonymous columns to the left by walking the proven header
-    # phase back only until the printed label/divider. This recovers intentionally
-    # omitted train numbers without entering station-name / operating-km space.
     first_explicit_x = explicit[0].x
     last_explicit_x = explicit[-1].x
     first_center = first_explicit_x
-    while first_center - pitch > label.x_max + pitch * 0.30:
+    while first_center - pitch > label_x_max + pitch * 0.30:
         first_center -= pitch
 
     slot_count = int(round((last_explicit_x - first_center) / pitch)) + 1
