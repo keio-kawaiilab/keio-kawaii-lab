@@ -2,17 +2,18 @@
 """Validate Sengakuji candidates with a multi-station Toei fingerprint.
 
 This diagnostic deliberately reuses the already-generated and audited Keikyu
-boundary evidence.  It only re-opens the official PDFs on pages that actually
+boundary evidence. It only re-opens the official PDFs on pages that actually
 contain boundary candidates, then compares several Toei-side station times in
 that printed column with the recorded Toei TrainTimetable candidates.
 
-The sequence is an identity check on the Toei side only.  It is never, by
+The sequence is an identity check on the Toei side only. It is never, by
 itself, evidence that the same physical train crosses the operator boundary.
 """
 from __future__ import annotations
 
 import io
 import json
+from bisect import bisect_left
 from collections import Counter
 from pathlib import Path
 from typing import Any
@@ -24,11 +25,14 @@ from keikyu_official_train_evidence import (
     DEFAULT_HOLIDAY_URL,
     DEFAULT_WEEKDAY_URL,
     column_tolerance,
+    cx,
+    cy,
+    data_start,
     fetch_pdf,
+    hhmm,
     nearest,
     norm,
     rows,
-    time_cells,
 )
 
 EVIDENCE_FILE = Path("data/transit-v2/keikyu-official-train-evidence.json")
@@ -81,18 +85,43 @@ def minute_equal(a: int, b: int) -> bool:
 
 
 def build_page_cache(words: list[dict[str, Any]]) -> dict[str, Any]:
+    """Build row/time geometry in one pass over page words.
+
+    The generic ``time_cells(words, y)`` helper intentionally rescans the full
+    page for one row. That is fine for a handful of boundary rows, but doing it
+    for every station row on every page is O(rows * words) and made this audit
+    time out. Here each numeric word is assigned to nearby parsed rows once.
+    """
     page_rows = rows(words)
-    time_by_y: dict[float, list[dict[str, Any]]] = {}
+    row_ys = sorted(float(row["y"]) for row in page_rows)
+    time_by_y: dict[float, list[dict[str, Any]]] = {y: [] for y in row_ys}
+    threshold = data_start(words)
+
+    for word in words:
+        if float(word.get("x0", 0)) < threshold:
+            continue
+        text = norm(word.get("text"))
+        minute = hhmm(text)
+        if minute is None:
+            continue
+        wy = cy(word)
+        insertion = bisect_left(row_ys, wy)
+        for idx in range(max(0, insertion - 2), min(len(row_ys), insertion + 2)):
+            y = row_ys[idx]
+            if abs(wy - y) <= 3.7:
+                time_by_y[y].append({"text": text, "x": cx(word), "minute": minute})
+
     all_time_cells: list[dict[str, Any]] = []
-    station_rows: list[dict[str, Any]] = []
+    for values in time_by_y.values():
+        values.sort(key=lambda row: float(row["x"]))
+        all_time_cells.extend(values)
+
+    station_rows = []
     for row in page_rows:
-        y = float(row["y"])
-        cells_for_row = time_cells(words, y)
-        time_by_y[y] = cells_for_row
-        all_time_cells.extend(cells_for_row)
         name = station_name(row["text"])
         if name:
-            station_rows.append({"station": name, "y": y})
+            station_rows.append({"station": name, "y": float(row["y"])})
+
     return {
         "stationRows": station_rows,
         "timeByY": time_by_y,
