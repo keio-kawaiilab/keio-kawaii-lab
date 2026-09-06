@@ -10,7 +10,7 @@ on:
 
 concurrency:
   group: distributed-live-calendar
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 permissions:
   contents: write
