@@ -1,0 +1,25 @@
+name: Audit Keisei-system Asakusa exact gap
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/audit_keisei_asakusa_gap.py'
+      - 'data/transit/toei/timetables/899209dea5fc3a.json'
+      - 'data/transit/keisei/timetables/official-network.json'
+      - '.github/workflows/audit-keisei-asakusa-gap.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Measure exact Asakusa coverage gap
+        run: python scripts/audit_keisei_asakusa_gap.py
