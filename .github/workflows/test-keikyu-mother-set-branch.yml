@@ -65,7 +65,7 @@ jobs:
             /tmp/keikyu-identity-graph.json \
             --output /tmp/keikyu-mother-set.json
           python scripts/verify_keikyu_independent_mother_set_audit.py /tmp/keikyu-mother-set.json
-      - name: Write compact audit summaries
+      - name: Cross-check blank classification and write compact summary
         run: |
           python - <<'PY'
           import json
@@ -74,33 +74,44 @@ jobs:
 
           data = json.loads(Path('/tmp/keikyu-mother-set.json').read_text(encoding='utf-8'))
           empty = json.loads(Path('/tmp/keikyu-empty-fragments.json').read_text(encoding='utf-8'))
+
+          assert data['geometryFragmentCount'] == empty['fragmentCount']
+          assert data['structuralBlankFragmentCount'] == empty['structuralBlankCandidateCount']
+          assert data['zeroTimeEvidenceBearingFragmentCount'] == empty['evidenceBearingEmptyFragmentCount']
+          assert data['trainBearingFragmentCount'] + data['structuralBlankFragmentCount'] == data['geometryFragmentCount']
+          assert data['candidatePhysicalTrainCount'] == data['trainBearingFragmentCount'] - data['officialCrossPageEdgeCount']
+          assert data['resolvedTimeCells'] + data['unresolvedTimeCells'] == data['sourceTimeCells']
+          assert data['issues'] == []
+          assert data['identityPolicy']['runtimeSameTrainPromotions'] == 0
+
           summary = {
-              'version': 2,
+              'version': 3,
               'generatedAt': datetime.now(timezone.utc).isoformat(),
               'sourceSha256': data['sourceSha256'],
-              'localFragmentCount': data['localFragmentCount'],
+              'geometryFragmentCount': data['geometryFragmentCount'],
+              'trainBearingFragmentCount': data['trainBearingFragmentCount'],
+              'structuralBlankFragmentCount': data['structuralBlankFragmentCount'],
               'officialCrossPageEdgeCount': data['officialCrossPageEdgeCount'],
-              'candidatePhysicalTrainCountBeforeBlankClassification': data['candidatePhysicalTrainCount'],
+              'candidatePhysicalTrainCount': data['candidatePhysicalTrainCount'],
               'joinedPhysicalTrainCandidateCount': data['joinedPhysicalTrainCandidateCount'],
-              'singletonPhysicalTrainCandidateCountBeforeBlankClassification': data['singletonPhysicalTrainCandidateCount'],
-              'componentSizeHistogramBeforeBlankClassification': data['componentSizeHistogram'],
+              'singletonPhysicalTrainCandidateCount': data['singletonPhysicalTrainCandidateCount'],
+              'componentSizeHistogram': data['componentSizeHistogram'],
               'resolvedTimeCells': data['resolvedTimeCells'],
               'unresolvedTimeCells': data['unresolvedTimeCells'],
               'sourceTimeCells': data['sourceTimeCells'],
-              'emptyLocalFragmentCount': data['emptyLocalFragmentCount'],
-              'emptyClassification': {
+              'zeroTimeEvidenceBearingFragmentCount': data['zeroTimeEvidenceBearingFragmentCount'],
+              'blankClassification': {
                   'counts': empty['emptyCounts'],
                   'positions': empty['emptyPositionCounts'],
                   'pagesWithEmptyFragments': empty['pagesWithEmptyFragments'],
                   'nonemptyAnonymousFragmentCount': empty['nonemptyAnonymousFragmentCount'],
                   'evidenceBearingEmptyFragmentCount': empty['evidenceBearingEmptyFragmentCount'],
                   'structuralBlankCandidateCount': empty['structuralBlankCandidateCount'],
-                  'evidenceBearingExamples': empty['evidenceBearingEmptyFragments'][:50],
                   'structuralBlankExamples': empty['structuralBlankCandidates'][:50],
               },
               'issues': data['issues'],
               'runtimeSameTrainPromotions': data['identityPolicy']['runtimeSameTrainPromotions'],
-              'note': 'Audit-only. Zero-time anonymous unreferenced grid slots are classified separately and are not yet accepted as physical trains.'
+              'note': 'Audit-only independent Keikyu mother set. Anonymous unreferenced zero-time geometry slots are retained for diagnostics but excluded from physical-train candidate counts.'
           }
           path = Path('docs/transit/keikyu-independent-mother-set-audit.json')
           path.parent.mkdir(parents=True, exist_ok=True)
