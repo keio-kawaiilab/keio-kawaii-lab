@@ -1,0 +1,80 @@
+name: Run full Keikyu identity audit
+
+on:
+  push:
+    branches:
+      - work/keikyu-prev-page-evidence-20260906
+    paths:
+      - '.github/workflows/run-keikyu-full-identity-audit.yml'
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+          pip install pdfplumber==0.11.7 requests==2.32.5
+      - name: Compile and unit test
+        run: |
+          python -m py_compile \
+            scripts/keikyu_official_pdf.py \
+            scripts/audit_keikyu_official_columns.py \
+            scripts/audit_keikyu_station_time_resolution.py \
+            scripts/build_keikyu_official_stop_times.py \
+            scripts/verify_keikyu_official_stop_times.py \
+            scripts/audit_keikyu_previous_publication_refs.py \
+            scripts/build_keikyu_cross_page_identity_audit.py \
+            scripts/verify_keikyu_cross_page_identity_audit.py
+          python scripts/test_keikyu_official_stop_times.py
+          python scripts/test_keikyu_previous_publication_refs.py
+          python scripts/test_keikyu_cross_page_identity_audit.py
+      - name: Build official page-local stop times
+        run: python scripts/build_keikyu_official_stop_times.py --output /tmp/stop-times.json
+      - name: Verify page-local stop times
+        run: python scripts/verify_keikyu_official_stop_times.py /tmp/stop-times.json
+      - name: Build official previous-publication references
+        run: python scripts/audit_keikyu_previous_publication_refs.py --output /tmp/refs.json
+      - name: Build identity candidate graph
+        run: python scripts/build_keikyu_cross_page_identity_audit.py /tmp/stop-times.json /tmp/refs.json --output /tmp/graph.json
+      - name: Verify identity candidate graph
+        run: python scripts/verify_keikyu_cross_page_identity_audit.py /tmp/graph.json
+      - name: Print strict audit result
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          stops=json.loads(Path('/tmp/stop-times.json').read_text())
+          refs=json.loads(Path('/tmp/refs.json').read_text())
+          graph=json.loads(Path('/tmp/graph.json').read_text())
+          missing=[p['pdfPage'] for p in refs['pages'] if p.get('printedPage') is None]
+          unresolved=[r for r in refs['fragments'] if r.get('targetStatus') not in {'no-reference','unique-explicit-reference-candidate'}]
+          result={
+            'stopTimeTotals':stops['totals'],
+            'pagesAudited':refs['pagesAudited'],
+            'missingPrintedPageNumbers':missing,
+            'completePreviousReferences':refs['completePreviousReferenceCount'],
+            'uniqueReferenceCandidates':refs['uniqueExplicitReferenceCandidateCount'],
+            'targetStatusCounts':refs['targetStatusCounts'],
+            'unresolvedReferenceCount':len(unresolved),
+            'graphCandidateEdges':graph['materializedCandidateEdgeCount'],
+            'graphNodes':graph['nodeCount'],
+            'graphComponents':graph['identityComponentCount'],
+            'componentSizeHistogram':graph['componentSizeHistogram'],
+            'branchingTargets':len(graph['branchingTargets']),
+            'multiplePreviousSources':len(graph['multiplePreviousSources']),
+            'cycles':len(graph['cycles']),
+            'issues':graph['issues'],
+            'runtimeSameTrainPromotions':0,
+          }
+          print(json.dumps(result,ensure_ascii=False,indent=2))
+          assert not missing
+          assert not unresolved
+          assert graph['candidateReferenceCount'] == refs['completePreviousReferenceCount']
+          assert graph['identityPolicy']['runtimeSameTrainPromotions'] == 0
+          PY
