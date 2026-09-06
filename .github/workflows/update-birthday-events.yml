@@ -9,6 +9,7 @@ on:
       - "scripts/update_official_x_birthday_events.py"
       - "scripts/test_update_official_x_birthday_events.py"
       - "scripts/reconcile_birthday_ticket_rows.py"
+      - "scripts/guard_birthday_year_consistency.py"
       - "scripts/apply_event_scopes.py"
       - "scripts/test_schedule_scope.py"
       - ".github/workflows/update-birthday-events.yml"
@@ -66,7 +67,7 @@ jobs:
         if: steps.control.outputs.frozen != 'true'
         working-directory: scripts
         run: |
-          python -m py_compile update_official_birthday_news.py reconcile_birthday_ticket_rows.py
+          python -m py_compile update_official_birthday_news.py reconcile_birthday_ticket_rows.py guard_birthday_year_consistency.py
           python -m unittest -v test_update_official_x_birthday_events.py test_schedule_scope.py
 
       - name: Collect birthday announcements and ticket windows
@@ -75,6 +76,11 @@ jobs:
         run: |
           set -euo pipefail
           cp data/live-events.json /tmp/live-events-before-birthday.json
+
+          # Remove impossible stale rows before matching. An explicit year in a
+          # birthday title is authoritative for the physical performance year,
+          # and ticket applications may never start after that event ended.
+          python scripts/guard_birthday_year_consistency.py
 
           # Primary path: official KAWAII LAB./group INFORMATION pages. This is
           # independent of X and supplies the displayed official URL and window.
@@ -86,9 +92,14 @@ jobs:
           timeout --signal=TERM --kill-after=10s 90s python scripts/update_official_x_birthday_events.py || \
             echo "::warning::Official X birthday fallback failed; keeping official-news/previous birthday data."
 
+          # Reject any impossible cross-year row produced by a source before it
+          # can be reconciled into the stable public event identity.
+          python scripts/guard_birthday_year_consistency.py
+
           # Fold a verified official ticket row into the stable physical-event row
           # so an old '現在受付なし' shadow cannot be restored by continuity guards.
           python scripts/reconcile_birthday_ticket_rows.py
+          python scripts/guard_birthday_year_consistency.py
           python scripts/apply_event_scopes.py
           python scripts/prepare_release_candidate.py --previous /tmp/live-events-before-birthday.json
           python scripts/audit_schedule_release_grouped.py \
