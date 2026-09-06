@@ -1,0 +1,85 @@
+name: Temporary Toei Asakusa mother-set audit
+
+on:
+  push:
+    branches:
+      - work/toei-asakusa-mother-set-20260906
+    paths:
+      - 'scripts/audit_toei_asakusa_mother_set.py'
+      - 'scripts/verify_toei_asakusa_mother_set.py'
+      - 'data/transit/toei/timetable-index.json'
+      - 'data/transit/toei/timetables/**'
+      - '.github/workflows/test-toei-asakusa-mother-set.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile audit
+        run: |
+          python -m py_compile \
+            scripts/audit_toei_asakusa_mother_set.py \
+            scripts/verify_toei_asakusa_mother_set.py
+      - name: Build and verify Toei Asakusa mother set
+        run: |
+          python scripts/audit_toei_asakusa_mother_set.py \
+            --output /tmp/toei-asakusa-mother-set.json
+          python scripts/verify_toei_asakusa_mother_set.py \
+            /tmp/toei-asakusa-mother-set.json
+      - name: Write compact summary
+        run: |
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          data = json.loads(Path('/tmp/toei-asakusa-mother-set.json').read_text(encoding='utf-8'))
+          assert data['tripCount'] == data['indexExpectedTripCount']
+          assert data['uniqueTimetableIdCount'] == data['tripCount']
+          assert data['uniqueLocalIdentityKeyCount'] == data['tripCount']
+          assert data['issues'] == []
+          assert data['identityPolicy']['runtimeSameTrainPromotions'] == 0
+          summary = {
+              'version': 1,
+              'generatedAt': datetime.now(timezone.utc).isoformat(),
+              'sourceSha256': data['source']['sha256'],
+              'tripCount': data['tripCount'],
+              'uniqueTimetableIdCount': data['uniqueTimetableIdCount'],
+              'blankTrainNumberCount': data['blankTrainNumberCount'],
+              'calendarTripCounts': data['calendarTripCounts'],
+              'directionTripCounts': data['directionTripCounts'],
+              'destinationOperatorCounts': data['destinationOperatorCounts'],
+              'totalStopRows': data['totalStopRows'],
+              'totalTimeCells': data['totalTimeCells'],
+              'sengakuji': data['sengakuji'],
+              'oshiage': data['oshiage'],
+              'issues': data['issues'],
+              'runtimeSameTrainPromotions': 0,
+              'note': 'Independent Toei Asakusa scheduled-train mother-set audit. Boundary contact is inventory only and does not establish cross-operator same-train identity.'
+          }
+          path = Path('docs/transit/toei-asakusa-mother-set-audit.json')
+          path.parent.mkdir(parents=True, exist_ok=True)
+          path.write_text(json.dumps(summary, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          print(json.dumps(summary, ensure_ascii=False, indent=2))
+          PY
+      - name: Commit audit summary to branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/transit/toei-asakusa-mother-set-audit.json
+          if git diff --cached --quiet; then
+            echo "No audit summary change."
+            exit 0
+          fi
+          git commit -m "Record Toei Asakusa mother-set audit"
+          git pull --rebase origin work/toei-asakusa-mother-set-20260906
+          git push origin HEAD:work/toei-asakusa-mother-set-20260906
