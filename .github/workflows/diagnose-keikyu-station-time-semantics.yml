@@ -1,0 +1,32 @@
+name: Diagnose Keikyu station-time semantics
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/diagnose_keikyu_station_time_pages.py'
+      - 'scripts/audit_keikyu_station_time_resolution.py'
+      - 'scripts/probe_keikyu_station_rows.py'
+      - 'scripts/keikyu_official_pdf.py'
+      - '.github/workflows/diagnose-keikyu-station-time-semantics.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Ensure PDF text tools
+        run: |
+          if ! command -v pdftotext >/dev/null || ! command -v pdfinfo >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y poppler-utils
+          fi
+      - name: Diagnose station-time semantic coverage
+        run: python scripts/diagnose_keikyu_station_time_pages.py
