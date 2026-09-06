@@ -8,8 +8,10 @@ from typing import Any
 MAIN = 'odpt.Railway:Keikyu.Main'
 AIRPORT = 'odpt.Railway:Keikyu.Airport'
 KURIHAMA = 'odpt.Railway:Keikyu.Kurihama'
+ZUSHI = 'odpt.Railway:Keikyu.Zushi'
 BOUNDARY_ID = 'keikyu-main-airport-kamata'
 KURIHAMA_BOUNDARY_ID = 'keikyu-main-kurihama-horinouchi'
+ZUSHI_BOUNDARY_ID = 'keikyu-main-zushi-kanazawahakkei'
 LEGACY_MARKER = 'same-printed-column-includes-shinagawa-and-haneda'
 MARKER = 'same-printed-column-two-exact-station-times'
 
@@ -21,6 +23,10 @@ BOUNDARY_SPECS: dict[str, dict[str, Any]] = {
     KURIHAMA_BOUNDARY_ID: {
         'station': '堀ノ内',
         'pairs': {(KURIHAMA, MAIN), (MAIN, KURIHAMA)},
+    },
+    ZUSHI_BOUNDARY_ID: {
+        'station': '金沢八景',
+        'pairs': {(ZUSHI, MAIN), (MAIN, ZUSHI)},
     },
 }
 
