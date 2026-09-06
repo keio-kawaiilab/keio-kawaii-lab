@@ -35,29 +35,96 @@ document.addEventListener("DOMContentLoaded", async () => {
     const selected = selectedGroup();
     return selected === "all" || event.group === selected || participants(event).includes(selected);
   };
+  const sourceTitle = (event) => String(event.eventTitle || event.displayTitle || event.title || "ライブ情報");
   const cleanTitle = (event) => {
-    let title = String(event.title || "ライブ情報").replace(/^20\d{2}[./-]\d{1,2}[./-]\d{1,2}\s+/, "").trim();
+    let title = sourceTitle(event).replace(/^20\d{2}[./-]\d{1,2}[./-]\d{1,2}\s+/, "").trim();
     const quoted = title.match(/「([^」]+)」/);
     if (quoted) return quoted[1].trim();
     title = title.replace(/^(?:20\d{2}年)?\d{1,2}月\d{1,2}日(?:\([^)]*\)|（[^）]*）)?\s*/, "");
-    title = title.split(/\s*@|開催決定|出演決定|アップグレード抽選受付|一般(?:発売|販売|先行)|FC\s*(?:会員)?先行|ファンクラブ|OFFICIAL FANCLUB|先行受付|チケット受付|受付のお知らせ/)[0];
-    return title.replace(/[!！\s\-–—｜|]+$/g, "").trim() || String(event.title || "ライブ情報");
+    title = title.split(/\s*@|開催決定|出演決定|アップグレード抽選受付|アップグレード受付|一般(?:発売|販売|先行)|FC\s*(?:会員)?先行|ファンクラブ|OFFICIAL FANCLUB|先行受付|チケット受付|受付のお知らせ/)[0];
+    return title.replace(/[!！\s\-–—｜|]+$/g, "").trim() || sourceTitle(event);
+  };
+  const normalizeTitle = (event) => {
+    let title = cleanTitle(event);
+    if (event.group) title = title.replace(new RegExp(event.group.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi"), "");
+    title = title
+      .replace(/[＜<][^＞>]+[＞>]/g, "")
+      .replace(/[「」『』【】\[\]()（）♡♥︎❤︎・･!！?？'"`~〜～\s_\-–—｜|:：,.，。/\\]/g, "")
+      .toLowerCase();
+    return title;
+  };
+  const birthdayPerson = (event) => {
+    let title = cleanTitle(event);
+    if (event.group) title = title.replace(event.group, "").trim();
+    const match = title.match(/([一-龠々ぁ-んァ-ヶA-Za-z0-9ー・]{2,30})\s*生誕祭/u);
+    return match ? match[1].replace(/[\s・]/g, "") : "";
+  };
+  const officialScheduleUrl = (event) => {
+    if (event.officialScheduleUrl) return String(event.officialScheduleUrl);
+    const urls = Array.isArray(event.urls) ? event.urls : [];
+    return String(urls.find((url) => String(url).includes("asobisystem.com/live_information/detail/")) || "");
   };
   const occurrences = (event) => {
     const rows = [];
     if (Array.isArray(event.schedule) && event.schedule.length) {
-      event.schedule.forEach((x) => rows.push({ date: String(x.date || "").slice(0, 10), venue: x.venue || event.venue || null }));
+      event.schedule.forEach((x) => rows.push({
+        date: String(x.date || "").slice(0, 10),
+        venue: x.venue || event.venue || null,
+        startTime: x.startTime || event.startTime || null
+      }));
     } else if (Array.isArray(event.eventDates) && event.eventDates.length) {
-      event.eventDates.forEach((x) => rows.push({ date: String(x).slice(0, 10), venue: event.venue || null }));
+      event.eventDates.forEach((x) => rows.push({
+        date: String(x).slice(0, 10),
+        venue: event.venue || null,
+        startTime: event.startTime || null
+      }));
     } else if (event.eventDate) {
-      rows.push({ date: String(event.eventDate).slice(0, 10), venue: event.venue || null });
+      rows.push({
+        date: String(event.eventDate).slice(0, 10),
+        venue: event.venue || null,
+        startTime: event.startTime || null
+      });
     }
     const seen = new Set();
     return rows.filter((x) => {
-      if (!parseDay(x.date) || seen.has(x.date)) return false;
-      seen.add(x.date);
+      const key = [x.date, x.startTime || "", String(x.venue || "").replace(/\s+/g, "")].join("\u001f");
+      if (!parseDay(x.date) || seen.has(key)) return false;
+      seen.add(key);
       return true;
     });
+  };
+  const samePerformance = (left, right) => {
+    if (left.event.group !== right.event.group || left.date !== right.date) return false;
+
+    // The physical slot is the strongest identity. Ticket source/title variants
+    // must never create two cards for one group at the same date and start time.
+    if (left.startTime && right.startTime && left.startTime === right.startTime) return true;
+
+    const leftOfficial = officialScheduleUrl(left.event);
+    const rightOfficial = officialScheduleUrl(right.event);
+    if (leftOfficial && rightOfficial && leftOfficial === rightOfficial) return true;
+
+    const leftBirthday = birthdayPerson(left.event);
+    const rightBirthday = birthdayPerson(right.event);
+    if (leftBirthday && rightBirthday && leftBirthday === rightBirthday) return true;
+
+    const leftTitle = normalizeTitle(left.event);
+    const rightTitle = normalizeTitle(right.event);
+    if (!leftTitle || !rightTitle) return false;
+    if (leftTitle === rightTitle) return true;
+    const shorter = leftTitle.length <= rightTitle.length ? leftTitle : rightTitle;
+    const longer = shorter === leftTitle ? rightTitle : leftTitle;
+    return shorter.length >= 10 && longer.includes(shorter);
+  };
+  const performanceScore = (item) => {
+    const title = String(item.event.title || "");
+    let score = 0;
+    if (officialScheduleUrl(item.event)) score += 12;
+    if (item.event.eventTitle) score += 5;
+    if (item.startTime) score += 4;
+    if (item.venue || item.event.venue) score += 2;
+    if (/アップグレード|受付|先行|一般発売/.test(title)) score -= 8;
+    return score;
   };
 
   let events = [];
@@ -71,13 +138,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   const uniquePerformances = [];
-  const seenPerformances = new Set();
   for (const event of events) {
     for (const occurrence of occurrences(event)) {
-      const key = [event.group, cleanTitle(event), occurrence.date].join("\u001f");
-      if (seenPerformances.has(key)) continue;
-      seenPerformances.add(key);
-      uniquePerformances.push({ event, ...occurrence });
+      const candidate = { event, ...occurrence };
+      const duplicateIndex = uniquePerformances.findIndex((existing) => samePerformance(existing, candidate));
+      if (duplicateIndex < 0) {
+        uniquePerformances.push(candidate);
+        continue;
+      }
+      if (performanceScore(candidate) > performanceScore(uniquePerformances[duplicateIndex])) {
+        uniquePerformances[duplicateIndex] = candidate;
+      }
     }
   }
 
