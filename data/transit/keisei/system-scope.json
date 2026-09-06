@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "updatedAt": "2026-09-06",
+  "id": "keisei-asakusa-keikyu-system",
+  "status": "incomplete",
+  "definition": "The system contains every train on every railway reached through verified same-train through-service relationships from the Keisei/Asakusa/Keikyu network. A train does not need to run on Keisei, Toei Asakusa, or any designated center line to be in scope. Completion requires all trains on every in-scope railway plus exact same-train identity across every through boundary; center-line-only coverage is never sufficient.",
+  "policy": {
+    "centerLineOnlyMayBeCalledComplete": false,
+    "allTrainsOnEveryInScopeRailwayRequired": true,
+    "trainMayBeInScopeWithoutTraversingKeisei": true,
+    "timeGapMayEstablishTrainIdentity": false,
+    "destinationAloneMayEstablishTrainIdentity": false,
+    "unresolvedIdentityIsTransfer": true
+  },
+  "railways": [
+    {"id":"odpt.Railway:Keisei.Main","label":"京成本線","lineTimetableCoverage":"exact","sameTrainCoverage":"exact-for-all-keisei-source-trains"},
+    {"id":"odpt.Railway:Keisei.Oshiage","label":"京成押上線","lineTimetableCoverage":"exact","sameTrainCoverage":"exact-for-all-keisei-source-trains"},
+    {"id":"odpt.Railway:Keisei.NaritaSkyAccess","label":"成田スカイアクセス線","lineTimetableCoverage":"exact","sameTrainCoverage":"exact-for-all-keisei-source-trains"},
+    {"id":"odpt.Railway:Keisei.HigashiNarita","label":"京成東成田線","lineTimetableCoverage":"exact","sameTrainCoverage":"exact-for-all-keisei-source-trains"},
+    {"id":"odpt.Railway:Keisei.Chiba","label":"京成千葉線","lineTimetableCoverage":"exact","sameTrainCoverage":"exact-for-all-keisei-source-trains"},
+    {"id":"odpt.Railway:Keisei.Chihara","label":"京成千原線","lineTimetableCoverage":"exact","sameTrainCoverage":"exact-for-all-keisei-source-trains"},
+    {"id":"odpt.Railway:Keisei.Matsudo","label":"京成松戸線","lineTimetableCoverage":"exact","sameTrainCoverage":"exact-for-all-keisei-source-trains"},
+    {"id":"manual.Railway:Hokuso.Hokuso","label":"北総線","lineTimetableCoverage":"partial-exact-projection","sameTrainCoverage":"keisei-led-exact-only"},
+    {"id":"manual.Railway:Shibayama.Shibayama","label":"芝山鉄道線","lineTimetableCoverage":"partial-exact-projection","sameTrainCoverage":"keisei-led-exact-only"},
+    {"id":"odpt.Railway:Toei.Asakusa","label":"都営浅草線","lineTimetableCoverage":"exact","sameTrainCoverage":"keisei-led-exact-only"},
+    {"id":"odpt.Railway:Keikyu.Main","label":"京急本線","lineTimetableCoverage":"departure-only","sameTrainCoverage":"keisei-led-exact-only"},
+    {"id":"odpt.Railway:Keikyu.Airport","label":"京急空港線","lineTimetableCoverage":"departure-only","sameTrainCoverage":"keisei-led-exact-only"},
+    {"id":"odpt.Railway:Keikyu.Kurihama","label":"京急久里浜線","lineTimetableCoverage":"departure-only","sameTrainCoverage":"keisei-led-exact-only"},
+    {"id":"odpt.Railway:Keikyu.Zushi","label":"京急逗子線","lineTimetableCoverage":"departure-only","sameTrainCoverage":"keisei-led-exact-only"}
+  ],
+  "excludedBecauseNoVerifiedThroughEdge": [
+    {"id":"odpt.Railway:Keisei.Kanamachi","label":"京成金町線","reason":"No same-train through-service edge to another in-scope railway is currently verified."},
+    {"id":"odpt.Railway:Keikyu.Daishi","label":"京急大師線","reason":"No same-train through-service edge to京急本線 is currently verified."}
+  ],
+  "officialSources": [
+    {"operator":"Keisei","url":"https://keisei.ekitan.com/","use":"retained official one-train pages; exact Keisei-led physical train identity"},
+    {"operator":"Toei","url":"https://www.kotsu.metro.tokyo.jp/subway/timetable/","use":"full Asakusa Line train timetable coverage"},
+    {"operator":"Keikyu","url":"https://www.keikyu.co.jp/ride/kakueki/pdf/schedule_all.pdf","use":"official full-line timetable with train numbers and through-operation notation"},
+    {"operator":"Hokuso","url":"https://www.hokuso-railway.co.jp/faq/","use":"official timetable and operating-range verification"},
+    {"operator":"Shibayama","url":"https://www.sibatetu.co.jp/schedule.html","use":"official full station timetable and destinations"}
+  ],
+  "blockingItems": [
+    "Ingest the Keikyu official full-line timetable as exact train columns for Main/Airport/Kurihama/Zushi, including trains that never enter Keisei.",
+    "Reconcile all 1,260 Toei Asakusa exact timetable trips with exact cross-boundary identities at Sengakuji and Oshiage, including Toei-Keikyu trains that never enter Keisei.",
+    "Verify all-train completeness for Hokuso from Hokuso official timetable data rather than relying only on the Keisei-led snapshot.",
+    "Verify all-train completeness for Shibayama against the current official timetable.",
+    "Add regressions proving Keikyu-only/Toei-only and other non-Keisei trains are retained while false through-service matches fail closed."
+  ]
+}
