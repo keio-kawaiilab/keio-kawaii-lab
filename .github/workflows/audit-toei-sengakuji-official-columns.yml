@@ -1,0 +1,50 @@
+name: Audit Sengakuji official columns against Toei mother set
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'data/transit/toei/timetables/899209dea5fc3a.json'
+      - 'scripts/keikyu_official_train_evidence.py'
+      - 'scripts/audit_toei_sengakuji_official_columns.py'
+      - '.github/workflows/audit-toei-sengakuji-official-columns.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PDF dependencies
+        run: pip install pdfplumber==0.11.7 requests==2.32.5
+      - name: Compile
+        run: python -m py_compile scripts/keikyu_official_train_evidence.py scripts/audit_toei_sengakuji_official_columns.py
+      - name: Match every official Sengakuji column to exact Toei timetable trips
+        run: |
+          python scripts/audit_toei_sengakuji_official_columns.py \
+            --output /tmp/toei-sengakuji-official-columns.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('/tmp/toei-sengakuji-official-columns.json').read_text(encoding='utf-8'))
+          assert p['officialColumnCandidateCount'] > 0
+          assert p['identityPolicy']['runtimeSameTrainPromotions'] == 0
+          assert p['identityPolicy']['keikyuIndependentMotherSetLinked'] is False
+          assert p['identityPolicy']['timeAloneMayEstablishCrossOperatorIdentity'] is False
+          assert p['identityPolicy']['trainNumberAloneMayEstablishCrossOperatorIdentity'] is False
+          assert not p['issues'], p['issues']
+          print(json.dumps({
+            'officialColumns':p['officialColumnCandidateCount'],
+            'statusCounts':p['statusCounts'],
+            'directions':p['directionCounts'],
+            'calendars':p['calendarCounts'],
+            'uniqueMatchedToeiTrips':p['uniqueMatchedToeiTripCount'],
+            'runtimeSameTrainPromotions':0,
+          },ensure_ascii=False,indent=2))
+          PY
