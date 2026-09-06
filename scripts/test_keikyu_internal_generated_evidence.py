@@ -76,6 +76,20 @@ class ConsumerTests(unittest.TestCase):
         self.assertEqual(1, len(edges))
         self.assertEqual('堀ノ内', edges[0]['boundary']['station'])
 
+    def test_valid_zushi_main_two_point_singleton_adds_edge(self) -> None:
+        row = entry(
+            boundaryId=target.ZUSHI_BOUNDARY_ID,
+            fromRailway=target.ZUSHI,
+            toRailway=target.MAIN,
+            fromFragment='z1', toFragment='m1', sourceMatches=['z1'], targetMatches=['m1'],
+        )
+        fragments = [fragment('z1', target.ZUSHI), fragment('m1', target.MAIN)]
+        indexes = graph((target.ZUSHI, target.MAIN), target.ZUSHI_BOUNDARY_ID)
+        edges, unresolved = self.apply(payload(row), fragments=fragments, indexes=indexes)
+        self.assertEqual([], unresolved)
+        self.assertEqual(1, len(edges))
+        self.assertEqual('金沢八景', edges[0]['boundary']['station'])
+
     def test_legacy_marker_remains_accepted(self) -> None:
         row = entry(evidence=['operator-official-connection-timetable', target.LEGACY_MARKER])
         edges, unresolved = self.apply(payload(row))
@@ -103,7 +117,7 @@ class ConsumerTests(unittest.TestCase):
         self.assertEqual('keikyu-internal-generated-evidence-unsafe-policy', unresolved[0]['kind'])
 
     def test_wrong_pair_fails_closed(self) -> None:
-        edges, unresolved = self.apply(payload(entry(toRailway='odpt.Railway:Keikyu.Zushi')))
+        edges, unresolved = self.apply(payload(entry(toRailway=target.ZUSHI)))
         self.assertEqual([], edges)
         self.assertEqual('unexpected-railway-pair', unresolved[0]['reason'])
 
