@@ -1,0 +1,90 @@
+name: Audit Toei Asakusa independent mother set
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'data/transit/toei/timetable-index.json'
+      - 'data/transit/toei/timetables/899209dea5fc3a.json'
+      - 'scripts/audit_toei_asakusa_independent_mother_set.py'
+      - 'scripts/verify_toei_asakusa_independent_mother_set.py'
+      - 'scripts/test_toei_asakusa_independent_mother_set.py'
+      - '.github/workflows/audit-toei-asakusa-independent-mother-set.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile and unit test
+        run: |
+          python -m py_compile \
+            scripts/audit_toei_asakusa_independent_mother_set.py \
+            scripts/verify_toei_asakusa_independent_mother_set.py \
+            scripts/test_toei_asakusa_independent_mother_set.py
+          python scripts/test_toei_asakusa_independent_mother_set.py
+      - name: Audit all Toei Asakusa train-timetable trips
+        run: |
+          python scripts/audit_toei_asakusa_independent_mother_set.py \
+            --output /tmp/toei-asakusa-independent-mother-set.json
+          python scripts/verify_toei_asakusa_independent_mother_set.py \
+            /tmp/toei-asakusa-independent-mother-set.json
+      - name: Write compact audit summary
+        run: |
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          payload = json.loads(Path('/tmp/toei-asakusa-independent-mother-set.json').read_text(encoding='utf-8'))
+          summary = {
+              'version': 1,
+              'generatedAt': datetime.now(timezone.utc).isoformat(),
+              'railway': payload['railway'],
+              'timeBasis': payload['timeBasis'],
+              'expectedTripCount': payload['expectedTripCount'],
+              'actualTripCount': payload['actualTripCount'],
+              'candidatePhysicalTrainCount': payload['candidatePhysicalTrainCount'],
+              'uniqueTimetableIdCount': payload['uniqueTimetableIdCount'],
+              'uniqueCalendarTrainIdCount': payload['uniqueCalendarTrainIdCount'],
+              'stationCount': payload['stationCount'],
+              'stopCount': payload['stopCount'],
+              'connectionCount': payload['connectionCount'],
+              'expectedConnectionCount': payload['expectedConnectionCount'],
+              'timeValueCount': payload['timeValueCount'],
+              'calendarCounts': payload['calendarCounts'],
+              'internalDestinationTrips': payload['internalDestinationTrips'],
+              'externalDestinationTrips': payload['externalDestinationTrips'],
+              'externalDestinationBoundaryCounts': payload['externalDestinationBoundaryCounts'],
+              'destinationCount': payload['destinationCount'],
+              'issues': payload['issues'],
+              'runtimeSameTrainPromotions': 0,
+              'note': 'Independent Toei Asakusa mother-set audit. Cross-operator identity remains fail-closed.'
+          }
+          path = Path('docs/transit/toei-asakusa-independent-mother-set-audit.json')
+          path.parent.mkdir(parents=True, exist_ok=True)
+          path.write_text(json.dumps(summary, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          print(json.dumps(summary, ensure_ascii=False, indent=2))
+          PY
+      - name: Commit compact summary
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/transit/toei-asakusa-independent-mother-set-audit.json
+          if git diff --cached --quiet; then
+            echo "No summary change."
+            exit 0
+          fi
+          git commit -m "Record Toei Asakusa independent mother-set audit"
+          git pull --rebase origin main
+          git push origin HEAD:main
