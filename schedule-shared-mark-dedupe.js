@@ -24,6 +24,35 @@
     }).sort().join(",");
   }
 
+  function groupOf(mark){
+    return (
+      attribute(mark,"data-group")||
+      attribute(mark,"data-performance-group")||
+      attribute(mark,"data-band-group")||
+      groupClass(mark)
+    ).toUpperCase();
+  }
+
+  function timeOf(mark){
+    var raw=
+      attribute(mark,"data-performance-time")||
+      attribute(mark,"data-start-time")||
+      attribute(mark,"data-time");
+    var match=raw.match(/(\d{1,2}):(\d{2})/);
+    if(!match)match=text(mark.textContent).match(/(?:開演|開始)?\s*(\d{1,2}):(\d{2})/);
+    return match?String(Number(match[1])).padStart(2,"0")+":"+match[2]:"";
+  }
+
+  function dateOf(mark){
+    var raw=
+      attribute(mark,"data-performance-date")||
+      attribute(mark,"data-date")||
+      attribute(mark,"data-event-date");
+    var match=raw.match(/(20\d{2})[-\/.](\d{1,2})[-\/.](\d{1,2})/);
+    if(!match)match=text(mark.textContent).match(/(20\d{2})[-\/.](\d{1,2})[-\/.](\d{1,2})/);
+    return match?match[1]+"-"+String(Number(match[2])).padStart(2,"0")+"-"+String(Number(match[3])).padStart(2,"0"):"";
+  }
+
   function bandIdentity(mark){
     var strong=mark.querySelector("strong");
     var sub=mark.querySelector("span");
@@ -54,6 +83,33 @@
       if(same.length<2)return;
       markDeduped(same[0],same.length);
       same.slice(1).forEach(function(mark){mark.remove();});
+    });
+  }
+
+  /*
+   * A physical performance is ONE item.  Announcement kind, ticket kind,
+   * source article and upgrade/FC-sale metadata are never allowed to create
+   * a second performance when group + day + start time are the same.
+   */
+  function performanceIdentity(mark){
+    var group=groupOf(mark);
+    var date=dateOf(mark);
+    var time=timeOf(mark);
+    if(group&&date&&time)return [group,date,"time",time].join("|");
+    if(group&&time)return [group,geometry(mark),"time",time].join("|");
+    return "";
+  }
+
+  function dedupePerformances(week){
+    var seen={};
+    [].slice.call(week.querySelectorAll(".performance")).forEach(function(mark){
+      var key=performanceIdentity(mark);
+      if(!key)return;
+      if(seen[key]){
+        mark.remove();
+      }else{
+        seen[key]=mark;
+      }
     });
   }
 
@@ -110,6 +166,15 @@
     return match?String(Number(match[1])).padStart(2,"0")+":"+match[2]:"";
   }
 
+  function cardVenue(card){
+    var items=card?card.querySelectorAll(".meta div"):[];
+    for(var i=0;i<items.length;i++){
+      var label=text((items[i].querySelector("b")||{}).textContent||"");
+      if(label.indexOf("会場")!==-1)return text(items[i].textContent).replace(/^会場\s*/,"");
+    }
+    return"";
+  }
+
   function cardTitle(card){
     return text((card.querySelector("h3")||{}).textContent||"")
       .toLowerCase()
@@ -124,16 +189,26 @@
       .replace(/[\s　!！・|｜\-–—_【】\[\]()（）『』「」<>＜＞:：./~〜～]/g,"");
   }
 
+  function cardPhysicalKey(card){
+    var group=text(card.getAttribute("data-group")).toUpperCase();
+    var date=cardDate(card);
+    var time=cardTime(card);
+    if(group&&date&&time)return [group,date,"time",time].join("|");
+    return"";
+  }
+
   function sameCard(a,b){
+    var ak=cardPhysicalKey(a),bk=cardPhysicalKey(b);
+    if(ak&&bk)return ak===bk;
+
     var ag=text(a.getAttribute("data-group")).toUpperCase();
     var bg=text(b.getAttribute("data-group")).toUpperCase();
     var ad=cardDate(a),bd=cardDate(b);
     if(!ag||!ad||ag!==bg||ad!==bd)return false;
-    var at=cardTime(a),bt=cardTime(b);
-    if(at&&bt)return at===bt;
-    var aa=cardTitle(a),bb=cardTitle(b);
-    if(!aa||!bb)return false;
-    return aa===bb||(aa.length>=5&&bb.indexOf(aa)>=0)||(bb.length>=5&&aa.indexOf(bb)>=0);
+
+    var av=cardVenue(a),bv=cardVenue(b);
+    var at=cardTitle(a),bt=cardTitle(b);
+    return !!av&&av===bv&&!!at&&!!bt&&(at===bt||(at.length>=5&&bt.indexOf(at)>=0)||(bt.length>=5&&at.indexOf(bt)>=0));
   }
 
   function cardScore(card){
@@ -214,6 +289,7 @@
   function apply(){
     queued=false;
     [].slice.call(calendar.querySelectorAll(".week")).forEach(function(week){
+      dedupePerformances(week);
       dedupeBands(week);
       repackWeek(week);
     });
