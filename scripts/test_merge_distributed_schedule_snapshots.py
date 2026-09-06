@@ -111,6 +111,21 @@ class DistributedSnapshotMergerTests(unittest.TestCase):
             guard["removed"][0]["reason"],
         )
 
+    def test_final_merge_classifies_upgrade_as_upgrade(self):
+        core = {"events": [{
+            "id": "birthday-upgrade",
+            "sourceType": "auto",
+            "group": "CANDY TUNE",
+            "title": "「CANDY TUNE 小川奈々子 生誕祭 2026」 アップグレード抽選受付のお知らせ",
+            "eventDate": "2026-10-01",
+            "ticketType": "年会費コース会員先行",
+        }]}
+        result = merger.merge_payloads(core, {"events": []}, {"events": []}, {"events": []})
+        event = next(row for row in result["events"] if row["id"] == "birthday-upgrade")
+        self.assertEqual("アップグレード抽選", event["ticketType"])
+        hardening = result["distributedMergeDiagnostics"]["ticketSemanticHardening"]
+        self.assertEqual(1, hardening["changedCount"])
+
 
 if __name__ == "__main__":
     unittest.main()
