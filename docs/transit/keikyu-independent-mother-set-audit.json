@@ -1,21 +1,23 @@
 {
-  "version": 2,
-  "generatedAt": "2026-09-06T11:49:46.459638+00:00",
+  "version": 3,
+  "generatedAt": "2026-09-06T11:54:34.561899+00:00",
   "sourceSha256": "e10b1c6efd92f40b0dae6d712b65c2391584b9134cd653c74fe78548ad681b63",
-  "localFragmentCount": 3336,
+  "geometryFragmentCount": 3336,
+  "trainBearingFragmentCount": 2759,
+  "structuralBlankFragmentCount": 577,
   "officialCrossPageEdgeCount": 387,
-  "candidatePhysicalTrainCountBeforeBlankClassification": 2949,
+  "candidatePhysicalTrainCount": 2372,
   "joinedPhysicalTrainCandidateCount": 387,
-  "singletonPhysicalTrainCandidateCountBeforeBlankClassification": 2562,
-  "componentSizeHistogramBeforeBlankClassification": {
-    "1": 2562,
+  "singletonPhysicalTrainCandidateCount": 1985,
+  "componentSizeHistogram": {
+    "1": 1985,
     "2": 387
   },
   "resolvedTimeCells": 74073,
   "unresolvedTimeCells": 4327,
   "sourceTimeCells": 78400,
-  "emptyLocalFragmentCount": 577,
-  "emptyClassification": {
+  "zeroTimeEvidenceBearingFragmentCount": 0,
+  "blankClassification": {
     "counts": {
       "anonymous": 577,
       "anonymous-unreferenced-zero-time-grid-slot": 577
@@ -28,7 +30,6 @@
     "nonemptyAnonymousFragmentCount": 406,
     "evidenceBearingEmptyFragmentCount": 0,
     "structuralBlankCandidateCount": 577,
-    "evidenceBearingExamples": [],
     "structuralBlankExamples": [
       "keikyu-official-pdf:p007:c00",
       "keikyu-official-pdf:p007:c01",
@@ -84,5 +85,5 @@
   },
   "issues": [],
   "runtimeSameTrainPromotions": 0,
-  "note": "Audit-only. Zero-time anonymous unreferenced grid slots are classified separately and are not yet accepted as physical trains."
+  "note": "Audit-only independent Keikyu mother set. Anonymous unreferenced zero-time geometry slots are retained for diagnostics but excluded from physical-train candidate counts."
 }
