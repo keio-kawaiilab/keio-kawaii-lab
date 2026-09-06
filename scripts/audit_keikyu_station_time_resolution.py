@@ -28,11 +28,17 @@ from keikyu_official_pdf import (
     page_count,
     time_cells,
 )
-from probe_keikyu_station_rows import compact_join, marker, station_adjacent_marker, station_matches
+from probe_keikyu_station_rows import (
+    compact_join,
+    marker,
+    semantic_label_boundary,
+    station_adjacent_marker,
+    station_matches,
+)
 
 
 def resolve_page(words, grid, titles: list[str]) -> dict[str, Any]:
-    left_boundary = grid.centers[0] - grid.pitch * 0.55
+    label_boundary = semantic_label_boundary(grid)
     raw_rows: list[dict[str, Any]] = []
 
     for row in cluster_by_y(words, tolerance=1.35):
@@ -40,11 +46,19 @@ def resolve_page(words, grid, titles: list[str]) -> dict[str, Any]:
         if y <= grid.header_y + 10:
             continue
 
-        left_words = [word for word in row if word.x < left_boundary]
+        # The station/着発 label band is not the train-grid edge. Keikyu can omit
+        # the first printed train number, which shifts the reconstructed first
+        # train center left without moving the station label band. Read labels
+        # slightly into the first train slot, but exclude time-shaped tokens from
+        # the label string. Grid cells are assigned independently below.
+        left_words = [
+            word for word in row
+            if word.x < label_boundary and not TIME_RE.fullmatch(word.text)
+        ]
         left_text = compact_join(left_words) if left_words else ""
         cells = []
         for word in row:
-            if word.x < left_boundary or not TIME_RE.fullmatch(word.text):
+            if not TIME_RE.fullmatch(word.text):
                 continue
             column = nearest_column(grid, word.x)
             if column is None:
@@ -195,7 +209,7 @@ def main() -> int:
         resolution_rate = totals["resolvedTimeCells"] / totals["timeCells"] if totals["timeCells"] else 0.0
 
         output = {
-            "version": 3,
+            "version": 4,
             "scope": "Keisei/Asakusa/Keikyu connected component; Keikyu Daishi excluded",
             "sourceSha256": hashlib.sha256(data).hexdigest(),
             "canonicalStationTitleCount": len(titles),
@@ -220,6 +234,7 @@ def main() -> int:
             "policy": {
                 "canonicalConnectedSystemStationRequired": True,
                 "printedArrivalDepartureStructureRequired": True,
+                "stationLabelBandIndependentOfTrainGridEdge": True,
                 "stationAdjacentMarkerMayResolveRow": True,
                 "clockTimeProximityMayResolveStation": False,
                 "destinationMayResolveStation": False,
