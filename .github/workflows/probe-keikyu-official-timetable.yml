@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - 'scripts/probe_keikyu_official_timetable.py'
+      - 'scripts/probe_keikyu_timetable_geometry.py'
       - '.github/workflows/probe-keikyu-official-timetable.yml'
 
 permissions:
@@ -27,3 +28,5 @@ jobs:
           fi
       - name: Probe current official timetable
         run: python scripts/probe_keikyu_official_timetable.py
+      - name: Probe train-column geometry
+        run: python scripts/probe_keikyu_timetable_geometry.py
