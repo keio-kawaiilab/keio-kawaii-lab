@@ -1,0 +1,25 @@
+name: Diagnose Sengakuji number disambiguation
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/diagnose_sengakuji_number_disambiguation.py'
+      - '.github/workflows/diagnose-sengakuji-number-disambiguation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PDF dependency
+        run: python -m pip install pdfplumber requests
+      - name: Test safe number disambiguation
+        run: python scripts/diagnose_sengakuji_number_disambiguation.py
