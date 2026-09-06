@@ -63,17 +63,38 @@ def station_matches(left_text: str, titles: list[str]) -> list[str]:
     return [title for title in matches if len(title) == longest]
 
 
+def operational_label_text(left_text: str) -> str:
+    """Remove only proven continuation-cell artifacts from the label area.
+
+    Keikyu prints a small 「前の掲載ページ」 continuation area immediately to
+    the left of the main train grid.  Depending on the page, its HHMM values and
+    ellipsis/symbol cells share the same PDF Y row as a station label, e.g.
+    ``三崎口発………1851…``.  Those values are not part of the station label and
+    must not prevent us from reading the printed 発/着/〃 marker.
+
+    This function does *not* move a time into another train column and does not
+    establish any train identity.  Full-width digits in station names such as
+    羽田空港第１・第２ターミナル are intentionally untouched.
+    """
+    value = re.sub(r"\d{3,4}", "", left_text)
+    value = re.sub(r"[…!#$\"'\\]+", "", value)
+    return value
+
+
 def marker(left_text: str) -> str | None:
-    # Ignore headings such as 発車番線; operational markers are printed at the
-    # right edge of the station-label area and therefore end the compact row.
-    if left_text.endswith("着"):
+    cleaned = operational_label_text(left_text)
+    # Explicitly reject table headings whose Japanese contains 発/着 but is not
+    # an operational arrival/departure row.
+    if any(token in cleaned for token in ("発車番線", "到着番線", "始発")):
+        return None
+    if cleaned.endswith("着"):
         return "arrival"
-    if left_text.endswith("発"):
+    if cleaned.endswith("発"):
         return "departure"
-    if left_text.endswith("〃"):
-        # In this timetable layout 〃 repeats the preceding row-label meaning,
-        # which for ordinary single-time station rows is 発.  Calling it a
-        # pass-through row was semantically wrong and could poison stop_times.
+    if cleaned.endswith("〃"):
+        # In this timetable layout 〃 repeats the preceding row-label meaning;
+        # for ordinary single-time station rows this is the published departure
+        # time.  It must never be interpreted as a train-identity shortcut.
         return "departure"
     return None
 
@@ -194,6 +215,7 @@ def main() -> int:
             "policy": {
                 "sameYMayBindStation": True,
                 "adjacentSpatialArrivalDepartureMayBindStation": True,
+                "continuationArtifactsMayBeRemovedFromLabel": True,
                 "clockTimeProximityMayBindTrainOrStation": False,
                 "destinationMayBindTrainOrStation": False,
                 "ambiguousStationRowMayPublish": False,
