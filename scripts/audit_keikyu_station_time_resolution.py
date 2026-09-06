@@ -28,7 +28,7 @@ from keikyu_official_pdf import (
     page_count,
     time_cells,
 )
-from probe_keikyu_station_rows import compact_join, marker, station_matches
+from probe_keikyu_station_rows import compact_join, marker, station_adjacent_marker, station_matches
 
 
 def resolve_page(words, grid, titles: list[str]) -> dict[str, Any]:
@@ -53,12 +53,18 @@ def resolve_page(words, grid, titles: list[str]) -> dict[str, Any]:
 
         if not cells and not left_text:
             continue
+
+        matches = station_matches(left_text, titles) if left_text else []
+        row_marker = marker(left_text) if left_text else None
+        if len(matches) == 1:
+            row_marker = station_adjacent_marker(left_text, matches[0]) or row_marker
+
         raw_rows.append(
             {
                 "y": y,
                 "left": left_text,
-                "stationMatches": station_matches(left_text, titles) if left_text else [],
-                "marker": marker(left_text) if left_text else None,
+                "stationMatches": matches,
+                "marker": row_marker,
                 "cells": cells,
             }
         )
@@ -186,12 +192,10 @@ def main() -> int:
                 -row["unresolvedTimeCells"],
             ),
         )[:15]
-        resolution_rate = (
-            totals["resolvedTimeCells"] / totals["timeCells"] if totals["timeCells"] else 0.0
-        )
+        resolution_rate = totals["resolvedTimeCells"] / totals["timeCells"] if totals["timeCells"] else 0.0
 
         output = {
-            "version": 2,
+            "version": 3,
             "scope": "Keisei/Asakusa/Keikyu connected component; Keikyu Daishi excluded",
             "sourceSha256": hashlib.sha256(data).hexdigest(),
             "canonicalStationTitleCount": len(titles),
@@ -208,10 +212,7 @@ def main() -> int:
                     "timeCells": row["timeCells"],
                     "resolvedTimeCells": row["resolvedTimeCells"],
                     "unresolvedTimeCells": row["unresolvedTimeCells"],
-                    "resolutionRate": round(
-                        row["resolvedTimeCells"] / row["timeCells"] if row["timeCells"] else 1.0,
-                        6,
-                    ),
+                    "resolutionRate": round(row["resolvedTimeCells"] / row["timeCells"] if row["timeCells"] else 1.0, 6),
                     "unresolvedSample": row["unresolvedSample"],
                 }
                 for row in worst_pages
@@ -219,6 +220,7 @@ def main() -> int:
             "policy": {
                 "canonicalConnectedSystemStationRequired": True,
                 "printedArrivalDepartureStructureRequired": True,
+                "stationAdjacentMarkerMayResolveRow": True,
                 "clockTimeProximityMayResolveStation": False,
                 "destinationMayResolveStation": False,
                 "crossPageIdentityEstablishedHere": False,
