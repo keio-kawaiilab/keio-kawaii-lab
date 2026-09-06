@@ -128,6 +128,18 @@ def marker(left_text: str) -> str | None:
     return None
 
 
+def semantic_label_boundary(grid) -> float:
+    """Right edge of the station/着発 label band, independent of train-grid edge.
+
+    Keikyu omits some printed train numbers. Recovering an anonymous first train
+    column shifts ``grid.centers[0]`` left by one pitch, but the printed station
+    name / 着発 band does not move. The label reader therefore extends into the
+    left half of the first train slot. Time-shaped tokens are excluded from the
+    label text and are assigned independently to the proven train grid.
+    """
+    return grid.centers[0] + grid.pitch * 0.45
+
+
 def main() -> int:
     titles = station_titles()
     if not titles:
@@ -141,19 +153,28 @@ def main() -> int:
         if grid is None:
             raise RuntimeError("could not prove train-column grid")
 
-        left_boundary = grid.centers[0] - grid.pitch * 0.55
+        label_boundary = semantic_label_boundary(grid)
         raw_rows: list[dict[str, Any]] = []
         for row in cluster_by_y(words, tolerance=1.35):
             y = sum(word.y for word in row) / len(row)
             if y <= grid.header_y + 20:
                 continue
-            left_words = [word for word in row if word.x < left_boundary]
+            # Label geometry and train-column geometry are deliberately separate.
+            # A time token can sit left of label_boundary in the anonymous first
+            # train slot, so omit time-shaped tokens from the label string rather
+            # than dropping that train cell from the grid.
+            left_words = [
+                word for word in row
+                if word.x < label_boundary and not TIME_RE.fullmatch(word.text)
+            ]
             left_text = compact_join(left_words)
             if not left_text:
-                continue
+                # Keep rows that have grid time cells even when the label is on
+                # an adjacent Y row; those are resolved spatially below.
+                left_text = ""
             cells = []
             for word in row:
-                if word.x < left_boundary or not TIME_RE.fullmatch(word.text):
+                if not TIME_RE.fullmatch(word.text):
                     continue
                 column = nearest_column(grid, word.x)
                 if column is None:
