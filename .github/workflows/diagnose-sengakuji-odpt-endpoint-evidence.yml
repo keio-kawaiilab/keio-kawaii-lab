@@ -1,0 +1,21 @@
+name: Diagnose Sengakuji ODPT endpoint evidence
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/diagnose_sengakuji_odpt_endpoint_evidence.mjs'
+      - '.github/workflows/diagnose-sengakuji-odpt-endpoint-evidence.yml'
+      - 'data/transit/odpt-train-identities.json'
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Diagnose exact cross-operator Sengakuji endpoint evidence
+        run: node scripts/diagnose_sengakuji_odpt_endpoint_evidence.mjs
