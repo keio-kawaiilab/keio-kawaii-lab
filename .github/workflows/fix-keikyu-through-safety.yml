@@ -1,0 +1,60 @@
+name: Patch Keikyu through safety workflow
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-keikyu-through-safety.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Replace unsafe nonzero-through assertion
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('.github/workflows/update-keikyu-official-through-evidence.yml')
+          text = path.read_text(encoding='utf-8')
+          start = "      - name: Validate generated same-train edges in both directions\n"
+          end = "      - name: Verify route runtime materialization\n"
+          if start not in text:
+              raise SystemExit('stale validation block start not found')
+          if end not in text:
+              raise SystemExit('runtime verification block not found')
+          before, rest = text.split(start, 1)
+          _stale, after = rest.split(end, 1)
+          replacement = (
+              "      - name: Validate independently verified cross-boundary continuations\n"
+              "        run: python scripts/verify_keikyu_through_materialization.py\n"
+              + end
+          )
+          path.write_text(before + replacement + after, encoding='utf-8')
+          PY
+      - name: Sanity check patched workflow
+        run: |
+          grep -q "Validate independently verified cross-boundary continuations" .github/workflows/update-keikyu-official-through-evidence.yml
+          ! grep -q "Validate generated same-train edges in both directions" .github/workflows/update-keikyu-official-through-evidence.yml
+      - name: Commit safety patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/workflows/update-keikyu-official-through-evidence.yml
+          if git diff --cached --quiet; then
+            echo "No workflow safety change needed."
+            exit 0
+          fi
+          git commit -m "Fail closed when Keikyu continuation is unverified"
+          git pull --rebase origin main
+          git push origin HEAD:main
