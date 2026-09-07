@@ -9,12 +9,15 @@ from keikyu_official_pdf import OFFICIAL_PDF_URL
 
 def official_dataset() -> dict:
     return {
-        'kind': 'keikyu-official-page-local-stop-times',
+        'kind': 'keikyu-official-section-local-stop-times',
         'source': {'url': OFFICIAL_PDF_URL, 'sha256': 'abc'},
         'identityPolicy': {
-            'pageColumnIsExactLocalIdentity': True,
-            'printedTrainNumberMayJoinPages': False,
-            'anonymousColumnMayJoinPages': False,
+            'pageSectionColumnIsExactLocalIdentity': True,
+            'literalTrainNumberRowsAreHardSectionBoundaries': True,
+            'literalPrintedCalendarRequired': True,
+            'calendarMayBeInferredFromPageNumber': False,
+            'printedTrainNumberMayJoinSectionsOrPages': False,
+            'anonymousColumnMayJoinSectionsOrPages': False,
             'clockTimeProximityMayJoinFragments': False,
             'destinationMayJoinFragments': False,
             'crossPageIdentityEstablished': False,
@@ -87,22 +90,22 @@ class CrossPageZushiEvidenceTests(unittest.TestCase):
         value['edges'] = [edge('a', 'b')]
         outgoing, incoming = target.build_graph(value, {'a', 'b', 'c'})
         roots = target.component_roots({'a', 'b', 'c'}, incoming)
-        source = {'id': 'source'}
-        dest = {'id': 'target'}
+        source = {'id': 'source', 'calendar': 'odpt.Calendar:Weekday'}
+        dest = {'id': 'target', 'calendar': 'odpt.Calendar:Weekday'}
         anchors = {
             'source': [{'station': '六浦', 'suffix': '.Mutsuura', 'minute': 600}],
             'target': [{'station': '金沢文庫', 'suffix': '.KanazawaBunko', 'minute': 608}],
         }
         index = {
-            ('.Mutsuura', 600): [{'officialFragment': 'a'}],
-            ('.KanazawaBunko', 608): [{'officialFragment': 'b'}],
+            ('weekday', '.Mutsuura', 600): [{'calendar': 'weekday', 'officialFragment': 'a'}],
+            ('weekday', '.KanazawaBunko', 608): [{'calendar': 'weekday', 'officialFragment': 'b'}],
         }
-        proof = target.cross_page_proof(source, dest, anchors, index, outgoing, roots)
+        proof = target.cross_page_proof(source, dest, 'weekday', anchors, index, outgoing, roots)
         self.assertIsNotNone(proof)
         self.assertEqual('a', proof['sourceOfficialFragment'])
         self.assertEqual('b', proof['targetOfficialFragment'])
 
-        reverse = target.cross_page_proof(dest, source, {
+        reverse = target.cross_page_proof(dest, source, 'weekday', {
             'target': anchors['target'], 'source': anchors['source']
         }, index, outgoing, roots)
         self.assertIsNone(reverse)
@@ -117,10 +120,10 @@ class CrossPageZushiEvidenceTests(unittest.TestCase):
             'target': [{'station': '金沢文庫', 'suffix': '.KanazawaBunko', 'minute': 608}],
         }
         index = {
-            ('.Mutsuura', 600): [{'officialFragment': 'a'}],
-            ('.KanazawaBunko', 608): [{'officialFragment': 'c'}],
+            ('weekday', '.Mutsuura', 600): [{'calendar': 'weekday', 'officialFragment': 'a'}],
+            ('weekday', '.KanazawaBunko', 608): [{'calendar': 'weekday', 'officialFragment': 'c'}],
         }
-        self.assertIsNone(target.cross_page_proof({'id': 'source'}, {'id': 'target'}, anchors, index, outgoing, roots))
+        self.assertIsNone(target.cross_page_proof({'id': 'source', 'calendar': 'odpt.Calendar:Weekday'}, {'id': 'target', 'calendar': 'odpt.Calendar:Weekday'}, 'weekday', anchors, index, outgoing, roots))
 
 
 if __name__ == '__main__':

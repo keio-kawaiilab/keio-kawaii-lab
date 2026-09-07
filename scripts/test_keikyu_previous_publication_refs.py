@@ -2,12 +2,20 @@
 from __future__ import annotations
 
 import unittest
+from types import SimpleNamespace
 
 from audit_keikyu_previous_publication_refs import (
     detect_printed_page_number,
-    extract_previous_publication_refs,
+    extract_previous_publication_refs as extract_section_refs,
 )
-from keikyu_official_pdf import TrainColumnGrid, Word
+from keikyu_official_pdf import TrainColumnGrid, Word, cluster_by_y
+
+
+def extract_previous_publication_refs(words, grid):
+    rows = [row for row in cluster_by_y(words) if any(w.text == "列車番号" for w in row)]
+    ordinal = len(rows) - 1
+    section = SimpleNamespace(grid=grid, header_ordinal=ordinal)
+    return extract_section_refs(words, section, rows, {ordinal})
 
 
 def word(text: str, x: float, y: float, width: float = 8.0, height: float = 8.0) -> Word:

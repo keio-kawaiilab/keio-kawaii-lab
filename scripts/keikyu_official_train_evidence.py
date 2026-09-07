@@ -262,12 +262,13 @@ def load_fragments(folder: Path) -> list[dict[str, Any]]:
 
 
 def fetch_pdf(url: str) -> bytes:
-    import requests
-    response = requests.get(url, headers={"User-Agent": "keio-kawaiilab-transit-evidence/3.0"}, timeout=(20, 180))
-    response.raise_for_status()
-    if not response.content.startswith(b"%PDF"):
+    from urllib.request import Request, urlopen
+    request = Request(url, headers={"User-Agent": "keio-kawaiilab-transit-evidence/3.0"})
+    with urlopen(request, timeout=180) as response:
+        content = response.read()
+    if not content.startswith(b"%PDF"):
         raise RuntimeError("official Keikyu source is not a PDF")
-    return response.content
+    return content
 
 
 def extract_pdf(content: bytes, calendar: str, source_url: str) -> list[dict[str, Any]]:
