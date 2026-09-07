@@ -1,0 +1,185 @@
+name: Apply additional Keikyu Zushi calendar V2 proofs
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/merge_keikyu_zushi_incremental_v2.py'
+      - '.github/workflows/apply-keikyu-zushi-incremental-v2.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: transit-db-writer
+  cancel-in-progress: true
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Sync latest main under writer lock
+        run: |
+          git fetch origin main
+          git checkout -B main origin/main
+          echo "MATERIALIZE_BASE=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install strict PDF dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+          pip install pdfplumber==0.11.7 PyMuPDF==1.26.4 requests==2.32.5
+      - name: Compile and run safety tests
+        run: |
+          python -m py_compile \
+            scripts/keikyu_official_pdf.py \
+            scripts/diagnose_keikyu_official_calendars.py \
+            scripts/build_keikyu_official_stop_times.py \
+            scripts/keikyu_schedule_all_zushi_evidence.py \
+            scripts/keikyu_internal_generated_evidence.py \
+            scripts/merge_keikyu_zushi_incremental_v2.py
+          python scripts/test_keikyu_section_aware_pdf.py
+          python scripts/test_keikyu_section_local_consumer.py
+          python scripts/test_keikyu_internal_generated_evidence.py
+      - name: Snapshot existing production Zushi evidence
+        run: |
+          cp data/transit-v2/keikyu-internal-official-train-evidence.json /tmp/evidence-before.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('/tmp/evidence-before.json').read_text(encoding='utf-8'))
+          rows=[r for r in p.get('entries') or [] if r.get('boundaryId')=='keikyu-main-zushi-kanazawahakkei']
+          pairs={(str(r.get('fromFragment') or ''),str(r.get('toFragment') or '')) for r in rows}
+          Path('/tmp/existing-zushi-pairs.json').write_text(json.dumps(sorted([list(x) for x in pairs])),encoding='utf-8')
+          print('EXISTING_ZUSHI_EVIDENCE',len(rows))
+          print('EXISTING_ZUSHI_PAIRS',len(pairs))
+          PY
+      - name: Download official full timetable once
+        run: |
+          python - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, 'scripts')
+          from keikyu_official_pdf import download_official_pdf
+          download_official_pdf(Path('/tmp/keikyu-schedule-all.pdf'))
+          PY
+      - name: Build strict printed-calendar official dataset
+        run: |
+          python scripts/build_keikyu_official_stop_times.py \
+            --pdf /tmp/keikyu-schedule-all.pdf \
+            --output /tmp/keikyu-stop-times-v2.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('/tmp/keikyu-stop-times-v2.json').read_text(encoding='utf-8'))
+          policy=p.get('identityPolicy') or {}
+          assert policy.get('literalPrintedCalendarRequired') is True
+          assert policy.get('unclassifiedCalendarPagesExcludedFromIdentity') is True
+          assert policy.get('calendarMayBeInferredFromPageNumber') is False
+          assert policy.get('calendarMayBeInferredFromNeighboringPages') is False
+          print('CALENDAR_EXCLUDED_PAGES',p.get('calendarExcludedPages'))
+          print('OFFICIAL_IDENTITY_FRAGMENTS',len(p.get('fragments') or []))
+          PY
+      - name: Prove only currently unresolved Zushi sources
+        run: |
+          python scripts/keikyu_schedule_all_zushi_evidence.py \
+            --official-stop-times /tmp/keikyu-stop-times-v2.json \
+            --entries-output /tmp/incremental-zushi-entries.json \
+            --report /tmp/incremental-zushi-report.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          rows=json.loads(Path('/tmp/incremental-zushi-entries.json').read_text(encoding='utf-8')).get('entries') or []
+          report=json.loads(Path('/tmp/incremental-zushi-report.json').read_text(encoding='utf-8'))
+          print('INCREMENTAL_FRESH_PROOFS',len(rows))
+          print('INCREMENTAL_REPORT',json.dumps(report,ensure_ascii=False))
+          if not rows:
+              raise SystemExit('no fresh unresolved Zushi proofs; production untouched')
+          PY
+      - name: Add only proofs nonconflicting with all existing Zushi evidence
+        run: |
+          python scripts/merge_keikyu_zushi_incremental_v2.py \
+            --existing /tmp/evidence-before.json \
+            --entries /tmp/incremental-zushi-entries.json \
+            --report /tmp/incremental-zushi-report.json \
+            --output data/transit-v2/keikyu-internal-official-train-evidence.json \
+            --accepted-output /tmp/accepted-incremental-zushi.json \
+            --summary-output /tmp/incremental-merge-summary.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          s=json.loads(Path('/tmp/incremental-merge-summary.json').read_text(encoding='utf-8'))
+          print('INCREMENTAL_ACCEPTED',s.get('acceptedIncrementalProofs'))
+          print('REJECTED_EXISTING_SOURCE',s.get('rejectedExistingSource'))
+          print('REJECTED_EXISTING_TARGET',s.get('rejectedExistingTarget'))
+          if int(s.get('acceptedIncrementalProofs') or 0) <= 0:
+              raise SystemExit('no nonconflicting incremental proofs')
+          PY
+      - name: Re-finalize and audit complete transit DB
+        run: |
+          python scripts/finalize_transit_v2.py
+          python scripts/audit_transit_v2.py
+      - name: Verify old evidence preserved and every accepted proof materialized
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          ROOT=Path('data/transit-v2')
+          old={tuple(x) for x in json.loads(Path('/tmp/existing-zushi-pairs.json').read_text(encoding='utf-8'))}
+          accepted_rows=json.loads(Path('/tmp/accepted-incremental-zushi.json').read_text(encoding='utf-8')).get('entries') or []
+          accepted={(str(r.get('fromFragment') or ''),str(r.get('toFragment') or '')) for r in accepted_rows}
+          accepted_ids={str(r.get('id') or '') for r in accepted_rows}
+          evidence=json.loads((ROOT/'keikyu-internal-official-train-evidence.json').read_text(encoding='utf-8')).get('entries') or []
+          now={(str(r.get('fromFragment') or ''),str(r.get('toFragment') or '')) for r in evidence if r.get('boundaryId')=='keikyu-main-zushi-kanazawahakkei'}
+          edges=json.loads((ROOT/'same-train-edges.json').read_text(encoding='utf-8')).get('edges') or []
+          materialized={(str(r.get('fromFragment') or ''),str(r.get('toFragment') or '')) for r in edges if r.get('classification')=='same-train'}
+          unresolved=json.loads((ROOT/'coverage.json').read_text(encoding='utf-8')).get('unresolved') or []
+          rejected={str(r.get('evidenceId') or '') for r in unresolved if r.get('kind')=='keikyu-internal-generated-evidence-rejected'}
+          lingering={str(r.get('fragment') or '') for r in unresolved if r.get('kind') in ('missing-boundary-train-identity-evidence','ambiguous-boundary-fragment-alignment')}
+          print('OLD_ZUSHI_PRESERVED',len(old & now),'/',len(old))
+          print('ACCEPTED_INCREMENTAL',len(accepted))
+          print('ACCEPTED_MATERIALIZED',len(accepted & materialized))
+          print('ACCEPTED_REJECTED',len(accepted_ids & rejected))
+          print('ACCEPTED_STILL_UNRESOLVED',len({a for a,_b in accepted} & lingering))
+          print('TOTAL_ZUSHI_EVIDENCE_AFTER',len(now))
+          if not old <= now:
+              raise SystemExit(f'existing Zushi evidence was lost: {sorted(old-now)[:5]}')
+          if not accepted <= now:
+              raise SystemExit(f'accepted incremental evidence missing from evidence DB: {sorted(accepted-now)[:5]}')
+          if accepted - materialized:
+              raise SystemExit(f'accepted proofs missing runtime materialization: {sorted(accepted-materialized)[:5]}')
+          if accepted_ids & rejected:
+              raise SystemExit(f'accepted proofs rejected by consumer: {sorted(accepted_ids&rejected)[:5]}')
+          if {a for a,_b in accepted} & lingering:
+              raise SystemExit('accepted source still unresolved')
+          PY
+      - name: Commit only verified generated DB
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            data/transit-v2/keikyu-internal-official-train-evidence.json \
+            data/transit-v2/same-train-edges.json \
+            data/transit-v2/runtime-same-train.json \
+            data/transit-v2/coverage.json \
+            data/transit-v2/index.json \
+            data/transit-v2/unresolved-summary.json
+          if git diff --cached --quiet; then
+            echo 'Incremental proofs already materialized'
+            exit 0
+          fi
+          git fetch origin main
+          remote="$(git rev-parse origin/main)"
+          if [ "$MATERIALIZE_BASE" != "$remote" ]; then
+            echo 'main moved during incremental proof; refusing stale generated DB commit'
+            exit 1
+          fi
+          git commit -m 'Add strict Keikyu Zushi calendar V2 evidence'
+          git push origin HEAD:main
