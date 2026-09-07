@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+import keikyu_official_train_evidence as calendar_parser
+
 MAIN = 'odpt.Railway:Keikyu.Main'
 AIRPORT = 'odpt.Railway:Keikyu.Airport'
 KURIHAMA = 'odpt.Railway:Keikyu.Kurihama'
@@ -50,6 +52,15 @@ def load_json(path: Path) -> dict[str, Any]:
         return {}
 
 
+def runtime_calendar(fragment: dict[str, Any]) -> str:
+    raw = fragment.get('calendar')
+    if calendar_parser.calendar_matches(raw, 'weekday'):
+        return 'weekday'
+    if calendar_parser.calendar_matches(raw, 'holiday'):
+        return 'holiday'
+    return ''
+
+
 def cross_page_global_policy_safe(policy: dict[str, Any]) -> bool:
     return (
         policy.get('officialPreviousPublicationPageAndTrainNumberRequiredForCrossPage') is True
@@ -69,11 +80,15 @@ def validate_section_local_entry(entry: dict[str, Any]) -> str:
         'singletonFragmentMatchRequiredAtBothPoints',
         'officialPageSectionColumnIsExactLocalIdentity',
         'officialSectionIdentityRequired',
+        'literalPrintedCalendarRequired',
+        'runtimeCalendarMustMatchOfficialPrintedCalendar',
         'sharedPublishedDestinationUsedOnlyForSearch',
         'candidateFragmentGapUsedOnlyForSearch',
     }
     if any(match_policy.get(key) is not True for key in required_true):
         return 'unsafe-section-local-entry-policy'
+    if match_policy.get('calendarMayBeInferredFromPageNumber') is not False:
+        return 'unsafe-section-local-calendar-inference-policy'
     if match_policy.get('crossPageIdentityUsed') is not False:
         return 'unsafe-section-local-cross-page-policy'
     if match_policy.get('trainNumberAloneMayEstablishIdentity') is not False:
@@ -85,7 +100,13 @@ def validate_section_local_entry(entry: dict[str, Any]) -> str:
     page = entry.get('pdfPage')
     section = entry.get('pdfSection')
     column = entry.get('pdfColumn')
+    official_calendar = str(entry.get('officialPrintedCalendar') or '')
+    evidence_calendar = str(entry.get('calendar') or '')
     anchors = entry.get('officialAnchors') or []
+    if official_calendar not in {'weekday', 'holiday'}:
+        return 'missing-literal-printed-calendar'
+    if evidence_calendar != official_calendar:
+        return 'evidence-calendar-official-calendar-mismatch'
     if not official_fragment or ':s' not in official_fragment:
         return 'missing-section-aware-official-fragment-id'
     if not isinstance(page, int) or page <= 0:
@@ -235,7 +256,13 @@ def apply_generated_evidence(
             or str(target.get('railway') or '') != pair[1]
         ):
             reason = 'fragment-railway-mismatch'
-        elif not reason:
+        elif not reason and is_section_local:
+            expected_calendar = str(entry.get('officialPrintedCalendar') or '')
+            source_calendar = runtime_calendar(source)
+            target_calendar = runtime_calendar(target)
+            if source_calendar != expected_calendar or target_calendar != expected_calendar:
+                reason = 'runtime-calendar-official-calendar-mismatch'
+        if not reason:
             boundary = next((
                 row for row in indexes.get('graph', {}).get(pair[0], [])
                 if str(row.get('toRailway') or '') == pair[1]
@@ -261,7 +288,7 @@ def apply_generated_evidence(
                 'keikyu-official-internal-explicit-section-cross-page-two-point'
                 if is_cross_page
                 else (
-                    'keikyu-official-internal-same-section-column-two-point'
+                    'keikyu-official-internal-same-section-calendar-column-two-point'
                     if is_section_local
                     else 'keikyu-official-internal-same-column-two-point'
                 )
