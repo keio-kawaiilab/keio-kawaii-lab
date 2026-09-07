@@ -29,8 +29,10 @@ def validate_official_dataset(payload: dict[str, Any]) -> None:
     required_true = {
         'pageSectionColumnIsExactLocalIdentity',
         'literalTrainNumberRowsAreHardSectionBoundaries',
+        'literalPrintedCalendarRequired',
     }
     required_false = {
+        'calendarMayBeInferredFromPageNumber',
         'printedTrainNumberMayJoinSectionsOrPages',
         'anonymousColumnMayJoinSectionsOrPages',
         'clockTimeProximityMayJoinFragments',
@@ -38,9 +40,9 @@ def validate_official_dataset(payload: dict[str, Any]) -> None:
         'crossPageIdentityEstablished',
     }
     if any(policy.get(key) is not True for key in required_true):
-        raise RuntimeError('unsafe official stop-time section-local identity policy')
+        raise RuntimeError('unsafe official stop-time section/calendar-local identity policy')
     if any(policy.get(key) is not False for key in required_false):
-        raise RuntimeError('unsafe official stop-time cross-fragment policy')
+        raise RuntimeError('unsafe official stop-time cross-fragment/calendar policy')
     if int(policy.get('runtimeSameTrainPromotions') or 0) != 0:
         raise RuntimeError('official stop-time dataset already contains runtime promotions')
     source = payload.get('source') or {}
@@ -70,10 +72,10 @@ def minute_of_hhmm(value: Any) -> int | None:
     return int(minute) % 1440 if minute is not None else None
 
 
-def official_anchor_index(payload: dict[str, Any]) -> dict[tuple[str, int], list[dict[str, Any]]]:
+def official_anchor_index(payload: dict[str, Any]) -> dict[tuple[str, str, int], list[dict[str, Any]]]:
     validate_official_dataset(payload)
     suffixes = station_suffix_map()
-    index: dict[tuple[str, int], list[dict[str, Any]]] = defaultdict(list)
+    index: dict[tuple[str, str, int], list[dict[str, Any]]] = defaultdict(list)
     seen_fragment_ids: set[str] = set()
     for fragment in payload.get('fragments') or []:
         if not isinstance(fragment, dict):
@@ -86,6 +88,9 @@ def official_anchor_index(payload: dict[str, Any]) -> dict[tuple[str, int], list
         if fid in seen_fragment_ids:
             raise RuntimeError(f'duplicate official section-column fragment: {fid}')
         seen_fragment_ids.add(fid)
+        calendar = str(fragment.get('calendar') or '')
+        if calendar not in {'weekday', 'holiday'}:
+            raise RuntimeError(f'official fragment missing literal printed calendar: {fid}')
         page = int(fragment.get('page') or 0)
         section = int(fragment.get('section') or 0)
         column = int(fragment.get('column') or 0)
@@ -101,8 +106,9 @@ def official_anchor_index(payload: dict[str, Any]) -> dict[tuple[str, int], list
             if local_key in seen_local:
                 continue
             seen_local.add(local_key)
-            index[(suffix, minute)].append({
+            index[(calendar, suffix, minute)].append({
                 'officialFragment': fid,
+                'calendar': calendar,
                 'page': page,
                 'section': section,
                 'column': column,
@@ -116,20 +122,27 @@ def official_anchor_index(payload: dict[str, Any]) -> dict[tuple[str, int], list
 def same_page_section_column_proof(
     source: dict[str, Any],
     target: dict[str, Any],
+    service: str,
     anchors: dict[str, list[dict[str, Any]]],
-    official_index: dict[tuple[str, int], list[dict[str, Any]]],
+    official_index: dict[tuple[str, str, int], list[dict[str, Any]]],
 ) -> dict[str, Any] | None:
+    if service not in {'weekday', 'holiday'} or base.service_of(target) != service:
+        return None
     source_id = str(source.get('id') or '')
     target_id = str(target.get('id') or '')
     groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for left in anchors.get(source_id, []):
-        left_hits = official_index.get((str(left.get('suffix') or ''), int(left.get('minute') or 0) % 1440), [])
+        left_hits = official_index.get(
+            (service, str(left.get('suffix') or ''), int(left.get('minute') or 0) % 1440), []
+        )
         if not left_hits:
             continue
         for right in anchors.get(target_id, []):
             if str(left.get('station') or '') == str(right.get('station') or ''):
                 continue
-            right_hits = official_index.get((str(right.get('suffix') or ''), int(right.get('minute') or 0) % 1440), [])
+            right_hits = official_index.get(
+                (service, str(right.get('suffix') or ''), int(right.get('minute') or 0) % 1440), []
+            )
             if not right_hits:
                 continue
             right_by_fragment: dict[str, list[dict[str, Any]]] = defaultdict(list)
@@ -138,8 +151,11 @@ def same_page_section_column_proof(
             for a in left_hits:
                 fid = str(a['officialFragment'])
                 for b in right_by_fragment.get(fid, []):
+                    if str(a.get('calendar') or '') != service or str(b.get('calendar') or '') != service:
+                        raise RuntimeError('calendar-keyed official index returned wrong service')
                     groups[fid].append({
                         'officialFragment': fid,
+                        'calendar': service,
                         'page': int(a['page']),
                         'section': int(a['section']),
                         'column': int(a['column']),
@@ -180,15 +196,21 @@ def build_entries(
     candidate_count = 0
     for _unresolved, source, pair in rows:
         source_id = str(source.get('id') or '')
+        service = base.service_of(source)
+        if service not in {'weekday', 'holiday'}:
+            reasons['source-calendar-unresolved'] += 1
+            continue
         candidates = current.candidate_targets(source, pair, fragments)
         candidate_count += len(candidates)
         proven: list[tuple[dict[str, Any], int, dict[str, Any]]] = []
         for target, gap in candidates:
-            proof = same_page_section_column_proof(source, target, anchors, official_index)
+            if base.service_of(target) != service:
+                continue
+            proof = same_page_section_column_proof(source, target, service, anchors, official_index)
             if proof:
                 proven.append((target, gap, proof))
         if len(proven) != 1:
-            reasons['no-unique-official-page-section-column-proof' if not proven else 'multiple-official-page-section-column-proofs'] += 1
+            reasons['no-unique-official-page-section-calendar-column-proof' if not proven else 'multiple-official-page-section-calendar-column-proofs'] += 1
             continue
 
         target, gap, proof = proven[0]
@@ -197,14 +219,14 @@ def build_entries(
         source_anchor = proof['sourceAnchor']
         target_anchor = proof['targetAnchor']
         provisional.append({
-            'status': 'official-section-column-evidence',
+            'status': 'official-section-calendar-column-evidence',
             'matchStatus': 'matched-singleton',
             'id': current.stable_id(
-                'schedule-all-section', base.service_of(source), spec['id'], proof['officialFragment'],
+                'schedule-all-section-calendar', service, spec['id'], proof['officialFragment'],
                 source_id, target['id'], source_anchor, target_anchor,
             ),
             'operator': 'keikyu',
-            'calendar': base.service_of(source),
+            'calendar': service,
             'direction': f"{pair[0].rsplit('.', 1)[-1].lower()}-to-{pair[1].rsplit('.', 1)[-1].lower()}",
             'boundaryId': spec['id'],
             'boundaryStation': spec['station'],
@@ -216,6 +238,7 @@ def build_entries(
             'targetMatches': [str(target['id'])],
             'officialAnchors': [source_anchor, target_anchor],
             'officialPageSectionLocalFragment': proof['officialFragment'],
+            'officialPrintedCalendar': service,
             'pdfPage': proof['page'],
             'pdfSection': proof['section'],
             'pdfColumn': proof['column'],
@@ -230,6 +253,9 @@ def build_entries(
                 'singletonFragmentMatchRequiredAtBothPoints': True,
                 'officialPageSectionColumnIsExactLocalIdentity': True,
                 'officialSectionIdentityRequired': True,
+                'literalPrintedCalendarRequired': True,
+                'runtimeCalendarMustMatchOfficialPrintedCalendar': True,
+                'calendarMayBeInferredFromPageNumber': False,
                 'crossPageIdentityUsed': False,
                 'sharedPublishedDestinationUsedOnlyForSearch': True,
                 'candidateFragmentGapUsedOnlyForSearch': True,
@@ -245,7 +271,7 @@ def build_entries(
     reasons['matched-current-missing-boundary'] += len(entries)
     summary = {
         'proofSource': OFFICIAL_PDF_URL,
-        'proofMode': 'exact-page-section-local-column-two-point',
+        'proofMode': 'exact-page-section-printed-calendar-local-column-two-point',
         'eligibleUnresolvedSources': len(rows),
         'candidatePairsAfterDestinationAndTimeSearch': candidate_count,
         'matchedSingleton': len(entries),
@@ -259,6 +285,9 @@ def build_entries(
             'singletonFragmentMatchRequiredAtBothPoints': True,
             'officialPageSectionColumnIsExactLocalIdentity': True,
             'officialSectionIdentityRequired': True,
+            'literalPrintedCalendarRequired': True,
+            'runtimeCalendarMustMatchOfficialPrintedCalendar': True,
+            'calendarMayBeInferredFromPageNumber': False,
             'crossPageIdentityUsed': False,
             'sharedPublishedDestinationIsSearchOnly': True,
             'candidateTimeWindowIsSearchOnly': True,
