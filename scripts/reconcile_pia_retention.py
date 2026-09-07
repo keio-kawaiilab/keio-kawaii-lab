@@ -48,7 +48,10 @@ def known_active(event: dict, today=None) -> bool:
         today = datetime.now(JST).date()
     if not is_pia(event):
         return False
-    if event.get("ticketType") == "現在受付なし" or event.get("applicationStatus") == "none":
+    status = str(event.get("applicationStatus") or "").strip().lower()
+    if status in {"ended", "sold_out", "none"}:
+        return False
+    if event.get("ticketType") == "現在受付なし":
         return False
     deadline = parse_day(event.get("applyEnd"))
     return bool(deadline and deadline >= today)
@@ -92,7 +95,8 @@ def reconcile(current_events: list[dict], previous_events: list[dict], today=Non
         current = out[index[key]]
         changed = False
         # Never lose an already-known exact deadline just because this scrape returned
-        # a thinner row. Start times are intentionally NOT copied here.
+        # a thinner row. Start times are intentionally NOT copied here. Ended/sold-out
+        # rows never enter this branch because they are not known-active sales.
         if not current.get("applyEnd") and previous.get("applyEnd"):
             current["applyEnd"] = previous.get("applyEnd")
             current["deadlineRecoveredFromPreviousRun"] = True
