@@ -56,8 +56,10 @@ def diagnose(pdf_path: Path) -> dict[str, Any]:
         'pages': rows,
         'policy': {
             'calendarComesOnlyFromLiteralPrintedPageLabel': True,
-            'bothOrNeitherLabelsAccepted': False,
+            'bothOrNeitherLabelsAcceptedForIdentity': False,
+            'unclassifiedPagesMustBeExcludedFromIdentity': True,
             'pageNumberRangeMayInferCalendar': False,
+            'neighboringPagesMayInferCalendar': False,
             'runtimeCalendarPromotions': 0,
         },
     }
@@ -80,11 +82,9 @@ def main() -> int:
         'output': str(args.output),
         'pagesAudited': payload['pagesAudited'],
         'counts': payload['counts'],
-        'unclassifiedOrAmbiguous': len(payload['unclassifiedOrAmbiguous']),
+        'unclassifiedOrAmbiguous': payload['unclassifiedOrAmbiguous'],
         'runtimeCalendarPromotions': 0,
     }, ensure_ascii=False, indent=2))
-    if payload['unclassifiedOrAmbiguous']:
-        raise SystemExit('not every in-scope official page has exactly one printed calendar label')
     return 0
 
 
