@@ -46,9 +46,9 @@ def graph(pair=None, boundary_id=None, *, verified: bool = True) -> dict:
 
 
 class ConsumerTests(unittest.TestCase):
-    def apply(self, data: dict, *, fragments=None, indexes=None):
+    def apply(self, data: dict, *, fragments=None, indexes=None, initial_unresolved=None):
         fragments = fragments or [fragment('m1', target.MAIN), fragment('a1', target.AIRPORT)]
-        unresolved: list[dict] = []
+        unresolved: list[dict] = list(initial_unresolved or [])
         with tempfile.TemporaryDirectory() as folder:
             path = Path(folder) / 'evidence.json'
             path.write_text(json.dumps(data), encoding='utf-8')
@@ -89,6 +89,24 @@ class ConsumerTests(unittest.TestCase):
         self.assertEqual([], unresolved)
         self.assertEqual(1, len(edges))
         self.assertEqual('金沢八景', edges[0]['boundary']['station'])
+
+    def test_current_missing_boundary_row_is_cleared_after_proof(self) -> None:
+        unresolved = [
+            {
+                'kind': 'missing-boundary-train-identity-evidence',
+                'fragment': 'm1',
+                'nextRailway': target.AIRPORT,
+            },
+            {
+                'kind': 'missing-boundary-train-identity-evidence',
+                'fragment': 'other',
+                'nextRailway': target.AIRPORT,
+            },
+        ]
+        edges, remaining = self.apply(payload(entry()), initial_unresolved=unresolved)
+        self.assertEqual(1, len(edges))
+        self.assertEqual(1, len(remaining))
+        self.assertEqual('other', remaining[0]['fragment'])
 
     def test_legacy_marker_remains_accepted(self) -> None:
         row = entry(evidence=['operator-official-connection-timetable', target.LEGACY_MARKER])
