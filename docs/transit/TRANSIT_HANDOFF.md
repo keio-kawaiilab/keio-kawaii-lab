@@ -9,6 +9,32 @@ Repository: `keio-kawaiilab/keio-kawaii-lab`
 Default branch: `main`
 Public route entry point: `route.html`
 
+**LATEST RESEARCH TARGET — western through-service systems, 2026-09-07**
+
+User requested Yahoo! train-detail research for Tobu Tojo, Seibu Ikebukuro /
+Seibu Yurakucho, Metro Lines 8/13, Toyoko/Minatomirai, Sotetsu/Shin-Yokohama,
+Meguro, Namboku/Saitama Railway and Mita. See
+`docs/transit/YAHOO_WESTERN_THROUGH_RESEARCH.md` and
+`docs/transit/yahoo-western-through-service-research.json` on
+`work/yahoo-western-through-research-20260907`.
+
+This checkpoint records representative one-train pages, both directions and
+weekday/Saturday/Sunday-holiday, explicit termini and conditional branches.
+It is research-only: zero runtime identity promotions; no all-train completeness,
+main merge, deployment or runtime test result is claimed. The older western
+identity reports' `complete:true` gates check boundary evidence availability /
+bidirectionality, not independently accounted all-train mother sets.
+
+Important findings: Shonandai is not exclusively a Toyoko branch and Ebina is
+not exclusively a Meguro branch. Both need the actual published station sequence.
+Keep Line 8/13, Namboku/Mita, terminal-only trains and special-date Seibu-Kyujomae
+services distinct. Yahoo's displayed headline/section train types must not be
+propagated uncritically across all operator sections.
+
+Next: establish complete official inventories, match these examples to exact
+runtime IDs/events/calendars, then verify positive and terminal-negative routing.
+The older Line-1 work below is preserved and is outside this research change.
+
 **LATEST IMPLEMENTATION — all 14 Line-1 connected-system railways, 2026-09-07**
 
 The whole-system implementation audit now passes `--require-complete`: all
