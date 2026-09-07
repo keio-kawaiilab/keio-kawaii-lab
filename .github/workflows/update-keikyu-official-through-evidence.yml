@@ -24,11 +24,12 @@ permissions:
 
 concurrency:
   group: transit-db-writer
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     env:
       ODPT_API_KEY: ${{ secrets.ODPT_API_KEY }}
       ODPT_CHALLENGE_API_KEY: ${{ secrets.ODPT_CHALLENGE_API_KEY }}
@@ -61,6 +62,7 @@ jobs:
             scripts/repair_keikyu_sengakuji_terminal_idempotent.py \
             scripts/keikyu_internal_official_evidence.py \
             scripts/keikyu_internal_generated_evidence.py \
+            scripts/keikyu_cross_page_zushi_evidence.py \
             scripts/verify_keikyu_internal_materialization.py \
             scripts/build_keikyu_official_stop_times.py \
             scripts/audit_keikyu_previous_publication_refs.py \
@@ -71,18 +73,31 @@ jobs:
           python scripts/test_repair_keikyu_sengakuji_terminal_idempotent.py
           python scripts/test_keikyu_internal_official_evidence.py
           python scripts/test_keikyu_internal_generated_evidence.py
+          python scripts/test_keikyu_cross_page_zushi_evidence.py
           python scripts/test_keikyu_official_stop_times.py
           python scripts/test_keikyu_previous_publication_refs.py
           python scripts/test_keikyu_cross_page_identity_audit.py
           python scripts/test_keikyu_independent_mother_set_audit.py
 
+      - name: Download official full timetable once
+        run: |
+          python - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, 'scripts')
+          from keikyu_official_pdf import download_official_pdf
+          download_official_pdf(Path('/tmp/keikyu-schedule-all.pdf'))
+          PY
+
       - name: Audit full official timetable mother set
         run: |
           python scripts/build_keikyu_official_stop_times.py \
+            --pdf /tmp/keikyu-schedule-all.pdf \
             --output /tmp/keikyu-official-stop-times.json
           python scripts/verify_keikyu_official_stop_times.py \
             /tmp/keikyu-official-stop-times.json
           python scripts/audit_keikyu_previous_publication_refs.py \
+            --pdf /tmp/keikyu-schedule-all.pdf \
             --output /tmp/keikyu-previous-publication-refs.json
           python scripts/build_keikyu_cross_page_identity_audit.py \
             /tmp/keikyu-official-stop-times.json \
@@ -109,10 +124,10 @@ jobs:
 
       - name: Extract official weekday and holiday boundary candidates
         run: |
-          python scripts/keikyu_official_train_evidence.py \
+          timeout 240s python scripts/keikyu_official_train_evidence.py \
             --calendar weekday \
             --output /tmp/keikyu-weekday.json
-          python scripts/keikyu_official_train_evidence.py \
+          timeout 240s python scripts/keikyu_official_train_evidence.py \
             --calendar holiday \
             --output /tmp/keikyu-holiday.json
           python scripts/merge_keikyu_official_evidence.py \
