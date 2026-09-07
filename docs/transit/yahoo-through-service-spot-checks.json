@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "reviewedAt": "2026-09-07",
+  "use": "Selected train-detail spot checks following the user's suggestion; not a bulk timetable source",
+  "productionSource": "Operator-linked station boards and official one-train pages",
+  "checks": [
+    {
+      "url": "https://transit.yahoo.co.jp/timetable/22911/3230/51443?kind=1&hh=8&mm=42",
+      "case": "Weekday Haneda 08:42 to Oshiage 09:37, missing Sengakuji continuation 847T",
+      "observed": "One complete train crosses Sengakuji. Its 25-station sequence and all events observed in the official sources match. Yahoo-only arrivals were not imported.",
+      "identityReview": "docs/transit/sengakuji-selected-one-train-review.json"
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/timetable/29033/4800/68963?hh=9&kind=1&mm=36",
+      "case": "Weekday internal-only Inba-Nihon-Idai to Shin-Kamagaya train, Inzai-Makinohara 09:36 departure",
+      "observed": "Full station list and separate arrival/departure events are available, including the Komuro dwell"
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/timetable/29033/4800/68984?hh=21&kind=1&mm=38",
+      "case": "Weekday Inba-Nihon-Idai to Misakiguchi through service, Inzai-Makinohara 21:38 departure",
+      "observed": "The one-train list crosses Oshiage and Sengakuji and includes a section-specific train-type note"
+    }
+  ]
+}

@@ -11,15 +11,19 @@ def stop_payload(numbers: dict[tuple[int, int], str | None]) -> dict:
     fragments = []
     for (page, column), number in sorted(numbers.items()):
         fragments.append({
-            "id": f"keikyu-official-pdf:p{page:03d}:c{column:02d}",
+            "id": f"keikyu-official-pdf:p{page:03d}:s00:c{column:02d}",
             "page": page,
             "column": column,
+            "section": 0,
             "printedTrainNumber": number,
             "stopTimes": [],
         })
     return {
+        "kind": "keikyu-official-section-local-stop-times",
+        "source": {"sha256": "abc"},
         "identityPolicy": {
-            "pageColumnIsExactLocalIdentity": True,
+            "pageSectionColumnIsExactLocalIdentity": True,
+            "literalTrainNumberRowsAreHardSectionBoundaries": True,
             "runtimeSameTrainPromotions": 0,
         },
         "fragments": fragments,
@@ -28,10 +32,12 @@ def stop_payload(numbers: dict[tuple[int, int], str | None]) -> dict:
 
 def refs(rows: list[dict]) -> dict:
     return {
+        "kind": "keikyu-official-section-previous-publication-reference-audit",
         "source": {"sha256": "abc"},
         "uniqueExplicitReferenceCandidateCount": len(rows),
         "identityPolicy": {
             "officialPreviousPublicationMetadataExtracted": True,
+            "sectionLocalCurrentGridRequired": True,
             "runtimeSameTrainPromotions": 0,
         },
         "fragments": rows,
@@ -44,6 +50,8 @@ def ref(current_page: int, current_col: int, current_no: str | None,
         "pdfPage": current_page,
         "printedPage": current_page,
         "column": current_col,
+        "section": 0,
+        "targetSection": 0,
         "currentTrainNumber": current_no,
         "previousPrintedPage": previous_page,
         "previousTrainNumber": previous_no,
@@ -89,7 +97,7 @@ class KeikyuCrossPageIdentityAuditTest(unittest.TestCase):
             ref(8, 0, "200A", 7, 0, "100A"),
             ref(9, 0, "300A", 7, 0, "100A"),
         ]))
-        self.assertIn("keikyu-official-pdf:p007:c00", payload["branchingTargets"])
+        self.assertIn("keikyu-official-pdf:p007:s00:c00", payload["branchingTargets"])
         with self.assertRaises(RuntimeError):
             verify(payload)
 

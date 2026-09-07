@@ -1,0 +1,120 @@
+{
+  "version": 1,
+  "kind": "keikyu-geometry-recovery-checkpoint",
+  "sourceSha256": "e10b1c6efd92f40b0dae6d712b65c2391584b9134cd653c74fe78548ad681b63",
+  "boundaryReconciliationComplete": true,
+  "wholeKeikyuCoverageComplete": false,
+  "runtimeIntegrationComplete": false,
+  "runtimeSameTrainPromotions": 0,
+  "statusCounts": {
+    "both-local-published-sequence-singleton": 577,
+    "official-transfer-via-nishimagome": 4
+  },
+  "recoveredCases": [
+    {
+      "toeiTimetableId": "odpt.TrainTimetable:Toei.Asakusa.1775K.Weekday",
+      "candidateId": "keikyu-connection-pdf:cff6470490ebb1f6dc328bad",
+      "keikyuPublicationGroup": "keikyu-mother:keikyu-official-pdf:p056:s00:c01"
+    },
+    {
+      "toeiTimetableId": "odpt.TrainTimetable:Toei.Asakusa.1681H.Weekday",
+      "candidateId": "keikyu-connection-pdf:0ff9fa1000d78331ad7f621e",
+      "keikyuPublicationGroup": "keikyu-mother:keikyu-official-pdf:p056:s00:c06"
+    },
+    {
+      "toeiTimetableId": "odpt.TrainTimetable:Toei.Asakusa.1729N.Weekday",
+      "candidateId": "keikyu-connection-pdf:41c38a4e2bab624cd52a940c",
+      "keikyuPublicationGroup": "keikyu-mother:keikyu-official-pdf:p056:s00:c08"
+    },
+    {
+      "toeiTimetableId": "odpt.TrainTimetable:Toei.Asakusa.1773H.Weekday",
+      "candidateId": "keikyu-connection-pdf:c0fa4879105273794136a25b",
+      "keikyuPublicationGroup": "keikyu-mother:keikyu-official-pdf:p056:s00:c11"
+    },
+    {
+      "toeiTimetableId": "odpt.TrainTimetable:Toei.Asakusa.1805H.Weekday",
+      "candidateId": "keikyu-connection-pdf:2f593c53dc3cdafe392a5f12",
+      "keikyuPublicationGroup": "keikyu-mother:keikyu-official-pdf:p056:s00:c13"
+    },
+    {
+      "toeiTimetableId": "odpt.TrainTimetable:Toei.Asakusa.1785H.Weekday",
+      "candidateId": "keikyu-connection-pdf:c29582fd949a4f49bfbd74f6",
+      "keikyuPublicationGroup": "keikyu-mother:keikyu-official-pdf:p056:s00:c18"
+    },
+    {
+      "toeiTimetableId": "odpt.TrainTimetable:Toei.Asakusa.1825N.Weekday",
+      "candidateId": "keikyu-connection-pdf:db0fc0741c7589a3f679505f",
+      "keikyuPublicationGroup": "keikyu-mother:keikyu-official-pdf:p056:s00:c20"
+    },
+    {
+      "toeiTimetableId": "odpt.TrainTimetable:Toei.Asakusa.1983K.Weekday",
+      "candidateId": "keikyu-connection-pdf:376112dc2bfd78f2952cf92f",
+      "keikyuPublicationGroup": "keikyu-mother:keikyu-official-pdf:p058:s00:c02"
+    },
+    {
+      "toeiTimetableId": "odpt.TrainTimetable:Toei.Asakusa.2252H.Weekday",
+      "candidateId": "keikyu-connection-pdf:e2554642521238ef128d96db",
+      "keikyuPublicationGroup": "keikyu-mother:keikyu-official-pdf:p036:s01:c24"
+    }
+  ],
+  "stopCounts": {
+    "sourceTimeCells": 67703,
+    "resolvedTimeCells": 66585,
+    "unresolvedTimeCells": 1118,
+    "timetableSections": 164,
+    "trainColumnFragments": 4133,
+    "explicitTrainNumberFragments": 2835,
+    "anonymousFragments": 1298
+  },
+  "verification": {
+    "stops": {
+      "verified": true,
+      "pages": 132,
+      "fragments": 4133,
+      "resolvedTimeCells": 66585,
+      "unresolvedTimeCells": 1118,
+      "runtimeSameTrainPromotions": 0
+    },
+    "graph": {
+      "verified": true,
+      "candidateReferences": 298,
+      "candidateEdges": 298,
+      "nodes": 596,
+      "components": 298,
+      "runtimeSameTrainPromotions": 0
+    },
+    "mother": {
+      "verified": true,
+      "geometryFragments": 4133,
+      "trainBearingFragments": 3140,
+      "structuralBlankFragments": 993,
+      "officialCrossPageEdges": 298,
+      "candidatePhysicalTrains": 2842,
+      "joinedCandidates": 298,
+      "singletons": 2544,
+      "sourceTimeCells": 67703,
+      "resolvedTimeCells": 66585,
+      "unresolvedTimeCells": 1118,
+      "zeroTimeEvidenceBearingFragments": 0,
+      "runtimeSameTrainPromotions": 0
+    }
+  },
+  "filesSha256": {
+    "keikyu-independent-mother-set-audit.json": "660438d703b48ba1c4360c22d90da404d45a5751c479c688085e733c557fb8b9",
+    "keikyu-calendar-cross-page-audit.json": "24427c6b7e1b1a619b10b136eb4812cf701431591d4abc9702bf0763ec500831",
+    "keikyu-reciprocal-publication-audit.json": "2c41ebdb0e0c1cd4dd6afcd76dd3affc23ac40a7e7718341fb4ed0afa3f0ba73",
+    "keikyu-printed-calendar-audit.json": "d4d70a778ed35c6a22af88921fd0099afdf4356339da3af17f8497c7a0ba7bc1",
+    "sengakuji-independent-reconciliation-audit.json": "62dd27096e40f37ceccf20427627e4269d81474367eb0deb0d5e1b450d26792b",
+    "sengakuji-published-sequence-audit.json": "87a1e9763a6d1e1473421e7f6eb95df91cb8eca193412638a2d069df43205c55",
+    "sengakuji-unfiltered-column-audit.json": "fb4b17ed3f3e842cef7426182f805e24d6d4095c593993d553890e5ffcb9f513",
+    "keikyu-independent-stop-times.json.gz": "768a72eff8fe0637e309159d7b1a66188ba1f5ec5f1ec75be90b98738cf1e4f0"
+  },
+  "remaining": {
+    "unresolvedCells": 1118,
+    "printedPageReferenceCells": 197,
+    "nonTimetableCalendarExcludedPages": [
+      77,
+      145
+    ]
+  }
+}

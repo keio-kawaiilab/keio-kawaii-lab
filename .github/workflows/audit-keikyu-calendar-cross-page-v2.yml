@@ -6,6 +6,22 @@ on:
     paths:
       - 'scripts/filter_keikyu_previous_refs_by_calendar.py'
       - 'scripts/build_keikyu_calendar_cross_page_identity_audit.py'
+      - 'scripts/verify_keikyu_*.py'
+      - 'scripts/build_keikyu_independent_mother_set_audit.py'
+      - 'scripts/build_keikyu_official_stop_times.py'
+      - 'scripts/audit_sengakuji_independent_reconciliation.py'
+      - 'scripts/audit_keikyu_reciprocal_publication.py'
+      - 'scripts/audit_sengakuji_published_sequences.py'
+      - 'scripts/audit_sengakuji_unfiltered_columns.py'
+      - 'scripts/save_keikyu_recovery_checkpoint.py'
+      - 'scripts/keikyu_official_pdf.py'
+      - 'scripts/diagnose_keikyu_official_calendars.py'
+      - 'scripts/audit_keikyu_station_time_resolution.py'
+      - 'scripts/diagnose_sengakuji_toei_sequence_match.py'
+      - 'scripts/audit_toei_sengakuji_official_columns.py'
+      - 'scripts/test_keikyu_*.py'
+      - 'scripts/test_sengakuji_independent_reconciliation.py'
+      - 'scripts/keikyu_audit_test_fixtures.py'
       - '.github/workflows/audit-keikyu-calendar-cross-page-v2.yml'
 
 permissions:
@@ -14,7 +30,7 @@ permissions:
 jobs:
   audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -25,6 +41,12 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq poppler-utils
           pip install pdfplumber==0.11.7 PyMuPDF==1.26.4 requests==2.32.5
+      - name: Test exact identity and fail-closed regressions
+        run: |
+          python -m unittest discover -s scripts -p 'test_keikyu_*.py'
+          python scripts/test_sengakuji_independent_reconciliation.py
+          node scripts/test_route_runtime_same_train.js
+          node scripts/test_route_core.js
       - name: Compile calendar-safe cross-page pipeline
         run: |
           python -m py_compile \
@@ -51,6 +73,7 @@ jobs:
           python scripts/build_keikyu_official_stop_times.py \
             --pdf /tmp/keikyu-schedule-all.pdf \
             --output /tmp/keikyu-stop-times-v2.json
+          python scripts/verify_keikyu_official_stop_times.py /tmp/keikyu-stop-times-v2.json
       - name: Extract section-aware official previous-page references
         run: |
           python scripts/audit_keikyu_previous_publication_refs.py \
@@ -68,6 +91,7 @@ jobs:
             /tmp/keikyu-stop-times-v2.json \
             /tmp/keikyu-prev-refs-calendar.json \
             --output /tmp/keikyu-cross-page-calendar.json
+          python scripts/verify_keikyu_cross_page_identity_audit.py /tmp/keikyu-cross-page-calendar.json
           python - <<'PY'
           import json
           from pathlib import Path
@@ -83,6 +107,42 @@ jobs:
               assert edge.get('calendar') in ('weekday','holiday'), edge
           print('CALENDAR_SAFE_CROSS_PAGE_EDGES',len(p.get('edges') or []))
           print('CALENDAR_SAFE_CROSS_PAGE_EDGE_CALENDARS',p.get('calendarEdgeCounts'))
+          PY
+      - name: Audit independent mother set and both Sengakuji local identities
+        run: |
+          python scripts/build_keikyu_independent_mother_set_audit.py \
+            /tmp/keikyu-stop-times-v2.json /tmp/keikyu-cross-page-calendar.json \
+            --output /tmp/keikyu-independent-mother-set.json
+          python scripts/verify_keikyu_independent_mother_set_audit.py /tmp/keikyu-independent-mother-set.json
+          python scripts/audit_sengakuji_independent_reconciliation.py \
+            /tmp/keikyu-stop-times-v2.json /tmp/keikyu-cross-page-calendar.json \
+            --output /tmp/sengakuji-independent-reconciliation.json
+      - name: Distinguish explicit continuations from printed transfer connections
+        run: |
+          python scripts/audit_keikyu_reciprocal_publication.py \
+            --pdf /tmp/keikyu-schedule-all.pdf \
+            --stops /tmp/keikyu-stop-times-v2.json \
+            --graph /tmp/keikyu-cross-page-calendar.json \
+            --output /tmp/keikyu-reciprocal-publication.json
+          python scripts/audit_sengakuji_published_sequences.py \
+            --stops /tmp/keikyu-stop-times-v2.json \
+            --graph /tmp/keikyu-cross-page-calendar.json \
+            --mother /tmp/keikyu-independent-mother-set.json \
+            --reciprocal /tmp/keikyu-reciprocal-publication.json \
+            --baseline /tmp/sengakuji-independent-reconciliation.json \
+            --pdf-cache-dir /tmp/keikyu-connection-pdfs \
+            --output /tmp/sengakuji-published-sequences.json
+          python scripts/audit_sengakuji_unfiltered_columns.py \
+            --pdf-cache-dir /tmp/keikyu-connection-pdfs \
+            --output /tmp/sengakuji-unfiltered-columns.json
+          python - <<'PY'
+          import sys, json
+          from pathlib import Path
+          sys.path.insert(0, 'scripts')
+          from save_keikyu_recovery_checkpoint import verify_boundary
+          cases = verify_boundary(json.loads(Path('/tmp/sengakuji-published-sequences.json').read_text()),
+                                  json.loads(Path('/tmp/sengakuji-unfiltered-columns.json').read_text()))
+          print('RECOVERED_BOUNDARY_CASES', len(cases))
           PY
       - name: Dry-run Zushi cross-page proofs from safe graph
         run: |
@@ -109,5 +169,11 @@ jobs:
             /tmp/keikyu-prev-refs-calendar.json
             /tmp/keikyu-cross-page-calendar.json
             /tmp/zushi-cross-page-calendar-report.json
+            /tmp/keikyu-stop-times-v2.json
+            /tmp/keikyu-independent-mother-set.json
+            /tmp/sengakuji-independent-reconciliation.json
+            /tmp/keikyu-reciprocal-publication.json
+            /tmp/sengakuji-published-sequences.json
+            /tmp/sengakuji-unfiltered-columns.json
           retention-days: 7
           if-no-files-found: error

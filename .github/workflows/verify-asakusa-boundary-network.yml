@@ -1,0 +1,55 @@
+name: Verify complete Asakusa boundary network
+on:
+  workflow_dispatch:
+  push:
+    branches: ['work/keikyu-internal-completion-*', main]
+    paths:
+      - 'scripts/*asakusa*'
+      - 'scripts/*sengakuji*'
+      - 'scripts/build_transit_v2.py'
+      - 'data/transit/toei/**'
+      - 'data/transit/keikyu/**'
+      - 'data/transit/keisei/**'
+      - 'data/transit-v2/**'
+      - 'docs/transit/*asakusa*'
+      - 'docs/transit/*oshiage*'
+      - 'docs/transit/*sengakuji*'
+      - '.github/workflows/verify-asakusa-boundary-network.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Reproduce all positive and negative boundary cases
+        run: |
+          python -m unittest discover -s scripts -p 'test_asakusa_*.py'
+          python scripts/verify_asakusa_boundary_network.py
+          python scripts/verify_sengakuji_runtime.py
+          node scripts/test_asakusa_boundary_routes.js
+          node scripts/test_keikyu_internal_routes.js
+          node scripts/test_route_runtime_same_train.js
+      - name: Check runtime installation survives regeneration
+        run: |
+          python scripts/asakusa_boundary_runtime.py
+          python scripts/finalize_transit_v2.py
+          python scripts/audit_transit_v2.py
+          python scripts/verify_asakusa_boundary_network.py
+          python scripts/verify_sengakuji_runtime.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: asakusa-complete-boundary-audit
+          path: |
+            docs/transit/asakusa-boundary-network-audit.json.gz
+            docs/transit/oshiage-official-origin-markers.json
+            docs/transit/sengakuji-selected-one-train-review.json
+            data/transit-v2/coverage.json

@@ -376,6 +376,8 @@ def main() -> int:
         indexes,
         V2 / 'reviewed-train-evidence.json',
     )
+    from keikyu_internal_runtime import apply as apply_keikyu_internal_network
+    edges = apply_keikyu_internal_network(fragments, edges)
 
     # A published through destination and a verified operational path do not by
     # themselves prove that a particular reconstructed station-timetable

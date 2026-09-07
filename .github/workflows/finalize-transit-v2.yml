@@ -3,6 +3,7 @@ name: Finalize transit v2 strict identity
 on:
   workflow_dispatch:
   push:
+    branches: [main]
     paths:
       - 'scripts/finalize_transit_v2.py'
       - 'scripts/normalize_transit_v2_physical_destinations.py'
@@ -30,6 +31,9 @@ jobs:
       - name: Finalize strict train identity database
         run: |
           python -m py_compile scripts/build_transit_v2.py scripts/finalize_transit_v2.py scripts/normalize_transit_v2_physical_destinations.py scripts/audit_transit_v2.py
+          if [ -f data/transit/keikyu/timetables/official-internal-network.json ]; then
+            python scripts/check_keikyu_internal_source.py
+          fi
           python scripts/finalize_transit_v2.py
           python scripts/normalize_transit_v2_physical_destinations.py
           python scripts/audit_transit_v2.py
@@ -59,6 +63,7 @@ jobs:
           PY
 
       - name: Commit finalized transit v2 snapshot
+        if: github.ref == 'refs/heads/main'
         shell: bash
         run: |
           if [ -z "$(git status --porcelain -- data/transit-v2)" ]; then

@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
@@ -21,10 +22,42 @@ from keikyu_official_train_evidence import (
     DEFAULT_WEEKDAY_URL,
     extract_pdf,
     fetch_pdf,
+    direction as printed_direction,
 )
 
 TOEI_FILE = Path("data/transit/toei/timetables/899209dea5fc3a.json")
 SENGAKUJI = "odpt.Station:Toei.Asakusa.Sengakuji"
+
+
+def official_column_is_supported(candidate: dict[str, Any]) -> bool:
+    """Validate the extraction contract before performing local-time lookup.
+
+    Markers are provenance within this trusted PDF extraction pipeline, not a
+    way to certify arbitrary third-party JSON as operator evidence.
+    """
+    calendar = candidate.get("calendar")
+    expected_url = {"weekday": DEFAULT_WEEKDAY_URL, "holiday": DEFAULT_HOLIDAY_URL}.get(calendar)
+    evidence = candidate.get("evidence") or []
+    geometry = candidate.get("rowGeometry") or {}
+    coordinates = [candidate.get("columnX")] + [geometry.get(k) for k in
+        ("sourceBoundaryY", "boundaryTrainNumberY", "targetBoundaryY")]
+    if not all(isinstance(v, (int, float)) and math.isfinite(v) for v in coordinates):
+        return False
+    return bool(
+        candidate.get("id") and expected_url and candidate.get("sourceUrl") == expected_url
+        and candidate.get("status") == "official-column-evidence"
+        and candidate.get("operator") == "keikyu"
+        and candidate.get("boundaryId") == "toei-keikyu-sengakuji"
+        and "operator-official-connection-timetable" in evidence
+        and "same-printed-column-spans-both-sides-of-sengakuji" in evidence
+        and type(candidate.get("pdfPage")) is int and candidate["pdfPage"] > 0
+        and coordinates[1] < coordinates[2] < coordinates[3]
+        and printed_direction(geometry.get("sourceBoundaryText"), geometry.get("targetBoundaryText"))
+            == candidate.get("direction")
+        and candidate.get("direction") in ("toei-to-keikyu", "keikyu-to-toei")
+        and all(type(candidate.get(k)) is int and 0 <= candidate[k] < 1800
+                for k in ("sourceBoundaryMinute", "targetBoundaryMinute"))
+    )
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -108,10 +141,17 @@ def audit(candidates: list[dict[str, Any]], timetable: dict[str, Any]) -> dict[s
     calendar_counts: Counter[str] = Counter()
     matched_ids: set[str] = set()
     duplicate_candidate_targets: Counter[str] = Counter()
+    candidate_ids = Counter(row.get("id") for row in candidates)
 
     for candidate in candidates:
         calendar = str(candidate.get("calendar") or "")
         direction = str(candidate.get("direction") or "")
+        if not official_column_is_supported(candidate) or candidate_ids[candidate.get("id")] != 1:
+            status = "unsupported-official-evidence" if not official_column_is_supported(candidate) else "duplicate-official-column"
+            status_counts[status] += 1
+            results.append({"candidateId": candidate.get("id"), "toeiMatchStatus": status,
+                            "toeiMatches": [], "calendar": calendar, "direction": direction})
+            continue
         if direction == "toei-to-keikyu":
             minute = int(candidate["sourceBoundaryMinute"])
         elif direction == "keikyu-to-toei":
@@ -139,6 +179,8 @@ def audit(candidates: list[dict[str, Any]], timetable: dict[str, Any]) -> dict[s
             "pdfPage": candidate.get("pdfPage"),
             "columnX": candidate.get("columnX"),
             "officialEvidence": candidate.get("evidence"),
+            "sourceUrl": candidate.get("sourceUrl"),
+            "rowGeometry": candidate.get("rowGeometry"),
             "toeiMatchStatus": status,
             "toeiMatches": ids,
             "toeiTrainNumbers": [str(row["trainNumber"]) for row in matches],
@@ -148,9 +190,14 @@ def audit(candidates: list[dict[str, Any]], timetable: dict[str, Any]) -> dict[s
     issues: list[dict[str, Any]] = []
     if multiply_targeted:
         issues.append({"kind": "multiple-official-columns-target-one-toei-trip", "count": len(multiply_targeted)})
+        for row in results:
+            if row["toeiMatchStatus"] == "matched-singleton" and row["toeiMatches"][0] in multiply_targeted:
+                row["toeiMatchStatus"] = "conflicting-official-columns"
+        status_counts = Counter(row["toeiMatchStatus"] for row in results)
+        matched_ids.difference_update(multiply_targeted)
 
     return {
-        "version": 1,
+        "version": 2,
         "kind": "toei-asakusa-sengakuji-official-column-audit",
         "officialColumnCandidateCount": len(candidates),
         "statusCounts": dict(sorted(status_counts.items())),

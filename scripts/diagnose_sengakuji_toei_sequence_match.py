@@ -36,22 +36,7 @@ from keikyu_official_train_evidence import (
 )
 
 EVIDENCE_FILE = Path("data/transit-v2/keikyu-official-train-evidence.json")
-PDF_TO_ODPT_SUFFIX = {
-    "泉岳寺": "Sengakuji",
-    "三田": "Mita",
-    "大門": "Daimon",
-    "新橋": "Shimbashi",
-    "東銀座": "HigashiGinza",
-    "宝町": "Takaracho",
-    "日本橋": "Nihombashi",
-    "人形町": "Ningyocho",
-    "東日本橋": "HigashiNihombashi",
-    "浅草橋": "Asakusabashi",
-    "蔵前": "Kuramae",
-    "浅草": "Asakusa",
-    "本所吾妻橋": "HonjoAzumabashi",
-    "押上": "Oshiage",
-}
+from keikyu_published_station_names import PDF_TO_ODPT_SUFFIX
 TOKENS = sorted(PDF_TO_ODPT_SUFFIX, key=len, reverse=True)
 
 

@@ -23,9 +23,39 @@ HOLIDAY_LABEL = '土休日用'
 CALENDAR_HINTS = ('平日', '土休', '休日', 'ダイヤ', '用その')
 
 
-def printed_calendar(page_text: str) -> str | None:
-    has_weekday = WEEKDAY_LABEL in page_text
-    has_holiday = HOLIDAY_LABEL in page_text
+def vertical_calendar_labels(words) -> list[dict[str, Any]]:
+    """Read contiguous literal vertical labels, never PDF extraction order.
+
+    Poppler may interleave another column's notes with the vertical page title.
+    Only x-aligned runs with bounded vertical gaps count; retain their geometry.
+    """
+    columns = []
+    for word in sorted(words, key=lambda w: (w.x, w.y)):
+        if columns and abs(word.x - columns[-1][0].x) <= .8:
+            columns[-1].append(word)
+        else:
+            columns.append([word])
+    evidence = []
+    for column in columns:
+        runs = []
+        for word in sorted(column, key=lambda w: w.y):
+            if runs and 0 < word.y - runs[-1][-1].y <= 20:
+                runs[-1].append(word)
+            else:
+                runs.append([word])
+        for run in runs:
+            text = ''.join(w.text for w in run)
+            for label in (WEEKDAY_LABEL, HOLIDAY_LABEL):
+                if label in text:
+                    evidence.append(dict(label=label, orientation='vertical',
+                        words=[dict(text=w.text, x=round(w.x, 3), y=round(w.y, 3)) for w in run]))
+    return evidence
+
+
+def printed_calendar(page_text: str, words=None) -> str | None:
+    labels = {e['label'] for e in vertical_calendar_labels(words or [])}
+    has_weekday = WEEKDAY_LABEL in page_text or WEEKDAY_LABEL in labels
+    has_holiday = HOLIDAY_LABEL in page_text or HOLIDAY_LABEL in labels
     if has_weekday == has_holiday:
         return None
     return 'weekday' if has_weekday else 'holiday'
@@ -49,7 +79,7 @@ def diagnose(pdf_path: Path) -> dict[str, Any]:
         excluded = page_scope_reason(page_text)
         if excluded:
             continue
-        calendar = printed_calendar(page_text)
+        calendar = printed_calendar(page_text, words)
         sections = detect_train_column_sections(words)
         has_weekday = WEEKDAY_LABEL in page_text
         has_holiday = HOLIDAY_LABEL in page_text
@@ -57,6 +87,7 @@ def diagnose(pdf_path: Path) -> dict[str, Any]:
             'page': page_number,
             'calendar': calendar,
             'sectionCount': len(sections),
+            'verticalCalendarEvidence': vertical_calendar_labels(words),
             'hasWeekdayLabel': has_weekday,
             'hasHolidayLabel': has_holiday,
         }

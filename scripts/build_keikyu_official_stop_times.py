@@ -20,7 +20,7 @@ from typing import Any
 
 from audit_keikyu_official_columns import FIRST_POSSIBLE_TIMETABLE_PAGE, page_scope_reason
 from audit_keikyu_station_time_resolution import resolve_page
-from diagnose_keikyu_official_calendars import printed_calendar
+from diagnose_keikyu_official_calendars import printed_calendar, vertical_calendar_labels
 from keikyu_connected_station_catalog import station_titles
 from keikyu_official_pdf import (
     OFFICIAL_PDF_URL,
@@ -93,6 +93,7 @@ def build_section_fragments(
                         "time": item["time"],
                         "rowY": item["y"],
                         "resolution": item["resolution"],
+                        **({'markerEvidenceY': item['markerEvidenceY']} if 'markerEvidenceY' in item else {}),
                     }
                     for item in resolved
                 ],
@@ -142,7 +143,7 @@ def build_dataset(pdf_path: Path, source_bytes: bytes) -> dict[str, Any]:
             excluded_pages.append({"page": page_number, "reason": excluded_reason})
             continue
 
-        calendar = printed_calendar(page_text)
+        calendar = printed_calendar(page_text, words)
         if calendar not in {"weekday", "holiday"}:
             calendar_excluded_pages.append(page_number)
             excluded_pages.append({"page": page_number, "reason": CALENDAR_EXCLUSION_REASON})
@@ -226,6 +227,7 @@ def build_dataset(pdf_path: Path, source_bytes: bytes) -> dict[str, Any]:
                 "page": page_number,
                 "calendar": calendar,
                 "sectionCount": len(page_section_rows),
+                "verticalCalendarEvidence": vertical_calendar_labels(words),
                 "fragmentCount": page_fragment_count,
                 "sourceTimeCells": page_cells,
                 "resolvedTimeCells": page_resolved,

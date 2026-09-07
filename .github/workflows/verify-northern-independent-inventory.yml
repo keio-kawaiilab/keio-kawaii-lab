@@ -1,0 +1,60 @@
+name: Verify independent Hokuso and Shibayama completion
+on:
+  workflow_dispatch:
+  push:
+    branches: ['work/keikyu-internal-completion-*', main]
+    paths:
+      - 'scripts/*hokuso*'
+      - 'scripts/*shibayama*'
+      - 'scripts/*northern*'
+      - 'scripts/audit_keisei*'
+      - 'scripts/build_keisei_extended_network.py'
+      - 'scripts/build_transit_v2.py'
+      - 'data/transit/hokuso/**'
+      - 'data/transit/shibayama/**'
+      - 'data/transit/keisei/system-scope.json'
+      - 'data/transit-v2/**'
+      - 'docs/transit/*hokuso*'
+      - 'docs/transit/*shibayama*'
+      - '.github/workflows/verify-northern-independent-inventory.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Reproduce all independent station boards and train sequences
+        run: |
+          python scripts/test_northern_independent_inventory.py
+          python scripts/verify_hokuso_independent_inventory.py
+          python scripts/audit_shibayama_independent_inventory.py --verify
+          python scripts/audit_keisei_exact_network.py
+          python scripts/audit_keisei_system_scope.py --require-complete
+          node scripts/test_northern_exact_routes.js
+          node scripts/test_asakusa_boundary_routes.js
+          node scripts/test_keikyu_internal_routes.js
+      - name: Prove the supplement survives source regeneration
+        run: |
+          python scripts/build_keisei_extended_network.py
+          python scripts/hokuso_independent_runtime.py
+          python scripts/finalize_transit_v2.py
+          python scripts/verify_hokuso_independent_inventory.py
+          python scripts/audit_keisei_system_scope.py --require-complete
+          node scripts/test_northern_exact_routes.js
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: line1-independent-completion-audits
+          path: |
+            docs/transit/hokuso-independent-inventory-audit.json.gz
+            docs/transit/shibayama-independent-inventory.json
+            docs/transit/line1-complete-system-audit.json
+            data/transit-v2/coverage.json

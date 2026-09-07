@@ -1,0 +1,68 @@
+name: Verify complete Keikyu internal network
+on:
+  workflow_dispatch:
+  push:
+    branches: ['work/keikyu-internal-completion-*', main]
+    paths:
+      - 'scripts/*keikyu*'
+      - 'scripts/build_transit_v2.py'
+      - 'scripts/finalize_transit_v2.py'
+      - 'data/transit/keikyu/**'
+      - 'data/transit-v2/**'
+      - 'docs/transit/keikyu-internal*'
+      - '.github/workflows/verify-keikyu-internal-network.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install source parser dependencies
+        run: |
+          python -m pip install PyMuPDF==1.26.4 pdfplumber==0.11.7
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+      - name: Verify exact identities and route behavior
+        run: |
+          python -m unittest discover -s scripts -p 'test_keikyu_*.py'
+          python -S scripts/verify_keikyu_internal_network.py
+          python scripts/verify_keikyu_internal_materialization.py
+          python scripts/audit_keisei_system_scope.py
+          node scripts/test_keikyu_internal_routes.js
+          node scripts/test_route_runtime_same_train.js
+      - name: Reproduce complete network from the current official PDF
+        run: |
+          python scripts/check_keikyu_internal_source.py
+          python scripts/build_keikyu_official_stop_times.py --output /tmp/keikyu-stops.json
+          python - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, 'scripts')
+          from keikyu_official_pdf import download_official_pdf
+          download_official_pdf(Path('/tmp/keikyu.pdf'))
+          PY
+          python scripts/keikyu_internal_inline_references.py --stops /tmp/keikyu-stops.json --pdf /tmp/keikyu.pdf --output /tmp/keikyu-inline.json
+          python scripts/build_keikyu_internal_network.py --stops /tmp/keikyu-stops.json --inline /tmp/keikyu-inline.json --pdf /tmp/keikyu.pdf --clean-stops /tmp/keikyu-clean.json --output /tmp/keikyu-network.json --report /tmp/keikyu-report.json
+          python - <<'PY'
+          import gzip, json
+          from pathlib import Path
+          pairs = [
+            ('/tmp/keikyu-network.json', 'data/transit/keikyu/timetables/official-internal-network.json'),
+            ('/tmp/keikyu-clean.json', 'docs/transit/keikyu-internal-source-stop-times.json.gz'),
+            ('/tmp/keikyu-inline.json', 'docs/transit/keikyu-internal-inline-notes.json.gz'),
+            ('/tmp/keikyu-report.json', 'docs/transit/keikyu-internal-network-audit.json.gz'),
+          ]
+          for generated, saved in pairs:
+            raw = Path(saved).read_bytes()
+            expected = json.loads(gzip.decompress(raw) if saved.endswith('.gz') else raw)
+            assert json.loads(Path(generated).read_bytes()) == expected, saved
+          print('Official PDF reproduction matches all four saved artifacts')
+          PY

@@ -21,9 +21,11 @@ def current_fragment(fid: str, railway: str, stops: list[list]) -> dict:
 
 def official_payload(extra_fragments: list[dict] | None = None) -> dict:
     base_fragment = {
-        'id': 'keikyu-official-pdf:p010:c03',
+        'id': 'keikyu-official-pdf:p010:s00:c03',
         'page': 10,
         'column': 3,
+        'section': 0,
+        'calendar': 'weekday',
         'stopTimes': [
             {'station': '逗子・葉山', 'event': 'departure', 'time': '1000'},
             {'station': '神武寺', 'event': 'departure', 'time': '1005'},
@@ -34,12 +36,15 @@ def official_payload(extra_fragments: list[dict] | None = None) -> dict:
         ],
     }
     return {
-        'kind': 'keikyu-official-page-local-stop-times',
+        'kind': 'keikyu-official-section-local-stop-times',
         'source': {'url': target.OFFICIAL_PDF_URL},
         'identityPolicy': {
-            'pageColumnIsExactLocalIdentity': True,
-            'printedTrainNumberMayJoinPages': False,
-            'anonymousColumnMayJoinPages': False,
+            'pageSectionColumnIsExactLocalIdentity': True,
+            'literalTrainNumberRowsAreHardSectionBoundaries': True,
+            'literalPrintedCalendarRequired': True,
+            'calendarMayBeInferredFromPageNumber': False,
+            'printedTrainNumberMayJoinSectionsOrPages': False,
+            'anonymousColumnMayJoinSectionsOrPages': False,
             'clockTimeProximityMayJoinFragments': False,
             'destinationMayJoinFragments': False,
             'crossPageIdentityEstablished': False,
@@ -53,7 +58,7 @@ class ScheduleAllZushiEvidenceTests(unittest.TestCase):
     def source_and_target(self):
         source = current_fragment('z1', target.base.ZUSHI, [
             ['odpt.Station:Keikyu.Zushi.ZushiHayama', 600, 600],
-            ['odpt.Station:Keikyu.Zushi.Jinmuji', 605, 605],
+            ['odpt.Station:Keikyu.Zushi.Jimmuji', 605, 605],
             ['odpt.Station:Keikyu.Zushi.Mutsuura', 610, 610],
         ])
         dest = current_fragment('m1', target.base.MAIN, [
@@ -69,24 +74,26 @@ class ScheduleAllZushiEvidenceTests(unittest.TestCase):
         owners = target.current.anchor_owner_index(fragments)
         anchors = target.current.singleton_anchor_cache(fragments, owners)
         index = target.official_anchor_index(official_payload())
-        proof = target.same_page_column_proof(source, dest, anchors, index)
+        proof = target.same_page_section_column_proof(source, dest, 'weekday', anchors, index)
         self.assertIsNotNone(proof)
-        self.assertEqual('keikyu-official-pdf:p010:c03', proof['officialFragment'])
+        self.assertEqual('keikyu-official-pdf:p010:s00:c03', proof['officialFragment'])
         self.assertGreaterEqual(proof['corroboratingAnchorPairs'], 1)
 
     def test_duplicate_official_columns_fail_closed(self):
         source, dest = self.source_and_target()
         duplicate = {
-            'id': 'keikyu-official-pdf:p011:c04',
+            'id': 'keikyu-official-pdf:p011:s00:c04',
             'page': 11,
             'column': 4,
+            'section': 0,
+            'calendar': 'weekday',
             'stopTimes': official_payload()['fragments'][0]['stopTimes'],
         }
         fragments = [source, dest]
         owners = target.current.anchor_owner_index(fragments)
         anchors = target.current.singleton_anchor_cache(fragments, owners)
         index = target.official_anchor_index(official_payload([duplicate]))
-        self.assertIsNone(target.same_page_column_proof(source, dest, anchors, index))
+        self.assertIsNone(target.same_page_section_column_proof(source, dest, 'weekday', anchors, index))
 
     def test_build_entries_uses_search_filters_only_then_official_proof(self):
         source, dest = self.source_and_target()

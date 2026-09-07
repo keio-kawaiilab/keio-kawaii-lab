@@ -82,6 +82,37 @@ def main() -> int:
     indices = collect_indices()
 
     network_supported = set(network_report.get("supportedRailways") or [])
+    from keikyu_internal_runtime import NETWORK, CORE
+    internal_verified = False
+    if NETWORK.exists():
+        from verify_keikyu_internal_network import verify
+        verify()
+        internal_verified = True
+    toei_audit_path = ROOT / 'docs/transit/toei-asakusa-independent-mother-set-audit.json'
+    toei_audit = load(toei_audit_path) if toei_audit_path.exists() else {}
+    toei_verified = (toei_audit.get('actualTripCount') == 1260
+                     and not toei_audit.get('issues')
+                     and int(indices.get('odpt.Railway:Toei.Asakusa', {}).get('trips') or 0) == 1260)
+    boundary_verified = False
+    if (ROOT / 'data/transit/toei/timetables/official-through-network.json').exists():
+        from verify_asakusa_boundary_network import verify as verify_asakusa
+        from verify_sengakuji_runtime import verify as verify_sengakuji
+        verify_asakusa()
+        verify_sengakuji()
+        boundary_verified = True
+    northern_verified = False
+    if (ROOT / 'data/transit/hokuso/official-independent-inventory.json.gz').exists():
+        from verify_hokuso_independent_inventory import verify as verify_hokuso
+        from audit_shibayama_independent_inventory import verify as verify_shibayama
+        verify_hokuso()
+        verify_shibayama()
+        from audit_keisei_exact_network import load_builder, build_station_names, audit_source_network, audit_all_projections, audit_metadata
+        builder = load_builder()
+        names = build_station_names(builder)
+        audit_source_network(builder, names)
+        keisei, hokuso, shibayama = audit_all_projections(names)
+        audit_metadata(keisei, hokuso, shibayama)
+        northern_verified = True
     rows: list[dict[str, Any]] = []
     errors: list[str] = []
 
@@ -103,6 +134,19 @@ def main() -> int:
             actual_identity = "keisei-led-exact-only"
         else:
             actual_identity = "none"
+
+        if railway_id == 'odpt.Railway:Toei.Asakusa' and toei_verified:
+            actual_line_coverage = 'exact-independent-1260-verified'
+            actual_identity = 'exact-all-independent-asakusa-trains' if boundary_verified else 'cross-boundary-reconciliation-incomplete'
+        if railway_id in CORE and internal_verified:
+            actual_line_coverage = 'exact'
+            actual_identity = 'internal-exact-all-published-sengakuji-continuations' if boundary_verified else 'internal-exact-external-reconciliation-incomplete'
+        if northern_verified and railway_id.startswith('manual.Railway:Hokuso.'):
+            actual_line_coverage = 'exact'
+            actual_identity = 'exact-all-independent-hokuso-trains'
+        if northern_verified and railway_id.startswith('manual.Railway:Shibayama.'):
+            actual_line_coverage = 'exact'
+            actual_identity = 'exact-all-independent-shibayama-trains'
 
         declared_line = str(configured.get("lineTimetableCoverage") or "")
         declared_identity = str(configured.get("sameTrainCoverage") or "")
@@ -126,8 +170,13 @@ def main() -> int:
             }
         )
 
-    all_line_exact = all(row["lineTimetableCoverage"] == "exact" for row in rows)
-    all_identity_exact = all(row["sameTrainCoverage"] == "exact-all-in-scope-trains" for row in rows)
+    all_line_exact = all(row["lineTimetableCoverage"] in {"exact", "exact-independent-1260-verified"} for row in rows)
+    proven_identities = {'exact-all-in-scope-trains'}
+    if northern_verified and boundary_verified and internal_verified and toei_verified:
+        proven_identities.update({'exact-for-all-keisei-source-trains', 'exact-all-independent-asakusa-trains',
+            'internal-exact-all-published-sengakuji-continuations', 'exact-all-independent-hokuso-trains',
+            'exact-all-independent-shibayama-trains'})
+    all_identity_exact = all(row["sameTrainCoverage"] in proven_identities for row in rows)
     complete = bool(rows) and all_line_exact and all_identity_exact and not errors
 
     if scope.get("status") == "complete" and not complete:

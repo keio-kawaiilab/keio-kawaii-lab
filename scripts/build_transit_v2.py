@@ -532,6 +532,13 @@ def audit_edge_registry(edges: list[dict[str, Any]], indexes: dict[str, Any], un
 
 
 def build() -> dict[str, Any]:
+    # Restore the audited exact Keikyu source after station-board refreshes.
+    from keikyu_internal_runtime import install
+    install()
+    from asakusa_boundary_runtime import install as install_asakusa
+    install_asakusa()
+    from hokuso_independent_runtime import install as install_hokuso
+    install_hokuso()
     manifest = load_json(V1 / 'manifest.json', {}) or {}
     registry = load_json(BOUNDARIES, {}) or {}
     indexes = index_entities(manifest)

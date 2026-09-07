@@ -174,12 +174,16 @@ jobs:
         if: steps.import.outputs.ran == 'true'
         run: |
           python scripts/build_transit_v2.py
-          python scripts/keikyu_official_train_evidence.py --calendar weekday --output /tmp/keikyu-weekday.json
-          python scripts/keikyu_official_train_evidence.py --calendar holiday --output /tmp/keikyu-holiday.json
-          python scripts/merge_keikyu_official_evidence.py \
+          if [ -f data/transit/keikyu/timetables/official-internal-network.json ]; then
+            python scripts/check_keikyu_internal_source.py
+          else
+            python scripts/keikyu_official_train_evidence.py --calendar weekday --output /tmp/keikyu-weekday.json
+            python scripts/keikyu_official_train_evidence.py --calendar holiday --output /tmp/keikyu-holiday.json
+            python scripts/merge_keikyu_official_evidence.py \
             /tmp/keikyu-weekday.json \
             /tmp/keikyu-holiday.json \
             --output data/transit-v2/keikyu-official-train-evidence.json
+          fi
           python scripts/keikyu_internal_official_evidence.py
           python scripts/finalize_transit_v2.py
           python scripts/audit_transit_v2.py
@@ -214,28 +218,37 @@ jobs:
           ]
           assert expected_sotetsu in runtime_edges, 'authoritative Sotetsu 6752 continuation disappeared from runtime DB'
 
-          entries = evidence.get('entries') or []
-          directions = {}
-          for row in entries:
-              direction = str(row.get('direction') or '')
-              directions[direction] = directions.get(direction, 0) + 1
-          official_edges = [row for row in edge_payload.get('edges') or [] if 'keikyu-official-connection-timetable-same-column' in (row.get('evidence') or [])]
-          production_pairs = {(str(row.get('fromFragment') or ''), str(row.get('toFragment') or '')) for row in entries}
-          edge_pairs = {(str(row.get('fromFragment') or ''), str(row.get('toFragment') or '')) for row in official_edges}
-          reverse_edges = [row for row in official_edges if (row.get('boundary') or {}).get('fromRailway') == 'odpt.Railway:Keikyu.Main' and (row.get('boundary') or {}).get('toRailway') == 'odpt.Railway:Toei.Asakusa']
-          assert directions.get('toei-to-keikyu', 0) > 0, directions
-          assert directions.get('keikyu-to-toei', 0) > 0, directions
-          assert reverse_edges, 'Keikyu -> Toei official same-train edges disappeared'
-          assert production_pairs <= edge_pairs, 'some Keikyu production evidence did not reach same-train edges'
+          if Path('data/transit/keikyu/timetables/official-internal-network.json').exists():
+              import sys
+              sys.path.insert(0, 'scripts')
+              from verify_keikyu_internal_network import verify
+              print(verify())
+          else:
+              entries = evidence.get('entries') or []
+              directions = {}
+              for row in entries:
+                  direction = str(row.get('direction') or '')
+                  directions[direction] = directions.get(direction, 0) + 1
+              official_edges = [row for row in edge_payload.get('edges') or [] if 'keikyu-official-connection-timetable-same-column' in (row.get('evidence') or [])]
+              production_pairs = {(str(row.get('fromFragment') or ''), str(row.get('toFragment') or '')) for row in entries}
+              edge_pairs = {(str(row.get('fromFragment') or ''), str(row.get('toFragment') or '')) for row in official_edges}
+              reverse_edges = [row for row in official_edges if (row.get('boundary') or {}).get('fromRailway') == 'odpt.Railway:Keikyu.Main' and (row.get('boundary') or {}).get('toRailway') == 'odpt.Railway:Toei.Asakusa']
+              assert directions.get('toei-to-keikyu', 0) > 0, directions
+              assert directions.get('keikyu-to-toei', 0) > 0, directions
+              assert reverse_edges, 'Keikyu -> Toei official same-train edges disappeared'
+              assert production_pairs <= edge_pairs, 'some Keikyu production evidence did not reach same-train edges'
 
-          print('strict transit-v2 unresolved:', audit['totalUnresolved'])
-          print('runtime strict same-train edges:', len(runtime_edges))
-          print('verified runtime continuation:', expected_sotetsu)
-          print('Keikyu official evidence directions:', directions)
-          print('Keikyu official generated edges:', len(official_edges))
-          print('Keikyu -> Toei generated edges:', len(reverse_edges))
+              print('strict transit-v2 unresolved:', audit['totalUnresolved'])
+              print('runtime strict same-train edges:', len(runtime_edges))
+              print('verified runtime continuation:', expected_sotetsu)
+              print('Keikyu official evidence directions:', directions)
+              print('Keikyu official generated edges:', len(official_edges))
+              print('Keikyu -> Toei generated edges:', len(reverse_edges))
           PY
-          python scripts/verify_keikyu_through_materialization.py --repair-report /tmp/keikyu-sengakuji-repair.json
+          if [ ! -f data/transit/keikyu/timetables/official-internal-network.json ]; then
+            python scripts/verify_keikyu_through_materialization.py --repair-report /tmp/keikyu-sengakuji-repair.json
+          fi
+          node scripts/test_keikyu_internal_routes.js
           python scripts/verify_keikyu_internal_materialization.py
 
       - name: Commit refreshed transit data
