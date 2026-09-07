@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "name": "KAWAII LAB. Transit Timetable DB v2",
   "purpose": "Train-centric scheduled-timetable database for route search with explicit same-train continuity and destination preservation.",
   "policy": {
@@ -17,20 +17,80 @@
   },
   "entities": {
     "TrainTimetableFragment": {
-      "required": ["id", "sourceKind", "sourceOperator", "operator", "railway", "calendar", "trainType", "trainNumber", "trainId", "timetableId", "origin", "destination", "stops", "confidence", "identityLevel"],
+      "required": [
+        "id",
+        "sourceKind",
+        "sourceOperator",
+        "operator",
+        "railway",
+        "calendar",
+        "trainType",
+        "trainNumber",
+        "trainId",
+        "timetableId",
+        "origin",
+        "destination",
+        "stops",
+        "confidence",
+        "identityLevel"
+      ],
       "notes": "One source timetable fragment. A physical train may have multiple fragments across railway/operator boundaries."
     },
     "SameTrainEdge": {
-      "required": ["fromFragment", "toFragment", "classification", "identityLevel", "evidence", "boundary"],
+      "required": [
+        "fromFragment",
+        "toFragment",
+        "classification",
+        "identityLevel",
+        "evidence",
+        "boundary"
+      ],
       "notes": "Directed continuation edge. Routing may preserve transfer count only across these edges."
     },
     "NetworkJourney": {
-      "required": ["id", "sourceKind", "railwayPath", "stops", "identityLevel"],
-      "notes": "An exact source that already describes one physical train across multiple railway IDs."
+      "required": [
+        "id",
+        "sourceKind",
+        "railwayPath",
+        "stops",
+        "identityLevel"
+      ],
+      "notes": "An exact source that already describes one physical train across multiple railway IDs. Published third-party journeys use source-exact-network and retain sourceProvider/sourceURL/sourceSha256. Their calendar is a foreign key to the registered source calendar catalog; it is not an unconditional weekday label."
     },
     "SourceEvidence": {
-      "levels": ["authoritative", "evidence-backed", "inferred-local-fragment", "unresolved"]
+      "levels": [
+        "authoritative",
+        "evidence-backed",
+        "inferred-local-fragment",
+        "unresolved",
+        "source-exact-network"
+      ]
+    },
+    "PublishedCalendarRule": {
+      "required": [
+        "id",
+        "dayKinds",
+        "sourceRule",
+        "dateRestricted",
+        "requiresDateEvaluation"
+      ],
+      "notes": "A date-restricted raw source expression must not be expanded to every listed weekday. An unspecified year remains null until separately verified."
+    },
+    "PublishedStation": {
+      "required": [
+        "id",
+        "sourceStationId",
+        "name",
+        "aliases",
+        "railways"
+      ],
+      "notes": "Stable source physical-station key with railway-scoped existing DB aliases. Same-named stations on unrelated lines are not aliases."
     }
   },
-  "transferRule": "Increment transfer count only when the next boarded train is not connected to the current train by an explicit same-train edge or exact network journey continuation."
+  "transferRule": "Increment transfer count only when the next boarded train is not connected to the current train by an explicit same-train edge or exact network journey continuation.",
+  "storage": {
+    "networkJourneys": "Legacy main journey file",
+    "networkJourneyFiles": "Additional named JSON or gzip JSON journey files; readers must load all registered files and reject duplicate IDs",
+    "sourceCatalogs": "Per-source station aliases and calendar rule catalogs; source-scoped station/calendar keys resolve here"
+  }
 }
