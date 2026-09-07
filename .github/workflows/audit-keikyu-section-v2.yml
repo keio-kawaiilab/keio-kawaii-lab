@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/audit-keikyu-section-v2.yml'
+      - 'scripts/diagnose_keikyu_official_calendars.py'
 
 permissions:
   contents: read
@@ -34,6 +35,7 @@ jobs:
             scripts/verify_keikyu_cross_page_identity_audit.py \
             scripts/keikyu_schedule_all_zushi_evidence.py \
             scripts/keikyu_cross_page_zushi_evidence_v2.py \
+            scripts/diagnose_keikyu_official_calendars.py \
             scripts/test_keikyu_section_aware_pdf.py
       - name: Test section boundaries
         run: python scripts/test_keikyu_section_aware_pdf.py
@@ -46,6 +48,11 @@ jobs:
           from keikyu_official_pdf import download_official_pdf
           download_official_pdf(Path('/tmp/keikyu-schedule-all.pdf'))
           PY
+      - name: Audit literal printed calendar labels
+        run: |
+          python scripts/diagnose_keikyu_official_calendars.py \
+            --pdf /tmp/keikyu-schedule-all.pdf \
+            --output /tmp/keikyu-calendar-diagnosis.json | tee /tmp/calendar-summary.txt
       - name: Build V2 section-local stop times
         run: |
           python scripts/build_keikyu_official_stop_times.py \
@@ -83,11 +90,14 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
+          cal=json.loads(Path('/tmp/keikyu-calendar-diagnosis.json').read_text(encoding='utf-8'))
           stop=json.loads(Path('/tmp/keikyu-stop-times-v2.json').read_text(encoding='utf-8'))
           refs=json.loads(Path('/tmp/keikyu-previous-refs-v2.json').read_text(encoding='utf-8'))
           graph=json.loads(Path('/tmp/keikyu-cross-page-v2.json').read_text(encoding='utf-8'))
           local=json.loads(Path('/tmp/zushi-section-local-report.json').read_text(encoding='utf-8'))
           cross=json.loads(Path('/tmp/zushi-cross-page-v2-report.json').read_text(encoding='utf-8'))
+          print('V2_CALENDAR_COUNTS', json.dumps(cal.get('counts') or {}, ensure_ascii=False, sort_keys=True))
+          print('V2_CALENDAR_UNCLASSIFIED', len(cal.get('unclassifiedOrAmbiguous') or []))
           print('V2_SECTIONS', stop['totals']['timetableSections'])
           print('V2_FRAGMENTS', stop['totals']['trainColumnFragments'])
           print('V2_TIME_CELLS', stop['totals']['sourceTimeCells'])
@@ -105,6 +115,7 @@ jobs:
         with:
           name: keikyu-section-v2-audit
           path: |
+            /tmp/keikyu-calendar-diagnosis.json
             /tmp/keikyu-stop-times-v2.json
             /tmp/keikyu-previous-refs-v2.json
             /tmp/keikyu-cross-page-v2.json
