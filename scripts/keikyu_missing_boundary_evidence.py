@@ -12,7 +12,8 @@ from typing import Any
 import keikyu_internal_official_evidence as base
 import keikyu_internal_official_evidence_selective as focused
 
-MAX_CANDIDATE_GAP_MINUTES = 5
+# Search window only. It is never accepted as train-identity evidence.
+MAX_CANDIDATE_GAP_MINUTES = 90
 CURRENT_KIND = 'missing-boundary-train-identity-evidence'
 MARKER = 'current-missing-boundary-official-column-v1'
 
@@ -39,10 +40,6 @@ def stable_id(*parts: Any) -> str:
     return 'keikyu-current-boundary:' + hashlib.sha256(raw.encode()).hexdigest()[:24]
 
 
-def stop_station(stop: Any) -> str:
-    return str(stop[0] or '') if isinstance(stop, list) and stop else ''
-
-
 def endpoint_minute(fragment: dict[str, Any], side: str) -> int | None:
     stops = fragment.get('stops') or []
     if not stops:
@@ -60,19 +57,15 @@ def endpoint_minute(fragment: dict[str, Any], side: str) -> int | None:
     return None
 
 
-def endpoint_matches(fragment: dict[str, Any], suffix: str, side: str) -> bool:
-    stops = fragment.get('stops') or []
-    if not stops:
-        return False
-    stop = stops[0] if side == 'start' else stops[-1]
-    return stop_station(stop).endswith(suffix)
-
-
 def forward_gap(source_minute: int, target_minute: int) -> int:
     gap = target_minute - source_minute
     if gap < 0:
         gap += 1440
     return gap
+
+
+def published_destinations(fragment: dict[str, Any]) -> set[str]:
+    return {str(value) for value in fragment.get('destination') or [] if value}
 
 
 def unresolved_sources(
@@ -86,16 +79,13 @@ def unresolved_sources(
         if not isinstance(unresolved, dict) or unresolved.get('kind') != CURRENT_KIND:
             continue
         source = by_id.get(str(unresolved.get('fragment') or ''))
-        if not source:
+        if not source or not (source.get('stops') or []):
             continue
         pair = (str(source.get('railway') or ''), str(unresolved.get('nextRailway') or ''))
         spec = base.BOUNDARIES.get(pair)
-        suffix = BOUNDARY_SUFFIXES.get(pair)
-        if not spec or not suffix:
+        if not spec or pair not in BOUNDARY_SUFFIXES:
             continue
         if boundary_id and str(spec.get('id') or '') != boundary_id:
-            continue
-        if not endpoint_matches(source, suffix, 'end'):
             continue
         rows.append((unresolved, source, pair))
     return rows
@@ -106,16 +96,25 @@ def candidate_targets(
     pair: tuple[str, str],
     fragments: list[dict[str, Any]],
 ) -> list[tuple[dict[str, Any], int]]:
+    """Find plausible next fragments only to limit official-PDF proof work.
+
+    Current reconstructed fragments frequently stop before the physical junction
+    (for example Zushi fragments stop at Mutsuura rather than Kanazawa-Hakkei).
+    Therefore candidate discovery must not require the boundary station itself.
+    Same calendar, exact published destination and chronology are search filters
+    only. Identity is established later only by independent official same-column
+    exact-time proof.
+    """
     service = base.service_of(source)
-    suffix = BOUNDARY_SUFFIXES[pair]
     source_minute = endpoint_minute(source, 'end')
-    if not service or source_minute is None:
+    source_destinations = published_destinations(source)
+    if not service or source_minute is None or not source_destinations:
         return []
     output: list[tuple[dict[str, Any], int]] = []
     for target in fragments:
         if str(target.get('railway') or '') != pair[1] or base.service_of(target) != service:
             continue
-        if not endpoint_matches(target, suffix, 'start'):
+        if not (source_destinations & published_destinations(target)):
             continue
         target_minute = endpoint_minute(target, 'start')
         if target_minute is None:
@@ -272,6 +271,7 @@ def build_entries(
         spec = base.BOUNDARIES[pair]
         source_anchor = proof['sourceAnchor']
         target_anchor = proof['targetAnchor']
+        shared_destinations = sorted(published_destinations(source) & published_destinations(target))
         provisional.append({
             'status': 'official-column-evidence',
             'matchStatus': 'matched-singleton',
@@ -291,15 +291,17 @@ def build_entries(
             'pdfPage': proof['page'],
             'columnX': proof['x'],
             'corroboratingAnchorPairs': proof['corroboratingAnchorPairs'],
-            'candidateBoundaryGapMinutes': gap,
+            'candidateFragmentGapMinutes': gap,
+            'sharedPublishedDestination': shared_destinations,
             'evidence': ['operator-official-mainline-timetable', base.MARKER, MARKER],
             'sourceUrl': proof['sourceUrl'],
             'matchPolicy': {
                 'officialSamePrintedColumnRequired': True,
                 'twoExactPublishedStationTimesRequired': True,
                 'singletonFragmentMatchRequiredAtBothPoints': True,
-                'candidateBoundaryGapUsedOnlyForSearch': True,
-                'candidateBoundaryGapMaximumMinutes': MAX_CANDIDATE_GAP_MINUTES,
+                'sharedPublishedDestinationUsedOnlyForSearch': True,
+                'candidateFragmentGapUsedOnlyForSearch': True,
+                'candidateFragmentGapMaximumMinutes': MAX_CANDIDATE_GAP_MINUTES,
                 'trainNumberAloneMayEstablishIdentity': False,
                 'timeProximityAloneMayEstablishIdentity': False,
             },
@@ -311,13 +313,14 @@ def build_entries(
     reasons['matched-current-missing-boundary'] += len(entries)
     summary = {
         'eligibleUnresolvedSources': len(rows),
-        'candidatePairsAfterTopologyAndTimeSearch': candidate_count,
+        'candidatePairsAfterDestinationAndTimeSearch': candidate_count,
         'matchedSingleton': len(entries),
         'reasons': dict(reasons),
         'boundaries': dict(Counter(str(row['boundaryId']) for row in entries)),
         'directions': dict(Counter(str(row['direction']) for row in entries)),
         'calendars': dict(Counter(str(row['calendar']) for row in entries)),
         'policy': {
+            'sharedPublishedDestinationIsSearchOnly': True,
             'candidateTimeWindowIsSearchOnly': True,
             'officialSamePrintedColumnRequired': True,
             'twoExactPublishedStationTimesRequired': True,
