@@ -12,7 +12,7 @@ import keikyu_missing_boundary_evidence as current
 from keikyu_official_pdf import OFFICIAL_PDF_URL
 
 BOUNDARY_ID = base.ZUSHI_BOUNDARY_ID
-MARKER = 'schedule-all-page-column-v1'
+MARKER = 'schedule-all-page-section-column-v2'
 
 
 def load_json(path: Path, default: Any = None) -> Any:
@@ -23,21 +23,22 @@ def load_json(path: Path, default: Any = None) -> Any:
 
 
 def validate_official_dataset(payload: dict[str, Any]) -> None:
-    if payload.get('kind') != 'keikyu-official-page-local-stop-times':
+    if payload.get('kind') != 'keikyu-official-section-local-stop-times':
         raise RuntimeError('unexpected official stop-time dataset kind')
     policy = payload.get('identityPolicy') or {}
     required_true = {
-        'pageColumnIsExactLocalIdentity',
+        'pageSectionColumnIsExactLocalIdentity',
+        'literalTrainNumberRowsAreHardSectionBoundaries',
     }
     required_false = {
-        'printedTrainNumberMayJoinPages',
-        'anonymousColumnMayJoinPages',
+        'printedTrainNumberMayJoinSectionsOrPages',
+        'anonymousColumnMayJoinSectionsOrPages',
         'clockTimeProximityMayJoinFragments',
         'destinationMayJoinFragments',
         'crossPageIdentityEstablished',
     }
     if any(policy.get(key) is not True for key in required_true):
-        raise RuntimeError('unsafe official stop-time local-identity policy')
+        raise RuntimeError('unsafe official stop-time section-local identity policy')
     if any(policy.get(key) is not False for key in required_false):
         raise RuntimeError('unsafe official stop-time cross-fragment policy')
     if int(policy.get('runtimeSameTrainPromotions') or 0) != 0:
@@ -80,10 +81,13 @@ def official_anchor_index(payload: dict[str, Any]) -> dict[tuple[str, int], list
         fid = str(fragment.get('id') or '')
         if not fid:
             continue
+        if ':s' not in fid:
+            raise RuntimeError(f'official fragment is not section-aware: {fid}')
         if fid in seen_fragment_ids:
-            raise RuntimeError(f'duplicate official page-column fragment: {fid}')
+            raise RuntimeError(f'duplicate official section-column fragment: {fid}')
         seen_fragment_ids.add(fid)
         page = int(fragment.get('page') or 0)
+        section = int(fragment.get('section') or 0)
         column = int(fragment.get('column') or 0)
         seen_local: set[tuple[str, int, str]] = set()
         for stop in fragment.get('stopTimes') or []:
@@ -100,6 +104,7 @@ def official_anchor_index(payload: dict[str, Any]) -> dict[tuple[str, int], list
             index[(suffix, minute)].append({
                 'officialFragment': fid,
                 'page': page,
+                'section': section,
                 'column': column,
                 'event': str(stop.get('event') or ''),
                 'time': str(stop.get('time') or ''),
@@ -108,7 +113,7 @@ def official_anchor_index(payload: dict[str, Any]) -> dict[tuple[str, int], list
     return dict(index)
 
 
-def same_page_column_proof(
+def same_page_section_column_proof(
     source: dict[str, Any],
     target: dict[str, Any],
     anchors: dict[str, list[dict[str, Any]]],
@@ -136,6 +141,7 @@ def same_page_column_proof(
                     groups[fid].append({
                         'officialFragment': fid,
                         'page': int(a['page']),
+                        'section': int(a['section']),
                         'column': int(a['column']),
                         'sourceAnchor': left,
                         'targetAnchor': right,
@@ -178,11 +184,11 @@ def build_entries(
         candidate_count += len(candidates)
         proven: list[tuple[dict[str, Any], int, dict[str, Any]]] = []
         for target, gap in candidates:
-            proof = same_page_column_proof(source, target, anchors, official_index)
+            proof = same_page_section_column_proof(source, target, anchors, official_index)
             if proof:
                 proven.append((target, gap, proof))
         if len(proven) != 1:
-            reasons['no-unique-official-page-column-proof' if not proven else 'multiple-official-page-column-proofs'] += 1
+            reasons['no-unique-official-page-section-column-proof' if not proven else 'multiple-official-page-section-column-proofs'] += 1
             continue
 
         target, gap, proof = proven[0]
@@ -191,10 +197,10 @@ def build_entries(
         source_anchor = proof['sourceAnchor']
         target_anchor = proof['targetAnchor']
         provisional.append({
-            'status': 'official-column-evidence',
+            'status': 'official-section-column-evidence',
             'matchStatus': 'matched-singleton',
             'id': current.stable_id(
-                'schedule-all', base.service_of(source), spec['id'], proof['officialFragment'],
+                'schedule-all-section', base.service_of(source), spec['id'], proof['officialFragment'],
                 source_id, target['id'], source_anchor, target_anchor,
             ),
             'operator': 'keikyu',
@@ -209,8 +215,9 @@ def build_entries(
             'sourceMatches': [source_id],
             'targetMatches': [str(target['id'])],
             'officialAnchors': [source_anchor, target_anchor],
-            'officialPageLocalFragment': proof['officialFragment'],
+            'officialPageSectionLocalFragment': proof['officialFragment'],
             'pdfPage': proof['page'],
+            'pdfSection': proof['section'],
             'pdfColumn': proof['column'],
             'corroboratingAnchorPairs': proof['corroboratingAnchorPairs'],
             'candidateFragmentGapMinutes': gap,
@@ -221,7 +228,8 @@ def build_entries(
                 'officialSamePrintedColumnRequired': True,
                 'twoExactPublishedStationTimesRequired': True,
                 'singletonFragmentMatchRequiredAtBothPoints': True,
-                'officialPageColumnIsExactLocalIdentity': True,
+                'officialPageSectionColumnIsExactLocalIdentity': True,
+                'officialSectionIdentityRequired': True,
                 'crossPageIdentityUsed': False,
                 'sharedPublishedDestinationUsedOnlyForSearch': True,
                 'candidateFragmentGapUsedOnlyForSearch': True,
@@ -237,7 +245,7 @@ def build_entries(
     reasons['matched-current-missing-boundary'] += len(entries)
     summary = {
         'proofSource': OFFICIAL_PDF_URL,
-        'proofMode': 'exact-page-local-column-two-point',
+        'proofMode': 'exact-page-section-local-column-two-point',
         'eligibleUnresolvedSources': len(rows),
         'candidatePairsAfterDestinationAndTimeSearch': candidate_count,
         'matchedSingleton': len(entries),
@@ -249,7 +257,8 @@ def build_entries(
             'officialSamePrintedColumnRequired': True,
             'twoExactPublishedStationTimesRequired': True,
             'singletonFragmentMatchRequiredAtBothPoints': True,
-            'officialPageColumnIsExactLocalIdentity': True,
+            'officialPageSectionColumnIsExactLocalIdentity': True,
+            'officialSectionIdentityRequired': True,
             'crossPageIdentityUsed': False,
             'sharedPublishedDestinationIsSearchOnly': True,
             'candidateTimeWindowIsSearchOnly': True,
