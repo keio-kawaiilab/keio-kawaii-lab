@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
-"""Fail-closed verifier for generated Keikyu official page-local stop times."""
+"""Verify printed-calendar, section-local identity and every retained time cell."""
 from __future__ import annotations
 
 import argparse
 import json
 import re
+import math
+from collections import Counter, defaultdict
 from pathlib import Path
 
 from keikyu_connected_station_catalog import station_titles
 
 TIME_RE = re.compile(r"^(?:[0-2]?\d)[0-5]\d$")
-ID_RE = re.compile(r"^keikyu-official-pdf:p(\d{3}):c(\d{2})$")
+ID_RE = re.compile(r"^keikyu-official-pdf:p(\d{3}):s(\d{2}):c(\d{2})$")
 EVENTS = {"arrival", "departure"}
 RESOLUTIONS = {
     "same-row-station-title",
@@ -21,21 +23,29 @@ RESOLUTIONS = {
 
 def verify(payload: dict) -> dict:
     errors: list[str] = []
-    if payload.get("version") != 1:
-        errors.append("version must be 1")
-    if payload.get("kind") != "keikyu-official-page-local-stop-times":
+    if payload.get("version") != 4:
+        errors.append("version must be 4")
+    if payload.get("kind") != "keikyu-official-section-local-stop-times":
         errors.append("unexpected dataset kind")
+    if not re.fullmatch(r"[0-9a-f]{64}", str((payload.get("source") or {}).get("sha256", ""))):
+        errors.append("missing or invalid source SHA256")
 
     policy = payload.get("identityPolicy") or {}
     required_false = (
-        "printedTrainNumberMayJoinPages",
-        "anonymousColumnMayJoinPages",
+        "printedTrainNumberMayJoinSectionsOrPages",
+        "anonymousColumnMayJoinSectionsOrPages",
+        "calendarMayBeInferredFromPageNumber",
+        "calendarMayBeInferredFromNeighboringPages",
         "clockTimeProximityMayJoinFragments",
         "destinationMayJoinFragments",
         "crossPageIdentityEstablished",
     )
-    if policy.get("pageColumnIsExactLocalIdentity") is not True:
-        errors.append("pageColumnIsExactLocalIdentity must be true")
+    for key in ("pageSectionColumnIsExactLocalIdentity", "literalTrainNumberRowsAreHardSectionBoundaries",
+                "literalPrintedCalendarRequired", "unclassifiedCalendarPagesExcludedFromIdentity"):
+        if policy.get(key) is not True:
+            errors.append(f"{key} must be true")
+    if policy.get("minimumDistinctTimedRowsPerIdentitySection") != 3:
+        errors.append("minimumDistinctTimedRowsPerIdentitySection must be 3")
     for key in required_false:
         if policy.get(key) is not False:
             errors.append(f"{key} must be false")
@@ -50,6 +60,8 @@ def verify(payload: dict) -> dict:
     unresolved_count = 0
     explicit_count = 0
     anonymous_count = 0
+    section_fragments = defaultdict(list)
+    calendar_fragments = Counter()
 
     for fragment in payload.get("fragments") or []:
         fragment_id = fragment.get("id")
@@ -62,10 +74,26 @@ def verify(payload: dict) -> dict:
         match = ID_RE.fullmatch(fragment_id)
         assert match is not None
         page = fragment.get("page")
+        section = fragment.get("section")
         column = fragment.get("column")
-        if page != int(match.group(1)) or column != int(match.group(2)):
-            errors.append(f"id/page/column mismatch: {fragment_id}")
-        fragment_counts_by_page[int(page)] = fragment_counts_by_page.get(int(page), 0) + 1
+        if (page, section, column) != tuple(map(int, match.groups())):
+            errors.append(f"id/page/section/column mismatch: {fragment_id}")
+            continue
+        fragment_counts_by_page[page] = fragment_counts_by_page.get(page, 0) + 1
+        section_fragments[(page, section)].append(fragment)
+        calendar = fragment.get("calendar")
+        if calendar not in ("weekday", "holiday"):
+            errors.append(f"missing literal calendar: {fragment_id}")
+        calendar_fragments[calendar] += 1
+        y_min, y_max = fragment.get("sectionYMin"), fragment.get("sectionYMax")
+        valid_bounds = all(isinstance(y, (int, float)) and math.isfinite(y) for y in (y_min, y_max))
+        if not valid_bounds or y_min >= y_max:
+            errors.append(f"invalid section bounds: {fragment_id}")
+        for cell in (fragment.get("stopTimes") or []) + (fragment.get("unresolvedCells") or []):
+            y = cell.get("rowY")
+            if (not isinstance(y, (int, float)) or not math.isfinite(y)
+                    or not valid_bounds or not y_min - 0.001 <= y <= y_max + 0.001):
+                errors.append(f"cell outside printed section: {fragment_id}")
 
         number = fragment.get("printedTrainNumber")
         anonymous = fragment.get("anonymousColumn")
@@ -101,14 +129,62 @@ def verify(payload: dict) -> dict:
             unresolved_count += 1
 
     page_rows = payload.get("pages") or []
+    seen_pages = set()
+    seen_sections = set()
+    calendar_pages = Counter()
+    calendar_sections = Counter()
     for page_row in page_rows:
         page = int(page_row["page"])
+        if page in seen_pages:
+            errors.append(f"duplicate page: {page}")
+        seen_pages.add(page)
+        calendar = page_row.get("calendar")
+        calendar_pages[calendar] += 1
+        sections = page_row.get("sections") or []
+        if page_row.get("sectionCount") != len(sections):
+            errors.append(f"section count mismatch on page {page}")
+        sums = Counter()
+        for row in sections:
+            key = (page, row.get("section"))
+            if key in seen_sections:
+                errors.append(f"duplicate section: {key}")
+            seen_sections.add(key)
+            calendar_sections[row.get("calendar")] += 1
+            members = section_fragments.get(key, [])
+            resolved = sum(len(f.get("stopTimes") or []) for f in members)
+            unresolved = sum(len(f.get("unresolvedCells") or []) for f in members)
+            actual = dict(fragmentCount=len(members), resolvedTimeCells=resolved,
+                          unresolvedTimeCells=unresolved, sourceTimeCells=resolved + unresolved)
+            for field, value in actual.items():
+                sums[field] += value
+                if row.get(field) != value:
+                    errors.append(f"section {key} {field} mismatch")
+            if row.get("calendar") != calendar or calendar not in ("weekday", "holiday"):
+                errors.append(f"section calendar mismatch: {key}")
+            for member in members:
+                for field, parent_field in (("calendar", "calendar"), ("headerOrdinal", "headerOrdinal"),
+                                           ("sectionYMin", "yMin"), ("sectionYMax", "yMax")):
+                    if member.get(field) != row.get(parent_field):
+                        errors.append(f"fragment/section {field} mismatch: {member['id']}")
+        for field, value in sums.items():
+            if page_row.get(field) != value:
+                errors.append(f"page {page} {field} mismatch")
         expected_fragments = int(page_row["fragmentCount"])
         if fragment_counts_by_page.get(page, 0) != expected_fragments:
             errors.append(f"fragment count mismatch on page {page}")
         if int(page_row["resolvedTimeCells"]) + int(page_row["unresolvedTimeCells"]) != int(page_row["sourceTimeCells"]):
             errors.append(f"cell accounting mismatch on page {page}")
         source_count += int(page_row["sourceTimeCells"])
+
+    if seen_pages != set(fragment_counts_by_page) or seen_sections != set(section_fragments):
+        errors.append("page/section manifest does not cover every fragment exactly once")
+    excluded_pages = {row["page"] if isinstance(row, dict) else row for row in payload.get("excludedPages", [])}
+    calendar_excluded = {row["page"] if isinstance(row, dict) else row for row in payload.get("calendarExcludedPages", [])}
+    if seen_pages & (excluded_pages | calendar_excluded):
+        errors.append("excluded page materialized as identity")
+    for field, counts in (("pages", calendar_pages), ("sections", calendar_sections), ("fragments", calendar_fragments)):
+        if (payload.get("calendarCounts") or {}).get(field) != dict(counts):
+            errors.append(f"calendar {field} accounting mismatch")
 
     totals = payload.get("totals") or {}
     expected = {
@@ -118,6 +194,7 @@ def verify(payload: dict) -> dict:
         "trainColumnFragments": len(ids),
         "explicitTrainNumberFragments": explicit_count,
         "anonymousFragments": anonymous_count,
+        "timetableSections": len(seen_sections),
     }
     for key, value in expected.items():
         if totals.get(key) != value:

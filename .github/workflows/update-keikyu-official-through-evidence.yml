@@ -99,9 +99,13 @@ jobs:
           python scripts/audit_keikyu_previous_publication_refs.py \
             --pdf /tmp/keikyu-schedule-all.pdf \
             --output /tmp/keikyu-previous-publication-refs.json
-          python scripts/build_keikyu_cross_page_identity_audit.py \
+          python scripts/filter_keikyu_previous_refs_by_calendar.py \
             /tmp/keikyu-official-stop-times.json \
             /tmp/keikyu-previous-publication-refs.json \
+            --output /tmp/keikyu-calendar-previous-refs.json
+          python scripts/build_keikyu_calendar_cross_page_identity_audit.py \
+            /tmp/keikyu-official-stop-times.json \
+            /tmp/keikyu-calendar-previous-refs.json \
             --output /tmp/keikyu-cross-page-identity-audit.json
           python scripts/verify_keikyu_cross_page_identity_audit.py \
             /tmp/keikyu-cross-page-identity-audit.json

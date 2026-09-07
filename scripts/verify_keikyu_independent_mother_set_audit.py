@@ -4,13 +4,14 @@ from __future__ import annotations
 
 import argparse
 import json
+from collections import Counter
 from pathlib import Path
 
 
 def verify(payload: dict) -> dict:
     errors: list[str] = []
-    if payload.get("version") != 2:
-        errors.append("version must be 2")
+    if payload.get("version") != 3:
+        errors.append("version must be 3")
     if payload.get("kind") != "keikyu-independent-mother-set-audit":
         errors.append("unexpected dataset kind")
 
@@ -22,6 +23,9 @@ def verify(payload: dict) -> dict:
         "structuralBlankFragmentsRemainAudited",
         "onlyVerifiedOfficialCrossPageEdgesMayUnion",
         "crossPageIdentityCandidateOnly",
+        "literalPrintedCalendarRequired",
+        "crossPageEdgesStayWithinPrintedCalendar",
+        "sourceHashesMustMatch",
     )
     required_false = (
         "clockTimeMayEstablishIdentity",
@@ -81,6 +85,8 @@ def verify(payload: dict) -> dict:
     seen: set[str] = set()
     fragment_sum = 0
     component_cell_sum = 0
+    resolved_sum = unresolved_sum = 0
+    actual_histogram = Counter()
     for component in components:
         members = [str(x) for x in component.get("fragments") or []]
         count = int(component.get("fragmentCount") or 0)
@@ -88,6 +94,9 @@ def verify(payload: dict) -> dict:
             errors.append(f"invalid component membership: {component.get('id')}")
             continue
         fragment_sum += count
+        actual_histogram[str(count)] += 1
+        if component.get("calendar") not in ("weekday", "holiday"):
+            errors.append(f"component missing literal calendar: {component.get('id')}")
         for member in members:
             if member in seen:
                 errors.append(f"fragment assigned twice: {member}")
@@ -100,8 +109,10 @@ def verify(payload: dict) -> dict:
         if resolved + unresolved != source:
             errors.append(f"component cell accounting mismatch: {component.get('id')}")
         component_cell_sum += source
+        resolved_sum += resolved
+        unresolved_sum += unresolved
         basis = component.get("identityBasis")
-        if count == 1 and basis != "page-local-column":
+        if count == 1 and basis != "page-section-local-column":
             errors.append(f"singleton has wrong identity basis: {component.get('id')}")
         if count > 1 and basis != "official-previous-publication-reference":
             errors.append(f"joined component has wrong identity basis: {component.get('id')}")
@@ -120,10 +131,16 @@ def verify(payload: dict) -> dict:
         errors.append("mother-set cell accounting mismatch")
     if component_cell_sum != source:
         errors.append("component cells do not sum to mother-set source cells")
+    if resolved_sum != resolved or unresolved_sum != unresolved:
+        errors.append("resolved/unresolved component totals mismatch")
+    if payload.get("coverageComplete") is not False:
+        errors.append("candidate mother set must not claim complete coverage")
     if source <= 0:
         errors.append("mother set has no source time cells")
 
     histogram = payload.get("componentSizeHistogram") or {}
+    if histogram != dict(actual_histogram):
+        errors.append("component histogram does not describe actual memberships")
     histogram_components = sum(int(v) for v in histogram.values())
     histogram_fragments = sum(int(k) * int(v) for k, v in histogram.items())
     if histogram_components != trains:

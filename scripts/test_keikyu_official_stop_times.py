@@ -4,7 +4,11 @@ from __future__ import annotations
 import unittest
 from types import SimpleNamespace
 
-from build_keikyu_official_stop_times import build_page_fragments, fragment_id
+from build_keikyu_official_stop_times import build_section_fragments, fragment_id
+
+
+def build_page_fragments(page, grid, resolved, unresolved):
+    return build_section_fragments(page, "weekday", 0, 0, 100.0, 600.0, grid, resolved, unresolved)
 
 
 class KeikyuOfficialStopTimesTest(unittest.TestCase):
@@ -30,15 +34,15 @@ class KeikyuOfficialStopTimesTest(unittest.TestCase):
         fragments = build_page_fragments(7, self.grid(), [], [])
         self.assertTrue(fragments[1]["anonymousColumn"])
         self.assertIsNone(fragments[1]["printedTrainNumber"])
-        self.assertEqual(fragments[1]["id"], "keikyu-official-pdf:p007:c01")
+        self.assertEqual(fragments[1]["id"], "keikyu-official-pdf:p007:s00:c01")
 
     def test_same_printed_number_on_different_pages_is_not_same_fragment(self):
         page7 = build_page_fragments(7, self.grid(), [], [])
         page8 = build_page_fragments(8, self.grid(), [], [])
         self.assertEqual(page7[0]["printedTrainNumber"], page8[0]["printedTrainNumber"])
         self.assertNotEqual(page7[0]["id"], page8[0]["id"])
-        self.assertEqual(page7[0]["id"], fragment_id(7, 0))
-        self.assertEqual(page8[0]["id"], fragment_id(8, 0))
+        self.assertEqual(page7[0]["id"], fragment_id(7, 0, 0))
+        self.assertEqual(page8[0]["id"], fragment_id(8, 0, 0))
 
     def test_unresolved_cells_remain_explicit(self):
         unresolved = [

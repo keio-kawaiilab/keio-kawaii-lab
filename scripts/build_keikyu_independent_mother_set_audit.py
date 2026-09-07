@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any
 
 from verify_keikyu_cross_page_identity_audit import verify as verify_identity_graph
+from verify_keikyu_official_stop_times import verify as verify_stop_times
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -27,11 +28,16 @@ def load_json(path: Path) -> dict[str, Any]:
 
 
 def build_audit(stop_times: dict[str, Any], graph: dict[str, Any]) -> dict[str, Any]:
+    verify_stop_times(stop_times)
     verify_identity_graph(graph)
+    if graph.get("version") != 3:
+        raise RuntimeError("mother set requires the printed-calendar graph (version 3)")
+    if (stop_times.get("source") or {}).get("sha256") != graph.get("sourceSha256"):
+        raise RuntimeError("stop-time/identity-graph source SHA256 mismatch")
     stop_policy = stop_times.get("identityPolicy") or {}
     issues: list[dict[str, Any]] = []
-    if stop_policy.get("pageColumnIsExactLocalIdentity") is not True:
-        issues.append({"kind": "unsafe-stop-time-policy", "field": "pageColumnIsExactLocalIdentity"})
+    if stop_policy.get("pageSectionColumnIsExactLocalIdentity") is not True:
+        issues.append({"kind": "unsafe-stop-time-policy", "field": "pageSectionColumnIsExactLocalIdentity"})
     if stop_policy.get("runtimeSameTrainPromotions") != 0:
         issues.append({"kind": "unexpected-upstream-runtime-promotion"})
 
@@ -46,9 +52,18 @@ def build_audit(stop_times: dict[str, Any], graph: dict[str, Any]) -> dict[str, 
         source = str(edge.get("fromFragment") or "")
         target = str(edge.get("toFragment") or "")
         graph_nodes.update((source, target))
-        graph_edges.append((source, target))
         if source not in by_id or target not in by_id:
             issues.append({"kind": "identity-edge-missing-fragment", "from": source, "to": target})
+            continue
+        previous, current = by_id[source], by_id[target]
+        if previous["calendar"] != current["calendar"] or previous["calendar"] != edge.get("calendar"):
+            issues.append({"kind": "identity-edge-calendar-mismatch", "from": source, "to": target})
+            continue
+        if (previous.get("printedTrainNumber") != edge.get("previousTrainNumber")
+                or current.get("printedTrainNumber") != edge.get("currentTrainNumber")):
+            issues.append({"kind": "identity-edge-train-number-mismatch", "from": source, "to": target})
+            continue
+        graph_edges.append((source, target))
 
     def has_any_cell(row: dict[str, Any]) -> bool:
         return bool(row.get("stopTimes") or row.get("unresolvedCells"))
@@ -132,12 +147,13 @@ def build_audit(stop_times: dict[str, Any], graph: dict[str, Any]) -> dict[str, 
             "fragments": member_ids,
             "fragmentCount": len(member_ids),
             "pdfPages": sorted(pages),
+            "calendar": train_bearing[member_ids[0]]["calendar"],
             "printedTrainNumbers": sorted(numbers),
             "resolvedTimeCells": resolved,
             "unresolvedTimeCells": unresolved,
             "sourceTimeCells": resolved + unresolved,
             "zeroTimeEvidenceBearingFragments": zero_time_members,
-            "identityBasis": "page-local-column" if len(member_ids) == 1 else "official-previous-publication-reference",
+            "identityBasis": "page-section-local-column" if len(member_ids) == 1 else "official-previous-publication-reference",
         })
 
     totals = stop_times.get("totals") or {}
@@ -172,6 +188,8 @@ def build_audit(stop_times: dict[str, Any], graph: dict[str, Any]) -> dict[str, 
         {
             "id": fragment_id,
             "page": int(row.get("page") or 0),
+            "section": row["section"],
+            "calendar": row["calendar"],
             "column": int(row.get("column") or 0),
             "columnCenterX": row.get("columnCenterX"),
             "anonymousColumn": bool(row.get("anonymousColumn")),
@@ -181,9 +199,12 @@ def build_audit(stop_times: dict[str, Any], graph: dict[str, Any]) -> dict[str, 
     ]
 
     return {
-        "version": 2,
+        "version": 3,
         "kind": "keikyu-independent-mother-set-audit",
         "sourceSha256": (stop_times.get("source") or {}).get("sha256"),
+        "calendarExcludedPages": stop_times.get("calendarExcludedPages", []),
+        "calendarCounts": stop_times["calendarCounts"],
+        "coverageComplete": False,
         "geometryFragmentCount": len(by_id),
         "trainBearingFragmentCount": len(train_bearing),
         "structuralBlankFragmentCount": len(structural_blanks),
@@ -206,6 +227,9 @@ def build_audit(stop_times: dict[str, Any], graph: dict[str, Any]) -> dict[str, 
             "anonymousUnreferencedZeroTimeExcludedFromTrainCount": True,
             "structuralBlankFragmentsRemainAudited": True,
             "onlyVerifiedOfficialCrossPageEdgesMayUnion": True,
+            "literalPrintedCalendarRequired": True,
+            "crossPageEdgesStayWithinPrintedCalendar": True,
+            "sourceHashesMustMatch": True,
             "clockTimeMayEstablishIdentity": False,
             "destinationMayEstablishIdentity": False,
             "crossPageIdentityCandidateOnly": True,
