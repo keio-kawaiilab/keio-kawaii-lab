@@ -19,42 +19,49 @@ def fragment(fid: str, railway: str, stops: list[list], destination: str = 'odpt
 
 
 class ResolverTests(unittest.TestCase):
-    def test_candidate_search_uses_verified_boundary_and_small_gap(self) -> None:
+    def test_candidate_search_handles_fragments_that_omit_boundary_station(self) -> None:
+        destination = 'odpt.Station:Keikyu.Airport.HanedaAirportTerminal1and2'
         source = fragment(
             'z1', target.base.ZUSHI,
             [
                 ['odpt.Station:Keikyu.Zushi.ZushiHayama', 600, 600],
-                ['odpt.Station:Keikyu.Zushi.KanazawaHakkei', 610, 610],
+                ['odpt.Station:Keikyu.Zushi.Jimmuji', 605, 605],
+                ['odpt.Station:Keikyu.Zushi.Mutsuura', 610, 610],
             ],
+            destination,
         )
         good = fragment(
             'm1', target.base.MAIN,
             [
-                ['odpt.Station:Keikyu.Main.KanazawaHakkei', 611, 611],
-                ['odpt.Station:Keikyu.Main.Yokohama', 620, 620],
+                ['odpt.Station:Keikyu.Main.KanazawaBunko', 615, 615],
+                ['odpt.Station:Keikyu.Main.Yokohama', 630, 630],
             ],
+            destination,
         )
-        late = fragment(
+        too_late = fragment(
             'm2', target.base.MAIN,
-            [
-                ['odpt.Station:Keikyu.Main.KanazawaHakkei', 616, 616],
-                ['odpt.Station:Keikyu.Main.Yokohama', 625, 625],
-            ],
+            [['odpt.Station:Keikyu.Main.KanazawaBunko', 701, 701]],
+            destination,
         )
-        wrong_boundary = fragment(
+        wrong_destination = fragment(
             'm3', target.base.MAIN,
-            [
-                ['odpt.Station:Keikyu.Main.Yokohama', 611, 611],
-                ['odpt.Station:Keikyu.Main.Shinagawa', 630, 630],
-            ],
+            [['odpt.Station:Keikyu.Main.KanazawaBunko', 611, 611]],
+            'odpt.Station:Keikyu.Main.Shinagawa',
         )
-        rows = target.candidate_targets(source, (target.base.ZUSHI, target.base.MAIN), [source, good, late, wrong_boundary])
-        self.assertEqual([('m1', 1)], [(row['id'], gap) for row, gap in rows])
+        rows = target.candidate_targets(
+            source,
+            (target.base.ZUSHI, target.base.MAIN),
+            [source, good, too_late, wrong_destination],
+        )
+        self.assertEqual([('m1', 5)], [(row['id'], gap) for row, gap in rows])
 
-    def test_current_unresolved_row_is_selected(self) -> None:
+    def test_current_unresolved_row_is_selected_without_boundary_stop(self) -> None:
         source = fragment(
             'z1', target.base.ZUSHI,
-            [['odpt.Station:Keikyu.Zushi.KanazawaHakkei', 610, 610]],
+            [
+                ['odpt.Station:Keikyu.Zushi.ZushiHayama', 600, 600],
+                ['odpt.Station:Keikyu.Zushi.Mutsuura', 610, 610],
+            ],
         )
         coverage = {'unresolved': [{
             'kind': target.CURRENT_KIND,
@@ -74,13 +81,13 @@ class ResolverTests(unittest.TestCase):
             'z1', target.base.ZUSHI,
             [
                 ['odpt.Station:Keikyu.Zushi.ZushiHayama', 600, 600],
-                ['odpt.Station:Keikyu.Zushi.KanazawaHakkei', 610, 610],
+                ['odpt.Station:Keikyu.Zushi.Mutsuura', 610, 610],
             ],
         )
         dest = fragment(
             'm1', target.base.MAIN,
             [
-                ['odpt.Station:Keikyu.Main.KanazawaHakkei', 611, 611],
+                ['odpt.Station:Keikyu.Main.KanazawaBunko', 615, 615],
                 ['odpt.Station:Keikyu.Main.Yokohama', 620, 620],
             ],
         )
@@ -96,7 +103,7 @@ class ResolverTests(unittest.TestCase):
         self.assertIsNotNone(proof)
         self.assertEqual(10, proof['page'])
 
-        official[( '.Yokohama', 620)] = [{'page': 10, 'x': 110.0, 'rowText': '横浜', 'sourceUrl': 'official.pdf'}]
+        official[('.Yokohama', 620)] = [{'page': 10, 'x': 110.0, 'rowText': '横浜', 'sourceUrl': 'official.pdf'}]
         self.assertIsNone(target.exact_same_column_proof(source, dest, anchors, official))
 
     def test_same_column_proof_rejects_multiple_printed_columns(self) -> None:
