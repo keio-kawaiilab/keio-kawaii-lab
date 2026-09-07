@@ -5,6 +5,8 @@ A physical fragment is one proven train column inside one independently detected
 printed timetable section on one PDF page. Printed train numbers are preserved
 as metadata but never used here to join sections or pages. Calendar identity is
 accepted only from the literal printed 「平日用」 / 「土休日用」 page label.
+Pages where that label is missing or ambiguous are excluded from identity
+materialization rather than inferred from page number or neighboring pages.
 """
 from __future__ import annotations
 
@@ -28,6 +30,8 @@ from keikyu_official_pdf import (
     download_official_pdf,
     page_count,
 )
+
+CALENDAR_EXCLUSION_REASON = "missing-or-ambiguous-literal-printed-calendar"
 
 
 def fragment_id(page_number: int, section: int, column: int) -> str:
@@ -116,6 +120,7 @@ def build_dataset(pdf_path: Path, source_bytes: bytes) -> dict[str, Any]:
     fragments: list[dict[str, Any]] = []
     pages: list[dict[str, Any]] = []
     excluded_pages: list[dict[str, Any]] = []
+    calendar_excluded_pages: list[int] = []
     calendar_pages: Counter[str] = Counter()
     calendar_sections: Counter[str] = Counter()
     calendar_fragments: Counter[str] = Counter()
@@ -139,7 +144,10 @@ def build_dataset(pdf_path: Path, source_bytes: bytes) -> dict[str, Any]:
 
         calendar = printed_calendar(page_text)
         if calendar not in {"weekday", "holiday"}:
-            raise RuntimeError(f"page {page_number} does not have exactly one literal printed calendar label")
+            calendar_excluded_pages.append(page_number)
+            excluded_pages.append({"page": page_number, "reason": CALENDAR_EXCLUSION_REASON})
+            continue
+
         sections = detect_train_column_sections(words)
         if not sections:
             continue
@@ -235,9 +243,12 @@ def build_dataset(pdf_path: Path, source_bytes: bytes) -> dict[str, Any]:
         raise RuntimeError("duplicate or missing section-local fragment id")
     if any(str(item.get("calendar") or "") not in {"weekday", "holiday"} for item in fragments):
         raise RuntimeError("section-local fragment missing literal printed calendar")
+    included_page_ids = {int(item["page"]) for item in pages}
+    if included_page_ids & set(calendar_excluded_pages):
+        raise RuntimeError("calendar-ambiguous page leaked into identity-bearing dataset")
 
     return {
-        "version": 3,
+        "version": 4,
         "kind": "keikyu-official-section-local-stop-times",
         "scope": "Keisei/Asakusa/Keikyu connected component; Keikyu Daishi excluded",
         "source": {
@@ -247,6 +258,7 @@ def build_dataset(pdf_path: Path, source_bytes: bytes) -> dict[str, Any]:
         },
         "canonicalStationTitleCount": len(titles),
         "excludedPages": excluded_pages,
+        "calendarExcludedPages": calendar_excluded_pages,
         "calendarCounts": {
             "pages": dict(calendar_pages),
             "sections": dict(calendar_sections),
@@ -260,7 +272,9 @@ def build_dataset(pdf_path: Path, source_bytes: bytes) -> dict[str, Any]:
             "literalTrainNumberRowsAreHardSectionBoundaries": True,
             "minimumDistinctTimedRowsPerIdentitySection": 3,
             "literalPrintedCalendarRequired": True,
+            "unclassifiedCalendarPagesExcludedFromIdentity": True,
             "calendarMayBeInferredFromPageNumber": False,
+            "calendarMayBeInferredFromNeighboringPages": False,
             "printedTrainNumberMayJoinSectionsOrPages": False,
             "anonymousColumnMayJoinSectionsOrPages": False,
             "clockTimeProximityMayJoinFragments": False,
@@ -298,6 +312,7 @@ def main() -> int:
         "output": str(args.output),
         "sourceSha256": dataset["source"]["sha256"],
         "pages": len(dataset["pages"]),
+        "calendarExcludedPages": dataset["calendarExcludedPages"],
         "calendarCounts": dataset["calendarCounts"],
         **dataset["totals"],
         "runtimeSameTrainPromotions": 0,
