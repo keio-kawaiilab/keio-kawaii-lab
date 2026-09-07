@@ -1,15 +1,3 @@
-#!/usr/bin/env python3
-"""Strict geometry helpers for the official Keikyu full-line timetable PDF.
-
-The timetable is a visual train-column table. We therefore use PDF word
-coordinates instead of joining station departures by time proximity. Page-local
-column geometry and physical-train identity are deliberately separate: an
-anonymous published column is a valid page column, but can never by itself prove
-cross-page or cross-operator same-train identity.
-
-Raw PDF bytes are only downloaded to a caller-provided temporary path and are
-never intended to be committed.
-"""
 from __future__ import annotations
 
 import re
@@ -52,6 +40,16 @@ class TrainColumnGrid:
     explicit_numbers: tuple[str | None, ...]
 
 
+@dataclass(frozen=True)
+class TrainColumnSection:
+    section_index: int
+    header_ordinal: int
+    y_min: float
+    y_max: float
+    grid: TrainColumnGrid
+    words: tuple[Word, ...]
+
+
 def compact(value: str) -> str:
     return re.sub(r"\s+", "", value or "")
 
@@ -82,13 +80,11 @@ def page_count(pdf_path: Path) -> int:
 
 
 def bbox_words(pdf_path: Path, page_number: int) -> tuple[float, float, list[Word]]:
-    xml = subprocess.check_output(
+    output = subprocess.check_output(
         [
             "pdftotext",
-            "-f",
-            str(page_number),
-            "-l",
-            str(page_number),
+            "-f", str(page_number),
+            "-l", str(page_number),
             "-bbox-layout",
             str(pdf_path),
             "-",
@@ -97,12 +93,14 @@ def bbox_words(pdf_path: Path, page_number: int) -> tuple[float, float, list[Wor
         encoding="utf-8",
         errors="replace",
     )
-    root = ET.fromstring(xml)
+    root = ET.fromstring(output)
     page = next((node for node in root.iter() if node.tag.endswith("page")), None)
     if page is None:
-        raise RuntimeError(f"bbox output contained no page for PDF page {page_number}")
+        raise RuntimeError(f"no PDF page element for page {page_number}")
+    width = float(page.attrib["width"])
+    height = float(page.attrib["height"])
     words: list[Word] = []
-    for node in page.iter():
+    for node in root.iter():
         if not node.tag.endswith("word"):
             continue
         text = compact("".join(node.itertext()))
@@ -117,38 +115,29 @@ def bbox_words(pdf_path: Path, page_number: int) -> tuple[float, float, list[Wor
                 y_max=float(node.attrib["yMax"]),
             )
         )
-    return float(page.attrib.get("width", 0)), float(page.attrib.get("height", 0)), words
+    return width, height, words
 
 
-def cluster_by_y(words: Iterable[Word], tolerance: float = 1.2) -> list[list[Word]]:
+def cluster_by_y(words: Iterable[Word], tolerance: float = 1.7) -> list[list[Word]]:
     ordered = sorted(words, key=lambda word: (word.y, word.x))
     rows: list[list[Word]] = []
+    anchors: list[float] = []
     for word in ordered:
-        if not rows:
+        if not rows or abs(word.y - anchors[-1]) > tolerance:
             rows.append([word])
-            continue
-        row_y = statistics.median(item.y for item in rows[-1])
-        if abs(word.y - row_y) <= tolerance:
-            rows[-1].append(word)
+            anchors.append(word.y)
         else:
-            rows.append([word])
-    for row in rows:
-        row.sort(key=lambda word: word.x)
-    return rows
+            rows[-1].append(word)
+            anchors[-1] = statistics.mean(item.y for item in rows[-1])
+    return [sorted(row, key=lambda word: word.x) for row in rows]
 
 
 def _row_text(row: list[Word]) -> str:
     return compact("".join(word.text for word in sorted(row, key=lambda word: word.x)))
 
 
-def _label_span(row: list[Word], needle: str = "列車番号") -> tuple[float, float] | None:
-    """Return the bbox span of a printed label even when PDF words split it.
-
-    ``pdftotext -bbox-layout`` can expose 「列 車 番 号」 as four separate Word
-    objects although compact row text is exactly ``列車番号``.  Header detection
-    must therefore prove the literal phrase as a consecutive word sequence,
-    rather than require one Word whose text contains the whole phrase.
-    """
+def _label_span(row: list[Word], label: str = "列車番号") -> tuple[float, float] | None:
+    needle = compact(label)
     ordered = sorted(row, key=lambda word: word.x)
     for start in range(len(ordered)):
         assembled = ""
@@ -165,24 +154,28 @@ def _label_span(row: list[Word], needle: str = "列車番号") -> tuple[float, f
     return None
 
 
-def _printed_train_number_rows(words: list[Word]) -> list[list[Word]]:
-    """Return literal printed 「列車番号」 rows near the top of the page."""
+def _all_printed_train_number_rows(words: list[Word]) -> list[list[Word]]:
     result: list[list[Word]] = []
     for row in cluster_by_y(words):
-        row_y = statistics.median(word.y for word in row)
-        if row_y > PRINTED_HEADER_Y_LIMIT:
-            continue
         if "列車番号" in _row_text(row) and _label_span(row) is not None:
             result.append(row)
     return result
 
 
-def _main_printed_header(words: list[Word]) -> tuple[list[Word], float] | None:
-    """Return the lower printed train-number row and label right edge.
+def _printed_train_number_rows(words: list[Word]) -> list[list[Word]]:
+    """Legacy helper: literal printed 「列車番号」 rows near the top of the page."""
+    return [
+        row for row in _all_printed_train_number_rows(words)
+        if statistics.median(word.y for word in row) <= PRINTED_HEADER_Y_LIMIT
+    ]
 
-    When two header bands exist, the upper one belongs to 「前の掲載ページ」;
-    the lower one is the current page's main timetable. This rule was audited
-    across the official PDF instead of choosing whichever numeric row is densest.
+
+def _main_printed_header(words: list[Word]) -> tuple[list[Word], float] | None:
+    """Legacy page-level selector retained for old audits only.
+
+    Do not use this for identity promotion. Official PDF pages can contain more
+    than one vertically separated timetable section; production identity must use
+    ``detect_train_column_sections`` instead.
     """
     rows = _printed_train_number_rows(words)
     if not rows:
@@ -195,24 +188,19 @@ def _main_printed_header(words: list[Word]) -> tuple[list[Word], float] | None:
 
 
 def _candidate_header_rows(words: list[Word]) -> list[list[Word]]:
-    """Compatibility helper: explicit train-number tokens from printed headers."""
     result: list[list[Word]] = []
     for row in _printed_train_number_rows(words):
         span = _label_span(row)
         if span is None:
             continue
         label_x_max = span[1]
-        tokens = [
-            word for word in row
-            if word.x > label_x_max and TRAIN_NUMBER_RE.fullmatch(word.text)
-        ]
+        tokens = [word for word in row if word.x > label_x_max and TRAIN_NUMBER_RE.fullmatch(word.text)]
         if tokens:
             result.append(tokens)
     return result
 
 
 def _infer_pitch(explicit: list[Word]) -> float | None:
-    """Infer adjacent train-column pitch from explicit numbers on the true header."""
     xs = sorted(word.x for word in explicit)
     adjacent = [b - a for a, b in zip(xs, xs[1:]) if 10.0 <= b - a <= 22.0]
     if not adjacent:
@@ -259,14 +247,6 @@ def _extend_right_edge_columns(
     max_slots: int = 4,
     min_distinct_rows: int = 3,
 ) -> TrainColumnGrid:
-    """Recover only anonymous columns to the right of the last explicit number.
-
-    The far left contains station names, operating-km values and continuation
-    metadata, so it must never be discovered from numeric density. The left edge
-    is instead bounded by the printed 「列車番号」 label. On the right there is no
-    station metadata; repeated pitch-aligned time cells on >=3 Y rows may safely
-    extend the page-local grid. Identity remains anonymous.
-    """
     if not grid.centers:
         return grid
     last = grid.centers[-1]
@@ -292,30 +272,18 @@ def _extend_right_edge_columns(
     )
 
 
-def detect_train_column_grid(words: list[Word]) -> TrainColumnGrid | None:
-    """Reconstruct a page-local train grid from the literal printed header.
-
-    The lower printed 「列車番号」 row is the sole header anchor. Missing printed
-    train numbers between explicit numbers, and between the label divider and
-    the first explicit number, are represented as ``None``. Anonymous columns
-    never establish cross-page or cross-operator identity.
-    """
-    selected = _main_printed_header(words)
-    if selected is None:
+def _grid_from_header_row(words: list[Word], header_row: list[Word]) -> TrainColumnGrid | None:
+    span = _label_span(header_row)
+    if span is None:
         return None
-    header_row, label_x_max = selected
+    label_x_max = span[1]
     header_y = statistics.median(word.y for word in header_row)
-
     explicit = sorted(
-        [
-            word for word in header_row
-            if word.x > label_x_max and TRAIN_NUMBER_RE.fullmatch(word.text)
-        ],
+        [word for word in header_row if word.x > label_x_max and TRAIN_NUMBER_RE.fullmatch(word.text)],
         key=lambda word: word.x,
     )
     if len(explicit) < 3:
         return None
-
     pitch = _infer_pitch(explicit)
     if pitch is None:
         return None
@@ -325,7 +293,6 @@ def detect_train_column_grid(words: list[Word]) -> TrainColumnGrid | None:
     first_center = first_explicit_x
     while first_center - pitch > label_x_max + pitch * 0.30:
         first_center -= pitch
-
     slot_count = int(round((last_explicit_x - first_center) / pitch)) + 1
     if not (3 <= slot_count <= 40):
         return None
@@ -350,6 +317,69 @@ def detect_train_column_grid(words: list[Word]) -> TrainColumnGrid | None:
     return _extend_right_edge_columns(words, initial)
 
 
+def detect_train_column_grid(words: list[Word]) -> TrainColumnGrid | None:
+    """Legacy page-level grid detector retained for non-promoting audits."""
+    selected = _main_printed_header(words)
+    if selected is None:
+        return None
+    header_row, _label_x_max = selected
+    return _grid_from_header_row(words, header_row)
+
+
+def detect_train_column_sections(
+    words: list[Word],
+    *,
+    min_distinct_timed_rows: int = 3,
+) -> list[TrainColumnSection]:
+    """Find disjoint section-local train grids on one official PDF page.
+
+    Every literal 「列車番号」 row is a hard vertical boundary, even when that row
+    cannot itself form a grid. This fail-closed rule prevents time cells below a
+    later header/metadata band from leaking into an earlier physical train grid.
+    A row becomes an identity-bearing section only when its explicit train
+    numbers form a strict grid AND at least ``min_distinct_timed_rows`` aligned
+    timetable rows exist before the next literal train-number boundary.
+    """
+    rows = sorted(
+        _all_printed_train_number_rows(words),
+        key=lambda row: statistics.median(word.y for word in row),
+    )
+    if not rows:
+        return []
+    page_bottom = max((word.y_max for word in words), default=0.0) + 1.0
+    sections: list[TrainColumnSection] = []
+    for ordinal, row in enumerate(rows):
+        header_y = float(statistics.median(word.y for word in row))
+        next_y = (
+            float(statistics.median(word.y for word in rows[ordinal + 1]))
+            if ordinal + 1 < len(rows)
+            else page_bottom
+        )
+        if next_y <= header_y + 12.0:
+            continue
+        section_words = tuple(
+            word for word in words
+            if word.y >= header_y - 2.0 and word.y < next_y - 1.0
+        )
+        grid = _grid_from_header_row(list(section_words), row)
+        if grid is None:
+            continue
+        timed = [word for _column, word in time_cells(list(section_words), grid)]
+        if _distinct_y_rows(timed) < min_distinct_timed_rows:
+            continue
+        sections.append(
+            TrainColumnSection(
+                section_index=len(sections),
+                header_ordinal=ordinal,
+                y_min=header_y,
+                y_max=next_y,
+                grid=grid,
+                words=section_words,
+            )
+        )
+    return sections
+
+
 def nearest_column(grid: TrainColumnGrid, x: float, max_fraction: float = 0.42) -> int | None:
     index = min(range(len(grid.centers)), key=lambda i: abs(grid.centers[i] - x))
     if abs(grid.centers[index] - x) > grid.pitch * max_fraction:
@@ -358,11 +388,6 @@ def nearest_column(grid: TrainColumnGrid, x: float, max_fraction: float = 0.42) 
 
 
 def time_cells(words: list[Word], grid: TrainColumnGrid) -> list[tuple[int, Word]]:
-    """Return time-like cells assigned to strict page columns.
-
-    Station/arrival/departure row interpretation is intentionally left to the
-    semantic parser. This helper proves horizontal column position only.
-    """
     result: list[tuple[int, Word]] = []
     for word in words:
         if word.y <= grid.header_y + 10:
