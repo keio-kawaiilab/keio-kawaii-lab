@@ -31,7 +31,8 @@ jobs:
         run: |
           python -m py_compile \
             scripts/keikyu_cross_page_zushi_evidence.py \
-            scripts/keikyu_internal_generated_evidence.py
+            scripts/keikyu_internal_generated_evidence.py \
+            scripts/diagnose_zushi_cross_page.py
           python scripts/test_keikyu_cross_page_zushi_evidence.py
           python scripts/test_keikyu_internal_generated_evidence.py
           python scripts/test_keikyu_previous_publication_refs.py
@@ -68,6 +69,12 @@ jobs:
             --existing /tmp/evidence-before.json \
             --output /tmp/evidence-after.json \
             --report /tmp/cross-page-report.json
+      - name: Diagnose every remaining strict proof gate
+        run: |
+          python scripts/diagnose_zushi_cross_page.py \
+            --official-stop-times /tmp/keikyu-stop-times.json \
+            --cross-page-audit /tmp/keikyu-cross-page-audit.json \
+            --output /tmp/cross-page-diagnosis.json
       - name: Summarize genuinely new explicit proofs
         id: summary
         run: |
@@ -99,6 +106,7 @@ jobs:
           path: |
             /tmp/cross-page-report.json
             /tmp/cross-page-fresh.json
+            /tmp/cross-page-diagnosis.json
           retention-days: 7
           if-no-files-found: error
 
