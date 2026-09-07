@@ -12,6 +12,7 @@ on:
       - "scripts/merge_distributed_schedule_snapshots.py"
       - "scripts/normalize_special_event_entities.py"
       - "scripts/prune_special_event_placeholders.py"
+      - "scripts/stamp_calendar_refresh.py"
       - "scripts/build_schedule_snapshot.py"
       - "scripts/fix_schedule_shell.py"
       - "scripts/strip_schedule_explanations.py"
@@ -41,6 +42,12 @@ jobs:
           python scripts/prune_special_event_placeholders.py --data data/live-events.json
           python scripts/enforce_physical_performance_identity.py
           python -m json.tool data/live-events.json >/dev/null
+
+      - name: Stamp successful public refresh
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/stamp_calendar_refresh.py --data data/live-events.json
 
       - name: Rebuild public snapshot from the hardened JSON
         shell: bash
