@@ -79,7 +79,7 @@ jobs:
       contents: write
     concurrency:
       group: transit-db-writer
-      cancel-in-progress: false
+      cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
         with:
