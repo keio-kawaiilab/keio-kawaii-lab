@@ -9,10 +9,14 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: transit-db-zushi-writer
+  cancel-in-progress: false
+
 jobs:
-  patch:
+  materialize:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
         with:
@@ -20,70 +24,19 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Extend strict official-column extractor without weakening policy
+      - name: Install strict PDF parsers
+        run: pip install pdfplumber==0.11.7 PyMuPDF==1.26.4 requests==2.32.5
+      - name: Validate strict producer and consumer rules
         run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          path = Path('scripts/keikyu_internal_official_evidence.py')
-          text = path.read_text(encoding='utf-8')
-          replacements = [
-              (
-                  "KURIHAMA = 'odpt.Railway:Keikyu.Kurihama'\nBOUNDARY_ID = 'keikyu-main-airport-kamata'",
-                  "KURIHAMA = 'odpt.Railway:Keikyu.Kurihama'\nZUSHI = 'odpt.Railway:Keikyu.Zushi'\nBOUNDARY_ID = 'keikyu-main-airport-kamata'",
-              ),
-              (
-                  "KURIHAMA_BOUNDARY_ID = 'keikyu-main-kurihama-horinouchi'\nLEGACY_MARKER",
-                  "KURIHAMA_BOUNDARY_ID = 'keikyu-main-kurihama-horinouchi'\nZUSHI_BOUNDARY_ID = 'keikyu-main-zushi-kanazawahakkei'\nLEGACY_MARKER",
-              ),
-              (
-                  "    (MAIN, KURIHAMA): {'id': KURIHAMA_BOUNDARY_ID, 'station': '堀ノ内'},\n}",
-                  "    (MAIN, KURIHAMA): {'id': KURIHAMA_BOUNDARY_ID, 'station': '堀ノ内'},\n    (ZUSHI, MAIN): {'id': ZUSHI_BOUNDARY_ID, 'station': '金沢八景'},\n    (MAIN, ZUSHI): {'id': ZUSHI_BOUNDARY_ID, 'station': '金沢八景'},\n}",
-              ),
-          ]
-          for old, new in replacements:
-              if old not in text:
-                  if new in text:
-                      continue
-                  raise SystemExit(f'generator patch anchor missing: {old!r}')
-              text = text.replace(old, new, 1)
-          path.write_text(text, encoding='utf-8')
-
-          path = Path('scripts/keikyu_internal_official_evidence_selective.py')
-          text = path.read_text(encoding='utf-8')
-          replacements = [
-              (
-                  "KURIHAMA = target.KURIHAMA\nSUPPORTED_PAIRS = {",
-                  "KURIHAMA = target.KURIHAMA\nZUSHI = target.ZUSHI\nSUPPORTED_PAIRS = {",
-              ),
-              (
-                  "    (MAIN, KURIHAMA),\n}",
-                  "    (MAIN, KURIHAMA),\n    (ZUSHI, MAIN),\n    (MAIN, ZUSHI),\n}",
-              ),
-          ]
-          for old, new in replacements:
-              if old not in text:
-                  if new in text:
-                      continue
-                  raise SystemExit(f'selective patch anchor missing: {old!r}')
-              text = text.replace(old, new, 1)
-          path.write_text(text, encoding='utf-8')
-          PY
-      - name: Run strict producer and consumer tests
-        run: |
-          pip install pdfplumber==0.11.7 PyMuPDF==1.26.4 requests==2.32.5
-          python -m py_compile scripts/keikyu_internal_official_evidence.py scripts/keikyu_internal_official_evidence_selective.py
+          python -m py_compile scripts/keikyu_internal_official_evidence.py scripts/keikyu_internal_official_evidence_selective.py scripts/keikyu_internal_generated_evidence.py
           python scripts/test_keikyu_internal_official_evidence.py
           python scripts/test_keikyu_internal_generated_evidence.py
-      - name: Verify Zushi strict policy is wired end to end
-        run: |
           python - <<'PY'
           import sys
           sys.path.insert(0, 'scripts')
           import keikyu_internal_official_evidence as producer
           import keikyu_internal_generated_evidence as consumer
           import keikyu_internal_official_evidence_selective as selective
-
           pair1 = (producer.ZUSHI, producer.MAIN)
           pair2 = (producer.MAIN, producer.ZUSHI)
           assert producer.BOUNDARIES[pair1]['id'] == producer.ZUSHI_BOUNDARY_ID
@@ -91,17 +44,68 @@ jobs:
           assert pair1 in selective.SUPPORTED_PAIRS and pair2 in selective.SUPPORTED_PAIRS
           assert consumer.ZUSHI_BOUNDARY_ID in consumer.BOUNDARY_SPECS
           assert consumer.BOUNDARY_SPECS[consumer.ZUSHI_BOUNDARY_ID]['pairs'] == {pair1, pair2}
-          print('strict Zushi boundary support wired')
+          print('STRICT_ZUSHI_RULES_OK')
           PY
-      - name: Commit strict Zushi extractor support
+      - name: Extract strict official Keikyu internal evidence
+        run: |
+          python scripts/keikyu_internal_official_evidence_selective.py \
+            --output data/transit-v2/keikyu-internal-official-train-evidence.json
+      - name: Re-finalize and audit transit DB
+        run: |
+          python scripts/finalize_transit_v2.py
+          python scripts/audit_transit_v2.py
+      - name: Report Zushi materialization
+        run: |
+          python - <<'PY'
+          import json
+          from collections import Counter
+          from pathlib import Path
+
+          evidence = json.loads(Path('data/transit-v2/keikyu-internal-official-train-evidence.json').read_text(encoding='utf-8'))
+          entries = evidence.get('entries') or []
+          zushi = [row for row in entries if row.get('boundaryId') == 'keikyu-main-zushi-kanazawahakkei']
+          edges = json.loads(Path('data/transit-v2/same-train-edges.json').read_text(encoding='utf-8')).get('edges') or []
+          zushi_pairs = {(str(row.get('fromFragment') or ''), str(row.get('toFragment') or '')) for row in zushi}
+          materialized = [row for row in edges if (str(row.get('fromFragment') or ''), str(row.get('toFragment') or '')) in zushi_pairs and row.get('classification') == 'same-train']
+          coverage = json.loads(Path('data/transit-v2/coverage.json').read_text(encoding='utf-8'))
+          unresolved = coverage.get('unresolved') or []
+          remaining_zushi = []
+          for row in unresolved:
+              if row.get('kind') != 'ambiguous-boundary-fragment-alignment':
+                  continue
+              text = json.dumps(row, ensure_ascii=False)
+              if 'Keikyu.Zushi' in text:
+                  remaining_zushi.append(row)
+          print('ZUSHI_STRICT_EVIDENCE', len(zushi))
+          print('ZUSHI_STRICT_DIRECTIONS', dict(Counter(str(row.get('direction') or '') for row in zushi)))
+          print('ZUSHI_MATERIALIZED_SAME_TRAIN', len(materialized))
+          print('ZUSHI_AMBIGUOUS_REMAINING', len(remaining_zushi))
+          print('INTERNAL_BOUNDARY_COUNTS', json.dumps((evidence.get('summary') or {}).get('boundaries') or {}, ensure_ascii=False, sort_keys=True))
+          if len(materialized) != len(zushi_pairs):
+              raise SystemExit(f'not all Zushi strict evidence materialized: evidence={len(zushi_pairs)} materialized={len(materialized)}')
+          PY
+      - name: Commit regenerated transit DB
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add scripts/keikyu_internal_official_evidence.py scripts/keikyu_internal_official_evidence_selective.py
+          git add \
+            data/transit-v2/keikyu-internal-official-train-evidence.json \
+            data/transit-v2/same-train-edges.json \
+            data/transit-v2/runtime-same-train.json \
+            data/transit-v2/coverage.json \
+            data/transit-v2/index.json \
+            data/transit-v2/unresolved-summary.json
           if git diff --cached --quiet; then
-            echo "Zushi support already present"
+            echo "Transit DB already reflects current strict Zushi evidence"
             exit 0
           fi
-          git commit -m "Extend strict Keikyu official evidence to Zushi Line"
-          git pull --rebase origin main
-          git push origin HEAD:main
+          git commit -m "Apply strict Keikyu Zushi through-train evidence"
+          for attempt in 1 2 3; do
+            git fetch origin main
+            if git rebase origin/main && git push origin HEAD:main; then
+              exit 0
+            fi
+            git rebase --abort || true
+            sleep 2
+          done
+          exit 1
