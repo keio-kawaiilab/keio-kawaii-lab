@@ -9,10 +9,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: keikyu-zushi-proof-reader
-  cancel-in-progress: true
-
 jobs:
   prove:
     name: prove-${{ matrix.calendar }}
@@ -33,14 +29,16 @@ jobs:
         run: |
           python -m py_compile \
             scripts/keikyu_missing_boundary_evidence.py \
-            scripts/run_keikyu_zushi_proof_calendar.py
+            scripts/run_keikyu_zushi_proof_calendar.py \
+            scripts/merge_keikyu_zushi_proof_artifacts.py
           python scripts/test_keikyu_missing_boundary_evidence.py
           python scripts/test_keikyu_internal_generated_evidence.py
       - name: Build strict Zushi proof for ${{ matrix.calendar }}
         run: |
           python scripts/run_keikyu_zushi_proof_calendar.py \
             --calendar '${{ matrix.calendar }}' \
-            --report '/tmp/zushi-${{ matrix.calendar }}-report.json'
+            --report '/tmp/zushi-${{ matrix.calendar }}-report.json' \
+            --entries-output '/tmp/zushi-${{ matrix.calendar }}-entries.json'
       - name: Summarize independent official proof
         run: |
           python - <<'PY'
@@ -62,7 +60,139 @@ jobs:
           CALENDAR: ${{ matrix.calendar }}
       - uses: actions/upload-artifact@v4
         with:
-          name: zushi-${{ matrix.calendar }}-proof-report
-          path: /tmp/zushi-${{ matrix.calendar }}-report.json
+          name: zushi-${{ matrix.calendar }}-proof
+          path: |
+            /tmp/zushi-${{ matrix.calendar }}-report.json
+            /tmp/zushi-${{ matrix.calendar }}-entries.json
           if-no-files-found: error
           retention-days: 7
+
+  materialize:
+    name: materialize-proven-zushi
+    needs: prove
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: write
+    concurrency:
+      group: transit-db-writer
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Sync to latest main after obtaining writer lock
+        run: |
+          git fetch origin main
+          git checkout -B main origin/main
+          echo "MATERIALIZE_BASE=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install parser dependencies used by evidence modules
+        run: pip install pdfplumber==0.11.7 PyMuPDF==1.26.4 requests==2.32.5
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: zushi-*-proof
+          path: /tmp/zushi-proof
+          merge-multiple: true
+      - name: Merge calendar proofs into official evidence
+        run: |
+          python scripts/merge_keikyu_zushi_proof_artifacts.py \
+            --entries \
+              /tmp/zushi-proof/zushi-weekday-entries.json \
+              /tmp/zushi-proof/zushi-holiday-entries.json \
+            --reports \
+              /tmp/zushi-proof/zushi-weekday-report.json \
+              /tmp/zushi-proof/zushi-holiday-report.json \
+            --summary-output /tmp/zushi-merged-summary.json
+          cat /tmp/zushi-merged-summary.json
+      - name: Require at least one strict official proof
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          s=json.loads(Path('/tmp/zushi-merged-summary.json').read_text(encoding='utf-8'))
+          matched=int(s.get('matchedSingleton') or 0)
+          eligible=int(s.get('eligibleUnresolvedSources') or 0)
+          candidates=int(s.get('candidatePairsAfterDestinationAndTimeSearch') or 0)
+          print('ZUSHI_ELIGIBLE_TOTAL', eligible)
+          print('ZUSHI_SEARCH_CANDIDATES_TOTAL', candidates)
+          print('ZUSHI_OFFICIAL_PROVEN_TOTAL', matched)
+          print('ZUSHI_PROVEN_CALENDARS', json.dumps(s.get('calendars') or {}, ensure_ascii=False, sort_keys=True))
+          if eligible <= 0:
+              raise SystemExit('no Zushi unresolved rows were evaluated')
+          if matched <= 0:
+              raise SystemExit('no strict official Zushi proof; production DB left untouched')
+          PY
+      - name: Re-finalize and audit transit DB
+        run: |
+          python scripts/finalize_transit_v2.py
+          python scripts/audit_transit_v2.py
+      - name: Verify every proven pair materialized and cleared
+        run: |
+          python - <<'PY'
+          import glob
+          import json
+          from pathlib import Path
+          ROOT=Path('data/transit-v2')
+          proof=[]
+          for path in glob.glob('/tmp/zushi-proof/zushi-*-entries.json'):
+              payload=json.loads(Path(path).read_text(encoding='utf-8'))
+              proof.extend(row for row in payload.get('entries') or [] if isinstance(row, dict))
+          pairs={(str(r.get('fromFragment') or ''), str(r.get('toFragment') or '')) for r in proof}
+          ids={str(r.get('id') or '') for r in proof}
+          if not pairs:
+              raise SystemExit('proof artifacts contained no pairs')
+          edges=json.loads((ROOT/'same-train-edges.json').read_text(encoding='utf-8')).get('edges') or []
+          materialized={
+              (str(r.get('fromFragment') or ''), str(r.get('toFragment') or ''))
+              for r in edges if r.get('classification')=='same-train'
+          }
+          coverage=json.loads((ROOT/'coverage.json').read_text(encoding='utf-8'))
+          unresolved=coverage.get('unresolved') or []
+          still={
+              str(r.get('fragment') or '') for r in unresolved
+              if r.get('kind')=='missing-boundary-train-identity-evidence'
+          }
+          rejected={
+              str(r.get('evidenceId') or '') for r in unresolved
+              if r.get('kind')=='keikyu-internal-generated-evidence-rejected'
+          }
+          missing=sorted(pairs-materialized)
+          lingering=sorted({a for a,_b in pairs} & still)
+          bad=sorted(ids & rejected)
+          print('CURRENT_ZUSHI_PROVEN', len(pairs))
+          print('CURRENT_ZUSHI_MATERIALIZED', len(pairs & materialized))
+          print('CURRENT_ZUSHI_STILL_UNRESOLVED', len(lingering))
+          print('CURRENT_ZUSHI_REJECTED', len(bad))
+          if missing:
+              raise SystemExit(f'proven Zushi edges missing after finalize: {missing[:5]}')
+          if lingering:
+              raise SystemExit(f'proven Zushi sources still unresolved: {lingering[:5]}')
+          if bad:
+              raise SystemExit(f'proven Zushi evidence rejected by consumer: {bad[:5]}')
+          PY
+      - name: Commit regenerated strict DB without rebasing stale output
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            data/transit-v2/keikyu-internal-official-train-evidence.json \
+            data/transit-v2/same-train-edges.json \
+            data/transit-v2/runtime-same-train.json \
+            data/transit-v2/coverage.json \
+            data/transit-v2/index.json \
+            data/transit-v2/unresolved-summary.json
+          if git diff --cached --quiet; then
+            echo "Strict Zushi evidence already materialized"
+            exit 0
+          fi
+          git fetch origin main
+          remote="$(git rev-parse origin/main)"
+          if [ "$MATERIALIZE_BASE" != "$remote" ]; then
+            echo "main moved during Zushi materialization; refusing stale generated DB commit"
+            exit 1
+          fi
+          git commit -m "Apply strict Keikyu Zushi same-train evidence"
+          git push origin HEAD:main
