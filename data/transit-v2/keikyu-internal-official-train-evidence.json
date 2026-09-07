@@ -11,7 +11,12 @@
     "twoExactPublishedStationTimesRequired": true,
     "singletonFragmentMatchRequiredAtBothPoints": true,
     "trainNumberAloneMayEstablishIdentity": false,
-    "timeProximityAloneMayEstablishIdentity": false
+    "timeProximityAloneMayEstablishIdentity": false,
+    "officialPreviousPublicationPageAndTrainNumberRequiredForCrossPage": true,
+    "uniquePreviousPublicationTargetRequiredForCrossPage": true,
+    "pageLocalFragmentMetadataMustMatchForCrossPage": true,
+    "crossPageGraphMustBeNonBranchingAcyclic": true,
+    "directedOfficialContinuationPathRequired": true
   },
   "summary": {
     "officialLegacyTwoPointColumns": 33,
@@ -9834,6 +9839,111 @@
         "trainNumberAloneMayEstablishIdentity": false,
         "timeProximityAloneMayEstablishIdentity": false
       }
+    },
+    {
+      "status": "official-explicit-cross-page-evidence",
+      "matchStatus": "matched-singleton",
+      "id": "keikyu-current-boundary:f528dad48a3831fd7b59acc5",
+      "operator": "keikyu",
+      "calendar": "holiday",
+      "direction": "main-to-zushi",
+      "boundaryId": "keikyu-main-zushi-kanazawahakkei",
+      "boundaryStation": "金沢八景",
+      "fromRailway": "odpt.Railway:Keikyu.Main",
+      "toRailway": "odpt.Railway:Keikyu.Zushi",
+      "fromFragment": "inferred:da26435918c9c48d2a629c7c",
+      "toFragment": "inferred:2b6cba34bff28956134b6315",
+      "sourceMatches": [
+        "inferred:da26435918c9c48d2a629c7c"
+      ],
+      "targetMatches": [
+        "inferred:2b6cba34bff28956134b6315"
+      ],
+      "officialAnchors": [
+        {
+          "station": "odpt.Station:Keikyu.Main.Sengakuji",
+          "suffix": ".Sengakuji",
+          "minute": 1400
+        },
+        {
+          "station": "odpt.Station:Keikyu.Zushi.KanazawaHakkei",
+          "suffix": ".KanazawaHakkei",
+          "minute": 16
+        }
+      ],
+      "officialPhysicalComponentRoot": "keikyu-official-pdf:p144:c17",
+      "sourceOfficialFragment": "keikyu-official-pdf:p144:c17",
+      "targetOfficialFragment": "keikyu-official-pdf:p106:c09",
+      "officialPreviousPublicationPath": [
+        {
+          "fromFragment": "keikyu-official-pdf:p144:c17",
+          "toFragment": "keikyu-official-pdf:p106:c09",
+          "previousPrintedPage": 139,
+          "previousTrainNumber": "2274H",
+          "currentPrintedPage": 101,
+          "currentTrainNumber": "",
+          "evidence": "keikyu-official-previous-publication-page-and-train-number"
+        }
+      ],
+      "corroboratingAnchorPaths": 4,
+      "candidateFragmentGapMinutes": 50,
+      "sharedPublishedDestination": [
+        "odpt.Station:Keikyu.Zushi.ZushiHayama"
+      ],
+      "evidence": [
+        "operator-official-full-timetable",
+        "official-previous-publication-chain-two-exact-station-times-v1"
+      ],
+      "sourceUrl": "https://www.keikyu.co.jp/ride/kakueki/pdf/schedule_all.pdf",
+      "matchPolicy": {
+        "crossPageIdentityUsed": true,
+        "officialPreviousPublicationPageAndTrainNumberRequired": true,
+        "uniquePreviousPublicationTargetRequired": true,
+        "pageLocalFragmentMetadataMustMatch": true,
+        "crossPageGraphMustBeNonBranchingAcyclic": true,
+        "directedOfficialContinuationPathRequired": true,
+        "twoExactPublishedStationTimesRequired": true,
+        "singletonFragmentMatchRequiredAtBothPoints": true,
+        "sharedPublishedDestinationUsedOnlyForSearch": true,
+        "candidateFragmentGapUsedOnlyForSearch": true,
+        "candidateFragmentGapMaximumMinutes": 90,
+        "trainNumberAloneMayEstablishIdentity": false,
+        "timeProximityAloneMayEstablishIdentity": false
+      }
     }
-  ]
+  ],
+  "latestCrossPageSummary": {
+    "proofSource": "https://www.keikyu.co.jp/ride/kakueki/pdf/schedule_all.pdf",
+    "proofMode": "explicit-previous-publication-chain-two-point",
+    "eligibleUnresolvedSources": 218,
+    "candidatePairsAfterDestinationAndTimeSearch": 1673,
+    "officialCrossPageEdges": 387,
+    "matchedSingleton": 1,
+    "reasons": {
+      "no-unique-explicit-cross-page-proof": 217,
+      "rejected-shared-target": 0,
+      "matched-explicit-cross-page": 1
+    },
+    "directions": {
+      "main-to-zushi": 1
+    },
+    "calendars": {
+      "holiday": 1
+    },
+    "policy": {
+      "crossPageIdentityUsed": true,
+      "officialPreviousPublicationPageAndTrainNumberRequired": true,
+      "uniquePreviousPublicationTargetRequired": true,
+      "pageLocalFragmentMetadataMustMatch": true,
+      "crossPageGraphMustBeNonBranchingAcyclic": true,
+      "directedOfficialContinuationPathRequired": true,
+      "twoExactPublishedStationTimesRequired": true,
+      "singletonFragmentMatchRequiredAtBothPoints": true,
+      "sharedPublishedDestinationIsSearchOnly": true,
+      "candidateTimeWindowIsSearchOnly": true,
+      "uniqueTargetRequired": true,
+      "trainNumberAloneMayEstablishIdentity": false,
+      "timeProximityAloneMayEstablishIdentity": false
+    }
+  }
 }
