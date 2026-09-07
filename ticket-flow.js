@@ -129,6 +129,9 @@
   }
 
   function stateFor(row){
+    if(clean(row&&row.applicationStatus).toLowerCase()==="ended"){
+      return{label:"受付終了",current:false,ended:true};
+    }
     var now=new Date();
     var start=moment(row.applyStart,false);
     var end=moment(row.applyEnd,true);
