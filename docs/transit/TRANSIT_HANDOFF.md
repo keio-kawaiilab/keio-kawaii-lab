@@ -9,30 +9,51 @@ Repository: `keio-kawaiilab/keio-kawaii-lab`
 Default branch: `main`
 Public route entry point: `route.html`
 
-**LATEST RESEARCH TARGET — western through-service systems, 2026-09-07**
+**LATEST RESEARCH — complete Yahoo western train inventory, 2026-09-07**
 
-User requested Yahoo! train-detail research for Tobu Tojo, Seibu Ikebukuro /
-Seibu Yurakucho, Metro Lines 8/13, Toyoko/Minatomirai, Sotetsu/Shin-Yokohama,
-Meguro, Namboku/Saitama Railway and Mita. See
-`docs/transit/YAHOO_WESTERN_THROUGH_RESEARCH.md` and
-`docs/transit/yahoo-western-through-service-research.json` on
-`work/yahoo-western-through-research-20260907`.
+The user explicitly requested every train, not representative examples. The
+research is now complete for the acquired Yahoo publication scope. Start with
+`docs/transit/yahoo-western-all-trains/README.md` (all-train index); the previous
+`YAHOO_WESTERN_THROUGH_RESEARCH.md` is retained as a historical sample report.
+Branch: `work/yahoo-western-through-research-20260907`; draft PR #200.
 
-This checkpoint records representative one-train pages, both directions and
-weekday/Saturday/Sunday-holiday, explicit termini and conditional branches.
-It is research-only: zero runtime identity promotions; no all-train completeness,
-main merge, deployment or runtime test result is claimed. The older western
-identity reports' `complete:true` gates check boundary evidence availability /
-bidirectionality, not independently accounted all-train mother sets.
+- All 212 physical stations covering the 18 target/core/Seibu-branch railways,
+  all 1,364 advertised direction/calendar boards, and 230,790 departure entries
+  have been independently enumerated and matched by station code and exact time.
+- All 7,898 distinct Yahoo publication IDs have complete one-train journeys.
+  A further 3,812 alternate-calendar pages match full stops, times, drive and
+  section comments exactly: 11,710 train-detail pages checked in total.
+- All 7,898 IDs have an ordered railway route: 3,958 multi-line, 3,940 line-only,
+  114 directional route patterns; 483 IDs carry explicit date restrictions.
+  Zero acquisition errors, missing boards, departure mismatches, chronological
+  errors, ambiguous routes or calendar-content mismatches. Counts are publication
+  IDs, NOT physical trains operating on a chosen date.
+- Include trains continuing beyond the core network: 184 via JR (8 reach the
+  Kawagoe Line) and 3 to Chichibu Railway. This does not claim full JR/Chichibu
+  internal-train inventories. Seibu Toshima/Sayama/Chichibu station boards are
+  included in the core acquisition.
+- `data/transit/yahoo-western-research/` retains clean extracted source data,
+  station indexes/boards, all occurrences, full train pages, alternate-calendar
+  verification, classifications, URLs/hashes, topology, manifest and `audit.json`.
+  Source engine is uniformly `202609_03a`. Raw HTML stays in the working cache;
+  persisted source records intentionally contain only timetable-related fields.
+- Scripts: `research_western_all_trains.py`, `check_western_yahoo_calendars.py`,
+  `classify_western_all_trains.py`, `report_western_all_trains.py` under `scripts/`.
+  Resuming those scripts reuses this snapshot. For a NEW timetable edition use
+  separate output/cache directories; do not mix editions or overwrite this proof.
+- The classifier uses a complete single-train page, board line evidence and
+  explicit through boundaries. No time-proximity links between separate IDs.
+  Parallel/common sections use line-specific board evidence. S-TRAIN may skip
+  the entire Seibu-Yurakucho section; do not require an invented boundary stop.
+  Preserve explicit termini, special-date service, and original section comments.
 
-Important findings: Shonandai is not exclusively a Toyoko branch and Ebina is
-not exclusively a Meguro branch. Both need the actual published station sequence.
-Keep Line 8/13, Namboku/Mita, terminal-only trains and special-date Seibu-Kyujomae
-services distinct. Yahoo's displayed headline/section train types must not be
-propagated uncritically across all operator sections.
+This is research-only: official-runtime ID matching, date expansion, seating/
+boarding restrictions and route-engine integration remain separate work. No
+runtime identities, main merge or deployment are claimed. Older western report
+`complete:true` checks were only boundary evidence; the new audit explicitly
+accounts for the whole acquired Yahoo mother set. Do not repeat collection in
+another chat merely because the older sample report says it was incomplete.
 
-Next: establish complete official inventories, match these examples to exact
-runtime IDs/events/calendars, then verify positive and terminal-negative routing.
 The older Line-1 work below is preserved and is outside this research change.
 
 **LATEST IMPLEMENTATION — all 14 Line-1 connected-system railways, 2026-09-07**
