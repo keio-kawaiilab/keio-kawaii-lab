@@ -12,6 +12,11 @@ on:
       - 'scripts/audit_sengakuji_independent_reconciliation.py'
       - 'scripts/audit_keikyu_reciprocal_publication.py'
       - 'scripts/audit_sengakuji_published_sequences.py'
+      - 'scripts/audit_sengakuji_unfiltered_columns.py'
+      - 'scripts/save_keikyu_recovery_checkpoint.py'
+      - 'scripts/keikyu_official_pdf.py'
+      - 'scripts/diagnose_keikyu_official_calendars.py'
+      - 'scripts/audit_keikyu_station_time_resolution.py'
       - 'scripts/diagnose_sengakuji_toei_sequence_match.py'
       - 'scripts/audit_toei_sengakuji_official_columns.py'
       - 'scripts/test_keikyu_*.py'
@@ -125,7 +130,20 @@ jobs:
             --mother /tmp/keikyu-independent-mother-set.json \
             --reciprocal /tmp/keikyu-reciprocal-publication.json \
             --baseline /tmp/sengakuji-independent-reconciliation.json \
+            --pdf-cache-dir /tmp/keikyu-connection-pdfs \
             --output /tmp/sengakuji-published-sequences.json
+          python scripts/audit_sengakuji_unfiltered_columns.py \
+            --pdf-cache-dir /tmp/keikyu-connection-pdfs \
+            --output /tmp/sengakuji-unfiltered-columns.json
+          python - <<'PY'
+          import sys, json
+          from pathlib import Path
+          sys.path.insert(0, 'scripts')
+          from save_keikyu_recovery_checkpoint import verify_boundary
+          cases = verify_boundary(json.loads(Path('/tmp/sengakuji-published-sequences.json').read_text()),
+                                  json.loads(Path('/tmp/sengakuji-unfiltered-columns.json').read_text()))
+          print('RECOVERED_BOUNDARY_CASES', len(cases))
+          PY
       - name: Dry-run Zushi cross-page proofs from safe graph
         run: |
           cp data/transit-v2/keikyu-internal-official-train-evidence.json /tmp/existing.json
@@ -156,5 +174,6 @@ jobs:
             /tmp/sengakuji-independent-reconciliation.json
             /tmp/keikyu-reciprocal-publication.json
             /tmp/sengakuji-published-sequences.json
+            /tmp/sengakuji-unfiltered-columns.json
           retention-days: 7
           if-no-files-found: error

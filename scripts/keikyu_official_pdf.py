@@ -5,6 +5,7 @@ import statistics
 import subprocess
 import urllib.request
 import xml.etree.ElementTree as ET
+from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
@@ -115,7 +116,30 @@ def bbox_words(pdf_path: Path, page_number: int) -> tuple[float, float, list[Wor
                 y_max=float(node.attrib["yMax"]),
             )
         )
+    # Poppler occasionally merges a station-name character on one row with
+    # the arrival/departure marker above it (e.g. 塚発). Reconstruct ONLY such
+    # multi-row words from exact PDF glyph coordinates, not guessed labels.
+    suspects = [w for w in words if 2 <= len(w.text) <= 12 and w.y_max-w.y_min > 10
+                and any('\u4e00' <= c <= '\u9fff' for c in w.text)]
+    if suspects:
+        import fitz
+        with fitz.open(pdf_path) as doc:
+            raw = doc[page_number-1].get_text('rawdict')
+        chars = [Word(c['c'], *c['bbox']) for block in raw['blocks'] for line in block.get('lines', [])
+                 for span in line['spans'] for c in span['chars'] if c['c'].strip()]
+        replacements = {w: split_multiline_word(w, chars) for w in suspects}
+        words = [part for w in words for part in replacements.get(w, [w])]
     return width, height, words
+
+
+def split_multiline_word(word: Word, chars: list[Word]) -> list[Word]:
+    selected = [c for c in chars if c.text in word.text
+                and word.x_min-.05 <= c.x <= word.x_max+.05
+                and word.y_min-.05 <= c.y <= word.y_max+.05]
+    if (Counter(c.text for c in selected) != Counter(word.text)
+            or not selected or max(c.y for c in selected)-min(c.y for c in selected) <= 2):
+        return [word]
+    return selected
 
 
 def cluster_by_y(words: Iterable[Word], tolerance: float = 1.7) -> list[list[Word]]:
@@ -258,7 +282,14 @@ def _extend_right_edge_columns(
             pitch=grid.pitch,
             header_y=grid.header_y,
         )
-        if rows >= min_distinct_rows:
+        # A literal continuation arrow in THIS header is also a printed column
+        # anchor. Two timed rows suffice for a terminating short section such
+        # as Sengakuji 00:20 -> Shinagawa 00:22. This extends coverage only: it
+        # does not invent a train number or join to the preceding section.
+        arrow = any(word.text == "↓" and abs(word.y - grid.header_y) <= 2
+                    and abs(word.x - (last + offset * grid.pitch)) <= grid.pitch * .34
+                    for word in words)
+        if rows >= min_distinct_rows or (arrow and rows >= 2):
             supported.append(offset)
     append = max(supported, default=0)
     if append == 0:

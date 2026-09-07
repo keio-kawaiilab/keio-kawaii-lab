@@ -41,6 +41,25 @@ from probe_keikyu_station_rows import (
 )
 
 
+def recover_nearby_operation_markers(raw_rows):
+    """Recover glyph-baseline separation, not time-based train matching.
+
+    Numeric and Japanese fonts can differ by 1.6 PDF points on the same
+    printed row. Require exactly one explicit operation-marker row within
+    1.9 points. Adjacent timetable rows are not searched beyond that bound.
+    """
+    marked = [r for r in raw_rows if r['marker']]
+    for row in raw_rows:
+        if row['marker'] or row['stationMatches'] or not row['cells']:
+            continue
+        candidates = [r for r in marked if 0 < abs(r['y']-row['y']) <= 1.9]
+        if len(candidates) == 1:
+            source = candidates[0]
+            row['marker'] = source['marker']
+            row['stationMatches'] = source['stationMatches']
+            row['markerEvidenceY'] = source['y']
+
+
 def resolve_page(words, grid, titles: list[str], *, include_records: bool = False) -> dict[str, Any]:
     """Resolve printed timetable cells without establishing train identity.
 
@@ -89,6 +108,7 @@ def resolve_page(words, grid, titles: list[str], *, include_records: bool = Fals
             }
         )
 
+    recover_nearby_operation_markers(raw_rows)
     station_anchors = [
         {"y": row["y"], "station": row["stationMatches"][0], "marker": row["marker"]}
         for row in raw_rows
@@ -127,6 +147,8 @@ def resolve_page(words, grid, titles: list[str], *, include_records: bool = Fals
                 resolution = "departure-row-to-preceding-station-title"
 
         if station and row["marker"]:
+            if 'markerEvidenceY' in row:
+                resolution = 'exact-nearby-printed-marker-and-' + (resolution or 'unknown')
             resolved_rows += 1
             resolved_cells += len(row["cells"])
             resolution_counts[resolution or "unknown"] = resolution_counts.get(resolution or "unknown", 0) + len(row["cells"])
@@ -141,6 +163,7 @@ def resolve_page(words, grid, titles: list[str], *, include_records: bool = Fals
                             "x": cell["x"],
                             "y": round(row["y"], 2),
                             "resolution": resolution,
+                            **({'markerEvidenceY': round(row['markerEvidenceY'], 3)} if 'markerEvidenceY' in row else {}),
                         }
                     )
         else:

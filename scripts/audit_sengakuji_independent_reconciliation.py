@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Audit both local identities behind official Sengakuji same-column evidence.
 
-No runtime output. Exact boundary events only nominate local records AFTER
-operator same-column evidence establishes the crossing. Ambiguous independent
+No runtime output. Same-column evidence is only a candidate inventory and may
+include transfers. The explicit continuation-marker audit must gate identity.
+Exact boundary events nominate local records. Ambiguous independent
 PDF components, duplicate targets and missing cells remain unresolved.
 """
 from __future__ import annotations
@@ -73,7 +74,8 @@ def reconcile(candidates, timetable, stop_times, graph, toei_index):
         "conflictingKeikyuComponents": conflicts, "issues": toei["issues"],
         "coverageComplete": False,
         "identityPolicy": {
-            "crossBoundaryFactComesFromOfficialSamePrintedColumn": True,
+            "crossBoundaryFactComesFromOfficialSamePrintedColumn": False,
+            "explicitContinuationMarkerGateStillRequired": True,
             "bothLocalIdentitiesMustResolveSingleton": True,
             "duplicateTargetsMayBeSelectedArbitrarily": False,
             "clockTimeProximityMayEstablishIdentity": False,
@@ -92,10 +94,12 @@ def main():
     parser.add_argument("--toei", type=Path, default=TOEI_FILE)
     parser.add_argument("--toei-index", type=Path, default=Path("data/transit/toei/timetable-index.json"))
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--pdf-cache-dir", type=Path)
     args = parser.parse_args()
     candidates, sources = [], []
     for calendar, url in (("weekday", DEFAULT_WEEKDAY_URL), ("holiday", DEFAULT_HOLIDAY_URL)):
-        content = fetch_pdf(url)
+        cached = args.pdf_cache_dir / f"other_{calendar}.pdf" if args.pdf_cache_dir else None
+        content = cached.read_bytes() if cached and cached.exists() else fetch_pdf(url)
         extracted = extract_pdf(content, calendar, url)
         sources.append(dict(calendar=calendar, url=url, sha256=hashlib.sha256(content).hexdigest(),
                             extractedColumns=len(extracted)))
