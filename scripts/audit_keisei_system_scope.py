@@ -82,6 +82,17 @@ def main() -> int:
     indices = collect_indices()
 
     network_supported = set(network_report.get("supportedRailways") or [])
+    from keikyu_internal_runtime import NETWORK, CORE
+    internal_verified = False
+    if NETWORK.exists():
+        from verify_keikyu_internal_network import verify
+        verify()
+        internal_verified = True
+    toei_audit_path = ROOT / 'docs/transit/toei-asakusa-independent-mother-set-audit.json'
+    toei_audit = load(toei_audit_path) if toei_audit_path.exists() else {}
+    toei_verified = (toei_audit.get('actualTripCount') == 1260
+                     and not toei_audit.get('issues')
+                     and int(indices.get('odpt.Railway:Toei.Asakusa', {}).get('trips') or 0) == 1260)
     rows: list[dict[str, Any]] = []
     errors: list[str] = []
 
@@ -103,6 +114,13 @@ def main() -> int:
             actual_identity = "keisei-led-exact-only"
         else:
             actual_identity = "none"
+
+        if railway_id == 'odpt.Railway:Toei.Asakusa' and toei_verified:
+            actual_line_coverage = 'exact-independent-1260-verified'
+            actual_identity = 'cross-boundary-reconciliation-incomplete'
+        if railway_id in CORE and internal_verified:
+            actual_line_coverage = 'exact'
+            actual_identity = 'internal-exact-external-reconciliation-incomplete'
 
         declared_line = str(configured.get("lineTimetableCoverage") or "")
         declared_identity = str(configured.get("sameTrainCoverage") or "")

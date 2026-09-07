@@ -60,6 +60,22 @@ The older audit-only instructions and internal counts below describe history.
   Full build/finalize testing also passed the new internal checks; pre-existing
   Keisei fragment regeneration drift was observed and its saved data was restored
   so this change does not replace unrelated operator identities.
+- First independent CI passed on `82432d6f473ecad06f9b50b046e4ac5d82c4fb51`:
+  https://github.com/keio-kawaiilab/keio-kawaii-lab/actions/runs/34103177778
+  This includes live-PDF reproduction of all four saved source artifacts.
+  Follow-up fixes remove PDF-library imports from runtime validation, update the
+  whole-system scope auditor to report completed internal coverage while retaining
+  incomplete external status, and make the four affected automatic data writers
+  main-only. Their commit steps also refuse to write from a feature branch.
+  The old through-service writer appended unrelated generated data in automatic
+  commit `f6daadc4df7316ca694fc01ce5e608143193fa9f`; that incidental output is
+  restored to the pre-run snapshot in the follow-up commit. An existing transfer
+  workflow also refreshed only main's own transfer candidates, without this
+  implementation. The unintended feature-triggered main writer was cancelled
+  before its commit step (run `34103177715`, conclusion `cancelled`; narrowly
+  targeted cleanup run `34103772830`, success). The temporary cancellation
+  workflow is removed after this confirmed cleanup. The internal implementation
+  remains draft PR #199, not deployed.
 - Read-only CI: `.github/workflows/verify-keikyu-internal-network.yml`. Reproduce
   from the current official PDF there; a new PDF revision must fail closed and
   be reviewed. `verify_keikyu_internal_materialization.py` dispatches the new

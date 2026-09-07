@@ -6,6 +6,7 @@ name: Generate through-service database
 on:
   workflow_dispatch:
   push:
+    branches: [main]
     paths:
       - 'data/transit/**/timetable-index.json'
       - 'data/transit/**/timetables/**'
@@ -166,6 +167,7 @@ jobs:
         run: |
           node -e "for(const f of ['data/transit/through-service-boundaries.json','data/transit/through-service-families.json','data/transit/through-service-trips.json','data/transit/through-service-coverage.json','data/transit/fukutoshin/identity-coverage-report.json','data/transit/line8/identity-coverage-report.json','data/transit/meguro/identity-coverage-report.json','data/transit/line8-line13/seibu-official-exact-through-trains.json','data/transit/line8-line13/seibu-strain-line13-columns.json','data/transit/fukutoshin/sotetsu-official-line13-columns.json','data/transit/meguro/sotetsu-official-meguro-columns.json'])JSON.parse(require('fs').readFileSync(f,'utf8'));"
       - name: Commit complete generated through-service database
+        if: github.ref == 'refs/heads/main'
         run: |
           git add data/transit/through-service-boundaries.json \
                   data/transit/through-service-families.json \

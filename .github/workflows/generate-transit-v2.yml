@@ -3,6 +3,7 @@ name: Generate transit v2
 on:
   workflow_dispatch:
   push:
+    branches: [main]
     paths:
       - 'scripts/build_transit_v2.py'
       - 'scripts/test_transit_v2.py'
@@ -106,7 +107,14 @@ jobs:
           fi
 
       - name: Build train-centric v2 database
-        run: python scripts/build_transit_v2.py
+        run: |
+          python scripts/build_transit_v2.py
+          if [ -f data/transit/keikyu/timetables/official-internal-network.json ]; then
+            python scripts/check_keikyu_internal_source.py
+            python scripts/finalize_transit_v2.py
+            python scripts/audit_transit_v2.py
+            python scripts/verify_keikyu_internal_materialization.py
+          fi
 
       - name: Validate strict identity policy
         run: |
@@ -129,6 +137,7 @@ jobs:
           PY
 
       - name: Commit refreshed transit v1 and v2 snapshots
+        if: github.ref == 'refs/heads/main'
         shell: bash
         run: |
           if git diff --quiet -- data/transit data/transit-v2; then

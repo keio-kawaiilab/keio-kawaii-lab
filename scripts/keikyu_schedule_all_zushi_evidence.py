@@ -50,21 +50,7 @@ def validate_official_dataset(payload: dict[str, Any]) -> None:
         raise RuntimeError('unexpected official timetable source URL')
 
 
-def station_suffix_map() -> dict[str, str]:
-    output: dict[str, str] = {}
-    duplicate: set[str] = set()
-    for suffix, labels in base.STATION_LABELS.items():
-        for label in labels:
-            key = base.parser.norm(label)
-            if not key:
-                continue
-            if key in output and output[key] != suffix:
-                duplicate.add(key)
-            else:
-                output[key] = suffix
-    for key in duplicate:
-        output.pop(key, None)
-    return output
+from keikyu_published_station_names import station_suffix_map
 
 
 def minute_of_hhmm(value: Any) -> int | None:

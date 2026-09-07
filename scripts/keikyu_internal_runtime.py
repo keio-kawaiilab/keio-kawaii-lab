@@ -92,9 +92,7 @@ def retain_verified_external(fragments,edges,network,identities,network_path):
     # Fixture networks do not opt into the saved, independently reconciled
     # external inventory. The production network preserves only prior services.
     if 'journeyEvidence' not in network:return edges
-    from keikyu_schedule_all_zushi_evidence import station_suffix_map
-    from keikyu_internal_official_evidence import parser
-    from diagnose_sengakuji_toei_sequence_match import PDF_TO_ODPT_SUFFIX
+    from keikyu_published_station_names import station_suffix_map, norm, PDF_TO_ODPT_SUFFIX
     audit=json.loads(Path('docs/transit/sengakuji-published-sequence-audit.json').read_text())
     retained=json.loads(Path('docs/transit/keikyu-retained-external-identities.json').read_text())
     if audit['sourceSha256']!=network['sourceSha256']:raise ValueError('external/internal source revision mismatch')
@@ -121,7 +119,7 @@ def retain_verified_external(fragments,edges,network,identities,network_path):
             if not any(s[0].endswith(suffix) and point['minute'] in [t%1440 for t in s[1:3]if t is not None]
                        for s in toei['stops']):raise ValueError('Toei source sequence changed')
         for point in r['keikyuFingerprint']:
-            suffix=suffixes[parser.norm(point['station'])]
+            suffix=suffixes[norm(point['station'])]
             if not any(network['stations'][s[0]].endswith(suffix) and point['minute'] in [t%1440 for t in s[1:3]if t is not None]
                        for s in trips[jid][3]):raise ValueError('Keikyu published sequence changed')
         main=[p for p in parts[jid]if p['railway']=='odpt.Railway:Keikyu.Main'
