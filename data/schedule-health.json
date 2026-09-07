@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-07T16:38:31.637291+09:00",
-  "candidateUpdatedAt": "2026-09-07T16:38:31+09:00",
-  "previousEventCount": 237,
-  "candidateEventCount": 230,
-  "protectedPreviousCount": 237,
+  "generatedAt": "2026-09-07T18:50:06.992776+09:00",
+  "candidateUpdatedAt": "2026-09-07T18:50:06+09:00",
+  "previousEventCount": 230,
+  "candidateEventCount": 231,
+  "protectedPreviousCount": 230,
   "errorCount": 0,
-  "warningCount": 27,
+  "warningCount": 23,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売",
@@ -31,13 +31,9 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
-    "performance dates added for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209: 2026-09-03, 2026-11-15",
-    "performance dates added for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209: 2026-09-03, 2026-11-15",
-    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209: 2026-09-21, 2026-09-25",
-    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209: 2026-10-13, 2026-10-15"
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし"
   ],
-  "candidateSha256": "32f106a582e0ab43dac46d57185a0be70d9287a1a678d2adea3c71ff8c3d40f9",
+  "candidateSha256": "4ed9469439470610ed8c3e0601dfdb53139d06e9bc66a055eb58e2b80e69678a",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -112,12 +108,10 @@
     "url:https://sweetsteady.asobisystem.com/news/detail/87781",
     "url:https://sweetsteady.asobisystem.com/news/detail/87795",
     "url:https://sweetsteady.asobisystem.com/news/detail/88352",
+    "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
-    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=13707",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14296",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=17867",
-    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
-    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25885",
     "url:https://tower.jp/article/feature_item/2026/08/28/0704",
     "url:https://tower.jp/ec/Customer/Login.aspx?npage=https%3a%2f%2ftower.jp%2fec%2fCustomer%2fMenu",
     "url:https://x.com/MORE_STAR_/status/2092567739969966299"
@@ -126,7 +120,7 @@
     "url:https://x.com/MORE_STAR_/status/2092567739969966299"
   ],
   "reconciledBaseDateMessageCount": 0,
-  "downgradedFalsePositiveCount": 2,
+  "downgradedFalsePositiveCount": 0,
   "legacyProtectedErrorCount": 9,
   "legacyProtectedErrors": [
     {
