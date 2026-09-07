@@ -39,8 +39,17 @@ in the complete 581-column connection-PDF inventory.** An independent scan
 without the old 0..4-minute dwell cutoff also finds exactly those 581 columns,
 with no additional candidates. This completes that boundary reconciliation,
 NOT whole-Keikyu train coverage or runtime integration. The latter remain false.
-The prior remote checkpoint `e61b39a0` passed read-only CI run `34091281959`;
-do not confuse that success with the new geometry-recovery code's CI result.
+The recovery snapshot is durably saved as remote commit `4347572b` and passed
+the full read-only calendar CI run `34093741341`, including regeneration,
+577/4/0 reconciliation, the unfiltered inventory and the Zushi proof dry run.
+The earlier checkpoint `e61b39a0` also passed run `34091281959`.
+
+Legacy diagnostic runs `34093741315` and `34093741201` initially failed because
+their environments lacked PyMuPDF for the new exact glyph-coordinate repair.
+Remote follow-up `c99f4b2c` explicitly installs pinned `PyMuPDF==1.26.4` in both
+read-only workflows. Follow-up runs are `34094120321` (layout probe) and
+`34094120397` (station semantics); verify their final status before describing
+these two diagnostics as green. Do not suppress or bypass the glyph repair.
 
 Machine-readable latest status: `docs/transit/keikyu-recovery-checkpoint.json`.
 Full independently parsed source DB is now saved, not scratch-only:
