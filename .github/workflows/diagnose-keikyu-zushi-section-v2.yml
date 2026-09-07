@@ -1,0 +1,58 @@
+name: Diagnose Keikyu Zushi section V2 gaps
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/diagnose_keikyu_zushi_section_v2_failures.py'
+      - 'scripts/diagnose_keikyu_section_calendars.py'
+      - '.github/workflows/diagnose-keikyu-zushi-section-v2.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PDF tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+      - name: Download official timetable once
+        run: |
+          python - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, 'scripts')
+          from keikyu_official_pdf import download_official_pdf
+          download_official_pdf(Path('/tmp/keikyu-schedule-all.pdf'))
+          PY
+      - name: Build section-aware official stop times
+        run: |
+          python scripts/build_keikyu_official_stop_times.py \
+            --pdf /tmp/keikyu-schedule-all.pdf \
+            --output /tmp/keikyu-stop-times-v2.json
+      - name: Diagnose remaining Zushi proof gates
+        run: |
+          python scripts/diagnose_keikyu_zushi_section_v2_failures.py \
+            --official-stop-times /tmp/keikyu-stop-times-v2.json \
+            --output /tmp/zushi-v2-gap-diagnostic.json | tee /tmp/zushi-v2-gap-summary.txt
+      - name: Diagnose printed calendar labels by section
+        run: |
+          python scripts/diagnose_keikyu_section_calendars.py \
+            --pdf /tmp/keikyu-schedule-all.pdf \
+            --output /tmp/keikyu-section-calendars.json | tee /tmp/calendar-summary.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keikyu-zushi-section-v2-diagnostics
+          path: |
+            /tmp/zushi-v2-gap-diagnostic.json
+            /tmp/keikyu-section-calendars.json
+          retention-days: 7
+          if-no-files-found: error
