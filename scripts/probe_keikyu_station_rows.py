@@ -36,6 +36,8 @@ IN_SCOPE_RAILWAYS = {
 }
 
 STATION_ALIASES = {
+    "ＹＲＰ野比": "YRP野比",
+    "屛風浦": "屏風浦",
     "羽田第１・第２": "羽田空港第１・第２ターミナル",
     "羽田第３": "羽田空港第３ターミナル",
 }
@@ -68,7 +70,7 @@ def station_matches(left_text: str, titles: list[str]) -> list[str]:
             matches.append(canonical)
     if not matches:
         return []
-    matches = sorted(set(matches), key=lambda value: (-len(value), value))
+    matches = sorted({STATION_ALIASES.get(value, value) for value in matches}, key=lambda value: (-len(value), value))
     longest = len(matches[0])
     return [title for title in matches if len(title) == longest]
 

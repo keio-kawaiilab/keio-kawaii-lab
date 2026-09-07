@@ -60,6 +60,27 @@ def recover_nearby_operation_markers(raw_rows):
             row['markerEvidenceY'] = source['y']
 
 
+def resolve_ditto_markers(raw_rows):
+    """A printed 〃 repeats the preceding explicit 着/発, including arrival.
+
+    Only the station-label band participates. An unanchored ditto remains
+    unresolved; do not default it to departure or carry state across sections.
+    """
+    previous = None
+    previous_y = None
+    for row in raw_rows:
+        label = row['left']
+        if not row['marker']:
+            continue
+        if label.endswith('〃') and not label.endswith(('着〃', '発〃')):
+            row['marker'] = previous
+            if previous is not None:
+                row['dittoEvidenceY'] = previous_y
+        elif row['marker'] in {'arrival', 'departure'}:
+            previous = row['marker']
+            previous_y = row['y']
+
+
 def resolve_page(words, grid, titles: list[str], *, include_records: bool = False) -> dict[str, Any]:
     """Resolve printed timetable cells without establishing train identity.
 
@@ -108,6 +129,7 @@ def resolve_page(words, grid, titles: list[str], *, include_records: bool = Fals
             }
         )
 
+    resolve_ditto_markers(raw_rows)
     recover_nearby_operation_markers(raw_rows)
     station_anchors = [
         {"y": row["y"], "station": row["stationMatches"][0], "marker": row["marker"]}

@@ -58,7 +58,7 @@ class ScheduleAllZushiEvidenceTests(unittest.TestCase):
     def source_and_target(self):
         source = current_fragment('z1', target.base.ZUSHI, [
             ['odpt.Station:Keikyu.Zushi.ZushiHayama', 600, 600],
-            ['odpt.Station:Keikyu.Zushi.Jinmuji', 605, 605],
+            ['odpt.Station:Keikyu.Zushi.Jimmuji', 605, 605],
             ['odpt.Station:Keikyu.Zushi.Mutsuura', 610, 610],
         ])
         dest = current_fragment('m1', target.base.MAIN, [

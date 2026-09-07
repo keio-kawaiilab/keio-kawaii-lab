@@ -23,6 +23,8 @@ ENTITY_FILES = (
 
 # Printed aliases in the Keikyu PDF. Values are canonical entity titles.
 PDF_ALIASES = {
+    "ＹＲＰ野比": "YRP野比",
+    "屛風浦": "屏風浦",
     "空港第２ビル": "空港第2ビル",
     "羽田第１・第２": "羽田空港第１・第２ターミナル",
     "羽田第３": "羽田空港第３ターミナル",
