@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import tempfile
+import statistics
 from collections import Counter
 from pathlib import Path
 from typing import Any
@@ -12,8 +13,11 @@ from audit_keikyu_official_columns import FIRST_POSSIBLE_TIMETABLE_PAGE, page_sc
 from audit_keikyu_station_time_resolution import resolve_page
 from keikyu_connected_station_catalog import station_titles
 from keikyu_official_pdf import (
+    TRAIN_NUMBER_RE,
     Word,
+    _label_span,
     bbox_words,
+    cluster_by_y,
     compact,
     detect_train_column_grid,
     download_official_pdf,
@@ -46,6 +50,26 @@ def band_words(words: list[Word], height: float, band: str) -> list[Word]:
     ]
 
 
+def train_number_rows(words: list[Word]) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    for row in cluster_by_y(words):
+        span = _label_span(row, '列車番号')
+        if span is None:
+            continue
+        label_right = span[1]
+        tokens = [w for w in row if w.x > label_right and TRAIN_NUMBER_RE.fullmatch(w.text)]
+        xs = sorted(w.x for w in tokens)
+        gaps = [round(b - a, 3) for a, b in zip(xs, xs[1:]) if 8 <= b - a <= 25]
+        out.append({
+            'y': round(float(statistics.median(w.y for w in row)), 3),
+            'labelRight': round(float(label_right), 3),
+            'explicitTokenCount': len(tokens),
+            'tokens': [w.text for w in tokens[:12]],
+            'candidateGaps': gaps[:20],
+        })
+    return out
+
+
 def diagnose(pdf_path: Path) -> dict[str, Any]:
     titles = station_titles()
     total_pages = page_count(pdf_path)
@@ -59,13 +83,21 @@ def diagnose(pdf_path: Path) -> dict[str, Any]:
         excluded = page_scope_reason(page_text)
         if excluded:
             continue
-        page_row: dict[str, Any] = {'page': page_number, 'bands': {}}
+        page_row: dict[str, Any] = {'page': page_number, 'height': height, 'bands': {}}
         for band in BANDS:
             bw = band_words(words, height, band)
+            headers = train_number_rows(bw)
+            totals[f'{band}TrainNumberRows'] += len(headers)
             grid = detect_train_column_grid(bw)
             if grid is None:
-                page_row['bands'][band] = {'grid': False}
-                missing.append({'page': page_number, 'band': band, 'reason': 'no-grid'})
+                page_row['bands'][band] = {'grid': False, 'trainNumberRows': headers}
+                missing.append({
+                    'page': page_number,
+                    'band': band,
+                    'reason': 'no-grid',
+                    'trainNumberRows': headers,
+                })
+                totals[f'{band}BandsWithoutGrid'] += 1
                 continue
             resolution = resolve_page(bw, grid, titles, include_records=False)
             cells = len(time_cells(bw, grid))
@@ -82,9 +114,13 @@ def diagnose(pdf_path: Path) -> dict[str, Any]:
                 'unresolvedTimeCells': int(resolution.get('unresolvedTimeCells') or 0),
                 'recordAccountingGap': int(resolution.get('recordAccountingGap') or 0),
                 'accountingMatches': accounted == int(resolution.get('timeCells') or 0),
+                'trainNumberRows': headers,
             }
             page_row['bands'][band] = row
             totals['bandsWithGrid'] += 1
+            totals[f'{band}BandsWithGrid'] += 1
+            totals[f'{band}Columns'] += row['columns']
+            totals[f'{band}TimeCells'] += row['timeCells']
             totals['columns'] += row['columns']
             totals['explicitColumns'] += row['explicitColumns']
             totals['anonymousColumns'] += row['anonymousColumns']
@@ -98,6 +134,7 @@ def diagnose(pdf_path: Path) -> dict[str, Any]:
         totals['pagesAudited'] += 1
 
     totals['expectedBands'] = totals['pagesAudited'] * 2
+    sample_missing = [row for row in missing if row.get('reason') == 'no-grid'][:12]
     return {
         'kind': 'keikyu-two-table-band-diagnosis',
         'splitPolicy': {
@@ -107,6 +144,7 @@ def diagnose(pdf_path: Path) -> dict[str, Any]:
             'identityPromotions': 0,
         },
         'totals': dict(totals),
+        'sampleMissingHeaders': sample_missing,
         'missingOrInvalidBands': missing,
         'pages': pages,
     }
@@ -129,6 +167,7 @@ def main() -> int:
         'output': str(args.output),
         **payload['totals'],
         'missingOrInvalidBands': len(payload['missingOrInvalidBands']),
+        'sampleMissingHeaders': payload['sampleMissingHeaders'],
         'identityPromotions': 0,
     }
     print(json.dumps(summary, ensure_ascii=False, indent=2))
