@@ -2,8 +2,9 @@
 """Build section-local Keikyu stop-time fragments from the official full timetable PDF.
 
 A physical fragment is one proven train column inside one independently detected
-printed timetable section on one PDF page.  Printed train numbers are preserved
-as metadata but never used here to join sections or pages.
+printed timetable section on one PDF page. Printed train numbers are preserved
+as metadata but never used here to join sections or pages. Calendar identity is
+accepted only from the literal printed 「平日用」 / 「土休日用」 page label.
 """
 from __future__ import annotations
 
@@ -11,11 +12,13 @@ import argparse
 import hashlib
 import json
 import tempfile
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
 from audit_keikyu_official_columns import FIRST_POSSIBLE_TIMETABLE_PAGE, page_scope_reason
 from audit_keikyu_station_time_resolution import resolve_page
+from diagnose_keikyu_official_calendars import printed_calendar
 from keikyu_connected_station_catalog import station_titles
 from keikyu_official_pdf import (
     OFFICIAL_PDF_URL,
@@ -33,6 +36,7 @@ def fragment_id(page_number: int, section: int, column: int) -> str:
 
 def build_section_fragments(
     page_number: int,
+    calendar: str,
     section_index: int,
     header_ordinal: int,
     y_min: float,
@@ -69,6 +73,7 @@ def build_section_fragments(
             {
                 "id": fragment_id(page_number, section_index, column),
                 "page": page_number,
+                "calendar": calendar,
                 "section": section_index,
                 "headerOrdinal": header_ordinal,
                 "sectionYMin": round(float(y_min), 3),
@@ -111,6 +116,9 @@ def build_dataset(pdf_path: Path, source_bytes: bytes) -> dict[str, Any]:
     fragments: list[dict[str, Any]] = []
     pages: list[dict[str, Any]] = []
     excluded_pages: list[dict[str, Any]] = []
+    calendar_pages: Counter[str] = Counter()
+    calendar_sections: Counter[str] = Counter()
+    calendar_fragments: Counter[str] = Counter()
     totals = {
         "sourceTimeCells": 0,
         "resolvedTimeCells": 0,
@@ -129,9 +137,13 @@ def build_dataset(pdf_path: Path, source_bytes: bytes) -> dict[str, Any]:
             excluded_pages.append({"page": page_number, "reason": excluded_reason})
             continue
 
+        calendar = printed_calendar(page_text)
+        if calendar not in {"weekday", "holiday"}:
+            raise RuntimeError(f"page {page_number} does not have exactly one literal printed calendar label")
         sections = detect_train_column_sections(words)
         if not sections:
             continue
+        calendar_pages[calendar] += 1
 
         page_section_rows: list[dict[str, Any]] = []
         page_resolved = 0
@@ -149,6 +161,7 @@ def build_dataset(pdf_path: Path, source_bytes: bytes) -> dict[str, Any]:
 
             section_fragments = build_section_fragments(
                 page_number,
+                calendar,
                 section.section_index,
                 section.header_ordinal,
                 section.y_min,
@@ -174,6 +187,7 @@ def build_dataset(pdf_path: Path, source_bytes: bytes) -> dict[str, Any]:
             page_section_rows.append(
                 {
                     "section": section.section_index,
+                    "calendar": calendar,
                     "headerOrdinal": section.header_ordinal,
                     "yMin": round(float(section.y_min), 3),
                     "yMax": round(float(section.y_max), 3),
@@ -189,6 +203,8 @@ def build_dataset(pdf_path: Path, source_bytes: bytes) -> dict[str, Any]:
             page_resolved += resolved_count
             page_unresolved += unresolved_count
             page_fragment_count += len(section_fragments)
+            calendar_sections[calendar] += 1
+            calendar_fragments[calendar] += len(section_fragments)
             totals["timetableSections"] += 1
             totals["sourceTimeCells"] += int(resolution["timeCells"])
             totals["resolvedTimeCells"] += resolved_count
@@ -200,6 +216,7 @@ def build_dataset(pdf_path: Path, source_bytes: bytes) -> dict[str, Any]:
         pages.append(
             {
                 "page": page_number,
+                "calendar": calendar,
                 "sectionCount": len(page_section_rows),
                 "fragmentCount": page_fragment_count,
                 "sourceTimeCells": page_cells,
@@ -216,9 +233,11 @@ def build_dataset(pdf_path: Path, source_bytes: bytes) -> dict[str, Any]:
     ids = [str(item.get("id") or "") for item in fragments]
     if any(not value for value in ids) or len(ids) != len(set(ids)):
         raise RuntimeError("duplicate or missing section-local fragment id")
+    if any(str(item.get("calendar") or "") not in {"weekday", "holiday"} for item in fragments):
+        raise RuntimeError("section-local fragment missing literal printed calendar")
 
     return {
-        "version": 2,
+        "version": 3,
         "kind": "keikyu-official-section-local-stop-times",
         "scope": "Keisei/Asakusa/Keikyu connected component; Keikyu Daishi excluded",
         "source": {
@@ -228,6 +247,11 @@ def build_dataset(pdf_path: Path, source_bytes: bytes) -> dict[str, Any]:
         },
         "canonicalStationTitleCount": len(titles),
         "excludedPages": excluded_pages,
+        "calendarCounts": {
+            "pages": dict(calendar_pages),
+            "sections": dict(calendar_sections),
+            "fragments": dict(calendar_fragments),
+        },
         "pages": pages,
         "totals": totals,
         "fragments": fragments,
@@ -235,6 +259,8 @@ def build_dataset(pdf_path: Path, source_bytes: bytes) -> dict[str, Any]:
             "pageSectionColumnIsExactLocalIdentity": True,
             "literalTrainNumberRowsAreHardSectionBoundaries": True,
             "minimumDistinctTimedRowsPerIdentitySection": 3,
+            "literalPrintedCalendarRequired": True,
+            "calendarMayBeInferredFromPageNumber": False,
             "printedTrainNumberMayJoinSectionsOrPages": False,
             "anonymousColumnMayJoinSectionsOrPages": False,
             "clockTimeProximityMayJoinFragments": False,
@@ -272,6 +298,7 @@ def main() -> int:
         "output": str(args.output),
         "sourceSha256": dataset["source"]["sha256"],
         "pages": len(dataset["pages"]),
+        "calendarCounts": dataset["calendarCounts"],
         **dataset["totals"],
         "runtimeSameTrainPromotions": 0,
     }
