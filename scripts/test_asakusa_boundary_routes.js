@@ -37,5 +37,5 @@ for(const trip of network.trips){
   assert.equal(api.direct(b,a,{__networks:[{data:one}]},departure,service),null,'a train cannot run backwards');
   tested++;
 }
-assert.equal(tested,1260);assert.equal(twoBoundaries,573);assert.equal(directions.size,8);
+assert.equal(tested,1260);assert.equal(twoBoundaries,613);assert.equal(directions.size,8);
 console.log(`Asakusa route checks passed: ${tested} exact journeys, ${twoBoundaries} across both boundaries, eight calendar/direction cases`);

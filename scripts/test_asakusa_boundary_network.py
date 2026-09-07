@@ -1,6 +1,6 @@
 import copy
 import unittest
-from build_asakusa_boundary_network import exact_local_sequence, join, minute, validate_chronology
+from build_asakusa_boundary_network import exact_local_sequence, join, minute, validate_chronology, verify_selected_review, read, SELECTED
 
 
 class BoundaryTests(unittest.TestCase):
@@ -47,6 +47,27 @@ class BoundaryTests(unittest.TestCase):
         validate_chronology([['A', None, 1439], ['B', 1452, None]])
         with self.assertRaises(ValueError):
             validate_chronology([['A', None, 400], ['B', 399, None]])
+
+    def test_selected_review_rejects_changed_source(self):
+        proof = read(SELECTED)
+        key = next(iter(proof['officialSourceSha256']))
+        proof['officialSourceSha256'][key] = '0' * 64
+        with self.assertRaisesRegex(ValueError, 'source changed'):
+            verify_selected_review(proof, {}, {}, {})
+
+    def test_selected_review_requires_both_sources(self):
+        proof = read(SELECTED)
+        proof['officialSourceSha256'].popitem()
+        with self.assertRaisesRegex(ValueError, 'both complete official sources'):
+            verify_selected_review(proof, {}, {}, {})
+
+    def test_selected_review_requires_all_review_checks(self):
+        for field in ['singleTrainCrossesSengakuji', 'wholeOrderedStationSequenceMatches',
+                      'everyOfficialObservedArrivalDepartureMatches']:
+            proof = read(SELECTED)
+            proof['review'][field] = False
+            with self.assertRaisesRegex(ValueError, 'whole-train identity'):
+                verify_selected_review(proof, {}, {}, {})
 
 
 if __name__ == '__main__':

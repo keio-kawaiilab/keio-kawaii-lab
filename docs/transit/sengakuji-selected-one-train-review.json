@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "reviewedAt": "2026-09-07",
+  "sourceUrl": "https://transit.yahoo.co.jp/timetable/22911/3230/51443?kind=1&hh=8&mm=42",
+  "sourceRole": "Selected one-train identity review only; all production station events remain official Keikyu and Toei data",
+  "calendar": "weekday",
+  "toeiTimetableId": "odpt.TrainTimetable:Toei.Asakusa.847T.Weekday",
+  "keikyuJourneyId": "keikyu-official:fd6e5d57d7640f20b1cf77bd",
+  "officialColumns": ["keikyu-official-pdf:p042:s00:c25", "keikyu-official-pdf:p069:s01:c01"],
+  "officialSourceSha256": {
+    "data/transit/keikyu/timetables/official-internal-network.json": "a984b1ecd2a1f56f57c76d3388d8a2acf226437947ed1cd9fbf019b87a9a54f2",
+    "data/transit/toei/timetables/899209dea5fc3a.json": "1c2b8ca2e8c6fbf976ad3927d499d5da929968fb065325aa9d893a100c30eef1"
+  },
+  "review": {
+    "singleTrainCrossesSengakuji": true,
+    "wholeOrderedStationSequenceMatches": true,
+    "everyOfficialObservedArrivalDepartureMatches": true,
+    "combinedStopCount": 25,
+    "summary": "Weekday Haneda 08:42 to Oshiage 09:37 is explicitly one train. The complete 25-stop sequence matches both official local sequences, including Sengakuji arrival 09:10 and departure 09:13. Additional Yahoo-only arrivals are not imported."
+  }
+}

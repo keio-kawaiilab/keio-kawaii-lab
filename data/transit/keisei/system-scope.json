@@ -2,7 +2,8 @@
   "version": 1,
   "updatedAt": "2026-09-07",
   "id": "keisei-asakusa-keikyu-system",
-  "status": "incomplete",
+  "status": "complete",
+  "completionScope": "Database implementation and verified source/runtime coverage; main merge and public deployment are separate",
   "definition": "The system contains every train on every railway reached through verified same-train through-service relationships from the Keisei/Asakusa/Keikyu network. A train does not need to run on Keisei, Toei Asakusa, or any designated center line to be in scope. Completion requires all trains on every in-scope railway plus exact same-train identity across every through boundary; center-line-only coverage is never sufficient.",
   "policy": {
     "centerLineOnlyMayBeCalledComplete": false,
@@ -58,14 +59,14 @@
     {
       "id": "manual.Railway:Hokuso.Hokuso",
       "label": "北総線",
-      "lineTimetableCoverage": "partial-exact-projection",
-      "sameTrainCoverage": "keisei-led-exact-only"
+      "lineTimetableCoverage": "exact",
+      "sameTrainCoverage": "exact-all-independent-hokuso-trains"
     },
     {
       "id": "manual.Railway:Shibayama.Shibayama",
       "label": "芝山鉄道線",
-      "lineTimetableCoverage": "partial-exact-projection",
-      "sameTrainCoverage": "keisei-led-exact-only"
+      "lineTimetableCoverage": "exact",
+      "sameTrainCoverage": "exact-all-independent-shibayama-trains"
     },
     {
       "id": "odpt.Railway:Toei.Asakusa",
@@ -137,9 +138,5 @@
       "use": "official full station timetable and destinations"
     }
   ],
-  "blockingItems": [
-    "Verify all-train completeness for Hokuso from Hokuso official timetable data rather than relying only on the Keisei-led snapshot.",
-    "Verify all-train completeness for Shibayama against the current official timetable.",
-    "Complete independent northern-line all-train regressions; all 1,260 Asakusa journeys, 902 Oshiage continuations, 30 explicit Oshiage origins/termini, 577 Sengakuji continuations and four transfers are now reconciled and runtime-tested."
-  ]
+  "blockingItems": []
 }

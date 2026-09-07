@@ -5,7 +5,8 @@ Oshiage identity requires an official one-train page crossing the boundary and
 the entire ordered Asakusa sequence, with every observed arrival/departure exact.
 Repeated one-train publications are alternatives, never extra physical trains;
 all alternatives must give the identical northern continuation or the join fails.
-Sengakuji uses the separate 577-continuation / 4-transfer source audit.
+Sengakuji accounts for all 620 independent passenger-boundary trains, including
+41 continuations outside the separate 577-continuation connection-column audit.
 """
 import argparse
 import gzip
@@ -22,6 +23,7 @@ DETAILS = Path('data/transit/keisei/official-train-details.json')
 KEISEI = Path('data/transit/keisei/timetables/official-network.json')
 IDENTITIES = Path('data/transit/odpt-train-identities.json')
 ORIGINS = Path('docs/transit/oshiage-official-origin-markers.json')
+SELECTED = Path('docs/transit/sengakuji-selected-one-train-review.json')
 ASAKUSA = 'odpt.Railway:Toei.Asakusa'
 
 
@@ -69,6 +71,35 @@ def validate_chronology(stops):
                 if previous is not None and t < previous:
                     raise ValueError('Published joined sequence has a time regression')
                 previous = t
+
+
+def verify_selected_review(proof, local, keikyu, names):
+    """Bind the narrow human-reviewed single-train proof to exact official data.
+
+    This is not an inferred clock match or a general exception for train numbers.
+    A changed source or review requires fresh review; Yahoo-only events are unused.
+    """
+    if set(proof['officialSourceSha256']) != {str(NETWORK), str(TOEI)}:
+        raise ValueError('Selected review lacks both complete official sources')
+    for filename, expected in proof['officialSourceSha256'].items():
+        if hashlib.sha256(Path(filename).read_bytes()).hexdigest() != expected:
+            raise ValueError('Selected one-train review source changed')
+    review = proof['review']
+    if not all(review.get(k) is True for k in ['singleTrainCrossesSengakuji',
+               'wholeOrderedStationSequenceMatches', 'everyOfficialObservedArrivalDepartureMatches']):
+        raise ValueError('Selected review does not establish whole-train identity')
+    tid, jid = proof['toeiTimetableId'], proof['keikyuJourneyId']
+    evidence = next(e for e in keikyu['journeyEvidence'] if e['id'] == jid)
+    t = next(t for t in keikyu['trips'] if t[5] == jid)
+    if evidence['members'] != proof['officialColumns'] or evidence['calendar'] != proof['calendar'] or local[tid]['calendar'] != proof['calendar']:
+        raise ValueError('Selected review official columns/calendar changed')
+    segment = {'stops': [[names[keikyu['stations'][s[0]]], minute(s[1]), minute(s[2])] for s in t[3]],
+               'links': [[keikyu['railways'][r] for r in rs] for rs in t[4]]}
+    combined = join(segment, local[tid])
+    if len(combined['stops']) != review['combinedStopCount']:
+        raise ValueError('Selected review full sequence changed')
+    validate_chronology(combined['stops'])
+    return tid, {'segment': segment, 'direction': 'keikyu-to-toei', 'journeyId': jid, 'candidateId': None}
 
 
 def build():
@@ -127,7 +158,15 @@ def build():
         north = {'stops': raw[oi:] if before else raw[:oi+1],
                  'links': all_links[oi:] if before else all_links[:oi]}
         direction = 'toei-to-keisei' if before else 'keisei-to-toei'
+        southern = None
+        if '泉岳寺' in [s[0] for s in raw]:
+            si = next(i for i, s in enumerate(raw) if s[0] == '泉岳寺')
+            if si > 0 and raw[si-1][0] == '品川':
+                southern = {'segment': {'stops': raw[:si+1], 'links': all_links[:si]}, 'direction': 'keikyu-to-toei'}
+            elif si+1 < len(raw) and raw[si+1][0] == '品川':
+                southern = {'segment': {'stops': raw[si:], 'links': all_links[si:]}, 'direction': 'toei-to-keikyu'}
         alternatives[tid].append({'segment': north, 'direction': direction,
+                                  'southern': southern, 'fullOrigin': raw[0][0], 'fullDestination': raw[-1][0],
                                   'sourceKey': source['key'], 'sourceUrl': source['url'], 'sourceIndex': index})
         source_matches.append(source['key'])
 
@@ -184,6 +223,44 @@ def build():
                    'links': [[keikyu['railways'][r] for r in rs] for rs in t[4]]}
         sg_join[tid] = {'segment': segment, 'direction': row['direction'], 'journeyId': jid, 'candidateId': row['candidateId']}
 
+    # The separate Keikyu connection-table audit has 577 columns, not every
+    # independent Asakusa boundary train. Forty additional continuations have
+    # complete official one-train pages and exact whole-Asakusa sequences.
+    selected_proof = read(SELECTED)
+    selected_tid, selected_join = verify_selected_review(selected_proof, local, keikyu, names)
+    sengakuji = []
+    for tid, row in local.items():
+        seq = row['stops']
+        relevant = (seq[0][0] == '泉岳寺' and seq[1][0] == '三田') or (seq[-1][0] == '泉岳寺' and seq[-2][0] == '三田')
+        if not relevant:
+            continue  # Sengakuji <-> Nishimagome shuttles are the other branch.
+        if tid in sg_join:
+            sengakuji.append({'toeiTimetableId': tid, 'status': 'verified-keikyu-connection-column'})
+            continue
+        candidates = alternatives[tid]
+        if tid == selected_tid:
+            if candidates:
+                raise ValueError('Selected case now has official one-train alternatives; reconcile')
+            sg_join[tid] = selected_join
+            sengakuji.append({'toeiTimetableId': tid, 'status': 'verified-selected-one-train-review',
+                             'reviewFile': str(SELECTED), 'sourceUrl': selected_proof['sourceUrl']})
+            continue
+        if not candidates:
+            raise ValueError('Unaccounted independent Sengakuji passenger-boundary train: ' + tid)
+        first = candidates[0]['southern']
+        if any(c['southern'] != first for c in candidates):
+            raise ValueError('Conflicting official southern continuations: ' + tid)
+        pubs = [{k: c[k] for k in ['sourceKey', 'sourceUrl', 'sourceIndex']} for c in candidates]
+        if first:
+            sg_join[tid] = dict(first, journeyId=None, candidateId=None)
+            sengakuji.append({'toeiTimetableId': tid, 'status': 'verified-complete-one-train-page', 'sourcePublications': pubs})
+        else:
+            if seq[-1][0] != '泉岳寺' or any(c['fullDestination'] != '泉岳寺' for c in candidates):
+                raise ValueError('Unresolved Sengakuji train lacks a literal complete-page terminus: ' + tid)
+            sengakuji.append({'toeiTimetableId': tid, 'status': 'explicit-sengakuji-terminus', 'sourcePublications': pubs})
+    if len(sengakuji) != 620 or len(sg_join) != 618:
+        raise ValueError('Independent Sengakuji boundary inventory changed')
+
     trips, reports = [], []
     rails = sorted(set(keisei['railways']) | set(keikyu['railways']) | {ASAKUSA})
     station_ids = sorted(set(id_by_name.values()))
@@ -201,7 +278,7 @@ def build():
         trips.append([0 if row['calendar'] == 'weekday' else 1, 0, row['trip'][2], stops, links, 'asakusa-verified:' + tid])
         reports.append({'toeiTimetableId': tid, 'oshiage': osh is not None, 'sengakuji': sg is not None,
                         'keikyuJourneyId': sg['journeyId'] if sg else None, 'stopCount': len(stops)})
-    hashes = {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in [TOEI, DETAILS, KEISEI, IDENTITIES, NETWORK, ORIGINS]}
+    hashes = {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in [TOEI, DETAILS, KEISEI, IDENTITIES, NETWORK, ORIGINS, SELECTED]}
     network = {'version': 1, 'timeBasis': 'train-timetable-network', 'source': 'Independent Toei/Keikyu timetables + Keisei official one-train pages',
                'identityBasis': 'whole-local-sequence-and-explicit-published-boundary-proof',
                'calendars': ['odpt.Calendar:Weekday', 'odpt.Calendar:SaturdayHoliday'], 'trainTypes': [''],
@@ -209,8 +286,11 @@ def build():
     report = {'version': 1, 'scope': 'All 1260 independent Asakusa trains and their proven Oshiage/Sengakuji continuations; not independent Hokuso/Shibayama completeness',
               'sourceFilesSha256': hashes, 'summary': {'asakusaTrains': len(trips), 'oshiageContinuations': len(osh_join),
               'oshiageOriginsOrTermini': len(oshiage)-len(osh_join), 'sengakujiContinuations': len(sg_join),
+              'sengakujiKeikyuPublishedReconciliations': 577, 'sengakujiAdditionalOneTrainPages': 40,
+              'sengakujiSelectedOneTrainReviews': 1, 'unresolvedSengakujiTrains': 0,
+              'sengakujiExplicitTermini': 2, 'sengakujiPassengerBoundaryCandidates': len(sengakuji),
               'matchedKeiseiSourcePublications': len(source_matches), 'unresolvedOshiageColumns': 0},
-              'oshiage': oshiage, 'journeys': reports,
+              'oshiage': oshiage, 'sengakuji': sengakuji, 'journeys': reports,
               'policy': {'trainNumberAloneProvesIdentity': False, 'timeProximityProvesIdentity': False,
                          'entireOrderedAsakusaSequenceRequired': True, 'allObservedArrivalDepartureEventsRequired': True,
                          'conflictingContinuationAlternativesRejected': True}}

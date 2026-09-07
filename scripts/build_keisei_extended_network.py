@@ -488,6 +488,9 @@ def main() -> int:
     report['endpointThroughCounts'] = endpoint_counts
     dump_json(REPORT_PATH, report)
     update_manifest(report, keisei_projection, hokuso_trips, shibayama_trips)
+    # Reapply independently proven internal-only trains after baseline refresh.
+    from hokuso_independent_runtime import install as install_hokuso
+    install_hokuso()
 
     print(json.dumps({
         'keiseiLineProjection': keisei_projection,

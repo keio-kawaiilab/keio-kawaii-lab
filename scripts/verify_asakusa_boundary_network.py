@@ -31,7 +31,11 @@ def verify():
             assert network['stations'][journeys[row['toeiTimetableId']][3][0][0]].endswith('.Oshiage')
         if row['status'] == 'explicit-oshiage-terminus':
             assert network['stations'][journeys[row['toeiTimetableId']][3][-1][0]].endswith('.Oshiage')
-    assert sum(r['oshiage'] and r['sengakuji'] for r in report['journeys']) == 573
+    assert sum(r['oshiage'] and r['sengakuji'] for r in report['journeys']) == 613
+    assert Counter(r['status'] for r in report['sengakuji']) == {
+        'verified-keikyu-connection-column': 577, 'verified-complete-one-train-page': 40,
+        'verified-selected-one-train-review': 1,
+        'explicit-sengakuji-terminus': 2}
     return report['summary']
 
 

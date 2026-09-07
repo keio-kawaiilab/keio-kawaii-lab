@@ -13,6 +13,7 @@ on:
       - 'data/transit-v2/**'
       - 'docs/transit/*asakusa*'
       - 'docs/transit/*oshiage*'
+      - 'docs/transit/*sengakuji*'
       - '.github/workflows/verify-asakusa-boundary-network.yml'
 permissions:
   contents: read
@@ -50,4 +51,5 @@ jobs:
           path: |
             docs/transit/asakusa-boundary-network-audit.json.gz
             docs/transit/oshiage-official-origin-markers.json
+            docs/transit/sengakuji-selected-one-train-review.json
             data/transit-v2/coverage.json
