@@ -33,7 +33,9 @@ jobs:
       - name: Verify exact identities and route behavior
         run: |
           python -m unittest discover -s scripts -p 'test_keikyu_*.py'
+          python -S scripts/verify_keikyu_internal_network.py
           python scripts/verify_keikyu_internal_materialization.py
+          python scripts/audit_keisei_system_scope.py
           node scripts/test_keikyu_internal_routes.js
           node scripts/test_route_runtime_same_train.js
       - name: Reproduce complete network from the current official PDF
