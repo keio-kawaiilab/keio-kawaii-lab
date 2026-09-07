@@ -32,6 +32,10 @@ class HardenPiaEventsTests(unittest.TestCase):
         self.assertEqual(h.exact_period_from_text(text), (None, None))
         self.assertEqual(h.deadline_from_text(text), "2026-08-25T23:59")
 
+    def test_result_announcement_is_not_a_deadline(self):
+        text = "抽選受付終了 ～2026/9/6(日) 23:59 抽選結果発表 2026/9/9(水) 18:00"
+        self.assertEqual(h.deadline_from_text(text), "2026-09-06T23:59")
+
     def test_pia_ui_label_is_never_valid_event_title(self):
         self.assertTrue(h.is_bad_title("行きたい!公演アラート"))
         self.assertTrue(h.is_bad_title("メールで通知"))
@@ -86,6 +90,7 @@ class HardenPiaEventsTests(unittest.TestCase):
             "eventDates": ["2026-11-10", "2026-11-12"],
             "sourceType": "pia",
             "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=20981",
+            "applicationStatus": "open",
         }
         kept, rejected = h.harden(
             [official, pia],
@@ -98,6 +103,33 @@ class HardenPiaEventsTests(unittest.TestCase):
         self.assertEqual(fixed["applyEnd"], "2026-08-24T11:00")
         self.assertTrue(fixed["deadlineVerified"])
         self.assertEqual(fixed["applicationDisplayMode"], "band-from-today")
+        self.assertEqual(h.validate_public_pia(kept), [])
+
+    def test_ended_pia_never_gets_active_band(self):
+        pia = {
+            "id": "ended",
+            "group": "CANDY TUNE",
+            "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
+            "ticketType": "2次プレリザーブ",
+            "applyStart": None,
+            "applyEnd": "2026-09-09T18:00",
+            "eventDate": "2026-10-02",
+            "sourceType": "ticket-history-guard",
+            "primarySource": "pia",
+            "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=35165",
+            "applicationStatus": "ended",
+            "applicationDisplayMode": "band-from-today",
+            "retainedFromPreviousPiaRun": True,
+        }
+        kept, rejected = h.harden(
+            [pia],
+            DummySession("抽選受付終了 ～2026/9/6(日) 23:59 抽選結果発表 2026/9/9(水) 18:00"),
+        )
+        self.assertFalse(rejected)
+        fixed = kept[0]
+        self.assertEqual(fixed["applyEnd"], "2026-09-06T23:59")
+        self.assertEqual(fixed["applicationDisplayMode"], "offers")
+        self.assertNotIn("retainedFromPreviousPiaRun", fixed)
         self.assertEqual(h.validate_public_pia(kept), [])
 
     def test_pia_without_timing_is_still_kept(self):
@@ -139,6 +171,7 @@ class HardenPiaEventsTests(unittest.TestCase):
             "eventDate": "2026-11-24",
             "sourceType": "pia",
             "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21416",
+            "applicationStatus": "open",
         }
         kept, rejected = h.harden(
             [pia],
