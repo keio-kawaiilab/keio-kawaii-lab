@@ -25,17 +25,67 @@ def entry(**changes) -> dict:
     return base
 
 
-def payload(row: dict, *, safe: bool = True) -> dict:
-    return {
-        'policy': {
-            'officialSamePrintedColumnRequired': True,
+def cross_page_entry(**changes) -> dict:
+    base = {
+        'id': 'internal:cross', 'matchStatus': 'matched-singleton',
+        'boundaryId': target.ZUSHI_BOUNDARY_ID,
+        'fromRailway': target.ZUSHI, 'toRailway': target.MAIN,
+        'fromFragment': 'z1', 'toFragment': 'm1',
+        'sourceMatches': ['z1'], 'targetMatches': ['m1'],
+        'sourceOfficialFragment': 'official:p1:c1',
+        'targetOfficialFragment': 'official:p2:c1',
+        'officialPhysicalComponentRoot': 'official:p1:c1',
+        'officialAnchors': [
+            {'station': '六浦', 'suffix': '.Mutsuura', 'minute': 600},
+            {'station': '金沢文庫', 'suffix': '.KanazawaBunko', 'minute': 608},
+        ],
+        'officialPreviousPublicationPath': [{
+            'fromFragment': 'official:p1:c1',
+            'toFragment': 'official:p2:c1',
+            'previousPrintedPage': 10,
+            'previousTrainNumber': '1234',
+            'currentPrintedPage': 11,
+            'currentTrainNumber': '1234',
+            'evidence': target.CROSS_PAGE_REFERENCE_EVIDENCE,
+        }],
+        'evidence': ['operator-official-full-timetable', target.CROSS_PAGE_MARKER],
+        'sourceUrl': 'https://www.keikyu.co.jp/ride/kakueki/pdf/schedule_all.pdf',
+        'matchPolicy': {
+            'crossPageIdentityUsed': True,
+            'officialPreviousPublicationPageAndTrainNumberRequired': True,
+            'uniquePreviousPublicationTargetRequired': True,
+            'pageLocalFragmentMetadataMustMatch': True,
+            'crossPageGraphMustBeNonBranchingAcyclic': True,
+            'directedOfficialContinuationPathRequired': True,
             'twoExactPublishedStationTimesRequired': True,
             'singletonFragmentMatchRequiredAtBothPoints': True,
-            'trainNumberAloneMayEstablishIdentity': False if safe else True,
+            'sharedPublishedDestinationUsedOnlyForSearch': True,
+            'candidateFragmentGapUsedOnlyForSearch': True,
+            'trainNumberAloneMayEstablishIdentity': False,
             'timeProximityAloneMayEstablishIdentity': False,
         },
-        'entries': [row],
     }
+    base.update(changes)
+    return base
+
+
+def payload(row: dict, *, safe: bool = True, cross_page: bool = False) -> dict:
+    policy = {
+        'officialSamePrintedColumnRequired': True,
+        'twoExactPublishedStationTimesRequired': True,
+        'singletonFragmentMatchRequiredAtBothPoints': True,
+        'trainNumberAloneMayEstablishIdentity': False if safe else True,
+        'timeProximityAloneMayEstablishIdentity': False,
+    }
+    if cross_page:
+        policy.update({
+            'officialPreviousPublicationPageAndTrainNumberRequiredForCrossPage': True,
+            'uniquePreviousPublicationTargetRequiredForCrossPage': True,
+            'pageLocalFragmentMetadataMustMatchForCrossPage': True,
+            'crossPageGraphMustBeNonBranchingAcyclic': True,
+            'directedOfficialContinuationPathRequired': True,
+        })
+    return {'policy': policy, 'entries': [row]}
 
 
 def graph(pair=None, boundary_id=None, *, verified: bool = True) -> dict:
@@ -92,16 +142,8 @@ class ConsumerTests(unittest.TestCase):
 
     def test_current_missing_boundary_row_is_cleared_after_proof(self) -> None:
         unresolved = [
-            {
-                'kind': 'missing-boundary-train-identity-evidence',
-                'fragment': 'm1',
-                'nextRailway': target.AIRPORT,
-            },
-            {
-                'kind': 'missing-boundary-train-identity-evidence',
-                'fragment': 'other',
-                'nextRailway': target.AIRPORT,
-            },
+            {'kind': 'missing-boundary-train-identity-evidence', 'fragment': 'm1', 'nextRailway': target.AIRPORT},
+            {'kind': 'missing-boundary-train-identity-evidence', 'fragment': 'other', 'nextRailway': target.AIRPORT},
         ]
         edges, remaining = self.apply(payload(entry()), initial_unresolved=unresolved)
         self.assertEqual(1, len(edges))
@@ -138,6 +180,47 @@ class ConsumerTests(unittest.TestCase):
         edges, unresolved = self.apply(payload(entry(toRailway=target.ZUSHI)))
         self.assertEqual([], edges)
         self.assertEqual('unexpected-railway-pair', unresolved[0]['reason'])
+
+    def test_valid_explicit_cross_page_path_adds_edge(self) -> None:
+        row = cross_page_entry()
+        fragments = [fragment('z1', target.ZUSHI), fragment('m1', target.MAIN)]
+        indexes = graph((target.ZUSHI, target.MAIN), target.ZUSHI_BOUNDARY_ID)
+        edges, unresolved = self.apply(payload(row, cross_page=True), fragments=fragments, indexes=indexes)
+        self.assertEqual([], unresolved)
+        self.assertEqual(1, len(edges))
+        self.assertEqual('keikyu-official-internal-explicit-cross-page-two-point', edges[0]['evidence'][0])
+
+    def test_cross_page_without_global_policy_fails_closed(self) -> None:
+        row = cross_page_entry()
+        fragments = [fragment('z1', target.ZUSHI), fragment('m1', target.MAIN)]
+        indexes = graph((target.ZUSHI, target.MAIN), target.ZUSHI_BOUNDARY_ID)
+        edges, unresolved = self.apply(payload(row), fragments=fragments, indexes=indexes)
+        self.assertEqual([], edges)
+        self.assertEqual('unsafe-cross-page-global-policy', unresolved[0]['reason'])
+
+    def test_discontinuous_cross_page_path_fails_closed(self) -> None:
+        row = cross_page_entry(officialPreviousPublicationPath=[{
+            'fromFragment': 'wrong:start', 'toFragment': 'official:p2:c1',
+            'previousPrintedPage': 10, 'previousTrainNumber': '1234',
+            'evidence': target.CROSS_PAGE_REFERENCE_EVIDENCE,
+        }])
+        fragments = [fragment('z1', target.ZUSHI), fragment('m1', target.MAIN)]
+        indexes = graph((target.ZUSHI, target.MAIN), target.ZUSHI_BOUNDARY_ID)
+        edges, unresolved = self.apply(payload(row, cross_page=True), fragments=fragments, indexes=indexes)
+        self.assertEqual([], edges)
+        self.assertEqual('discontinuous-cross-page-reference-path', unresolved[0]['reason'])
+
+    def test_cross_page_path_missing_explicit_metadata_fails_closed(self) -> None:
+        row = cross_page_entry(officialPreviousPublicationPath=[{
+            'fromFragment': 'official:p1:c1', 'toFragment': 'official:p2:c1',
+            'previousPrintedPage': None, 'previousTrainNumber': '',
+            'evidence': target.CROSS_PAGE_REFERENCE_EVIDENCE,
+        }])
+        fragments = [fragment('z1', target.ZUSHI), fragment('m1', target.MAIN)]
+        indexes = graph((target.ZUSHI, target.MAIN), target.ZUSHI_BOUNDARY_ID)
+        edges, unresolved = self.apply(payload(row, cross_page=True), fragments=fragments, indexes=indexes)
+        self.assertEqual([], edges)
+        self.assertEqual('missing-explicit-previous-publication-metadata', unresolved[0]['reason'])
 
 
 if __name__ == '__main__':
