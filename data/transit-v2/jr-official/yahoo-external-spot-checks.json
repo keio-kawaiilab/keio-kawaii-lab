@@ -1,0 +1,150 @@
+{
+  "version": 1,
+  "provider": "Yahoo!乗換案内",
+  "retrievedAt": "2026-09-07",
+  "purpose": "JR external through-service route evidence; spot checks only",
+  "policy": {
+    "routeSearchMayEstablishTrainIdentity": false,
+    "sameTrainRequiresSourceTrainEvidence": true,
+    "zeroTransferIsRouteBehaviorEvidenceOnly": true,
+    "runtimeActivated": false
+  },
+  "checks": [
+    {
+      "family": "jr-ueno-tokyo-line",
+      "from": "高崎",
+      "to": "熱海",
+      "observedService": "JR高崎線(上野東京ライン)熱海行",
+      "transfers": 0,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E9%AB%98%E5%B4%8E-%E7%86%B1%E6%B5%B7"
+    },
+    {
+      "family": "jr-ueno-tokyo-line",
+      "from": "熱海",
+      "to": "高崎",
+      "observedService": "JR東海道本線(上野東京ライン)当駅始発高崎行",
+      "transfers": 0,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E7%86%B1%E6%B5%B7-%E9%AB%98%E5%B4%8E"
+    },
+    {
+      "family": "jr-musashino-keiyo",
+      "from": "府中本町",
+      "to": "東京",
+      "observedService": "JR武蔵野線当駅始発東京行",
+      "transfers": 0,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E5%BA%9C%E4%B8%AD%E6%9C%AC%E7%94%BA-%E6%9D%B1%E4%BA%AC"
+    },
+    {
+      "family": "jr-musashino-keiyo",
+      "from": "幕張豊砂",
+      "to": "府中本町",
+      "observedService": "JR武蔵野線府中本町行",
+      "transfers": 0,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E5%B9%95%E5%BC%B5%E8%B1%8A%E7%A0%82-%E5%BA%9C%E4%B8%AD%E6%9C%AC%E7%94%BA"
+    },
+    {
+      "family": "jr-ome-chuo",
+      "from": "東京",
+      "to": "青梅",
+      "observedService": "JR中央・青梅線青梅特快当駅始発青梅行",
+      "transfers": 0,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E6%9D%B1%E4%BA%AC-%E9%9D%92%E6%A2%85"
+    },
+    {
+      "family": "jr-sotetsu-direct",
+      "from": "新宿",
+      "to": "海老名(相鉄・小田急)",
+      "observedService": "JR埼京線(相鉄線直通)当駅始発海老名行",
+      "transfers": 0,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E5%AE%BF-%E6%B5%B7%E8%80%81%E5%90%8D%28%E7%9B%B8%E9%89%84%E3%83%BB%E5%B0%8F%E7%94%B0%E6%80%A5%29"
+    },
+    {
+      "family": "jr-sotetsu-direct",
+      "from": "指扇",
+      "to": "海老名(相鉄・小田急)",
+      "observedService": "JR埼京線(相鉄線直通)当駅始発海老名行",
+      "transfers": 0,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E6%8C%87%E6%89%87-%E6%B5%B7%E8%80%81%E5%90%8D%28%E7%9B%B8%E9%89%84%E3%83%BB%E5%B0%8F%E7%94%B0%E6%80%A5%29"
+    },
+    {
+      "family": "jr-rinkai-direct",
+      "from": "大宮(埼玉県)",
+      "to": "品川シーサイド",
+      "observedService": "JR埼京線通勤快速新木場行（りんかい線区間へ継続）",
+      "transfers": 0,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E5%A4%A7%E5%AE%AE%28%E5%9F%BC%E7%8E%89%E7%9C%8C%29-%E5%93%81%E5%B7%9D%E3%82%B7%E3%83%BC%E3%82%B5%E3%82%A4%E3%83%89"
+    },
+    {
+      "family": "jr-rinkai-direct",
+      "from": "大宮(埼玉県)",
+      "to": "東雲(東京都)",
+      "observedService": "JR埼京線通勤快速新木場行／東京臨海高速鉄道りんかい線",
+      "transfers": 0,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E5%A4%A7%E5%AE%AE%28%E5%9F%BC%E7%8E%89%E7%9C%8C%29-%E6%9D%B1%E9%9B%B2%28%E6%9D%B1%E4%BA%AC%E9%83%BD%29"
+    },
+    {
+      "family": "jr-chiyoda-direct",
+      "from": "我孫子",
+      "to": "国会議事堂前",
+      "observedService": "JR常磐線当駅始発代々木上原行",
+      "transfers": 0,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E6%88%91%E5%AD%AB%E5%AD%90-%E5%9B%BD%E4%BC%9A%E8%AD%B0%E4%BA%8B%E5%A0%82%E5%89%8D"
+    },
+    {
+      "family": "jr-chiyoda-direct",
+      "from": "取手",
+      "to": "西日暮里",
+      "observedService": "JR常磐線代々木上原行",
+      "transfers": 0,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E5%8F%96%E6%89%8B-%E8%A5%BF%E6%97%A5%E6%9A%AE%E9%87%8C"
+    },
+    {
+      "family": "jr-shonan-shinjuku",
+      "from": "大船",
+      "to": "新宿",
+      "observedService": "JR湘南新宿ライン快速前橋行",
+      "transfers": 0,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E5%A4%A7%E8%88%B9-%E6%96%B0%E5%AE%BF"
+    },
+    {
+      "family": "jr-shonan-shinjuku",
+      "from": "新宿",
+      "to": "大船",
+      "observedService": "JR湘南新宿ライン",
+      "transfers": 0,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E5%AE%BF-%E5%A4%A7%E8%88%B9"
+    },
+    {
+      "family": "jr-sobu-yokosuka",
+      "from": "成田空港(鉄道)",
+      "to": "横須賀",
+      "observedService": "JR特急成田エクスプレス42号当駅始発大船行",
+      "transfers": 1,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E6%88%90%E7%94%B0%E7%A9%BA%E6%B8%AF%28%E9%89%84%E9%81%93%29-%E6%A8%AA%E9%A0%88%E8%B3%80/"
+    },
+    {
+      "family": "jr-sobu-yokosuka",
+      "from": "成田",
+      "to": "西大井",
+      "observedService": "JR総武線快速久里浜行",
+      "transfers": 0,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E6%88%90%E7%94%B0-%E8%A5%BF%E5%A4%A7%E4%BA%95"
+    },
+    {
+      "family": "jr-tozai-chuo-sobu",
+      "from": "中野(東京都)",
+      "to": "西船橋",
+      "observedService": "東京メトロ東西線快速当駅始発東葉勝田台行（JR中央・総武線との境界確認）",
+      "transfers": 0,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E4%B8%AD%E9%87%8E%28%E6%9D%B1%E4%BA%AC%E9%83%BD%29-%E8%A5%BF%E8%88%B9%E6%A9%8B"
+    },
+    {
+      "family": "jr-tozai-chuo-sobu",
+      "from": "西船橋",
+      "to": "三鷹",
+      "observedService": "JR総武線三鷹行／東京メトロ東西線からの直通候補を区別",
+      "transfers": null,
+      "sourceUrl": "https://transit.yahoo.co.jp/search/result/%E8%A5%BF%E8%88%B9%E6%A9%8B-%E4%B8%89%E9%B7%B9"
+    }
+  ]
+}

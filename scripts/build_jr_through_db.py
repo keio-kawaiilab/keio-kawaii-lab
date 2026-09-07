@@ -186,6 +186,8 @@ def build(root):
                          'independentMotherSetComplete': False})
     west = read_json(v2 / 'western/network-journeys.json.gz')['journeys']
     west_jr = [j['id'] for j in west if any('JR-East.' in r for r in j['railwayPath'])]
+    yahoo_checks_path = v2 / 'jr-official/yahoo-external-spot-checks.json'
+    yahoo_checks = read_json(yahoo_checks_path)['checks'] if yahoo_checks_path.exists() else []
     inputs = ['data/transit-v2/fragments/jr-east.json', 'data/transit-v2/same-train-edges.json',
               'data/transit/odpt-train-identities.json', 'data/transit/jr-east/entities.json',
               'data/transit-v2/western/network-journeys.json.gz']
@@ -200,12 +202,14 @@ def build(root):
                          'splitMergeEdges': sum(e['toFragment'] != next_id.get(e['fromFragment']) for e in edges),
                          'externalEndpointEvidenceRows': len(external),
                          'missingFragmentLinkReferences': len(missing_links),
-                         'existingWesternJRJourneyReferences': len(west_jr)},
+                         'existingWesternJRJourneyReferences': len(west_jr),
+                         'yahooExternalSpotChecks': len(yahoo_checks)},
              'snapshotAccounted': len(ledger) == len(fragments),
              'allJRComplete': False, 'independentMotherSetComplete': False,
              'runtimeActivated': False, 'lines': per_line,
              'externalTargets': dict(Counter(e['targetRailway'] for e in external)),
              'existingWesternJRJourneyIds': west_jr,
+             'yahooExternalSpotCheckFile': str(yahoo_checks_path.relative_to(root)) if yahoo_checks_path.exists() else None,
              'remaining': ['independent all-station weekday/holiday inventory',
                            'external one-train full-journey collection/reconciliation',
                            'quarantined event conflicts and omitted identity-row stop coverage',
