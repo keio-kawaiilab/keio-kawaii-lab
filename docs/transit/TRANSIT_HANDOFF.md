@@ -32,6 +32,23 @@ connection columns are NOT 581 proven through trains. Four holiday columns
 explicitly connect to another train from Nishimagome. Same-column alignment
 alone does not establish physical identity. See section 7's new checkpoint.
 
+**LATEST CHECKPOINT — geometry recovery, 2026-09-07:** the nine previously
+unmatched boundary cases are now recovered. **577 explicit continuations have
+singleton identities on both local sides; 4 are transfers; 0 remain unresolved
+in the complete 581-column connection-PDF inventory.** An independent scan
+without the old 0..4-minute dwell cutoff also finds exactly those 581 columns,
+with no additional candidates. This completes that boundary reconciliation,
+NOT whole-Keikyu train coverage or runtime integration. The latter remain false.
+The prior remote checkpoint `e61b39a0` passed read-only CI run `34091281959`;
+do not confuse that success with the new geometry-recovery code's CI result.
+
+Machine-readable latest status: `docs/transit/keikyu-recovery-checkpoint.json`.
+Full independently parsed source DB is now saved, not scratch-only:
+`docs/transit/keikyu-independent-stop-times.json.gz` (deterministic gzip JSON,
+round-trip and stop verifier checked). The checkpoint records hashes of all
+eight associated persisted inputs/reports. Same-named audit JSON reports now
+contain this newer checkpoint; historical counts below describe older commits.
+
 ## 1. Non-negotiable meaning of 「○○系統」
 
 「○○系統を見て」は、○○へ入る列車だけを見るという意味ではない。
@@ -87,7 +104,7 @@ The component currently includes Keisei core lines, Hokuso, Shibayama, Toei Asak
 
 The Keikyu official full-line PDF is now parsed independently of the Keisei mother set.
 
-Current **printed-calendar + page/section/column** audit (2026-09-07):
+Previous **printed-calendar + page/section/column** audit (superseded by geometry recovery below):
 
 - Source SHA256: `e10b1c6efd92f40b0dae6d712b65c2391584b9134cd653c74fe78548ad681b63`
 - PDF pages: **145**; retained calendar-labelled pages: **127**, sections: **156**
@@ -283,7 +300,7 @@ not permission to concatenate overlapping stop sequences.
 - All 32 former Toei ambiguities are distinguishable by exact ordered station
   sequences. Of these, 29 also have a Keikyu match; 3 remain among the 9 misses.
 
-Current inventory after explicit marker and both-local sequence checks:
+Historical inventory before geometry recovery:
 
 | Result | Columns |
 | --- | ---: |
@@ -313,7 +330,7 @@ interior Toei stop; they are not missing/corrupt ODPT trips. The old 494-entry
 projected evidence contains none of these four boundary numbers, but this is
 not a complete runtime provenance audit.
 
-The **9 remaining Keikyu misses are all weekday**:
+The **9 former Keikyu misses were all weekday** (all recovered below):
 
 - Eight northbound arrivals **18:07, 18:14, 18:18, 18:22, 18:28, 18:34,
   18:40, 19:26**, on weekday connection PDF page 8. Matching printed times
@@ -330,11 +347,102 @@ The **9 remaining Keikyu misses are all weekday**:
 
 No production DB, runtime resolver, main merge or deployment changed.
 `coverageComplete=false`, `runtimeSameTrainPromotions=0` remain mandatory.
-**Next:** repair trailing-arrow column coverage; establish literal calendars
+**Historical next action, now performed:** repair trailing-arrow column coverage; establish literal calendars
 for excluded pages without inference; account for 1,205 unresolved cells;
 then rebuild/reverify mother and boundary audits. The old broad candidate
 extractors still return transfer columns intentionally for inventory: never
 promote their results without the new boundary-marker gate.
+
+### 2026-09-07 geometry-recovery result: boundary inventory resolved
+
+Implemented and tested, without nearest-clock-time joining:
+
+1. Read literal vertical calendar labels from same-x, contiguous-y PDF words.
+   Poppler's extraction order inserted neighboring train notes into `平日用`.
+   Full PDF pages 56/58/68/70/74 are recovered from actual characters, not from
+   page numbers, neighboring calendars, screenshots' capture times or guessing.
+2. Restore a trailing header `↓` column when the same grid position contains
+   at least two timed rows. Page 36 section 1 column 24 now contains Sengakuji
+   00:20 -> Shinagawa 00:22; its number remains anonymous. No automatic join
+   to 2252H in the preceding header is made by this geometry rule.
+3. Split accidentally merged multi-row text such as `塚発` using exact PDF
+   glyph coordinates and an exact character-multiset check. Do not invent a
+   missing character, guess its baseline or split a normal single-row label.
+   This restores **104** additional station-time cells.
+4. Restore **42** more cells separated from a unique printed operation marker
+   by a font-baseline offset <=1.9 PDF points. Save `markerEvidenceY` and verify
+   its distance; competing markers, absent proof and distant rows fail closed.
+   These are geometric distances, NOT train-time tolerances.
+
+Current complete accounting **within retained section/column coverage**:
+
+| Item | Count |
+| --- | ---: |
+| Calendar-classified timetable pages | 132 (weekday 68 / holiday 64) |
+| Sections / geometry fragments | 164 / 4,133 |
+| Train-bearing / structural-blank fragments | 3,140 / 993 |
+| Source numeric time-shaped cells | 67,703 |
+| Resolved station-time cells | 66,585 |
+| Retained unresolved cells | 1,118 |
+| Explicit same-calendar previous-publication graph edges | 298 |
+| Independent mother candidate components | 2,842 |
+| Reciprocal repeat-publication links | 453 (weekday 231 / holiday 222) |
+| Resulting publication groups | 2,389 |
+
+Calendar-unclassified pages **77 and 145 are non-timetable MEMO sheets**,
+visually inspected. Their MEMO lettering is artwork, not extractable text;
+the only extracted text is page numbers 72/140. Both have zero train sections.
+There are now **zero unclassified identity-bearing pages**. The calendar audit
+retains these two sheets explicitly rather than inventing a calendar.
+
+Of 1,118 residual numeric cells, **197 are explicitly in `前の掲載ページ` rows**
+(page references, not operational times). Others include embedded origin/end
+annotations; their exact semantics still require per-column classification.
+Do NOT describe all 1,118 as missing trains or pretend all are harmless metadata.
+Do NOT mark the whole mother set complete merely because all retained cells
+are accounted for or all 132 page calendars are known. Section/grid exclusions,
+anonymous within-page continuations and complete route-ready train assembly
+still require review. Runtime is unchanged.
+
+User-provided screenshots confirmed the eight evening cases. All eight plus
+2252H at midnight now have exact local matches. The **1773SH** literal number
+is retained in both full-PDF page 56 and page 74 columns; the Toei timetable ID
+contains **1773H**. No global S-stripping/number-normalization identity rule
+was introduced. Exact published multi-station sequences establish the mapping.
+
+Current boundary status: **577 reconciled continuations / 4 confirmed transfers
+/ 0 unmatched / 0 ambiguous**. Source hashes, all column coordinates,
+multi-station comparisons, negative cases, both local IDs and all nine recovered
+case IDs are saved. The unfiltered scan checks every PDF page (no hardcoded
+10-page ceiling) and every aligned boundary-time column, without a dwell cap.
+
+New files/commands:
+
+- `scripts/test_keikyu_geometry_recovery.py` (20 focused geometry/proof tests)
+- `scripts/audit_sengakuji_unfiltered_columns.py`
+- `scripts/save_keikyu_recovery_checkpoint.py`
+- `scripts/test_keikyu_recovered_inventory.py` (8 saved-inventory regressions)
+- `docs/transit/keikyu-recovery-checkpoint.json`
+- `docs/transit/keikyu-independent-stop-times.json.gz`
+- `docs/transit/keikyu-calendar-cross-page-audit.json`
+- `docs/transit/keikyu-printed-calendar-audit.json`
+- `docs/transit/sengakuji-unfiltered-column-audit.json`
+
+Local verification: **151 Keikyu + 12 Sengakuji + 9 Toei = 172 Python tests**;
+route runtime same-train, route-core, transfer-rules and transfer-block JS suites
+passed. Actual full-source stop verifier, graph verifier, mother verifier,
+complete sequence reconciliation, unfiltered scan and compressed-DB round-trip
+also passed. Whole-repository discovery is still not claimed green.
+
+The read-only calendar CI now repeats the unfiltered scan and nine-case/full-
+inventory gate. Source revision changing the pinned 577/4 population must stop
+for a new reviewed inventory, not silently lower the expected count.
+
+**Next work:** classify residual per-column annotation cells without losing
+their source provenance; audit omitted/anonymous section continuations and
+assemble complete independent Keikyu trains; only then integrate verified
+identities into the runtime DB with positive/negative route regressions.
+No additional manual research is requested from the user for the eight trains.
 
 ## 8. Remaining component blockers
 
@@ -376,7 +484,7 @@ A new chat should be able to resume by reading this file plus the current files 
 
 Local verification on the 2026-09-07 checkpoint:
 
-- `python3 -m unittest discover -s scripts -p 'test_keikyu_*.py'`: **123 passed** (27 new reciprocal/sequence/transfer tests).
+- `python3 -m unittest discover -s scripts -p 'test_keikyu_*.py'`: **151 passed** (latest geometry-recovery checkpoint).
 - `python3 scripts/test_sengakuji_independent_reconciliation.py`: **12 passed**.
 - `python3 -m unittest discover -s scripts -p 'test_toei_*.py'`: **9 passed**.
 - Route runtime same-train, route-core, transfer-rules and transfer-block JS suites: **passed**.

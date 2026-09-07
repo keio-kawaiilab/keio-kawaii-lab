@@ -112,9 +112,18 @@ def verify(payload: dict) -> dict:
                 errors.append(f"invalid event in {fragment_id}: {stop.get('event')!r}")
             if not isinstance(stop.get("time"), str) or not TIME_RE.fullmatch(stop["time"]):
                 errors.append(f"invalid time in {fragment_id}: {stop.get('time')!r}")
-            if stop.get("resolution") not in RESOLUTIONS:
+            resolution = stop.get('resolution', '')
+            recovered_marker = isinstance(resolution, str) and resolution.startswith('exact-nearby-printed-marker-and-')
+            base_resolution = resolution.removeprefix('exact-nearby-printed-marker-and-') if recovered_marker else resolution
+            if base_resolution not in RESOLUTIONS:
                 errors.append(f"invalid resolution in {fragment_id}: {stop.get('resolution')!r}")
             row_y = stop.get("rowY")
+            if recovered_marker:
+                evidence_y = stop.get('markerEvidenceY')
+                if (not isinstance(evidence_y, (int, float)) or not math.isfinite(evidence_y)
+                        or not isinstance(row_y, (int, float)) or not math.isfinite(row_y)
+                        or not 0 < abs(evidence_y-row_y) <= 1.91):
+                    errors.append(f"missing/out-of-bounds printed marker proof: {fragment_id}")
             if not isinstance(row_y, (int, float)):
                 errors.append(f"missing rowY in {fragment_id}")
             elif previous_y is not None and row_y < previous_y:

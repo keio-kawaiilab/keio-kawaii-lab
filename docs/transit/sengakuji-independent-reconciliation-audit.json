@@ -4,9 +4,8 @@
   "sourceSha256": "e10b1c6efd92f40b0dae6d712b65c2391584b9134cd653c74fe78548ad681b63",
   "officialColumnCandidateCount": 581,
   "statusCounts": {
-    "both-local-singleton-candidate": 301,
-    "keikyu-ambiguous": 238,
-    "keikyu-unmatched": 6,
+    "both-local-singleton-candidate": 265,
+    "keikyu-ambiguous": 280,
     "toei-ambiguous": 32,
     "toei-unmatched": 4
   },
@@ -36,43 +35,38 @@
     "kind": "keikyu-independent-mother-set-audit",
     "sourceSha256": "e10b1c6efd92f40b0dae6d712b65c2391584b9134cd653c74fe78548ad681b63",
     "calendarExcludedPages": [
-      56,
-      58,
-      68,
-      70,
-      74,
       77,
       145
     ],
     "calendarCounts": {
       "pages": {
-        "weekday": 63,
+        "weekday": 68,
         "holiday": 64
       },
       "sections": {
-        "weekday": 77,
+        "weekday": 85,
         "holiday": 79
       },
       "fragments": {
-        "weekday": 1935,
+        "weekday": 2140,
         "holiday": 1993
       }
     },
     "coverageComplete": false,
-    "geometryFragmentCount": 3928,
-    "trainBearingFragmentCount": 2968,
-    "structuralBlankFragmentCount": 960,
-    "officialCrossPageEdgeCount": 253,
-    "candidatePhysicalTrainCount": 2715,
-    "joinedPhysicalTrainCandidateCount": 253,
-    "singletonPhysicalTrainCandidateCount": 2462,
+    "geometryFragmentCount": 4133,
+    "trainBearingFragmentCount": 3140,
+    "structuralBlankFragmentCount": 993,
+    "officialCrossPageEdgeCount": 298,
+    "candidatePhysicalTrainCount": 2842,
+    "joinedPhysicalTrainCandidateCount": 298,
+    "singletonPhysicalTrainCandidateCount": 2544,
     "componentSizeHistogram": {
-      "1": 2462,
-      "2": 253
+      "1": 2544,
+      "2": 298
     },
-    "resolvedTimeCells": 63685,
-    "unresolvedTimeCells": 1205,
-    "sourceTimeCells": 64890,
+    "resolvedTimeCells": 66585,
+    "unresolvedTimeCells": 1118,
+    "sourceTimeCells": 67703,
     "zeroTimeEvidenceBearingFragmentCount": 0,
     "issues": [],
     "identityPolicy": {
@@ -94,7 +88,8 @@
   "issues": [],
   "coverageComplete": false,
   "identityPolicy": {
-    "crossBoundaryFactComesFromOfficialSamePrintedColumn": true,
+    "crossBoundaryFactComesFromOfficialSamePrintedColumn": false,
+    "explicitContinuationMarkerGateStillRequired": true,
     "bothLocalIdentitiesMustResolveSingleton": true,
     "duplicateTargetsMayBeSelectedArbitrarily": false,
     "clockTimeProximityMayEstablishIdentity": false,
@@ -1534,9 +1529,10 @@
         "621N"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p039:s00:c14"
+        "keikyu-mother:keikyu-official-pdf:p039:s00:c14",
+        "keikyu-mother:keikyu-official-pdf:p068:s01:c03"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:922a25d3d68ef1e81964c71f",
@@ -1568,7 +1564,8 @@
       ],
       "keikyuComponentMatches": [
         "keikyu-mother:keikyu-official-pdf:p011:s00:c11",
-        "keikyu-mother:keikyu-official-pdf:p039:s00:c16"
+        "keikyu-mother:keikyu-official-pdf:p039:s00:c16",
+        "keikyu-mother:keikyu-official-pdf:p068:s01:c04"
       ],
       "reconciliationStatus": "keikyu-ambiguous"
     },
@@ -1602,7 +1599,8 @@
       ],
       "keikyuComponentMatches": [
         "keikyu-mother:keikyu-official-pdf:p011:s00:c18",
-        "keikyu-mother:keikyu-official-pdf:p039:s00:c22"
+        "keikyu-mother:keikyu-official-pdf:p039:s00:c22",
+        "keikyu-mother:keikyu-official-pdf:p068:s01:c05"
       ],
       "reconciliationStatus": "keikyu-ambiguous"
     },
@@ -1635,9 +1633,11 @@
         "663H"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p039:s00:c23"
+        "keikyu-mother:keikyu-official-pdf:p011:s00:c20",
+        "keikyu-mother:keikyu-official-pdf:p039:s00:c23",
+        "keikyu-mother:keikyu-official-pdf:p068:s01:c06"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:d4feb4cb4ea3e55bc5638ad2",
@@ -1668,9 +1668,10 @@
         "773K"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p040:s00:c04"
+        "keikyu-mother:keikyu-official-pdf:p040:s00:c04",
+        "keikyu-mother:keikyu-official-pdf:p068:s01:c07"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:130dfc9f9a21613d7ef95e04",
@@ -1701,9 +1702,10 @@
         "665H"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p040:s00:c07"
+        "keikyu-mother:keikyu-official-pdf:p040:s00:c07",
+        "keikyu-mother:keikyu-official-pdf:p068:s01:c08"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:9869d0c479e3007260160561",
@@ -1734,9 +1736,10 @@
         "725N"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p040:s00:c12"
+        "keikyu-mother:keikyu-official-pdf:p040:s00:c12",
+        "keikyu-mother:keikyu-official-pdf:p068:s01:c09"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:eef05d6bd6be1e8ad535bb67",
@@ -1767,9 +1770,10 @@
         "667H"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p040:s00:c14"
+        "keikyu-mother:keikyu-official-pdf:p040:s00:c14",
+        "keikyu-mother:keikyu-official-pdf:p068:s01:c10"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:db43d2eaad1ccaa3278a0cd7",
@@ -1800,9 +1804,10 @@
         "775K"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p040:s00:c20"
+        "keikyu-mother:keikyu-official-pdf:p040:s00:c20",
+        "keikyu-mother:keikyu-official-pdf:p068:s01:c11"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:6f348a1a24e9e029f8c15ae7",
@@ -1833,9 +1838,10 @@
         "669H"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p040:s00:c22"
+        "keikyu-mother:keikyu-official-pdf:p040:s00:c22",
+        "keikyu-mother:keikyu-official-pdf:p068:s01:c12"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:5232f012105011db2f5a324d",
@@ -1866,9 +1872,10 @@
         "777K"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p041:s00:c03"
+        "keikyu-mother:keikyu-official-pdf:p041:s00:c03",
+        "keikyu-mother:keikyu-official-pdf:p068:s01:c13"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:6f304814eea755c00a29a103",
@@ -1899,9 +1906,10 @@
         "671H"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p041:s00:c08"
+        "keikyu-mother:keikyu-official-pdf:p041:s00:c08",
+        "keikyu-mother:keikyu-official-pdf:p068:s01:c14"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:97bec88c0dba03ffe3e74592",
@@ -1932,9 +1940,10 @@
         "723N"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p041:s00:c13"
+        "keikyu-mother:keikyu-official-pdf:p041:s00:c13",
+        "keikyu-mother:keikyu-official-pdf:p068:s01:c15"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:a24a6dc86996c58eb29020e5",
@@ -1965,9 +1974,10 @@
         "673H"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p041:s00:c17"
+        "keikyu-mother:keikyu-official-pdf:p041:s00:c17",
+        "keikyu-mother:keikyu-official-pdf:p068:s01:c17"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:001ef05ecd0c9733194c2401",
@@ -1998,9 +2008,10 @@
         "809T"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p041:s00:c22"
+        "keikyu-mother:keikyu-official-pdf:p041:s00:c22",
+        "keikyu-mother:keikyu-official-pdf:p068:s01:c18"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:38b0274c39d2e408e720d5aa",
@@ -2031,9 +2042,10 @@
         "775H"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p042:s00:c01"
+        "keikyu-mother:keikyu-official-pdf:p042:s00:c01",
+        "keikyu-mother:keikyu-official-pdf:p068:s01:c19"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:02a033f6eacc1bf2dc4a35e0",
@@ -2064,9 +2076,11 @@
         "851K"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p042:s00:c08"
+        "keikyu-mother:keikyu-official-pdf:p014:s00:c02",
+        "keikyu-mother:keikyu-official-pdf:p042:s00:c08",
+        "keikyu-mother:keikyu-official-pdf:p068:s01:c20"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:8d62ea333122d0d450c93aaa",
@@ -2097,9 +2111,10 @@
         "777H"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p042:s00:c10"
+        "keikyu-mother:keikyu-official-pdf:p042:s00:c10",
+        "keikyu-mother:keikyu-official-pdf:p068:s01:c21"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:aaeac60ed641cfa7bff3c24a",
@@ -2130,9 +2145,10 @@
         "801T"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p042:s00:c18"
+        "keikyu-mother:keikyu-official-pdf:p042:s00:c18",
+        "keikyu-mother:keikyu-official-pdf:p068:s01:c24"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:cb7d5d1c537d3a650216b7c2",
@@ -2163,9 +2179,10 @@
         "779H"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p042:s00:c20"
+        "keikyu-mother:keikyu-official-pdf:p042:s00:c20",
+        "keikyu-mother:keikyu-official-pdf:p068:s01:c25"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:acd7bdc2dbab040a110de1e7",
@@ -2691,6 +2708,7 @@
         "781H"
       ],
       "keikyuComponentMatches": [
+        "keikyu-mother:keikyu-official-pdf:p014:s00:c22",
         "keikyu-mother:keikyu-official-pdf:p043:s00:c04",
         "keikyu-mother:keikyu-official-pdf:p069:s01:c02"
       ],
@@ -2759,6 +2777,7 @@
         "783H"
       ],
       "keikyuComponentMatches": [
+        "keikyu-mother:keikyu-official-pdf:p015:s00:c03",
         "keikyu-mother:keikyu-official-pdf:p043:s00:c13",
         "keikyu-mother:keikyu-official-pdf:p069:s01:c05"
       ],
@@ -3667,7 +3686,8 @@
       "keikyuComponentMatches": [
         "keikyu-mother:keikyu-official-pdf:p017:s00:c09",
         "keikyu-mother:keikyu-official-pdf:p045:s00:c23",
-        "keikyu-mother:keikyu-official-pdf:p069:s00:c24"
+        "keikyu-mother:keikyu-official-pdf:p069:s00:c24",
+        "keikyu-mother:keikyu-official-pdf:p070:s01:c03"
       ],
       "reconciliationStatus": "keikyu-ambiguous"
     },
@@ -3701,7 +3721,9 @@
       ],
       "keikyuComponentMatches": [
         "keikyu-mother:keikyu-official-pdf:p017:s00:c14",
-        "keikyu-mother:keikyu-official-pdf:p046:s00:c07"
+        "keikyu-mother:keikyu-official-pdf:p046:s00:c07",
+        "keikyu-mother:keikyu-official-pdf:p070:s00:c02",
+        "keikyu-mother:keikyu-official-pdf:p070:s01:c06"
       ],
       "reconciliationStatus": "keikyu-ambiguous"
     },
@@ -3735,7 +3757,9 @@
       ],
       "keikyuComponentMatches": [
         "keikyu-mother:keikyu-official-pdf:p017:s00:c17",
-        "keikyu-mother:keikyu-official-pdf:p046:s00:c09"
+        "keikyu-mother:keikyu-official-pdf:p046:s00:c09",
+        "keikyu-mother:keikyu-official-pdf:p070:s00:c03",
+        "keikyu-mother:keikyu-official-pdf:p070:s01:c07"
       ],
       "reconciliationStatus": "keikyu-ambiguous"
     },
@@ -3768,9 +3792,10 @@
         "1119T"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p046:s00:c12"
+        "keikyu-mother:keikyu-official-pdf:p046:s00:c12",
+        "keikyu-mother:keikyu-official-pdf:p070:s01:c08"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:de1b505739ebfea4b26a1dd9",
@@ -3802,7 +3827,9 @@
       ],
       "keikyuComponentMatches": [
         "keikyu-mother:keikyu-official-pdf:p018:s00:c01",
-        "keikyu-mother:keikyu-official-pdf:p046:s00:c19"
+        "keikyu-mother:keikyu-official-pdf:p046:s00:c19",
+        "keikyu-mother:keikyu-official-pdf:p070:s00:c07",
+        "keikyu-mother:keikyu-official-pdf:p070:s01:c11"
       ],
       "reconciliationStatus": "keikyu-ambiguous"
     },
@@ -3836,7 +3863,9 @@
       ],
       "keikyuComponentMatches": [
         "keikyu-mother:keikyu-official-pdf:p018:s00:c03",
-        "keikyu-mother:keikyu-official-pdf:p046:s00:c21"
+        "keikyu-mother:keikyu-official-pdf:p046:s00:c21",
+        "keikyu-mother:keikyu-official-pdf:p070:s00:c08",
+        "keikyu-mother:keikyu-official-pdf:p070:s01:c12"
       ],
       "reconciliationStatus": "keikyu-ambiguous"
     },
@@ -3870,7 +3899,9 @@
       ],
       "keikyuComponentMatches": [
         "keikyu-mother:keikyu-official-pdf:p018:s00:c07",
-        "keikyu-mother:keikyu-official-pdf:p046:s00:c24"
+        "keikyu-mother:keikyu-official-pdf:p046:s00:c24",
+        "keikyu-mother:keikyu-official-pdf:p070:s00:c10",
+        "keikyu-mother:keikyu-official-pdf:p070:s01:c13"
       ],
       "reconciliationStatus": "keikyu-ambiguous"
     },
@@ -3904,7 +3935,9 @@
       ],
       "keikyuComponentMatches": [
         "keikyu-mother:keikyu-official-pdf:p018:s00:c12",
-        "keikyu-mother:keikyu-official-pdf:p047:s00:c06"
+        "keikyu-mother:keikyu-official-pdf:p047:s00:c06",
+        "keikyu-mother:keikyu-official-pdf:p070:s00:c13",
+        "keikyu-mother:keikyu-official-pdf:p070:s01:c16"
       ],
       "reconciliationStatus": "keikyu-ambiguous"
     },
@@ -3938,7 +3971,9 @@
       ],
       "keikyuComponentMatches": [
         "keikyu-mother:keikyu-official-pdf:p018:s00:c14",
-        "keikyu-mother:keikyu-official-pdf:p047:s00:c09"
+        "keikyu-mother:keikyu-official-pdf:p047:s00:c09",
+        "keikyu-mother:keikyu-official-pdf:p070:s00:c14",
+        "keikyu-mother:keikyu-official-pdf:p070:s01:c17"
       ],
       "reconciliationStatus": "keikyu-ambiguous"
     },
@@ -3971,9 +4006,10 @@
         "1129T"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p047:s00:c11"
+        "keikyu-mother:keikyu-official-pdf:p047:s00:c11",
+        "keikyu-mother:keikyu-official-pdf:p070:s01:c18"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:095e2ffd2a49a7bf9f119197",
@@ -4004,9 +4040,10 @@
         "1181K"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p047:s00:c18"
+        "keikyu-mother:keikyu-official-pdf:p047:s00:c18",
+        "keikyu-mother:keikyu-official-pdf:p070:s01:c21"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:1f371690fc18e465d084c41a",
@@ -4037,9 +4074,10 @@
         "1065H"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p047:s00:c20"
+        "keikyu-mother:keikyu-official-pdf:p047:s00:c20",
+        "keikyu-mother:keikyu-official-pdf:p070:s01:c22"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:3c72016258172ee41769d42e",
@@ -4070,9 +4108,10 @@
         "1223N"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p047:s00:c23"
+        "keikyu-mother:keikyu-official-pdf:p047:s00:c23",
+        "keikyu-mother:keikyu-official-pdf:p070:s01:c23"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:9a6b6cbbd392f8b2bbe7d915",
@@ -7639,9 +7678,10 @@
         "1641H"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p055:s00:c11"
+        "keikyu-mother:keikyu-official-pdf:p055:s00:c11",
+        "keikyu-mother:keikyu-official-pdf:p074:s01:c03"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:4326921d016dd14ea5454ce6",
@@ -7672,9 +7712,10 @@
         "1735H"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p055:s00:c13"
+        "keikyu-mother:keikyu-official-pdf:p055:s00:c13",
+        "keikyu-mother:keikyu-official-pdf:p074:s01:c05"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:d6ffac673829150c6941d337",
@@ -7705,9 +7746,10 @@
         "1625H"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p055:s00:c18"
+        "keikyu-mother:keikyu-official-pdf:p055:s00:c18",
+        "keikyu-mother:keikyu-official-pdf:p074:s01:c06"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:89fd2fbf9f6fa215e25dea7f",
@@ -7738,9 +7780,10 @@
         "1721N"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p055:s00:c20"
+        "keikyu-mother:keikyu-official-pdf:p055:s00:c20",
+        "keikyu-mother:keikyu-official-pdf:p074:s01:c07"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:f13da7bc91d9261a4965133b",
@@ -7771,9 +7814,10 @@
         "1671H"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p055:s00:c23"
+        "keikyu-mother:keikyu-official-pdf:p055:s00:c23",
+        "keikyu-mother:keikyu-official-pdf:p074:s01:c08"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:cff6470490ebb1f6dc328bad",
@@ -7869,8 +7913,11 @@
       "toeiTrainNumbers": [
         "1729N"
       ],
-      "keikyuComponentMatches": [],
-      "reconciliationStatus": "keikyu-unmatched"
+      "keikyuComponentMatches": [
+        "keikyu-mother:keikyu-official-pdf:p056:s00:c08",
+        "keikyu-mother:keikyu-official-pdf:p074:s01:c12"
+      ],
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:c0fa4879105273794136a25b",
@@ -7900,8 +7947,11 @@
       "toeiTrainNumbers": [
         "1773H"
       ],
-      "keikyuComponentMatches": [],
-      "reconciliationStatus": "keikyu-unmatched"
+      "keikyuComponentMatches": [
+        "keikyu-mother:keikyu-official-pdf:p056:s00:c11",
+        "keikyu-mother:keikyu-official-pdf:p074:s01:c13"
+      ],
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:2f593c53dc3cdafe392a5f12",
@@ -7964,8 +8014,12 @@
       "toeiTrainNumbers": [
         "1785H"
       ],
-      "keikyuComponentMatches": [],
-      "reconciliationStatus": "keikyu-unmatched"
+      "keikyuComponentMatches": [
+        "keikyu-mother:keikyu-official-pdf:p029:s00:c05",
+        "keikyu-mother:keikyu-official-pdf:p056:s00:c18",
+        "keikyu-mother:keikyu-official-pdf:p074:s01:c15"
+      ],
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:db0fc0741c7589a3f679505f",
@@ -7995,8 +8049,12 @@
       "toeiTrainNumbers": [
         "1825N"
       ],
-      "keikyuComponentMatches": [],
-      "reconciliationStatus": "keikyu-unmatched"
+      "keikyuComponentMatches": [
+        "keikyu-mother:keikyu-official-pdf:p029:s00:c09",
+        "keikyu-mother:keikyu-official-pdf:p056:s00:c20",
+        "keikyu-mother:keikyu-official-pdf:p074:s01:c16"
+      ],
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:f5f3bfcd74f732b63cb6c70b",
@@ -8027,9 +8085,10 @@
         "1835N"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p057:s00:c02"
+        "keikyu-mother:keikyu-official-pdf:p057:s00:c02",
+        "keikyu-mother:keikyu-official-pdf:p074:s01:c18"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:cfc3365c6f44cd50a05597ca",
@@ -8060,9 +8119,10 @@
         "1841T"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p057:s00:c06"
+        "keikyu-mother:keikyu-official-pdf:p057:s00:c06",
+        "keikyu-mother:keikyu-official-pdf:p074:s01:c21"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:30cc2fa9236c957ff83b78c7",
@@ -8093,9 +8153,10 @@
         "1819T"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p057:s00:c12"
+        "keikyu-mother:keikyu-official-pdf:p057:s00:c12",
+        "keikyu-mother:keikyu-official-pdf:p074:s01:c22"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:e4e0f7082548eb99d3674b0a",
@@ -8126,9 +8187,10 @@
         "1831T"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p057:s00:c17"
+        "keikyu-mother:keikyu-official-pdf:p057:s00:c17",
+        "keikyu-mother:keikyu-official-pdf:p074:s01:c23"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:91d1926f67598fc6be256243",
@@ -8159,9 +8221,10 @@
         "1877K"
       ],
       "keikyuComponentMatches": [
-        "keikyu-mother:keikyu-official-pdf:p057:s00:c19"
+        "keikyu-mother:keikyu-official-pdf:p057:s00:c19",
+        "keikyu-mother:keikyu-official-pdf:p074:s01:c24"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:376112dc2bfd78f2952cf92f",
@@ -8191,8 +8254,11 @@
       "toeiTrainNumbers": [
         "1983K"
       ],
-      "keikyuComponentMatches": [],
-      "reconciliationStatus": "keikyu-unmatched"
+      "keikyuComponentMatches": [
+        "keikyu-mother:keikyu-official-pdf:p058:s00:c02",
+        "keikyu-mother:keikyu-official-pdf:p074:s01:c25"
+      ],
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:dd4831e6f3ecba4baf615b87",
@@ -8817,9 +8883,10 @@
         "1993K"
       ],
       "keikyuComponentMatches": [
+        "keikyu-mother:keikyu-official-pdf:p058:s00:c08",
         "keikyu-mother:keikyu-official-pdf:p075:s01:c02"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:e91527c53c56540bf87a9aad",
@@ -8850,9 +8917,10 @@
         "1927T"
       ],
       "keikyuComponentMatches": [
+        "keikyu-mother:keikyu-official-pdf:p058:s00:c14",
         "keikyu-mother:keikyu-official-pdf:p075:s01:c03"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:9fc2d43ed434793413a47f66",
@@ -8883,9 +8951,10 @@
         "1833H"
       ],
       "keikyuComponentMatches": [
+        "keikyu-mother:keikyu-official-pdf:p058:s00:c18",
         "keikyu-mother:keikyu-official-pdf:p075:s01:c04"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:2e7bfb024749090fbdc3ebfd",
@@ -8916,9 +8985,10 @@
         "1979H"
       ],
       "keikyuComponentMatches": [
+        "keikyu-mother:keikyu-official-pdf:p058:s00:c21",
         "keikyu-mother:keikyu-official-pdf:p075:s01:c05"
       ],
-      "reconciliationStatus": "both-local-singleton-candidate"
+      "reconciliationStatus": "keikyu-ambiguous"
     },
     {
       "candidateId": "keikyu-connection-pdf:fc0863569ee181468b614617",
@@ -9624,8 +9694,10 @@
       "toeiTrainNumbers": [
         "2252H"
       ],
-      "keikyuComponentMatches": [],
-      "reconciliationStatus": "keikyu-unmatched"
+      "keikyuComponentMatches": [
+        "keikyu-mother:keikyu-official-pdf:p036:s01:c24"
+      ],
+      "reconciliationStatus": "both-local-singleton-candidate"
     },
     {
       "candidateId": "keikyu-connection-pdf:daff8e068b8d74e2da94fb1f",
