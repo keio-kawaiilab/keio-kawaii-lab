@@ -7,20 +7,121 @@ on:
       - '.github/workflows/extend-keikyu-zushi-official-evidence.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
-  group: transit-db-zushi-writer
+  group: transit-db-writer
   cancel-in-progress: false
 
 jobs:
-  diagnose:
+  materialize:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Sync to latest main before analysis
+        run: |
+          git fetch origin main
+          git checkout -B main origin/main
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Diagnose current Keikyu Zushi missing-boundary geometry
-        run: python scripts/diagnose_keikyu_current_missing_boundaries.py
+      - name: Install strict PDF parsers
+        run: pip install pdfplumber==0.11.7 PyMuPDF==1.26.4 requests==2.32.5
+      - name: Test fragmented-boundary resolver and consumer
+        run: |
+          python -m py_compile \
+            scripts/keikyu_missing_boundary_evidence.py \
+            scripts/keikyu_internal_generated_evidence.py
+          python scripts/test_keikyu_missing_boundary_evidence.py
+          python scripts/test_keikyu_internal_generated_evidence.py
+      - name: Build strict Zushi proof in temporary output
+        run: |
+          python scripts/keikyu_missing_boundary_evidence.py \
+            --boundary-id keikyu-main-zushi-kanazawahakkei \
+            --output /tmp/keikyu-internal-official-train-evidence.json \
+            --report /tmp/zushi-current-evidence-report.json
+          cat /tmp/zushi-current-evidence-report.json
+      - name: Require independent official proof before mutation
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report=json.loads(Path('/tmp/zushi-current-evidence-report.json').read_text(encoding='utf-8'))
+          matched=int(report.get('matchedSingleton') or 0)
+          candidates=int(report.get('candidatePairsAfterDestinationAndTimeSearch') or 0)
+          eligible=int(report.get('eligibleUnresolvedSources') or 0)
+          print('ZUSHI_ELIGIBLE', eligible)
+          print('ZUSHI_SEARCH_CANDIDATES', candidates)
+          print('ZUSHI_OFFICIAL_PROVEN', matched)
+          if eligible <= 0:
+              raise SystemExit('current Zushi unresolved rows were not selected')
+          if matched <= 0:
+              raise SystemExit('no independent official-column Zushi proof found; production DB left untouched')
+          PY
+      - name: Apply proven evidence and audit strict DB
+        run: |
+          cp /tmp/keikyu-internal-official-train-evidence.json data/transit-v2/keikyu-internal-official-train-evidence.json
+          python scripts/finalize_transit_v2.py
+          python scripts/audit_transit_v2.py
+      - name: Verify proven Zushi pairs materialized and cleared
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          ROOT=Path('data/transit-v2')
+          evidence=json.loads((ROOT/'keikyu-internal-official-train-evidence.json').read_text(encoding='utf-8'))
+          zushi=[
+              row for row in evidence.get('entries') or []
+              if row.get('boundaryId')=='keikyu-main-zushi-kanazawahakkei'
+              and 'current-missing-boundary-official-column-v1' in (row.get('evidence') or [])
+          ]
+          pairs={(str(row.get('fromFragment') or ''), str(row.get('toFragment') or '')) for row in zushi}
+          edges=json.loads((ROOT/'same-train-edges.json').read_text(encoding='utf-8')).get('edges') or []
+          materialized={
+              (str(row.get('fromFragment') or ''), str(row.get('toFragment') or ''))
+              for row in edges
+              if row.get('classification')=='same-train'
+          }
+          coverage=json.loads((ROOT/'coverage.json').read_text(encoding='utf-8'))
+          unresolved_sources={
+              str(row.get('fragment') or '')
+              for row in coverage.get('unresolved') or []
+              if row.get('kind')=='missing-boundary-train-identity-evidence'
+          }
+          missing=sorted(pairs-materialized)
+          still=sorted({source for source,_target in pairs} & unresolved_sources)
+          print('CURRENT_ZUSHI_PROVEN', len(pairs))
+          print('CURRENT_ZUSHI_MATERIALIZED', len(pairs & materialized))
+          print('CURRENT_ZUSHI_STILL_UNRESOLVED', len(still))
+          if missing:
+              raise SystemExit(f'missing current Zushi same-train edges: {missing[:5]}')
+          if still:
+              raise SystemExit(f'proven current Zushi sources remain unresolved: {still[:5]}')
+          PY
+      - name: Commit only if main did not move during proof
+        run: |
+          base="$(git rev-parse HEAD)"
+          git fetch origin main
+          remote="$(git rev-parse origin/main)"
+          if [ "$base" != "$remote" ]; then
+            echo "main moved during proof; refusing to rebase generated DB"
+            exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            data/transit-v2/keikyu-internal-official-train-evidence.json \
+            data/transit-v2/same-train-edges.json \
+            data/transit-v2/runtime-same-train.json \
+            data/transit-v2/coverage.json \
+            data/transit-v2/index.json \
+            data/transit-v2/unresolved-summary.json
+          if git diff --cached --quiet; then
+            echo "Strict Zushi evidence already materialized"
+            exit 0
+          fi
+          git commit -m "Apply current strict Keikyu Zushi through evidence"
+          git push origin HEAD:main
