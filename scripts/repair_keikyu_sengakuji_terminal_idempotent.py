@@ -7,8 +7,6 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
-import requests
-
 import repair_keikyu_sengakuji_terminal as repair
 
 REPORT_PATH = Path('/tmp/keikyu-sengakuji-repair.json')
@@ -69,6 +67,15 @@ def idempotent_report_is_safe(
 
 
 def main() -> int:
+    from keikyu_exact_terminal import verify_exact_terminal
+    current_table, table_path, index = repair.load_main_table()
+    exact_report = verify_exact_terminal(current_table)
+    if exact_report is not None:
+        REPORT_PATH.write_text(json.dumps(exact_report, indent=2) + '\n')
+        print(json.dumps(exact_report, indent=2))
+        return 0
+    import requests
+    import import_odpt_timetables as importer
     challenge_key = os.environ.get('ODPT_CHALLENGE_API_KEY', '').strip() or os.environ.get('ODPT_API_KEY', '').strip()
     if not challenge_key:
         raise RuntimeError('ODPT_CHALLENGE_API_KEY is required for Keikyu repair')
@@ -85,31 +92,31 @@ def main() -> int:
     manifest = json.loads(repair.MANIFEST_PATH.read_text(encoding='utf-8'))
     operator = str(
         ((manifest.get('operators') or {}).get('keikyu') or {}).get('operator')
-        or repair.importer.TARGETS['keikyu']['fallback']
+        or importer.TARGETS['keikyu']['fallback']
     )
     session = requests.Session()
     session.headers.update({'User-Agent': 'keio-kawaii-lab-keikyu-terminal-repair/4.0'})
 
-    station_raw = repair.importer.api_get(
+    station_raw = importer.api_get(
         session,
         'odpt:StationTimetable',
         challenge_key,
         operator,
-        base_url=repair.importer.CHALLENGE_BASE_URL,
+        base_url=importer.CHALLENGE_BASE_URL,
     )
-    railway_raw = repair.importer.api_get(
+    railway_raw = importer.api_get(
         session,
         'odpt:Railway',
         challenge_key,
         operator,
-        base_url=repair.importer.CHALLENGE_BASE_URL,
+        base_url=importer.CHALLENGE_BASE_URL,
     )
-    station_entities_raw = repair.importer.api_get(
+    station_entities_raw = importer.api_get(
         session,
         'odpt:Station',
         challenge_key,
         operator,
-        base_url=repair.importer.CHALLENGE_BASE_URL,
+        base_url=importer.CHALLENGE_BASE_URL,
     )
     if not station_raw or not railway_raw or not station_entities_raw:
         raise RuntimeError('Keikyu ODPT source data is incomplete')
@@ -131,9 +138,9 @@ def main() -> int:
         raise RuntimeError('No strict synthetic Sengakuji inbound rows were generated')
 
     augmented_raw = list(station_raw) + synthetic_items
-    compact_stations = [repair.importer.compact_entity(row) for row in station_entities_raw]
-    aliases = repair.importer.canonical_station_aliases(station_entities_raw, compact_stations)
-    rebuilt = repair.importer.compact_station_timetables(augmented_raw, aliases, railway_raw)
+    compact_stations = [importer.compact_entity(row) for row in station_entities_raw]
+    aliases = importer.canonical_station_aliases(station_entities_raw, compact_stations)
+    rebuilt = importer.compact_station_timetables(augmented_raw, aliases, railway_raw)
     if repair.MAIN not in rebuilt:
         repair.write_report(preliminary)
         raise RuntimeError('Rebuilt Keikyu Main timetable is missing')
@@ -174,7 +181,7 @@ def main() -> int:
         'afterSengakujiEnds': dict(after_ends),
         'repairMode': mode,
     }
-    repair.importer.dump_json(table_path, table)
+    importer.dump_json(table_path, table)
 
     meta = index['lines'][repair.MAIN]
     meta['trips'] = len(table.get('trips') or [])

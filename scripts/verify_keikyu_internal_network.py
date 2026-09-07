@@ -45,8 +45,8 @@ def verify():
             assert f['sourceKind'] == 'exact-train-timetable'
     expected = apply(fragments, [])  # also checks every stop and retained external fingerprint
     internal = [e for e in expected if 'keikyu-official-complete-internal-network' in e['evidence']]
-    external = [e for e in expected if 'keikyu-retained-external-exact-sequence' in e['evidence']]
-    assert len(internal) == 1590 and len(external) == 398
+    external = [e for e in expected if 'keikyu-official-sengakuji-exact-sequence' in e['evidence']]
+    assert len(internal) == 1590 and len(external) == 577
     by_id = {f['id']: f for f in fragments}
     actual = read('data/transit-v2/same-train-edges.json')['edges']
     pairs = {(e['fromFragment'], e['toFragment']) for e in actual}
@@ -66,7 +66,7 @@ def verify():
     _, regenerated = load_all_fragments({'operators': {'keikyu': {'operator': 'odpt.Operator:Keikyu'}}}, {})
     assert journeys == regenerated, 'saved network journeys differ from official input'
     return {'routeJourneys': len(journeys), 'internalThroughJourneys': 1368,
-            'internalRuntimeLinks': len(internal), 'retainedExternalLinks': len(external),
+            'internalRuntimeLinks': len(internal), 'verifiedExternalLinks': len(external),
             'unassembledGroups': 0, 'unclassifiedNumericCells': 0, 'calendarDirections': len(directions)}
 
 

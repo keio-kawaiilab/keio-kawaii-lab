@@ -93,6 +93,13 @@ def main() -> int:
     toei_verified = (toei_audit.get('actualTripCount') == 1260
                      and not toei_audit.get('issues')
                      and int(indices.get('odpt.Railway:Toei.Asakusa', {}).get('trips') or 0) == 1260)
+    boundary_verified = False
+    if (ROOT / 'data/transit/toei/timetables/official-through-network.json').exists():
+        from verify_asakusa_boundary_network import verify as verify_asakusa
+        from verify_sengakuji_runtime import verify as verify_sengakuji
+        verify_asakusa()
+        verify_sengakuji()
+        boundary_verified = True
     rows: list[dict[str, Any]] = []
     errors: list[str] = []
 
@@ -117,10 +124,10 @@ def main() -> int:
 
         if railway_id == 'odpt.Railway:Toei.Asakusa' and toei_verified:
             actual_line_coverage = 'exact-independent-1260-verified'
-            actual_identity = 'cross-boundary-reconciliation-incomplete'
+            actual_identity = 'exact-all-independent-asakusa-trains' if boundary_verified else 'cross-boundary-reconciliation-incomplete'
         if railway_id in CORE and internal_verified:
             actual_line_coverage = 'exact'
-            actual_identity = 'internal-exact-external-reconciliation-incomplete'
+            actual_identity = 'internal-exact-all-published-sengakuji-continuations' if boundary_verified else 'internal-exact-external-reconciliation-incomplete'
 
         declared_line = str(configured.get("lineTimetableCoverage") or "")
         declared_identity = str(configured.get("sameTrainCoverage") or "")
@@ -144,7 +151,7 @@ def main() -> int:
             }
         )
 
-    all_line_exact = all(row["lineTimetableCoverage"] == "exact" for row in rows)
+    all_line_exact = all(row["lineTimetableCoverage"] in {"exact", "exact-independent-1260-verified"} for row in rows)
     all_identity_exact = all(row["sameTrainCoverage"] == "exact-all-in-scope-trains" for row in rows)
     complete = bool(rows) and all_line_exact and all_identity_exact and not errors
 

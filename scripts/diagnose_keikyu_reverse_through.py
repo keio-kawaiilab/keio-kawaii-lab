@@ -282,6 +282,16 @@ def strict_sengakuji_repair_simulation(reverse_candidates):
 
 
 def main():
+    from keikyu_exact_terminal import verify_exact_terminal
+    _, current_table = load_v1_main_table()
+    exact_report = verify_exact_terminal(current_table)
+    if exact_report is not None:
+        from verify_keikyu_internal_network import verify
+        payload = {'summary': {'exactTerminalVerification': exact_report,
+                               'runtimeVerification': verify()}}
+        Path('/tmp/keikyu-reverse-diagnostic.json').write_text(json.dumps(payload, indent=2) + '\n')
+        print(json.dumps(payload['summary'], indent=2))
+        return 0
     fragments = parser.load_fragments(Path('data/transit-v2/fragments'))
     indexes, endpoint_inventory = build_endpoint_indexes(fragments)
     all_rows = []
