@@ -62,13 +62,25 @@ def runtime_calendar(fragment: dict[str, Any]) -> str:
 
 
 def cross_page_global_policy_safe(policy: dict[str, Any]) -> bool:
+    required_true = {
+        'officialPreviousPublicationPageAndTrainNumberRequiredForCrossPage',
+        'uniquePreviousPublicationTargetRequiredForCrossPage',
+        'pageSectionLocalFragmentMetadataMustMatchForCrossPage',
+        'crossPageGraphMustBeNonBranchingAcyclic',
+        'directedOfficialContinuationPathRequired',
+        'officialSectionIdentityRequiredForCrossPage',
+        'literalPrintedCalendarRequiredForCrossPage',
+        'runtimeCalendarMustMatchOfficialPrintedCalendarForCrossPage',
+        'unclassifiedCalendarPagesExcludedFromCrossPageIdentity',
+        'crossPageEdgesStayWithinPrintedCalendar',
+    }
+    required_false = {
+        'calendarMayBeInferredFromPageNumberForCrossPage',
+        'calendarMayBeInferredFromNeighboringPagesForCrossPage',
+    }
     return (
-        policy.get('officialPreviousPublicationPageAndTrainNumberRequiredForCrossPage') is True
-        and policy.get('uniquePreviousPublicationTargetRequiredForCrossPage') is True
-        and policy.get('pageSectionLocalFragmentMetadataMustMatchForCrossPage') is True
-        and policy.get('crossPageGraphMustBeNonBranchingAcyclic') is True
-        and policy.get('directedOfficialContinuationPathRequired') is True
-        and policy.get('officialSectionIdentityRequiredForCrossPage') is True
+        all(policy.get(key) is True for key in required_true)
+        and all(policy.get(key) is False for key in required_false)
     )
 
 
@@ -135,11 +147,19 @@ def validate_cross_page_entry(entry: dict[str, Any]) -> str:
         'officialSectionIdentityRequired',
         'twoExactPublishedStationTimesRequired',
         'singletonFragmentMatchRequiredAtBothPoints',
+        'literalPrintedCalendarRequired',
+        'runtimeCalendarMustMatchOfficialPrintedCalendar',
+        'unclassifiedCalendarPagesExcludedFromIdentity',
+        'officialContinuationPathMustStayWithinPrintedCalendar',
         'sharedPublishedDestinationUsedOnlyForSearch',
         'candidateFragmentGapUsedOnlyForSearch',
     }
     if any(match_policy.get(key) is not True for key in required_true):
         return 'unsafe-cross-page-entry-policy'
+    if match_policy.get('calendarMayBeInferredFromPageNumber') is not False:
+        return 'unsafe-cross-page-calendar-inference-policy'
+    if match_policy.get('calendarMayBeInferredFromNeighboringPages') is not False:
+        return 'unsafe-cross-page-calendar-inference-policy'
     if match_policy.get('trainNumberAloneMayEstablishIdentity') is not False:
         return 'unsafe-cross-page-train-number-policy'
     if match_policy.get('timeProximityAloneMayEstablishIdentity') is not False:
@@ -150,6 +170,12 @@ def validate_cross_page_entry(entry: dict[str, Any]) -> str:
     root = str(entry.get('officialPhysicalComponentRoot') or '')
     path = entry.get('officialPreviousPublicationPath') or []
     anchors = entry.get('officialAnchors') or []
+    official_calendar = str(entry.get('officialPrintedCalendar') or '')
+    evidence_calendar = str(entry.get('calendar') or '')
+    if official_calendar not in {'weekday', 'holiday'}:
+        return 'missing-cross-page-literal-printed-calendar'
+    if evidence_calendar != official_calendar:
+        return 'cross-page-evidence-calendar-official-calendar-mismatch'
     if not start or not target or start == target or not root:
         return 'invalid-cross-page-official-endpoints'
     if ':s' not in start or ':s' not in target:
@@ -169,6 +195,7 @@ def validate_cross_page_entry(entry: dict[str, Any]) -> str:
         previous_number = str(edge.get('previousTrainNumber') or '')
         previous_page = edge.get('previousPrintedPage')
         evidence = str(edge.get('evidence') or '')
+        edge_calendar = str(edge.get('calendar') or '')
         if source != cursor or not nxt:
             return 'discontinuous-cross-page-reference-path'
         if ':s' not in source or ':s' not in nxt:
@@ -177,6 +204,8 @@ def validate_cross_page_entry(entry: dict[str, Any]) -> str:
             return 'missing-explicit-previous-publication-evidence'
         if not previous_number or not isinstance(previous_page, int) or previous_page <= 0:
             return 'missing-explicit-previous-publication-metadata'
+        if edge_calendar != official_calendar:
+            return 'cross-page-reference-edge-calendar-mismatch'
         if nxt in seen:
             return 'cyclic-cross-page-reference-path'
         seen.add(nxt)
@@ -256,7 +285,7 @@ def apply_generated_evidence(
             or str(target.get('railway') or '') != pair[1]
         ):
             reason = 'fragment-railway-mismatch'
-        elif not reason and is_section_local:
+        elif not reason and (is_section_local or is_cross_page):
             expected_calendar = str(entry.get('officialPrintedCalendar') or '')
             source_calendar = runtime_calendar(source)
             target_calendar = runtime_calendar(target)
