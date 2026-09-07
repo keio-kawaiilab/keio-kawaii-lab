@@ -9,7 +9,47 @@ Repository: `keio-kawaiilab/keio-kawaii-lab`
 Default branch: `main`
 Public route entry point: `route.html`
 
-**LATEST RESEARCH — complete Yahoo western train inventory, 2026-09-07**
+**LATEST DB IMPORT — western all-train database, 2026-09-07**
+
+The user requested DB integration after the complete Yahoo investigation. All
+7,898 source publication IDs are now registered in the transit-v2 database:
+3,958 multi-line and 3,940 line-only journeys, 163,734 ordered station stop rows,
+248 physical stations, and 36 calendar rules. All 483 date-restricted journeys
+retain their original conditions. No year is invented for yearless expressions.
+
+- Branch: `work/western-through-db-20260907`, based on the saved research commit
+  `682948812bd57e6919270c18de77317a48291521` / PR #200.
+  DB changes are saved in draft PR #201, stacked on the research branch.
+- Start at `docs/transit/WESTERN_DB_IMPORT.md`. The canonical data is under
+  `data/transit-v2/western/`; `index.json` registers its network shard and source
+  station/calendar catalogs. `transit_network_db.load_network_journeys()` reads
+  both the existing main network file and every registered source shard.
+- `import_western_train_db.py` verifies the source manifest, imports every
+  journey with stable edition-qualified IDs, creates station aliases/calendar
+  foreign keys, compares complete legacy fragments and updates the DB index.
+  The normal `build_transit_v2.py` calls this importer; the finalizer reads the
+  registered shards so regeneration/counting retains the western data.
+  It also refreshes the crosswalk/input hashes after final fragment rewrites.
+- `verify_western_train_db.py` independently compares every imported stop,
+  available arrival/departure, full railway path, endpoint, source reference
+  and calendar condition with the saved research. All 7,898 IDs and 163,734
+  stop rows pass. Regression tests reject a missing train, altered time,
+  calendar mismatch, ambiguous fragment match and duplicate database ID;
+  reinstall after an index rebuild is deterministic and preserves legacy data.
+- Existing-fragment crosswalk: 6,618 unique exact-content matches, 6 ambiguous,
+  3,930 without an exact match and 4,112 with insufficient comparable events.
+  These are legacy fragment counts, not missing imported trains. No legacy
+  identity is forcibly merged or promoted. Full published journeys are already
+  in the canonical DB independently of old inferred fragments.
+
+DB import is complete. Routing/UI activation remains separate: route.js still
+uses its existing v1 sources. The new DB's source calendar keys and raw date
+conditions must be resolved, boarding/seat rules handled, and the route reader
+adapted before claiming live search supports all western trains. Do not claim
+main merge, site publication or end-to-end routing completion from this import.
+Continue from the saved DB; do not recollect Yahoo or repeat this import work.
+
+**PREVIOUS RESEARCH — complete Yahoo western train inventory, 2026-09-07**
 
 The user explicitly requested every train, not representative examples. The
 research is now complete for the acquired Yahoo publication scope. Start with

@@ -586,6 +586,11 @@ def build() -> dict[str, Any]:
     }
     write_json(OUT / 'coverage.json', coverage)
     write_json(OUT / 'index.json', {'version': 1, 'generatedAt': generated, 'sourceManifestFetchedAt': manifest.get('fetchedAt'), 'spec': 'spec.json', 'serviceBoundaries': 'service-boundaries.json', 'sameTrainEdges': 'same-train-edges.json', 'networkJourneys': 'network-journeys.json', 'coverage': 'coverage.json', 'fragmentFiles': fragment_files})
+    # Re-register the independently audited source database after regenerating
+    # the ODPT indexes. Source calendar rules stay attached to every journey.
+    from import_western_train_db import install as install_western
+    install_western(V1.parent.parent)
+    coverage = load_json(OUT / 'coverage.json', coverage)
     print(json.dumps(coverage['summary'], ensure_ascii=False, indent=2))
     return coverage
 

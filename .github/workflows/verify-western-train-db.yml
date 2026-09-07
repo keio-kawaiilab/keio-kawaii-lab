@@ -1,0 +1,32 @@
+name: Verify western all-train database import
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'scripts/*western*'
+      - 'scripts/transit_network_db.py'
+      - 'scripts/build_transit_v2.py'
+      - 'scripts/finalize_transit_v2.py'
+      - 'data/transit-v2/**'
+      - 'data/transit/yahoo-western-research/**'
+      - '.github/workflows/verify-western-train-db.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify complete import and regeneration
+        run: |
+          python scripts/verify_western_train_db.py
+          python scripts/test_western_train_db.py
+          python scripts/test_transit_v2.py
+      - name: Verify the finalized database retains every imported train
+        run: |
+          python scripts/finalize_transit_v2.py
+          python scripts/verify_western_train_db.py

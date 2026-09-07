@@ -14,6 +14,7 @@ if str(SCRIPT_DIR) not in sys.path:
 
 import build_transit_v2 as base
 import reviewed_train_evidence as reviewed
+from transit_network_db import load_network_journeys
 
 ROOT = Path('.')
 V1 = ROOT / 'data/transit'
@@ -327,6 +328,7 @@ def write_outputs(
             'exactFragments': sum(1 for f in fragments if f.get('sourceKind') == 'exact-train-timetable'),
             'inferredFragments': sum(1 for f in fragments if f.get('sourceKind') == 'station-timetable-reconstruction'),
             'networkJourneys': len(networks),
+            'westernPublishedJourneys': sum(n.get('sourceOperator') == 'western-yahoo' for n in networks),
             'sameTrainEdges': len(edges),
             'authoritativeSameTrainEdges': sum(1 for e in edges if e.get('identityLevel') == 'authoritative'),
             'evidenceBackedSameTrainEdges': sum(1 for e in edges if e.get('identityLevel') == 'evidence-backed'),
@@ -358,8 +360,7 @@ def main() -> int:
     manifest = load_json(V1 / 'manifest.json', {}) or {}
     registry = load_json(BOUNDARIES, {}) or {}
     index = load_json(V2 / 'index.json', {}) or {}
-    networks_payload = load_json(V2 / 'network-journeys.json', {}) or {}
-    networks = [row for row in networks_payload.get('journeys') or [] if isinstance(row, dict)]
+    networks = load_network_journeys(V2, index)
     fragments = load_fragments(index)
     if not fragments:
         raise RuntimeError('No transit-v2 fragments are available to finalize')
@@ -408,6 +409,11 @@ def main() -> int:
         raise RuntimeError('unexpected same-train identity level')
     if any('train-number' in '|'.join(edge.get('evidence') or []).lower() for edge in edges):
         raise RuntimeError('train number evidence must never establish same-train identity')
+    # Finalization rewrites legacy fragment metadata. Refresh the source
+    # crosswalk and its input hashes against those final files, not the
+    # intermediate builder output.
+    from import_western_train_db import install as install_western
+    install_western(V2.parent.parent)
     print('strict transit-v2 finalization passed')
     return 0
 
