@@ -1,0 +1,195 @@
+name: Prove Keikyu Zushi through service from full official timetable
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/extend-keikyu-zushi-schedule-all.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  prove:
+    name: prove-schedule-all
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install strict PDF dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+          pip install pdfplumber==0.11.7 PyMuPDF==1.26.4 requests==2.32.5
+      - name: Test full-timetable Zushi resolver
+        run: |
+          python -m py_compile \
+            scripts/keikyu_schedule_all_zushi_evidence.py \
+            scripts/test_keikyu_schedule_all_zushi_evidence.py \
+            scripts/merge_keikyu_zushi_proof_artifacts.py
+          python scripts/test_keikyu_schedule_all_zushi_evidence.py
+          python scripts/test_keikyu_internal_generated_evidence.py
+      - name: Build exact page-local official stop times
+        run: python scripts/build_keikyu_official_stop_times.py --output /tmp/keikyu-stop-times.json
+      - name: Prove current Zushi pairs from official page columns
+        run: |
+          python scripts/keikyu_schedule_all_zushi_evidence.py \
+            --official-stop-times /tmp/keikyu-stop-times.json \
+            --entries-output /tmp/zushi-schedule-all-entries.json \
+            --report /tmp/zushi-schedule-all-report.json
+          cat /tmp/zushi-schedule-all-report.json
+      - name: Require current rows and print proof totals
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('/tmp/zushi-schedule-all-report.json').read_text(encoding='utf-8'))
+          eligible=int(r.get('eligibleUnresolvedSources') or 0)
+          candidates=int(r.get('candidatePairsAfterDestinationAndTimeSearch') or 0)
+          matched=int(r.get('matchedSingleton') or 0)
+          print('SCHEDULE_ALL_ZUSHI_ELIGIBLE', eligible)
+          print('SCHEDULE_ALL_ZUSHI_SEARCH_CANDIDATES', candidates)
+          print('SCHEDULE_ALL_ZUSHI_OFFICIAL_PROVEN', matched)
+          print('SCHEDULE_ALL_ZUSHI_DIRECTIONS', json.dumps(r.get('directions') or {}, ensure_ascii=False, sort_keys=True))
+          print('SCHEDULE_ALL_ZUSHI_CALENDARS', json.dumps(r.get('calendars') or {}, ensure_ascii=False, sort_keys=True))
+          print('SCHEDULE_ALL_ZUSHI_REASONS', json.dumps(r.get('reasons') or {}, ensure_ascii=False, sort_keys=True))
+          if eligible <= 0:
+              raise SystemExit('no current Zushi unresolved rows selected')
+          if matched <= 0:
+              raise SystemExit('no exact schedule_all page-column proof found')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zushi-schedule-all-proof
+          path: |
+            /tmp/zushi-schedule-all-entries.json
+            /tmp/zushi-schedule-all-report.json
+          retention-days: 7
+          if-no-files-found: error
+
+  materialize:
+    name: materialize-schedule-all-zushi
+    needs: prove
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: write
+    concurrency:
+      group: transit-db-writer
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Sync to latest main after obtaining writer lock
+        run: |
+          git fetch origin main
+          git checkout -B main origin/main
+          echo "MATERIALIZE_BASE=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install strict PDF dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+          pip install pdfplumber==0.11.7 PyMuPDF==1.26.4 requests==2.32.5
+      - name: Re-test resolver on latest main
+        run: |
+          python scripts/test_keikyu_schedule_all_zushi_evidence.py
+          python scripts/test_keikyu_internal_generated_evidence.py
+      - name: Rebuild official stop times and fresh proof on latest main
+        run: |
+          python scripts/build_keikyu_official_stop_times.py --output /tmp/keikyu-stop-times.json
+          python scripts/keikyu_schedule_all_zushi_evidence.py \
+            --official-stop-times /tmp/keikyu-stop-times.json \
+            --entries-output /tmp/zushi-schedule-all-entries.json \
+            --report /tmp/zushi-schedule-all-report.json
+          python scripts/merge_keikyu_zushi_proof_artifacts.py \
+            --entries /tmp/zushi-schedule-all-entries.json \
+            --reports /tmp/zushi-schedule-all-report.json \
+            --summary-output /tmp/zushi-schedule-all-merged.json
+      - name: Require at least one fresh strict proof
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('/tmp/zushi-schedule-all-report.json').read_text(encoding='utf-8'))
+          matched=int(r.get('matchedSingleton') or 0)
+          eligible=int(r.get('eligibleUnresolvedSources') or 0)
+          print('FRESH_ZUSHI_ELIGIBLE', eligible)
+          print('FRESH_ZUSHI_OFFICIAL_PROVEN', matched)
+          if eligible <= 0:
+              raise SystemExit('no current Zushi unresolved rows remain to evaluate')
+          if matched <= 0:
+              raise SystemExit('no fresh strict Zushi proof; production DB left untouched')
+          PY
+      - name: Re-finalize and audit transit DB
+        run: |
+          python scripts/finalize_transit_v2.py
+          python scripts/audit_transit_v2.py
+      - name: Verify every fresh proof materialized and cleared
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          ROOT=Path('data/transit-v2')
+          proof=json.loads(Path('/tmp/zushi-schedule-all-entries.json').read_text(encoding='utf-8')).get('entries') or []
+          pairs={(str(r.get('fromFragment') or ''), str(r.get('toFragment') or '')) for r in proof}
+          ids={str(r.get('id') or '') for r in proof}
+          edges=json.loads((ROOT/'same-train-edges.json').read_text(encoding='utf-8')).get('edges') or []
+          materialized={
+              (str(r.get('fromFragment') or ''), str(r.get('toFragment') or ''))
+              for r in edges if r.get('classification')=='same-train'
+          }
+          unresolved=json.loads((ROOT/'coverage.json').read_text(encoding='utf-8')).get('unresolved') or []
+          lingering={
+              str(r.get('fragment') or '') for r in unresolved
+              if r.get('kind')=='missing-boundary-train-identity-evidence'
+          }
+          rejected={
+              str(r.get('evidenceId') or '') for r in unresolved
+              if r.get('kind')=='keikyu-internal-generated-evidence-rejected'
+          }
+          missing=sorted(pairs-materialized)
+          still=sorted({a for a,_b in pairs} & lingering)
+          bad=sorted(ids & rejected)
+          print('SCHEDULE_ALL_ZUSHI_PROVEN', len(pairs))
+          print('SCHEDULE_ALL_ZUSHI_MATERIALIZED', len(pairs & materialized))
+          print('SCHEDULE_ALL_ZUSHI_STILL_UNRESOLVED', len(still))
+          print('SCHEDULE_ALL_ZUSHI_REJECTED', len(bad))
+          if not pairs:
+              raise SystemExit('fresh proof unexpectedly empty')
+          if missing:
+              raise SystemExit(f'proven Zushi edges missing after finalize: {missing[:5]}')
+          if still:
+              raise SystemExit(f'proven Zushi sources still unresolved: {still[:5]}')
+          if bad:
+              raise SystemExit(f'proven Zushi evidence rejected by consumer: {bad[:5]}')
+          PY
+      - name: Commit only fresh generated DB
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            data/transit-v2/keikyu-internal-official-train-evidence.json \
+            data/transit-v2/same-train-edges.json \
+            data/transit-v2/runtime-same-train.json \
+            data/transit-v2/coverage.json \
+            data/transit-v2/index.json \
+            data/transit-v2/unresolved-summary.json
+          if git diff --cached --quiet; then
+            echo "Strict schedule_all Zushi evidence already materialized"
+            exit 0
+          fi
+          git fetch origin main
+          remote="$(git rev-parse origin/main)"
+          if [ "$MATERIALIZE_BASE" != "$remote" ]; then
+            echo "main moved during fresh Zushi proof; refusing stale generated DB commit"
+            exit 1
+          fi
+          git commit -m "Apply strict Keikyu Zushi schedule-all evidence"
+          git push origin HEAD:main
