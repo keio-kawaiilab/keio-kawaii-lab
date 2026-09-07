@@ -6,6 +6,7 @@ on:
     paths:
       - 'scripts/diagnose_keikyu_zushi_section_v2_failures.py'
       - 'scripts/diagnose_keikyu_section_calendars.py'
+      - 'scripts/diagnose_keikyu_zushi_target_conflicts.py'
       - '.github/workflows/diagnose-keikyu-zushi-section-v2.yml'
 
 permissions:
@@ -44,6 +45,11 @@ jobs:
           python scripts/diagnose_keikyu_zushi_section_v2_failures.py \
             --official-stop-times /tmp/keikyu-stop-times-v2.json \
             --output /tmp/zushi-v2-gap-diagnostic.json | tee /tmp/zushi-v2-gap-summary.txt
+      - name: Diagnose shared-target local proof conflicts
+        run: |
+          python scripts/diagnose_keikyu_zushi_target_conflicts.py \
+            --official-stop-times /tmp/keikyu-stop-times-v2.json \
+            --output /tmp/zushi-target-conflicts.json | tee /tmp/zushi-target-conflicts-summary.txt
       - name: Diagnose printed calendar labels by section
         run: |
           python scripts/diagnose_keikyu_section_calendars.py \
@@ -54,6 +60,7 @@ jobs:
           name: keikyu-zushi-section-v2-diagnostics
           path: |
             /tmp/zushi-v2-gap-diagnostic.json
+            /tmp/zushi-target-conflicts.json
             /tmp/keikyu-section-calendars.json
           retention-days: 7
           if-no-files-found: error
