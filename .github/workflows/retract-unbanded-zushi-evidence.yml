@@ -1,0 +1,103 @@
+name: Retract unsafe unbanded Keikyu Zushi evidence
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/retract-unbanded-zushi-evidence.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: transit-db-writer
+  cancel-in-progress: true
+
+jobs:
+  retract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Sync latest main after writer lock
+        run: |
+          git fetch origin main
+          git checkout -B main origin/main
+          echo "BASE=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Retract only unbanded schedule-all Zushi evidence
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path=Path('data/transit-v2/keikyu-internal-official-train-evidence.json')
+          payload=json.loads(path.read_text(encoding='utf-8'))
+          markers={
+              'schedule-all-page-column-v1',
+              'official-previous-publication-chain-two-exact-station-times-v1',
+          }
+          kept=[]
+          removed=[]
+          for row in payload.get('entries') or []:
+              evidence={str(v) for v in row.get('evidence') or []}
+              if evidence & markers:
+                  removed.append(row)
+              else:
+                  kept.append(row)
+          if not removed:
+              raise SystemExit('no unbanded schedule-all Zushi evidence found; refusing unexpected no-op')
+          payload['entries']=kept
+          payload['retraction']={
+              'reason':'official full-timetable page contains two independent table bands; legacy page+column identity lacked band separation',
+              'removedEntryCount':len(removed),
+              'markers':sorted(markers),
+          }
+          path.write_text(json.dumps(payload,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+          ids=[str(r.get('id') or '') for r in removed]
+          Path('/tmp/retracted-ids.json').write_text(json.dumps(ids,ensure_ascii=False),encoding='utf-8')
+          print('RETRACTED_UNBANDED_ZUSHI_ENTRIES',len(removed))
+          print('REMAINING_INTERNAL_EVIDENCE_ENTRIES',len(kept))
+          PY
+      - name: Re-finalize and audit without retracted evidence
+        run: |
+          python scripts/finalize_transit_v2.py
+          python scripts/audit_transit_v2.py
+      - name: Verify retracted evidence no longer materializes
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          ids=set(json.loads(Path('/tmp/retracted-ids.json').read_text(encoding='utf-8')))
+          edges=json.loads(Path('data/transit-v2/same-train-edges.json').read_text(encoding='utf-8')).get('edges') or []
+          leaked=[]
+          for row in edges:
+              evidence={str(v) for v in row.get('evidence') or []}
+              if ids & evidence:
+                  leaked.append(row)
+          print('RETRACTED_EDGE_LEAKS',len(leaked))
+          if leaked:
+              raise SystemExit('retracted unbanded evidence still materialized')
+          PY
+      - name: Commit safety retraction
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            data/transit-v2/keikyu-internal-official-train-evidence.json \
+            data/transit-v2/same-train-edges.json \
+            data/transit-v2/runtime-same-train.json \
+            data/transit-v2/coverage.json \
+            data/transit-v2/index.json \
+            data/transit-v2/unresolved-summary.json
+          git fetch origin main
+          if [ "$BASE" != "$(git rev-parse origin/main)" ]; then
+            echo 'main moved during retraction; refusing stale commit'
+            exit 1
+          fi
+          git commit -m "Retract unbanded Keikyu Zushi evidence"
+          git push origin HEAD:main
