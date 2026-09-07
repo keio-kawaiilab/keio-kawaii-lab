@@ -119,27 +119,38 @@ def directed_path(source: str, target: str, outgoing: dict[str, dict[str, Any]])
 def cross_page_proof(
     source: dict[str, Any],
     target: dict[str, Any],
+    service: str,
     anchors: dict[str, list[dict[str, Any]]],
-    official_index: dict[tuple[str, int], list[dict[str, Any]]],
+    official_index: dict[tuple[str, str, int], list[dict[str, Any]]],
     outgoing: dict[str, dict[str, Any]],
     roots: dict[str, str],
 ) -> dict[str, Any] | None:
+    if service not in {'weekday', 'holiday'} or base.service_of(target) != service:
+        return None
     source_id = str(source.get('id') or '')
     target_id = str(target.get('id') or '')
     matches_by_component: dict[str, list[dict[str, Any]]] = defaultdict(list)
 
     for left in anchors.get(source_id, []):
-        left_hits = official_index.get((str(left.get('suffix') or ''), int(left.get('minute') or 0) % 1440), [])
+        left_hits = official_index.get(
+            (service, str(left.get('suffix') or ''), int(left.get('minute') or 0) % 1440), []
+        )
         for right in anchors.get(target_id, []):
             if str(left.get('station') or '') == str(right.get('station') or ''):
                 continue
-            right_hits = official_index.get((str(right.get('suffix') or ''), int(right.get('minute') or 0) % 1440), [])
+            right_hits = official_index.get(
+                (service, str(right.get('suffix') or ''), int(right.get('minute') or 0) % 1440), []
+            )
             for a in left_hits:
+                if str(a.get('calendar') or '') != service:
+                    raise RuntimeError('calendar-keyed official source hit returned wrong service')
                 left_fragment = str(a.get('officialFragment') or '')
                 left_root = roots.get(left_fragment)
                 if not left_root:
                     continue
                 for b in right_hits:
+                    if str(b.get('calendar') or '') != service:
+                        raise RuntimeError('calendar-keyed official target hit returned wrong service')
                     right_fragment = str(b.get('officialFragment') or '')
                     if not right_fragment or right_fragment == left_fragment:
                         continue
@@ -150,6 +161,7 @@ def cross_page_proof(
                         continue
                     matches_by_component[left_root].append({
                         'componentRoot': left_root,
+                        'calendar': service,
                         'sourceOfficialFragment': left_fragment,
                         'targetOfficialFragment': right_fragment,
                         'sourceAnchor': left,
@@ -201,11 +213,17 @@ def build_entries(
     candidate_count = 0
     for _unresolved, source, pair in rows:
         source_id = str(source.get('id') or '')
+        service = base.service_of(source)
+        if service not in {'weekday', 'holiday'}:
+            reasons['source-calendar-unresolved'] += 1
+            continue
         candidates = current.candidate_targets(source, pair, fragments)
         candidate_count += len(candidates)
         proven: list[tuple[dict[str, Any], int, dict[str, Any]]] = []
         for target, gap in candidates:
-            proof = cross_page_proof(source, target, anchors, official_index, outgoing, roots)
+            if base.service_of(target) != service:
+                continue
+            proof = cross_page_proof(source, target, service, anchors, official_index, outgoing, roots)
             if proof:
                 proven.append((target, gap, proof))
         if len(proven) != 1:
@@ -220,13 +238,14 @@ def build_entries(
             'status': 'official-explicit-cross-page-evidence',
             'matchStatus': 'matched-singleton',
             'id': current.stable_id(
-                'schedule-all-cross-page', base.service_of(source), spec['id'],
+                'schedule-all-cross-page', service, spec['id'],
                 proof['componentRoot'], source_id, target['id'],
                 proof['sourceOfficialFragment'], proof['targetOfficialFragment'],
             ),
             'operator': 'keikyu',
-            'calendar': base.service_of(source),
-            'direction': f"{pair[0].rsplit('.', 1)[-1].lower()}-to-{pair[1].rsplit('.', 1)[-1].lower()}",
+            'calendar': service,
+            'officialPrintedCalendar': service,
+            'direction': f"{pair[0].rsplit('.', 1)[-1].lower()}-to-{pair[1].rsplit('.', 1)[-1]}",
             'boundaryId': spec['id'],
             'boundaryStation': spec['station'],
             'fromRailway': pair[0],
@@ -265,6 +284,9 @@ def build_entries(
                 'directedOfficialContinuationPathRequired': True,
                 'twoExactPublishedStationTimesRequired': True,
                 'singletonFragmentMatchRequiredAtBothPoints': True,
+                'literalPrintedCalendarRequired': True,
+                'runtimeCalendarMustMatchOfficialPrintedCalendar': True,
+                'calendarMayBeInferredFromPageNumber': False,
                 'sharedPublishedDestinationUsedOnlyForSearch': True,
                 'candidateFragmentGapUsedOnlyForSearch': True,
                 'candidateFragmentGapMaximumMinutes': current.MAX_CANDIDATE_GAP_MINUTES,
@@ -279,7 +301,7 @@ def build_entries(
     reasons['matched-explicit-cross-page'] += len(entries)
     summary = {
         'proofSource': OFFICIAL_PDF_URL,
-        'proofMode': 'explicit-previous-publication-chain-two-point',
+        'proofMode': 'explicit-previous-publication-chain-printed-calendar-two-point',
         'eligibleUnresolvedSources': len(rows),
         'candidatePairsAfterDestinationAndTimeSearch': candidate_count,
         'officialCrossPageEdges': len(outgoing),
@@ -296,6 +318,9 @@ def build_entries(
             'directedOfficialContinuationPathRequired': True,
             'twoExactPublishedStationTimesRequired': True,
             'singletonFragmentMatchRequiredAtBothPoints': True,
+            'literalPrintedCalendarRequired': True,
+            'runtimeCalendarMustMatchOfficialPrintedCalendar': True,
+            'calendarMayBeInferredFromPageNumber': False,
             'sharedPublishedDestinationIsSearchOnly': True,
             'candidateTimeWindowIsSearchOnly': True,
             'uniqueTargetRequired': True,
