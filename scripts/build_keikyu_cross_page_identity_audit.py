@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
-"""Build an audit-only exact-identity graph from Keikyu's printed page references.
+"""Build an audit-only identity graph from Keikyu explicit printed page references.
 
-This stage is deliberately NOT a runtime same-train producer.  It consumes the
-page-local stop-time dataset plus the explicit official 「前の掲載ページ／列車番号」
-reference audit and materializes only uniquely resolved reference edges.  Every
-edge is then checked for stale fragments, metadata mismatch, branching and
-cycles before any later code is allowed to consider promotion.
+Both stop-time fragments and references must use page+section+column local identity.
+No runtime same-train edge is produced here.
 """
 from __future__ import annotations
 
@@ -86,14 +83,27 @@ def build_audit(stop_times: dict[str, Any], references: dict[str, Any]) -> dict[
     ref_policy = references.get("identityPolicy") or {}
     issues: list[dict[str, Any]] = []
 
-    if stop_policy.get("pageColumnIsExactLocalIdentity") is not True:
-        issues.append({"kind": "unsafe-stop-time-policy", "field": "pageColumnIsExactLocalIdentity"})
+    if stop_times.get("kind") != "keikyu-official-section-local-stop-times":
+        issues.append({"kind": "unsafe-stop-time-kind"})
+    if references.get("kind") != "keikyu-official-section-previous-publication-reference-audit":
+        issues.append({"kind": "unsafe-reference-kind"})
+    if stop_policy.get("pageSectionColumnIsExactLocalIdentity") is not True:
+        issues.append({"kind": "unsafe-stop-time-policy", "field": "pageSectionColumnIsExactLocalIdentity"})
+    if stop_policy.get("literalTrainNumberRowsAreHardSectionBoundaries") is not True:
+        issues.append({"kind": "unsafe-stop-time-policy", "field": "literalTrainNumberRowsAreHardSectionBoundaries"})
     if stop_policy.get("runtimeSameTrainPromotions") != 0:
         issues.append({"kind": "unexpected-upstream-runtime-promotion"})
     if ref_policy.get("officialPreviousPublicationMetadataExtracted") is not True:
         issues.append({"kind": "unsafe-reference-policy", "field": "officialPreviousPublicationMetadataExtracted"})
+    if ref_policy.get("sectionLocalCurrentGridRequired") is not True:
+        issues.append({"kind": "unsafe-reference-policy", "field": "sectionLocalCurrentGridRequired"})
     if ref_policy.get("runtimeSameTrainPromotions") != 0:
         issues.append({"kind": "unexpected-reference-runtime-promotion"})
+
+    source_sha = str((stop_times.get("source") or {}).get("sha256") or "")
+    reference_sha = str((references.get("source") or {}).get("sha256") or "")
+    if not source_sha or source_sha != reference_sha:
+        issues.append({"kind": "source-sha-mismatch"})
 
     stop_fragments = stop_times.get("fragments") or []
     by_id = {str(row.get("id")): row for row in stop_fragments if row.get("id")}
@@ -106,11 +116,13 @@ def build_audit(stop_times: dict[str, Any], references: dict[str, Any]) -> dict[
         if ref.get("targetStatus") != "unique-explicit-reference-candidate":
             continue
         current_page = int(ref["pdfPage"])
+        current_section = int(ref["section"])
         current_column = int(ref["column"])
         target_page = int(ref["targetPdfPage"])
+        target_section = int(ref["targetSection"])
         target_column = int(ref["targetColumn"])
-        current_id = fragment_id(current_page, current_column)
-        target_id = fragment_id(target_page, target_column)
+        current_id = fragment_id(current_page, current_section, current_column)
+        target_id = fragment_id(target_page, target_section, target_column)
         current = by_id.get(current_id)
         target = by_id.get(target_id)
 
@@ -137,6 +149,9 @@ def build_audit(stop_times: dict[str, Any], references: dict[str, Any]) -> dict[
                 "reference": ref.get("previousTrainNumber"),
             })
             continue
+        if int(current.get("section", -1)) != current_section or int(target.get("section", -1)) != target_section:
+            issues.append({"kind": "section-metadata-mismatch", "fragment": current_id})
+            continue
         if target_id == current_id:
             issues.append({"kind": "self-reference", "fragment": current_id})
             continue
@@ -158,6 +173,10 @@ def build_audit(stop_times: dict[str, Any], references: dict[str, Any]) -> dict[
             "previousTrainNumber": str(ref["previousTrainNumber"]),
             "currentPrintedPage": ref.get("printedPage"),
             "currentTrainNumber": ref.get("currentTrainNumber"),
+            "previousPdfPage": target_page,
+            "previousSection": target_section,
+            "currentPdfPage": current_page,
+            "currentSection": current_section,
         })
 
     incoming: dict[str, list[str]] = defaultdict(list)
@@ -170,16 +189,8 @@ def build_audit(stop_times: dict[str, Any], references: dict[str, Any]) -> dict[
         outgoing[source].append(target)
         incoming[target].append(source)
 
-    branching = {
-        node: sorted(targets)
-        for node, targets in sorted(outgoing.items())
-        if len(targets) > 1
-    }
-    multiple_previous = {
-        node: sorted(sources)
-        for node, sources in sorted(incoming.items())
-        if len(sources) > 1
-    }
+    branching = {node: sorted(targets) for node, targets in sorted(outgoing.items()) if len(targets) > 1}
+    multiple_previous = {node: sorted(sources) for node, sources in sorted(incoming.items()) if len(sources) > 1}
     cycles = _find_cycles(nodes, outgoing)
     components = _components(nodes, [(e["fromFragment"], e["toFragment"]) for e in edges]) if nodes else []
 
@@ -195,9 +206,9 @@ def build_audit(stop_times: dict[str, Any], references: dict[str, Any]) -> dict[
         component_sizes[str(len(group))] += 1
 
     return {
-        "version": 1,
-        "kind": "keikyu-official-cross-page-identity-audit",
-        "sourceSha256": (references.get("source") or {}).get("sha256"),
+        "version": 2,
+        "kind": "keikyu-official-section-cross-page-identity-audit",
+        "sourceSha256": source_sha,
         "candidateReferenceCount": int(references.get("uniqueExplicitReferenceCandidateCount") or 0),
         "materializedCandidateEdgeCount": len(edges),
         "nodeCount": len(nodes),
@@ -213,7 +224,8 @@ def build_audit(stop_times: dict[str, Any], references: dict[str, Any]) -> dict[
             "officialPreviousPublicationPageRequired": True,
             "officialPreviousTrainNumberRequired": True,
             "uniqueTargetFragmentRequired": True,
-            "pageLocalFragmentMetadataMustMatch": True,
+            "pageSectionLocalFragmentMetadataMustMatch": True,
+            "officialSectionIdentityRequired": True,
             "clockTimeUsedForIdentity": False,
             "destinationUsedForIdentity": False,
             "branchingAllowedForPromotion": False,
