@@ -14,7 +14,12 @@ KURIHAMA_BOUNDARY_ID = 'keikyu-main-kurihama-horinouchi'
 ZUSHI_BOUNDARY_ID = 'keikyu-main-zushi-kanazawahakkei'
 LEGACY_MARKER = 'same-printed-column-includes-shinagawa-and-haneda'
 MARKER = 'same-printed-column-two-exact-station-times'
-CROSS_PAGE_MARKER = 'official-previous-publication-chain-two-exact-station-times-v1'
+SECTION_LOCAL_MARKER = 'schedule-all-page-section-column-v2'
+CROSS_PAGE_MARKER = 'official-previous-publication-section-chain-two-exact-station-times-v2'
+DEPRECATED_UNBANDED_MARKERS = {
+    'schedule-all-page-column-v1',
+    'official-previous-publication-chain-two-exact-station-times-v1',
+}
 CROSS_PAGE_REFERENCE_EVIDENCE = 'keikyu-official-previous-publication-page-and-train-number'
 RESOLVABLE_UNRESOLVED_KINDS = {
     'ambiguous-boundary-fragment-alignment',
@@ -49,9 +54,10 @@ def cross_page_global_policy_safe(policy: dict[str, Any]) -> bool:
     return (
         policy.get('officialPreviousPublicationPageAndTrainNumberRequiredForCrossPage') is True
         and policy.get('uniquePreviousPublicationTargetRequiredForCrossPage') is True
-        and policy.get('pageLocalFragmentMetadataMustMatchForCrossPage') is True
+        and policy.get('pageSectionLocalFragmentMetadataMustMatchForCrossPage') is True
         and policy.get('crossPageGraphMustBeNonBranchingAcyclic') is True
         and policy.get('directedOfficialContinuationPathRequired') is True
+        and policy.get('officialSectionIdentityRequiredForCrossPage') is True
     )
 
 
@@ -61,9 +67,10 @@ def validate_cross_page_entry(entry: dict[str, Any]) -> str:
         'crossPageIdentityUsed',
         'officialPreviousPublicationPageAndTrainNumberRequired',
         'uniquePreviousPublicationTargetRequired',
-        'pageLocalFragmentMetadataMustMatch',
+        'pageSectionLocalFragmentMetadataMustMatch',
         'crossPageGraphMustBeNonBranchingAcyclic',
         'directedOfficialContinuationPathRequired',
+        'officialSectionIdentityRequired',
         'twoExactPublishedStationTimesRequired',
         'singletonFragmentMatchRequiredAtBothPoints',
         'sharedPublishedDestinationUsedOnlyForSearch',
@@ -83,6 +90,8 @@ def validate_cross_page_entry(entry: dict[str, Any]) -> str:
     anchors = entry.get('officialAnchors') or []
     if not start or not target or start == target or not root:
         return 'invalid-cross-page-official-endpoints'
+    if ':s' not in start or ':s' not in target:
+        return 'missing-section-aware-official-fragment-id'
     if not isinstance(path, list) or not path:
         return 'missing-cross-page-official-reference-path'
     if not isinstance(anchors, list) or len(anchors) != 2:
@@ -100,6 +109,8 @@ def validate_cross_page_entry(entry: dict[str, Any]) -> str:
         evidence = str(edge.get('evidence') or '')
         if source != cursor or not nxt:
             return 'discontinuous-cross-page-reference-path'
+        if ':s' not in source or ':s' not in nxt:
+            return 'unbanded-fragment-in-cross-page-reference-path'
         if evidence != CROSS_PAGE_REFERENCE_EVIDENCE:
             return 'missing-explicit-previous-publication-evidence'
         if not previous_number or not isinstance(previous_page, int) or previous_page <= 0:
@@ -148,28 +159,40 @@ def apply_generated_evidence(
         source = by_id.get(source_id)
         target = by_id.get(target_id)
         evidence = [str(value) for value in entry.get('evidence') or []]
+        evidence_set = set(evidence)
         source_matches = [str(value) for value in entry.get('sourceMatches') or []]
         target_matches = [str(value) for value in entry.get('targetMatches') or []]
         pair = (str(entry.get('fromRailway') or ''), str(entry.get('toRailway') or ''))
         boundary_id = str(entry.get('boundaryId') or '')
         spec = BOUNDARY_SPECS.get(boundary_id)
-        is_same_column = bool({MARKER, LEGACY_MARKER} & set(evidence))
-        is_cross_page = CROSS_PAGE_MARKER in evidence
+        is_same_column = bool({MARKER, LEGACY_MARKER} & evidence_set)
+        is_section_local = SECTION_LOCAL_MARKER in evidence_set
+        is_cross_page = CROSS_PAGE_MARKER in evidence_set
 
         reason = ''
-        if not spec or (not is_same_column and not is_cross_page):
+        if evidence_set & DEPRECATED_UNBANDED_MARKERS:
+            reason = 'deprecated-unbanded-official-identity'
+        elif not spec or (not is_same_column and not is_cross_page):
             reason = 'missing-supported-official-identity-marker'
+        elif SECTION_LOCAL_MARKER in evidence_set and not is_section_local:
+            reason = 'invalid-section-local-marker'
         elif is_cross_page and not cross_page_global_policy_safe(policy):
             reason = 'unsafe-cross-page-global-policy'
         elif is_cross_page:
             reason = validate_cross_page_entry(entry)
-        if not reason and source_matches != [source_id] or (not reason and target_matches != [target_id]):
+
+        if not reason and source_matches != [source_id]:
+            reason = 'non-singleton-recorded-match'
+        elif not reason and target_matches != [target_id]:
             reason = 'non-singleton-recorded-match'
         elif not reason and (not source or not target):
             reason = 'stale-fragment-reference'
         elif not reason and pair not in spec['pairs']:
             reason = 'unexpected-railway-pair'
-        elif not reason and (str(source.get('railway') or '') != pair[0] or str(target.get('railway') or '') != pair[1]):
+        elif not reason and (
+            str(source.get('railway') or '') != pair[0]
+            or str(target.get('railway') or '') != pair[1]
+        ):
             reason = 'fragment-railway-mismatch'
         elif not reason:
             boundary = next((
@@ -193,7 +216,11 @@ def apply_generated_evidence(
         key = (source_id, target_id)
         if key not in seen:
             seen.add(key)
-            identity_evidence = 'keikyu-official-internal-explicit-cross-page-two-point' if is_cross_page else 'keikyu-official-internal-same-column-two-point'
+            identity_evidence = (
+                'keikyu-official-internal-explicit-section-cross-page-two-point'
+                if is_cross_page
+                else 'keikyu-official-internal-same-column-two-point'
+            )
             output.append({
                 'fromFragment': source_id,
                 'toFragment': target_id,
