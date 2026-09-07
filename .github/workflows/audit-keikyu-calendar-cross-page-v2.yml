@@ -1,0 +1,113 @@
+name: Audit Keikyu calendar-safe cross-page V2
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/filter_keikyu_previous_refs_by_calendar.py'
+      - 'scripts/build_keikyu_calendar_cross_page_identity_audit.py'
+      - '.github/workflows/audit-keikyu-calendar-cross-page-v2.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install official PDF dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+          pip install pdfplumber==0.11.7 PyMuPDF==1.26.4 requests==2.32.5
+      - name: Compile calendar-safe cross-page pipeline
+        run: |
+          python -m py_compile \
+            scripts/keikyu_official_pdf.py \
+            scripts/diagnose_keikyu_official_calendars.py \
+            scripts/build_keikyu_official_stop_times.py \
+            scripts/audit_keikyu_previous_publication_refs.py \
+            scripts/filter_keikyu_previous_refs_by_calendar.py \
+            scripts/build_keikyu_cross_page_identity_audit.py \
+            scripts/build_keikyu_calendar_cross_page_identity_audit.py \
+            scripts/keikyu_cross_page_zushi_evidence.py \
+            scripts/keikyu_cross_page_zushi_evidence_v2.py
+      - name: Download official timetable once
+        run: |
+          python - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, 'scripts')
+          from keikyu_official_pdf import download_official_pdf
+          download_official_pdf(Path('/tmp/keikyu-schedule-all.pdf'))
+          PY
+      - name: Build strict printed-calendar stop-time dataset
+        run: |
+          python scripts/build_keikyu_official_stop_times.py \
+            --pdf /tmp/keikyu-schedule-all.pdf \
+            --output /tmp/keikyu-stop-times-v2.json
+      - name: Extract section-aware official previous-page references
+        run: |
+          python scripts/audit_keikyu_previous_publication_refs.py \
+            --pdf /tmp/keikyu-schedule-all.pdf \
+            --output /tmp/keikyu-prev-refs-raw.json
+      - name: Filter references to same literal printed calendar
+        run: |
+          python scripts/filter_keikyu_previous_refs_by_calendar.py \
+            /tmp/keikyu-stop-times-v2.json \
+            /tmp/keikyu-prev-refs-raw.json \
+            --output /tmp/keikyu-prev-refs-calendar.json
+      - name: Build strict same-calendar cross-page identity graph
+        run: |
+          python scripts/build_keikyu_calendar_cross_page_identity_audit.py \
+            /tmp/keikyu-stop-times-v2.json \
+            /tmp/keikyu-prev-refs-calendar.json \
+            --output /tmp/keikyu-cross-page-calendar.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('/tmp/keikyu-cross-page-calendar.json').read_text(encoding='utf-8'))
+          assert not (p.get('issues') or []), p.get('issues')
+          policy=p.get('identityPolicy') or {}
+          assert policy.get('literalPrintedCalendarRequired') is True
+          assert policy.get('unclassifiedCalendarPagesExcludedFromIdentity') is True
+          assert policy.get('crossPageEdgesStayWithinPrintedCalendar') is True
+          assert policy.get('calendarMayBeInferredFromPageNumber') is False
+          assert policy.get('calendarMayBeInferredFromNeighboringPages') is False
+          for edge in p.get('edges') or []:
+              assert edge.get('calendar') in ('weekday','holiday'), edge
+          print('CALENDAR_SAFE_CROSS_PAGE_EDGES',len(p.get('edges') or []))
+          print('CALENDAR_SAFE_CROSS_PAGE_EDGE_CALENDARS',p.get('calendarEdgeCounts'))
+          PY
+      - name: Dry-run Zushi cross-page proofs from safe graph
+        run: |
+          cp data/transit-v2/keikyu-internal-official-train-evidence.json /tmp/existing.json
+          python scripts/keikyu_cross_page_zushi_evidence_v2.py \
+            --official-stop-times /tmp/keikyu-stop-times-v2.json \
+            --cross-page-audit /tmp/keikyu-cross-page-calendar.json \
+            --existing /tmp/existing.json \
+            --output /tmp/evidence-with-cross-page.json \
+            --report /tmp/zushi-cross-page-calendar-report.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('/tmp/zushi-cross-page-calendar-report.json').read_text(encoding='utf-8'))
+          print('CALENDAR_SAFE_ZUSHI_CROSS_PAGE_PROOFS',r.get('matchedSingleton'))
+          print('CALENDAR_SAFE_ZUSHI_CROSS_PAGE_DIRECTIONS',r.get('directions'))
+          print('CALENDAR_SAFE_ZUSHI_CROSS_PAGE_CALENDARS',r.get('calendars'))
+          print('CALENDAR_SAFE_ZUSHI_CROSS_PAGE_REASONS',r.get('reasons'))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keikyu-calendar-cross-page-v2
+          path: |
+            /tmp/keikyu-prev-refs-calendar.json
+            /tmp/keikyu-cross-page-calendar.json
+            /tmp/zushi-cross-page-calendar-report.json
+          retention-days: 7
+          if-no-files-found: error
