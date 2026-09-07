@@ -1,0 +1,116 @@
+name: Audit Keikyu section-aware official timetable V2
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit-keikyu-section-v2.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PDF dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+          pip install pdfplumber==0.11.7 PyMuPDF==1.26.4 requests==2.32.5
+      - name: Compile section-aware pipeline
+        run: |
+          python -m py_compile \
+            scripts/keikyu_official_pdf.py \
+            scripts/build_keikyu_official_stop_times.py \
+            scripts/audit_keikyu_previous_publication_refs.py \
+            scripts/build_keikyu_cross_page_identity_audit.py \
+            scripts/verify_keikyu_cross_page_identity_audit.py \
+            scripts/keikyu_schedule_all_zushi_evidence.py \
+            scripts/keikyu_cross_page_zushi_evidence_v2.py \
+            scripts/test_keikyu_section_aware_pdf.py
+      - name: Test section boundaries
+        run: python scripts/test_keikyu_section_aware_pdf.py
+      - name: Download official timetable once
+        run: |
+          python - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, 'scripts')
+          from keikyu_official_pdf import download_official_pdf
+          download_official_pdf(Path('/tmp/keikyu-schedule-all.pdf'))
+          PY
+      - name: Build V2 section-local stop times
+        run: |
+          python scripts/build_keikyu_official_stop_times.py \
+            --pdf /tmp/keikyu-schedule-all.pdf \
+            --output /tmp/keikyu-stop-times-v2.json | tee /tmp/stop-times-summary.txt
+      - name: Build V2 section-local previous-page references
+        run: |
+          python scripts/audit_keikyu_previous_publication_refs.py \
+            --pdf /tmp/keikyu-schedule-all.pdf \
+            --output /tmp/keikyu-previous-refs-v2.json | tee /tmp/previous-refs-summary.txt
+      - name: Build and verify V2 explicit identity graph
+        run: |
+          python scripts/build_keikyu_cross_page_identity_audit.py \
+            /tmp/keikyu-stop-times-v2.json \
+            /tmp/keikyu-previous-refs-v2.json \
+            --output /tmp/keikyu-cross-page-v2.json | tee /tmp/cross-page-summary.txt
+          python scripts/verify_keikyu_cross_page_identity_audit.py \
+            /tmp/keikyu-cross-page-v2.json | tee /tmp/cross-page-verify.txt
+      - name: Dry-run section-local Zushi proofs
+        run: |
+          python scripts/keikyu_schedule_all_zushi_evidence.py \
+            --official-stop-times /tmp/keikyu-stop-times-v2.json \
+            --entries-output /tmp/zushi-section-local-entries.json \
+            --report /tmp/zushi-section-local-report.json | tee /tmp/zushi-section-local-summary.txt
+      - name: Dry-run section-aware cross-page Zushi proofs
+        run: |
+          python scripts/keikyu_cross_page_zushi_evidence_v2.py \
+            --official-stop-times /tmp/keikyu-stop-times-v2.json \
+            --cross-page-audit /tmp/keikyu-cross-page-v2.json \
+            --existing data/transit-v2/keikyu-internal-official-train-evidence.json \
+            --output /tmp/evidence-v2-after.json \
+            --report /tmp/zushi-cross-page-v2-report.json | tee /tmp/zushi-cross-page-v2-summary.txt
+      - name: Print V2 proof totals
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          stop=json.loads(Path('/tmp/keikyu-stop-times-v2.json').read_text(encoding='utf-8'))
+          refs=json.loads(Path('/tmp/keikyu-previous-refs-v2.json').read_text(encoding='utf-8'))
+          graph=json.loads(Path('/tmp/keikyu-cross-page-v2.json').read_text(encoding='utf-8'))
+          local=json.loads(Path('/tmp/zushi-section-local-report.json').read_text(encoding='utf-8'))
+          cross=json.loads(Path('/tmp/zushi-cross-page-v2-report.json').read_text(encoding='utf-8'))
+          print('V2_SECTIONS', stop['totals']['timetableSections'])
+          print('V2_FRAGMENTS', stop['totals']['trainColumnFragments'])
+          print('V2_TIME_CELLS', stop['totals']['sourceTimeCells'])
+          print('V2_RESOLVED_TIME_CELLS', stop['totals']['resolvedTimeCells'])
+          print('V2_COMPLETE_PREVIOUS_REFS', refs['completePreviousReferenceCount'])
+          print('V2_UNIQUE_PREVIOUS_REFS', refs['uniqueExplicitReferenceCandidateCount'])
+          print('V2_GRAPH_EDGES', graph['materializedCandidateEdgeCount'])
+          print('V2_GRAPH_ISSUES', len(graph.get('issues') or []))
+          print('V2_ZUSHI_LOCAL_PROVEN', int(local.get('matchedSingleton') or 0))
+          print('V2_ZUSHI_CROSS_PROVEN', int(cross.get('matchedSingleton') or 0))
+          print('V2_ZUSHI_LOCAL_REASONS', json.dumps(local.get('reasons') or {}, ensure_ascii=False, sort_keys=True))
+          print('V2_ZUSHI_CROSS_REASONS', json.dumps(cross.get('reasons') or {}, ensure_ascii=False, sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keikyu-section-v2-audit
+          path: |
+            /tmp/keikyu-stop-times-v2.json
+            /tmp/keikyu-previous-refs-v2.json
+            /tmp/keikyu-cross-page-v2.json
+            /tmp/zushi-section-local-entries.json
+            /tmp/zushi-section-local-report.json
+            /tmp/zushi-cross-page-v2-report.json
+            /tmp/evidence-v2-after.json
+          retention-days: 7
+          if-no-files-found: error
