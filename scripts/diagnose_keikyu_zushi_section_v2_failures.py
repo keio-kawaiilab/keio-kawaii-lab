@@ -22,13 +22,22 @@ def load(path: Path) -> dict[str, Any]:
 
 
 def hit_fragments(
+    service: str,
     anchors: list[dict[str, Any]],
-    official_index: dict[tuple[str, int], list[dict[str, Any]]],
+    official_index: dict[tuple[str, str, int], list[dict[str, Any]]],
 ) -> set[str]:
+    if service not in {'weekday', 'holiday'}:
+        return set()
     out: set[str] = set()
     for anchor in anchors:
-        key = (str(anchor.get('suffix') or ''), int(anchor.get('minute') or 0) % 1440)
+        key = (
+            service,
+            str(anchor.get('suffix') or ''),
+            int(anchor.get('minute') or 0) % 1440,
+        )
         for hit in official_index.get(key, []):
+            if str(hit.get('calendar') or '') != service:
+                raise RuntimeError('calendar-keyed official index returned wrong service')
             fid = str(hit.get('officialFragment') or '')
             if fid:
                 out.add(fid)
@@ -65,7 +74,7 @@ def main() -> int:
         direction = f"{pair[0].rsplit('.', 1)[-1].lower()}-to-{pair[1].rsplit('.', 1)[-1].lower()}"
         candidates = current.candidate_targets(source, pair, fragments)
         source_anchors = anchors.get(source_id, [])
-        source_hits = hit_fragments(source_anchors, official_index)
+        source_hits = hit_fragments(service, source_anchors, official_index)
 
         proven: list[tuple[str, dict[str, Any]]] = []
         any_target_anchor = False
@@ -75,12 +84,18 @@ def main() -> int:
         for target, gap in candidates:
             target_id = str(target['id'])
             target_anchors = anchors.get(target_id, [])
-            target_hits = hit_fragments(target_anchors, official_index)
+            target_hits = hit_fragments(service, target_anchors, official_index)
             any_target_anchor = any_target_anchor or bool(target_anchors)
             any_target_hit = any_target_hit or bool(target_hits)
             shared = source_hits & target_hits
             shared_counts.append(len(shared))
-            proof = local.same_page_column_proof(source, target, anchors, official_index)
+            proof = local.same_page_section_column_proof(
+                source,
+                target,
+                service,
+                anchors,
+                official_index,
+            )
             if proof:
                 proven.append((target_id, proof))
             target_rows.append({
@@ -91,23 +106,25 @@ def main() -> int:
                 'sharedOfficialFragments': len(shared),
             })
 
-        if not candidates:
+        if service not in {'weekday', 'holiday'}:
+            gate = 'runtime-calendar-unrecognized'
+        elif not candidates:
             gate = 'no-candidate-target'
         elif not source_anchors:
             gate = 'no-source-singleton-anchor'
         elif not source_hits:
-            gate = 'no-source-official-hit'
+            gate = 'no-source-official-hit-in-same-calendar'
         elif not any_target_anchor:
             gate = 'no-target-singleton-anchor'
         elif not any_target_hit:
-            gate = 'no-target-official-hit'
+            gate = 'no-target-official-hit-in-same-calendar'
         elif len(proven) > 1:
             gate = 'multiple-runtime-targets-with-local-proof'
         elif len(proven) == 1:
             gate = 'locally-proven-before-target-conflict-check'
             provisional.append((source_id, proven[0][0]))
         elif max(shared_counts, default=0) == 0:
-            gate = 'official-hits-exist-but-no-shared-section-column'
+            gate = 'same-calendar-official-hits-exist-but-no-shared-section-column'
         elif max(shared_counts, default=0) > 1:
             gate = 'shared-multiple-official-section-columns'
         else:
@@ -122,7 +139,7 @@ def main() -> int:
             'direction': direction,
             'candidateTargets': len(candidates),
             'sourceSingletonAnchors': len(source_anchors),
-            'sourceOfficialFragments': len(source_hits),
+            'sourceOfficialFragmentsInSameCalendar': len(source_hits),
             'provenTargets': [target for target, _proof in proven],
             'gate': gate,
             'targets': target_rows[:20],
@@ -145,6 +162,7 @@ def main() -> int:
         'finalLocalProofsIfRecomputedNow': final_local,
         'officialAnchorKeys': len(official_index),
         'officialFragments': len(official.get('fragments') or []),
+        'calendarExcludedPages': official.get('calendarExcludedPages') or [],
     }
     payload = {'summary': summary, 'details': details}
     Path(args.output).write_text(json.dumps(payload, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
