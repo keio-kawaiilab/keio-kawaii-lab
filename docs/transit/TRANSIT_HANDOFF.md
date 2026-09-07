@@ -9,6 +9,63 @@ Repository: `keio-kawaiilab/keio-kawaii-lab`
 Default branch: `main`
 Public route entry point: `route.html`
 
+**LATEST IMPLEMENTATION — Keikyu internal through services, 2026-09-07**
+
+Current implementation branch: `work/keikyu-internal-completion-20260907`, based
+on the saved reconciliation checkpoint `b6cef83384952325dd0f4b46765befd4b24499e7`.
+This completes the internal Main/Airport/Kurihama/Zushi database implementation
+and route tests for both printed calendars. It does not claim a main merge or
+public deployment, or completion of the entire Keisei/Asakusa connected system.
+The older audit-only instructions and internal counts below describe history.
+
+- Official PDF SHA-256: `e10b1c6efd92f40b0dae6d712b65c2391584b9134cd653c74fe78548ad681b63`.
+  All 3,140 train-bearing columns are accounted for in 2,128 publication groups;
+  993 empty geometry columns are retained separately. 2,011 groups have at least
+  two Keikyu stops and become exact network journeys, including **1,368 internal
+  through journeys**. The other 117 have fewer than two internal stops.
+- Main ↔ Airport, Main ↔ Kurihama, and Main ↔ Zushi are covered in both directions
+  on weekdays and holidays. There are 1,592 boundary passages, represented by
+  1,590 runtime identity links plus two network-only cases that pass an untimed
+  junction. No junction stop or time is invented for those cases.
+- The parser now handles 屛風浦 / ＹＲＰ野比 aliases, the `.Jimmuji` station ID,
+  arrival ditto marks, and 522 literal inline page/endpoint notes. The 261 inline
+  links require reciprocal references plus exact endpoints, with one explicitly
+  reviewed source discrepancy. Equal train numbers or nearby clocks never join
+  otherwise unrelated columns. Unknown numeric cells and unassembled groups: 0.
+- Two source-specific discrepancies are pinned to the exact PDF hash and glyphs:
+  PDF p93's literal `羽田第１・第３` terminal typo is resolved by two reciprocal
+  airport-arrival notes; p121 → p94's exact printed origin/boundary/destination
+  evidence supports the forward reference despite p94's incorrect return page.
+  Literal source errors, all six corrected cells, and 11 removed annotation cells
+  remain in `keikyu-internal-source-stop-times.json.gz` and the network audit.
+- The four core line tables now project exact official journeys. Daishi and other
+  operators' fragment files are preserved. The previous 225 internal entries are
+  archived losslessly in `keikyu-internal-legacy-evidence.json.gz`; the legacy
+  generator cannot overwrite the new network. Scheduled refresh checks the live
+  official PDF hash and validates all exact projections before committing.
+- **External scope stays separate:** only 398 previously active external identities
+  supported by the independent exact-sequence audit are retained against the new
+  Keikyu journeys. Thirteen unsupported older endpoint associations are kept in
+  `keikyu-retained-external-identities.json` for investigation and not promoted.
+  They are not declared transfers. The separate 577-continuation / 4-transfer /
+  0-unresolved Sengakuji publication audit is unchanged; it is not a claim that
+  all 577 have been integrated into runtime. The old 494-row same-column layer
+  stays disabled. Global unresolved counts alone do not measure external coverage.
+- Validation: all 161 Keikyu unit tests pass; the actual route engine resolves
+  every one of the 1,368 through journeys with zero transfers, both calendars and
+  all six directed boundaries. Wrong calendar, reversed train direction, and
+  fictitious Zushi–Kurihama / Uraga–Kurihama direct services are rejected. Runtime
+  validation checks all 1,590 internal and 398 retained external identities.
+  Source regeneration matches the saved network, clean stops, notes, and audit.
+  Full build/finalize testing also passed the new internal checks; pre-existing
+  Keisei fragment regeneration drift was observed and its saved data was restored
+  so this change does not replace unrelated operator identities.
+- Read-only CI: `.github/workflows/verify-keikyu-internal-network.yml`. Reproduce
+  from the current official PDF there; a new PDF revision must fail closed and
+  be reviewed. `verify_keikyu_internal_materialization.py` dispatches the new
+  verifier when this complete network exists. Check the branch's CI result before
+  merging. Main/public state must be checked separately.
+
 Latest work checkpoint: `work/sengakuji-exact-reconciliation-20260907`, based on
 `39791a0d5e63cac5fc69e66d00aca1931c890138`. The work below is an audit-only branch
 checkpoint until merged; it is NOT a claim of production deployment. Do not

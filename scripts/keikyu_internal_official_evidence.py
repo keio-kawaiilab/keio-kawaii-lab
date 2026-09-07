@@ -62,7 +62,7 @@ STATION_LABELS: dict[str, tuple[str, ...]] = {
     '.Shinotsu': ('新大津',), '.Kitakurihama': ('北久里浜',), '.KeikyuKurihama': ('京急久里浜',),
     '.YrpNobi': ('YRP野比', 'ＹＲＰ野比'), '.KeikyuNagasawa': ('京急長沢',),
     '.Tsukuihama': ('津久井浜',), '.Miurakaigan': ('三浦海岸',), '.Misakiguchi': ('三崎口',),
-    '.Mutsuura': ('六浦',), '.Jinmuji': ('神武寺',), '.ZushiHayama': ('逗子・葉山',),
+    '.Mutsuura': ('六浦',), '.Jimmuji': ('神武寺',), '.ZushiHayama': ('逗子・葉山',),
 }
 
 
@@ -472,6 +472,16 @@ def main() -> int:
     ap.add_argument('--coverage', default='data/transit-v2/coverage.json')
     ap.add_argument('--output', default='data/transit-v2/keikyu-internal-official-train-evidence.json')
     args = ap.parse_args()
+    network = Path('data/transit/keikyu/timetables/official-internal-network.json')
+    if network.exists() and args.output == 'data/transit-v2/keikyu-internal-official-train-evidence.json':
+        current = json.loads(network.read_text())
+        if current.get('internalCoverageComplete') is not True:
+            raise RuntimeError('Official internal network requires review')
+        archived = json.loads(Path(args.output).read_text())
+        if archived.get('entries') or not archived.get('supersededBy'):
+            raise RuntimeError('Legacy internal evidence was not archived')
+        print('Internal identities are supplied by the verified complete official network')
+        return 0
     payload = build_payload(Path(args.fragments), Path(args.coverage))
     Path(args.output).write_text(json.dumps(payload, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     print(json.dumps(payload['summary'], ensure_ascii=False, indent=2))

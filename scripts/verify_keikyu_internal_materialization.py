@@ -25,6 +25,10 @@ def runtime_ref(fragment: dict) -> str:
 
 
 def main() -> int:
+    if Path('data/transit/keikyu/timetables/official-internal-network.json').exists():
+        from verify_keikyu_internal_network import verify
+        print(json.dumps(verify(), ensure_ascii=False, indent=2))
+        return 0
     evidence = load('keikyu-internal-official-train-evidence.json')
     entries = [row for row in evidence.get('entries') or [] if isinstance(row, dict)]
     edges = [row for row in load('same-train-edges.json').get('edges') or [] if isinstance(row, dict)]
