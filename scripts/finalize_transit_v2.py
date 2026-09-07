@@ -414,6 +414,8 @@ def main() -> int:
     # intermediate builder output.
     from import_western_train_db import install as install_western
     install_western(V2.parent.parent)
+    from build_jr_through_db import install as install_jr
+    install_jr(V2.parent.parent)
     print('strict transit-v2 finalization passed')
     return 0
 

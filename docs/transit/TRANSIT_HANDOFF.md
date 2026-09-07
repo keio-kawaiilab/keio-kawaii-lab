@@ -9,6 +9,38 @@ Repository: `keio-kawaiilab/keio-kawaii-lab`
 Default branch: `main`
 Public route entry point: `route.html`
 
+**LATEST CHECKPOINT — JR internal/external continuation DB, 2026-09-07**
+
+Current branch: `work/jr-through-20260907`, based on western DB commit
+`c4f8bff6e849eb411c291ea82e018c1638f23fc1`. Start at `JR_THROUGH_DB.md`.
+
+- All 18,731 retained JR-East fragments (40 lines) are accounted once, using
+  5,633 re-proved ODPT continuation edges. Materialized 13,238 unbranched
+  journey portions, including 3,709 multi-line portions. All 292,354 source
+  stop rows project exactly to 288,407 assembled rows; zero quarantines.
+- `data/transit-v2/jr-official/` is registered with the shared DB reader.
+  Full fragment/event projections, original calendars, section train labels,
+  source hashes and missing/external endpoint evidence are retained.
+  The normal builder and finalizer regenerate and register this shard.
+- 140 split/merge-related edges remain explicit; no arbitrary branch pairing.
+  272 missing-fragment references include identity-only rows already bridged
+  by explicit links. Neither count means that many missing physical trains.
+- External origins/destinations have 1,091 evidence rows across 15 target
+  railway IDs. Includes Chiyoda/Odakyu, Tozai/ToyoRapid, Rinkai/Sotetsu,
+  Izukyu/IzuHakone/Fujikyu/Tobu and other JR companies. The preceding western
+  DB's 184 JR journeys are referenced, not recollected or duplicated.
+- New bulk network collection stopped with `network approval was cancelled
+  before a decision was returned`. This is an environment retrieval blocker,
+  not proof of Yahoo denial. Normal Web search worked; comprehensive train
+  acquisition did not. Do not mistake cached pages for newly collected data.
+- **JR IS NOT COMPLETE:** no independent all-station mother-set audit yet;
+  no complete external reconciliation; split/car/date rules and route-engine
+  activation remain. New network rows have `runtimeActivated:false`.
+  The existing v1 reader and public route entry remain untouched.
+- JR 11 tests and independent source-event verifier pass. Western all-train
+  verifier still passes. A read-only CI workflow is added; remote CI status
+  must be checked separately. Preserve this checkpoint before resuming.
+
 **LATEST DB IMPORT — western all-train database, 2026-09-07**
 
 The user requested DB integration after the complete Yahoo investigation. All

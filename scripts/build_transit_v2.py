@@ -590,6 +590,8 @@ def build() -> dict[str, Any]:
     # the ODPT indexes. Source calendar rules stay attached to every journey.
     from import_western_train_db import install as install_western
     install_western(V1.parent.parent)
+    from build_jr_through_db import install as install_jr
+    install_jr(V1.parent.parent)
     coverage = load_json(OUT / 'coverage.json', coverage)
     print(json.dumps(coverage['summary'], ensure_ascii=False, indent=2))
     return coverage

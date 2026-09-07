@@ -1,0 +1,31 @@
+name: Verify JR official continuation database
+on:
+  pull_request:
+    paths:
+      - 'scripts/*jr_through_db.py'
+      - 'scripts/build_transit_v2.py'
+      - 'scripts/finalize_transit_v2.py'
+      - 'data/transit-v2/**'
+      - 'data/transit/odpt-train-identities.json'
+      - '.github/workflows/verify-jr-through-db.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify every JR source event and negative identity cases
+        run: |
+          python scripts/verify_jr_through_db.py
+          python scripts/test_jr_through_db.py
+          python scripts/test_transit_v2.py
+      - name: Verify regeneration preserves both source shards
+        run: |
+          python scripts/finalize_transit_v2.py
+          python scripts/verify_jr_through_db.py
+          python scripts/verify_western_train_db.py
