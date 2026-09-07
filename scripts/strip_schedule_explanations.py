@@ -12,10 +12,11 @@ HIDDEN_POLICY = "<!-- schedule-source-policy: FC先行・アップグレード�
 PAST_OCCURRENCE_RENDERER = "occ(e).forEach(function(o){var k=performanceKey(e,o)"
 CURRENT_OCCURRENCE_RENDERER = "occ(e).forEach(function(o){var od=p(o.date);if(od&&od<today)return;var k=performanceKey(e,o)"
 
-# Physical performance identity is independent from source/event kind/ticket row.
-# Same group + same day + same verified start time is one public performance.
+# Ordinary physical performances use group + day + verified start time.
+# Release events / large benefit events are one event entity per group + day:
+# sale rows, parts and provisional times must never split one special-event card.
 LEGACY_PERFORMANCE_KEY = "function performanceKey(e,o){return[String(e.group||''),String(o.date||'').slice(0,10),eventKind(e),canon(e)].join('|')}"
-PERFORMANCE_KEY = (
+GENERIC_PERFORMANCE_KEY = (
     "function performanceTitleKey(e){return String(title(e)||'').toLowerCase().replace(/\\s+/g,'').replace(/[!！・|｜\\-–—_\\[\\]()（）『』「」]/g,'')}"
     "function performanceVenueKey(e,o){var v=String((o&&o.venue)||e.venue||'').toLowerCase();"
     "v=v.replace(/^(?:北海道|東京都|京都府|大阪府|.{2,3}県)\\s*/,'').replace(/\\s+/g,'').replace(/[!！・|｜\\-–—_\\[\\]()（）『』「」]/g,'');return v}"
@@ -24,13 +25,24 @@ PERFORMANCE_KEY = (
     "if(day&&time)return [group,day,'time',time].join('|');"
     "return [group,day,'fallback',venue,titleKey].join('|')}"
 )
+PERFORMANCE_KEY = (
+    "function performanceTitleKey(e){return String(title(e)||'').toLowerCase().replace(/\\s+/g,'').replace(/[!！・|｜\\-–—_\\[\\]()（）『』「」]/g,'')}"
+    "function performanceVenueKey(e,o){var v=String((o&&o.venue)||e.venue||'').toLowerCase();"
+    "v=v.replace(/^(?:北海道|東京都|京都府|大阪府|.{2,3}県)\\s*/,'').replace(/\\s+/g,'').replace(/[!！・|｜\\-–—_\\[\\]()（）『』「」]/g,'');return v}"
+    "function performanceKey(e,o){var day=String((o&&o.date)||e.eventDate||'').slice(0,10),"
+    "time=String((o&&o.startTime)||e.startTime||'').replace(/\\s+/g,''),venue=performanceVenueKey(e,o),titleKey=performanceTitleKey(e),group=String(e.group||'').trim();"
+    "if(e.eventCategory==='release-event'||e.eventCategory==='large-benefit')return [group,day,'special'].join('|');"
+    "if(day&&time)return [group,day,'time',time].join('|');"
+    "return [group,day,'fallback',venue,titleKey].join('|')}"
+)
 
-# fix_schedule_shell.py installs the final occurrence-based identity. These
-# markers validate the physical rule without depending on minified formatting.
+# fix_schedule_shell.py installs the occurrence-based identity. These markers
+# validate both the special-event day invariant and ordinary timed performances.
 OCCURRENCE_PERFORMANCE_MARKERS = (
     "function performanceVenueKey(e,o)",
     "function performanceKey(e,o)",
     "performanceTitleKey(e)",
+    "if(e.eventCategory==='release-event'||e.eventCategory==='large-benefit')return [group,day,'special'].join('|')",
     "if(day&&time)return [group,day,'time',time].join('|')",
     "return [group,day,'fallback',venue,titleKey].join('|')",
 )
@@ -62,6 +74,10 @@ def has_application_band_identity(page: str) -> bool:
 def ensure_visible_title_performance_identity(page: str) -> str:
     if has_visible_title_performance_identity(page):
         fixed = page
+    elif GENERIC_PERFORMANCE_KEY in page:
+        # The shell builder still emits the ordinary-performance key. Upgrade it
+        # at the final release boundary so special events cannot be split again.
+        fixed = page.replace(GENERIC_PERFORMANCE_KEY, PERFORMANCE_KEY, 1)
     elif LEGACY_PERFORMANCE_KEY in page:
         fixed = page.replace(LEGACY_PERFORMANCE_KEY, PERFORMANCE_KEY, 1)
     else:
@@ -82,8 +98,10 @@ def assert_physical_identity(page: str) -> None:
     block = page[start:end]
     if "eventKind(e)" in block:
         raise RuntimeError("eventKind must not participate in physical performance identity")
+    if "if(e.eventCategory==='release-event'||e.eventCategory==='large-benefit')return [group,day,'special'].join('|')" not in block:
+        raise RuntimeError("special events must use one group/date identity")
     if "if(day&&time)return [group,day,'time',time].join('|')" not in block:
-        raise RuntimeError("group/date/start-time physical performance key is missing")
+        raise RuntimeError("ordinary group/date/start-time physical performance key is missing")
 
 
 def main() -> int:
