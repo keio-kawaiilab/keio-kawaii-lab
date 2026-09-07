@@ -15,6 +15,11 @@ concurrency:
 
 jobs:
   prove:
+    name: prove-${{ matrix.calendar }}
+    strategy:
+      fail-fast: false
+      matrix:
+        calendar: [weekday, holiday]
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
@@ -26,28 +31,38 @@ jobs:
         run: pip install pdfplumber==0.11.7 PyMuPDF==1.26.4 requests==2.32.5
       - name: Test fragmented-boundary resolver
         run: |
-          python -m py_compile scripts/keikyu_missing_boundary_evidence.py
+          python -m py_compile \
+            scripts/keikyu_missing_boundary_evidence.py \
+            scripts/run_keikyu_zushi_proof_calendar.py
           python scripts/test_keikyu_missing_boundary_evidence.py
           python scripts/test_keikyu_internal_generated_evidence.py
-      - name: Build strict Zushi proof without mutating production
+      - name: Build strict Zushi proof for ${{ matrix.calendar }}
         run: |
-          python scripts/keikyu_missing_boundary_evidence.py \
-            --boundary-id keikyu-main-zushi-kanazawahakkei \
-            --output /tmp/keikyu-internal-official-train-evidence.json \
-            --report /tmp/zushi-current-evidence-report.json
-          cat /tmp/zushi-current-evidence-report.json
+          python scripts/run_keikyu_zushi_proof_calendar.py \
+            --calendar '${{ matrix.calendar }}' \
+            --report '/tmp/zushi-${{ matrix.calendar }}-report.json'
       - name: Summarize independent official proof
         run: |
           python - <<'PY'
           import json
+          import os
           from pathlib import Path
-          report=json.loads(Path('/tmp/zushi-current-evidence-report.json').read_text(encoding='utf-8'))
+          cal=os.environ['CALENDAR']
+          report=json.loads(Path(f'/tmp/zushi-{cal}-report.json').read_text(encoding='utf-8'))
+          print('ZUSHI_CALENDAR', cal)
           print('ZUSHI_ELIGIBLE', int(report.get('eligibleUnresolvedSources') or 0))
           print('ZUSHI_SEARCH_CANDIDATES', int(report.get('candidatePairsAfterDestinationAndTimeSearch') or 0))
           print('ZUSHI_OFFICIAL_PROVEN', int(report.get('matchedSingleton') or 0))
           print('ZUSHI_DIRECTIONS', json.dumps(report.get('directions') or {}, ensure_ascii=False, sort_keys=True))
-          print('ZUSHI_CALENDARS', json.dumps(report.get('calendars') or {}, ensure_ascii=False, sort_keys=True))
           print('ZUSHI_REASONS', json.dumps(report.get('reasons') or {}, ensure_ascii=False, sort_keys=True))
           if int(report.get('eligibleUnresolvedSources') or 0) <= 0:
-              raise SystemExit('no current Zushi unresolved sources selected')
+              raise SystemExit(f'no current Zushi unresolved sources selected for {cal}')
           PY
+        env:
+          CALENDAR: ${{ matrix.calendar }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zushi-${{ matrix.calendar }}-proof-report
+          path: /tmp/zushi-${{ matrix.calendar }}-report.json
+          if-no-files-found: error
+          retention-days: 7
