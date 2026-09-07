@@ -26,3 +26,7 @@ jobs:
           python scripts/verify_western_train_db.py
           python scripts/test_western_train_db.py
           python scripts/test_transit_v2.py
+      - name: Verify the finalized database retains every imported train
+        run: |
+          python scripts/finalize_transit_v2.py
+          python scripts/verify_western_train_db.py

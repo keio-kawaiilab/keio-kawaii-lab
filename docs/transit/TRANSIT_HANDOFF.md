@@ -19,6 +19,7 @@ retain their original conditions. No year is invented for yearless expressions.
 
 - Branch: `work/western-through-db-20260907`, based on the saved research commit
   `682948812bd57e6919270c18de77317a48291521` / PR #200.
+  DB changes are saved in draft PR #201, stacked on the research branch.
 - Start at `docs/transit/WESTERN_DB_IMPORT.md`. The canonical data is under
   `data/transit-v2/western/`; `index.json` registers its network shard and source
   station/calendar catalogs. `transit_network_db.load_network_journeys()` reads
@@ -28,6 +29,7 @@ retain their original conditions. No year is invented for yearless expressions.
   foreign keys, compares complete legacy fragments and updates the DB index.
   The normal `build_transit_v2.py` calls this importer; the finalizer reads the
   registered shards so regeneration/counting retains the western data.
+  It also refreshes the crosswalk/input hashes after final fragment rewrites.
 - `verify_western_train_db.py` independently compares every imported stop,
   available arrival/departure, full railway path, endpoint, source reference
   and calendar condition with the saved research. All 7,898 IDs and 163,734

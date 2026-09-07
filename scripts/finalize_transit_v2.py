@@ -409,6 +409,11 @@ def main() -> int:
         raise RuntimeError('unexpected same-train identity level')
     if any('train-number' in '|'.join(edge.get('evidence') or []).lower() for edge in edges):
         raise RuntimeError('train number evidence must never establish same-train identity')
+    # Finalization rewrites legacy fragment metadata. Refresh the source
+    # crosswalk and its input hashes against those final files, not the
+    # intermediate builder output.
+    from import_western_train_db import install as install_western
+    install_western(V2.parent.parent)
     print('strict transit-v2 finalization passed')
     return 0
 
