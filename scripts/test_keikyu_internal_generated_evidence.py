@@ -9,8 +9,8 @@ from pathlib import Path
 import keikyu_internal_generated_evidence as target
 
 
-def fragment(fid: str, railway: str) -> dict:
-    return {'id': fid, 'railway': railway, 'calendar': 'odpt.Calendar:Weekday', 'stops': []}
+def fragment(fid: str, railway: str, calendar: str = 'odpt.Calendar:Weekday') -> dict:
+    return {'id': fid, 'railway': railway, 'calendar': calendar, 'stops': []}
 
 
 def entry(**changes) -> dict:
@@ -32,6 +32,8 @@ def cross_page_entry(**changes) -> dict:
         'fromRailway': target.ZUSHI, 'toRailway': target.MAIN,
         'fromFragment': 'z1', 'toFragment': 'm1',
         'sourceMatches': ['z1'], 'targetMatches': ['m1'],
+        'calendar': 'weekday',
+        'officialPrintedCalendar': 'weekday',
         'sourceOfficialFragment': 'keikyu-official-pdf:p010:s01:c01',
         'targetOfficialFragment': 'keikyu-official-pdf:p011:s00:c01',
         'officialPhysicalComponentRoot': 'keikyu-official-pdf:p010:s01:c01',
@@ -46,6 +48,7 @@ def cross_page_entry(**changes) -> dict:
             'previousTrainNumber': '1234',
             'currentPrintedPage': 11,
             'currentTrainNumber': '1234',
+            'calendar': 'weekday',
             'evidence': target.CROSS_PAGE_REFERENCE_EVIDENCE,
         }],
         'evidence': ['operator-official-full-timetable-section-aware', target.CROSS_PAGE_MARKER],
@@ -60,6 +63,12 @@ def cross_page_entry(**changes) -> dict:
             'officialSectionIdentityRequired': True,
             'twoExactPublishedStationTimesRequired': True,
             'singletonFragmentMatchRequiredAtBothPoints': True,
+            'literalPrintedCalendarRequired': True,
+            'runtimeCalendarMustMatchOfficialPrintedCalendar': True,
+            'unclassifiedCalendarPagesExcludedFromIdentity': True,
+            'officialContinuationPathMustStayWithinPrintedCalendar': True,
+            'calendarMayBeInferredFromPageNumber': False,
+            'calendarMayBeInferredFromNeighboringPages': False,
             'sharedPublishedDestinationUsedOnlyForSearch': True,
             'candidateFragmentGapUsedOnlyForSearch': True,
             'trainNumberAloneMayEstablishIdentity': False,
@@ -86,6 +95,12 @@ def payload(row: dict, *, safe: bool = True, cross_page: bool = False) -> dict:
             'crossPageGraphMustBeNonBranchingAcyclic': True,
             'directedOfficialContinuationPathRequired': True,
             'officialSectionIdentityRequiredForCrossPage': True,
+            'literalPrintedCalendarRequiredForCrossPage': True,
+            'runtimeCalendarMustMatchOfficialPrintedCalendarForCrossPage': True,
+            'unclassifiedCalendarPagesExcludedFromCrossPageIdentity': True,
+            'crossPageEdgesStayWithinPrintedCalendar': True,
+            'calendarMayBeInferredFromPageNumberForCrossPage': False,
+            'calendarMayBeInferredFromNeighboringPagesForCrossPage': False,
         })
     return {'policy': policy, 'entries': [row]}
 
@@ -206,6 +221,31 @@ class ConsumerTests(unittest.TestCase):
         self.assertEqual([], edges)
         self.assertEqual('unsafe-cross-page-global-policy', unresolved[0]['reason'])
 
+    def test_cross_page_path_calendar_mismatch_fails_closed(self) -> None:
+        row = cross_page_entry(officialPreviousPublicationPath=[{
+            'fromFragment': 'keikyu-official-pdf:p010:s01:c01',
+            'toFragment': 'keikyu-official-pdf:p011:s00:c01',
+            'previousPrintedPage': 10, 'previousTrainNumber': '1234',
+            'calendar': 'holiday',
+            'evidence': target.CROSS_PAGE_REFERENCE_EVIDENCE,
+        }])
+        fragments = [fragment('z1', target.ZUSHI), fragment('m1', target.MAIN)]
+        indexes = graph((target.ZUSHI, target.MAIN), target.ZUSHI_BOUNDARY_ID)
+        edges, unresolved = self.apply(payload(row, cross_page=True), fragments=fragments, indexes=indexes)
+        self.assertEqual([], edges)
+        self.assertEqual('cross-page-reference-edge-calendar-mismatch', unresolved[0]['reason'])
+
+    def test_cross_page_runtime_calendar_mismatch_fails_closed(self) -> None:
+        row = cross_page_entry()
+        fragments = [
+            fragment('z1', target.ZUSHI),
+            fragment('m1', target.MAIN, 'odpt.Calendar:SaturdayHoliday'),
+        ]
+        indexes = graph((target.ZUSHI, target.MAIN), target.ZUSHI_BOUNDARY_ID)
+        edges, unresolved = self.apply(payload(row, cross_page=True), fragments=fragments, indexes=indexes)
+        self.assertEqual([], edges)
+        self.assertEqual('runtime-calendar-official-calendar-mismatch', unresolved[0]['reason'])
+
     def test_unbanded_fragment_id_in_v2_cross_page_path_fails_closed(self) -> None:
         row = cross_page_entry(
             sourceOfficialFragment='official:p1:c1',
@@ -213,6 +253,7 @@ class ConsumerTests(unittest.TestCase):
                 'fromFragment': 'official:p1:c1',
                 'toFragment': 'keikyu-official-pdf:p011:s00:c01',
                 'previousPrintedPage': 10, 'previousTrainNumber': '1234',
+                'calendar': 'weekday',
                 'evidence': target.CROSS_PAGE_REFERENCE_EVIDENCE,
             }],
         )
@@ -227,6 +268,7 @@ class ConsumerTests(unittest.TestCase):
             'fromFragment': 'keikyu-official-pdf:p999:s00:c01',
             'toFragment': 'keikyu-official-pdf:p011:s00:c01',
             'previousPrintedPage': 10, 'previousTrainNumber': '1234',
+            'calendar': 'weekday',
             'evidence': target.CROSS_PAGE_REFERENCE_EVIDENCE,
         }])
         fragments = [fragment('z1', target.ZUSHI), fragment('m1', target.MAIN)]
@@ -240,6 +282,7 @@ class ConsumerTests(unittest.TestCase):
             'fromFragment': 'keikyu-official-pdf:p010:s01:c01',
             'toFragment': 'keikyu-official-pdf:p011:s00:c01',
             'previousPrintedPage': None, 'previousTrainNumber': '',
+            'calendar': 'weekday',
             'evidence': target.CROSS_PAGE_REFERENCE_EVIDENCE,
         }])
         fragments = [fragment('z1', target.ZUSHI), fragment('m1', target.MAIN)]
