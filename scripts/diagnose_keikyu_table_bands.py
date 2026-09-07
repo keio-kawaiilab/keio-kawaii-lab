@@ -13,6 +13,7 @@ from audit_keikyu_official_columns import FIRST_POSSIBLE_TIMETABLE_PAGE, page_sc
 from audit_keikyu_station_time_resolution import resolve_page
 from keikyu_connected_station_catalog import station_titles
 from keikyu_official_pdf import (
+    PRINTED_HEADER_Y_LIMIT,
     TRAIN_NUMBER_RE,
     Word,
     _label_span,
@@ -50,6 +51,20 @@ def band_words(words: list[Word], height: float, band: str) -> list[Word]:
     ]
 
 
+def header_gate(y: float, xs: list[float]) -> tuple[str, float | None]:
+    if y > PRINTED_HEADER_Y_LIMIT:
+        return 'below-current-header-y-limit', None
+    if len(xs) < 3:
+        return 'fewer-than-three-explicit-train-numbers', None
+    adjacent = [b - a for a, b in zip(xs, xs[1:]) if 10.0 <= b - a <= 22.0]
+    if not adjacent:
+        return 'no-valid-10-to-22pt-adjacent-pitch', None
+    pitch = float(statistics.median(adjacent))
+    if not (10.0 <= pitch <= 22.0):
+        return 'median-pitch-out-of-range', pitch
+    return 'passes-header-preconditions', pitch
+
+
 def train_number_rows(words: list[Word]) -> list[dict[str, Any]]:
     out: list[dict[str, Any]] = []
     for row in cluster_by_y(words):
@@ -59,13 +74,19 @@ def train_number_rows(words: list[Word]) -> list[dict[str, Any]]:
         label_right = span[1]
         tokens = [w for w in row if w.x > label_right and TRAIN_NUMBER_RE.fullmatch(w.text)]
         xs = sorted(w.x for w in tokens)
-        gaps = [round(b - a, 3) for a, b in zip(xs, xs[1:]) if 8 <= b - a <= 25]
+        candidate_gaps = [round(b - a, 3) for a, b in zip(xs, xs[1:]) if 8 <= b - a <= 25]
+        exact_gaps = [round(b - a, 3) for a, b in zip(xs, xs[1:]) if 10 <= b - a <= 22]
+        y = float(statistics.median(w.y for w in row))
+        gate, pitch = header_gate(y, xs)
         out.append({
-            'y': round(float(statistics.median(w.y for w in row)), 3),
+            'y': round(y, 3),
             'labelRight': round(float(label_right), 3),
             'explicitTokenCount': len(tokens),
-            'tokens': [w.text for w in tokens[:12]],
-            'candidateGaps': gaps[:20],
+            'tokens': [w.text for w in tokens[:16]],
+            'candidateGaps': candidate_gaps[:24],
+            'exactPitchGaps': exact_gaps[:24],
+            'inferredPitch': round(pitch, 3) if pitch is not None else None,
+            'gate': gate,
         })
     return out
 
@@ -76,6 +97,8 @@ def diagnose(pdf_path: Path) -> dict[str, Any]:
     pages: list[dict[str, Any]] = []
     totals: Counter[str] = Counter()
     missing: list[dict[str, Any]] = []
+    lower_gate_counts: Counter[str] = Counter()
+    lower_header_samples: list[dict[str, Any]] = []
 
     for page_number in range(FIRST_POSSIBLE_TIMETABLE_PAGE, total_pages + 1):
         _width, height, words = bbox_words(pdf_path, page_number)
@@ -88,6 +111,11 @@ def diagnose(pdf_path: Path) -> dict[str, Any]:
             bw = band_words(words, height, band)
             headers = train_number_rows(bw)
             totals[f'{band}TrainNumberRows'] += len(headers)
+            if band == 'lower':
+                for header in headers:
+                    lower_gate_counts[str(header['gate'])] += 1
+                    if len(lower_header_samples) < 30:
+                        lower_header_samples.append({'page': page_number, **header})
             grid = detect_train_column_grid(bw)
             if grid is None:
                 page_row['bands'][band] = {'grid': False, 'trainNumberRows': headers}
@@ -144,6 +172,8 @@ def diagnose(pdf_path: Path) -> dict[str, Any]:
             'identityPromotions': 0,
         },
         'totals': dict(totals),
+        'lowerHeaderGateCounts': dict(lower_gate_counts.most_common()),
+        'lowerHeaderSamples': lower_header_samples,
         'sampleMissingHeaders': sample_missing,
         'missingOrInvalidBands': missing,
         'pages': pages,
@@ -166,8 +196,9 @@ def main() -> int:
     summary = {
         'output': str(args.output),
         **payload['totals'],
+        'lowerHeaderGateCounts': payload['lowerHeaderGateCounts'],
+        'lowerHeaderSamples': payload['lowerHeaderSamples'],
         'missingOrInvalidBands': len(payload['missingOrInvalidBands']),
-        'sampleMissingHeaders': payload['sampleMissingHeaders'],
         'identityPromotions': 0,
     }
     print(json.dumps(summary, ensure_ascii=False, indent=2))
