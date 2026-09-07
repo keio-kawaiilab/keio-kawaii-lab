@@ -52,7 +52,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y poppler-utils
-          pip install pdfplumber==0.11.7 requests==2.32.5
+          pip install pdfplumber==0.11.7 PyMuPDF==1.26.4 requests==2.32.5
 
       - name: Test fail-closed identity rules
         run: |
