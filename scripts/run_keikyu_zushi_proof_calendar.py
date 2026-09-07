@@ -22,6 +22,7 @@ def main() -> int:
     ap.add_argument('--coverage', default='data/transit-v2/coverage.json')
     ap.add_argument('--fragments', default='data/transit-v2/fragments/keikyu.json')
     ap.add_argument('--report', required=True)
+    ap.add_argument('--entries-output')
     args = ap.parse_args()
 
     coverage = load(Path(args.coverage))
@@ -54,6 +55,15 @@ def main() -> int:
         ],
     }
     Path(args.report).write_text(json.dumps(summary, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    if args.entries_output:
+        Path(args.entries_output).write_text(
+            json.dumps({
+                'calendar': args.calendar,
+                'boundaryId': BOUNDARY_ID,
+                'entries': entries,
+            }, ensure_ascii=False, indent=2) + '\n',
+            encoding='utf-8',
+        )
     print(json.dumps(summary, ensure_ascii=False, indent=2))
     return 0
 
