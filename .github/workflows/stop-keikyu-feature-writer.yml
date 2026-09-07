@@ -1,0 +1,23 @@
+name: Stop unintended feature-branch transit writer
+on:
+  push:
+    branches: ['work/keikyu-internal-completion-20260907']
+    paths: ['.github/workflows/stop-keikyu-feature-writer.yml']
+permissions:
+  actions: write
+  contents: read
+jobs:
+  stop:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const run_id = 34103177715;
+            const args = {owner: context.repo.owner, repo: context.repo.repo, run_id};
+            const {data: run} = await github.rest.actions.getWorkflowRun(args);
+            if (run.head_sha !== '82432d6f473ecad06f9b50b046e4ac5d82c4fb51' || run.head_branch !== 'work/keikyu-internal-completion-20260907') {
+              throw new Error('Refusing to cancel a different workflow run');
+            }
+            if (run.status !== 'completed') await github.rest.actions.cancelWorkflowRun(args);
+            core.info('Stopped the unintended writer from this feature branch');
