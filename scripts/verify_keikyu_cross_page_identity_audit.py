@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail-closed verifier for the Keikyu cross-page identity audit graph."""
+"""Fail-closed verifier for the section-aware Keikyu cross-page identity graph."""
 from __future__ import annotations
 
 import argparse
@@ -9,9 +9,9 @@ from pathlib import Path
 
 def verify(payload: dict) -> dict:
     errors: list[str] = []
-    if payload.get("version") != 1:
-        errors.append("version must be 1")
-    if payload.get("kind") != "keikyu-official-cross-page-identity-audit":
+    if payload.get("version") != 2:
+        errors.append("version must be 2")
+    if payload.get("kind") != "keikyu-official-section-cross-page-identity-audit":
         errors.append("unexpected dataset kind")
 
     policy = payload.get("identityPolicy") or {}
@@ -19,7 +19,8 @@ def verify(payload: dict) -> dict:
         "officialPreviousPublicationPageRequired",
         "officialPreviousTrainNumberRequired",
         "uniqueTargetFragmentRequired",
-        "pageLocalFragmentMetadataMustMatch",
+        "pageSectionLocalFragmentMetadataMustMatch",
+        "officialSectionIdentityRequired",
     )
     required_false = (
         "clockTimeUsedForIdentity",
@@ -52,6 +53,8 @@ def verify(payload: dict) -> dict:
         if not source or not target:
             errors.append("edge missing fragment id")
             continue
+        if ":s" not in source or ":s" not in target:
+            errors.append(f"edge uses non-section fragment id: {source}->{target}")
         if source == target:
             errors.append(f"self edge: {source}")
         pair = (source, target)
@@ -64,6 +67,8 @@ def verify(payload: dict) -> dict:
             errors.append(f"edge missing previous train number: {source}->{target}")
         if not edge.get("previousPrintedPage"):
             errors.append(f"edge missing previous printed page: {source}->{target}")
+        if edge.get("previousSection") is None or edge.get("currentSection") is None:
+            errors.append(f"edge missing section metadata: {source}->{target}")
 
     if payload.get("issues"):
         errors.append(f"identity audit has {len(payload['issues'])} structural/reference issue(s)")
