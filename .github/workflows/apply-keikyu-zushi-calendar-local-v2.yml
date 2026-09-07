@@ -1,0 +1,185 @@
+name: Apply Keikyu Zushi printed-calendar local V2
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-keikyu-zushi-calendar-local-v2.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: transit-db-writer
+  cancel-in-progress: true
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Sync latest main under writer lock
+        run: |
+          git fetch origin main
+          git checkout -B main origin/main
+          echo "MATERIALIZE_BASE=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install strict PDF dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+          pip install pdfplumber==0.11.7 PyMuPDF==1.26.4 requests==2.32.5
+      - name: Compile and test local calendar V2 safety
+        run: |
+          python -m py_compile \
+            scripts/keikyu_official_pdf.py \
+            scripts/diagnose_keikyu_official_calendars.py \
+            scripts/build_keikyu_official_stop_times.py \
+            scripts/keikyu_schedule_all_zushi_evidence.py \
+            scripts/keikyu_internal_generated_evidence.py \
+            scripts/merge_keikyu_zushi_section_v2.py \
+            scripts/test_keikyu_section_aware_pdf.py \
+            scripts/test_keikyu_section_local_consumer.py \
+            scripts/test_keikyu_internal_generated_evidence.py
+          python scripts/test_keikyu_section_aware_pdf.py
+          python scripts/test_keikyu_section_local_consumer.py
+          python scripts/test_keikyu_internal_generated_evidence.py
+      - name: Download official full timetable once
+        run: |
+          python - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, 'scripts')
+          from keikyu_official_pdf import download_official_pdf
+          download_official_pdf(Path('/tmp/keikyu-schedule-all.pdf'))
+          PY
+      - name: Diagnose literal calendars and build fail-closed dataset
+        run: |
+          python scripts/diagnose_keikyu_official_calendars.py \
+            --pdf /tmp/keikyu-schedule-all.pdf \
+            --output /tmp/keikyu-calendar-diagnosis.json
+          python scripts/build_keikyu_official_stop_times.py \
+            --pdf /tmp/keikyu-schedule-all.pdf \
+            --output /tmp/keikyu-stop-times-v2.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          diag=json.loads(Path('/tmp/keikyu-calendar-diagnosis.json').read_text(encoding='utf-8'))
+          stop=json.loads(Path('/tmp/keikyu-stop-times-v2.json').read_text(encoding='utf-8'))
+          unknown={int(row['page']) for row in diag.get('unclassifiedOrAmbiguous') or []}
+          excluded={int(x) for x in stop.get('calendarExcludedPages') or []}
+          included={int(row['page']) for row in stop.get('pages') or []}
+          print('CALENDAR_UNCLASSIFIED_PAGES',sorted(unknown))
+          print('CALENDAR_EXCLUDED_FROM_IDENTITY',sorted(excluded))
+          print('INCLUDED_CALENDAR_PAGES',len(included))
+          if unknown != excluded:
+              raise SystemExit(f'diagnosis/dataset calendar exclusion mismatch: diagnosis={sorted(unknown)} dataset={sorted(excluded)}')
+          if unknown & included:
+              raise SystemExit('unclassified calendar page leaked into identity dataset')
+          policy=stop.get('identityPolicy') or {}
+          assert policy.get('literalPrintedCalendarRequired') is True
+          assert policy.get('unclassifiedCalendarPagesExcludedFromIdentity') is True
+          assert policy.get('calendarMayBeInferredFromPageNumber') is False
+          assert policy.get('calendarMayBeInferredFromNeighboringPages') is False
+          for fragment in stop.get('fragments') or []:
+              if fragment.get('calendar') not in ('weekday','holiday'):
+                  raise SystemExit(f'fragment lacks literal calendar: {fragment.get("id")}')
+          PY
+      - name: Freshly prove Zushi local V2 within printed calendar
+        run: |
+          python scripts/keikyu_schedule_all_zushi_evidence.py \
+            --official-stop-times /tmp/keikyu-stop-times-v2.json \
+            --entries-output /tmp/zushi-section-v2-entries.json \
+            --report /tmp/zushi-section-v2-report.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          entries=json.loads(Path('/tmp/zushi-section-v2-entries.json').read_text(encoding='utf-8')).get('entries') or []
+          report=json.loads(Path('/tmp/zushi-section-v2-report.json').read_text(encoding='utf-8'))
+          print('FRESH_CALENDAR_V2_PROVEN',len(entries))
+          print('FRESH_CALENDAR_V2_DIRECTIONS',report.get('directions'))
+          print('FRESH_CALENDAR_V2_CALENDARS',report.get('calendars'))
+          if not entries:
+              raise SystemExit('no fresh printed-calendar section-local proofs; production left untouched')
+          for row in entries:
+              if row.get('calendar') != row.get('officialPrintedCalendar'):
+                  raise SystemExit(f'runtime/official calendar mismatch in fresh proof: {row.get("id")}')
+              official=str(row.get('officialPageSectionLocalFragment') or '')
+              if ':s' not in official:
+                  raise SystemExit(f'unbanded official fragment in fresh proof: {row.get("id")}')
+          PY
+      - name: Replace prior Zushi section proofs with only fresh calendar proofs
+        run: |
+          cp data/transit-v2/keikyu-internal-official-train-evidence.json /tmp/evidence-before-v2.json
+          python scripts/merge_keikyu_zushi_section_v2.py \
+            --existing /tmp/evidence-before-v2.json \
+            --entries /tmp/zushi-section-v2-entries.json \
+            --report /tmp/zushi-section-v2-report.json \
+            --output data/transit-v2/keikyu-internal-official-train-evidence.json \
+            --summary-output /tmp/zushi-section-v2-merge.json
+      - name: Re-finalize and audit complete transit DB
+        run: |
+          python scripts/finalize_transit_v2.py
+          python scripts/audit_transit_v2.py
+      - name: Verify exact fresh-set materialization
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          ROOT=Path('data/transit-v2')
+          marker='schedule-all-page-section-column-v2'
+          proof=json.loads(Path('/tmp/zushi-section-v2-entries.json').read_text(encoding='utf-8')).get('entries') or []
+          expected={(str(r.get('fromFragment') or ''),str(r.get('toFragment') or '')) for r in proof}
+          ids={str(r.get('id') or '') for r in proof}
+          evidence=json.loads((ROOT/'keikyu-internal-official-train-evidence.json').read_text(encoding='utf-8'))
+          ev_entries=evidence.get('entries') or []
+          zushi=[r for r in ev_entries if r.get('boundaryId')=='keikyu-main-zushi-kanazawahakkei' and marker in {str(v) for v in r.get('evidence') or []}]
+          actual={(str(r.get('fromFragment') or ''),str(r.get('toFragment') or '')) for r in zushi}
+          edges=json.loads((ROOT/'same-train-edges.json').read_text(encoding='utf-8')).get('edges') or []
+          materialized={(str(r.get('fromFragment') or ''),str(r.get('toFragment') or '')) for r in edges if r.get('classification')=='same-train'}
+          unresolved=json.loads((ROOT/'coverage.json').read_text(encoding='utf-8')).get('unresolved') or []
+          rejected={str(r.get('evidenceId') or '') for r in unresolved if r.get('kind')=='keikyu-internal-generated-evidence-rejected'}
+          lingering={str(r.get('fragment') or '') for r in unresolved if r.get('kind') in ('missing-boundary-train-identity-evidence','ambiguous-boundary-fragment-alignment')}
+          print('FRESH_EXPECTED',len(expected))
+          print('FRESH_EVIDENCE_ENTRIES',len(zushi))
+          print('FRESH_MATERIALIZED',len(expected & materialized))
+          print('FRESH_REJECTED',len(ids & rejected))
+          print('FRESH_STILL_UNRESOLVED',len({a for a,_b in expected} & lingering))
+          if actual != expected:
+              raise SystemExit('production Zushi section evidence is not exactly fresh calendar proof set')
+          if expected - materialized:
+              raise SystemExit(f'fresh proofs missing from runtime: {sorted(expected-materialized)[:5]}')
+          if ids & rejected:
+              raise SystemExit(f'fresh proofs rejected: {sorted(ids&rejected)[:5]}')
+          if {a for a,_b in expected} & lingering:
+              raise SystemExit('fresh proven sources remain unresolved')
+          PY
+      - name: Commit only verified generated DB
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            data/transit-v2/keikyu-internal-official-train-evidence.json \
+            data/transit-v2/same-train-edges.json \
+            data/transit-v2/runtime-same-train.json \
+            data/transit-v2/coverage.json \
+            data/transit-v2/index.json \
+            data/transit-v2/unresolved-summary.json
+          if git diff --cached --quiet; then
+            echo 'Fresh printed-calendar V2 already materialized'
+            exit 0
+          fi
+          git fetch origin main
+          remote="$(git rev-parse origin/main)"
+          if [ "$MATERIALIZE_BASE" != "$remote" ]; then
+            echo 'main moved during fresh proof; refusing stale generated DB commit'
+            exit 1
+          fi
+          git commit -m 'Apply strict Keikyu Zushi printed-calendar V2 evidence'
+          git push origin HEAD:main
