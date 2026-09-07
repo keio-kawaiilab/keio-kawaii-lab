@@ -29,14 +29,15 @@ jobs:
           python-version: '3.12'
       - name: Validate scope and print whole-system coverage
         run: python scripts/audit_keisei_system_scope.py
-      - name: Assert we do not falsely claim completion yet
+      - name: Require every independent inventory and boundary proof
         run: |
-          python scripts/audit_keisei_system_scope.py --write /tmp/keisei-system-coverage.json
+          python scripts/audit_keisei_system_scope.py --require-complete --write /tmp/keisei-system-coverage.json
           python - <<'PY'
           import json
           from pathlib import Path
           report=json.loads(Path('/tmp/keisei-system-coverage.json').read_text(encoding='utf-8'))
-          assert report['complete'] is False, 'Do not mark the Keisei system complete until every in-scope line and same-train identity is exact.'
+          assert report['complete'] is True
+          assert report['railwayCount'] == 14 and not report['errors'] and not report['blockingItems']
           print('whole-system complete:', report['complete'])
           print('in-scope railways:', report['railwayCount'])
           print('line timetables all exact:', report['allLineTimetablesExact'])

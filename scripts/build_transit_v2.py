@@ -537,6 +537,8 @@ def build() -> dict[str, Any]:
     install()
     from asakusa_boundary_runtime import install as install_asakusa
     install_asakusa()
+    from hokuso_independent_runtime import install as install_hokuso
+    install_hokuso()
     manifest = load_json(V1 / 'manifest.json', {}) or {}
     registry = load_json(BOUNDARIES, {}) or {}
     indexes = index_entities(manifest)

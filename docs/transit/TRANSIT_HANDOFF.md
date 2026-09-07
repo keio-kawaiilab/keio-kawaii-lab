@@ -9,7 +9,59 @@ Repository: `keio-kawaiilab/keio-kawaii-lab`
 Default branch: `main`
 Public route entry point: `route.html`
 
-**LATEST IMPLEMENTATION — complete Asakusa boundary journeys, 2026-09-07**
+**LATEST IMPLEMENTATION — all 14 Line-1 connected-system railways, 2026-09-07**
+
+The whole-system implementation audit now passes `--require-complete`: all
+14 in-scope railways have independently accounted timetables and exact through
+identities. Main merge/public deployment are still separate and not performed.
+
+- The Keikyu/Asakusa commit `7139a6a229e5437035850f65c4dd4f3c268ff413` passed
+  all 11 triggered workflows, including both previously failing Keikyu jobs.
+- A final independent boundary inventory found that 577 connection-table
+  continuations were only a subset. All **620** Asakusa trains meeting the
+  Sengakuji/Mita passenger boundary are now accounted: **618 continuations**
+  and **2 explicit termini**. The 41 additions comprise 40 complete Keisei
+  one-train-page proofs and one selected Yahoo one-train identity review for
+  weekday 847T (all production events still from official Keikyu/Toei sources).
+  **613** journeys cross both Oshiage and Sengakuji. Nishimagome-branch shuttles
+  are not incorrectly joined to Keikyu. See the full Asakusa boundary audit and
+  `sengakuji-selected-one-train-review.json`; the old 577/4 audit is retained
+  as a separate source-column subset, not claimed as the whole boundary.
+- Hokuso's operator-linked timetables were collected across all 15 stations,
+  both service calendars and all 28 valid directions: **56 station boards,
+  4,572 departures, 490 source train pages** (including Sky Access/Skyliner
+  services published on the shared corridor). No missing/ambiguous departures.
+  The 242 departures continuing outward beyond Takasago/Nihon-Idai are recorded
+  separately as outside this corridor, not silently discarded.
+- Three formerly missing internal-only trains were found and added, with full
+  official one-train pages: weekday 645T at 06:36 and 735N at 07:14, holiday
+  835N at 08:25, all Inzai-Makinohara -> Inba-Nihon-Idai. Exact arrivals are
+  06:40 / 07:18 / 08:29. The 870-row Keisei-led baseline stays untouched; the
+  active Hokuso overlay has 873 source-publication rows, plus a three-journey
+  exact network supplement. Do not call the 873 publication rows unique trains.
+- Shibayama's own complete station boards account for **122 physical trains**:
+  32 each direction weekday and 29 each direction holiday. All are represented
+  by the retained 185 official source publications, with exact local arrivals
+  and departures and matching published service destinations. A service's
+  displayed destination is distinguished from the full one-train page endpoint.
+- Source HTML and hashes, every station departure, exact source-page references,
+  new local stops and full reconstructions are saved. Northern tests reject a
+  missing internal train, missing station/calendar, altered departure or
+  conflicting arrival; all 870 Hokuso/185 Shibayama baseline publications and
+  three added local trips pass the actual route engine. Per-line search also
+  finds all three without depending on the direct-network fallback.
+- `hokuso_independent_runtime.py` reinstalls the additive overlay after baseline
+  refresh; `build_transit_v2.py` and the extended Keisei builder invoke it.
+  The baseline auditor remains separate from independent full-line coverage.
+- Yahoo! train-detail pages were used as spot checks following the user's tip;
+  production inventory and new train rows come from the operator-linked sources,
+  not a bulk copy of Yahoo data. See `yahoo-through-service-spot-checks.json`.
+- The new northern commit must pass its independent CI before the final result
+  is described as fully green. `line1-complete-system-audit.json` records the
+  full 14-railway implementation audit. All older incomplete-scope statements
+  below are historical checkpoints superseded by this section.
+
+**Previous checkpoint — complete Asakusa boundary journeys, 2026-09-07**
 
 PR #199 remains an implementation branch, not a main merge or public deployment.
 The following supersedes the older external-retention-only status below:

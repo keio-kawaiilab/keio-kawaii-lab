@@ -289,14 +289,24 @@ def audit_all_projections(names_by_id: dict[str, str]) -> tuple[dict[str, dict[s
         index = load_json(ROOT / f'data/transit/{slug}/timetable-index.json')
         row = (index.get('lines') or {}).get(railway_id)
         assert isinstance(row, dict), slug
+        active_table = None
+        if slug == 'hokuso' and row.get('status') == 'official-independent-inventory':
+            from verify_hokuso_independent_inventory import verify as verify_hokuso
+            verify_hokuso()
+            # This audit's report describes only the Keisei-led projection.
+            # The independent verifier above checks the active 873-trip overlay.
+            baseline = load_json(ROOT / 'data/transit/hokuso/timetables/official-hokuso.json')
+            active_table = load_json(ROOT / 'data/transit/hokuso' / row['file'])
+            row = dict(row, status='official-exact-network-projection',
+                       trips=len(baseline['trips']), connections=connection_count(baseline))
         trips, connections = audit_projection(
             names_by_id, railway_id,
             ROOT / f'data/transit/{slug}/timetables/official-{slug}.json',
             row, slug,
         )
         coverage = load_json(ROOT / f'data/transit/{slug}/coverage-report.json')
-        assert int(coverage.get('trips', -1)) == trips, slug
-        assert int(coverage.get('connections', -1)) == connections, slug
+        assert int(coverage.get('trips', -1)) == (len(active_table['trips']) if active_table else trips), slug
+        assert int(coverage.get('connections', -1)) == (connection_count(active_table) if active_table else connections), slug
         assert coverage.get('identityBasis') == 'same official one-train page', slug
         external[slug] = trips
     return keisei_summary, external['hokuso'], external['shibayama']
@@ -328,7 +338,7 @@ def audit_metadata(keisei_summary: dict[str, dict[str, int]], hokuso_trips: int,
     assert keisei.get('identityBasis') == 'official-one-train-page'
     assert 'exact railway-link projection' in str(keisei.get('timetableSource') or '')
 
-    assert int(hokuso.get('stations', -1)) == 15 and int(hokuso.get('trainTimetables', -1)) == hokuso_trips
+    assert int(hokuso.get('stations', -1)) == 15 and int(hokuso.get('trainTimetables', -1)) == hokuso_trips + int(hokuso.get('localSupplementTrips') or 0)
     assert int(shibayama.get('stations', -1)) == 2 and int(shibayama.get('trainTimetables', -1)) == shibayama_trips
     assert hokuso.get('identityBasis') == 'official-one-train-page'
     assert shibayama.get('identityBasis') == 'official-one-train-page'

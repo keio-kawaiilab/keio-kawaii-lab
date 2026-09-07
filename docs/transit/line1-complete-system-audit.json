@@ -1,0 +1,127 @@
+{
+  "version": 1,
+  "scopeId": "keisei-asakusa-keikyu-system",
+  "complete": true,
+  "definition": "all trains on all in-scope railways + exact cross-boundary same-train identity",
+  "railwayCount": 14,
+  "allLineTimetablesExact": true,
+  "allSameTrainIdentitiesExact": true,
+  "keiseiLedNetworkTripCount": 4659,
+  "keiseiLedSourceTrainCount": 4659,
+  "railways": [
+    {
+      "railway": "odpt.Railway:Keisei.Main",
+      "label": "京成本線",
+      "lineTimetableCoverage": "exact",
+      "sameTrainCoverage": "exact-for-all-keisei-source-trains",
+      "indexedTrips": 2979,
+      "inferredTrips": 0
+    },
+    {
+      "railway": "odpt.Railway:Keisei.Oshiage",
+      "label": "京成押上線",
+      "lineTimetableCoverage": "exact",
+      "sameTrainCoverage": "exact-for-all-keisei-source-trains",
+      "indexedTrips": 2059,
+      "inferredTrips": 0
+    },
+    {
+      "railway": "odpt.Railway:Keisei.NaritaSkyAccess",
+      "label": "成田スカイアクセス線",
+      "lineTimetableCoverage": "exact",
+      "sameTrainCoverage": "exact-for-all-keisei-source-trains",
+      "indexedTrips": 392,
+      "inferredTrips": 0
+    },
+    {
+      "railway": "odpt.Railway:Keisei.HigashiNarita",
+      "label": "京成東成田線",
+      "lineTimetableCoverage": "exact",
+      "sameTrainCoverage": "exact-for-all-keisei-source-trains",
+      "indexedTrips": 185,
+      "inferredTrips": 0
+    },
+    {
+      "railway": "odpt.Railway:Keisei.Chiba",
+      "label": "京成千葉線",
+      "lineTimetableCoverage": "exact",
+      "sameTrainCoverage": "exact-for-all-keisei-source-trains",
+      "indexedTrips": 803,
+      "inferredTrips": 0
+    },
+    {
+      "railway": "odpt.Railway:Keisei.Chihara",
+      "label": "京成千原線",
+      "lineTimetableCoverage": "exact",
+      "sameTrainCoverage": "exact-for-all-keisei-source-trains",
+      "indexedTrips": 456,
+      "inferredTrips": 0
+    },
+    {
+      "railway": "odpt.Railway:Keisei.Matsudo",
+      "label": "京成松戸線",
+      "lineTimetableCoverage": "exact",
+      "sameTrainCoverage": "exact-for-all-keisei-source-trains",
+      "indexedTrips": 640,
+      "inferredTrips": 0
+    },
+    {
+      "railway": "manual.Railway:Hokuso.Hokuso",
+      "label": "北総線",
+      "lineTimetableCoverage": "exact",
+      "sameTrainCoverage": "exact-all-independent-hokuso-trains",
+      "indexedTrips": 873,
+      "inferredTrips": 0
+    },
+    {
+      "railway": "manual.Railway:Shibayama.Shibayama",
+      "label": "芝山鉄道線",
+      "lineTimetableCoverage": "exact",
+      "sameTrainCoverage": "exact-all-independent-shibayama-trains",
+      "indexedTrips": 185,
+      "inferredTrips": 0
+    },
+    {
+      "railway": "odpt.Railway:Toei.Asakusa",
+      "label": "都営浅草線",
+      "lineTimetableCoverage": "exact-independent-1260-verified",
+      "sameTrainCoverage": "exact-all-independent-asakusa-trains",
+      "indexedTrips": 1260,
+      "inferredTrips": 0
+    },
+    {
+      "railway": "odpt.Railway:Keikyu.Main",
+      "label": "京急本線",
+      "lineTimetableCoverage": "exact",
+      "sameTrainCoverage": "internal-exact-all-published-sengakuji-continuations",
+      "indexedTrips": 1919,
+      "inferredTrips": 0
+    },
+    {
+      "railway": "odpt.Railway:Keikyu.Airport",
+      "label": "京急空港線",
+      "lineTimetableCoverage": "exact",
+      "sameTrainCoverage": "internal-exact-all-published-sengakuji-continuations",
+      "indexedTrips": 724,
+      "inferredTrips": 0
+    },
+    {
+      "railway": "odpt.Railway:Keikyu.Kurihama",
+      "label": "京急久里浜線",
+      "lineTimetableCoverage": "exact",
+      "sameTrainCoverage": "internal-exact-all-published-sengakuji-continuations",
+      "indexedTrips": 511,
+      "inferredTrips": 0
+    },
+    {
+      "railway": "odpt.Railway:Keikyu.Zushi",
+      "label": "京急逗子線",
+      "lineTimetableCoverage": "exact",
+      "sameTrainCoverage": "internal-exact-all-published-sengakuji-continuations",
+      "indexedTrips": 447,
+      "inferredTrips": 0
+    }
+  ],
+  "blockingItems": [],
+  "errors": []
+}
