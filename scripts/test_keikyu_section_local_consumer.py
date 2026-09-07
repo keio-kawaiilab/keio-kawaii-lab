@@ -9,8 +9,8 @@ from pathlib import Path
 import keikyu_internal_generated_evidence as target
 
 
-def fragment(fid: str, railway: str) -> dict:
-    return {'id': fid, 'railway': railway, 'calendar': 'odpt.Calendar:Weekday', 'stops': []}
+def fragment(fid: str, railway: str, calendar: str = 'odpt.Calendar:Weekday') -> dict:
+    return {'id': fid, 'railway': railway, 'calendar': calendar, 'stops': []}
 
 
 def row(**changes) -> dict:
@@ -24,6 +24,8 @@ def row(**changes) -> dict:
         'toFragment': 'm1',
         'sourceMatches': ['z1'],
         'targetMatches': ['m1'],
+        'calendar': 'weekday',
+        'officialPrintedCalendar': 'weekday',
         'officialAnchors': [
             {'station': '六浦', 'suffix': '.Mutsuura', 'minute': 600},
             {'station': '金沢文庫', 'suffix': '.KanazawaBunko', 'minute': 608},
@@ -40,6 +42,9 @@ def row(**changes) -> dict:
             'singletonFragmentMatchRequiredAtBothPoints': True,
             'officialPageSectionColumnIsExactLocalIdentity': True,
             'officialSectionIdentityRequired': True,
+            'literalPrintedCalendarRequired': True,
+            'runtimeCalendarMustMatchOfficialPrintedCalendar': True,
+            'calendarMayBeInferredFromPageNumber': False,
             'crossPageIdentityUsed': False,
             'sharedPublishedDestinationUsedOnlyForSearch': True,
             'candidateFragmentGapUsedOnlyForSearch': True,
@@ -76,13 +81,13 @@ def graph() -> dict:
 
 
 class SectionLocalConsumerTests(unittest.TestCase):
-    def apply(self, entry: dict):
+    def apply(self, entry: dict, *, source_calendar='odpt.Calendar:Weekday', target_calendar='odpt.Calendar:Weekday'):
         unresolved: list[dict] = []
         with tempfile.TemporaryDirectory() as folder:
             path = Path(folder) / 'evidence.json'
             path.write_text(json.dumps(payload(entry)), encoding='utf-8')
             edges = target.apply_generated_evidence(
-                [fragment('z1', target.ZUSHI), fragment('m1', target.MAIN)],
+                [fragment('z1', target.ZUSHI, source_calendar), fragment('m1', target.MAIN, target_calendar)],
                 [],
                 unresolved,
                 graph(),
@@ -90,11 +95,11 @@ class SectionLocalConsumerTests(unittest.TestCase):
             )
         return edges, unresolved
 
-    def test_valid_section_local_v2_adds_edge(self) -> None:
+    def test_valid_section_calendar_local_v2_adds_edge(self) -> None:
         edges, unresolved = self.apply(row())
         self.assertEqual([], unresolved)
         self.assertEqual(1, len(edges))
-        self.assertEqual('keikyu-official-internal-same-section-column-two-point', edges[0]['evidence'][0])
+        self.assertEqual('keikyu-official-internal-same-section-calendar-column-two-point', edges[0]['evidence'][0])
 
     def test_fragment_metadata_mismatch_fails_closed(self) -> None:
         edges, unresolved = self.apply(row(pdfColumn=5))
@@ -112,6 +117,16 @@ class SectionLocalConsumerTests(unittest.TestCase):
         edges, unresolved = self.apply(row(officialPageSectionLocalFragment='keikyu-official-pdf:p067:c04'))
         self.assertEqual([], edges)
         self.assertEqual('missing-section-aware-official-fragment-id', unresolved[0]['reason'])
+
+    def test_evidence_and_official_calendar_mismatch_fails_closed(self) -> None:
+        edges, unresolved = self.apply(row(calendar='holiday'))
+        self.assertEqual([], edges)
+        self.assertEqual('evidence-calendar-official-calendar-mismatch', unresolved[0]['reason'])
+
+    def test_runtime_and_official_calendar_mismatch_fails_closed(self) -> None:
+        edges, unresolved = self.apply(row(), target_calendar='odpt.Calendar:SaturdayHoliday')
+        self.assertEqual([], edges)
+        self.assertEqual('runtime-calendar-official-calendar-mismatch', unresolved[0]['reason'])
 
 
 if __name__ == '__main__':
