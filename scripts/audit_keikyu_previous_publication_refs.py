@@ -1,15 +1,10 @@
 #!/usr/bin/env python3
-"""Audit Keikyu's explicit previous-publication references without promoting identity.
+"""Audit Keikyu explicit previous-publication references by printed timetable section.
 
-The official full timetable prints, above the main train-number row, an explicit
-"前の掲載ページ" row and (when applicable) the train number used on that previous
-published page.  These are much stronger evidence than clock-time proximity, but
-this audit intentionally stops before runtime same-train promotion.
-
-Output is designed for ephemeral CI/research use.  It inventories every parsed
-page-local column, preserves partial references, maps printed page numbers to PDF
-pages only when the printed page number is uniquely detected, and reports whether
-(page, previous train number) resolves to a unique page-local target.
+Only metadata geometrically associated with one independently detected current
+timetable section is aligned to that section's columns.  A preceding literal
+「列車番号」 row is eligible as previous-train metadata only when it is not itself
+an identity-bearing timetable section header.
 """
 from __future__ import annotations
 
@@ -26,14 +21,14 @@ from audit_keikyu_official_columns import FIRST_POSSIBLE_TIMETABLE_PAGE, page_sc
 from keikyu_official_pdf import (
     TRAIN_NUMBER_RE,
     TrainColumnGrid,
+    TrainColumnSection,
     Word,
+    _all_printed_train_number_rows,
     _label_span,
-    _main_printed_header,
-    _printed_train_number_rows,
     bbox_words,
     cluster_by_y,
     compact,
-    detect_train_column_grid,
+    detect_train_column_sections,
     download_official_pdf,
     nearest_column,
     page_count,
@@ -71,8 +66,7 @@ def _assign_tokens(
             continue
         if values[column] is not None and values[column] != value:
             raise RuntimeError(
-                f"multiple {label} values snapped to column {column}: "
-                f"{values[column]!r}, {value!r}"
+                f"multiple {label} values snapped to column {column}: {values[column]!r}, {value!r}"
             )
         values[column] = value
     return values
@@ -90,31 +84,35 @@ def _parse_printed_page(value: str) -> int | None:
     return number if number > 0 else None
 
 
-def extract_previous_publication_refs(words: list[Word], grid: TrainColumnGrid) -> list[dict[str, Any]]:
-    """Return official previous-page metadata aligned to the current page grid.
+def extract_previous_publication_refs(
+    words: list[Word],
+    section: TrainColumnSection,
+    all_train_rows: list[list[Word]],
+    identity_header_ordinals: set[int],
+) -> list[dict[str, Any]]:
+    """Align explicit previous-publication metadata to one current section grid."""
+    ordinal = section.header_ordinal
+    grid = section.grid
+    current_y = grid.header_y
 
-    Alignment is geometric to the already-proven current page columns.  Missing
-    values remain None.  This function does not claim that a reference has been
-    matched to a target fragment.
-    """
-    main = _main_printed_header(words)
-    if main is None:
-        return [
-            {"previousPrintedPage": None, "previousTrainNumber": None}
-            for _ in grid.centers
-        ]
-    main_row, _label_right = main
-    main_y = _row_y(main_row)
-
-    upper_train_rows = [
-        row for row in _printed_train_number_rows(words)
-        if _row_y(row) < main_y - 1.0
+    previous_identity_ys = [
+        _row_y(all_train_rows[index])
+        for index in identity_header_ordinals
+        if index < ordinal
     ]
-    previous_train_row = max(upper_train_rows, key=_row_y) if upper_train_rows else None
+    lower_bound = max(previous_identity_ys, default=-1.0)
+
+    previous_train_row: list[Word] | None = None
+    if ordinal > 0 and ordinal - 1 not in identity_header_ordinals:
+        candidate = all_train_rows[ordinal - 1]
+        candidate_y = _row_y(candidate)
+        if lower_bound < candidate_y < current_y - 1.0:
+            previous_train_row = candidate
 
     previous_page_rows: list[list[Word]] = []
     for row in cluster_by_y(words):
-        if _row_y(row) >= main_y - 1.0:
+        y = _row_y(row)
+        if not (lower_bound < y < current_y - 1.0):
             continue
         if _label_span(row, "前の掲載ページ") is not None:
             previous_page_rows.append(row)
@@ -163,17 +161,6 @@ def _footer_page_candidates(
 
 
 def detect_printed_page_number(width: float, height: float, words: list[Word]) -> int | None:
-    """Detect the printed publication page number from its official typography.
-
-    The current official PDF prints publication numbers in a visibly larger
-    footer font than timetable times and continuation metadata. Auditing normal
-    pages plus special printed pages 32 and 62 shows the publication glyph box at
-    about 12.9 pt high, while timetable integers are about 6.0 pt and special
-    continuation-page labels remain about 8.3 pt. We therefore require both the
-    outer footer geometry and the large official page-number typography first.
-    A narrow legacy bottom-edge fallback remains fail-closed. No PDF-page offset
-    or inferred sequence is ever used.
-    """
     large_values: set[int] = set()
     for word in words:
         if word.y < height * 0.82:
@@ -215,35 +202,57 @@ def build_audit(pdf_path: Path, source_bytes: bytes) -> dict[str, Any]:
         if excluded_reason:
             excluded_pages.append({"pdfPage": pdf_page, "reason": excluded_reason})
             continue
-        grid = detect_train_column_grid(words)
-        if grid is None:
+
+        sections = detect_train_column_sections(words)
+        if not sections:
             continue
-
+        all_train_rows = sorted(_all_printed_train_number_rows(words), key=_row_y)
+        identity_ordinals = {section.header_ordinal for section in sections}
         printed_page = detect_printed_page_number(width, height, words)
-        refs = extract_previous_publication_refs(words, grid)
-        if len(refs) != len(grid.centers):
-            raise RuntimeError(f"reference/grid length mismatch on PDF page {pdf_page}")
 
-        with_any = 0
-        with_both = 0
-        for column, ref in enumerate(refs):
-            previous_page = ref["previousPrintedPage"]
-            previous_number = ref["previousTrainNumber"]
-            if previous_page is not None or previous_number is not None:
-                with_any += 1
-            if previous_page is not None and previous_number is not None:
-                with_both += 1
-            fragments.append(
+        page_with_any = 0
+        page_with_both = 0
+        section_rows: list[dict[str, Any]] = []
+        for section in sections:
+            refs = extract_previous_publication_refs(words, section, all_train_rows, identity_ordinals)
+            if len(refs) != len(section.grid.centers):
+                raise RuntimeError(
+                    f"reference/grid length mismatch on PDF page {pdf_page} section {section.section_index}"
+                )
+            with_any = 0
+            with_both = 0
+            for column, ref in enumerate(refs):
+                previous_page = ref["previousPrintedPage"]
+                previous_number = ref["previousTrainNumber"]
+                if previous_page is not None or previous_number is not None:
+                    with_any += 1
+                if previous_page is not None and previous_number is not None:
+                    with_both += 1
+                fragments.append(
+                    {
+                        "pdfPage": pdf_page,
+                        "printedPage": printed_page,
+                        "section": section.section_index,
+                        "headerOrdinal": section.header_ordinal,
+                        "column": column,
+                        "currentTrainNumber": section.grid.explicit_numbers[column],
+                        "previousPrintedPage": previous_page,
+                        "previousTrainNumber": previous_number,
+                        "targetStatus": "not-evaluated",
+                        "targetPdfPage": None,
+                        "targetSection": None,
+                        "targetColumn": None,
+                    }
+                )
+            page_with_any += with_any
+            page_with_both += with_both
+            section_rows.append(
                 {
-                    "pdfPage": pdf_page,
-                    "printedPage": printed_page,
-                    "column": column,
-                    "currentTrainNumber": grid.explicit_numbers[column],
-                    "previousPrintedPage": previous_page,
-                    "previousTrainNumber": previous_number,
-                    "targetStatus": "not-evaluated",
-                    "targetPdfPage": None,
-                    "targetColumn": None,
+                    "section": section.section_index,
+                    "headerOrdinal": section.header_ordinal,
+                    "fragmentCount": len(section.grid.centers),
+                    "previousReferenceColumns": with_any,
+                    "completePreviousReferenceColumns": with_both,
                 }
             )
 
@@ -251,14 +260,16 @@ def build_audit(pdf_path: Path, source_bytes: bytes) -> dict[str, Any]:
             {
                 "pdfPage": pdf_page,
                 "printedPage": printed_page,
-                "fragmentCount": len(grid.centers),
-                "previousReferenceColumns": with_any,
-                "completePreviousReferenceColumns": with_both,
+                "sectionCount": len(sections),
+                "fragmentCount": sum(row["fragmentCount"] for row in section_rows),
+                "previousReferenceColumns": page_with_any,
+                "completePreviousReferenceColumns": page_with_both,
+                "sections": section_rows,
             }
         )
 
     if not page_rows:
-        raise RuntimeError("no in-scope Keikyu timetable pages audited")
+        raise RuntimeError("no in-scope Keikyu timetable sections audited")
 
     printed_to_pdf: dict[int, list[int]] = {}
     for page in page_rows:
@@ -267,14 +278,14 @@ def build_audit(pdf_path: Path, source_bytes: bytes) -> dict[str, Any]:
             continue
         printed_to_pdf.setdefault(int(printed), []).append(int(page["pdfPage"]))
 
-    target_index: dict[tuple[int, str], list[tuple[int, int]]] = {}
+    target_index: dict[tuple[int, str], list[tuple[int, int, int]]] = {}
     for fragment in fragments:
         printed = fragment["printedPage"]
         number = fragment["currentTrainNumber"]
         if printed is None or not number:
             continue
         target_index.setdefault((int(printed), str(number)), []).append(
-            (int(fragment["pdfPage"]), int(fragment["column"]))
+            (int(fragment["pdfPage"]), int(fragment["section"]), int(fragment["column"]))
         )
 
     status_counts: dict[str, int] = {}
@@ -293,7 +304,11 @@ def build_audit(pdf_path: Path, source_bytes: bytes) -> dict[str, Any]:
             targets = target_index.get((int(previous_page), str(previous_number)), [])
             if len(targets) == 1:
                 status = "unique-explicit-reference-candidate"
-                fragment["targetPdfPage"], fragment["targetColumn"] = targets[0]
+                (
+                    fragment["targetPdfPage"],
+                    fragment["targetSection"],
+                    fragment["targetColumn"],
+                ) = targets[0]
             elif not targets:
                 status = "target-train-number-not-found"
             else:
@@ -314,13 +329,14 @@ def build_audit(pdf_path: Path, source_bytes: bytes) -> dict[str, Any]:
     }
 
     return {
-        "version": 1,
-        "kind": "keikyu-official-previous-publication-reference-audit",
+        "version": 2,
+        "kind": "keikyu-official-section-previous-publication-reference-audit",
         "source": {
             "sha256": hashlib.sha256(source_bytes).hexdigest(),
             "pdfPages": total_pages,
         },
         "pagesAudited": len(page_rows),
+        "sectionsAudited": sum(int(page["sectionCount"]) for page in page_rows),
         "excludedPages": excluded_pages,
         "pagesWithoutDetectedPrintedPageNumber": pages_without_printed_number,
         "duplicatePrintedPageMappings": duplicate_printed_pages,
@@ -330,6 +346,8 @@ def build_audit(pdf_path: Path, source_bytes: bytes) -> dict[str, Any]:
         "targetStatusCounts": status_counts,
         "identityPolicy": {
             "officialPreviousPublicationMetadataExtracted": True,
+            "sectionLocalCurrentGridRequired": True,
+            "precedingIdentityHeaderCannotBePreviousTrainMetadata": True,
             "uniqueExplicitLookupIsCandidateOnly": True,
             "clockTimeUsedForMatching": False,
             "destinationUsedForMatching": False,
@@ -367,6 +385,7 @@ def main() -> int:
                 "sourceSha256": payload["source"]["sha256"],
                 "pdfPages": payload["source"]["pdfPages"],
                 "pagesAudited": payload["pagesAudited"],
+                "sectionsAudited": payload["sectionsAudited"],
                 "fragments": payload["fragmentCount"],
                 "completePreviousReferences": payload["completePreviousReferenceCount"],
                 "uniqueExplicitReferenceCandidates": payload["uniqueExplicitReferenceCandidateCount"],
