@@ -47,9 +47,9 @@ The earlier checkpoint `e61b39a0` also passed run `34091281959`.
 Legacy diagnostic runs `34093741315` and `34093741201` initially failed because
 their environments lacked PyMuPDF for the new exact glyph-coordinate repair.
 Remote follow-up `c99f4b2c` explicitly installs pinned `PyMuPDF==1.26.4` in both
-read-only workflows. Follow-up runs are `34094120321` (layout probe) and
-`34094120397` (station semantics); verify their final status before describing
-these two diagnostics as green. Do not suppress or bypass the glyph repair.
+read-only workflows. Both follow-up runs succeeded: `34094120321` (layout probe)
+and `34094120397` (station semantics). All three affected read-only CI workflows
+are now verified green. Do not suppress or bypass the glyph repair.
 
 Machine-readable latest status: `docs/transit/keikyu-recovery-checkpoint.json`.
 Full independently parsed source DB is now saved, not scratch-only:
