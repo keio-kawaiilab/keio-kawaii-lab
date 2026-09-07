@@ -13,11 +13,24 @@ import update_pia_events as pia
 
 DATA_PATH = Path("data/live-events.json")
 JST = timezone(timedelta(hours=9))
+RESULT_HINTS = ("抽選結果発表", "結果発表", "当落発表", "当選発表")
+
+# Confirmed corrections for the CANDY TUNE 2nd pre-reserve rows that were
+# previously polluted by the result-announcement timestamp.
+KNOWN_DEADLINE_CORRECTIONS = {
+    "lotRlsCd=35165": "2026-09-06T23:59",
+    "lotRlsCd=97161": "2026-09-06T23:59",
+}
 
 
 def stable_id(*parts: object) -> str:
     raw = "\x1f".join(str(value or "") for value in parts)
     return hashlib.sha1(raw.encode("utf-8")).hexdigest()[:16]
+
+
+def _before_result_announcement(text: str) -> str:
+    positions = [text.find(hint) for hint in RESULT_HINTS if text.find(hint) >= 0]
+    return text[:min(positions)] if positions else text
 
 
 def _original_status(context: str) -> str | None:
@@ -48,18 +61,19 @@ def _original_sale_window(context: str) -> tuple[str | None, str | None]:
     for token in ("まもなく抽選受付", "まもなく受付", "まもなく発売"):
         pos = context.find(token)
         if pos >= 0:
-            return pia._range_from_tail(context[pos:pos + 320])
+            return pia._range_from_tail(_before_result_announcement(context[pos:pos + 320]))
 
     if "発売前" in context:
         pos = context.find("発売前")
-        match = pia.DATE_RE.search(context[pos:pos + 220])
+        tail = _before_result_announcement(context[pos:pos + 220])
+        match = pia.DATE_RE.search(tail)
         return (pia.to_iso(match) if match else None), None
 
     for token in ("抽選受付中", "販売期間中", "受付中", "本日発売初日"):
         pos = context.find(token)
         if pos < 0:
             continue
-        tail = context[pos:pos + 280]
+        tail = _before_result_announcement(context[pos:pos + 280])
         matches = list(pia.DATE_RE.finditer(tail))
         if matches:
             return None, pia.to_iso(matches[-1])
@@ -75,13 +89,12 @@ def guarded_sale_window(context: str) -> tuple[str | None, str | None]:
     if original[0] or original[1]:
         return original
 
-    # Ended rows often stop showing the start time but still retain the known
-    # deadline (e.g. "予定枚数終了 ～2026/9/9 23:59"). Preserve that directly
-    # observed boundary instead of dropping the entire historical sale.
+    # Never scan through result/lottery-announcement text. A result timestamp is
+    # not an application deadline, even when it is the last date on the page.
     positions = [context.find(hint) for hint in pia.ENDED_HINTS if context.find(hint) >= 0]
     if not positions:
         return None, None
-    tail = context[min(positions):min(positions) + 360]
+    tail = _before_result_announcement(context[min(positions):min(positions) + 360])
     matches = list(pia.DATE_RE.finditer(tail))
     if not matches:
         return None, None
@@ -94,6 +107,15 @@ def history_key(event: dict) -> tuple[str, str, str, str]:
     kind = str(event.get("ticketType") or "")
     provider = str(event.get("ticketProvider") or event.get("primarySource") or "pia")
     return group, day, kind, provider
+
+
+def _event_urls(event: dict) -> set[str]:
+    values = [str(event.get("url") or "")] + [str(x) for x in (event.get("urls") or [])]
+    return {value.split("#", 1)[0] for value in values if value}
+
+
+def same_sale(left: dict, right: dict) -> bool:
+    return bool(_event_urls(left) & _event_urls(right))
 
 
 def normalize_guard_row(event: dict) -> dict:
@@ -119,11 +141,44 @@ def normalize_guard_row(event: dict) -> dict:
     if row.get("applyEnd"):
         row["deadlineVerified"] = True
         row["deadlineSource"] = row.get("url")
-    if row.get("applyStart") and row.get("applyEnd"):
+    if str(row.get("applicationStatus") or "").lower() in {"ended", "sold_out"}:
+        row["applicationDisplayMode"] = "offers"
+    elif row.get("applyStart") and row.get("applyEnd"):
         row["applicationDisplayMode"] = "band"
     else:
         row["applicationDisplayMode"] = "offers"
     return row
+
+
+def apply_known_deadline_corrections(payload: dict) -> int:
+    corrected = 0
+    for row in payload.get("events", []):
+        if not isinstance(row, dict):
+            continue
+        joined = "\n".join(_event_urls(row))
+        for marker, deadline in KNOWN_DEADLINE_CORRECTIONS.items():
+            if marker not in joined:
+                continue
+            changed = False
+            if row.get("applyEnd") != deadline:
+                row["applyEnd"] = deadline
+                changed = True
+            if row.get("applicationStatus") != "ended":
+                row["applicationStatus"] = "ended"
+                changed = True
+            if row.get("applicationDisplayMode") != "offers":
+                row["applicationDisplayMode"] = "offers"
+                changed = True
+            row["deadlineVerified"] = True
+            row["deadlineSource"] = row.get("url") or row.get("deadlineSource")
+            row["deadlineCorrectionReason"] = "application deadline separated from result announcement"
+            row.pop("retainedFromPreviousPiaRun", None)
+            row.pop("piaRetentionReason", None)
+            row.pop("deadlineRecoveredFromPreviousRun", None)
+            if changed:
+                corrected += 1
+            break
+    return corrected
 
 
 def discover_pages(session: requests.Session, group: str) -> tuple[list[tuple[str, str]], list[str]]:
@@ -181,9 +236,6 @@ def collect_ended_sales(
                     if event.get("applicationStatus") not in {"ended", "sold_out"}:
                         continue
                     if not event.get("applyStart") and not event.get("applyEnd"):
-                        # We know a sale existed, but the archive intentionally does
-                        # not publish a period without at least one directly observed
-                        # boundary. Keep it out rather than inventing a date.
                         continue
                     ended.append(normalize_guard_row(event))
     finally:
@@ -210,6 +262,25 @@ def merge(payload: dict, rows: list[dict]) -> tuple[int, int]:
             continue
         current = events[index[key]]
         changed = False
+
+        # A fresh observation of the same Pia sale is authoritative for status and
+        # its observed deadline. This lets a corrected sale boundary replace a
+        # stale value that was previously taken from a result-announcement date.
+        if same_sale(current, row):
+            if row.get("applyEnd") and current.get("applyEnd") != row.get("applyEnd"):
+                current["applyEnd"] = row.get("applyEnd")
+                changed = True
+            if row.get("applicationStatus") in {"ended", "sold_out"} and current.get("applicationStatus") != row.get("applicationStatus"):
+                current["applicationStatus"] = row.get("applicationStatus")
+                changed = True
+            if row.get("applicationStatus") in {"ended", "sold_out"} and current.get("applicationDisplayMode") != "offers":
+                current["applicationDisplayMode"] = "offers"
+                changed = True
+            for stale_key in ("retainedFromPreviousPiaRun", "piaRetentionReason", "deadlineRecoveredFromPreviousRun"):
+                if stale_key in current:
+                    current.pop(stale_key, None)
+                    changed = True
+
         for field in (
             "applyStart", "applyEnd", "applicationStatus", "applicationWindowVerified",
             "deadlineVerified", "applicationWindowSource", "deadlineSource", "historyPreserved",
@@ -231,9 +302,10 @@ def run(check: bool = False, today: date | None = None) -> dict:
     today = today or datetime.now(JST).date()
     original_payload = json.loads(DATA_PATH.read_text(encoding="utf-8"))
     payload = json.loads(json.dumps(original_payload, ensure_ascii=False))
+    known_corrected = apply_known_deadline_corrections(payload)
     session = requests.Session()
     session.headers.update({
-        "User-Agent": "Mozilla/5.0 (compatible; keio-kawaii-lab-pia-history-guard/1.1; +https://github.com/keio-kawaiilab/keio-kawaii-lab)",
+        "User-Agent": "Mozilla/5.0 (compatible; keio-kawaii-lab-pia-history-guard/1.2; +https://github.com/keio-kawaiilab/keio-kawaii-lab)",
         "Accept-Language": "ja,en;q=0.8",
     })
     try:
@@ -249,6 +321,7 @@ def run(check: bool = False, today: date | None = None) -> dict:
 
     return {
         "checkedAt": datetime.now(JST).isoformat(timespec="seconds"),
+        "knownDeadlineCorrections": known_corrected,
         "endedPiaRowsObserved": len(rows),
         "endedPiaRowsAdded": added,
         "endedPiaRowsEnriched": enriched,
