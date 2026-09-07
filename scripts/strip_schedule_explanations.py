@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import json
 import re
+from datetime import datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 PAGE = Path("schedule.html")
+DATA = Path("data/live-events.json")
+JST = ZoneInfo("Asia/Tokyo")
 HIDDEN_POLICY = "<!-- schedule-source-policy: FC先行・アップグレードを除いて原則すべて採用 -->"
 
 # A multi-day event remains in the dataset until its final performance has passed.
@@ -36,8 +41,6 @@ PERFORMANCE_KEY = (
     "return [group,day,'fallback',venue,titleKey].join('|')}"
 )
 
-# fix_schedule_shell.py installs the occurrence-based identity. These markers
-# validate both the special-event day invariant and ordinary timed performances.
 OCCURRENCE_PERFORMANCE_MARKERS = (
     "function performanceVenueKey(e,o)",
     "function performanceKey(e,o)",
@@ -75,8 +78,6 @@ def ensure_visible_title_performance_identity(page: str) -> str:
     if has_visible_title_performance_identity(page):
         fixed = page
     elif GENERIC_PERFORMANCE_KEY in page:
-        # The shell builder still emits the ordinary-performance key. Upgrade it
-        # at the final release boundary so special events cannot be split again.
         fixed = page.replace(GENERIC_PERFORMANCE_KEY, PERFORMANCE_KEY, 1)
     elif LEGACY_PERFORMANCE_KEY in page:
         fixed = page.replace(LEGACY_PERFORMANCE_KEY, PERFORMANCE_KEY, 1)
@@ -102,6 +103,32 @@ def assert_physical_identity(page: str) -> None:
         raise RuntimeError("special events must use one group/date identity")
     if "if(day&&time)return [group,day,'time',time].join('|')" not in block:
         raise RuntimeError("ordinary group/date/start-time physical performance key is missing")
+
+
+def stamp_public_refresh(page: str) -> str:
+    """Stamp only at the final release boundary.
+
+    Both automated release workflows call this script after the snapshot is built.
+    If any later test fails, neither the JSON nor the HTML is committed, so the
+    displayed time represents the latest successfully publishable refresh.
+    """
+    if not DATA.exists():
+        raise RuntimeError("live event data is missing; cannot stamp public refresh")
+    payload = json.loads(DATA.read_text(encoding="utf-8"))
+    stamp = datetime.now(JST).replace(microsecond=0).isoformat()
+    payload["checkedAt"] = stamp
+    payload["updatedAt"] = stamp
+    DATA.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+    pattern = re.compile(r'(<script id="snapshot-data" type="application/json">)(.*?)(</script>)', re.S)
+    match = pattern.search(page)
+    if not match:
+        raise RuntimeError("snapshot-data block is missing; cannot stamp public refresh")
+    snapshot = json.loads(match.group(2))
+    snapshot["checkedAt"] = stamp
+    snapshot["updatedAt"] = stamp
+    encoded = json.dumps(snapshot, ensure_ascii=False, separators=(",", ":"))
+    return page[:match.start()] + match.group(1) + encoded + match.group(3) + page[match.end():]
 
 
 def main() -> int:
@@ -140,8 +167,9 @@ def main() -> int:
     if not has_visible_title_performance_identity(page) or not has_application_band_identity(page):
         raise RuntimeError("physical performance dedupe is missing from schedule renderer")
 
+    page = stamp_public_refresh(page)
     PAGE.write_text(page, encoding="utf-8")
-    print("Removed internal schedule copy, hid past details, and preserved one physical performance identity")
+    print("Removed internal schedule copy, preserved performance identity, and stamped the public refresh time")
     return 0
 
 
