@@ -10,6 +10,8 @@ on:
       - "scripts/enforce_physical_performance_identity.py"
       - "scripts/reconcile_physical_performance_times.py"
       - "scripts/merge_distributed_schedule_snapshots.py"
+      - "scripts/normalize_special_event_entities.py"
+      - "scripts/prune_special_event_placeholders.py"
       - "scripts/build_schedule_snapshot.py"
       - "scripts/fix_schedule_shell.py"
       - "scripts/strip_schedule_explanations.py"
@@ -35,6 +37,8 @@ jobs:
           python scripts/guard_birthday_year_consistency.py --data data/live-events.json
           python scripts/harden_ticket_semantics.py --data data/live-events.json
           python scripts/reconcile_physical_performance_times.py --data data/live-events.json
+          python scripts/normalize_special_event_entities.py --data data/live-events.json
+          python scripts/prune_special_event_placeholders.py --data data/live-events.json
           python scripts/enforce_physical_performance_identity.py
           python -m json.tool data/live-events.json >/dev/null
 
@@ -44,6 +48,8 @@ jobs:
           set -euo pipefail
           python scripts/build_schedule_snapshot.py
           python scripts/fix_schedule_shell.py
+          python scripts/prune_special_event_placeholders.py --data data/live-events.json
+          python scripts/build_schedule_snapshot.py
           python scripts/strip_schedule_explanations.py
           python scripts/enforce_physical_performance_identity.py
           node --check /tmp/schedule-inline.js
