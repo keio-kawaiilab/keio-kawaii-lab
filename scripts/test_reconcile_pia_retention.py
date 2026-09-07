@@ -38,6 +38,17 @@ class PiaRetentionTests(unittest.TestCase):
         self.assertEqual(merged, [])
         self.assertEqual(retained, [])
 
+    def test_ended_sale_is_not_retained_even_with_future_wrong_deadline(self):
+        old = self.event(applicationStatus="ended", applyEnd="2026-09-09T18:00")
+        merged, retained, _ = r.reconcile([], [old], self.today)
+        self.assertEqual(merged, [])
+        self.assertEqual(retained, [])
+        self.assertFalse(r.known_active(old, self.today))
+
+    def test_sold_out_sale_is_not_retained_as_active(self):
+        old = self.event(applicationStatus="sold_out", applyEnd="2026-09-09T18:00")
+        self.assertFalse(r.known_active(old, self.today))
+
     def test_same_lot_is_not_duplicated(self):
         current = self.event(id="new")
         merged, retained, _ = r.reconcile([current], [self.event()], self.today)
