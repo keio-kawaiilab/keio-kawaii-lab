@@ -62,21 +62,25 @@ def main() -> int:
             f'V2 report/entry mismatch: report={report.get("matchedSingleton")} entries={len(new_entries)}'
         )
     if not new_entries:
-        raise SystemExit('no fresh section-local V2 proofs to merge')
+        raise SystemExit('no fresh section-local calendar V2 proofs to merge')
     for row in new_entries:
         safe_new_entry(row)
 
-    # Remove every legacy unbanded full-timetable proof before adding V2.  Other
-    # independent official evidence (for example Airport-line connection PDF)
-    # remains untouched.
+    # Replace, never accumulate, Zushi section-local schedule_all evidence. This
+    # is important when the proof contract gets stricter: a previously accepted
+    # section proof must disappear unless the latest source can prove it again.
     retained: list[dict[str, Any]] = []
     removed_deprecated = 0
+    removed_previous_zushi_section = 0
     for row in existing.get('entries') or []:
         if not isinstance(row, dict):
             continue
         evidence = {str(value) for value in row.get('evidence') or []}
         if evidence & consumer.DEPRECATED_UNBANDED_MARKERS:
             removed_deprecated += 1
+            continue
+        if row.get('boundaryId') == BOUNDARY_ID and consumer.SECTION_LOCAL_MARKER in evidence:
+            removed_previous_zushi_section += 1
             continue
         retained.append(row)
 
@@ -102,9 +106,20 @@ def main() -> int:
     if deprecated_remaining:
         raise SystemExit(f'deprecated evidence survived V2 merge: {deprecated_remaining[:5]}')
 
+    fresh_pairs = {
+        (str(row.get('fromFragment') or ''), str(row.get('toFragment') or ''))
+        for row in new_entries
+    }
+    actual_zushi_section_pairs = {
+        (str(row.get('fromFragment') or ''), str(row.get('toFragment') or ''))
+        for row in entries
+        if row.get('boundaryId') == BOUNDARY_ID
+        and consumer.SECTION_LOCAL_MARKER in {str(value) for value in row.get('evidence') or []}
+    }
+    if actual_zushi_section_pairs != fresh_pairs:
+        raise SystemExit('merged Zushi section-local set is not exactly the fresh proof set')
+
     policy = dict(existing.get('policy') or {})
-    # Delete old V1 cross-page policy name so the JSON cannot imply that page-only
-    # fragment matching remains acceptable.
     policy.pop('pageLocalFragmentMetadataMustMatchForCrossPage', None)
     policy.update({
         'officialSamePrintedColumnRequired': True,
@@ -114,6 +129,9 @@ def main() -> int:
         'timeProximityAloneMayEstablishIdentity': False,
         'officialPageSectionColumnIsExactLocalIdentityForScheduleAll': True,
         'officialSectionIdentityRequiredForScheduleAll': True,
+        'literalPrintedCalendarRequiredForScheduleAll': True,
+        'runtimeCalendarMustMatchOfficialPrintedCalendarForScheduleAll': True,
+        'calendarMayBeInferredFromPageNumberForScheduleAll': False,
         'deprecatedUnbandedScheduleAllMarkersAccepted': False,
         'officialPreviousPublicationPageAndTrainNumberRequiredForCrossPage': True,
         'uniquePreviousPublicationTargetRequiredForCrossPage': True,
@@ -134,13 +152,14 @@ def main() -> int:
         'calendars': dict(calendar_counts),
         'zushiSectionV2': report,
         'deprecatedUnbandedEntriesRemovedDuringLatestMerge': removed_deprecated,
+        'previousZushiSectionEntriesReplacedDuringLatestMerge': removed_previous_zushi_section,
     })
     if cross_report:
         summary['zushiCrossPageSectionV2'] = cross_report
 
     output = dict(existing)
     output.update({
-        'version': max(3, int(existing.get('version') or 0)),
+        'version': max(4, int(existing.get('version') or 0)),
         'generatedAt': datetime.now(timezone.utc).isoformat(),
         'operator': 'keikyu',
         'boundaryIds': sorted(k for k in boundary_counts if k),
@@ -148,15 +167,14 @@ def main() -> int:
         'summary': summary,
         'entries': entries,
     })
-    # Stale V1 latestCrossPageSummary is intentionally discarded; if supplied,
-    # V2 cross-page status is stored under the recomputed summary above.
     output.pop('latestCrossPageSummary', None)
 
     Path(args.output).write_text(json.dumps(output, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     audit_summary = {
-        'retainedExistingEntries': len(retained),
-        'freshSectionV2Entries': len(new_entries),
+        'retainedIndependentExistingEntries': len(retained),
+        'freshSectionCalendarV2Entries': len(new_entries),
         'deprecatedEntriesRemoved': removed_deprecated,
+        'previousZushiSectionEntriesReplaced': removed_previous_zushi_section,
         'mergedEntries': len(entries),
         'boundaries': dict(boundary_counts),
         'directions': dict(direction_counts),
