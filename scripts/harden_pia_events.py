@@ -27,12 +27,19 @@ PERIOD_LABELS = (
 )
 DEADLINE_HINTS = (
     "抽選受付中", "販売期間中", "受付中", "申込受付中", "受付締切",
-    "申込締切", "販売終了日時", "受付終了日時",
+    "申込締切", "販売終了日時", "受付終了日時", "抽選受付終了", "販売終了",
 )
+RESULT_HINTS = ("抽選結果発表", "結果発表", "当落発表", "当選発表")
+ENDED_STATUSES = {"ended", "sold_out"}
 
 
 def norm(value: object) -> str:
     return re.sub(r"\s+", " ", unicodedata.normalize("NFKC", str(value or ""))).strip()
+
+
+def before_result_info(text: str) -> str:
+    positions = [text.find(hint) for hint in RESULT_HINTS if text.find(hint) >= 0]
+    return text[:min(positions)] if positions else text
 
 
 def to_iso(match: re.Match) -> str:
@@ -47,7 +54,7 @@ def exact_period_from_text(text: str) -> tuple[str | None, str | None]:
         pos = text.find(label)
         if pos < 0:
             continue
-        tail = text[pos:pos + 1200]
+        tail = before_result_info(text[pos:pos + 1200])
         matches = list(DATE_RE.finditer(tail))
         if len(matches) < 2:
             continue
@@ -67,7 +74,7 @@ def deadline_from_text(text: str) -> str | None:
         pos = text.find(hint)
         if pos < 0:
             continue
-        tail = text[pos:pos + 500]
+        tail = before_result_info(text[pos:pos + 500])
         matches = list(DATE_RE.finditer(tail))
         if matches:
             return to_iso(matches[-1])
@@ -221,12 +228,12 @@ def harden(events: list[dict], session: requests.Session) -> tuple[list[dict], l
             kept.append(event)
             continue
 
-        # FC/upgrade information remains official-only by product policy.
         if official_only_family(event):
             rejected.append({"id": event.get("id"), "reason": "official-only-fc-or-upgrade"})
             continue
 
         event = repair_title_and_schedule(event, events)
+        ended = str(event.get("applicationStatus") or "").strip().lower() in ENDED_STATUSES
         detail_start, detail_end, detail_deadline, evidence_url = fetch_detail_evidence(session, event)
 
         if detail_start and detail_end:
@@ -234,7 +241,7 @@ def harden(events: list[dict], session: requests.Session) -> tuple[list[dict], l
             event["applyEnd"] = detail_end
             event["applicationWindowVerified"] = True
             event["deadlineVerified"] = True
-            event["applicationDisplayMode"] = "band"
+            event["applicationDisplayMode"] = "offers" if ended else "band"
             event["applicationWindowSource"] = evidence_url
             event["deadlineSource"] = evidence_url
         else:
@@ -242,20 +249,21 @@ def harden(events: list[dict], session: requests.Session) -> tuple[list[dict], l
             if not deadline and valid_isoish(event.get("applyEnd")):
                 deadline = str(event.get("applyEnd"))
             if deadline:
-                # Keep the source start unknown, but the UI intentionally draws the band
-                # from today through this known deadline.
                 event["applyStart"] = None
                 event["applyEnd"] = deadline
                 event["applicationWindowVerified"] = False
                 event["deadlineVerified"] = True
-                event["applicationDisplayMode"] = "band-from-today"
+                event["applicationDisplayMode"] = "offers" if ended else "band-from-today"
                 event["deadlineSource"] = evidence_url or event.get("url")
             else:
-                # Pia is the ticketing authority for non-FC/non-upgrade sales. Keep the
-                # listing even when timing fields cannot be extracted in this run.
                 event["applicationWindowVerified"] = False
                 event["deadlineVerified"] = False
-                event["applicationDisplayMode"] = "pia-listing"
+                event["applicationDisplayMode"] = "offers" if ended else "pia-listing"
+
+        if ended:
+            event.pop("retainedFromPreviousPiaRun", None)
+            event.pop("piaRetentionReason", None)
+            event.pop("deadlineRecoveredFromPreviousRun", None)
 
         kept.append(event)
 
@@ -272,6 +280,10 @@ def validate_public_pia(events: list[dict]) -> list[str]:
             continue
         if is_bad_title(event.get("title")):
             problems.append(f"generic title remains: {event.get('id')} {event.get('title')}")
+            continue
+        status = str(event.get("applicationStatus") or "").strip().lower()
+        if status in ENDED_STATUSES and event.get("applicationDisplayMode") in {"band", "band-from-today"}:
+            problems.append(f"ended Pia sale has active band: {event.get('id')}")
             continue
         if event.get("applicationWindowVerified") is True:
             start, end = event.get("applyStart"), event.get("applyEnd")
@@ -290,7 +302,7 @@ def main() -> int:
     payload = json.loads(DATA_PATH.read_text(encoding="utf-8"))
     events = [dict(x) for x in payload.get("events", []) if isinstance(x, dict)]
     session = requests.Session()
-    session.headers.update({"User-Agent": "KeioKawaiiLabCalendarBot/2.2 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"})
+    session.headers.update({"User-Agent": "KeioKawaiiLabCalendarBot/2.3 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"})
 
     hardened, rejected = harden(events, session)
     problems = validate_public_pia(hardened)
@@ -300,6 +312,7 @@ def main() -> int:
         "fullBands": sum(1 for x in hardened if is_pia(x) and x.get("applicationDisplayMode") == "band"),
         "todayBands": sum(1 for x in hardened if is_pia(x) and x.get("applicationDisplayMode") == "band-from-today"),
         "piaListingsWithoutTiming": sum(1 for x in hardened if is_pia(x) and x.get("applicationDisplayMode") == "pia-listing"),
+        "endedOffers": sum(1 for x in hardened if is_pia(x) and str(x.get("applicationStatus") or "").lower() in ENDED_STATUSES and x.get("applicationDisplayMode") == "offers"),
         "rejectedOfficialOnly": rejected,
         "validationProblems": problems,
     }, ensure_ascii=False, indent=2))
