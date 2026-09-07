@@ -90,13 +90,20 @@ def apply(fragments,edges,network_path=NETWORK):
 
 def retain_verified_external(fragments,edges,network,identities,network_path):
     # Fixture networks do not opt into the saved, independently reconciled
-    # external inventory. The production network preserves only prior services.
+    # external inventory. Production uses the full independently verified inventory.
     if 'journeyEvidence' not in network:return edges
     from keikyu_published_station_names import station_suffix_map, norm, PDF_TO_ODPT_SUFFIX
     audit=json.loads(Path('docs/transit/sengakuji-published-sequence-audit.json').read_text())
-    retained=json.loads(Path('docs/transit/keikyu-retained-external-identities.json').read_text())
     if audit['sourceSha256']!=network['sourceSha256']:raise ValueError('external/internal source revision mismatch')
-    requested={(r['toeiTimetableId'],r['direction'])for r in retained['identities']}
+    from save_keikyu_recovery_checkpoint import verify_boundary
+    unfiltered=json.loads(Path('docs/transit/sengakuji-unfiltered-column-audit.json').read_text())
+    verify_boundary(audit, unfiltered)
+    toei_raw=Path('data/transit/toei/timetables/899209dea5fc3a.json').read_bytes()
+    if hashlib.sha256(toei_raw).hexdigest()!=audit['toeiSourceSha256']:
+        raise ValueError('Toei source revision changed; independent reconciliation required')
+    requested={(r['toeiSequenceMatches'][0],r['direction'])for r in audit['results']
+               if r['publishedSequenceStatus']=='both-local-published-sequence-singleton'}
+    if len(requested)!=577:raise ValueError('Incomplete full Sengakuji inventory')
     by_tt={f.get('timetableId'):f for f in fragments if f.get('timetableId')}
     member={fid:r['id']for r in network['journeyEvidence']for fid in r['members']}
     parts={r['journeyId']:r['parts']for r in identities}
@@ -128,7 +135,7 @@ def retain_verified_external(fragments,edges,network,identities,network_path):
         keikyu=by_tt[main[0]['timetableId']]
         source,target=(toei,keikyu)if r['direction']=='toei-to-keikyu'else(keikyu,toei)
         out.append({'fromFragment':source['id'],'toFragment':target['id'],'classification':'same-train',
-                    'identityLevel':'evidence-backed','evidence':['keikyu-retained-external-exact-sequence',r['candidateId']],
+                    'identityLevel':'evidence-backed','evidence':['keikyu-official-sengakuji-exact-sequence',r['candidateId']],
                     'sourceUrls':[r['sourceUrl']],
                     'boundary':{'station':'泉岳寺','fromRailway':source['railway'],'toRailway':target['railway']}})
         seen.add(key)

@@ -45,6 +45,8 @@ def normalize_station_name(value: Any) -> str:
     text = unicodedata.normalize("NFKC", str(value or "")).strip()
     text = re.sub(r"\s+", "", text)
     aliases = {
+        "井土ケ谷": "井土ヶ谷",
+        "屛風浦": "屏風浦",
         "成田空港(成田第1ターミナル)": "成田空港",
         "空港第2ビル(成田第2・第3ターミナル)": "空港第2ビル",
         "空港第2ビル(成田第2・3ターミナル)": "空港第2ビル",

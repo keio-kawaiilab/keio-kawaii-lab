@@ -71,31 +71,31 @@
       "id": "odpt.Railway:Toei.Asakusa",
       "label": "都営浅草線",
       "lineTimetableCoverage": "exact-independent-1260-verified",
-      "sameTrainCoverage": "cross-boundary-reconciliation-incomplete"
+      "sameTrainCoverage": "exact-all-independent-asakusa-trains"
     },
     {
       "id": "odpt.Railway:Keikyu.Main",
       "label": "京急本線",
       "lineTimetableCoverage": "exact",
-      "sameTrainCoverage": "internal-exact-external-reconciliation-incomplete"
+      "sameTrainCoverage": "internal-exact-all-published-sengakuji-continuations"
     },
     {
       "id": "odpt.Railway:Keikyu.Airport",
       "label": "京急空港線",
       "lineTimetableCoverage": "exact",
-      "sameTrainCoverage": "internal-exact-external-reconciliation-incomplete"
+      "sameTrainCoverage": "internal-exact-all-published-sengakuji-continuations"
     },
     {
       "id": "odpt.Railway:Keikyu.Kurihama",
       "label": "京急久里浜線",
       "lineTimetableCoverage": "exact",
-      "sameTrainCoverage": "internal-exact-external-reconciliation-incomplete"
+      "sameTrainCoverage": "internal-exact-all-published-sengakuji-continuations"
     },
     {
       "id": "odpt.Railway:Keikyu.Zushi",
       "label": "京急逗子線",
       "lineTimetableCoverage": "exact",
-      "sameTrainCoverage": "internal-exact-external-reconciliation-incomplete"
+      "sameTrainCoverage": "internal-exact-all-published-sengakuji-continuations"
     }
   ],
   "excludedBecauseNoVerifiedThroughEdge": [
@@ -138,10 +138,8 @@
     }
   ],
   "blockingItems": [
-    "Integrate the independently verified Sengakuji external identities against the completed Keikyu internal network; internal Main/Airport/Kurihama/Zushi coverage is complete.",
-    "Reconcile all 1,260 independently verified Toei Asakusa timetable trips with exact cross-boundary identities at Sengakuji and Oshiage, including Toei-Keikyu trains that never enter Keisei. The independent Toei mother set itself is already verified.",
     "Verify all-train completeness for Hokuso from Hokuso official timetable data rather than relying only on the Keisei-led snapshot.",
     "Verify all-train completeness for Shibayama against the current official timetable.",
-    "Complete external-system regressions for all non-Keisei services; the full Keikyu internal inventory and false-through regression are verified."
+    "Complete independent northern-line all-train regressions; all 1,260 Asakusa journeys, 902 Oshiage continuations, 30 explicit Oshiage origins/termini, 577 Sengakuji continuations and four transfers are now reconciled and runtime-tested."
   ]
 }

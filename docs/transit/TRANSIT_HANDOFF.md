@@ -9,7 +9,39 @@ Repository: `keio-kawaiilab/keio-kawaii-lab`
 Default branch: `main`
 Public route entry point: `route.html`
 
-**LATEST IMPLEMENTATION — Keikyu internal through services, 2026-09-07**
+**LATEST IMPLEMENTATION — complete Asakusa boundary journeys, 2026-09-07**
+
+PR #199 remains an implementation branch, not a main merge or public deployment.
+The following supersedes the older external-retention-only status below:
+
+- All 577 independently reconciled Sengakuji continuations are now materialized
+  as exact runtime links. The four official transfers remain non-through; none
+  of the 581 published columns is unresolved. The old unsafe 494-row layer stays
+  disabled. The old 398-retained / 13-unsupported manifest is historical only.
+- `build_asakusa_boundary_network.py` reconstructs all 1,260 independent Asakusa
+  trains, including trains not entering Keisei. Complete ordered Asakusa stops
+  and every observed arrival/departure event must match an official crossing
+  train page; equal train numbers or near times never prove a join.
+- Oshiage: 902 continuations supported by 1,997 official source publications.
+  Alternative publications must give identical northern stops, events, railway
+  links and direction. The other 30 are 15 explicit Oshiage origins (official
+  Toei ▲ markers, both calendars) and 15 explicitly published Oshiage termini.
+  These are accounted negatives, not discarded or inferred missing trains.
+- 573 complete journeys cross both Sengakuji and Oshiage. All 1,260 pass the
+  actual route engine with zero transfers, exact times, and wrong-calendar and
+  reverse-direction rejection. The source-hash-bound Toei network descriptor
+  and global 1,260 network journeys are installed without replacing unrelated
+  Keisei fragments. Global network journeys: 7,930; runtime links: 12,631.
+- Legacy reverse-repair/collection CI now checks exact network projections and
+  all 577 verified identities instead of demanding synthetic station-board
+  repairs or unsafe same-column links. Exact repair mode runs dependency-free
+  and rejects altered or missing terminal events. Keikyu tests: 165; new Asakusa
+  helper tests: 7. Independent CI results must be checked before claiming green.
+- Whole connected-system status remains **incomplete**: independent all-train
+  completeness on Hokuso and Shibayama still requires verification. Do not
+  confuse full Asakusa boundary completion with every train on those lines.
+
+**Previous implementation checkpoint — Keikyu internal through services**
 
 Current implementation branch: `work/keikyu-internal-completion-20260907`, based
 on the saved reconciliation checkpoint `b6cef83384952325dd0f4b46765befd4b24499e7`.

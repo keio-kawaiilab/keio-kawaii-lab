@@ -9,9 +9,6 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
-import requests
-
-import import_odpt_timetables as importer
 import keikyu_official_train_evidence as parser
 
 MAIN = parser.KEIKYU_MAIN
@@ -334,6 +331,15 @@ def write_report(report: dict[str, Any]) -> None:
 
 
 def main() -> int:
+    from keikyu_exact_terminal import verify_exact_terminal
+    current_table, table_path, index = load_main_table()
+    exact_report = verify_exact_terminal(current_table)
+    if exact_report is not None:
+        Path('/tmp/keikyu-sengakuji-repair.json').write_text(json.dumps(exact_report, indent=2) + '\n')
+        print(json.dumps(exact_report, indent=2))
+        return 0
+    import requests
+    import import_odpt_timetables as importer
     challenge_key = os.environ.get('ODPT_CHALLENGE_API_KEY', '').strip() or os.environ.get('ODPT_API_KEY', '').strip()
     if not challenge_key:
         raise RuntimeError('ODPT_CHALLENGE_API_KEY is required for Keikyu repair')

@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "station": "押上",
+  "direction": "西馬込・羽田空港・京急線方面",
+  "reviewedOn": "2026-09-07",
+  "evidence": "The official station timetable explicitly marks these departures ▲; its legend defines ▲ as 当駅始発. These are not inferred from an absent Keisei match.",
+  "sources": [
+    {
+      "calendar": "weekday",
+      "url": "https://www.kotsu.metro.tokyo.jp/subway/timetable/asakusa/A20SD.html",
+      "publishedRevision": "令和7年12月15日改正",
+      "explicitOriginDepartureMinutes": [459, 552, 574, 591, 733, 813, 893, 1068]
+    },
+    {
+      "calendar": "holiday",
+      "url": "https://www.kotsu.metro.tokyo.jp/subway/timetable/asakusa/A20SH.html",
+      "publishedRevision": "令和7年12月13日改正",
+      "explicitOriginDepartureMinutes": [613, 733, 813, 893, 973, 1053, 1133]
+    }
+  ]
+}
