@@ -14,6 +14,10 @@ KURIHAMA_BOUNDARY_ID = 'keikyu-main-kurihama-horinouchi'
 ZUSHI_BOUNDARY_ID = 'keikyu-main-zushi-kanazawahakkei'
 LEGACY_MARKER = 'same-printed-column-includes-shinagawa-and-haneda'
 MARKER = 'same-printed-column-two-exact-station-times'
+RESOLVABLE_UNRESOLVED_KINDS = {
+    'ambiguous-boundary-fragment-alignment',
+    'missing-boundary-train-identity-evidence',
+}
 
 BOUNDARY_SPECS: dict[str, dict[str, Any]] = {
     BOUNDARY_ID: {
@@ -132,7 +136,7 @@ def apply_generated_evidence(
         unresolved[:] = [
             row for row in unresolved
             if not (
-                row.get('kind') == 'ambiguous-boundary-fragment-alignment'
+                row.get('kind') in RESOLVABLE_UNRESOLVED_KINDS
                 and str(row.get('fragment') or '') in resolved_sources
             )
         ]
