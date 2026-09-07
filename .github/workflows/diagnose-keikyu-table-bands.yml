@@ -1,0 +1,48 @@
+name: Diagnose Keikyu two-table page bands
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/diagnose-keikyu-table-bands.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PDF dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+          pip install pdfplumber==0.11.7 PyMuPDF==1.26.4 requests==2.32.5
+      - name: Compile diagnosis
+        run: python -m py_compile scripts/diagnose_keikyu_table_bands.py
+      - name: Download official timetable
+        run: |
+          python - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, 'scripts')
+          from keikyu_official_pdf import download_official_pdf
+          download_official_pdf(Path('/tmp/keikyu-schedule-all.pdf'))
+          PY
+      - name: Audit upper and lower table bands
+        run: |
+          python scripts/diagnose_keikyu_table_bands.py \
+            --pdf /tmp/keikyu-schedule-all.pdf \
+            --output /tmp/keikyu-table-bands.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keikyu-two-table-band-diagnosis
+          path: /tmp/keikyu-table-bands.json
+          retention-days: 7
+          if-no-files-found: error
