@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/diagnose-keikyu-table-bands.yml'
+      - 'scripts/diagnose_keikyu_table_bands.py'
 
 permissions:
   contents: read
