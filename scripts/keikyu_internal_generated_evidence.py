@@ -61,6 +61,47 @@ def cross_page_global_policy_safe(policy: dict[str, Any]) -> bool:
     )
 
 
+def validate_section_local_entry(entry: dict[str, Any]) -> str:
+    match_policy = entry.get('matchPolicy') or {}
+    required_true = {
+        'officialSamePrintedColumnRequired',
+        'twoExactPublishedStationTimesRequired',
+        'singletonFragmentMatchRequiredAtBothPoints',
+        'officialPageSectionColumnIsExactLocalIdentity',
+        'officialSectionIdentityRequired',
+        'sharedPublishedDestinationUsedOnlyForSearch',
+        'candidateFragmentGapUsedOnlyForSearch',
+    }
+    if any(match_policy.get(key) is not True for key in required_true):
+        return 'unsafe-section-local-entry-policy'
+    if match_policy.get('crossPageIdentityUsed') is not False:
+        return 'unsafe-section-local-cross-page-policy'
+    if match_policy.get('trainNumberAloneMayEstablishIdentity') is not False:
+        return 'unsafe-section-local-train-number-policy'
+    if match_policy.get('timeProximityAloneMayEstablishIdentity') is not False:
+        return 'unsafe-section-local-time-policy'
+
+    official_fragment = str(entry.get('officialPageSectionLocalFragment') or '')
+    page = entry.get('pdfPage')
+    section = entry.get('pdfSection')
+    column = entry.get('pdfColumn')
+    anchors = entry.get('officialAnchors') or []
+    if not official_fragment or ':s' not in official_fragment:
+        return 'missing-section-aware-official-fragment-id'
+    if not isinstance(page, int) or page <= 0:
+        return 'invalid-section-local-pdf-page'
+    if not isinstance(section, int) or section < 0:
+        return 'invalid-section-local-pdf-section'
+    if not isinstance(column, int) or column < 0:
+        return 'invalid-section-local-pdf-column'
+    expected = f'keikyu-official-pdf:p{page:03d}:s{section:02d}:c{column:02d}'
+    if official_fragment != expected:
+        return 'section-local-fragment-metadata-mismatch'
+    if not isinstance(anchors, list) or len(anchors) != 2:
+        return 'missing-section-local-two-point-anchors'
+    return ''
+
+
 def validate_cross_page_entry(entry: dict[str, Any]) -> str:
     match_policy = entry.get('matchPolicy') or {}
     required_true = {
@@ -174,8 +215,8 @@ def apply_generated_evidence(
             reason = 'deprecated-unbanded-official-identity'
         elif not spec or (not is_same_column and not is_cross_page):
             reason = 'missing-supported-official-identity-marker'
-        elif SECTION_LOCAL_MARKER in evidence_set and not is_section_local:
-            reason = 'invalid-section-local-marker'
+        elif is_section_local:
+            reason = validate_section_local_entry(entry)
         elif is_cross_page and not cross_page_global_policy_safe(policy):
             reason = 'unsafe-cross-page-global-policy'
         elif is_cross_page:
@@ -219,7 +260,11 @@ def apply_generated_evidence(
             identity_evidence = (
                 'keikyu-official-internal-explicit-section-cross-page-two-point'
                 if is_cross_page
-                else 'keikyu-official-internal-same-column-two-point'
+                else (
+                    'keikyu-official-internal-same-section-column-two-point'
+                    if is_section_local
+                    else 'keikyu-official-internal-same-column-two-point'
+                )
             )
             output.append({
                 'fromFragment': source_id,
