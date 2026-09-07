@@ -26,63 +26,59 @@ jobs:
           python-version: '3.12'
       - name: Install strict PDF parsers
         run: pip install pdfplumber==0.11.7 PyMuPDF==1.26.4 requests==2.32.5
-      - name: Validate strict producer and consumer rules
+      - name: Test current-format strict resolver and consumer
         run: |
-          python -m py_compile scripts/keikyu_internal_official_evidence.py scripts/keikyu_internal_official_evidence_selective.py scripts/keikyu_internal_generated_evidence.py
-          python scripts/test_keikyu_internal_official_evidence.py
+          python -m py_compile \
+            scripts/keikyu_missing_boundary_evidence.py \
+            scripts/keikyu_internal_generated_evidence.py
+          python scripts/test_keikyu_missing_boundary_evidence.py
           python scripts/test_keikyu_internal_generated_evidence.py
-          python - <<'PY'
-          import sys
-          sys.path.insert(0, 'scripts')
-          import keikyu_internal_official_evidence as producer
-          import keikyu_internal_generated_evidence as consumer
-          import keikyu_internal_official_evidence_selective as selective
-          pair1 = (producer.ZUSHI, producer.MAIN)
-          pair2 = (producer.MAIN, producer.ZUSHI)
-          assert producer.BOUNDARIES[pair1]['id'] == producer.ZUSHI_BOUNDARY_ID
-          assert producer.BOUNDARIES[pair2]['id'] == producer.ZUSHI_BOUNDARY_ID
-          assert pair1 in selective.SUPPORTED_PAIRS and pair2 in selective.SUPPORTED_PAIRS
-          assert consumer.ZUSHI_BOUNDARY_ID in consumer.BOUNDARY_SPECS
-          assert consumer.BOUNDARY_SPECS[consumer.ZUSHI_BOUNDARY_ID]['pairs'] == {pair1, pair2}
-          print('STRICT_ZUSHI_RULES_OK')
-          PY
-      - name: Extract strict official Keikyu internal evidence
+      - name: Resolve current Zushi missing-boundary rows with official columns
         run: |
-          python scripts/keikyu_internal_official_evidence_selective.py \
-            --output data/transit-v2/keikyu-internal-official-train-evidence.json
+          python scripts/keikyu_missing_boundary_evidence.py \
+            --boundary-id keikyu-main-zushi-kanazawahakkei \
+            --report /tmp/zushi-current-evidence-report.json
+          cat /tmp/zushi-current-evidence-report.json
       - name: Re-finalize and audit transit DB
         run: |
           python scripts/finalize_transit_v2.py
           python scripts/audit_transit_v2.py
-      - name: Report Zushi materialization
+      - name: Verify current Zushi evidence materialization
         run: |
           python - <<'PY'
           import json
-          from collections import Counter
           from pathlib import Path
 
-          evidence = json.loads(Path('data/transit-v2/keikyu-internal-official-train-evidence.json').read_text(encoding='utf-8'))
-          entries = evidence.get('entries') or []
-          zushi = [row for row in entries if row.get('boundaryId') == 'keikyu-main-zushi-kanazawahakkei']
-          edges = json.loads(Path('data/transit-v2/same-train-edges.json').read_text(encoding='utf-8')).get('edges') or []
-          zushi_pairs = {(str(row.get('fromFragment') or ''), str(row.get('toFragment') or '')) for row in zushi}
-          materialized = [row for row in edges if (str(row.get('fromFragment') or ''), str(row.get('toFragment') or '')) in zushi_pairs and row.get('classification') == 'same-train']
-          coverage = json.loads(Path('data/transit-v2/coverage.json').read_text(encoding='utf-8'))
-          unresolved = coverage.get('unresolved') or []
-          remaining_zushi = []
-          for row in unresolved:
-              if row.get('kind') != 'ambiguous-boundary-fragment-alignment':
-                  continue
-              text = json.dumps(row, ensure_ascii=False)
-              if 'Keikyu.Zushi' in text:
-                  remaining_zushi.append(row)
-          print('ZUSHI_STRICT_EVIDENCE', len(zushi))
-          print('ZUSHI_STRICT_DIRECTIONS', dict(Counter(str(row.get('direction') or '') for row in zushi)))
-          print('ZUSHI_MATERIALIZED_SAME_TRAIN', len(materialized))
-          print('ZUSHI_AMBIGUOUS_REMAINING', len(remaining_zushi))
-          print('INTERNAL_BOUNDARY_COUNTS', json.dumps((evidence.get('summary') or {}).get('boundaries') or {}, ensure_ascii=False, sort_keys=True))
-          if len(materialized) != len(zushi_pairs):
-              raise SystemExit(f'not all Zushi strict evidence materialized: evidence={len(zushi_pairs)} materialized={len(materialized)}')
+          ROOT=Path('data/transit-v2')
+          evidence=json.loads((ROOT/'keikyu-internal-official-train-evidence.json').read_text(encoding='utf-8'))
+          zushi=[
+              row for row in evidence.get('entries') or []
+              if row.get('boundaryId')=='keikyu-main-zushi-kanazawahakkei'
+              and 'current-missing-boundary-official-column-v1' in (row.get('evidence') or [])
+          ]
+          pairs={(str(row.get('fromFragment') or ''), str(row.get('toFragment') or '')) for row in zushi}
+          edges=json.loads((ROOT/'same-train-edges.json').read_text(encoding='utf-8')).get('edges') or []
+          materialized={
+              (str(row.get('fromFragment') or ''), str(row.get('toFragment') or ''))
+              for row in edges
+              if row.get('classification')=='same-train'
+          }
+          coverage=json.loads((ROOT/'coverage.json').read_text(encoding='utf-8'))
+          unresolved_sources={
+              str(row.get('fragment') or '')
+              for row in coverage.get('unresolved') or []
+              if row.get('kind')=='missing-boundary-train-identity-evidence'
+          }
+          missing=sorted(pairs-materialized)
+          still=sorted({source for source,_target in pairs} & unresolved_sources)
+          print('CURRENT_ZUSHI_PROVEN', len(pairs))
+          print('CURRENT_ZUSHI_MATERIALIZED', len(pairs & materialized))
+          print('CURRENT_ZUSHI_STILL_UNRESOLVED', len(still))
+          print('CURRENT_ZUSHI_MISSING_EDGES', len(missing))
+          if missing:
+              raise SystemExit(f'missing current Zushi same-train edges: {missing[:5]}')
+          if still:
+              raise SystemExit(f'proven current Zushi sources remain unresolved: {still[:5]}')
           PY
       - name: Commit regenerated transit DB
         run: |
@@ -96,10 +92,10 @@ jobs:
             data/transit-v2/index.json \
             data/transit-v2/unresolved-summary.json
           if git diff --cached --quiet; then
-            echo "Transit DB already reflects current strict Zushi evidence"
+            echo "No new current Zushi evidence materialized"
             exit 0
           fi
-          git commit -m "Apply strict Keikyu Zushi through-train evidence"
+          git commit -m "Apply current strict Keikyu Zushi through evidence"
           for attempt in 1 2 3; do
             git fetch origin main
             if git rebase origin/main && git push origin HEAD:main; then
