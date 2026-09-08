@@ -1,8 +1,8 @@
 # スケジュール総点検 修正台帳
 
 最終更新: 2026-09-08
-現在の状態: P1-6 本番反映確認まで完了
-次の作業対象: P1-7 告知文がイベント名へ混入
+現在の状態: P1-7 本番反映確認まで完了
+次の作業対象: P1-8 ツアー公演詳細の開場・開演時刻欠落
 
 ## 引き継ぎルール
 - 別チャットでは最初にこのファイルを読む。
@@ -93,10 +93,21 @@
    - 公開HTML確認: CANDY TUNE 9/9大阪のFC先行・ぴあ2次は `受付終了` + `data-action-mode="detail"` の `受付詳細を確認 →`。FRUITS ZIPPER 9/16以降の将来リセールは `受付予定`、現在期間内の受付は `受付中` と表示。browser runtimeも同じ4状態を現在時刻から計算する。
    - デプロイ: 生成公開commit `668e1632920f1d325eb39d0b85a9dc6d64bd203d` に対する GitHub Pages `pages build and deployment` run #2816（run ID 34192333184）が成功。P1-6は公開反映まで完了。
 
-7. [次の作業] P1 告知文がイベント名へ混入
-   - ニュース見出しからイベント名を正規化する。
+7. [本番反映確認済み] P1 告知文がイベント名へ混入
+   - 症状: MORE STAR 2026/10/17 Zepp Namba公演などで、公式ニュースの見出し `2026.09.07 2026年10月17日(土) ... 出演決定！MORE STAR FC会員先行受付開始` がそのまま公開イベント名へ採用されていた。
+   - 原因: `performance_entities.py` が同一物理公演の元レコードから信頼度の高いbase行を選び、その行の `title` も丸ごと継承していた。公式ニュース行は高優先度なので、別ソースに短い正式イベント名があっても告知見出しが勝つ場合があった。
+   - 修正: 最終公開境界に `normalize_public_event_titles.py` を追加。現在の公開タイトルが「出演決定」「受付開始」などの告知文らしい場合に限り、同じ物理公演の `sourceRowIds` 内に既存する告知語なしの候補を探す。さらに、その候補の正規化文字列が長い告知見出し内に実際に含まれる場合だけ、その既存候補へ差し替える。文字列を推測生成したり、正規表現で無理に切り出したりはしない。
+   - データ保全: 収集用 `events` の元ニュース見出しは証跡として一切書き換えない。公開側だけ `title` / `eventTitle` / `displayTitle` をそろえ、`publicTitleOriginal` / `publicTitleSourceRowId` / `publicTitleNormalization` に変更前タイトルと採用根拠を保持する。
+   - 静的/動的整合: `publicEvents` だけでなく、`schedule.html` の静的カードと `snapshot-data` も最終公開境界で同じ正式名へそろえる。既存の公開処理が必ず通る `strip_schedule_explanations.py` から正規化を呼ぶため、自動更新経路でも回避できない。
+   - 実例確認: MORE STAR 2026/10/17は `FM大阪 『Live or Treat 2026』 in Zepp Namba` に正規化。元の公式ニュース取得行 `f054f2a8893de7de` には `FC会員先行受付開始` を含む原見出しをそのまま保持。
+   - 修正ファイル: `scripts/normalize_public_event_titles.py`, `scripts/strip_schedule_explanations.py`。
+   - PR: #218 `fix: normalize announcement-style event titles`
+   - CI検証: GitHub Actions `Test schedule audit fixes` run #13（run ID 34198288275）が全工程成功。正規化対象は `performance-MORE-STAR-2026-10-17-time-16-30` の1件だけで、既存P0/P1回帰・全スケジュール再生成・Node/UI検査も通過。公開正式名への変更とraw取得行温存を同時に検査した。
+   - 本番反映: PR #218 merge後の `Apply canonical special-event entities` run #9（run ID 34198368420）が、最新mainから全再生成・検証・commitまで成功。生成公開commitは `093c4694f46b3098236efaa23e63c3109d875940`。
+   - 公開HTML確認: 上記生成commitの `data/live-events.json` と `schedule.html` で、MORE STAR 10/17の公開タイトルが `FM大阪 『Live or Treat 2026』 in Zepp Namba` になり、長い告知見出しを公開カード名として使用しないことを確認。
+   - デプロイ: 生成公開commit `093c4694f46b3098236efaa23e63c3109d875940` に対する GitHub Pages `pages build and deployment` run #2822（run ID 34198394969）が成功。P1-7は公開反映まで完了。
 
-8. [未着手] P1 ツアー公演詳細の開場・開演時刻欠落
+8. [次の作業] P1 ツアー公演詳細の開場・開演時刻欠落
    - 日ごとの開場・開演を保持・表示する。
 
 9. [未着手] P2 会場詳細ページが「読み込んでいます…」のまま
@@ -122,3 +133,4 @@
 - 2026-09-08: #214後のcanonical migration run #6が最新データ上の再生成・commitまで成功。commit `f871af9593c71b0fc47d90a1e03234b04881d215` の公開JSON/静的HTMLを確認し、Pages run #2805成功まで確認。P1-4を本番反映確認済みに確定し、次をP1-5とした。
 - 2026-09-08: P1-5の開始日時欠損表示・CTAをPR #215で修正。CI run #11、canonical migration run #7、生成commit `53f75c83aab4f15a31661098e84e78f4487deca6`、Pages run #2810の成功と公開HTMLを確認。P1-5を本番反映確認済みに確定し、次をP1-6とした。
 - 2026-09-08: P1-6の受付状態をPR #217で現在時刻ベースの4状態へ統一。CI run #12、canonical migration run #8、生成commit `668e1632920f1d325eb39d0b85a9dc6d64bd203d`、Pages run #2816の成功と静的/runtime双方の公開HTMLを確認。P1-6を本番反映確認済みに確定し、次をP1-7とした。
+- 2026-09-08: P1-7の告知文混入をPR #218で、同一物理公演の別ソースに実在する正式タイトルだけを採用する方式へ修正。CI run #13、canonical migration run #9、生成commit `093c4694f46b3098236efaa23e63c3109d875940`、Pages run #2822の成功とMORE STAR 10/17公開カードを確認。rawニュース見出しも証跡として温存し、P1-7を本番反映確認済みに確定。次をP1-8とした。
