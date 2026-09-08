@@ -11,6 +11,8 @@ on:
       - "scripts/performance_entities.py"
       - "scripts/install_performance_public_view.py"
       - "scripts/strip_schedule_explanations.py"
+      - "scripts/fix_missing_application_start_ui.py"
+      - "scripts/test_schedule_scope_ui.js"
   workflow_dispatch:
 
 permissions:
