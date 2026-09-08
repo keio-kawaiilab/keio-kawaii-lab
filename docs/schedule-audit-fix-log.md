@@ -1,8 +1,8 @@
 # スケジュール総点検 修正台帳
 
 最終更新: 2026-09-08
-現在の状態: P2-9 本番正常表示・再発防止確認まで完了
-次の作業対象: P2-10 「バックアップを表示中。最新データを確認しています…」が残る
+現在の状態: P2-10 本番反映確認まで完了
+次の作業対象: P2-11 「182イベント掲載中」の件数定義不一致
 
 ## 引き継ぎルール
 - 別チャットでは最初にこのファイルを読む。
@@ -132,10 +132,20 @@
    - デプロイ: 上記main commitに対する GitHub Pages `pages build and deployment` run #2828（run ID 34202500419）が成功。
    - 判定: 現在の本番不具合ではなく元監査の誤検知。ただし同症状の再発条件をCIで固定し、本番正常表示・main上CI・Pages成功まで確認してP2-9を完了とした。
 
-10. [次の作業] P2 「バックアップを表示中。最新データを確認しています…」が残る
-    - 最新取得成功後の解除処理、失敗時挙動を確認。
+10. [本番反映確認済み] P2 「バックアップを表示中。最新データを確認しています…」が残る
+    - 症状: 初期HTMLは自動生成済みバックアップを即時表示し、`data/live-events.json` の最新取得中は `バックアップを表示中。最新データを確認しています…` と表示。通常の成功・失敗では状態遷移するが、通信リクエストがpendingのまま完了しない場合は初期文言が残り続ける余地があった。
+    - 原因: runtimeの最新JSON取得が素の `fetch(..., {cache:'no-store'})` で、成功時・catch時の終了表示は実装済みだった一方、取得自体に上限時間がなかった。
+    - 修正: `fetchLatestScheduleData(url, timeoutMs)` を公開runtimeへ導入し、最新JSON確認を10秒で打ち切る。10秒以内に成功すれば `最終更新: ...` へ更新し最新JSONで再描画、エラーまたはタイムアウトなら生成済みバックアップを維持して `最新JSONの読込に失敗したため、自動生成済みバックアップを表示しています。` へ確定する。
+    - 自動更新耐性: `guard_schedule_latest_data_loading.py` を追加し、全公開経路が通る `strip_schedule_explanations.py` の最終境界から必ず適用。単発のHTML手修正ではなく、今後の自動再生成でも無制限fetchへ戻らない。
+    - 再発防止: `test_schedule_scope_ui.js` で初期checking表示、10秒ガード、旧無制限fetch消滅、成功時終了表示、失敗/タイムアウト時終了表示を契約検査。
+    - 修正ファイル: `scripts/guard_schedule_latest_data_loading.py`, `scripts/strip_schedule_explanations.py`, `scripts/test_schedule_scope_ui.js`。
+    - PR: #223 `fix: bound schedule latest-data loading`
+    - CI検証: 初回 `Test schedule audit fixes` run #16（run ID 34233399768）は新ガード自体の適用後、既存Node疑似ブラウザが `clearTimeout` を提供していないため停止。既存監査単体は全成功。ガードを `settled` フラグだけで安全に終端する形へ調整し、run #17（run ID 34233583164）は全工程成功。公開再生成、Node/UI、仙台複数受付、Christmas SESSION、SWEET STEP等の既存回帰まで通過。
+    - 本番反映: PR #223をsquash merge。main commit `fc7e6311803785e565e6a9394218ef659455bd07`。続く `Apply canonical special-event entities` run #11（run ID 34233692474）が最新main上で公開HTML再生成・検証・commitまで成功。生成公開commitは `bd3c89ab54bab9c8ded5678448287fb68ed46ced`。
+    - 公開HTML確認: 生成commitの `schedule.html` に `fetchLatestScheduleData('./data/live-events.json?ts='+Date.now(),10000)` が存在し、成功時 `最終更新: ...` / 失敗・タイムアウト時バックアップ確定の両終了経路を保持。
+    - デプロイ: 生成公開commitに対する GitHub Pages `pages build and deployment` run #2838（run ID 34233726186）がbuild/deployとも成功。P2-10は公開反映まで完了。
 
-11. [未着手] P2 「182イベント掲載中」の件数定義不一致
+11. [次の作業] P2 「182イベント掲載中」の件数定義不一致
     - 公演数と受付レコード数を分離する。
 
 12. [未着手] P2 会場名表記揺れ
@@ -155,3 +165,4 @@
 - 2026-09-08: P1-7の告知文混入をPR #218で、同一物理公演の別ソースに実在する正式タイトルだけを採用する方式へ修正。CI run #13、canonical migration run #9、生成commit `093c4694f46b3098236efaa23e63c3109d875940`、Pages run #2822の成功とMORE STAR 10/17公開カードを確認。rawニュース見出しも証跡として温存し、P1-7を本番反映確認済みに確定。次をP1-8とした。
 - 2026-09-08: P1-8はPR #219でツアー日別OPEN/STARTの静的表示とruntime補完優先順位を修正。CI run #14、canonical migration run #10、生成commit `d441842e109b78b07402c0215e1b49f273a2500f`、Pages run #2826（run ID 34200033161）の成功と公開HTMLを確認。P1-8を本番反映確認済みに確定し、次をP2-9とした。
 - 2026-09-08: P2-9は元監査がJavaScript実行前のplaceholderだけを見た誤検知と判明。現行本番の東京ガーデンシアター詳細が正常表示し、既存のstable venue ID・name/alias正規化・取得失敗表示・cache bustを確認。PR #220で回帰契約テストを追加し、venue CI run #3、schedule audit run #15、main venue CI run #4、Pages run #2828成功まで確認。P2-9を本番反映確認済みに確定し、次をP2-10とした。
+- 2026-09-08: P2-10は最新JSON取得にタイムアウトがなくpending時にchecking表示が残り得ることを特定。PR #223で10秒のbounded fetchを最終公開境界へ導入し、CI run #17、canonical migration run #11、生成commit `bd3c89ab54bab9c8ded5678448287fb68ed46ced`、Pages run #2838成功と公開HTMLへの10秒ガード反映まで確認。P2-10を本番反映確認済みに確定し、次をP2-11とした。
