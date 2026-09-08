@@ -27,7 +27,9 @@ jobs:
           python-version: "3.12"
       - name: Verify canonical model
         working-directory: scripts
-        run: python -m unittest -v test_special_event_entities.py
+        run: |
+          python -m unittest -v test_special_event_entities.py
+          python -m unittest -v test_special_event_occurrence_details.py
       - name: Migrate public data and rebuild schedule
         run: |
           python scripts/normalize_special_event_entities.py

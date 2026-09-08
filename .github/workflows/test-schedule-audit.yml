@@ -1,0 +1,87 @@
+name: Test schedule audit fixes
+
+on:
+  pull_request:
+    paths:
+      - "scripts/**"
+      - "data/live-events.json"
+      - "schedule.html"
+      - ".github/workflows/test-schedule-audit.yml"
+      - ".github/workflows/apply-special-event-entities.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run special-event regression tests
+        working-directory: scripts
+        run: |
+          python -m unittest -v test_special_event_entities.py
+          python -m unittest -v test_special_event_occurrence_details.py
+      - name: Rebuild schedule through release boundary
+        run: |
+          python scripts/normalize_special_event_entities.py
+          python scripts/build_schedule_snapshot.py
+          python scripts/fix_schedule_shell.py
+          python scripts/strip_schedule_explanations.py
+          node --check /tmp/schedule-inline.js
+          node scripts/test_schedule_band_grouping.js
+          node scripts/test_schedule_scope_ui.js
+          python scripts/normalize_special_event_entities.py --check
+      - name: Verify SWEET STEP is rendered as date-scoped occurrences
+        run: |
+          python - <<'PY'
+          import json
+          import re
+          from pathlib import Path
+
+          payload = json.loads(Path("data/live-events.json").read_text(encoding="utf-8"))
+          matches = [
+              e for e in payload.get("events", [])
+              if e.get("group") == "SWEET STEADY"
+              and e.get("eventCategory") == "release-event"
+              and "SWEET STEP" in str(e.get("displayTitle") or e.get("title") or "")
+              and {"2026-09-05", "2026-09-07", "2026-09-14"}.issubset(set(e.get("eventDates") or []))
+          ]
+          assert len(matches) == 1, f"expected one canonical SWEET STEP series, got {len(matches)}"
+          event = matches[0]
+          assert event.get("displayByOccurrence") is True
+          for key in ("salesStartTime", "gatheringTime", "startTime", "numberedCallTimes", "purchaseMethod"):
+              assert key not in event, f"cross-date parent field leaked: {key}"
+          details = event["occurrenceDetails"]
+          assert details["2026-09-05"]["salesStartTime"] == "10:10"
+          assert details["2026-09-05"]["gatheringTime"] == "13:20"
+          assert details["2026-09-05"]["startTime"] == "14:00"
+          assert details["2026-09-07"]["salesStartTime"] == "12:00"
+          assert details["2026-09-07"]["gatheringTime"] == "16:00"
+          assert details["2026-09-07"]["startTime"] == "16:30"
+          assert details["2026-09-14"]["specialDetailsStatus"] == "awaiting-details"
+          assert "startTime" not in details["2026-09-14"]
+
+          html = Path("schedule.html").read_text(encoding="utf-8")
+          parent_id = re.escape(str(event.get("id")))
+          # 9/5 and 9/7 are already in the past on 2026-09-08, so the static
+          # future-only snapshot correctly omits them. The 9/14 card must exist
+          # and must not inherit either earlier day's operational details.
+          match = re.search(
+              rf'<article[^>]+data-event-id="{parent_id}--2026-09-14(?:-\d+)?".*?</article>',
+              html,
+              re.S,
+          )
+          assert match, "missing future date-scoped rendered card for 2026-09-14"
+          card = match.group(0)
+          assert "公式の詳細発表待ちです。開催日と会場のみ確認済みです。" in card
+          assert "<b>会場販売開始</b>" not in card
+          assert "<b>集合</b>" not in card
+          assert "<b>イベント開始</b>" not in card
+          assert "整理番号別の集合・呼び出し目安" not in card
+          assert "function expandSpecialOccurrences(raw)" in html
+          PY
