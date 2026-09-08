@@ -8,6 +8,7 @@ from __future__ import annotations
 from strip_schedule_explanations_core import *  # noqa: F401,F403
 import strip_schedule_explanations_core as _core
 import normalize_public_event_titles as _titles
+import normalize_external_event_public_view as _external_view
 import fix_missing_application_start_ui as _missing_start
 import guard_schedule_latest_data_loading as _latest_data
 
@@ -17,6 +18,9 @@ def main() -> int:
     if result != 0:
         return result
     result = _titles.main()
+    if result != 0:
+        return result
+    result = _external_view.main()
     if result != 0:
         return result
     result = _missing_start.main()

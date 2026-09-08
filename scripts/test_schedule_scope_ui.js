@@ -33,8 +33,27 @@ const snapshot = JSON.parse(snapshotMatch[1]);
 check(snapshot.events.some(event => event.eventScope === 'kawaii-lab'), 'snapshot has no hosted events');
 check(snapshot.events.some(event => event.eventScope === 'external'), 'snapshot has no external events');
 
+const kawacolle = snapshot.events.filter(event => {
+  const title = [event.eventTitle, event.displayTitle, event.title].filter(Boolean).join(' ');
+  return String(event.eventDate || '').slice(0, 10) === '2026-10-12' && /COLLECTION produced by TGC/i.test(title);
+});
+check(kawacolle.length === 1, `2026-10-12 Kawacolle must be one public event, got ${kawacolle.length}`);
+check(kawacolle[0].eventScope === 'external', '2026-10-12 Kawacolle is incorrectly classified as KAWAII LAB.-hosted');
+const expectedKawacolleParticipants = ['FRUITS ZIPPER', 'CANDY TUNE', 'SWEET STEADY', 'CUTIE STREET', 'MORE STAR', 'KAWAII LAB. SOUTH'];
+check(expectedKawacolleParticipants.every(group => (kawacolle[0].participants || []).includes(group)), '2026-10-12 Kawacolle lost participating groups while deduplicating');
+check(new Set(kawacolle[0].participants || []).size === 6, '2026-10-12 Kawacolle participant list is not the six announced groups');
+
+const liveOrTreat = snapshot.events.filter(event => {
+  const title = [event.eventTitle, event.displayTitle, event.title].filter(Boolean).join(' ');
+  return String(event.eventDate || '').slice(0, 10) === '2026-10-17' && /Live or Treat 2026/i.test(title);
+});
+check(liveOrTreat.length === 1, `2026-10-17 Live or Treat must be one public event, got ${liveOrTreat.length}`);
+check(liveOrTreat[0].eventScope === 'external', '2026-10-17 Live or Treat is incorrectly classified as KAWAII LAB.-hosted');
+
 const cardsMatch = page.match(/<div class="cards" id="cards">([\s\S]*?)<\/div>\s*<script id="snapshot-data"/);
 check(cardsMatch, 'server-rendered cards are missing');
 check(!/data-scope="external"/.test(cardsMatch[1]), 'default server-rendered cards leaked an external event');
+check(!/COLLECTION produced by TGC/i.test(cardsMatch[1]), '2026-10-12 Kawacolle leaked into the hosted-only default cards');
+check(!/Live or Treat 2026/i.test(cardsMatch[1]), '2026-10-17 Live or Treat leaked into the hosted-only default cards');
 
 console.log('Schedule scope UI tests passed');
