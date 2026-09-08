@@ -7,6 +7,8 @@ from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+import install_performance_public_view
+
 PAGE = Path("schedule.html")
 DATA = Path("data/live-events.json")
 JST = ZoneInfo("Asia/Tokyo")
@@ -108,7 +110,7 @@ def assert_physical_identity(page: str) -> None:
 def stamp_public_refresh(page: str) -> str:
     """Stamp only at the final release boundary.
 
-    Both automated release workflows call this script after the snapshot is built.
+    Automated release workflows call this script after the snapshot is built.
     If any later test fails, neither the JSON nor the HTML is committed, so the
     displayed time represents the latest successfully publishable refresh.
     """
@@ -132,6 +134,12 @@ def stamp_public_refresh(page: str) -> str:
 
 
 def main() -> int:
+    # Final release boundary: first derive the public one-performance model from
+    # acquisition/source rows. Every existing calendar publisher already calls
+    # this script, so automated refreshes cannot bypass the canonical public view.
+    if install_performance_public_view.main() != 0:
+        raise RuntimeError("failed to install canonical performance public view")
+
     page = PAGE.read_text(encoding="utf-8")
 
     page = re.sub(r'<p class="lead">.*?</p>\s*', '', page, count=1, flags=re.S)
