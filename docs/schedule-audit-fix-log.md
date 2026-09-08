@@ -1,8 +1,8 @@
 # スケジュール総点検 修正台帳
 
 最終更新: 2026-09-08
-現在の状態: P1-4 本番反映確認まで完了
-次の作業対象: P1-5 「申込開始開始日時未取得」表示
+現在の状態: P1-5 本番反映確認まで完了
+次の作業対象: P1-6 終了済み受付に「終了」状態が出ない
 
 ## 引き継ぎルール
 - 別チャットでは最初にこのファイルを読む。
@@ -66,10 +66,20 @@
    - 公開HTML確認: `schedule.html` のCANDY TUNE 10/8仙台ツアーカードは1枚だけで、同カード内のチケット欄に「公式 / FC：FC先行」と「イープラス：先着 ★一般発売」を表示。最新JSON再読込時も `publicEvents` を優先するため、受付別独立カードへ戻らない。
    - デプロイ: 生成データcommit `f871af9593c71b0fc47d90a1e03234b04881d215` に対する GitHub Pages `pages build and deployment` run #2805（run ID 34184502227）が成功。P1-4は公開反映まで完了。
 
-5. [次の作業] P1 「申込開始開始日時未取得」表示
-   - 開始日時欠損時の表示・申込リンク制御を修正。
+5. [本番反映確認済み] P1 「申込開始開始日時未取得」表示
+   - 症状: 受付開始日時が欠損した行で、静的カードは項目名「申込開始」と値「開始日時未取得」が連結され `申込開始開始日時未取得` と表示され得た。ブラウザ再描画側も開始日時不明を期間先頭へそのまま入れ、かつ締切が未来なら `受付中・予定` と判定して `申込ページ →` を表示していた。
+   - 原因: 静的HTML生成とブラウザJSで欠損表現が別実装になっており、`applyStart` 欠損を「不明な事実」ではなくカレンダー帯生成用のsynthetic開始日と混同していた。URLの存在だけでも申込CTAを有効化していた。
+   - 修正: 開始日時欠損時は表示値を `日時未取得` に統一。受付欄では `申込開始：日時未取得` とし、締切だけ取得済みなら `／ 締切 YYYY/M/D HH:MM` を併記する。開始日時が確認できない受付は `受付中・予定` にせず状態を `開始日時未取得` とする。
+   - リンク制御: 公式・プレイガイドURL自体は証跡として保持するが、開始日時不明時は申込可能と断定するCTAを出さず、`受付詳細を確認 →` のdetail-onlyリンクへ降格。開始日時が取得済みの受付は従来どおり申込先リンクを維持する。
+   - 再発防止: `strip_schedule_explanations.py` を公開境界ラッパー化し、既存のcanonical公開モデル生成・最終更新時刻反映後に `fix_missing_application_start_ui.py` を必ず通す。静的カードと実際に配信されるインラインJSの双方を同じ最終境界で検査・補正し、`/tmp/schedule-inline.js` も補正後に書き直してCIのNode構文検査対象にする。
+   - 修正ファイル: `scripts/fix_missing_application_start_ui.py`, `scripts/strip_schedule_explanations.py`, `scripts/strip_schedule_explanations_core.py`, `scripts/test_schedule_scope_ui.js`。
+   - PR: #215 `fix: handle unknown application start times safely`
+   - CI検証: 初回run #10は新実装自体の公開再生成・Node構文・既存Python回帰まで成功したが、旧UIテストが `open=!end||end>=now` の固定文字列を期待して停止。テストを新仕様 `open=!missingStart&&(!end||end>=now)` と、欠損時の状態・detail-only CTA・重複文言禁止まで確認する形へ更新。`Test schedule audit fixes` run #11（run ID 34185322550）は全工程成功し、P0/P1-4回帰・全再生成・Node/UIテストも通過。
+   - 本番反映: PR #215 merge後の `Apply canonical special-event entities` run #7（run ID 34185358225）が、最新main上でcanonical検証・公開データ/HTML再生成・mainへのcommitまで成功。生成公開commitは `53f75c83aab4f15a31661098e84e78f4487deca6`。
+   - 公開HTML確認: mainの `schedule.html` で `申込開始開始日時未取得` は0件。実例としてCANDY TUNE 10/1生誕祭の開始日時不明アップグレード、CANDY TUNEツアーの開始日時不明ぴあ受付は `申込開始：日時未取得` と表示され、リンクは `data-action-mode="detail"` の `受付詳細を確認 →` になった。ブラウザruntimeも開始日時不明をopen扱いしない。
+   - デプロイ: 生成公開commit `53f75c83aab4f15a31661098e84e78f4487deca6` に対する GitHub Pages `pages build and deployment` run #2810（run ID 34185373763）が成功。P1-5は公開反映まで完了。
 
-6. [未着手] P1 終了済み受付に「終了」状態が出ない
+6. [次の作業] P1 終了済み受付に「終了」状態が出ない
    - 現在時刻から受付状態を計算する。
 
 7. [未着手] P1 告知文がイベント名へ混入
@@ -99,3 +109,4 @@
 - 2026-09-08: P1-4は収集用eventsを温存しつつ公開用`publicEvents`を導入。PR #213のCI run #6で10/8仙台1公演＋複数受付、既存P0回帰、全生成/UIテストを検証。
 - 2026-09-08: #213本番migration時に15分自動更新とのmain競合を検出。最新データを上書きせず停止したうえ、PR #214で「競合時は最新mainから全再生成」へ変更。#214 CI run #7成功。
 - 2026-09-08: #214後のcanonical migration run #6が最新データ上の再生成・commitまで成功。commit `f871af9593c71b0fc47d90a1e03234b04881d215` の公開JSON/静的HTMLを確認し、Pages run #2805成功まで確認。P1-4を本番反映確認済みに確定し、次をP1-5とした。
+- 2026-09-08: P1-5の開始日時欠損表示・CTAをPR #215で修正。CI run #11、canonical migration run #7、生成commit `53f75c83aab4f15a31661098e84e78f4487deca6`、Pages run #2810の成功と公開HTMLを確認。P1-5を本番反映確認済みに確定し、次をP1-6とした。
