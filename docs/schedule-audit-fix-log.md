@@ -1,8 +1,8 @@
 # スケジュール総点検 修正台帳
 
 最終更新: 2026-09-08
-現在の状態: P1-5 本番反映確認まで完了
-次の作業対象: P1-6 終了済み受付に「終了」状態が出ない
+現在の状態: P1-6 本番反映確認まで完了
+次の作業対象: P1-7 告知文がイベント名へ混入
 
 ## 引き継ぎルール
 - 別チャットでは最初にこのファイルを読む。
@@ -79,10 +79,21 @@
    - 公開HTML確認: mainの `schedule.html` で `申込開始開始日時未取得` は0件。実例としてCANDY TUNE 10/1生誕祭の開始日時不明アップグレード、CANDY TUNEツアーの開始日時不明ぴあ受付は `申込開始：日時未取得` と表示され、リンクは `data-action-mode="detail"` の `受付詳細を確認 →` になった。ブラウザruntimeも開始日時不明をopen扱いしない。
    - デプロイ: 生成公開commit `53f75c83aab4f15a31661098e84e78f4487deca6` に対する GitHub Pages `pages build and deployment` run #2810（run ID 34185373763）が成功。P1-5は公開反映まで完了。
 
-6. [次の作業] P1 終了済み受付に「終了」状態が出ない
-   - 現在時刻から受付状態を計算する。
+6. [本番反映確認済み] P1 終了済み受付に「終了」状態が出ない
+   - 症状: 公開用performanceカードの静的HTMLには受付状態表示がなく、ブラウザ再描画側も開始日時欠損を優先すると、締切が既に過ぎていても `開始日時未取得` のままになり得た。また開始前と受付中の区別もなかった。
+   - 原因: 静的チケット欄とruntimeの受付状態判定が別実装で、runtimeは締切の単純比較だけ、静的HTMLは状態計算なしだった。
+   - 修正: JSTの現在時刻に対して受付開始・締切を比較し、`受付予定` / `受付中` / `受付終了` / `開始日時未取得` の4状態へ統一。確定した締切が過ぎている場合は開始日時不明より強い事実として `受付終了` を優先する。
+   - リンク制御: `受付終了` と `開始日時未取得` は申込可能と誤認させない `受付詳細を確認 →` のdetail-onlyリンクへ変更。`受付予定` と `受付中` は申込先・商品/整理券ページへのリンクを維持する。
+   - 静的/動的整合: 最終公開境界 `fix_missing_application_start_ui.py` で静的performanceカードにも同じ状態を付与し、ブラウザ `offerHtml()` も同じ時刻条件で再計算する。既存の当日締切時刻比較も維持する。
+   - 再発防止: `test_schedule_scope_ui.js` に4状態、終了済み静的カード、detail-only、当日締切比較の検査を追加。`fix_missing_application_start_ui.py` / UIテスト変更時にもcanonical migrationが自動起動するようworkflow対象を追加。
+   - 修正ファイル: `scripts/fix_missing_application_start_ui.py`, `scripts/test_schedule_scope_ui.js`, `.github/workflows/apply-special-event-entities.yml`。
+   - PR: #217 `fix: show time-aware ticket reception states`
+   - CI検証: GitHub Actions `Test schedule audit fixes` run #12（run ID 34192269809）が全工程成功。既存P0/P1回帰、全スケジュール再生成、Node構文、帯/UI、CANDY TUNE仙台1公演化、Christmas SESSION、SWEET STEPの日付別表示まで通過。
+   - 本番反映: PR #217 merge後の `Apply canonical special-event entities` run #8（run ID 34192312850）が、最新mainからcanonical検証・公開HTML再生成・commitまで成功。生成公開commitは `668e1632920f1d325eb39d0b85a9dc6d64bd203d`。
+   - 公開HTML確認: CANDY TUNE 9/9大阪のFC先行・ぴあ2次は `受付終了` + `data-action-mode="detail"` の `受付詳細を確認 →`。FRUITS ZIPPER 9/16以降の将来リセールは `受付予定`、現在期間内の受付は `受付中` と表示。browser runtimeも同じ4状態を現在時刻から計算する。
+   - デプロイ: 生成公開commit `668e1632920f1d325eb39d0b85a9dc6d64bd203d` に対する GitHub Pages `pages build and deployment` run #2816（run ID 34192333184）が成功。P1-6は公開反映まで完了。
 
-7. [未着手] P1 告知文がイベント名へ混入
+7. [次の作業] P1 告知文がイベント名へ混入
    - ニュース見出しからイベント名を正規化する。
 
 8. [未着手] P1 ツアー公演詳細の開場・開演時刻欠落
@@ -110,3 +121,4 @@
 - 2026-09-08: #213本番migration時に15分自動更新とのmain競合を検出。最新データを上書きせず停止したうえ、PR #214で「競合時は最新mainから全再生成」へ変更。#214 CI run #7成功。
 - 2026-09-08: #214後のcanonical migration run #6が最新データ上の再生成・commitまで成功。commit `f871af9593c71b0fc47d90a1e03234b04881d215` の公開JSON/静的HTMLを確認し、Pages run #2805成功まで確認。P1-4を本番反映確認済みに確定し、次をP1-5とした。
 - 2026-09-08: P1-5の開始日時欠損表示・CTAをPR #215で修正。CI run #11、canonical migration run #7、生成commit `53f75c83aab4f15a31661098e84e78f4487deca6`、Pages run #2810の成功と公開HTMLを確認。P1-5を本番反映確認済みに確定し、次をP1-6とした。
+- 2026-09-08: P1-6の受付状態をPR #217で現在時刻ベースの4状態へ統一。CI run #12、canonical migration run #8、生成commit `668e1632920f1d325eb39d0b85a9dc6d64bd203d`、Pages run #2816の成功と静的/runtime双方の公開HTMLを確認。P1-6を本番反映確認済みに確定し、次をP1-7とした。
