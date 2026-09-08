@@ -3,15 +3,23 @@ name: Check venue detail JavaScript
 on:
   pull_request:
     paths:
+      - "venue.html"
+      - "venues.js"
       - "venue-detail.js"
       - "venue-detail-cleanup.js"
+      - "data/venues.json"
+      - "scripts/test_venue_detail_contract.js"
       - ".github/workflows/check-venue-detail.yml"
   push:
     branches:
       - "main"
     paths:
+      - "venue.html"
+      - "venues.js"
       - "venue-detail.js"
       - "venue-detail-cleanup.js"
+      - "data/venues.json"
+      - "scripts/test_venue_detail_contract.js"
       - ".github/workflows/check-venue-detail.yml"
   workflow_dispatch:
 
@@ -28,3 +36,7 @@ jobs:
         run: |
           node --check venue-detail.js
           node --check venue-detail-cleanup.js
+          node --check venues.js
+          node --check scripts/test_venue_detail_contract.js
+      - name: Check venue detail loading contract
+        run: node scripts/test_venue_detail_contract.js
