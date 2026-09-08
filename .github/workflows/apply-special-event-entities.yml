@@ -8,6 +8,8 @@ on:
       - ".github/workflows/apply-special-event-entities.yml"
       - "scripts/schedule_audit_corrections.py"
       - "scripts/ohanami_two_show_correction.py"
+      - "scripts/performance_entities.py"
+      - "scripts/install_performance_public_view.py"
   workflow_dispatch:
 
 permissions:
@@ -33,12 +35,14 @@ jobs:
           python -m unittest -v test_special_event_entities.py
           python -m unittest -v test_special_event_occurrence_details.py
           python -m unittest -v test_schedule_audit_corrections.py
+          python -m unittest -v test_performance_entities.py
       - name: Migrate public data and rebuild schedule
         run: |
           python scripts/normalize_special_event_entities.py
           python scripts/schedule_audit_corrections.py --fail-on-conflict
           python scripts/build_schedule_snapshot.py
           python scripts/fix_schedule_shell.py
+          python scripts/install_performance_public_view.py
           python scripts/strip_schedule_explanations.py
           node --check /tmp/schedule-inline.js
           node scripts/test_schedule_band_grouping.js

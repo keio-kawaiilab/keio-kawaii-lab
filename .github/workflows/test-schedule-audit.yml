@@ -27,18 +27,62 @@ jobs:
           python -m unittest -v test_special_event_entities.py
           python -m unittest -v test_special_event_occurrence_details.py
           python -m unittest -v test_schedule_audit_corrections.py
+          python -m unittest -v test_performance_entities.py
       - name: Rebuild schedule through release boundary
         run: |
           python scripts/normalize_special_event_entities.py
           python scripts/schedule_audit_corrections.py --fail-on-conflict
           python scripts/build_schedule_snapshot.py
           python scripts/fix_schedule_shell.py
+          python scripts/install_performance_public_view.py
           python scripts/strip_schedule_explanations.py
           node --check /tmp/schedule-inline.js
           node scripts/test_schedule_band_grouping.js
           node scripts/test_schedule_scope_ui.js
           python scripts/normalize_special_event_entities.py --check
           python scripts/schedule_audit_corrections.py --check --fail-on-conflict
+      - name: Verify one CANDY TUNE Sendai performance owns every ticket offer
+        run: |
+          python - <<'PY'
+          import json
+          import re
+          from pathlib import Path
+
+          payload = json.loads(Path("data/live-events.json").read_text(encoding="utf-8"))
+          public = payload.get("publicEvents") or []
+          sendai = [
+              e for e in public
+              if e.get("entityType") == "performance"
+              and e.get("group") == "CANDY TUNE"
+              and str(e.get("eventDate") or "")[:10] == "2026-10-08"
+              and str(e.get("startTime") or "") == "18:30"
+          ]
+          assert len(sendai) == 1, f"expected one public Sendai performance, got {len(sendai)}"
+          event = sendai[0]
+          assert "仙台サンプラザホール" in str(event.get("venue") or "")
+          assert event.get("openTime") == "17:30"
+          offers = event.get("offers") or []
+          ticket_types = {str(o.get("ticketType") or "") for o in offers if isinstance(o, dict)}
+          assert "FC先行" in ticket_types, ticket_types
+          assert any("一般発売" in value for value in ticket_types), ticket_types
+          source_ids = set(event.get("sourceRowIds") or [])
+          assert "1ea8729093138217" in source_ids, source_ids
+          assert "057d4f57383ebf4f" in source_ids, source_ids
+          assert "1d39bd5dbf1e137a" in source_ids, source_ids
+
+          html = Path("schedule.html").read_text(encoding="utf-8")
+          cards = re.findall(
+              r'<article class="card[^>]*data-group="CANDY TUNE"[^>]*>.*?2026/10/8.*?</article>',
+              html,
+              re.S,
+          )
+          matches = [card for card in cards if "仙台サンプラザホール" in card and "JAPAN TOUR 2026" in card]
+          assert len(matches) == 1, f"expected one static Sendai tour card, got {len(matches)}"
+          assert "FC先行" in matches[0]
+          assert "一般発売" in matches[0]
+          assert "data.publicEvents||data.events" in html
+          assert "e.entityType!=='special-event'&&e.entityType!=='performance'" in html
+          PY
       - name: Verify Christmas SESSION Day1 has one confirmed venue fact
         run: |
           python - <<'PY'
@@ -122,9 +166,6 @@ jobs:
 
           html = Path("schedule.html").read_text(encoding="utf-8")
           parent_id = re.escape(str(event.get("id")))
-          # 9/5 and 9/7 are already in the past on 2026-09-08, so the static
-          # future-only snapshot correctly omits them. The 9/14 card must exist
-          # and must not inherit either earlier day's operational details.
           match = re.search(
               rf'<article[^>]+data-event-id="{parent_id}--2026-09-14(?:-\d+)?".*?</article>',
               html,
