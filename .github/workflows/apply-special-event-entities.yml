@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - ".github/workflows/apply-special-event-entities.yml"
+      - "scripts/schedule_audit_corrections.py"
+      - "scripts/ohanami_two_show_correction.py"
   workflow_dispatch:
 
 permissions:
