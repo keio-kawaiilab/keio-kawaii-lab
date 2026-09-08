@@ -1,8 +1,8 @@
 # スケジュール総点検 修正台帳
 
 最終更新: 2026-09-08
-現在の状態: P1-7 本番反映確認まで完了
-次の作業対象: P1-8 ツアー公演詳細の開場・開演時刻欠落
+現在の状態: P1-8 本番反映確認まで完了
+次の作業対象: P2-9 会場詳細ページが「読み込んでいます…」のまま
 
 ## 引き継ぎルール
 - 別チャットでは最初にこのファイルを読む。
@@ -107,10 +107,19 @@
    - 公開HTML確認: 上記生成commitの `data/live-events.json` と `schedule.html` で、MORE STAR 10/17の公開タイトルが `FM大阪 『Live or Treat 2026』 in Zepp Namba` になり、長い告知見出しを公開カード名として使用しないことを確認。
    - デプロイ: 生成公開commit `093c4694f46b3098236efaa23e63c3109d875940` に対する GitHub Pages `pages build and deployment` run #2822（run ID 34198394969）が成功。P1-7は公開反映まで完了。
 
-8. [次の作業] P1 ツアー公演詳細の開場・開演時刻欠落
-   - 日ごとの開場・開演を保持・表示する。
+8. [本番反映確認済み] P1 ツアー公演詳細の開場・開演時刻欠落
+   - 症状: 公開用performanceモデルに日別OPEN/STARTが存在していても、初期静的HTMLのperformanceカードは「開催日」だけを描画して開場・開演を表示していなかった。またbrowser runtimeで旧multi-day tour行を公式scheduleから補完する際、受付行のトップ階層時刻が日別公式時刻より優先される経路があった。
+   - 原因: `build_schedule_snapshot.build_card()` のライブカードは日付のみで時刻を描画せず、runtime `repair()` は `x.openTime || r.openTime` / `x.startTime || r.startTime` の順で補完していた。
+   - 修正: `install_performance_public_view.py` の最終公開境界でperformance静的カードを `開催日時` 表示へ差し替え、`eventDate + openTime + startTime` を描画。runtime repairも `r.openTime || x.openTime` / `r.startTime || x.startTime` に変更し、日別公式schedule occurrenceを優先するよう統一した。
+   - 安全策・回帰: 時刻の異なるCANDY TUNEツアー2公演を実DBで固定検査。2026/10/4 函館市民会館はOPEN16:30/START17:30、2026/10/8 仙台サンプラザホールはOPEN17:30/START18:30。両方を同時に検査することで、ツアー代表時刻を全日に誤伝播する再発も防ぐ。仙台のFC先行/一般発売の複数受付保持も継続確認する。
+   - 修正ファイル: `scripts/install_performance_public_view.py`。
+   - PR: #219 `fix: preserve per-day tour performance times`
+   - CI検証: GitHub Actions `Test schedule audit fixes` run #14（run ID 34199949029）が全工程成功。新規ツアー時刻ガード、実DB再生成、既存P0/P1回帰、Node構文、帯/UI、仙台複数受付、Christmas SESSION、SWEET STEP日別表示まで通過。
+   - 本番反映: PR #219 merge後の `Apply canonical special-event entities` run #10（run ID 34200007528）が成功。生成公開commitは `d441842e109b78b07402c0215e1b49f273a2500f`。
+   - 公開HTML確認: 生成commitの `schedule.html` で、函館は `2026/10/4 ／ 開場 16:30 ／ 開演 17:30`、仙台は `2026/10/8 ／ 開場 17:30 ／ 開演 18:30` を初期静的カードから表示。browser runtimeも日別公式時刻優先へ統一されていることを確認。
+   - デプロイ: 生成公開commit `d441842e109b78b07402c0215e1b49f273a2500f` に対する GitHub Pages `pages build and deployment` run #2826（run ID 34200033161）が成功。P1-8は公開反映まで完了。
 
-9. [未着手] P2 会場詳細ページが「読み込んでいます…」のまま
+9. [次の作業] P2 会場詳細ページが「読み込んでいます…」のまま
    - 会場ID化、検索キー正規化、取得失敗時表示を確認。
 
 10. [未着手] P2 「バックアップを表示中。最新データを確認しています…」が残る
@@ -134,3 +143,4 @@
 - 2026-09-08: P1-5の開始日時欠損表示・CTAをPR #215で修正。CI run #11、canonical migration run #7、生成commit `53f75c83aab4f15a31661098e84e78f4487deca6`、Pages run #2810の成功と公開HTMLを確認。P1-5を本番反映確認済みに確定し、次をP1-6とした。
 - 2026-09-08: P1-6の受付状態をPR #217で現在時刻ベースの4状態へ統一。CI run #12、canonical migration run #8、生成commit `668e1632920f1d325eb39d0b85a9dc6d64bd203d`、Pages run #2816の成功と静的/runtime双方の公開HTMLを確認。P1-6を本番反映確認済みに確定し、次をP1-7とした。
 - 2026-09-08: P1-7の告知文混入をPR #218で、同一物理公演の別ソースに実在する正式タイトルだけを採用する方式へ修正。CI run #13、canonical migration run #9、生成commit `093c4694f46b3098236efaa23e63c3109d875940`、Pages run #2822の成功とMORE STAR 10/17公開カードを確認。rawニュース見出しも証跡として温存し、P1-7を本番反映確認済みに確定。次をP1-8とした。
+- 2026-09-08: P1-8はPR #219でツアー日別OPEN/STARTの静的表示とruntime補完優先順位を修正。CI run #14、canonical migration run #10、生成commit `d441842e109b78b07402c0215e1b49f273a2500f`、Pages run #2826（run ID 34200033161）の成功と公開HTMLを確認。P1-8を本番反映確認済みに確定し、次をP2-9とした。
