@@ -8,14 +8,21 @@
 - 1件ずつ `調査中 → 修正済み → 検証済み` の順で進める。
 - 修正したファイル名・原因・確認内容を必ず追記する。
 - 原則として未検証の変更を `main` に入れない。
+- 各項目は、可能なら公式一次情報の確認内容・PR番号・CI結果まで残す。
 
 ## 修正対象
 
-1. [調査中] P0 SWEET STEADY 9/5・9/7・9/14 リリースイベントの情報混在
-   - 症状: 複数日を1件にまとめ、集合・開始・詳細が別日から混在。
-   - 正しい方向: 公演日単位で日時・整理券・説明を独立保持する。
+1. [検証済み] P0 SWEET STEADY 9/5・9/7・9/14 リリースイベントの情報混在
+   - 原因: 3日分を1つの正規イベント系列に統合したあと、日付固有の `salesStartTime` / `gatheringTime` / `startTime` / `numberedCallTimes` まで親レコードへ残り、表示時に全日へ継承されていた。
+   - 修正: 正規イベント系列は1件のまま維持し、日付固有情報を `occurrenceDetails` に分離。静的HTML生成時とブラウザJSON再読込時の双方で日付別表示へ展開するようにした。
+   - 9/5: 販売10:10 / 集合13:20 / 開演14:00 / 呼出目安10:00〜11:40。
+   - 9/7: 販売12:00 / 集合16:00 / 開演16:30 / 呼出目安11:50〜13:30。
+   - 9/14: 詳細未発表として、9/5・9/7の販売・集合・開始・呼出情報を一切継承しない。
+   - 修正ファイル: `scripts/special_event_occurrence_details.py`, `scripts/fix_schedule_shell.py`, `scripts/test_special_event_occurrence_details.py`, `.github/workflows/test-schedule-audit.yml`, `.github/workflows/apply-special-event-entities.yml`。
+   - PR: #209 `fix: isolate SWEET STEADY release-event details by date`
+   - 検証: GitHub Actions `Test schedule audit fixes` run #2 成功。新規回帰テスト、既存正規化テスト、全スケジュール再生成、Node構文チェック、既存帯/UIテスト、9/14実カードの別日情報非混入を確認。
 
-2. [未着手] P0 Christmas SESSION 12/12 の会場不一致
+2. [調査中] P0 Christmas SESSION 12/12 の会場不一致
    - グループ別カードでは会場未定、合同カードでは有明アリーナ。
 
 3. [未着手] P0 SWEET STEADY「お花見会」9/21 の重複・2公演表現不足
@@ -51,4 +58,5 @@
     - 正式会場ID・表示名・別名を正規化する。
 
 ## 変更履歴
-- 2026-09-08: 修正台帳を新規作成。1件目を調査開始。
+- 2026-09-08: 修正台帳を新規作成。
+- 2026-09-08: P0-1 SWEET STEADY 9/5・9/7・9/14 情報混在を修正し、PR #209 のCIで検証完了。P0-2 Christmas SESSION 会場不一致の調査へ移行。
