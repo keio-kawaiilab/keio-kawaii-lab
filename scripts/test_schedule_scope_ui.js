@@ -20,6 +20,13 @@ check(/data-action-mode="detail"/.test(page), 'server-rendered ended/unknown rec
 check(!/申込開始開始日時未取得/.test(page), 'duplicate missing-start wording remains');
 check(/exactEnd&&exactEnd<now/.test(page), 'expired same-day calendar bands are not hidden');
 
+check(/バックアップを表示中。最新データを確認しています/.test(page), 'initial backup/loading status is missing');
+check(/function fetchLatestScheduleData\(url,timeoutMs\)/.test(page), 'latest schedule data fetch has no bounded loading helper');
+check(/fetchLatestScheduleData\('\.\/data\/live-events\.json\?ts='\+Date\.now\(\),10000\)/.test(page), 'latest schedule data fetch is not capped at 10 seconds');
+check(!/fetch\('\.\/data\/live-events\.json\?ts='\+Date\.now\(\),\{cache:'no-store'\}\)/.test(page), 'legacy unbounded latest-data fetch remains');
+check(/textContent='最終更新: '\+\(data\.checkedAt\|\|data\.updatedAt\|\|'不明'\)/.test(page), 'successful latest-data load does not clear the checking status');
+check(/最新JSONの読込に失敗したため、自動生成済みバックアップを表示しています/.test(page), 'failed or timed-out latest-data load has no terminal fallback status');
+
 const snapshotMatch = page.match(/<script id="snapshot-data" type="application\/json">([\s\S]*?)<\/script>/);
 check(snapshotMatch, 'snapshot JSON is missing');
 const snapshot = JSON.parse(snapshotMatch[1]);
