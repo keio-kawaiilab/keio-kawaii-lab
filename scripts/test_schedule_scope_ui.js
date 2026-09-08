@@ -10,9 +10,13 @@ check(/data-scope="all"/.test(page), 'external-inclusive button is missing');
 check(/selectedScope='kawaii-lab'/.test(page), 'runtime default scope is not hosted');
 check(/match\(e,selected\)&&scopeMatch\(e\)/.test(page), 'calendar render does not enforce scope');
 check(/scope-badge">外部出演/.test(page), 'external card badge is missing');
-check(/end=moment\(o\.applyEnd,true\),open=!missingStart&&\(!end\|\|end>=now\)/.test(page), 'same-day ticket deadlines are not compared by time');
-check(/state=missingStart\?'開始日時未取得'/.test(page), 'unknown application starts are still presented as open');
-check(/missingStart\?'受付詳細を確認 →'/.test(page), 'unknown application starts still expose an application CTA');
+check(/start=moment\(o\.applyStart,false\),end=moment\(o\.applyEnd,true\),ended=!!end&&end<now/.test(page), 'ticket start/end moments are not compared with the current time');
+check(/scheduled=!missingStart&&!!start&&start>now/.test(page), 'future ticket receptions are not detected');
+check(/open=!missingStart&&!ended&&!scheduled/.test(page), 'open ticket state ignores ended or future receptions');
+check(/state=ended\?'受付終了':missingStart\?'開始日時未取得':scheduled\?'受付予定':'受付中'/.test(page), 'ticket reception state labels are incomplete');
+check(/detailOnly=ended\|\|missingStart/.test(page), 'ended or unknown-start receptions still expose an application CTA');
+check(/sale-state ended">受付終了/.test(page), 'server-rendered cards do not expose an ended reception state');
+check(/data-action-mode="detail"/.test(page), 'server-rendered ended/unknown receptions do not use detail-only links');
 check(!/申込開始開始日時未取得/.test(page), 'duplicate missing-start wording remains');
 check(/exactEnd&&exactEnd<now/.test(page), 'expired same-day calendar bands are not hidden');
 
