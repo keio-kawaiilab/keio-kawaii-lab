@@ -9,6 +9,7 @@ from strip_schedule_explanations_core import *  # noqa: F401,F403
 import strip_schedule_explanations_core as _core
 import normalize_public_event_titles as _titles
 import fix_missing_application_start_ui as _missing_start
+import guard_schedule_latest_data_loading as _latest_data
 
 
 def main() -> int:
@@ -18,7 +19,10 @@ def main() -> int:
     result = _titles.main()
     if result != 0:
         return result
-    return _missing_start.main()
+    result = _missing_start.main()
+    if result != 0:
+        return result
+    return _latest_data.main()
 
 
 if __name__ == "__main__":
