@@ -6,6 +6,7 @@ import json
 import re
 from pathlib import Path
 
+from schedule_audit_corrections import apply_all as apply_schedule_audit_corrections
 from schedule_scope import apply_event_scope
 
 DATA_PATH = Path("data/live-events.json")
@@ -176,20 +177,43 @@ def main() -> int:
     original = [event for event in payload.get("events", []) if isinstance(event, dict)]
     updated = [apply_event_scope(event) for event in original]
     updated, birthday_shadows_removed = dedupe_birthday_schedule_shadows(updated)
+
+    scoped_payload = dict(payload)
+    scoped_payload["events"] = updated
+    corrected_payload, audit_report = apply_schedule_audit_corrections(scoped_payload)
+    corrected_events = [event for event in corrected_payload.get("events", []) if isinstance(event, dict)]
+    audit_required = corrected_events != updated
+    conflicts = [
+        conflict
+        for section in audit_report.values()
+        if isinstance(section, dict)
+        for conflict in section.get("conflicts") or []
+    ]
+    if conflicts:
+        raise SystemExit("Schedule audit correction conflict: " + json.dumps(conflicts, ensure_ascii=False))
+
     missing = sum(1 for event in original if not event.get("eventScope"))
-    invalid = [event.get("id") for event in updated if event.get("eventScope") not in {"kawaii-lab", "external"}]
+    invalid = [event.get("id") for event in corrected_events if event.get("eventScope") not in {"kawaii-lab", "external"}]
     if invalid:
         raise SystemExit(f"Invalid eventScope values: {invalid}")
     if args.check:
         if missing:
             raise SystemExit(f"{missing} events have no eventScope")
-        print(f"Event scope check passed: {len(updated)} events; {birthday_shadows_removed} stale birthday shadow(s) removed")
+        if audit_required:
+            raise SystemExit("Schedule audit corrections are required before release: " + json.dumps(audit_report, ensure_ascii=False))
+        print(
+            f"Event scope check passed: {len(corrected_events)} events; "
+            f"{birthday_shadows_removed} stale birthday shadow(s) removed; "
+            f"schedule audit corrections verified"
+        )
         return 0
-    payload["events"] = updated
-    DATA_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+    corrected_payload["events"] = corrected_events
+    DATA_PATH.write_text(json.dumps(corrected_payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(
-        f"Applied event scopes: {len(updated)} events ({missing} newly classified); "
-        f"{birthday_shadows_removed} stale birthday shadow(s) removed"
+        f"Applied event scopes: {len(corrected_events)} events ({missing} newly classified); "
+        f"{birthday_shadows_removed} stale birthday shadow(s) removed; "
+        f"schedule audit corrections: {json.dumps(audit_report, ensure_ascii=False)}"
     )
     return 0
 

@@ -21,14 +21,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Run special-event regression tests
+      - name: Run schedule audit regression tests
         working-directory: scripts
         run: |
           python -m unittest -v test_special_event_entities.py
           python -m unittest -v test_special_event_occurrence_details.py
+          python -m unittest -v test_schedule_audit_corrections.py
       - name: Rebuild schedule through release boundary
         run: |
           python scripts/normalize_special_event_entities.py
+          python scripts/schedule_audit_corrections.py --fail-on-conflict
           python scripts/build_schedule_snapshot.py
           python scripts/fix_schedule_shell.py
           python scripts/strip_schedule_explanations.py
@@ -36,6 +38,58 @@ jobs:
           node scripts/test_schedule_band_grouping.js
           node scripts/test_schedule_scope_ui.js
           python scripts/normalize_special_event_entities.py --check
+          python scripts/schedule_audit_corrections.py --check --fail-on-conflict
+      - name: Verify Christmas SESSION Day1 has one confirmed venue fact
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          payload = json.loads(Path("data/live-events.json").read_text(encoding="utf-8"))
+          token = "KAWAII LAB. Christmas SESSION 2026"
+          day = "2026-12-12"
+          venue = "有明アリーナ"
+          audit_id = "P0-christmas-session-2026-day1-venue"
+
+          def title(e):
+              return " ".join(str(e.get(k) or "") for k in ("displayTitle", "eventTitle", "title"))
+
+          def compatible(open_time, start_time):
+              return (not open_time or str(open_time).strip() == "15:00") and (not start_time or str(start_time).strip() == "17:00")
+
+          authoritative = [
+              e for e in payload.get("events", [])
+              if e.get("group") == "KAWAII LAB.合同"
+              and e.get("sourceType") == "official-schedule"
+              and str(e.get("eventDate") or "")[:10] == day
+              and token.lower() in title(e).lower()
+          ]
+          assert authoritative, "missing canonical official Christmas SESSION Day1 row"
+          assert {str(e.get("venue") or "") for e in authoritative} == {venue}
+
+          targets = []
+          schedule_targets = []
+          for e in payload.get("events", []):
+              if token.lower() not in title(e).lower():
+                  continue
+              if str(e.get("eventDate") or "")[:10] == day and compatible(e.get("openTime"), e.get("startTime")):
+                  targets.append(e)
+              for row in e.get("schedule") or []:
+                  if not isinstance(row, dict):
+                      continue
+                  if str(row.get("date") or "")[:10] == day and compatible(row.get("openTime"), row.get("startTime")):
+                      schedule_targets.append((e, row))
+
+          assert len(targets) >= 2, f"unexpectedly few Day1 Christmas rows: {len(targets)}"
+          assert all(e.get("venue") == venue for e in targets), [
+              (e.get("id"), e.get("group"), e.get("venue")) for e in targets if e.get("venue") != venue
+          ]
+          assert all(row.get("venue") == venue for _, row in schedule_targets), [
+              (e.get("id"), e.get("group"), row.get("venue"))
+              for e, row in schedule_targets if row.get("venue") != venue
+          ]
+          assert any(audit_id in (e.get("auditCorrectionIds") or []) for e in targets), "no corrected Day1 row carries audit provenance"
+          PY
       - name: Verify SWEET STEP is rendered as date-scoped occurrences
         run: |
           python - <<'PY'
