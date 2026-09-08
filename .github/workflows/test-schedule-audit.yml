@@ -40,6 +40,7 @@ jobs:
         run: |
           python - <<'PY'
           import json
+          import re
           from pathlib import Path
 
           payload = json.loads(Path("data/live-events.json").read_text(encoding="utf-8"))
@@ -66,8 +67,21 @@ jobs:
           assert "startTime" not in details["2026-09-14"]
 
           html = Path("schedule.html").read_text(encoding="utf-8")
-          parent_id = str(event.get("id"))
-          for day in ("2026-09-05", "2026-09-07", "2026-09-14"):
-              assert f"{parent_id}--{day}" in html, f"missing date-scoped rendered id for {day}"
+          parent_id = re.escape(str(event.get("id")))
+          # 9/5 and 9/7 are already in the past on 2026-09-08, so the static
+          # future-only snapshot correctly omits them. The 9/14 card must exist
+          # and must not inherit either earlier day's operational details.
+          match = re.search(
+              rf'<article[^>]+data-event-id="{parent_id}--2026-09-14(?:-\d+)?".*?</article>',
+              html,
+              re.S,
+          )
+          assert match, "missing future date-scoped rendered card for 2026-09-14"
+          card = match.group(0)
+          assert "公式の詳細発表待ちです。開催日と会場のみ確認済みです。" in card
+          assert "<b>会場販売開始</b>" not in card
+          assert "<b>集合</b>" not in card
+          assert "<b>イベント開始</b>" not in card
+          assert "整理番号別の集合・呼び出し目安" not in card
           assert "function expandSpecialOccurrences(raw)" in html
           PY
