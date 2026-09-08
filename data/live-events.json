@@ -1,6 +1,6 @@
 {
   "demo": false,
-  "updatedAt": "2026-09-08T19:10:46+09:00",
+  "updatedAt": "2026-09-08T19:39:54+09:00",
   "source": "KAWAII LAB.各グループ公式公開情報 + チケットぴあ・ローチケ・イープラス公開情報 + SUKISUKI公開オンライン特典会情報 + 公式大特典会・リリースイベント情報",
   "events": [
     {
@@ -1771,9 +1771,9 @@
       "id": "3e71742c839253ef",
       "group": "CUTIE STREET",
       "title": "CUTIE STREET 梅田みゆ 生誕祭 2026",
-      "ticketType": "現在受付なし",
-      "applyStart": null,
-      "applyEnd": null,
+      "ticketType": "年会費コース会員先行",
+      "applyStart": "2026-08-05T12:00",
+      "applyEnd": "2026-08-09T23:59",
       "resultDate": null,
       "paymentEnd": null,
       "eventDate": "2026-09-14",
@@ -1794,12 +1794,16 @@
       "startTime": "19:00",
       "eventScope": "kawaii-lab",
       "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/42328",
-      "applicationDisplayMode": "schedule-only",
+      "applicationDisplayMode": "band",
       "specialDetailsStatus": "ticket-details-found",
       "discoverySourceUrl": "https://cutiestreet.asobisystem.com/news/detail/86338",
       "ticketGuardRejected": true,
       "ticketGuardReason": "upgrade notice cannot be used as the source of an annual-fee ticket sale",
-      "ticketGuardSource": "https://cutiestreet.asobisystem.com/news/detail/86338"
+      "ticketGuardSource": "https://cutiestreet.asobisystem.com/news/detail/86338",
+      "applicationWindowVerified": true,
+      "deadlineVerified": true,
+      "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/86338",
+      "deadlineSource": "https://cutiestreet.asobisystem.com/news/detail/86338"
     },
     {
       "id": "special-64615b6b82e21e26",
@@ -10719,7 +10723,7 @@
     "remainingDuplicates": []
   },
   "releasePreparation": {
-    "preparedAt": "2026-09-08T19:10:42+09:00",
+    "preparedAt": "2026-09-08T19:39:50+09:00",
     "normalizedSpecialEvents": 6,
     "duplicateIdsRemoved": 0,
     "retainedPreviousRows": 0,
@@ -10749,10 +10753,10 @@
       "remainingDuplicates": []
     },
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-09-08T19:10:42+09:00",
-    "checkedAt": "2026-09-08T19:10:42+09:00"
+    "publicUpdatedAt": "2026-09-08T19:39:50+09:00",
+    "checkedAt": "2026-09-08T19:39:50+09:00"
   },
-  "checkedAt": "2026-09-08T19:10:46+09:00",
+  "checkedAt": "2026-09-08T19:39:54+09:00",
   "playguideFailures": [
     "lawson/CANDY TUNE: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=25)",
     "lawson/CUTIE STREET: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=25)",
@@ -17826,7 +17830,29 @@
       "sourceRowIds": [
         "3e71742c839253ef"
       ],
-      "offers": [],
+      "offers": [
+        {
+          "sourceRowId": "3e71742c839253ef",
+          "provider": "official",
+          "url": "https://cutiestreet.asobisystem.com/news/detail/86338",
+          "urls": [
+            "https://cutiestreet.asobisystem.com/news/detail/86338",
+            "https://cutiestreet.asobisystem.com/live_information/detail/42328"
+          ],
+          "ticketType": "年会費コース会員先行",
+          "applyStart": "2026-08-05T12:00",
+          "applyEnd": "2026-08-09T23:59",
+          "applicationStatus": "none",
+          "applicationWindowVerified": true,
+          "deadlineVerified": true,
+          "applicationDisplayMode": "band",
+          "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/86338",
+          "deadlineSource": "https://cutiestreet.asobisystem.com/news/detail/86338",
+          "sourceType": "derived",
+          "primarySource": "official",
+          "sourcePublishedAt": "2026-08-05"
+        }
+      ],
       "eventEndDate": "2026-09-14",
       "eventDates": [
         "2026-09-14"
@@ -17840,9 +17866,9 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
+      "ticketType": "年会費コース会員先行",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers"
     },
     {
       "id": "performance-CUTIE-STREET-2026-09-23-time-17-00",
@@ -25036,7 +25062,7 @@
     "performanceEntityCount": 107,
     "sourceOccurrenceCount": 321,
     "mergedSourceOccurrences": 214,
-    "offerCount": 198
+    "offerCount": 199
   },
   "specialEventNormalization": {
     "sourceSpecialRows": 7,
