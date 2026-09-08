@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
+import json
 from copy import deepcopy
+from pathlib import Path
 from typing import Any
 
 
+DATA_PATH = Path("data/live-events.json")
 CHRISTMAS_DAY1_AUDIT_ID = "P0-christmas-session-2026-day1-venue"
 CHRISTMAS_TOKEN = "KAWAII LAB. Christmas SESSION 2026"
 CHRISTMAS_DAY1 = "2026-12-12"
@@ -152,3 +156,37 @@ def apply_christmas_day1_venue_correction(payload: dict[str, Any]) -> tuple[dict
                 event["performanceFactSources"] = sources
 
     return corrected, report
+
+
+def apply_all(payload: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
+    corrected, christmas_report = apply_christmas_day1_venue_correction(payload)
+    return corrected, {"christmasSessionDay1Venue": christmas_report}
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Apply source-backed schedule audit corrections before public release.")
+    parser.add_argument("--data", type=Path, default=DATA_PATH)
+    parser.add_argument("--check", action="store_true", help="Verify the file is already corrected without writing it.")
+    parser.add_argument("--fail-on-conflict", action="store_true")
+    args = parser.parse_args()
+
+    payload = json.loads(args.data.read_text(encoding="utf-8"))
+    corrected, report = apply_all(payload)
+    conflicts = [
+        item
+        for section in report.values()
+        if isinstance(section, dict)
+        for item in section.get("conflicts") or []
+    ]
+    if args.fail_on_conflict and conflicts:
+        raise SystemExit("Schedule audit correction conflict: " + json.dumps(conflicts, ensure_ascii=False))
+    if args.check and corrected != payload:
+        raise SystemExit("Schedule audit corrections are required before release: " + json.dumps(report, ensure_ascii=False))
+    if not args.check and corrected != payload:
+        args.data.write_text(json.dumps(corrected, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps(report, ensure_ascii=False))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
