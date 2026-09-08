@@ -7,6 +7,7 @@ from schedule_audit_corrections import (
     CHRISTMAS_DAY1_AUDIT_ID,
     apply_christmas_day1_venue_correction,
 )
+from test_ohanami_two_show_correction import OhanamiTwoShowCorrectionTest  # noqa: F401
 
 
 class ScheduleAuditCorrectionsTest(unittest.TestCase):
