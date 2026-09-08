@@ -1,8 +1,8 @@
 # スケジュール総点検 修正台帳
 
 最終更新: 2026-09-08
-現在の状態: P1-8 本番反映確認まで完了
-次の作業対象: P2-9 会場詳細ページが「読み込んでいます…」のまま
+現在の状態: P2-9 本番正常表示・再発防止確認まで完了
+次の作業対象: P2-10 「バックアップを表示中。最新データを確認しています…」が残る
 
 ## 引き継ぎルール
 - 別チャットでは最初にこのファイルを読む。
@@ -119,10 +119,20 @@
    - 公開HTML確認: 生成commitの `schedule.html` で、函館は `2026/10/4 ／ 開場 16:30 ／ 開演 17:30`、仙台は `2026/10/8 ／ 開場 17:30 ／ 開演 18:30` を初期静的カードから表示。browser runtimeも日別公式時刻優先へ統一されていることを確認。
    - デプロイ: 生成公開commit `d441842e109b78b07402c0215e1b49f273a2500f` に対する GitHub Pages `pages build and deployment` run #2826（run ID 34200033161）が成功。P1-8は公開反映まで完了。
 
-9. [次の作業] P2 会場詳細ページが「読み込んでいます…」のまま
-   - 会場ID化、検索キー正規化、取得失敗時表示を確認。
+9. [本番反映確認済み] P2 会場詳細ページが「読み込んでいます…」のまま
+   - 監査再確認: 元監査は実ブラウザでJavaScript実行後を確認できず、初期HTMLの `会場情報を読み込んでいます…` placeholderだけを見て不具合扱いしていた。現行本番では東京ガーデンシアター詳細が会場名・住所・アクセス・収容人数・今後の公演まで正常表示されることを再確認した。
+   - 既存実装: `data/venues.json` はstableな会場 `id` を保持。一覧の詳細リンクは `venue.html?id=...` を優先し、`venue-detail.js` は `?id=` の完全一致を第一候補にする。旧 `?name=` は会場名・aliasesを正規化して完全一致するフォールバックとして維持する。
+   - 取得失敗時: 会場JSON等の取得が失敗した場合はloading placeholderを残さず、`会場情報を読み込めませんでした。` と会場一覧へのリンクへ置換する既存処理を確認。`venue-detail.js` / `venue-detail-cleanup.js` もversion query付きで読み込み、古い壊れたJSキャッシュを避ける。
+   - 既修正確認: 2026/8/25の既存履歴に、cleanup observer loop修正、会場詳細JS構文CI、detail scriptのcache bustがすでに入っていることを確認。したがって今回は正常な本番描画ロジックを無理に変更しない。
+   - 再発防止: `scripts/test_venue_detail_contract.js` を追加し、全会場のID存在・一意性、ID-first詳細リンク、ID解決、name/alias正規化フォールバック、取得失敗表示、detail scriptのcache bustを契約テスト化。`.github/workflows/check-venue-detail.yml` の監視pathも `venue.html` / `venues.js` / `data/venues.json` / 新テストまで拡張した。
+   - 修正ファイル: `scripts/test_venue_detail_contract.js`, `.github/workflows/check-venue-detail.yml`。
+   - PR: #220 `test: guard venue detail loading behavior`
+   - CI検証: PR上の `Check venue detail JavaScript` run #3（run ID 34202434645）成功。新規 `Check venue detail loading contract` も成功。併せて `Test schedule audit fixes` run #15（run ID 34202434693）も全工程成功し、既存P0/P1回帰を壊していないことを確認。main反映後の会場専用run #4（run ID 34202501405）も成功。
+   - 本番反映: PR #220をsquash mergeし、main commit `4a086fdd41841f884f17b87e882c749e1dda958a` へ反映。
+   - デプロイ: 上記main commitに対する GitHub Pages `pages build and deployment` run #2828（run ID 34202500419）が成功。
+   - 判定: 現在の本番不具合ではなく元監査の誤検知。ただし同症状の再発条件をCIで固定し、本番正常表示・main上CI・Pages成功まで確認してP2-9を完了とした。
 
-10. [未着手] P2 「バックアップを表示中。最新データを確認しています…」が残る
+10. [次の作業] P2 「バックアップを表示中。最新データを確認しています…」が残る
     - 最新取得成功後の解除処理、失敗時挙動を確認。
 
 11. [未着手] P2 「182イベント掲載中」の件数定義不一致
@@ -144,3 +154,4 @@
 - 2026-09-08: P1-6の受付状態をPR #217で現在時刻ベースの4状態へ統一。CI run #12、canonical migration run #8、生成commit `668e1632920f1d325eb39d0b85a9dc6d64bd203d`、Pages run #2816の成功と静的/runtime双方の公開HTMLを確認。P1-6を本番反映確認済みに確定し、次をP1-7とした。
 - 2026-09-08: P1-7の告知文混入をPR #218で、同一物理公演の別ソースに実在する正式タイトルだけを採用する方式へ修正。CI run #13、canonical migration run #9、生成commit `093c4694f46b3098236efaa23e63c3109d875940`、Pages run #2822の成功とMORE STAR 10/17公開カードを確認。rawニュース見出しも証跡として温存し、P1-7を本番反映確認済みに確定。次をP1-8とした。
 - 2026-09-08: P1-8はPR #219でツアー日別OPEN/STARTの静的表示とruntime補完優先順位を修正。CI run #14、canonical migration run #10、生成commit `d441842e109b78b07402c0215e1b49f273a2500f`、Pages run #2826（run ID 34200033161）の成功と公開HTMLを確認。P1-8を本番反映確認済みに確定し、次をP2-9とした。
+- 2026-09-08: P2-9は元監査がJavaScript実行前のplaceholderだけを見た誤検知と判明。現行本番の東京ガーデンシアター詳細が正常表示し、既存のstable venue ID・name/alias正規化・取得失敗表示・cache bustを確認。PR #220で回帰契約テストを追加し、venue CI run #3、schedule audit run #15、main venue CI run #4、Pages run #2828成功まで確認。P2-9を本番反映確認済みに確定し、次をP2-10とした。
