@@ -1,8 +1,8 @@
 # スケジュール総点検 修正台帳
 
 最終更新: 2026-09-08
-現在の状態: P1-4 修正実装済み・PR CI待ち
-次の作業対象: P1-4 同一公演が受付種別ごとに複数カード化（検証・本番反映）
+現在の状態: P1-4 本番反映確認まで完了
+次の作業対象: P1-5 「申込開始開始日時未取得」表示
 
 ## 引き継ぎルール
 - 別チャットでは最初にこのファイルを読む。
@@ -49,19 +49,24 @@
    - 公開HTML確認: `schedule.html` の静的カードは `単独公演 お花見会 第一回` と `単独公演 お花見会 第二回` の2枚だけになり、両方Zepp Shinjuku。正規DBも第一回 OPEN13:00/START14:00、第二回 OPEN16:30/START17:30 の2行を保持し、旧FC受付行は独立カードではなく統合メタデータへ移行済み。
    - デプロイ: 上記生成データcommitに対する GitHub Pages `pages build and deployment` run #2799 が成功。P0-3は公開反映まで完了。
 
-4. [修正済み・検証待ち] P1 同一公演が受付種別ごとに複数カード化
-   - 代表症状: CANDY TUNE 2026/10/8 仙台サンプラザホール 18:30公演が、FC先行・イープラス一般発売・ローチケ由来・公式ツアー日程など複数の取得行として存在し、正規DBと静的HTMLで受付ごとの独立カードになり得る。
+4. [本番反映確認済み] P1 同一公演が受付種別ごとに複数カード化
+   - 代表症状: CANDY TUNE 2026/10/8 仙台サンプラザホール 18:30公演が、FC先行・イープラス一般発売・ローチケ由来・公式ツアー日程など複数の取得行として存在し、正規DBと静的HTMLで受付ごとの独立カードになり得た。
    - 原因: 収集DBの1行が「物理公演」と「チケット受付」の両方を兼ねていた。ブラウザ実行後の `performanceModels()` には公演単位の束ね処理があったが、公開JSONと初期静的HTMLには同等の公演エンティティ層がなかった。
-   - 修正方針: 収集元の `events` は証跡・更新互換性のため削除せず保持し、公開用に `publicEvents` を新設。KAWAII LAB.主催の通常ライブは `group + date + verified start time` を物理公演キーとして1公演1エンティティ化し、FC/ぴあ/ローチケ/e+/公式などの受付を `offers` 配列へ格納する。
-   - データ保全: 元取得行IDを `sourceRowIds`、受付元を `offers[].sourceRowId`、URL群を各offerと公演側へ残す。マルチデイツアーの元レコードは日付ごとの物理公演へ展開するが、収集用 `events` 自体は変更しない。
-   - 静的HTML: `publicEvents` 由来でカードを生成し、1公演カード内に受付ごとのチケット欄を表示する。ブラウザ再読込も `publicEvents` を優先し、performance entityの `offers` を既存UIへ展開する。
-   - 自動更新: 全公開経路が最後に通る `strip_schedule_explanations.py` から公開モデル生成を必須実行するため、15分ごとの分散自動更新・旧緊急更新・canonical migrationのいずれでも回避できない。
-   - 代表ケース保護: CANDY TUNE 10/8仙台が公開上ちょうど1公演、会場=仙台サンプラザホール、OPEN17:30/START18:30、FC先行と一般発売の両受付を保持することを実DB回帰テストと公開HTML検証で固定。
+   - 修正: 収集元の `events` は証跡・更新互換性のため削除せず保持し、公開用 `publicEvents` を新設。KAWAII LAB.主催の通常ライブは `group + date + verified start time` を物理公演キーとして1公演1エンティティ化し、FC/ぴあ/ローチケ/e+/公式などの受付を `offers` 配列へ格納する。
+   - データ保全: 元取得行IDを `sourceRowIds`、受付元を `offers[].sourceRowId`、URL群を各offerと公演側へ残す。マルチデイツアーの元レコードは公開モデルだけ日付ごとの物理公演へ展開し、収集用 `events` 自体は変更しない。
+   - 静的HTML: `publicEvents` 由来でカードを生成し、1公演カード内に受付ごとのチケット欄を表示する。ブラウザ再読込も `data.publicEvents || data.events` を優先し、performance entityの `offers` を既存UIへ展開する。
+   - 自動更新: 全公開経路が最後に通る `strip_schedule_explanations.py` から公開モデル生成を必須実行。15分ごとの分散自動更新・旧緊急更新・canonical migrationのいずれでも公開モデル生成を回避できない。
    - 修正ファイル: `scripts/performance_entities.py`, `scripts/install_performance_public_view.py`, `scripts/test_performance_entities.py`, `scripts/strip_schedule_explanations.py`, `.github/workflows/test-schedule-audit.yml`, `.github/workflows/apply-special-event-entities.yml`。
-   - ブランチ: `fix/schedule-audit-p1-4-performance-offers`。
-   - 検証予定: 新規単体/実DBテスト、P0回帰、全スケジュール再生成、Node構文、帯/UIテスト、静的HTMLで10/8仙台が1枚かつFC/一般発売を同カード内に保持することをPR CIで確認する。
+   - PR: #213 `fix: model one performance with multiple ticket offers`
+   - CI検証: GitHub Actions `Test schedule audit fixes` run #6 成功。新規performance entity単体/実DBテスト、P0回帰、全スケジュール再生成、Node構文、既存帯/UIテスト、静的HTMLで10/8仙台が1枚かつFC/一般発売を同カード内に保持することを確認。
+   - 初回本番migration: `Apply canonical special-event entities` run #5 はテスト・公開モデル生成・再構築まで成功したが、同時刻の15分自動更新がmainを進めたため生成済み `data/live-events.json` / `schedule.html` のrebaseが競合し、最新データを上書きせず安全に停止した。
+   - 競合再発防止: PR #214 `ci: rebuild canonical schedule after concurrent refresh` で、push競合時は生成済みファイルをrebaseせず最新mainへ戻り、最新の収集データ上で正規化・監査補正・全スケジュール生成・performance公開モデル生成・Node/UIテストを最初からやり直してからpushする方式へ変更。PR #214の `Test schedule audit fixes` run #7 成功。
+   - 本番反映: #214 merge後の `Apply canonical special-event entities` run #6 が最終commitまで成功。最新mainを基礎に生成した公開データcommitは `f871af9593c71b0fc47d90a1e03234b04881d215`。
+   - 正規公開JSON確認: `publicEvents` 内のCANDY TUNE 10/8仙台は `performance-CANDY-TUNE-2026-10-08-time-18-30` の1公演のみ。会場=宮城県 仙台サンプラザホール、OPEN17:30/START18:30。`offers` にFC先行とイープラス一般発売を保持し、ローチケ等の元取得行も `sourceRowIds` で追跡可能。
+   - 公開HTML確認: `schedule.html` のCANDY TUNE 10/8仙台ツアーカードは1枚だけで、同カード内のチケット欄に「公式 / FC：FC先行」と「イープラス：先着 ★一般発売」を表示。最新JSON再読込時も `publicEvents` を優先するため、受付別独立カードへ戻らない。
+   - デプロイ: 生成データcommit `f871af9593c71b0fc47d90a1e03234b04881d215` に対する GitHub Pages `pages build and deployment` run #2805（run ID 34184502227）が成功。P1-4は公開反映まで完了。
 
-5. [未着手] P1 「申込開始開始日時未取得」表示
+5. [次の作業] P1 「申込開始開始日時未取得」表示
    - 開始日時欠損時の表示・申込リンク制御を修正。
 
 6. [未着手] P1 終了済み受付に「終了」状態が出ない
@@ -91,4 +96,6 @@
 - 2026-09-08: P0-2 Christmas SESSION Day1をPR #210のCI run #4で検証し、mainへsquash merge。P0-3へ移行。
 - 2026-09-08: P0-3 SWEET STEADY「お花見会」は第一回の重複と第二回欠落を修正。PR #211のCI run #5で新規回帰・実DB・既存P0回帰・全生成/UIテストまで検証完了。
 - 2026-09-08: PR #212で監査補正変更時のcanonical migration自動起動を追加。migration run #4で正規DB/公開HTMLへ適用し、Pages run #2799成功まで確認。P0-3を本番反映確認済みに確定し、次をP1-4とした。
-- 2026-09-08: P1-4は収集用eventsを温存しつつ公開用`publicEvents`を導入する実装へ。10/8仙台の受付別重複を1物理公演＋offersへ統合する処理、静的HTML再生成、全公開経路の最終境界への接続、回帰テストを実装。PR CI待ち。
+- 2026-09-08: P1-4は収集用eventsを温存しつつ公開用`publicEvents`を導入。PR #213のCI run #6で10/8仙台1公演＋複数受付、既存P0回帰、全生成/UIテストを検証。
+- 2026-09-08: #213本番migration時に15分自動更新とのmain競合を検出。最新データを上書きせず停止したうえ、PR #214で「競合時は最新mainから全再生成」へ変更。#214 CI run #7成功。
+- 2026-09-08: #214後のcanonical migration run #6が最新データ上の再生成・commitまで成功。commit `f871af9593c71b0fc47d90a1e03234b04881d215` の公開JSON/静的HTMLを確認し、Pages run #2805成功まで確認。P1-4を本番反映確認済みに確定し、次をP1-5とした。
