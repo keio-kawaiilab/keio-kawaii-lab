@@ -1,184 +1,20 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import json
-import re
-from datetime import datetime
-from pathlib import Path
-from zoneinfo import ZoneInfo
-
-import install_performance_public_view
-
-PAGE = Path("schedule.html")
-DATA = Path("data/live-events.json")
-JST = ZoneInfo("Asia/Tokyo")
-HIDDEN_POLICY = "<!-- schedule-source-policy: FC先行・アップグレードを除いて原則すべて採用 -->"
-
-# A multi-day event remains in the dataset until its final performance has passed.
-# The detail renderer must still hide individual performances whose date is already past.
-PAST_OCCURRENCE_RENDERER = "occ(e).forEach(function(o){var k=performanceKey(e,o)"
-CURRENT_OCCURRENCE_RENDERER = "occ(e).forEach(function(o){var od=p(o.date);if(od&&od<today)return;var k=performanceKey(e,o)"
-
-# Ordinary physical performances use group + day + verified start time.
-# Release events / large benefit events are one event entity per group + day:
-# sale rows, parts and provisional times must never split one special-event card.
-LEGACY_PERFORMANCE_KEY = "function performanceKey(e,o){return[String(e.group||''),String(o.date||'').slice(0,10),eventKind(e),canon(e)].join('|')}"
-GENERIC_PERFORMANCE_KEY = (
-    "function performanceTitleKey(e){return String(title(e)||'').toLowerCase().replace(/\\s+/g,'').replace(/[!！・|｜\\-–—_\\[\\]()（）『』「」]/g,'')}"
-    "function performanceVenueKey(e,o){var v=String((o&&o.venue)||e.venue||'').toLowerCase();"
-    "v=v.replace(/^(?:北海道|東京都|京都府|大阪府|.{2,3}県)\\s*/,'').replace(/\\s+/g,'').replace(/[!！・|｜\\-–—_\\[\\]()（）『』「」]/g,'');return v}"
-    "function performanceKey(e,o){var day=String((o&&o.date)||e.eventDate||'').slice(0,10),"
-    "time=String((o&&o.startTime)||e.startTime||'').replace(/\\s+/g,''),venue=performanceVenueKey(e,o),titleKey=performanceTitleKey(e),group=String(e.group||'').trim();"
-    "if(day&&time)return [group,day,'time',time].join('|');"
-    "return [group,day,'fallback',venue,titleKey].join('|')}"
-)
-PERFORMANCE_KEY = (
-    "function performanceTitleKey(e){return String(title(e)||'').toLowerCase().replace(/\\s+/g,'').replace(/[!！・|｜\\-–—_\\[\\]()（）『』「」]/g,'')}"
-    "function performanceVenueKey(e,o){var v=String((o&&o.venue)||e.venue||'').toLowerCase();"
-    "v=v.replace(/^(?:北海道|東京都|京都府|大阪府|.{2,3}県)\\s*/,'').replace(/\\s+/g,'').replace(/[!！・|｜\\-–—_\\[\\]()（）『』「」]/g,'');return v}"
-    "function performanceKey(e,o){var day=String((o&&o.date)||e.eventDate||'').slice(0,10),"
-    "time=String((o&&o.startTime)||e.startTime||'').replace(/\\s+/g,''),venue=performanceVenueKey(e,o),titleKey=performanceTitleKey(e),group=String(e.group||'').trim();"
-    "if(e.eventCategory==='release-event'||e.eventCategory==='large-benefit')return [group,day,'special'].join('|');"
-    "if(day&&time)return [group,day,'time',time].join('|');"
-    "return [group,day,'fallback',venue,titleKey].join('|')}"
-)
-
-OCCURRENCE_PERFORMANCE_MARKERS = (
-    "function performanceVenueKey(e,o)",
-    "function performanceKey(e,o)",
-    "performanceTitleKey(e)",
-    "if(e.eventCategory==='release-event'||e.eventCategory==='large-benefit')return [group,day,'special'].join('|')",
-    "if(day&&time)return [group,day,'time',time].join('|')",
-    "return [group,day,'fallback',venue,titleKey].join('|')",
-)
-LEGACY_BAND_KEY_TAIL = "String(e.applyEnd||''),canon(e)].join('|')"
-BAND_KEY_TAIL = "String(e.applyEnd||''),performanceTitleKey(e)].join('|')"
-APPLICATION_BAND_MARKERS = (
-    "function applicationBandSubjectKey(e)",
-    "function applicationBandKey(e,index)",
-    "applicationBandSubjectKey(e)",
-)
-
-
-def ensure_past_performances_hidden(page: str) -> str:
-    if CURRENT_OCCURRENCE_RENDERER in page:
-        return page
-    if PAST_OCCURRENCE_RENDERER not in page:
-        raise RuntimeError("schedule detail renderer changed; past-performance guard could not be installed")
-    return page.replace(PAST_OCCURRENCE_RENDERER, CURRENT_OCCURRENCE_RENDERER, 1)
-
-
-def has_visible_title_performance_identity(page: str) -> bool:
-    return PERFORMANCE_KEY in page or all(marker in page for marker in OCCURRENCE_PERFORMANCE_MARKERS)
-
-
-def has_application_band_identity(page: str) -> bool:
-    return BAND_KEY_TAIL in page or all(marker in page for marker in APPLICATION_BAND_MARKERS)
-
-
-def ensure_visible_title_performance_identity(page: str) -> str:
-    if has_visible_title_performance_identity(page):
-        fixed = page
-    elif GENERIC_PERFORMANCE_KEY in page:
-        fixed = page.replace(GENERIC_PERFORMANCE_KEY, PERFORMANCE_KEY, 1)
-    elif LEGACY_PERFORMANCE_KEY in page:
-        fixed = page.replace(LEGACY_PERFORMANCE_KEY, PERFORMANCE_KEY, 1)
-    else:
-        raise RuntimeError("schedule performance identity changed; physical-performance dedupe could not be installed")
-
-    if has_application_band_identity(fixed):
-        return fixed
-    if LEGACY_BAND_KEY_TAIL not in fixed:
-        raise RuntimeError("schedule application-band identity changed; title dedupe could not be installed")
-    return fixed.replace(LEGACY_BAND_KEY_TAIL, BAND_KEY_TAIL, 1)
-
-
-def assert_physical_identity(page: str) -> None:
-    start = page.find("function performanceKey(e,o)")
-    end = page.find("function performanceKeyForEvent", start)
-    if start < 0 or end < 0:
-        raise RuntimeError("physical performance identity block is missing")
-    block = page[start:end]
-    if "eventKind(e)" in block:
-        raise RuntimeError("eventKind must not participate in physical performance identity")
-    if "if(e.eventCategory==='release-event'||e.eventCategory==='large-benefit')return [group,day,'special'].join('|')" not in block:
-        raise RuntimeError("special events must use one group/date identity")
-    if "if(day&&time)return [group,day,'time',time].join('|')" not in block:
-        raise RuntimeError("ordinary group/date/start-time physical performance key is missing")
-
-
-def stamp_public_refresh(page: str) -> str:
-    """Stamp only at the final release boundary.
-
-    Automated release workflows call this script after the snapshot is built.
-    If any later test fails, neither the JSON nor the HTML is committed, so the
-    displayed time represents the latest successfully publishable refresh.
-    """
-    if not DATA.exists():
-        raise RuntimeError("live event data is missing; cannot stamp public refresh")
-    payload = json.loads(DATA.read_text(encoding="utf-8"))
-    stamp = datetime.now(JST).replace(microsecond=0).isoformat()
-    payload["checkedAt"] = stamp
-    payload["updatedAt"] = stamp
-    DATA.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-
-    pattern = re.compile(r'(<script id="snapshot-data" type="application/json">)(.*?)(</script>)', re.S)
-    match = pattern.search(page)
-    if not match:
-        raise RuntimeError("snapshot-data block is missing; cannot stamp public refresh")
-    snapshot = json.loads(match.group(2))
-    snapshot["checkedAt"] = stamp
-    snapshot["updatedAt"] = stamp
-    encoded = json.dumps(snapshot, ensure_ascii=False, separators=(",", ":"))
-    return page[:match.start()] + match.group(1) + encoded + match.group(3) + page[match.end():]
+# Keep the established release-boundary implementation intact in the core
+# module, then apply P1-5 as the final UI correctness guard.  The wrapper keeps
+# existing imports working while making the new guard impossible for publishers
+# that already call strip_schedule_explanations.py to bypass.
+from strip_schedule_explanations_core import *  # noqa: F401,F403
+import strip_schedule_explanations_core as _core
+import fix_missing_application_start_ui as _missing_start
 
 
 def main() -> int:
-    # Final release boundary: first derive the public one-performance model from
-    # acquisition/source rows. Every existing calendar publisher already calls
-    # this script, so automated refreshes cannot bypass the canonical public view.
-    if install_performance_public_view.main() != 0:
-        raise RuntimeError("failed to install canonical performance public view")
-
-    page = PAGE.read_text(encoding="utf-8")
-
-    page = re.sub(r'<p class="lead">.*?</p>\s*', '', page, count=1, flags=re.S)
-    page = re.sub(r'<p class="policy">.*?</p>\s*', '', page, count=1, flags=re.S)
-    page = re.sub(r'<div class="deadline-note">.*?</div>', '', page, flags=re.S)
-
-    dynamic_note = "+(synthetic?'<div class=\"deadline-note\">開始日時は未取得です。カレンダーの帯は今日から締切まで表示しています。</div>':'')+"
-    page = page.replace(dynamic_note, "+")
-
-    page = ensure_past_performances_hidden(page)
-    page = ensure_visible_title_performance_identity(page)
-    assert_physical_identity(page)
-
-    if HIDDEN_POLICY not in page:
-        marker = '<aside class="schedule-disclaimer"'
-        pos = page.find(marker)
-        if pos >= 0:
-            page = page[:pos] + HIDDEN_POLICY + "\n" + page[pos:]
-        else:
-            page = page.replace('<main>', '<main>\n' + HIDDEN_POLICY, 1)
-
-    forbidden_visible = (
-        'チケットぴあ掲載の受付は、',
-        '一般発売・プレリザーブ等はぴあを優先。',
-        '開始日時は未取得です。カレンダーの帯は今日から締切まで表示しています。',
-    )
-    for text in forbidden_visible:
-        if text in page:
-            raise RuntimeError(f"user-facing implementation note still present: {text}")
-
-    if CURRENT_OCCURRENCE_RENDERER not in page:
-        raise RuntimeError("past-performance guard is missing from schedule detail renderer")
-    if not has_visible_title_performance_identity(page) or not has_application_band_identity(page):
-        raise RuntimeError("physical performance dedupe is missing from schedule renderer")
-
-    page = stamp_public_refresh(page)
-    PAGE.write_text(page, encoding="utf-8")
-    print("Removed internal schedule copy, preserved performance identity, and stamped the public refresh time")
-    return 0
+    result = _core.main()
+    if result != 0:
+        return result
+    return _missing_start.main()
 
 
 if __name__ == "__main__":

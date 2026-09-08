@@ -10,7 +10,10 @@ check(/data-scope="all"/.test(page), 'external-inclusive button is missing');
 check(/selectedScope='kawaii-lab'/.test(page), 'runtime default scope is not hosted');
 check(/match\(e,selected\)&&scopeMatch\(e\)/.test(page), 'calendar render does not enforce scope');
 check(/scope-badge">外部出演/.test(page), 'external card badge is missing');
-check(/end=moment\(o\.applyEnd,true\),open=!end\|\|end>=now/.test(page), 'same-day ticket deadlines are not compared by time');
+check(/end=moment\(o\.applyEnd,true\),open=!missingStart&&\(!end\|\|end>=now\)/.test(page), 'same-day ticket deadlines are not compared by time');
+check(/state=missingStart\?'開始日時未取得'/.test(page), 'unknown application starts are still presented as open');
+check(/missingStart\?'受付詳細を確認 →'/.test(page), 'unknown application starts still expose an application CTA');
+check(!/申込開始開始日時未取得/.test(page), 'duplicate missing-start wording remains');
 check(/exactEnd&&exactEnd<now/.test(page), 'expired same-day calendar bands are not hidden');
 
 const snapshotMatch = page.match(/<script id="snapshot-data" type="application\/json">([\s\S]*?)<\/script>/);
