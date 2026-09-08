@@ -33,7 +33,7 @@
    - PR: #210 `fix: reconcile Christmas SESSION Day1 venue`
    - 検証: GitHub Actions `Test schedule audit fixes` run #4 成功。単体4テスト、実DBの対象トップ階層/schedule行、全スケジュール再生成、Node構文、既存帯/UIテスト、P0-1回帰テストを確認後、squash merge済み。
 
-3. [修正済み・検証待ち] P0 SWEET STEADY「お花見会」9/21 の重複・2公演表現不足
+3. [検証済み] P0 SWEET STEADY「お花見会」9/21 の重複・2公演表現不足
    - 症状: 14:00公演が、Zepp Shinjukuを保持する公演レコードと会場未設定のFC受付レコードの2行に分裂。一方で同日17:30の第二回が正規DBに存在しない。
    - 公式確認: 2026/9/21 Zepp Shinjuku (TOKYO)。第一回 OPEN 13:00 / START 14:00、第二回 OPEN 16:30 / START 17:30。
    - 原因: 公式ニュースから「公演」と「FC受付」が別レコード化された一方、同日複数公演を作る取得・正規化処理が第一回しか生成していなかった。
@@ -41,7 +41,8 @@
    - データ保全: 統合した受付元は `auditMergedTicketOffers`、取得元行は `auditMergedSourceRowIds`、公式根拠は `performanceFactSources` に保持し、重複カードを消しても受付ソース情報は捨てない。
    - 安全策: 対象行にZepp Shinjuku以外の非空会場、または14:00/17:30以外の開始時刻が入った場合は自動上書きせず conflict として公開処理を停止可能。補正は冪等化する。
    - 修正ファイル: `scripts/ohanami_two_show_correction.py`, `scripts/schedule_audit_corrections.py`, `scripts/test_ohanami_two_show_correction.py`, `scripts/test_schedule_audit_corrections.py`。
-   - 検証予定: 重複統合、2公演生成、会場競合停止、第二回が既存の場合の再利用、冪等性、実DBで14:00/17:30の2行だけになることをPR CIで確認する。
+   - PR: #211 `fix: split SWEET STEADY Ohanami into two performances`
+   - 検証: GitHub Actions `Test schedule audit fixes` run #5 成功。重複統合、第一回/第二回生成、会場競合停止、既存第二回再利用、冪等性、実DBで14:00/17:30の2行になることに加え、P0-1/P0-2回帰、全スケジュール再生成、Node構文、既存帯/UIテストまで成功。
 
 4. [未着手] P1 同一公演が受付種別ごとに複数カード化
    - CANDY TUNE 10/8仙台ほか。
@@ -75,4 +76,4 @@
 - 2026-09-08: 修正台帳を新規作成。
 - 2026-09-08: P0-1 SWEET STEADY 9/5・9/7・9/14 情報混在を修正し、PR #209 のCIで検証完了。
 - 2026-09-08: P0-2 Christmas SESSION Day1をPR #210のCI run #4で検証し、mainへsquash merge。P0-3へ移行。
-- 2026-09-08: P0-3 SWEET STEADY「お花見会」は第一回の重複と第二回欠落を確認。2公演正規化・ソース統合・競合停止の補正と回帰テストを実装し、PR CI待ち。
+- 2026-09-08: P0-3 SWEET STEADY「お花見会」は第一回の重複と第二回欠落を修正。PR #211のCI run #5で新規回帰・実DB・既存P0回帰・全生成/UIテストまで検証完了。
