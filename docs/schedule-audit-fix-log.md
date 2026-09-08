@@ -1,7 +1,7 @@
 # スケジュール総点検 修正台帳
 
 最終更新: 2026-09-08
-作業ブランチ: `fix/schedule-audit-20260908`
+現在の作業ブランチ: `fix/schedule-audit-p0-2-christmas-venue`
 
 ## 引き継ぎルール
 - 別チャットでは最初にこのファイルを読む。
@@ -22,8 +22,15 @@
    - PR: #209 `fix: isolate SWEET STEADY release-event details by date`
    - 検証: GitHub Actions `Test schedule audit fixes` run #2 成功。新規回帰テスト、既存正規化テスト、全スケジュール再生成、Node構文チェック、既存帯/UIテスト、9/14実カードの別日情報非混入を確認。
 
-2. [調査中] P0 Christmas SESSION 12/12 の会場不一致
-   - グループ別カードでは会場未定、合同カードでは有明アリーナ。
+2. [修正済み・検証待ち] P0 Christmas SESSION 12/12 の会場不一致
+   - 症状: グループ別・受付別レコードの一部で12/12だけ `venue: null`。合同公式スケジュール行は `有明アリーナ`。表示時の補完で隠れる場合があるが、正規DBに不一致が残っていた。
+   - 公式確認: 2026/12/12 Day1は有明アリーナ、OPEN 15:00 / START 17:00。12/13 Day2も有明アリーナ、OPEN 14:00 / START 16:00。
+   - 原因: チケット受付・グループ別レコードへ日付と開場/開演は引き継がれている一方、同一物理公演の確定会場が伝播していなかった。合同 `official-schedule` レコードだけが確定会場を保持していた。
+   - 修正: `KAWAII LAB. Christmas SESSION 2026` + `2026-12-12` + Day1時刻と整合する行について、合同 `official-schedule` の会場候補が1つに確定する場合のみ、欠損したトップ階層・schedule行のvenueへ伝播する。
+   - 安全策: 非空の異なる会場は絶対に上書きせず conflict として停止可能。別イベント・別時刻は対象外。補正済み行に `P0-christmas-session-2026-day1-venue` と公式ソースを記録する。
+   - 再発防止: 通常の自動更新が共通で通る `apply_event_scopes.py` に補正を接続。別経路の canonical special-event migration にも補正CLIを接続。
+   - 修正ファイル: `scripts/schedule_audit_corrections.py`, `scripts/test_schedule_audit_corrections.py`, `scripts/apply_event_scopes.py`, `.github/workflows/apply-special-event-entities.yml`, `.github/workflows/test-schedule-audit.yml`。
+   - 検証予定: 単体4テスト、実データ内の対象トップ階層/schedule行が全て有明アリーナになること、既存全スケジュール生成・Node構文・帯/UIテストをPR CIで確認する。
 
 3. [未着手] P0 SWEET STEADY「お花見会」9/21 の重複・2公演表現不足
    - Zepp Shinjuku / 会場未定が重複。
@@ -59,4 +66,5 @@
 
 ## 変更履歴
 - 2026-09-08: 修正台帳を新規作成。
-- 2026-09-08: P0-1 SWEET STEADY 9/5・9/7・9/14 情報混在を修正し、PR #209 のCIで検証完了。P0-2 Christmas SESSION 会場不一致の調査へ移行。
+- 2026-09-08: P0-1 SWEET STEADY 9/5・9/7・9/14 情報混在を修正し、PR #209 のCIで検証完了。
+- 2026-09-08: P0-2 Christmas SESSION Day1の正規DB会場欠損の原因を特定。安全な公式会場伝播と共通公開境界への再発防止を実装し、PR CI待ち。
