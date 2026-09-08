@@ -7,6 +7,8 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
+from ohanami_two_show_correction import apply_ohanami_two_show_correction
+
 
 DATA_PATH = Path("data/live-events.json")
 CHRISTMAS_DAY1_AUDIT_ID = "P0-christmas-session-2026-day1-venue"
@@ -160,7 +162,11 @@ def apply_christmas_day1_venue_correction(payload: dict[str, Any]) -> tuple[dict
 
 def apply_all(payload: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
     corrected, christmas_report = apply_christmas_day1_venue_correction(payload)
-    return corrected, {"christmasSessionDay1Venue": christmas_report}
+    corrected, ohanami_report = apply_ohanami_two_show_correction(corrected)
+    return corrected, {
+        "christmasSessionDay1Venue": christmas_report,
+        "sweetSteadyOhanamiTwoShows": ohanami_report,
+    }
 
 
 def main() -> int:
