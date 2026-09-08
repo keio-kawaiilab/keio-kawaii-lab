@@ -1,7 +1,7 @@
 {
-  "date": "2026-09-08",
+  "date": "2026-09-09",
   "horizonDays": 7,
-  "generatedAt": "2026-09-08T22:02+09:00",
+  "generatedAt": "2026-09-09T03:34+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -14,12 +14,12 @@
       "eventIds": [
         "54a369497f59ce96",
         "e4e0246476c2e42e",
+        "4a87a28bad812f06",
         "84787797cc4cbcb3",
         "9a117c2e21632619",
         "b39ab0fb53c29e22",
         "c06ce2ef470dc1d6",
-        "e8cd4bc32eeea723",
-        "4a87a28bad812f06"
+        "e8cd4bc32eeea723"
       ],
       "areaCode": "270000",
       "areaName": "大阪府",
@@ -29,7 +29,7 @@
       "min": 25.0,
       "pop": "50",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-09-08T17:00:00+09:00",
+      "issuedAt": "2026-09-08T23:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "20〜24℃",
       "coordinates": {
@@ -79,6 +79,13 @@
           "validAt": "2026-09-10T00:00+09:00",
           "temp": 24
         }
+      ],
+      "hourlyRain": [
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-09-09T18:00+09:00"
+        }
       ]
     },
     {
@@ -108,25 +115,28 @@
       "eventIds": [
         "54a369497f59ce96",
         "e4e0246476c2e42e",
+        "4a87a28bad812f06",
         "84787797cc4cbcb3",
         "9a117c2e21632619",
         "b39ab0fb53c29e22",
         "e8cd4bc32eeea723",
-        "e1d8758eb33627e4",
-        "4a87a28bad812f06"
+        "e1d8758eb33627e4"
       ],
       "areaCode": "270000",
       "areaName": "大阪府",
-      "precision": "area",
-      "label": "くもり 時々 雨",
+      "precision": "mesh5km",
+      "label": "晴れ",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
-      "issuedAt": "2026-09-08T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "issuedAt": "2026-09-08T23:00:00+09:00",
+      "meshTime": "00:00",
+      "meshTempBand": "20〜24℃",
+      "coordinates": {
+        "lat": 34.689934,
+        "lon": 135.486069
+      }
     },
     {
       "date": "2026-09-11",
@@ -230,14 +240,14 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 25,
-    "uniqueVenueDates": 11,
+    "occurrencesInRange": 29,
+    "uniqueVenueDates": 13,
     "weatherEntries": 8,
-    "meshEntries": 1,
-    "failures": 3,
+    "meshEntries": 2,
+    "failures": 5,
     "meshTimelineEntries": 1,
     "meshExactTempSlots": 7,
-    "hourlyRainEntries": 0
+    "hourlyRainEntries": 1
   },
   "failures": [
     {
@@ -254,6 +264,16 @@
       "date": "2026-09-14",
       "venue": "北海道 サッポロファクトリー アトリウム",
       "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-09-16",
+      "venue": "埼玉県 イオンレイクタウンkaze 1F光の広場",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-09-16",
+      "venue": "埼玉県 大宮ソニックシティ 大ホール",
+      "reason": "開催日の予報がまだありません"
     }
   ]
 }
