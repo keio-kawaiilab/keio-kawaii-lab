@@ -1,7 +1,7 @@
 # スケジュール総点検 修正台帳
 
 最終更新: 2026-09-08
-現在の状態: P2-10 本番反映確認まで完了
+現在の状態: 緊急修正 10/12・10/17 外部主催判定／10/12同一イベント重複 本番反映確認まで完了
 次の作業対象: P2-11 「182イベント掲載中」の件数定義不一致
 
 ## 引き継ぎルール
@@ -145,6 +145,20 @@
     - 公開HTML確認: 生成commitの `schedule.html` に `fetchLatestScheduleData('./data/live-events.json?ts='+Date.now(),10000)` が存在し、成功時 `最終更新: ...` / 失敗・タイムアウト時バックアップ確定の両終了経路を保持。
     - デプロイ: 生成公開commitに対する GitHub Pages `pages build and deployment` run #2838（run ID 34233726186）がbuild/deployとも成功。P2-10は公開反映まで完了。
 
+10-A. [本番反映確認済み] P1 外部主催イベントの主催誤判定・10/12同一イベント7重複
+    - 症状: 2026/10/12 `KAWAII LAB. COLLECTION produced by TGC ～KAWAIIっちゃ in KITAKYUSHU～` が、同じ北九州メッセ・OPEN14:00/START16:00の物理イベントにもかかわらず、CANDY TUNE / CUTIE STREET / FRUITS ZIPPER / KAWAII LAB. SOUTH / KAWAII LAB.合同 / MORE STAR / SWEET STEADY の7カードに分裂していた。2026/10/17 MORE STAR `FM大阪 『Live or Treat 2026』 in Zepp Namba` も `KAWAII LAB.主催のみ` 側へ誤分類されていた。
+    - 公式確認: 10/12のTGC公式ページは主催を `KAWAII LAB. COLLECTION実行委員会`、企画・制作を `株式会社W TOKYO` と明記。10/17のMORE STAR公式告知は `主催：FM大阪` と明記。サイトの `KAWAII LAB.主催のみ` 定義では両方とも外部出演として扱う。
+    - 原因: `schedule_scope.py` のタイトルヒューリスティックが `KAWAII LAB. COLLECTION` を先に主催扱いし、`produced by TGC` を含む外部主催情報より優先していた。また既存の公開performance統合は基本的に主催イベントを対象にしており、グループ別に取得された同一外部イベントを横断して1物理イベントへ束ねる最終境界がなかった。
+    - 修正: `normalize_external_event_public_view.py` を追加。公式主催者を確認済みの2イベント系列を最終公開境界で `eventScope=external` に固定し、取得元raw行は証跡として保持したまま公開用行だけ同一物理イベントへ統合する。10/12は公開1イベントに集約し、出演6組 `FRUITS ZIPPER / CANDY TUNE / SWEET STEADY / CUTIE STREET / MORE STAR / KAWAII LAB. SOUTH` を `participants` に保持。10/17も複数受付・複数取得元を1イベント内へ束ねる。
+    - 主催のみ表示: `schedule.html` の初期静的カードも補正後snapshotから再生成し、10/12・10/17を `KAWAII LAB.主催のみ` から除外。`participants` は既存グループフィルタが参照するため、外部出演を含む表示では10/12を各出演グループから検索可能なまま維持する。
+    - 再発防止: `strip_schedule_explanations.py` から外部イベント補正を必須実行。`test_schedule_scope_ui.js` で10/12=公開1件・external・出演6組、10/17=公開1件・external、両イベントが主催のみ静的カードへ漏れないことを固定検査する。
+    - 修正ファイル: `scripts/normalize_external_event_public_view.py`, `scripts/strip_schedule_explanations.py`, `scripts/test_schedule_scope_ui.js`。
+    - PR: #224 `fix: classify verified external events and dedupe Kawacolle`
+    - CI検証: `Test schedule audit fixes` run #18（run ID 34236260359）が全工程成功。今回の10/12・10/17契約検査に加え、既存の仙台複数受付、Christmas SESSION、SWEET STEP、Node/UI等の全回帰を通過。
+    - 本番反映: PR #224をsquash merge（main merge commit `1f7f1186ff8fdc852bcaae9a15d30e147abc502d`）。続く `Apply canonical special-event entities` run #12（run ID 34236359700）が公開JSON/HTML再生成・検証・main commitまで成功。生成公開commitは `9292c390a4affe5ae26dfe513266f244def7724b`。
+    - 公開データ確認: 生成DBの該当raw取得行は `eventScope=external`、`eventScopeSource=verified-organizer`、主催者根拠を保持。公開モデルはCIで10/12を1件・10/17を1件に固定検証済み。
+    - デプロイ: 生成公開commitに対する GitHub Pages `pages build and deployment` run #2843（run ID 34236399741）が成功。緊急修正は公開反映まで完了。
+
 11. [次の作業] P2 「182イベント掲載中」の件数定義不一致
     - 公演数と受付レコード数を分離する。
 
@@ -166,3 +180,4 @@
 - 2026-09-08: P1-8はPR #219でツアー日別OPEN/STARTの静的表示とruntime補完優先順位を修正。CI run #14、canonical migration run #10、生成commit `d441842e109b78b07402c0215e1b49f273a2500f`、Pages run #2826（run ID 34200033161）の成功と公開HTMLを確認。P1-8を本番反映確認済みに確定し、次をP2-9とした。
 - 2026-09-08: P2-9は元監査がJavaScript実行前のplaceholderだけを見た誤検知と判明。現行本番の東京ガーデンシアター詳細が正常表示し、既存のstable venue ID・name/alias正規化・取得失敗表示・cache bustを確認。PR #220で回帰契約テストを追加し、venue CI run #3、schedule audit run #15、main venue CI run #4、Pages run #2828成功まで確認。P2-9を本番反映確認済みに確定し、次をP2-10とした。
 - 2026-09-08: P2-10は最新JSON取得にタイムアウトがなくpending時にchecking表示が残り得ることを特定。PR #223で10秒のbounded fetchを最終公開境界へ導入し、CI run #17、canonical migration run #11、生成commit `bd3c89ab54bab9c8ded5678448287fb68ed46ced`、Pages run #2838成功と公開HTMLへの10秒ガード反映まで確認。P2-10を本番反映確認済みに確定し、次をP2-11とした。
+- 2026-09-08: 10/12 Kawacolleが同一物理イベントなのに7カードへ分裂し、10/12・10/17が主催のみへ誤分類される問題を緊急修正。PR #224で公式主催者根拠によるexternal固定＋外部イベント系列の公開1件化を最終公開境界へ追加。CI run #18、canonical migration run #12、生成commit `9292c390a4affe5ae26dfe513266f244def7724b`、Pages run #2843成功まで確認。次の通常作業対象はP2-11のまま。
