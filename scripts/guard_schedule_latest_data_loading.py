@@ -8,9 +8,9 @@ LEGACY_FETCH = "fetch('./data/live-events.json?ts='+Date.now(),{cache:'no-store'
 GUARDED_FETCH = "fetchLatestScheduleData('./data/live-events.json?ts='+Date.now(),10000)"
 HELPER = (
     "function fetchLatestScheduleData(url,timeoutMs){return new Promise(function(resolve,reject){"
-    "var settled=false,timer=setTimeout(function(){if(settled)return;settled=true;reject(new Error('timeout'))},timeoutMs);"
-    "fetch(url,{cache:'no-store'}).then(function(response){if(settled)return;settled=true;clearTimeout(timer);resolve(response)},"
-    "function(error){if(settled)return;settled=true;clearTimeout(timer);reject(error)})})}\n"
+    "var settled=false;setTimeout(function(){if(settled)return;settled=true;reject(new Error('timeout'))},timeoutMs);"
+    "fetch(url,{cache:'no-store'}).then(function(response){if(settled)return;settled=true;resolve(response)},"
+    "function(error){if(settled)return;settled=true;reject(error)})})}\n"
 )
 
 
