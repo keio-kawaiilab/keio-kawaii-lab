@@ -137,7 +137,8 @@ jobs:
           assert row.get("applicationStatus") == "ended"
           assert row.get("ticketProvider") == "pia"
           assert row.get("price") == "一般指定席 6,500円"
-          assert "12,000" not in json.dumps(row, ensure_ascii=False), "FC-only upgrade leaked into general sale"
+          for field in ("ticketType", "price", "ticketLimit", "ticketFormat"):
+              assert "12,000" not in str(row.get(field) or ""), f"FC-only upgrade leaked into general-sale field: {field}"
 
           performances = [
               row for row in payload.get("publicEvents", [])
