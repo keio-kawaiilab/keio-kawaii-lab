@@ -1,0 +1,185 @@
+name: One-off fix Umeda birthday general sale
+
+on:
+  push:
+    paths:
+      - ".github/workflows/oneoff-fix-umeda-birthday-general-sale.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Restore verified general-sale phase
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          path = Path("data/live-events.json")
+          payload = json.loads(path.read_text(encoding="utf-8"))
+          events = payload.get("events") or []
+
+          title = "CUTIE STREET 梅田みゆ 生誕祭 2026"
+          day = "2026-09-14"
+          group = "CUTIE STREET"
+          pia_url = "https://t.pia.jp/pia/artist/artists.do?artistsCd=OC140004"
+          promoter_url = "https://www.red-hot.ne.jp/play/detail.php?pid=py28451"
+          official_url = "https://cutiestreet.asobisystem.com/news/detail/84114"
+          row_id = hashlib.sha256(f"{group}|{day}|梅田みゆ|一般発売|2026-08-22T10:00|pia".encode()).hexdigest()[:16]
+
+          def is_target_general(row):
+              if not isinstance(row, dict):
+                  return False
+              return (
+                  row.get("group") == group
+                  and str(row.get("eventDate") or "")[:10] == day
+                  and "梅田みゆ" in str(row.get("title") or "")
+                  and "一般発売" in str(row.get("ticketType") or "")
+                  and row.get("entityType") != "performance"
+              )
+
+          existing = [row for row in events if is_target_general(row)]
+          if len(existing) > 1:
+              raise RuntimeError(f"refusing to create another general-sale row; found {len(existing)} target rows")
+
+          verified = {
+              "id": row_id,
+              "group": group,
+              "title": title,
+              "ticketType": "一般発売（SOLD OUT）",
+              "ticketProvider": "pia",
+              "saleFamily": "general-sale",
+              "applyStart": "2026-08-22T10:00",
+              "applyEnd": None,
+              "resultDate": None,
+              "paymentEnd": None,
+              "eventDate": day,
+              "venue": "SGCホール有明",
+              "openTime": "17:30",
+              "startTime": "19:00",
+              "url": pia_url,
+              "urls": [pia_url, promoter_url, official_url],
+              "sourceType": "audit-correction",
+              "sourceChannel": "promoter-general-sale",
+              "sourcePublishedAt": None,
+              "sourceObservedAt": "2026-09-09T22:00:00+09:00",
+              "applicationStatus": "ended",
+              "primarySource": "pia",
+              "sourceCandidates": ["pia", "promoter", "official"],
+              "eventScope": "kawaii-lab",
+              "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/42328",
+              "applicationDisplayMode": "band",
+              "applicationWindowVerified": True,
+              "deadlineVerified": False,
+              "applicationWindowSource": promoter_url,
+              "deadlineSource": None,
+              "price": "一般指定席 6,500円",
+              "ticketLimit": "1人2枚まで",
+              "ticketFormat": "電子チケットのみ",
+              "saleStatus": "SOLD OUT",
+              "auditCorrectionIds": ["P1-umeda-birthday-2026-general-sale"],
+              "note": "一般発売は2026-08-22 10:00開始。Hot StuffでSOLD OUT、ぴあで予定枚数終了を確認。販売終了は売切れによるもので、9/9 23:59表示を受付締切として扱わない。FC限定アップグレード（お見送り会付指定席12,000円）とは別受付。"
+          }
+
+          if existing:
+              existing[0].clear()
+              existing[0].update(verified)
+          else:
+              events.append(verified)
+
+          payload["events"] = events
+          path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          print(json.dumps({"rawGeneralSaleRows": 1, "rowId": row_id}, ensure_ascii=False))
+          PY
+
+      - name: Rebuild public performance model and static schedule
+        run: |
+          python scripts/install_performance_public_view.py
+
+      - name: Verify Umeda birthday correction
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          payload = json.loads(Path("data/live-events.json").read_text(encoding="utf-8"))
+          raw = [
+              row for row in payload.get("events", [])
+              if isinstance(row, dict)
+              and row.get("group") == "CUTIE STREET"
+              and str(row.get("eventDate") or "")[:10] == "2026-09-14"
+              and "梅田みゆ" in str(row.get("title") or "")
+              and "一般発売" in str(row.get("ticketType") or "")
+              and row.get("entityType") != "performance"
+          ]
+          assert len(raw) == 1, f"expected exactly one raw general-sale row, got {len(raw)}"
+          row = raw[0]
+          assert row.get("applyStart") == "2026-08-22T10:00"
+          assert row.get("applyEnd") is None, "do not invent a deadline for a sold-out sale"
+          assert row.get("resultDate") is None, "general sale must not inherit a lottery result date"
+          assert row.get("applicationStatus") == "ended"
+          assert row.get("ticketProvider") == "pia"
+          assert row.get("price") == "一般指定席 6,500円"
+          assert "12,000" not in json.dumps(row, ensure_ascii=False), "FC-only upgrade leaked into general sale"
+
+          performances = [
+              row for row in payload.get("publicEvents", [])
+              if isinstance(row, dict)
+              and row.get("entityType") == "performance"
+              and row.get("group") == "CUTIE STREET"
+              and row.get("eventDate") == "2026-09-14"
+              and "梅田みゆ" in str(row.get("title") or "")
+              and row.get("startTime") == "19:00"
+          ]
+          assert len(performances) == 1, f"expected one physical performance, got {len(performances)}"
+          offers = performances[0].get("offers") or []
+          general = [offer for offer in offers if "一般発売" in str(offer.get("ticketType") or "")]
+          assert len(general) == 1, f"expected one general-sale offer, got {len(general)}"
+          assert general[0].get("provider") == "pia"
+          assert general[0].get("applyStart") == "2026-08-22T10:00"
+          assert general[0].get("applicationStatus") == "ended"
+          assert general[0].get("resultDate") is None
+          assert any("先行" in str(offer.get("ticketType") or "") for offer in offers), "FC advance offer disappeared"
+          assert "12,000" not in json.dumps(general[0], ensure_ascii=False), "FC-only upgrade leaked into public general-sale offer"
+
+          page = Path("schedule.html").read_text(encoding="utf-8")
+          assert "一般発売（SOLD OUT）" in page
+          assert "2026/8/22 10:00〜" in page
+          print(json.dumps({"performanceCount": len(performances), "generalSaleOfferCount": len(general), "offerCount": len(offers)}, ensure_ascii=False))
+          PY
+
+      - name: Run performance entity regression tests
+        run: |
+          python scripts/test_performance_entities.py
+
+      - name: Commit corrected schedule data
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- data/live-events.json schedule.html; then
+            echo "No schedule correction required."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/live-events.json schedule.html
+          git commit -m "fix(schedule): add Umeda birthday general sale"
+          git pull --rebase origin main
+          git push origin HEAD:main
