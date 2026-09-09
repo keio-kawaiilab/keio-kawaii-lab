@@ -1,14 +1,15 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-10T06:44:05.705596+09:00",
-  "candidateUpdatedAt": "2026-09-10T06:44:05+09:00",
+  "generatedAt": "2026-09-10T06:58:33.687709+09:00",
+  "candidateUpdatedAt": "2026-09-10T06:58:33+09:00",
   "previousEventCount": 293,
   "candidateEventCount": 293,
   "protectedPreviousCount": 293,
   "errorCount": 0,
-  "warningCount": 23,
+  "warningCount": 24,
   "errors": [],
   "warnings": [
+    "quarantined one event/source update and kept the previous known-good data: Pia row contains FC/upgrade-only sale: CUTIE STREET / CUTIE STREET 梅田みゆ 生誕祭 2026 / 年会費コース会員先行",
     "quarantined one event/source update and kept the previous known-good data: duplicate Pia lot pia:13219: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
     "quarantined one event/source update and kept the previous known-good data: duplicate Pia lot pia:13707: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
     "quarantined one event/source update and kept the previous known-good data: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -33,7 +34,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
   ],
-  "candidateSha256": "13dab87b08737da7983984abce22ed7da7939560dcb90ebef0b9b7cd2e83f965",
+  "candidateSha256": "9b7d52ef648afd3ce26d0cf91510e4d6caef7dd622c78fadca95a26c87897011",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -57,6 +58,9 @@
     "url:https://candytune.asobisystem.com/live_information/detail/40741",
     "url:https://candytune.asobisystem.com/live_information/detail/40742",
     "url:https://candytune.asobisystem.com/live_information/detail/40743",
+    "url:https://candytune.asobisystem.com/live_information/detail/43376",
+    "url:https://candytune.asobisystem.com/news/detail/86518",
+    "url:https://candytune.asobisystem.com/news/detail/87180",
     "url:https://candytune.asobisystem.com/news/detail/87766",
     "url:https://candytune.asobisystem.com/news/detail/88915",
     "url:https://candytune.asobisystem.com/news/detail/88933",
@@ -227,8 +231,13 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 9,
+  "quarantineCount": 10,
   "quarantineActions": [
+    {
+      "error": "Pia row contains FC/upgrade-only sale: CUTIE STREET / CUTIE STREET 梅田みゆ 生誕祭 2026 / 年会費コース会員先行",
+      "action": "restored previous row",
+      "restoredPreviousRows": 1
+    },
     {
       "error": "duplicate Pia lot pia:13219: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
       "action": "restored previous Pia lot rows",
