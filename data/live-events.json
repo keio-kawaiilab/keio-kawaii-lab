@@ -1,6 +1,6 @@
 {
   "demo": false,
-  "updatedAt": "2026-09-10T12:05:39+09:00",
+  "updatedAt": "2026-09-10T14:04:01+09:00",
   "source": "KAWAII LAB.各グループ公式公開情報 + チケットぴあ・ローチケ・イープラス公開情報 + SUKISUKI公開オンライン特典会情報 + 公式大特典会・リリースイベント情報",
   "events": [
     {
@@ -4301,9 +4301,9 @@
       "id": "c0bb53a7d3bc6b1a",
       "group": "CANDY TUNE",
       "title": "2026.09.04 「CANDY TUNE 小川奈々子 生誕祭 2026」 アップグレード抽選受付のお知らせ",
-      "ticketType": "現在受付なし",
-      "applyStart": null,
-      "applyEnd": null,
+      "ticketType": "年会費コース会員先行",
+      "applyStart": "2026-09-04T18:00",
+      "applyEnd": "2026-09-07T23:59",
       "resultDate": null,
       "paymentEnd": null,
       "eventDate": "2026-10-01",
@@ -4321,10 +4321,18 @@
       ],
       "eventScope": "kawaii-lab",
       "applicationStatus": "none",
-      "applicationDisplayMode": "schedule-only",
+      "applicationDisplayMode": "band",
       "ticketGuardRejected": true,
       "ticketGuardReason": "upgrade notice cannot be used as the source of an annual-fee ticket sale",
-      "ticketGuardSource": "https://candytune.asobisystem.com/news/detail/88933"
+      "ticketGuardSource": "https://candytune.asobisystem.com/news/detail/88933",
+      "applicationWindowVerified": true,
+      "deadlineVerified": true,
+      "applicationWindowSource": "https://candytune.asobisystem.com/news/detail/88933",
+      "deadlineSource": "https://candytune.asobisystem.com/news/detail/88933",
+      "specialDetailsStatus": "ticket-details-found",
+      "urls": [
+        "https://candytune.asobisystem.com/news/detail/88933"
+      ]
     },
     {
       "id": "1adce369ffa0f87a",
@@ -7024,7 +7032,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=22728",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=22728",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "external"
     },
     {
       "id": "bbd991977c083fbd",
@@ -11774,10 +11783,10 @@
       "eventTitle": "宮野静生誕祭",
       "displayTitle": "宮野静生誕祭",
       "eventCategory": "solo-live",
-      "ticketType": "現在受付なし",
+      "ticketType": "FC先行",
       "applicationStatus": "none",
-      "applyStart": null,
-      "applyEnd": null,
+      "applyStart": "2026-05-03T12:00",
+      "applyEnd": "2026-05-06T23:59",
       "resultDate": null,
       "paymentEnd": null,
       "specialDetailsStatus": "ticket-details-found",
@@ -12840,7 +12849,7 @@
     "failures": []
   },
   "releasePreparation": {
-    "preparedAt": "2026-09-10T12:05:35+09:00",
+    "preparedAt": "2026-09-10T14:03:56+09:00",
     "normalizedSpecialEvents": 7,
     "duplicateIdsRemoved": 0,
     "retainedPreviousRows": 0,
@@ -12870,10 +12879,10 @@
       "remainingDuplicates": []
     },
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-09-10T12:05:35+09:00",
-    "checkedAt": "2026-09-10T12:05:35+09:00"
+    "publicUpdatedAt": "2026-09-10T14:03:56+09:00",
+    "checkedAt": "2026-09-10T14:03:56+09:00"
   },
-  "checkedAt": "2026-09-10T12:05:39+09:00",
+  "checkedAt": "2026-09-10T14:04:01+09:00",
   "publicEvents": [
     {
       "id": "1c60e2be989c564d",
@@ -15099,7 +15108,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=22728",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=22728",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "external"
     },
     {
       "id": "dc60d5d019d83f33",
@@ -16769,6 +16779,14 @@
       "ticketGuardRejected": true,
       "ticketGuardReason": "upgrade notice cannot be used as the source of an annual-fee ticket sale",
       "ticketGuardSource": "https://candytune.asobisystem.com/news/detail/88933",
+      "specialDetailsStatus": "ticket-details-found",
+      "urls": [
+        "https://kawaiilab.asobisystem.com/news/detail/88104",
+        "https://candytune.asobisystem.com/news/detail/88933",
+        "https://candytune.asobisystem.com/live_information/detail/43376",
+        "https://candytune.asobisystem.com/news/detail/87180",
+        "https://candytune.asobisystem.com/news/detail/86518"
+      ],
       "entityType": "performance",
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-10-01|time|19:00",
@@ -16795,6 +16813,27 @@
           "sourceChannel": "recent-official-body",
           "primarySource": "official",
           "sourcePublishedAt": "2026-08-26"
+        },
+        {
+          "sourceRowId": "c0bb53a7d3bc6b1a",
+          "provider": "official",
+          "url": "https://candytune.asobisystem.com/news/detail/88933",
+          "urls": [
+            "https://candytune.asobisystem.com/news/detail/88933"
+          ],
+          "ticketType": "年会費コース会員先行",
+          "applyStart": "2026-09-04T18:00",
+          "applyEnd": "2026-09-07T23:59",
+          "applicationStatus": "none",
+          "applicationWindowVerified": true,
+          "deadlineVerified": true,
+          "applicationDisplayMode": "band",
+          "applicationWindowSource": "https://candytune.asobisystem.com/news/detail/88933",
+          "deadlineSource": "https://candytune.asobisystem.com/news/detail/88933",
+          "sourceType": "auto",
+          "sourceChannel": "recent-official-body",
+          "primarySource": "official",
+          "sourcePublishedAt": "2026-09-04"
         }
       ],
       "eventEndDate": "2026-10-01",
@@ -16810,16 +16849,9 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "FC先行",
+      "ticketType": "複数受付",
       "applicationDisplayMode": "offers",
-      "applicationStatus": "offers",
-      "urls": [
-        "https://kawaiilab.asobisystem.com/news/detail/88104",
-        "https://candytune.asobisystem.com/news/detail/88933",
-        "https://candytune.asobisystem.com/live_information/detail/43376",
-        "https://candytune.asobisystem.com/news/detail/87180",
-        "https://candytune.asobisystem.com/news/detail/86518"
-      ]
+      "applicationStatus": "offers"
     },
     {
       "id": "performance-CANDY-TUNE-2026-10-02-time-18-30",
@@ -19889,7 +19921,32 @@
       "sourceRowIds": [
         "b53753cee55c15bd"
       ],
-      "offers": [],
+      "offers": [
+        {
+          "sourceRowId": "b53753cee55c15bd",
+          "provider": "official",
+          "url": "https://kawaiilab.asobisystem.com/news/detail/77965",
+          "urls": [
+            "https://kawaiilab.asobisystem.com/news/detail/77965",
+            "https://candytune.asobisystem.com",
+            "https://x.com/CANDY_TUNE_/status/1928400828135813410",
+            "https://x.com/CANDY_TUNE_/status/1928398492147261442"
+          ],
+          "ticketType": "FC先行",
+          "applyStart": "2026-05-03T12:00",
+          "applyEnd": "2026-05-06T23:59",
+          "applicationStatus": "none",
+          "applicationWindowVerified": true,
+          "deadlineVerified": true,
+          "applicationDisplayMode": "band",
+          "applicationWindowSource": "https://kawaiilab.asobisystem.com/news/detail/77965",
+          "deadlineSource": "https://kawaiilab.asobisystem.com/news/detail/77965",
+          "sourceType": "derived",
+          "sourceChannel": "official-birthday-news",
+          "primarySource": "official",
+          "sourcePublishedAt": "2026-05-03"
+        }
+      ],
       "eventEndDate": "2027-05-30",
       "eventDates": [
         "2027-05-30"
@@ -19901,9 +19958,9 @@
           "venue": "duo MUSIC EXCHANGE"
         }
       ],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
+      "ticketType": "FC先行",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers"
     },
     {
       "id": "performance-CUTIE-STREET-2026-09-14-time-19-00",
@@ -26442,7 +26499,7 @@
     "performanceEntityCount": 98,
     "sourceOccurrenceCount": 388,
     "mergedSourceOccurrences": 290,
-    "offerCount": 164
+    "offerCount": 166
   },
   "resaleDiagnostics": {
     "articles": 24,
