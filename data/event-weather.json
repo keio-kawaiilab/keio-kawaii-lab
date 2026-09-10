@@ -1,7 +1,7 @@
 {
   "date": "2026-09-10",
   "horizonDays": 7,
-  "generatedAt": "2026-09-10T07:43+09:00",
+  "generatedAt": "2026-09-10T16:29+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -13,10 +13,14 @@
       "venueKey": "グランキューブ大阪メインホール",
       "eventIds": [
         "54a369497f59ce96",
+        "834b04f24d38d0ac",
+        "4a87a28bad812f06",
         "526017ffbdd4288e",
         "9a117c2e21632619",
+        "729af685ffc70afd",
         "e1d8758eb33627e4",
-        "e2b41858db054451"
+        "e2b41858db054451",
+        "119c2ef1b0193081"
       ],
       "areaCode": "270000",
       "areaName": "大阪府",
@@ -26,7 +30,7 @@
       "min": 28.0,
       "pop": "80",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-09-10T05:00:00+09:00",
+      "issuedAt": "2026-09-10T11:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "20〜24℃",
       "coordinates": {
@@ -35,22 +39,10 @@
       },
       "meshTimeline": [
         {
-          "time": "09:00",
-          "label": "晴れ",
-          "validAt": "2026-09-10T09:00+09:00",
-          "temp": 25
-        },
-        {
-          "time": "12:00",
-          "label": "晴れ",
-          "validAt": "2026-09-10T12:00+09:00",
-          "temp": 27
-        },
-        {
           "time": "15:00",
           "label": "くもり",
           "validAt": "2026-09-10T15:00+09:00",
-          "temp": 24
+          "temp": 25
         },
         {
           "time": "18:00",
@@ -70,23 +62,6 @@
           "validAt": "2026-09-11T00:00+09:00",
           "temp": 22
         }
-      ],
-      "hourlyRain": [
-        {
-          "time": "18:00",
-          "rain": true,
-          "validAt": "2026-09-10T18:00+09:00"
-        },
-        {
-          "time": "19:00",
-          "rain": true,
-          "validAt": "2026-09-10T19:00+09:00"
-        },
-        {
-          "time": "20:00",
-          "rain": true,
-          "validAt": "2026-09-10T20:00+09:00"
-        }
       ]
     },
     {
@@ -104,7 +79,7 @@
       "min": 18.0,
       "pop": "50",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-09-10T05:00:00+09:00",
+      "issuedAt": "2026-09-10T11:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "20〜24℃",
       "coordinates": {
@@ -122,7 +97,7 @@
           "time": "09:00",
           "label": "雨",
           "validAt": "2026-09-11T09:00+09:00",
-          "temp": 19
+          "temp": 20
         },
         {
           "time": "12:00",
@@ -166,12 +141,12 @@
       "areaCode": "280010",
       "areaName": "南部",
       "precision": "area",
-      "label": "雨 昼過ぎ から くもり",
+      "label": "雨 昼過ぎ から くもり 所により 明け方 まで 雷を伴い 激しく 降る",
       "max": 28.0,
       "min": 23.0,
       "pop": "20",
       "popLabel": "12〜18時",
-      "issuedAt": "2026-09-10T05:00:00+09:00",
+      "issuedAt": "2026-09-10T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -184,14 +159,14 @@
         "special-a91f4fd0f80a1f20"
       ],
       "areaCode": "140010",
-      "areaName": "神奈川県",
+      "areaName": "東部",
       "precision": "area",
-      "label": "くもり",
-      "max": 27.0,
-      "min": 21.0,
-      "pop": "40",
-      "popLabel": "1日",
-      "issuedAt": "2026-09-09T17:00:00+09:00",
+      "label": "くもり 一時 雨",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-09-10T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -207,11 +182,11 @@
       "areaName": "千葉県",
       "precision": "area",
       "label": "くもり",
-      "max": 28.0,
+      "max": 27.0,
       "min": 22.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-09-09T17:00:00+09:00",
+      "issuedAt": "2026-09-10T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -231,7 +206,7 @@
       "min": 23.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-09-09T17:00:00+09:00",
+      "issuedAt": "2026-09-10T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -247,11 +222,11 @@
       "areaName": "埼玉県",
       "precision": "area",
       "label": "くもり一時雨",
-      "max": 28.0,
+      "max": 27.0,
       "min": 21.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-09-09T17:00:00+09:00",
+      "issuedAt": "2026-09-10T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -264,32 +239,31 @@
         "024676b8e98a3faf",
         "1479772cf070fe92",
         "3b4755f8891c7bb8",
-        "53e72104ed9d32d1",
         "5cb8a271eaacbbdc"
       ],
       "areaCode": "110010",
       "areaName": "埼玉県",
       "precision": "area",
       "label": "くもり一時雨",
-      "max": 28.0,
+      "max": 27.0,
       "min": 21.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-09-09T17:00:00+09:00",
+      "issuedAt": "2026-09-10T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
     }
   ],
   "stats": {
-    "occurrencesInRange": 19,
+    "occurrencesInRange": 22,
     "uniqueVenueDates": 11,
     "weatherEntries": 8,
     "meshEntries": 2,
     "failures": 3,
     "meshTimelineEntries": 2,
-    "meshExactTempSlots": 13,
-    "hourlyRainEntries": 1
+    "meshExactTempSlots": 11,
+    "hourlyRainEntries": 0
   },
   "failures": [
     {
