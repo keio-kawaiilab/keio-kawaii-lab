@@ -1,7 +1,7 @@
 {
   "date": "2026-09-10",
   "horizonDays": 7,
-  "generatedAt": "2026-09-10T16:29+09:00",
+  "generatedAt": "2026-09-10T22:06+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -12,6 +12,7 @@
       "venue": "大阪府 グランキューブ大阪 メインホール",
       "venueKey": "グランキューブ大阪メインホール",
       "eventIds": [
+        "119c2ef1b0193081",
         "54a369497f59ce96",
         "834b04f24d38d0ac",
         "4a87a28bad812f06",
@@ -19,37 +20,24 @@
         "9a117c2e21632619",
         "729af685ffc70afd",
         "e1d8758eb33627e4",
-        "e2b41858db054451",
-        "119c2ef1b0193081"
+        "e2b41858db054451"
       ],
       "areaCode": "270000",
       "areaName": "大阪府",
       "precision": "mesh5km",
       "label": "雨",
-      "max": 28.0,
-      "min": 28.0,
+      "max": null,
+      "min": null,
       "pop": "80",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-09-10T11:00:00+09:00",
-      "meshTime": "18:00",
+      "popLabel": "当日最大",
+      "issuedAt": "2026-09-10T17:00:00+09:00",
+      "meshTime": "21:00",
       "meshTempBand": "20〜24℃",
       "coordinates": {
         "lat": 34.689934,
         "lon": 135.486069
       },
       "meshTimeline": [
-        {
-          "time": "15:00",
-          "label": "くもり",
-          "validAt": "2026-09-10T15:00+09:00",
-          "temp": 25
-        },
-        {
-          "time": "18:00",
-          "label": "雨",
-          "validAt": "2026-09-10T18:00+09:00",
-          "temp": 23
-        },
         {
           "time": "21:00",
           "label": "雨",
@@ -60,7 +48,24 @@
           "time": "24:00",
           "label": "雨",
           "validAt": "2026-09-11T00:00+09:00",
-          "temp": 22
+          "temp": 23
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "17:30",
+          "rain": true,
+          "validAt": "2026-09-10T17:30+09:00"
+        },
+        {
+          "time": "18:30",
+          "rain": true,
+          "validAt": "2026-09-10T18:30+09:00"
+        },
+        {
+          "time": "19:30",
+          "rain": true,
+          "validAt": "2026-09-10T19:30+09:00"
         }
       ]
     },
@@ -79,7 +84,7 @@
       "min": 18.0,
       "pop": "50",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-09-10T11:00:00+09:00",
+      "issuedAt": "2026-09-10T17:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "20〜24℃",
       "coordinates": {
@@ -141,12 +146,12 @@
       "areaCode": "280010",
       "areaName": "南部",
       "precision": "area",
-      "label": "雨 昼過ぎ から くもり 所により 明け方 まで 雷を伴い 激しく 降る",
-      "max": 28.0,
+      "label": "雨 昼過ぎ から くもり 所により 朝 まで 雷を伴い 激しく 降る",
+      "max": 29.0,
       "min": 23.0,
       "pop": "20",
       "popLabel": "12〜18時",
-      "issuedAt": "2026-09-10T11:00:00+09:00",
+      "issuedAt": "2026-09-10T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -166,7 +171,7 @@
       "min": null,
       "pop": null,
       "popLabel": "",
-      "issuedAt": "2026-09-10T11:00:00+09:00",
+      "issuedAt": "2026-09-10T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -186,7 +191,7 @@
       "min": 22.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-09-10T11:00:00+09:00",
+      "issuedAt": "2026-09-10T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -206,7 +211,7 @@
       "min": 23.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-09-10T11:00:00+09:00",
+      "issuedAt": "2026-09-10T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -226,7 +231,7 @@
       "min": 21.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-09-10T11:00:00+09:00",
+      "issuedAt": "2026-09-10T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -249,7 +254,7 @@
       "min": 21.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-09-10T11:00:00+09:00",
+      "issuedAt": "2026-09-10T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -262,8 +267,8 @@
     "meshEntries": 2,
     "failures": 3,
     "meshTimelineEntries": 2,
-    "meshExactTempSlots": 11,
-    "hourlyRainEntries": 0
+    "meshExactTempSlots": 9,
+    "hourlyRainEntries": 1
   },
   "failures": [
     {
