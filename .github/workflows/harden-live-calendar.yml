@@ -6,6 +6,7 @@ on:
     paths:
       - ".github/workflows/harden-live-calendar.yml"
       - "scripts/guard_birthday_year_consistency.py"
+      - "scripts/guard_candy_tune_tour_integrity.py"
       - "scripts/harden_ticket_semantics.py"
       - "scripts/enforce_physical_performance_identity.py"
       - "scripts/reconcile_physical_performance_times.py"
@@ -35,6 +36,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          python scripts/guard_candy_tune_tour_integrity.py --data data/live-events.json
           python scripts/guard_birthday_year_consistency.py --data data/live-events.json
           python scripts/harden_ticket_semantics.py --data data/live-events.json
           python scripts/reconcile_physical_performance_times.py --data data/live-events.json
@@ -42,6 +44,7 @@ jobs:
           python scripts/prune_special_event_placeholders.py --data data/live-events.json
           python scripts/enforce_physical_performance_identity.py
           python -m json.tool data/live-events.json >/dev/null
+          python scripts/guard_candy_tune_tour_integrity.py --data data/live-events.json
 
       - name: Stamp successful public refresh
         shell: bash
@@ -59,6 +62,7 @@ jobs:
           python scripts/build_schedule_snapshot.py
           python scripts/strip_schedule_explanations.py
           python scripts/enforce_physical_performance_identity.py
+          python scripts/guard_candy_tune_tour_integrity.py --data data/live-events.json --html schedule.html
           node --check /tmp/schedule-inline.js
 
       - name: Publish hardened calendar immediately
