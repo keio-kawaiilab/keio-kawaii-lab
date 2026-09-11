@@ -1,6 +1,6 @@
 {
   "demo": false,
-  "updatedAt": "2026-09-12T07:07:32+09:00",
+  "updatedAt": "2026-09-12T07:54:46+09:00",
   "source": "KAWAII LAB.各グループ公式公開情報 + チケットぴあ・ローチケ・イープラス公開情報 + SUKISUKI公開オンライン特典会情報 + 公式大特典会・リリースイベント情報",
   "events": [
     {
@@ -2337,7 +2337,6 @@
       "sourceRowIds": [
         "special-a2c1a096739330c5"
       ],
-      "offers": [],
       "schedule": [
         {
           "date": "2026-09-22",
@@ -2351,7 +2350,8 @@
       "eventEndDate": "2026-09-22",
       "venues": [
         "東京流通センター 第二展示場Eホール"
-      ]
+      ],
+      "offers": []
     },
     {
       "id": "special-3f1d3d73ed6fb4d1",
@@ -2998,66 +2998,44 @@
       ]
     },
     {
-      "id": "4073e6fb0d7a84c2",
+      "id": "baa05c3930ff4d48",
       "group": "CANDY TUNE",
       "title": "💚🎂💚小川奈々子 生誕祭 2026 💚🎂💚",
-      "eventTitle": "CANDY TUNE 小川奈々子 生誕祭 2026",
       "ticketType": "年会費コース会員先行",
-      "applicationStatus": "none",
+      "applyStart": "2026-09-04T18:00",
+      "applyEnd": "2026-09-07T23:59",
+      "resultDate": null,
+      "paymentEnd": null,
       "eventDate": "2026-10-01",
       "venue": "東京都 SGCホール有明",
       "openTime": "17:30",
       "startTime": "19:00",
-      "url": "https://candytune.asobisystem.com/live_information/detail/43376",
-      "urls": [
-        "https://candytune.asobisystem.com/live_information/detail/43376",
-        "https://candytune.asobisystem.com/news/detail/88933",
-        "https://candytune.asobisystem.com/news/detail/86518",
-        "https://candytune.asobisystem.com/news/detail/87180"
-      ],
+      "url": "https://candytune.asobisystem.com/news/detail/88933",
       "sourceType": "official-schedule",
-      "primarySource": "official",
-      "eventScope": "kawaii-lab",
-      "applyStart": "2026-09-04T18:00",
-      "applyEnd": "2026-09-07T23:59",
-      "applicationDisplayMode": "band",
-      "applicationWindowVerified": true,
-      "deadlineVerified": true,
-      "applicationWindowSource": "https://candytune.asobisystem.com/news/detail/88933",
-      "deadlineSource": "https://candytune.asobisystem.com/news/detail/88933",
-      "specialDetailsStatus": "ticket-details-found",
       "sourcePublishedAt": "2026-09-04",
-      "discoverySourceUrl": "https://candytune.asobisystem.com/news/detail/88933",
-      "sourceCandidates": [
-        "official"
-      ],
-      "performanceMatchedToOfficial": true
-    },
-    {
-      "id": "baa05c3930ff4d48",
-      "group": "CANDY TUNE",
-      "title": "CANDY TUNE 小川奈々子 生誕祭 2026",
-      "ticketType": "現在受付なし",
-      "applyStart": null,
-      "applyEnd": null,
-      "resultDate": null,
-      "paymentEnd": null,
-      "eventDate": "2026-10-01",
-      "venue": null,
-      "openTime": null,
-      "startTime": null,
-      "url": "https://candytune.asobisystem.com/news/detail/86518",
-      "sourceType": "derived",
-      "sourcePublishedAt": "2026-08-16",
       "applicationStatus": "none",
       "urls": [
+        "https://candytune.asobisystem.com/news/detail/88933",
+        "https://candytune.asobisystem.com/live_information/detail/43376",
         "https://candytune.asobisystem.com/news/detail/86518",
         "https://candytune.asobisystem.com/news/detail/87180"
       ],
       "eventScope": "kawaii-lab",
       "sourceStale": true,
       "sourceStaleSince": "2026-09-12T07:06:48+09:00",
-      "releaseRetentionReason": "missing-from-current-refresh"
+      "releaseRetentionReason": "missing-from-current-refresh",
+      "eventTitle": "CANDY TUNE 小川奈々子 生誕祭 2026",
+      "applicationDisplayMode": "band",
+      "applicationWindowVerified": true,
+      "deadlineVerified": true,
+      "applicationWindowSource": "https://candytune.asobisystem.com/news/detail/88933",
+      "deadlineSource": "https://candytune.asobisystem.com/news/detail/88933",
+      "specialDetailsStatus": "ticket-details-found",
+      "discoverySourceUrl": "https://candytune.asobisystem.com/news/detail/88933",
+      "primarySource": "official",
+      "sourceCandidates": [
+        "official"
+      ]
     },
     {
       "id": "1adce369ffa0f87a",
@@ -6854,10 +6832,10 @@
       "eventTitle": "宮野静生誕祭",
       "displayTitle": "宮野静生誕祭",
       "eventCategory": "solo-live",
-      "ticketType": "現在受付なし",
+      "ticketType": "FC先行",
       "applicationStatus": "none",
-      "applyStart": null,
-      "applyEnd": null,
+      "applyStart": "2026-05-03T12:00",
+      "applyEnd": "2026-05-06T23:59",
       "resultDate": null,
       "paymentEnd": null,
       "specialDetailsStatus": "ticket-details-found",
@@ -7736,9 +7714,9 @@
   },
   "physicalEventInvariant": {
     "semanticNormalization": {
-      "sourceSpecialRows": 7,
+      "sourceSpecialRows": 9,
       "canonicalSpecialEvents": 7,
-      "rowsCollapsed": 0,
+      "rowsCollapsed": 2,
       "releaseEventEntities": 4,
       "largeBenefitEntities": 3,
       "alreadyCanonicalRows": 7
@@ -7753,30 +7731,13 @@
     "remainingDuplicates": []
   },
   "releasePreparation": {
-    "preparedAt": "2026-09-12T07:06:48+09:00",
+    "preparedAt": "2026-09-12T07:54:43+09:00",
     "normalizedSpecialEvents": 6,
     "duplicateIdsRemoved": 0,
-    "retainedPreviousRows": 2,
-    "retained": [
-      {
-        "id": "baa05c3930ff4d48",
-        "group": "CANDY TUNE",
-        "title": "CANDY TUNE 小川奈々子 生誕祭 2026",
-        "ticketType": "現在受付なし",
-        "provider": null,
-        "applyEnd": null
-      },
-      {
-        "id": "e5e68e523d97d1b2",
-        "group": "CANDY TUNE",
-        "title": "CANDY TUNE",
-        "ticketType": "抽選 3次プレオーダー受付",
-        "provider": "eplus",
-        "applyEnd": "2026-09-17T23:59"
-      }
-    ],
-    "expandedPreviousSpecialEntities": 6,
-    "expandedCandidateSpecialEntities": 6,
+    "retainedPreviousRows": 0,
+    "retained": [],
+    "expandedPreviousSpecialEntities": 7,
+    "expandedCandidateSpecialEntities": 7,
     "supersededStaleJointRowsRemoved": 0,
     "supersededStaleJointRowIds": [],
     "officialXSeriesMerged": 0,
@@ -7788,7 +7749,7 @@
         "rowsCollapsed": 2,
         "releaseEventEntities": 4,
         "largeBenefitEntities": 3,
-        "alreadyCanonicalRows": 6
+        "alreadyCanonicalRows": 7
       },
       "specialEventsBeforePhysicalMerge": 7,
       "specialEventsAfterPhysicalMerge": 7,
@@ -7800,10 +7761,10 @@
       "remainingDuplicates": []
     },
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-09-12T07:06:48+09:00",
-    "checkedAt": "2026-09-12T07:06:48+09:00"
+    "publicUpdatedAt": "2026-09-12T07:54:43+09:00",
+    "checkedAt": "2026-09-12T07:54:43+09:00"
   },
-  "checkedAt": "2026-09-12T07:07:32+09:00",
+  "checkedAt": "2026-09-12T07:54:46+09:00",
   "playguideFailures": [
     "lawson/CANDY TUNE: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=25)",
     "lawson/CUTIE STREET: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=25)",
@@ -7889,14 +7850,6 @@
       "fixes": []
     },
     "eventCount": 149
-  },
-  "specialEventNormalization": {
-    "sourceSpecialRows": 7,
-    "canonicalSpecialEvents": 7,
-    "rowsCollapsed": 0,
-    "releaseEventEntities": 4,
-    "largeBenefitEntities": 3,
-    "alreadyCanonicalRows": 7
   },
   "publicEvents": [
     {
@@ -8877,7 +8830,6 @@
       "sourceRowIds": [
         "special-a2c1a096739330c5"
       ],
-      "offers": [],
       "schedule": [
         {
           "date": "2026-09-22",
@@ -8891,7 +8843,8 @@
       "eventEndDate": "2026-09-22",
       "venues": [
         "東京流通センター 第二展示場Eホール"
-      ]
+      ],
+      "offers": []
     },
     {
       "id": "special-3f1d3d73ed6fb4d1",
@@ -10859,15 +10812,19 @@
       "applicationStatus": "offers"
     },
     {
-      "id": "performance-CANDY-TUNE-2026-10-01-fallback-candytune-2026",
+      "id": "performance-CANDY-TUNE-2026-10-01-time-19-00",
       "group": "CANDY TUNE",
-      "title": "CANDY TUNE 小川奈々子 生誕祭 2026",
+      "title": "💚🎂💚小川奈々子 生誕祭 2026 💚🎂💚",
       "eventDate": "2026-10-01",
-      "venue": null,
-      "url": "https://candytune.asobisystem.com/news/detail/86518",
-      "sourceType": "derived",
-      "sourcePublishedAt": "2026-08-16",
+      "venue": "東京都 SGCホール有明",
+      "openTime": "17:30",
+      "startTime": "19:00",
+      "url": "https://candytune.asobisystem.com/news/detail/88933",
+      "sourceType": "official-schedule",
+      "sourcePublishedAt": "2026-09-04",
       "urls": [
+        "https://candytune.asobisystem.com/news/detail/88933",
+        "https://candytune.asobisystem.com/live_information/detail/43376",
         "https://candytune.asobisystem.com/news/detail/86518",
         "https://candytune.asobisystem.com/news/detail/87180"
       ],
@@ -10875,68 +10832,27 @@
       "sourceStale": true,
       "sourceStaleSince": "2026-09-12T07:06:48+09:00",
       "releaseRetentionReason": "missing-from-current-refresh",
-      "entityType": "performance",
-      "performanceEntityVersion": 1,
-      "performanceKey": "CANDY TUNE|2026-10-01|fallback||candytune小川奈々子生誕祭2026",
-      "sourceRowIds": [
-        "baa05c3930ff4d48"
-      ],
-      "offers": [],
-      "eventEndDate": "2026-10-01",
-      "eventDates": [
-        "2026-10-01"
-      ],
-      "eventCount": 1,
-      "schedule": [
-        {
-          "date": "2026-10-01",
-          "venue": null
-        }
-      ],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
-    },
-    {
-      "id": "performance-CANDY-TUNE-2026-10-01-time-19-00",
-      "group": "CANDY TUNE",
-      "title": "💚🎂💚小川奈々子 生誕祭 2026 💚🎂💚",
       "eventTitle": "CANDY TUNE 小川奈々子 生誕祭 2026",
-      "eventDate": "2026-10-01",
-      "venue": "東京都 SGCホール有明",
-      "openTime": "17:30",
-      "startTime": "19:00",
-      "url": "https://candytune.asobisystem.com/live_information/detail/43376",
-      "urls": [
-        "https://candytune.asobisystem.com/live_information/detail/43376",
-        "https://candytune.asobisystem.com/news/detail/88933",
-        "https://candytune.asobisystem.com/news/detail/86518",
-        "https://candytune.asobisystem.com/news/detail/87180"
-      ],
-      "sourceType": "official-schedule",
-      "primarySource": "official",
-      "eventScope": "kawaii-lab",
       "specialDetailsStatus": "ticket-details-found",
-      "sourcePublishedAt": "2026-09-04",
       "discoverySourceUrl": "https://candytune.asobisystem.com/news/detail/88933",
+      "primarySource": "official",
       "sourceCandidates": [
         "official"
       ],
-      "performanceMatchedToOfficial": true,
       "entityType": "performance",
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-10-01|time|19:00",
       "sourceRowIds": [
-        "4073e6fb0d7a84c2"
+        "baa05c3930ff4d48"
       ],
       "offers": [
         {
-          "sourceRowId": "4073e6fb0d7a84c2",
+          "sourceRowId": "baa05c3930ff4d48",
           "provider": "official",
-          "url": "https://candytune.asobisystem.com/live_information/detail/43376",
+          "url": "https://candytune.asobisystem.com/news/detail/88933",
           "urls": [
-            "https://candytune.asobisystem.com/live_information/detail/43376",
             "https://candytune.asobisystem.com/news/detail/88933",
+            "https://candytune.asobisystem.com/live_information/detail/43376",
             "https://candytune.asobisystem.com/news/detail/86518",
             "https://candytune.asobisystem.com/news/detail/87180"
           ],
@@ -13363,7 +13279,32 @@
       "sourceRowIds": [
         "b53753cee55c15bd"
       ],
-      "offers": [],
+      "offers": [
+        {
+          "sourceRowId": "b53753cee55c15bd",
+          "provider": "official",
+          "url": "https://kawaiilab.asobisystem.com/news/detail/77965",
+          "urls": [
+            "https://kawaiilab.asobisystem.com/news/detail/77965",
+            "https://candytune.asobisystem.com",
+            "https://x.com/CANDY_TUNE_/status/1928400828135813410",
+            "https://x.com/CANDY_TUNE_/status/1928398492147261442"
+          ],
+          "ticketType": "FC先行",
+          "applyStart": "2026-05-03T12:00",
+          "applyEnd": "2026-05-06T23:59",
+          "applicationStatus": "none",
+          "applicationWindowVerified": true,
+          "deadlineVerified": true,
+          "applicationDisplayMode": "band",
+          "applicationWindowSource": "https://kawaiilab.asobisystem.com/news/detail/77965",
+          "deadlineSource": "https://kawaiilab.asobisystem.com/news/detail/77965",
+          "sourceType": "derived",
+          "sourceChannel": "official-birthday-news",
+          "primarySource": "official",
+          "sourcePublishedAt": "2026-05-03"
+        }
+      ],
       "eventEndDate": "2027-05-30",
       "eventDates": [
         "2027-05-30"
@@ -13375,9 +13316,9 @@
           "venue": "duo MUSIC EXCHANGE"
         }
       ],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
+      "ticketType": "FC先行",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers"
     },
     {
       "id": "performance-CUTIE-STREET-2026-09-14-time-19-00",
@@ -18422,11 +18363,19 @@
   ],
   "publicEventModelVersion": 1,
   "publicEventModelReport": {
-    "rawEventCount": 140,
+    "rawEventCount": 139,
     "passthroughEventCount": 56,
-    "performanceEntityCount": 87,
-    "sourceOccurrenceCount": 228,
+    "performanceEntityCount": 86,
+    "sourceOccurrenceCount": 227,
     "mergedSourceOccurrences": 141,
-    "offerCount": 55
+    "offerCount": 56
+  },
+  "specialEventNormalization": {
+    "sourceSpecialRows": 7,
+    "canonicalSpecialEvents": 7,
+    "rowsCollapsed": 0,
+    "releaseEventEntities": 4,
+    "largeBenefitEntities": 3,
+    "alreadyCanonicalRows": 7
   }
 }
