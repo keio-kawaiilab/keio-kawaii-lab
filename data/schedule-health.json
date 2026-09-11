@@ -1,18 +1,17 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-11T17:03:05.546865+09:00",
-  "candidateUpdatedAt": "2026-09-11T17:03:05+09:00",
+  "generatedAt": "2026-09-11T19:04:15.786515+09:00",
+  "candidateUpdatedAt": "2026-09-11T19:04:15+09:00",
   "previousEventCount": 275,
   "candidateEventCount": 275,
   "protectedPreviousCount": 275,
   "errorCount": 0,
-  "warningCount": 28,
+  "warningCount": 25,
   "errors": [],
   "warnings": [
+    "quarantined one event/source update and kept the previous known-good data: Pia row contains FC/upgrade-only sale: CUTIE STREET / CUTIE STREET 梅田みゆ 生誕祭 2026 / 年会費コース会員先行",
     "quarantined one event/source update and kept the previous known-good data: duplicate Pia lot pia:17441: FRUITS ZIPPER / FRUITS ZIPPER / ぴあ先行",
-    "quarantined one event/source update and kept the previous known-good data: duplicate Pia lot pia:13525: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
     "quarantined one event/source update and kept the previous known-good data: duplicate Pia lot pia:14547: FRUITS ZIPPER / FRUITS ZIPPER / 2次プレリザーブ",
-    "quarantined one event/source update and kept the previous known-good data: duplicate Pia lot pia:26281: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event is not marked as official-source data: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event has no participation method: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -22,14 +21,12 @@
     "quarantined one event/source update and kept the previous known-good data: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:13525: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:26281: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: missing or invalid eventScope: FRUITS ZIPPER / FRUITS ZIPPER / ぴあ先行",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:17441: FRUITS ZIPPER / FRUITS ZIPPER / ぴあ先行",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: missing or invalid eventScope: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:13525: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: missing or invalid eventScope: FRUITS ZIPPER / FRUITS ZIPPER / 2次プレリザーブ",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14547: FRUITS ZIPPER / FRUITS ZIPPER / 2次プレリザーブ",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: missing or invalid eventScope: FRUITS ZIPPER / FRUITS ZIPPER / 2次プレリザーブ",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:26281: FRUITS ZIPPER / FRUITS ZIPPER / 2次プレリザーブ",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event is not marked as official-source data: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no participation method: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -38,7 +35,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
   ],
-  "candidateSha256": "b92dcd9cc28805c6192eededed4289e850390fff065224a5c51e400f027143bb",
+  "candidateSha256": "58b9c9c9401575bb2f824d7811141a5d1dd36c7c0a75c14f65952b2972889177",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -147,7 +144,7 @@
   ],
   "reconciledBaseDateMessageCount": 0,
   "downgradedFalsePositiveCount": 0,
-  "legacyProtectedErrorCount": 17,
+  "legacyProtectedErrorCount": 15,
   "legacyProtectedErrors": [
     {
       "error": "duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
@@ -156,6 +153,16 @@
     },
     {
       "error": "duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
+      "label": "FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "duplicate Pia lot pia:13525: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
+      "label": "FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "duplicate Pia lot pia:26281: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
       "label": "FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     },
@@ -170,32 +177,12 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     },
     {
-      "error": "missing or invalid eventScope: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
-      "label": "FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
-      "error": "duplicate Pia lot pia:13525: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
-      "label": "FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
       "error": "missing or invalid eventScope: FRUITS ZIPPER / FRUITS ZIPPER / 2次プレリザーブ",
       "label": "FRUITS ZIPPER / FRUITS ZIPPER / 2次プレリザーブ",
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     },
     {
       "error": "duplicate Pia lot pia:14547: FRUITS ZIPPER / FRUITS ZIPPER / 2次プレリザーブ",
-      "label": "FRUITS ZIPPER / FRUITS ZIPPER / 2次プレリザーブ",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
-      "error": "missing or invalid eventScope: FRUITS ZIPPER / FRUITS ZIPPER / 2次プレリザーブ",
-      "label": "FRUITS ZIPPER / FRUITS ZIPPER / 2次プレリザーブ",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
-      "error": "duplicate Pia lot pia:26281: FRUITS ZIPPER / FRUITS ZIPPER / 2次プレリザーブ",
       "label": "FRUITS ZIPPER / FRUITS ZIPPER / 2次プレリザーブ",
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     },
@@ -235,25 +222,20 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 11,
+  "quarantineCount": 10,
   "quarantineActions": [
+    {
+      "error": "Pia row contains FC/upgrade-only sale: CUTIE STREET / CUTIE STREET 梅田みゆ 生誕祭 2026 / 年会費コース会員先行",
+      "action": "restored previous row",
+      "restoredPreviousRows": 1
+    },
     {
       "error": "duplicate Pia lot pia:17441: FRUITS ZIPPER / FRUITS ZIPPER / ぴあ先行",
       "action": "restored previous Pia lot rows",
       "restoredPreviousRows": 2
     },
     {
-      "error": "duplicate Pia lot pia:13525: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
-      "action": "restored previous Pia lot rows",
-      "restoredPreviousRows": 2
-    },
-    {
       "error": "duplicate Pia lot pia:14547: FRUITS ZIPPER / FRUITS ZIPPER / 2次プレリザーブ",
-      "action": "restored previous Pia lot rows",
-      "restoredPreviousRows": 2
-    },
-    {
-      "error": "duplicate Pia lot pia:26281: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
       "action": "restored previous Pia lot rows",
       "restoredPreviousRows": 2
     },
