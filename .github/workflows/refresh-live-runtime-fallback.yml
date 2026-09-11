@@ -1,0 +1,70 @@
+name: Refresh live runtime fallback
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "data/live-events.json"
+      - "scripts/build_live_runtime_fallback.py"
+      - "scripts/guard_candy_tune_tour_integrity.py"
+      - ".github/workflows/refresh-live-runtime-fallback.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-live-runtime-fallback
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Rebuild and validate fallback
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_live_runtime_fallback.py
+          python scripts/guard_candy_tune_tour_integrity.py \
+            --data data/live-events.json \
+            --fallback live-runtime-fallback.js
+
+      - name: Publish synchronized fallback
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          for attempt in 1 2 3 4; do
+            git fetch origin main
+            git reset --hard origin/main
+            python scripts/build_live_runtime_fallback.py
+            python scripts/guard_candy_tune_tour_integrity.py \
+              --data data/live-events.json \
+              --fallback live-runtime-fallback.js
+
+            if git diff --quiet -- live-runtime-fallback.js; then
+              echo "Runtime fallback is already synchronized."
+              exit 0
+            fi
+
+            git add live-runtime-fallback.js
+            git commit -m "chore: synchronize live runtime fallback"
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+
+            echo "main changed before fallback push; rebuilding from latest main (attempt ${attempt})."
+            sleep 2
+          done
+
+          echo "Could not synchronize runtime fallback after four retries." >&2
+          exit 1
