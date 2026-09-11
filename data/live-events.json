@@ -1,6 +1,6 @@
 {
   "demo": false,
-  "updatedAt": "2026-09-11T09:12:52+09:00",
+  "updatedAt": "2026-09-11T09:51:08+09:00",
   "source": "KAWAII LAB.各グループ公式公開情報 + チケットぴあ・ローチケ・イープラス公開情報 + SUKISUKI公開オンライン特典会情報 + 公式大特典会・リリースイベント情報",
   "events": [
     {
@@ -8616,10 +8616,10 @@
       "eventTitle": "CUTIE STREET 佐野愛花 生誕祭 2026",
       "displayTitle": "CUTIE STREET 佐野愛花 生誕祭 2026",
       "eventCategory": "solo-live",
-      "ticketType": "現在受付なし",
+      "ticketType": "FC先行",
       "applicationStatus": "none",
-      "applyStart": null,
-      "applyEnd": null,
+      "applyStart": "2026-08-31T19:00",
+      "applyEnd": "2026-09-10T23:59",
       "resultDate": null,
       "paymentEnd": null,
       "applicationDisplayMode": "band",
@@ -10388,10 +10388,10 @@
       "eventTitle": "宮野静生誕祭",
       "displayTitle": "宮野静生誕祭",
       "eventCategory": "solo-live",
-      "ticketType": "現在受付なし",
+      "ticketType": "FC先行",
       "applicationStatus": "none",
-      "applyStart": null,
-      "applyEnd": null,
+      "applyStart": "2026-05-03T12:00",
+      "applyEnd": "2026-05-06T23:59",
       "resultDate": null,
       "paymentEnd": null,
       "specialDetailsStatus": "ticket-details-found",
@@ -11252,9 +11252,9 @@
   },
   "physicalEventInvariant": {
     "semanticNormalization": {
-      "sourceSpecialRows": 9,
+      "sourceSpecialRows": 14,
       "canonicalSpecialEvents": 9,
-      "rowsCollapsed": 0,
+      "rowsCollapsed": 5,
       "releaseEventEntities": 4,
       "largeBenefitEntities": 5,
       "alreadyCanonicalRows": 9
@@ -11454,28 +11454,11 @@
     "failures": []
   },
   "releasePreparation": {
-    "preparedAt": "2026-09-11T09:12:47+09:00",
+    "preparedAt": "2026-09-11T09:51:05+09:00",
     "normalizedSpecialEvents": 8,
     "duplicateIdsRemoved": 0,
-    "retainedPreviousRows": 2,
-    "retained": [
-      {
-        "id": "3e71742c839253ef",
-        "group": "CUTIE STREET",
-        "title": "CUTIE STREET 梅田みゆ 生誕祭 2026",
-        "ticketType": "現在受付なし",
-        "provider": "pia",
-        "applyEnd": null
-      },
-      {
-        "id": "e5e68e523d97d1b2",
-        "group": "CANDY TUNE",
-        "title": "CANDY TUNE",
-        "ticketType": "抽選 3次プレオーダー受付",
-        "provider": "eplus",
-        "applyEnd": "2026-09-17T23:59"
-      }
-    ],
+    "retainedPreviousRows": 0,
+    "retained": [],
     "expandedPreviousSpecialEntities": 9,
     "expandedCandidateSpecialEntities": 9,
     "supersededStaleJointRowsRemoved": 0,
@@ -11501,10 +11484,10 @@
       "remainingDuplicates": []
     },
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-09-11T09:12:47+09:00",
-    "checkedAt": "2026-09-11T09:12:47+09:00"
+    "publicUpdatedAt": "2026-09-11T09:51:05+09:00",
+    "checkedAt": "2026-09-11T09:51:05+09:00"
   },
-  "checkedAt": "2026-09-11T09:12:52+09:00",
+  "checkedAt": "2026-09-11T09:51:08+09:00",
   "publicEvents": [
     {
       "id": "1c60e2be989c564d",
@@ -13486,59 +13469,48 @@
       "startTime": "16:00",
       "url": "https://kawaiilab.asobisystem.com/news/detail/87217",
       "sourceType": "derived",
-      "sourcePublishedAt": "2026-09-04",
-      "discoverySourceUrl": "https://kawaiilab.asobisystem.com/news/detail/88102",
+      "sourcePublishedAt": "2026-08-19",
+      "discoverySourceUrl": "https://kawaiilab.asobisystem.com/news/detail/87217",
       "sourceChannel": "recent-official-body",
       "primarySource": "official",
       "sourceCandidates": [
         "official"
       ],
       "eventScope": "external",
-      "eventScopeCorrectionId": "P2-external-kawacolle-tgc",
-      "eventScopeSource": "verified-organizer",
-      "eventScopeSourceUrl": "https://tgc.girlswalker.com/kawacolle/",
-      "organizer": "KAWAII LAB. COLLECTION実行委員会",
-      "sourceStale": true,
-      "sourceStaleSince": "2026-09-11T08:50:09+09:00",
-      "releaseRetentionReason": "missing-from-current-refresh",
-      "participants": [
-        "FRUITS ZIPPER",
-        "CANDY TUNE",
-        "SWEET STEADY",
-        "CUTIE STREET",
-        "MORE STAR",
-        "KAWAII LAB. SOUTH"
-      ],
       "urls": [
         "https://kawaiilab.asobisystem.com/news/detail/87217",
         "https://candytune.asobisystem.com/news/detail/87766",
         "https://kawaiilab.asobisystem.com/news/detail/88102",
         "https://cutiestreet.asobisystem.com/news/detail/87770",
         "https://fruitszipper.asobisystem.com/news/detail/87763",
-        "https://cutiestreet.asobisystem.com/live_information/detail/43749",
         "https://fruitszipper.asobisystem.com/live_information/detail/44011",
+        "https://sweetsteady.asobisystem.com/live_information/detail/43905",
+        "https://cutiestreet.asobisystem.com/live_information/detail/43749",
         "https://morestar.asobisystem.com/news/detail/87772",
-        "https://sweetsteady.asobisystem.com/news/detail/87767",
-        "https://sweetsteady.asobisystem.com/live_information/detail/43905"
+        "https://sweetsteady.asobisystem.com/news/detail/87767"
       ],
-      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/43749",
+      "sourceStale": true,
+      "sourceStaleSince": "2026-09-03T00:14:43+09:00",
+      "releaseRetentionReason": "missing-from-current-refresh",
+      "eventScopeCorrectionId": "P2-external-kawacolle-tgc",
+      "eventScopeSource": "verified-organizer",
+      "eventScopeSourceUrl": "https://tgc.girlswalker.com/kawacolle/",
+      "organizer": "KAWAII LAB. COLLECTION実行委員会",
+      "externalEventFamily": "kawacolle-tgc",
       "entityType": "performance",
       "performanceEntityVersion": 1,
-      "performanceKey": "external|kawacolle-tgc|2026-10-12|16:00|北九州メッセ8020001福岡県北九州市小倉北区浅野381",
-      "sourceRowIds": [
-        "0eda4995aeb45acc",
-        "5431b2ffede26b08",
-        "282004f2b4e08a9b",
-        "2942bdf889c71563",
-        "91de82db0b44b5bf",
-        "a3a0f862e17b3b89",
-        "4d97127cb745d806",
-        "e38ff19923540d70",
-        "46495cdec5a11b74",
-        "eb28a15c1cec351e",
-        "0eb6efaa1bfa6a08",
-        "7ff37524e8b3ed70",
-        "c599e69a91c7ca47"
+      "eventEndDate": "2026-10-12",
+      "eventDates": [
+        "2026-10-12"
+      ],
+      "eventCount": 1,
+      "schedule": [
+        {
+          "date": "2026-10-12",
+          "venue": "北九州メッセ(〒802-0001 福岡県北九州市小倉北区浅野3-8-1)",
+          "openTime": "14:00",
+          "startTime": "16:00"
+        }
       ],
       "offers": [
         {
@@ -13580,23 +13552,24 @@
           "sourcePublishedAt": "2026-09-04"
         }
       ],
-      "eventEndDate": "2026-10-12",
-      "eventDates": [
-        "2026-10-12"
-      ],
-      "eventCount": 1,
-      "schedule": [
-        {
-          "date": "2026-10-12",
-          "venue": "北九州メッセ(〒802-0001 福岡県北九州市小倉北区浅野3-8-1)",
-          "openTime": "14:00",
-          "startTime": "16:00"
-        }
-      ],
-      "externalEventFamily": "kawacolle-tgc",
       "ticketType": "複数受付",
       "applicationDisplayMode": "offers",
       "applicationStatus": "offers",
+      "sourceRowIds": [
+        "0eda4995aeb45acc",
+        "5431b2ffede26b08",
+        "282004f2b4e08a9b",
+        "2942bdf889c71563",
+        "91de82db0b44b5bf",
+        "a3a0f862e17b3b89",
+        "4d97127cb745d806",
+        "c599e69a91c7ca47",
+        "e38ff19923540d70",
+        "46495cdec5a11b74",
+        "eb28a15c1cec351e",
+        "0eb6efaa1bfa6a08",
+        "7ff37524e8b3ed70"
+      ],
       "mergedPublicEventIds": [
         "0eda4995aeb45acc",
         "5431b2ffede26b08",
@@ -13605,15 +13578,24 @@
         "91de82db0b44b5bf",
         "a3a0f862e17b3b89",
         "4d97127cb745d806",
+        "c599e69a91c7ca47",
         "e38ff19923540d70",
         "46495cdec5a11b74",
         "eb28a15c1cec351e",
         "0eb6efaa1bfa6a08",
-        "7ff37524e8b3ed70",
-        "performance-KAWAII-LAB-2026-10-12-time-16-00"
+        "7ff37524e8b3ed70"
       ],
       "eventTitle": "KAWAII LAB. COLLECTION produced by TGC ~KAWAIIっちゃ in KITAKYUSHU~",
-      "displayTitle": "KAWAII LAB. COLLECTION produced by TGC ~KAWAIIっちゃ in KITAKYUSHU~"
+      "displayTitle": "KAWAII LAB. COLLECTION produced by TGC ~KAWAIIっちゃ in KITAKYUSHU~",
+      "participants": [
+        "FRUITS ZIPPER",
+        "CANDY TUNE",
+        "SWEET STEADY",
+        "CUTIE STREET",
+        "MORE STAR",
+        "KAWAII LAB. SOUTH"
+      ],
+      "performanceKey": "external|kawacolle-tgc|2026-10-12|16:00|北九州メッセ8020001福岡県北九州市小倉北区浅野381"
     },
     {
       "id": "e536dcd50908fac9",
@@ -13740,9 +13722,9 @@
       "startTime": "16:30",
       "url": "https://morestar.asobisystem.com/news/detail/89194",
       "urls": [
-        "https://morestar.asobisystem.com/news/detail/89194",
         "https://eplus.jp/sf/detail/4598860001-P0030001P021001",
-        "https://eplus.jp/sf/detail/4598860001-P0030001P021001?P1=0175"
+        "https://eplus.jp/sf/detail/4598860001-P0030001P021001?P1=0175",
+        "https://morestar.asobisystem.com/news/detail/89194"
       ],
       "sourceType": "eplus",
       "primarySource": "eplus",
@@ -13753,29 +13735,27 @@
       "eventTitle": "FM大阪 『Live or Treat 2026』 in Zepp Namba",
       "performanceMatchedToOfficial": true,
       "eventScope": "external",
+      "eventScopeCorrectionId": "P2-external-fm-osaka-live-or-treat-2026",
+      "eventScopeSource": "verified-organizer",
+      "eventScopeSourceUrl": "https://morestar.asobisystem.com/news/detail/89194",
+      "organizer": "FM大阪",
+      "externalEventFamily": "fm-osaka-live-or-treat-2026",
       "entityType": "performance",
       "performanceEntityVersion": 1,
-      "performanceKey": "external|fm-osaka-live-or-treat-2026|2026-10-17|16:30|zeppnamba",
-      "sourceRowIds": [
-        "f054f2a8893de7de",
-        "8a848c20ba17f2f7"
+      "eventEndDate": "2026-10-17",
+      "eventDates": [
+        "2026-10-17"
+      ],
+      "eventCount": 1,
+      "schedule": [
+        {
+          "date": "2026-10-17",
+          "venue": "Zepp Namba",
+          "openTime": "15:30",
+          "startTime": "16:30"
+        }
       ],
       "offers": [
-        {
-          "sourceRowId": "f054f2a8893de7de",
-          "provider": "official",
-          "url": "https://morestar.asobisystem.com/news/detail/89194",
-          "urls": [
-            "https://morestar.asobisystem.com/news/detail/89194"
-          ],
-          "ticketType": "チケット受付",
-          "applyStart": "2026-09-07T18:00",
-          "applyEnd": "2026-09-13T23:59",
-          "sourceType": "auto",
-          "sourceChannel": "recent-official-body",
-          "primarySource": "official",
-          "sourcePublishedAt": "2026-09-07"
-        },
         {
           "sourceRowId": "8a848c20ba17f2f7",
           "provider": "eplus",
@@ -13797,40 +13777,39 @@
           "sourceType": "eplus",
           "primarySource": "eplus",
           "sourceObservedAt": "2026-09-11T09:07:25+09:00"
-        }
-      ],
-      "eventEndDate": "2026-10-17",
-      "eventDates": [
-        "2026-10-17"
-      ],
-      "eventCount": 1,
-      "schedule": [
+        },
         {
-          "date": "2026-10-17",
-          "venue": "Zepp Namba",
-          "openTime": "15:30",
-          "startTime": "16:30"
+          "sourceRowId": "f054f2a8893de7de",
+          "provider": "official",
+          "url": "https://morestar.asobisystem.com/news/detail/89194",
+          "urls": [
+            "https://morestar.asobisystem.com/news/detail/89194"
+          ],
+          "ticketType": "チケット受付",
+          "applyStart": "2026-09-07T18:00",
+          "applyEnd": "2026-09-13T23:59",
+          "sourceType": "auto",
+          "sourceChannel": "recent-official-body",
+          "primarySource": "official",
+          "sourcePublishedAt": "2026-09-07"
         }
       ],
-      "displayTitle": "FM大阪 『Live or Treat 2026』 in Zepp Namba",
-      "publicTitleOriginal": "2026年10月17日(土) FM大阪 『Live or Treat 2026』in Zepp Namba 出演決定!MORE STAR FC会員先行受付開始!",
-      "publicTitleSourceRowId": "8a848c20ba17f2f7",
-      "publicTitleNormalization": "corroborated-source-title",
-      "eventScopeCorrectionId": "P2-external-fm-osaka-live-or-treat-2026",
-      "eventScopeSource": "verified-organizer",
-      "eventScopeSourceUrl": "https://morestar.asobisystem.com/news/detail/89194",
-      "organizer": "FM大阪",
-      "externalEventFamily": "fm-osaka-live-or-treat-2026",
       "ticketType": "複数受付",
       "applicationDisplayMode": "offers",
       "applicationStatus": "offers",
-      "mergedPublicEventIds": [
-        "f054f2a8893de7de",
-        "performance-MORE-STAR-2026-10-17-time-16-30"
+      "sourceRowIds": [
+        "8a848c20ba17f2f7",
+        "f054f2a8893de7de"
       ],
+      "mergedPublicEventIds": [
+        "8a848c20ba17f2f7",
+        "f054f2a8893de7de"
+      ],
+      "displayTitle": "FM大阪 『Live or Treat 2026』 in Zepp Namba",
       "participants": [
         "MORE STAR"
-      ]
+      ],
+      "performanceKey": "external|fm-osaka-live-or-treat-2026|2026-10-17|16:30|zeppnamba"
     },
     {
       "id": "1f6716c5847439cd",
@@ -17846,7 +17825,32 @@
       "sourceRowIds": [
         "b53753cee55c15bd"
       ],
-      "offers": [],
+      "offers": [
+        {
+          "sourceRowId": "b53753cee55c15bd",
+          "provider": "official",
+          "url": "https://kawaiilab.asobisystem.com/news/detail/77965",
+          "urls": [
+            "https://kawaiilab.asobisystem.com/news/detail/77965",
+            "https://candytune.asobisystem.com",
+            "https://x.com/CANDY_TUNE_/status/1928400828135813410",
+            "https://x.com/CANDY_TUNE_/status/1928398492147261442"
+          ],
+          "ticketType": "FC先行",
+          "applyStart": "2026-05-03T12:00",
+          "applyEnd": "2026-05-06T23:59",
+          "applicationStatus": "none",
+          "applicationWindowVerified": true,
+          "deadlineVerified": true,
+          "applicationDisplayMode": "band",
+          "applicationWindowSource": "https://kawaiilab.asobisystem.com/news/detail/77965",
+          "deadlineSource": "https://kawaiilab.asobisystem.com/news/detail/77965",
+          "sourceType": "derived",
+          "sourceChannel": "official-birthday-news",
+          "primarySource": "official",
+          "sourcePublishedAt": "2026-05-03"
+        }
+      ],
       "eventEndDate": "2027-05-30",
       "eventDates": [
         "2027-05-30"
@@ -17858,9 +17862,9 @@
           "venue": "duo MUSIC EXCHANGE"
         }
       ],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
+      "ticketType": "FC先行",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers"
     },
     {
       "id": "performance-CUTIE-STREET-2026-09-14-time-19-00",
@@ -19035,32 +19039,27 @@
       "id": "performance-CUTIE-STREET-2026-11-26-time-19-00",
       "group": "CUTIE STREET",
       "title": "CUTIE STREET 佐野愛花 生誕祭 2026",
-      "eventTitle": "CUTIE STREET 佐野愛花 生誕祭 2026",
-      "displayTitle": "CUTIE STREET 佐野愛花 生誕祭 2026",
-      "eventCategory": "solo-live",
       "eventDate": "2026-11-26",
       "venue": "SGCホール有明",
       "openTime": "17:30",
       "startTime": "19:00",
       "url": "https://cutiestreet.asobisystem.com/news/detail/88521",
-      "urls": [
-        "https://cutiestreet.asobisystem.com/news/detail/88521",
-        "https://red-hot.ne.jp/play/detail.php?pid=py28690"
-      ],
       "sourceType": "derived",
-      "sourceChannel": "official-birthday-news",
+      "sourcePublishedAt": "2026-08-31",
+      "discoverySourceUrl": "https://cutiestreet.asobisystem.com/news/detail/88521",
+      "sourceChannel": "recent-official-body",
       "primarySource": "official",
       "sourceCandidates": [
         "official"
       ],
       "eventScope": "kawaii-lab",
-      "promoterVerified": true,
-      "discoverySourceUrl": "https://cutiestreet.asobisystem.com/news/detail/88521",
-      "sourcePublishedAt": "2026-08-31",
+      "eventTitle": "CUTIE STREET 佐野愛花 生誕祭 2026",
+      "displayTitle": "CUTIE STREET 佐野愛花 生誕祭 2026",
+      "urls": [
+        "https://cutiestreet.asobisystem.com/news/detail/88521",
+        "https://red-hot.ne.jp/play/detail.php?pid=py28690"
+      ],
       "specialDetailsStatus": "ticket-details-found",
-      "sourceStale": true,
-      "sourceStaleSince": "2026-09-11T08:50:09+09:00",
-      "releaseRetentionReason": "missing-from-current-refresh",
       "entityType": "performance",
       "performanceEntityVersion": 1,
       "performanceKey": "CUTIE STREET|2026-11-26|time|19:00",
@@ -24000,11 +23999,11 @@
   "publicEventModelVersion": 1,
   "publicEventModelReport": {
     "rawEventCount": 239,
-    "passthroughEventCount": 77,
-    "performanceEntityCount": 101,
-    "sourceOccurrenceCount": 324,
+    "passthroughEventCount": 79,
+    "performanceEntityCount": 99,
+    "sourceOccurrenceCount": 322,
     "mergedSourceOccurrences": 223,
-    "offerCount": 108
+    "offerCount": 107
   },
   "playguideFailures": [
     "lawson/CANDY TUNE: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=25)",
