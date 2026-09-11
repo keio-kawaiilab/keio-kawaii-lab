@@ -36,6 +36,10 @@ EXPECTED_DATES = {
     "2026-12-09",
 }
 DATE_RE = re.compile(r"^2026-\d{2}-\d{2}")
+FALLBACK_RE = re.compile(
+    r"\s*window\.KL_LIVE_FALLBACK\s*=\s*(\[.*\])\s*;\s*",
+    re.DOTALL,
+)
 
 
 def _text(event: dict) -> str:
@@ -64,6 +68,8 @@ def event_dates(event: dict) -> set[str]:
     values = event.get("eventDates")
     if isinstance(values, list):
         for value in values:
+            if isinstance(value, dict):
+                value = value.get("date")
             if value and DATE_RE.match(str(value)):
                 found.add(str(value)[:10])
 
@@ -79,15 +85,13 @@ def event_dates(event: dict) -> set[str]:
     return found
 
 
-def validate_data(path: Path) -> None:
-    payload = json.loads(path.read_text(encoding="utf-8"))
-    events = payload if isinstance(payload, list) else payload.get("events", [])
+def validate_event_list(events: object, label: str) -> None:
     if not isinstance(events, list):
-        raise SystemExit("CANDY TUNE guard: live-events payload has no events array")
+        raise SystemExit(f"CANDY TUNE guard: {label} has no event list")
 
     targets = [event for event in events if isinstance(event, dict) and is_target(event)]
     if not targets:
-        raise SystemExit("CANDY TUNE guard: autumn 2026 tour entity disappeared completely")
+        raise SystemExit(f"CANDY TUNE guard: autumn 2026 tour disappeared from {label}")
 
     found: set[str] = set()
     for event in targets:
@@ -96,11 +100,38 @@ def validate_data(path: Path) -> None:
     missing = sorted(EXPECTED_DATES - found)
     if missing:
         raise SystemExit(
-            "CANDY TUNE guard: refusing publication; missing official tour dates: "
+            f"CANDY TUNE guard: refusing publication; {label} is missing official tour dates: "
             + ", ".join(missing)
         )
 
-    print(f"CANDY TUNE canonical tour integrity OK: {len(EXPECTED_DATES)}/{len(EXPECTED_DATES)} dates")
+    print(f"CANDY TUNE {label} integrity OK: {len(EXPECTED_DATES)}/{len(EXPECTED_DATES)} dates")
+
+
+def validate_data(path: Path) -> None:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if isinstance(payload, list):
+        events = payload
+    elif isinstance(payload, dict) and isinstance(payload.get("publicEvents"), list):
+        events = payload["publicEvents"]
+    elif isinstance(payload, dict):
+        events = payload.get("events", [])
+    else:
+        events = None
+    validate_event_list(events, "canonical tour")
+
+
+def validate_fallback(path: Path) -> None:
+    text = path.read_text(encoding="utf-8")
+    match = FALLBACK_RE.fullmatch(text)
+    if not match:
+        raise SystemExit(
+            "CANDY TUNE guard: runtime fallback is not a valid window.KL_LIVE_FALLBACK array"
+        )
+    try:
+        events = json.loads(match.group(1))
+    except json.JSONDecodeError as exc:
+        raise SystemExit(f"CANDY TUNE guard: runtime fallback JSON is invalid: {exc}") from exc
+    validate_event_list(events, "runtime fallback")
 
 
 class TourCardParser(HTMLParser):
@@ -167,12 +198,15 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data", default="data/live-events.json")
     parser.add_argument("--html")
+    parser.add_argument("--fallback")
     parser.add_argument("--from-date", default=date.today().isoformat())
     args = parser.parse_args()
 
     validate_data(Path(args.data))
     if args.html:
         validate_html(Path(args.html), args.from_date)
+    if args.fallback:
+        validate_fallback(Path(args.fallback))
     return 0
 
 
