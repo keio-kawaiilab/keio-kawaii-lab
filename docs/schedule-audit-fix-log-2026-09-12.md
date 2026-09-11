@@ -31,3 +31,16 @@
 - CANDY TUNEツアーのfallbackを部分的な静的データとして手動維持しない。必ず正規 `data/live-events.json` から生成する。
 - 公式23公演のうち1公演でも正規データ・fallbackから欠けた場合は公開を止める。
 - 次の通常修正対象は本体台帳どおり P2-11「182イベント掲載中」の件数定義不一致。
+
+## 再発防止強化: 欠損した最新JSONをブラウザで採用しない
+
+### 追加で判明した表示経路
+- 公開HTMLの静的バックアップが正常でも、ページ表示後に `data/live-events.json` を取得して無条件で表示を置き換えていた。
+- そのため、既存の公開前チェックを通らない古い手動・一回限りの更新経路が欠損JSONをmainへ入れた場合、次の自動修復までの間だけツアーが消える余地があった。
+
+### 再発防止
+- `scripts/guard_schedule_latest_data_loading.py` にブラウザ側の内容検査を追加した。
+- 最新JSONの `publicEvents`（未生成時のみ `events`）に、公式CANDY TUNE秋ツアー全23日程が存在する場合だけ表示を置き換える。
+- 1日でも欠けているJSONは採用せず、検証済みの静的バックアップ表示をそのまま維持する。
+- 既存の公開前チェック、runtime fallback全件同期、ブラウザ採用前チェックの3段階で欠損表示を防ぐ。
+- `scripts/test_guard_schedule_latest_data_loading.py` と `scripts/test_schedule_latest_data_guard.js` をCIへ追加し、ガードの挿入・旧ページからの更新・冪等性・未知の実装形への安全停止に加え、実データは通過し1日欠損データは拒否されることを確認する。

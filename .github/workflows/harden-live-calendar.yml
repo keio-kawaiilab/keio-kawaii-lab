@@ -18,6 +18,7 @@ on:
       - "scripts/build_schedule_snapshot.py"
       - "scripts/fix_schedule_shell.py"
       - "scripts/strip_schedule_explanations.py"
+      - "scripts/guard_schedule_latest_data_loading.py"
 
 permissions:
   contents: write

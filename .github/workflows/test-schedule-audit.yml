@@ -28,6 +28,7 @@ jobs:
           python -m unittest -v test_special_event_occurrence_details.py
           python -m unittest -v test_schedule_audit_corrections.py
           python -m unittest -v test_performance_entities.py
+          python -m unittest -v test_guard_schedule_latest_data_loading.py
       - name: Rebuild schedule through release boundary
         run: |
           python scripts/normalize_special_event_entities.py
@@ -39,6 +40,7 @@ jobs:
           node --check /tmp/schedule-inline.js
           node scripts/test_schedule_band_grouping.js
           node scripts/test_schedule_scope_ui.js
+          node scripts/test_schedule_latest_data_guard.js
           python scripts/normalize_special_event_entities.py --check
           python scripts/schedule_audit_corrections.py --check --fail-on-conflict
       - name: Verify one CANDY TUNE Sendai performance owns every ticket offer
@@ -81,6 +83,8 @@ jobs:
           assert "FC先行" in matches[0]
           assert "一般発売" in matches[0]
           assert "data.publicEvents||data.events" in html
+          assert "function hasRequiredCandyTuneTour(data)" in html
+          assert "if(!hasRequiredCandyTuneTour(data))throw new Error('integrity')" in html
           assert "e.entityType!=='special-event'&&e.entityType!=='performance'" in html
           PY
       - name: Verify Christmas SESSION Day1 has one confirmed venue fact
