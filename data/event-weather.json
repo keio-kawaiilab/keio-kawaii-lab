@@ -1,7 +1,7 @@
 {
   "date": "2026-09-11",
   "horizonDays": 7,
-  "generatedAt": "2026-09-11T16:27+09:00",
+  "generatedAt": "2026-09-11T22:00+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -18,30 +18,18 @@
       "areaName": "東京地方",
       "precision": "mesh5km",
       "label": "雨",
-      "max": 21.0,
-      "min": 21.0,
+      "max": null,
+      "min": null,
       "pop": "50",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-09-11T11:00:00+09:00",
-      "meshTime": "18:00",
+      "issuedAt": "2026-09-11T17:00:00+09:00",
+      "meshTime": "21:00",
       "meshTempBand": "20〜24℃",
       "coordinates": {
         "lat": 35.637161,
         "lon": 139.790894
       },
       "meshTimeline": [
-        {
-          "time": "15:00",
-          "label": "雨",
-          "validAt": "2026-09-11T15:00+09:00",
-          "temp": 20
-        },
-        {
-          "time": "18:00",
-          "label": "雨",
-          "validAt": "2026-09-11T18:00+09:00",
-          "temp": 20
-        },
         {
           "time": "21:00",
           "label": "雨",
@@ -53,6 +41,23 @@
           "label": "雨",
           "validAt": "2026-09-12T00:00+09:00",
           "temp": 20
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "17:00",
+          "rain": false,
+          "validAt": "2026-09-11T17:00+09:00"
+        },
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-09-11T18:00+09:00"
+        },
+        {
+          "time": "19:00",
+          "rain": false,
+          "validAt": "2026-09-11T19:00+09:00"
         }
       ]
     },
@@ -66,12 +71,12 @@
       "areaCode": "280010",
       "areaName": "南部",
       "precision": "area",
-      "label": "くもり 夜 晴れ 所により 昼前 雨",
-      "max": 29.0,
-      "min": 29.0,
-      "pop": "20",
-      "popLabel": "12〜18時",
-      "issuedAt": "2026-09-11T11:00:00+09:00",
+      "label": "くもり 夜遅く 晴れ",
+      "max": null,
+      "min": null,
+      "pop": "10",
+      "popLabel": "18〜00時",
+      "issuedAt": "2026-09-11T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -86,12 +91,12 @@
       "areaCode": "140010",
       "areaName": "東部",
       "precision": "area",
-      "label": "くもり 時々 雨",
+      "label": "雨 昼前 から くもり",
       "max": 23.0,
       "min": 19.0,
-      "pop": "40",
+      "pop": "10",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-09-11T11:00:00+09:00",
+      "issuedAt": "2026-09-11T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -111,7 +116,7 @@
       "min": null,
       "pop": null,
       "popLabel": "",
-      "issuedAt": "2026-09-11T11:00:00+09:00",
+      "issuedAt": "2026-09-11T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -131,7 +136,7 @@
       "min": 23.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-09-11T11:00:00+09:00",
+      "issuedAt": "2026-09-11T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -151,7 +156,7 @@
       "min": 21.0,
       "pop": "60",
       "popLabel": "1日",
-      "issuedAt": "2026-09-11T11:00:00+09:00",
+      "issuedAt": "2026-09-11T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -174,7 +179,7 @@
       "min": 21.0,
       "pop": "60",
       "popLabel": "1日",
-      "issuedAt": "2026-09-11T11:00:00+09:00",
+      "issuedAt": "2026-09-11T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -197,7 +202,7 @@
       "min": 22.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-09-11T11:00:00+09:00",
+      "issuedAt": "2026-09-11T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -210,8 +215,8 @@
     "meshEntries": 1,
     "failures": 3,
     "meshTimelineEntries": 1,
-    "meshExactTempSlots": 4,
-    "hourlyRainEntries": 0
+    "meshExactTempSlots": 2,
+    "hourlyRainEntries": 1
   },
   "failures": [
     {
