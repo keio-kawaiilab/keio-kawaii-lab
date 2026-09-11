@@ -1,86 +1,12 @@
 {
-  "date": "2026-09-11",
+  "date": "2026-09-12",
   "horizonDays": 7,
-  "generatedAt": "2026-09-11T22:00+09:00",
+  "generatedAt": "2026-09-12T03:25+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
-    {
-      "date": "2026-09-11",
-      "venue": "東京ガーデンシアター（東京都江東区有明2-1-6）",
-      "venueKey": "東京ガーデンシアター東京都江東区有明2-1-6",
-      "eventIds": [
-        "8980db78c4d524b7"
-      ],
-      "areaCode": "130010",
-      "areaName": "東京地方",
-      "precision": "mesh5km",
-      "label": "雨",
-      "max": null,
-      "min": null,
-      "pop": "50",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-09-11T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "20〜24℃",
-      "coordinates": {
-        "lat": 35.637161,
-        "lon": 139.790894
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "雨",
-          "validAt": "2026-09-11T21:00+09:00",
-          "temp": 20
-        },
-        {
-          "time": "24:00",
-          "label": "雨",
-          "validAt": "2026-09-12T00:00+09:00",
-          "temp": 20
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "17:00",
-          "rain": false,
-          "validAt": "2026-09-11T17:00+09:00"
-        },
-        {
-          "time": "18:00",
-          "rain": false,
-          "validAt": "2026-09-11T18:00+09:00"
-        },
-        {
-          "time": "19:00",
-          "rain": false,
-          "validAt": "2026-09-11T19:00+09:00"
-        }
-      ]
-    },
-    {
-      "date": "2026-09-11",
-      "venue": "兵庫県 神戸ハーバーランド スペースシアター",
-      "venueKey": "神戸ハーバーランドスペースシアター",
-      "eventIds": [
-        "special-a91f4fd0f80a1f20"
-      ],
-      "areaCode": "280010",
-      "areaName": "南部",
-      "precision": "area",
-      "label": "くもり 夜遅く 晴れ",
-      "max": null,
-      "min": null,
-      "pop": "10",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-09-11T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
     {
       "date": "2026-09-12",
       "venue": "神奈川県 アリオ橋本 1F 屋外イベント広場",
@@ -126,6 +52,7 @@
       "venue": "SGCホール有明",
       "venueKey": "sgcホール有明",
       "eventIds": [
+        "05f385ab70d5c2e5",
         "3e71742c839253ef"
       ],
       "areaCode": "130010",
@@ -209,14 +136,14 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 17,
-    "uniqueVenueDates": 11,
-    "weatherEntries": 8,
-    "meshEntries": 1,
-    "failures": 3,
-    "meshTimelineEntries": 1,
-    "meshExactTempSlots": 2,
-    "hourlyRainEntries": 1
+    "occurrencesInRange": 24,
+    "uniqueVenueDates": 12,
+    "weatherEntries": 6,
+    "meshEntries": 0,
+    "failures": 6,
+    "meshTimelineEntries": 0,
+    "meshExactTempSlots": 0,
+    "hourlyRainEntries": 0
   },
   "failures": [
     {
@@ -233,6 +160,21 @@
       "date": "2026-09-14",
       "venue": "北海道 サッポロファクトリー アトリウム",
       "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-09-19",
+      "venue": "千葉県 千葉市蘇我スポーツ公園",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-09-19",
+      "venue": "千葉県 松戸・森のホール21 大ホール",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-09-19",
+      "venue": "横浜アリーナ",
+      "reason": "開催日の予報がまだありません"
     }
   ]
 }
