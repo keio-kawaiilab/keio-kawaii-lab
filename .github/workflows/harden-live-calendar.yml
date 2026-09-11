@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - ".github/workflows/harden-live-calendar.yml"
+      - "scripts/build_live_runtime_fallback.py"
       - "scripts/guard_birthday_year_consistency.py"
       - "scripts/guard_candy_tune_tour_integrity.py"
       - "scripts/harden_ticket_semantics.py"
@@ -52,7 +53,7 @@ jobs:
           set -euo pipefail
           python scripts/stamp_calendar_refresh.py --data data/live-events.json
 
-      - name: Rebuild public snapshot from the hardened JSON
+      - name: Rebuild public snapshot and runtime fallback from the hardened JSON
         shell: bash
         run: |
           set -euo pipefail
@@ -62,7 +63,8 @@ jobs:
           python scripts/build_schedule_snapshot.py
           python scripts/strip_schedule_explanations.py
           python scripts/enforce_physical_performance_identity.py
-          python scripts/guard_candy_tune_tour_integrity.py --data data/live-events.json --html schedule.html
+          python scripts/build_live_runtime_fallback.py
+          python scripts/guard_candy_tune_tour_integrity.py --data data/live-events.json --html schedule.html --fallback live-runtime-fallback.js
           node --check /tmp/schedule-inline.js
 
       - name: Publish hardened calendar immediately
@@ -91,7 +93,8 @@ jobs:
             python scripts/build_schedule_snapshot.py
             python scripts/strip_schedule_explanations.py
             python scripts/enforce_physical_performance_identity.py
-            python scripts/guard_candy_tune_tour_integrity.py --data data/live-events.json --html schedule.html
+            python scripts/build_live_runtime_fallback.py
+            python scripts/guard_candy_tune_tour_integrity.py --data data/live-events.json --html schedule.html --fallback live-runtime-fallback.js
             node --check /tmp/schedule-inline.js
           }
 
@@ -102,12 +105,12 @@ jobs:
               rebuild_latest_main
             fi
 
-            if git diff --quiet -- data/live-events.json schedule.html; then
+            if git diff --quiet -- data/live-events.json schedule.html live-runtime-fallback.js; then
               echo "No calendar changes were needed."
               exit 0
             fi
 
-            git add data/live-events.json schedule.html
+            git add data/live-events.json schedule.html live-runtime-fallback.js
             git commit -m "Repair and synchronize physical schedule items"
             if git push origin HEAD:main; then
               exit 0
