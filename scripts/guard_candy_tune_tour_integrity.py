@@ -8,29 +8,31 @@ from datetime import date
 from html.parser import HTMLParser
 from pathlib import Path
 
+# Official CANDY TUNE ticket summary / tour schedule (verified 2026-09-11):
+# https://candytune.asobisystem.com/news/detail/43700
 EXPECTED_DATES = {
     "2026-08-29",
     "2026-08-30",
-    "2026-09-05",
-    "2026-09-06",
-    "2026-09-12",
-    "2026-09-13",
+    "2026-09-04",
+    "2026-09-09",
+    "2026-09-10",
     "2026-09-19",
-    "2026-09-20",
-    "2026-09-26",
-    "2026-09-27",
-    "2026-10-03",
+    "2026-10-02",
     "2026-10-04",
-    "2026-10-10",
-    "2026-10-11",
-    "2026-10-17",
-    "2026-10-18",
-    "2026-10-31",
-    "2026-11-01",
-    "2026-11-14",
-    "2026-11-15",
-    "2026-11-22",
+    "2026-10-08",
+    "2026-10-09",
+    "2026-10-26",
+    "2026-10-27",
+    "2026-10-29",
+    "2026-11-10",
+    "2026-11-12",
+    "2026-11-17",
+    "2026-11-19",
+    "2026-11-24",
+    "2026-11-26",
+    "2026-11-30",
     "2026-12-01",
+    "2026-12-08",
     "2026-12-09",
 }
 DATE_RE = re.compile(r"^2026-\d{2}-\d{2}")
@@ -94,7 +96,7 @@ def validate_data(path: Path) -> None:
     missing = sorted(EXPECTED_DATES - found)
     if missing:
         raise SystemExit(
-            "CANDY TUNE guard: refusing publication; missing canonical tour dates: "
+            "CANDY TUNE guard: refusing publication; missing official tour dates: "
             + ", ".join(missing)
         )
 
@@ -119,6 +121,7 @@ class TourCardParser(HTMLParser):
             event_id = attrs_dict.get("data-event-id") or ""
             match = re.search(r"performance-CANDY-TUNE-(2026-\d{2}-\d{2})", event_id)
             if match:
+                self.depth = 0
                 self.current_depth = 0
                 self.current_date = match.group(1)
                 self.current_text = []
