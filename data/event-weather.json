@@ -1,7 +1,7 @@
 {
   "date": "2026-09-12",
   "horizonDays": 7,
-  "generatedAt": "2026-09-12T07:45+09:00",
+  "generatedAt": "2026-09-12T16:19+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -17,12 +17,12 @@
       "areaCode": "140010",
       "areaName": "東部",
       "precision": "area",
-      "label": "雨 昼前 から くもり",
-      "max": 23.0,
-      "min": 23.0,
+      "label": "雨 昼過ぎ から くもり",
+      "max": 24.0,
+      "min": 24.0,
       "pop": "20",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-09-12T06:00:00+09:00",
+      "issuedAt": "2026-09-12T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -42,7 +42,7 @@
       "min": 21.0,
       "pop": "20",
       "popLabel": "当日最大",
-      "issuedAt": "2026-09-12T05:00:00+09:00",
+      "issuedAt": "2026-09-12T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -57,12 +57,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "くもり時々晴れ",
-      "max": 32.0,
-      "min": 23.0,
-      "pop": "30",
-      "popLabel": "1日",
-      "issuedAt": "2026-09-11T17:00:00+09:00",
+      "label": "晴れ 時々 くもり",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-09-12T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -78,11 +78,11 @@
       "areaName": "埼玉県",
       "precision": "area",
       "label": "くもり時々雨",
-      "max": 27.0,
+      "max": 29.0,
       "min": 21.0,
       "pop": "60",
       "popLabel": "1日",
-      "issuedAt": "2026-09-11T17:00:00+09:00",
+      "issuedAt": "2026-09-12T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -94,17 +94,18 @@
       "eventIds": [
         "024676b8e98a3faf",
         "1479772cf070fe92",
+        "3b4755f8891c7bb8",
         "5cb8a271eaacbbdc"
       ],
       "areaCode": "110010",
       "areaName": "埼玉県",
       "precision": "area",
       "label": "くもり時々雨",
-      "max": 27.0,
+      "max": 29.0,
       "min": 21.0,
       "pop": "60",
       "popLabel": "1日",
-      "issuedAt": "2026-09-11T17:00:00+09:00",
+      "issuedAt": "2026-09-12T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -116,28 +117,94 @@
       "eventIds": [
         "024676b8e98a3faf",
         "5cb8a271eaacbbdc",
-        "11df1b1ce3d6e6e2"
+        "11df1b1ce3d6e6e2",
+        "e34edc8be7d72139"
       ],
       "areaCode": "120010",
       "areaName": "千葉県",
       "precision": "area",
       "label": "くもり",
-      "max": 26.0,
+      "max": 25.0,
+      "min": 21.0,
+      "pop": "40",
+      "popLabel": "1日",
+      "issuedAt": "2026-09-12T11:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-09-19",
+      "venue": "千葉県 千葉市蘇我スポーツ公園",
+      "venueKey": "千葉市蘇我スポーツ公園",
+      "eventIds": [
+        "dd0e8ce853313621"
+      ],
+      "areaCode": "120010",
+      "areaName": "千葉県",
+      "precision": "area",
+      "label": "くもり",
+      "max": 27.0,
       "min": 22.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-09-11T17:00:00+09:00",
+      "issuedAt": "2026-09-12T11:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-09-19",
+      "venue": "千葉県 松戸・森のホール21 大ホール",
+      "venueKey": "松戸森のホール21",
+      "eventIds": [
+        "0e9184c1333d3c2b",
+        "54a369497f59ce96",
+        "834b04f24d38d0ac",
+        "6cb157e1b121fd92",
+        "913685881c282a9a",
+        "9e94ed44785eb00c"
+      ],
+      "areaCode": "120010",
+      "areaName": "千葉県",
+      "precision": "area",
+      "label": "くもり",
+      "max": 27.0,
+      "min": 22.0,
+      "pop": "40",
+      "popLabel": "1日",
+      "issuedAt": "2026-09-12T11:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-09-19",
+      "venue": "横浜アリーナ",
+      "venueKey": "横浜アリーナ",
+      "eventIds": [
+        "b6aa01b3367843ee"
+      ],
+      "areaCode": "140010",
+      "areaName": "神奈川県",
+      "precision": "area",
+      "label": "くもり",
+      "max": 26.0,
+      "min": 20.0,
+      "pop": "40",
+      "popLabel": "1日",
+      "issuedAt": "2026-09-12T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
     }
   ],
   "stats": {
-    "occurrencesInRange": 18,
+    "occurrencesInRange": 23,
     "uniqueVenueDates": 12,
-    "weatherEntries": 6,
+    "weatherEntries": 9,
     "meshEntries": 0,
-    "failures": 6,
+    "failures": 3,
     "meshTimelineEntries": 0,
     "meshExactTempSlots": 0,
     "hourlyRainEntries": 0
@@ -157,21 +224,6 @@
       "date": "2026-09-14",
       "venue": "北海道 サッポロファクトリー アトリウム",
       "reason": "都道府県を解決できません"
-    },
-    {
-      "date": "2026-09-19",
-      "venue": "千葉県 千葉市蘇我スポーツ公園",
-      "reason": "開催日の予報がまだありません"
-    },
-    {
-      "date": "2026-09-19",
-      "venue": "千葉県 松戸・森のホール21 大ホール",
-      "reason": "開催日の予報がまだありません"
-    },
-    {
-      "date": "2026-09-19",
-      "venue": "横浜アリーナ",
-      "reason": "開催日の予報がまだありません"
     }
   ]
 }
