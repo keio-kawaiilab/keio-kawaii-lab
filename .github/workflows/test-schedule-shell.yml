@@ -7,6 +7,11 @@ on:
     paths:
       - "scripts/build_schedule_snapshot.py"
       - "scripts/fix_schedule_shell.py"
+      - "scripts/guard_performance_runtime.py"
+      - "scripts/test_performance_runtime.js"
+      - "scripts/test_guard_performance_runtime.py"
+      - "scripts/fix_missing_application_start_ui.py"
+      - "data/live-events.json"
       - "scripts/strip_schedule_explanations.py"
       - "scripts/test_schedule_band_grouping.js"
       - "scripts/test_schedule_scope_ui.js"
@@ -37,3 +42,5 @@ jobs:
           node --check /tmp/schedule-inline.js
           node scripts/test_schedule_band_grouping.js
           node scripts/test_schedule_scope_ui.js
+          node scripts/test_performance_runtime.js
+          python -m unittest discover -s scripts -p test_guard_performance_runtime.py

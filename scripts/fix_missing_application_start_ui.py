@@ -37,7 +37,7 @@ def _replace_function(page: str, name: str, next_name: str, replacement: str, ma
     if end < 0:
         raise RuntimeError(f"schedule runtime no longer contains {next_name}() after {name}()")
     current = page[start:end]
-    if marker in current:
+    if current == replacement:
         return page
     return page[:start] + replacement + page[end:]
 
@@ -195,12 +195,15 @@ def patch_page(page: str, *, now: datetime | None = None) -> str:
 
     # Static performance cards must show the same time-aware reception state as
     # the browser runtime. A passed deadline always wins over missing-start data.
-    page = re.sub(
-        r'<div class="ticket-option">.*?</div>',
-        lambda m: _patch_static_ticket_option(m.group(0), now),
-        page,
-        flags=re.S,
-    )
+    # Do not treat HTML string literals inside runtime scripts as static cards.
+    chunks = re.split(r'(<script\b[^>]*>.*?</script>)', page, flags=re.S | re.I)
+    for i in range(0, len(chunks), 2):
+        chunks[i] = re.sub(
+            r'<div class="ticket-option">.*?</div>',
+            lambda m: _patch_static_ticket_option(m.group(0), now),
+            chunks[i], flags=re.S,
+        )
+    page = ''.join(chunks)
 
     page = _replace_function(page, "startText", "performanceDate", START_TEXT_JS, "missingStart=!e.applyStart")
     page = _replace_function(page, "offerHtml", "detailList", OFFER_HTML_JS, "ended=!!end&&end<now")

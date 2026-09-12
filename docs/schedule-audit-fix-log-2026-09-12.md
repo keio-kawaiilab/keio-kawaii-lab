@@ -1,5 +1,17 @@
 # スケジュール総点検 修正台帳 2026-09-12 追補
 
+## 2026-09-12 再消失: ブラウザの公演整理が受付終了と公演削除を混同
+
+- 調査基点: `eca6f9ef1711b58cb63c926c2f2abdf8baf03475`。データに23日存在するが、実際の `prepare()` 実行後に9/19などが消えることを再現。
+- 原因: 公演の関連URL群にぴあがあると公式FC/リセールもぴあ判定。`expandCanonicalOffers()` で分けた公演本体と受付を `mergePiaDuplicates()` がlot単位で再統合し、受付期限・FC除外フィルタが公演も削除していた。
+- 前回のチェックの限界: 入力日付の存在と静的HTMLしか確認せず、prepare・絞り込み・カレンダー・詳細カードまで実行していなかった。「再発防止完了」の説明は不十分だった。
+- 修正: `guard_performance_runtime.py` で公演本体と受付に役割を付与。公演本体から受付期限を切り離し、canonical公演・受付を旧収集行の再補完/lot統合/終了受付削除から除外。公演翌日以降は通常どおり非表示。終了受付は履歴に残し、申込帯は期限どおり非表示。
+- 公式/プレイガイド判定は明示されたproviderを優先。offerにはそのofferのURLだけを持たせ、他社URLを継承しない。
+- 関連修正: `fix_missing_application_start_ui.py` がscript内のHTML文字列まで静的カードとして書き換え、受付状態を「開始日時未取得」に固定していた。静的処理はscript外だけに限定し、runtime関数は完全な実装へ復元。
+- 継続適用: `fix_schedule_shell.py` と最終公開境界 `strip_schedule_explanations.py` に接続。最終公開境界で `test_performance_runtime.js` を実行し、表示後の欠落時は公開を失敗させる。
+- 検証: 修正前HTMLでは9/19消失で新テスト失敗。修正後は今後18日すべての表示モデル、詳細カード、カレンダー生成、CANDYフィルタ、最新JSON成功/失敗時のsnapshot表示を検証。合成例で同一lotの別日/昼夜公演、FC判定、終了履歴/未来リセール、当日表示/翌日削除を検証。公開後の確認結果は次の追記を参照。
+- 次の作業者: 入力23日だけで正常判断しない。必ず `node scripts/test_performance_runtime.js` を実行する。旧公演/チケット混在モデルに戻さない。
+
 本ファイルは `docs/schedule-audit-fix-log.md` の 2026-09-12 追補。次回作業時は本ファイルと本体台帳を両方読むこと。
 
 ## 緊急修正: CANDY TUNE JAPAN TOUR 2026 - AUTUMN 再消失

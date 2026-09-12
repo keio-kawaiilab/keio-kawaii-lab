@@ -6,6 +6,7 @@ import re
 from pathlib import Path
 
 import build_schedule_snapshot
+import guard_performance_runtime
 from normalize_special_event_entities import normalize_payload, validate
 from special_event_occurrence_details import (
     apply_known_occurrence_corrections,
@@ -190,6 +191,7 @@ def main() -> int:
     page = install_performance_reconcile(page)
     page = install_application_band_identity(page)
     page = install_truthful_status(page)
+    page = guard_performance_runtime.transform(page)
 
     required = (
         "function performanceTitleKey(e)",
