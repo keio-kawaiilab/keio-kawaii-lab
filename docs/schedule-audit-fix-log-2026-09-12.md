@@ -12,6 +12,14 @@
 - 検証: 修正前HTMLでは9/19消失で新テスト失敗。修正後は今後18日すべての表示モデル、詳細カード、カレンダー生成、CANDYフィルタ、最新JSON成功/失敗時のsnapshot表示を検証。合成例で同一lotの別日/昼夜公演、FC判定、終了履歴/未来リセール、当日表示/翌日削除を検証。公開後の確認結果は次の追記を参照。
 - 次の作業者: 入力23日だけで正常判断しない。必ず `node scripts/test_performance_runtime.js` を実行する。旧公演/チケット混在モデルに戻さない。
 
+### 本番反映確認
+
+- 修正コミット: `f8d1c445450142459e34b87c6e5290afd02244f8`。
+- CI成功: `Schedule shell build regression` run `34666038550`、`Harden live calendar` run `34666038562`、`Apply canonical special-event entities` run `34666038526`、`Special event entity regression` run `34666038580`。
+- 自動再生成後commit: `28a1a55f3ee2b4e70b568e9deae55624fe7ee060`。GitHub Pages run `34666055957`: completed / success。
+- 公開URLからschedule.htmlとlive-events.jsonを取り直し、その取得内容を `test_performance_runtime.js` に渡して成功。今後18日分のprepare/詳細カード/カレンダー出力、snapshot/latest/offline経路を確認。実ブラウザの目視検査ではなく、公開コードをNode VMで実行した表示処理テストである。
+- 状態: 本番反映確認済み。この修正では公開データの公演日程を手動追加・削除していない。
+
 本ファイルは `docs/schedule-audit-fix-log.md` の 2026-09-12 追補。次回作業時は本ファイルと本体台帳を両方読むこと。
 
 ## 緊急修正: CANDY TUNE JAPAN TOUR 2026 - AUTUMN 再消失
