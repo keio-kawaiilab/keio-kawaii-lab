@@ -1,7 +1,7 @@
 {
   "date": "2026-09-12",
   "horizonDays": 7,
-  "generatedAt": "2026-09-12T16:19+09:00",
+  "generatedAt": "2026-09-12T21:20+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -17,12 +17,12 @@
       "areaCode": "140010",
       "areaName": "東部",
       "precision": "area",
-      "label": "雨 昼過ぎ から くもり",
-      "max": 24.0,
-      "min": 24.0,
+      "label": "くもり 所により 夜 雨",
+      "max": null,
+      "min": null,
       "pop": "20",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-09-12T11:00:00+09:00",
+      "issuedAt": "2026-09-12T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -37,12 +37,12 @@
       "areaCode": "120010",
       "areaName": "北西部",
       "precision": "area",
-      "label": "くもり 夜 晴れ 所により 昼前 まで 雨",
-      "max": 26.0,
+      "label": "くもり 夜 晴れ 所により 昼過ぎ まで 雨",
+      "max": 27.0,
       "min": 21.0,
       "pop": "20",
       "popLabel": "当日最大",
-      "issuedAt": "2026-09-12T11:00:00+09:00",
+      "issuedAt": "2026-09-12T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -62,7 +62,7 @@
       "min": null,
       "pop": null,
       "popLabel": "",
-      "issuedAt": "2026-09-12T11:00:00+09:00",
+      "issuedAt": "2026-09-12T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -82,7 +82,7 @@
       "min": 21.0,
       "pop": "60",
       "popLabel": "1日",
-      "issuedAt": "2026-09-12T11:00:00+09:00",
+      "issuedAt": "2026-09-12T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -105,7 +105,7 @@
       "min": 21.0,
       "pop": "60",
       "popLabel": "1日",
-      "issuedAt": "2026-09-12T11:00:00+09:00",
+      "issuedAt": "2026-09-12T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -128,7 +128,7 @@
       "min": 21.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-09-12T11:00:00+09:00",
+      "issuedAt": "2026-09-12T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -148,7 +148,7 @@
       "min": 22.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-09-12T11:00:00+09:00",
+      "issuedAt": "2026-09-12T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -159,8 +159,10 @@
       "venueKey": "松戸森のホール21",
       "eventIds": [
         "0e9184c1333d3c2b",
+        "119c2ef1b0193081",
         "54a369497f59ce96",
         "834b04f24d38d0ac",
+        "e4e0246476c2e42e",
         "6cb157e1b121fd92",
         "913685881c282a9a",
         "9e94ed44785eb00c"
@@ -173,7 +175,7 @@
       "min": 22.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-09-12T11:00:00+09:00",
+      "issuedAt": "2026-09-12T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -193,14 +195,14 @@
       "min": 20.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-09-12T11:00:00+09:00",
+      "issuedAt": "2026-09-12T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
     }
   ],
   "stats": {
-    "occurrencesInRange": 23,
+    "occurrencesInRange": 25,
     "uniqueVenueDates": 12,
     "weatherEntries": 9,
     "meshEntries": 0,
