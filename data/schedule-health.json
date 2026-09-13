@@ -1,26 +1,19 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-14T08:09:19.890320+09:00",
-  "candidateUpdatedAt": "2026-09-14T08:09:19+09:00",
+  "generatedAt": "2026-09-14T08:20:21.051055+09:00",
+  "candidateUpdatedAt": "2026-09-14T08:20:20+09:00",
   "previousEventCount": 316,
   "candidateEventCount": 316,
   "protectedPreviousCount": 316,
   "errorCount": 0,
-  "warningCount": 49,
+  "warningCount": 40,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: duplicate Pia lot pia:17441: FRUITS ZIPPER / FRUITS ZIPPER / ぴあ先行",
-    "quarantined one event/source update and kept the previous known-good data: duplicate Pia lot pia:15956: SWEET STEADY / SWEET STEADY 単独公演 お花見会 / プレリザーブ",
     "quarantined one event/source update and kept the previous known-good data: canonical special event application window is not backed by an official page: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場【1部・3部・6部】 / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: canonical special event deadline is not verified by an official page: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場【1部・3部・6部】 / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: canonical special event offer has no verified purchase/ticket window: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場【1部・3部・6部】 / 現在受付なし / offer 1",
     "quarantined one event/source update and kept the previous known-good data: special event has no official source URL: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場【1部・3部・6部】 / 現在受付なし",
-    "quarantined one event/source update and kept the previous known-good data: missing title: CANDY TUNE / ? / FC先行",
-    "quarantined one event/source update and kept the previous known-good data: missing title: CUTIE STREET / ? / FC先行",
-    "quarantined one event/source update and kept the previous known-good data: missing title: FRUITS ZIPPER / ? / FC先行",
-    "quarantined one event/source update and kept the previous known-good data: missing title: KAWAII LAB. MATES / ? / FC先行",
-    "quarantined one event/source update and kept the previous known-good data: missing title: KAWAII LAB. SOUTH / ? / FC先行",
-    "quarantined one event/source update and kept the previous known-good data: missing title: SWEET STEADY / ? / FC先行",
     "quarantined one event/source update and kept the previous known-good data: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event is not marked as official-source data: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event has no participation method: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -28,8 +21,6 @@
     "quarantined one event/source update and kept the previous known-good data: special event has no verified purchase/ticket window: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
-    "quarantined one event/source update and kept the previous known-good data: protected future/active item disappeared: SWEET STEADY / SWEET STEADY 単独公演 お花見会 / FC先行",
-    "quarantined one event/source update and kept the previous known-good data: protected future/active item disappeared: SWEET STEADY / SWEET STEADY 単独公演 お花見会 / FC先行",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14066: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
@@ -59,7 +50,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
   ],
-  "candidateSha256": "b2cc33bb197bff0af88c9472d79629afd4b1e13e4940d40506f37b808575f519",
+  "candidateSha256": "3f43fe2a354beef6d0581faf4d56c2db3dcf6ba2f2e7340eadf70963ad13d36a",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/",
@@ -327,17 +318,12 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 21,
+  "quarantineCount": 12,
   "quarantineActions": [
     {
       "error": "duplicate Pia lot pia:17441: FRUITS ZIPPER / FRUITS ZIPPER / ぴあ先行",
       "action": "restored previous Pia lot rows",
       "restoredPreviousRows": 2
-    },
-    {
-      "error": "duplicate Pia lot pia:15956: SWEET STEADY / SWEET STEADY 単独公演 お花見会 / プレリザーブ",
-      "action": "restored previous Pia lot rows",
-      "restoredPreviousRows": 1
     },
     {
       "error": "canonical special event application window is not backed by an official page: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場【1部・3部・6部】 / 現在受付なし",
@@ -358,36 +344,6 @@
       "error": "special event has no official source URL: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場【1部・3部・6部】 / 現在受付なし",
       "action": "restored previous row",
       "restoredPreviousRows": 1
-    },
-    {
-      "error": "missing title: CANDY TUNE / ? / FC先行",
-      "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 2
-    },
-    {
-      "error": "missing title: CUTIE STREET / ? / FC先行",
-      "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 2
-    },
-    {
-      "error": "missing title: FRUITS ZIPPER / ? / FC先行",
-      "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 2
-    },
-    {
-      "error": "missing title: KAWAII LAB. MATES / ? / FC先行",
-      "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 2
-    },
-    {
-      "error": "missing title: KAWAII LAB. SOUTH / ? / FC先行",
-      "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 2
-    },
-    {
-      "error": "missing title: SWEET STEADY / ? / FC先行",
-      "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 2
     },
     {
       "error": "special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -423,16 +379,6 @@
       "error": "special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
       "action": "restored previous row",
       "restoredPreviousRows": 1
-    },
-    {
-      "error": "protected future/active item disappeared: SWEET STEADY / SWEET STEADY 単独公演 お花見会 / FC先行",
-      "action": "restored disappeared previous row",
-      "restoredPreviousRows": 2
-    },
-    {
-      "error": "protected future/active item disappeared: SWEET STEADY / SWEET STEADY 単独公演 お花見会 / FC先行",
-      "action": "restored disappeared previous row",
-      "restoredPreviousRows": 2
     }
   ],
   "rowFailuresCanBlockRelease": false,
