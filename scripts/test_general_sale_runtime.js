@@ -35,12 +35,13 @@ async function main(){
     const models=h.api.show(raw,'2026-09-14',row.group);
     const matches=models.filter(m=>m.group===row.group&&m.date===row.eventDate&&m.startTime===row.startTime);
     assert.equal(matches.length,1,'exactly one performance '+row.id);
-    assert(matches[0].offers.some(o=>o.url===row.offer.url&&o.applyStart===row.offer.applyStart),'missing sale '+row.id);
+    const sale=matches[0].offers.find(o=>o.url===row.offer.url&&o.applyStart===row.offer.applyStart);
+    assert(sale,'missing sale '+row.id);
     const html=h.get('cards').innerHTML;
     const cards=html.match(/<article[\s\S]*?<\/article>/g)||[];
     const card=cards.find(c=>c.includes(row.offer.url.replace(/&/g,'&amp;'))&&c.includes('開演 '+row.startTime));
     assert(card,'missing rendered sale '+row.id);
-    assert(card.includes(row.offer.applicationStatus==='sold_out'?'予定枚数終了':'受付中'));
+    assert(card.includes((sale.event||sale).applicationStatus==='sold_out'?'予定枚数終了':'受付中'));
    }
   }
  }

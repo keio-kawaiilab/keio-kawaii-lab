@@ -182,7 +182,7 @@
 - 2026-09-08: P2-10は最新JSON取得にタイムアウトがなくpending時にchecking表示が残り得ることを特定。PR #223で10秒のbounded fetchを最終公開境界へ導入し、CI run #17、canonical migration run #11、生成commit `bd3c89ab54bab9c8ded5678448287fb68ed46ced`、Pages run #2838成功と公開HTMLへの10秒ガード反映まで確認。P2-10を本番反映確認済みに確定し、次をP2-11とした。
 - 2026-09-08: 10/12 Kawacolleが同一物理イベントなのに7カードへ分裂し、10/12・10/17が主催のみへ誤分類される問題を緊急修正。PR #224で公式主催者根拠によるexternal固定＋外部イベント系列の公開1件化を最終公開境界へ追加。CI run #18、canonical migration run #12、生成commit `9292c390a4affe5ae26dfe513266f244def7724b`、Pages run #2843成功まで確認。次の通常作業対象はP2-11のまま。
 
-## 2026-09-14 一般販売の欠落（修正済み・検証済み／本番確認待ち）
+## 2026-09-14 一般販売の欠落（修正済み・検証済み・本番表示確認済み）
 - 9/21 SWEET STEADY お花見会 第一回・第二回、9/23・9/29・9/30 CUTIE STREETツアーで9/12 10:00一般発売の未掲載を確認。
 - HOT STUFFの各公演詳細とぴあの販売画面を直接照合。お花見会は現在予定枚数終了、有明2日間は9/23 23:59まで販売期間中。
 - 既存Promoter General Sale Guardが生誕祭のみ対象。修正と公開表示の検証を実施中。
@@ -193,3 +193,7 @@
 - `promoter_general_sale_guard.py` は生誕祭以外の既知公演もグループ・日・開演・会場一致で補完。ナビゲーションの「一般発売」を本文と取り違えず、発売情報欄から開始を抽出。同日昼夜を別の受付として扱う。ワークフローはJSONだけでなく公開HTML/fallbackまで再生成する。
 - `update_pia_events.py` に今回のスイステ・きゅーすと公演ページを継続監視先として追加。
 - 検証: 5公演の公開モデルとsnapshot/latest/offlineで一般発売表示・販売状態・公演が1件であること、既存キャンチューツアー23日/未来18日の維持を確認。一般販売9テスト、既存公演13テスト、帯・主催区分・ブラウザ表示処理の回帰テスト成功。実ブラウザによる本番確認は反映後に追記。
+
+- 本番確認: commit `32c4329ae3b082aa886eeb0eff875ed8f6aca679` を公開。自動再生成（Harden live calendar `34765174208`）・Schedule shell build regression `34765174069` 成功。公開ページのブラウザーDOMでお花見会昼夜と横浜を「予定枚数終了」、有明2公演を「受付中」、一般発売開始・締切・ぴあリンクを確認。公演カードは5件のまま。
+- Promoter Guardの初回公開は並行更新とのrebase競合で安全停止。競合時に独立worktreeで最新mainから再収集・再生成・検証して再試行するよう修正。
+- 別件の既存失敗: Archive verified ticket history `34765174072` は `test_ended_entry_is_never_removed_when_live_data_no_longer_contains_it` の保存ID不一致で停止。今回その実装は変更していない。一般販売の本番表示と再生成は上記で確認済み。

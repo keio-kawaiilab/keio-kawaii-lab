@@ -70,5 +70,30 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/live-events.json data/ticket-history.json schedule.html live-runtime-fallback.js
           git commit -m "Recover promoter general sale history"
-          git pull --rebase origin main
-          git push origin HEAD:main
+          if git push origin HEAD:main; then
+            exit 0
+          fi
+          for attempt in 1 2 3; do
+            git fetch origin main
+            retry_dir="$(mktemp -d /tmp/promoter-publish.XXXXXX)"
+            git worktree add --detach "$retry_dir" origin/main
+            if (
+              set -euo pipefail
+              cd "$retry_dir" || exit 1
+              python scripts/promoter_general_sale_guard.py || exit 1
+              python scripts/archive_ticket_history.py || exit 1
+              python scripts/build_schedule_snapshot.py || exit 1
+              python scripts/fix_schedule_shell.py || exit 1
+              python scripts/strip_schedule_explanations.py || exit 1
+              python scripts/build_live_runtime_fallback.py || exit 1
+              node scripts/test_general_sale_runtime.js || exit 1
+              git add data/live-events.json data/ticket-history.json schedule.html live-runtime-fallback.js || exit 1
+              if git diff --cached --quiet; then exit 0; fi
+              git commit -m "Recover promoter general sale history from latest main" || exit 1
+              git push origin HEAD:main
+            ); then
+              exit 0
+            fi
+          done
+          echo "Latest-main publication did not complete after three retries." >&2
+          exit 1
