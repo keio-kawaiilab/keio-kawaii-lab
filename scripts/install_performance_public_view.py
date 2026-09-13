@@ -9,6 +9,7 @@ from typing import Any
 
 import build_schedule_snapshot
 from performance_entities import build_public_events
+from verified_general_sales import apply_verified_general_sales
 from schedule_scope import HOSTED, infer_event_scope
 from special_event_occurrence_details import expand_occurrence_views
 
@@ -84,7 +85,7 @@ def _ticket_options_html(event: dict[str, Any]) -> str:
             else '<span class="ticket-link" aria-disabled="true">リンク未取得</span>'
         )
         rows.append(
-            '<div class="ticket-option">'
+            f'<div class="ticket-option" data-sale-status="{build_schedule_snapshot.esc(offer.get("applicationStatus") or "")}">'
             f'<span class="provider {build_schedule_snapshot.esc(provider)}">{build_schedule_snapshot.esc(label)}</span>'
             '<span class="ticket-copy">'
             f'<b>{build_schedule_snapshot.esc(ticket_type)}</b>'
@@ -146,6 +147,7 @@ def _build_public_card(event: dict[str, Any]) -> str:
 def _public_display_events(payload: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     display_source = expand_occurrence_views(payload.get("events") or [])
     public_events, report = build_public_events(display_source)
+    apply_verified_general_sales(public_events)
     now = datetime.now(JST)
     today = now.date()
     visible = [
@@ -331,6 +333,7 @@ def _verify_tour_times(payload: dict[str, Any], page: str) -> None:
 def main() -> int:
     payload = json.loads(DATA.read_text(encoding="utf-8"))
     public_events, model_report = build_public_events(payload.get("events") or [])
+    apply_verified_general_sales(public_events)
     payload["publicEvents"] = public_events
     payload["publicEventModelVersion"] = 1
     payload["publicEventModelReport"] = model_report

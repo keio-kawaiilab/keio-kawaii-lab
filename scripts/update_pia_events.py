@@ -26,6 +26,8 @@ ARTIST_URLS = {
 # Artist pages occasionally omit or defer individual bundle links. Keep high-confidence
 # public event bundles as seeds, then merge them with the normal discovery result.
 SEEDED_EVENT_PAGES = {
+    "SWEET STEADY": [("https://t.pia.jp/pia/event/event.do?eventBundleCd=b2670866", "SWEET STEADY 単独公演 お花見会")],
+    "CUTIE STREET": [("https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981", "CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-")],
     "CANDY TUNE": [
         ("https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827", "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -"),
     ],

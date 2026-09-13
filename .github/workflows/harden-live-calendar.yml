@@ -6,6 +6,8 @@ on:
     paths:
       - ".github/workflows/harden-live-calendar.yml"
       - "scripts/build_live_runtime_fallback.py"
+      - "scripts/verified_general_sales.py"
+      - "data/verified-general-sales.json"
       - "scripts/guard_birthday_year_consistency.py"
       - "scripts/guard_candy_tune_tour_integrity.py"
       - "scripts/harden_ticket_semantics.py"

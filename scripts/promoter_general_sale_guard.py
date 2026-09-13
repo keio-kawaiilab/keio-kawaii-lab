@@ -5,6 +5,8 @@ import argparse
 import hashlib
 import json
 import re
+import unicodedata
+from copy import deepcopy
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
@@ -163,6 +165,9 @@ def provider_name(links: list[str]) -> str:
 
 def extract_general_sale(soup: BeautifulSoup, event_day: str, source_url: str) -> dict | None:
     text = normalize(soup.get_text(" ", strip=True))
+    # Ignore navigation labels and ticket prices outside the sale section.
+    if "発売情報" in text:
+        text = text.split("発売情報", 1)[1].split("券種・料金", 1)[0]
     match = GENERAL_RE.search(text)
     if not match:
         return None
@@ -211,7 +216,36 @@ def discover_group_candidates(session: requests.Session) -> tuple[list[promoter.
     return list(found.values()), failures
 
 
-def collect(session: requests.Session, today: date) -> tuple[list[dict], list[dict]]:
+def parse_known_performance(html: str, known_events: list[dict], today: date) -> dict | None:
+    """Match a promoter detail to an existing show, including ordinary tours.
+
+    Related-show links cannot supply a different group's identity or time.
+    A match requires group, date, start time and venue together.
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    text = normalize(unicodedata.normalize("NFKC", soup.get_text(" ", strip=True)))
+    text = text.split("関連公演", 1)[0]
+    day_match = promoter.DATE_RE.search(text)
+    start = promoter.first_match(promoter.START_RE, text)
+    if not day_match or not start:
+        return None
+    day = date(*(int(v) for v in day_match.groups())).isoformat()
+    if day < today.isoformat():
+        return None
+    def venue_key(value):
+        value = unicodedata.normalize("NFKC", str(value or ""))
+        value = re.sub(r"^(?:東京都|北海道|京都府|大阪府|.{2,3}県)\s*", "", value)
+        return re.sub(r"[\s()（）]", "", value).casefold()
+    venues = [venue_key(a.get_text(" ", strip=True)) for a in soup.find_all("a", href=True)
+              if "venue/detail.php" in str(a.get("href"))]
+    matches = [e for e in known_events if e.get("entityType") == "performance"
+               and e.get("group") in promoter.GROUPS and e["group"] in text
+               and e.get("eventDate") == day and e.get("startTime") == start
+               and venue_key(e.get("venue")) in venues[:1]]
+    return deepcopy(matches[0]) if len(matches) == 1 else None
+
+
+def collect(session: requests.Session, today: date, known_events=None) -> tuple[list[dict], list[dict]]:
     candidates, failures = discover_group_candidates(session)
     rows: list[dict] = []
 
@@ -220,13 +254,20 @@ def collect(session: requests.Session, today: date) -> tuple[list[dict], list[di
         try:
             response = session.get(source_url, timeout=25)
             response.raise_for_status()
-            event = promoter.parse_detail(source_url, response.text, today)
+            event = parse_known_performance(response.text, known_events or [], today)
+            if event is None:
+                event = promoter.parse_detail(source_url, response.text, today)
             if not event:
                 continue
             event_day = str(event.get("eventDate") or "")[:10]
             soup = BeautifulSoup(response.text, "html.parser")
             sale = extract_general_sale(soup, event_day, source_url)
             if not sale:
+                continue
+            # A verified public offer already has this start; do not create a
+            # second promoter row that the legacy two-show normalizer can fold.
+            if any("一般" in str(o.get("ticketType") or "") and o.get("applyStart") == sale["applyStart"]
+                   for o in event.get("offers") or []):
                 continue
         except Exception as exc:
             failures.append({
@@ -243,6 +284,7 @@ def collect(session: requests.Session, today: date) -> tuple[list[dict], list[di
                 "promoter-general-sale",
                 event.get("group"),
                 event_day,
+                event.get("startTime"),
                 sale["applyStart"],
                 source_url,
             ),
@@ -278,19 +320,19 @@ def collect(session: requests.Session, today: date) -> tuple[list[dict], list[di
     return rows, failures
 
 
-def general_sale_key(event: dict) -> tuple[str, str, str] | None:
+def general_sale_key(event: dict) -> tuple[str, str, str, str] | None:
     if "一般" not in normalize(event.get("ticketType")):
         return None
     group = normalize(event.get("group"))
     day = str(event.get("eventDate") or "")[:10]
     if not group or not day:
         return None
-    return group, day, "一般発売"
+    return group, day, str(event.get("startTime") or ""), "一般発売"
 
 
 def merge(payload: dict, rows: list[dict]) -> tuple[int, int]:
     events = [dict(x) for x in payload.get("events", []) if isinstance(x, dict)]
-    index: dict[tuple[str, str, str], int] = {}
+    index: dict[tuple[str, str, str, str], int] = {}
     for i, event in enumerate(events):
         key = general_sale_key(event)
         if key:
@@ -349,7 +391,7 @@ def run(check: bool = False, today: date | None = None) -> dict:
     payload = json.loads(json.dumps(original, ensure_ascii=False))
     session = make_session()
     try:
-        rows, failures = collect(session, today)
+        rows, failures = collect(session, today, payload.get("publicEvents") or [])
     finally:
         session.close()
 

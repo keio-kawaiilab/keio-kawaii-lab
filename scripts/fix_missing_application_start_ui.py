@@ -18,9 +18,9 @@ START_TEXT_JS = (
 OFFER_HTML_JS = (
     "function offerHtml(o){var missingStart=!!o.synthetic||!o.applyStart,"
     "period=missingStart?('申込開始：日時未取得'+(o.applyEnd?' ／ 締切 '+fmt(o.applyEnd):'')):(fmt(o.applyStart)+' 〜 '+fmt(o.applyEnd)),"
-    "start=moment(o.applyStart,false),end=moment(o.applyEnd,true),ended=!!end&&end<now,"
+    "start=moment(o.applyStart,false),end=moment(o.applyEnd,true),soldOut=(o.event||o).applicationStatus==='sold_out',ended=soldOut||(!!end&&end<now),"
     "scheduled=!missingStart&&!!start&&start>now,open=!missingStart&&!ended&&!scheduled,"
-    "state=ended?'受付終了':missingStart?'開始日時未取得':scheduled?'受付予定':'受付中',"
+    "state=soldOut?'予定枚数終了':ended?'受付終了':missingStart?'開始日時未取得':scheduled?'受付予定':'受付中',"
     "detailOnly=ended||missingStart,"
     "action=detailOnly?'受付詳細を確認 →':o.provider==='kawaii-store'?'整理券ページ →':/^(rakuten|hmv|tower)$/.test(o.provider)?'対象商品ページ →':'申込ページ →',"
     "mode=detailOnly?' detail-only':'',stateClass=open?' open':scheduled?' scheduled':ended?' ended':'';"
@@ -167,6 +167,8 @@ def _patch_static_ticket_option(block: str, now: datetime) -> str:
         block = block[: match.start(1)] + normalized_window + block[match.end(1) :]
 
     state_key, state_label, detail_only = _offer_state(original_window, now)
+    if 'data-sale-status="sold_out"' in block:
+        state_key, state_label, detail_only = "ended", "予定枚数終了", True
     block = _set_static_state(block, state_key, state_label)
     return _set_static_link_mode(block, detail_only=detail_only)
 
@@ -199,22 +201,22 @@ def patch_page(page: str, *, now: datetime | None = None) -> str:
     chunks = re.split(r'(<script\b[^>]*>.*?</script>)', page, flags=re.S | re.I)
     for i in range(0, len(chunks), 2):
         chunks[i] = re.sub(
-            r'<div class="ticket-option">.*?</div>',
+            r'<div class="ticket-option"[^>]*>.*?</div>',
             lambda m: _patch_static_ticket_option(m.group(0), now),
             chunks[i], flags=re.S,
         )
     page = ''.join(chunks)
 
     page = _replace_function(page, "startText", "performanceDate", START_TEXT_JS, "missingStart=!e.applyStart")
-    page = _replace_function(page, "offerHtml", "detailList", OFFER_HTML_JS, "ended=!!end&&end<now")
+    page = _replace_function(page, "offerHtml", "detailList", OFFER_HTML_JS, "ended=soldOut||(!!end&&end<now)")
 
     if "申込開始開始日時未取得" in page:
         raise RuntimeError("duplicate missing-start label remains in schedule.html")
-    if "ended=!!end&&end<now" not in page:
+    if "ended=soldOut||(!!end&&end<now)" not in page:
         raise RuntimeError("runtime no longer calculates ended receptions from the current time")
     if "scheduled=!missingStart&&!!start&&start>now" not in page:
         raise RuntimeError("runtime no longer calculates future receptions from the current time")
-    if "state=ended?'受付終了'" not in page:
+    if "state=soldOut?'予定枚数終了':ended?'受付終了'" not in page:
         raise RuntimeError("ended receptions are not exposed as ended")
     if "detailOnly=ended||missingStart" not in page:
         raise RuntimeError("ended or unknown-start receptions still expose an application CTA")

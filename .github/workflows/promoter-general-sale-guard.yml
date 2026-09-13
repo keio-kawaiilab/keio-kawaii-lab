@@ -3,6 +3,7 @@ name: Promoter General Sale Guard
 on:
   workflow_dispatch:
   push:
+    branches: [main]
     paths:
       - "scripts/promoter_general_sale_guard.py"
       - "scripts/test_promoter_general_sale_guard.py"
@@ -38,7 +39,7 @@ jobs:
       - name: Regression tests
         env:
           PYTHONPATH: scripts
-        run: python -m unittest scripts/test_promoter_general_sale_guard.py
+        run: python -m unittest scripts/test_promoter_general_sale_guard.py scripts/test_verified_general_sales.py
 
       - name: Recover promoter general-sale history
         env:
@@ -50,16 +51,24 @@ jobs:
           PYTHONPATH: scripts
         run: python scripts/archive_ticket_history.py
 
+      - name: Rebuild public general-sale display
+        run: |
+          python scripts/build_schedule_snapshot.py
+          python scripts/fix_schedule_shell.py
+          python scripts/strip_schedule_explanations.py
+          python scripts/build_live_runtime_fallback.py
+          node scripts/test_general_sale_runtime.js
+
       - name: Commit recovered ticket history
         shell: bash
         run: |
-          if git diff --quiet -- data/live-events.json data/ticket-history.json; then
+          if git diff --quiet -- data/live-events.json data/ticket-history.json schedule.html live-runtime-fallback.js; then
             echo "No promoter ticket-history changes."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/live-events.json data/ticket-history.json
+          git add data/live-events.json data/ticket-history.json schedule.html live-runtime-fallback.js
           git commit -m "Recover promoter general sale history"
           git pull --rebase origin main
           git push origin HEAD:main
