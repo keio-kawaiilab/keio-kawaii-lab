@@ -1,32 +1,12 @@
 {
-  "date": "2026-09-13",
+  "date": "2026-09-14",
   "horizonDays": 7,
-  "generatedAt": "2026-09-13T22:26+09:00",
+  "generatedAt": "2026-09-14T03:07+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
-    {
-      "date": "2026-09-13",
-      "venue": "千葉県 千葉市蘇我スポーツ公園",
-      "venueKey": "千葉市蘇我スポーツ公園",
-      "eventIds": [
-        "6e58b59f8753f01c"
-      ],
-      "areaCode": "120010",
-      "areaName": "北西部",
-      "precision": "area",
-      "label": "くもり 夜 晴れ",
-      "max": null,
-      "min": null,
-      "pop": "10",
-      "popLabel": "当日最大",
-      "issuedAt": "2026-09-13T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
     {
       "date": "2026-09-14",
       "venue": "SGCホール有明",
@@ -293,21 +273,16 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 32,
-    "uniqueVenueDates": 15,
-    "weatherEntries": 11,
+    "occurrencesInRange": 37,
+    "uniqueVenueDates": 16,
+    "weatherEntries": 10,
     "meshEntries": 1,
-    "failures": 4,
+    "failures": 6,
     "meshTimelineEntries": 1,
     "meshExactTempSlots": 7,
     "hourlyRainEntries": 0
   },
   "failures": [
-    {
-      "date": "2026-09-13",
-      "venue": "北海道 苫小牧・キラキラ公園",
-      "reason": "都道府県を解決できません"
-    },
     {
       "date": "2026-09-14",
       "venue": "北海道 サッポロファクトリー アトリウム",
@@ -315,12 +290,27 @@
     },
     {
       "date": "2026-09-20",
-      "venue": "オンライン（SUKISUKI）",
+      "venue": "ダイナシティ正面店頭ステージ(屋外)",
       "reason": "都道府県を解決できません"
     },
     {
-      "date": "2026-09-20",
-      "venue": "ダイナシティ正面店頭ステージ(屋外)",
+      "date": "2026-09-21",
+      "venue": "東京都 Zepp Shinjuku(TOKYO)",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-09-21",
+      "venue": "三重県 三重県文化会館 大ホール",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-09-21",
+      "venue": "千葉県 千葉市蘇我スポーツ公園",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-09-21",
+      "venue": "三重県文化会館 大ホール",
       "reason": "都道府県を解決できません"
     }
   ]
