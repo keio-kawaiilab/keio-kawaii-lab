@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-14T00:09:18.262092+09:00",
-  "candidateUpdatedAt": "2026-09-14T00:09:17+09:00",
-  "previousEventCount": 316,
+  "generatedAt": "2026-09-14T01:09:04.820844+09:00",
+  "candidateUpdatedAt": "2026-09-14T01:09:04+09:00",
+  "previousEventCount": 312,
   "candidateEventCount": 312,
-  "protectedPreviousCount": 313,
+  "protectedPreviousCount": 312,
   "errorCount": 0,
-  "warningCount": 46,
+  "warningCount": 40,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: duplicate Pia lot pia:17441: FRUITS ZIPPER / FRUITS ZIPPER / ぴあ先行",
@@ -14,12 +14,6 @@
     "quarantined one event/source update and kept the previous known-good data: canonical special event deadline is not verified by an official page: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場【1部・3部・6部】 / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: canonical special event offer has no verified purchase/ticket window: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場【1部・3部・6部】 / 現在受付なし / offer 1",
     "quarantined one event/source update and kept the previous known-good data: special event has no official source URL: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場【1部・3部・6部】 / 現在受付なし",
-    "quarantined one event/source update and kept the previous known-good data: missing title: CANDY TUNE / ? / FC先行",
-    "quarantined one event/source update and kept the previous known-good data: missing title: CUTIE STREET / ? / FC先行",
-    "quarantined one event/source update and kept the previous known-good data: missing title: FRUITS ZIPPER / ? / FC先行",
-    "quarantined one event/source update and kept the previous known-good data: missing title: KAWAII LAB. MATES / ? / FC先行",
-    "quarantined one event/source update and kept the previous known-good data: missing title: KAWAII LAB. SOUTH / ? / FC先行",
-    "quarantined one event/source update and kept the previous known-good data: missing title: SWEET STEADY / ? / FC先行",
     "quarantined one event/source update and kept the previous known-good data: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event is not marked as official-source data: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event has no participation method: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -56,7 +50,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
   ],
-  "candidateSha256": "c2a6ae2e8de60cb5ebf17734443b05ad0d2c1fa691e3b14dcf9e4b3c04df0326",
+  "candidateSha256": "91de5b4a8e21fc6da9854bf18b0f2411bfdca91444a4f6eb8e91b7c5f48e167f",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/",
@@ -136,7 +130,6 @@
     "url:https://morestar.asobisystem.com/news/detail/87783",
     "url:https://morestar.asobisystem.com/news/detail/88498",
     "url:https://prtimes.jp/main/html/rd/p/000000861.000017258.html",
-    "url:https://sukisuki-shop.com/goods/6500000004400",
     "url:https://sukisuki-shop.com/goods/6500000004401",
     "url:https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026",
     "url:https://sweetsteady.asobisystem.com/live_information/detail/43905",
@@ -324,7 +317,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 18,
+  "quarantineCount": 12,
   "quarantineActions": [
     {
       "error": "duplicate Pia lot pia:17441: FRUITS ZIPPER / FRUITS ZIPPER / ぴあ先行",
@@ -350,36 +343,6 @@
       "error": "special event has no official source URL: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場【1部・3部・6部】 / 現在受付なし",
       "action": "restored previous row",
       "restoredPreviousRows": 1
-    },
-    {
-      "error": "missing title: CANDY TUNE / ? / FC先行",
-      "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 2
-    },
-    {
-      "error": "missing title: CUTIE STREET / ? / FC先行",
-      "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 2
-    },
-    {
-      "error": "missing title: FRUITS ZIPPER / ? / FC先行",
-      "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 2
-    },
-    {
-      "error": "missing title: KAWAII LAB. MATES / ? / FC先行",
-      "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 2
-    },
-    {
-      "error": "missing title: KAWAII LAB. SOUTH / ? / FC先行",
-      "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 2
-    },
-    {
-      "error": "missing title: SWEET STEADY / ? / FC先行",
-      "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 2
     },
     {
       "error": "special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
