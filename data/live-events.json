@@ -1,6 +1,6 @@
 {
   "demo": false,
-  "updatedAt": "2026-09-14T03:22:28+09:00",
+  "updatedAt": "2026-09-14T03:48:28+09:00",
   "source": "KAWAII LAB.各グループ公式公開情報 + チケットぴあ・ローチケ・イープラス公開情報 + SUKISUKI公開オンライン特典会情報 + 公式大特典会・リリースイベント情報",
   "events": [
     {
@@ -3032,7 +3032,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=15956",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=15956",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "external"
     },
     {
       "id": "a31be5e59f42b0b7",
@@ -3809,7 +3810,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=95188",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=95188",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "kawaii-lab"
     },
     {
       "id": "73a26f64f10ae635",
@@ -4927,9 +4929,9 @@
       "id": "8bd3d05e19ac0532",
       "group": "CANDY TUNE",
       "title": "CANDY TUNE 小川奈々子 生誕祭 2026",
-      "ticketType": "現在受付なし",
-      "applyStart": null,
-      "applyEnd": null,
+      "ticketType": "年会費コース会員先行",
+      "applyStart": "2026-09-04T18:00",
+      "applyEnd": "2026-09-07T23:59",
       "resultDate": null,
       "paymentEnd": null,
       "eventDate": "2026-10-01",
@@ -4957,11 +4959,15 @@
       ],
       "applicationStatus": "none",
       "officialScheduleUrl": "https://candytune.asobisystem.com/live_information/detail/43376",
-      "applicationDisplayMode": "schedule-only",
+      "applicationDisplayMode": "band",
       "specialDetailsStatus": "ticket-details-found",
       "ticketGuardRejected": true,
       "ticketGuardReason": "upgrade notice cannot be used as the source of an annual-fee ticket sale",
-      "ticketGuardSource": "https://candytune.asobisystem.com/news/detail/88933"
+      "ticketGuardSource": "https://candytune.asobisystem.com/news/detail/88933",
+      "applicationWindowVerified": true,
+      "deadlineVerified": true,
+      "applicationWindowSource": "https://candytune.asobisystem.com/news/detail/88933",
+      "deadlineSource": "https://candytune.asobisystem.com/news/detail/88933"
     },
     {
       "id": "a44a6c558b82f37d",
@@ -14132,7 +14138,7 @@
     "failures": []
   },
   "releasePreparation": {
-    "preparedAt": "2026-09-14T02:41:24+09:00",
+    "preparedAt": "2026-09-14T03:48:25+09:00",
     "normalizedSpecialEvents": 11,
     "duplicateIdsRemoved": 0,
     "retainedPreviousRows": 0,
@@ -14162,10 +14168,10 @@
       "remainingDuplicates": []
     },
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-09-14T02:41:24+09:00",
-    "checkedAt": "2026-09-14T02:41:24+09:00"
+    "publicUpdatedAt": "2026-09-14T03:48:25+09:00",
+    "checkedAt": "2026-09-14T03:48:25+09:00"
   },
-  "checkedAt": "2026-09-14T03:22:28+09:00",
+  "checkedAt": "2026-09-14T03:48:28+09:00",
   "publicEvents": [
     {
       "id": "1b5fec5f58ba553f",
@@ -15323,7 +15329,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=15956",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=15956",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "external"
     },
     {
       "id": "special-906dad7a05b62fe5",
@@ -18745,13 +18752,13 @@
     {
       "id": "performance-CANDY-TUNE-2026-10-01-time-19-00",
       "group": "CANDY TUNE",
-      "title": "CANDY TUNE 小川奈々子 生誕祭 2026",
+      "title": "2026.09.04 「CANDY TUNE 小川奈々子 生誕祭 2026」 アップグレード抽選受付のお知らせ",
       "eventDate": "2026-10-01",
       "venue": "SGCホール有明",
       "openTime": "17:30",
       "startTime": "19:00",
       "url": "https://kawaiilab.asobisystem.com/news/detail/88104",
-      "sourceType": "derived",
+      "sourceType": "auto",
       "sourcePublishedAt": "2026-09-04",
       "discoverySourceUrl": "https://candytune.asobisystem.com/news/detail/88933",
       "sourceChannel": "recent-official-body",
@@ -18769,11 +18776,6 @@
         "https://candytune.asobisystem.com/news/detail/86518",
         "https://candytune.asobisystem.com/news/detail/87180"
       ],
-      "officialScheduleUrl": "https://candytune.asobisystem.com/live_information/detail/43376",
-      "specialDetailsStatus": "ticket-details-found",
-      "ticketGuardRejected": true,
-      "ticketGuardReason": "upgrade notice cannot be used as the source of an annual-fee ticket sale",
-      "ticketGuardSource": "https://candytune.asobisystem.com/news/detail/88933",
       "entityType": "performance",
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-10-01|time|19:00",
@@ -18783,6 +18785,31 @@
         "c0bb53a7d3bc6b1a"
       ],
       "offers": [
+        {
+          "sourceRowId": "8bd3d05e19ac0532",
+          "provider": "official",
+          "url": "https://kawaiilab.asobisystem.com/news/detail/88104",
+          "urls": [
+            "https://kawaiilab.asobisystem.com/news/detail/88104",
+            "https://candytune.asobisystem.com/news/detail/88933",
+            "https://candytune.asobisystem.com/live_information/detail/43376",
+            "https://candytune.asobisystem.com/news/detail/86518",
+            "https://candytune.asobisystem.com/news/detail/87180"
+          ],
+          "ticketType": "年会費コース会員先行",
+          "applyStart": "2026-09-04T18:00",
+          "applyEnd": "2026-09-07T23:59",
+          "applicationStatus": "none",
+          "applicationWindowVerified": true,
+          "deadlineVerified": true,
+          "applicationDisplayMode": "band",
+          "applicationWindowSource": "https://candytune.asobisystem.com/news/detail/88933",
+          "deadlineSource": "https://candytune.asobisystem.com/news/detail/88933",
+          "sourceType": "derived",
+          "sourceChannel": "recent-official-body",
+          "primarySource": "official",
+          "sourcePublishedAt": "2026-09-04"
+        },
         {
           "sourceRowId": "a44a6c558b82f37d",
           "provider": "official",
@@ -29681,7 +29708,7 @@
     "performanceEntityCount": 99,
     "sourceOccurrenceCount": 473,
     "mergedSourceOccurrences": 374,
-    "offerCount": 239
+    "offerCount": 240
   },
   "resaleDiagnostics": {
     "articles": 25,
