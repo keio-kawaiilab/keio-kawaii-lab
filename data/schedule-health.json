@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-13T14:11:11.712094+09:00",
-  "candidateUpdatedAt": "2026-09-13T14:11:11+09:00",
-  "previousEventCount": 318,
-  "candidateEventCount": 318,
-  "protectedPreviousCount": 318,
+  "generatedAt": "2026-09-13T15:04:57.770118+09:00",
+  "candidateUpdatedAt": "2026-09-13T15:04:57+09:00",
+  "previousEventCount": 320,
+  "candidateEventCount": 315,
+  "protectedPreviousCount": 320,
   "errorCount": 0,
-  "warningCount": 49,
+  "warningCount": 55,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: canonical special event application window is not backed by an official page: CUTIE STREET / CUTIE STREET大特典会＠ベルサール渋谷ファースト【1部・3部・6部】 / 現在受付なし",
@@ -18,6 +18,12 @@
     "quarantined one event/source update and kept the previous known-good data: canonical special event deadline is not verified by an official page: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場【1部・3部・6部】 / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: canonical special event offer has no verified purchase/ticket window: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場【1部・3部・6部】 / 現在受付なし / offer 1",
     "quarantined one event/source update and kept the previous known-good data: special event has no official source URL: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場【1部・3部・6部】 / 現在受付なし",
+    "quarantined one event/source update and kept the previous known-good data: missing title: CANDY TUNE / ? / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: missing title: CUTIE STREET / ? / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: missing title: FRUITS ZIPPER / ? / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: missing title: KAWAII LAB. MATES / ? / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: missing title: KAWAII LAB. SOUTH / ? / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: missing title: SWEET STEADY / ? / FC先行",
     "quarantined one event/source update and kept the previous known-good data: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event is not marked as official-source data: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event has no participation method: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -59,7 +65,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
   ],
-  "candidateSha256": "e5d97597807a5e32038686a58f6535472cd5624bd7847f2de0025e5315773dc7",
+  "candidateSha256": "0110bc7bc23595d8f483f0a5ec8cac281679b2d59e36602c4b642b0c6a0f1354",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/",
@@ -163,6 +169,7 @@
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=17441",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=17867",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=20981",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=22728",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=22735",
@@ -353,7 +360,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 16,
+  "quarantineCount": 22,
   "quarantineActions": [
     {
       "error": "canonical special event application window is not backed by an official page: CUTIE STREET / CUTIE STREET大特典会＠ベルサール渋谷ファースト【1部・3部・6部】 / 現在受付なし",
@@ -401,6 +408,36 @@
       "restoredPreviousRows": 1
     },
     {
+      "error": "missing title: CANDY TUNE / ? / FC先行",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "missing title: CUTIE STREET / ? / FC先行",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "missing title: FRUITS ZIPPER / ? / FC先行",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "missing title: KAWAII LAB. MATES / ? / FC先行",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "missing title: KAWAII LAB. SOUTH / ? / FC先行",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "missing title: SWEET STEADY / ? / FC先行",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 2
+    },
+    {
       "error": "special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
       "action": "restored previous row",
       "restoredPreviousRows": 1
@@ -439,18 +476,11 @@
   "rowFailuresCanBlockRelease": false,
   "officialIndexReconciledAfterQuarantine": {
     "reassignedCount": 0,
-    "hydratedCount": 1,
+    "hydratedCount": 0,
     "ambiguousCount": 1,
     "unresolvedCount": 0,
     "reassigned": [],
-    "hydrated": [
-      {
-        "group": "CUTIE STREET",
-        "date": "2026-09-14",
-        "url": "https://cutiestreet.asobisystem.com/live_information/detail/42328",
-        "eventId": "05f385ab70d5c2e5"
-      }
-    ],
+    "hydrated": [],
     "ambiguous": [
       {
         "group": "SWEET STEADY",
