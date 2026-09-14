@@ -1,6 +1,13 @@
 name: Ticket flow release check
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "ticket-flow.js"
+      - "scripts/archive_ticket_history.py"
+      - "scripts/test_ticket_flow_history_runtime.js"
+      - ".github/workflows/ticket-flow-release-check.yml"
   pull_request:
     paths:
       - "ticket-flow.js"
@@ -32,3 +39,6 @@ jobs:
 
       - name: Verify additive fail-closed release guards
         run: python -m unittest -v scripts.test_ticket_flow_release
+
+      - name: Verify history independent of application visibility
+        run: node scripts/test_ticket_flow_history_runtime.js

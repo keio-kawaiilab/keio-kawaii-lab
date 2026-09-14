@@ -196,6 +196,8 @@ def make_entry(event: dict, source_url: str, source_key: str, day: str, registry
         "ticketType": event.get("ticketType"),
         "ticketProvider": event.get("ticketProvider") or event.get("primarySource") or source_key,
         "saleFamily": event.get("saleFamily"),
+        "applicationStatus": event.get("applicationStatus"),
+        "sourceObservedAt": event.get("sourceObservedAt"),
         "applyStart": event.get("applyStart"),
         "applyEnd": event.get("applyEnd"),
         "resultDate": event.get("resultDate"),
@@ -259,12 +261,26 @@ def archive_payload(live: dict, history: dict, registry: dict, now: str) -> dict
             "ticketProvider": existing.get("ticketProvider"),
         }
         canonical_id = history_identity(stub, canonical_url, source_key, clean(existing.get("eventDate")))
-        existing["id"] = canonical_id
         existing["sourceUrl"] = canonical_url
         current = by_id.get(canonical_id)
         by_id[canonical_id] = merge_entry(current, existing, now) if current else existing
 
-    for event in live.get("events", []):
+    observations = list(live.get("events", []))
+    source_ids = {str(row.get("id")) for row in observations if isinstance(row, dict) and row.get("id")}
+    # Public-only verified offers must survive removal from the application UI.
+    for performance in live.get("publicEvents", []):
+        if not isinstance(performance, dict):
+            continue
+        for offer in performance.get("offers") or []:
+            if not isinstance(offer, dict) or str(offer.get("sourceRowId")) in source_ids:
+                continue
+            event = {key: performance.get(key) for key in
+                     ("group", "title", "eventDate", "venue", "eventCategory", "participants")}
+            event.update(offer)
+            event["ticketProvider"] = offer.get("ticketProvider") or offer.get("provider")
+            observations.append(event)
+
+    for event in observations:
         if not isinstance(event, dict):
             continue
         if clean(event.get("ticketType")) in {"", "現在受付なし"}:

@@ -39,6 +39,26 @@ class ArchiveTicketHistoryTests(unittest.TestCase):
         result = mod.archive_payload({"events": []}, existing, self.registry, "2026-08-27T12:00:00+09:00")
         self.assertEqual([x["id"] for x in result["entries"]], ["keep-me"])
 
+    def test_public_only_sold_out_offer_is_archived_and_retained(self):
+        live={"events": [], "publicEvents": [{
+            "group":"CUTIE STREET", "title":"Arena Tour", "eventDate":"2026-09-23",
+            "offers":[{"sourceRowId":"verified-yokohama", "provider":"pia",
+                "ticketType":"一般発売（当日引換券）", "applyStart":"2026-09-12T10:00",
+                "applyEnd":"2026-09-22T23:59", "applicationStatus":"sold_out",
+                "applicationWindowVerified":True,
+                "url":"https://t.pia.jp/pia/ticketInformation.do?eventCd=2635331&rlsCd=001"}]}]}
+        result=mod.archive_payload(live,{"entries":[]},self.registry,"2026-09-14T10:00:00+09:00")
+        self.assertEqual(len(result["entries"]),1)
+        row=result["entries"][0]
+        self.assertTrue(row["publishable"])
+        self.assertTrue(row["flowEligible"])
+        self.assertEqual(row["applicationStatus"],"sold_out")
+        self.assertEqual(row["ticketProvider"],"pia")
+        again=mod.archive_payload(live,result,self.registry,"2026-09-14T11:00:00+09:00")
+        self.assertEqual(len(again["entries"]),1)
+        retained=mod.archive_payload({"events":[]},again,self.registry,"2026-09-15T11:00:00+09:00")
+        self.assertEqual(retained["entries"][0]["id"],row["id"])
+
     def test_direct_official_full_window_is_archived_and_publishable(self):
         live = {"events": [{
             "group": "CANDY TUNE",

@@ -129,6 +129,9 @@
   }
 
   function stateFor(row){
+    if(clean(row&&row.applicationStatus).toLowerCase()==="sold_out"){
+      return{label:"予定枚数終了",current:false,ended:true};
+    }
     if(clean(row&&row.applicationStatus).toLowerCase()==="ended"){
       return{label:"受付終了",current:false,ended:true};
     }
