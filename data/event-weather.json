@@ -1,7 +1,7 @@
 {
   "date": "2026-09-14",
   "horizonDays": 7,
-  "generatedAt": "2026-09-14T07:35+09:00",
+  "generatedAt": "2026-09-14T17:05+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -17,43 +17,19 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "mesh5km",
-      "label": "晴れ",
-      "max": 32.0,
-      "min": 32.0,
-      "pop": "20",
+      "label": "くもり",
+      "max": null,
+      "min": null,
+      "pop": "30",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-09-14T05:00:00+09:00",
-      "meshTime": "18:00",
+      "issuedAt": "2026-09-14T17:00:00+09:00",
+      "meshTime": "21:00",
       "meshTempBand": "25〜29℃",
       "coordinates": {
         "lat": 35.630138,
         "lon": 139.787827
       },
       "meshTimeline": [
-        {
-          "time": "09:00",
-          "label": "晴れ",
-          "validAt": "2026-09-14T09:00+09:00",
-          "temp": 28
-        },
-        {
-          "time": "12:00",
-          "label": "晴れ",
-          "validAt": "2026-09-14T12:00+09:00",
-          "temp": 29
-        },
-        {
-          "time": "15:00",
-          "label": "晴れ",
-          "validAt": "2026-09-14T15:00+09:00",
-          "temp": 29
-        },
-        {
-          "time": "18:00",
-          "label": "晴れ",
-          "validAt": "2026-09-14T18:00+09:00",
-          "temp": 27
-        },
         {
           "time": "21:00",
           "label": "くもり",
@@ -66,23 +42,6 @@
           "validAt": "2026-09-15T00:00+09:00",
           "temp": 26
         }
-      ],
-      "hourlyRain": [
-        {
-          "time": "18:00",
-          "rain": false,
-          "validAt": "2026-09-14T18:00+09:00"
-        },
-        {
-          "time": "19:00",
-          "rain": false,
-          "validAt": "2026-09-14T19:00+09:00"
-        },
-        {
-          "time": "20:00",
-          "rain": false,
-          "validAt": "2026-09-14T20:00+09:00"
-        }
       ]
     },
     {
@@ -90,17 +49,18 @@
       "venue": "埼玉県 イオンレイクタウンkaze 1F光の広場",
       "venueKey": "イオンレイクタウンkaze1f光の広場",
       "eventIds": [
-        "special-64615b6b82e21e26"
+        "special-64615b6b82e21e26",
+        "special-a91f4fd0f80a1f20"
       ],
       "areaCode": "110010",
-      "areaName": "埼玉県",
+      "areaName": "南部",
       "precision": "area",
-      "label": "くもり時々雨",
-      "max": 27.0,
-      "min": 20.0,
-      "pop": "60",
-      "popLabel": "1日",
-      "issuedAt": "2026-09-13T17:00:00+09:00",
+      "label": "雨 時々 くもり",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-09-14T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -117,14 +77,14 @@
         "5cb8a271eaacbbdc"
       ],
       "areaCode": "110010",
-      "areaName": "埼玉県",
+      "areaName": "南部",
       "precision": "area",
-      "label": "くもり時々雨",
-      "max": 27.0,
-      "min": 20.0,
-      "pop": "60",
-      "popLabel": "1日",
-      "issuedAt": "2026-09-13T17:00:00+09:00",
+      "label": "雨 時々 くもり",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-09-14T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -141,10 +101,10 @@
       "precision": "area",
       "label": "くもり一時雨",
       "max": 24.0,
-      "min": 20.0,
+      "min": 19.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-09-13T17:00:00+09:00",
+      "issuedAt": "2026-09-14T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -165,10 +125,10 @@
       "precision": "area",
       "label": "くもり",
       "max": 24.0,
-      "min": 20.0,
+      "min": 21.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-09-13T17:00:00+09:00",
+      "issuedAt": "2026-09-14T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -184,11 +144,11 @@
       "areaName": "千葉県",
       "precision": "area",
       "label": "くもり一時雨",
-      "max": 26.0,
+      "max": 25.0,
       "min": 21.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-09-13T17:00:00+09:00",
+      "issuedAt": "2026-09-14T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -211,11 +171,11 @@
       "areaName": "千葉県",
       "precision": "area",
       "label": "くもり一時雨",
-      "max": 26.0,
+      "max": 25.0,
       "min": 21.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-09-13T17:00:00+09:00",
+      "issuedAt": "2026-09-14T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -232,10 +192,10 @@
       "precision": "area",
       "label": "くもり",
       "max": 26.0,
-      "min": 19.0,
+      "min": 20.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-09-13T17:00:00+09:00",
+      "issuedAt": "2026-09-14T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -252,10 +212,10 @@
       "precision": "area",
       "label": "くもり一時雨",
       "max": 28.0,
-      "min": 20.0,
+      "min": 21.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-09-13T17:00:00+09:00",
+      "issuedAt": "2026-09-14T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -273,25 +233,89 @@
       "areaName": "神奈川県",
       "precision": "area",
       "label": "くもり一時雨",
-      "max": 27.0,
+      "max": 28.0,
       "min": 21.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-09-13T17:00:00+09:00",
+      "issuedAt": "2026-09-14T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-09-21",
+      "venue": "東京都 Zepp Shinjuku(TOKYO)",
+      "venueKey": "zeppshinjukutokyo",
+      "eventIds": [
+        "a31be5e59f42b0b7",
+        "a31be5e59f42b0b7--ohanami-second"
+      ],
+      "areaCode": "130010",
+      "areaName": "東京地方",
+      "precision": "area",
+      "label": "くもり",
+      "max": 28.0,
+      "min": 22.0,
+      "pop": "40",
+      "popLabel": "1日",
+      "issuedAt": "2026-09-14T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-09-21",
+      "venue": "三重県 三重県文化会館 大ホール",
+      "venueKey": "三重県文化会館",
+      "eventIds": [
+        "024676b8e98a3faf",
+        "5cb8a271eaacbbdc",
+        "1ff7623ef8d21f95",
+        "5ac189008c65aa57"
+      ],
+      "areaCode": "240010",
+      "areaName": "三重県",
+      "precision": "area",
+      "label": "くもり一時雨",
+      "max": 28.0,
+      "min": 23.0,
+      "pop": "50",
+      "popLabel": "1日",
+      "issuedAt": "2026-09-14T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-09-21",
+      "venue": "千葉県 千葉市蘇我スポーツ公園",
+      "venueKey": "千葉市蘇我スポーツ公園",
+      "eventIds": [
+        "21cc160681752132"
+      ],
+      "areaCode": "120010",
+      "areaName": "千葉県",
+      "precision": "area",
+      "label": "くもり",
+      "max": 27.0,
+      "min": 22.0,
+      "pop": "40",
+      "popLabel": "1日",
+      "issuedAt": "2026-09-14T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
     }
   ],
   "stats": {
-    "occurrencesInRange": 37,
+    "occurrencesInRange": 38,
     "uniqueVenueDates": 16,
-    "weatherEntries": 10,
+    "weatherEntries": 13,
     "meshEntries": 1,
-    "failures": 6,
+    "failures": 3,
     "meshTimelineEntries": 1,
-    "meshExactTempSlots": 6,
-    "hourlyRainEntries": 1
+    "meshExactTempSlots": 2,
+    "hourlyRainEntries": 0
   },
   "failures": [
     {
@@ -303,21 +327,6 @@
       "date": "2026-09-20",
       "venue": "ダイナシティ正面店頭ステージ(屋外)",
       "reason": "都道府県を解決できません"
-    },
-    {
-      "date": "2026-09-21",
-      "venue": "東京都 Zepp Shinjuku(TOKYO)",
-      "reason": "開催日の予報がまだありません"
-    },
-    {
-      "date": "2026-09-21",
-      "venue": "三重県 三重県文化会館 大ホール",
-      "reason": "開催日の予報がまだありません"
-    },
-    {
-      "date": "2026-09-21",
-      "venue": "千葉県 千葉市蘇我スポーツ公園",
-      "reason": "開催日の予報がまだありません"
     },
     {
       "date": "2026-09-21",
