@@ -344,6 +344,11 @@ def main() -> int:
     page = re.sub(r'<script src="\./train-status\.js(?:\?v=[^"]*)?"></script>\s*', "", page)
     page = page.replace("</body>", '<script src="./train-status.js?v=202608300345"></script>\n</body>', 1)
 
+    # Load the history renderer directly with a versioned URL so older indirect
+    # loaders cannot keep using pre-sold-out history status logic.
+    if 'data-ticket-flow' not in page:
+        page = page.replace('</body>', '<script src="./ticket-flow.js?v=20260914-history" data-ticket-flow defer></script>\n</body>', 1)
+
     now = datetime.now(JST)
     today = now.date()
     events = [dict(x) for x in payload.get("events", []) if isinstance(x, dict)]
