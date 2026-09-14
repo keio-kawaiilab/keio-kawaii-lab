@@ -339,10 +339,10 @@ def main() -> int:
         return 0
 
     page = ensure_site_navigation(page)
-    if 'href="./train-status.css"' not in page:
-        page = page.replace("<style>", '<link rel="stylesheet" href="./train-status.css">\n<style>', 1)
+    if 'href="./train-status.css?v=20260914-event"' not in page:
+        page = page.replace("<style>", '<link rel="stylesheet" href="./train-status.css?v=20260914-event">\n<style>', 1)
     page = re.sub(r'<script src="\./train-status\.js(?:\?v=[^"]*)?"></script>\s*', "", page)
-    page = page.replace("</body>", '<script src="./train-status.js?v=202608300345"></script>\n</body>', 1)
+    page = page.replace("</body>", '<script src="./train-status.js?v=20260914-event"></script>\n</body>', 1)
 
     # Load the history renderer directly with a versioned URL so older indirect
     # loaders cannot keep using pre-sold-out history status logic.

@@ -47,3 +47,14 @@ assert(api.disruptionsForEvent(event,"2026-08-24",venues,tokyoMetro).length===0,
 assert(api.disruptionsForEvent(event,"2026-08-25",venues,[{name:"横浜線",url:"b"}]).length===0,"an unrelated route must stay empty");
 
 console.log("train-status frontend matching tests passed");
+
+var shared=[{name:'りんかい線',url:'https://example.com/rinkai',status:'列車遅延'}];
+var shows=[{group:'CUTIE STREET',title:'梅田みゆ 生誕祭 2026',eventDate:'2026-09-14',venue:'SGCホール有明',startTime:'19:00'},
+ {group:'CUTIE STREET',title:'ARENA TOUR',eventDate:'2026-09-29',venue:'有明アリーナ',startTime:'18:00'}];
+var associated=api.summaryRoutes('2026-09-14',shows.concat(shows[0]),venues,shared);
+assert(associated.length===1&&associated[0].performances.length===1,'same-day performance association must dedupe without adding future shows');
+var html=api.alertHtml(associated,'test');
+assert(html.includes('CUTIE STREET 梅田みゆ 生誕祭 2026')&&html.includes('SGCホール有明')&&html.includes('9/14 開演 19:00'),'summary must identify the concert and venue');
+assert(!html.includes('ARENA TOUR'),'unrelated date appeared in summary');
+assert(!shared[0].performances,'summary mutated route source');
+console.log('train-status concert context tests passed');

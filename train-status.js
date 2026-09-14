@@ -151,9 +151,35 @@
     return found;
   }
 
+  function summaryRoutes(today,events,venues,routes){
+    var found=[];
+    events.forEach(function(event){
+      occurrenceRows(event).forEach(function(row){
+        if(row.date!==today)return;
+        var venue=resolveVenue(row.venue,venues);
+        if(!venue)return;
+        routes.forEach(function(route){
+          if(!routeMatchesVenue(route,venue))return;
+          var item=found.find(function(value){return value.url===route.url;});
+          if(!item){item=Object.assign({},route,{performances:[]});found.push(item);}
+          var title=String(event.displayTitle||event.title||event.eventTitle||event.group||"公演");
+          if(event.group&&title.indexOf(event.group)<0)title=event.group+" "+title;
+          var info={title:title,date:row.date,venue:row.venue,startTime:event.startTime||""};
+          var key=[info.title,info.date,info.venue,info.startTime].join("|");
+          if(!item.performances.some(function(value){return value.key===key;}))item.performances.push(Object.assign({key:key},info));
+        });
+      });
+    });
+    return found;
+  }
+
   function alertHtml(routes,sourceName){
     var items=routes.map(function(route){
-      return '<li><div><strong>'+esc(route.name)+'</strong><span>'+esc(route.status||"運行情報あり")+'</span></div><a href="'+esc(route.url)+'" target="_blank" rel="noopener">最新情報 ↗</a></li>';
+      var targets=(route.performances||[]).map(function(event){
+        var day=event.date.split("-").map(Number);
+        return '<p class="train-status-target"><b>'+esc(event.title)+'</b><br>'+day[1]+'/'+day[2]+(event.startTime?' 開演 '+esc(event.startTime):'')+' ／ '+esc(event.venue)+'</p>';
+      }).join("");
+      return '<li><div>'+targets+'<strong>'+esc(route.name)+'</strong><span>'+esc(route.status||"運行情報あり")+'</span></div><a href="'+esc(route.url)+'" target="_blank" rel="noopener">最新情報 ↗</a></li>';
     }).join("");
     return '<aside class="train-status-alert" role="alert" aria-label="公演当日の鉄道運行情報">'+
       '<div class="train-status-alert-head"><span aria-hidden="true">!</span><div><small>公演当日の交通情報</small><strong>最寄り路線に運行情報があります</strong></div></div>'+
@@ -182,12 +208,7 @@
   function mountScheduleSummary(today,events,venues,status){
     var cards=document.getElementById("cards");
     if(!cards||document.querySelector(".train-status-summary"))return;
-    var routes=[];
-    events.forEach(function(event){
-      disruptionsForEvent(event,today,venues,status.routes||[]).forEach(function(route){
-        if(!routes.some(function(item){return item.url===route.url;}))routes.push(route);
-      });
-    });
+    var routes=summaryRoutes(today,events,venues,status.routes||[]);
     if(!routes.length)return;
     var target=document.querySelector(".schedule-disclaimer")||document.querySelector(".lead");
     if(!target)return;
@@ -256,7 +277,7 @@
     var status=values[1]||{};
     var events=values[2].events||[];
     if(status.date!==today||!Array.isArray(status.routes)||!status.routes.length)return;
-    mountScheduleSummary(today,events,venues,status);
+    mountScheduleSummary(today,values[2].publicEvents||events,venues,status);
     mountScheduleAlerts(today,events,venues,status);
     observeScheduleAlerts(today,events,venues,status);
     mountDetailAlert(today,events,venues,status);
@@ -265,6 +286,8 @@
   });
 
   window.KawaiiTrainStatus={
+    summaryRoutes:summaryRoutes,
+    alertHtml:alertHtml,
     normalizeLine:normalizeLine,
     lineKeys:lineKeys,
     venueLineKeys:venueLineKeys,
