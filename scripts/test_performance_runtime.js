@@ -66,7 +66,7 @@ async function main(){
   assert(h.api.effectiveBand(prepared.find(e=>e.ticketType==='公式リセール')),'upcoming resale band disappeared');
   const model=h.api.performanceModels(prepared).find(m=>m.date==='2099-09-19'&&m.startTime==='18:00');
   assert.strictEqual(model.offers.length,3,'ticket history was lost');
-  h.api.renderCards(prepared);assert(h.get('cards').innerHTML.includes('受付終了'),'ended reception label missing');
+  h.api.renderCards(prepared);assert(!h.get('cards').innerHTML.includes('受付終了'),'ended reception leaked into application cards');
   assert(h.get('cards').innerHTML.includes('受付予定'),'future reception label missing');
   h.api.clock('2099-09-19');assert.strictEqual(h.api.performanceModels(h.api.prepare(input)).length,3,'show vanished on performance day');
   h.api.clock('2099-09-20');assert.strictEqual(h.api.performanceModels(h.api.prepare(input)).length,1,'past performances not removed');

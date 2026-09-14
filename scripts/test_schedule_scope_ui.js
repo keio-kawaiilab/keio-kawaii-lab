@@ -15,8 +15,8 @@ check(/scheduled=!missingStart&&!!start&&start>now/.test(page), 'future ticket r
 check(/open=!missingStart&&!ended&&!scheduled/.test(page), 'open ticket state ignores ended or future receptions');
 check(/state=soldOut\?'予定枚数終了':ended\?'受付終了':missingStart\?'開始日時未取得':scheduled\?'受付予定':'受付中'/.test(page), 'ticket reception state labels are incomplete');
 check(/detailOnly=ended\|\|missingStart/.test(page), 'ended or unknown-start receptions still expose an application CTA');
-check(/sale-state ended">受付終了/.test(page), 'server-rendered cards do not expose an ended reception state');
-check(/data-action-mode="detail"/.test(page), 'server-rendered ended/unknown receptions do not use detail-only links');
+check(!/<div class="ticket-option"[^>]*>(?:(?!<\/div>)[\s\S])*sale-state ended/.test(page.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'')), 'ended reception remains in static application cards');
+check(page.includes("if(ended)return '';"), 'ended receptions must be omitted at runtime');
 check(!/申込開始開始日時未取得/.test(page), 'duplicate missing-start wording remains');
 check(/exactEnd&&exactEnd<now/.test(page), 'expired same-day calendar bands are not hidden');
 

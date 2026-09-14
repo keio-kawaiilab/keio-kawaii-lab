@@ -58,11 +58,15 @@ class GeneralSalesTest(unittest.TestCase):
         self.assertEqual(merge(payload, rows), (2,0))
         self.assertEqual(len(payload['events']), 2)
 
-    def test_sold_out_static_sale_is_visible_without_apply_cta(self):
+    def test_sold_out_static_sale_is_hidden(self):
         block='<div class="ticket-option" data-sale-status="sold_out"><span class="ticket-copy"><b>一般発売</b><small>2026/9/12 10:00〜</small></span><a class="ticket-link" href="https://t.pia.jp/">申込先 →</a></div>'
         html=_patch_static_ticket_option(block, datetime(2026,9,14,tzinfo=ZoneInfo('Asia/Tokyo')))
-        self.assertIn('予定枚数終了',html)
-        self.assertNotIn('受付中',html)
-        self.assertIn('data-action-mode="detail"',html)
+        self.assertEqual(html, '')
+
+    def test_expired_static_offer_is_hidden_but_future_offer_remains(self):
+        template='<div class="ticket-option"><span class="ticket-copy"><b>FC先行</b><small>{}</small></span><a class="ticket-link" href="https://example.com/">申込先 →</a></div>'
+        now=datetime(2026,9,14,tzinfo=ZoneInfo('Asia/Tokyo'))
+        self.assertEqual(_patch_static_ticket_option(template.format('2026/7/23 12:00〜2026/7/26 23:59'),now),'')
+        self.assertIn('受付予定',_patch_static_ticket_option(template.format('2026/9/15 12:00〜2026/9/20 23:59'),now))
 
 if __name__ == '__main__': unittest.main()

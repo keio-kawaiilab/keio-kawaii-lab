@@ -24,6 +24,7 @@ OFFER_HTML_JS = (
     "detailOnly=ended||missingStart,"
     "action=detailOnly?'受付詳細を確認 →':o.provider==='kawaii-store'?'整理券ページ →':/^(rakuten|hmv|tower)$/.test(o.provider)?'対象商品ページ →':'申込ページ →',"
     "mode=detailOnly?' detail-only':'',stateClass=open?' open':scheduled?' scheduled':ended?' ended':'';"
+    "if(ended)return '';"
     "return'<div class=\"ticket-option\"><span class=\"provider '+esc(o.provider)+'\">'+esc(o.label)+'</span><span class=\"ticket-copy\"><b>'+esc(o.ticketType)+'<span class=\"sale-state'+stateClass+'\">'+state+'</span></b><small>'+esc(period)+'</small></span><a class=\"ticket-link'+mode+'\" data-action-mode=\"'+(detailOnly?'detail':'apply')+'\" href=\"'+esc(o.url)+'\" target=\"_blank\" rel=\"noopener\">'+action+'</a></div>'}"
     "\n"
 )
@@ -169,6 +170,8 @@ def _patch_static_ticket_option(block: str, now: datetime) -> str:
     state_key, state_label, detail_only = _offer_state(original_window, now)
     if 'data-sale-status="sold_out"' in block:
         state_key, state_label, detail_only = "ended", "予定枚数終了", True
+    if state_key == "ended":
+        return ""
     block = _set_static_state(block, state_key, state_label)
     return _set_static_link_mode(block, detail_only=detail_only)
 

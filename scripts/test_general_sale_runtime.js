@@ -39,6 +39,10 @@ async function main(){
     assert(sale,'missing sale '+row.id);
     const html=h.get('cards').innerHTML;
     const cards=html.match(/<article[\s\S]*?<\/article>/g)||[];
+    if((sale.event||sale).applicationStatus==='sold_out'){
+      assert(!html.includes(row.offer.url.replace(/&/g,'&amp;')), 'sold-out application still visible '+row.id);
+      continue;
+    }
     const card=cards.find(c=>c.includes(row.offer.url.replace(/&/g,'&amp;'))&&c.includes('開演 '+row.startTime));
     assert(card,'missing rendered sale '+row.id);
     assert(card.includes((sale.event||sale).applicationStatus==='sold_out'?'予定枚数終了':'受付中'));
