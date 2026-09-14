@@ -1,19 +1,30 @@
 {
-  "entries": 482,
+  "entries": 1073,
   "bySource": {
-    "eplus": 22,
-    "group-official": 425,
-    "kawaii-lab-fc": 5,
-    "lawson": 7,
-    "pia": 23
+    "eplus": 48,
+    "group-official": 590,
+    "kawaii-lab-fc": 80,
+    "lawson": 13,
+    "pia": 337,
+    "promoter": 5
   },
-  "historyWarnings": [],
-  "historyWarningCount": 0,
-  "status": "ok",
+  "historyWarnings": [
+    "284edd47dca20142468d: missing application end",
+    "606154986ef18e2b489d: missing application end",
+    "f09612f8e1733ae51f65: missing application end"
+  ],
+  "historyWarningCount": 3,
+  "status": "blocked",
   "registryErrors": [],
   "collectorAlignmentErrors": [],
   "liveCoverageErrors": [],
   "liveCoverageWarnings": [],
   "liveCoverageWarningCount": 0,
-  "errors": []
+  "errors": [
+    "284edd47dca20142468d: sourceUrl host www.red-hot.ne.jp maps to None, not 'promoter'",
+    "606154986ef18e2b489d: sourceUrl host www.red-hot.ne.jp maps to None, not 'promoter'",
+    "f09612f8e1733ae51f65: sourceUrl host www.red-hot.ne.jp maps to None, not 'promoter'",
+    "5d4df7b294775e1e3b86: sourceUrl host www.red-hot.ne.jp maps to None, not 'promoter'",
+    "35558d7c3e601876b900: sourceUrl host www.red-hot.ne.jp maps to None, not 'promoter'"
+  ]
 }
