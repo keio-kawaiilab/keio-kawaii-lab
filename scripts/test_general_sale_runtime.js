@@ -40,6 +40,7 @@ async function main(){
     const html=h.get('cards').innerHTML;
     const cards=html.match(/<article[\s\S]*?<\/article>/g)||[];
     if((sale.event||sale).applicationStatus==='sold_out'){
+      assert.equal(h.api.effectiveBand(sale.event||sale),null,'sold-out general sale band remains '+row.id);
       assert(!html.includes(row.offer.url.replace(/&/g,'&amp;')), 'sold-out application still visible '+row.id);
       continue;
     }

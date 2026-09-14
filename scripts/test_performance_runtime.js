@@ -64,6 +64,10 @@ async function main(){
   assert(!fc.urls.includes(pia),'FC offer inherited an unrelated Pia URL');
   assert.strictEqual(h.api.effectiveBand(fc),null,'ended FC still has an active band');
   assert(h.api.effectiveBand(prepared.find(e=>e.ticketType==='公式リセール')),'upcoming resale band disappeared');
+  const available=prepared.find(e=>e.ticketType==='公式リセール');
+  assert.strictEqual(h.api.effectiveBand({...available,applicationStatus:'sold_out'}),null,'sold-out reception still has an application band');
+  assert(h.api.effectiveBand({...available,applicationStatus:'open'}),'available reception lost its band');
+
   const model=h.api.performanceModels(prepared).find(m=>m.date==='2099-09-19'&&m.startTime==='18:00');
   assert.strictEqual(model.offers.length,3,'ticket history was lost');
   h.api.renderCards(prepared);assert(!h.get('cards').innerHTML.includes('受付終了'),'ended reception leaked into application cards');

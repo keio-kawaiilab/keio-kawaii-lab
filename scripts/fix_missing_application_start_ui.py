@@ -210,6 +210,13 @@ def patch_page(page: str, *, now: datetime | None = None) -> str:
         )
     page = ''.join(chunks)
 
+    band_start = "function effectiveBand(e){"
+    sold_out_guard = "if(e.applicationStatus==='sold_out')return null;"
+    if band_start not in page:
+        raise RuntimeError("application band function missing")
+    if band_start + sold_out_guard not in page:
+        page = page.replace(band_start, band_start + sold_out_guard, 1)
+
     page = _replace_function(page, "startText", "performanceDate", START_TEXT_JS, "missingStart=!e.applyStart")
     page = _replace_function(page, "offerHtml", "detailList", OFFER_HTML_JS, "ended=soldOut||(!!end&&end<now)")
 
