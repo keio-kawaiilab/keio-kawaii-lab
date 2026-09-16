@@ -1,7 +1,7 @@
 {
   "date": "2026-09-17",
   "horizonDays": 7,
-  "generatedAt": "2026-09-17T03:51+09:00",
+  "generatedAt": "2026-09-17T08:13+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -17,12 +17,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "雨 昼前 から くもり 所により 明け方 まで 雷 を伴う",
-      "max": 23.0,
-      "min": 19.0,
+      "label": "雨 昼前 から くもり",
+      "max": 24.0,
+      "min": 24.0,
       "pop": "20",
       "popLabel": "12〜18時",
-      "issuedAt": "2026-09-16T17:00:00+09:00",
+      "issuedAt": "2026-09-17T05:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -38,18 +38,62 @@
       "areaCode": "120010",
       "areaName": "北西部",
       "precision": "mesh5km",
-      "label": "くもり",
-      "max": null,
-      "min": null,
-      "pop": null,
-      "popLabel": "",
-      "issuedAt": "2026-09-16T20:00:00+09:00",
-      "meshTime": "00:00",
-      "meshTempBand": "15〜19℃",
+      "label": "雨",
+      "max": 23.0,
+      "min": 18.0,
+      "pop": "30",
+      "popLabel": "18〜00時",
+      "issuedAt": "2026-09-17T05:00:00+09:00",
+      "meshTime": "18:00",
+      "meshTempBand": "20〜24℃",
       "coordinates": {
         "lat": 35.79921,
         "lon": 139.940964
-      }
+      },
+      "meshTimeline": [
+        {
+          "time": "06:00",
+          "label": "くもり",
+          "validAt": "2026-09-18T06:00+09:00",
+          "temp": 18
+        },
+        {
+          "time": "09:00",
+          "label": "くもり",
+          "validAt": "2026-09-18T09:00+09:00",
+          "temp": 19
+        },
+        {
+          "time": "12:00",
+          "label": "くもり",
+          "validAt": "2026-09-18T12:00+09:00",
+          "temp": 21
+        },
+        {
+          "time": "15:00",
+          "label": "くもり",
+          "validAt": "2026-09-18T15:00+09:00",
+          "temp": 22
+        },
+        {
+          "time": "18:00",
+          "label": "雨",
+          "validAt": "2026-09-18T18:00+09:00",
+          "temp": 20
+        },
+        {
+          "time": "21:00",
+          "label": "雨",
+          "validAt": "2026-09-18T21:00+09:00",
+          "temp": 20
+        },
+        {
+          "time": "24:00",
+          "label": "くもり",
+          "validAt": "2026-09-19T00:00+09:00",
+          "temp": 20
+        }
+      ]
     },
     {
       "date": "2026-09-19",
@@ -160,9 +204,7 @@
       "venueKey": "zeppshinjukutokyo",
       "eventIds": [
         "fc44df7009fe2d63",
-        "fc44df7009fe2d63--ohanami-second",
-        "92372ef7627cb6c2",
-        "9e9b276cb979e658"
+        "fc44df7009fe2d63--ohanami-second"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
@@ -243,9 +285,10 @@
       "venue": "神奈川県 横浜アリーナ",
       "venueKey": "横浜アリーナ",
       "eventIds": [
-        "0bf989743dfb2324",
+        "3f13107c4c87d36b",
+        "3f99f7bcacecc458",
         "a9f07d73f091ca00",
-        "99ec6cead20ab0ef"
+        "465126c2998fe7d6"
       ],
       "areaCode": "140010",
       "areaName": "神奈川県",
@@ -283,13 +326,13 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 31,
+    "occurrencesInRange": 29,
     "uniqueVenueDates": 17,
     "weatherEntries": 13,
     "meshEntries": 1,
     "failures": 4,
-    "meshTimelineEntries": 0,
-    "meshExactTempSlots": 0,
+    "meshTimelineEntries": 1,
+    "meshExactTempSlots": 7,
     "hourlyRainEntries": 0
   },
   "failures": [
