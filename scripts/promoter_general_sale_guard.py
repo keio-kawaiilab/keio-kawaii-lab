@@ -14,6 +14,7 @@ from urllib.parse import urljoin, urlparse
 import requests
 from bs4 import BeautifulSoup
 
+from performance_entities import build_public_events
 import update_promoter_birthday_events as promoter
 
 DATA_PATH = Path("data/live-events.json")
@@ -385,13 +386,32 @@ def make_session() -> requests.Session:
     return session
 
 
+def known_performances(payload: dict) -> list[dict]:
+    """Build the current canonical performance list used for promoter matching.
+
+    ``data/live-events.json`` normally stores collector rows only.  ``publicEvents``
+    is generated later while building the public schedule, so reading only that
+    optional field made the scheduled promoter crawl receive an empty performance
+    list.  Birthday pages could still be parsed independently, but ordinary tours
+    could never pass ``parse_known_performance`` and their general sales were
+    silently skipped.
+
+    Always rebuild from the current collector rows.  This also prevents a stale
+    pre-rendered ``publicEvents`` snapshot from being used after a fresh crawl.
+    """
+    rows = [row for row in payload.get("events", []) if isinstance(row, dict)]
+    public, _report = build_public_events(rows)
+    return [row for row in public if row.get("entityType") == "performance"]
+
+
 def run(check: bool = False, today: date | None = None) -> dict:
     today = today or datetime.now(JST).date()
     original = json.loads(DATA_PATH.read_text(encoding="utf-8"))
     payload = json.loads(json.dumps(original, ensure_ascii=False))
     session = make_session()
     try:
-        rows, failures = collect(session, today, payload.get("publicEvents") or [])
+        performances = known_performances(payload)
+        rows, failures = collect(session, today, performances)
     finally:
         session.close()
 
@@ -403,16 +423,17 @@ def run(check: bool = False, today: date | None = None) -> dict:
 
     return {
         "checkedAt": datetime.now(JST).isoformat(timespec="seconds"),
-        "birthdayGeneralSalesObserved": len(rows),
-        "birthdayGeneralSalesAdded": added,
-        "birthdayGeneralSalesEnriched": enriched,
+        "knownPerformancesChecked": len(performances),
+        "generalSalesObserved": len(rows),
+        "generalSalesAdded": added,
+        "generalSalesEnriched": enriched,
         "changed": changed,
         "failures": failures,
     }
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Recover birthday-event general-sale history from promoter pages after playguides mark it sold out.")
+    parser = argparse.ArgumentParser(description="Discover general sales for known performances from promoter pages.")
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     print(json.dumps(run(check=args.check), ensure_ascii=False, indent=2))

@@ -1,4 +1,4 @@
-name: Promoter General Sale Guard
+name: Promoter General Sale Fallback
 
 on:
   workflow_dispatch:
@@ -39,9 +39,9 @@ jobs:
       - name: Regression tests
         env:
           PYTHONPATH: scripts
-        run: python -m unittest scripts/test_promoter_general_sale_guard.py scripts/test_verified_general_sales.py
+        run: python -m unittest scripts/test_promoter_general_sale_guard.py scripts/test_verified_general_sales.py scripts/test_audit_ticket_sources.py
 
-      - name: Recover promoter general-sale history
+      - name: Discover promoter general sales from current performances
         env:
           PYTHONPATH: scripts
         run: python scripts/promoter_general_sale_guard.py

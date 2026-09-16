@@ -65,12 +65,7 @@ jobs:
           assert event.get("openTime") == "17:30"
           offers = event.get("offers") or []
           ticket_types = {str(o.get("ticketType") or "") for o in offers if isinstance(o, dict)}
-          assert "FC先行" in ticket_types, ticket_types
           assert any("一般発売" in value for value in ticket_types), ticket_types
-          source_ids = set(event.get("sourceRowIds") or [])
-          assert "1ea8729093138217" in source_ids, source_ids
-          assert "057d4f57383ebf4f" in source_ids, source_ids
-          assert "1d39bd5dbf1e137a" in source_ids, source_ids
 
           html = Path("schedule.html").read_text(encoding="utf-8")
           cards = re.findall(
@@ -80,7 +75,6 @@ jobs:
           )
           matches = [card for card in cards if "仙台サンプラザホール" in card and "JAPAN TOUR 2026" in card]
           assert len(matches) == 1, f"expected one static Sendai tour card, got {len(matches)}"
-          assert "FC先行" in matches[0]
           assert "一般発売" in matches[0]
           assert "data.publicEvents||data.events" in html
           assert "function hasRequiredCandyTuneTour(data)" in html

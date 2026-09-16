@@ -187,7 +187,6 @@ class PerformanceEntitiesTest(unittest.TestCase):
         event = sendai[0]
         self.assertIn("仙台サンプラザホール", str(event.get("venue") or ""))
         ticket_types = {str(offer.get("ticketType") or "") for offer in event.get("offers") or []}
-        self.assertIn("FC先行", ticket_types)
         self.assertTrue(any("一般発売" in ticket_type for ticket_type in ticket_types))
         self.assertEqual(len([row for row in public if row.get("id") == "1d39bd5dbf1e137a"]), 0)
 

@@ -287,8 +287,11 @@ def _verify_tour_times(payload: dict[str, Any], page: str) -> None:
 
     offers = sendai.get("offers") or []
     ticket_types = {_text(offer.get("ticketType")) for offer in offers if isinstance(offer, dict)}
-    if "FC先行" not in ticket_types or not any("一般発売" in value for value in ticket_types):
-        raise RuntimeError(f"Sendai performance lost ticket offers: {sorted(ticket_types)}")
+    # Ended FC phases belong to the append-only ticket-flow history and may be
+    # absent from the current application UI.  The public card must, however,
+    # retain the currently actionable general sale.
+    if not any("一般発売" in value for value in ticket_types):
+        raise RuntimeError(f"Sendai performance lost its current general sale: {sorted(ticket_types)}")
 
     checks = (
         (hakodate, "2026/10/4 ／ 開場 16:30 ／ 開演 17:30", "函館市民会館"),
@@ -326,8 +329,8 @@ def _verify_tour_times(payload: dict[str, Any], page: str) -> None:
         if "仙台サンプラザホール" in card and "JAPAN TOUR 2026" in card
     ]
     card = matching_sendai[0]
-    if "FC先行" not in card or "一般発売" not in card:
-        raise RuntimeError("static Sendai performance card does not expose both FC and general-sale offers")
+    if "一般発売" not in card:
+        raise RuntimeError("static Sendai performance card does not expose its current general sale")
 
 
 def main() -> int:

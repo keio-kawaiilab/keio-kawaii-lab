@@ -425,7 +425,7 @@ jobs:
         run: |
           set -euo pipefail
           cd scripts
-          python -m unittest -v test_merge_distributed_schedule_snapshots.py test_reconcile_official_schedule_index.py test_audit_schedule_release_grouped.py test_prepare_release_candidate.py test_schedule_scope.py test_audit_official_schedule_coverage.py
+          python -m unittest -v test_merge_distributed_schedule_snapshots.py test_reconcile_official_schedule_index.py test_audit_schedule_release_grouped.py test_prepare_release_candidate.py test_schedule_scope.py test_audit_official_schedule_coverage.py test_promoter_general_sale_guard.py test_audit_ticket_sources.py
           cd ..
           cp /tmp/calendar-core/official-schedule-index.json data/official-schedule-index.json
           python scripts/merge_distributed_schedule_snapshots.py \
@@ -438,6 +438,10 @@ jobs:
           python scripts/resolve_source_priority.py
           python scripts/enrich_event_metadata.py
           python scripts/apply_event_scopes.py
+          # Promoter pages are matched against the freshly merged canonical
+          # performance list. This is part of every 15-minute discovery pass,
+          # not a once-daily birthday-only repair.
+          python scripts/promoter_general_sale_guard.py
           python scripts/prepare_release_candidate.py --previous /tmp/live-events-last-good.json
           python scripts/reconcile_official_schedule_index.py \
             --data data/live-events.json \
@@ -456,6 +460,13 @@ jobs:
             --report data/schedule-health.json
           python scripts/audit_official_schedule_coverage.py \
             --previous-index /tmp/official-schedule-index-last-good.json
+          python scripts/archive_ticket_history.py
+          python scripts/audit_ticket_sources.py --report /tmp/ticket-source-audit.json
+          # Record complete source/history coverage without freezing unrelated
+          # healthy updates on a transient endpoint failure.
+          python scripts/audit_ticket_collection_continuity.py \
+            --report data/ticket-collection-health.json \
+            --no-fail
 
       - name: Build final public schedule
         run: |
@@ -480,13 +491,13 @@ jobs:
       - name: Commit one audited integrated release
         shell: bash
         run: |
-          if [ -z "$(git status --porcelain -- data/live-events.json data/official-schedule-index.json data/schedule-health.json schedule.html)" ]; then
+          if [ -z "$(git status --porcelain -- data/live-events.json data/official-schedule-index.json data/schedule-health.json data/ticket-history.json data/ticket-collection-health.json schedule.html)" ]; then
             echo "No audited distributed calendar changes."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/live-events.json data/official-schedule-index.json data/schedule-health.json schedule.html
+          git add data/live-events.json data/official-schedule-index.json data/schedule-health.json data/ticket-history.json data/ticket-collection-health.json schedule.html
           git commit -m "chore: publish distributed audited calendar"
           for attempt in 1 2 3; do
             if git push origin HEAD:main; then exit 0; fi

@@ -5,6 +5,28 @@ import promoter_general_sale_guard as g
 
 
 class PromoterGeneralSaleGuardTests(unittest.TestCase):
+    def test_known_performances_are_built_from_raw_events_without_public_events(self):
+        payload = {"events": [{
+            "id": "tour-show",
+            "group": "CANDY TUNE",
+            "title": "CANDY TUNE JAPAN TOUR 2026",
+            "eventTitle": "CANDY TUNE JAPAN TOUR 2026",
+            "eventDate": "2026-10-08",
+            "venue": "仙台サンプラザホール",
+            "openTime": "17:30",
+            "startTime": "18:30",
+            "ticketType": "現在受付なし",
+            "eventScope": "kawaii-lab",
+            "url": "https://candytune.asobisystem.com/live_information/detail/1",
+        }]}
+
+        rows = g.known_performances(payload)
+
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["entityType"], "performance")
+        self.assertEqual(rows[0]["group"], "CANDY TUNE")
+        self.assertEqual(rows[0]["startTime"], "18:30")
+
     def test_month_discovery_keeps_only_supported_birthday_cards(self):
         html = """
         <div class="event-card">

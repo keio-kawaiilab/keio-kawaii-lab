@@ -186,7 +186,11 @@ def audit_history(registry: dict, history: dict) -> tuple[list[str], dict]:
 
         source_url = str(item.get("sourceUrl") or "")
         source_host = host(source_url)
-        mapped = rules.get(source_host)
+        # Registry rules apply to the host and all of its subdomains.  Live-row
+        # auditing already uses mapped_source(); history auditing must use the
+        # same rule so www.red-hot.ne.jp is not rejected when red-hot.ne.jp is
+        # the registered promoter source.
+        mapped = mapped_source(source_url, registry)
         if not source_url or not source_host:
             errors.append(f"{entry_id or index}: missing sourceUrl")
         elif mapped != source_key:
