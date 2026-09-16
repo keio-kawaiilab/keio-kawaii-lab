@@ -1,93 +1,18 @@
 {
-  "date": "2026-09-16",
+  "date": "2026-09-17",
   "horizonDays": 7,
-  "generatedAt": "2026-09-16T22:42+09:00",
+  "generatedAt": "2026-09-17T03:51+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
     {
-      "date": "2026-09-16",
-      "venue": "埼玉県 イオンレイクタウンkaze 1F 光の広場",
-      "venueKey": "イオンレイクタウンkaze1f光の広場",
-      "eventIds": [
-        "special-12457a17463fd618"
-      ],
-      "areaCode": "110010",
-      "areaName": "南部",
-      "precision": "area",
-      "label": "雨",
-      "max": null,
-      "min": null,
-      "pop": "80",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-09-16T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
-    {
-      "date": "2026-09-16",
-      "venue": "埼玉県 大宮ソニックシティ 大ホール",
-      "venueKey": "大宮ソニックシティ",
-      "eventIds": [
-        "024676b8e98a3faf",
-        "41021fb2c14f7e59"
-      ],
-      "areaCode": "110010",
-      "areaName": "南部",
-      "precision": "mesh5km",
-      "label": "雨",
-      "max": null,
-      "min": null,
-      "pop": "80",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-09-16T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "20〜24℃",
-      "coordinates": {
-        "lat": 35.905506,
-        "lon": 139.619995
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "雨",
-          "validAt": "2026-09-16T21:00+09:00",
-          "temp": 20
-        },
-        {
-          "time": "24:00",
-          "label": "雨",
-          "validAt": "2026-09-17T00:00+09:00",
-          "temp": 20
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "17:30",
-          "rain": true,
-          "validAt": "2026-09-16T17:30+09:00"
-        },
-        {
-          "time": "18:30",
-          "rain": true,
-          "validAt": "2026-09-16T18:30+09:00"
-        },
-        {
-          "time": "19:30",
-          "rain": true,
-          "validAt": "2026-09-16T19:30+09:00"
-        }
-      ]
-    },
-    {
       "date": "2026-09-17",
-      "venue": "東京都 神戸ハーバーランド スペースシアター",
-      "venueKey": "神戸ハーバーランドスペースシアター",
+      "venue": "東京都 アーバンドック ららぽーと豊洲シーサイドデッキ メインステージ",
+      "venueKey": "アーバンドックららぽーと豊洲シーサイドデッキメインステージ",
       "eventIds": [
-        "special-4f18192e2c6b7681"
+        "special-a91f4fd0f80a1f20"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
@@ -95,8 +20,8 @@
       "label": "雨 昼前 から くもり 所により 明け方 まで 雷 を伴う",
       "max": 23.0,
       "min": 19.0,
-      "pop": "70",
-      "popLabel": "当日最大",
+      "pop": "20",
+      "popLabel": "12〜18時",
       "issuedAt": "2026-09-16T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
@@ -112,16 +37,19 @@
       ],
       "areaCode": "120010",
       "areaName": "北西部",
-      "precision": "area",
+      "precision": "mesh5km",
       "label": "くもり",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
       "issuedAt": "2026-09-16T20:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "meshTime": "00:00",
+      "meshTempBand": "15〜19℃",
+      "coordinates": {
+        "lat": 35.79921,
+        "lon": 139.940964
+      }
     },
     {
       "date": "2026-09-19",
@@ -186,6 +114,26 @@
     },
     {
       "date": "2026-09-20",
+      "venue": "ベルサール渋谷ファースト",
+      "venueKey": "ベルサール渋谷ファースト",
+      "eventIds": [
+        "special-317d7ef88307612c"
+      ],
+      "areaCode": "130010",
+      "areaName": "東京地方",
+      "precision": "area",
+      "label": "くもり時々雨",
+      "max": 26.0,
+      "min": 20.0,
+      "pop": "60",
+      "popLabel": "1日",
+      "issuedAt": "2026-09-16T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-09-20",
       "venue": "神奈川県 横浜アリーナ",
       "venueKey": "横浜アリーナ",
       "eventIds": [
@@ -211,8 +159,10 @@
       "venue": "東京都 Zepp Shinjuku(TOKYO)",
       "venueKey": "zeppshinjukutokyo",
       "eventIds": [
-        "a31be5e59f42b0b7",
-        "a31be5e59f42b0b7--ohanami-second"
+        "fc44df7009fe2d63",
+        "fc44df7009fe2d63--ohanami-second",
+        "92372ef7627cb6c2",
+        "9e9b276cb979e658"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
@@ -270,11 +220,10 @@
     },
     {
       "date": "2026-09-22",
-      "venue": "東京都 東京流通センター 第二展示場Fホール",
-      "venueKey": "東京流通センター第二展示場fホール",
+      "venue": "有明ガーデン みんなのテラス",
+      "venueKey": "有明ガーデンみんなのテラス",
       "eventIds": [
-        "special-d467ddf68b1df591",
-        "special-3f1d3d73ed6fb4d1"
+        "special-79b6ff7fc6f3d86e"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
@@ -296,8 +245,7 @@
       "eventIds": [
         "0bf989743dfb2324",
         "a9f07d73f091ca00",
-        "3f99f7bcacecc458",
-        "b929ac13fb654730"
+        "99ec6cead20ab0ef"
       ],
       "areaCode": "140010",
       "areaName": "神奈川県",
@@ -335,14 +283,14 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 28,
-    "uniqueVenueDates": 16,
-    "weatherEntries": 14,
+    "occurrencesInRange": 31,
+    "uniqueVenueDates": 17,
+    "weatherEntries": 13,
     "meshEntries": 1,
-    "failures": 2,
-    "meshTimelineEntries": 1,
-    "meshExactTempSlots": 2,
-    "hourlyRainEntries": 1
+    "failures": 4,
+    "meshTimelineEntries": 0,
+    "meshExactTempSlots": 0,
+    "hourlyRainEntries": 0
   },
   "failures": [
     {
@@ -353,6 +301,16 @@
     {
       "date": "2026-09-22",
       "venue": "東京流通センター 第二展示場Eホール",
+      "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-09-22",
+      "venue": "東京流通センター 第二展示場Fホール",
+      "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-09-24",
+      "venue": "ヒューリックホール東京",
       "reason": "都道府県を解決できません"
     }
   ]
