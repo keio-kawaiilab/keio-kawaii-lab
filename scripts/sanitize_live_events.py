@@ -371,7 +371,11 @@ def collapse_expired_application_windows(events: list[dict], today: date) -> lis
                 schedule_only.append(item)
                 continue
             last_relevant = latest_relevant_ticket_day(item)
-            if last_relevant and last_relevant >= today:
+            unknown_deadline = bool(item.get("applyStart")) and not item.get("applyEnd")
+            explicitly_closed = str(item.get("applicationStatus") or "").lower() in {"ended", "closed", "sold_out", "cancelled", "canceled"}
+            if unknown_deadline and not explicitly_closed:
+                current.append(item)
+            elif last_relevant and last_relevant >= today:
                 current.append(item)
             else:
                 expired.append(item)

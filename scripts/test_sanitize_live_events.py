@@ -5,6 +5,13 @@ import sanitize_live_events as s
 
 
 class SanitizerTests(unittest.TestCase):
+    def test_general_sale_without_deadline_is_not_rewritten_as_ended(self):
+        event = {"id": "general", "group": "MORE STAR", "title": "MORE STAR LIVE", "ticketType": "一般発売", "eventDate": "2099-10-01", "applyStart": "2099-09-01T10:00", "applyEnd": None, "applicationStatus": "observed", "url": "https://morestar.asobisystem.com/news/detail/new"}
+        rows = s.sanitize_payload({"events": [event]}, today=date(2099, 9, 15))["events"]
+        self.assertEqual(rows[0]["ticketType"], "一般発売")
+        self.assertEqual(rows[0]["applyStart"], "2099-09-01T10:00")
+        self.assertIsNone(rows[0]["applyEnd"])
+
     def test_removes_result_date_false_event_and_cleans_title(self):
         payload = {
             "events": [

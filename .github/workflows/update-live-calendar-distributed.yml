@@ -7,6 +7,14 @@ on:
       - ".github/workflows/update-live-calendar-distributed.yml"
       - "data/live-events.json"
       - "data/official-schedule-index.json"
+      - "scripts/continuous_official_discovery.py"
+      - "scripts/update_live_events*.py"
+      - "scripts/update_official_schedule*.py"
+      - "scripts/update_playguide_events*.py"
+      - "scripts/sanitize_live_events.py"
+      - "scripts/resolve_source_priority.py"
+      - "scripts/reapply_calendar_observations.py"
+      - "scripts/audit_discovery_publication.py"
   schedule:
     - cron: "*/15 * * * *"
 

@@ -6,6 +6,8 @@ import audit_discovery_publication as publication
 import continuous_official_discovery as discovery
 import update_live_events_v2 as retention
 from performance_entities import build_public_events
+from sanitize_live_events import sanitize_payload
+from resolve_source_priority import resolve
 
 
 class ContinuousDiscoveryTests(unittest.TestCase):
@@ -39,6 +41,8 @@ class ContinuousDiscoveryTests(unittest.TestCase):
         payload = retention.build_payload({"events": [], "anotherCollectorDiagnostics": {"ok": True}},
                                           {row["id"]: row for row in rows}, [], [], date(2099, 9, 1))
         self.assertTrue(payload["anotherCollectorDiagnostics"]["ok"])
+        payload = sanitize_payload(payload, today=date(2099, 9, 15))
+        payload["events"] = resolve(payload["events"])
         public, _ = build_public_events(payload["events"])
         report = publication.audit({"observations": [{"expectedOffers": rows}]}, {"publicEvents": public})
         self.assertEqual(report["representedOffers"], 1)
