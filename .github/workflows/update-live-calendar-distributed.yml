@@ -222,6 +222,8 @@ jobs:
           elif ! python scripts/audit_playguide_collection.py; then
             echo "::warning::Some playguide sources are degraded; collector retained their previous rows while healthy provider updates remain publishable."
             echo "degraded=playguides" >> "$GITHUB_OUTPUT"
+          elif python -c 'import json; d=json.load(open("data/live-events.json")).get("playguideDiagnostics") or {}; raise SystemExit(0 if d.get("failureCount") or d.get("stillActiveMissingCount") else 1)'; then
+            echo "degraded=playguides-partial" >> "$GITHUB_OUTPUT"
           else
             echo "degraded=" >> "$GITHUB_OUTPUT"
           fi
