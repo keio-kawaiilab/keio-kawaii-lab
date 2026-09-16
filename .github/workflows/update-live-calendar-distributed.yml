@@ -110,7 +110,7 @@ jobs:
             cp /tmp/live-events-last-good.json data/live-events.json
             mark_degraded "group-official-news"
           fi
-          if python -c 'import json; d=json.load(open("data/live-events.json")); raise SystemExit(0 if (d.get("ticketCollectorDiagnostics") or {}).get("failureCount") else 1)'; then
+          if python -c 'import json; d=json.load(open("data/live-events.json")).get("ticketCollectorDiagnostics") or {}; raise SystemExit(0 if d.get("failureCount") or d.get("pendingReview") else 1)'; then
             mark_degraded "official-news-partial"
           fi
 
@@ -584,7 +584,7 @@ jobs:
           existing="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
 
           if [ -n "$degraded" ]; then
-            body="一部の取得元または取得ジョブが失敗したため、その範囲だけ前回正常データを維持し、取得できた他の最新情報は公開しました。個別障害は全体公開を止めません。次回以降も15分ごとに自動再試行します。\n\ndegraded sources: ${degraded}\nrun: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            body="取得失敗または解析未解決の情報が残っています。該当範囲は前回データ・再試行対象を保持し、取得できた最新情報は公開しました。次回以降も15分ごとに再試行します。詳細はdata/official-discovery-state.jsonとdata/discovery-publication-health.jsonに記録しています。\n\ndegraded sources: ${degraded}\nrun: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
             if [ -n "$existing" ]; then
               gh issue edit "$existing" --repo "$GITHUB_REPOSITORY" --body "$body"
             else
