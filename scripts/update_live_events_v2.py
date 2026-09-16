@@ -6,9 +6,11 @@ import json
 import re
 import sys
 import time
+from copy import deepcopy
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, datetime
-from urllib.parse import urljoin
+from pathlib import Path
+from urllib.parse import urljoin, urlparse
 
 import requests
 from bs4 import BeautifulSoup
@@ -21,6 +23,7 @@ NEWS_SCAN_PAGES = 15
 NEWS_PAGE_WORKERS = 5
 MAX_FETCH_ATTEMPTS = 3
 DISCOVERED_BY_GROUP: dict[str, dict[str, parser_v1.Candidate]] = {}
+FEED_FAILURES: dict[str, list[dict]] = {}
 
 
 def _get_with_retry(session: requests.Session, url: str, timeout: int = 20):
@@ -49,6 +52,7 @@ def deep_candidate_links(session: requests.Session, group: str, base: str) -> li
     """Scan fifteen official news pages, at five-page concurrency, and account for every ticket article."""
     found: dict[str, parser_v1.Candidate] = {}
     page_urls = {page: f"{base}/news/1/?page={page}" for page in range(1, NEWS_SCAN_PAGES + 1)}
+    page_urls[0] = f"{base}/"
     html_by_page: dict[int, str] = {}
     headers = {str(k): str(v) for k, v in session.headers.items()}
 
@@ -56,10 +60,14 @@ def deep_candidate_links(session: requests.Session, group: str, base: str) -> li
         futures = {pool.submit(_fetch_news_page, url, headers): page for page, url in page_urls.items()}
         for future in as_completed(futures):
             page = futures[future]
-            html_by_page[page] = future.result()
-
-    if len(html_by_page) != NEWS_SCAN_PAGES:
-        raise RuntimeError(f"only {len(html_by_page)}/{NEWS_SCAN_PAGES} news pages were readable for {group}")
+            try:
+                html_by_page[page] = future.result()
+            except Exception as exc:
+                FEED_FAILURES.setdefault(group, []).append({
+                    "group": group, "stage": "news-page", "url": page_urls[page], "error": str(exc),
+                })
+    if not html_by_page:
+        raise RuntimeError(f"No official index was readable for {group}")
 
     # Parse in page order so diagnostics and dedupe stay deterministic.
     for page in sorted(html_by_page):
@@ -71,12 +79,13 @@ def deep_candidate_links(session: requests.Session, group: str, base: str) -> li
             title = parser_v1.normalize_space(anchor.get_text(" ", strip=True))
             if not title:
                 continue
-            if not any(key in title for key in parser_v1.TICKET_HINTS):
+            if page > 2 and not any(key in title for key in parser_v1.TICKET_HINTS):
                 continue
             if any(key in title for key in parser_v1.IGNORE_TITLE_HINTS):
                 continue
             full = urljoin(base, href)
-            found[full] = parser_v1.Candidate(group=group, title=title, url=full)
+            if urlparse(full).netloc == urlparse(base).netloc:
+                found[full] = parser_v1.Candidate(group=group, title=title, url=full)
 
     DISCOVERED_BY_GROUP[group] = dict(found)
     return list(found.values())
@@ -91,7 +100,10 @@ def parse_day(value: object) -> date | None:
 
 
 def event_last_day(event: dict) -> date | None:
-    return parse_day(event.get("eventEndDate")) or parse_day(event.get("eventDate"))
+    values = [event.get("eventEndDate"), event.get("eventDate"), *(event.get("eventDates") or [])]
+    values.extend(row.get("date") for row in (event.get("schedule") or []) if isinstance(row, dict))
+    days = [day for value in values if (day := parse_day(value)) is not None]
+    return max(days) if days else None
 
 
 def should_show(event: dict, today: date) -> bool:
@@ -287,8 +299,44 @@ def account_unresolved_candidates(
 
 
 def build_payload(existing: dict, fresh_by_id: dict[str, dict], pending: list[dict], failures: list[dict], today: date) -> dict:
+    from performance_entities import build_public_events
+    from resolve_source_priority import canonical_title, event_days
+    existing = deepcopy(existing)
+    known, _ = build_public_events(existing.get("events", []))
+    for event in fresh_by_id.values():
+        matches = [row for row in known
+                   if row.get("group") == event.get("group") and row.get("eventDate") == event.get("eventDate")
+                   and event.get("url") in event_urls(row)
+                   and (not event.get("startTime") or not row.get("startTime") or event["startTime"] == row["startTime"])]
+        if not matches:
+            wanted = canonical_title(event)
+            matches = [row for row in known
+                       if row.get("group") == event.get("group") and row.get("eventDate") == event.get("eventDate")
+                       and wanted and canonical_title(row) and (wanted in canonical_title(row) or canonical_title(row) in wanted)
+                       and (not event.get("startTime") or not row.get("startTime") or event["startTime"] == row["startTime"])]
+        if len(matches) == 1:
+            for field in ("eventTitle", "displayTitle", "venue", "openTime", "startTime", "eventScope", "officialScheduleUrl"):
+                if not event.get(field) and matches[0].get(field):
+                    event[field] = matches[0][field]
+            if event.get("startTime") and not matches[0].get("startTime"):
+                source_ids = set(matches[0].get("sourceRowIds") or [matches[0].get("id")])
+                for previous in existing.get("events", []):
+                    if previous.get("id") in source_ids and not previous.get("startTime") and len(event_days(previous)) == 1:
+                        previous["startTime"] = event["startTime"]
+                        previous["performanceTimeSourceUrl"] = event.get("url")
     fresh_urls = {str(e.get("url")) for e in fresh_by_id.values() if e.get("url")}
-    fresh_events = [e for e in fresh_by_id.values() if should_show(e, today)]
+    fresh_events = []
+    for event in fresh_by_id.values():
+        if not should_show(event, today):
+            continue
+        end = str(event.get("applyEnd") or "")
+        if end and end[:10] < today.isoformat():
+            # The observation is archived before this merge. An ended reception
+            # does not need another application row for an already known show.
+            if any((row.get("group") == event.get("group") or event.get("group") in (row.get("participants") or []))
+                   and event.get("eventDate") in event_days(row) for row in known):
+                continue
+        fresh_events.append(event)
     retained: list[dict] = []
     for original in existing.get("events", []):
         if not isinstance(original, dict):
@@ -315,6 +363,7 @@ def build_payload(existing: dict, fresh_by_id: dict[str, dict], pending: list[di
         str(e.get("group") or ""),
     ))
     return {
+        **existing,
         "demo": False,
         "updatedAt": datetime.now(parser_v1.JST).isoformat(timespec="seconds"),
         "source": "KAWAII LAB.各グループ公式サイト + KAWAII LAB. OFFICIAL FANCLUB公開情報（本日以降の公演のみ）",
@@ -330,19 +379,19 @@ def main() -> int:
     args = cli.parse_args()
 
     DISCOVERED_BY_GROUP.clear()
+    FEED_FAILURES.clear()
     session = requests.Session()
     session.headers.update({"User-Agent": "KeioKawaiiLabCalendarBot/2.2 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"})
     existing = parser_v1.read_existing()
+    state_path = Path("data/official-discovery-state.json")
+    if state_path.exists():
+        existing["officialDiscoveryState"] = json.loads(state_path.read_text(encoding="utf-8"))
 
-    parser_v1.candidate_links = deep_candidate_links
-    fresh_by_id, pending, failures, candidate_counts = parser_v1.collect(session)
-    central_events, central_pending, central_failures, central_candidates = collect_central_fc(session, existing)
-    fresh_by_id.update(central_events)
-    pending.extend(central_pending)
-    failures.extend(central_failures)
-    candidate_counts["KAWAII LAB. FC"] = len(central_candidates)
-
-    newly_pending = account_unresolved_candidates(fresh_by_id, pending, failures, central_candidates)
+    from continuous_official_discovery import collect
+    fresh_by_id, pending, failures, candidate_counts, observations = collect(session, existing)
+    central_events = {key: row for key, row in fresh_by_id.items() if row.get("sourceChannel") == "kawaii-lab-fc"}
+    central_candidates = range(candidate_counts.get("KAWAII LAB. FC", 0))
+    newly_pending = pending
     failed_lists = {
         str(item.get("group")) for item in failures
         if isinstance(item, dict) and item.get("stage") == "news-list"
@@ -367,26 +416,26 @@ def main() -> int:
         "newlyAccountedUnresolvedArticles": len(newly_pending),
         "failureCount": len(failures),
         "failures": failures,
+        "status": "degraded" if failures or pending else "ok",
+        "observations": observations,
     }
     print(json.dumps(diagnostics, ensure_ascii=False, indent=2))
 
-    if reachable_group_feeds < len(parser_v1.GROUPS) or not central_feed_reachable:
-        print("At least one official ticket news feed could not be fully scanned; existing public data left untouched.", file=sys.stderr)
-        return 2
-    if official_candidates == 0:
-        print("No ticket-related articles were discovered across group official feeds; treating this as a collector anomaly.", file=sys.stderr)
-        return 2
-    if not fresh_by_id and not pending:
-        print("No parsed or reviewable official ticket observations were produced; existing data left untouched.", file=sys.stderr)
-        return 2
     if args.check:
-        print("Official ticket source check passed; every discovered ticket article is explicitly accounted for.")
-        return 0
+        return 2 if failures else 0
 
+    import archive_ticket_history as archive
+    history = archive.archive_payload(
+        {"events": list(fresh_by_id.values())}, archive.load_json(archive.HISTORY_PATH),
+        archive.load_json(archive.REGISTRY_PATH), diagnostics["collectedAt"],
+    )
+    archive.HISTORY_PATH.write_text(json.dumps(history, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     payload = build_payload(existing, fresh_by_id, pending, failures, datetime.now(parser_v1.JST).date())
     payload["ticketCollectorDiagnostics"] = diagnostics
+    payload.pop("officialDiscoveryState", None)
     parser_v1.OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     parser_v1.OUTPUT_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    state_path.write_text(json.dumps(diagnostics, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Wrote {len(payload['events'])} current/future events with collector diagnostics.")
     return 0
 

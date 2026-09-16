@@ -37,6 +37,21 @@ class NoopSession:
 
 
 class OfficialScheduleParallelTests(unittest.TestCase):
+    def test_one_failed_month_preserves_previous_rows_and_new_healthy_rows(self):
+        class PartialSession(SlowSession):
+            def get(self, url, timeout=25):
+                if "a.example" in url:
+                    raise RuntimeError("source temporarily unavailable")
+                return super().get(url, timeout)
+        rows, status, diagnostics = parallel.collect_parallel(
+            date(2026, 8, 28), groups={"A": "https://a.example.com", "B": "https://b.example.com"},
+            months=[(2026, 9)], session_factory=PartialSession)
+        self.assertEqual(status["A"]["monthsChecked"], 0)
+        self.assertEqual(len(rows), 1)
+        previous = {"entries": [{"group": "A", "date": "2026-09-01", "url": "https://a.example.com/live_information/detail/old", "title": "Old show"}]}
+        parallel.retain_failed_months(rows, previous, diagnostics["failures"], date(2026, 8, 28))
+        self.assertEqual({row.group for row in rows}, {"A", "B"})
+
     def test_group_month_requests_run_concurrently(self):
         groups = {
             "A": "https://a.example.com",

@@ -196,6 +196,8 @@ def extract_event_occurrences(
                 venue = normalize_space(vm.group(1))
                 break
         open_time, start_time = extract_performance_time(block)
+        if start_time is None and m.group(4) is not None:
+            start_time = f"{int(m.group(4)):02d}:{int(m.group(5)):02d}"
         occurrences.append((event_date, venue, open_time, start_time))
 
     if not occurrences and ("開催" in title or "生誕祭" in title or "ライブ" in title or "LIVE" in title or "TOUR" in title):
@@ -211,9 +213,9 @@ def extract_event_occurrences(
     seen = set()
     result = []
     for item in occurrences:
-        if item[0] in seen:
+        if item in seen:
             continue
-        seen.add(item[0])
+        seen.add(item)
         result.append(item)
     return result
 

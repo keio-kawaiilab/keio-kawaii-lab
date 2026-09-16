@@ -70,7 +70,8 @@ def is_online(event: dict) -> bool:
 
 
 def sale_family(event: dict) -> str:
-    text = normalize_text(f"{event.get('ticketType', '')} {event.get('title', '')}")
+    ticket_type = normalize_text(event.get("ticketType"))
+    text = ticket_type if ticket_type and ticket_type not in {"チケット受付", "現在受付なし"} else normalize_text(f"{ticket_type} {event.get('title', '')}")
     if is_online(event):
         return "online-benefit"
     if "アップグレード" in text:
@@ -215,6 +216,11 @@ def same_event_and_sale(a: dict, b: dict) -> bool:
     if group_key(a) != group_key(b):
         return False
     if sale_family(a) != sale_family(b):
+        return False
+    for field in ("applyStart", "applyEnd", "startTime"):
+        if a.get(field) and b.get(field) and a[field] != b[field]:
+            return False
+    if a.get("applyStart") and b.get("applyStart") and a.get("ticketType") != b.get("ticketType"):
         return False
 
     # A performance can have simultaneous application windows at multiple

@@ -1,9 +1,22 @@
 import unittest
+from datetime import date
+from types import SimpleNamespace
+from unittest.mock import patch
 
 import update_playguide_events as playguides
 
 
 class PlayguideEventTests(unittest.TestCase):
+    def test_sold_out_offer_is_observed_instead_of_leaving_old_open_row(self):
+        class Session:
+            def get(self, *_args, **_kwargs):
+                html = '<div class="block-ticket"><span class="block-ticket__title">一般発売</span><span class="ticket-status">予定枚数終了</span>受付期間:2099/8/21(金)12:00～2099/8/31(月)23:59</div>'
+                return SimpleNamespace(text=html, raise_for_status=lambda: None)
+        with patch.object(playguides, "eplus_performance_links", return_value=[{"day": "2099-09-01", "url": "https://eplus.jp/sf/detail/test"}]):
+            rows = playguides.collect_eplus(Session(), "CANDY TUNE", date(2099, 8, 25))
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["applicationStatus"], "sold_out")
+
     def test_jsonld_discovers_hidden_eplus_performance(self):
         html = '''<script type="application/ld+json">{
           "@type":"Event",

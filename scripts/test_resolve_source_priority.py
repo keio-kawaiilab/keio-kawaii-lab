@@ -22,13 +22,13 @@ class SourcePriorityTests(unittest.TestCase):
         pia = self.base(
             sourceType="pia",
             url="https://t.pia.jp/pia/event/event.do?eventCd=example",
-            applyStart="2026-08-22T10:00",
+            applyStart="2026-08-20T10:00",
             applyEnd="2026-09-13T23:59",
         )
         out = r.resolve([official, pia])
         self.assertEqual(len(out), 1)
         self.assertEqual(out[0]["primarySource"], "pia")
-        self.assertEqual(out[0]["applyStart"], "2026-08-22T10:00")
+        self.assertEqual(out[0]["applyStart"], "2026-08-20T10:00")
         self.assertEqual(len(out[0]["urls"]), 2)
 
     def test_distinct_pia_lots_are_never_collapsed(self):
@@ -87,7 +87,7 @@ class SourcePriorityTests(unittest.TestCase):
             ticketType="FC先行",
             sourceType="pia",
             url="https://t.pia.jp/pia/event/event.do?eventCd=example",
-            applyStart="2026-08-02T12:00",
+            applyStart="2026-08-01T12:00",
             applyEnd="2026-08-10T23:59",
         )
         out = r.resolve([pia_fc, official_fc])
@@ -104,6 +104,15 @@ class SourcePriorityTests(unittest.TestCase):
         )
         out = r.resolve([official_upgrade, pia])
         self.assertEqual(len(out), 2)
+
+    def test_additional_fc_round_and_second_performance_survive(self):
+        first = self.base(ticketType="FC先行", applyStart="2026-08-01T12:00", applyEnd="2026-08-10T23:59", startTime="14:00")
+        second = dict(first, applyStart="2026-08-15T12:00", applyEnd="2026-08-20T23:59")
+        evening = dict(second, startTime="18:00")
+        self.assertEqual(len(r.resolve([first, second, evening])), 3)
+
+    def test_general_sale_is_not_classified_as_fc_from_old_article_title(self):
+        self.assertEqual(r.sale_family(self.base(title="CUTIE STREET OFFICIAL FANCLUB先行のお知らせ", ticketType="一般発売")), "general")
 
     def test_sukisuki_beats_official_for_online_benefit(self):
         official = self.base(

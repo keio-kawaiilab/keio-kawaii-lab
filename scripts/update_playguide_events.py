@@ -192,18 +192,18 @@ def collect_eplus(session: requests.Session, group: str, today: date) -> list[di
         for block in detail_soup.select(".block-ticket"):
             text = norm(block.get_text(" ", strip=True))
             apply_start, apply_end = iso_window(text)
-            if not (apply_start and apply_end and is_current_window(apply_end, today)):
+            if not (apply_start and apply_end):
                 continue
             status = norm((block.select_one(".ticket-status") or block).get_text(" ", strip=True))
-            if "受付終了" in status or "予定枚数終了" in status:
-                continue
             title_node = block.select_one(".block-ticket__title")
             ticket_type = norm(title_node.get_text(" ", strip=True) if title_node else "イープラス受付")
-            results.append(event_record(
+            event = event_record(
                 provider="eplus", group=group, title=page_title, ticket_type=ticket_type,
                 apply_start=apply_start, apply_end=apply_end, event_date=day, venue=venue,
                 url=detail_url, open_time=performance.get("openTime"), start_time=performance.get("startTime"),
-            ))
+            )
+            event["applicationStatus"] = reception_status(status, apply_end, today)
+            results.append(event)
     return results
 
 
@@ -218,6 +218,14 @@ def previous_schedule(item) -> tuple[str | None, str]:
     day_match = re.search(r"公演日[:：]?\s*(20\d{2}/\d{1,2}/\d{1,2})", text)
     venue_match = re.search(r"会場[:：]?\s*(.+)$", text)
     return (iso_day(day_match.group(1)) if day_match else None, clean_venue(venue_match.group(1)) if venue_match else "")
+
+
+def reception_status(text: str, end: str, today: date) -> str:
+    if re.search(r"予定枚数終了|完売|SOLD\s*OUT", text, re.I):
+        return "sold_out"
+    if "受付終了" in text or not is_current_window(end, today):
+        return "ended"
+    return "open"
 
 
 def collect_lawson(session: requests.Session, group: str, today: date) -> list[dict]:
@@ -237,9 +245,7 @@ def collect_lawson(session: requests.Session, group: str, today: date) -> list[d
                 continue
             text = norm(item.get_text(" ", strip=True))
             apply_start, apply_end = iso_window(text)
-            if not (apply_start and apply_end and is_current_window(apply_end, today)):
-                continue
-            if "受付終了" in text or "予定枚数終了" in text:
+            if not (apply_start and apply_end):
                 continue
             kind = norm((item.select_one("#reception_typename") or item).get_text(" ", strip=True))
             sale = item.select_one("#sale_name")
@@ -250,10 +256,12 @@ def collect_lawson(session: requests.Session, group: str, today: date) -> list[d
             if not lcode:
                 continue
             detail_url = f"https://l-tike.com/order/?gLcode={lcode}"
-            results.append(event_record(
+            event = event_record(
                 provider="lawson", group=group, title=title, ticket_type=ticket_type,
                 apply_start=apply_start, apply_end=apply_end, event_date=event_date, venue=venue, url=detail_url,
-            ))
+            )
+            event["applicationStatus"] = reception_status(text, apply_end, today)
+            results.append(event)
     return results
 
 

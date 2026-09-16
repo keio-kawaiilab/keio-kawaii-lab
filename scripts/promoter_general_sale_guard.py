@@ -265,11 +265,8 @@ def collect(session: requests.Session, today: date, known_events=None) -> tuple[
             sale = extract_general_sale(soup, event_day, source_url)
             if not sale:
                 continue
-            # A verified public offer already has this start; do not create a
-            # second promoter row that the legacy two-show normalizer can fold.
-            if any("一般" in str(o.get("ticketType") or "") and o.get("applyStart") == sale["applyStart"]
-                   for o in event.get("offers") or []):
-                continue
+            # Re-observe existing offers too: matching starts do not prove that
+            # availability is unchanged (a sale can now be sold out).
         except Exception as exc:
             failures.append({
                 "stage": "general-sale-detail",
@@ -317,6 +314,7 @@ def collect(session: requests.Session, today: date, known_events=None) -> tuple[
             "eventScope": "kawaii-lab",
             "historyPreserved": True,
             "soldOutObserved": sale["soldOutObserved"],
+            "sourceObservedAt": datetime.now(JST).isoformat(timespec="seconds"),
         })
     return rows, failures
 
@@ -360,10 +358,9 @@ def merge(payload: dict, rows: list[dict]) -> tuple[int, int]:
             target["applicationWindowVerified"] = True
             target["applicationWindowSource"] = row["applicationWindowSource"]
             changed = True
-        if row.get("soldOutObserved") and not target.get("soldOutObserved"):
+        if row.get("soldOutObserved") and (not target.get("soldOutObserved") or target.get("applicationStatus") != "sold_out"):
             target["soldOutObserved"] = True
-            if target.get("applicationStatus") in (None, "", "none", "observed"):
-                target["applicationStatus"] = "sold_out"
+            target["applicationStatus"] = "sold_out"
             changed = True
         urls = list(dict.fromkeys([*(target.get("urls") or []), *(row.get("urls") or [])]))
         if urls != (target.get("urls") or []):
@@ -416,6 +413,11 @@ def run(check: bool = False, today: date | None = None) -> dict:
         session.close()
 
     added, enriched = merge(payload, rows)
+    payload["promoterGeneralSaleDiagnostics"] = {
+        "checkedAt": datetime.now(JST).isoformat(timespec="seconds"),
+        "knownPerformancesChecked": len(performances), "generalSalesObserved": len(rows),
+        "generalSalesAdded": added, "generalSalesEnriched": enriched, "failures": failures,
+    }
     changed = payload != original
     if changed and not check:
         payload["updatedAt"] = datetime.now(JST).isoformat(timespec="seconds")

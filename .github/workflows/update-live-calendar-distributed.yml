@@ -67,7 +67,7 @@ jobs:
     needs: prepare
     if: needs.prepare.outputs.frozen != 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 14
     outputs:
       degraded: ${{ steps.collect.outputs.degraded }}
     steps:
@@ -88,7 +88,7 @@ jobs:
 
       - name: Test official schedule auto-add and parallel collector
         working-directory: scripts
-        run: python -m unittest -v test_update_official_schedule.py test_update_official_schedule_parallel.py
+        run: python -m unittest -v test_update_official_schedule.py test_update_official_schedule_parallel.py test_update_live_events_v2.py test_continuous_official_discovery.py test_reapply_calendar_observations.py
 
       - name: Collect official, PIA and official schedule data
         id: collect
@@ -105,10 +105,13 @@ jobs:
           # Network/source failures and hung requests are isolated to that source.
           # A timed-out source falls back to its previous known-good rows while
           # unrelated collectors continue and remain publishable.
-          if ! timeout --signal=TERM --kill-after=10s 150s python scripts/update_live_events_v2.py; then
+          if ! timeout --signal=TERM --kill-after=10s 420s python scripts/update_live_events_v2.py; then
             echo "::warning::Core official fetch failed or timed out; retaining previous official rows for this refresh."
             cp /tmp/live-events-last-good.json data/live-events.json
             mark_degraded "group-official-news"
+          fi
+          if python -c 'import json; d=json.load(open("data/live-events.json")); raise SystemExit(0 if (d.get("ticketCollectorDiagnostics") or {}).get("failureCount") else 1)'; then
+            mark_degraded "official-news-partial"
           fi
 
           cp data/live-events.json /tmp/live-events-before-pia.json
@@ -137,6 +140,9 @@ jobs:
             cp /tmp/official-schedule-index-before-refresh.json data/official-schedule-index.json
             mark_degraded "group-official-schedule"
           fi
+          if python -c 'import json; d=json.load(open("data/official-schedule-index.json")); raise SystemExit(0 if d.get("failures") else 1)'; then
+            mark_degraded "official-schedule-partial"
+          fi
 
           python scripts/apply_event_scopes.py
           python scripts/prepare_release_candidate.py --previous /tmp/live-events-last-good.json
@@ -149,6 +155,8 @@ jobs:
           path: |
             data/live-events.json
             data/official-schedule-index.json
+            data/official-discovery-state.json
+            data/ticket-history.json
           retention-days: 1
           if-no-files-found: error
 
@@ -212,8 +220,7 @@ jobs:
             cp /tmp/live-events-before-playguide.json data/live-events.json
             echo "degraded=playguides" >> "$GITHUB_OUTPUT"
           elif ! python scripts/audit_playguide_collection.py; then
-            echo "::warning::Playguide refresh did not pass source-health audit; retaining the previous playguide snapshot."
-            cp /tmp/live-events-before-playguide.json data/live-events.json
+            echo "::warning::Some playguide sources are degraded; collector retained their previous rows while healthy provider updates remain publishable."
             echo "degraded=playguides" >> "$GITHUB_OUTPUT"
           else
             echo "degraded=" >> "$GITHUB_OUTPUT"
@@ -334,7 +341,7 @@ jobs:
     needs: [prepare, collect-core, collect-playguide, collect-sukisuki, collect-special]
     if: always() && needs.prepare.result == 'success' && needs.prepare.outputs.frozen != 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 7
+    timeout-minutes: 10
     steps:
       - name: Checkout pinned base
         uses: actions/checkout@v4
@@ -360,6 +367,8 @@ jobs:
           else
             echo '{"entries":[],"groups":{}}' > /tmp/official-schedule-index-last-good.json
           fi
+          mkdir -p /tmp/calendar-base
+          cp data/live-events.json data/official-schedule-index.json data/ticket-history.json /tmp/calendar-base/
 
       - name: Seed last-known-good fallback for every collector
         shell: bash
@@ -428,6 +437,14 @@ jobs:
           python -m unittest -v test_merge_distributed_schedule_snapshots.py test_reconcile_official_schedule_index.py test_audit_schedule_release_grouped.py test_prepare_release_candidate.py test_schedule_scope.py test_audit_official_schedule_coverage.py test_promoter_general_sale_guard.py test_audit_ticket_sources.py
           cd ..
           cp /tmp/calendar-core/official-schedule-index.json data/official-schedule-index.json
+          if [ -f /tmp/calendar-core/ticket-history.json ]; then
+            cp /tmp/calendar-core/ticket-history.json data/ticket-history.json
+          fi
+          if [ -f /tmp/calendar-core/official-discovery-state.json ]; then
+            cp /tmp/calendar-core/official-discovery-state.json data/official-discovery-state.json
+          elif [ ! -f data/official-discovery-state.json ]; then
+            echo '{"status":"degraded","failureCount":1,"failures":[{"error":"Core discovery snapshot unavailable"}],"observations":[]}' > data/official-discovery-state.json
+          fi
           python scripts/merge_distributed_schedule_snapshots.py \
             --core /tmp/calendar-core/live-events.json \
             --playguide /tmp/calendar-playguide/live-events.json \
@@ -476,8 +493,47 @@ jobs:
           node --check /tmp/schedule-inline.js
           node scripts/test_schedule_band_grouping.js
           node scripts/test_schedule_scope_ui.js
+          python scripts/build_live_runtime_fallback.py
+          python scripts/audit_discovery_publication.py
 
-      - name: Close resolved distributed incident
+      - name: Commit one audited integrated release
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/calendar-collected
+          cp data/live-events.json data/official-schedule-index.json data/ticket-history.json data/ticket-collection-health.json /tmp/calendar-collected/
+          if [ -f data/official-discovery-state.json ]; then cp data/official-discovery-state.json /tmp/calendar-collected/; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3 4; do
+            git fetch origin main
+            if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
+              # Collected observations remain in /tmp. Reapply their structured
+              # delta on latest main, then rebuild and audit the resulting UI.
+              git reset --hard origin/main
+              cp data/live-events.json /tmp/calendar-latest-main.json
+              python scripts/reapply_calendar_observations.py --base /tmp/calendar-base --collected /tmp/calendar-collected
+              python scripts/reconcile_official_schedule_index.py
+              python scripts/audit_schedule_release_grouped.py --previous /tmp/calendar-latest-main.json --candidate data/live-events.json --report data/schedule-health.json
+              python scripts/build_schedule_snapshot.py
+              python scripts/fix_schedule_shell.py
+              python scripts/strip_schedule_explanations.py
+              python scripts/archive_ticket_history.py
+              python scripts/build_live_runtime_fallback.py
+              python scripts/audit_discovery_publication.py
+              node --check /tmp/schedule-inline.js
+              node scripts/test_schedule_band_grouping.js
+              node scripts/test_schedule_scope_ui.js
+            fi
+            git add data/live-events.json data/official-schedule-index.json data/schedule-health.json data/ticket-history.json data/ticket-collection-health.json data/official-discovery-state.json data/discovery-publication-health.json schedule.html live-runtime-fallback.js
+            if git diff --cached --quiet; then exit 0; fi
+            git commit -m "chore: publish distributed audited calendar"
+            if git push origin HEAD:main; then exit 0; fi
+          done
+          echo "Unable to publish integrated calendar after 4 attempts."
+          exit 1
+
+      - name: Close resolved distributed incident after publication
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
@@ -485,32 +541,8 @@ jobs:
           title="🚨 Distributed schedule refresh blocked"
           existing="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
           if [ -n "$existing" ]; then
-            gh issue close "$existing" --repo "$GITHUB_REPOSITORY" --comment "統合処理と公開が正常に通過しました。個別取得元・個別イベントの異常は局所隔離されます。"
+            gh issue close "$existing" --repo "$GITHUB_REPOSITORY" --comment "統合処理・監査・mainへの公開が完了しました。取得元の未解決事項は別途保持します。"
           fi
-
-      - name: Commit one audited integrated release
-        shell: bash
-        run: |
-          if [ -z "$(git status --porcelain -- data/live-events.json data/official-schedule-index.json data/schedule-health.json data/ticket-history.json data/ticket-collection-health.json schedule.html)" ]; then
-            echo "No audited distributed calendar changes."
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/live-events.json data/official-schedule-index.json data/schedule-health.json data/ticket-history.json data/ticket-collection-health.json schedule.html
-          git commit -m "chore: publish distributed audited calendar"
-          for attempt in 1 2 3; do
-            if git push origin HEAD:main; then exit 0; fi
-            echo "Push attempt ${attempt} rejected; rebasing integrated release onto latest main."
-            git fetch origin main
-            if ! git rebase origin/main; then
-              git rebase --abort || true
-              echo "Concurrent changes overlap integrated calendar output; refusing overwrite."
-              exit 1
-            fi
-          done
-          echo "Unable to publish integrated calendar after 3 attempts."
-          exit 1
 
   report-source-health:
     needs: [prepare, collect-core, collect-playguide, collect-sukisuki, collect-special, merge-publish]

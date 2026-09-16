@@ -59,10 +59,7 @@ def collect_parallel(
                 _, rows, _ = future.result()
                 grouped_rows[group].extend(rows)
             except Exception as exc:
-                failures.append({"group": group, "url": url, "error": f"{type(exc).__name__}: {exc}"})
-
-    if failures:
-        raise RuntimeError("Official schedule parallel crawl was incomplete: " + json.dumps(failures, ensure_ascii=False))
+                failures.append({"group": group, "year": year, "month": month, "url": url, "error": f"{type(exc).__name__}: {exc}"})
 
     all_rows: list[official.OfficialRow] = []
     status = {}
@@ -70,13 +67,15 @@ def collect_parallel(
         deduped = {(row.group, row.day, row.url): row for row in grouped_rows.get(group, [])}
         rows = list(deduped.values())
         all_rows.extend(rows)
-        status[group] = {"count": len(rows), "monthsChecked": len(months)}
+        failed = sum(1 for item in failures if item["group"] == group)
+        status[group] = {"count": len(rows), "monthsChecked": len(months) - failed, "failedMonths": failed}
 
     diagnostics = {
         "listMode": "parallel",
         "listWorkers": workers,
         "listRequests": len(tasks),
         "listDurationSeconds": round(time.monotonic() - started, 3),
+        "failures": failures,
     }
     return all_rows, status, diagnostics
 
@@ -137,25 +136,41 @@ def prefetch_details(
                 responses[url] = response
             except Exception as exc:
                 failures.append({"url": url, "error": f"{type(exc).__name__}: {exc}"})
-    if failures:
-        raise RuntimeError("Official detail parallel crawl was incomplete: " + json.dumps(failures, ensure_ascii=False))
     return responses, {
         "detailMode": "parallel",
         "detailWorkers": workers,
         "detailRequests": len(urls),
         "detailDurationSeconds": round(time.monotonic() - started, 3),
+        "detailFailures": failures,
     }
 
 
 class CachedSession:
-    def __init__(self, responses: dict[str, object], fallback):
+    def __init__(self, responses: dict[str, object], fallback, failures=()):
         self.responses = responses
         self.fallback = fallback
+        self.failed_urls = {item["url"] for item in failures}
 
     def get(self, url: str, *args, **kwargs):
         if url in self.responses:
             return self.responses[url]
+        if url in self.failed_urls:
+            raise RuntimeError(f"Official detail unavailable in this pass: {url}")
         return self.fallback.get(url, *args, **kwargs)
+
+
+def retain_failed_months(rows, previous_index, failures, today):
+    failed = {(item["group"], f'{item["year"]:04d}-{item["month"]:02d}') for item in failures}
+    known = {(row.group, row.day, row.url) for row in rows}
+    for entry in previous_index.get("entries", []):
+        day = str(entry.get("date") or "")
+        key = (entry.get("group"), day, entry.get("url"))
+        if (key[0], day[:7]) not in failed or day < today.isoformat() or key in known:
+            continue
+        rows.append(official.OfficialRow(key[0], day, entry.get("category", "LIVE"), entry.get("title", ""),
+                                        key[2], entry.get("eventScope", "external")))
+        known.add(key)
+    return rows
 
 
 def enrich_birthday_ticket_windows(
@@ -201,18 +216,20 @@ def main() -> int:
 
     today = datetime.now(official.JST).date()
     rows, status, list_diag = collect_parallel(today, max_workers=args.workers)
-    if not rows or any(status[group]["count"] == 0 for group in official.GROUPS):
-        raise SystemExit(f"Official schedule crawl returned an unsafe result: {status}")
     if args.check:
         print(json.dumps({"officialRows": len(rows), "groups": status, **list_diag}, ensure_ascii=False, indent=2))
-        return 0
+        return 2 if list_diag["failures"] else 0
 
     payload = json.loads(official.DATA_PATH.read_text(encoding="utf-8"))
+    previous_index = json.loads(official.INDEX_PATH.read_text(encoding="utf-8")) if official.INDEX_PATH.exists() else {}
+    rows = retain_failed_months(rows, previous_index, list_diag["failures"], today)
+    if not rows:
+        raise SystemExit("No current or previous official rows available")
     needed_urls = detail_urls_needed(payload, rows)
     detail_responses, detail_diag = prefetch_details(needed_urls, max_workers=args.workers)
     fallback = official.make_session()
     try:
-        merged, diagnostics = official.merge(payload, rows, CachedSession(detail_responses, fallback))
+        merged, diagnostics = official.merge(payload, rows, CachedSession(detail_responses, fallback, detail_diag.get("detailFailures", [])))
     finally:
         fallback.close()
 
@@ -237,7 +254,9 @@ def main() -> int:
         "range": {"start": today.isoformat(), "monthsAhead": official.MONTHS_AHEAD},
         "groups": status,
         "entries": [row.as_index() for row in rows],
+        "failures": list_diag["failures"] + detail_diag.get("detailFailures", []),
     }
+    merged["officialScheduleDiagnostics"] = {**list_diag, **detail_diag}
     official.DATA_PATH.write_text(json.dumps(merged, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     official.INDEX_PATH.write_text(json.dumps(index, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({**diagnostics, **list_diag, **detail_diag, "birthdayNews": birthday_diag}, ensure_ascii=False, indent=2))

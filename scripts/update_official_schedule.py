@@ -373,12 +373,18 @@ def merge(payload: dict, rows: list[OfficialRow], session: requests.Session) -> 
     events = [dict(event) for event in payload.get("events", []) if isinstance(event, dict)]
     events = [event for event in events if event.get("sourceType") != "official-schedule"]
     detail_cache: dict[str, dict] = {}
+    detail_failures = []
+    previous_by_id = {event.get("id"): event for event in payload.get("events", [])}
 
     def detail(row: OfficialRow) -> dict:
         if row.url not in detail_cache:
-            response = session.get(row.url, timeout=25)
-            response.raise_for_status()
-            detail_cache[row.url] = parse_detail(response.text)
+            try:
+                response = session.get(row.url, timeout=25)
+                response.raise_for_status()
+                detail_cache[row.url] = parse_detail(response.text)
+            except Exception as exc:
+                detail_cache[row.url] = {}
+                detail_failures.append({"url": row.url, "error": str(exc)})
             time.sleep(0.04)
         return detail_cache[row.url]
 
@@ -404,6 +410,9 @@ def merge(payload: dict, rows: list[OfficialRow], session: requests.Session) -> 
     for cluster in collapse_missing(missing):
         info = detail(cluster[0])
         event = build_event(cluster, info)
+        if event.get("id") in previous_by_id:
+            previous = previous_by_id[event["id"]]
+            event = {**previous, **{key: value for key, value in event.items() if value not in (None, "", [], {})}}
         events.append(event)
         added.append(event)
         for row in cluster:
@@ -421,6 +430,7 @@ def merge(payload: dict, rows: list[OfficialRow], session: requests.Session) -> 
         "addedEvents": len(added),
         "detailPages": len(detail_cache),
         "ticketScopesPropagated": propagated,
+        "detailFailures": detail_failures,
     }
     return out, diagnostics
 

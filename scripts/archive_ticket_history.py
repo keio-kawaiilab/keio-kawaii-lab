@@ -171,6 +171,8 @@ def history_identity(event: dict, source_url: str, source_key: str, day: str) ->
         clean(event.get("ticketProvider") or event.get("primarySource") or source_key),
         source_url,
     )
+    if event.get("startTime"):
+        parts += (clean(event["startTime"]),)
     return hashlib.sha1("\x1f".join(parts).encode("utf-8")).hexdigest()[:20]
 
 
@@ -192,6 +194,7 @@ def make_entry(event: dict, source_url: str, source_key: str, day: str, registry
         "participants": event.get("participants") or [],
         "eventTitle": title_for(event),
         "eventDate": day,
+        "startTime": event.get("startTime"),
         "venue": event.get("venue"),
         "ticketType": event.get("ticketType"),
         "ticketProvider": event.get("ticketProvider") or event.get("primarySource") or source_key,
@@ -275,7 +278,7 @@ def archive_payload(live: dict, history: dict, registry: dict, now: str) -> dict
             if not isinstance(offer, dict) or str(offer.get("sourceRowId")) in source_ids:
                 continue
             event = {key: performance.get(key) for key in
-                     ("group", "title", "eventDate", "venue", "eventCategory", "participants")}
+                     ("group", "title", "eventDate", "startTime", "venue", "eventCategory", "participants")}
             event.update(offer)
             event["ticketProvider"] = offer.get("ticketProvider") or offer.get("provider")
             observations.append(event)
