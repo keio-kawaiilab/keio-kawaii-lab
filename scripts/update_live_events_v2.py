@@ -324,7 +324,6 @@ def build_payload(existing: dict, fresh_by_id: dict[str, dict], pending: list[di
                     if previous.get("id") in source_ids and not previous.get("startTime") and len(event_days(previous)) == 1:
                         previous["startTime"] = event["startTime"]
                         previous["performanceTimeSourceUrl"] = event.get("url")
-    fresh_urls = {str(e.get("url")) for e in fresh_by_id.values() if e.get("url")}
     fresh_events = []
     for event in fresh_by_id.values():
         if not should_show(event, today):
@@ -337,6 +336,8 @@ def build_payload(existing: dict, fresh_by_id: dict[str, dict], pending: list[di
                    and event.get("eventDate") in event_days(row) for row in known):
                 continue
         fresh_events.append(event)
+    visible_by_id = {event["id"]: event for event in fresh_events}
+    fresh_urls = {str(event["url"]) for event in fresh_events if event.get("url")}
     retained: list[dict] = []
     for original in existing.get("events", []):
         if not isinstance(original, dict):
@@ -344,7 +345,7 @@ def build_payload(existing: dict, fresh_by_id: dict[str, dict], pending: list[di
         event = dict(original)
         if not should_show(event, today):
             continue
-        if represented_by_fresh(event, fresh_by_id, fresh_urls):
+        if represented_by_fresh(event, visible_by_id, fresh_urls):
             continue
         retained.append(event)
 

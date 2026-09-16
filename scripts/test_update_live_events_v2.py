@@ -5,6 +5,11 @@ import update_live_events_v2 as v2
 
 
 class RetentionPolicyTests(unittest.TestCase):
+    def test_archived_fresh_reception_does_not_erase_future_performance(self):
+        row = {"id": "same", "sourceType": "auto", "group": "MORE STAR", "title": "MORE STAR LIVE", "eventDate": "2099-10-01", "applyEnd": "2099-08-01T23:59", "url": "https://morestar.asobisystem.com/news/detail/1"}
+        result = v2.build_payload({"events": [row]}, {"same": dict(row)}, [], [], date(2099, 9, 1))
+        self.assertEqual([event["id"] for event in result["events"]], ["same"])
+
     def test_future_show_survives_old_application_deadline(self):
         event = {
             "eventDate": "2026-12-12",
