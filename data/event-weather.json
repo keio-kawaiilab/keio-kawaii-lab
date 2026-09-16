@@ -1,7 +1,7 @@
 {
   "date": "2026-09-16",
   "horizonDays": 7,
-  "generatedAt": "2026-09-16T08:09+09:00",
+  "generatedAt": "2026-09-16T16:53+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -17,12 +17,12 @@
       "areaCode": "110010",
       "areaName": "南部",
       "precision": "area",
-      "label": "雨 所により 昼過ぎ から 夕方 激しく 降る",
-      "max": 23.0,
-      "min": 23.0,
-      "pop": "70",
+      "label": "雨",
+      "max": null,
+      "min": null,
+      "pop": "80",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-09-16T05:00:00+09:00",
+      "issuedAt": "2026-09-16T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -39,41 +39,29 @@
       "areaName": "南部",
       "precision": "mesh5km",
       "label": "雨",
-      "max": 23.0,
-      "min": 23.0,
-      "pop": "70",
+      "max": null,
+      "min": null,
+      "pop": "80",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-09-16T05:00:00+09:00",
+      "issuedAt": "2026-09-16T17:00:00+09:00",
       "meshTime": "18:00",
-      "meshTempBand": "20〜24℃",
+      "meshTempBand": "15〜19℃",
       "coordinates": {
         "lat": 35.905506,
         "lon": 139.619995
       },
       "meshTimeline": [
         {
-          "time": "09:00",
-          "label": "雨",
-          "validAt": "2026-09-16T09:00+09:00",
-          "temp": 21
-        },
-        {
-          "time": "12:00",
-          "label": "雨",
-          "validAt": "2026-09-16T12:00+09:00",
-          "temp": 22
-        },
-        {
           "time": "15:00",
           "label": "雨",
           "validAt": "2026-09-16T15:00+09:00",
-          "temp": 22
+          "temp": 20
         },
         {
           "time": "18:00",
           "label": "雨",
           "validAt": "2026-09-16T18:00+09:00",
-          "temp": 20
+          "temp": 19
         },
         {
           "time": "21:00",
@@ -90,19 +78,19 @@
       ],
       "hourlyRain": [
         {
-          "time": "18:00",
+          "time": "17:30",
           "rain": true,
-          "validAt": "2026-09-16T18:00+09:00"
+          "validAt": "2026-09-16T17:30+09:00"
         },
         {
-          "time": "19:00",
+          "time": "18:30",
           "rain": true,
-          "validAt": "2026-09-16T19:00+09:00"
+          "validAt": "2026-09-16T18:30+09:00"
         },
         {
-          "time": "20:00",
+          "time": "19:30",
           "rain": true,
-          "validAt": "2026-09-16T20:00+09:00"
+          "validAt": "2026-09-16T19:30+09:00"
         }
       ]
     },
@@ -116,12 +104,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "雨 昼前 から くもり",
+      "label": "雨 昼前 から くもり 所により 明け方 まで 雷 を伴う",
       "max": 23.0,
-      "min": 18.0,
+      "min": 19.0,
       "pop": "70",
       "popLabel": "当日最大",
-      "issuedAt": "2026-09-16T05:00:00+09:00",
+      "issuedAt": "2026-09-16T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -135,14 +123,14 @@
         "11df1b1ce3d6e6e2"
       ],
       "areaCode": "120010",
-      "areaName": "千葉県",
+      "areaName": "北西部",
       "precision": "area",
-      "label": "くもり一時雨",
-      "max": 23.0,
-      "min": 20.0,
-      "pop": "50",
-      "popLabel": "1日",
-      "issuedAt": "2026-09-15T17:00:00+09:00",
+      "label": "くもり",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-09-16T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -162,7 +150,7 @@
       "min": 20.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-09-15T17:00:00+09:00",
+      "issuedAt": "2026-09-16T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -183,7 +171,7 @@
       "min": 20.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-09-15T17:00:00+09:00",
+      "issuedAt": "2026-09-16T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -199,11 +187,11 @@
       "areaName": "神奈川県",
       "precision": "area",
       "label": "くもり",
-      "max": 25.0,
+      "max": 26.0,
       "min": 19.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-09-15T17:00:00+09:00",
+      "issuedAt": "2026-09-16T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -220,12 +208,12 @@
       "areaCode": "140010",
       "areaName": "神奈川県",
       "precision": "area",
-      "label": "くもり一時雨",
+      "label": "くもり時々雨",
       "max": 26.0,
       "min": 20.0,
-      "pop": "50",
+      "pop": "60",
       "popLabel": "1日",
-      "issuedAt": "2026-09-15T17:00:00+09:00",
+      "issuedAt": "2026-09-16T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -241,12 +229,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "くもり一時雨",
-      "max": 27.0,
+      "label": "くもり時々雨",
+      "max": 26.0,
       "min": 21.0,
-      "pop": "50",
+      "pop": "60",
       "popLabel": "1日",
-      "issuedAt": "2026-09-15T17:00:00+09:00",
+      "issuedAt": "2026-09-16T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -263,11 +251,11 @@
       "areaName": "三重県",
       "precision": "area",
       "label": "くもり一時雨",
-      "max": 27.0,
+      "max": 26.0,
       "min": 23.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-09-15T17:00:00+09:00",
+      "issuedAt": "2026-09-16T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -282,12 +270,12 @@
       "areaCode": "120010",
       "areaName": "千葉県",
       "precision": "area",
-      "label": "くもり一時雨",
-      "max": 25.0,
-      "min": 21.0,
-      "pop": "50",
+      "label": "くもり時々雨",
+      "max": 26.0,
+      "min": 22.0,
+      "pop": "60",
       "popLabel": "1日",
-      "issuedAt": "2026-09-15T17:00:00+09:00",
+      "issuedAt": "2026-09-16T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -305,10 +293,54 @@
       "precision": "area",
       "label": "くもり",
       "max": 27.0,
-      "min": 20.0,
+      "min": 21.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-09-15T17:00:00+09:00",
+      "issuedAt": "2026-09-16T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-09-23",
+      "venue": "神奈川県 横浜アリーナ",
+      "venueKey": "横浜アリーナ",
+      "eventIds": [
+        "0bf989743dfb2324",
+        "a9f07d73f091ca00",
+        "3f99f7bcacecc458",
+        "b929ac13fb654730"
+      ],
+      "areaCode": "140010",
+      "areaName": "神奈川県",
+      "precision": "area",
+      "label": "くもり",
+      "max": 27.0,
+      "min": 22.0,
+      "pop": "40",
+      "popLabel": "1日",
+      "issuedAt": "2026-09-16T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-09-23",
+      "venue": "岐阜県 長良川国際会議場 メインホール",
+      "venueKey": "長良川国際会議場メインホール",
+      "eventIds": [
+        "024676b8e98a3faf",
+        "f1172a787c8f80eb"
+      ],
+      "areaCode": "210010",
+      "areaName": "岐阜県",
+      "precision": "area",
+      "label": "くもり",
+      "max": 29.0,
+      "min": 22.0,
+      "pop": "40",
+      "popLabel": "1日",
+      "issuedAt": "2026-09-16T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -317,11 +349,11 @@
   "stats": {
     "occurrencesInRange": 28,
     "uniqueVenueDates": 16,
-    "weatherEntries": 12,
+    "weatherEntries": 14,
     "meshEntries": 1,
-    "failures": 4,
+    "failures": 2,
     "meshTimelineEntries": 1,
-    "meshExactTempSlots": 6,
+    "meshExactTempSlots": 4,
     "hourlyRainEntries": 1
   },
   "failures": [
@@ -334,16 +366,6 @@
       "date": "2026-09-22",
       "venue": "東京流通センター 第二展示場Eホール",
       "reason": "都道府県を解決できません"
-    },
-    {
-      "date": "2026-09-23",
-      "venue": "神奈川県 横浜アリーナ",
-      "reason": "開催日の予報がまだありません"
-    },
-    {
-      "date": "2026-09-23",
-      "venue": "岐阜県 長良川国際会議場 メインホール",
-      "reason": "開催日の予報がまだありません"
     }
   ]
 }
