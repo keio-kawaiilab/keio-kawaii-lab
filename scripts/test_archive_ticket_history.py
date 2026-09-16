@@ -4,6 +4,16 @@ import archive_ticket_history as mod
 
 
 class ArchiveTicketHistoryTests(unittest.TestCase):
+    def test_repeated_archive_preserves_two_show_times_without_duplicate_ids(self):
+        base = {"group": "CANDY TUNE", "eventTitle": "Two shows", "eventDate": "2099-10-01", "ticketType": "一般発売", "applyStart": "2099-09-01T10:00", "url": "https://example.asobisystem.com/news/detail/two"}
+        live = {"events": [dict(base, startTime="14:00"), dict(base, startTime="18:00")]}
+        history = {"entries": []}
+        for _ in range(3):
+            history = mod.archive_payload(live, history, self.registry, "2099-09-02T10:00:00+09:00")
+            self.assertEqual(len(history["entries"]), 2)
+            self.assertEqual(len({row["id"] for row in history["entries"]}), 2)
+        self.assertEqual({row["startTime"] for row in history["entries"]}, {"14:00", "18:00"})
+
     def setUp(self):
         self.registry = {
             "version": 1,

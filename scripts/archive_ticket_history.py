@@ -260,6 +260,7 @@ def archive_payload(live: dict, history: dict, registry: dict, now: str) -> dict
         stub = {
             "group": existing.get("group"),
             "eventTitle": existing.get("eventTitle"),
+            "startTime": existing.get("startTime"),
             "ticketType": existing.get("ticketType"),
             "ticketProvider": existing.get("ticketProvider"),
         }
