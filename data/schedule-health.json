@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-18T07:11:14.134987+09:00",
-  "candidateUpdatedAt": "2026-09-18T07:11:13+09:00",
-  "previousEventCount": 167,
+  "generatedAt": "2026-09-18T07:20:44.990647+09:00",
+  "candidateUpdatedAt": "2026-09-18T07:20:44+09:00",
+  "previousEventCount": 165,
   "candidateEventCount": 165,
-  "protectedPreviousCount": 166,
+  "protectedPreviousCount": 164,
   "errorCount": 0,
-  "warningCount": 72,
+  "warningCount": 71,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / ぴあNICOSカード限定先行",
@@ -22,7 +22,6 @@
     "quarantined one event/source update and kept the previous known-good data: canonical special event offer has no verified purchase/ticket window: CUTIE STREET / CUTIE STREET 大特典会＠ベルサール渋谷ファースト【事前抽選会】 / 現在受付なし / offer 8",
     "quarantined one event/source update and kept the previous known-good data: special event has no official source URL: CUTIE STREET / CUTIE STREET 大特典会＠ベルサール渋谷ファースト【事前抽選会】 / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: duplicate Pia lot pia:17441: FRUITS ZIPPER / FRUITS ZIPPER / ぴあ先行",
-    "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: SWEET STEADY / SWEET STEADY 単独公演 お花見会 / 一般発売",
     "quarantined one event/source update and kept the previous known-good data: duplicate Pia lot pia:95188: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / ぴあプレミアム先行",
     "quarantined one event/source update and kept the previous known-good data: special event has no official source URL: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場【1部・3部・6部】 / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event is not marked as official-source data: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場【1部・3部・6部】 / 現在受付なし",
@@ -82,7 +81,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
   ],
-  "candidateSha256": "9e7b3d73d92f7ca8180d2ce7391f93d9ff26102fbda4f7b58eda56dd37e1666f",
+  "candidateSha256": "e39ad5fc890592f61995b564925a37c0b84a16fd5d6fb480a6414cacc4e56f16",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/",
@@ -151,7 +150,6 @@
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
-    "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2670866",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=09569",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=13219",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=13707",
@@ -401,7 +399,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 29,
+  "quarantineCount": 28,
   "quarantineActions": [
     {
       "error": "duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / ぴあNICOSカード限定先行",
@@ -466,11 +464,6 @@
     {
       "error": "duplicate Pia lot pia:17441: FRUITS ZIPPER / FRUITS ZIPPER / ぴあ先行",
       "action": "restored previous Pia lot rows",
-      "restoredPreviousRows": 2
-    },
-    {
-      "error": "active Pia row has no lotRlsCd detail URL: SWEET STEADY / SWEET STEADY 単独公演 お花見会 / 一般発売",
-      "action": "restored previous row",
       "restoredPreviousRows": 2
     },
     {
