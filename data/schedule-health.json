@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-18T00:32:49.966954+09:00",
-  "candidateUpdatedAt": "2026-09-18T00:32:49+09:00",
-  "previousEventCount": 160,
-  "candidateEventCount": 160,
-  "protectedPreviousCount": 159,
+  "generatedAt": "2026-09-18T04:05:55.022718+09:00",
+  "candidateUpdatedAt": "2026-09-18T04:05:54+09:00",
+  "previousEventCount": 163,
+  "candidateEventCount": 163,
+  "protectedPreviousCount": 162,
   "errorCount": 0,
-  "warningCount": 67,
+  "warningCount": 68,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / ぴあNICOSカード限定先行",
@@ -39,6 +39,7 @@
     "quarantined one event/source update and kept the previous known-good data: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: MORE STAR / MORE STAR 単独ライブ 5th STAR / 一般発売",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:13219: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:28155: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 2次プレリザーブ",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:19934: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:13707: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
@@ -77,7 +78,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
   ],
-  "candidateSha256": "da9e92c2a138fdc14e7555f4b74e45996da0066aade2b3e0a7424f262de3cf98",
+  "candidateSha256": "845fe87f7547870430434eb7804738e31029febc8931ce30a11388b9eb3cb3b7",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/",
@@ -145,6 +146,7 @@
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=09569",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=13219",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=13707",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14296",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=17441",
@@ -173,7 +175,7 @@
   ],
   "reconciledBaseDateMessageCount": 0,
   "downgradedFalsePositiveCount": 0,
-  "legacyProtectedErrorCount": 39,
+  "legacyProtectedErrorCount": 40,
   "legacyProtectedErrors": [
     {
       "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
@@ -183,6 +185,11 @@
     {
       "error": "active Pia row has no lotRlsCd detail URL: MORE STAR / MORE STAR 単独ライブ 5th STAR / 一般発売",
       "label": "MORE STAR / MORE STAR 単独ライブ 5th STAR / 一般発売",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "duplicate Pia lot pia:13219: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
+      "label": "FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     },
     {
