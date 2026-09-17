@@ -25,12 +25,21 @@ class ContinuousDiscoveryTests(unittest.TestCase):
         self.assertEqual([item.url for item in found], ["https://candytune.asobisystem.com/news/detail/new"])
         self.assertEqual(len(retention.FEED_FAILURES["CANDY TUNE"]), 1)
 
-    def test_old_future_article_and_unresolved_url_are_revisited(self):
+    def test_future_article_and_publication_missing_url_are_revisited(self):
         base = "https://candytune.asobisystem.com/news/detail/"
-        existing = {"events": [{"group": "CANDY TUNE", "eventDate": "2099-10-01", "url": base + "old"}],
-                    "pendingReview": [{"group": "CANDY TUNE", "url": base + "pending"}]}
+        existing = {
+            "events": [{"group": "CANDY TUNE", "eventDate": "2099-10-01", "url": base + "old"}],
+            "pendingReview": [{"group": "CANDY TUNE", "url": base + "stale-pending"}],
+            "failures": [{"group": "CANDY TUNE", "url": base + "stale-failure"}],
+            "officialDiscoveryState": {
+                "observations": [
+                    {"group": "CANDY TUNE", "url": base + "retry", "status": "publication-missing"},
+                    {"group": "CANDY TUNE", "url": base + "stale-observation", "status": "pending"},
+                ]
+            },
+        }
         found = discovery.revisit_candidates(existing, date(2099, 9, 1))
-        self.assertEqual(set(found), {base + "old", base + "pending"})
+        self.assertEqual(set(found), {base + "old", base + "retry"})
 
     def test_new_general_sale_flows_from_article_into_public_offer(self):
         candidate = discovery.parser.Candidate("CANDY TUNE", "CANDY TUNE 新ツアー", "https://candytune.asobisystem.com/news/detail/new")
