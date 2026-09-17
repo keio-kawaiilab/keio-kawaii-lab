@@ -31,15 +31,26 @@ class CachedArticle:
 
 
 def revisit_candidates(existing, today):
+    """Revisit only sources that can still change a live result.
+
+    Fresh official index scans already rediscover recent unresolved articles on
+    every pass. Re-injecting every historical pending/failure/observation here
+    made the candidate set grow forever and spent most cycles re-reading stale
+    pages. Keep old sources only when they belong to a still-future event, or
+    when the publication audit explicitly says a parsed offer failed to reach
+    the public output.
+    """
     hosts = {urlparse(base).netloc: group for group, base in parser.GROUPS.items()}
     hosts[urlparse(retention.CENTRAL_FC_BASE).netloc] = "KAWAII LAB. FC"
     found = {}
+
     rows = [row for row in existing.get("events", []) if retention.should_show(row, today)]
-    rows += existing.get("pendingReview", []) + existing.get("failures", [])
-    rows += existing.get("officialDiscoveryState", {}).get("observations", [])
+    rows += [
+        row for row in existing.get("officialDiscoveryState", {}).get("observations", [])
+        if isinstance(row, dict) and row.get("status") == "publication-missing"
+    ]
+
     for row in rows:
-        if row.get("status") in {"irrelevant", "past"}:
-            continue
         for url in sorted(retention.event_urls(row) | {str(row.get("officialScheduleUrl") or "")}):
             host = urlparse(url).netloc
             if host not in hosts or not any(path in url for path in ("/news/detail/", "/live_information/detail/")):
