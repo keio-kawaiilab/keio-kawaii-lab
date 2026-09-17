@@ -27,6 +27,12 @@
     dedupe.setAttribute("data-schedule-card-dedupe-v2","");
     document.body.appendChild(dedupe);
   }
+  if(!document.querySelector('script[data-shared-benefit-dedupe]')){
+    var benefitDedupe=document.createElement("script");
+    benefitDedupe.src="./schedule-shared-benefit-dedupe.js?v=20260917";
+    benefitDedupe.setAttribute("data-shared-benefit-dedupe","");
+    document.body.appendChild(benefitDedupe);
+  }
   if(!document.querySelector('script[data-cutiestreet-tour-fix]')){
     var cutieFix=document.createElement("script");
     cutieFix.src="./schedule-cutiestreet-tour-fix.js?v=202609061930";
