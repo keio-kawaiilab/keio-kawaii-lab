@@ -259,6 +259,61 @@ class AuditScheduleReleaseTests(unittest.TestCase):
         errors, _, _ = audit(payload([event]), payload([copy.deepcopy(event)]), NOW)
         self.assertEqual([], errors)
 
+    def test_legacy_multidate_release_bundle_may_split_into_verified_dates(self):
+        old = {
+            "id": "special-old",
+            "group": "CANDY TUNE",
+            "eventScope": "kawaii-lab",
+            "title": "CANDY TUNE 4thシングル発売記念リリースイベント",
+            "eventCategory": "release-event",
+            "entityType": "special-event",
+            "specialEventEntityVersion": 1,
+            "ticketType": "現在受付なし",
+            "applicationStatus": "none",
+            "applicationDisplayMode": "schedule-only",
+            "specialDetailsStatus": "awaiting-details",
+            "eventDate": "2026-09-27",
+            "eventEndDate": "2026-09-30",
+            "eventDates": ["2026-09-27", "2026-09-30"],
+            "schedule": [
+                {"date": "2026-09-27", "venue": "セブンパークアリオ柏"},
+                {"date": "2026-09-30", "venue": "イオンモール幕張新都心"},
+            ],
+            "venue": "複数会場（全2公演）",
+            "url": "https://candytune.asobisystem.com/news/detail/90320",
+            "urls": [
+                "https://candytune.asobisystem.com/news/detail/90320",
+                "https://candytune.asobisystem.com/news/detail/90321",
+            ],
+            "sourceType": "official-special",
+        }
+        first = {
+            **copy.deepcopy(old),
+            "id": "special-927",
+            "eventDate": "2026-09-27",
+            "eventEndDate": "2026-09-27",
+            "eventDates": ["2026-09-27"],
+            "schedule": [{"date": "2026-09-27", "venue": "セブンパークアリオ柏"}],
+            "venue": "セブンパークアリオ柏",
+            "url": "https://candytune.asobisystem.com/news/detail/90320",
+            "urls": ["https://candytune.asobisystem.com/news/detail/90320"],
+        }
+        second = {
+            **copy.deepcopy(old),
+            "id": "special-930",
+            "eventDate": "2026-09-30",
+            "eventEndDate": "2026-09-30",
+            "eventDates": ["2026-09-30"],
+            "schedule": [{"date": "2026-09-30", "venue": "イオンモール幕張新都心"}],
+            "venue": "イオンモール幕張新都心",
+            "url": "https://candytune.asobisystem.com/news/detail/90321",
+            "urls": ["https://candytune.asobisystem.com/news/detail/90321"],
+        }
+
+        errors, warnings, _ = audit(payload([old]), payload([first, second]), NOW)
+        self.assertEqual([], errors)
+        self.assertTrue(any("split into physical events" in warning for warning in warnings))
+
     def test_release_event_missing_gathering_time_is_blocked(self):
         errors, _, _ = audit(payload([]), payload([base_release(gatheringTime=None)]), NOW)
         self.assertTrue(any("sales/gathering/start time" in error for error in errors))
