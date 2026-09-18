@@ -161,6 +161,29 @@ class ContinuousDiscoveryTests(unittest.TestCase):
         candidate = discovery.parser.Candidate("MORE STAR", "Live", "https://morestar.asobisystem.com/news/detail/new")
         self.assertEqual(discovery.general_sale_rows(candidate, "一般販売の詳細は後日\n公演日：2099年10月1日18:00", {}), [])
 
+    def test_tour_resale_rows_are_paired_per_performance(self):
+        candidate = discovery.parser.Candidate(
+            "FRUITS ZIPPER",
+            "FRUITS ZIPPER JAPAN TOUR 2099 リセールサービスのお知らせ",
+            "https://fruitszipper.asobisystem.com/news/detail/resale",
+        )
+        text = (
+            "2099.08.31\n"
+            "2099/9/3(木) よこすか芸術劇場\n"
+            "〖リセール受付・購入期間〗9/1(火)10:00〜9/2(水)23:59\n"
+            "2099/9/21(月) 三重県文化会館\n"
+            "〖リセール受付・購入期間〗9/19(土)10:00〜9/20(日)23:59\n"
+        )
+        rows = discovery.paired_resale_rows(candidate, text)
+        self.assertEqual(len(rows), 2)
+        self.assertEqual(
+            {(row["eventDate"], row["applyStart"], row["applyEnd"]) for row in rows},
+            {
+                ("2099-09-03", "2099-09-01T10:00", "2099-09-02T23:59"),
+                ("2099-09-21", "2099-09-19T10:00", "2099-09-20T23:59"),
+            },
+        )
+
     def test_tour_resale_windows_are_not_cross_joined_to_all_dates(self):
         candidate = discovery.parser.Candidate("MORE STAR", "Live リセール", "https://morestar.asobisystem.com/news/detail/new")
         text = "2099.09.01\n公演日：2099年10月1日\nリセール：2099年9月28日10:00〜9月30日23:59\n公演日：2099年11月1日\nリセール：2099年10月28日10:00〜10月31日23:59"
