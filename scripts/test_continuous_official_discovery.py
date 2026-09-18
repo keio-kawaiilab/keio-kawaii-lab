@@ -150,6 +150,27 @@ class ContinuousDiscoveryTests(unittest.TestCase):
         self.assertIsNotNone(row)
         self.assertEqual(row["eventDate"], "2099-11-09")
 
+    def test_non_sale_fc_notice_is_irrelevant(self):
+        candidate = discovery.parser.Candidate(
+            "KAWAII LAB. FC",
+            "KAWAII LAB. STORE デジタル整理券導入のお知らせ",
+            "https://kawaiilab.asobisystem.com/news/detail/notice",
+        )
+        class DummyResponse:
+            text = "<div class='section--detail'><h1>KAWAII LAB. STORE デジタル整理券導入のお知らせ</h1><p>チケットに関する注意事項</p></div>"
+            def raise_for_status(self):
+                return None
+        class DummySession:
+            headers = {}
+            def __enter__(self): return self
+            def __exit__(self, *args): return None
+            def get(self, *args, **kwargs): return DummyResponse()
+        with patch.object(discovery.requests, "Session", return_value=DummySession()):
+            rows, review, status = discovery.read_candidate(candidate, {"events": []}, {})
+        self.assertEqual(rows, [])
+        self.assertIsNone(review)
+        self.assertEqual(status, "irrelevant")
+
     def test_unlabeled_fc_window_after_heading_is_extracted(self):
         text = "<KAWAII LAB. OFFICIAL FANCLUB 有料会員先行受付＞\n2026年9月18日(金)12:00〜2026年9月24日(木)23:59\nお申込みはこちら"
         self.assertEqual(
