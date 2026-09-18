@@ -148,6 +148,7 @@ def fallback_row_from_review(candidate, title, text, review, existing):
     group = candidate.group
     stable_title = _stable_performance_title(title, group)
     wanted = retention.title_key(stable_title, group)
+    wanted = re.sub(r"(?:公演|開催)+$", "", wanted)
     if not wanted:
         return None
 
@@ -158,6 +159,7 @@ def fallback_row_from_review(candidate, title, text, review, existing):
             continue
         current_title = event.get("eventTitle") or event.get("displayTitle") or event.get("title")
         current = retention.title_key(_stable_performance_title(str(current_title or ""), group), group)
+        current = re.sub(r"(?:公演|開催)+$", "", current)
         if not current or current != wanted:
             continue
         event_date = str(event.get("eventDate") or "")[:10]
