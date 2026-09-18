@@ -150,6 +150,13 @@ class ContinuousDiscoveryTests(unittest.TestCase):
         self.assertIsNotNone(row)
         self.assertEqual(row["eventDate"], "2099-11-09")
 
+    def test_unlabeled_fc_window_after_heading_is_extracted(self):
+        text = "<KAWAII LAB. OFFICIAL FANCLUB 有料会員先行受付＞\n2026年9月18日(金)12:00〜2026年9月24日(木)23:59\nお申込みはこちら"
+        self.assertEqual(
+            discovery.unlabeled_ticket_window(text, 2026),
+            ("2026-09-18T12:00", "2026-09-24T23:59"),
+        )
+
     def test_performance_date_is_not_misread_as_general_sale_start(self):
         candidate = discovery.parser.Candidate("MORE STAR", "Live", "https://morestar.asobisystem.com/news/detail/new")
         self.assertEqual(discovery.general_sale_rows(candidate, "一般販売の詳細は後日\n公演日：2099年10月1日18:00", {}), [])
