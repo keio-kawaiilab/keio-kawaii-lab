@@ -20,6 +20,21 @@ import update_live_events_v2 as retention
 
 WORKERS = 24
 SALE_RE = re.compile(r"一般(?:発売|販売)|当日券|リセール")
+RETRACTED_SOURCES_PATH = "data/retracted-ticket-sources.json"
+
+
+def retracted_source_urls():
+    try:
+        import json
+        from pathlib import Path
+        payload = json.loads(Path(RETRACTED_SOURCES_PATH).read_text(encoding="utf-8"))
+    except Exception:
+        return set()
+    return {
+        str(item.get("url") or "").strip()
+        for item in payload.get("entries", [])
+        if isinstance(item, dict) and item.get("url")
+    }
 
 
 class CachedArticle:
@@ -513,6 +528,7 @@ def read_candidate(candidate, existing, headers):
 
 def collect(session, existing):
     candidates = revisit_candidates(existing, datetime.now(parser.JST).date())
+    retracted_urls = retracted_source_urls()
     failures, pending, observations = [], [], []
     counts, fresh = {}, {}
     feeds = {**parser.GROUPS, "KAWAII LAB. FC": retention.CENTRAL_FC_BASE}
@@ -523,13 +539,15 @@ def collect(session, existing):
             try:
                 found = future.result()
                 counts[group] = len(found)
-                candidates.update({item.url: item for item in found})
+                candidates.update({item.url: item for item in found if item.url not in retracted_urls})
                 failures.extend(retention.FEED_FAILURES.get(group, []))
                 if not found:
                     failures.append({"group": group, "stage": "news-list", "error": "No detail links in official feed"})
             except Exception as exc:
                 counts[group] = 0
                 failures.append({"group": group, "stage": "news-list", "error": str(exc)})
+    for url in retracted_urls:
+        candidates.pop(url, None)
     now = datetime.now(parser.JST).isoformat(timespec="seconds")
     headers = dict(session.headers)
     with ThreadPoolExecutor(max_workers=WORKERS) as pool:
