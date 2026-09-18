@@ -235,6 +235,89 @@ class PrepareReleaseCandidateTests(unittest.TestCase):
         self.assertEqual(1, report["officialXRowsCollapsed"])
         self.assertEqual(0, report["physicalEventInvariant"]["remainingDuplicateCount"])
 
+    def test_legacy_multidate_release_bundle_is_replaced_by_separate_current_dates(self):
+        title = "CANDY TUNE 4thシングル発売記念リリースイベント"
+        previous = {
+            "events": [{
+                "id": "special-legacy",
+                "group": "CANDY TUNE",
+                "title": title,
+                "eventTitle": title,
+                "displayTitle": title,
+                "eventCategory": "release-event",
+                "entityType": "special-event",
+                "specialEventEntityVersion": 1,
+                "ticketType": "現在受付なし",
+                "applicationStatus": "none",
+                "eventDate": "2026-09-27",
+                "eventEndDate": "2026-09-30",
+                "eventDates": ["2026-09-27", "2026-09-30"],
+                "schedule": [
+                    {"date": "2026-09-27", "venue": "セブンパークアリオ柏 屋外スマイルパーク", "startTime": "17:00"},
+                    {"date": "2026-09-30", "venue": "イオンモール幕張新都心", "startTime": "18:00"},
+                ],
+                "venue": "複数会場（全2公演）",
+                "sourceType": "official-special",
+                "primarySource": "official",
+                "urls": [
+                    "https://candytune.asobisystem.com/news/detail/90320",
+                    "https://candytune.asobisystem.com/news/detail/90321",
+                ],
+                "offers": [],
+            }]
+        }
+        candidate = {
+            "events": [
+                {
+                    "id": "fresh-927",
+                    "group": "CANDY TUNE",
+                    "title": title,
+                    "eventTitle": title,
+                    "displayTitle": title,
+                    "eventCategory": "release-event",
+                    "ticketType": "商品購入電子整理券（先着）",
+                    "ticketProvider": "kawaii-store",
+                    "applicationStatus": "open",
+                    "applyStart": "2026-09-26T21:00",
+                    "applyEnd": "2026-09-27T10:00",
+                    "eventDate": "2026-09-27",
+                    "venue": "セブンパークアリオ柏 屋外スマイルパーク",
+                    "startTime": "17:00",
+                    "url": "https://candytune.asobisystem.com/news/detail/90320",
+                    "sourceType": "official-special",
+                },
+                {
+                    "id": "fresh-930",
+                    "group": "CANDY TUNE",
+                    "title": title,
+                    "eventTitle": title,
+                    "displayTitle": title,
+                    "eventCategory": "release-event",
+                    "ticketType": "商品購入電子整理券（先着）",
+                    "ticketProvider": "kawaii-store",
+                    "applicationStatus": "open",
+                    "applyStart": "2026-09-29T21:00",
+                    "applyEnd": "2026-09-30T10:00",
+                    "eventDate": "2026-09-30",
+                    "venue": "イオンモール幕張新都心",
+                    "startTime": "18:00",
+                    "url": "https://candytune.asobisystem.com/news/detail/90321",
+                    "sourceType": "official-special",
+                },
+            ]
+        }
+
+        prepared, report = prep.prepare(previous, candidate, self.NOW)
+        releases = [row for row in prepared["events"] if row.get("eventCategory") == "release-event"]
+
+        self.assertEqual(len(releases), 2)
+        self.assertEqual(len({row["id"] for row in releases}), 2)
+        self.assertEqual({tuple(row.get("eventDates") or [row.get("eventDate")]) for row in releases}, {
+            ("2026-09-27",),
+            ("2026-09-30",),
+        })
+        self.assertGreaterEqual(report["supersededLegacyReleaseSeriesRemoved"], 1)
+
     def test_observation_clock_only_does_not_advance_public_updated_at(self):
         previous = {
             "updatedAt": "2026-08-27T18:00:00+09:00",
