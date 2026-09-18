@@ -83,6 +83,42 @@ class ContinuousDiscoveryTests(unittest.TestCase):
         public, _ = build_public_events(out["events"])
         self.assertEqual(publication.audit({"observations": observations}, {"publicEvents": public})["representedOffers"], 1)
 
+    def test_ticket_article_without_performance_date_links_to_one_known_future_show(self):
+        candidate = discovery.parser.Candidate(
+            "CUTIE STREET",
+            "『CUTIE STREET テストメンバー 生誕祭 2099』公演 リセールサービスのお知らせ",
+            "https://cutiestreet.asobisystem.com/news/detail/resale",
+        )
+        existing = {"events": [{
+            "id": "show",
+            "group": "CUTIE STREET",
+            "eventTitle": "CUTIE STREET テストメンバー 生誕祭 2099",
+            "eventDate": "2099-11-09",
+            "venue": "SGCホール有明",
+            "startTime": "19:00",
+            "ticketType": "現在受付なし",
+        }]}
+        review = {"applyStart": "2099-11-01T10:00", "applyEnd": "2099-11-05T23:59"}
+        row = discovery.fallback_row_from_review(candidate, candidate.title, "リセール", review, existing)
+        self.assertIsNotNone(row)
+        self.assertEqual(row["eventDate"], "2099-11-09")
+        self.assertEqual(row["ticketType"], "リセール")
+        self.assertEqual(row["applyStart"], "2099-11-01T10:00")
+        self.assertEqual(row["applyEnd"], "2099-11-05T23:59")
+
+    def test_ticket_article_without_date_stays_pending_when_show_match_is_ambiguous(self):
+        candidate = discovery.parser.Candidate(
+            "CUTIE STREET",
+            "CUTIE STREET 同名公演 リセールサービスのお知らせ",
+            "https://cutiestreet.asobisystem.com/news/detail/resale",
+        )
+        existing = {"events": [
+            {"group": "CUTIE STREET", "eventTitle": "CUTIE STREET 同名公演", "eventDate": "2099-11-09"},
+            {"group": "CUTIE STREET", "eventTitle": "CUTIE STREET 同名公演", "eventDate": "2099-11-10"},
+        ]}
+        review = {"applyStart": "2099-11-01T10:00", "applyEnd": "2099-11-05T23:59"}
+        self.assertIsNone(discovery.fallback_row_from_review(candidate, candidate.title, "リセール", review, existing))
+
     def test_performance_date_is_not_misread_as_general_sale_start(self):
         candidate = discovery.parser.Candidate("MORE STAR", "Live", "https://morestar.asobisystem.com/news/detail/new")
         self.assertEqual(discovery.general_sale_rows(candidate, "一般販売の詳細は後日\n公演日：2099年10月1日18:00", {}), [])
