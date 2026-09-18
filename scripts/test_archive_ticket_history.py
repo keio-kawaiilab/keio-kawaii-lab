@@ -14,6 +14,34 @@ class ArchiveTicketHistoryTests(unittest.TestCase):
             self.assertEqual(len({row["id"] for row in history["entries"]}), 2)
         self.assertEqual({row["startTime"] for row in history["entries"]}, {"14:00", "18:00"})
 
+    def test_duplicate_legacy_ids_are_repaired_without_dropping_history_rows(self):
+        history = {"entries": [
+            {
+                "id": "legacy-duplicate",
+                "group": "CANDY TUNE",
+                "eventTitle": "First show",
+                "eventDate": "2099-10-01",
+                "ticketType": "一般発売",
+                "applyStart": "2099-09-01T10:00",
+                "sourceKey": "group-official",
+                "sourceUrl": "https://example.asobisystem.com/news/detail/first",
+            },
+            {
+                "id": "legacy-duplicate",
+                "group": "CANDY TUNE",
+                "eventTitle": "Second show",
+                "eventDate": "2099-10-02",
+                "ticketType": "一般発売",
+                "applyStart": "2099-09-02T10:00",
+                "sourceKey": "group-official",
+                "sourceUrl": "https://example.asobisystem.com/news/detail/second",
+            },
+        ]}
+        result = mod.archive_payload({"events": []}, history, self.registry, "2099-09-03T10:00:00+09:00")
+        self.assertEqual(len(result["entries"]), 2)
+        self.assertEqual(len({row["id"] for row in result["entries"]}), 2)
+        self.assertEqual({row["eventTitle"] for row in result["entries"]}, {"First show", "Second show"})
+
     def setUp(self):
         self.registry = {
             "version": 1,
