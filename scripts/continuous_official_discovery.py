@@ -400,6 +400,12 @@ def read_candidate(candidate, existing, headers):
     if not title or title.upper() in {"NEWS", "INFORMATION", "LIVE", "SCHEDULE"}:
         title = candidate.title
     text = soup.get_text("\n", strip=True)
+    non_sale_title_hints = (
+        *parser.IGNORE_TITLE_HINTS,
+        "払い戻し", "連動企画", "デジタル整理券", "AUDITION", "ご注意とお願い",
+    )
+    if any(hint in title for hint in non_sale_title_hints):
+        return [], None, "irrelevant"
     if not any(hint in text or hint in title for hint in (*parser.TICKET_HINTS, "一般販売")):
         return [], None, "irrelevant"
     group = candidate.group
