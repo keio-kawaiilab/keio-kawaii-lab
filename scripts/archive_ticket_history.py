@@ -299,7 +299,23 @@ def archive_payload(live: dict, history: dict, registry: dict, now: str) -> dict
             current = by_id.get(incoming["id"])
             by_id[incoming["id"]] = merge_entry(current, incoming, now) if current else incoming
 
-    result = list(by_id.values())
+    # Legacy history rows may carry an old/stale id even after their canonical
+    # identity changes (for example after URL normalization).  by_id is keyed by
+    # the canonical identity, so two different entries can otherwise survive
+    # with the same stored id and block every release audit.  Preserve a legacy
+    # id when it is unique, but deterministically repair only collisions.
+    result = []
+    used_ids: set[str] = set()
+    for canonical_id, value in by_id.items():
+        row = dict(value)
+        stored_id = clean(row.get("id")) or canonical_id
+        if stored_id in used_ids:
+            stored_id = canonical_id
+        if stored_id in used_ids:  # defensive only; SHA-1 prefix collision is extraordinarily unlikely
+            stored_id = hashlib.sha1((canonical_id + "\\x1f" + clean(row.get("sourceUrl"))).encode("utf-8")).hexdigest()[:20]
+        row["id"] = stored_id
+        used_ids.add(stored_id)
+        result.append(row)
     result.sort(key=lambda x: (
         clean(x.get("eventDate")) or "9999",
         clean(x.get("applyStart")) or clean(x.get("applyEnd")) or "9999",
