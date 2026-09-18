@@ -119,6 +119,93 @@ def general_sale_rows(candidate, text, existing):
     return rows
 
 
+def paired_resale_rows(candidate, text):
+    """Parse tour resale tables as one reception window per performance.
+
+    Official tour articles repeat: performance date/venue, then that show's
+    resale period.  Treating all dates in the article as one generic window can
+    fabricate a year-long range, so preserve the local one-to-one pairing.
+    """
+    lines = [parser.normalize_space(line) for line in text.splitlines() if parser.normalize_space(line)]
+    published = parser.article_date_from_text(text)
+    default_year = int(published[:4]) if published else datetime.now(parser.JST).year
+    rows = []
+    seen = set()
+    for i, line in enumerate(lines):
+        if "リセール" not in line or "受付" not in line:
+            continue
+        segment = " ".join(lines[i:i + 2])
+        sale_matches = list(parser.DATE_ANY_RE.finditer(segment))
+        if len(sale_matches) < 2:
+            continue
+
+        event_line = None
+        event_match = None
+        for j in range(i - 1, max(-1, i - 4), -1):
+            candidate_line = lines[j]
+            if "リセール" in candidate_line or "受付" in candidate_line:
+                continue
+            match = parser.DATE_ANY_RE.search(candidate_line)
+            if match:
+                event_line, event_match = candidate_line, match
+                break
+        if event_line is None or event_match is None:
+            continue
+
+        event_iso = parser.date_match_to_iso(event_match, default_year)
+        if not event_iso:
+            continue
+        event_date = event_iso[:10]
+        event_year = int(event_date[:4])
+        start = parser.date_match_to_iso(sale_matches[0], event_year)
+        if not start:
+            continue
+        # A January performance may have a December resale window in the
+        # previous year when the year is omitted in the article.
+        if sale_matches[0].group(1) is None and start[:10] > event_date:
+            start_dt = parser._iso_datetime(start)
+            start = start_dt.replace(year=start_dt.year - 1).strftime("%Y-%m-%dT%H:%M" if "T" in start else "%Y-%m-%d")
+        end = parser.date_match_to_iso(sale_matches[1], int(start[:4]))
+        if not end:
+            continue
+        if sale_matches[1].group(1) is None and parser._iso_datetime(end) < parser._iso_datetime(start):
+            end_dt = parser._iso_datetime(end)
+            end = end_dt.replace(year=end_dt.year + 1).strftime("%Y-%m-%dT%H:%M" if "T" in end else "%Y-%m-%d")
+        if parser._iso_datetime(end) < parser._iso_datetime(start) or start[:10] > event_date:
+            continue
+
+        venue = parser.normalize_space(event_line[event_match.end():]).strip(" 　-–—:：()（）[]【】") or None
+        identity = (event_date, start, end)
+        if identity in seen:
+            continue
+        seen.add(identity)
+        row = {
+            "id": parser.event_id(candidate.group, candidate.url, event_date, start, "リセール"),
+            "group": candidate.group,
+            "title": candidate.title,
+            "eventTitle": _stable_performance_title(candidate.title, candidate.group),
+            "ticketType": "リセール",
+            "eventDate": event_date,
+            "venue": venue,
+            "openTime": None,
+            "startTime": None,
+            "applyStart": start,
+            "applyEnd": end,
+            "resultDate": None,
+            "paymentEnd": None,
+            "url": candidate.url,
+            "sourceType": "auto",
+            "sourceChannel": "kawaii-lab-fc" if urlparse(candidate.url).netloc == urlparse(retention.CENTRAL_FC_BASE).netloc else "official-continuous",
+            "applicationWindowVerified": True,
+            "deadlineVerified": True,
+            "applicationWindowSource": candidate.url,
+            "deadlineSource": candidate.url,
+            "sourcePublishedAt": published,
+        }
+        rows.append(row)
+    return rows
+
+
 def _stable_performance_title(title, group):
     """Remove ticket-announcement boilerplate while preserving the show name."""
     text = retention.performance_title(title, group)
@@ -323,6 +410,15 @@ def read_candidate(candidate, existing, headers):
                         "reason": "Official article group is ambiguous"}, "pending"
     candidate = parser.Candidate(group, title, candidate.url)
     rows, review = parser.parse_candidate(CachedArticle(str(soup)), candidate)
+    paired_resales = paired_resale_rows(candidate, text)
+    if paired_resales:
+        existing_keys = {(row.get("eventDate"), row.get("ticketType"), row.get("applyStart"), row.get("applyEnd")) for row in rows}
+        for row in paired_resales:
+            key = (row.get("eventDate"), row.get("ticketType"), row.get("applyStart"), row.get("applyEnd"))
+            if key not in existing_keys:
+                rows.append(row)
+                existing_keys.add(key)
+        review = None
     if not rows and not review:
         published = parser.article_date_from_text(text)
         default_year = int(published[:4]) if published else datetime.now(parser.JST).year
