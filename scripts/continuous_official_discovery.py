@@ -119,6 +119,97 @@ def general_sale_rows(candidate, text, existing):
     return rows
 
 
+def _stable_performance_title(title, group):
+    """Remove ticket-announcement boilerplate while preserving the show name."""
+    text = retention.performance_title(title, group)
+    text = re.split(
+        r"(?:公演\\s*)?(?:リセールサービスのお知らせ|リセール|一般(?:発売|販売)|"
+        r"当日券|アップグレード(?:抽選)?|年会費コース会員限定先行|FC(?:会員)?先行)",
+        text,
+        maxsplit=1,
+        flags=re.I,
+    )[0]
+    return parser.normalize_space(text).strip(" 　!！｜|・-–—:：[]【】『』「」")
+
+
+def fallback_row_from_review(candidate, title, text, review, existing):
+    """Attach a ticket window to one uniquely matching known future performance.
+
+    Some official ticket articles intentionally omit the performance date because
+    the show was announced earlier.  The old collector discovered those pages but
+    left them in pendingReview forever.  When the article supplies one verified
+    application window and its show title maps to exactly one current/future
+    performance, reuse that already-published performance date instead of asking
+    for manual intervention.  Ambiguous matches still stay pending.
+    """
+    if not review or not review.get("applyStart") or not review.get("applyEnd"):
+        return None
+
+    group = candidate.group
+    stable_title = _stable_performance_title(title, group)
+    wanted = retention.title_key(stable_title, group)
+    if not wanted:
+        return None
+
+    today = datetime.now(parser.JST).date()
+    performances = {}
+    for event in existing.get("events", []):
+        if not isinstance(event, dict) or event.get("group") != group or not retention.should_show(event, today):
+            continue
+        current_title = event.get("eventTitle") or event.get("displayTitle") or event.get("title")
+        current = retention.title_key(_stable_performance_title(str(current_title or ""), group), group)
+        if not current or current != wanted:
+            continue
+        event_date = str(event.get("eventDate") or "")[:10]
+        if not event_date:
+            continue
+        identity = (event_date, str(event.get("startTime") or ""), str(event.get("venue") or ""))
+        performances.setdefault(identity, event)
+
+    if len(performances) != 1:
+        return None
+
+    base = next(iter(performances.values()))
+    ticket_type = parser.extract_ticket_type(title, text)
+    source_channel = "official-continuous"
+    if "アップグレード" in title:
+        ticket_type = "アップグレード抽選"
+    elif "リセール" in title:
+        ticket_type = "リセール"
+    elif re.search(r"一般(?:発売|販売)", title):
+        ticket_type = "一般発売"
+    elif urlparse(candidate.url).netloc == urlparse(retention.CENTRAL_FC_BASE).netloc and retention.FC_HINT_RE.search(title):
+        ticket_type = "KAWAII LAB. FC先行"
+        source_channel = "kawaii-lab-fc"
+
+    event_date = str(base.get("eventDate"))[:10]
+    start = str(review["applyStart"])
+    row = {
+        "id": parser.event_id(group, candidate.url, event_date, start, ticket_type),
+        "group": group,
+        "title": title,
+        "eventTitle": stable_title,
+        "ticketType": ticket_type,
+        "applyStart": start,
+        "applyEnd": review.get("applyEnd"),
+        "resultDate": None,
+        "paymentEnd": None,
+        "eventDate": event_date,
+        "venue": base.get("venue"),
+        "openTime": base.get("openTime"),
+        "startTime": base.get("startTime"),
+        "url": candidate.url,
+        "sourceType": "auto",
+        "sourceChannel": source_channel,
+        "applicationWindowVerified": True,
+        "applicationWindowSource": candidate.url,
+        "sourcePublishedAt": parser.article_date_from_text(text),
+    }
+    if row.get("startTime"):
+        row["id"] += hashlib.sha1(str(row["startTime"]).encode()).hexdigest()[:6]
+    return row
+
+
 def read_candidate(candidate, existing, headers):
     with requests.Session() as session:
         session.headers.update(headers)
@@ -143,6 +234,11 @@ def read_candidate(candidate, existing, headers):
     if not any(hint in text or hint in title for hint in (*parser.TICKET_HINTS, "一般販売")):
         return [], None, "irrelevant"
     rows, review = parser.parse_candidate(CachedArticle(str(soup)), candidate)
+    if not rows and review:
+        fallback = fallback_row_from_review(candidate, title, text, review, existing)
+        if fallback:
+            rows = [fallback]
+            review = None
     # The announcement's subject takes precedence over mentions of previous
     # receptions in its terms (e.g. "FC purchasers may apply for this upgrade").
     for row in rows:
