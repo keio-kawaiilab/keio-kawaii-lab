@@ -162,7 +162,7 @@ class SpecialEventEntityTests(unittest.TestCase):
         self.assertEqual(report["physicalRowsCollapsed"], 0)
         self.assertEqual(len(enforced["events"]), 2)
 
-    def test_release_series_split_across_dates_becomes_one_event(self):
+    def test_release_series_new_date_remains_a_separate_event(self):
         payload = {"events": [
             {
                 "id": "old-series",
@@ -197,10 +197,41 @@ class SpecialEventEntityTests(unittest.TestCase):
             },
         ]}
         normalized, _ = normalize_payload(payload)
+        self.assertEqual(len(normalized["events"]), 2)
+        by_dates = {tuple(event.get("eventDates") or [event.get("eventDate")]): event for event in normalized["events"]}
+        self.assertIn(("2027-01-03", "2027-02-04"), by_dates)
+        self.assertIn(("2027-02-05",), by_dates)
+
+    def test_same_release_occurrence_different_sale_rows_still_merge(self):
+        payload = {"events": [
+            {
+                "id": "detail",
+                "group": "CANDY TUNE",
+                "eventCategory": "release-event",
+                "displayTitle": "4thシングル発売記念リリースイベント",
+                "eventDate": "2026-09-30",
+                "venue": "イオンモール幕張新都心",
+                "ticketProvider": "kawaii-store",
+                "ticketType": "商品購入電子整理券（先着）",
+                "applyStart": "2026-09-29T21:00",
+                "applyEnd": "2026-09-30T10:00",
+                "url": "https://candytune.asobisystem.com/news/detail/90321",
+            },
+            {
+                "id": "shell",
+                "group": "CANDY TUNE",
+                "eventCategory": "release-event",
+                "displayTitle": "4thシングル発売記念リリースイベント",
+                "eventDate": "2026-09-30",
+                "venue": "千葉県 イオンモール幕張新都心",
+                "ticketType": "現在受付なし",
+                "url": "https://x.com/CANDY_TUNE_/status/1",
+            },
+        ]}
+        normalized, _ = normalize_payload(payload)
         self.assertEqual(len(normalized["events"]), 1)
-        event = normalized["events"][0]
-        self.assertEqual(event["eventDates"], ["2027-01-03", "2027-02-04", "2027-02-05"])
-        self.assertEqual(event["eventCount"], 3)
+        self.assertEqual(normalized["events"][0]["eventDate"], "2026-09-30")
+        self.assertEqual(len(normalized["events"][0]["offers"]), 1)
 
     def test_different_large_benefit_dates_remain_different_events(self):
         payload = {"events": [
