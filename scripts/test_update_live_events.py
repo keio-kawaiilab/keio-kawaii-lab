@@ -25,6 +25,13 @@ class ParserTests(unittest.TestCase):
             ("2025-08-03T20:00", "2025-08-25T23:59"),
         )
 
+    def test_late_night_24h_plus_window_is_normalized(self):
+        text = "受付期間：2026年8月31日(月)24:25〜9月14日(月)25:00"
+        self.assertEqual(
+            u.extract_window(text, 2026),
+            ("2026-09-01T00:25", "2026-09-15T01:00"),
+        )
+
     def test_cross_year_window(self):
         text = "受付期間：2026年12月28日(月)18:00〜1月3日(日)23:59"
         self.assertEqual(
