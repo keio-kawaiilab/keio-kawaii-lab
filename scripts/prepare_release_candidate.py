@@ -192,6 +192,35 @@ def drop_superseded_stale_joint_specials(events: list[dict]) -> tuple[list[dict]
     ], dropped
 
 
+def legacy_release_series_replaced_by_current_occurrences(old: dict, current: list[dict]) -> bool:
+    """Drop an old multi-date release entity once every occurrence is rediscovered separately.
+
+    Earlier public data intentionally bundled one release series across multiple
+    dates. After switching to one physical event per date, retaining that legacy
+    parent reconnects the new rows during normalization and recreates the bundle.
+    Only retire the old parent when every date+venue occurrence is present in
+    current same-group release-event rows.
+    """
+    if str(old.get("eventCategory") or "") != "release-event":
+        return False
+    places = physical_places(old)
+    days = {day for day, _venue in places}
+    if len(days) < 2 or not places:
+        return False
+
+    group = str(old.get("group") or "")
+    covered: set[tuple[str, str]] = set()
+    for event in current:
+        if not isinstance(event, dict):
+            continue
+        if str(event.get("group") or "") != group:
+            continue
+        if str(event.get("eventCategory") or "") != "release-event":
+            continue
+        covered.update(places.intersection(physical_places(event)))
+    return covered == places
+
+
 def strong_keys(event: dict) -> set[str]:
     keys: set[str] = set()
     event_id = text(event.get("id"))
@@ -324,11 +353,15 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
     candidate_semantic = {semantic_key(event) for event in events}
 
     retained = []
+    superseded_legacy_release_series = []
     today = now.astimezone(JST).date()
     for old in previous.get("events", []):
         if not isinstance(old, dict) or not should_retain_previous(old, today):
             continue
         if stale_joint_replaced_by_participant_rows(old, events):
+            continue
+        if legacy_release_series_replaced_by_current_occurrences(old, events):
+            superseded_legacy_release_series.append(str(old.get("id") or ""))
             continue
         keys = strong_keys(old)
         if keys and candidate_strong.intersection(keys):
@@ -365,6 +398,8 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
         "expandedCandidateSpecialEntities": candidate_expand.get("expandedSpecialEntities", 0),
         "supersededStaleJointRowsRemoved": len(superseded_joint_rows),
         "supersededStaleJointRowIds": superseded_joint_rows,
+        "supersededLegacyReleaseSeriesRemoved": len(superseded_legacy_release_series),
+        "supersededLegacyReleaseSeriesIds": superseded_legacy_release_series,
         **official_x_report,
     }
 
