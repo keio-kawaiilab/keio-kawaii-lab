@@ -119,6 +119,37 @@ class ContinuousDiscoveryTests(unittest.TestCase):
         review = {"applyStart": "2099-11-01T10:00", "applyEnd": "2099-11-05T23:59"}
         self.assertIsNone(discovery.fallback_row_from_review(candidate, candidate.title, "リセール", review, existing))
 
+    def test_central_fc_article_uses_existing_joint_event_url(self):
+        url = "https://kawaiilab.asobisystem.com/news/detail/87217"
+        existing = {"events": [
+            {"group": "KAWAII LAB. SOUTH", "eventTitle": "Joint show", "eventDate": "2099-10-12", "url": url},
+            {"group": "KAWAII LAB.合同", "participants": ["FRUITS ZIPPER", "CANDY TUNE"],
+             "eventTitle": "Joint show", "eventDate": "2099-10-12", "url": url},
+        ]}
+        self.assertEqual(discovery.infer_central_group("Joint show FC先行", "受付開始", url, existing), "KAWAII LAB.合同")
+
+    def test_expired_review_is_not_current_pending(self):
+        self.assertTrue(discovery.review_is_expired(
+            {"applyStart": "2026-01-01T10:00", "applyEnd": "2026-01-03T23:59"},
+            date(2026, 9, 18),
+        ))
+        self.assertFalse(discovery.review_is_expired(
+            {"applyStart": "2026-09-18T10:00", "applyEnd": "2026-09-20T23:59"},
+            date(2026, 9, 18),
+        ))
+
+    def test_fallback_prefers_exact_existing_url_over_title_variation(self):
+        url = "https://cutiestreet.asobisystem.com/live_information/detail/99999"
+        candidate = discovery.parser.Candidate("CUTIE STREET", "Completely different ticket headline", url)
+        existing = {"events": [{
+            "group": "CUTIE STREET", "eventTitle": "Known Future Show", "eventDate": "2099-11-09",
+            "venue": "Test Hall", "url": url,
+        }]}
+        review = {"applyStart": "2099-11-01T10:00", "applyEnd": "2099-11-05T23:59"}
+        row = discovery.fallback_row_from_review(candidate, candidate.title, "FC先行", review, existing)
+        self.assertIsNotNone(row)
+        self.assertEqual(row["eventDate"], "2099-11-09")
+
     def test_performance_date_is_not_misread_as_general_sale_start(self):
         candidate = discovery.parser.Candidate("MORE STAR", "Live", "https://morestar.asobisystem.com/news/detail/new")
         self.assertEqual(discovery.general_sale_rows(candidate, "一般販売の詳細は後日\n公演日：2099年10月1日18:00", {}), [])
