@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-19T03:27:46.618373+09:00",
-  "candidateUpdatedAt": "2026-09-19T03:27:46+09:00",
+  "generatedAt": "2026-09-19T03:35:53.936229+09:00",
+  "candidateUpdatedAt": "2026-09-19T03:35:53+09:00",
   "previousEventCount": 181,
-  "candidateEventCount": 181,
+  "candidateEventCount": 180,
   "protectedPreviousCount": 181,
   "errorCount": 0,
-  "warningCount": 49,
+  "warningCount": 48,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: canonical special event application window is not backed by an official page: CUTIE STREET / CUTIE STREET 大特典会＠ベルサール渋谷ファースト【事前抽選会】 / 現在受付なし",
@@ -33,7 +33,6 @@
     "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for pia:68942: 2026-11-30, 2026-12-01",
     "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / 「CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS 」公演 リセールサービスのお知らせ / リセール",
     "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / 「CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS 」公演 リセールサービスのお知らせ / リセール",
-    "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for id:special-75fd2d727fae8f60: 2027-07-27",
     "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for url:https://x.com/MORE_STAR_/status/2092567739969966299 [MORE STAR]: 2026-10-21",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event application window is not backed by an official page: CUTIE STREET / CUTIE STREET 大特典会＠ベルサール渋谷ファースト【事前抽選会】 / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event deadline is not verified by an official page: CUTIE STREET / CUTIE STREET 大特典会＠ベルサール渋谷ファースト【事前抽選会】 / 現在受付なし",
@@ -59,7 +58,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: MORE STAR / MORE STAR 単独ライブ 5th STAR / 一般発売"
   ],
-  "candidateSha256": "7b4c35bebb73ac17b2bf610c15528279063ff707bb9cfcbd47f5d562faa98db0",
+  "candidateSha256": "d2fce7cda4d87610846b5b13fbc114327445c2e1f1e30883ac68fbf0b37da558",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -118,7 +117,6 @@
     "url:https://sukisuki-shop.com/goods/6500000004411",
     "url:https://sukisuki-shop.com/goods/6500000004412",
     "url:https://sukisuki-shop.com/goods/6500000004413",
-    "url:https://sweetsteady.asobisystem.com/",
     "url:https://sweetsteady.asobisystem.com/live_information/detail/43905",
     "url:https://sweetsteady.asobisystem.com/live_information/detail/44458",
     "url:https://sweetsteady.asobisystem.com/news/detail/87767",
@@ -138,12 +136,10 @@
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29682",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30314",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30338",
-    "url:https://x.com/MORE_STAR_/status/2092567739969966299",
-    "url:https://x.com/SWEET_STEADY/status/1949317702285479983"
+    "url:https://x.com/MORE_STAR_/status/2092567739969966299"
   ],
   "officialXSharedSourceKeysReconciled": [
-    "url:https://x.com/MORE_STAR_/status/2092567739969966299",
-    "url:https://x.com/SWEET_STEADY/status/1949317702285479983"
+    "url:https://x.com/MORE_STAR_/status/2092567739969966299"
   ],
   "reconciledBaseDateMessageCount": 0,
   "downgradedFalsePositiveCount": 0,
@@ -265,7 +261,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 26,
+  "quarantineCount": 25,
   "quarantineActions": [
     {
       "error": "canonical special event application window is not backed by an official page: CUTIE STREET / CUTIE STREET 大特典会＠ベルサール渋谷ファースト【事前抽選会】 / 現在受付なし",
@@ -386,11 +382,6 @@
       "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / 「CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS 」公演 リセールサービスのお知らせ / リセール",
       "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
       "restoredPreviousRows": 9
-    },
-    {
-      "error": "future performance dates disappeared for id:special-75fd2d727fae8f60: 2027-07-27",
-      "action": "restored previous rows for id:special-75fd2d727fae8f60",
-      "restoredPreviousRows": 1
     },
     {
       "error": "future performance dates disappeared for url:https://x.com/MORE_STAR_/status/2092567739969966299 [MORE STAR]: 2026-10-21",
