@@ -139,6 +139,14 @@ def offer_key(offer: dict) -> tuple:
 
 
 def compatible_release(a: dict, b: dict) -> bool:
+    """Merge release-event rows only when they describe the same occurrence.
+
+    A release series can reuse the same title/product across many different
+    dates and venues. Treating the whole series as one entity made a newly
+    discovered date disappear into an older card and also leaked occurrence-
+    specific timings (sales/gathering/start) across dates. Same-title rows are
+    mergeable only when their physical occurrence overlaps.
+    """
     if text(a.get("group")) != text(b.get("group")) or category(a) != category(b):
         return False
     if normalized_series_title(a) != normalized_series_title(b):
@@ -146,7 +154,19 @@ def compatible_release(a: dict, b: dict) -> bool:
     pa, pb = normalized_product(a), normalized_product(b)
     if pa and pb and pa != pb:
         return False
-    return True
+
+    left, right = occurrence_keys(a), occurrence_keys(b)
+    if left.intersection(right):
+        return True
+
+    left_days = {day for day, _ in left}
+    right_days = {day for day, _ in right}
+    if not left_days.intersection(right_days):
+        return False
+
+    # Same day with one source missing the venue can still be the same real
+    # event. Different days must remain separate public events.
+    return any(not venue for _, venue in left) or any(not venue for _, venue in right)
 
 
 def compatible_benefit(a: dict, b: dict) -> bool:
