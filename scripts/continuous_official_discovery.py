@@ -162,6 +162,42 @@ def infer_central_group(title, text, url, existing):
     return retention.infer_group(title, existing) or retention.infer_group(text, existing)
 
 
+def unlabeled_ticket_window(text, default_year):
+    """Extract a nearby date range after a ticket-reception heading.
+
+    Official FC articles often render the actual period on the line after
+    '<...先行受付>' without the words 受付期間/申込期間, which the legacy parser
+    intentionally required.  Keep this fallback local and require an explicit
+    range so ordinary performance dates are not mistaken for applications.
+    """
+    lines = [parser.normalize_space(line) for line in text.splitlines() if parser.normalize_space(line)]
+    heading_re = re.compile(r"(?:先行受付|会員先行|一般発売|リセール受付|抽選受付)")
+    range_re = re.compile(r"[〜～~－–—-]")
+    for i, line in enumerate(lines):
+        if not heading_re.search(line):
+            continue
+        segment = " ".join(lines[i:i + 4])
+        matches = list(parser.DATE_ANY_RE.finditer(segment))
+        if len(matches) < 2:
+            continue
+        between = segment[matches[0].end():matches[1].start()]
+        if not range_re.search(between):
+            continue
+        start = parser.date_match_to_iso(matches[0], default_year)
+        if not start:
+            continue
+        end = parser.date_match_to_iso(matches[1], int(start[:4]))
+        if not end:
+            continue
+        if matches[1].group(1) is None and parser._iso_datetime(end) < parser._iso_datetime(start):
+            end_dt = parser._iso_datetime(end)
+            end = end_dt.replace(year=end_dt.year + 1).strftime("%Y-%m-%dT%H:%M" if "T" in end else "%Y-%m-%d")
+        if parser._iso_datetime(end) < parser._iso_datetime(start):
+            continue
+        return start, end
+    return None
+
+
 def review_is_expired(review, today):
     """Do not keep already-ended receptions in the current unresolved queue."""
     ends = []
@@ -287,6 +323,16 @@ def read_candidate(candidate, existing, headers):
                         "reason": "Official article group is ambiguous"}, "pending"
     candidate = parser.Candidate(group, title, candidate.url)
     rows, review = parser.parse_candidate(CachedArticle(str(soup)), candidate)
+    if not rows and not review:
+        published = parser.article_date_from_text(text)
+        default_year = int(published[:4]) if published else datetime.now(parser.JST).year
+        window = unlabeled_ticket_window(text, default_year)
+        if window:
+            review = {
+                "group": group, "title": title, "url": candidate.url,
+                "reason": "受付見出し直後の申込期間を取得しましたが、公演への結合待ちです。",
+                "applyStart": window[0], "applyEnd": window[1],
+            }
     if not rows and review:
         fallback = fallback_row_from_review(candidate, title, text, review, existing)
         if fallback:
