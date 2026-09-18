@@ -285,6 +285,19 @@ def unlabeled_ticket_window(text, default_year):
     return None
 
 
+def title_is_past_event(title, text, today):
+    """Treat an explicitly dated, already-finished event headline as historical."""
+    published = parser.article_date_from_text(text)
+    default_year = int(published[:4]) if published else today.year
+    dates = []
+    for match in parser.DATE_ANY_RE.finditer(title):
+        value = parser.date_match_to_iso(match, default_year)
+        if value:
+            dates.append(retention.parse_day(value))
+    dates = [day for day in dates if day is not None]
+    return bool(dates) and max(dates) < today
+
+
 def review_is_expired(review, today):
     """Do not keep already-ended receptions in the current unresolved queue."""
     ends = []
@@ -406,6 +419,8 @@ def read_candidate(candidate, existing, headers):
     )
     if any(hint in title for hint in non_sale_title_hints):
         return [], None, "irrelevant"
+    if title_is_past_event(title, text, datetime.now(parser.JST).date()):
+        return [], None, "past"
     if not any(hint in text or hint in title for hint in (*parser.TICKET_HINTS, "一般販売")):
         return [], None, "irrelevant"
     group = candidate.group
