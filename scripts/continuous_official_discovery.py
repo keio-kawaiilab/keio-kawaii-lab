@@ -311,6 +311,19 @@ def review_is_expired(review, today):
     return bool(parsed) and all(day < today for day in parsed)
 
 
+def explicit_event_days(title, text):
+    published = parser.article_date_from_text(text)
+    default_year = int(published[:4]) if published else datetime.now(parser.JST).year
+    days = []
+    for match in parser.DATE_ANY_RE.finditer(title):
+        value = parser.date_match_to_iso(match, default_year)
+        if value:
+            day = value[:10]
+            if day not in days:
+                days.append(day)
+    return days
+
+
 def fallback_row_from_review(candidate, title, text, review, existing):
     """Attach a ticket window to one uniquely matching known future performance.
 
@@ -337,11 +350,22 @@ def fallback_row_from_review(candidate, title, text, review, existing):
         event for event in _future_url_matches(candidate.url, existing)
         if event.get("group") == group
     ]
-    source = direct_matches if direct_matches else existing.get("events", [])
+    dated_matches = []
+    if not direct_matches:
+        title_days = set(explicit_event_days(title, text))
+        if title_days:
+            dated_matches = [
+                event for event in existing.get("events", [])
+                if isinstance(event, dict)
+                and event.get("group") == group
+                and retention.should_show(event, today)
+                and str(event.get("eventDate") or "")[:10] in title_days
+            ]
+    source = direct_matches or dated_matches or existing.get("events", [])
     for event in source:
         if not isinstance(event, dict) or event.get("group") != group or not retention.should_show(event, today):
             continue
-        if not direct_matches:
+        if not direct_matches and not dated_matches:
             current_title = event.get("eventTitle") or event.get("displayTitle") or event.get("title")
             current = retention.title_key(_stable_performance_title(str(current_title or ""), group), group)
             current = re.sub(r"(?:公演|開催)+$", "", current)
