@@ -171,6 +171,18 @@ class ContinuousDiscoveryTests(unittest.TestCase):
         self.assertIsNone(review)
         self.assertEqual(status, "irrelevant")
 
+    def test_explicitly_dated_past_ticket_title_is_historical(self):
+        self.assertTrue(discovery.title_is_past_event(
+            "7/11(土) KAWAII LAB. SESSION 当日券販売のお知らせ",
+            "2026.07.11",
+            date(2026, 9, 18),
+        ))
+        self.assertFalse(discovery.title_is_past_event(
+            "2026年10月26日(月) SWEET STEADY BIRTHDAY LIVE FC先行受付開始！",
+            "2026.09.18",
+            date(2026, 9, 18),
+        ))
+
     def test_unlabeled_fc_window_after_heading_is_extracted(self):
         text = "<KAWAII LAB. OFFICIAL FANCLUB 有料会員先行受付＞\n2026年9月18日(金)12:00〜2026年9月24日(木)23:59\nお申込みはこちら"
         self.assertEqual(
