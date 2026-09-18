@@ -198,9 +198,14 @@ class SpecialEventEntityTests(unittest.TestCase):
         ]}
         normalized, _ = normalize_payload(payload)
         self.assertEqual(len(normalized["events"]), 2)
+        self.assertEqual(len({event["id"] for event in normalized["events"]}), 2)
         by_dates = {tuple(event.get("eventDates") or [event.get("eventDate")]): event for event in normalized["events"]}
         self.assertIn(("2027-01-03", "2027-02-04"), by_dates)
         self.assertIn(("2027-02-05",), by_dates)
+        self.assertNotEqual(
+            by_dates[("2027-01-03", "2027-02-04")]["id"],
+            by_dates[("2027-02-05",)]["id"],
+        )
 
     def test_same_release_occurrence_different_sale_rows_still_merge(self):
         payload = {"events": [
