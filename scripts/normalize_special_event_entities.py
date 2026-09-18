@@ -238,10 +238,17 @@ def canonical_key(items: list[dict], schedule: list[dict]) -> str:
     cat = category(first)
     title = normalized_series_title(first)
     product = next((normalized_product(item) for item in items if normalized_product(item)), "")
-    if cat == "release-event":
-        return "|".join((group, cat, title, product))
     occurrence = schedule[0] if schedule else {}
-    return "|".join((group, cat, title, str(occurrence.get("date") or ""), venue_key(occurrence.get("venue"))))
+    day = str(occurrence.get("date") or "")
+    venue = venue_key(occurrence.get("venue"))
+    # Different release-event dates/venues are different physical events.
+    # The old key omitted the occurrence for release events, so correctly
+    # separated rows still received the same canonical id. The release audit
+    # then quarantined the duplicate id and restored the previous merged row.
+    # Include the physical occurrence in every special-event canonical id.
+    if cat == "release-event":
+        return "|".join((group, cat, title, product, day, venue))
+    return "|".join((group, cat, title, day, venue))
 
 
 def make_entity(items: list[dict]) -> dict:
