@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-18T15:34:04.567186+09:00",
-  "candidateUpdatedAt": "2026-09-18T15:34:04+09:00",
+  "generatedAt": "2026-09-18T15:53:57.220027+09:00",
+  "candidateUpdatedAt": "2026-09-18T15:53:56+09:00",
   "previousEventCount": 157,
   "candidateEventCount": 156,
   "protectedPreviousCount": 157,
   "errorCount": 0,
-  "warningCount": 46,
+  "warningCount": 48,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: canonical special event application window is not backed by an official page: CUTIE STREET / CUTIE STREET 大特典会＠ベルサール渋谷ファースト【事前抽選会】 / 現在受付なし",
@@ -17,6 +17,7 @@
     "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: SWEET STEADY / SWEET STEADY 単独公演 お花見会 / 一般発売",
     "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / プレリザーブ",
     "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
+    "quarantined one event/source update and kept the previous known-good data: duplicate event id: special-79b6ff7fc6f3d86e",
     "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
     "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
     "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
@@ -29,6 +30,7 @@
     "quarantined one event/source update and kept the previous known-good data: special event has no verified purchase/ticket window: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+    "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for id:special-79b6ff7fc6f3d86e: 2026-09-27",
     "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for url:https://red-hot.ne.jp/play/detail.php?pid=py28311: 2026-09-29, 2026-09-30",
     "quarantined one event/source update and kept the previous known-good data: protected future/active item disappeared: MORE STAR / MORE STAR 単独ライブ 5th STAR / 一般発売",
     "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for pia:68942: 2026-11-30, 2026-12-01",
@@ -56,7 +58,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: MORE STAR / MORE STAR 単独ライブ 5th STAR / 一般発売"
   ],
-  "candidateSha256": "fb4576bc2d12def8e4cd069e76785743d8395bc7943ed871757dfa2388a06121",
+  "candidateSha256": "c0c0c7a31ad3b855c4712210674352a3ba266b37c43f203895859405f5f47063",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -254,7 +256,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 23,
+  "quarantineCount": 25,
   "quarantineActions": [
     {
       "error": "canonical special event application window is not backed by an official page: CUTIE STREET / CUTIE STREET 大特典会＠ベルサール渋谷ファースト【事前抽選会】 / 現在受付なし",
@@ -295,6 +297,11 @@
       "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
       "action": "restored previous row",
       "restoredPreviousRows": 5
+    },
+    {
+      "error": "duplicate event id: special-79b6ff7fc6f3d86e",
+      "action": "restored previous duplicate-id row",
+      "restoredPreviousRows": 1
     },
     {
       "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
@@ -354,6 +361,11 @@
     {
       "error": "special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
       "action": "restored previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "future performance dates disappeared for id:special-79b6ff7fc6f3d86e: 2026-09-27",
+      "action": "restored previous rows for id:special-79b6ff7fc6f3d86e",
       "restoredPreviousRows": 1
     },
     {
