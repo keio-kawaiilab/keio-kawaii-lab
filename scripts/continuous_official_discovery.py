@@ -132,6 +132,49 @@ def _stable_performance_title(title, group):
     return parser.normalize_space(text).strip(" 　!！｜|・-–—:：[]【】『』「」")
 
 
+def _future_url_matches(url, existing):
+    today = datetime.now(parser.JST).date()
+    return [
+        event for event in existing.get("events", [])
+        if isinstance(event, dict)
+        and retention.should_show(event, today)
+        and url in retention.event_urls(event)
+    ]
+
+
+def infer_central_group(title, text, url, existing):
+    """Resolve a central-FC article from the strongest evidence first."""
+    matches = _future_url_matches(url, existing)
+    if matches:
+        # Joint KAWAII LAB. performances are intentionally represented by the
+        # canonical joint row even if a subgroup mirror row shares the URL.
+        joint = [row for row in matches if row.get("group") == "KAWAII LAB.合同"]
+        if joint:
+            return "KAWAII LAB.合同"
+        groups = {str(row.get("group") or "") for row in matches if row.get("group")}
+        if len(groups) == 1:
+            return next(iter(groups))
+
+    combined = f"{title}\n{text}"
+    explicit = [group for group in parser.GROUPS if group.lower() in combined.lower()]
+    if len(explicit) == 1:
+        return explicit[0]
+    return retention.infer_group(title, existing) or retention.infer_group(text, existing)
+
+
+def review_is_expired(review, today):
+    """Do not keep already-ended receptions in the current unresolved queue."""
+    ends = []
+    if review.get("applyEnd"):
+        ends.append(str(review["applyEnd"])[:10])
+    for window in review.get("windows") or []:
+        if isinstance(window, dict) and window.get("applyEnd"):
+            ends.append(str(window["applyEnd"])[:10])
+    parsed = [retention.parse_day(value) for value in ends]
+    parsed = [day for day in parsed if day is not None]
+    return bool(parsed) and all(day < today for day in parsed)
+
+
 def fallback_row_from_review(candidate, title, text, review, existing):
     """Attach a ticket window to one uniquely matching known future performance.
 
@@ -154,14 +197,20 @@ def fallback_row_from_review(candidate, title, text, review, existing):
 
     today = datetime.now(parser.JST).date()
     performances = {}
-    for event in existing.get("events", []):
+    direct_matches = [
+        event for event in _future_url_matches(candidate.url, existing)
+        if event.get("group") == group
+    ]
+    source = direct_matches if direct_matches else existing.get("events", [])
+    for event in source:
         if not isinstance(event, dict) or event.get("group") != group or not retention.should_show(event, today):
             continue
-        current_title = event.get("eventTitle") or event.get("displayTitle") or event.get("title")
-        current = retention.title_key(_stable_performance_title(str(current_title or ""), group), group)
-        current = re.sub(r"(?:公演|開催)+$", "", current)
-        if not current or current != wanted:
-            continue
+        if not direct_matches:
+            current_title = event.get("eventTitle") or event.get("displayTitle") or event.get("title")
+            current = retention.title_key(_stable_performance_title(str(current_title or ""), group), group)
+            current = re.sub(r"(?:公演|開催)+$", "", current)
+            if not current or current != wanted:
+                continue
         event_date = str(event.get("eventDate") or "")[:10]
         if not event_date:
             continue
@@ -206,6 +255,8 @@ def fallback_row_from_review(candidate, title, text, review, existing):
         "applicationWindowVerified": True,
         "applicationWindowSource": candidate.url,
         "sourcePublishedAt": parser.article_date_from_text(text),
+        "participants": base.get("participants") or [],
+        "eventScope": base.get("eventScope"),
     }
     if row.get("startTime"):
         row["id"] += hashlib.sha1(str(row["startTime"]).encode()).hexdigest()[:6]
@@ -226,21 +277,23 @@ def read_candidate(candidate, existing, headers):
     if not title or title.upper() in {"NEWS", "INFORMATION", "LIVE", "SCHEDULE"}:
         title = candidate.title
     text = soup.get_text("\n", strip=True)
+    if not any(hint in text or hint in title for hint in (*parser.TICKET_HINTS, "一般販売")):
+        return [], None, "irrelevant"
     group = candidate.group
     if group == "KAWAII LAB. FC":
-        group = retention.infer_group(title, existing)
+        group = infer_central_group(title, text, candidate.url, existing)
         if not group:
             return [], {"group": candidate.group, "title": title, "url": candidate.url,
                         "reason": "Official article group is ambiguous"}, "pending"
     candidate = parser.Candidate(group, title, candidate.url)
-    if not any(hint in text or hint in title for hint in (*parser.TICKET_HINTS, "一般販売")):
-        return [], None, "irrelevant"
     rows, review = parser.parse_candidate(CachedArticle(str(soup)), candidate)
     if not rows and review:
         fallback = fallback_row_from_review(candidate, title, text, review, existing)
         if fallback:
             rows = [fallback]
             review = None
+        elif review_is_expired(review, datetime.now(parser.JST).date()):
+            return [], None, "past"
     # The announcement's subject takes precedence over mentions of previous
     # receptions in its terms (e.g. "FC purchasers may apply for this upgrade").
     for row in rows:
@@ -263,8 +316,11 @@ def read_candidate(candidate, existing, headers):
         if not any(all(old.get(k) == row.get(k) for k in ("eventDate", "startTime", "ticketType", "applyStart")) for old in rows):
             rows.append(row)
     if not rows and not review:
+        if "/live_information/detail/" in candidate.url:
+            return [], None, "schedule-only"
         review = {"group": group, "title": title, "url": candidate.url,
-                  "reason": "Ticket article found; performance/reception could not be extracted"}
+                  "reason": "Ticket article found; performance/reception could not be extracted",
+                  "sourcePublishedAt": parser.article_date_from_text(text)}
     return rows, review, "parsed" if rows and not review else "pending"
 
 
