@@ -288,6 +288,53 @@ def replaced_by_joint_christmas(old: dict, candidates: Iterable[dict]) -> bool:
     return False
 
 
+def replaced_by_split_release_events(old: dict, candidates: Iterable[dict], today: date) -> bool:
+    """Allow one legacy multi-date release entity to become separate physical events.
+
+    The migration is safe only when at least two current same-group release
+    rows, backed by the legacy entity's official article URLs, collectively
+    cover every future date carried by the old bundle.
+    """
+    if str(old.get("eventCategory") or "") != "release-event":
+        return False
+    old_days = {
+        value for value in event_days(old)
+        if parse_day(value) is not None and parse_day(value) >= today
+    }
+    if len(old_days) < 2:
+        return False
+
+    old_official = {
+        value for value in urls(old)
+        if "asobisystem.com/news/detail/" in value
+    }
+    if not old_official:
+        return False
+
+    group = str(old.get("group") or "")
+    matches = []
+    covered: set[str] = set()
+    for event in candidates:
+        if not isinstance(event, dict):
+            continue
+        if str(event.get("group") or "") != group:
+            continue
+        if str(event.get("eventCategory") or "") != "release-event":
+            continue
+        current_official = {
+            value for value in urls(event)
+            if "asobisystem.com/news/detail/" in value
+        }
+        if not old_official.intersection(current_official):
+            continue
+        matches.append(event)
+        covered.update(
+            value for value in event_days(event)
+            if parse_day(value) is not None and parse_day(value) >= today
+        )
+    return len(matches) >= 2 and old_days.issubset(covered)
+
+
 def audit(previous: dict, candidate: dict, now: datetime) -> tuple[list[str], list[str], dict]:
     errors: list[str] = []
     warnings: list[str] = []
@@ -468,9 +515,13 @@ def audit(previous: dict, candidate: dict, now: datetime) -> tuple[list[str], li
                 match = cand_index[key]
                 match_key = key
                 break
+        split_release = replaced_by_split_release_events(old, cand_events, today)
         if match is None:
             if replaced_by_joint_christmas(old, cand_events):
                 warnings.append(f"redundant group row replaced by joint Christmas event: {label(old)}")
+                continue
+            if split_release:
+                warnings.append(f"legacy multi-date release event split into physical events: {label(old)}")
                 continue
             errors.append(f"protected future/active item disappeared: {label(old)}")
             continue
@@ -479,7 +530,10 @@ def audit(previous: dict, candidate: dict, now: datetime) -> tuple[list[str], li
         new_days = set(event_days(match))
         missing_days = sorted(old_days - new_days)
         if missing_days:
-            errors.append(f"future performance dates disappeared for {match_key}: {', '.join(missing_days)}")
+            if split_release:
+                warnings.append(f"legacy multi-date release event split into physical events: {label(old)}")
+            else:
+                errors.append(f"future performance dates disappeared for {match_key}: {', '.join(missing_days)}")
         added_days = sorted(new_days - set(event_days(old)))
         if added_days:
             warnings.append(f"performance dates added for {match_key}: {', '.join(added_days)}")
