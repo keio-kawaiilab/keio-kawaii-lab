@@ -76,7 +76,18 @@ def date_match_to_iso(match: re.Match, default_year: int | None = None) -> str |
     if not year:
         return None
     try:
-        datetime(int(year), int(month), int(day), int(hour or 0), int(minute or 0))
+        base = datetime(int(year), int(month), int(day))
+        raw_hour = int(hour or 0)
+        raw_minute = int(minute or 0)
+        if raw_minute > 59 or raw_hour > 47:
+            return None
+        # Japanese ticket pages commonly use late-night clock notation such as
+        # 24:25 or 25:00.  Normalize it to the following calendar day instead
+        # of dropping an otherwise valid application window.
+        if raw_hour >= 24:
+            normalized = base + timedelta(hours=raw_hour, minutes=raw_minute)
+            return normalized.strftime("%Y-%m-%dT%H:%M")
+        datetime(int(year), int(month), int(day), raw_hour, raw_minute)
     except ValueError:
         return None
     return to_iso(year, month, day, hour, minute)
