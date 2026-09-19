@@ -1,125 +1,12 @@
 {
-  "date": "2026-09-19",
+  "date": "2026-09-20",
   "horizonDays": 7,
-  "generatedAt": "2026-09-19T21:41+09:00",
+  "generatedAt": "2026-09-20T02:57+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
-    {
-      "date": "2026-09-19",
-      "venue": "千葉県 千葉市蘇我スポーツ公園",
-      "venueKey": "千葉市蘇我スポーツ公園",
-      "eventIds": [
-        "dd0e8ce853313621"
-      ],
-      "areaCode": "120010",
-      "areaName": "北西部",
-      "precision": "area",
-      "label": "くもり 夜 雨 所により 夜遅く 雷 を伴う",
-      "max": null,
-      "min": null,
-      "pop": "50",
-      "popLabel": "当日最大",
-      "issuedAt": "2026-09-19T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
-    {
-      "date": "2026-09-19",
-      "venue": "千葉県 松戸・森のホール21 大ホール",
-      "venueKey": "松戸森のホール21",
-      "eventIds": [
-        "54a369497f59ce96",
-        "9e94ed44785eb00c",
-        "ad65b9364aae713f"
-      ],
-      "areaCode": "120010",
-      "areaName": "北西部",
-      "precision": "mesh5km",
-      "label": "雨",
-      "max": null,
-      "min": null,
-      "pop": "50",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-09-19T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "20〜24℃",
-      "coordinates": {
-        "lat": 35.79921,
-        "lon": 139.940964
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "雨",
-          "validAt": "2026-09-19T21:00+09:00",
-          "temp": 21
-        },
-        {
-          "time": "24:00",
-          "label": "雨",
-          "validAt": "2026-09-20T00:00+09:00",
-          "temp": 22
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "17:00",
-          "rain": true,
-          "validAt": "2026-09-19T17:00+09:00"
-        },
-        {
-          "time": "18:00",
-          "rain": false,
-          "validAt": "2026-09-19T18:00+09:00"
-        },
-        {
-          "time": "19:00",
-          "rain": false,
-          "validAt": "2026-09-19T19:00+09:00"
-        }
-      ]
-    },
-    {
-      "date": "2026-09-19",
-      "venue": "横浜アリーナ",
-      "venueKey": "横浜アリーナ",
-      "eventIds": [
-        "b6aa01b3367843ee"
-      ],
-      "areaCode": "140010",
-      "areaName": "東部",
-      "precision": "mesh5km",
-      "label": "雨",
-      "max": null,
-      "min": null,
-      "pop": "50",
-      "popLabel": "当日最大",
-      "issuedAt": "2026-09-19T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "20〜24℃",
-      "coordinates": {
-        "lat": 35.51228,
-        "lon": 139.620102
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "雨",
-          "validAt": "2026-09-19T21:00+09:00",
-          "temp": 21
-        },
-        {
-          "time": "24:00",
-          "label": "雨",
-          "validAt": "2026-09-20T00:00+09:00",
-          "temp": 21
-        }
-      ]
-    },
     {
       "date": "2026-09-20",
       "venue": "ベルサール渋谷ファースト",
@@ -223,6 +110,11 @@
           "time": "12:00",
           "rain": true,
           "validAt": "2026-09-20T12:00+09:00"
+        },
+        {
+          "time": "17:00",
+          "rain": true,
+          "validAt": "2026-09-20T17:00+09:00"
         }
       ]
     },
@@ -257,16 +149,19 @@
       ],
       "areaCode": "240010",
       "areaName": "北中部",
-      "precision": "area",
-      "label": "雨 後 くもり",
+      "precision": "mesh5km",
+      "label": "雨",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
       "issuedAt": "2026-09-19T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "meshTime": "00:00",
+      "meshTempBand": "20〜24℃",
+      "coordinates": {
+        "lat": 34.744926,
+        "lon": 136.500809
+      }
     },
     {
       "date": "2026-09-21",
@@ -315,7 +210,8 @@
       "eventIds": [
         "3f13107c4c87d36b",
         "a9f07d73f091ca00",
-        "465126c2998fe7d6"
+        "465126c2998fe7d6",
+        "b929ac13fb654730"
       ],
       "areaCode": "140010",
       "areaName": "神奈川県",
@@ -416,14 +312,14 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 33,
+    "occurrencesInRange": 32,
     "uniqueVenueDates": 19,
-    "weatherEntries": 14,
-    "meshEntries": 3,
-    "failures": 5,
-    "meshTimelineEntries": 3,
-    "meshExactTempSlots": 11,
-    "hourlyRainEntries": 2
+    "weatherEntries": 11,
+    "meshEntries": 2,
+    "failures": 8,
+    "meshTimelineEntries": 1,
+    "meshExactTempSlots": 7,
+    "hourlyRainEntries": 1
   },
   "failures": [
     {
@@ -449,6 +345,21 @@
     {
       "date": "2026-09-24",
       "venue": "ヒューリックホール東京",
+      "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-09-27",
+      "venue": "千葉県 セブンパークアリオ柏 屋外スマイルパーク",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-09-27",
+      "venue": "博多国際展示場 ３Fホール",
+      "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-09-27",
+      "venue": "東京ドリームパーク ドリームテラス",
       "reason": "都道府県を解決できません"
     }
   ]
