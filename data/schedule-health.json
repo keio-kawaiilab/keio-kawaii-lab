@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-19T21:47:04.733395+09:00",
-  "candidateUpdatedAt": "2026-09-19T21:47:04+09:00",
-  "previousEventCount": 183,
+  "generatedAt": "2026-09-19T22:11:34.866040+09:00",
+  "candidateUpdatedAt": "2026-09-19T22:11:34+09:00",
+  "previousEventCount": 193,
   "candidateEventCount": 182,
-  "protectedPreviousCount": 183,
+  "protectedPreviousCount": 193,
   "errorCount": 0,
-  "warningCount": 41,
+  "warningCount": 46,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: canonical special event application window is not backed by an official page: CUTIE STREET / CUTIE STREET 大特典会＠ベルサール渋谷ファースト【事前抽選会】 / 現在受付なし",
@@ -49,9 +49,14 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: MORE STAR / MORE STAR 単独ライブ 5th STAR / 一般発売"
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: MORE STAR / MORE STAR 単独ライブ 5th STAR / 一般発売",
+    "performance dates added for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209: 2026-09-03, 2026-09-21, 2026-09-25, 2026-10-04, 2026-10-07, 2026-10-13, 2026-10-15, 2026-10-26, 2026-10-27, 2026-11-05, 2026-11-06, 2026-11-12, 2026-11-21, 2026-11-22",
+    "performance dates added for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209: 2026-09-03, 2026-09-21, 2026-09-25, 2026-10-04, 2026-10-07, 2026-10-26, 2026-10-27, 2026-11-05, 2026-11-06, 2026-11-12, 2026-11-21, 2026-11-22",
+    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209: 2026-09-30, 2026-10-01",
+    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827: 2026-09-19, 2026-11-24, 2026-11-26",
+    "ended playguide row removed: SWEET STEADY / PIA LIVE STREAM / プレリザーブ"
   ],
-  "candidateSha256": "366723162d224feec695f99e1eb46f1b2c2c5af302db92594b3fac5e37b76198",
+  "candidateSha256": "ba40ed6b336f1506f0d691a1fd57aeded782091a59fb57bfa2400d8d605d83b9",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -118,21 +123,25 @@
     "url:https://sweetsteady.asobisystem.com/news/detail/87767",
     "url:https://sweetsteady.asobisystem.com/news/detail/88352",
     "url:https://sweetsteady.asobisystem.com/news/detail/89498",
-    "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=09569",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=17867",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=20981",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=23843",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25960",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=28155",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29668",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29682",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30314",
-    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30338"
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30338",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=32739",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=35131"
   ],
   "officialXSharedSourceKeysReconciled": [],
   "reconciledBaseDateMessageCount": 0,
-  "downgradedFalsePositiveCount": 0,
+  "downgradedFalsePositiveCount": 3,
   "legacyProtectedErrorCount": 21,
   "legacyProtectedErrors": [
     {
