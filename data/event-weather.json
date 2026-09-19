@@ -1,7 +1,7 @@
 {
   "date": "2026-09-19",
   "horizonDays": 7,
-  "generatedAt": "2026-09-19T16:31+09:00",
+  "generatedAt": "2026-09-19T21:41+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -17,12 +17,12 @@
       "areaCode": "120010",
       "areaName": "北西部",
       "precision": "area",
-      "label": "くもり 時々 雨",
-      "max": 24.0,
-      "min": 24.0,
+      "label": "くもり 夜 雨 所により 夜遅く 雷 を伴う",
+      "max": null,
+      "min": null,
       "pop": "50",
       "popLabel": "当日最大",
-      "issuedAt": "2026-09-19T11:00:00+09:00",
+      "issuedAt": "2026-09-19T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -39,13 +39,13 @@
       "areaCode": "120010",
       "areaName": "北西部",
       "precision": "mesh5km",
-      "label": "くもり",
-      "max": 24.0,
-      "min": 24.0,
+      "label": "雨",
+      "max": null,
+      "min": null,
       "pop": "50",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-09-19T11:00:00+09:00",
-      "meshTime": "18:00",
+      "issuedAt": "2026-09-19T17:00:00+09:00",
+      "meshTime": "21:00",
       "meshTempBand": "20〜24℃",
       "coordinates": {
         "lat": 35.79921,
@@ -53,28 +53,33 @@
       },
       "meshTimeline": [
         {
-          "time": "15:00",
-          "label": "くもり",
-          "validAt": "2026-09-19T15:00+09:00",
-          "temp": 24
-        },
-        {
-          "time": "18:00",
-          "label": "くもり",
-          "validAt": "2026-09-19T18:00+09:00",
-          "temp": 22
-        },
-        {
           "time": "21:00",
           "label": "雨",
           "validAt": "2026-09-19T21:00+09:00",
-          "temp": 22
+          "temp": 21
         },
         {
           "time": "24:00",
           "label": "雨",
           "validAt": "2026-09-20T00:00+09:00",
           "temp": 22
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "17:00",
+          "rain": true,
+          "validAt": "2026-09-19T17:00+09:00"
+        },
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-09-19T18:00+09:00"
+        },
+        {
+          "time": "19:00",
+          "rain": false,
+          "validAt": "2026-09-19T19:00+09:00"
         }
       ]
     },
@@ -89,30 +94,18 @@
       "areaName": "東部",
       "precision": "mesh5km",
       "label": "雨",
-      "max": 25.0,
-      "min": 25.0,
+      "max": null,
+      "min": null,
       "pop": "50",
       "popLabel": "当日最大",
-      "issuedAt": "2026-09-19T11:00:00+09:00",
-      "meshTime": "15:00",
+      "issuedAt": "2026-09-19T17:00:00+09:00",
+      "meshTime": "21:00",
       "meshTempBand": "20〜24℃",
       "coordinates": {
         "lat": 35.51228,
         "lon": 139.620102
       },
       "meshTimeline": [
-        {
-          "time": "15:00",
-          "label": "雨",
-          "validAt": "2026-09-19T15:00+09:00",
-          "temp": 24
-        },
-        {
-          "time": "18:00",
-          "label": "雨",
-          "validAt": "2026-09-19T18:00+09:00",
-          "temp": 23
-        },
         {
           "time": "21:00",
           "label": "雨",
@@ -121,7 +114,7 @@
         },
         {
           "time": "24:00",
-          "label": "くもり",
+          "label": "雨",
           "validAt": "2026-09-20T00:00+09:00",
           "temp": 21
         }
@@ -142,7 +135,7 @@
       "min": 21.0,
       "pop": "80",
       "popLabel": "06〜12時",
-      "issuedAt": "2026-09-19T11:00:00+09:00",
+      "issuedAt": "2026-09-19T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -162,9 +155,9 @@
       "label": "雨",
       "max": 24.0,
       "min": 21.0,
-      "pop": "80",
+      "pop": "90",
       "popLabel": "当日最大",
-      "issuedAt": "2026-09-19T11:00:00+09:00",
+      "issuedAt": "2026-09-19T17:00:00+09:00",
       "meshTime": "15:00",
       "meshTempBand": "20〜24℃",
       "coordinates": {
@@ -214,6 +207,23 @@
           "validAt": "2026-09-21T00:00+09:00",
           "temp": 22
         }
+      ],
+      "hourlyRain": [
+        {
+          "time": "10:00",
+          "rain": true,
+          "validAt": "2026-09-20T10:00+09:00"
+        },
+        {
+          "time": "11:00",
+          "rain": true,
+          "validAt": "2026-09-20T11:00+09:00"
+        },
+        {
+          "time": "12:00",
+          "rain": true,
+          "validAt": "2026-09-20T12:00+09:00"
+        }
       ]
     },
     {
@@ -232,7 +242,7 @@
       "min": null,
       "pop": null,
       "popLabel": "",
-      "issuedAt": "2026-09-19T11:00:00+09:00",
+      "issuedAt": "2026-09-19T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -253,7 +263,7 @@
       "min": null,
       "pop": null,
       "popLabel": "",
-      "issuedAt": "2026-09-19T11:00:00+09:00",
+      "issuedAt": "2026-09-19T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -273,7 +283,7 @@
       "min": null,
       "pop": null,
       "popLabel": "",
-      "issuedAt": "2026-09-19T11:00:00+09:00",
+      "issuedAt": "2026-09-19T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -293,7 +303,7 @@
       "min": 22.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-09-19T11:00:00+09:00",
+      "issuedAt": "2026-09-19T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -315,7 +325,7 @@
       "min": 21.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-09-19T11:00:00+09:00",
+      "issuedAt": "2026-09-19T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -337,7 +347,7 @@
       "min": 21.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-09-19T11:00:00+09:00",
+      "issuedAt": "2026-09-19T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -359,7 +369,7 @@
       "min": 17.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-09-19T11:00:00+09:00",
+      "issuedAt": "2026-09-19T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -379,7 +389,7 @@
       "min": 22.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-09-19T11:00:00+09:00",
+      "issuedAt": "2026-09-19T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -399,7 +409,7 @@
       "min": 20.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-09-19T11:00:00+09:00",
+      "issuedAt": "2026-09-19T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -412,8 +422,8 @@
     "meshEntries": 3,
     "failures": 5,
     "meshTimelineEntries": 3,
-    "meshExactTempSlots": 15,
-    "hourlyRainEntries": 0
+    "meshExactTempSlots": 11,
+    "hourlyRainEntries": 2
   },
   "failures": [
     {
