@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "reviewedAt": "2026-09-20",
   "use": "Selected train-detail spot checks following the user's suggestion; not a bulk timetable source",
   "productionSource": "Operator-linked station boards and official one-train pages",
@@ -54,6 +54,16 @@
       "url": "https://transit.yahoo.co.jp/search/result/%E6%B5%A6%E5%92%8C%E7%BE%8E%E5%9C%92-%E6%AD%A6%E8%94%B5%E5%B0%8F%E5%B1%B1",
       "case": "Namboku/Saitama/Meguro spot check: Urawa-misono 06:46 to Musashi-koyama 07:55 on 2026-09-07",
       "observed": "Yahoo shows a zero-transfer Saitama Railway train bound for Ebina continuing through Akabane-iwabuchi and the Namboku corridor toward the Tokyu Meguro side. This corroborates the Saitama Railway/Namboku/Meguro through-service chain."
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/search/result/%E8%A5%BF%E6%AD%A6%E7%A7%A9%E7%88%B6-%E9%87%91%E6%B2%A2%E6%96%87%E5%BA%AB",
+      "case": "S-TRAIN 4 north-to-south identity spot check: Seibu-Chichibu 17:07 toward Motomachi-Chukagai",
+      "observed": "Yahoo identifies the 17:07 departure as Seibu S-TRAIN 4 bound for Motomachi-Chukagai and continues it across Kotake-mukaihara (pass) as Tokyo Metro S-TRAIN 4 with the same destination. This corroborates the official same-column S-TRAIN identity across the Seibu/Fukutoshin boundary."
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E6%B5%9C%E6%9D%BE-%E8%A5%BF%E6%AD%A6%E7%A7%A9%E7%88%B6",
+      "case": "S-TRAIN 1 south-to-north identity spot check: Tokyu/Fukutoshin corridor toward Seibu-Chichibu 10:03",
+      "observed": "Yahoo identifies S-TRAIN 1 on the Tokyu side as bound for Seibu-Chichibu and continues it across Kotake-mukaihara (pass) as Seibu S-TRAIN 1, reaching Seibu-Chichibu at 10:03. This corroborates the reverse official same-column identity."
     }
   ]
 }
