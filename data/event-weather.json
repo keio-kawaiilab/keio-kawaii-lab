@@ -1,7 +1,7 @@
 {
   "date": "2026-09-21",
   "horizonDays": 7,
-  "generatedAt": "2026-09-21T03:11+09:00",
+  "generatedAt": "2026-09-21T07:40+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -18,12 +18,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "雨 所により 昼過ぎ から 雷を伴い 非常に 激しく 降る",
+      "label": "雨 所により 昼前 から 雷を伴い 非常に 激しく 降る",
       "max": 26.0,
-      "min": 21.0,
+      "min": 26.0,
       "pop": "100",
       "popLabel": "12〜18時",
-      "issuedAt": "2026-09-20T17:00:00+09:00",
+      "issuedAt": "2026-09-21T05:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -34,17 +34,17 @@
       "venueKey": "三重県文化会館",
       "eventIds": [
         "024676b8e98a3faf",
-        "1ff7623ef8d21f95"
+        "4b63db179190d020"
       ],
       "areaCode": "240010",
       "areaName": "北中部",
       "precision": "mesh5km",
       "label": "晴れ",
-      "max": 29.0,
-      "min": 23.0,
-      "pop": "20",
+      "max": 30.0,
+      "min": 30.0,
+      "pop": "10",
       "popLabel": "12〜18時",
-      "issuedAt": "2026-09-20T17:00:00+09:00",
+      "issuedAt": "2026-09-21T05:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "25〜29℃",
       "coordinates": {
@@ -53,16 +53,10 @@
       },
       "meshTimeline": [
         {
-          "time": "06:00",
-          "label": "雨",
-          "validAt": "2026-09-21T06:00+09:00",
-          "temp": 24
-        },
-        {
           "time": "09:00",
-          "label": "雨",
+          "label": "くもり",
           "validAt": "2026-09-21T09:00+09:00",
-          "temp": 26
+          "temp": 27
         },
         {
           "time": "12:00",
@@ -74,25 +68,25 @@
           "time": "15:00",
           "label": "晴れ",
           "validAt": "2026-09-21T15:00+09:00",
-          "temp": 28
+          "temp": 29
         },
         {
           "time": "18:00",
           "label": "晴れ",
           "validAt": "2026-09-21T18:00+09:00",
-          "temp": 26
+          "temp": 27
         },
         {
           "time": "21:00",
           "label": "晴れ",
           "validAt": "2026-09-21T21:00+09:00",
-          "temp": 25
+          "temp": 26
         },
         {
           "time": "24:00",
           "label": "晴れ",
           "validAt": "2026-09-22T00:00+09:00",
-          "temp": 24
+          "temp": 25
         }
       ],
       "hourlyRain": [
@@ -100,6 +94,16 @@
           "time": "17:00",
           "rain": false,
           "validAt": "2026-09-21T17:00+09:00"
+        },
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-09-21T18:00+09:00"
+        },
+        {
+          "time": "19:00",
+          "rain": false,
+          "validAt": "2026-09-21T19:00+09:00"
         }
       ]
     },
@@ -113,12 +117,12 @@
       "areaCode": "120010",
       "areaName": "北西部",
       "precision": "area",
-      "label": "雨 所により 昼過ぎ から 雷を伴い 非常に 激しく 降る",
+      "label": "雨 所により 昼前 から 雷を伴い 非常に 激しく 降る",
       "max": 26.0,
-      "min": 22.0,
+      "min": 26.0,
       "pop": "100",
       "popLabel": "当日最大",
-      "issuedAt": "2026-09-20T17:00:00+09:00",
+      "issuedAt": "2026-09-21T05:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -133,12 +137,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "くもり 一時 雨",
-      "max": null,
-      "min": null,
-      "pop": null,
-      "popLabel": "",
-      "issuedAt": "2026-09-20T17:00:00+09:00",
+      "label": "くもり 時々 晴れ 所により 未明 雨",
+      "max": 29.0,
+      "min": 24.0,
+      "pop": "10",
+      "popLabel": "12〜18時",
+      "issuedAt": "2026-09-21T05:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -150,8 +154,7 @@
       "eventIds": [
         "3f13107c4c87d36b",
         "a9f07d73f091ca00",
-        "465126c2998fe7d6",
-        "b929ac13fb654730"
+        "465126c2998fe7d6"
       ],
       "areaCode": "140010",
       "areaName": "神奈川県",
@@ -272,21 +275,16 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 27,
-    "uniqueVenueDates": 16,
+    "occurrencesInRange": 25,
+    "uniqueVenueDates": 15,
     "weatherEntries": 10,
     "meshEntries": 1,
-    "failures": 6,
+    "failures": 5,
     "meshTimelineEntries": 1,
-    "meshExactTempSlots": 7,
+    "meshExactTempSlots": 6,
     "hourlyRainEntries": 1
   },
   "failures": [
-    {
-      "date": "2026-09-21",
-      "venue": "三重県文化会館 大ホール",
-      "reason": "都道府県を解決できません"
-    },
     {
       "date": "2026-09-22",
       "venue": "東京流通センター 第二展示場Eホール",
