@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "reviewedAt": "2026-09-20",
   "use": "Selected train-detail spot checks following the user's suggestion; not a bulk timetable source",
   "productionSource": "Operator-linked station boards and official one-train pages",
@@ -79,6 +79,21 @@
       "url": "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E5%92%8C%E5%85%89%E5%B8%82&s=0&stype=&ticket=ic&to=%E6%96%B0%E6%A8%AA%E6%B5%9C&ws=3",
       "case": "Line 13 southbound destination identity spot check: Wakoshi 17:00 to Shin-Yokohama 18:08 on 2026-09-09",
       "observed": "Yahoo shows a zero-transfer Tokyo Metro Fukutoshin Line train originating at Wakoshi and published as bound for Shonandai, running through Shibuya, the Tokyu Toyoko corridor, Hiyoshi and Shin-Tsunashima to Shin-Yokohama. The published Shonandai destination corroborates the existing Line 13 family that continues into the Sotetsu corridor; no Yahoo-only stop-time rows were imported."
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/search/result?all=1&from=%E6%A3%AE%E6%9E%97%E5%85%AC%E5%9C%92%28%E5%9F%BC%E7%8E%89%E7%9C%8C%29&stype=&to=%E5%85%83%E7%94%BA%E3%83%BB%E4%B8%AD%E8%8F%AF%E8%A1%97",
+      "case": "Line 13/Tobu reverse-direction spot check: Shinrin-koen 12:40 to Motomachi-Chukagai 14:31 on 2026-09-19",
+      "observed": "Yahoo shows a zero-transfer F-Liner from Shinrin-koen to Motomachi-Chukagai. The service runs on the Tobu Tojo Line and marks Wakoshi as no-transfer into the Tokyo Metro Fukutoshin Line, continuing through the Tokyu/Minatomirai corridor. This corroborates the reverse direction of the Tojo/Fukutoshin/Toyoko/Minatomirai same-train chain."
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E6%9C%A8%E5%A0%B4-%E5%A4%A7%E6%B3%89%E5%AD%A6%E5%9C%92",
+      "case": "Line 8/Seibu reverse-direction spot check: Shin-kiba 06:54 to Oizumi-gakuen 07:50 on 2026-09-06",
+      "observed": "Yahoo shows a zero-transfer Tokyo Metro Yurakucho Line train originating at Shin-kiba and bound for Tokorozawa. Kotake-mukaihara is explicitly marked no-transfer into the Seibu Yurakucho Line, and the itinerary continues through Nerima into the Seibu Ikebukuro corridor to Oizumi-gakuen. This corroborates the reverse Line 8 Seibu chain."
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E6%9C%A8%E5%A0%B4-%E5%B7%9D%E8%B6%8A",
+      "case": "Line 8/Tobu reverse-direction spot check: Shin-kiba 05:13 to Kawagoe 06:31 on 2026-09-02",
+      "observed": "Yahoo returns a zero-transfer Shin-kiba-to-Kawagoe route and marks Wakoshi as no-transfer into a Tobu Tojo Line train bound for Kawagoeshi. This corroborates the reverse Yurakucho/Tojo boundary identity at Wakoshi."
     }
   ]
 }
