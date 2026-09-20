@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "reviewedAt": "2026-09-07",
+  "version": 2,
+  "reviewedAt": "2026-09-20",
   "use": "Selected train-detail spot checks following the user's suggestion; not a bulk timetable source",
   "productionSource": "Operator-linked station boards and official one-train pages",
   "checks": [
@@ -19,6 +19,41 @@
       "url": "https://transit.yahoo.co.jp/timetable/29033/4800/68984?hh=21&kind=1&mm=38",
       "case": "Weekday Inba-Nihon-Idai to Misakiguchi through service, Inzai-Makinohara 21:38 departure",
       "observed": "The one-train list crosses Oshiage and Sengakuji and includes a section-specific train-type note"
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E5%85%83%E7%94%BA%E3%83%BB%E4%B8%AD%E8%8F%AF%E8%A1%97&s=0&stype=&ticket=ic&to=%E6%A3%AE%E6%9E%97%E5%85%AC%E5%9C%92(%E5%9F%BC%E7%8E%89%E7%9C%8C)&ws=3",
+      "case": "Line 13/Tobu end-to-end spot check: Motomachi-Chukagai 15:03 to Shinrin-koen 16:51 on 2026-09-20",
+      "observed": "Yahoo shows a zero-transfer F-Liner from the Minatomirai Line to Shinrin-koen, with no-transfer continuation at Kotake-mukaihara into the Fukutoshin Line and at Wakoshi into the Tobu Tojo Line. This corroborates the existing exact through-service family; no Yahoo-only timetable rows were imported."
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/search/result/%E6%89%80%E6%B2%A2-%E5%85%83%E7%94%BA%E3%83%BB%E4%B8%AD%E8%8F%AF%E8%A1%97",
+      "case": "Line 13/Seibu spot check: Tokorozawa 08:58 to Motomachi-Chukagai 10:17 on 2026-09-20",
+      "observed": "Yahoo shows a zero-transfer F-Liner toward Motomachi-Chukagai and explicitly marks Kotake-mukaihara as no-transfer into the Fukutoshin Line. This corroborates the Seibu Ikebukuro/Seibu Yurakucho/Fukutoshin/Toyoko/Minatomirai chain."
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E3%81%B5%E3%81%98%E3%81%BF%E9%87%8E&s=2&ticket=ic&to=%E6%96%B0%E6%9C%A8%E5%A0%B4&ws=3",
+      "case": "Line 8/Tobu spot check: Fujimino to Shin-kiba",
+      "observed": "Yahoo shows zero-transfer Tobu Tojo trains to Shin-kiba and marks Wakoshi as no-transfer into the Tokyo Metro Yurakucho Line. This corroborates the existing Yurakucho-Tojo exact boundary identities."
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/search/result/%E5%B0%8F%E6%89%8B%E6%8C%87-%E6%9C%89%E6%A5%BD%E7%94%BA",
+      "case": "Line 8/Seibu spot check: Kotesashi 13:48 toward Shin-kiba",
+      "observed": "Yahoo shows a zero-transfer Seibu Ikebukuro train bound for Shin-kiba and marks Kotake-mukaihara as no-transfer into the Tokyo Metro Yurakucho Line. This corroborates the existing Seibu/Yurakucho exact identities."
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E8%A5%BF%E9%AB%98%E5%B3%B6%E5%B9%B3&s=2&stype=&ticket=ic&to=%E6%B5%B7%E8%80%81%E5%90%8D(%E7%9B%B8%E9%89%84%E3%83%BB%E5%B0%8F%E7%94%B0%E6%80%A5)&ws=3",
+      "case": "Meguro/Mita/Sotetsu end-to-end spot check: Nishi-takashimadaira 14:36 to Ebina 16:28 on 2026-09-20",
+      "observed": "Yahoo shows a zero-transfer train from the Toei Mita Line to Ebina and explicitly marks Shin-Yokohama as no-transfer into the Sotetsu Shin-Yokohama Line. This corroborates the Mita/Meguro/Tokyu Shin-Yokohama/Sotetsu through-service chain."
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E6%B5%B7%E8%80%81%E5%90%8D(%E7%9B%B8%E9%89%84%E3%83%BB%E5%B0%8F%E7%94%B0%E6%80%A5)&s=2&ticket=ic&to=%E6%96%B0%E7%B6%B1%E5%B3%B6&ws=3",
+      "case": "Meguro/Mita/Sotetsu reverse spot check: Ebina 14:36 toward Nishi-takashimadaira on 2026-09-20",
+      "observed": "Yahoo shows the Sotetsu Main Line departure carrying the Nishi-takashimadaira destination, with Shin-Yokohama marked no-transfer into the Tokyu Shin-Yokohama Line. This corroborates the reverse-direction same-train identity."
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/search/result/%E6%B5%A6%E5%92%8C%E7%BE%8E%E5%9C%92-%E6%AD%A6%E8%94%B5%E5%B0%8F%E5%B1%B1",
+      "case": "Namboku/Saitama/Meguro spot check: Urawa-misono 06:46 to Musashi-koyama 07:55 on 2026-09-07",
+      "observed": "Yahoo shows a zero-transfer Saitama Railway train bound for Ebina continuing through Akabane-iwabuchi and the Namboku corridor toward the Tokyu Meguro side. This corroborates the Saitama Railway/Namboku/Meguro through-service chain."
     }
   ]
 }
