@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "reviewedAt": "2026-09-20",
   "use": "Selected train-detail spot checks following the user's suggestion; not a bulk timetable source",
   "productionSource": "Operator-linked station boards and official one-train pages",
@@ -64,6 +64,21 @@
       "url": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E6%B5%9C%E6%9D%BE-%E8%A5%BF%E6%AD%A6%E7%A7%A9%E7%88%B6",
       "case": "S-TRAIN 1 south-to-north identity spot check: Tokyu/Fukutoshin corridor toward Seibu-Chichibu 10:03",
       "observed": "Yahoo identifies S-TRAIN 1 on the Tokyu side as bound for Seibu-Chichibu and continues it across Kotake-mukaihara (pass) as Seibu S-TRAIN 1, reaching Seibu-Chichibu at 10:03. This corroborates the reverse official same-column identity."
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/search/result/%E6%B9%98%E5%8D%97%E5%8F%B0-%E8%87%AA%E7%94%B1%E3%81%8C%E4%B8%98",
+      "case": "Line 13/Sotetsu Izumino branch spot check: Shonandai 08:23 to Jiyugaoka 09:06 on 2026-09-04",
+      "observed": "Yahoo shows a zero-transfer Sotetsu Izumino Line commuter limited express originating at Shonandai and bound for Wakoshi. The same itinerary runs through Futamatagawa, Nishiya and Hazawa-yokohama-kokudai, then marks Shin-Yokohama as no-transfer and continues as a Tokyu Shin-Yokohama Line express bound for Wakoshi. This corroborates the Izumino/Main/Sotetsu Shin-Yokohama/Tokyu Shin-Yokohama chain toward the Line 13 corridor."
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/search/result/%E7%B7%91%E5%9C%92%E9%83%BD%E5%B8%82-%E6%B5%A6%E5%92%8C%E7%BE%8E%E5%9C%92",
+      "case": "Meguro/Namboku/Saitama reverse end-to-end spot check: Ryokuentoshi 18:20 to Urawa-misono 20:24 on 2026-09-13",
+      "observed": "Yahoo shows a zero-transfer route from Ryokuentoshi to Urawa-misono. It starts as a Sotetsu Izumino Line train bound for Urawa-misono, crosses the Sotetsu Main and Shin-Yokohama corridors, marks Shin-Yokohama as no-transfer into the Tokyu Shin-Yokohama Line, then continues through the Meguro/Namboku/Saitama Railway corridor to Urawa-misono. This corroborates the southern branch and northern Namboku/Saitama through-service chain in one actual itinerary."
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E5%92%8C%E5%85%89%E5%B8%82&s=0&stype=&ticket=ic&to=%E6%96%B0%E6%A8%AA%E6%B5%9C&ws=3",
+      "case": "Line 13 southbound destination identity spot check: Wakoshi 17:00 to Shin-Yokohama 18:08 on 2026-09-09",
+      "observed": "Yahoo shows a zero-transfer Tokyo Metro Fukutoshin Line train originating at Wakoshi and published as bound for Shonandai, running through Shibuya, the Tokyu Toyoko corridor, Hiyoshi and Shin-Tsunashima to Shin-Yokohama. The published Shonandai destination corroborates the existing Line 13 family that continues into the Sotetsu corridor; no Yahoo-only stop-time rows were imported."
     }
   ]
 }
