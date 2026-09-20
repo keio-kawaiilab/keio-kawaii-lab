@@ -1,5 +1,5 @@
 {
-  "version": 5,
+  "version": 6,
   "reviewedAt": "2026-09-20",
   "use": "Selected train-detail spot checks following the user's suggestion; not a bulk timetable source",
   "productionSource": "Operator-linked station boards and official one-train pages",
@@ -94,6 +94,11 @@
       "url": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E6%9C%A8%E5%A0%B4-%E5%B7%9D%E8%B6%8A",
       "case": "Line 8/Tobu reverse-direction spot check: Shin-kiba 05:13 to Kawagoe 06:31 on 2026-09-02",
       "observed": "Yahoo returns a zero-transfer Shin-kiba-to-Kawagoe route and marks Wakoshi as no-transfer into a Tobu Tojo Line train bound for Kawagoeshi. This corroborates the reverse Yurakucho/Tojo boundary identity at Wakoshi."
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/search/result?all=1&from=%E6%96%B0%E6%9C%A8%E5%A0%B4&stype=&to=%E5%B0%8F%E6%89%8B%E6%8C%87",
+      "case": "Negative identity guard: Shin-kiba 10:53 toward Kotesashi on 2026-09-01",
+      "observed": "Yahoo labels the Metro Yurakucho departure as Kotesashi-bound and marks Kotake-mukaihara as no-transfer into the Seibu Yurakucho Line, but the itinerary then requires a transfer at Nerima to a Seibu Ikebukuro Line semi-express for Hanno. Therefore a published destination or an earlier no-transfer boundary must not be used to infer same-train identity across a later boundary. Exact boundary evidence remains required."
     }
   ]
 }
