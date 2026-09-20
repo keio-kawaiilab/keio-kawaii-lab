@@ -1,7 +1,7 @@
 {
   "date": "2026-09-20",
   "horizonDays": 7,
-  "generatedAt": "2026-09-20T16:54+09:00",
+  "generatedAt": "2026-09-20T22:12+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -45,25 +45,13 @@
       "pop": "80",
       "popLabel": "当日最大",
       "issuedAt": "2026-09-20T17:00:00+09:00",
-      "meshTime": "15:00",
+      "meshTime": "21:00",
       "meshTempBand": "20〜24℃",
       "coordinates": {
         "lat": 35.51228,
         "lon": 139.620102
       },
       "meshTimeline": [
-        {
-          "time": "15:00",
-          "label": "雨",
-          "validAt": "2026-09-20T15:00+09:00",
-          "temp": 22
-        },
-        {
-          "time": "18:00",
-          "label": "雨",
-          "validAt": "2026-09-20T18:00+09:00",
-          "temp": 22
-        },
         {
           "time": "21:00",
           "label": "雨",
@@ -92,6 +80,21 @@
           "time": "12:00",
           "rain": true,
           "validAt": "2026-09-20T12:00+09:00"
+        },
+        {
+          "time": "17:30",
+          "rain": true,
+          "validAt": "2026-09-20T17:30+09:00"
+        },
+        {
+          "time": "18:30",
+          "rain": true,
+          "validAt": "2026-09-20T18:30+09:00"
+        },
+        {
+          "time": "19:30",
+          "rain": true,
+          "validAt": "2026-09-20T19:30+09:00"
         }
       ]
     },
@@ -358,7 +361,7 @@
     "meshEntries": 2,
     "failures": 7,
     "meshTimelineEntries": 2,
-    "meshExactTempSlots": 11,
+    "meshExactTempSlots": 9,
     "hourlyRainEntries": 1
   },
   "failures": [
