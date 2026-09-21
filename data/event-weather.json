@@ -1,98 +1,12 @@
 {
-  "date": "2026-09-21",
+  "date": "2026-09-22",
   "horizonDays": 7,
-  "generatedAt": "2026-09-21T17:11+09:00",
+  "generatedAt": "2026-09-22T00:18+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
-    {
-      "date": "2026-09-21",
-      "venue": "東京都 Zepp Shinjuku(TOKYO)",
-      "venueKey": "zeppshinjukutokyo",
-      "eventIds": [
-        "fc44df7009fe2d63",
-        "fc44df7009fe2d63--ohanami-second"
-      ],
-      "areaCode": "130010",
-      "areaName": "東京地方",
-      "precision": "area",
-      "label": "雨 夜遅く くもり 所により 雷を伴い 非常に 激しく 降る",
-      "max": null,
-      "min": null,
-      "pop": "80",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-09-21T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
-    {
-      "date": "2026-09-21",
-      "venue": "三重県 三重県文化会館 大ホール",
-      "venueKey": "三重県文化会館",
-      "eventIds": [
-        "024676b8e98a3faf",
-        "4b63db179190d020"
-      ],
-      "areaCode": "240010",
-      "areaName": "北中部",
-      "precision": "mesh5km",
-      "label": "晴れ",
-      "max": null,
-      "min": null,
-      "pop": "10",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-09-21T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "25〜29℃",
-      "coordinates": {
-        "lat": 34.744926,
-        "lon": 136.500809
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "晴れ",
-          "validAt": "2026-09-21T21:00+09:00",
-          "temp": 25
-        },
-        {
-          "time": "24:00",
-          "label": "晴れ",
-          "validAt": "2026-09-22T00:00+09:00",
-          "temp": 25
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "16:30",
-          "rain": false,
-          "validAt": "2026-09-21T16:30+09:00"
-        }
-      ]
-    },
-    {
-      "date": "2026-09-21",
-      "venue": "千葉県 千葉市蘇我スポーツ公園",
-      "venueKey": "千葉市蘇我スポーツ公園",
-      "eventIds": [
-        "21cc160681752132"
-      ],
-      "areaCode": "120010",
-      "areaName": "北西部",
-      "precision": "area",
-      "label": "雨 所により 雷を伴い 非常に 激しく 降る",
-      "max": null,
-      "min": null,
-      "pop": "100",
-      "popLabel": "当日最大",
-      "issuedAt": "2026-09-21T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
     {
       "date": "2026-09-22",
       "venue": "有明ガーデン みんなのテラス",
@@ -146,16 +60,19 @@
       ],
       "areaCode": "210010",
       "areaName": "美濃地方",
-      "precision": "area",
-      "label": "くもり 一時 雨",
+      "precision": "mesh5km",
+      "label": "晴れ",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
       "issuedAt": "2026-09-21T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "meshTime": "00:00",
+      "meshTempBand": "20〜24℃",
+      "coordinates": {
+        "lat": 35.441143,
+        "lon": 136.768906
+      }
     },
     {
       "date": "2026-09-25",
@@ -241,14 +158,14 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 25,
-    "uniqueVenueDates": 15,
-    "weatherEntries": 10,
+    "occurrencesInRange": 24,
+    "uniqueVenueDates": 13,
+    "weatherEntries": 7,
     "meshEntries": 1,
-    "failures": 5,
-    "meshTimelineEntries": 1,
-    "meshExactTempSlots": 2,
-    "hourlyRainEntries": 1
+    "failures": 6,
+    "meshTimelineEntries": 0,
+    "meshExactTempSlots": 0,
+    "hourlyRainEntries": 0
   },
   "failures": [
     {
@@ -275,6 +192,11 @@
       "date": "2026-09-27",
       "venue": "東京ドリームパーク ドリームテラス",
       "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-09-29",
+      "venue": "東京都 有明アリーナ",
+      "reason": "開催日の予報がまだありません"
     }
   ]
 }
