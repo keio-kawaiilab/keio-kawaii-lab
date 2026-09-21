@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-22T07:40:47.722784+09:00",
-  "candidateUpdatedAt": "2026-09-22T07:40:47+09:00",
-  "previousEventCount": 153,
+  "generatedAt": "2026-09-22T07:46:29.789047+09:00",
+  "candidateUpdatedAt": "2026-09-22T07:46:29+09:00",
+  "previousEventCount": 166,
   "candidateEventCount": 166,
-  "protectedPreviousCount": 153,
+  "protectedPreviousCount": 166,
   "errorCount": 0,
-  "warningCount": 36,
+  "warningCount": 34,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 2次プレリザーブ",
@@ -28,8 +28,6 @@
     "quarantined one event/source update and kept the previous known-good data: protected future/active item disappeared: MORE STAR / MORE STAR 単独ライブ 5th STAR / 一般発売",
     "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for pia:68942: 2026-10-08, 2026-10-09, 2026-11-10, 2026-11-12, 2026-11-17, 2026-11-19, 2026-11-30, 2026-12-01",
     "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for pia:29056: 2026-11-30, 2026-12-01",
-    "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / 「CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS 」公演 リセールサービスのお知らせ / リセール",
-    "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / 「CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS 」公演 リセールサービスのお知らせ / リセール",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event application window is not backed by an official page: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場【FC限定 1部・3部・6部】 / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event deadline is not verified by an official page: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場【FC限定 1部・3部・6部】 / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event offer has no verified purchase/ticket window: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場【FC限定 1部・3部・6部】 / 現在受付なし / offer 1",
@@ -46,7 +44,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: MORE STAR / MORE STAR 単独ライブ 5th STAR / 一般発売"
   ],
-  "candidateSha256": "8deae4cd1bb892d0b9b07c6d46ca5b6ba3120e5f74ebbbe200b2b0b51eaedfb4",
+  "candidateSha256": "0f4672f016468b0bd47cb859d95fcb6a036ab8d25e550ba7adcf8726bedc2ad9",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/",
@@ -56,15 +54,13 @@
     "url:https://candytune.asobisystem.com/live_information/detail/40731",
     "url:https://candytune.asobisystem.com/live_information/detail/40732",
     "url:https://candytune.asobisystem.com/live_information/detail/40740",
+    "url:https://candytune.asobisystem.com/live_information/detail/40743",
     "url:https://candytune.asobisystem.com/live_information/detail/44617",
     "url:https://candytune.asobisystem.com/news/detail/87766",
     "url:https://candytune.asobisystem.com/news/detail/88212",
     "url:https://cutiestreet.asobisystem.com/feature/autumntour",
-    "url:https://cutiestreet.asobisystem.com/live_information/detail/40309",
     "url:https://cutiestreet.asobisystem.com/live_information/detail/40310",
     "url:https://cutiestreet.asobisystem.com/live_information/detail/40312",
-    "url:https://cutiestreet.asobisystem.com/live_information/detail/40313",
-    "url:https://cutiestreet.asobisystem.com/live_information/detail/40361",
     "url:https://cutiestreet.asobisystem.com/live_information/detail/40362",
     "url:https://cutiestreet.asobisystem.com/live_information/detail/40363",
     "url:https://cutiestreet.asobisystem.com/live_information/detail/40364",
@@ -203,7 +199,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 21,
+  "quarantineCount": 19,
   "quarantineActions": [
     {
       "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 2次プレリザーブ",
@@ -299,16 +295,6 @@
       "error": "future performance dates disappeared for pia:29056: 2026-11-30, 2026-12-01",
       "action": "restored previous rows for pia:29056",
       "restoredPreviousRows": 1
-    },
-    {
-      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / 「CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS 」公演 リセールサービスのお知らせ / リセール",
-      "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
-      "restoredPreviousRows": 7
-    },
-    {
-      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / 「CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS 」公演 リセールサービスのお知らせ / リセール",
-      "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
-      "restoredPreviousRows": 7
     }
   ],
   "rowFailuresCanBlockRelease": false,
