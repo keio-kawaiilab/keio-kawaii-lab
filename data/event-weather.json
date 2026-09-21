@@ -1,7 +1,7 @@
 {
   "date": "2026-09-21",
   "horizonDays": 7,
-  "generatedAt": "2026-09-21T07:40+09:00",
+  "generatedAt": "2026-09-21T17:11+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -18,12 +18,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "雨 所により 昼前 から 雷を伴い 非常に 激しく 降る",
-      "max": 26.0,
-      "min": 26.0,
-      "pop": "100",
-      "popLabel": "12〜18時",
-      "issuedAt": "2026-09-21T05:00:00+09:00",
+      "label": "雨 夜遅く くもり 所により 雷を伴い 非常に 激しく 降る",
+      "max": null,
+      "min": null,
+      "pop": "80",
+      "popLabel": "18〜00時",
+      "issuedAt": "2026-09-21T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -40,12 +40,12 @@
       "areaName": "北中部",
       "precision": "mesh5km",
       "label": "晴れ",
-      "max": 30.0,
-      "min": 30.0,
+      "max": null,
+      "min": null,
       "pop": "10",
-      "popLabel": "12〜18時",
-      "issuedAt": "2026-09-21T05:00:00+09:00",
-      "meshTime": "18:00",
+      "popLabel": "18〜00時",
+      "issuedAt": "2026-09-21T17:00:00+09:00",
+      "meshTime": "21:00",
       "meshTempBand": "25〜29℃",
       "coordinates": {
         "lat": 34.744926,
@@ -53,34 +53,10 @@
       },
       "meshTimeline": [
         {
-          "time": "09:00",
-          "label": "くもり",
-          "validAt": "2026-09-21T09:00+09:00",
-          "temp": 27
-        },
-        {
-          "time": "12:00",
-          "label": "雨",
-          "validAt": "2026-09-21T12:00+09:00",
-          "temp": 29
-        },
-        {
-          "time": "15:00",
-          "label": "晴れ",
-          "validAt": "2026-09-21T15:00+09:00",
-          "temp": 29
-        },
-        {
-          "time": "18:00",
-          "label": "晴れ",
-          "validAt": "2026-09-21T18:00+09:00",
-          "temp": 27
-        },
-        {
           "time": "21:00",
           "label": "晴れ",
           "validAt": "2026-09-21T21:00+09:00",
-          "temp": 26
+          "temp": 25
         },
         {
           "time": "24:00",
@@ -91,19 +67,9 @@
       ],
       "hourlyRain": [
         {
-          "time": "17:00",
+          "time": "16:30",
           "rain": false,
-          "validAt": "2026-09-21T17:00+09:00"
-        },
-        {
-          "time": "18:00",
-          "rain": false,
-          "validAt": "2026-09-21T18:00+09:00"
-        },
-        {
-          "time": "19:00",
-          "rain": false,
-          "validAt": "2026-09-21T19:00+09:00"
+          "validAt": "2026-09-21T16:30+09:00"
         }
       ]
     },
@@ -117,12 +83,12 @@
       "areaCode": "120010",
       "areaName": "北西部",
       "precision": "area",
-      "label": "雨 所により 昼前 から 雷を伴い 非常に 激しく 降る",
-      "max": 26.0,
-      "min": 26.0,
+      "label": "雨 所により 雷を伴い 非常に 激しく 降る",
+      "max": null,
+      "min": null,
       "pop": "100",
       "popLabel": "当日最大",
-      "issuedAt": "2026-09-21T05:00:00+09:00",
+      "issuedAt": "2026-09-21T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -139,10 +105,10 @@
       "precision": "area",
       "label": "くもり 時々 晴れ 所により 未明 雨",
       "max": 29.0,
-      "min": 24.0,
+      "min": 25.0,
       "pop": "10",
       "popLabel": "12〜18時",
-      "issuedAt": "2026-09-21T05:00:00+09:00",
+      "issuedAt": "2026-09-21T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -157,14 +123,14 @@
         "465126c2998fe7d6"
       ],
       "areaCode": "140010",
-      "areaName": "神奈川県",
+      "areaName": "東部",
       "precision": "area",
       "label": "くもり",
-      "max": 27.0,
-      "min": 21.0,
-      "pop": "40",
-      "popLabel": "1日",
-      "issuedAt": "2026-09-20T17:00:00+09:00",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-09-21T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -179,14 +145,14 @@
         "f1172a787c8f80eb"
       ],
       "areaCode": "210010",
-      "areaName": "岐阜県",
+      "areaName": "美濃地方",
       "precision": "area",
-      "label": "くもり時々晴れ",
-      "max": 29.0,
-      "min": 21.0,
-      "pop": "30",
-      "popLabel": "1日",
-      "issuedAt": "2026-09-20T17:00:00+09:00",
+      "label": "くもり 一時 雨",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-09-21T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -203,12 +169,12 @@
       "areaCode": "150010",
       "areaName": "新潟県",
       "precision": "area",
-      "label": "くもり",
-      "max": 26.0,
-      "min": 18.0,
-      "pop": "40",
+      "label": "くもり時々晴れ",
+      "max": 25.0,
+      "min": 17.0,
+      "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-09-20T17:00:00+09:00",
+      "issuedAt": "2026-09-21T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -228,7 +194,7 @@
       "min": 22.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-09-20T17:00:00+09:00",
+      "issuedAt": "2026-09-21T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -244,11 +210,11 @@
       "areaName": "千葉県",
       "precision": "area",
       "label": "くもり一時雨",
-      "max": 24.0,
-      "min": 21.0,
+      "max": 23.0,
+      "min": 20.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-09-20T17:00:00+09:00",
+      "issuedAt": "2026-09-21T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -263,12 +229,12 @@
       "areaCode": "120010",
       "areaName": "千葉県",
       "precision": "area",
-      "label": "くもり",
-      "max": 24.0,
+      "label": "くもり一時雨",
+      "max": 25.0,
       "min": 20.0,
-      "pop": "40",
+      "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-09-20T17:00:00+09:00",
+      "issuedAt": "2026-09-21T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -281,7 +247,7 @@
     "meshEntries": 1,
     "failures": 5,
     "meshTimelineEntries": 1,
-    "meshExactTempSlots": 6,
+    "meshExactTempSlots": 2,
     "hourlyRainEntries": 1
   },
   "failures": [
