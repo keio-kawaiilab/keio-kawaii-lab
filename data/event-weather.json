@@ -1,7 +1,7 @@
 {
   "date": "2026-09-22",
   "horizonDays": 7,
-  "generatedAt": "2026-09-22T12:15+09:00",
+  "generatedAt": "2026-09-22T16:56+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -17,12 +17,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "晴れ 時々 くもり 所により 夜遅く 雨",
-      "max": 32.0,
-      "min": 32.0,
-      "pop": "0",
-      "popLabel": "12〜18時",
-      "issuedAt": "2026-09-22T11:00:00+09:00",
+      "label": "くもり 夜のはじめ頃 晴れ",
+      "max": null,
+      "min": null,
+      "pop": "10",
+      "popLabel": "18〜00時",
+      "issuedAt": "2026-09-22T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -38,12 +38,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "晴れ 時々 くもり 所により 夜遅く 雨",
-      "max": 32.0,
-      "min": 32.0,
-      "pop": "20",
+      "label": "くもり 夜のはじめ頃 晴れ",
+      "max": null,
+      "min": null,
+      "pop": "10",
       "popLabel": "当日最大",
-      "issuedAt": "2026-09-22T11:00:00+09:00",
+      "issuedAt": "2026-09-22T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -54,18 +54,20 @@
       "venueKey": "横浜アリーナ",
       "eventIds": [
         "3f13107c4c87d36b",
+        "3f99f7bcacecc458",
         "a9f07d73f091ca00",
+        "b929ac13fb654730",
         "465126c2998fe7d6"
       ],
       "areaCode": "140010",
       "areaName": "東部",
       "precision": "mesh5km",
       "label": "くもり",
-      "max": 24.0,
+      "max": 25.0,
       "min": 22.0,
       "pop": "30",
       "popLabel": "当日最大",
-      "issuedAt": "2026-09-22T11:00:00+09:00",
+      "issuedAt": "2026-09-22T17:00:00+09:00",
       "meshTime": "15:00",
       "meshTempBand": "25〜29℃",
       "coordinates": {
@@ -130,11 +132,11 @@
       "areaName": "美濃地方",
       "precision": "mesh5km",
       "label": "雨",
-      "max": 29.0,
+      "max": 28.0,
       "min": 22.0,
-      "pop": "50",
+      "pop": "30",
       "popLabel": "12〜18時",
-      "issuedAt": "2026-09-22T11:00:00+09:00",
+      "issuedAt": "2026-09-22T17:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "25〜29℃",
       "coordinates": {
@@ -203,7 +205,7 @@
       "min": 17.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-09-22T11:00:00+09:00",
+      "issuedAt": "2026-09-22T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -223,7 +225,7 @@
       "min": 22.0,
       "pop": "60",
       "popLabel": "1日",
-      "issuedAt": "2026-09-22T11:00:00+09:00",
+      "issuedAt": "2026-09-22T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -243,7 +245,7 @@
       "min": 20.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-09-22T11:00:00+09:00",
+      "issuedAt": "2026-09-22T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -263,7 +265,7 @@
       "min": 20.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-09-22T11:00:00+09:00",
+      "issuedAt": "2026-09-22T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -274,7 +276,9 @@
       "venueKey": "有明アリーナ",
       "eventIds": [
         "3f13107c4c87d36b",
+        "3f99f7bcacecc458",
         "a9f07d73f091ca00",
+        "b929ac13fb654730",
         "465126c2998fe7d6",
         "08282b2e0d62abc8"
       ],
@@ -286,14 +290,14 @@
       "min": 21.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-09-22T11:00:00+09:00",
+      "issuedAt": "2026-09-22T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
     }
   ],
   "stats": {
-    "occurrencesInRange": 23,
+    "occurrencesInRange": 27,
     "uniqueVenueDates": 13,
     "weatherEntries": 9,
     "meshEntries": 2,
