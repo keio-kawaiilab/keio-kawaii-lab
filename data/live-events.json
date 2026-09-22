@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-23T00:45:44+09:00",
+  "checkedAt": "2026-09-23T02:10:08+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-09-22T07:11:57+09:00",
     "scannedPages": {
@@ -2924,9 +2924,9 @@
       "id": "8bd3d05e19ac0532",
       "group": "CANDY TUNE",
       "title": "CANDY TUNE 小川奈々子 生誕祭 2026",
-      "ticketType": "現在受付なし",
-      "applyStart": null,
-      "applyEnd": null,
+      "ticketType": "年会費コース会員先行",
+      "applyStart": "2026-09-04T18:00",
+      "applyEnd": "2026-09-07T23:59",
       "resultDate": null,
       "paymentEnd": null,
       "eventDate": "2026-10-01",
@@ -2954,11 +2954,15 @@
       ],
       "applicationStatus": "none",
       "officialScheduleUrl": "https://candytune.asobisystem.com/live_information/detail/43376",
-      "applicationDisplayMode": "schedule-only",
+      "applicationDisplayMode": "band",
       "specialDetailsStatus": "ticket-details-found",
       "ticketGuardRejected": true,
       "ticketGuardReason": "upgrade notice cannot be used as the source of an annual-fee ticket sale",
-      "ticketGuardSource": "https://candytune.asobisystem.com/news/detail/88933"
+      "ticketGuardSource": "https://candytune.asobisystem.com/news/detail/88933",
+      "applicationWindowVerified": true,
+      "deadlineVerified": true,
+      "applicationWindowSource": "https://candytune.asobisystem.com/news/detail/88933",
+      "deadlineSource": "https://candytune.asobisystem.com/news/detail/88933"
     },
     {
       "id": "1adce369ffa0f87a",
@@ -9315,7 +9319,7 @@
   },
   "publicEventModelVersion": 1,
   "releasePreparation": {
-    "preparedAt": "2026-09-22T21:46:34+09:00",
+    "preparedAt": "2026-09-23T02:10:05+09:00",
     "normalizedSpecialEvents": 11,
     "duplicateIdsRemoved": 0,
     "retainedPreviousRows": 0,
@@ -9350,8 +9354,8 @@
       "remainingDuplicates": []
     },
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-09-22T21:46:34+09:00",
-    "checkedAt": "2026-09-22T21:46:34+09:00"
+    "publicUpdatedAt": "2026-09-23T02:10:05+09:00",
+    "checkedAt": "2026-09-23T02:10:05+09:00"
   },
   "resaleDiagnostics": {
     "articles": 26,
@@ -16002,14 +16006,14 @@
       }
     ]
   },
-  "updatedAt": "2026-09-23T00:45:44+09:00",
+  "updatedAt": "2026-09-23T02:10:08+09:00",
   "publicEventModelReport": {
     "rawEventCount": 191,
     "passthroughEventCount": 74,
     "performanceEntityCount": 83,
     "sourceOccurrenceCount": 296,
     "mergedSourceOccurrences": 213,
-    "offerCount": 155
+    "offerCount": 156
   },
   "publicEvents": [
     {
@@ -19908,7 +19912,33 @@
       "sourceRowIds": [
         "8bd3d05e19ac0532"
       ],
-      "offers": [],
+      "offers": [
+        {
+          "sourceRowId": "8bd3d05e19ac0532",
+          "provider": "official",
+          "url": "https://kawaiilab.asobisystem.com/news/detail/88104",
+          "urls": [
+            "https://kawaiilab.asobisystem.com/news/detail/88104",
+            "https://candytune.asobisystem.com/news/detail/88933",
+            "https://candytune.asobisystem.com/live_information/detail/43376",
+            "https://candytune.asobisystem.com/news/detail/86518",
+            "https://candytune.asobisystem.com/news/detail/87180"
+          ],
+          "ticketType": "年会費コース会員先行",
+          "applyStart": "2026-09-04T18:00",
+          "applyEnd": "2026-09-07T23:59",
+          "applicationStatus": "none",
+          "applicationWindowVerified": true,
+          "deadlineVerified": true,
+          "applicationDisplayMode": "band",
+          "applicationWindowSource": "https://candytune.asobisystem.com/news/detail/88933",
+          "deadlineSource": "https://candytune.asobisystem.com/news/detail/88933",
+          "sourceType": "derived",
+          "sourceChannel": "recent-official-body",
+          "primarySource": "official",
+          "sourcePublishedAt": "2026-09-04"
+        }
+      ],
       "eventEndDate": "2026-10-01",
       "eventDates": [
         "2026-10-01"
@@ -19922,9 +19952,9 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
+      "ticketType": "年会費コース会員先行",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers"
     },
     {
       "id": "performance-CANDY-TUNE-2026-10-02-time-18-30",
