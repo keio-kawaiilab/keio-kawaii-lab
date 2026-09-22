@@ -1,58 +1,18 @@
 {
-  "date": "2026-09-22",
+  "date": "2026-09-23",
   "horizonDays": 7,
-  "generatedAt": "2026-09-22T22:39+09:00",
+  "generatedAt": "2026-09-23T03:48+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
     {
-      "date": "2026-09-22",
-      "venue": "有明ガーデン みんなのテラス",
-      "venueKey": "有明ガーデンみんなのテラス",
-      "eventIds": [
-        "special-2b482e4fa4ee199a"
-      ],
-      "areaCode": "130010",
-      "areaName": "東京地方",
-      "precision": "area",
-      "label": "晴れ 夜遅く くもり",
-      "max": null,
-      "min": null,
-      "pop": "10",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-09-22T19:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
-    {
-      "date": "2026-09-22",
-      "venue": "東京都 東京流通センター 第二展示場Fホール",
-      "venueKey": "東京流通センター第二展示場fホール",
-      "eventIds": [
-        "special-d467ddf68b1df591",
-        "special-3f1d3d73ed6fb4d1"
-      ],
-      "areaCode": "130010",
-      "areaName": "東京地方",
-      "precision": "area",
-      "label": "晴れ 夜遅く くもり",
-      "max": null,
-      "min": null,
-      "pop": "10",
-      "popLabel": "当日最大",
-      "issuedAt": "2026-09-22T19:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
-    {
       "date": "2026-09-23",
       "venue": "神奈川県 横浜アリーナ",
       "venueKey": "横浜アリーナ",
       "eventIds": [
+        "342aeadaf9a1f6bd",
         "3f13107c4c87d36b",
         "3f99f7bcacecc458",
         "a9f07d73f091ca00",
@@ -116,6 +76,23 @@
           "label": "くもり",
           "validAt": "2026-09-24T00:00+09:00",
           "temp": 21
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "16:00",
+          "rain": false,
+          "validAt": "2026-09-23T16:00+09:00"
+        },
+        {
+          "time": "17:00",
+          "rain": false,
+          "validAt": "2026-09-23T17:00+09:00"
+        },
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-09-23T18:00+09:00"
         }
       ]
     },
@@ -185,6 +162,18 @@
           "label": "くもり",
           "validAt": "2026-09-24T00:00+09:00",
           "temp": 23
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "17:00",
+          "rain": false,
+          "validAt": "2026-09-23T17:00+09:00"
+        },
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-09-23T18:00+09:00"
         }
       ]
     },
@@ -275,6 +264,7 @@
       "venue": "東京都 有明アリーナ",
       "venueKey": "有明アリーナ",
       "eventIds": [
+        "342aeadaf9a1f6bd",
         "3f13107c4c87d36b",
         "3f99f7bcacecc458",
         "a9f07d73f091ca00",
@@ -297,21 +287,16 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 27,
+    "occurrencesInRange": 37,
     "uniqueVenueDates": 13,
-    "weatherEntries": 9,
+    "weatherEntries": 7,
     "meshEntries": 2,
-    "failures": 4,
+    "failures": 6,
     "meshTimelineEntries": 2,
     "meshExactTempSlots": 14,
-    "hourlyRainEntries": 0
+    "hourlyRainEntries": 2
   },
   "failures": [
-    {
-      "date": "2026-09-22",
-      "venue": "東京流通センター 第二展示場Eホール",
-      "reason": "都道府県を解決できません"
-    },
     {
       "date": "2026-09-24",
       "venue": "ヒューリックホール東京",
@@ -326,6 +311,21 @@
       "date": "2026-09-27",
       "venue": "東京ドリームパーク ドリームテラス",
       "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-09-30",
+      "venue": "千葉県 イオンモール幕張新都心グランドモール1F グランドスクエア",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-09-30",
+      "venue": "大阪府 グランキューブ大阪 メインホール",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-09-30",
+      "venue": "東京都 有明アリーナ",
+      "reason": "開催日の予報がまだありません"
     }
   ]
 }
