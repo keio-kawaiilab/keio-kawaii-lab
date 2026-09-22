@@ -1,0 +1,48 @@
+name: One-off fix missing ticket bands
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - fix/missing-ticket-bands-20260922
+    paths:
+      - scripts/add_verified_missing_ticket_bands.py
+      - scripts/test_add_verified_missing_ticket_bands.py
+      - .github/workflows/oneoff-fix-missing-ticket-bands.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/missing-ticket-bands-20260922
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install verified bands and rebuild snapshots
+        run: |
+          python scripts/add_verified_missing_ticket_bands.py
+          PYTHONPATH=scripts python scripts/install_performance_public_view.py
+          python scripts/archive_ticket_history.py
+      - name: Verify data and schedule runtime
+        run: |
+          PYTHONPATH=scripts python -m unittest -v test_add_verified_missing_ticket_bands test_performance_entities test_archive_ticket_history
+          node scripts/test_schedule_band_grouping.js
+          node scripts/test_general_sale_runtime.js
+          node scripts/test_performance_runtime.js
+          python scripts/guard_candy_tune_tour_integrity.py --from-date 2026-10-01
+          git diff --check
+      - name: Commit generated schedule data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/live-events.json data/ticket-history.json schedule.html
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "fix: publish verified missing ticket bands"
+          git push origin HEAD:fix/missing-ticket-bands-20260922
