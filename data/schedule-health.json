@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-23T08:16:56.395992+09:00",
-  "candidateUpdatedAt": "2026-09-23T08:16:56+09:00",
-  "previousEventCount": 202,
-  "candidateEventCount": 202,
-  "protectedPreviousCount": 198,
+  "generatedAt": "2026-09-23T10:31:28.080964+09:00",
+  "candidateUpdatedAt": "2026-09-23T10:31:27+09:00",
+  "previousEventCount": 204,
+  "candidateEventCount": 204,
+  "protectedPreviousCount": 200,
   "errorCount": 0,
-  "warningCount": 31,
+  "warningCount": 32,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: duplicate Pia lot pia:95188: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / ぴあプレミアム先行",
@@ -26,6 +26,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / プレリザーブ",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: MORE STAR / MORE STAR 単独ライブ 5th STAR / 一般発売",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: application window reversed: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / プレリザーブ",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: missing or invalid eventScope: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / ぴあプレミアム先行",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:95188: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / ぴあプレミアム先行",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event application window is not backed by an official page: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場【FC限定 1部・3部・6部】 / 現在受付なし",
@@ -41,7 +42,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
   ],
-  "candidateSha256": "8b8646aa991fec7f8cda5fe198b5cac3928e5c7c18c2a953fb69fd161b0550ae",
+  "candidateSha256": "a2096576750641493a76a26569f8418d7ed633a58b281eeba2cc0fa54dd43adb",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -101,6 +102,7 @@
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=20981",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21321",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=22728",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=23457",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=23843",
@@ -111,13 +113,14 @@
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29682",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30314",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30338",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=33295",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=95188",
     "url:https://tower.jp/store/event/maekin"
   ],
   "officialXSharedSourceKeysReconciled": [],
   "reconciledBaseDateMessageCount": 0,
   "downgradedFalsePositiveCount": 0,
-  "legacyProtectedErrorCount": 19,
+  "legacyProtectedErrorCount": 20,
   "legacyProtectedErrors": [
     {
       "error": "duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
@@ -142,6 +145,11 @@
     {
       "error": "active Pia row has no lotRlsCd detail URL: MORE STAR / MORE STAR 単独ライブ 5th STAR / 一般発売",
       "label": "MORE STAR / MORE STAR 単独ライブ 5th STAR / 一般発売",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "application window reversed: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / プレリザーブ",
+      "label": "CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / プレリザーブ",
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     },
     {
