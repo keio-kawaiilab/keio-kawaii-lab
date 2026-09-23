@@ -1,126 +1,32 @@
 {
-  "date": "2026-09-23",
+  "date": "2026-09-24",
   "horizonDays": 7,
-  "generatedAt": "2026-09-23T22:50+09:00",
+  "generatedAt": "2026-09-24T03:59+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
     {
-      "date": "2026-09-23",
-      "venue": "神奈川県 横浜アリーナ",
-      "venueKey": "横浜アリーナ",
+      "date": "2026-09-24",
+      "venue": "東京都 ヒューリックホール東京",
+      "venueKey": "ヒューリックホール東京",
       "eventIds": [
-        "342aeadaf9a1f6bd",
-        "3f13107c4c87d36b",
-        "3f99f7bcacecc458",
-        "a9f07d73f091ca00",
-        "b929ac13fb654730",
-        "465126c2998fe7d6"
+        "e1009c920777be83",
+        "882a5093cd14347a"
       ],
-      "areaCode": "140010",
-      "areaName": "東部",
-      "precision": "mesh5km",
-      "label": "雨",
-      "max": null,
-      "min": null,
-      "pop": "60",
-      "popLabel": "当日最大",
-      "issuedAt": "2026-09-23T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "20〜24℃",
-      "coordinates": {
-        "lat": 35.51228,
-        "lon": 139.620102
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "雨",
-          "validAt": "2026-09-23T21:00+09:00",
-          "temp": 20
-        },
-        {
-          "time": "24:00",
-          "label": "雨",
-          "validAt": "2026-09-24T00:00+09:00",
-          "temp": 20
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "16:00",
-          "rain": true,
-          "validAt": "2026-09-23T16:00+09:00"
-        },
-        {
-          "time": "17:00",
-          "rain": true,
-          "validAt": "2026-09-23T17:00+09:00"
-        },
-        {
-          "time": "18:00",
-          "rain": true,
-          "validAt": "2026-09-23T18:00+09:00"
-        }
-      ]
-    },
-    {
-      "date": "2026-09-23",
-      "venue": "岐阜県 長良川国際会議場 メインホール",
-      "venueKey": "長良川国際会議場メインホール",
-      "eventIds": [
-        "024676b8e98a3faf",
-        "4fcf9e35c58edb21",
-        "f1172a787c8f80eb"
-      ],
-      "areaCode": "210010",
-      "areaName": "美濃地方",
-      "precision": "mesh5km",
-      "label": "雨",
-      "max": null,
-      "min": null,
+      "areaCode": "130010",
+      "areaName": "東京地方",
+      "precision": "area",
+      "label": "くもり 時々 晴れ 未明 雨",
+      "max": 29.0,
+      "min": 19.0,
       "pop": "20",
       "popLabel": "18〜00時",
       "issuedAt": "2026-09-23T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "20〜24℃",
-      "coordinates": {
-        "lat": 35.441143,
-        "lon": 136.768906
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "雨",
-          "validAt": "2026-09-23T21:00+09:00",
-          "temp": 24
-        },
-        {
-          "time": "24:00",
-          "label": "くもり",
-          "validAt": "2026-09-24T00:00+09:00",
-          "temp": 23
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "16:30",
-          "rain": false,
-          "validAt": "2026-09-23T16:30+09:00"
-        },
-        {
-          "time": "17:30",
-          "rain": true,
-          "validAt": "2026-09-23T17:30+09:00"
-        },
-        {
-          "time": "18:30",
-          "rain": false,
-          "validAt": "2026-09-23T18:30+09:00"
-        }
-      ]
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
     },
     {
       "date": "2026-09-25",
@@ -133,16 +39,19 @@
       ],
       "areaCode": "150010",
       "areaName": "下越",
-      "precision": "area",
-      "label": "くもり 時々 晴れ",
+      "precision": "mesh5km",
+      "label": "晴れ",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
       "issuedAt": "2026-09-23T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "meshTime": "00:00",
+      "meshTempBand": "20〜24℃",
+      "coordinates": {
+        "lat": 37.913635,
+        "lon": 139.035461
+      }
     },
     {
       "date": "2026-09-26",
@@ -169,7 +78,8 @@
       "venue": "千葉県 幕張メッセ1-3ホール",
       "venueKey": "幕張メッセ1-3ホール",
       "eventIds": [
-        "f30cb136d31dc216"
+        "f30cb136d31dc216",
+        "d4dcb3a0dada60e7"
       ],
       "areaCode": "120010",
       "areaName": "千葉県",
@@ -211,10 +121,7 @@
       "eventIds": [
         "342aeadaf9a1f6bd",
         "3f13107c4c87d36b",
-        "3f99f7bcacecc458",
         "a9f07d73f091ca00",
-        "b929ac13fb654730",
-        "465126c2998fe7d6",
         "08282b2e0d62abc8"
       ],
       "areaCode": "130010",
@@ -280,10 +187,7 @@
       "eventIds": [
         "342aeadaf9a1f6bd",
         "3f13107c4c87d36b",
-        "3f99f7bcacecc458",
         "a9f07d73f091ca00",
-        "b929ac13fb654730",
-        "465126c2998fe7d6",
         "08282b2e0d62abc8"
       ],
       "areaCode": "130010",
@@ -301,30 +205,35 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 37,
+    "occurrencesInRange": 29,
     "uniqueVenueDates": 13,
-    "weatherEntries": 10,
-    "meshEntries": 2,
-    "failures": 3,
-    "meshTimelineEntries": 2,
-    "meshExactTempSlots": 4,
-    "hourlyRainEntries": 2
+    "weatherEntries": 9,
+    "meshEntries": 1,
+    "failures": 4,
+    "meshTimelineEntries": 0,
+    "meshExactTempSlots": 0,
+    "hourlyRainEntries": 0
   },
   "failures": [
     {
-      "date": "2026-09-24",
-      "venue": "ヒューリックホール東京",
-      "reason": "都道府県を解決できません"
-    },
-    {
       "date": "2026-09-27",
-      "venue": "オンライン（SUKISUKI）",
+      "venue": "博多国際展示場 ３Fホール",
       "reason": "都道府県を解決できません"
     },
     {
       "date": "2026-09-27",
       "venue": "東京ドリームパーク ドリームテラス",
       "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-10-01",
+      "venue": "SGCホール有明",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-10-01",
+      "venue": "大阪府 グランキューブ大阪 メインホール",
+      "reason": "開催日の予報がまだありません"
     }
   ]
 }
