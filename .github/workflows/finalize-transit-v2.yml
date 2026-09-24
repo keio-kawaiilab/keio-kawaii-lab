@@ -64,6 +64,21 @@ jobs:
           print(json.dumps(coverage['summary'], ensure_ascii=False, indent=2))
           PY
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Validate regenerated route search
+        run: |
+          node --check route-core.js
+          node --check route.js
+          node scripts/test_route_core.js
+          node scripts/test_route_runtime_same_train.js
+          node scripts/test_route_destination_display.js
+          node scripts/test_keisei_route_ui.js
+          node scripts/test_route_preview_smoke.js
+          node scripts/test_route_preview_ui.js
+
       - name: Commit finalized transit v2 snapshot
         if: github.ref == 'refs/heads/main'
         shell: bash
