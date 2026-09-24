@@ -1,7 +1,7 @@
 {
   "date": "2026-09-25",
   "horizonDays": 7,
-  "generatedAt": "2026-09-25T04:04+09:00",
+  "generatedAt": "2026-09-25T08:24+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -18,12 +18,12 @@
       "areaCode": "150010",
       "areaName": "下越",
       "precision": "mesh5km",
-      "label": "くもり",
+      "label": "晴れ",
       "max": 26.0,
-      "min": 17.0,
+      "min": 26.0,
       "pop": "0",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-09-24T17:00:00+09:00",
+      "issuedAt": "2026-09-25T05:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "20〜24℃",
       "coordinates": {
@@ -32,14 +32,8 @@
       },
       "meshTimeline": [
         {
-          "time": "06:00",
-          "label": "くもり",
-          "validAt": "2026-09-25T06:00+09:00",
-          "temp": 19
-        },
-        {
           "time": "09:00",
-          "label": "雨",
+          "label": "晴れ",
           "validAt": "2026-09-25T09:00+09:00",
           "temp": 23
         },
@@ -51,13 +45,13 @@
         },
         {
           "time": "15:00",
-          "label": "くもり",
+          "label": "雨",
           "validAt": "2026-09-25T15:00+09:00",
           "temp": 23
         },
         {
           "time": "18:00",
-          "label": "くもり",
+          "label": "晴れ",
           "validAt": "2026-09-25T18:00+09:00",
           "temp": 22
         },
@@ -69,7 +63,7 @@
         },
         {
           "time": "24:00",
-          "label": "晴れ",
+          "label": "くもり",
           "validAt": "2026-09-26T00:00+09:00",
           "temp": 20
         }
@@ -79,6 +73,16 @@
           "time": "18:00",
           "rain": false,
           "validAt": "2026-09-25T18:00+09:00"
+        },
+        {
+          "time": "19:00",
+          "rain": false,
+          "validAt": "2026-09-25T19:00+09:00"
+        },
+        {
+          "time": "20:00",
+          "rain": false,
+          "validAt": "2026-09-25T20:00+09:00"
         }
       ]
     },
@@ -92,12 +96,12 @@
       "areaCode": "400010",
       "areaName": "福岡地方",
       "precision": "area",
-      "label": "くもり 時々 雨",
-      "max": null,
-      "min": null,
-      "pop": null,
-      "popLabel": "",
-      "issuedAt": "2026-09-24T17:00:00+09:00",
+      "label": "雨 明け方 まで くもり",
+      "max": 25.0,
+      "min": 22.0,
+      "pop": "50",
+      "popLabel": "12〜18時",
+      "issuedAt": "2026-09-25T05:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -113,12 +117,12 @@
       "areaCode": "120010",
       "areaName": "北西部",
       "precision": "area",
-      "label": "くもり 時々 雨",
-      "max": null,
-      "min": null,
-      "pop": null,
-      "popLabel": "",
-      "issuedAt": "2026-09-24T17:00:00+09:00",
+      "label": "雨 朝晩 くもり",
+      "max": 20.0,
+      "min": 19.0,
+      "pop": "80",
+      "popLabel": "当日最大",
+      "issuedAt": "2026-09-25T05:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -148,11 +152,10 @@
       "venue": "東京都 有明アリーナ",
       "venueKey": "有明アリーナ",
       "eventIds": [
-        "342aeadaf9a1f6bd",
-        "3f13107c4c87d36b",
         "a9f07d73f091ca00",
-        "08282b2e0d62abc8",
-        "3acfe8a0cbffc54d"
+        "caf1ac6c70614fc7",
+        "120bef86bfd1e983",
+        "b929ac13fb654730"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
@@ -215,11 +218,10 @@
       "venue": "東京都 有明アリーナ",
       "venueKey": "有明アリーナ",
       "eventIds": [
-        "342aeadaf9a1f6bd",
-        "3f13107c4c87d36b",
         "a9f07d73f091ca00",
-        "08282b2e0d62abc8",
-        "5c1f7b4d1d49ef26"
+        "caf1ac6c70614fc7",
+        "120bef86bfd1e983",
+        "b929ac13fb654730"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
@@ -228,6 +230,26 @@
       "max": 26.0,
       "min": 20.0,
       "pop": "50",
+      "popLabel": "1日",
+      "issuedAt": "2026-09-24T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-10-01",
+      "venue": "SGC HALL ARIAKE",
+      "venueKey": "sgchallariake",
+      "eventIds": [
+        "55efd64c6876df01"
+      ],
+      "areaCode": "130010",
+      "areaName": "東京地方",
+      "precision": "area",
+      "label": "くもり",
+      "max": 25.0,
+      "min": 19.0,
+      "pop": "40",
       "popLabel": "1日",
       "issuedAt": "2026-09-24T17:00:00+09:00",
       "meshTime": null,
@@ -280,18 +302,18 @@
   ],
   "stats": {
     "occurrencesInRange": 32,
-    "uniqueVenueDates": 13,
-    "weatherEntries": 10,
+    "uniqueVenueDates": 14,
+    "weatherEntries": 11,
     "meshEntries": 1,
     "failures": 3,
     "meshTimelineEntries": 1,
-    "meshExactTempSlots": 7,
+    "meshExactTempSlots": 6,
     "hourlyRainEntries": 1
   },
   "failures": [
     {
       "date": "2026-09-27",
-      "venue": "博多国際展示場 ３Fホール",
+      "venue": "オンライン（SUKISUKI）",
       "reason": "都道府県を解決できません"
     },
     {
