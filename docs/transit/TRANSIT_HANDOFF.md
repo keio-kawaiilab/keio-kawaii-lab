@@ -4,10 +4,22 @@
 >
 > Repository state on `main` is the source of truth. If a chat summary or an earlier assistant claim conflicts with the repository, inspect `main`, correct the record, and update this file.
 
-Last reviewed: **2026-09-07 JST**
+Last reviewed: **2026-09-24 JST**
 Repository: `keio-kawaiilab/keio-kawaii-lab`
 Default branch: `main`
 Public route entry point: `route.html`
+
+**LATEST CHECKPOINT — Yahoo reviewed same-train evidence, 2026-09-24**
+
+- Yahoo!乗換案内 is now used as an explicitly labeled third-party spot-check source for selected same-train identities; it is never mislabeled as operator-official evidence and is not bulk-imported as timetable data.
+- `docs/transit/yahoo-through-service-spot-checks.json` was expanded through commit `abd82ca2` with checks covering Odakyu Enoshima/Odawara, Odakyu Tama/Odawara, Seibu Haijima/Shinjuku, Den-en-toshi/Hanzomon/Tobu and Chiyoda/Odakyu/Tama, in addition to the previously reviewed Line 1, Line 8, Line 13 and Meguro corridors.
+- Seven Yahoo-verified ID-less reconstructed fragments were promoted through the strict reviewed-evidence mechanism in squash commit `3af6fbf6`: four Odakyu weekday trains and three Seibu weekday trains. Every selector was checked to match exactly one source fragment and exactly one target fragment before promotion.
+- Third-party reviewed evidence has the explicit evidence type `third-party-route-result:yahoo-transit-zero-transfer`; the previous operator-official default remains unchanged for existing entries.
+- Strict finalization on main produced commit `3903afc0` and reduced unresolved identities from **3815 to 3808**. Current audit: **3807** `missing-boundary-train-identity-evidence` plus **1** disabled legacy Keikyu marker. By operator: Tokyu **1803**, Seibu **1333**, Odakyu **671**, unknown **1**.
+- Finalizer automation was hardened in `73eee84c`: changes to reviewed evidence now trigger strict finalization, and the same workflow directly runs route-core/runtime/destination/Keisei/preview route tests after regeneration because a GitHub Actions bot commit does not reliably trigger a second workflow. The hardened run passed completely and wrote finalization commit `408cf6a6`.
+- A negative Yahoo case remains part of the evidence record: a published destination and an earlier no-transfer boundary do **not** prove same-train identity across a later boundary (the previously reviewed Shin-kiba -> Kotesashi example changes trains at Nerima). Keep exact per-boundary evidence requirements.
+- Next useful work: continue reducing the remaining 3807 per-train identity gaps, prioritizing Odakyu (671) and Seibu (1333) with Yahoo train/route checks that can be mapped to unique fragment selectors, then Tokyu (1803). Do not promote a destination, train number or time proximity by itself.
+
 
 **LATEST IMPLEMENTATION — all 14 Line-1 connected-system railways, 2026-09-07**
 
