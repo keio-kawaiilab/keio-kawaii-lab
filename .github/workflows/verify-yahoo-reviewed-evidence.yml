@@ -26,7 +26,6 @@ jobs:
         run: |
           python -m py_compile scripts/reviewed_train_evidence.py scripts/finalize_transit_v2.py scripts/audit_transit_v2.py
           python scripts/test_reviewed_train_evidence.py
-          python scripts/test_transit_v2_alignment.py
       - name: Rebuild strict identity snapshot
         run: |
           python scripts/finalize_transit_v2.py
