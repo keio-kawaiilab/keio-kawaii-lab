@@ -9,6 +9,8 @@ on:
       - 'scripts/normalize_transit_v2_physical_destinations.py'
       - 'scripts/audit_transit_v2.py'
       - 'data/transit-v2/service-boundaries.json'
+      - 'scripts/reviewed_train_evidence.py'
+      - 'data/transit-v2/reviewed-train-evidence.json'
       - '.github/workflows/finalize-transit-v2.yml'
 
 permissions:
