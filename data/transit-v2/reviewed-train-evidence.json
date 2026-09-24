@@ -1,12 +1,15 @@
 {
-  "version": 1,
+  "version": 2,
   "policy": {
-    "purpose": "Operator-official per-train evidence for timetable sources that do not publish stable train IDs in ODPT StationTimetable.",
+    "purpose": "Human-reviewed exact per-train identity evidence for timetable sources that do not publish stable train IDs in ODPT StationTimetable. Operator-official and explicitly labeled third-party route-result evidence are kept distinct.",
     "selectorMustMatchExactlyOneSourceAndTarget": true,
     "verifiedOperationalBoundaryRequired": true,
     "timeProximityAloneMayEstablishIdentity": false,
     "trainNumberAloneMayEstablishIdentity": false,
-    "staleSelectorMustFailClosed": true
+    "staleSelectorMustFailClosed": true,
+    "thirdPartyEvidenceMustBeExplicitlyLabeled": true,
+    "thirdPartyEvidenceMayBulkPromote": false,
+    "destinationOrTimeAloneMayEstablishIdentity": false
   },
   "entries": [
     {
@@ -69,6 +72,223 @@
         "https://transfer.navitime.biz/tokyu/pc/diagram/TrainRouteTimetable?day=10&hour=15&kind=%E6%9D%B1%E6%80%A5%E7%94%B0%E5%9C%92%E9%83%BD%E5%B8%82%E7%B7%9A%E6%80%A5%E8%A1%8C&minutes=29&month=08&posType=1&rrCd=00000789&stCd=00002875&trCd=01a900c7&updown=0&year=2026"
       ],
       "note": "Tokyu official Saginuma timetable links the 15:29 express Oimachi service to a per-train route page; the same service reaches Mizonokuchi at 15:33 and continues on the Oimachi Line."
+    },
+    {
+      "id": "odakyu-enoshima-0801-weekday-yahoo",
+      "status": "verified-current",
+      "operator": "odakyu",
+      "evidenceType": "third-party-route-result:yahoo-transit-zero-transfer",
+      "boundaryId": "odakyu-odawara-enoshima-sagamiono",
+      "from": {
+        "railway": "odpt.Railway:Odakyu.Enoshima",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:Odakyu.Express",
+        "destination": "odpt.Station:Odakyu.Odawara.Shinjuku",
+        "firstStop": {
+          "station": "odpt.Station:Odakyu.Enoshima.Fujisawa",
+          "departure": 481
+        }
+      },
+      "to": {
+        "railway": "odpt.Railway:Odakyu.Odawara",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:Odakyu.RapidExpress",
+        "destination": "odpt.Station:Odakyu.Odawara.Shinjuku",
+        "firstStop": {
+          "station": "odpt.Station:Odakyu.Odawara.SagamiOno",
+          "departure": 507
+        }
+      },
+      "sourceUrls": [
+        "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E8%97%A4%E6%B2%A2&s=1&ticket=ic&to=%E6%96%B0%E5%AE%BF&ws=3"
+      ],
+      "note": "Yahoo route result shows one physical zero-transfer service from Fujisawa 08:01 to Shinjuku 09:08 on a weekday; the reconstructed fragments uniquely match the published departure, destination and section-specific train types across Sagami-Ono."
+    },
+    {
+      "id": "odakyu-enoshima-1810-weekday-yahoo",
+      "status": "verified-current",
+      "operator": "odakyu",
+      "evidenceType": "third-party-route-result:yahoo-transit-zero-transfer",
+      "boundaryId": "odakyu-odawara-enoshima-sagamiono",
+      "from": {
+        "railway": "odpt.Railway:Odakyu.Odawara",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:Odakyu.RapidExpress",
+        "destination": "odpt.Station:Odakyu.Enoshima.Fujisawa",
+        "firstStop": {
+          "station": "odpt.Station:Odakyu.Odawara.Shinjuku",
+          "departure": 1090
+        }
+      },
+      "to": {
+        "railway": "odpt.Railway:Odakyu.Enoshima",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:Odakyu.RapidExpress",
+        "destination": "odpt.Station:Odakyu.Enoshima.Fujisawa",
+        "firstStop": {
+          "station": "odpt.Station:Odakyu.Odawara.SagamiOno",
+          "departure": 1128
+        }
+      },
+      "sourceUrls": [
+        "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E6%96%B0%E5%AE%BF&s=0&ticket=ic&to=%E8%97%A4%E6%B2%A2&ws=3"
+      ],
+      "note": "Yahoo route result shows the Shinjuku 18:10 rapid express continuing without transfer across Sagami-Ono to Fujisawa."
+    },
+    {
+      "id": "odakyu-tama-2032-weekday-yahoo",
+      "status": "verified-current",
+      "operator": "odakyu",
+      "evidenceType": "third-party-route-result:yahoo-transit-zero-transfer",
+      "boundaryId": "odakyu-odawara-tama-shinyurigaoka",
+      "from": {
+        "railway": "odpt.Railway:Odakyu.Odawara",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:Odakyu.Express",
+        "destination": "odpt.Station:Odakyu.Tama.Karakida",
+        "firstStop": {
+          "station": "odpt.Station:Odakyu.Odawara.Shinjuku",
+          "departure": 1232
+        }
+      },
+      "to": {
+        "railway": "odpt.Railway:Odakyu.Tama",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:Odakyu.Express",
+        "destination": "odpt.Station:Odakyu.Tama.Karakida",
+        "firstStop": {
+          "station": "odpt.Station:Odakyu.Tama.ShinYurigaoka",
+          "departure": 1264
+        }
+      },
+      "sourceUrls": [
+        "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E5%AE%BF-%E5%94%90%E6%9C%A8%E7%94%B0"
+      ],
+      "note": "Yahoo route result shows the Shinjuku 20:32 express continuing without transfer at Shin-Yurigaoka into the Tama Line to Karakida."
+    },
+    {
+      "id": "odakyu-tama-1718-weekday-yahoo",
+      "status": "verified-current",
+      "operator": "odakyu",
+      "evidenceType": "third-party-route-result:yahoo-transit-zero-transfer",
+      "boundaryId": "odakyu-odawara-tama-shinyurigaoka",
+      "from": {
+        "railway": "odpt.Railway:Odakyu.Tama",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:Odakyu.Express",
+        "destination": "odpt.Station:Odakyu.Odawara.Shinjuku",
+        "firstStop": {
+          "station": "odpt.Station:Odakyu.Tama.Karakida",
+          "departure": 1038
+        }
+      },
+      "to": {
+        "railway": "odpt.Railway:Odakyu.Odawara",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:Odakyu.Express",
+        "destination": "odpt.Station:Odakyu.Odawara.Shinjuku",
+        "firstStop": {
+          "station": "odpt.Station:Odakyu.Tama.ShinYurigaoka",
+          "departure": 1056
+        }
+      },
+      "sourceUrls": [
+        "https://transit.yahoo.co.jp/search/result/%E5%94%90%E6%9C%A8%E7%94%B0-%E6%96%B0%E5%AE%BF%E8%A5%BF%E5%8F%A3"
+      ],
+      "note": "Yahoo route result shows the Karakida 17:18 express continuing without a train change across Shin-Yurigaoka toward Shinjuku."
+    },
+    {
+      "id": "seibu-haijima-0512-weekday-yahoo",
+      "status": "verified-current",
+      "operator": "seibu",
+      "evidenceType": "third-party-route-result:yahoo-transit-zero-transfer",
+      "boundaryId": "seibu-shinjuku-haijima-kodaira",
+      "from": {
+        "railway": "odpt.Railway:Seibu.Haijima",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:Seibu.SemiExpress",
+        "destination": "odpt.Station:Seibu.Shinjuku.SeibuShinjuku",
+        "firstStop": {
+          "station": "odpt.Station:Seibu.Haijima.Haijima",
+          "departure": 312
+        }
+      },
+      "to": {
+        "railway": "odpt.Railway:Seibu.Shinjuku",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:Seibu.SemiExpress",
+        "destination": "odpt.Station:Seibu.Shinjuku.SeibuShinjuku",
+        "firstStop": {
+          "station": "odpt.Station:Seibu.Shinjuku.Kodaira",
+          "departure": 336
+        }
+      },
+      "sourceUrls": [
+        "https://transit.yahoo.co.jp/search/result/%E6%8B%9D%E5%B3%B6-%E8%A5%BF%E6%AD%A6%E6%96%B0%E5%AE%BF"
+      ],
+      "note": "Yahoo route result shows a zero-transfer semi-express from Haijima 05:12 to Seibu-Shinjuku, continuing across Kodaira."
+    },
+    {
+      "id": "seibu-haijima-1610-weekday-yahoo",
+      "status": "verified-current",
+      "operator": "seibu",
+      "evidenceType": "third-party-route-result:yahoo-transit-zero-transfer",
+      "boundaryId": "seibu-shinjuku-haijima-kodaira",
+      "from": {
+        "railway": "odpt.Railway:Seibu.Haijima",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:Seibu.Express",
+        "destination": "odpt.Station:Seibu.Shinjuku.SeibuShinjuku",
+        "firstStop": {
+          "station": "odpt.Station:Seibu.Haijima.Haijima",
+          "departure": 970
+        }
+      },
+      "to": {
+        "railway": "odpt.Railway:Seibu.Shinjuku",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:Seibu.Express",
+        "destination": "odpt.Station:Seibu.Shinjuku.SeibuShinjuku",
+        "firstStop": {
+          "station": "odpt.Station:Seibu.Shinjuku.Kodaira",
+          "departure": 992
+        }
+      },
+      "sourceUrls": [
+        "https://transit.yahoo.co.jp/search/result/%E8%A5%BF%E6%AD%A6%E7%AB%8B%E5%B7%9D-%E6%96%B0%E5%AE%BF"
+      ],
+      "note": "Yahoo route result shows the Haijima-origin express observed at Seibu-Tachikawa 16:13 continuing without transfer across Kodaira to Seibu-Shinjuku."
+    },
+    {
+      "id": "seibu-haijima-liner7-2015-weekday-yahoo",
+      "status": "verified-current",
+      "operator": "seibu",
+      "evidenceType": "third-party-route-result:yahoo-transit-zero-transfer",
+      "boundaryId": "seibu-shinjuku-haijima-kodaira",
+      "from": {
+        "railway": "odpt.Railway:Seibu.Shinjuku",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:Seibu.HaijimaLiner",
+        "destination": "odpt.Station:Seibu.Haijima.Haijima",
+        "firstStop": {
+          "station": "odpt.Station:Seibu.Shinjuku.SeibuShinjuku",
+          "departure": 1215
+        }
+      },
+      "to": {
+        "railway": "odpt.Railway:Seibu.Haijima",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:Seibu.HaijimaLiner",
+        "destination": "odpt.Station:Seibu.Haijima.Haijima",
+        "firstStop": {
+          "station": "odpt.Station:Seibu.Shinjuku.Kodaira",
+          "departure": 1242
+        }
+      },
+      "sourceUrls": [
+        "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E6%96%B0%E5%AE%BF&s=2&stype=&ticket=ic&to=%E6%AD%A6%E8%94%B5%E5%BC%95%E7%94%B0&ws=3"
+      ],
+      "note": "Yahoo route result on 2026-09-24 shows Seibu Haijima Liner 7 departing Seibu-Shinjuku at 20:15 and continuing across Kodaira toward Haijima as the same named train."
     }
   ]
 }
