@@ -1,6 +1,6 @@
 {
-  "version": 6,
-  "reviewedAt": "2026-09-20",
+  "version": 7,
+  "reviewedAt": "2026-09-24",
   "use": "Selected train-detail spot checks following the user's suggestion; not a bulk timetable source",
   "productionSource": "Operator-linked station boards and official one-train pages",
   "checks": [
@@ -99,6 +99,51 @@
       "url": "https://transit.yahoo.co.jp/search/result?all=1&from=%E6%96%B0%E6%9C%A8%E5%A0%B4&stype=&to=%E5%B0%8F%E6%89%8B%E6%8C%87",
       "case": "Negative identity guard: Shin-kiba 10:53 toward Kotesashi on 2026-09-01",
       "observed": "Yahoo labels the Metro Yurakucho departure as Kotesashi-bound and marks Kotake-mukaihara as no-transfer into the Seibu Yurakucho Line, but the itinerary then requires a transfer at Nerima to a Seibu Ikebukuro Line semi-express for Hanno. Therefore a published destination or an earlier no-transfer boundary must not be used to infer same-train identity across a later boundary. Exact boundary evidence remains required."
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E8%97%A4%E6%B2%A2&s=1&ticket=ic&to=%E6%96%B0%E5%AE%BF&ws=3",
+      "case": "Odakyu Enoshima/Odawara northbound identity spot check: Fujisawa 08:01 to Shinjuku 09:08 on 2026-09-15",
+      "observed": "Yahoo shows a zero-transfer Odakyu Enoshima Line express originating at Fujisawa and bound for Shinjuku. The listed stop sequence crosses Sagami-Ono and continues on the Odawara Line to Shinjuku, corroborating same-train identity across the Enoshima/Odawara boundary."
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E6%96%B0%E5%AE%BF&s=0&ticket=ic&to=%E8%97%A4%E6%B2%A2&ws=3",
+      "case": "Odakyu Odawara/Enoshima southbound identity spot check: Shinjuku 18:10 to Fujisawa 19:09 on 2026-09-15",
+      "observed": "Yahoo shows a zero-transfer Odakyu Odawara Line rapid express originating at Shinjuku and bound for Fujisawa. The route crosses Sagami-Ono and continues into the Enoshima Line without a transfer, corroborating the reverse same-train identity."
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/search/result/%E6%96%B0%E5%AE%BF-%E5%94%90%E6%9C%A8%E7%94%B0",
+      "case": "Odakyu Odawara/Tama southbound identity spot check: Shinjuku 20:32 to Karakida 21:19 on 2026-09-03",
+      "observed": "Yahoo shows a zero-transfer Odakyu Odawara Line express originating at Shinjuku and bound for Karakida, crossing Shin-Yurigaoka and continuing into the Tama Line. This corroborates same-train identity across the Odawara/Tama boundary."
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/search/result/%E5%94%90%E6%9C%A8%E7%94%B0-%E6%96%B0%E5%AE%BF%E8%A5%BF%E5%8F%A3",
+      "case": "Odakyu Tama/Odawara northbound identity spot check: Karakida 17:18 to Shinjuku 18:04 on 2026-09-16",
+      "observed": "Yahoo shows a zero-transfer Odakyu Tama Line express originating at Karakida and bound for Shinjuku, crossing Shin-Yurigaoka and continuing on the Odawara Line. This corroborates the reverse same-train identity."
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/search/result/%E6%8B%9D%E5%B3%B6-%E8%A5%BF%E6%AD%A6%E6%96%B0%E5%AE%BF",
+      "case": "Seibu Haijima/Shinjuku eastbound identity spot check: Haijima 05:12 to Seibu-Shinjuku 06:04 on 2026-09-17",
+      "observed": "Yahoo shows a zero-transfer Seibu Haijima Line semi-express originating at Haijima and bound for Seibu-Shinjuku. Its listed sequence passes Kodaira and continues over the Shinjuku Line, corroborating same-train identity across the Haijima/Shinjuku boundary."
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/search/result/%E8%A5%BF%E6%AD%A6%E7%AB%8B%E5%B7%9D-%E6%96%B0%E5%AE%BF",
+      "case": "Seibu Haijima/Shinjuku eastbound daytime spot check: Seibu-Tachikawa 16:13 to Seibu-Shinjuku 17:02 on 2026-09-17",
+      "observed": "Yahoo shows a zero-transfer Seibu Haijima Line express bound for Seibu-Shinjuku, crossing Kodaira and continuing on the Shinjuku Line. This provides a second time-of-day corroboration of the boundary identity."
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E4%B8%AD%E5%A4%AE%E6%9E%97%E9%96%93&s=1&stype=&ticket=ic&to=%E5%8D%97%E6%A0%97%E6%A9%8B&ws=3",
+      "case": "Den-en-toshi/Hanzomon/Tobu end-to-end northbound spot check: Chuo-rinkan 20:37 to Minami-kurihashi 23:11 on 2026-09-07",
+      "observed": "Yahoo shows a zero-transfer Tokyu Den-en-toshi Line express originating at Chuo-rinkan and bound for Minami-kurihashi. The listed 41-station sequence crosses Shibuya into the Hanzomon Line and Oshiage into the Tobu corridor, corroborating the full same-train through-service chain."
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E4%B9%85%E5%96%9C&s=1&stype=&ticket=ic&to=%E5%8D%8A%E8%94%B5%E9%96%80&ws=3",
+      "case": "Tobu/Hanzomon southbound spot check: Kuki 15:13 to Hanzomon 16:32 on 2026-09-24",
+      "observed": "Yahoo shows a zero-transfer Tobu Isesaki Line express originating at Kuki and bound for Chuo-rinkan, crossing Oshiage and continuing on the Tokyo Metro Hanzomon Line to Hanzomon. This corroborates the reverse Tobu/Hanzomon same-train boundary identity."
+    },
+    {
+      "url": "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E5%8C%97%E5%8D%83%E4%BD%8F&s=0&ticket=ic&to=%E5%94%90%E6%9C%A8%E7%94%B0&ws=3",
+      "case": "Chiyoda/Odakyu/Tama end-to-end spot check: Kita-senju 11:12 to Karakida 12:27 on 2026-09-24",
+      "observed": "Yahoo shows a zero-transfer Tokyo Metro Chiyoda Line express bound for Karakida. The stop list crosses Yoyogi-uehara into the Odakyu Odawara Line and Shin-Yurigaoka into the Tama Line, corroborating both cross-operator and internal Odakyu same-train identities in one itinerary."
     }
   ]
 }
