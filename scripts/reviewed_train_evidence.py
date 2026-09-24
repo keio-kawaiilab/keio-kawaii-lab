@@ -70,6 +70,7 @@ def apply_reviewed_train_evidence(
 
     for entry in entries:
         entry_id = str(entry.get('id') or '')
+        evidence_type = str(entry.get('evidenceType') or 'operator-official-per-train-timetable')
         sources = [fragment for fragment in fragments if matches_fragment(fragment, entry.get('from') or {})]
         targets = [fragment for fragment in fragments if matches_fragment(fragment, entry.get('to') or {})]
         if len(sources) != 1 or len(targets) != 1:
@@ -86,7 +87,7 @@ def apply_reviewed_train_evidence(
         key = (str(source['id']), str(target['id']))
         if key not in seen:
             seen.add(key)
-            output.append({'fromFragment': source['id'], 'toFragment': target['id'], 'classification': 'same-train', 'identityLevel': 'evidence-backed', 'evidence': ['operator-official-per-train-timetable', entry_id], 'sourceUrls': [str(url) for url in entry.get('sourceUrls') or [] if url], 'boundary': {'station': boundary.get('station') or '', 'fromRailway': from_railway, 'toRailway': to_railway}})
+            output.append({'fromFragment': source['id'], 'toFragment': target['id'], 'classification': 'same-train', 'identityLevel': 'evidence-backed', 'evidence': [evidence_type, entry_id], 'sourceUrls': [str(url) for url in entry.get('sourceUrls') or [] if url], 'boundary': {'station': boundary.get('station') or '', 'fromRailway': from_railway, 'toRailway': to_railway}})
         resolved_sources.add(str(source['id']))
 
     if resolved_sources:
