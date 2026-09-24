@@ -1,41 +1,19 @@
 {
-  "date": "2026-09-24",
+  "date": "2026-09-25",
   "horizonDays": 7,
-  "generatedAt": "2026-09-24T22:45+09:00",
+  "generatedAt": "2026-09-25T04:04+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
     {
-      "date": "2026-09-24",
-      "venue": "東京都 ヒューリックホール東京",
-      "venueKey": "ヒューリックホール東京",
-      "eventIds": [
-        "e1009c920777be83",
-        "882a5093cd14347a"
-      ],
-      "areaCode": "130010",
-      "areaName": "東京地方",
-      "precision": "area",
-      "label": "晴れ 夜 くもり 所により 雨",
-      "max": null,
-      "min": null,
-      "pop": "20",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-09-24T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
-    {
       "date": "2026-09-25",
       "venue": "愛知県 Niterra日本特殊陶業市民会館フォレストホール",
       "venueKey": "niterra日本特殊陶業市民会館フォレストホール",
       "eventIds": [
         "024676b8e98a3faf",
-        "7c9b00244b7f179a",
-        "f489325be948c581"
+        "357f2010b708975e"
       ],
       "areaCode": "150010",
       "areaName": "下越",
@@ -94,6 +72,13 @@
           "label": "晴れ",
           "validAt": "2026-09-26T00:00+09:00",
           "temp": 20
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-09-25T18:00+09:00"
         }
       ]
     },
@@ -294,14 +279,14 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 31,
+    "occurrencesInRange": 32,
     "uniqueVenueDates": 13,
-    "weatherEntries": 11,
+    "weatherEntries": 10,
     "meshEntries": 1,
-    "failures": 2,
+    "failures": 3,
     "meshTimelineEntries": 1,
     "meshExactTempSlots": 7,
-    "hourlyRainEntries": 0
+    "hourlyRainEntries": 1
   },
   "failures": [
     {
@@ -312,6 +297,11 @@
     {
       "date": "2026-09-27",
       "venue": "東京ドリームパーク ドリームテラス",
+      "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-10-02",
+      "venue": "北海道 旭川市民文化会館",
       "reason": "都道府県を解決できません"
     }
   ]
