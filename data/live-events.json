@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-24T15:40:32+09:00",
+  "checkedAt": "2026-09-24T15:41:54+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-09-22T07:11:57+09:00",
     "scannedPages": {
@@ -2499,9 +2499,9 @@
       "id": "8bd3d05e19ac0532",
       "group": "CANDY TUNE",
       "title": "CANDY TUNE 小川奈々子 生誕祭 2026",
-      "ticketType": "現在受付なし",
-      "applyStart": null,
-      "applyEnd": null,
+      "ticketType": "年会費コース会員先行",
+      "applyStart": "2026-09-04T18:00",
+      "applyEnd": "2026-09-07T23:59",
       "resultDate": null,
       "paymentEnd": null,
       "eventDate": "2026-10-01",
@@ -2529,11 +2529,15 @@
       ],
       "applicationStatus": "none",
       "officialScheduleUrl": "https://candytune.asobisystem.com/live_information/detail/43376",
-      "applicationDisplayMode": "schedule-only",
+      "applicationDisplayMode": "band",
       "specialDetailsStatus": "ticket-details-found",
       "ticketGuardRejected": true,
       "ticketGuardReason": "upgrade notice cannot be used as the source of an annual-fee ticket sale",
-      "ticketGuardSource": "https://candytune.asobisystem.com/news/detail/88933"
+      "ticketGuardSource": "https://candytune.asobisystem.com/news/detail/88933",
+      "applicationWindowVerified": true,
+      "deadlineVerified": true,
+      "applicationWindowSource": "https://candytune.asobisystem.com/news/detail/88933",
+      "deadlineSource": "https://candytune.asobisystem.com/news/detail/88933"
     },
     {
       "id": "1adce369ffa0f87a",
@@ -7141,9 +7145,9 @@
       "id": "d3b63d95b1602c8e",
       "group": "CUTIE STREET",
       "title": "CUTIE STREET 佐野愛花 生誕祭 2026",
-      "ticketType": "現在受付なし",
-      "applyStart": null,
-      "applyEnd": null,
+      "ticketType": "FC先行",
+      "applyStart": "2026-08-31T19:00",
+      "applyEnd": "2026-09-10T23:59",
       "resultDate": null,
       "paymentEnd": null,
       "eventDate": "2026-11-26",
@@ -8859,11 +8863,11 @@
     "performanceEntityCount": 83,
     "sourceOccurrenceCount": 265,
     "mergedSourceOccurrences": 182,
-    "offerCount": 121
+    "offerCount": 123
   },
   "publicEventModelVersion": 1,
   "releasePreparation": {
-    "preparedAt": "2026-09-24T15:40:30+09:00",
+    "preparedAt": "2026-09-24T15:41:51+09:00",
     "normalizedSpecialEvents": 10,
     "duplicateIdsRemoved": 0,
     "retainedPreviousRows": 0,
@@ -8898,8 +8902,8 @@
       "remainingDuplicates": []
     },
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-09-24T15:40:30+09:00",
-    "checkedAt": "2026-09-24T15:40:30+09:00"
+    "publicUpdatedAt": "2026-09-24T15:41:51+09:00",
+    "checkedAt": "2026-09-24T15:41:51+09:00"
   },
   "resaleDiagnostics": {
     "articles": 26,
@@ -15457,7 +15461,7 @@
       }
     ]
   },
-  "updatedAt": "2026-09-24T15:40:32+09:00",
+  "updatedAt": "2026-09-24T15:41:54+09:00",
   "publicEvents": [
     {
       "id": "1c60e2be989c564d",
@@ -19002,7 +19006,33 @@
       "sourceRowIds": [
         "8bd3d05e19ac0532"
       ],
-      "offers": [],
+      "offers": [
+        {
+          "sourceRowId": "8bd3d05e19ac0532",
+          "provider": "official",
+          "url": "https://kawaiilab.asobisystem.com/news/detail/88104",
+          "urls": [
+            "https://kawaiilab.asobisystem.com/news/detail/88104",
+            "https://candytune.asobisystem.com/news/detail/88933",
+            "https://candytune.asobisystem.com/live_information/detail/43376",
+            "https://candytune.asobisystem.com/news/detail/86518",
+            "https://candytune.asobisystem.com/news/detail/87180"
+          ],
+          "ticketType": "年会費コース会員先行",
+          "applyStart": "2026-09-04T18:00",
+          "applyEnd": "2026-09-07T23:59",
+          "applicationStatus": "none",
+          "applicationWindowVerified": true,
+          "deadlineVerified": true,
+          "applicationDisplayMode": "band",
+          "applicationWindowSource": "https://candytune.asobisystem.com/news/detail/88933",
+          "deadlineSource": "https://candytune.asobisystem.com/news/detail/88933",
+          "sourceType": "derived",
+          "sourceChannel": "recent-official-body",
+          "primarySource": "official",
+          "sourcePublishedAt": "2026-09-04"
+        }
+      ],
       "eventEndDate": "2026-10-01",
       "eventDates": [
         "2026-10-01"
@@ -19016,9 +19046,9 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
+      "ticketType": "年会費コース会員先行",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers"
     },
     {
       "id": "performance-CANDY-TUNE-2026-10-02-time-18-30",
@@ -23489,7 +23519,30 @@
       "sourceRowIds": [
         "d3b63d95b1602c8e"
       ],
-      "offers": [],
+      "offers": [
+        {
+          "sourceRowId": "d3b63d95b1602c8e",
+          "provider": "official",
+          "url": "https://cutiestreet.asobisystem.com/news/detail/88521",
+          "urls": [
+            "https://cutiestreet.asobisystem.com/news/detail/88521",
+            "https://red-hot.ne.jp/play/detail.php?pid=py28690"
+          ],
+          "ticketType": "FC先行",
+          "applyStart": "2026-08-31T19:00",
+          "applyEnd": "2026-09-10T23:59",
+          "applicationStatus": "none",
+          "applicationWindowVerified": true,
+          "deadlineVerified": true,
+          "applicationDisplayMode": "band",
+          "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/88521",
+          "deadlineSource": "https://cutiestreet.asobisystem.com/news/detail/88521",
+          "sourceType": "derived",
+          "sourceChannel": "recent-official-body",
+          "primarySource": "official",
+          "sourcePublishedAt": "2026-08-31"
+        }
+      ],
       "eventEndDate": "2026-11-26",
       "eventDates": [
         "2026-11-26"
@@ -23503,9 +23556,9 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
+      "ticketType": "FC先行",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers"
     },
     {
       "id": "performance-CUTIE-STREET-2026-11-28-fallback-ig-cutiestreetjapanarenatour2026autumn",
