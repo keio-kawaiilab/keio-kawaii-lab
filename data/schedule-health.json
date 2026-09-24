@@ -1,15 +1,16 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-24T11:38:23.630069+09:00",
-  "candidateUpdatedAt": "2026-09-24T11:38:23+09:00",
-  "previousEventCount": 187,
+  "generatedAt": "2026-09-24T13:38:45.187099+09:00",
+  "candidateUpdatedAt": "2026-09-24T13:38:44+09:00",
+  "previousEventCount": 178,
   "candidateEventCount": 178,
-  "protectedPreviousCount": 186,
+  "protectedPreviousCount": 177,
   "errorCount": 0,
-  "warningCount": 37,
+  "warningCount": 31,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / プレリザーブ",
+    "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / チケットぴあ受付",
     "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
     "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
     "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
@@ -38,16 +39,9 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: MORE STAR / MORE STAR 単独ライブ 5th STAR / 一般発売",
-    "performance dates added for pia:68942: 2026-10-08, 2026-10-09, 2026-11-10, 2026-11-12, 2026-11-17, 2026-11-19, 2026-11-30, 2026-12-01",
-    "performance dates added for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209: 2026-09-03, 2026-11-22",
-    "performance dates added for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209: 2026-09-03, 2026-11-22",
-    "performance dates added for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209: 2026-09-03",
-    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209: 2026-10-04, 2026-10-07",
-    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209: 2026-11-12",
-    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209: 2026-11-21"
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: MORE STAR / MORE STAR 単独ライブ 5th STAR / 一般発売"
   ],
-  "candidateSha256": "4962a39fd0b751526050b1f64c5db7a06c9d83c2180b417e209d5f7dd6a76374",
+  "candidateSha256": "ff0cc4520be8e5122f5fb81d51dc637cd22738ec0a7f309fb4476339584c41aa",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -75,6 +69,7 @@
     "url:https://fruitszipper.asobisystem.com/live_information/detail/40034",
     "url:https://fruitszipper.asobisystem.com/live_information/detail/40036",
     "url:https://fruitszipper.asobisystem.com/live_information/detail/40037",
+    "url:https://fruitszipper.asobisystem.com/live_information/detail/40042",
     "url:https://fruitszipper.asobisystem.com/live_information/detail/40043",
     "url:https://fruitszipper.asobisystem.com/live_information/detail/40044",
     "url:https://fruitszipper.asobisystem.com/live_information/detail/40046",
@@ -97,6 +92,7 @@
     "url:https://sweetsteady.asobisystem.com/live_information/detail/43908",
     "url:https://sweetsteady.asobisystem.com/live_information/detail/43909",
     "url:https://sweetsteady.asobisystem.com/news/detail/89498",
+    "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=09569",
@@ -106,14 +102,12 @@
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=20981",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25960",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=28155",
-    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29668",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30314",
-    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30338",
-    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=68942"
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30338"
   ],
   "officialXSharedSourceKeysReconciled": [],
   "reconciledBaseDateMessageCount": 0,
-  "downgradedFalsePositiveCount": 3,
+  "downgradedFalsePositiveCount": 0,
   "legacyProtectedErrorCount": 13,
   "legacyProtectedErrors": [
     {
@@ -182,12 +176,17 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 17,
+  "quarantineCount": 18,
   "quarantineActions": [
     {
       "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / プレリザーブ",
       "action": "restored previous row",
       "restoredPreviousRows": 1
+    },
+    {
+      "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / チケットぴあ受付",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 2
     },
     {
       "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
