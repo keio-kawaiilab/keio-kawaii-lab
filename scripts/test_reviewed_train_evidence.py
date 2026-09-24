@@ -52,6 +52,18 @@ def main() -> int:
     assert len(edges) == 1, edges
     assert edges[0]['fromFragment'] == 'source' and edges[0]['toFragment'] == 'target', edges
     assert edges[0]['identityLevel'] == 'evidence-backed', edges
+    assert edges[0]['evidence'][0] == 'operator-official-per-train-timetable', edges
+    custom_registry = json.loads(json.dumps(registry))
+    custom_registry['entries'][0]['id'] = 'test-yahoo-evidence'
+    custom_registry['entries'][0]['evidenceType'] = 'third-party-route-result:yahoo-transit-zero-transfer'
+    custom_registry['entries'][0]['sourceUrls'] = ['https://transit.yahoo.co.jp/example']
+    custom_unresolved = []
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / 'registry.json'
+        path.write_text(json.dumps(custom_registry), encoding='utf-8')
+        custom_edges = reviewed.apply_reviewed_train_evidence(fragments, [], custom_unresolved, indexes, path)
+    assert len(custom_edges) == 1, custom_edges
+    assert custom_edges[0]['evidence'] == ['third-party-route-result:yahoo-transit-zero-transfer', 'test-yahoo-evidence'], custom_edges
     assert not unresolved, unresolved
     print('reviewed train evidence tests passed')
     return 0
