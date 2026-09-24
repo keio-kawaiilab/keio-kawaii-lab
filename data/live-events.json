@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-25T05:59:35+09:00",
+  "checkedAt": "2026-09-25T06:33:49+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-09-22T07:11:57+09:00",
     "scannedPages": {
@@ -2368,6 +2368,44 @@
       "deadlineVerified": true,
       "applicationWindowSource": "https://candytune.asobisystem.com/news/detail/88933",
       "deadlineSource": "https://candytune.asobisystem.com/news/detail/88933"
+    },
+    {
+      "id": "55efd64c6876df01",
+      "group": "CANDY TUNE",
+      "title": "CANDY TUNE 小川奈々子 生誕祭 2026",
+      "eventTitle": "CANDY TUNE 小川奈々子 生誕祭 2026",
+      "displayTitle": "CANDY TUNE 小川奈々子 生誕祭 2026",
+      "eventCategory": "solo-live",
+      "ticketType": "一般発売",
+      "ticketProvider": "pia",
+      "applyStart": "2026-09-25T18:00",
+      "applyEnd": null,
+      "resultDate": null,
+      "paymentEnd": null,
+      "applicationStatus": "observed",
+      "applicationDisplayMode": "offers",
+      "applicationWindowVerified": true,
+      "applicationWindowSource": "https://red-hot.ne.jp/play/detail.php?pid=py28581",
+      "eventDate": "2026-10-01",
+      "venue": "SGC HALL ARIAKE",
+      "openTime": "17:30",
+      "startTime": "19:00",
+      "url": "https://red-hot.ne.jp/play/detail.php?pid=py28581",
+      "urls": [
+        "https://red-hot.ne.jp/play/detail.php?pid=py28581",
+        "https://t.pia.jp/"
+      ],
+      "sourceType": "ticket-history-guard",
+      "sourceChannel": "promoter-general-sale",
+      "primarySource": "promoter",
+      "sourceCandidates": [
+        "promoter",
+        "pia"
+      ],
+      "eventScope": "kawaii-lab",
+      "historyPreserved": true,
+      "soldOutObserved": false,
+      "sourceObservedAt": "2026-09-25T06:33:37+09:00"
     },
     {
       "id": "1adce369ffa0f87a",
@@ -8224,20 +8262,20 @@
     "lawson/SWEET STEADY: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=25)"
   ],
   "promoterGeneralSaleDiagnostics": {
-    "checkedAt": "2026-09-25T05:58:32+09:00",
+    "checkedAt": "2026-09-25T06:33:48+09:00",
     "knownPerformancesChecked": 83,
     "generalSalesObserved": 3,
-    "generalSalesAdded": 3,
+    "generalSalesAdded": 1,
     "generalSalesEnriched": 0,
     "failures": []
   },
   "publicEventModelReport": {
-    "rawEventCount": 177,
+    "rawEventCount": 178,
     "passthroughEventCount": 69,
     "performanceEntityCount": 83,
-    "sourceOccurrenceCount": 240,
-    "mergedSourceOccurrences": 157,
-    "offerCount": 96
+    "sourceOccurrenceCount": 241,
+    "mergedSourceOccurrences": 158,
+    "offerCount": 97
   },
   "publicEventModelVersion": 1,
   "releasePreparation": {
@@ -14837,7 +14875,7 @@
       }
     ]
   },
-  "updatedAt": "2026-09-25T05:59:35+09:00",
+  "updatedAt": "2026-09-25T06:33:49+09:00",
   "publicEvents": [
     {
       "id": "1c60e2be989c564d",
@@ -18222,7 +18260,9 @@
         "https://candytune.asobisystem.com/news/detail/88933",
         "https://candytune.asobisystem.com/live_information/detail/43376",
         "https://candytune.asobisystem.com/news/detail/86518",
-        "https://candytune.asobisystem.com/news/detail/87180"
+        "https://candytune.asobisystem.com/news/detail/87180",
+        "https://red-hot.ne.jp/play/detail.php?pid=py28581",
+        "https://t.pia.jp/"
       ],
       "officialScheduleUrl": "https://candytune.asobisystem.com/live_information/detail/43376",
       "specialDetailsStatus": "ticket-details-found",
@@ -18233,7 +18273,8 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-10-01|time|19:00",
       "sourceRowIds": [
-        "8bd3d05e19ac0532"
+        "8bd3d05e19ac0532",
+        "55efd64c6876df01"
       ],
       "offers": [
         {
@@ -18260,6 +18301,26 @@
           "sourceChannel": "recent-official-body",
           "primarySource": "official",
           "sourcePublishedAt": "2026-09-04"
+        },
+        {
+          "sourceRowId": "55efd64c6876df01",
+          "provider": "pia",
+          "url": "https://red-hot.ne.jp/play/detail.php?pid=py28581",
+          "urls": [
+            "https://red-hot.ne.jp/play/detail.php?pid=py28581",
+            "https://t.pia.jp/"
+          ],
+          "ticketType": "一般発売",
+          "ticketProvider": "pia",
+          "applyStart": "2026-09-25T18:00",
+          "applicationStatus": "observed",
+          "applicationWindowVerified": true,
+          "applicationDisplayMode": "offers",
+          "applicationWindowSource": "https://red-hot.ne.jp/play/detail.php?pid=py28581",
+          "sourceType": "ticket-history-guard",
+          "sourceChannel": "promoter-general-sale",
+          "primarySource": "promoter",
+          "sourceObservedAt": "2026-09-25T06:33:37+09:00"
         }
       ],
       "eventEndDate": "2026-10-01",
@@ -18275,7 +18336,7 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "年会費コース会員先行",
+      "ticketType": "複数受付",
       "applicationDisplayMode": "offers",
       "applicationStatus": "offers"
     },
