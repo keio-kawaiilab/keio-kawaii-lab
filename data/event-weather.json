@@ -1,7 +1,7 @@
 {
   "date": "2026-09-25",
   "horizonDays": 7,
-  "generatedAt": "2026-09-25T17:09+09:00",
+  "generatedAt": "2026-09-25T23:08+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -43,6 +43,23 @@
           "label": "晴れ",
           "validAt": "2026-09-26T00:00+09:00",
           "temp": 20
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "17:30",
+          "rain": false,
+          "validAt": "2026-09-25T17:30+09:00"
+        },
+        {
+          "time": "18:30",
+          "rain": false,
+          "validAt": "2026-09-25T18:30+09:00"
+        },
+        {
+          "time": "19:30",
+          "rain": false,
+          "validAt": "2026-09-25T19:30+09:00"
         }
       ]
     },
@@ -270,7 +287,7 @@
     "failures": 3,
     "meshTimelineEntries": 1,
     "meshExactTempSlots": 2,
-    "hourlyRainEntries": 0
+    "hourlyRainEntries": 1
   },
   "failures": [
     {
