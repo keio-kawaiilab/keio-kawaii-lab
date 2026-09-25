@@ -26,6 +26,7 @@ jobs:
           python scripts/guard_candy_tune_tour_integrity.py --data data/live-events.json
           python scripts/guard_birthday_year_consistency.py --data data/live-events.json
           python scripts/harden_ticket_semantics.py --data data/live-events.json
+          python scripts/apply_known_schedule_corrections.py --data data/live-events.json
           python scripts/reconcile_physical_performance_times.py --data data/live-events.json
           python scripts/normalize_special_event_entities.py --data data/live-events.json
           python scripts/prune_special_event_placeholders.py --data data/live-events.json
@@ -59,6 +60,7 @@ jobs:
             python scripts/guard_candy_tune_tour_integrity.py --data data/live-events.json
             python scripts/guard_birthday_year_consistency.py --data data/live-events.json
             python scripts/harden_ticket_semantics.py --data data/live-events.json
+            python scripts/apply_known_schedule_corrections.py --data data/live-events.json
             python scripts/reconcile_physical_performance_times.py --data data/live-events.json
             python scripts/normalize_special_event_entities.py --data data/live-events.json
             python scripts/prune_special_event_placeholders.py --data data/live-events.json
