@@ -29,9 +29,11 @@ async function harness(failFetch) {
 async function main(){
  const targets=JSON.parse(fs.readFileSync('data/verified-general-sales.json','utf8')).observations.filter(r=>r.eventDate>=new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Tokyo'}));
  for(const offline of [false,true]){
-  const h=await harness(offline);h.api.clock('2026-09-14');
+  const h=await harness(offline);
   for(const raw of [snapshot.events,payload.publicEvents]){
    for(const row of targets){
+    const observedDay=String(row.offer.sourceObservedAt||row.offer.applyStart||'2026-09-14').slice(0,10);
+    h.api.clock(observedDay);
     const models=h.api.show(raw,'2026-09-14',row.group);
     const matches=models.filter(m=>m.group===row.group&&m.date===row.eventDate&&m.startTime===row.startTime);
     assert.equal(matches.length,1,'exactly one performance '+row.id);
