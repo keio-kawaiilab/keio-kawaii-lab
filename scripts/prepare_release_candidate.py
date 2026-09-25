@@ -8,6 +8,7 @@ from datetime import datetime
 from pathlib import Path
 
 import dedupe_official_x_series as official_x_dedupe
+from apply_known_schedule_corrections import apply_known_corrections
 from expand_special_event_entities import expand_payload
 from enforce_physical_event_invariant import enforce_payload
 from audit_schedule_release import (
@@ -386,6 +387,7 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
 
     events, duplicate_ids_removed_after_retention = dedupe_ids(events)
     events, official_x_report = official_x_dedupe.collapse(events)
+    events, known_correction_report = apply_known_corrections(events)
     out = dict(candidate)
     out["events"] = events
     out["releasePreparation"] = {
@@ -401,6 +403,7 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
         "supersededLegacyReleaseSeriesRemoved": len(superseded_legacy_release_series),
         "supersededLegacyReleaseSeriesIds": superseded_legacy_release_series,
         **official_x_report,
+        "knownScheduleCorrections": known_correction_report,
     }
 
     # Hard public invariant: source wording, URL and sales channel can never
