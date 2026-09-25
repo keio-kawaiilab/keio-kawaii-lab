@@ -22,6 +22,7 @@ on:
       - "scripts/normalize_special_event_entities.py"
       - "scripts/enforce_physical_event_invariant.py"
       - "scripts/expand_special_event_entities.py"
+      - "scripts/apply_known_schedule_corrections.py"
       - "scripts/prepare_release_candidate.py"
       - "scripts/test_special_event_entities.py"
   schedule:
