@@ -8,7 +8,7 @@ const snapshot = JSON.parse(page.match(/<script id="snapshot-data"[^>]*>([\s\S]*
 const inline = [...page.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(m => m[1]).find(s => s.includes('function prepare(raw)'));
 const exported = inline.replace(/\}\)\(\);\s*$/, `globalThis.api={prepare,providerId,effectiveBand,performanceModels,renderCards,
   show:function(raw,day,group){events=prepare(raw);start=p(day);selected=group;render();return performanceModels(events.filter(e=>match(e,selected)&&scopeMatch(e)))},
-  clock:function(day){now=moment(day+'T12:00',false);today=p(day);initial=today;start=today}};})();`);
+  clock:function(value){var s=String(value||'');now=moment(s.indexOf('T')>=0?s:s+'T12:00',false);today=p(s.slice(0,10));initial=today;start=today}};})();`);
 function element() {
   return {children:[],appendChild(x){this.children.push(x)},setAttribute(){},
     classList:{add(){},remove(){},toggle(){}},style:{},innerHTML:'',textContent:''};
@@ -32,8 +32,8 @@ async function main(){
   const h=await harness(offline);
   for(const raw of [snapshot.events,payload.publicEvents]){
    for(const row of targets){
-    const observedDay=String(row.offer.sourceObservedAt||row.offer.applyStart||'2026-09-14').slice(0,10);
-    h.api.clock(observedDay);
+    const observedMoment=String(row.offer.sourceObservedAt||row.offer.applyStart||'2026-09-14T12:00');
+    h.api.clock(observedMoment);
     const models=h.api.show(raw,'2026-09-14',row.group);
     const matches=models.filter(m=>m.group===row.group&&m.date===row.eventDate&&m.startTime===row.startTime);
     assert.equal(matches.length,1,'exactly one performance '+row.id);
