@@ -25,6 +25,15 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
                 "url": "https://t.pia.jp/pia/ticketInformation.do?eventCd=2635331&rlsCd=001",
             },
             {
+                "id": "obsolete-pia",
+                "group": "CUTIE STREET",
+                "title": "CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-",
+                "eventDate": "2026-09-23",
+                "sourceChannel": "pia-ended-sale",
+                "applicationStatus": "ended",
+                "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=95188",
+            },
+            {
                 "id": "ig",
                 "group": "CUTIE STREET",
                 "title": "【CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-】@IGアリーナ",
@@ -121,6 +130,7 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
         self.assertEqual(len(hakata["parts"]), 6)
         self.assertEqual(hakata["offers"], [])
         self.assertNotIn("bad-pia-bundle", by_id)
+        self.assertNotIn("obsolete-pia", by_id)
 
         ig = by_id["ig"]
         self.assertEqual(ig["venue"], "愛知県 IGアリーナ")
@@ -146,6 +156,7 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
 
         self.assertEqual(report["hakataSpecialFixed"], 1)
         self.assertEqual(report["cutieWrongPiaBundleRemoved"], 1)
+        self.assertEqual(report["cutieObsoletePiaRowsRemoved"], 1)
         self.assertEqual(report["cutieIgFixed"], 1)
         self.assertEqual(report["staleChristmasRowsRemoved"], 1)
         self.assertEqual(report["fmAichiFixed"], 1)
