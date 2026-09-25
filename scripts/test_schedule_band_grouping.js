@@ -89,6 +89,26 @@ assert.strictEqual(eplus.location, '新潟・福島');
 assert.strictEqual(lawson.location, '新潟・福島');
 assert.strictEqual(lawson.events.length, 2);
 
+const openEndedRows = [{
+  id: 'open-ended-general',
+  group: 'CANDY TUNE',
+  title: 'CANDY TUNE TEST BIRTHDAY LIVE',
+  ticketType: '一般発売',
+  ticketProvider: 'pia',
+  sourceType: 'ticket-history-guard',
+  applicationStatus: 'open',
+  applicationWindowVerified: true,
+  applyStart: '2099-09-25T18:00',
+  applyEnd: null,
+  eventDate: '2099-10-01',
+  startTime: '19:00',
+  venue: 'SGC HALL ARIAKE',
+  url: 'https://t.pia.jp/pia/event/event.do?eventCd=9999999',
+}];
+const openEndedGrouped = context.__scheduleTest.groupedApplicationBands(context.__scheduleTest.prepare(openEndedRows));
+assert.strictEqual(openEndedGrouped.length, 1, 'open-ended verified general sale must render a band');
+assert.strictEqual(openEndedGrouped[0].band.openEnded, true, 'open-ended band must be marked so the UI does not invent a deadline');
+
 const sweetTourUrl = 'https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2099';
 const sweetTourCommon = {
   group: 'SWEET STEADY',
