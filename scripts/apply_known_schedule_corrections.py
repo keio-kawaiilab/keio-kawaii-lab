@@ -94,6 +94,19 @@ def _is_cutie_wrong_bundle(event: dict) -> bool:
     return event.get("group") == "CUTIE STREET" and any("eventCd=2635331" in value for value in _urls(event))
 
 
+def _is_cutie_obsolete_tour_sale(event: dict) -> bool:
+    if event.get("group") != "CUTIE STREET":
+        return False
+    if str(event.get("sourceChannel") or "") != "pia-ended-sale":
+        return False
+    values = _urls(event)
+    return any(
+        marker in value
+        for value in values
+        for marker in ("lotRlsCd=95188", "lotRlsCd=23843")
+    )
+
+
 def _is_cutie_ig_offer(event: dict) -> bool:
     if event.get("group") != "CUTIE STREET":
         return False
@@ -254,6 +267,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
     report = {
         "hakataSpecialFixed": 0,
         "cutieWrongPiaBundleRemoved": 0,
+        "cutieObsoletePiaRowsRemoved": 0,
         "cutieIgFixed": 0,
         "staleChristmasRowsRemoved": 0,
         "fmAichiFixed": 0,
@@ -265,6 +279,9 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
     for event in source:
         if _is_cutie_wrong_bundle(event):
             report["cutieWrongPiaBundleRemoved"] += 1
+            continue
+        if _is_cutie_obsolete_tour_sale(event):
+            report["cutieObsoletePiaRowsRemoved"] += 1
             continue
         if _is_redundant_more_star_christmas(event, has_joint_christmas):
             report["staleChristmasRowsRemoved"] += 1
