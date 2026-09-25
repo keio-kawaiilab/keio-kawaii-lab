@@ -17,7 +17,7 @@ START_TEXT_JS = (
 
 OFFER_HTML_JS = (
     "function offerHtml(o){var missingStart=!!o.synthetic||!o.applyStart,"
-    "period=missingStart?('申込開始：日時未取得'+(o.applyEnd?' ／ 締切 '+fmt(o.applyEnd):'')):(fmt(o.applyStart)+' 〜 '+fmt(o.applyEnd)),"
+    "period=missingStart?('申込開始：日時未取得'+(o.applyEnd?' ／ 締切 '+fmt(o.applyEnd):'')):(fmt(o.applyStart)+(o.applyEnd?' 〜 '+fmt(o.applyEnd):' 〜 終了日時未発表')),"
     "start=moment(o.applyStart,false),end=moment(o.applyEnd,true),soldOut=(o.event||o).applicationStatus==='sold_out',ended=soldOut||(!!end&&end<now),"
     "scheduled=!missingStart&&!!start&&start>now,open=!missingStart&&!ended&&!scheduled,"
     "state=soldOut?'予定枚数終了':ended?'受付終了':missingStart?'開始日時未取得':scheduled?'受付予定':'受付中',"
