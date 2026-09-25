@@ -56,6 +56,11 @@ STATUS_NEW = "document.getElementById('status').textContent='最終更新: '+(da
 APPLICATION_BAND_KEY_LEGACY = "function applicationBandKey(e,index){if(!playguide(e))return'event|'+index;return[String(e.group||''),parts(e).slice().sort().join(','),providerId(e),String(e.ticketType||''),String(e.applyStart||''),String(e.applyEnd||''),performanceTitleKey(e)].join('|')}"
 APPLICATION_BAND_KEY_NEW = "function applicationBandSubjectKey(e){var u=String(e.officialTourUrl||'').trim();if(u)return'tour:'+u.toLowerCase().replace(/[?#].*$/,'').replace(/\\/$/,'');var t=String(title(e)||'').toLowerCase().replace(/^\\s*20\\d{2}[.\\/-]\\d{1,2}[.\\/-]\\d{1,2}\\s*/,'').replace(/\\s+/g,'').replace(/[!！・|｜\\-–—_\\[\\]()（）『』「」]/g,'');return'title:'+t}function applicationBandKey(e,index){var tour=String(e.officialTourUrl||'').trim();if(!playguide(e)&&!tour)return'event|'+index;return[String(e.group||''),parts(e).slice().sort().join(','),providerId(e),String(e.ticketType||''),String(e.applyStart||''),String(e.applyEnd||''),applicationBandSubjectKey(e)].join('|')}"
 
+OPEN_ENDED_EFFECTIVE_BAND_JS = "function effectiveBand(e){if(e.applicationStatus==='sold_out')return null;var z=p(e.applyEnd),exactEnd=moment(e.applyEnd,true),openEnded=false;if(!z&&e.applyStart&&e.applicationWindowVerified===true){var ds=days(e).map(function(v){return p(v)}).filter(function(v){return!!v});if(ds.length===1){z=ds[0];openEnded=true}}if(!z||z<today||(!openEnded&&exactEnd&&exactEnd<now))return null;var a=null,synthetic=false;if(playguide(e)&&family(e)==='ticket'){if(e.applicationWindowVerified===true&&e.applyStart)a=p(e.applyStart);else{a=today;synthetic=true}}else if(e.applyStart)a=p(e.applyStart);if(!a)return null;if(a<today)a=today;if(z<a)return null;return{start:a,end:z,synthetic:synthetic,openEnded:openEnded}}"
+OPEN_ENDED_OFFER_HTML_JS = "function offerHtml(o){var missingStart=!!o.synthetic||!o.applyStart,period=missingStart?('申込開始：日時未取得'+(o.applyEnd?' ／ 締切 '+fmt(o.applyEnd):'')):(fmt(o.applyStart)+(o.applyEnd?' 〜 '+fmt(o.applyEnd):' 〜 終了日時未発表')),start=moment(o.applyStart,false),end=moment(o.applyEnd,true),soldOut=(o.event||o).applicationStatus==='sold_out',ended=soldOut||(!!end&&end<now),scheduled=!missingStart&&!!start&&start>now,open=!missingStart&&!ended&&!scheduled,state=soldOut?'予定枚数終了':ended?'受付終了':missingStart?'開始日時未取得':scheduled?'受付予定':'受付中',detailOnly=ended||missingStart,action=detailOnly?'受付詳細を確認 →':o.provider==='kawaii-store'?'整理券ページ →':/^(rakuten|hmv|tower)$/.test(o.provider)?'対象商品ページ →':'申込ページ →',mode=detailOnly?' detail-only':'',stateClass=open?' open':scheduled?' scheduled':ended?' ended':'';if(ended)return '';return'<div class=\"ticket-option\"><span class=\"provider '+esc(o.provider)+'\">'+esc(o.label)+'</span><span class=\"ticket-copy\"><b>'+esc(o.ticketType)+'<span class=\"sale-state'+stateClass+'\">'+state+'</span></b><small>'+esc(period)+'</small></span><a class=\"ticket-link'+mode+'\" data-action-mode=\"'+(detailOnly?'detail':'apply')+'\" href=\"'+esc(o.url)+'\" target=\"_blank\" rel=\"noopener\">'+action+'</a></div>'}"
+OPEN_ENDED_BAND_COPY_OLD = "b.innerHTML='<strong>'+esc((loc?loc+'｜':'')+shortTitle(e))+'</strong><span>'+esc(providerName(e)+'｜'+(e.ticketType||'申込')+'｜'+fmt(e.applyEnd)+'まで')+'</span>'"
+OPEN_ENDED_BAND_COPY_NEW = "b.innerHTML='<strong>'+esc((loc?loc+'｜':'')+shortTitle(e))+'</strong><span>'+esc(providerName(e)+'｜'+(e.ticketType||'申込')+'｜'+(r.openEnded?'終了日時未発表':fmt(e.applyEnd)+'まで'))+'</span>'"
+
 PERFORMANCE_RECONCILE_JS = (
     "function performanceTimeMatchKeys(e,o){var day=String((o&&o.date)||e.eventDate||'').slice(0,10),venue=performanceVenueKey(e,o),base=[String(e.group||''),day,venue].join('|'),out=[],tour=String(e.officialTourUrl||'').trim().toLowerCase().replace(/[?#].*$/,'').replace(/\\/$/,'');if(tour)out.push(base+'|tour:'+tour);var t=performanceTitleKey(e);if(t)out.push(base+'|title:'+t);return out}"
     "function reconcilePerformanceTimes(all){var tm={},om={};function add(map,k,v){if(!v)return;(map[k]||(map[k]={}))[String(v).replace(/\\s+/g,'')]=1}function vals(map,ks){var x={};ks.forEach(function(k){Object.keys(map[k]||{}).forEach(function(v){x[v]=1})});return Object.keys(x)};"
@@ -167,6 +172,26 @@ def install_application_band_identity(page: str) -> str:
     return page.replace(APPLICATION_BAND_KEY_LEGACY, APPLICATION_BAND_KEY_NEW, 1)
 
 
+def install_open_ended_general_sales(page: str) -> str:
+    start = page.find("function effectiveBand(e){")
+    end = page.find("function applicationBandSubjectKey", start)
+    if start < 0 or end < 0:
+        raise RuntimeError("schedule effectiveBand() block not found")
+    page = page[:start] + OPEN_ENDED_EFFECTIVE_BAND_JS + page[end:]
+
+    start = page.find("function offerHtml(o){")
+    end = page.find("function detailList", start)
+    if start < 0 or end < 0:
+        raise RuntimeError("schedule offerHtml() block not found")
+    page = page[:start] + OPEN_ENDED_OFFER_HTML_JS + page[end:]
+
+    if OPEN_ENDED_BAND_COPY_NEW not in page:
+        if OPEN_ENDED_BAND_COPY_OLD not in page:
+            raise RuntimeError("schedule band label renderer changed")
+        page = page.replace(OPEN_ENDED_BAND_COPY_OLD, OPEN_ENDED_BAND_COPY_NEW, 1)
+    return page
+
+
 def install_truthful_status(page: str) -> str:
     if STATUS_NEW in page:
         return page
@@ -190,6 +215,7 @@ def main() -> int:
     page = install_offer_adapter(page)
     page = install_performance_reconcile(page)
     page = install_application_band_identity(page)
+    page = install_open_ended_general_sales(page)
     page = install_truthful_status(page)
     page = guard_performance_runtime.transform(page)
 
@@ -206,6 +232,8 @@ def main() -> int:
         "function reconcilePerformanceTimes(all)",
         "fixed=reconcilePerformanceTimes(fixed)",
         "function applicationBandSubjectKey(e)",
+        "openEnded",
+        "終了日時未発表",
         "e.officialTourUrl",
         "function performanceModels(vis)",
         "perfSeen[pk]",
