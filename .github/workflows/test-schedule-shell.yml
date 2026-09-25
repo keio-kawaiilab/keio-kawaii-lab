@@ -37,14 +37,21 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Verify complete public schedule build chain
-        run: |
-          python scripts/build_schedule_snapshot.py
-          python scripts/fix_schedule_shell.py
-          python scripts/strip_schedule_explanations.py
-          node --check /tmp/schedule-inline.js
-          node scripts/test_schedule_band_grouping.js
-          node scripts/test_schedule_scope_ui.js
-          node scripts/test_performance_runtime.js
-          node scripts/test_general_sale_runtime.js
-          python -m unittest discover -s scripts -p test_guard_performance_runtime.py
+      - name: Build schedule snapshot
+        run: python scripts/build_schedule_snapshot.py
+      - name: Apply schedule shell guards
+        run: python scripts/fix_schedule_shell.py
+      - name: Strip schedule explanations
+        run: python scripts/strip_schedule_explanations.py
+      - name: Check inline JavaScript syntax
+        run: node --check /tmp/schedule-inline.js
+      - name: Test application band grouping
+        run: node scripts/test_schedule_band_grouping.js
+      - name: Test schedule scope UI
+        run: node scripts/test_schedule_scope_ui.js
+      - name: Test performance runtime
+        run: node scripts/test_performance_runtime.js
+      - name: Test verified general sales
+        run: node scripts/test_general_sale_runtime.js
+      - name: Test performance guard
+        run: python -m unittest discover -s scripts -p test_guard_performance_runtime.py
