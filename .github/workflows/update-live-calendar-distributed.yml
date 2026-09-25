@@ -454,7 +454,7 @@ jobs:
         run: |
           set -euo pipefail
           cd scripts
-          python -m unittest -v test_merge_distributed_schedule_snapshots.py test_reconcile_official_schedule_index.py test_audit_schedule_release_grouped.py test_prepare_release_candidate.py test_special_event_entities.py test_schedule_scope.py test_audit_official_schedule_coverage.py test_promoter_general_sale_guard.py test_audit_ticket_sources.py
+          python -m unittest -v test_merge_distributed_schedule_snapshots.py test_reconcile_official_schedule_index.py test_audit_schedule_release_grouped.py test_prepare_release_candidate.py test_apply_known_schedule_corrections.py test_special_event_entities.py test_schedule_scope.py test_audit_official_schedule_coverage.py test_promoter_general_sale_guard.py test_audit_ticket_sources.py
           cd ..
           cp /tmp/calendar-core/official-schedule-index.json data/official-schedule-index.json
           if [ -f /tmp/calendar-core/ticket-history.json ]; then
