@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-25T08:50:17.009152+09:00",
-  "candidateUpdatedAt": "2026-09-25T08:50:16+09:00",
-  "previousEventCount": 154,
-  "candidateEventCount": 154,
-  "protectedPreviousCount": 154,
+  "generatedAt": "2026-09-25T10:57:36.864006+09:00",
+  "candidateUpdatedAt": "2026-09-25T10:57:36+09:00",
+  "previousEventCount": 162,
+  "candidateEventCount": 162,
+  "protectedPreviousCount": 162,
   "errorCount": 0,
-  "warningCount": 42,
+  "warningCount": 43,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: canonical special event application window is not backed by an official page: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場【FC限定 1部・3部・6部】 / 現在受付なし",
@@ -31,6 +31,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / プレリザーブ",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE 小川奈々子 生誕祭 2026 / 一般発売",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: application window reversed: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / プレリザーブ",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event application window is not backed by an official page: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場【FC限定 1部・3部・6部】 / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event deadline is not verified by an official page: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場【FC限定 1部・3部・6部】 / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event offer has no verified purchase/ticket window: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場【FC限定 1部・3部・6部】 / 現在受付なし / offer 1",
@@ -52,7 +53,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
   ],
-  "candidateSha256": "9689cac9b0e8425d05194ccbc940fd14b7cffd4b7712bf5f0947cdf6c3f062d0",
+  "candidateSha256": "7ad5632b83843d96e28f169dc8c3d563cb1bc49e43a9f906d5c38325a5e2256a",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -107,18 +108,20 @@
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=20981",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21321",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=23457",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25960",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=28155",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29682",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30314",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30338",
-    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=32739"
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=32739",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=68942"
   ],
   "officialXSharedSourceKeysReconciled": [],
   "reconciledBaseDateMessageCount": 0,
   "downgradedFalsePositiveCount": 0,
-  "legacyProtectedErrorCount": 23,
+  "legacyProtectedErrorCount": 24,
   "legacyProtectedErrors": [
     {
       "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / プレリザーブ",
@@ -133,6 +136,11 @@
     {
       "error": "active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE 小川奈々子 生誕祭 2026 / 一般発売",
       "label": "CANDY TUNE / CANDY TUNE 小川奈々子 生誕祭 2026 / 一般発売",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "application window reversed: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / プレリザーブ",
+      "label": "CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / プレリザーブ",
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     },
     {
