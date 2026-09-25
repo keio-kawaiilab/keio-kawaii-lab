@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-26T03:54:41.061448+09:00",
-  "candidateUpdatedAt": "2026-09-26T03:54:40+09:00",
-  "previousEventCount": 144,
-  "candidateEventCount": 144,
-  "protectedPreviousCount": 141,
+  "generatedAt": "2026-09-26T06:27:59.706601+09:00",
+  "candidateUpdatedAt": "2026-09-26T06:27:59+09:00",
+  "previousEventCount": 145,
+  "candidateEventCount": 145,
+  "protectedPreviousCount": 142,
   "errorCount": 0,
-  "warningCount": 29,
+  "warningCount": 28,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: special event has no participation method: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場 / 現在受付なし",
@@ -25,7 +25,6 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE 小川奈々子 生誕祭 2026 / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: application window reversed: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / プレリザーブ",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: application window reversed: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / プレリザーブ",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no participation method: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場 / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no target product: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場 / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no verified purchase/ticket window: CUTIE STREET / CUTIE STREET大特典会＠博多国際展示場 / 現在受付なし",
@@ -39,7 +38,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
   ],
-  "candidateSha256": "a35d1be1d166d605468451c8c9bd363b49a053eef35c36f19ae98966a44133e8",
+  "candidateSha256": "34c85c1297c7c21eab0b75471d21e2d0dfa7c7f34e9c28f31d0bc632a3ab86da",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -99,7 +98,7 @@
   "officialXSharedSourceKeysReconciled": [],
   "reconciledBaseDateMessageCount": 0,
   "downgradedFalsePositiveCount": 0,
-  "legacyProtectedErrorCount": 17,
+  "legacyProtectedErrorCount": 16,
   "legacyProtectedErrors": [
     {
       "error": "duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
@@ -114,11 +113,6 @@
     {
       "error": "active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE 小川奈々子 生誕祭 2026 / 一般発売",
       "label": "CANDY TUNE / CANDY TUNE 小川奈々子 生誕祭 2026 / 一般発売",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
-      "error": "application window reversed: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / プレリザーブ",
-      "label": "CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / プレリザーブ",
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     },
     {
