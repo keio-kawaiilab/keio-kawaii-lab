@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-27T05:39:20+09:00",
+  "checkedAt": "2026-09-27T06:11:27+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-09-26T06:49:48+09:00",
     "scannedPages": {
@@ -6287,9 +6287,9 @@
       "id": "d3b63d95b1602c8e",
       "group": "CUTIE STREET",
       "title": "CUTIE STREET 佐野愛花 生誕祭 2026",
-      "ticketType": "現在受付なし",
-      "applyStart": null,
-      "applyEnd": null,
+      "ticketType": "FC先行",
+      "applyStart": "2026-08-31T19:00",
+      "applyEnd": "2026-09-10T23:59",
       "resultDate": null,
       "paymentEnd": null,
       "eventDate": "2026-11-26",
@@ -8281,32 +8281,15 @@
     "performanceEntityCount": 81,
     "sourceOccurrenceCount": 233,
     "mergedSourceOccurrences": 152,
-    "offerCount": 90
+    "offerCount": 91
   },
   "publicEventModelVersion": 1,
   "releasePreparation": {
-    "preparedAt": "2026-09-27T05:39:17+09:00",
+    "preparedAt": "2026-09-27T06:11:24+09:00",
     "normalizedSpecialEvents": 10,
     "duplicateIdsRemoved": 0,
-    "retainedPreviousRows": 2,
-    "retained": [
-      {
-        "id": "b0aed4c7ffbf70e1",
-        "group": "CANDY TUNE",
-        "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
-        "ticketType": "公式リセール",
-        "provider": null,
-        "applyEnd": "2026-12-07T23:59"
-      },
-      {
-        "id": "db0954256a3ad9f4",
-        "group": "CANDY TUNE",
-        "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
-        "ticketType": "公式リセール",
-        "provider": null,
-        "applyEnd": "2026-12-08T23:59"
-      }
-    ],
+    "retainedPreviousRows": 0,
+    "retained": [],
     "expandedPreviousSpecialEntities": 11,
     "expandedCandidateSpecialEntities": 11,
     "supersededStaleJointRowsRemoved": 0,
@@ -8348,8 +8331,8 @@
       "remainingDuplicates": []
     },
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-09-27T05:39:17+09:00",
-    "checkedAt": "2026-09-27T05:39:17+09:00"
+    "publicUpdatedAt": "2026-09-27T06:11:24+09:00",
+    "checkedAt": "2026-09-27T06:11:24+09:00"
   },
   "resaleDiagnostics": {
     "articles": 26,
@@ -14891,7 +14874,7 @@
       }
     ]
   },
-  "updatedAt": "2026-09-27T05:39:20+09:00",
+  "updatedAt": "2026-09-27T06:11:27+09:00",
   "publicEvents": [
     {
       "id": "fa421e6fd8955232",
@@ -22763,7 +22746,30 @@
       "sourceRowIds": [
         "d3b63d95b1602c8e"
       ],
-      "offers": [],
+      "offers": [
+        {
+          "sourceRowId": "d3b63d95b1602c8e",
+          "provider": "official",
+          "url": "https://cutiestreet.asobisystem.com/news/detail/88521",
+          "urls": [
+            "https://cutiestreet.asobisystem.com/news/detail/88521",
+            "https://red-hot.ne.jp/play/detail.php?pid=py28690"
+          ],
+          "ticketType": "FC先行",
+          "applyStart": "2026-08-31T19:00",
+          "applyEnd": "2026-09-10T23:59",
+          "applicationStatus": "none",
+          "applicationWindowVerified": true,
+          "deadlineVerified": true,
+          "applicationDisplayMode": "band",
+          "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/88521",
+          "deadlineSource": "https://cutiestreet.asobisystem.com/news/detail/88521",
+          "sourceType": "derived",
+          "sourceChannel": "recent-official-body",
+          "primarySource": "official",
+          "sourcePublishedAt": "2026-08-31"
+        }
+      ],
       "eventEndDate": "2026-11-26",
       "eventDates": [
         "2026-11-26"
@@ -22777,9 +22783,9 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
+      "ticketType": "FC先行",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers"
     },
     {
       "id": "performance-CUTIE-STREET-2026-11-28-fallback-13-cutiestreetjapanarenatour2026autumn",
