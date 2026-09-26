@@ -1,53 +1,12 @@
 {
-  "date": "2026-09-26",
+  "date": "2026-09-27",
   "horizonDays": 7,
-  "generatedAt": "2026-09-26T22:23+09:00",
+  "generatedAt": "2026-09-27T03:32+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
-    {
-      "date": "2026-09-26",
-      "venue": "福岡県 三井ショッピングパーク ららぽーと福岡1Fオーバルパーク（屋外）",
-      "venueKey": "三井ショッピングパークららぽーと福岡1fオーバルパーク屋外",
-      "eventIds": [
-        "special-3f474f29a0acb65c"
-      ],
-      "areaCode": "400010",
-      "areaName": "福岡地方",
-      "precision": "area",
-      "label": "雨 夜遅く くもり 所により 夕方 雷を伴い 激しく 降る",
-      "max": null,
-      "min": null,
-      "pop": "50",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-09-26T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
-    {
-      "date": "2026-09-26",
-      "venue": "千葉県 幕張メッセ1-3ホール",
-      "venueKey": "幕張メッセ1-3ホール",
-      "eventIds": [
-        "f30cb136d31dc216",
-        "d4dcb3a0dada60e7"
-      ],
-      "areaCode": "120010",
-      "areaName": "北西部",
-      "precision": "area",
-      "label": "くもり 夜のはじめ頃 雨",
-      "max": null,
-      "min": null,
-      "pop": "50",
-      "popLabel": "当日最大",
-      "issuedAt": "2026-09-26T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
     {
       "date": "2026-09-27",
       "venue": "千葉県 セブンパークアリオ柏 屋外スマイルパーク",
@@ -93,10 +52,11 @@
       "venue": "東京都 有明アリーナ",
       "venueKey": "有明アリーナ",
       "eventIds": [
-        "a9f07d73f091ca00",
-        "120bef86bfd1e983",
+        "342aeadaf9a1f6bd",
         "3f99f7bcacecc458",
-        "342aeadaf9a1f6bd"
+        "a9f07d73f091ca00",
+        "b929ac13fb654730",
+        "120bef86bfd1e983"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
@@ -158,10 +118,11 @@
       "venue": "東京都 有明アリーナ",
       "venueKey": "有明アリーナ",
       "eventIds": [
-        "a9f07d73f091ca00",
-        "120bef86bfd1e983",
+        "342aeadaf9a1f6bd",
         "3f99f7bcacecc458",
-        "342aeadaf9a1f6bd"
+        "a9f07d73f091ca00",
+        "b929ac13fb654730",
+        "120bef86bfd1e983"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
@@ -243,10 +204,11 @@
       "venue": "宮城県 セキスイハイムスーパーアリーナ",
       "venueKey": "セキスイハイムスーパーアリーナ",
       "eventIds": [
-        "a9f07d73f091ca00",
+        "342aeadaf9a1f6bd",
         "3f99f7bcacecc458",
-        "306741014e705013",
-        "342aeadaf9a1f6bd"
+        "a9f07d73f091ca00",
+        "b929ac13fb654730",
+        "306741014e705013"
       ],
       "areaCode": "040010",
       "areaName": "東部",
@@ -283,11 +245,11 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 39,
-    "uniqueVenueDates": 16,
-    "weatherEntries": 13,
+    "occurrencesInRange": 52,
+    "uniqueVenueDates": 19,
+    "weatherEntries": 11,
     "meshEntries": 0,
-    "failures": 3,
+    "failures": 8,
     "meshTimelineEntries": 0,
     "meshExactTempSlots": 0,
     "hourlyRainEntries": 0
@@ -307,6 +269,31 @@
       "date": "2026-10-03",
       "venue": "清水マリンパーク",
       "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-10-04",
+      "venue": "宮城県 セキスイハイムスーパーアリーナ",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-10-04",
+      "venue": "北海道 函館市民会館",
+      "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-10-04",
+      "venue": "栃木県 宇都宮市文化会館 大ホール",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-10-04",
+      "venue": "清水マリンパーク",
+      "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-10-04",
+      "venue": "石川県 金沢歌劇座",
+      "reason": "開催日の予報がまだありません"
     }
   ]
 }
