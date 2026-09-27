@@ -1,7 +1,7 @@
 {
   "date": "2026-09-28",
   "horizonDays": 7,
-  "generatedAt": "2026-09-28T03:58+09:00",
+  "generatedAt": "2026-09-28T08:22+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -13,23 +13,70 @@
       "venueKey": "有明アリーナ",
       "eventIds": [
         "a9f07d73f091ca00",
-        "120bef86bfd1e983"
+        "120bef86bfd1e983",
+        "3f99f7bcacecc458",
+        "b929ac13fb654730",
+        "342aeadaf9a1f6bd"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "mesh5km",
-      "label": "くもり",
-      "max": null,
-      "min": null,
-      "pop": null,
-      "popLabel": "",
-      "issuedAt": "2026-09-27T17:00:00+09:00",
-      "meshTime": "00:00",
-      "meshTempBand": "20〜24℃",
+      "label": "雨",
+      "max": 20.0,
+      "min": 19.0,
+      "pop": "70",
+      "popLabel": "18〜00時",
+      "issuedAt": "2026-09-28T05:00:00+09:00",
+      "meshTime": "18:00",
+      "meshTempBand": "15〜19℃",
       "coordinates": {
         "lat": 35.64241,
         "lon": 139.795013
-      }
+      },
+      "meshTimeline": [
+        {
+          "time": "06:00",
+          "label": "雨",
+          "validAt": "2026-09-29T06:00+09:00",
+          "temp": 21
+        },
+        {
+          "time": "09:00",
+          "label": "雨",
+          "validAt": "2026-09-29T09:00+09:00",
+          "temp": 20
+        },
+        {
+          "time": "12:00",
+          "label": "雨",
+          "validAt": "2026-09-29T12:00+09:00",
+          "temp": 20
+        },
+        {
+          "time": "15:00",
+          "label": "雨",
+          "validAt": "2026-09-29T15:00+09:00",
+          "temp": 20
+        },
+        {
+          "time": "18:00",
+          "label": "雨",
+          "validAt": "2026-09-29T18:00+09:00",
+          "temp": 18
+        },
+        {
+          "time": "21:00",
+          "label": "雨",
+          "validAt": "2026-09-29T21:00+09:00",
+          "temp": 19
+        },
+        {
+          "time": "24:00",
+          "label": "雨",
+          "validAt": "2026-09-30T00:00+09:00",
+          "temp": 19
+        }
+      ]
     },
     {
       "date": "2026-09-30",
@@ -79,7 +126,10 @@
       "venueKey": "有明アリーナ",
       "eventIds": [
         "a9f07d73f091ca00",
-        "120bef86bfd1e983"
+        "120bef86bfd1e983",
+        "3f99f7bcacecc458",
+        "b929ac13fb654730",
+        "342aeadaf9a1f6bd"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
@@ -162,7 +212,11 @@
       "venueKey": "セキスイハイムスーパーアリーナ",
       "eventIds": [
         "a9f07d73f091ca00",
-        "08f1285bf1508e9c"
+        "d7a8ba5d29c8c86a",
+        "fa5aeb95b4104cd4",
+        "3f99f7bcacecc458",
+        "b929ac13fb654730",
+        "342aeadaf9a1f6bd"
       ],
       "areaCode": "040010",
       "areaName": "東部",
@@ -203,7 +257,11 @@
       "venueKey": "セキスイハイムスーパーアリーナ",
       "eventIds": [
         "a9f07d73f091ca00",
-        "08f1285bf1508e9c"
+        "fa5aeb95b4104cd4",
+        "a0a9d16e98b33df0",
+        "3f99f7bcacecc458",
+        "b929ac13fb654730",
+        "342aeadaf9a1f6bd"
       ],
       "areaCode": "040010",
       "areaName": "東部",
@@ -261,13 +319,13 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 41,
+    "occurrencesInRange": 51,
     "uniqueVenueDates": 16,
     "weatherEntries": 12,
     "meshEntries": 1,
     "failures": 4,
-    "meshTimelineEntries": 0,
-    "meshExactTempSlots": 0,
+    "meshTimelineEntries": 1,
+    "meshExactTempSlots": 7,
     "hourlyRainEntries": 0
   },
   "failures": [
