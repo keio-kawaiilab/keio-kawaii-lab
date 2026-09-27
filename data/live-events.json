@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-27T10:55:59+09:00",
+  "checkedAt": "2026-09-27T10:57:25+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-09-27T06:31:54+09:00",
     "scannedPages": {
@@ -4763,7 +4763,6 @@
       "sourceRowIds": [
         "special-420e0fa9f721b51b"
       ],
-      "offers": [],
       "schedule": [
         {
           "date": "2026-11-08",
@@ -4777,7 +4776,8 @@
       "eventEndDate": "2026-11-08",
       "venues": [
         "【リリースイベント】石川県 イオンモール白山 平面駐車場"
-      ]
+      ],
+      "offers": []
     },
     {
       "id": "30fd5394e642a81b",
@@ -5870,9 +5870,9 @@
       "id": "d3b63d95b1602c8e",
       "group": "CUTIE STREET",
       "title": "CUTIE STREET 佐野愛花 生誕祭 2026",
-      "ticketType": "現在受付なし",
-      "applyStart": null,
-      "applyEnd": null,
+      "ticketType": "FC先行",
+      "applyStart": "2026-08-31T19:00",
+      "applyEnd": "2026-09-10T23:59",
       "resultDate": null,
       "paymentEnd": null,
       "eventDate": "2026-11-26",
@@ -7586,9 +7586,9 @@
   ],
   "physicalEventInvariant": {
     "semanticNormalization": {
-      "sourceSpecialRows": 11,
+      "sourceSpecialRows": 17,
       "canonicalSpecialEvents": 11,
-      "rowsCollapsed": 0,
+      "rowsCollapsed": 6,
       "releaseEventEntities": 6,
       "largeBenefitEntities": 5,
       "alreadyCanonicalRows": 11
@@ -7659,70 +7659,21 @@
   },
   "publicEventModelReport": {
     "rawEventCount": 151,
-    "passthroughEventCount": 62,
-    "performanceEntityCount": 80,
-    "sourceOccurrenceCount": 209,
+    "passthroughEventCount": 63,
+    "performanceEntityCount": 79,
+    "sourceOccurrenceCount": 208,
     "mergedSourceOccurrences": 129,
-    "offerCount": 66
+    "offerCount": 67
   },
   "publicEventModelVersion": 1,
   "releasePreparation": {
-    "preparedAt": "2026-09-27T10:55:30+09:00",
-    "normalizedSpecialEvents": 11,
+    "preparedAt": "2026-09-27T10:57:22+09:00",
+    "normalizedSpecialEvents": 10,
     "duplicateIdsRemoved": 0,
-    "retainedPreviousRows": 6,
-    "retained": [
-      {
-        "id": "25bfb2525fd38135",
-        "group": "CANDY TUNE",
-        "title": "CANDY TUNE",
-        "ticketType": "現在受付なし",
-        "provider": "eplus",
-        "applyEnd": null
-      },
-      {
-        "id": "b9d9aabeefd0e4f8",
-        "group": "CANDY TUNE",
-        "title": "CANDY TUNE",
-        "ticketType": "現在受付なし",
-        "provider": "eplus",
-        "applyEnd": null
-      },
-      {
-        "id": "dbdf42a29078a17a",
-        "group": "CANDY TUNE",
-        "title": "CANDY TUNE",
-        "ticketType": "現在受付なし",
-        "provider": "eplus",
-        "applyEnd": null
-      },
-      {
-        "id": "special-134f44ecd651cd4c-schedule",
-        "group": "CUTIE STREET",
-        "title": "CUTIE STREET 大特典会",
-        "ticketType": "現在受付なし",
-        "provider": null,
-        "applyEnd": null
-      },
-      {
-        "id": "46b77d47cc8b36da",
-        "group": "CANDY TUNE",
-        "title": "CANDY TUNE",
-        "ticketType": "現在受付なし",
-        "provider": "eplus",
-        "applyEnd": null
-      },
-      {
-        "id": "850f9d39ec4fd5e8",
-        "group": "CANDY TUNE",
-        "title": "CANDY TUNE",
-        "ticketType": "先着 ★一般発売",
-        "provider": "eplus",
-        "applyEnd": "2026-11-29T20:00"
-      }
-    ],
+    "retainedPreviousRows": 0,
+    "retained": [],
     "expandedPreviousSpecialEntities": 11,
-    "expandedCandidateSpecialEntities": 9,
+    "expandedCandidateSpecialEntities": 11,
     "supersededStaleJointRowsRemoved": 0,
     "supersededStaleJointRowIds": [],
     "supersededLegacyReleaseSeriesRemoved": 2,
@@ -7745,12 +7696,12 @@
     },
     "physicalEventInvariant": {
       "semanticNormalization": {
-        "sourceSpecialRows": 19,
+        "sourceSpecialRows": 17,
         "canonicalSpecialEvents": 11,
-        "rowsCollapsed": 8,
+        "rowsCollapsed": 6,
         "releaseEventEntities": 6,
         "largeBenefitEntities": 5,
-        "alreadyCanonicalRows": 10
+        "alreadyCanonicalRows": 11
       },
       "specialEventsBeforePhysicalMerge": 11,
       "specialEventsAfterPhysicalMerge": 11,
@@ -7762,8 +7713,8 @@
       "remainingDuplicates": []
     },
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-09-27T10:55:30+09:00",
-    "checkedAt": "2026-09-27T10:55:30+09:00"
+    "publicUpdatedAt": "2026-09-27T10:57:22+09:00",
+    "checkedAt": "2026-09-27T10:57:22+09:00"
   },
   "resaleDiagnostics": {
     "articles": 26,
@@ -14322,7 +14273,7 @@
       }
     ]
   },
-  "updatedAt": "2026-09-27T10:55:59+09:00",
+  "updatedAt": "2026-09-27T10:57:25+09:00",
   "publicEvents": [
     {
       "id": "050ce426ad5c713b",
@@ -15717,17 +15668,17 @@
       "eventScope": "external",
       "urls": [
         "https://kawaiilab.asobisystem.com/news/detail/87217",
+        "https://kawaiilab.asobisystem.com/news/detail/89950",
+        "https://fruitszipper.asobisystem.com/live_information/detail/44011",
+        "https://candytune.asobisystem.com/live_information/detail/44996",
+        "https://sweetsteady.asobisystem.com/live_information/detail/43905",
+        "https://cutiestreet.asobisystem.com/live_information/detail/43749",
+        "https://morestar.asobisystem.com/live_information/detail/45350",
         "https://candytune.asobisystem.com/news/detail/87766",
         "https://cutiestreet.asobisystem.com/news/detail/87770",
-        "https://cutiestreet.asobisystem.com/live_information/detail/43749",
         "https://fruitszipper.asobisystem.com/news/detail/87763",
-        "https://fruitszipper.asobisystem.com/live_information/detail/44011",
         "https://morestar.asobisystem.com/news/detail/87772",
-        "https://sweetsteady.asobisystem.com/news/detail/87767",
-        "https://sweetsteady.asobisystem.com/live_information/detail/43905",
-        "https://kawaiilab.asobisystem.com/news/detail/89950",
-        "https://candytune.asobisystem.com/live_information/detail/44996",
-        "https://morestar.asobisystem.com/live_information/detail/45350"
+        "https://sweetsteady.asobisystem.com/news/detail/87767"
       ],
       "sourceStale": true,
       "sourceStaleSince": "2026-09-03T00:14:43+09:00",
@@ -15758,13 +15709,13 @@
       "applicationStatus": "none",
       "sourceRowIds": [
         "4d97127cb745d806",
-        "e38ff19923540d70",
-        "95417a67234ce562"
+        "95417a67234ce562",
+        "e38ff19923540d70"
       ],
       "mergedPublicEventIds": [
         "4d97127cb745d806",
-        "e38ff19923540d70",
-        "performance-KAWAII-LAB-2026-10-12-time-16-00"
+        "95417a67234ce562",
+        "e38ff19923540d70"
       ],
       "eventTitle": "KAWAII LAB. COLLECTION produced by TGC ~KAWAIIっちゃ in KITAKYUSHU~",
       "displayTitle": "KAWAII LAB. COLLECTION produced by TGC ~KAWAIIっちゃ in KITAKYUSHU~",
@@ -16367,7 +16318,6 @@
       "sourceRowIds": [
         "special-420e0fa9f721b51b"
       ],
-      "offers": [],
       "schedule": [
         {
           "date": "2026-11-08",
@@ -16381,7 +16331,8 @@
       "eventEndDate": "2026-11-08",
       "venues": [
         "【リリースイベント】石川県 イオンモール白山 平面駐車場"
-      ]
+      ],
+      "offers": []
     },
     {
       "id": "0e965c081582cf5e",
@@ -21734,7 +21685,30 @@
       "sourceRowIds": [
         "d3b63d95b1602c8e"
       ],
-      "offers": [],
+      "offers": [
+        {
+          "sourceRowId": "d3b63d95b1602c8e",
+          "provider": "official",
+          "url": "https://cutiestreet.asobisystem.com/news/detail/88521",
+          "urls": [
+            "https://cutiestreet.asobisystem.com/news/detail/88521",
+            "https://red-hot.ne.jp/play/detail.php?pid=py28690"
+          ],
+          "ticketType": "FC先行",
+          "applyStart": "2026-08-31T19:00",
+          "applyEnd": "2026-09-10T23:59",
+          "applicationStatus": "none",
+          "applicationWindowVerified": true,
+          "deadlineVerified": true,
+          "applicationDisplayMode": "band",
+          "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/88521",
+          "deadlineSource": "https://cutiestreet.asobisystem.com/news/detail/88521",
+          "sourceType": "derived",
+          "sourceChannel": "recent-official-body",
+          "primarySource": "official",
+          "sourcePublishedAt": "2026-08-31"
+        }
+      ],
       "eventEndDate": "2026-11-26",
       "eventDates": [
         "2026-11-26"
@@ -21748,9 +21722,9 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
+      "ticketType": "FC先行",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers"
     },
     {
       "id": "performance-CUTIE-STREET-2026-11-28-fallback-2-cutiestreetjapanarenatour2026autumn",
