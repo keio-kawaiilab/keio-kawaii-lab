@@ -73,7 +73,9 @@
       "label": "チケットぴあ",
       "kind": "playguide",
       "publishPolicy": "direct",
-      "authority": ["pia-sale-window"],
+      "authority": [
+        "pia-sale-window"
+      ],
       "artistUrls": {
         "FRUITS ZIPPER": "https://t.pia.jp/pia/artist/artists.do?artistsCd=M4140001",
         "CANDY TUNE": "https://t.pia.jp/pia/artist/artists.do?artistsCd=N1260021",
@@ -86,7 +88,9 @@
       "label": "イープラス",
       "kind": "playguide",
       "publishPolicy": "direct",
-      "authority": ["eplus-sale-window"],
+      "authority": [
+        "eplus-sale-window"
+      ],
       "artistUrls": {
         "FRUITS ZIPPER": "https://eplus.jp/sf/word/0000152889",
         "CANDY TUNE": "https://eplus.jp/sf/word/0000157138",
@@ -99,8 +103,17 @@
       "label": "ローチケ",
       "kind": "playguide",
       "publishPolicy": "direct",
-      "authority": ["lawson-sale-window"],
-      "searchBaseUrl": "https://l-tike.com/search/"
+      "authority": [
+        "lawson-sale-window"
+      ],
+      "artistUrls": {
+        "FRUITS ZIPPER": "https://l-tike.com/artist/000000000899959/",
+        "CANDY TUNE": "https://l-tike.com/artist/000000000928029/",
+        "SWEET STEADY": "https://l-tike.com/artist/000000000956758/",
+        "CUTIE STREET": "https://l-tike.com/artist/000000000973775/",
+        "MORE STAR": "https://l-tike.com/artist/000000001014114/"
+      },
+      "discoveryNote": "Canonical artist pages are the primary discovery surface; keyword search is not required for publication health."
     },
     "promoter": {
       "label": "公演主催・制作（HOT STUFF PROMOTION）",
@@ -116,7 +129,9 @@
       "label": "各公式X",
       "kind": "social",
       "publishPolicy": "discovery-only",
-      "authority": ["discovery"],
+      "authority": [
+        "discovery"
+      ],
       "note": "公式Xで先に告知を発見した場合も、URL・受付期間を公式サイトまたは販売事業者ページで再確認してから履歴へ入れる。"
     }
   },
