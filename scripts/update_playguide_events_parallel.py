@@ -5,6 +5,7 @@ import argparse
 import json
 import sys
 import time
+import threading
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, datetime
@@ -16,6 +17,8 @@ import update_playguide_events as playguides
 JST = ZoneInfo("Asia/Tokyo")
 USER_AGENT = "KeioKawaiiLabCalendarBot/1.7 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"
 Collector = Callable[[object, str, date], list[dict]]
+LAWSON_MAX_CONCURRENCY = 2
+LAWSON_GATE = threading.BoundedSemaphore(LAWSON_MAX_CONCURRENCY)
 DEFAULT_TASKS: tuple[tuple[str, str, Collector], ...] = tuple(
     (provider, group, collector)
     for group in playguides.GROUPS
@@ -39,7 +42,14 @@ def collect_one(
 ) -> tuple[str, str, list[dict]]:
     session = session_factory()
     try:
-        rows = collector(session, group, today)
+        if provider == "lawson":
+            # Lawson has consistently timed out when all five group searches hit
+            # its edge simultaneously from one GitHub runner.  Keep the overall
+            # collector parallel, but cap only Lawson to two in-flight searches.
+            with LAWSON_GATE:
+                rows = collector(session, group, today)
+        else:
+            rows = collector(session, group, today)
     finally:
         close = getattr(session, "close", None)
         if callable(close):
