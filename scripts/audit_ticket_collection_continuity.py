@@ -125,14 +125,9 @@ def source_endpoints(registry: dict) -> list[dict]:
     central = sources.get("kawaii-lab-fc") or {}
     if central.get("newsUrl"):
         checks.append({"key": "kawaii-lab-fc:news", "url": central["newsUrl"], "marker": "/news/detail/"})
-    for provider in ("pia", "eplus"):
+    for provider in ("pia", "eplus", "lawson"):
         for group, url in ((sources.get(provider) or {}).get("artistUrls") or {}).items():
             checks.append({"key": f"{provider}:{group}", "url": url, "marker": None})
-    lawson_base = clean((sources.get("lawson") or {}).get("searchBaseUrl"))
-    if lawson_base:
-        for group in groups:
-            sep = "&" if "?" in lawson_base else "?"
-            checks.append({"key": f"lawson:{group}", "url": f"{lawson_base}{sep}keyword={quote(group)}", "marker": None})
     return checks
 
 
