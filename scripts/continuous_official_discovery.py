@@ -300,6 +300,83 @@ def unlabeled_ticket_window(text, default_year):
     return None
 
 
+def standalone_ticket_window(text, default_year):
+    """Extract an explicit two-ended ticket range even when the page omits a label.
+
+    Some resale/upgrade articles print only the range itself on a dedicated line
+    after explanatory copy. The article has already passed ticket-intent checks
+    before this helper is used, so require both endpoints and a range separator
+    on the same normalized line to avoid treating performance dates as sales.
+    """
+    range_re = re.compile(r"[〜～~－–—-]")
+    for line in [parser.normalize_space(value) for value in text.splitlines() if parser.normalize_space(value)]:
+        matches = list(parser.DATE_ANY_RE.finditer(line))
+        if len(matches) < 2:
+            continue
+        between = line[matches[0].end():matches[1].start()]
+        if not range_re.search(between):
+            continue
+        start = parser.date_match_to_iso(matches[0], default_year)
+        if not start:
+            continue
+        end = parser.date_match_to_iso(matches[1], int(start[:4]))
+        if not end:
+            continue
+        if matches[1].group(1) is None and parser._iso_datetime(end) < parser._iso_datetime(start):
+            end_dt = parser._iso_datetime(end)
+            end = end_dt.replace(year=end_dt.year + 1).strftime("%Y-%m-%dT%H:%M" if "T" in end else "%Y-%m-%d")
+        if parser._iso_datetime(end) >= parser._iso_datetime(start):
+            return start, end
+    return None
+
+
+def end_only_ticket_window_is_expired(text, today):
+    """Recognize a proven, already-ended reception when its start is omitted.
+
+    Official pages sometimes publish an end-only reception such as
+    "受付期間：～2026/3/2 23:59まで". We must not invent a start time, but once
+    the explicit end is in the past the article no longer belongs in current
+    pending review.
+    """
+    published = parser.article_date_from_text(text)
+    default_year = int(published[:4]) if published else today.year
+    heading_re = re.compile(r"(?:受付期間|申込期間|お申込期間|お申し込み期間|販売期間|先行受付)")
+    range_re = re.compile(r"[〜～~－–—-]")
+    lines = [parser.normalize_space(value) for value in text.splitlines() if parser.normalize_space(value)]
+    for i, line in enumerate(lines):
+        if not heading_re.search(line):
+            continue
+        segment = " ".join(lines[i:i + 2])
+        matches = list(parser.DATE_ANY_RE.finditer(segment))
+        if len(matches) != 1:
+            continue
+        match = matches[0]
+        prefix = segment[:match.start()]
+        suffix = segment[match.end():]
+        if not (range_re.search(prefix) or "まで" in suffix):
+            continue
+        end = parser.date_match_to_iso(match, default_year)
+        end_day = retention.parse_day(end)
+        if end_day is not None and end_day < today:
+            return True
+    return False
+
+
+def ticket_windows_are_all_expired(text, today):
+    """Return true only when every explicit ticket reception has ended."""
+    published = parser.article_date_from_text(text)
+    default_year = int(published[:4]) if published else today.year
+    windows = parser.extract_windows(text, default_year)
+    if not windows:
+        standalone = standalone_ticket_window(text, default_year)
+        windows = [standalone] if standalone else []
+    if not windows:
+        return end_only_ticket_window_is_expired(text, today)
+    ends = [retention.parse_day(end) for _start, end in windows]
+    ends = [day for day in ends if day is not None]
+    return bool(ends) and len(ends) == len(windows) and all(day < today for day in ends)
+
+
 def title_is_past_event(title, text, today):
     """Treat an explicitly dated, already-finished event headline as historical."""
     published = parser.article_date_from_text(text)
@@ -455,6 +532,8 @@ def read_candidate(candidate, existing, headers):
     non_sale_title_hints = (
         *parser.IGNORE_TITLE_HINTS,
         "払い戻し", "連動企画", "デジタル整理券", "AUDITION", "ご注意とお願い",
+        "システムメンテナンス", "店頭キャンペーン",
+        "JTBオフィシャルファンクラブツアー", "に関しまして",
     )
     if any(hint in title for hint in non_sale_title_hints):
         return [], None, "irrelevant"
@@ -462,12 +541,24 @@ def read_candidate(candidate, existing, headers):
         return [], None, "past"
     if not any(hint in text or hint in title for hint in (*parser.TICKET_HINTS, "一般販売")):
         return [], None, "irrelevant"
+    today = datetime.now(parser.JST).date()
     group = candidate.group
     if group == "KAWAII LAB. FC":
         group = infer_central_group(title, text, candidate.url, existing)
         if not group:
-            return [], {"group": candidate.group, "title": title, "url": candidate.url,
-                        "reason": "Official article group is ambiguous"}, "pending"
+            # Old central-FC articles can remain ambiguous forever after their
+            # receptions end. Do not keep asking a human to resolve a sale that
+            # can no longer be acted on; only current/future ambiguous windows
+            # belong in pendingReview.
+            if ticket_windows_are_all_expired(text, today):
+                return [], None, "past"
+            return [], {
+                "group": candidate.group,
+                "title": title,
+                "url": candidate.url,
+                "reason": "Official article group is ambiguous",
+                "sourcePublishedAt": parser.article_date_from_text(text),
+            }, "pending"
     candidate = parser.Candidate(group, title, candidate.url)
     rows, review = parser.parse_candidate(CachedArticle(str(soup)), candidate)
     paired_resales = paired_resale_rows(candidate, text)
@@ -482,13 +573,15 @@ def read_candidate(candidate, existing, headers):
     if not rows and not review:
         published = parser.article_date_from_text(text)
         default_year = int(published[:4]) if published else datetime.now(parser.JST).year
-        window = unlabeled_ticket_window(text, default_year)
+        window = unlabeled_ticket_window(text, default_year) or standalone_ticket_window(text, default_year)
         if window:
             review = {
                 "group": group, "title": title, "url": candidate.url,
-                "reason": "受付見出し直後の申込期間を取得しましたが、公演への結合待ちです。",
+                "reason": "申込期間を取得しましたが、公演への結合待ちです。",
                 "applyStart": window[0], "applyEnd": window[1],
             }
+        elif end_only_ticket_window_is_expired(text, today):
+            return [], None, "past"
     if not rows and review:
         fallback = fallback_row_from_review(candidate, title, text, review, existing)
         if fallback:
