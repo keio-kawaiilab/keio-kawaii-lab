@@ -20,6 +20,13 @@ DATA_PATH = Path("data/live-events.json")
 JST = ZoneInfo("Asia/Tokyo")
 
 LAWSON_SEARCH_URL = "https://l-tike.com/search/"
+LAWSON_ARTIST_URLS = {
+    "FRUITS ZIPPER": "https://l-tike.com/artist/000000000899959/",
+    "CANDY TUNE": "https://l-tike.com/artist/000000000928029/",
+    "SWEET STEADY": "https://l-tike.com/artist/000000000956758/",
+    "CUTIE STREET": "https://l-tike.com/artist/000000000973775/",
+    "MORE STAR": "https://l-tike.com/artist/000000001014114/",
+}
 LAWSON_SEARCH_HEADERS = {
     # Lawson's edge has repeatedly stalled requests from GitHub runners when
     # five bot-UA searches arrive at once.  Use ordinary browser negotiation
@@ -244,48 +251,121 @@ def reception_status(text: str, end: str, today: date) -> str:
     return "open"
 
 
+def _lawson_artist_event_date(anchor_text: str, apply_end: str) -> str | None:
+    """Infer the full performance date from Lawson's artist-list month/day.
+
+    Artist pages omit the year in their compact ticket rows, while every linked
+    order page gives a year-qualified reception deadline.  A performance cannot
+    precede its own application deadline, so use that year and roll forward one
+    year only when the month/day would otherwise be earlier than the deadline.
+    """
+    match = re.search(r"(?<!\d)(\d{1,2})\.(\d{2})(?!\d)", norm(anchor_text))
+    if not match:
+        return None
+    try:
+        end_day = date.fromisoformat(str(apply_end)[:10])
+        event_day = date(end_day.year, int(match.group(1)), int(match.group(2)))
+        if event_day < end_day:
+            event_day = date(end_day.year + 1, event_day.month, event_day.day)
+        return event_day.isoformat()
+    except ValueError:
+        return None
+
+
+def _lawson_artist_venue(anchor_text: str) -> str:
+    """Extract the venue from the compact artist-page ticket row."""
+    text = norm(anchor_text)
+    date_match = re.search(r"(?<!\d)\d{1,2}\.\d{2}(?!\d)", text)
+    if date_match:
+        text = text[date_match.end():].strip()
+    text = re.sub(r"^[月火水木金土日]+曜日\s*", "", text)
+    text = re.sub(r"^(?:北海道|東京都|京都府|大阪府|.{2,3}県)\s*", "", text)
+    # Ticket labels and state are rendered after the venue.
+    text = re.split(
+        r"\s+(?:一般発売|プレリク|抽選|先着|受付中|発売中|本日発売|予定枚数終了|受付終了)\b",
+        text,
+        maxsplit=1,
+    )[0]
+    return clean_venue(text)
+
+
+def _lawson_artist_ticket_type(anchor_text: str) -> str:
+    text = norm(anchor_text)
+    if "一般発売" in text:
+        return "一般発売"
+    if "プレリク" in text:
+        return "プレリク"
+    if "抽選" in text:
+        return "抽選受付"
+    if "先着" in text:
+        return "先着受付"
+    return "ローチケ受付"
+
+
 def collect_lawson(session: requests.Session, group: str, today: date) -> list[dict]:
-    # Let requests encode the query as application/x-www-form-urlencoded
-    # (spaces become '+'), matching Lawson's own public search URLs.  Combined
-    # with browser-compatible negotiation headers this avoids the long-lived
-    # GitHub-runner timeout path seen with percent-encoded bot-UA requests.
+    """Collect Lawson tickets from the group's canonical artist page.
+
+    Lawson's keyword-search endpoint has persistently timed out from GitHub
+    Actions runners even though the public site is healthy.  The canonical
+    artist pages are a more precise first-party discovery surface and expose
+    direct order links, dates, venues and sale states without keyword matching.
+    """
+    artist_url = LAWSON_ARTIST_URLS[group]
     response = session.get(
-        LAWSON_SEARCH_URL,
-        params={"keyword": group},
+        artist_url,
         headers=LAWSON_SEARCH_HEADERS,
         timeout=LAWSON_TIMEOUT,
     )
     response.raise_for_status()
     soup = BeautifulSoup(response.text, "html.parser")
     results: list[dict] = []
-    for box in soup.select(".ResultBox"):
-        title_node = box.select_one(".ResultBox__title")
-        title = norm(title_node.get_text(" ", strip=True) if title_node else group)
-        if group.replace(" ", "") not in title.replace(" ", "") and group not in title:
+    seen_urls: set[str] = set()
+
+    for anchor in soup.select('a[href*="/order/"]'):
+        anchor_text = norm(anchor.get_text(" ", strip=True))
+        if not anchor_text or "受付終了" in anchor_text:
             continue
-        for item in box.select(".prfItem"):
-            event_date, venue = previous_schedule(item)
-            if not event_date or date.fromisoformat(event_date) < today:
-                continue
-            text = norm(item.get_text(" ", strip=True))
-            apply_start, apply_end = iso_window(text)
-            if not (apply_start and apply_end):
-                continue
-            kind = norm((item.select_one("#reception_typename") or item).get_text(" ", strip=True))
-            sale = item.select_one("#sale_name")
-            sale_name = norm(sale.get_text(" ", strip=True) if sale else "")
-            ticket_type = " ".join(x for x in (kind, sale_name) if x) or "ローチケ受付"
-            button = item.select_one("[data-lcode]")
-            lcode = norm(button.get("data-lcode") if button else "")
-            if not lcode:
-                continue
-            detail_url = f"https://l-tike.com/order/?gLcode={lcode}"
-            event = event_record(
-                provider="lawson", group=group, title=title, ticket_type=ticket_type,
-                apply_start=apply_start, apply_end=apply_end, event_date=event_date, venue=venue, url=detail_url,
-            )
-            event["applicationStatus"] = reception_status(text, apply_end, today)
-            results.append(event)
+        detail_url = urljoin("https://l-tike.com", str(anchor.get("href") or ""))
+        if not detail_url or detail_url in seen_urls:
+            continue
+        seen_urls.add(detail_url)
+
+        detail = session.get(
+            detail_url,
+            headers=LAWSON_SEARCH_HEADERS,
+            timeout=LAWSON_TIMEOUT,
+        )
+        detail.raise_for_status()
+        detail_text = norm(BeautifulSoup(detail.text, "html.parser").get_text(" ", strip=True))
+        apply_start, apply_end = iso_window(detail_text)
+        if not (apply_start and apply_end):
+            continue
+
+        event_date = _lawson_artist_event_date(anchor_text, apply_end)
+        if not event_date or date.fromisoformat(event_date) < today:
+            continue
+
+        heading = anchor.find_previous(["h2", "h3"])
+        title = norm(heading.get_text(" ", strip=True) if heading else group) or group
+        venue = _lawson_artist_venue(anchor_text)
+        ticket_type = _lawson_artist_ticket_type(anchor_text)
+        event = event_record(
+            provider="lawson",
+            group=group,
+            title=title,
+            ticket_type=ticket_type,
+            apply_start=apply_start,
+            apply_end=apply_end,
+            event_date=event_date,
+            venue=venue,
+            url=detail_url,
+        )
+        event["applicationStatus"] = reception_status(
+            anchor_text + " " + detail_text,
+            apply_end,
+            today,
+        )
+        results.append(event)
     return results
 
 
