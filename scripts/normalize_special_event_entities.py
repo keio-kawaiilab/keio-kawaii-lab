@@ -367,9 +367,147 @@ def normalize_events(events: list[dict]) -> tuple[list[dict], dict]:
     }
 
 
+def _logical_duplicate_signature(event: dict) -> str:
+    """Stable public-row identity used only to repair accidental id collisions.
+
+    URLs and collector bookkeeping are intentionally excluded: two collectors
+    can describe the same public row with different source metadata.  Sales
+    windows/providers stay in the signature so simultaneous ticket channels are
+    never collapsed merely because a buggy collector reused an id.
+    """
+    schedule = []
+    for row in schedule_rows(event):
+        schedule.append({
+            "date": str(row.get("date") or "")[:10],
+            "venue": venue_key(row.get("venue") or event.get("venue")),
+            "openTime": text(row.get("openTime")),
+            "startTime": text(row.get("startTime")),
+        })
+    payload = {
+        "group": text(event.get("group")),
+        "category": category(event),
+        "title": normalized_series_title(event),
+        "eventDate": str(event.get("eventDate") or "")[:10],
+        "eventDates": sorted(str(value)[:10] for value in event.get("eventDates") or [] if value),
+        "schedule": schedule,
+        "venue": venue_key(event.get("venue")),
+        "startTime": text(event.get("startTime")),
+        "ticketProvider": text(event.get("ticketProvider")).casefold(),
+        "ticketType": text(event.get("ticketType")).casefold(),
+        "applyStart": text(event.get("applyStart")),
+        "applyEnd": text(event.get("applyEnd")),
+    }
+    return json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+
+def _merge_duplicate_id_rows(items: list[dict]) -> dict:
+    """Keep the richest copy of one logical row while preserving source links."""
+    winner = copy.deepcopy(max(items, key=richness))
+    merged_urls = []
+    for item in items:
+        for value in all_urls(item):
+            if value not in merged_urls:
+                merged_urls.append(value)
+    if merged_urls:
+        winner["urls"] = merged_urls
+        if not winner.get("url"):
+            winner["url"] = merged_urls[0]
+
+    for field in ("sourceRowIds", "sourceCandidates", "auditCorrectionIds"):
+        values = []
+        for item in items:
+            raw = item.get(field)
+            if isinstance(raw, list):
+                for value in raw:
+                    if value not in (None, "") and value not in values:
+                        values.append(value)
+        if values:
+            winner[field] = values
+    return winner
+
+
+def repair_duplicate_event_ids(events: list[dict]) -> tuple[list[dict], dict]:
+    """Fail soft on local event-id collisions without dropping distinct events.
+
+    Exact logical duplicates are collapsed to the richest row.  If one id was
+    accidentally reused for genuinely different rows, keep every row and give
+    all but one a deterministic suffix derived from its public identity.  This
+    prevents a single collector/id regression from freezing the whole calendar.
+    """
+    buckets: dict[str, list[dict]] = {}
+    passthrough: list[dict] = []
+    order: list[str] = []
+    for raw in events:
+        event = copy.deepcopy(raw)
+        event_id = text(event.get("id"))
+        if not event_id:
+            passthrough.append(event)
+            continue
+        if event_id not in buckets:
+            buckets[event_id] = []
+            order.append(event_id)
+        buckets[event_id].append(event)
+
+    repaired: list[dict] = list(passthrough)
+    collisions = 0
+    collapsed = 0
+    disambiguated = 0
+    details = []
+
+    for event_id in order:
+        items = buckets[event_id]
+        if len(items) == 1:
+            repaired.append(items[0])
+            continue
+
+        collisions += 1
+        by_signature: dict[str, list[dict]] = {}
+        for item in items:
+            signature = _logical_duplicate_signature(item)
+            by_signature.setdefault(signature, []).append(item)
+
+        logical_rows = [
+            (signature, _merge_duplicate_id_rows(group))
+            for signature, group in sorted(by_signature.items(), key=lambda pair: pair[0])
+        ]
+        collapsed += len(items) - len(logical_rows)
+
+        assigned = []
+        for index, (signature, row) in enumerate(logical_rows):
+            if index:
+                suffix = hashlib.sha1(signature.encode("utf-8")).hexdigest()[:10]
+                row["id"] = f"{event_id}--{suffix}"
+                row["idCollisionRepairedFrom"] = event_id
+                disambiguated += 1
+            repaired.append(row)
+            assigned.append(str(row.get("id") or ""))
+
+        details.append({
+            "originalId": event_id,
+            "sourceRows": len(items),
+            "logicalRows": len(logical_rows),
+            "assignedIds": assigned,
+        })
+
+    repaired.sort(key=lambda event: (
+        str(event.get("eventDate") or "9999-12-31"),
+        str(event.get("group") or ""),
+        str(event.get("eventCategory") or ""),
+        str(event.get("id") or ""),
+    ))
+    return repaired, {
+        "duplicateEventIdCollisions": collisions,
+        "duplicateEventRowsCollapsed": collapsed,
+        "duplicateEventIdsDisambiguated": disambiguated,
+        "duplicateEventIdRepairs": details,
+    }
+
+
 def normalize_payload(payload: dict) -> tuple[dict, dict]:
     rows = [dict(event) for event in payload.get("events", []) if isinstance(event, dict)]
     normalized, report = normalize_events(rows)
+    normalized, id_report = repair_duplicate_event_ids(normalized)
+    report = {**report, **id_report}
     out = dict(payload)
     out["events"] = normalized
     out["specialEventNormalization"] = report
