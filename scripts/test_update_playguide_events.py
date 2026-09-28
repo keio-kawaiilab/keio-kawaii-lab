@@ -55,38 +55,47 @@ class PlayguideEventTests(unittest.TestCase):
         self.assertEqual(event["startTime"], "18:30")
         self.assertTrue(event["applicationWindowVerified"])
 
-    def test_lawson_search_uses_browser_headers_params_and_bounded_timeout(self):
+    def test_lawson_uses_canonical_artist_page_and_direct_order_window(self):
         calls = []
+
         class Session:
             def get(self, url, **kwargs):
                 calls.append((url, kwargs))
-                html = """
-                <div class="ResultBox">
-                  <h3 class="ResultBox__title">CANDY TUNE</h3>
-                  <dl class="ResultBox__informations">
-                    <dd>公演日：2099/10/1</dd>
-                    <dd>会場：豊洲PIT</dd>
-                  </dl>
-                  <div class="prfItem">
-                    <span id="reception_typename">先着</span>
-                    <span id="sale_name">一般発売</span>
-                    受付期間:2099/9/1 10:00～2099/9/30 23:59
-                    <button data-lcode="12345">申込</button>
-                  </div>
-                </div>
-                """
+                if "/artist/" in url:
+                    html = """
+                    <h3>CANDY TUNE</h3>
+                    <a href="/order/?gLcode=12345">
+                      10.08 木曜日 宮城県 仙台サンプラザホール 一般発売 先着 発売中
+                    </a>
+                    """
+                else:
+                    html = "受付期間 2099/9/1(火) 10:00 ～ 2099/10/8(木) 23:59まで Lコード 12345"
                 return SimpleNamespace(text=html, raise_for_status=lambda: None)
 
         rows = playguides.collect_lawson(Session(), "CANDY TUNE", date(2099, 9, 2))
 
         self.assertEqual(1, len(rows))
         self.assertEqual("lawson", rows[0]["ticketProvider"])
-        self.assertEqual("https://l-tike.com/order/?gLcode=12345", rows[0]["url"])
-        self.assertEqual(playguides.LAWSON_SEARCH_URL, calls[0][0])
-        self.assertEqual({"keyword": "CANDY TUNE"}, calls[0][1]["params"])
+        self.assertEqual("一般発売", rows[0]["ticketType"])
+        self.assertEqual("2099-10-08", rows[0]["eventDate"])
+        self.assertEqual("仙台サンプラザホール", rows[0]["venue"])
+        self.assertEqual("2099-09-01T10:00", rows[0]["applyStart"])
+        self.assertEqual("2099-10-08T23:59", rows[0]["applyEnd"])
+        self.assertEqual("open", rows[0]["applicationStatus"])
+        self.assertEqual(playguides.LAWSON_ARTIST_URLS["CANDY TUNE"], calls[0][0])
+        self.assertIn("/order/?gLcode=12345", calls[1][0])
         self.assertEqual(playguides.LAWSON_TIMEOUT, calls[0][1]["timeout"])
         self.assertIn("Mozilla/5.0", calls[0][1]["headers"]["User-Agent"])
-        self.assertEqual("https://l-tike.com/", calls[0][1]["headers"]["Referer"])
+
+    def test_lawson_artist_date_rolls_into_next_year_after_december_deadline(self):
+        self.assertEqual(
+            "2100-01-10",
+            playguides._lawson_artist_event_date(
+                "01.10 日曜日 東京都 Test Hall 一般発売 先着 発売中",
+                "2099-12-20T23:59",
+            ),
+        )
+
 
     def test_dedupe_never_collapses_different_providers(self):
         common = dict(
