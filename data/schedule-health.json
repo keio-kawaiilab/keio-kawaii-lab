@@ -1,16 +1,24 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-29T03:17:08.553003+09:00",
-  "candidateUpdatedAt": "2026-09-29T03:17:08+09:00",
+  "generatedAt": "2026-09-29T04:46:09.566365+09:00",
+  "candidateUpdatedAt": "2026-09-29T04:46:09+09:00",
   "previousEventCount": 168,
   "candidateEventCount": 168,
   "protectedPreviousCount": 168,
   "errorCount": 0,
-  "warningCount": 15,
+  "warningCount": 23,
   "errors": [],
   "warnings": [
+    "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
+    "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE 小川奈々子 生誕祭 2026 / 一般発売",
     "quarantined one event/source update and kept the previous known-good data: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / プレリザーブ",
+    "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for url:https://red-hot.ne.jp/play/detail.php?pid=py28309: 2026-09-30",
+    "quarantined one event/source update and kept the previous known-good data: deadline moved earlier for sukisuki:6500000004582: 2026-09-30T23:59 -> 2026-09-29T23:59 (manual review required)",
+    "quarantined one event/source update and kept the previous known-good data: protected future/active item disappeared: CUTIE STREET / CUTIE STREET 古澤里紗 生誕祭 2026 / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: protected future/active item disappeared: CUTIE STREET / CUTIE STREET 板倉可奈 生誕祭 2026 / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: protected future/active item disappeared: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: deadline moved earlier for eplus:https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175:days:2026-12-05: 2026-10-01T23:59 -> 2026-07-30T23:59 (manual review required)",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE 小川奈々子 生誕祭 2026 / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event is not marked as official-source data: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -25,7 +33,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: missing or invalid eventScope: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / プレイガイド最速先行",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売"
   ],
-  "candidateSha256": "57c2efdb7c9bef04571e082f75adbed5715bd5d68fcedda7bf43b71190819bce",
+  "candidateSha256": "e765f5699d5cb78c0772c174dfb2c898de2ecaf6e5df67836314040277729e43",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -34,6 +42,7 @@
     "url:https://candytune.asobisystem.com/live_information/detail/40731",
     "url:https://candytune.asobisystem.com/live_information/detail/40732",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
+    "url:https://candytune.asobisystem.com/live_information/detail/40740",
     "url:https://candytune.asobisystem.com/news/detail/88212",
     "url:https://cutiestreet.asobisystem.com/",
     "url:https://cutiestreet.asobisystem.com/feature/autumntour",
@@ -159,8 +168,18 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 2,
+  "quarantineCount": 10,
   "quarantineActions": [
+    {
+      "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE 小川奈々子 生誕祭 2026 / 一般発売",
+      "action": "restored previous row",
+      "restoredPreviousRows": 1
+    },
     {
       "error": "special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
       "action": "restored previous row",
@@ -170,6 +189,36 @@
       "error": "active deadline disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / プレリザーブ",
       "action": "restored previous rows for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
       "restoredPreviousRows": 7
+    },
+    {
+      "error": "future performance dates disappeared for url:https://red-hot.ne.jp/play/detail.php?pid=py28309: 2026-09-30",
+      "action": "restored previous rows for url:https://red-hot.ne.jp/play/detail.php?pid=py28309",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "deadline moved earlier for sukisuki:6500000004582: 2026-09-30T23:59 -> 2026-09-29T23:59 (manual review required)",
+      "action": "restored previous rows for sukisuki:6500000004582",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "protected future/active item disappeared: CUTIE STREET / CUTIE STREET 古澤里紗 生誕祭 2026 / FC先行",
+      "action": "restored disappeared previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "protected future/active item disappeared: CUTIE STREET / CUTIE STREET 板倉可奈 生誕祭 2026 / FC先行",
+      "action": "restored disappeared previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "protected future/active item disappeared: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / FC先行",
+      "action": "restored disappeared previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "deadline moved earlier for eplus:https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175:days:2026-12-05: 2026-10-01T23:59 -> 2026-07-30T23:59 (manual review required)",
+      "action": "restored previous rows for eplus:https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175:days:2026-12-05",
+      "restoredPreviousRows": 1
     }
   ],
   "rowFailuresCanBlockRelease": false,
