@@ -128,6 +128,82 @@ class ContinuousDiscoveryTests(unittest.TestCase):
         ]}
         self.assertEqual(discovery.infer_central_group("Joint show FC先行", "受付開始", url, existing), "KAWAII LAB.合同")
 
+    def test_standalone_resale_range_is_extracted(self):
+        text = (
+            "リセールサービスのお知らせ\n"
+            "申込方法をご確認ください\n"
+            "2026年5月22日(金)10:00〜2026年5月27日(水)23:59まで\n"
+        )
+        self.assertEqual(
+            discovery.standalone_ticket_window(text, 2026),
+            ("2026-05-22T10:00", "2026-05-27T23:59"),
+        )
+
+    def test_end_only_expired_ticket_window_leaves_current_pending_queue(self):
+        text = "2026.02.17\n受付期間：～2026年3月2日(月)23:59まで"
+        self.assertTrue(
+            discovery.end_only_ticket_window_is_expired(text, date(2026, 9, 28))
+        )
+        future = "2026.09.27\n受付期間：～2026年10月2日(金)23:59まで"
+        self.assertFalse(
+            discovery.end_only_ticket_window_is_expired(future, date(2026, 9, 28))
+        )
+
+    def test_ambiguous_central_article_with_expired_window_is_past(self):
+        candidate = discovery.parser.Candidate(
+            "KAWAII LAB. FC",
+            "KAWAII LAB. SESSION vol.17 / vol.18 チケットぴあ特別先行（抽選）実施決定！",
+            "https://kawaiilab.asobisystem.com/news/detail/old",
+        )
+
+        class DummyResponse:
+            text = (
+                "<div class='section--detail'><h1>KAWAII LAB. SESSION vol.17 / vol.18 "
+                "チケットぴあ特別先行（抽選）実施決定！</h1>"
+                "<p>受付期間：2025年11月28日(金)12:00〜2025年12月3日(水)23:59</p></div>"
+            )
+            def raise_for_status(self):
+                return None
+
+        class DummySession:
+            headers = {}
+            def __enter__(self): return self
+            def __exit__(self, *args): return None
+            def get(self, *args, **kwargs): return DummyResponse()
+
+        with patch.object(discovery.requests, "Session", return_value=DummySession()):
+            rows, review, status = discovery.read_candidate(candidate, {"events": []}, {})
+        self.assertEqual([], rows)
+        self.assertIsNone(review)
+        self.assertEqual("past", status)
+
+    def test_system_maintenance_article_is_irrelevant_even_if_body_mentions_ticket(self):
+        candidate = discovery.parser.Candidate(
+            "CANDY TUNE",
+            "［重要］システムメンテナンスのお知らせ",
+            "https://candytune.asobisystem.com/news/detail/maintenance",
+        )
+
+        class DummyResponse:
+            text = (
+                "<div class='section--detail'><h1>［重要］システムメンテナンスのお知らせ</h1>"
+                "<p>メンテナンス中はチケットページをご利用いただけません。</p></div>"
+            )
+            def raise_for_status(self):
+                return None
+
+        class DummySession:
+            headers = {}
+            def __enter__(self): return self
+            def __exit__(self, *args): return None
+            def get(self, *args, **kwargs): return DummyResponse()
+
+        with patch.object(discovery.requests, "Session", return_value=DummySession()):
+            rows, review, status = discovery.read_candidate(candidate, {"events": []}, {})
+        self.assertEqual([], rows)
+        self.assertIsNone(review)
+        self.assertEqual("irrelevant", status)
+
     def test_expired_review_is_not_current_pending(self):
         self.assertTrue(discovery.review_is_expired(
             {"applyStart": "2026-01-01T10:00", "applyEnd": "2026-01-03T23:59"},
