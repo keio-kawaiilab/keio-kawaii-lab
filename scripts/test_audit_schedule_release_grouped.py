@@ -6,6 +6,7 @@ import unittest
 from datetime import datetime, timezone
 
 from audit_schedule_release_grouped import (
+    _replace_candidate_rows,
     audit_grouped,
     is_global_integrity_error,
     repair_local_errors,
@@ -94,6 +95,23 @@ class GroupedReleaseAuditTests(unittest.TestCase):
         new_rows = [copy.deepcopy(old_rows[0]), copy.deepcopy(old_rows[2])]
         errors, _, _ = audit_grouped(payload(old_rows), payload(new_rows), NOW)
         self.assertTrue(any("disappeared" in item for item in errors))
+
+    def test_quarantine_restore_evicts_same_id_even_when_trigger_matches_another_row(self):
+        current_same_id = event("shared-id", "2026-11-28", "正規化後の現行タイトル")
+        implicated = event("bad-row", "2026-11-29", "監査で隔離される行")
+        previous_same_id = event("shared-id", "2026-11-28", "前回の正常タイトル")
+        candidate = payload([current_same_id, implicated])
+
+        changed = _replace_candidate_rows(
+            candidate,
+            lambda row: row.get("id") == "bad-row",
+            [previous_same_id],
+        )
+
+        self.assertTrue(changed)
+        ids = [row.get("id") for row in candidate["events"]]
+        self.assertEqual(["shared-id"], ids)
+        self.assertEqual("前回の正常タイトル", candidate["events"][0]["title"])
 
     def test_release_repair_restores_bad_source_but_keeps_unrelated_fresh_event(self):
         title = "MORE STAR リリースイベント"
