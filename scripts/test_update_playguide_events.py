@@ -55,6 +55,39 @@ class PlayguideEventTests(unittest.TestCase):
         self.assertEqual(event["startTime"], "18:30")
         self.assertTrue(event["applicationWindowVerified"])
 
+    def test_lawson_search_uses_browser_headers_params_and_bounded_timeout(self):
+        calls = []
+        class Session:
+            def get(self, url, **kwargs):
+                calls.append((url, kwargs))
+                html = """
+                <div class="ResultBox">
+                  <h3 class="ResultBox__title">CANDY TUNE</h3>
+                  <dl class="ResultBox__informations">
+                    <dd>公演日：2099/10/1</dd>
+                    <dd>会場：豊洲PIT</dd>
+                  </dl>
+                  <div class="prfItem">
+                    <span id="reception_typename">先着</span>
+                    <span id="sale_name">一般発売</span>
+                    受付期間:2099/9/1 10:00～2099/9/30 23:59
+                    <button data-lcode="12345">申込</button>
+                  </div>
+                </div>
+                """
+                return SimpleNamespace(text=html, raise_for_status=lambda: None)
+
+        rows = playguides.collect_lawson(Session(), "CANDY TUNE", date(2099, 9, 2))
+
+        self.assertEqual(1, len(rows))
+        self.assertEqual("lawson", rows[0]["ticketProvider"])
+        self.assertEqual("https://l-tike.com/order/?gLcode=12345", rows[0]["url"])
+        self.assertEqual(playguides.LAWSON_SEARCH_URL, calls[0][0])
+        self.assertEqual({"keyword": "CANDY TUNE"}, calls[0][1]["params"])
+        self.assertEqual(playguides.LAWSON_TIMEOUT, calls[0][1]["timeout"])
+        self.assertIn("Mozilla/5.0", calls[0][1]["headers"]["User-Agent"])
+        self.assertEqual("https://l-tike.com/", calls[0][1]["headers"]["Referer"])
+
     def test_dedupe_never_collapses_different_providers(self):
         common = dict(
             group="CANDY TUNE",
