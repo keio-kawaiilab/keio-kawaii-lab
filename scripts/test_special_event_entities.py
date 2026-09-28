@@ -8,6 +8,75 @@ from normalize_special_event_entities import normalize_payload, validate
 
 
 class SpecialEventEntityTests(unittest.TestCase):
+    def test_duplicate_ordinary_id_same_logical_row_collapses_before_publication(self):
+        payload = {"events": [
+            {
+                "id": "644a68f1d59b3670",
+                "group": "CUTIE STREET",
+                "eventTitle": "【CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-】@ IGアリーナ",
+                "title": "【CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-】@ IGアリーナ",
+                "eventDate": "2026-11-28",
+                "venue": "愛知県 IGアリーナ",
+                "ticketType": "現在受付なし",
+                "sourceType": "official-schedule",
+                "url": "https://cutiestreet.asobisystem.com/feature/autumntour",
+            },
+            {
+                "id": "644a68f1d59b3670",
+                "group": "CUTIE STREET",
+                "eventTitle": "【CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-】@ IGアリーナ",
+                "title": "【CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-】@ IGアリーナ",
+                "eventDate": "2026-11-28",
+                "venue": "愛知県 IGアリーナ",
+                "ticketType": "現在受付なし",
+                "sourceType": "official-schedule",
+                "url": "https://cutiestreet.asobisystem.com/feature/autumntour",
+                "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/example",
+            },
+        ]}
+
+        normalized, report = normalize_payload(payload)
+
+        self.assertEqual(1, len(normalized["events"]))
+        self.assertEqual("644a68f1d59b3670", normalized["events"][0]["id"])
+        self.assertEqual(1, report["duplicateEventIdCollisions"])
+        self.assertEqual(1, report["duplicateEventRowsCollapsed"])
+        self.assertEqual(0, report["duplicateEventIdsDisambiguated"])
+        self.assertFalse(validate(normalized))
+
+    def test_duplicate_ordinary_id_for_distinct_events_is_disambiguated_not_dropped(self):
+        payload = {"events": [
+            {
+                "id": "reused-id",
+                "group": "CUTIE STREET",
+                "eventTitle": "ARENA TOUR",
+                "eventDate": "2026-11-28",
+                "venue": "IGアリーナ",
+                "ticketType": "現在受付なし",
+                "sourceType": "official-schedule",
+            },
+            {
+                "id": "reused-id",
+                "group": "CUTIE STREET",
+                "eventTitle": "ARENA TOUR",
+                "eventDate": "2026-11-29",
+                "venue": "IGアリーナ",
+                "ticketType": "現在受付なし",
+                "sourceType": "official-schedule",
+            },
+        ]}
+
+        normalized, report = normalize_payload(payload)
+
+        self.assertEqual(2, len(normalized["events"]))
+        ids = {event["id"] for event in normalized["events"]}
+        self.assertIn("reused-id", ids)
+        self.assertTrue(any(value.startswith("reused-id--") for value in ids))
+        self.assertEqual(1, report["duplicateEventIdCollisions"])
+        self.assertEqual(0, report["duplicateEventRowsCollapsed"])
+        self.assertEqual(1, report["duplicateEventIdsDisambiguated"])
+        self.assertFalse(validate(normalized))
+
     def test_same_large_benefit_different_sales_channels_becomes_one_event(self):
         payload = {"events": [
             {
