@@ -19,6 +19,22 @@ from bs4 import BeautifulSoup
 DATA_PATH = Path("data/live-events.json")
 JST = ZoneInfo("Asia/Tokyo")
 
+LAWSON_SEARCH_URL = "https://l-tike.com/search/"
+LAWSON_SEARCH_HEADERS = {
+    # Lawson's edge has repeatedly stalled requests from GitHub runners when
+    # five bot-UA searches arrive at once.  Use ordinary browser negotiation
+    # headers for this public HTML endpoint; source identity remains recorded
+    # explicitly in the emitted rows and registry.
+    "User-Agent": (
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+    "Accept-Language": "ja,en-US;q=0.8,en;q=0.7",
+    "Referer": "https://l-tike.com/",
+}
+LAWSON_TIMEOUT = (8, 18)
+
 EPLUS_ARTIST_URLS = {
     "FRUITS ZIPPER": "https://eplus.jp/sf/word/0000152889",
     "CANDY TUNE": "https://eplus.jp/sf/word/0000157138",
@@ -229,8 +245,16 @@ def reception_status(text: str, end: str, today: date) -> str:
 
 
 def collect_lawson(session: requests.Session, group: str, today: date) -> list[dict]:
-    search_url = f"https://l-tike.com/search/?keyword={quote(group)}"
-    response = session.get(search_url, timeout=25)
+    # Let requests encode the query as application/x-www-form-urlencoded
+    # (spaces become '+'), matching Lawson's own public search URLs.  Combined
+    # with browser-compatible negotiation headers this avoids the long-lived
+    # GitHub-runner timeout path seen with percent-encoded bot-UA requests.
+    response = session.get(
+        LAWSON_SEARCH_URL,
+        params={"keyword": group},
+        headers=LAWSON_SEARCH_HEADERS,
+        timeout=LAWSON_TIMEOUT,
+    )
     response.raise_for_status()
     soup = BeautifulSoup(response.text, "html.parser")
     results: list[dict] = []
