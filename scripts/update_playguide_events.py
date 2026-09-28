@@ -10,7 +10,7 @@ import unicodedata
 from collections import Counter
 from datetime import date, datetime
 from pathlib import Path
-from urllib.parse import quote, urljoin
+from urllib.parse import urljoin
 from zoneinfo import ZoneInfo
 
 import requests
@@ -19,7 +19,6 @@ from bs4 import BeautifulSoup
 DATA_PATH = Path("data/live-events.json")
 JST = ZoneInfo("Asia/Tokyo")
 
-LAWSON_SEARCH_URL = "https://l-tike.com/search/"
 LAWSON_ARTIST_URLS = {
     "FRUITS ZIPPER": "https://l-tike.com/artist/000000000899959/",
     "CANDY TUNE": "https://l-tike.com/artist/000000000928029/",
@@ -28,10 +27,8 @@ LAWSON_ARTIST_URLS = {
     "MORE STAR": "https://l-tike.com/artist/000000001014114/",
 }
 LAWSON_SEARCH_HEADERS = {
-    # Lawson's edge has repeatedly stalled requests from GitHub runners when
-    # five bot-UA searches arrive at once.  Use ordinary browser negotiation
-    # headers for this public HTML endpoint; source identity remains recorded
-    # explicitly in the emitted rows and registry.
+    # Use ordinary browser negotiation headers for Lawson's canonical public
+    # artist/detail pages. Source identity remains explicit in emitted rows.
     "User-Agent": (
         "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
         "(KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
