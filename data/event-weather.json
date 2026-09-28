@@ -1,7 +1,7 @@
 {
-  "date": "2026-09-28",
+  "date": "2026-09-29",
   "horizonDays": 7,
-  "generatedAt": "2026-09-28T17:56+09:00",
+  "generatedAt": "2026-09-29T06:12+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -13,17 +13,19 @@
       "venueKey": "有明アリーナ",
       "eventIds": [
         "a9f07d73f091ca00",
-        "120bef86bfd1e983"
+        "120bef86bfd1e983",
+        "3f99f7bcacecc458",
+        "b929ac13fb654730"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "mesh5km",
       "label": "雨",
-      "max": 20.0,
-      "min": 20.0,
+      "max": 21.0,
+      "min": 21.0,
       "pop": "70",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-09-28T17:00:00+09:00",
+      "issuedAt": "2026-09-29T05:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "15〜19℃",
       "coordinates": {
@@ -31,12 +33,6 @@
         "lon": 139.795013
       },
       "meshTimeline": [
-        {
-          "time": "06:00",
-          "label": "雨",
-          "validAt": "2026-09-29T06:00+09:00",
-          "temp": 21
-        },
         {
           "time": "09:00",
           "label": "雨",
@@ -71,7 +67,24 @@
           "time": "24:00",
           "label": "雨",
           "validAt": "2026-09-30T00:00+09:00",
-          "temp": 19
+          "temp": 18
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "17:00",
+          "rain": true,
+          "validAt": "2026-09-29T17:00+09:00"
+        },
+        {
+          "time": "18:00",
+          "rain": true,
+          "validAt": "2026-09-29T18:00+09:00"
+        },
+        {
+          "time": "19:00",
+          "rain": true,
+          "validAt": "2026-09-29T19:00+09:00"
         }
       ]
     },
@@ -86,11 +99,11 @@
       "areaName": "北西部",
       "precision": "area",
       "label": "くもり 時々 雨",
-      "max": null,
-      "min": null,
-      "pop": null,
-      "popLabel": "",
-      "issuedAt": "2026-09-28T17:00:00+09:00",
+      "max": 21.0,
+      "min": 18.0,
+      "pop": "50",
+      "popLabel": "18〜00時",
+      "issuedAt": "2026-09-29T05:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -106,16 +119,63 @@
       ],
       "areaCode": "270000",
       "areaName": "大阪府",
-      "precision": "area",
-      "label": "くもり",
-      "max": null,
-      "min": null,
-      "pop": null,
-      "popLabel": "",
-      "issuedAt": "2026-09-28T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "precision": "mesh5km",
+      "label": "晴れ",
+      "max": 27.0,
+      "min": 19.0,
+      "pop": "0",
+      "popLabel": "18〜00時",
+      "issuedAt": "2026-09-29T05:00:00+09:00",
+      "meshTime": "18:00",
+      "meshTempBand": "25〜29℃",
+      "coordinates": {
+        "lat": 34.689934,
+        "lon": 135.486069
+      },
+      "meshTimeline": [
+        {
+          "time": "06:00",
+          "label": "晴れ",
+          "validAt": "2026-09-30T06:00+09:00",
+          "temp": 19
+        },
+        {
+          "time": "09:00",
+          "label": "晴れ",
+          "validAt": "2026-09-30T09:00+09:00",
+          "temp": 22
+        },
+        {
+          "time": "12:00",
+          "label": "晴れ",
+          "validAt": "2026-09-30T12:00+09:00",
+          "temp": 25
+        },
+        {
+          "time": "15:00",
+          "label": "晴れ",
+          "validAt": "2026-09-30T15:00+09:00",
+          "temp": 27
+        },
+        {
+          "time": "18:00",
+          "label": "晴れ",
+          "validAt": "2026-09-30T18:00+09:00",
+          "temp": 25
+        },
+        {
+          "time": "21:00",
+          "label": "晴れ",
+          "validAt": "2026-09-30T21:00+09:00",
+          "temp": 23
+        },
+        {
+          "time": "24:00",
+          "label": "晴れ",
+          "validAt": "2026-10-01T00:00+09:00",
+          "temp": 21
+        }
+      ]
     },
     {
       "date": "2026-09-30",
@@ -123,20 +183,69 @@
       "venueKey": "有明アリーナ",
       "eventIds": [
         "a9f07d73f091ca00",
-        "120bef86bfd1e983"
+        "120bef86bfd1e983",
+        "3f99f7bcacecc458",
+        "b929ac13fb654730"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
-      "precision": "area",
-      "label": "くもり 時々 雨",
-      "max": null,
-      "min": null,
-      "pop": null,
-      "popLabel": "",
-      "issuedAt": "2026-09-28T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "precision": "mesh5km",
+      "label": "雨",
+      "max": 21.0,
+      "min": 18.0,
+      "pop": "50",
+      "popLabel": "12〜18時",
+      "issuedAt": "2026-09-29T05:00:00+09:00",
+      "meshTime": "18:00",
+      "meshTempBand": "15〜19℃",
+      "coordinates": {
+        "lat": 35.64241,
+        "lon": 139.795013
+      },
+      "meshTimeline": [
+        {
+          "time": "06:00",
+          "label": "雨",
+          "validAt": "2026-09-30T06:00+09:00",
+          "temp": 19
+        },
+        {
+          "time": "09:00",
+          "label": "雨",
+          "validAt": "2026-09-30T09:00+09:00",
+          "temp": 19
+        },
+        {
+          "time": "12:00",
+          "label": "くもり",
+          "validAt": "2026-09-30T12:00+09:00",
+          "temp": 20
+        },
+        {
+          "time": "15:00",
+          "label": "くもり",
+          "validAt": "2026-09-30T15:00+09:00",
+          "temp": 19
+        },
+        {
+          "time": "18:00",
+          "label": "雨",
+          "validAt": "2026-09-30T18:00+09:00",
+          "temp": 18
+        },
+        {
+          "time": "21:00",
+          "label": "くもり",
+          "validAt": "2026-09-30T21:00+09:00",
+          "temp": 18
+        },
+        {
+          "time": "24:00",
+          "label": "くもり",
+          "validAt": "2026-10-01T00:00+09:00",
+          "temp": 19
+        }
+      ]
     },
     {
       "date": "2026-10-01",
@@ -206,7 +315,9 @@
       "venueKey": "セキスイハイムスーパーアリーナ",
       "eventIds": [
         "a9f07d73f091ca00",
-        "fa5aeb95b4104cd4"
+        "fa5aeb95b4104cd4",
+        "3f99f7bcacecc458",
+        "b929ac13fb654730"
       ],
       "areaCode": "040010",
       "areaName": "東部",
@@ -247,7 +358,9 @@
       "venueKey": "セキスイハイムスーパーアリーナ",
       "eventIds": [
         "a9f07d73f091ca00",
-        "fa5aeb95b4104cd4"
+        "fa5aeb95b4104cd4",
+        "3f99f7bcacecc458",
+        "b929ac13fb654730"
       ],
       "areaCode": "040010",
       "areaName": "東部",
@@ -305,14 +418,14 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 37,
-    "uniqueVenueDates": 16,
+    "occurrencesInRange": 52,
+    "uniqueVenueDates": 17,
     "weatherEntries": 12,
-    "meshEntries": 1,
-    "failures": 4,
-    "meshTimelineEntries": 1,
-    "meshExactTempSlots": 7,
-    "hourlyRainEntries": 0
+    "meshEntries": 3,
+    "failures": 5,
+    "meshTimelineEntries": 3,
+    "meshExactTempSlots": 20,
+    "hourlyRainEntries": 1
   },
   "failures": [
     {
@@ -334,6 +447,11 @@
       "date": "2026-10-04",
       "venue": "清水マリンパーク",
       "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-10-06",
+      "venue": "宮城県 仙台サンプラザホール",
+      "reason": "開催日の予報がまだありません"
     }
   ]
 }
