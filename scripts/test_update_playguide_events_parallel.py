@@ -41,6 +41,37 @@ class ParallelPlayguideTests(unittest.TestCase):
         self.assertEqual(1, len(result["failures"]))
         self.assertIn("lawson/CANDY TUNE", result["failures"][0])
 
+    def test_lawson_concurrency_is_capped_without_serializing_other_sources(self):
+        state = {"active": 0, "max": 0}
+        lock = __import__("threading").Lock()
+
+        def lawson(_session, group, _today):
+            with lock:
+                state["active"] += 1
+                state["max"] = max(state["max"], state["active"])
+            time.sleep(0.06)
+            with lock:
+                state["active"] -= 1
+            return [{
+                "id": "lawson-" + group,
+                "ticketProvider": "lawson",
+                "sourceType": "lawson",
+                "group": group,
+                "eventDate": "2099-09-01",
+                "url": "https://l-tike.com/" + group,
+            }]
+
+        tasks = tuple(("lawson", group, lawson) for group in ("A", "B", "C", "D", "E"))
+        result = parallel.collect_parallel(
+            date(2099, 8, 28),
+            "2099-08-28T15:00:00+09:00",
+            tasks=tasks,
+            max_workers=5,
+            session_factory=DummySession,
+        )
+        self.assertEqual(5, len(result["fresh"]))
+        self.assertLessEqual(state["max"], parallel.LAWSON_MAX_CONCURRENCY)
+
     def test_independent_sources_run_concurrently(self):
         def slow(_session, group, _today):
             time.sleep(0.12)
