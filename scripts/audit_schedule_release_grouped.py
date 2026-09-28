@@ -265,10 +265,41 @@ def _same_event_candidates(previous_events: list[dict], current: dict) -> list[d
 
 def _replace_candidate_rows(candidate: dict, predicate, replacements: list[dict]) -> bool:
     rows = _events(candidate)
-    kept = [event for event in rows if not predicate(event)]
-    if len(kept) == len(rows) and not replacements:
+
+    # A quarantine restore is authoritative for the restored event id.  The
+    # candidate row can have a different label/source key from the previous
+    # known-good row (for example after title normalization), so filtering only
+    # by the triggering predicate can leave that candidate row behind and then
+    # append the previous row with the same id.  That creates a duplicate id at
+    # the final publication boundary and used to freeze the entire refresh.
+    #
+    # Remove both rows implicated by the predicate and any surviving candidate
+    # row whose id is being restored.  Also collapse duplicate replacement ids
+    # defensively so one local quarantine can never poison unrelated updates.
+    replacement_rows: list[dict] = []
+    replacement_ids: set[str] = set()
+    for event in replacements:
+        replacement = copy.deepcopy(event)
+        event_id = str(replacement.get("id") or "").strip()
+        if event_id and event_id in replacement_ids:
+            continue
+        if event_id:
+            replacement_ids.add(event_id)
+        replacement_rows.append(replacement)
+
+    kept = []
+    for event in rows:
+        if predicate(event):
+            continue
+        event_id = str(event.get("id") or "").strip()
+        if event_id and event_id in replacement_ids:
+            continue
+        kept.append(event)
+
+    updated = kept + replacement_rows
+    if updated == rows:
         return False
-    candidate["events"] = kept + [copy.deepcopy(event) for event in replacements]
+    candidate["events"] = updated
     return True
 
 
