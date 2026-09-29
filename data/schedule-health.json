@@ -1,15 +1,14 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-30T05:28:38.446668+09:00",
-  "candidateUpdatedAt": "2026-09-30T05:28:38+09:00",
+  "generatedAt": "2026-09-30T06:07:01.986663+09:00",
+  "candidateUpdatedAt": "2026-09-30T06:06:45+09:00",
   "previousEventCount": 153,
-  "candidateEventCount": 153,
+  "candidateEventCount": 151,
   "protectedPreviousCount": 153,
   "errorCount": 0,
-  "warningCount": 9,
+  "warningCount": 8,
   "errors": [],
   "warnings": [
-    "quarantined one event/source update and kept the previous known-good data: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE 小川奈々子 生誕祭 2026 / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event is not marked as official-source data: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -19,7 +18,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
   ],
-  "candidateSha256": "20af1f459d28b8ff9a70c3c36c1c03091a81e4cb78915373eecadcfbaa1f8f52",
+  "candidateSha256": "75c9e5bd1bbba425748a4f98a9f5e2965292a6817cf3a7941d14612aca35c520",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -27,6 +26,7 @@
     "url:https://candytune.asobisystem.com/live_information/detail/40728",
     "url:https://candytune.asobisystem.com/live_information/detail/40731",
     "url:https://candytune.asobisystem.com/live_information/detail/40732",
+    "url:https://candytune.asobisystem.com/live_information/detail/40733",
     "url:https://candytune.asobisystem.com/live_information/detail/40743",
     "url:https://candytune.asobisystem.com/news/detail/88212",
     "url:https://cutiestreet.asobisystem.com/",
@@ -123,42 +123,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 1,
-  "quarantineActions": [
-    {
-      "error": "special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
-      "action": "restored previous row",
-      "restoredPreviousRows": 1
-    }
-  ],
-  "rowFailuresCanBlockRelease": false,
-  "officialIndexReconciledAfterQuarantine": {
-    "reassignedCount": 0,
-    "hydratedCount": 0,
-    "ambiguousCount": 0,
-    "unresolvedCount": 3,
-    "reassigned": [],
-    "hydrated": [],
-    "ambiguous": [],
-    "unresolved": [
-      {
-        "group": "SWEET STEADY",
-        "date": "2026-10-11",
-        "url": "https://sweetsteady.asobisystem.com/live_information/detail/45518",
-        "representedBy": "a197fe7cce1a9729"
-      },
-      {
-        "group": "MORE STAR",
-        "date": "2026-10-11",
-        "url": "https://morestar.asobisystem.com/live_information/detail/45672",
-        "representedBy": "a197fe7cce1a9729"
-      },
-      {
-        "group": "MORE STAR",
-        "date": "2026-10-17",
-        "url": "https://morestar.asobisystem.com/live_information/detail/45673",
-        "representedBy": "9c9a76acf596123e"
-      }
-    ]
-  }
+  "quarantineCount": 0,
+  "quarantineActions": [],
+  "rowFailuresCanBlockRelease": false
 }
