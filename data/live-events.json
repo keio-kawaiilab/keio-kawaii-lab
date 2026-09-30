@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-30T12:59:33+09:00",
+  "checkedAt": "2026-09-30T14:33:19+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-09-29T08:31:11+09:00",
     "scannedPages": {
@@ -1484,9 +1484,9 @@
       "id": "8bd3d05e19ac0532",
       "group": "CANDY TUNE",
       "title": "CANDY TUNE 小川奈々子 生誕祭 2026",
-      "ticketType": "現在受付なし",
-      "applyStart": null,
-      "applyEnd": null,
+      "ticketType": "年会費コース会員先行",
+      "applyStart": "2026-09-04T18:00",
+      "applyEnd": "2026-09-07T23:59",
       "resultDate": null,
       "paymentEnd": null,
       "eventDate": "2026-10-01",
@@ -1514,11 +1514,15 @@
       ],
       "applicationStatus": "none",
       "officialScheduleUrl": "https://candytune.asobisystem.com/live_information/detail/43376",
-      "applicationDisplayMode": "schedule-only",
+      "applicationDisplayMode": "band",
       "specialDetailsStatus": "ticket-details-found",
       "ticketGuardRejected": true,
       "ticketGuardReason": "upgrade notice cannot be used as the source of an annual-fee ticket sale",
-      "ticketGuardSource": "https://candytune.asobisystem.com/news/detail/88933"
+      "ticketGuardSource": "https://candytune.asobisystem.com/news/detail/88933",
+      "applicationWindowVerified": true,
+      "deadlineVerified": true,
+      "applicationWindowSource": "https://candytune.asobisystem.com/news/detail/88933",
+      "deadlineSource": "https://candytune.asobisystem.com/news/detail/88933"
     },
     {
       "id": "55efd64c6876df01",
@@ -7783,11 +7787,11 @@
     "performanceEntityCount": 82,
     "sourceOccurrenceCount": 260,
     "mergedSourceOccurrences": 178,
-    "offerCount": 119
+    "offerCount": 120
   },
   "publicEventModelVersion": 1,
   "releasePreparation": {
-    "preparedAt": "2026-09-30T12:59:30+09:00",
+    "preparedAt": "2026-09-30T14:33:16+09:00",
     "normalizedSpecialEvents": 7,
     "duplicateIdsRemoved": 0,
     "retainedPreviousRows": 0,
@@ -7806,16 +7810,13 @@
     "knownScheduleCorrections": {
       "hakataSpecialFixed": 0,
       "cutieWrongPiaBundleRemoved": 0,
-      "cutieObsoletePiaRowsRemoved": 2,
+      "cutieObsoletePiaRowsRemoved": 0,
       "cutieIgFixed": 1,
       "staleChristmasRowsRemoved": 0,
       "fmAichiFixed": 0,
       "sweetFcSecondStartFixed": 0,
-      "semanticTicketDuplicatesRemoved": 2,
-      "semanticTicketDuplicateIds": [
-        "ef9326cb6422c4ea",
-        "8f2ef76c3fbff232"
-      ]
+      "semanticTicketDuplicatesRemoved": 0,
+      "semanticTicketDuplicateIds": []
     },
     "physicalEventInvariant": {
       "semanticNormalization": {
@@ -7840,8 +7841,8 @@
       "remainingDuplicates": []
     },
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-09-30T12:59:30+09:00",
-    "checkedAt": "2026-09-30T12:59:30+09:00"
+    "publicUpdatedAt": "2026-09-30T14:33:16+09:00",
+    "checkedAt": "2026-09-30T14:33:16+09:00"
   },
   "resaleDiagnostics": {
     "articles": 26,
@@ -14479,7 +14480,7 @@
       }
     ]
   },
-  "updatedAt": "2026-09-30T12:59:33+09:00",
+  "updatedAt": "2026-09-30T14:33:19+09:00",
   "publicEvents": [
     {
       "id": "1c60e2be989c564d",
@@ -18091,6 +18092,31 @@
       ],
       "offers": [
         {
+          "sourceRowId": "8bd3d05e19ac0532",
+          "provider": "official",
+          "url": "https://kawaiilab.asobisystem.com/news/detail/88104",
+          "urls": [
+            "https://kawaiilab.asobisystem.com/news/detail/88104",
+            "https://candytune.asobisystem.com/news/detail/88933",
+            "https://candytune.asobisystem.com/live_information/detail/43376",
+            "https://candytune.asobisystem.com/news/detail/86518",
+            "https://candytune.asobisystem.com/news/detail/87180"
+          ],
+          "ticketType": "年会費コース会員先行",
+          "applyStart": "2026-09-04T18:00",
+          "applyEnd": "2026-09-07T23:59",
+          "applicationStatus": "none",
+          "applicationWindowVerified": true,
+          "deadlineVerified": true,
+          "applicationDisplayMode": "band",
+          "applicationWindowSource": "https://candytune.asobisystem.com/news/detail/88933",
+          "deadlineSource": "https://candytune.asobisystem.com/news/detail/88933",
+          "sourceType": "derived",
+          "sourceChannel": "recent-official-body",
+          "primarySource": "official",
+          "sourcePublishedAt": "2026-09-04"
+        },
+        {
           "sourceRowId": "55efd64c6876df01",
           "provider": "pia",
           "url": "https://t.pia.jp/pia/event/event.do?eventCd=2631198",
@@ -18125,7 +18151,7 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "一般発売",
+      "ticketType": "複数受付",
       "applicationDisplayMode": "offers",
       "applicationStatus": "offers"
     },
