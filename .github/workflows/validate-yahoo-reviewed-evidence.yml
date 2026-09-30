@@ -1,0 +1,54 @@
+name: Validate Yahoo reviewed transit evidence
+
+on:
+  push:
+    branches:
+      - work/yahoo-reviewed-evidence-20260924
+    paths:
+      - '.github/workflows/validate-yahoo-reviewed-evidence.yml'
+      - 'scripts/reviewed_train_evidence.py'
+      - 'scripts/test_reviewed_train_evidence.py'
+      - 'data/transit-v2/reviewed-train-evidence.json'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Test reviewed evidence helper
+        run: |
+          python -m py_compile scripts/reviewed_train_evidence.py scripts/finalize_transit_v2.py scripts/audit_transit_v2.py
+          python scripts/test_reviewed_train_evidence.py
+      - name: Finalize strict DB in validation workspace
+        run: |
+          python scripts/finalize_transit_v2.py
+          python scripts/normalize_transit_v2_physical_destinations.py
+          python scripts/audit_transit_v2.py
+      - name: Assert Yahoo evidence and report delta
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          e=json.loads(Path('data/transit-v2/same-train-edges.json').read_text())
+          c=json.loads(Path('data/transit-v2/coverage.json').read_text())
+          y=[x for x in e['edges'] if any(str(v).startswith('third-party-route-result:yahoo-transit-zero-transfer') for v in (x.get('evidence') or []))]
+          print('YAHOO_EVIDENCE_EDGES', len(y))
+          print('UNRESOLVED_TOTAL', c['summary']['unresolved'])
+          print('EVIDENCE_BACKED', c['summary']['evidenceBackedSameTrainEdges'])
+          assert len(y) == 7, y
+          assert c['summary']['unresolved'] <= 3808, c['summary']
+          PY
+      - name: Validate route runtime
+        run: |
+          node scripts/test_route_core.js
+          node scripts/test_route_runtime_same_train.js
+          node scripts/test_route_destination_display.js
