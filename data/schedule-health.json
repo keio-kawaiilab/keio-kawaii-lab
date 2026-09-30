@@ -1,15 +1,21 @@
 {
   "status": "ok",
-  "generatedAt": "2026-09-30T08:58:51.646035+09:00",
-  "candidateUpdatedAt": "2026-09-30T08:58:51+09:00",
+  "generatedAt": "2026-09-30T09:28:05.964048+09:00",
+  "candidateUpdatedAt": "2026-09-30T09:28:05+09:00",
   "previousEventCount": 152,
   "candidateEventCount": 152,
   "protectedPreviousCount": 152,
   "errorCount": 0,
-  "warningCount": 9,
+  "warningCount": 15,
   "errors": [],
   "warnings": [
+    "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
+    "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE 小川奈々子 生誕祭 2026 / 一般発売",
+    "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 一般発売",
     "quarantined one event/source update and kept the previous known-good data: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+    "quarantined one event/source update and kept the previous known-good data: deadline moved earlier for eplus:https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175:days:2026-12-05: 2026-10-01T23:59 -> 2026-07-30T23:59 (manual review required)",
+    "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN -「CANDY CIRCUS」公演 リセールサービスのお知らせ / リセール",
+    "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for url:https://x.com/MORE_STAR_/status/2092567739969966299 [MORE STAR]: 2026-11-25",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE 小川奈々子 生誕祭 2026 / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event is not marked as official-source data: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -19,7 +25,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
   ],
-  "candidateSha256": "26247e63723e889b2e6582c4cb18f7bf734bb62e2764940c5d16ef1cc74d835b",
+  "candidateSha256": "966ecf89f85b9b68d7db148c36e8427a2b67acd2a6874847ca528e4913c81ad6",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -50,6 +56,7 @@
     "url:https://kawaiilab.asobisystem.com/news/detail/87217",
     "url:https://kawaiilab.asobisystem.com/news/detail/88140",
     "url:https://kawaiilab.asobisystem.com/news/detail/88214",
+    "url:https://morestar.asobisystem.com/live_information/detail/45677",
     "url:https://prtimes.jp/main/html/rd/p/000000898.000017258.html",
     "url:https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026",
     "url:https://sweetsteady.asobisystem.com/live_information/detail/43905",
@@ -122,12 +129,42 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 1,
+  "quarantineCount": 7,
   "quarantineActions": [
+    {
+      "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 3
+    },
+    {
+      "error": "active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE 小川奈々子 生誕祭 2026 / 一般発売",
+      "action": "restored previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 一般発売",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 5
+    },
     {
       "error": "special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
       "action": "restored previous row",
       "restoredPreviousRows": 1
+    },
+    {
+      "error": "deadline moved earlier for eplus:https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175:days:2026-12-05: 2026-10-01T23:59 -> 2026-07-30T23:59 (manual review required)",
+      "action": "restored previous rows for eplus:https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175:days:2026-12-05",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN -「CANDY CIRCUS」公演 リセールサービスのお知らせ / リセール",
+      "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
+      "restoredPreviousRows": 8
+    },
+    {
+      "error": "future performance dates disappeared for url:https://x.com/MORE_STAR_/status/2092567739969966299 [MORE STAR]: 2026-11-25",
+      "action": "restored previous rows for url:https://x.com/MORE_STAR_/status/2092567739969966299",
+      "restoredPreviousRows": 2
     }
   ],
   "rowFailuresCanBlockRelease": false,
