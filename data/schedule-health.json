@@ -1,15 +1,19 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-01T01:56:02.565961+09:00",
-  "candidateUpdatedAt": "2026-10-01T01:56:02+09:00",
+  "generatedAt": "2026-10-01T02:04:40.650485+09:00",
+  "candidateUpdatedAt": "2026-10-01T02:04:40+09:00",
   "previousEventCount": 152,
-  "candidateEventCount": 152,
+  "candidateEventCount": 150,
   "protectedPreviousCount": 152,
   "errorCount": 0,
-  "warningCount": 9,
+  "warningCount": 13,
   "errors": [],
   "warnings": [
+    "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE 小川奈々子 生誕祭 2026 / 一般発売",
+    "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
+    "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 一般発売",
     "quarantined one event/source update and kept the previous known-good data: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+    "quarantined one event/source update and kept the previous known-good data: deadline moved earlier for eplus:https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175:days:2026-12-05: 2026-10-01T23:59 -> 2026-07-30T23:59 (manual review required)",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE 小川奈々子 生誕祭 2026 / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event is not marked as official-source data: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -19,7 +23,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
   ],
-  "candidateSha256": "777fed2091907791cc9edf1a5888a4a96594e4e93a2cf4a0d49b8a5437c08058",
+  "candidateSha256": "80837770bb92a4c0aedae55ee462436dd678e293921c736daf2a6273408d0879",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -27,6 +31,7 @@
     "url:https://candytune.asobisystem.com/live_information/detail/40728",
     "url:https://candytune.asobisystem.com/live_information/detail/40731",
     "url:https://candytune.asobisystem.com/live_information/detail/40732",
+    "url:https://candytune.asobisystem.com/live_information/detail/40740",
     "url:https://candytune.asobisystem.com/live_information/detail/40743",
     "url:https://candytune.asobisystem.com/news/detail/88212",
     "url:https://cutiestreet.asobisystem.com/",
@@ -123,11 +128,31 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 1,
+  "quarantineCount": 5,
   "quarantineActions": [
+    {
+      "error": "active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE 小川奈々子 生誕祭 2026 / 一般発売",
+      "action": "restored previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 一般発売",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 4
+    },
     {
       "error": "special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
       "action": "restored previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "deadline moved earlier for eplus:https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175:days:2026-12-05: 2026-10-01T23:59 -> 2026-07-30T23:59 (manual review required)",
+      "action": "restored previous rows for eplus:https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175:days:2026-12-05",
       "restoredPreviousRows": 1
     }
   ],
@@ -136,11 +161,17 @@
     "reassignedCount": 0,
     "hydratedCount": 0,
     "ambiguousCount": 0,
-    "unresolvedCount": 3,
+    "unresolvedCount": 4,
     "reassigned": [],
     "hydrated": [],
     "ambiguous": [],
     "unresolved": [
+      {
+        "group": "FRUITS ZIPPER",
+        "date": "2026-11-01",
+        "url": "https://fruitszipper.asobisystem.com/live_information/detail/44318",
+        "representedBy": "2502a39e2d67a72e"
+      },
       {
         "group": "SWEET STEADY",
         "date": "2026-10-11",
