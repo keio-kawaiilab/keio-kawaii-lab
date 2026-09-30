@@ -1,126 +1,12 @@
 {
-  "date": "2026-09-30",
+  "date": "2026-10-01",
   "horizonDays": 7,
-  "generatedAt": "2026-09-30T17:58+09:00",
+  "generatedAt": "2026-10-01T04:56+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
-    {
-      "date": "2026-09-30",
-      "venue": "千葉県 イオンモール幕張新都心グランドモール1F グランドスクエア",
-      "venueKey": "イオンモール幕張新都心グランドモール1fグランドスクエア",
-      "eventIds": [
-        "special-1703a3ffa31f9eec"
-      ],
-      "areaCode": "120010",
-      "areaName": "北西部",
-      "precision": "area",
-      "label": "くもり 所により 雨",
-      "max": null,
-      "min": null,
-      "pop": "20",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-09-30T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
-    {
-      "date": "2026-09-30",
-      "venue": "大阪府 グランキューブ大阪 メインホール",
-      "venueKey": "グランキューブ大阪メインホール",
-      "eventIds": [
-        "024676b8e98a3faf",
-        "1ad36ff5ec67392e"
-      ],
-      "areaCode": "270000",
-      "areaName": "大阪府",
-      "precision": "mesh5km",
-      "label": "くもり",
-      "max": null,
-      "min": null,
-      "pop": "0",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-09-30T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "20〜24℃",
-      "coordinates": {
-        "lat": 34.689934,
-        "lon": 135.486069
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "くもり",
-          "validAt": "2026-09-30T21:00+09:00",
-          "temp": 23
-        },
-        {
-          "time": "24:00",
-          "label": "晴れ",
-          "validAt": "2026-10-01T00:00+09:00",
-          "temp": 22
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "17:30",
-          "rain": false,
-          "validAt": "2026-09-30T17:30+09:00"
-        }
-      ]
-    },
-    {
-      "date": "2026-09-30",
-      "venue": "東京都 有明アリーナ",
-      "venueKey": "有明アリーナ",
-      "eventIds": [
-        "a9f07d73f091ca00"
-      ],
-      "areaCode": "130010",
-      "areaName": "東京地方",
-      "precision": "mesh5km",
-      "label": "くもり",
-      "max": null,
-      "min": null,
-      "pop": "30",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-09-30T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "15〜19℃",
-      "coordinates": {
-        "lat": 35.64241,
-        "lon": 139.795013
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "くもり",
-          "validAt": "2026-09-30T21:00+09:00",
-          "temp": 19
-        },
-        {
-          "time": "24:00",
-          "label": "くもり",
-          "validAt": "2026-10-01T00:00+09:00",
-          "temp": 19
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "16:30",
-          "rain": true,
-          "validAt": "2026-09-30T16:30+09:00"
-        },
-        {
-          "time": "17:30",
-          "rain": false,
-          "validAt": "2026-09-30T17:30+09:00"
-        }
-      ]
-    },
     {
       "date": "2026-10-01",
       "venue": "SGC HALL ARIAKE",
@@ -132,11 +18,11 @@
       "areaName": "東京地方",
       "precision": "mesh5km",
       "label": "晴れ",
-      "max": 26.0,
-      "min": 18.0,
+      "max": 27.0,
+      "min": 27.0,
       "pop": "10",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-09-30T17:00:00+09:00",
+      "issuedAt": "2026-10-01T05:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "20〜24℃",
       "coordinates": {
@@ -185,6 +71,18 @@
           "label": "くもり",
           "validAt": "2026-10-02T00:00+09:00",
           "temp": 22
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-10-01T18:00+09:00"
+        },
+        {
+          "time": "19:00",
+          "rain": false,
+          "validAt": "2026-10-01T19:00+09:00"
         }
       ]
     },
@@ -199,11 +97,11 @@
       "areaName": "東京地方",
       "precision": "mesh5km",
       "label": "晴れ",
-      "max": 26.0,
-      "min": 18.0,
+      "max": 27.0,
+      "min": 27.0,
       "pop": "10",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-09-30T17:00:00+09:00",
+      "issuedAt": "2026-10-01T05:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "20〜24℃",
       "coordinates": {
@@ -253,6 +151,18 @@
           "validAt": "2026-10-02T00:00+09:00",
           "temp": 22
         }
+      ],
+      "hourlyRain": [
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-10-01T18:00+09:00"
+        },
+        {
+          "time": "19:00",
+          "rain": false,
+          "validAt": "2026-10-01T19:00+09:00"
+        }
       ]
     },
     {
@@ -261,17 +171,17 @@
       "venueKey": "グランキューブ大阪メインホール",
       "eventIds": [
         "024676b8e98a3faf",
-        "1adce369ffa0f87a"
+        "2244668b41f8e706"
       ],
       "areaCode": "270000",
       "areaName": "大阪府",
       "precision": "mesh5km",
       "label": "晴れ",
       "max": 30.0,
-      "min": 20.0,
+      "min": 30.0,
       "pop": "10",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-09-30T17:00:00+09:00",
+      "issuedAt": "2026-10-01T05:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "25〜29℃",
       "coordinates": {
@@ -320,6 +230,18 @@
           "label": "晴れ",
           "validAt": "2026-10-02T00:00+09:00",
           "temp": 22
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-10-01T18:00+09:00"
+        },
+        {
+          "time": "19:00",
+          "rain": false,
+          "validAt": "2026-10-01T19:00+09:00"
         }
       ]
     },
@@ -492,14 +414,14 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 39,
-    "uniqueVenueDates": 18,
-    "weatherEntries": 14,
-    "meshEntries": 5,
-    "failures": 4,
-    "meshTimelineEntries": 5,
-    "meshExactTempSlots": 25,
-    "hourlyRainEntries": 2
+    "occurrencesInRange": 44,
+    "uniqueVenueDates": 16,
+    "weatherEntries": 11,
+    "meshEntries": 3,
+    "failures": 5,
+    "meshTimelineEntries": 3,
+    "meshExactTempSlots": 21,
+    "hourlyRainEntries": 3
   },
   "failures": [
     {
@@ -521,6 +443,11 @@
       "date": "2026-10-04",
       "venue": "清水マリンパーク",
       "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-10-08",
+      "venue": "宮城県 仙台サンプラザホール",
+      "reason": "開催日の予報がまだありません"
     }
   ]
 }
