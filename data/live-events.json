@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-02T08:14:30+09:00",
+  "checkedAt": "2026-10-02T08:22:45+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-02T07:55:12+09:00",
     "scannedPages": {
@@ -2273,7 +2273,7 @@
         "https://sweetsteady.asobisystem.com/live_information/detail/45518",
         "https://morestar.asobisystem.com/live_information/detail/45672"
       ],
-      "sourceType": "derived",
+      "sourceType": "official-special",
       "primarySource": "official",
       "sourceCandidates": [
         "official"
@@ -2307,13 +2307,13 @@
         "西日本総合展示場"
       ],
       "specialDetailsStatus": "awaiting-details",
-      "offers": [],
       "participants": [
         "CANDY TUNE",
         "SWEET STEADY",
         "MORE STAR"
       ],
-      "officialScheduleUrl": "https://morestar.asobisystem.com/live_information/detail/45672"
+      "officialScheduleUrl": "https://morestar.asobisystem.com/live_information/detail/45672",
+      "offers": []
     },
     {
       "id": "4d97127cb745d806",
@@ -3072,9 +3072,9 @@
       "id": "bc711a68240aff0c",
       "group": "SWEET STEADY",
       "title": "SWEET STEADY 庄司なぎさ BIRTHDAY LIVE 2026",
-      "ticketType": "現在受付なし",
-      "applyStart": null,
-      "applyEnd": null,
+      "ticketType": "アップグレード抽選",
+      "applyStart": "2026-09-27T12:00",
+      "applyEnd": "2026-10-01T23:59",
       "resultDate": null,
       "paymentEnd": null,
       "eventDate": "2026-10-26",
@@ -3094,7 +3094,14 @@
         "https://sweetsteady.asobisystem.com/news/detail/90455",
         "https://sweetsteady.asobisystem.com/live_information/detail/44461"
       ],
-      "applicationStatus": "none"
+      "applicationStatus": "none",
+      "applicationDisplayMode": "band",
+      "applicationWindowVerified": true,
+      "deadlineVerified": true,
+      "applicationWindowSource": "https://sweetsteady.asobisystem.com/news/detail/90455",
+      "deadlineSource": "https://sweetsteady.asobisystem.com/news/detail/90455",
+      "specialDetailsStatus": "ticket-details-found",
+      "discoverySourceUrl": "https://sweetsteady.asobisystem.com/news/detail/90455"
     },
     {
       "id": "0904c182aaace14f",
@@ -3379,7 +3386,7 @@
         "https://cutiestreet.asobisystem.com/live_information/detail/45469",
         "https://cutiestreet.asobisystem.com/live_information/detail/45470"
       ],
-      "sourceType": "derived",
+      "sourceType": "official-special",
       "sourceChannel": "official-prtimes",
       "primarySource": "official",
       "sourceCandidates": [
@@ -6105,7 +6112,7 @@
         "https://x.com/SWEET_STEADY/status/1944245087384613023"
       ],
       "discoverySourceUrl": "https://x.com/SWEET_STEADY/status/1944245087384613023",
-      "sourceType": "derived",
+      "sourceType": "official-special",
       "sourceChannel": "official-x-syndication",
       "primarySource": "official",
       "sourceCandidates": [
@@ -6494,21 +6501,21 @@
   },
   "publicEventModelReport": {
     "rawEventCount": 136,
-    "passthroughEventCount": 57,
-    "performanceEntityCount": 82,
-    "sourceOccurrenceCount": 196,
+    "passthroughEventCount": 58,
+    "performanceEntityCount": 81,
+    "sourceOccurrenceCount": 195,
     "mergedSourceOccurrences": 114,
-    "offerCount": 46
+    "offerCount": 47
   },
   "publicEventModelVersion": 1,
   "releasePreparation": {
-    "preparedAt": "2026-10-02T04:24:01+09:00",
-    "normalizedSpecialEvents": 6,
+    "preparedAt": "2026-10-02T08:22:42+09:00",
+    "normalizedSpecialEvents": 4,
     "duplicateIdsRemoved": 0,
     "retainedPreviousRows": 0,
     "retained": [],
-    "expandedPreviousSpecialEntities": 7,
-    "expandedCandidateSpecialEntities": 7,
+    "expandedPreviousSpecialEntities": 5,
+    "expandedCandidateSpecialEntities": 5,
     "supersededStaleJointRowsRemoved": 0,
     "supersededStaleJointRowIds": [],
     "supersededLegacyReleaseSeriesRemoved": 2,
@@ -6531,19 +6538,19 @@
     },
     "physicalEventInvariant": {
       "semanticNormalization": {
-        "sourceSpecialRows": 7,
-        "canonicalSpecialEvents": 7,
+        "sourceSpecialRows": 5,
+        "canonicalSpecialEvents": 5,
         "rowsCollapsed": 0,
         "releaseEventEntities": 3,
-        "largeBenefitEntities": 4,
-        "alreadyCanonicalRows": 7,
+        "largeBenefitEntities": 2,
+        "alreadyCanonicalRows": 5,
         "duplicateEventIdCollisions": 0,
         "duplicateEventRowsCollapsed": 0,
         "duplicateEventIdsDisambiguated": 0,
         "duplicateEventIdRepairs": []
       },
-      "specialEventsBeforePhysicalMerge": 7,
-      "specialEventsAfterPhysicalMerge": 7,
+      "specialEventsBeforePhysicalMerge": 5,
+      "specialEventsAfterPhysicalMerge": 5,
       "physicalRowsCollapsed": 0,
       "internalScheduleRowsCollapsed": 0,
       "collisionCount": 0,
@@ -6552,8 +6559,8 @@
       "remainingDuplicates": []
     },
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-10-02T04:24:01+09:00",
-    "checkedAt": "2026-10-02T04:24:01+09:00"
+    "publicUpdatedAt": "2026-10-02T08:22:42+09:00",
+    "checkedAt": "2026-10-02T08:22:42+09:00"
   },
   "resaleDiagnostics": {
     "articles": 26,
@@ -13141,7 +13148,7 @@
       }
     ]
   },
-  "updatedAt": "2026-10-02T08:14:30+09:00",
+  "updatedAt": "2026-10-02T08:22:45+09:00",
   "publicEvents": [
     {
       "id": "37895c0d415d27e5",
@@ -13719,7 +13726,7 @@
         "https://sweetsteady.asobisystem.com/live_information/detail/45518",
         "https://morestar.asobisystem.com/live_information/detail/45672"
       ],
-      "sourceType": "derived",
+      "sourceType": "official-special",
       "primarySource": "official",
       "sourceCandidates": [
         "official"
@@ -13753,13 +13760,13 @@
         "西日本総合展示場"
       ],
       "specialDetailsStatus": "awaiting-details",
-      "offers": [],
       "participants": [
         "CANDY TUNE",
         "SWEET STEADY",
         "MORE STAR"
       ],
-      "officialScheduleUrl": "https://morestar.asobisystem.com/live_information/detail/45672"
+      "officialScheduleUrl": "https://morestar.asobisystem.com/live_information/detail/45672",
+      "offers": []
     },
     {
       "id": "performance-external-kawacolle-tgc-2026-10-12-16-00-8020001-381",
@@ -13781,17 +13788,17 @@
       "eventScope": "external",
       "urls": [
         "https://kawaiilab.asobisystem.com/news/detail/87217",
+        "https://kawaiilab.asobisystem.com/news/detail/89950",
+        "https://fruitszipper.asobisystem.com/live_information/detail/44011",
+        "https://candytune.asobisystem.com/live_information/detail/44996",
+        "https://sweetsteady.asobisystem.com/live_information/detail/43905",
+        "https://cutiestreet.asobisystem.com/live_information/detail/43749",
+        "https://morestar.asobisystem.com/live_information/detail/45350",
         "https://candytune.asobisystem.com/news/detail/87766",
         "https://cutiestreet.asobisystem.com/news/detail/87770",
-        "https://cutiestreet.asobisystem.com/live_information/detail/43749",
         "https://fruitszipper.asobisystem.com/news/detail/87763",
-        "https://fruitszipper.asobisystem.com/live_information/detail/44011",
         "https://morestar.asobisystem.com/news/detail/87772",
-        "https://sweetsteady.asobisystem.com/news/detail/87767",
-        "https://sweetsteady.asobisystem.com/live_information/detail/43905",
-        "https://kawaiilab.asobisystem.com/news/detail/89950",
-        "https://candytune.asobisystem.com/live_information/detail/44996",
-        "https://morestar.asobisystem.com/live_information/detail/45350"
+        "https://sweetsteady.asobisystem.com/news/detail/87767"
       ],
       "sourceStale": true,
       "sourceStaleSince": "2026-09-03T00:14:43+09:00",
@@ -13822,13 +13829,13 @@
       "applicationStatus": "none",
       "sourceRowIds": [
         "4d97127cb745d806",
-        "e38ff19923540d70",
-        "95417a67234ce562"
+        "95417a67234ce562",
+        "e38ff19923540d70"
       ],
       "mergedPublicEventIds": [
         "4d97127cb745d806",
-        "e38ff19923540d70",
-        "performance-KAWAII-LAB-2026-10-12-time-16-00"
+        "95417a67234ce562",
+        "e38ff19923540d70"
       ],
       "eventTitle": "KAWAII LAB. COLLECTION produced by TGC ~KAWAIIっちゃ in KITAKYUSHU~",
       "displayTitle": "KAWAII LAB. COLLECTION produced by TGC ~KAWAIIっちゃ in KITAKYUSHU~",
@@ -14346,7 +14353,7 @@
         "https://cutiestreet.asobisystem.com/live_information/detail/45469",
         "https://cutiestreet.asobisystem.com/live_information/detail/45470"
       ],
-      "sourceType": "derived",
+      "sourceType": "official-special",
       "sourceChannel": "official-prtimes",
       "primarySource": "official",
       "sourceCandidates": [
@@ -15248,7 +15255,7 @@
         "https://x.com/SWEET_STEADY/status/1944245087384613023"
       ],
       "discoverySourceUrl": "https://x.com/SWEET_STEADY/status/1944245087384613023",
-      "sourceType": "derived",
+      "sourceType": "official-special",
       "sourceChannel": "official-x-syndication",
       "primarySource": "official",
       "sourceCandidates": [
@@ -22786,13 +22793,37 @@
         "https://sweetsteady.asobisystem.com/news/detail/90455",
         "https://sweetsteady.asobisystem.com/live_information/detail/44461"
       ],
+      "specialDetailsStatus": "ticket-details-found",
+      "discoverySourceUrl": "https://sweetsteady.asobisystem.com/news/detail/90455",
       "entityType": "performance",
       "performanceEntityVersion": 1,
       "performanceKey": "SWEET STEADY|2026-10-26|time|19:00",
       "sourceRowIds": [
         "bc711a68240aff0c"
       ],
-      "offers": [],
+      "offers": [
+        {
+          "sourceRowId": "bc711a68240aff0c",
+          "provider": "official",
+          "url": "https://sweetsteady.asobisystem.com/news/detail/90455",
+          "urls": [
+            "https://sweetsteady.asobisystem.com/news/detail/90455",
+            "https://sweetsteady.asobisystem.com/live_information/detail/44461"
+          ],
+          "ticketType": "アップグレード抽選",
+          "applyStart": "2026-09-27T12:00",
+          "applyEnd": "2026-10-01T23:59",
+          "applicationStatus": "none",
+          "applicationWindowVerified": true,
+          "deadlineVerified": true,
+          "applicationDisplayMode": "band",
+          "applicationWindowSource": "https://sweetsteady.asobisystem.com/news/detail/90455",
+          "deadlineSource": "https://sweetsteady.asobisystem.com/news/detail/90455",
+          "sourceType": "derived",
+          "primarySource": "official",
+          "sourcePublishedAt": "2026-09-27"
+        }
+      ],
       "eventEndDate": "2026-10-26",
       "eventDates": [
         "2026-10-26"
@@ -22806,9 +22837,9 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
+      "ticketType": "アップグレード抽選",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers"
     },
     {
       "id": "performance-SWEET-STEADY-2026-11-13-time-18-30",
