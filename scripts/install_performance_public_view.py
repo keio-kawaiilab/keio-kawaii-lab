@@ -296,7 +296,7 @@ def _verify_tour_times(payload: dict[str, Any], page: str) -> None:
     # Parse each <article> independently. The previous regex could cross card
     # boundaries while looking for a later date string and falsely count one
     # performance as multiple static cards.
-    article_cards = re.findall(r'<article\\b[^>]*>.*?</article>', page, flags=re.S)
+    article_cards = re.findall(r'<article\b[^>]*>.*?</article>', page, flags=re.S)
     candy_cards = [
         card for card in article_cards
         if 'data-group="CANDY TUNE"' in card.split(">", 1)[0]
@@ -365,7 +365,7 @@ def main() -> int:
             "message": str(exc),
         }
         payload.setdefault("renderWarnings", []).append(warning)
-        DATA.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+        DATA.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         print(f"::warning::Event-level render verification degraded; continuing unrelated publication: {exc}")
 
     scripts = re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>", page, re.S)
