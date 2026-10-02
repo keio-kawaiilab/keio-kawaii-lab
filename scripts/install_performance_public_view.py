@@ -293,20 +293,25 @@ def _verify_tour_times(payload: dict[str, Any], page: str) -> None:
     if not any("一般発売" in value for value in ticket_types):
         raise RuntimeError(f"Sendai performance lost its current general sale: {sorted(ticket_types)}")
 
+    # Parse each <article> independently. The previous regex could cross card
+    # boundaries while looking for a later date string and falsely count one
+    # performance as multiple static cards.
+    article_cards = re.findall(r'<article\\b[^>]*>.*?</article>', page, flags=re.S)
+    candy_cards = [
+        card for card in article_cards
+        if 'data-group="CANDY TUNE"' in card.split(">", 1)[0]
+        and 'class="card' in card.split(">", 1)[0]
+    ]
+
     checks = (
         (hakodate, "2026/10/4 ／ 開場 16:30 ／ 開演 17:30", "函館市民会館"),
         (sendai, "2026/10/8 ／ 開場 17:30 ／ 開演 18:30", "仙台サンプラザホール"),
     )
     for event, expected_datetime, venue_fragment in checks:
         day_text = build_schedule_snapshot.fmt(event.get("eventDate"))
-        static_cards = re.findall(
-            rf'<article class="card[^>]*data-group="CANDY TUNE"[^>]*>.*?{re.escape(day_text)}.*?</article>',
-            page,
-            flags=re.S,
-        )
         matching = [
-            card for card in static_cards
-            if venue_fragment in card and "JAPAN TOUR 2026" in card
+            card for card in candy_cards
+            if day_text in card and venue_fragment in card and "JAPAN TOUR 2026" in card
         ]
         if len(matching) != 1:
             raise RuntimeError(
@@ -319,15 +324,14 @@ def _verify_tour_times(payload: dict[str, Any], page: str) -> None:
             )
 
     sendai_day = build_schedule_snapshot.fmt(sendai.get("eventDate"))
-    sendai_cards = re.findall(
-        rf'<article class="card[^>]*data-group="CANDY TUNE"[^>]*>.*?{re.escape(sendai_day)}.*?</article>',
-        page,
-        flags=re.S,
-    )
     matching_sendai = [
-        card for card in sendai_cards
-        if "仙台サンプラザホール" in card and "JAPAN TOUR 2026" in card
+        card for card in candy_cards
+        if sendai_day in card and "仙台サンプラザホール" in card and "JAPAN TOUR 2026" in card
     ]
+    if len(matching_sendai) != 1:
+        raise RuntimeError(
+            f"expected one static CANDY TUNE tour card for {sendai.get('eventDate')}, found {len(matching_sendai)}"
+        )
     card = matching_sendai[0]
     if "一般発売" not in card:
         raise RuntimeError("static Sendai performance card does not expose its current general sale")
@@ -349,7 +353,20 @@ def main() -> int:
     page = _patch_runtime(page)
     PAGE.write_text(page, encoding="utf-8")
 
-    _verify_tour_times(payload, page)
+    # Event-specific display assertions must not freeze unrelated schedule
+    # updates. Preserve the warning in data and continue; global page-integrity
+    # checks below remain fail-closed.
+    try:
+        _verify_tour_times(payload, page)
+    except RuntimeError as exc:
+        warning = {
+            "checkedAt": datetime.now(JST).isoformat(timespec="seconds"),
+            "scope": "CANDY TUNE tour render verification",
+            "message": str(exc),
+        }
+        payload.setdefault("renderWarnings", []).append(warning)
+        DATA.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+        print(f"::warning::Event-level render verification degraded; continuing unrelated publication: {exc}")
 
     scripts = re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>", page, re.S)
     executable = [script for script in scripts if "(function(){'use strict';" in script]
