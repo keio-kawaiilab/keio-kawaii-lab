@@ -1,0 +1,57 @@
+name: Validate Toyoko Yahoo evidence
+
+on:
+  push:
+    branches:
+      - work/yahoo-toyoko-20261003
+    paths:
+      - '.github/workflows/validate-toyoko-yahoo-evidence.yml'
+      - 'data/transit-v2/reviewed-train-evidence.json'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Finalize strict DB
+        run: |
+          python scripts/test_reviewed_train_evidence.py
+          python scripts/finalize_transit_v2.py
+          python scripts/normalize_transit_v2_physical_destinations.py
+          python scripts/audit_transit_v2.py
+      - name: Assert Toyoko Yahoo promotions
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          edges=json.loads(Path('data/transit-v2/same-train-edges.json').read_text())['edges']
+          coverage=json.loads(Path('data/transit-v2/coverage.json').read_text())
+          ids={
+            'tokyu-toyoko-fukutoshin-1503-holiday-yahoo',
+            'tokyu-toyoko-fukutoshin-1533-holiday-yahoo',
+            'tokyu-toyoko-fukutoshin-1333-weekday-yahoo',
+            'tokyu-toyoko-fukutoshin-1403-weekday-yahoo',
+            'tokyu-toyoko-minatomirai-0500-holiday-yahoo-20261003',
+            'tokyu-toyoko-minatomirai-0516-holiday-yahoo-20261003',
+          }
+          found={str((e.get('evidence') or [None,None])[1]) for e in edges if len(e.get('evidence') or [])>1}
+          missing=sorted(ids-found)
+          print('MISSING',missing)
+          print('UNRESOLVED',coverage['summary']['unresolved'])
+          assert not missing, missing
+          assert int(coverage['summary']['unresolved']) <= 3796, coverage['summary']
+          PY
+      - name: Route runtime smoke tests
+        run: |
+          node scripts/test_route_core.js
+          node scripts/test_route_runtime_same_train.js
+          node scripts/test_route_destination_display.js
