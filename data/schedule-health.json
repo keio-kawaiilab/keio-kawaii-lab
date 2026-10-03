@@ -1,18 +1,16 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-03T22:33:39.723341+09:00",
-  "candidateUpdatedAt": "2026-10-03T22:33:39+09:00",
-  "previousEventCount": 171,
-  "candidateEventCount": 170,
-  "protectedPreviousCount": 171,
+  "generatedAt": "2026-10-03T23:26:04.766973+09:00",
+  "candidateUpdatedAt": "2026-10-03T23:26:04+09:00",
+  "previousEventCount": 172,
+  "candidateEventCount": 172,
+  "protectedPreviousCount": 172,
   "errorCount": 0,
-  "warningCount": 11,
+  "warningCount": 9,
   "errors": [],
   "warnings": [
-    "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
-    "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 一般発売",
     "quarantined one event/source update and kept the previous known-good data: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
-    "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for url:https://x.com/MORE_STAR_/status/2092567739969966299 [MORE STAR]: 2026-11-25",
+    "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 公式リセール",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event is not marked as official-source data: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no participation method: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -21,7 +19,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
   ],
-  "candidateSha256": "ecb837546f24c928d7457f4e19cb8407fd6456ce12bd7e57e00876d97ce21e8f",
+  "candidateSha256": "14ca727da832a58849d02dac78335502992b96ffd1ac136b30a778a4f9a84008",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -30,7 +28,6 @@
     "url:https://candytune.asobisystem.com/live_information/detail/40731",
     "url:https://candytune.asobisystem.com/live_information/detail/40732",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
-    "url:https://candytune.asobisystem.com/live_information/detail/40743",
     "url:https://candytune.asobisystem.com/news/detail/88212",
     "url:https://cutiestreet.asobisystem.com/",
     "url:https://cutiestreet.asobisystem.com/feature/autumntour",
@@ -129,27 +126,17 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 4,
+  "quarantineCount": 2,
   "quarantineActions": [
-    {
-      "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
-      "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 1
-    },
-    {
-      "error": "active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 一般発売",
-      "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 7
-    },
     {
       "error": "special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
       "action": "restored previous row",
       "restoredPreviousRows": 1
     },
     {
-      "error": "future performance dates disappeared for url:https://x.com/MORE_STAR_/status/2092567739969966299 [MORE STAR]: 2026-11-25",
-      "action": "restored previous rows for url:https://x.com/MORE_STAR_/status/2092567739969966299",
-      "restoredPreviousRows": 2
+      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 公式リセール",
+      "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
+      "restoredPreviousRows": 8
     }
   ],
   "rowFailuresCanBlockRelease": false,
@@ -157,28 +144,16 @@
     "reassignedCount": 0,
     "hydratedCount": 0,
     "ambiguousCount": 0,
-    "unresolvedCount": 4,
+    "unresolvedCount": 2,
     "reassigned": [],
     "hydrated": [],
     "ambiguous": [],
     "unresolved": [
       {
-        "group": "FRUITS ZIPPER",
-        "date": "2026-11-01",
-        "url": "https://fruitszipper.asobisystem.com/live_information/detail/44318",
-        "representedBy": "2502a39e2d67a72e"
-      },
-      {
         "group": "SWEET STEADY",
         "date": "2026-10-11",
         "url": "https://sweetsteady.asobisystem.com/live_information/detail/45518",
         "representedBy": "a197fe7cce1a9729"
-      },
-      {
-        "group": "MORE STAR",
-        "date": "2026-10-07",
-        "url": "https://morestar.asobisystem.com/live_information/detail/45755",
-        "representedBy": "a78fc7ce762556f7"
       },
       {
         "group": "MORE STAR",
