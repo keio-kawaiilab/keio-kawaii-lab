@@ -506,6 +506,192 @@
         "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E6%8A%BC%E4%B8%8A&s=0&stype=&ticket=ic&to=%E4%B8%AD%E5%A4%AE%E6%9E%97%E9%96%93&ws=3"
       ],
       "note": "Yahoo Transit shows the Saturday/holiday Oshiage 20:31 express to Chuo-rinkan as zero-transfer across Shibuya; strict selectors uniquely match the Hanzomon and Tokyu fragments."
+    },
+    {
+      "id": "tokyu-toyoko-fukutoshin-1503-holiday-yahoo",
+      "status": "verified-current",
+      "operator": "tokyu",
+      "evidenceType": "third-party-route-result:yahoo-transit-zero-transfer",
+      "boundaryId": "toyoko-fukutoshin-shibuya",
+      "from": {
+        "railway": "odpt.Railway:Tokyu.Toyoko",
+        "calendar": "odpt.Calendar:SaturdayHoliday",
+        "trainType": "odpt.TrainType:Tokyu.F-Liner",
+        "destination": "odpt.Station:Tobu.Tojo.ShinrinKoen",
+        "firstStop": {
+          "station": "odpt.Station:Tokyu.Toyoko.Yokohama",
+          "departure": 912
+        }
+      },
+      "to": {
+        "railway": "odpt.Railway:TokyoMetro.Fukutoshin",
+        "calendar": "odpt.Calendar:SaturdayHoliday",
+        "trainType": "odpt.TrainType:TokyoMetro.F-Liner",
+        "destination": "odpt.Station:Tobu.Tojo.ShinrinKoen",
+        "firstStop": {
+          "station": "odpt.Station:TokyoMetro.Hanzomon.Shibuya",
+          "departure": 940
+        }
+      },
+      "sourceUrls": [
+        "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E5%85%83%E7%94%BA%E3%83%BB%E4%B8%AD%E8%8F%AF%E8%A1%97&s=0&stype=&ticket=ic&to=%E6%A3%AE%E6%9E%97%E5%85%AC%E5%9C%92(%E5%9F%BC%E7%8E%89%E7%9C%8C)&ws=3"
+      ],
+      "note": "Yahoo Transit shows the holiday Motomachi-Chukagai 15:03 F-Liner to Shinrin-koen continuing through Yokohama and Shibuya with zero transfers."
+    },
+    {
+      "id": "tokyu-toyoko-fukutoshin-1533-holiday-yahoo",
+      "status": "verified-current",
+      "operator": "tokyu",
+      "evidenceType": "third-party-route-result:yahoo-transit-zero-transfer",
+      "boundaryId": "toyoko-fukutoshin-shibuya",
+      "from": {
+        "railway": "odpt.Railway:Tokyu.Toyoko",
+        "calendar": "odpt.Calendar:SaturdayHoliday",
+        "trainType": "odpt.TrainType:Tokyu.F-Liner",
+        "destination": "odpt.Station:Tobu.Tojo.ShinrinKoen",
+        "firstStop": {
+          "station": "odpt.Station:Tokyu.Toyoko.Yokohama",
+          "departure": 942
+        }
+      },
+      "to": {
+        "railway": "odpt.Railway:TokyoMetro.Fukutoshin",
+        "calendar": "odpt.Calendar:SaturdayHoliday",
+        "trainType": "odpt.TrainType:TokyoMetro.F-Liner",
+        "destination": "odpt.Station:Tobu.Tojo.ShinrinKoen",
+        "firstStop": {
+          "station": "odpt.Station:TokyoMetro.Hanzomon.Shibuya",
+          "departure": 970
+        }
+      },
+      "sourceUrls": [
+        "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E5%85%83%E7%94%BA%E3%83%BB%E4%B8%AD%E8%8F%AF%E8%A1%97&s=0&stype=&ticket=ic&to=%E6%A3%AE%E6%9E%97%E5%85%AC%E5%9C%92(%E5%9F%BC%E7%8E%89%E7%9C%8C)&ws=3"
+      ],
+      "note": "Yahoo Transit shows the holiday Motomachi-Chukagai 15:33 F-Liner to Shinrin-koen continuing across Shibuya with zero transfers."
+    },
+    {
+      "id": "tokyu-toyoko-fukutoshin-1333-weekday-yahoo",
+      "status": "verified-current",
+      "operator": "tokyu",
+      "evidenceType": "third-party-route-result:yahoo-transit-zero-transfer",
+      "boundaryId": "toyoko-fukutoshin-shibuya",
+      "from": {
+        "railway": "odpt.Railway:Tokyu.Toyoko",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:Tokyu.F-Liner",
+        "destination": "odpt.Station:Tobu.Tojo.ShinrinKoen",
+        "firstStop": {
+          "station": "odpt.Station:Tokyu.Toyoko.Yokohama",
+          "departure": 822
+        }
+      },
+      "to": {
+        "railway": "odpt.Railway:TokyoMetro.Fukutoshin",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:TokyoMetro.F-Liner",
+        "destination": "odpt.Station:Tobu.Tojo.ShinrinKoen",
+        "firstStop": {
+          "station": "odpt.Station:TokyoMetro.Hanzomon.Shibuya",
+          "departure": 850
+        }
+      },
+      "sourceUrls": [
+        "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E5%85%83%E7%94%BA%E3%83%BB%E4%B8%AD%E8%8F%AF%E8%A1%97&s=0&stype=&ticket=ic&to=%E6%A3%AE%E6%9E%97%E5%85%AC%E5%9C%92(%E5%9F%BC%E7%8E%89%E7%9C%8C)&ws=3"
+      ],
+      "note": "Yahoo Transit shows the weekday Motomachi-Chukagai 13:33 F-Liner to Shinrin-koen as zero-transfer; the strict selectors uniquely match the Toyoko and Fukutoshin fragments."
+    },
+    {
+      "id": "tokyu-toyoko-fukutoshin-1403-weekday-yahoo",
+      "status": "verified-current",
+      "operator": "tokyu",
+      "evidenceType": "third-party-route-result:yahoo-transit-zero-transfer",
+      "boundaryId": "toyoko-fukutoshin-shibuya",
+      "from": {
+        "railway": "odpt.Railway:Tokyu.Toyoko",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:Tokyu.F-Liner",
+        "destination": "odpt.Station:Tobu.Tojo.ShinrinKoen",
+        "firstStop": {
+          "station": "odpt.Station:Tokyu.Toyoko.Yokohama",
+          "departure": 852
+        }
+      },
+      "to": {
+        "railway": "odpt.Railway:TokyoMetro.Fukutoshin",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:TokyoMetro.F-Liner",
+        "destination": "odpt.Station:Tobu.Tojo.ShinrinKoen",
+        "firstStop": {
+          "station": "odpt.Station:TokyoMetro.Hanzomon.Shibuya",
+          "departure": 880
+        }
+      },
+      "sourceUrls": [
+        "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E5%85%83%E7%94%BA%E3%83%BB%E4%B8%AD%E8%8F%AF%E8%A1%97&s=0&stype=&ticket=ic&to=%E6%A3%AE%E6%9E%97%E5%85%AC%E5%9C%92(%E5%9F%BC%E7%8E%89%E7%9C%8C)&ws=3"
+      ],
+      "note": "Yahoo Transit shows the weekday Motomachi-Chukagai 14:03 F-Liner to Shinrin-koen as zero-transfer across Shibuya."
+    },
+    {
+      "id": "tokyu-toyoko-minatomirai-0500-holiday-yahoo-20261003",
+      "status": "verified-current",
+      "operator": "tokyu",
+      "evidenceType": "third-party-route-result:yahoo-transit-zero-transfer",
+      "boundaryId": "minatomirai-toyoko-yokohama",
+      "from": {
+        "railway": "odpt.Railway:Tokyu.Toyoko",
+        "calendar": "odpt.Calendar:SaturdayHoliday",
+        "trainType": "odpt.TrainType:Tokyu.Local",
+        "destination": "odpt.Station:Minatomirai.Minatomirai.MotomachiChukagai",
+        "firstStop": {
+          "station": "odpt.Station:Tokyu.Toyoko.Shibuya",
+          "departure": 300
+        }
+      },
+      "to": {
+        "railway": "manual.Railway:YokohamaMinatomirai.Minatomirai",
+        "calendar": "odpt.Calendar:SaturdayHoliday",
+        "trainType": "manual.TrainType:YokohamaMinatomirai.Local",
+        "destination": "manual.Station:yokohama-minatomirai.元町・中華街",
+        "firstStop": {
+          "station": "manual.Station:yokohama-minatomirai.横浜",
+          "departure": 341
+        }
+      },
+      "sourceUrls": [
+        "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E6%B8%8B%E8%B0%B7&ticket=ic&to=%E5%85%83%E7%94%BA%E3%83%BB%E4%B8%AD%E8%8F%AF%E8%A1%97&type=1"
+      ],
+      "note": "Yahoo Transit on 2026-10-03 shows Shibuya 05:00 to Motomachi-Chukagai 05:50 as one zero-transfer local train, crossing Yokohama at 05:41."
+    },
+    {
+      "id": "tokyu-toyoko-minatomirai-0516-holiday-yahoo-20261003",
+      "status": "verified-current",
+      "operator": "tokyu",
+      "evidenceType": "third-party-route-result:yahoo-transit-zero-transfer",
+      "boundaryId": "minatomirai-toyoko-yokohama",
+      "from": {
+        "railway": "odpt.Railway:Tokyu.Toyoko",
+        "calendar": "odpt.Calendar:SaturdayHoliday",
+        "trainType": "odpt.TrainType:Tokyu.Local",
+        "destination": "odpt.Station:Minatomirai.Minatomirai.MotomachiChukagai",
+        "firstStop": {
+          "station": "odpt.Station:Tokyu.Toyoko.Shibuya",
+          "departure": 316
+        }
+      },
+      "to": {
+        "railway": "manual.Railway:YokohamaMinatomirai.Minatomirai",
+        "calendar": "odpt.Calendar:SaturdayHoliday",
+        "trainType": "manual.TrainType:YokohamaMinatomirai.Local",
+        "destination": "manual.Station:yokohama-minatomirai.元町・中華街",
+        "firstStop": {
+          "station": "manual.Station:yokohama-minatomirai.横浜",
+          "departure": 355
+        }
+      },
+      "sourceUrls": [
+        "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E6%B8%8B%E8%B0%B7&ticket=ic&to=%E5%85%83%E7%94%BA%E3%83%BB%E4%B8%AD%E8%8F%AF%E8%A1%97&type=1"
+      ],
+      "note": "Yahoo Transit on 2026-10-03 shows Shibuya 05:16 to Motomachi-Chukagai 06:04 as one zero-transfer local train, crossing Yokohama at 05:55."
     }
   ]
 }
