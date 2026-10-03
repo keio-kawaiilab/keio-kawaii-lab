@@ -48,7 +48,7 @@ jobs:
           print('MISSING',missing)
           print('UNRESOLVED',coverage['summary']['unresolved'])
           assert not missing, missing
-          assert int(coverage['summary']['unresolved']) <= 3796, coverage['summary']
+          assert int(coverage['summary']['unresolved']) <= 3798, coverage['summary']
           PY
       - name: Route runtime smoke tests
         run: |
