@@ -1,7 +1,7 @@
 {
   "date": "2026-10-04",
   "horizonDays": 7,
-  "generatedAt": "2026-10-04T03:40+09:00",
+  "generatedAt": "2026-10-04T08:18+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -18,12 +18,12 @@
       "areaCode": "040010",
       "areaName": "東部",
       "precision": "mesh5km",
-      "label": "晴れ",
-      "max": 22.0,
-      "min": 12.0,
+      "label": "くもり",
+      "max": 20.0,
+      "min": 20.0,
       "pop": "10",
       "popLabel": "12〜18時",
-      "issuedAt": "2026-10-03T17:00:00+09:00",
+      "issuedAt": "2026-10-04T05:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "15〜19℃",
       "coordinates": {
@@ -31,12 +31,6 @@
         "lon": 140.947601
       },
       "meshTimeline": [
-        {
-          "time": "06:00",
-          "label": "晴れ",
-          "validAt": "2026-10-04T06:00+09:00",
-          "temp": 11
-        },
         {
           "time": "09:00",
           "label": "晴れ",
@@ -47,7 +41,7 @@
           "time": "12:00",
           "label": "晴れ",
           "validAt": "2026-10-04T12:00+09:00",
-          "temp": 20
+          "temp": 19
         },
         {
           "time": "15:00",
@@ -57,19 +51,19 @@
         },
         {
           "time": "18:00",
-          "label": "晴れ",
+          "label": "くもり",
           "validAt": "2026-10-04T18:00+09:00",
           "temp": 18
         },
         {
           "time": "21:00",
-          "label": "晴れ",
+          "label": "くもり",
           "validAt": "2026-10-04T21:00+09:00",
           "temp": 15
         },
         {
           "time": "24:00",
-          "label": "くもり",
+          "label": "晴れ",
           "validAt": "2026-10-05T00:00+09:00",
           "temp": 14
         }
@@ -98,7 +92,6 @@
       "venueKey": "宇都宮市文化会館",
       "eventIds": [
         "024676b8e98a3faf",
-        "0275e0023055a052",
         "1b8b5d7780fea06b"
       ],
       "areaCode": "090010",
@@ -106,34 +99,28 @@
       "precision": "mesh5km",
       "label": "晴れ",
       "max": 23.0,
-      "min": 15.0,
+      "min": 23.0,
       "pop": "10",
       "popLabel": "12〜18時",
-      "issuedAt": "2026-10-03T17:00:00+09:00",
+      "issuedAt": "2026-10-04T05:00:00+09:00",
       "meshTime": "18:00",
-      "meshTempBand": "20〜24℃",
+      "meshTempBand": "15〜19℃",
       "coordinates": {
         "lat": 36.547546,
         "lon": 139.86702
       },
       "meshTimeline": [
         {
-          "time": "06:00",
-          "label": "くもり",
-          "validAt": "2026-10-04T06:00+09:00",
-          "temp": 15
-        },
-        {
           "time": "09:00",
           "label": "くもり",
           "validAt": "2026-10-04T09:00+09:00",
-          "temp": 19
+          "temp": 18
         },
         {
           "time": "12:00",
           "label": "くもり",
           "validAt": "2026-10-04T12:00+09:00",
-          "temp": 22
+          "temp": 21
         },
         {
           "time": "15:00",
@@ -145,7 +132,7 @@
           "time": "18:00",
           "label": "晴れ",
           "validAt": "2026-10-04T18:00+09:00",
-          "temp": 20
+          "temp": 19
         },
         {
           "time": "21:00",
@@ -170,6 +157,11 @@
           "time": "18:00",
           "rain": false,
           "validAt": "2026-10-04T18:00+09:00"
+        },
+        {
+          "time": "19:00",
+          "rain": false,
+          "validAt": "2026-10-04T19:00+09:00"
         }
       ]
     },
@@ -183,32 +175,12 @@
       "areaCode": "170010",
       "areaName": "加賀",
       "precision": "area",
-      "label": "くもり 昼前 まで 時々 晴れ",
-      "max": 24.0,
-      "min": 16.0,
-      "pop": "0",
+      "label": "くもり",
+      "max": 23.0,
+      "min": 23.0,
+      "pop": "10",
       "popLabel": "06〜12時",
-      "issuedAt": "2026-10-03T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
-    {
-      "date": "2026-10-04",
-      "venue": "静岡県 静岡・清水マリンパーク",
-      "venueKey": "静岡清水マリンパーク",
-      "eventIds": [
-        "6d12f6624cf02cc8"
-      ],
-      "areaCode": "220010",
-      "areaName": "中部",
-      "precision": "area",
-      "label": "晴れ 昼過ぎ から くもり",
-      "max": 26.0,
-      "min": 18.0,
-      "pop": "0",
-      "popLabel": "06〜12時",
-      "issuedAt": "2026-10-03T17:00:00+09:00",
+      "issuedAt": "2026-10-04T05:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -310,7 +282,6 @@
         "a58e3e7fd0cc515d",
         "b00356dc8e715287",
         "d3591270c0bbb442",
-        "f0b3114072eaa66f",
         "fce42cbcc1764834"
       ],
       "areaCode": "040010",
@@ -336,7 +307,6 @@
         "9e39a25b816ecc66",
         "25bfb2525fd38135",
         "d3591270c0bbb442",
-        "f0b3114072eaa66f",
         "33149fdab7148fee",
         "5cc0e7bebef39584",
         "9c4eb5b0dd011417"
@@ -376,13 +346,13 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 49,
-    "uniqueVenueDates": 16,
-    "weatherEntries": 11,
+    "occurrencesInRange": 46,
+    "uniqueVenueDates": 15,
+    "weatherEntries": 10,
     "meshEntries": 2,
     "failures": 5,
     "meshTimelineEntries": 2,
-    "meshExactTempSlots": 14,
+    "meshExactTempSlots": 12,
     "hourlyRainEntries": 2
   },
   "failures": [
