@@ -289,6 +289,223 @@
         "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E6%96%B0%E5%AE%BF&s=2&stype=&ticket=ic&to=%E6%AD%A6%E8%94%B5%E5%BC%95%E7%94%B0&ws=3"
       ],
       "note": "Yahoo route result on 2026-09-24 shows Seibu Haijima Liner 7 departing Seibu-Shinjuku at 20:15 and continuing across Kodaira toward Haijima as the same named train."
+    },
+    {
+      "id": "tokyu-denentoshi-hanzomon-1332-holiday-yahoo-20261003",
+      "status": "verified-current",
+      "operator": "tokyu",
+      "evidenceType": "third-party-route-result:yahoo-transit-zero-transfer",
+      "boundaryId": "denentoshi-hanzomon-shibuya",
+      "from": {
+        "railway": "odpt.Railway:Tokyu.DenEnToshi",
+        "calendar": "odpt.Calendar:SaturdayHoliday",
+        "trainType": "odpt.TrainType:Tokyu.SemiExpress",
+        "destination": "odpt.Station:TokyoMetro.Hanzomon.Oshiage",
+        "firstStop": {
+          "station": "odpt.Station:Tokyu.DenEnToshi.ChuoRinkan",
+          "departure": 812
+        }
+      },
+      "to": {
+        "railway": "odpt.Railway:TokyoMetro.Hanzomon",
+        "calendar": "odpt.Calendar:SaturdayHoliday",
+        "trainType": "odpt.TrainType:TokyoMetro.Local",
+        "destination": "odpt.Station:TokyoMetro.Hanzomon.Oshiage",
+        "firstStop": {
+          "station": "odpt.Station:TokyoMetro.Hanzomon.Shibuya",
+          "departure": 857
+        }
+      },
+      "sourceUrls": [
+        "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E4%B8%AD%E5%A4%AE%E6%9E%97%E9%96%93&s=2&ticket=ic&to=%E6%8A%BC%E4%B8%8A&ws=3"
+      ],
+      "note": "Yahoo Transit on 2026-10-03 shows a zero-transfer Chuo-rinkan 13:32 semi-express to Oshiage, crossing Shibuya at 14:17. The strict selectors uniquely identify the Tokyu and Hanzomon fragments."
+    },
+    {
+      "id": "tokyu-denentoshi-hanzomon-1341-holiday-yahoo-20261003",
+      "status": "verified-current",
+      "operator": "tokyu",
+      "evidenceType": "third-party-route-result:yahoo-transit-zero-transfer",
+      "boundaryId": "denentoshi-hanzomon-shibuya",
+      "from": {
+        "railway": "odpt.Railway:Tokyu.DenEnToshi",
+        "calendar": "odpt.Calendar:SaturdayHoliday",
+        "trainType": "odpt.TrainType:Tokyu.Express",
+        "destination": "odpt.Station:Tobu.Isesaki.Kuki",
+        "firstStop": {
+          "station": "odpt.Station:Tokyu.DenEnToshi.ChuoRinkan",
+          "departure": 821
+        }
+      },
+      "to": {
+        "railway": "odpt.Railway:TokyoMetro.Hanzomon",
+        "calendar": "odpt.Calendar:SaturdayHoliday",
+        "trainType": "odpt.TrainType:TokyoMetro.Express",
+        "destination": "odpt.Station:Tobu.Isesaki.Kuki",
+        "firstStop": {
+          "station": "odpt.Station:TokyoMetro.Hanzomon.Shibuya",
+          "departure": 862
+        }
+      },
+      "sourceUrls": [
+        "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E4%B8%AD%E5%A4%AE%E6%9E%97%E9%96%93&s=2&ticket=ic&to=%E6%8A%BC%E4%B8%8A&ws=3"
+      ],
+      "note": "Yahoo Transit on 2026-10-03 shows a zero-transfer Chuo-rinkan 13:41 express to Kuki, crossing Shibuya at 14:22. The strict selectors uniquely identify both fragments."
+    },
+    {
+      "id": "tokyu-denentoshi-hanzomon-1352-holiday-yahoo-20261003",
+      "status": "verified-current",
+      "operator": "tokyu",
+      "evidenceType": "third-party-route-result:yahoo-transit-zero-transfer",
+      "boundaryId": "denentoshi-hanzomon-shibuya",
+      "from": {
+        "railway": "odpt.Railway:Tokyu.DenEnToshi",
+        "calendar": "odpt.Calendar:SaturdayHoliday",
+        "trainType": "odpt.TrainType:Tokyu.SemiExpress",
+        "destination": "odpt.Station:TokyoMetro.Hanzomon.Oshiage",
+        "firstStop": {
+          "station": "odpt.Station:Tokyu.DenEnToshi.ChuoRinkan",
+          "departure": 832
+        }
+      },
+      "to": {
+        "railway": "odpt.Railway:TokyoMetro.Hanzomon",
+        "calendar": "odpt.Calendar:SaturdayHoliday",
+        "trainType": "odpt.TrainType:TokyoMetro.Local",
+        "destination": "odpt.Station:TokyoMetro.Hanzomon.Oshiage",
+        "firstStop": {
+          "station": "odpt.Station:TokyoMetro.Hanzomon.Shibuya",
+          "departure": 877
+        }
+      },
+      "sourceUrls": [
+        "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E4%B8%AD%E5%A4%AE%E6%9E%97%E9%96%93&s=2&ticket=ic&to=%E6%8A%BC%E4%B8%8A&ws=3"
+      ],
+      "note": "Yahoo Transit on 2026-10-03 shows a zero-transfer Chuo-rinkan 13:52 semi-express to Oshiage, crossing Shibuya at 14:37. The strict selectors uniquely identify both fragments."
+    },
+    {
+      "id": "tokyu-denentoshi-hanzomon-2037-weekday-yahoo",
+      "status": "verified-current",
+      "operator": "tokyu",
+      "evidenceType": "third-party-route-result:yahoo-transit-zero-transfer",
+      "boundaryId": "denentoshi-hanzomon-shibuya",
+      "from": {
+        "railway": "odpt.Railway:Tokyu.DenEnToshi",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:Tokyu.Express",
+        "destination": "odpt.Station:Tobu.Nikko.MinamiKurihashi",
+        "firstStop": {
+          "station": "odpt.Station:Tokyu.DenEnToshi.ChuoRinkan",
+          "departure": 1237
+        }
+      },
+      "to": {
+        "railway": "odpt.Railway:TokyoMetro.Hanzomon",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:TokyoMetro.SemiExpress",
+        "destination": "odpt.Station:Tobu.Nikko.MinamiKurihashi",
+        "firstStop": {
+          "station": "odpt.Station:TokyoMetro.Hanzomon.Shibuya",
+          "departure": 1280
+        }
+      },
+      "sourceUrls": [
+        "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E4%B8%AD%E5%A4%AE%E6%9E%97%E9%96%93&s=1&stype=&ticket=ic&to=%E5%8D%97%E6%A0%97%E6%A9%8B&ws=3"
+      ],
+      "note": "Yahoo Transit shows the weekday Chuo-rinkan 20:37 express to Minami-kurihashi as a zero-transfer through service; strict selectors uniquely match the Tokyu and Hanzomon fragments."
+    },
+    {
+      "id": "tokyu-denentoshi-hanzomon-1341-weekday-yahoo",
+      "status": "verified-current",
+      "operator": "tokyu",
+      "evidenceType": "third-party-route-result:yahoo-transit-zero-transfer",
+      "boundaryId": "denentoshi-hanzomon-shibuya",
+      "from": {
+        "railway": "odpt.Railway:Tokyu.DenEnToshi",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:Tokyu.Express",
+        "destination": "odpt.Station:Tobu.Isesaki.Kuki",
+        "firstStop": {
+          "station": "odpt.Station:Tokyu.DenEnToshi.ChuoRinkan",
+          "departure": 821
+        }
+      },
+      "to": {
+        "railway": "odpt.Railway:TokyoMetro.Hanzomon",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:TokyoMetro.Express",
+        "destination": "odpt.Station:Tobu.Isesaki.Kuki",
+        "firstStop": {
+          "station": "odpt.Station:TokyoMetro.Hanzomon.Shibuya",
+          "departure": 862
+        }
+      },
+      "sourceUrls": [
+        "https://transit.yahoo.co.jp/search/result?all=1&from=%E4%B8%AD%E5%A4%AE%E6%9E%97%E9%96%93&stype=&to=%E6%8A%BC%E4%B8%8A"
+      ],
+      "note": "Yahoo Transit shows the weekday Chuo-rinkan 13:41 express to Kuki continuing across Shibuya without transfer; strict selectors uniquely match the fragments."
+    },
+    {
+      "id": "tokyu-denentoshi-hanzomon-1612-weekday-yahoo",
+      "status": "verified-current",
+      "operator": "tokyu",
+      "evidenceType": "third-party-route-result:yahoo-transit-zero-transfer",
+      "boundaryId": "denentoshi-hanzomon-shibuya",
+      "from": {
+        "railway": "odpt.Railway:Tokyu.DenEnToshi",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:Tokyu.Express",
+        "destination": "odpt.Station:Tobu.Nikko.MinamiKurihashi",
+        "firstStop": {
+          "station": "odpt.Station:Tokyu.DenEnToshi.ChuoRinkan",
+          "departure": 972
+        }
+      },
+      "to": {
+        "railway": "odpt.Railway:TokyoMetro.Hanzomon",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:TokyoMetro.Express",
+        "destination": "odpt.Station:Tobu.Nikko.MinamiKurihashi",
+        "firstStop": {
+          "station": "odpt.Station:TokyoMetro.Hanzomon.Shibuya",
+          "departure": 1012
+        }
+      },
+      "sourceUrls": [
+        "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E4%B8%AD%E5%A4%AE%E6%9E%97%E9%96%93&s=0&ticket=ic&to=%E6%8A%BC%E4%B8%8A&ws=3"
+      ],
+      "note": "Yahoo Transit shows the weekday Chuo-rinkan 16:12 express to Minami-kurihashi continuing across Shibuya without transfer; strict selectors uniquely match the fragments."
+    },
+    {
+      "id": "hanzomon-denentoshi-2031-holiday-yahoo",
+      "status": "verified-current",
+      "operator": "tokyu",
+      "evidenceType": "third-party-route-result:yahoo-transit-zero-transfer",
+      "boundaryId": "denentoshi-hanzomon-shibuya",
+      "from": {
+        "railway": "odpt.Railway:TokyoMetro.Hanzomon",
+        "calendar": "odpt.Calendar:SaturdayHoliday",
+        "trainType": "odpt.TrainType:TokyoMetro.Express",
+        "destination": "odpt.Station:Tokyu.DenEnToshi.ChuoRinkan",
+        "firstStop": {
+          "station": "odpt.Station:TokyoMetro.Hanzomon.Oshiage",
+          "departure": 1231
+        }
+      },
+      "to": {
+        "railway": "odpt.Railway:Tokyu.DenEnToshi",
+        "calendar": "odpt.Calendar:SaturdayHoliday",
+        "trainType": "odpt.TrainType:Tokyu.Express",
+        "destination": "odpt.Station:Tokyu.DenEnToshi.ChuoRinkan",
+        "firstStop": {
+          "station": "odpt.Station:Tokyu.Toyoko.Shibuya",
+          "departure": 1263
+        }
+      },
+      "sourceUrls": [
+        "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E6%8A%BC%E4%B8%8A&s=0&stype=&ticket=ic&to=%E4%B8%AD%E5%A4%AE%E6%9E%97%E9%96%93&ws=3"
+      ],
+      "note": "Yahoo Transit shows the Saturday/holiday Oshiage 20:31 express to Chuo-rinkan as zero-transfer across Shibuya; strict selectors uniquely match the Hanzomon and Tokyu fragments."
     }
   ]
 }
