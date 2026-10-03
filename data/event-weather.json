@@ -1,87 +1,12 @@
 {
-  "date": "2026-10-03",
+  "date": "2026-10-04",
   "horizonDays": 7,
-  "generatedAt": "2026-10-03T22:53+09:00",
+  "generatedAt": "2026-10-04T03:40+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
-    {
-      "date": "2026-10-03",
-      "venue": "宮城県 セキスイハイムスーパーアリーナ",
-      "venueKey": "セキスイハイムスーパーアリーナ",
-      "eventIds": [
-        "a9f07d73f091ca00",
-        "a68af55adbb6684e"
-      ],
-      "areaCode": "040010",
-      "areaName": "東部",
-      "precision": "mesh5km",
-      "label": "晴れ",
-      "max": null,
-      "min": null,
-      "pop": "0",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-10-03T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "10〜14℃",
-      "coordinates": {
-        "lat": 38.33662,
-        "lon": 140.947601
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "晴れ",
-          "validAt": "2026-10-03T21:00+09:00",
-          "temp": 14
-        },
-        {
-          "time": "24:00",
-          "label": "晴れ",
-          "validAt": "2026-10-04T00:00+09:00",
-          "temp": 12
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "17:00",
-          "rain": false,
-          "validAt": "2026-10-03T17:00+09:00"
-        },
-        {
-          "time": "18:00",
-          "rain": false,
-          "validAt": "2026-10-03T18:00+09:00"
-        },
-        {
-          "time": "19:00",
-          "rain": false,
-          "validAt": "2026-10-03T19:00+09:00"
-        }
-      ]
-    },
-    {
-      "date": "2026-10-03",
-      "venue": "栃木県 モビリティリゾートもてぎ",
-      "venueKey": "モビリティリゾートもてぎ",
-      "eventIds": [
-        "bc67e06a79f05c8a"
-      ],
-      "areaCode": "090010",
-      "areaName": "南部",
-      "precision": "area",
-      "label": "晴れ 夜 くもり 南西部 では 夜 霧",
-      "max": null,
-      "min": null,
-      "pop": "10",
-      "popLabel": "当日最大",
-      "issuedAt": "2026-10-03T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
     {
       "date": "2026-10-04",
       "venue": "宮城県 セキスイハイムスーパーアリーナ",
@@ -148,6 +73,23 @@
           "validAt": "2026-10-05T00:00+09:00",
           "temp": 14
         }
+      ],
+      "hourlyRain": [
+        {
+          "time": "16:00",
+          "rain": false,
+          "validAt": "2026-10-04T16:00+09:00"
+        },
+        {
+          "time": "17:00",
+          "rain": false,
+          "validAt": "2026-10-04T17:00+09:00"
+        },
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-10-04T18:00+09:00"
+        }
       ]
     },
     {
@@ -156,7 +98,8 @@
       "venueKey": "宇都宮市文化会館",
       "eventIds": [
         "024676b8e98a3faf",
-        "0275e0023055a052"
+        "0275e0023055a052",
+        "1b8b5d7780fea06b"
       ],
       "areaCode": "090010",
       "areaName": "南部",
@@ -216,6 +159,18 @@
           "validAt": "2026-10-05T00:00+09:00",
           "temp": 17
         }
+      ],
+      "hourlyRain": [
+        {
+          "time": "17:00",
+          "rain": false,
+          "validAt": "2026-10-04T17:00+09:00"
+        },
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-10-04T18:00+09:00"
+        }
       ]
     },
     {
@@ -231,6 +186,26 @@
       "label": "くもり 昼前 まで 時々 晴れ",
       "max": 24.0,
       "min": 16.0,
+      "pop": "0",
+      "popLabel": "06〜12時",
+      "issuedAt": "2026-10-03T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-10-04",
+      "venue": "静岡県 静岡・清水マリンパーク",
+      "venueKey": "静岡清水マリンパーク",
+      "eventIds": [
+        "6d12f6624cf02cc8"
+      ],
+      "areaCode": "220010",
+      "areaName": "中部",
+      "precision": "area",
+      "label": "晴れ 昼過ぎ から くもり",
+      "max": 26.0,
+      "min": 18.0,
       "pop": "0",
       "popLabel": "06〜12時",
       "issuedAt": "2026-10-03T17:00:00+09:00",
@@ -401,21 +376,16 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 48,
-    "uniqueVenueDates": 15,
-    "weatherEntries": 12,
-    "meshEntries": 3,
-    "failures": 3,
-    "meshTimelineEntries": 3,
-    "meshExactTempSlots": 16,
-    "hourlyRainEntries": 1
+    "occurrencesInRange": 49,
+    "uniqueVenueDates": 16,
+    "weatherEntries": 11,
+    "meshEntries": 2,
+    "failures": 5,
+    "meshTimelineEntries": 2,
+    "meshExactTempSlots": 14,
+    "hourlyRainEntries": 2
   },
   "failures": [
-    {
-      "date": "2026-10-03",
-      "venue": "清水マリンパーク",
-      "reason": "都道府県を解決できません"
-    },
     {
       "date": "2026-10-04",
       "venue": "北海道 函館市民会館",
@@ -424,6 +394,21 @@
     {
       "date": "2026-10-04",
       "venue": "清水マリンパーク",
+      "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-10-11",
+      "venue": "ぴあアリーナ MM（神奈川県横浜市西区みなとみらい3-2-2）",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-10-11",
+      "venue": "石川県 本多の森北電ホール",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-10-11",
+      "venue": "西日本総合展示場",
       "reason": "都道府県を解決できません"
     }
   ]
