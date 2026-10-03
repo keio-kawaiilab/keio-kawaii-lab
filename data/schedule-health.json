@@ -1,27 +1,18 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-03T15:41:07.486046+09:00",
-  "candidateUpdatedAt": "2026-10-03T15:38:50+09:00",
+  "generatedAt": "2026-10-03T16:33:13.386900+09:00",
+  "candidateUpdatedAt": "2026-10-03T16:33:12+09:00",
   "previousEventCount": 179,
-  "candidateEventCount": 179,
+  "candidateEventCount": 167,
   "protectedPreviousCount": 179,
   "errorCount": 0,
-  "warningCount": 24,
+  "warningCount": 13,
   "errors": [],
   "warnings": [
-    "quarantined one event/source update and kept the previous known-good data: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
-    "quarantined one event/source update and kept the previous known-good data: duplicate Pia lot pia:30338: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN / 現在受付なし",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: missing or invalid eventScope: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: missing or invalid eventScope: FRUITS ZIPPER / FRUITS ZIPPER / 2次プレリザーブ",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: missing or invalid eventScope: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / ぴあプレミアム先行",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: missing or invalid eventScope: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:22735: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: missing or invalid eventScope: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14224: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: missing or invalid eventScope: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / プレリザーブ",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: missing or invalid eventScope: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / プレイガイド最速先行",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: missing or invalid eventScope: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 2次プレリザーブ",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: missing or invalid eventScope: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / ぴあ先行",
+    "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
+    "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 一般発売",
+    "quarantined one event/source update and kept the previous known-good data: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+    "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for url:https://x.com/MORE_STAR_/status/2092567739969966299 [MORE STAR]: 2026-11-25",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event is not marked as official-source data: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no participation method: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -29,12 +20,10 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no verified purchase/ticket window: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: missing or invalid eventScope: FRUITS ZIPPER / FRUITS ZIPPER / ぴあNICOSカード限定先行",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / ぴあNICOSカード限定先行",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: missing or invalid eventScope: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 2次プレリザーブ",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:30338: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 2次プレリザーブ"
+    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981: 2026-10-28, 2026-10-29, 2026-10-31, 2026-11-01",
+    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981: 2026-10-28, 2026-10-29, 2026-10-31, 2026-11-01"
   ],
-  "candidateSha256": "9f7547e826715a551e9628b90f98e4d5b365c3953387d9aba4f9194bc8bd6c43",
+  "candidateSha256": "07b171182406c42cc1e8d19efd352cbead60b7b8758a1041391181d9e9085232",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -68,6 +57,7 @@
     "url:https://prtimes.jp/main/html/rd/p/000000898.000017258.html",
     "url:https://sukisuki-shop.com/goods/6500000004023",
     "url:https://sukisuki-shop.com/goods/6500000004582",
+    "url:https://sweetsteady.asobisystem.com/",
     "url:https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026",
     "url:https://sweetsteady.asobisystem.com/live_information/detail/43905",
     "url:https://sweetsteady.asobisystem.com/live_information/detail/43907",
@@ -75,7 +65,6 @@
     "url:https://sweetsteady.asobisystem.com/live_information/detail/43909",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
-    "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=09569",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14224",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14296",
@@ -105,64 +94,9 @@
     "url:https://x.com/MORE_STAR_/status/2092567739969966299"
   ],
   "reconciledBaseDateMessageCount": 0,
-  "downgradedFalsePositiveCount": 0,
-  "legacyProtectedErrorCount": 22,
+  "downgradedFalsePositiveCount": 2,
+  "legacyProtectedErrorCount": 7,
   "legacyProtectedErrors": [
-    {
-      "error": "missing or invalid eventScope: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
-      "label": "FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
-      "error": "missing or invalid eventScope: FRUITS ZIPPER / FRUITS ZIPPER / 2次プレリザーブ",
-      "label": "FRUITS ZIPPER / FRUITS ZIPPER / 2次プレリザーブ",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
-      "error": "missing or invalid eventScope: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / ぴあプレミアム先行",
-      "label": "CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / ぴあプレミアム先行",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
-      "error": "missing or invalid eventScope: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
-      "label": "FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
-      "error": "duplicate Pia lot pia:22735: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
-      "label": "FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
-      "error": "missing or invalid eventScope: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
-      "label": "FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
-      "error": "duplicate Pia lot pia:14224: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
-      "label": "FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
-      "error": "missing or invalid eventScope: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / プレリザーブ",
-      "label": "CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / プレリザーブ",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
-      "error": "missing or invalid eventScope: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / プレイガイド最速先行",
-      "label": "CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / プレイガイド最速先行",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
-      "error": "missing or invalid eventScope: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 2次プレリザーブ",
-      "label": "CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 2次プレリザーブ",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
-      "error": "missing or invalid eventScope: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / ぴあ先行",
-      "label": "CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / ぴあ先行",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
     {
       "error": "special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
       "label": "MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -197,38 +131,28 @@
       "error": "special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
       "label": "MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
       "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
-      "error": "missing or invalid eventScope: FRUITS ZIPPER / FRUITS ZIPPER / ぴあNICOSカード限定先行",
-      "label": "FRUITS ZIPPER / FRUITS ZIPPER / ぴあNICOSカード限定先行",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
-      "error": "duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / ぴあNICOSカード限定先行",
-      "label": "FRUITS ZIPPER / FRUITS ZIPPER / ぴあNICOSカード限定先行",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
-      "error": "missing or invalid eventScope: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 2次プレリザーブ",
-      "label": "CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 2次プレリザーブ",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
-      "error": "duplicate Pia lot pia:30338: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 2次プレリザーブ",
-      "label": "CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 2次プレリザーブ",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 2,
+  "quarantineCount": 4,
   "quarantineActions": [
     {
-      "error": "duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
-      "action": "restored previous Pia lot rows",
-      "restoredPreviousRows": 2
+      "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 1
     },
     {
-      "error": "duplicate Pia lot pia:30338: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN / 現在受付なし",
-      "action": "restored previous Pia lot rows",
+      "error": "active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 一般発売",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 7
+    },
+    {
+      "error": "special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+      "action": "restored previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "future performance dates disappeared for url:https://x.com/MORE_STAR_/status/2092567739969966299 [MORE STAR]: 2026-11-25",
+      "action": "restored previous rows for url:https://x.com/MORE_STAR_/status/2092567739969966299",
       "restoredPreviousRows": 2
     }
   ],
@@ -237,16 +161,28 @@
     "reassignedCount": 0,
     "hydratedCount": 0,
     "ambiguousCount": 0,
-    "unresolvedCount": 2,
+    "unresolvedCount": 4,
     "reassigned": [],
     "hydrated": [],
     "ambiguous": [],
     "unresolved": [
       {
+        "group": "FRUITS ZIPPER",
+        "date": "2026-11-01",
+        "url": "https://fruitszipper.asobisystem.com/live_information/detail/44318",
+        "representedBy": "2502a39e2d67a72e"
+      },
+      {
         "group": "SWEET STEADY",
         "date": "2026-10-11",
         "url": "https://sweetsteady.asobisystem.com/live_information/detail/45518",
         "representedBy": "a197fe7cce1a9729"
+      },
+      {
+        "group": "MORE STAR",
+        "date": "2026-10-07",
+        "url": "https://morestar.asobisystem.com/live_information/detail/45755",
+        "representedBy": "a78fc7ce762556f7"
       },
       {
         "group": "MORE STAR",
