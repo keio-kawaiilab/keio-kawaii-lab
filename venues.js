@@ -110,15 +110,27 @@
 
   function occurrences(event){
     var rows=[];
+    function add(date,venue){
+      if(isPhysicalVenue(venue))rows.push({date:String(date||event.eventDate||"").slice(0,10),venue:venue});
+    }
     if(Array.isArray(event.schedule)&&event.schedule.length){
       event.schedule.forEach(function(item){
-        if(item&&isPhysicalVenue(item.venue)){
-          rows.push({date:String(item.date||event.eventDate||"").slice(0,10),venue:item.venue});
+        if(!item)return;
+        var locations=Array.isArray(item.venueLocations)?item.venueLocations:[];
+        if(locations.length){
+          locations.forEach(function(venue){add(item.date,venue);});
+        }else{
+          add(item.date,item.venue);
         }
       });
-    }else if(isPhysicalVenue(event.venue)){
+    }else{
+      var locations=Array.isArray(event.venueLocations)?event.venueLocations:[];
       (event.eventDates&&event.eventDates.length?event.eventDates:[event.eventDate]).forEach(function(date){
-        rows.push({date:String(date||"").slice(0,10),venue:event.venue});
+        if(locations.length){
+          locations.forEach(function(venue){add(date,venue);});
+        }else{
+          add(date,event.venue);
+        }
       });
     }
     return rows;
