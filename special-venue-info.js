@@ -134,7 +134,7 @@
     var meta=card.querySelector(".meta");
     if(!meta)return;
     var name=venueText(card);
-    if(!name||/オンライン/.test(name))return;
+    if(!name||/オンライン|YouTube|当選者のみ|https?:\/\//i.test(name))return;
 
     [].slice.call(meta.querySelectorAll(".special-venue-address,.special-venue-access")).forEach(function(node){node.remove();});
 
