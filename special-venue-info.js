@@ -4,64 +4,7 @@
   var cards=document.getElementById("cards");
   if(!cards)return;
 
-  var supplemental=[
-    {
-      name:"アーバンドック ららぽーと豊洲 シーサイドデッキ メインステージ",
-      aliases:["ららぽーと豊洲 シーサイドデッキ メインステージ","東京都 ららぽーと豊洲 シーサイドデッキ メインステージ","アーバンドックららぽーと豊洲"],
-      address:"東京都江東区豊洲2-4-9",
-      access:["東京メトロ有楽町線「豊洲駅」2b出口直結","ゆりかもめ「豊洲駅」直結"],
-      officialUrl:"https://mitsui-shopping-park.com/lalaport/toyosu/access/train-bus.html"
-    },
-    {
-      name:"ららぽーと立川立飛 2Fイベント広場",
-      aliases:["ららぽーと立川立飛2Fイベント広場","東京都 ららぽーと立川立飛 2Fイベント広場"],
-      address:"東京都立川市泉町935-1",
-      access:["多摩モノレール「立飛駅」直結","JR「立川駅」から多摩モノレール「立川北駅」へ乗り換え、2駅約4分"],
-      officialUrl:"https://mitsui-shopping-park.com/lalaport/tachikawa/access/train_bus.html"
-    },
-    {
-      name:"animate hall BLACK（アニメイト池袋本店 北館9F）",
-      aliases:["animate hall BLACK(アニメイト池袋本店 北館9F)","animate hall BLACK（アニメイト池袋本店 北館9F）","アニメイト池袋本店 北館9F"],
-      address:"東京都豊島区東池袋1-20-7 アニメイト池袋本店 北館9F",
-      access:["JR・東京メトロ・西武池袋線・東武東上線「池袋駅」東口から徒歩約5分"],
-      officialUrl:"https://www.animate.co.jp/shop/ikebukuro/access/"
-    },
-    {
-      name:"テラスモール松戸 2Fこもれびステージ",
-      aliases:["テラスモール松戸2Fこもれびステージ","千葉県 テラスモール松戸 2Fこもれびステージ"],
-      address:"千葉県松戸市八ヶ崎2-8-1",
-      access:["JR常磐線・武蔵野線「新松戸駅」から京成バス千葉ウエスト約15分、「テラスモール松戸北口」下車すぐ","JR常磐線「北小金駅」から京成バス千葉ウエスト約5分、「テラスモール松戸北口」下車すぐ"],
-      officialUrl:"https://terracemall.com/matsudo/access/"
-    },
-    {
-      name:"ところざわサクラタウン 千人テラス",
-      aliases:["埼玉県 ところざわサクラタウン 千人テラス"],
-      address:"埼玉県所沢市東所沢和田3-31-3",
-      access:["JR武蔵野線「東所沢駅」から徒歩約10分"],
-      officialUrl:"https://tokorozawa-sakuratown.com/access.html"
-    },
-    {
-      name:"エミテラス所沢 2F TOKOROZAWA e-CUBE",
-      aliases:["エミテラス所沢2F TOKOROZAWA e-CUBE","埼玉県 エミテラス所沢2F TOKOROZAWA e-CUBE","TOKOROZAWA e-CUBE"],
-      address:"埼玉県所沢市東住吉10-1",
-      access:["西武池袋線・西武新宿線「所沢駅」西口から徒歩約4分"],
-      officialUrl:"https://et-ge-tokorozawa.com/emiterrace/access/"
-    },
-    {
-      name:"ベルサール汐留",
-      aliases:["東京都 ベルサール汐留"],
-      address:"東京都中央区銀座8-21-1 住友不動産汐留浜離宮ビル B1・1F・2F",
-      access:["都営大江戸線「汐留駅」5番出口から徒歩約4分","JR「新橋駅」汐留口から徒歩約7分"],
-      officialUrl:"https://www.bellesalle.co.jp/shisetsu/higashiginza/bs_shiodome/"
-    },
-    {
-      name:"東京流通センター 第二展示場 Fホール",
-      aliases:["東京都 東京流通センター 第二展示場 Fホール","大特典会 東京流通センター 第二展示場 Fホール","東京流通センター第二展示場Fホール"],
-      address:"東京都大田区平和島6-1-1 東京流通センター 第二展示場 Fホール",
-      access:["東京モノレール「流通センター駅」から徒歩約1分（駅正面の2階建て・第二展示場）"],
-      officialUrl:"https://www.trc-event.jp/access/index.html"
-    }
-  ];
+  var supplemental=[];
 
   function esc(value){
     return String(value==null?"":value)
