@@ -30,6 +30,7 @@ VENUE_RE = re.compile(r"^(?:📍|会場[：:]?|場所[：:]?|開催場所[：:]?
 INLINE_VENUE_RE = re.compile(r"(?:^|\s)(?:📍|会場[：:]?|場所[：:]?|開催場所[：:]?)\s*([^🕰🎫📅🗓\n]+)")
 PLACEHOLDER_VENUES = {"未定", "会場未定", "詳細は追ってお知らせします", "詳細は後日発表"}
 APPLICATION_WORDS = ("受付", "申込", "販売", "予約開始", "締切")
+TWITTER_EPOCH_MS = 1288834974657
 
 
 def normalize(value: object) -> str:
@@ -62,34 +63,57 @@ def event_key(event: dict) -> tuple[str, str, str]:
     return (str(event.get("group") or ""), event_day(event), special_category(event.get("eventCategory") or event.get("title")))
 
 
-def infer_date(match: re.Match, today: date) -> date | None:
-    year_text, month_text, day_text = match.groups()
+def tweet_date_from_url(value: object, today: date | None = None) -> date | None:
+    """Recover the X post date from its Snowflake id.
+
+    Old posts remain visible in public timelines. Using today's year for a
+    yearless "7/13" can therefore resurrect a 2025 event as 2027. Anchor
+    yearless dates to the post itself instead.
+    """
+    match = re.search(r"/status/(\d{15,22})", str(value or ""))
+    if not match:
+        return None
     try:
-        year = int(year_text) if year_text else today.year
+        tweet_id = int(match.group(1))
+        timestamp_ms = (tweet_id >> 22) + TWITTER_EPOCH_MS
+        posted = datetime.fromtimestamp(timestamp_ms / 1000, timezone.utc).astimezone(JST).date()
+    except (ValueError, OverflowError, OSError):
+        return None
+    today = today or datetime.now(JST).date()
+    if posted < date(2010, 1, 1) or posted > today + timedelta(days=1):
+        return None
+    return posted
+
+
+def infer_date(match: re.Match, today: date, reference_date: date | None = None) -> date | None:
+    year_text, month_text, day_text = match.groups()
+    anchor = reference_date or today
+    try:
+        year = int(year_text) if year_text else anchor.year
         candidate = date(year, int(month_text), int(day_text))
-        if not year_text and candidate < today - timedelta(days=45):
-            candidate = date(today.year + 1, candidate.month, candidate.day)
+        if not year_text and candidate < anchor - timedelta(days=45):
+            candidate = date(anchor.year + 1, candidate.month, candidate.day)
         return candidate
     except ValueError:
         return None
 
 
-def dates_in_line(line: str, today: date) -> list[date]:
+def dates_in_line(line: str, today: date, reference_date: date | None = None) -> list[date]:
     if any(word in line for word in APPLICATION_WORDS):
         return []
     result = []
     for match in DATE_RE.finditer(line):
-        parsed = infer_date(match, today)
+        parsed = infer_date(match, today, reference_date)
         if parsed and parsed >= today and parsed not in result:
             result.append(parsed)
     return result
 
 
-def extract_date(lines: list[str], today: date) -> date | None:
+def extract_date(lines: list[str], today: date, reference_date: date | None = None) -> date | None:
     preferred = []
     fallback = []
     for line in lines:
-        parsed_values = dates_in_line(line, today)
+        parsed_values = dates_in_line(line, today, reference_date)
         if not parsed_values:
             continue
         target = preferred if any(token in line for token in ("開催", "🗓", "📅", "日程")) else fallback
@@ -101,6 +125,8 @@ def extract_date(lines: list[str], today: date) -> date | None:
 def clean_venue(value: object) -> str | None:
     venue = normalize(value).strip("｜|・ ")
     if not venue or venue in PLACEHOLDER_VENUES or "詳細" in venue:
+        return None
+    if re.search(r"https?://|\bYouTube\b|当選者のみ", venue, re.I):
         return None
     return venue
 
@@ -128,18 +154,18 @@ def extract_venue(lines: list[str]) -> str | None:
     return None
 
 
-def extract_occurrences(lines: list[str], today: date) -> list[tuple[date, str]]:
+def extract_occurrences(lines: list[str], today: date, reference_date: date | None = None) -> list[tuple[date, str]]:
     """Pair each announced event date with the nearest following explicit venue."""
     paired: list[tuple[date, str]] = []
     for index, line in enumerate(lines):
-        line_dates = dates_in_line(line, today)
+        line_dates = dates_in_line(line, today, reference_date)
         if not line_dates:
             continue
         venue = venue_in_line(line)
         if not venue:
             for probe_index in range(index + 1, min(len(lines), index + 6)):
                 probe = lines[probe_index]
-                if dates_in_line(probe, today):
+                if dates_in_line(probe, today, reference_date):
                     break
                 venue = venue_in_line(probe)
                 if venue:
@@ -157,7 +183,7 @@ def extract_occurrences(lines: list[str], today: date) -> list[tuple[date, str]]
 
     if paired:
         return paired
-    day = extract_date(lines, today)
+    day = extract_date(lines, today, reference_date)
     venue = extract_venue(lines)
     return [(day, venue)] if day and venue else []
 
@@ -276,7 +302,8 @@ def parse_profile(group: str, handle: str, html: str, today: date | None = None)
         if not category:
             continue
         fallback_title = extract_title(group, text, lines, category)
-        for day, venue in extract_occurrences(lines, today):
+        reference_date = tweet_date_from_url(url, today) or today
+        for day, venue in extract_occurrences(lines, today, reference_date):
             if day < today:
                 continue
             key = (group, day.isoformat(), category)
