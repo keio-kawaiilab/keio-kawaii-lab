@@ -100,15 +100,23 @@
     return"規模確認中";
   }
 
+  function isPhysicalVenue(value){
+    var text=String(value||"").trim();
+    if(!text)return false;
+    if(/オンライン|複数会場|当選者のみ|YouTube/i.test(text))return false;
+    if(/https?:\/\//i.test(text))return false;
+    return true;
+  }
+
   function occurrences(event){
     var rows=[];
     if(Array.isArray(event.schedule)&&event.schedule.length){
       event.schedule.forEach(function(item){
-        if(item&&item.venue&&!/オンライン|複数会場/.test(item.venue)){
+        if(item&&isPhysicalVenue(item.venue)){
           rows.push({date:String(item.date||event.eventDate||"").slice(0,10),venue:item.venue});
         }
       });
-    }else if(event.venue&&!/オンライン|複数会場/.test(event.venue)){
+    }else if(isPhysicalVenue(event.venue)){
       (event.eventDates&&event.eventDates.length?event.eventDates:[event.eventDate]).forEach(function(date){
         rows.push({date:String(date||"").slice(0,10),venue:event.venue});
       });
