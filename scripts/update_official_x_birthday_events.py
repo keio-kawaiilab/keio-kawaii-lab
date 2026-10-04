@@ -320,7 +320,8 @@ def event_from_post(
     primary_url = official_urls[0] if official_urls else url
     all_urls = _unique_urls(primary_url, official_urls, url)
     events = []
-    for day, venue in base.extract_occurrences(lines, today):
+    reference_date = base.tweet_date_from_url(url, today) or today
+    for day, venue in base.extract_occurrences(lines, today, reference_date):
         if day < today:
             continue
         title = base.extract_occurrence_title(group, lines, day, today, category, fallback_title)
