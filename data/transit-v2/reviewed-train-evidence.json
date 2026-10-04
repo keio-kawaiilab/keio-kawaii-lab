@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "policy": {
     "purpose": "Human-reviewed exact per-train identity evidence for timetable sources that do not publish stable train IDs in ODPT StationTimetable. Operator-official and explicitly labeled third-party route-result evidence are kept distinct.",
     "selectorMustMatchExactlyOneSourceAndTarget": true,
@@ -847,6 +847,99 @@
         "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E4%BA%8C%E5%AD%90%E7%8E%89%E5%B7%9D&s=2&stype=&ticket=ic&to=%E4%B9%85%E5%96%9C&ws=3"
       ],
       "note": "Yahoo Transit reviewed 2026-10-03: Futako-Tamagawa 10:16 to Kuki 11:57, zero transfers; Shibuya 10:32 and Oshiage 11:05. Source and target selectors each match exactly one current fragment."
+    },
+    {
+      "id": "tokyu-denentoshi-hanzomon-1236-holiday-yahoo-20261004",
+      "status": "verified-current",
+      "operator": "tokyu",
+      "evidenceType": "third-party-route-result:yahoo-transit-zero-transfer",
+      "boundaryId": "denentoshi-hanzomon-shibuya",
+      "from": {
+        "railway": "odpt.Railway:Tokyu.DenEnToshi",
+        "calendar": "odpt.Calendar:SaturdayHoliday",
+        "trainType": "odpt.TrainType:Tokyu.Local",
+        "destination": "odpt.Station:Tobu.Isesaki.Kuki",
+        "containsStop": {
+          "station": "odpt.Station:Tokyu.Oimachi.FutakoTamagawa",
+          "departure": 756
+        }
+      },
+      "to": {
+        "railway": "odpt.Railway:TokyoMetro.Hanzomon",
+        "calendar": "odpt.Calendar:SaturdayHoliday",
+        "trainType": "odpt.TrainType:TokyoMetro.Express",
+        "destination": "odpt.Station:Tobu.Isesaki.Kuki",
+        "firstStop": {
+          "station": "odpt.Station:TokyoMetro.Hanzomon.Shibuya",
+          "departure": 772
+        }
+      },
+      "sourceUrls": [
+        "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E4%BA%8C%E5%AD%90%E7%8E%89%E5%B7%9D&s=2&stype=&ticket=ic&to=%E4%B9%85%E5%96%9C&ws=3"
+      ],
+      "note": "Yahoo Transit reviewed 2026-10-04: Futako-Tamagawa 12:36 to Kuki 14:17, zero transfers; Shibuya 12:52, Oshiage 13:25. Source and target selectors uniquely match current fragments."
+    },
+    {
+      "id": "tokyu-denentoshi-hanzomon-1256-holiday-yahoo-20261004",
+      "status": "verified-current",
+      "operator": "tokyu",
+      "evidenceType": "third-party-route-result:yahoo-transit-zero-transfer",
+      "boundaryId": "denentoshi-hanzomon-shibuya",
+      "from": {
+        "railway": "odpt.Railway:Tokyu.DenEnToshi",
+        "calendar": "odpt.Calendar:SaturdayHoliday",
+        "trainType": "odpt.TrainType:Tokyu.Local",
+        "destination": "odpt.Station:Tobu.Isesaki.Kuki",
+        "containsStop": {
+          "station": "odpt.Station:Tokyu.Oimachi.FutakoTamagawa",
+          "departure": 776
+        }
+      },
+      "to": {
+        "railway": "odpt.Railway:TokyoMetro.Hanzomon",
+        "calendar": "odpt.Calendar:SaturdayHoliday",
+        "trainType": "odpt.TrainType:TokyoMetro.Express",
+        "destination": "odpt.Station:Tobu.Isesaki.Kuki",
+        "firstStop": {
+          "station": "odpt.Station:TokyoMetro.Hanzomon.Shibuya",
+          "departure": 792
+        }
+      },
+      "sourceUrls": [
+        "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E4%BA%8C%E5%AD%90%E7%8E%89%E5%B7%9D&s=2&stype=&ticket=ic&to=%E4%B9%85%E5%96%9C&ws=3"
+      ],
+      "note": "Yahoo Transit reviewed 2026-10-04: Futako-Tamagawa 12:56 to Kuki 14:37, zero transfers; Shibuya 13:12, Oshiage 13:45. Source and target selectors uniquely match current fragments."
+    },
+    {
+      "id": "tokyu-denentoshi-hanzomon-1316-holiday-yahoo-20261004",
+      "status": "verified-current",
+      "operator": "tokyu",
+      "evidenceType": "third-party-route-result:yahoo-transit-zero-transfer",
+      "boundaryId": "denentoshi-hanzomon-shibuya",
+      "from": {
+        "railway": "odpt.Railway:Tokyu.DenEnToshi",
+        "calendar": "odpt.Calendar:SaturdayHoliday",
+        "trainType": "odpt.TrainType:Tokyu.Local",
+        "destination": "odpt.Station:Tobu.Isesaki.Kuki",
+        "containsStop": {
+          "station": "odpt.Station:Tokyu.Oimachi.FutakoTamagawa",
+          "departure": 796
+        }
+      },
+      "to": {
+        "railway": "odpt.Railway:TokyoMetro.Hanzomon",
+        "calendar": "odpt.Calendar:SaturdayHoliday",
+        "trainType": "odpt.TrainType:TokyoMetro.Express",
+        "destination": "odpt.Station:Tobu.Isesaki.Kuki",
+        "firstStop": {
+          "station": "odpt.Station:TokyoMetro.Hanzomon.Shibuya",
+          "departure": 812
+        }
+      },
+      "sourceUrls": [
+        "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E4%BA%8C%E5%AD%90%E7%8E%89%E5%B7%9D&s=2&stype=&ticket=ic&to=%E4%B9%85%E5%96%9C&ws=3"
+      ],
+      "note": "Yahoo Transit reviewed 2026-10-04: Futako-Tamagawa 13:16 to Kuki 14:57, zero transfers; Shibuya 13:32, Oshiage 14:05. Source and target selectors uniquely match current fragments."
     }
   ]
 }
