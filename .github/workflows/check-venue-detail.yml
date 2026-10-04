@@ -7,6 +7,7 @@ on:
       - "venues.js"
       - "venue-detail.js"
       - "venue-detail-cleanup.js"
+      - "special-venue-info.js"
       - "data/venues.json"
       - "scripts/test_venue_detail_contract.js"
       - ".github/workflows/check-venue-detail.yml"
@@ -36,6 +37,7 @@ jobs:
         run: |
           node --check venue-detail.js
           node --check venue-detail-cleanup.js
+          node --check special-venue-info.js
           node --check venues.js
           node --check scripts/test_venue_detail_contract.js
       - name: Check venue detail loading contract
