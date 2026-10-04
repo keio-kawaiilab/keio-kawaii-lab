@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "policy": {
     "purpose": "Human-reviewed exact per-train identity evidence for timetable sources that do not publish stable train IDs in ODPT StationTimetable. Operator-official and explicitly labeled third-party route-result evidence are kept distinct.",
     "selectorMustMatchExactlyOneSourceAndTarget": true,
@@ -692,6 +692,68 @@
         "https://transit.yahoo.co.jp/search/result?all=1&expkind=1&from=%E6%B8%8B%E8%B0%B7&ticket=ic&to=%E5%85%83%E7%94%BA%E3%83%BB%E4%B8%AD%E8%8F%AF%E8%A1%97&type=1"
       ],
       "note": "Yahoo Transit on 2026-10-03 shows Shibuya 05:16 to Motomachi-Chukagai 06:04 as one zero-transfer local train, crossing Yokohama at 05:55."
+    },
+    {
+      "id": "tokyu-denentoshi-hanzomon-0513-weekday-yahoo",
+      "status": "verified-current",
+      "operator": "tokyu",
+      "evidenceType": "third-party-route-result:yahoo-transit-zero-transfer",
+      "boundaryId": "denentoshi-hanzomon-shibuya",
+      "from": {
+        "railway": "odpt.Railway:Tokyu.DenEnToshi",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:Tokyu.Local",
+        "destination": "odpt.Station:Tobu.Nikko.MinamiKurihashi",
+        "containsStop": {
+          "station": "odpt.Station:Tokyu.Oimachi.FutakoTamagawa",
+          "departure": 313
+        }
+      },
+      "to": {
+        "railway": "odpt.Railway:TokyoMetro.Hanzomon",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:TokyoMetro.SemiExpress",
+        "destination": "odpt.Station:Tobu.Nikko.MinamiKurihashi",
+        "firstStop": {
+          "station": "odpt.Station:TokyoMetro.Hanzomon.Shibuya",
+          "departure": 329
+        }
+      },
+      "sourceUrls": [
+        "https://transit.yahoo.co.jp/search/result/%E4%BA%8C%E5%AD%90%E7%8E%89%E5%B7%9D-%E5%8D%97%E6%A0%97%E6%A9%8B"
+      ],
+      "note": "Yahoo Transit route result reviewed for a weekday zero-transfer service: Futako-Tamagawa 05:13, Shibuya 05:29, Oshiage 06:01, Minami-kurihashi 07:01. The Tokyu and Tokyo Metro fragments each match exactly one reconstructed/exact record at the Shibuya boundary."
+    },
+    {
+      "id": "tokyu-denentoshi-hanzomon-1028-weekday-yahoo",
+      "status": "verified-current",
+      "operator": "tokyu",
+      "evidenceType": "third-party-route-result:yahoo-transit-zero-transfer",
+      "boundaryId": "denentoshi-hanzomon-shibuya",
+      "from": {
+        "railway": "odpt.Railway:Tokyu.DenEnToshi",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:Tokyu.Express",
+        "destination": "odpt.Station:Tobu.Nikko.MinamiKurihashi",
+        "containsStop": {
+          "station": "odpt.Station:Tokyu.Oimachi.FutakoTamagawa",
+          "departure": 628
+        }
+      },
+      "to": {
+        "railway": "odpt.Railway:TokyoMetro.Hanzomon",
+        "calendar": "odpt.Calendar:Weekday",
+        "trainType": "odpt.TrainType:TokyoMetro.Express",
+        "destination": "odpt.Station:Tobu.Nikko.MinamiKurihashi",
+        "firstStop": {
+          "station": "odpt.Station:TokyoMetro.Hanzomon.Shibuya",
+          "departure": 640
+        }
+      },
+      "sourceUrls": [
+        "https://transit.yahoo.co.jp/search/result/%E4%BA%8C%E5%AD%90%E7%8E%89%E5%B7%9D-%E5%8D%97%E6%A0%97%E6%A9%8B"
+      ],
+      "note": "Yahoo Transit route result reviewed for a weekday zero-transfer service: Futako-Tamagawa 10:28, Shibuya 10:40, Oshiage 11:15, Minami-kurihashi 12:12. The Tokyu and Tokyo Metro fragments each match exactly one record at the Shibuya boundary."
     }
   ]
 }
