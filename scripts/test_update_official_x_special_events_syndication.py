@@ -49,5 +49,18 @@ class OfficialXSyndicationSpecialEventTests(unittest.TestCase):
         self.assertEqual(events[0]["sourceChannel"], "official-x-syndication")
 
 
+
+    def test_old_yearless_post_does_not_resurface_as_future_event(self):
+        x_url = "https://x.com/SWEET_STEADY/status/1944245087384613023"
+        text = """リリースイベント
+7/13(日)
+📍千葉県 イオンモール幕張新都心 豊砂公園"""
+        events = s.events_from_post("SWEET STEADY", x_url, text, date(2026, 10, 4))
+        self.assertEqual(events, [])
+
+    def test_tweet_snowflake_anchors_yearless_date(self):
+        x_url = "https://x.com/SWEET_STEADY/status/1944245087384613023"
+        self.assertEqual(base.tweet_date_from_url(x_url, date(2026, 10, 4)), date(2025, 7, 13))
+
 if __name__ == "__main__":
     unittest.main()
