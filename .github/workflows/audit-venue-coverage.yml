@@ -1,0 +1,85 @@
+name: Venue coverage monitor
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 * * * *"
+  push:
+    branches:
+      - main
+    paths:
+      - "data/live-events.json"
+      - "data/venues.json"
+      - "scripts/audit_venue_coverage.py"
+      - "scripts/test_audit_venue_coverage.py"
+      - ".github/workflows/audit-venue-coverage.yml"
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: venue-coverage-monitor
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Test venue coverage auditor
+        working-directory: scripts
+        run: python -m unittest -v test_audit_venue_coverage.py
+
+      - name: Audit venue coverage without blocking calendar publication
+        id: audit
+        shell: bash
+        run: |
+          set +e
+          python scripts/audit_venue_coverage.py --report /tmp/venue-coverage.json
+          code=$?
+          set -e
+          if [ "$code" -eq 0 ]; then
+            echo "status=ok" >> "$GITHUB_OUTPUT"
+          else
+            echo "status=degraded" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open or close venue coverage issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          STATUS: ${{ steps.audit.outputs.status }}
+        shell: bash
+        run: |
+          title="⚠️ Venue database coverage needs attention"
+          existing="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
+          if [ "$STATUS" = "degraded" ]; then
+            summary="$(python - <<'PY'
+          import json
+          r=json.load(open('/tmp/venue-coverage.json', encoding='utf-8'))
+          print(
+              f"venueCount={r['venueCount']}\n"
+              f"errorCount={r['errorCount']}\n"
+              f"unmatched={len(r['unmatchedVenues'])}\n"
+              f"opaqueMultiVenue={len(r['opaqueMultiVenueRows'])}\n"
+              f"prefectureOnly={len(r['prefectureOnlyVenueRows'])}\n"
+              f"missingRequired={len(r['missingRequired'])}"
+          )
+          PY
+          )"
+            body="会場DB監査で未解決項目を検出しました。カレンダー本体の更新は止めず、会場ガイドだけ独立して修正対象にします。\n\n${summary}\n\nrun: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            if [ -n "$existing" ]; then
+              gh issue edit "$existing" --repo "$GITHUB_REPOSITORY" --body "$body"
+            else
+              gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body "$body"
+            fi
+          elif [ -n "$existing" ]; then
+            gh issue close "$existing" --repo "$GITHUB_REPOSITORY" --comment "会場DBと今後の公演会場の完全一致を確認しました。"
+          fi
