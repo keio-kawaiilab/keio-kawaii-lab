@@ -18,6 +18,9 @@ CUTIE_IG_1128 = "https://cutiestreet.asobisystem.com/live_information/detail/403
 CUTIE_IG_1129 = "https://cutiestreet.asobisystem.com/live_information/detail/40369"
 SWEET_FC_SECOND_ARTICLE = "https://sweetsteady.asobisystem.com/news/detail/89498"
 FM_AICHI_OFFICIAL = "https://fma.co.jp/f/event/?id=6g2EwJVP"
+GIFT_OFFICIAL = "https://www.gift-idol.jp/"
+GIFT_MULTI_VENUE = "複数会場（SGCホール有明・TOYOTA ARENA TOKYO）"
+GIFT_LOCATIONS = ["東京都 SGC HALL ARIAKE", "東京都 TOYOTA ARENA TOKYO"]
 
 HAKATA_PARTS = [
     {"part": "第1部", "content": "2ショットチェキ撮影会（FC限定）", "start": "10:00", "end": "11:00", "receptionStart": "09:40", "receptionEnd": "10:40"},
@@ -182,6 +185,82 @@ def _repair_fm_aichi(event: dict) -> dict:
     return out
 
 
+def _repair_gift_multi_venue(event: dict) -> dict:
+    out = deepcopy(event)
+    if "GIFT" not in str(event.get("title") or event.get("eventTitle") or "").upper():
+        return out
+    day = _day(event)
+    if day not in {"2026-11-28", "2026-11-29"}:
+        return out
+    if day == "2026-11-28" and event.get("group") not in {"CANDY TUNE", "MORE STAR"}:
+        return out
+    if day == "2026-11-29" and event.get("group") != "SWEET STEADY":
+        return out
+    out["venue"] = GIFT_MULTI_VENUE
+    out["venueLocations"] = list(GIFT_LOCATIONS)
+    out["schedule"] = [{
+        "date": day,
+        "venue": GIFT_MULTI_VENUE,
+        "venueLocations": list(GIFT_LOCATIONS),
+        "openTime": out.get("openTime") or "11:30",
+        "startTime": out.get("startTime") or "13:00",
+    }]
+    out["eventDate"] = day
+    out["eventEndDate"] = day
+    out["eventDates"] = [day]
+    out["eventCount"] = 1
+    values = _urls(out)
+    if GIFT_OFFICIAL not in values:
+        values.append(GIFT_OFFICIAL)
+    out["urls"] = values
+    out.setdefault("officialScheduleUrl", GIFT_OFFICIAL)
+    return out
+
+
+def _missing_more_star_gift(events: Iterable[dict]) -> dict | None:
+    if any(
+        event.get("group") == "MORE STAR"
+        and _day(event) == "2026-11-28"
+        and "GIFT" in str(event.get("title") or event.get("eventTitle") or "").upper()
+        for event in events
+    ):
+        return None
+    title = "GIFT 〜Girls Idol Festival Tokyo〜"
+    return {
+        "id": "known-gift-more-star-20261128",
+        "group": "MORE STAR",
+        "title": title,
+        "eventTitle": title,
+        "displayTitle": title,
+        "eventDate": "2026-11-28",
+        "eventEndDate": "2026-11-28",
+        "eventDates": ["2026-11-28"],
+        "eventCount": 1,
+        "venue": GIFT_MULTI_VENUE,
+        "venueLocations": list(GIFT_LOCATIONS),
+        "openTime": "11:30",
+        "startTime": "13:00",
+        "schedule": [{
+            "date": "2026-11-28",
+            "venue": GIFT_MULTI_VENUE,
+            "venueLocations": list(GIFT_LOCATIONS),
+            "openTime": "11:30",
+            "startTime": "13:00",
+        }],
+        "url": GIFT_OFFICIAL,
+        "urls": [GIFT_OFFICIAL],
+        "officialScheduleUrl": GIFT_OFFICIAL,
+        "sourceType": "official-organizer",
+        "sourceChannel": "known-official-correction",
+        "primarySource": "official",
+        "sourceCandidates": ["official"],
+        "eventScope": "external",
+        "ticketType": "現在受付なし",
+        "applicationStatus": "none",
+        "applicationDisplayMode": "schedule-only",
+    }
+
+
 def _repair_sweet_second_fc(event: dict) -> dict:
     out = deepcopy(event)
     if (
@@ -272,6 +351,8 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "staleChristmasRowsRemoved": 0,
         "fmAichiFixed": 0,
         "sweetFcSecondStartFixed": 0,
+        "giftMultiVenueFixed": 0,
+        "giftMoreStarAdded": 0,
         "semanticTicketDuplicatesRemoved": 0,
         "semanticTicketDuplicateIds": [],
     }
@@ -305,7 +386,17 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         if current.get("applyStart") != before_start:
             report["sweetFcSecondStartFixed"] += 1
 
+        before_venue = (current.get("venue"), tuple(current.get("venueLocations") or []))
+        current = _repair_gift_multi_venue(current)
+        if (current.get("venue"), tuple(current.get("venueLocations") or [])) != before_venue:
+            report["giftMultiVenueFixed"] += 1
+
         out.append(current)
+
+    gift_more_star = _missing_more_star_gift(out)
+    if gift_more_star:
+        out.append(gift_more_star)
+        report["giftMoreStarAdded"] += 1
 
     out, removed, removed_ids = _dedupe_ticket_rows(out)
     report["semanticTicketDuplicatesRemoved"] = removed
