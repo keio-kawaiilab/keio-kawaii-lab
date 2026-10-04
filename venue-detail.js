@@ -71,13 +71,28 @@
 
   function occurrenceRows(event){
     var rows=[];
+    function add(date,venue){
+      if(!venue||/オンライン|当選者のみ|YouTube|https?:\/\//i.test(String(venue)))return;
+      rows.push({date:String(date||event.eventDate||"").slice(0,10),venue:venue});
+    }
     if(Array.isArray(event.schedule)&&event.schedule.length){
       event.schedule.forEach(function(item){
-        if(item&&item.venue)rows.push({date:String(item.date||event.eventDate||"").slice(0,10),venue:item.venue});
+        if(!item)return;
+        var locations=Array.isArray(item.venueLocations)?item.venueLocations:[];
+        if(locations.length){
+          locations.forEach(function(venue){add(item.date,venue);});
+        }else if(!/複数会場/.test(String(item.venue||""))){
+          add(item.date,item.venue);
+        }
       });
-    }else if(event.venue&&!/複数会場|オンライン/.test(event.venue)){
+    }else{
+      var locations=Array.isArray(event.venueLocations)?event.venueLocations:[];
       (event.eventDates&&event.eventDates.length?event.eventDates:[event.eventDate]).forEach(function(date){
-        rows.push({date:String(date||"").slice(0,10),venue:event.venue});
+        if(locations.length){
+          locations.forEach(function(venue){add(date,venue);});
+        }else if(!/複数会場/.test(String(event.venue||""))){
+          add(date,event.venue);
+        }
       });
     }
     return rows;
