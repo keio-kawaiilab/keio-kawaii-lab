@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-05T11:14:58+09:00",
+  "checkedAt": "2026-10-05T16:42:12+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-05T06:55:15+09:00",
     "scannedPages": {
@@ -879,7 +879,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=17867",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=17867",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "external"
     },
     {
       "id": "ffb22411ba4df88d",
@@ -1544,7 +1545,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=13219",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=13219",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "external"
     },
     {
       "id": "36b6a243f5327a55",
@@ -3004,7 +3006,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=24086",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=24086",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "kawaii-lab"
     },
     {
       "id": "5b03043b5afc32a6",
@@ -4085,7 +4088,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=09569",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=09569",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "kawaii-lab"
     },
     {
       "id": "3edcd98dd32ff61b",
@@ -4933,7 +4937,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "kawaii-lab"
     },
     {
       "id": "0fb464260791e1c0",
@@ -7217,7 +7222,7 @@
   },
   "publicEventModelVersion": 1,
   "releasePreparation": {
-    "preparedAt": "2026-10-05T10:38:56+09:00",
+    "preparedAt": "2026-10-05T16:42:09+09:00",
     "normalizedSpecialEvents": 3,
     "duplicateIdsRemoved": 0,
     "retainedPreviousRows": 0,
@@ -7242,8 +7247,11 @@
       "sweetFcSecondStartFixed": 0,
       "giftMultiVenueFixed": 0,
       "giftMoreStarAdded": 0,
-      "semanticTicketDuplicatesRemoved": 0,
-      "semanticTicketDuplicateIds": []
+      "semanticTicketDuplicatesRemoved": 2,
+      "semanticTicketDuplicateIds": [
+        "ef9326cb6422c4ea",
+        "8f2ef76c3fbff232"
+      ]
     },
     "physicalEventInvariant": {
       "semanticNormalization": {
@@ -7268,8 +7276,8 @@
       "remainingDuplicates": []
     },
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-10-05T10:38:56+09:00",
-    "checkedAt": "2026-10-05T10:38:56+09:00"
+    "publicUpdatedAt": "2026-10-05T16:42:09+09:00",
+    "checkedAt": "2026-10-05T16:42:09+09:00"
   },
   "resaleDiagnostics": {
     "articles": 26,
@@ -13760,7 +13768,7 @@
       }
     ]
   },
-  "updatedAt": "2026-10-05T11:14:58+09:00",
+  "updatedAt": "2026-10-05T16:42:12+09:00",
   "publicEvents": [
     {
       "id": "1c60e2be989c564d",
@@ -13908,7 +13916,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=17867",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=17867",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "external"
     },
     {
       "id": "ffb22411ba4df88d",
@@ -14138,7 +14147,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=13219",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=13219",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "external"
     },
     {
       "id": "36b6a243f5327a55",
@@ -25045,6 +25055,11 @@
     },
     {
       "checkedAt": "2026-10-05T11:14:58+09:00",
+      "scope": "CANDY TUNE tour render verification",
+      "message": "expected one static CANDY TUNE tour card for 2026-10-04, found 0"
+    },
+    {
+      "checkedAt": "2026-10-05T16:42:12+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one static CANDY TUNE tour card for 2026-10-04, found 0"
     }
