@@ -1,7 +1,7 @@
 {
   "date": "2026-10-06",
   "horizonDays": 7,
-  "generatedAt": "2026-10-06T10:25+09:00",
+  "generatedAt": "2026-10-06T18:22+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -14,53 +14,30 @@
       "eventIds": [
         "024676b8e98a3faf",
         "522551fc3b4ece3c",
-        "d7b2b6ff7ca27d2e"
+        "d7b2b6ff7ca27d2e",
+        "f5e7ec3b0f972f60"
       ],
       "areaCode": "040010",
       "areaName": "東部",
       "precision": "mesh5km",
-      "label": "くもり",
-      "max": 24.0,
-      "min": 24.0,
+      "label": "晴れ",
+      "max": null,
+      "min": null,
       "pop": "0",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-10-06T05:00:00+09:00",
-      "meshTime": "18:00",
-      "meshTempBand": "20〜24℃",
+      "issuedAt": "2026-10-06T17:00:00+09:00",
+      "meshTime": "21:00",
+      "meshTempBand": "15〜19℃",
       "coordinates": {
         "lat": 38.257999,
         "lon": 140.894226
       },
       "meshTimeline": [
         {
-          "time": "09:00",
-          "label": "くもり",
-          "validAt": "2026-10-06T09:00+09:00",
-          "temp": 22
-        },
-        {
-          "time": "12:00",
-          "label": "くもり",
-          "validAt": "2026-10-06T12:00+09:00",
-          "temp": 24
-        },
-        {
-          "time": "15:00",
-          "label": "くもり",
-          "validAt": "2026-10-06T15:00+09:00",
-          "temp": 21
-        },
-        {
-          "time": "18:00",
-          "label": "くもり",
-          "validAt": "2026-10-06T18:00+09:00",
-          "temp": 20
-        },
-        {
           "time": "21:00",
           "label": "晴れ",
           "validAt": "2026-10-06T21:00+09:00",
-          "temp": 18
+          "temp": 17
         },
         {
           "time": "24:00",
@@ -71,14 +48,9 @@
       ],
       "hourlyRain": [
         {
-          "time": "18:00",
+          "time": "17:30",
           "rain": false,
-          "validAt": "2026-10-06T18:00+09:00"
-        },
-        {
-          "time": "19:00",
-          "rain": false,
-          "validAt": "2026-10-06T19:00+09:00"
+          "validAt": "2026-10-06T17:30+09:00"
         },
         {
           "time": "20:00",
@@ -104,7 +76,7 @@
       "min": 16.0,
       "pop": "0",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-10-06T05:00:00+09:00",
+      "issuedAt": "2026-10-06T17:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "15〜19℃",
       "coordinates": {
@@ -146,7 +118,7 @@
           "time": "21:00",
           "label": "晴れ",
           "validAt": "2026-10-07T21:00+09:00",
-          "temp": 16
+          "temp": 15
         },
         {
           "time": "24:00",
@@ -167,11 +139,11 @@
       "areaName": "東京地方",
       "precision": "area",
       "label": "くもり 昼前 から 時々 晴れ",
-      "max": 26.0,
-      "min": 19.0,
+      "max": 25.0,
+      "min": 18.0,
       "pop": "10",
       "popLabel": "12〜18時",
-      "issuedAt": "2026-10-06T05:00:00+09:00",
+      "issuedAt": "2026-10-06T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -186,12 +158,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "晴れ時々くもり",
-      "max": 25.0,
-      "min": 16.0,
-      "pop": "20",
-      "popLabel": "1日",
-      "issuedAt": "2026-10-05T17:00:00+09:00",
+      "label": "晴れ 時々 くもり",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-10-06T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -202,6 +174,7 @@
       "venueKey": "仙台サンプラザホール",
       "eventIds": [
         "54a369497f59ce96",
+        "e4e0246476c2e42e",
         "12f75454cf2d4fd0",
         "9e39a25b816ecc66",
         "170dc0ee19ba620b",
@@ -212,12 +185,12 @@
       "areaCode": "040010",
       "areaName": "東部",
       "precision": "area",
-      "label": "晴れ時々くもり",
-      "max": 24.0,
-      "min": 13.0,
-      "pop": "20",
-      "popLabel": "1日",
-      "issuedAt": "2026-10-05T17:00:00+09:00",
+      "label": "晴れ",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-10-06T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -228,6 +201,7 @@
       "venueKey": "宇都宮市文化会館",
       "eventIds": [
         "54a369497f59ce96",
+        "e4e0246476c2e42e",
         "12f75454cf2d4fd0",
         "9e39a25b816ecc66",
         "2cd66df3ae3baa26",
@@ -240,9 +214,9 @@
       "label": "晴れ時々くもり",
       "max": 25.0,
       "min": 12.0,
-      "pop": "20",
+      "pop": "10",
       "popLabel": "1日",
-      "issuedAt": "2026-10-05T17:00:00+09:00",
+      "issuedAt": "2026-10-06T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -257,12 +231,12 @@
       "areaCode": "400020",
       "areaName": "福岡県",
       "precision": "area",
-      "label": "くもり時々晴れ",
+      "label": "くもり",
       "max": 28.0,
       "min": 20.0,
-      "pop": "30",
+      "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-10-05T17:00:00+09:00",
+      "issuedAt": "2026-10-06T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -282,7 +256,7 @@
       "min": 16.0,
       "pop": "20",
       "popLabel": "1日",
-      "issuedAt": "2026-10-05T17:00:00+09:00",
+      "issuedAt": "2026-10-06T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -298,12 +272,12 @@
       "areaCode": "170010",
       "areaName": "石川県",
       "precision": "area",
-      "label": "くもり時々晴れ",
+      "label": "晴れ時々くもり",
       "max": 26.0,
       "min": 16.0,
-      "pop": "30",
+      "pop": "20",
       "popLabel": "1日",
-      "issuedAt": "2026-10-05T17:00:00+09:00",
+      "issuedAt": "2026-10-06T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -320,10 +294,10 @@
       "precision": "area",
       "label": "くもり時々晴れ",
       "max": 28.0,
-      "min": 19.0,
+      "min": 20.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-10-05T17:00:00+09:00",
+      "issuedAt": "2026-10-06T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -342,30 +316,45 @@
       "precision": "area",
       "label": "くもり時々晴れ",
       "max": 28.0,
-      "min": 19.0,
+      "min": 20.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-10-05T17:00:00+09:00",
+      "issuedAt": "2026-10-06T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-10-13",
+      "venue": "香川県 レクザムホール 大ホール（香川県県民ホール）",
+      "venueKey": "レクザムホール香川県県民ホール",
+      "eventIds": [
+        "024676b8e98a3faf",
+        "184bbe22552a5ee0"
+      ],
+      "areaCode": "370000",
+      "areaName": "香川県",
+      "precision": "area",
+      "label": "くもり時々晴れ",
+      "max": 27.0,
+      "min": 18.0,
+      "pop": "30",
+      "popLabel": "1日",
+      "issuedAt": "2026-10-06T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
     }
   ],
   "stats": {
-    "occurrencesInRange": 31,
+    "occurrencesInRange": 34,
     "uniqueVenueDates": 12,
-    "weatherEntries": 11,
+    "weatherEntries": 12,
     "meshEntries": 2,
-    "failures": 1,
+    "failures": 0,
     "meshTimelineEntries": 2,
-    "meshExactTempSlots": 13,
+    "meshExactTempSlots": 9,
     "hourlyRainEntries": 1
   },
-  "failures": [
-    {
-      "date": "2026-10-13",
-      "venue": "香川県 レクザムホール 大ホール（香川県県民ホール）",
-      "reason": "開催日の予報がまだありません"
-    }
-  ]
+  "failures": []
 }
