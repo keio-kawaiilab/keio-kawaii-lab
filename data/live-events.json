@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-06T11:41:36+09:00",
+  "checkedAt": "2026-10-06T11:43:21+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-06T09:19:36+09:00",
     "scannedPages": {
@@ -2760,9 +2760,9 @@
       "id": "bc711a68240aff0c",
       "group": "SWEET STEADY",
       "title": "SWEET STEADY 庄司なぎさ BIRTHDAY LIVE 2026",
-      "ticketType": "現在受付なし",
-      "applyStart": null,
-      "applyEnd": null,
+      "ticketType": "アップグレード抽選",
+      "applyStart": "2026-09-27T12:00",
+      "applyEnd": "2026-10-01T23:59",
       "resultDate": null,
       "paymentEnd": null,
       "eventDate": "2026-10-26",
@@ -2998,9 +2998,9 @@
       "id": "7716664bade7e531",
       "group": "FRUITS ZIPPER",
       "title": "FRUITS ZIPPER 月足天音 生誕祭 2026",
-      "ticketType": "現在受付なし",
-      "applyStart": null,
-      "applyEnd": null,
+      "ticketType": "FC先行",
+      "applyStart": "2026-09-30T18:00",
+      "applyEnd": "2026-10-05T23:59",
       "resultDate": null,
       "paymentEnd": null,
       "eventDate": "2026-10-29",
@@ -3020,7 +3020,14 @@
         "https://fruitszipper.asobisystem.com/news/detail/90870",
         "https://fruitszipper.asobisystem.com/live_information/detail/45703"
       ],
-      "applicationStatus": "none"
+      "applicationStatus": "none",
+      "applicationDisplayMode": "band",
+      "applicationWindowVerified": true,
+      "deadlineVerified": true,
+      "applicationWindowSource": "https://fruitszipper.asobisystem.com/news/detail/90870",
+      "deadlineSource": "https://fruitszipper.asobisystem.com/news/detail/90870",
+      "specialDetailsStatus": "ticket-details-found",
+      "discoverySourceUrl": "https://fruitszipper.asobisystem.com/news/detail/90870"
     },
     {
       "id": "8ef49078d65b4ade",
@@ -3522,9 +3529,9 @@
       "id": "30fd5394e642a81b",
       "group": "CUTIE STREET",
       "title": "CUTIE STREET 古澤里紗 生誕祭 2026",
-      "ticketType": "現在受付なし",
-      "applyStart": null,
-      "applyEnd": null,
+      "ticketType": "FC先行",
+      "applyStart": "2026-09-16T12:00",
+      "applyEnd": "2026-09-23T23:59",
       "resultDate": null,
       "paymentEnd": null,
       "eventDate": "2026-11-09",
@@ -3645,9 +3652,9 @@
       "id": "b2851240b2347a25",
       "group": "CUTIE STREET",
       "title": "CUTIE STREET 板倉可奈 生誕祭 2026",
-      "ticketType": "現在受付なし",
-      "applyStart": null,
-      "applyEnd": null,
+      "ticketType": "FC先行",
+      "applyStart": "2026-09-16T12:00",
+      "applyEnd": "2026-09-23T23:59",
       "resultDate": null,
       "paymentEnd": null,
       "eventDate": "2026-11-11",
@@ -6283,15 +6290,15 @@
   },
   "publicEventModelReport": {
     "rawEventCount": 128,
-    "passthroughEventCount": 54,
-    "performanceEntityCount": 80,
-    "sourceOccurrenceCount": 190,
+    "passthroughEventCount": 55,
+    "performanceEntityCount": 79,
+    "sourceOccurrenceCount": 189,
     "mergedSourceOccurrences": 110,
-    "offerCount": 37
+    "offerCount": 41
   },
   "publicEventModelVersion": 1,
   "releasePreparation": {
-    "preparedAt": "2026-10-06T11:41:34+09:00",
+    "preparedAt": "2026-10-06T11:43:20+09:00",
     "normalizedSpecialEvents": 3,
     "duplicateIdsRemoved": 0,
     "retainedPreviousRows": 0,
@@ -6312,15 +6319,12 @@
       "cutieObsoletePiaRowsRemoved": 0,
       "cutieIgFixed": 2,
       "staleChristmasRowsRemoved": 0,
-      "fmAichiFixed": 1,
+      "fmAichiFixed": 0,
       "sweetFcSecondStartFixed": 0,
-      "giftMultiVenueFixed": 2,
+      "giftMultiVenueFixed": 0,
       "giftMoreStarAdded": 0,
-      "semanticTicketDuplicatesRemoved": 2,
-      "semanticTicketDuplicateIds": [
-        "ef9326cb6422c4ea",
-        "8f2ef76c3fbff232"
-      ]
+      "semanticTicketDuplicatesRemoved": 0,
+      "semanticTicketDuplicateIds": []
     },
     "physicalEventInvariant": {
       "semanticNormalization": {
@@ -6345,8 +6349,8 @@
       "remainingDuplicates": []
     },
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-10-06T11:41:34+09:00",
-    "checkedAt": "2026-10-06T11:41:34+09:00"
+    "publicUpdatedAt": "2026-10-06T11:43:20+09:00",
+    "checkedAt": "2026-10-06T11:43:20+09:00"
   },
   "resaleDiagnostics": {
     "articles": 26,
@@ -12837,7 +12841,7 @@
       }
     ]
   },
-  "updatedAt": "2026-10-06T11:41:36+09:00",
+  "updatedAt": "2026-10-06T11:43:21+09:00",
   "publicEvents": [
     {
       "id": "050ce426ad5c713b",
@@ -13383,17 +13387,17 @@
       "eventScope": "external",
       "urls": [
         "https://kawaiilab.asobisystem.com/news/detail/87217",
+        "https://kawaiilab.asobisystem.com/news/detail/89950",
+        "https://fruitszipper.asobisystem.com/live_information/detail/44011",
+        "https://candytune.asobisystem.com/live_information/detail/44996",
+        "https://sweetsteady.asobisystem.com/live_information/detail/43905",
+        "https://cutiestreet.asobisystem.com/live_information/detail/43749",
+        "https://morestar.asobisystem.com/live_information/detail/45350",
         "https://candytune.asobisystem.com/news/detail/87766",
         "https://cutiestreet.asobisystem.com/news/detail/87770",
-        "https://cutiestreet.asobisystem.com/live_information/detail/43749",
         "https://fruitszipper.asobisystem.com/news/detail/87763",
-        "https://fruitszipper.asobisystem.com/live_information/detail/44011",
         "https://morestar.asobisystem.com/news/detail/87772",
-        "https://sweetsteady.asobisystem.com/news/detail/87767",
-        "https://sweetsteady.asobisystem.com/live_information/detail/43905",
-        "https://kawaiilab.asobisystem.com/news/detail/89950",
-        "https://candytune.asobisystem.com/live_information/detail/44996",
-        "https://morestar.asobisystem.com/live_information/detail/45350"
+        "https://sweetsteady.asobisystem.com/news/detail/87767"
       ],
       "sourceStale": true,
       "sourceStaleSince": "2026-09-03T00:14:43+09:00",
@@ -13424,13 +13428,13 @@
       "applicationStatus": "none",
       "sourceRowIds": [
         "4d97127cb745d806",
-        "e38ff19923540d70",
-        "95417a67234ce562"
+        "95417a67234ce562",
+        "e38ff19923540d70"
       ],
       "mergedPublicEventIds": [
         "4d97127cb745d806",
-        "e38ff19923540d70",
-        "performance-KAWAII-LAB-2026-10-12-time-16-00"
+        "95417a67234ce562",
+        "e38ff19923540d70"
       ],
       "eventTitle": "KAWAII LAB. COLLECTION produced by TGC ~KAWAIIっちゃ in KITAKYUSHU~",
       "displayTitle": "KAWAII LAB. COLLECTION produced by TGC ~KAWAIIっちゃ in KITAKYUSHU~",
@@ -18752,7 +18756,30 @@
       "sourceRowIds": [
         "30fd5394e642a81b"
       ],
-      "offers": [],
+      "offers": [
+        {
+          "sourceRowId": "30fd5394e642a81b",
+          "provider": "official",
+          "url": "https://kawaiilab.asobisystem.com/news/detail/90495",
+          "urls": [
+            "https://kawaiilab.asobisystem.com/news/detail/90495",
+            "https://cutiestreet.asobisystem.com/news/detail/89588"
+          ],
+          "ticketType": "FC先行",
+          "applyStart": "2026-09-16T12:00",
+          "applyEnd": "2026-09-23T23:59",
+          "applicationStatus": "none",
+          "applicationWindowVerified": true,
+          "deadlineVerified": true,
+          "applicationDisplayMode": "band",
+          "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/89588",
+          "deadlineSource": "https://cutiestreet.asobisystem.com/news/detail/89588",
+          "sourceType": "derived",
+          "sourceChannel": "kawaii-lab-fc",
+          "primarySource": "official",
+          "sourcePublishedAt": "2026-09-16"
+        }
+      ],
       "eventEndDate": "2026-11-09",
       "eventDates": [
         "2026-11-09"
@@ -18766,9 +18793,9 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
+      "ticketType": "FC先行",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers"
     },
     {
       "id": "performance-CUTIE-STREET-2026-11-11-time-19-00",
@@ -18801,7 +18828,30 @@
       "sourceRowIds": [
         "b2851240b2347a25"
       ],
-      "offers": [],
+      "offers": [
+        {
+          "sourceRowId": "b2851240b2347a25",
+          "provider": "official",
+          "url": "https://kawaiilab.asobisystem.com/news/detail/89953",
+          "urls": [
+            "https://kawaiilab.asobisystem.com/news/detail/89953",
+            "https://cutiestreet.asobisystem.com/news/detail/89518"
+          ],
+          "ticketType": "FC先行",
+          "applyStart": "2026-09-16T12:00",
+          "applyEnd": "2026-09-23T23:59",
+          "applicationStatus": "none",
+          "applicationWindowVerified": true,
+          "deadlineVerified": true,
+          "applicationDisplayMode": "band",
+          "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/89518",
+          "deadlineSource": "https://cutiestreet.asobisystem.com/news/detail/89518",
+          "sourceType": "derived",
+          "sourceChannel": "kawaii-lab-fc",
+          "primarySource": "official",
+          "sourcePublishedAt": "2026-09-16"
+        }
+      ],
       "eventEndDate": "2026-11-11",
       "eventDates": [
         "2026-11-11"
@@ -18815,9 +18865,9 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
+      "ticketType": "FC先行",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers"
     },
     {
       "id": "performance-CUTIE-STREET-2026-11-14-time-16-00",
@@ -20905,13 +20955,37 @@
         "https://fruitszipper.asobisystem.com/news/detail/90870",
         "https://fruitszipper.asobisystem.com/live_information/detail/45703"
       ],
+      "specialDetailsStatus": "ticket-details-found",
+      "discoverySourceUrl": "https://fruitszipper.asobisystem.com/news/detail/90870",
       "entityType": "performance",
       "performanceEntityVersion": 1,
       "performanceKey": "FRUITS ZIPPER|2026-10-29|time|19:00",
       "sourceRowIds": [
         "7716664bade7e531"
       ],
-      "offers": [],
+      "offers": [
+        {
+          "sourceRowId": "7716664bade7e531",
+          "provider": "official",
+          "url": "https://fruitszipper.asobisystem.com/news/detail/90870",
+          "urls": [
+            "https://fruitszipper.asobisystem.com/news/detail/90870",
+            "https://fruitszipper.asobisystem.com/live_information/detail/45703"
+          ],
+          "ticketType": "FC先行",
+          "applyStart": "2026-09-30T18:00",
+          "applyEnd": "2026-10-05T23:59",
+          "applicationStatus": "none",
+          "applicationWindowVerified": true,
+          "deadlineVerified": true,
+          "applicationDisplayMode": "band",
+          "applicationWindowSource": "https://fruitszipper.asobisystem.com/news/detail/90870",
+          "deadlineSource": "https://fruitszipper.asobisystem.com/news/detail/90870",
+          "sourceType": "derived",
+          "primarySource": "official",
+          "sourcePublishedAt": "2026-09-30"
+        }
+      ],
       "eventEndDate": "2026-10-29",
       "eventDates": [
         "2026-10-29"
@@ -20925,9 +20999,9 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
+      "ticketType": "FC先行",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers"
     },
     {
       "id": "performance-FRUITS-ZIPPER-2026-11-05-time-18-30",
@@ -22171,7 +22245,29 @@
       "sourceRowIds": [
         "bc711a68240aff0c"
       ],
-      "offers": [],
+      "offers": [
+        {
+          "sourceRowId": "bc711a68240aff0c",
+          "provider": "official",
+          "url": "https://sweetsteady.asobisystem.com/news/detail/90455",
+          "urls": [
+            "https://sweetsteady.asobisystem.com/news/detail/90455",
+            "https://sweetsteady.asobisystem.com/live_information/detail/44461"
+          ],
+          "ticketType": "アップグレード抽選",
+          "applyStart": "2026-09-27T12:00",
+          "applyEnd": "2026-10-01T23:59",
+          "applicationStatus": "none",
+          "applicationWindowVerified": true,
+          "deadlineVerified": true,
+          "applicationDisplayMode": "band",
+          "applicationWindowSource": "https://sweetsteady.asobisystem.com/news/detail/90455",
+          "deadlineSource": "https://sweetsteady.asobisystem.com/news/detail/90455",
+          "sourceType": "derived",
+          "primarySource": "official",
+          "sourcePublishedAt": "2026-09-27"
+        }
+      ],
       "eventEndDate": "2026-10-26",
       "eventDates": [
         "2026-10-26"
@@ -22185,9 +22281,9 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
+      "ticketType": "アップグレード抽選",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers"
     },
     {
       "id": "performance-SWEET-STEADY-2026-11-13-time-18-30",
@@ -22565,6 +22661,11 @@
     },
     {
       "checkedAt": "2026-10-06T11:41:36+09:00",
+      "scope": "CANDY TUNE tour render verification",
+      "message": "expected one static CANDY TUNE tour card for 2026-10-04, found 0"
+    },
+    {
+      "checkedAt": "2026-10-06T11:43:21+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one static CANDY TUNE tour card for 2026-10-04, found 0"
     }
