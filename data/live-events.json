@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-08T05:10:44+09:00",
+  "checkedAt": "2026-10-08T08:52:52+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-08T08:19:00+09:00",
     "scannedPages": {
@@ -1827,7 +1827,7 @@
       "discoverySourceUrl": "https://kawaiilab.asobisystem.com/news/detail/89950",
       "primarySource": "official",
       "applicationStatus": "none",
-      "eventScope": "kawaii-lab",
+      "eventScope": "external",
       "eventScopeCorrectionId": "P2-external-kawacolle-tgc",
       "eventScopeSource": "verified-organizer",
       "eventScopeSourceUrl": "https://tgc.girlswalker.com/kawacolle/",
@@ -2229,14 +2229,14 @@
       "eventDate": "2026-10-18",
       "venue": "三重県 ナガシマスパーランド内ナガシマスパードーム",
       "openTime": "12:00",
-      "startTime": "12:00",
+      "startTime": "13:00",
       "url": "https://sweetsteady.asobisystem.com/live_information/detail/44460",
       "urls": [
         "https://sweetsteady.asobisystem.com/live_information/detail/44460"
       ],
       "sourceType": "official-schedule",
       "primarySource": "official",
-      "eventScope": "kawaii-lab",
+      "eventScope": "external",
       "sourceCandidates": [
         "official"
       ],
@@ -2772,7 +2772,7 @@
       "entityType": "special-event",
       "specialEventEntityVersion": 1,
       "sourceRowIds": [
-        "9cedb9fa4d2b5c24"
+        "special-134f44ecd651cd4c"
       ],
       "schedule": [
         {
@@ -4398,12 +4398,13 @@
       "ticketType": "現在受付なし",
       "applicationStatus": "none",
       "eventDate": "2026-11-28",
-      "venue": "東京都 SGCホール有明​​​、TOYOTA ARENA TOKYO​",
+      "venue": "複数会場（SGCホール有明・TOYOTA ARENA TOKYO）",
       "openTime": "11:30",
       "startTime": "13:00",
       "url": "https://candytune.asobisystem.com/live_information/detail/45190",
       "urls": [
-        "https://candytune.asobisystem.com/live_information/detail/45190"
+        "https://candytune.asobisystem.com/live_information/detail/45190",
+        "https://www.gift-idol.jp/"
       ],
       "sourceType": "official-schedule",
       "primarySource": "official",
@@ -4492,7 +4493,7 @@
       "venues": [
         "愛知県 IGアリーナ"
       ],
-      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/40369",
+      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/40368",
       "openTime": "16:00",
       "startTime": "18:00"
     },
@@ -4571,11 +4572,12 @@
       "ticketType": "現在受付なし",
       "applicationStatus": "none",
       "eventDate": "2026-11-29",
-      "venue": "東京都",
+      "venue": "複数会場（SGCホール有明・TOYOTA ARENA TOKYO）",
       "startTime": "11:30",
       "url": "https://sweetsteady.asobisystem.com/live_information/detail/44466",
       "urls": [
-        "https://sweetsteady.asobisystem.com/live_information/detail/44466"
+        "https://sweetsteady.asobisystem.com/live_information/detail/44466",
+        "https://www.gift-idol.jp/"
       ],
       "sourceType": "official-schedule",
       "primarySource": "official",
@@ -5470,7 +5472,7 @@
       "entityType": "special-event",
       "specialEventEntityVersion": 1,
       "sourceRowIds": [
-        "26111f309194c1a8"
+        "special-aa599eba3876a7f9"
       ],
       "offers": []
     },
@@ -5963,12 +5965,12 @@
     "failures": []
   },
   "publicEventModelReport": {
-    "rawEventCount": 150,
-    "passthroughEventCount": 65,
-    "performanceEntityCount": 79,
-    "sourceOccurrenceCount": 258,
-    "mergedSourceOccurrences": 179,
-    "offerCount": 111
+    "rawEventCount": 121,
+    "passthroughEventCount": 53,
+    "performanceEntityCount": 80,
+    "sourceOccurrenceCount": 180,
+    "mergedSourceOccurrences": 100,
+    "offerCount": 27
   },
   "publicEventModelVersion": 1,
   "releasePreparation": {
@@ -12515,7 +12517,7 @@
       }
     ]
   },
-  "updatedAt": "2026-10-08T08:20:47+09:00",
+  "updatedAt": "2026-10-08T08:52:52+09:00",
   "publicEvents": [
     {
       "id": "050ce426ad5c713b",
@@ -12607,7 +12609,8 @@
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=13707",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14224",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=35131",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25885"
+        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25885",
+        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=26281"
       ],
       "sourceType": "derived",
       "sourcePublishedAt": null,
@@ -12625,152 +12628,6 @@
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=17867",
       "applicationDisplayMode": "offers",
       "venues": [],
-      "eventScope": "external"
-    },
-    {
-      "id": "1b5fec5f58ba553f",
-      "group": "FRUITS ZIPPER",
-      "title": "FRUITS ZIPPER",
-      "ticketType": "2次プレリザーブ",
-      "applyStart": "2026-08-04T18:00",
-      "applyEnd": "2026-08-10T23:59",
-      "resultDate": null,
-      "paymentEnd": null,
-      "eventDate": "2026-09-03",
-      "eventEndDate": "2026-11-15",
-      "eventDates": [
-        "2026-09-03",
-        "2026-11-15"
-      ],
-      "schedule": [
-        {
-          "date": "2026-09-03",
-          "venue": null
-        },
-        {
-          "date": "2026-11-15",
-          "venue": null
-        }
-      ],
-      "eventCount": 2,
-      "venue": "複数会場（全2公演）",
-      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14066",
-      "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14066",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209"
-      ],
-      "sourceType": "ticket-history-guard",
-      "sourcePublishedAt": null,
-      "applicationStatus": "ended",
-      "sourceChannel": "pia-ended-sale",
-      "primarySource": "pia",
-      "ticketProvider": "pia",
-      "sourceCandidates": [
-        "pia"
-      ],
-      "historyPreserved": true,
-      "applicationWindowVerified": true,
-      "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14066",
-      "deadlineVerified": true,
-      "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14066",
-      "applicationDisplayMode": "offers",
-      "eventScope": "external"
-    },
-    {
-      "id": "1c60e2be989c564d",
-      "group": "FRUITS ZIPPER",
-      "title": "FRUITS ZIPPER",
-      "ticketType": "ぴあNICOSカード限定先行",
-      "applyStart": "2026-06-23T18:00",
-      "applyEnd": "2026-06-28T23:59",
-      "resultDate": null,
-      "paymentEnd": null,
-      "eventDate": "2026-09-03",
-      "eventEndDate": "2026-11-22",
-      "eventDates": [
-        "2026-09-03",
-        "2026-11-22"
-      ],
-      "schedule": [
-        {
-          "date": "2026-09-03",
-          "venue": null
-        },
-        {
-          "date": "2026-11-22",
-          "venue": null
-        }
-      ],
-      "eventCount": 2,
-      "venue": "複数会場（全2公演）",
-      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14296",
-      "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14296",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209"
-      ],
-      "sourceType": "ticket-history-guard",
-      "sourcePublishedAt": null,
-      "applicationStatus": "ended",
-      "sourceChannel": "pia-ended-sale",
-      "primarySource": "pia",
-      "ticketProvider": "pia",
-      "sourceCandidates": [
-        "pia"
-      ],
-      "historyPreserved": true,
-      "applicationWindowVerified": true,
-      "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14296",
-      "deadlineVerified": true,
-      "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14296",
-      "applicationDisplayMode": "offers"
-    },
-    {
-      "id": "298c07bdc26e46e3",
-      "group": "FRUITS ZIPPER",
-      "title": "FRUITS ZIPPER",
-      "ticketType": "プレリザーブ",
-      "applyStart": "2026-07-17T18:00",
-      "applyEnd": "2026-07-20T23:59",
-      "resultDate": null,
-      "paymentEnd": null,
-      "eventDate": "2026-09-03",
-      "eventEndDate": "2026-11-22",
-      "eventDates": [
-        "2026-09-03",
-        "2026-11-22"
-      ],
-      "schedule": [
-        {
-          "date": "2026-09-03",
-          "venue": null
-        },
-        {
-          "date": "2026-11-22",
-          "venue": null
-        }
-      ],
-      "eventCount": 2,
-      "venue": "複数会場（全2公演）",
-      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=23680",
-      "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=23680",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209"
-      ],
-      "sourceType": "ticket-history-guard",
-      "sourcePublishedAt": null,
-      "applicationStatus": "ended",
-      "sourceChannel": "pia-ended-sale",
-      "primarySource": "pia",
-      "ticketProvider": "pia",
-      "sourceCandidates": [
-        "pia"
-      ],
-      "historyPreserved": true,
-      "applicationWindowVerified": true,
-      "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=23680",
-      "deadlineVerified": true,
-      "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=23680",
-      "applicationDisplayMode": "offers",
       "eventScope": "external"
     },
     {
@@ -12804,7 +12661,6 @@
       "urls": [
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14296",
         "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=17867",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=23680"
       ],
       "sourceType": "derived",
@@ -12826,7 +12682,7 @@
       "venues": []
     },
     {
-      "id": "38a77e2c68f8977d",
+      "id": "c23b34ccd84bdb04",
       "group": "FRUITS ZIPPER",
       "title": "FRUITS ZIPPER",
       "ticketType": "現在受付なし",
@@ -12834,27 +12690,27 @@
       "applyEnd": null,
       "resultDate": null,
       "paymentEnd": null,
-      "eventDate": "2026-10-04",
-      "eventEndDate": "2026-10-07",
+      "eventDate": "2026-09-03",
+      "eventEndDate": "2026-11-15",
       "eventDates": [
-        "2026-10-04",
-        "2026-10-07"
+        "2026-09-03",
+        "2026-11-15"
       ],
       "schedule": [
         {
-          "date": "2026-10-04",
+          "date": "2026-09-03",
           "venue": null
         },
         {
-          "date": "2026-10-07",
+          "date": "2026-11-15",
           "venue": null
         }
       ],
       "eventCount": 2,
       "venue": "複数会場（全2公演）",
-      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=13219",
+      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14066",
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=13219",
+        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14066",
         "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209"
       ],
       "sourceType": "derived",
@@ -12868,107 +12724,12 @@
       ],
       "historyPreserved": true,
       "applicationWindowVerified": true,
-      "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=13219",
+      "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14066",
       "deadlineVerified": true,
-      "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=13219",
+      "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14066",
       "applicationDisplayMode": "offers",
       "eventScope": "external",
       "venues": []
-    },
-    {
-      "id": "39f8f9713796250b",
-      "group": "FRUITS ZIPPER",
-      "title": "FRUITS ZIPPER",
-      "ticketType": "プレリザーブ",
-      "applyStart": "2026-08-04T18:00",
-      "applyEnd": "2026-08-17T23:59",
-      "resultDate": null,
-      "paymentEnd": null,
-      "eventDate": "2026-10-04",
-      "eventEndDate": "2026-10-07",
-      "eventDates": [
-        "2026-10-04",
-        "2026-10-07"
-      ],
-      "schedule": [
-        {
-          "date": "2026-10-04",
-          "venue": null
-        },
-        {
-          "date": "2026-10-07",
-          "venue": null
-        }
-      ],
-      "eventCount": 2,
-      "venue": "複数会場（全2公演）",
-      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=13219",
-      "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=13219",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209"
-      ],
-      "sourceType": "ticket-history-guard",
-      "sourcePublishedAt": null,
-      "applicationStatus": "ended",
-      "sourceChannel": "pia-ended-sale",
-      "primarySource": "pia",
-      "ticketProvider": "pia",
-      "sourceCandidates": [
-        "pia"
-      ],
-      "historyPreserved": true,
-      "applicationWindowVerified": true,
-      "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=13219",
-      "deadlineVerified": true,
-      "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=13219",
-      "applicationDisplayMode": "offers",
-      "eventScope": "external"
-    },
-    {
-      "id": "a78fc7ce762556f7",
-      "group": "MORE STAR",
-      "title": "14日 MORE STAR オンライン特典会",
-      "ticketType": "現在受付なし",
-      "applyStart": null,
-      "applyEnd": null,
-      "resultDate": null,
-      "paymentEnd": null,
-      "eventDate": "2026-10-07",
-      "startTime": "17:00",
-      "venue": "オンライン（SUKISUKI）",
-      "url": "https://sukisuki-shop.com/goods/6500000004582",
-      "urls": [
-        "https://sukisuki-shop.com/goods/6500000004582",
-        "https://morestar.asobisystem.com/live_information/detail/45755"
-      ],
-      "sourceType": "derived",
-      "eventCategory": "online-benefit",
-      "sourcePublishedAt": null,
-      "applicationStatus": "none",
-      "eventScope": "kawaii-lab",
-      "officialScheduleUrl": "https://morestar.asobisystem.com/live_information/detail/45755"
-    },
-    {
-      "id": "89284cc266bd0f7d",
-      "group": "SWEET STEADY",
-      "title": "番組観覧『すいらぶ 〜 Secret baseすいすての花園 〜』",
-      "eventTitle": "番組観覧『すいらぶ 〜 Secret baseすいすての花園 〜』",
-      "ticketType": "現在受付なし",
-      "applicationStatus": "none",
-      "eventDate": "2026-10-07",
-      "venue": "東京都 当選者のみ",
-      "openTime": "16:30",
-      "startTime": "17:00",
-      "url": "https://sweetsteady.asobisystem.com/live_information/detail/45517",
-      "urls": [
-        "https://sweetsteady.asobisystem.com/live_information/detail/45517"
-      ],
-      "sourceType": "official-schedule",
-      "primarySource": "official",
-      "eventScope": "external",
-      "sourceCandidates": [
-        "official"
-      ]
     },
     {
       "id": "443e327828d9a6d0",
@@ -12993,14 +12754,14 @@
       "eventScope": "kawaii-lab"
     },
     {
-      "id": "0f7ba50bf1900567",
+      "id": "32152e6b288b48c1",
       "group": "MORE STAR",
       "title": "15日 MORE STAR lovers book 2026 by LARME オンライン特典会",
-      "ticketType": "オンライン特典会・抽選販売",
-      "applyStart": "2026-10-02T18:00",
-      "applyEnd": "2026-10-04T23:59",
-      "resultDate": "2026-10-05",
-      "paymentEnd": "2026-10-07T23:59",
+      "ticketType": "現在受付なし",
+      "applyStart": null,
+      "applyEnd": null,
+      "resultDate": null,
+      "paymentEnd": null,
       "eventDate": "2026-10-08",
       "startTime": "18:00",
       "venue": "オンライン（SUKISUKI）",
@@ -13008,9 +12769,10 @@
       "urls": [
         "https://sukisuki-shop.com/goods/6500000004606"
       ],
-      "sourceType": "sukisuki",
+      "sourceType": "derived",
       "eventCategory": "online-benefit",
       "sourcePublishedAt": null,
+      "applicationStatus": "none",
       "eventScope": "kawaii-lab"
     },
     {
@@ -13258,17 +13020,17 @@
       "eventScope": "external",
       "urls": [
         "https://kawaiilab.asobisystem.com/news/detail/87217",
-        "https://kawaiilab.asobisystem.com/news/detail/89950",
-        "https://fruitszipper.asobisystem.com/live_information/detail/44011",
-        "https://candytune.asobisystem.com/live_information/detail/44996",
-        "https://sweetsteady.asobisystem.com/live_information/detail/43905",
-        "https://cutiestreet.asobisystem.com/live_information/detail/43749",
-        "https://morestar.asobisystem.com/live_information/detail/45350",
         "https://candytune.asobisystem.com/news/detail/87766",
         "https://cutiestreet.asobisystem.com/news/detail/87770",
+        "https://cutiestreet.asobisystem.com/live_information/detail/43749",
         "https://fruitszipper.asobisystem.com/news/detail/87763",
+        "https://fruitszipper.asobisystem.com/live_information/detail/44011",
         "https://morestar.asobisystem.com/news/detail/87772",
-        "https://sweetsteady.asobisystem.com/news/detail/87767"
+        "https://sweetsteady.asobisystem.com/news/detail/87767",
+        "https://sweetsteady.asobisystem.com/live_information/detail/43905",
+        "https://kawaiilab.asobisystem.com/news/detail/89950",
+        "https://candytune.asobisystem.com/live_information/detail/44996",
+        "https://morestar.asobisystem.com/live_information/detail/45350"
       ],
       "sourceStale": true,
       "sourceStaleSince": "2026-09-03T00:14:43+09:00",
@@ -13299,13 +13061,13 @@
       "applicationStatus": "none",
       "sourceRowIds": [
         "4d97127cb745d806",
-        "95417a67234ce562",
-        "e38ff19923540d70"
+        "e38ff19923540d70",
+        "95417a67234ce562"
       ],
       "mergedPublicEventIds": [
         "4d97127cb745d806",
-        "95417a67234ce562",
-        "e38ff19923540d70"
+        "e38ff19923540d70",
+        "performance-KAWAII-LAB-2026-10-12-time-16-00"
       ],
       "eventTitle": "KAWAII LAB. COLLECTION produced by TGC ~KAWAIIっちゃ in KITAKYUSHU~",
       "displayTitle": "KAWAII LAB. COLLECTION produced by TGC ~KAWAIIっちゃ in KITAKYUSHU~",
@@ -13320,55 +13082,25 @@
       "performanceKey": "external|kawacolle-tgc|2026-10-12|16:00|北九州メッセ8020001福岡県北九州市小倉北区浅野381"
     },
     {
-      "id": "0b039f87f7abbde1",
-      "group": "FRUITS ZIPPER",
-      "title": "FRUITS ZIPPER",
-      "ticketType": "現在受付なし",
-      "applyStart": null,
-      "applyEnd": null,
-      "resultDate": null,
-      "paymentEnd": null,
-      "eventDate": "2026-10-13",
-      "eventEndDate": "2026-10-15",
-      "eventDates": [
-        "2026-10-13",
-        "2026-10-15"
-      ],
-      "schedule": [
-        {
-          "date": "2026-10-13",
-          "venue": null
-        },
-        {
-          "date": "2026-10-15",
-          "venue": null
-        }
-      ],
-      "eventCount": 2,
-      "venue": "複数会場（全2公演）",
-      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=22735",
+      "id": "4ac7837d3936b623",
+      "group": "CUTIE STREET",
+      "title": "CUTIE STREET オンライン特典会",
+      "ticketType": "オンライン特典会・抽選販売",
+      "applyStart": "2026-10-07T12:00",
+      "applyEnd": "2026-10-08T23:59",
+      "resultDate": "2026-10-09",
+      "paymentEnd": "2026-10-11T23:59",
+      "eventDate": "2026-10-14",
+      "startTime": "15:00",
+      "venue": "オンライン（SUKISUKI）",
+      "url": "https://sukisuki-shop.com/goods/6500000004614",
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=22735",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14547"
+        "https://sukisuki-shop.com/goods/6500000004614"
       ],
-      "sourceType": "derived",
+      "sourceType": "sukisuki",
+      "eventCategory": "online-benefit",
       "sourcePublishedAt": null,
-      "applicationStatus": "none",
-      "sourceChannel": "pia-ended-sale",
-      "primarySource": "pia",
-      "ticketProvider": "pia",
-      "sourceCandidates": [
-        "pia"
-      ],
-      "historyPreserved": true,
-      "applicationWindowVerified": true,
-      "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14547",
-      "deadlineVerified": true,
-      "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14547",
-      "applicationDisplayMode": "offers",
-      "eventScope": "external",
-      "venues": []
+      "eventScope": "kawaii-lab"
     },
     {
       "id": "92c79bb044962aff",
@@ -13697,56 +13429,6 @@
       "eventScope": "external"
     },
     {
-      "id": "dc60d5d019d83f33",
-      "group": "FRUITS ZIPPER",
-      "title": "FRUITS ZIPPER",
-      "ticketType": "現在受付なし",
-      "applyStart": null,
-      "applyEnd": null,
-      "resultDate": null,
-      "paymentEnd": null,
-      "eventDate": "2026-10-26",
-      "eventEndDate": "2026-10-27",
-      "eventDates": [
-        "2026-10-26",
-        "2026-10-27"
-      ],
-      "schedule": [
-        {
-          "date": "2026-10-26",
-          "venue": null
-        },
-        {
-          "date": "2026-10-27",
-          "venue": null
-        }
-      ],
-      "eventCount": 2,
-      "venue": "複数会場（全2公演）",
-      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=22728",
-      "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=22728",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209"
-      ],
-      "sourceType": "derived",
-      "sourcePublishedAt": null,
-      "applicationStatus": "none",
-      "sourceChannel": "pia-ended-sale",
-      "primarySource": "pia",
-      "ticketProvider": "pia",
-      "sourceCandidates": [
-        "pia"
-      ],
-      "historyPreserved": true,
-      "applicationWindowVerified": true,
-      "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=22728",
-      "deadlineVerified": true,
-      "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=22728",
-      "applicationDisplayMode": "offers",
-      "eventScope": "external",
-      "venues": []
-    },
-    {
       "id": "efd8271cb67101f4",
       "group": "FRUITS ZIPPER",
       "title": "FRUITS ZIPPER 4th Anniversary写真集 書店イベント@ ベルサール渋谷ガーデン",
@@ -13866,7 +13548,7 @@
         "https://cutiestreet.asobisystem.com/live_information/detail/45469",
         "https://cutiestreet.asobisystem.com/live_information/detail/45470"
       ],
-      "sourceType": "official-special",
+      "sourceType": "derived",
       "sourceChannel": "official-prtimes",
       "primarySource": "official",
       "sourceCandidates": [
@@ -13950,57 +13632,8 @@
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=13707",
       "applicationDisplayMode": "offers",
-      "venues": [],
-      "eventScope": "external"
-    },
-    {
-      "id": "8267778a525bb848",
-      "group": "FRUITS ZIPPER",
-      "title": "FRUITS ZIPPER",
-      "ticketType": "プレリザーブ",
-      "applyStart": "2026-08-04T11:00",
-      "applyEnd": "2026-08-16T23:59",
-      "resultDate": null,
-      "paymentEnd": null,
-      "eventDate": "2026-11-05",
-      "eventEndDate": "2026-11-06",
-      "eventDates": [
-        "2026-11-05",
-        "2026-11-06"
-      ],
-      "schedule": [
-        {
-          "date": "2026-11-05",
-          "venue": null
-        },
-        {
-          "date": "2026-11-06",
-          "venue": null
-        }
-      ],
-      "eventCount": 2,
-      "venue": "複数会場（全2公演）",
-      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=13707",
-      "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=13707",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209"
-      ],
-      "sourceType": "ticket-history-guard",
-      "sourcePublishedAt": null,
-      "applicationStatus": "ended",
-      "sourceChannel": "pia-ended-sale",
-      "primarySource": "pia",
-      "ticketProvider": "pia",
-      "sourceCandidates": [
-        "pia"
-      ],
-      "historyPreserved": true,
-      "applicationWindowVerified": true,
-      "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=13707",
-      "deadlineVerified": true,
-      "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=13707",
-      "applicationDisplayMode": "offers",
-      "eventScope": "external"
+      "eventScope": "external",
+      "venues": []
     },
     {
       "id": "b0345f81c85dead1",
@@ -14120,80 +13753,6 @@
       "offers": []
     },
     {
-      "id": "07c811fe8e46b921",
-      "group": "FRUITS ZIPPER",
-      "title": "FRUITS ZIPPER",
-      "ticketType": "プレリザーブ",
-      "applyStart": "2026-08-15T11:00",
-      "applyEnd": "2026-08-25T23:59",
-      "resultDate": null,
-      "paymentEnd": null,
-      "eventDate": "2026-11-12",
-      "eventEndDate": null,
-      "eventDates": null,
-      "schedule": null,
-      "eventCount": null,
-      "venue": null,
-      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25885",
-      "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25885",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209"
-      ],
-      "sourceType": "ticket-history-guard",
-      "sourcePublishedAt": null,
-      "applicationStatus": "ended",
-      "sourceChannel": "pia-ended-sale",
-      "primarySource": "pia",
-      "ticketProvider": "pia",
-      "sourceCandidates": [
-        "pia"
-      ],
-      "historyPreserved": true,
-      "applicationWindowVerified": true,
-      "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25885",
-      "deadlineVerified": true,
-      "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25885",
-      "applicationDisplayMode": "offers",
-      "eventScope": "external"
-    },
-    {
-      "id": "538a83112befaf66",
-      "group": "FRUITS ZIPPER",
-      "title": "FRUITS ZIPPER",
-      "ticketType": "2次プレリザーブ",
-      "applyStart": "2026-08-29T11:00",
-      "applyEnd": "2026-09-07T23:59",
-      "resultDate": null,
-      "paymentEnd": null,
-      "eventDate": "2026-11-12",
-      "eventEndDate": null,
-      "eventDates": null,
-      "schedule": null,
-      "eventCount": null,
-      "venue": null,
-      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=35131",
-      "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=35131",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209"
-      ],
-      "sourceType": "ticket-history-guard",
-      "sourcePublishedAt": null,
-      "applicationStatus": "ended",
-      "sourceChannel": "pia-ended-sale",
-      "primarySource": "pia",
-      "ticketProvider": "pia",
-      "sourceCandidates": [
-        "pia"
-      ],
-      "historyPreserved": true,
-      "applicationWindowVerified": true,
-      "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=35131",
-      "deadlineVerified": true,
-      "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=35131",
-      "applicationDisplayMode": "offers",
-      "eventScope": "external"
-    },
-    {
       "id": "568f5ac5c94be240",
       "group": "FRUITS ZIPPER",
       "title": "FRUITS ZIPPER",
@@ -14280,55 +13839,6 @@
       ]
     },
     {
-      "id": "34b4d0a22c8deee7",
-      "group": "FRUITS ZIPPER",
-      "title": "FRUITS ZIPPER",
-      "ticketType": "2次プレリザーブ",
-      "applyStart": "2026-09-05",
-      "applyEnd": "2026-09-10T23:59",
-      "resultDate": null,
-      "paymentEnd": null,
-      "eventDate": "2026-11-21",
-      "eventEndDate": "2026-11-22",
-      "eventDates": [
-        "2026-11-21",
-        "2026-11-22"
-      ],
-      "schedule": [
-        {
-          "date": "2026-11-21",
-          "venue": null
-        },
-        {
-          "date": "2026-11-22",
-          "venue": null
-        }
-      ],
-      "eventCount": 2,
-      "venue": "複数会場（全2公演）",
-      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=26281",
-      "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=26281",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209"
-      ],
-      "sourceType": "ticket-history-guard",
-      "sourcePublishedAt": null,
-      "applicationStatus": "ended",
-      "sourceChannel": "pia-ended-sale",
-      "primarySource": "pia",
-      "ticketProvider": "pia",
-      "sourceCandidates": [
-        "pia"
-      ],
-      "historyPreserved": true,
-      "applicationWindowVerified": true,
-      "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=26281",
-      "deadlineVerified": true,
-      "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=26281",
-      "applicationDisplayMode": "offers",
-      "eventScope": "external"
-    },
-    {
       "id": "457b1636e10a5379",
       "group": "FRUITS ZIPPER",
       "title": "FRUITS ZIPPER",
@@ -14378,55 +13888,6 @@
       "applicationDisplayMode": "offers",
       "eventScope": "external",
       "venues": []
-    },
-    {
-      "id": "8c9dafbc35ac88d9",
-      "group": "FRUITS ZIPPER",
-      "title": "FRUITS ZIPPER",
-      "ticketType": "プレリザーブ",
-      "applyStart": "2026-08-04",
-      "applyEnd": "2026-08-11T23:59",
-      "resultDate": null,
-      "paymentEnd": null,
-      "eventDate": "2026-11-21",
-      "eventEndDate": "2026-11-22",
-      "eventDates": [
-        "2026-11-21",
-        "2026-11-22"
-      ],
-      "schedule": [
-        {
-          "date": "2026-11-21",
-          "venue": null
-        },
-        {
-          "date": "2026-11-22",
-          "venue": null
-        }
-      ],
-      "eventCount": 2,
-      "venue": "複数会場（全2公演）",
-      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14224",
-      "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14224",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209"
-      ],
-      "sourceType": "ticket-history-guard",
-      "sourcePublishedAt": null,
-      "applicationStatus": "ended",
-      "sourceChannel": "pia-ended-sale",
-      "primarySource": "pia",
-      "ticketProvider": "pia",
-      "sourceCandidates": [
-        "pia"
-      ],
-      "historyPreserved": true,
-      "applicationWindowVerified": true,
-      "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14224",
-      "deadlineVerified": true,
-      "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14224",
-      "applicationDisplayMode": "offers",
-      "eventScope": "external"
     },
     {
       "id": "26d0069375101fa4",
@@ -14998,6 +14459,23 @@
       "offers": []
     },
     {
+      "id": "74553f349873b69c",
+      "group": "CANDY TUNE",
+      "title": "「災害支援基金コンサート」",
+      "eventTitle": "「災害支援基金コンサート」",
+      "ticketType": "現在受付なし",
+      "applicationStatus": "none",
+      "eventDate": "2027-01-19",
+      "venue": "東京都 日本武道館",
+      "url": "https://candytune.asobisystem.com/live_information/detail/46043",
+      "urls": [
+        "https://candytune.asobisystem.com/live_information/detail/46043"
+      ],
+      "sourceType": "official-schedule",
+      "primarySource": "official",
+      "eventScope": "external"
+    },
+    {
       "id": "432d1788645f2d1b",
       "group": "FRUITS ZIPPER",
       "title": "FRUITS ZIPPERのオールナイトニッポンX in 横浜アリーナ",
@@ -15066,8 +14544,6 @@
         }
       ],
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
         "https://candytune.asobisystem.com/news/detail/82537",
         "https://candytune.asobisystem.com/news/detail/85850",
@@ -15097,8 +14573,7 @@
         "https://candytune.asobisystem.com/news/detail/80541",
         "https://kawaiilab.asobisystem.com/news/detail/88214",
         "https://kawaiilab.asobisystem.com/news/detail/83517",
-        "https://candytune.asobisystem.com/news/detail/88212",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210"
+        "https://candytune.asobisystem.com/news/detail/88212"
       ],
       "eventCount": 1,
       "venues": [
@@ -15133,61 +14608,14 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-08-29|time|17:00",
       "sourceRowIds": [
-        "119c2ef1b0193081",
-        "54a369497f59ce96",
-        "e4e0246476c2e42e"
+        "54a369497f59ce96"
       ],
-      "offers": [
-        {
-          "sourceRowId": "119c2ef1b0193081",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-01T18:00",
-          "applyEnd": "2026-08-05T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "e4e0246476c2e42e",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T18:00",
-          "applyEnd": "2026-08-16T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        }
-      ],
+      "offers": [],
       "openTime": "16:00",
       "startTime": "17:00",
-      "ticketType": "複数受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-CANDY-TUNE-2026-08-30-time-16-00",
@@ -15211,8 +14639,6 @@
         }
       ],
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
         "https://candytune.asobisystem.com/news/detail/82537",
         "https://candytune.asobisystem.com/news/detail/85850",
@@ -15242,8 +14668,7 @@
         "https://candytune.asobisystem.com/news/detail/80541",
         "https://kawaiilab.asobisystem.com/news/detail/88214",
         "https://kawaiilab.asobisystem.com/news/detail/83517",
-        "https://candytune.asobisystem.com/news/detail/88212",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210"
+        "https://candytune.asobisystem.com/news/detail/88212"
       ],
       "eventCount": 1,
       "venues": [
@@ -15278,61 +14703,14 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-08-30|time|16:00",
       "sourceRowIds": [
-        "119c2ef1b0193081",
-        "54a369497f59ce96",
-        "e4e0246476c2e42e"
+        "54a369497f59ce96"
       ],
-      "offers": [
-        {
-          "sourceRowId": "119c2ef1b0193081",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-01T18:00",
-          "applyEnd": "2026-08-05T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "e4e0246476c2e42e",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T18:00",
-          "applyEnd": "2026-08-16T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        }
-      ],
+      "offers": [],
       "openTime": "15:00",
       "startTime": "16:00",
-      "ticketType": "複数受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-CANDY-TUNE-2026-09-04-time-18-30",
@@ -15356,8 +14734,6 @@
         }
       ],
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
         "https://candytune.asobisystem.com/news/detail/82537",
         "https://candytune.asobisystem.com/news/detail/85850",
@@ -15387,8 +14763,7 @@
         "https://candytune.asobisystem.com/news/detail/80541",
         "https://kawaiilab.asobisystem.com/news/detail/88214",
         "https://kawaiilab.asobisystem.com/news/detail/83517",
-        "https://candytune.asobisystem.com/news/detail/88212",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210"
+        "https://candytune.asobisystem.com/news/detail/88212"
       ],
       "eventCount": 1,
       "venues": [
@@ -15423,61 +14798,14 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-09-04|time|18:30",
       "sourceRowIds": [
-        "119c2ef1b0193081",
-        "54a369497f59ce96",
-        "e4e0246476c2e42e"
+        "54a369497f59ce96"
       ],
-      "offers": [
-        {
-          "sourceRowId": "119c2ef1b0193081",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-01T18:00",
-          "applyEnd": "2026-08-05T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "e4e0246476c2e42e",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T18:00",
-          "applyEnd": "2026-08-16T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        }
-      ],
+      "offers": [],
       "openTime": "17:30",
       "startTime": "18:30",
-      "ticketType": "複数受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-CANDY-TUNE-2026-09-09-time-18-30",
@@ -15501,8 +14829,6 @@
         }
       ],
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
         "https://candytune.asobisystem.com/news/detail/82537",
         "https://candytune.asobisystem.com/news/detail/85850",
@@ -15533,8 +14859,8 @@
         "https://kawaiilab.asobisystem.com/news/detail/88214",
         "https://kawaiilab.asobisystem.com/news/detail/83517",
         "https://candytune.asobisystem.com/news/detail/88212",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19314",
+        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25960",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
@@ -15579,62 +14905,15 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-09-09|time|18:30",
       "sourceRowIds": [
-        "119c2ef1b0193081",
         "54a369497f59ce96",
-        "e4e0246476c2e42e",
         "12f75454cf2d4fd0"
       ],
-      "offers": [
-        {
-          "sourceRowId": "119c2ef1b0193081",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-01T18:00",
-          "applyEnd": "2026-08-05T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "e4e0246476c2e42e",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T18:00",
-          "applyEnd": "2026-08-16T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        }
-      ],
+      "offers": [],
       "openTime": "17:30",
       "startTime": "18:30",
-      "ticketType": "複数受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-CANDY-TUNE-2026-09-10-time-18-30",
@@ -15658,8 +14937,6 @@
         }
       ],
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
         "https://candytune.asobisystem.com/news/detail/82537",
         "https://candytune.asobisystem.com/news/detail/85850",
@@ -15690,8 +14967,8 @@
         "https://kawaiilab.asobisystem.com/news/detail/88214",
         "https://kawaiilab.asobisystem.com/news/detail/83517",
         "https://candytune.asobisystem.com/news/detail/88212",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19314",
+        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25960",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
@@ -15736,62 +15013,15 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-09-10|time|18:30",
       "sourceRowIds": [
-        "119c2ef1b0193081",
         "54a369497f59ce96",
-        "e4e0246476c2e42e",
         "12f75454cf2d4fd0"
       ],
-      "offers": [
-        {
-          "sourceRowId": "119c2ef1b0193081",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-01T18:00",
-          "applyEnd": "2026-08-05T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "e4e0246476c2e42e",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T18:00",
-          "applyEnd": "2026-08-16T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        }
-      ],
+      "offers": [],
       "openTime": "17:30",
       "startTime": "18:30",
-      "ticketType": "複数受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-CANDY-TUNE-2026-09-19-time-18-00",
@@ -15815,8 +15045,6 @@
         }
       ],
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
         "https://candytune.asobisystem.com/news/detail/82537",
         "https://candytune.asobisystem.com/news/detail/85850",
@@ -15846,8 +15074,7 @@
         "https://candytune.asobisystem.com/news/detail/80541",
         "https://kawaiilab.asobisystem.com/news/detail/88214",
         "https://kawaiilab.asobisystem.com/news/detail/83517",
-        "https://candytune.asobisystem.com/news/detail/88212",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210"
+        "https://candytune.asobisystem.com/news/detail/88212"
       ],
       "eventCount": 1,
       "venues": [
@@ -15882,61 +15109,14 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-09-19|time|18:00",
       "sourceRowIds": [
-        "119c2ef1b0193081",
-        "54a369497f59ce96",
-        "e4e0246476c2e42e"
+        "54a369497f59ce96"
       ],
-      "offers": [
-        {
-          "sourceRowId": "119c2ef1b0193081",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-01T18:00",
-          "applyEnd": "2026-08-05T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "e4e0246476c2e42e",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T18:00",
-          "applyEnd": "2026-08-16T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        }
-      ],
+      "offers": [],
       "openTime": "17:00",
       "startTime": "18:00",
-      "ticketType": "複数受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-CANDY-TUNE-2026-10-02-time-18-30",
@@ -15960,8 +15140,6 @@
         }
       ],
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
         "https://candytune.asobisystem.com/news/detail/82537",
         "https://candytune.asobisystem.com/news/detail/85850",
@@ -15992,8 +15170,8 @@
         "https://kawaiilab.asobisystem.com/news/detail/88214",
         "https://kawaiilab.asobisystem.com/news/detail/83517",
         "https://candytune.asobisystem.com/news/detail/88212",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19314",
+        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25960",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
@@ -16048,63 +15226,16 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-10-02|time|18:30",
       "sourceRowIds": [
-        "119c2ef1b0193081",
         "54a369497f59ce96",
-        "e4e0246476c2e42e",
         "12f75454cf2d4fd0",
         "9e39a25b816ecc66"
       ],
-      "offers": [
-        {
-          "sourceRowId": "119c2ef1b0193081",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-01T18:00",
-          "applyEnd": "2026-08-05T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "e4e0246476c2e42e",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T18:00",
-          "applyEnd": "2026-08-16T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        }
-      ],
+      "offers": [],
       "openTime": "17:30",
       "startTime": "18:30",
-      "ticketType": "複数受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-CANDY-TUNE-2026-10-04-time-17-30",
@@ -16128,8 +15259,6 @@
         }
       ],
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
         "https://candytune.asobisystem.com/news/detail/82537",
         "https://candytune.asobisystem.com/news/detail/85850",
@@ -16160,8 +15289,8 @@
         "https://kawaiilab.asobisystem.com/news/detail/88214",
         "https://kawaiilab.asobisystem.com/news/detail/83517",
         "https://candytune.asobisystem.com/news/detail/88212",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19314",
+        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25960",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
@@ -16216,63 +15345,16 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-10-04|time|17:30",
       "sourceRowIds": [
-        "119c2ef1b0193081",
         "54a369497f59ce96",
-        "e4e0246476c2e42e",
         "12f75454cf2d4fd0",
         "9e39a25b816ecc66"
       ],
-      "offers": [
-        {
-          "sourceRowId": "119c2ef1b0193081",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-01T18:00",
-          "applyEnd": "2026-08-05T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "e4e0246476c2e42e",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T18:00",
-          "applyEnd": "2026-08-16T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        }
-      ],
+      "offers": [],
       "openTime": "16:30",
       "startTime": "17:30",
-      "ticketType": "複数受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-CANDY-TUNE-2026-10-08-time-18-30",
@@ -16296,8 +15378,6 @@
         }
       ],
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
         "https://candytune.asobisystem.com/news/detail/82537",
         "https://candytune.asobisystem.com/news/detail/85850",
@@ -16328,8 +15408,8 @@
         "https://kawaiilab.asobisystem.com/news/detail/88214",
         "https://kawaiilab.asobisystem.com/news/detail/83517",
         "https://candytune.asobisystem.com/news/detail/88212",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19314",
+        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25960",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
@@ -16350,13 +15430,14 @@
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30252",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=57175",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=79559",
-        "https://eplus.jp/sf/detail/3923750001-P0030010P021001",
         "https://eplus.jp/sf/detail/3923750001-P0030010P021001?P1=0175",
         "https://eplus.jp/sf/detail/3923750001-P0030011P021001?P1=0175",
         "https://eplus.jp/sf/detail/3923750001-P0030008P021001",
         "https://eplus.jp/sf/detail/3923750001-P0030008P021001?P1=0175",
         "https://eplus.jp/sf/detail/3923750001-P0030009P021001",
         "https://eplus.jp/sf/detail/3923750001-P0030013P021001",
+        "https://eplus.jp/sf/detail/3923750001-P0030011P021001",
+        "https://eplus.jp/sf/detail/3923750001-P0030010P021001",
         "https://l-tike.com/order/?gBaseVenueCd=26694&gCarrierCd=08&gEntryMthd=02&gLcode=21640&gPfKey=20260803000002265622&gScheduleNo=1"
       ],
       "eventCount": 1,
@@ -16392,84 +15473,15 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-10-08|time|18:30",
       "sourceRowIds": [
-        "119c2ef1b0193081",
         "54a369497f59ce96",
-        "e4e0246476c2e42e",
         "12f75454cf2d4fd0",
         "9e39a25b816ecc66",
-        "170dc0ee19ba620b",
         "2cd66df3ae3baa26",
+        "30a81506ad73edcf",
         "b00356dc8e715287",
-        "d577a07b6086ff3d",
         "f0b3114072eaa66f"
       ],
       "offers": [
-        {
-          "sourceRowId": "119c2ef1b0193081",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-01T18:00",
-          "applyEnd": "2026-08-05T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "e4e0246476c2e42e",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T18:00",
-          "applyEnd": "2026-08-16T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "170dc0ee19ba620b",
-          "provider": "eplus",
-          "url": "https://eplus.jp/sf/detail/3923750001-P0030010P021001",
-          "urls": [
-            "https://eplus.jp/sf/detail/3923750001-P0030010P021001",
-            "https://eplus.jp/sf/detail/3923750001-P0030010P021001?P1=0175"
-          ],
-          "ticketType": "先着 ★一般発売",
-          "ticketProvider": "eplus",
-          "applyStart": "2026-09-05T10:00",
-          "applyEnd": "2026-10-07T23:59",
-          "applicationStatus": "open",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "band",
-          "applicationWindowSource": "https://eplus.jp/sf/detail/3923750001-P0030010P021001",
-          "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030010P021001",
-          "sourceType": "eplus",
-          "primarySource": "eplus",
-          "sourceObservedAt": "2026-10-03T16:28:54+09:00"
-        },
         {
           "sourceRowId": "b00356dc8e715287",
           "provider": "lawson",
@@ -16491,33 +15503,11 @@
           "sourceType": "manual-verified",
           "primarySource": "lawson",
           "sourceObservedAt": "2026-09-22T11:19:13+09:00"
-        },
-        {
-          "sourceRowId": "d577a07b6086ff3d",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T11:00",
-          "applyEnd": "2026-08-17T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
         }
       ],
       "openTime": "17:30",
       "startTime": "18:30",
-      "ticketType": "複数受付",
+      "ticketType": "一般発売（先着）",
       "applicationDisplayMode": "offers",
       "applicationStatus": "offers"
     },
@@ -16543,8 +15533,6 @@
         }
       ],
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
         "https://candytune.asobisystem.com/news/detail/82537",
         "https://candytune.asobisystem.com/news/detail/85850",
@@ -16575,8 +15563,8 @@
         "https://kawaiilab.asobisystem.com/news/detail/88214",
         "https://kawaiilab.asobisystem.com/news/detail/83517",
         "https://candytune.asobisystem.com/news/detail/88212",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19314",
+        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25960",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
@@ -16638,89 +15626,18 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-10-09|time|18:30",
       "sourceRowIds": [
-        "119c2ef1b0193081",
         "54a369497f59ce96",
-        "e4e0246476c2e42e",
         "12f75454cf2d4fd0",
         "9e39a25b816ecc66",
         "2cd66df3ae3baa26",
-        "d577a07b6086ff3d",
-        "f0b3114072eaa66f",
-        "da7e7a8313e7f6d8"
+        "f0b3114072eaa66f"
       ],
-      "offers": [
-        {
-          "sourceRowId": "119c2ef1b0193081",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-01T18:00",
-          "applyEnd": "2026-08-05T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "e4e0246476c2e42e",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T18:00",
-          "applyEnd": "2026-08-16T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "d577a07b6086ff3d",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T11:00",
-          "applyEnd": "2026-08-17T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        }
-      ],
+      "offers": [],
       "openTime": "17:30",
       "startTime": "18:30",
-      "ticketType": "複数受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-CANDY-TUNE-2026-10-26-time-18-30",
@@ -16744,8 +15661,6 @@
         }
       ],
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
         "https://candytune.asobisystem.com/news/detail/82537",
         "https://candytune.asobisystem.com/news/detail/85850",
@@ -16776,8 +15691,8 @@
         "https://kawaiilab.asobisystem.com/news/detail/88214",
         "https://kawaiilab.asobisystem.com/news/detail/83517",
         "https://candytune.asobisystem.com/news/detail/88212",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19314",
+        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25960",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
@@ -16834,135 +15749,18 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-10-26|time|18:30",
       "sourceRowIds": [
-        "119c2ef1b0193081",
         "54a369497f59ce96",
-        "e4e0246476c2e42e",
         "12f75454cf2d4fd0",
         "9e39a25b816ecc66",
-        "07a699afb71524cf",
-        "62f7299c180e2baa",
         "b09e5a2f429cb013",
-        "c4356b6a3eb08f58",
-        "f6b1d32c2680a7d6"
+        "c4356b6a3eb08f58"
       ],
-      "offers": [
-        {
-          "sourceRowId": "119c2ef1b0193081",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-01T18:00",
-          "applyEnd": "2026-08-05T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "e4e0246476c2e42e",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T18:00",
-          "applyEnd": "2026-08-16T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "07a699afb71524cf",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=24086",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=24086",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T11:00",
-          "applyEnd": "2026-08-19T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=24086",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=24086",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "62f7299c180e2baa",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-26T11:00",
-          "applyEnd": "2026-09-06T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "f6b1d32c2680a7d6",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21321",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21321",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30252"
-          ],
-          "ticketType": "ぴあ先行",
-          "ticketProvider": "pia",
-          "applyStart": "2026-09-09T11:00",
-          "applyEnd": "2026-09-13T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21321",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21321",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        }
-      ],
+      "offers": [],
       "openTime": "17:30",
       "startTime": "18:30",
-      "ticketType": "複数受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-CANDY-TUNE-2026-10-27-time-18-30",
@@ -16986,8 +15784,6 @@
         }
       ],
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
         "https://candytune.asobisystem.com/news/detail/82537",
         "https://candytune.asobisystem.com/news/detail/85850",
@@ -17018,8 +15814,8 @@
         "https://kawaiilab.asobisystem.com/news/detail/88214",
         "https://kawaiilab.asobisystem.com/news/detail/83517",
         "https://candytune.asobisystem.com/news/detail/88212",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19314",
+        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25960",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
@@ -17076,135 +15872,18 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-10-27|time|18:30",
       "sourceRowIds": [
-        "119c2ef1b0193081",
         "54a369497f59ce96",
-        "e4e0246476c2e42e",
         "12f75454cf2d4fd0",
         "9e39a25b816ecc66",
-        "07a699afb71524cf",
-        "62f7299c180e2baa",
         "b09e5a2f429cb013",
-        "c4356b6a3eb08f58",
-        "f6b1d32c2680a7d6"
+        "c4356b6a3eb08f58"
       ],
-      "offers": [
-        {
-          "sourceRowId": "119c2ef1b0193081",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-01T18:00",
-          "applyEnd": "2026-08-05T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "e4e0246476c2e42e",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T18:00",
-          "applyEnd": "2026-08-16T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "07a699afb71524cf",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=24086",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=24086",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T11:00",
-          "applyEnd": "2026-08-19T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=24086",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=24086",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "62f7299c180e2baa",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-26T11:00",
-          "applyEnd": "2026-09-06T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "f6b1d32c2680a7d6",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21321",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21321",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30252"
-          ],
-          "ticketType": "ぴあ先行",
-          "ticketProvider": "pia",
-          "applyStart": "2026-09-09T11:00",
-          "applyEnd": "2026-09-13T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21321",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21321",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        }
-      ],
+      "offers": [],
       "openTime": "17:30",
       "startTime": "18:30",
-      "ticketType": "複数受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-CANDY-TUNE-2026-10-29-time-18-30",
@@ -17228,8 +15907,6 @@
         }
       ],
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
         "https://candytune.asobisystem.com/news/detail/82537",
         "https://candytune.asobisystem.com/news/detail/85850",
@@ -17260,8 +15937,8 @@
         "https://kawaiilab.asobisystem.com/news/detail/88214",
         "https://kawaiilab.asobisystem.com/news/detail/83517",
         "https://candytune.asobisystem.com/news/detail/88212",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19314",
+        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25960",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
@@ -17318,134 +15995,17 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-10-29|time|18:30",
       "sourceRowIds": [
-        "119c2ef1b0193081",
         "54a369497f59ce96",
-        "e4e0246476c2e42e",
         "12f75454cf2d4fd0",
         "9e39a25b816ecc66",
-        "07a699afb71524cf",
-        "62f7299c180e2baa",
-        "b09e5a2f429cb013",
-        "f6b1d32c2680a7d6"
+        "b09e5a2f429cb013"
       ],
-      "offers": [
-        {
-          "sourceRowId": "119c2ef1b0193081",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-01T18:00",
-          "applyEnd": "2026-08-05T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "e4e0246476c2e42e",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T18:00",
-          "applyEnd": "2026-08-16T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "07a699afb71524cf",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=24086",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=24086",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T11:00",
-          "applyEnd": "2026-08-19T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=24086",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=24086",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "62f7299c180e2baa",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-26T11:00",
-          "applyEnd": "2026-09-06T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "f6b1d32c2680a7d6",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21321",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21321",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30252"
-          ],
-          "ticketType": "ぴあ先行",
-          "ticketProvider": "pia",
-          "applyStart": "2026-09-09T11:00",
-          "applyEnd": "2026-09-13T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21321",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21321",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        }
-      ],
+      "offers": [],
       "openTime": "17:30",
       "startTime": "18:30",
-      "ticketType": "複数受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-CANDY-TUNE-2026-11-10-time-18-30",
@@ -17469,8 +16029,6 @@
         }
       ],
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
         "https://candytune.asobisystem.com/news/detail/82537",
         "https://candytune.asobisystem.com/news/detail/85850",
@@ -17501,8 +16059,8 @@
         "https://kawaiilab.asobisystem.com/news/detail/88214",
         "https://kawaiilab.asobisystem.com/news/detail/83517",
         "https://candytune.asobisystem.com/news/detail/88212",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19314",
+        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25960",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
@@ -17559,82 +16117,13 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-11-10|time|18:30",
       "sourceRowIds": [
-        "119c2ef1b0193081",
         "54a369497f59ce96",
-        "e4e0246476c2e42e",
         "12f75454cf2d4fd0",
         "9e39a25b816ecc66",
-        "3090876e64521ccf",
         "3edcd98dd32ff61b",
         "8186760ea6925dff"
       ],
       "offers": [
-        {
-          "sourceRowId": "119c2ef1b0193081",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-01T18:00",
-          "applyEnd": "2026-08-05T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "e4e0246476c2e42e",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T18:00",
-          "applyEnd": "2026-08-16T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "3090876e64521ccf",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=20981",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=20981",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T11:00",
-          "applyEnd": "2026-08-24T11:00",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=20981",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=20981",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
         {
           "sourceRowId": "3edcd98dd32ff61b",
           "provider": "eplus",
@@ -17660,7 +16149,7 @@
       ],
       "openTime": "17:30",
       "startTime": "18:30",
-      "ticketType": "複数受付",
+      "ticketType": "先着 ★一般発売",
       "applicationDisplayMode": "offers",
       "applicationStatus": "offers"
     },
@@ -17686,8 +16175,6 @@
         }
       ],
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
         "https://candytune.asobisystem.com/news/detail/82537",
         "https://candytune.asobisystem.com/news/detail/85850",
@@ -17718,8 +16205,8 @@
         "https://kawaiilab.asobisystem.com/news/detail/88214",
         "https://kawaiilab.asobisystem.com/news/detail/83517",
         "https://candytune.asobisystem.com/news/detail/88212",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19314",
+        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25960",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
@@ -17776,82 +16263,13 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-11-12|time|18:30",
       "sourceRowIds": [
-        "119c2ef1b0193081",
         "54a369497f59ce96",
-        "e4e0246476c2e42e",
         "12f75454cf2d4fd0",
         "9e39a25b816ecc66",
-        "3090876e64521ccf",
         "8186760ea6925dff",
         "22ba8f96d026e8d4"
       ],
       "offers": [
-        {
-          "sourceRowId": "119c2ef1b0193081",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-01T18:00",
-          "applyEnd": "2026-08-05T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "e4e0246476c2e42e",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T18:00",
-          "applyEnd": "2026-08-16T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "3090876e64521ccf",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=20981",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=20981",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T11:00",
-          "applyEnd": "2026-08-24T11:00",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=20981",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=20981",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
         {
           "sourceRowId": "22ba8f96d026e8d4",
           "provider": "eplus",
@@ -17877,7 +16295,7 @@
       ],
       "openTime": "17:30",
       "startTime": "18:30",
-      "ticketType": "複数受付",
+      "ticketType": "先着 ★一般発売",
       "applicationDisplayMode": "offers",
       "applicationStatus": "offers"
     },
@@ -17903,8 +16321,6 @@
         }
       ],
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
         "https://candytune.asobisystem.com/news/detail/82537",
         "https://candytune.asobisystem.com/news/detail/85850",
@@ -17935,8 +16351,8 @@
         "https://kawaiilab.asobisystem.com/news/detail/88214",
         "https://kawaiilab.asobisystem.com/news/detail/83517",
         "https://candytune.asobisystem.com/news/detail/88212",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19314",
+        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25960",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
@@ -17963,6 +16379,7 @@
         "https://eplus.jp/sf/detail/3923750001-P0030008P021001?P1=0175",
         "https://eplus.jp/sf/detail/3923750001-P0030009P021001",
         "https://eplus.jp/sf/detail/3923750001-P0030013P021001",
+        "https://eplus.jp/sf/detail/3923750001-P0030011P021001",
         "https://l-tike.com/order/?gBaseVenueCd=36839&gCarrierCd=08&gEntryMthd=02&gLcode=70492&gPfKey=20260803000002265589&gScheduleNo=2"
       ],
       "eventCount": 1,
@@ -17998,62 +16415,15 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-11-17|time|18:30",
       "sourceRowIds": [
-        "119c2ef1b0193081",
         "54a369497f59ce96",
-        "e4e0246476c2e42e",
         "12f75454cf2d4fd0",
         "9e39a25b816ecc66",
         "2cd66df3ae3baa26",
         "020226c01dd0fc22",
         "3f0e8aa705b99fbe",
-        "a7827b50bb58076d",
-        "e4387cb595e46a06"
+        "a7827b50bb58076d"
       ],
       "offers": [
-        {
-          "sourceRowId": "119c2ef1b0193081",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-01T18:00",
-          "applyEnd": "2026-08-05T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "e4e0246476c2e42e",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T18:00",
-          "applyEnd": "2026-08-16T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
         {
           "sourceRowId": "3f0e8aa705b99fbe",
           "provider": "lawson",
@@ -18097,28 +16467,6 @@
           "sourceType": "eplus",
           "primarySource": "eplus",
           "sourceObservedAt": "2026-10-04T12:56:27+09:00"
-        },
-        {
-          "sourceRowId": "e4387cb595e46a06",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T11:00",
-          "applyEnd": "2026-08-23T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
         }
       ],
       "openTime": "17:30",
@@ -18149,8 +16497,6 @@
         }
       ],
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
         "https://candytune.asobisystem.com/news/detail/82537",
         "https://candytune.asobisystem.com/news/detail/85850",
@@ -18181,8 +16527,8 @@
         "https://kawaiilab.asobisystem.com/news/detail/88214",
         "https://kawaiilab.asobisystem.com/news/detail/83517",
         "https://candytune.asobisystem.com/news/detail/88212",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19314",
+        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25960",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
@@ -18209,6 +16555,7 @@
         "https://eplus.jp/sf/detail/3923750001-P0030008P021001?P1=0175",
         "https://eplus.jp/sf/detail/3923750001-P0030009P021001",
         "https://eplus.jp/sf/detail/3923750001-P0030013P021001",
+        "https://eplus.jp/sf/detail/3923750001-P0030011P021001",
         "https://l-tike.com/order/?gBaseVenueCd=51230&gCarrierCd=08&gEntryMthd=02&gLcode=53526&gPfKey=20260804000002266658&gScheduleNo=1"
       ],
       "eventCount": 1,
@@ -18244,84 +16591,15 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-11-19|time|18:30",
       "sourceRowIds": [
-        "119c2ef1b0193081",
         "54a369497f59ce96",
-        "e4e0246476c2e42e",
         "12f75454cf2d4fd0",
         "9e39a25b816ecc66",
         "2cd66df3ae3baa26",
         "020226c01dd0fc22",
-        "e4387cb595e46a06",
         "0fb464260791e1c0",
         "daaf7e8cb779732e"
       ],
       "offers": [
-        {
-          "sourceRowId": "119c2ef1b0193081",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-01T18:00",
-          "applyEnd": "2026-08-05T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "e4e0246476c2e42e",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T18:00",
-          "applyEnd": "2026-08-16T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "e4387cb595e46a06",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T11:00",
-          "applyEnd": "2026-08-23T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
         {
           "sourceRowId": "0fb464260791e1c0",
           "provider": "eplus",
@@ -18394,8 +16672,6 @@
         }
       ],
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
         "https://candytune.asobisystem.com/news/detail/82537",
         "https://candytune.asobisystem.com/news/detail/85850",
@@ -18426,8 +16702,8 @@
         "https://kawaiilab.asobisystem.com/news/detail/88214",
         "https://kawaiilab.asobisystem.com/news/detail/83517",
         "https://candytune.asobisystem.com/news/detail/88212",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=68942",
+        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29682",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=23457",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25960",
@@ -18481,108 +16757,16 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-11-24|time|18:30",
       "sourceRowIds": [
-        "119c2ef1b0193081",
         "54a369497f59ce96",
-        "e4e0246476c2e42e",
         "9e39a25b816ecc66",
-        "1e57bff7dd3d1e58",
-        "cfe769bfa9e31034"
+        "5103efcdf3b526de"
       ],
-      "offers": [
-        {
-          "sourceRowId": "119c2ef1b0193081",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-01T18:00",
-          "applyEnd": "2026-08-05T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "e4e0246476c2e42e",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T18:00",
-          "applyEnd": "2026-08-16T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "1e57bff7dd3d1e58",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=62959",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=62959",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-09-24T11:00",
-          "applyEnd": "2026-10-06T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=62959",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=62959",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "cfe769bfa9e31034",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21416",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21416",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-12T11:00",
-          "applyEnd": "2026-08-25T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21416",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21416",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        }
-      ],
+      "offers": [],
       "openTime": "17:30",
       "startTime": "18:30",
-      "ticketType": "複数受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-CANDY-TUNE-2026-11-26-time-18-30",
@@ -18606,8 +16790,6 @@
         }
       ],
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
         "https://candytune.asobisystem.com/news/detail/82537",
         "https://candytune.asobisystem.com/news/detail/85850",
@@ -18638,8 +16820,8 @@
         "https://kawaiilab.asobisystem.com/news/detail/88214",
         "https://kawaiilab.asobisystem.com/news/detail/83517",
         "https://candytune.asobisystem.com/news/detail/88212",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=68942",
+        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29682",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=23457",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25960",
@@ -18693,108 +16875,16 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-11-26|time|18:30",
       "sourceRowIds": [
-        "119c2ef1b0193081",
         "54a369497f59ce96",
-        "e4e0246476c2e42e",
         "9e39a25b816ecc66",
-        "1e57bff7dd3d1e58",
-        "cfe769bfa9e31034"
+        "5103efcdf3b526de"
       ],
-      "offers": [
-        {
-          "sourceRowId": "119c2ef1b0193081",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-01T18:00",
-          "applyEnd": "2026-08-05T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "e4e0246476c2e42e",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T18:00",
-          "applyEnd": "2026-08-16T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "1e57bff7dd3d1e58",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=62959",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=62959",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-09-24T11:00",
-          "applyEnd": "2026-10-06T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=62959",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=62959",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "cfe769bfa9e31034",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21416",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21416",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-12T11:00",
-          "applyEnd": "2026-08-25T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21416",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21416",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        }
-      ],
+      "offers": [],
       "openTime": "17:30",
       "startTime": "18:30",
-      "ticketType": "複数受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-CANDY-TUNE-2026-11-30-time-18-30",
@@ -18818,8 +16908,6 @@
         }
       ],
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
         "https://candytune.asobisystem.com/news/detail/82537",
         "https://candytune.asobisystem.com/news/detail/85850",
@@ -18850,8 +16938,8 @@
         "https://kawaiilab.asobisystem.com/news/detail/88214",
         "https://kawaiilab.asobisystem.com/news/detail/83517",
         "https://candytune.asobisystem.com/news/detail/88212",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19314",
+        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25960",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
@@ -18911,82 +16999,13 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-11-30|time|18:30",
       "sourceRowIds": [
-        "119c2ef1b0193081",
         "54a369497f59ce96",
-        "e4e0246476c2e42e",
         "12f75454cf2d4fd0",
         "9e39a25b816ecc66",
-        "697132af5e3523ee",
         "850f9d39ec4fd5e8",
         "d43f8390c05a4a6d"
       ],
       "offers": [
-        {
-          "sourceRowId": "119c2ef1b0193081",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-01T18:00",
-          "applyEnd": "2026-08-05T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "e4e0246476c2e42e",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T18:00",
-          "applyEnd": "2026-08-16T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "697132af5e3523ee",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30338",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30338",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-09-02",
-          "applyEnd": "2026-09-08T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30338",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30338",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
         {
           "sourceRowId": "850f9d39ec4fd5e8",
           "provider": "eplus",
@@ -19013,7 +17032,7 @@
       ],
       "openTime": "17:30",
       "startTime": "18:30",
-      "ticketType": "複数受付",
+      "ticketType": "先着 ★一般発売",
       "applicationDisplayMode": "offers",
       "applicationStatus": "offers"
     },
@@ -19039,8 +17058,6 @@
         }
       ],
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
         "https://candytune.asobisystem.com/news/detail/82537",
         "https://candytune.asobisystem.com/news/detail/85850",
@@ -19071,8 +17088,8 @@
         "https://kawaiilab.asobisystem.com/news/detail/88214",
         "https://kawaiilab.asobisystem.com/news/detail/83517",
         "https://candytune.asobisystem.com/news/detail/88212",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19314",
+        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25960",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
@@ -19099,6 +17116,7 @@
         "https://eplus.jp/sf/detail/3923750001-P0030008P021001?P1=0175",
         "https://eplus.jp/sf/detail/3923750001-P0030009P021001",
         "https://eplus.jp/sf/detail/3923750001-P0030013P021001",
+        "https://eplus.jp/sf/detail/3923750001-P0030011P021001",
         "https://eplus.jp/sf/detail/3923750001-P0030012P021001",
         "https://eplus.jp/sf/detail/3923750001-P0030012P021001?P1=0175",
         "https://l-tike.com/order/?gBaseVenueCd=84423&gCarrierCd=08&gEntryMthd=03&gLcode=93496&gPfKey=20260814000002271718&gScheduleNo=2",
@@ -19137,83 +17155,14 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-12-01|time|18:30",
       "sourceRowIds": [
-        "119c2ef1b0193081",
         "54a369497f59ce96",
-        "e4e0246476c2e42e",
         "12f75454cf2d4fd0",
         "9e39a25b816ecc66",
         "2cd66df3ae3baa26",
-        "697132af5e3523ee",
         "850f9d39ec4fd5e8",
         "d43f8390c05a4a6d"
       ],
       "offers": [
-        {
-          "sourceRowId": "119c2ef1b0193081",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-01T18:00",
-          "applyEnd": "2026-08-05T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "e4e0246476c2e42e",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T18:00",
-          "applyEnd": "2026-08-16T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "697132af5e3523ee",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30338",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30338",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-09-02",
-          "applyEnd": "2026-09-08T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30338",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30338",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
         {
           "sourceRowId": "850f9d39ec4fd5e8",
           "provider": "eplus",
@@ -19240,20 +17189,20 @@
       ],
       "openTime": "17:30",
       "startTime": "18:30",
-      "ticketType": "複数受付",
+      "ticketType": "先着 ★一般発売",
       "applicationDisplayMode": "offers",
       "applicationStatus": "offers"
     },
     {
       "id": "performance-CANDY-TUNE-2026-12-03-time-19-00",
       "group": "CANDY TUNE",
-      "title": "2026年12月3日(木) 「CANDY TUNE 村川緋杏 生誕祭 2026」開催決定！年会費コース会員限定先行受付開始！",
+      "title": "CANDY TUNE 村川緋杏 生誕祭 2026",
       "eventDate": "2026-12-03",
       "venue": "東京都 SGCホール有明",
       "openTime": "17:30",
       "startTime": "19:00",
       "url": "https://candytune.asobisystem.com/news/detail/91529",
-      "sourceType": "auto",
+      "sourceType": "derived",
       "sourcePublishedAt": "2026-10-02",
       "eventScope": "kawaii-lab",
       "officialScheduleUrl": "https://candytune.asobisystem.com/live_information/detail/45891",
@@ -19269,25 +17218,9 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-12-03|time|19:00",
       "sourceRowIds": [
-        "d8a3f5820819ba88"
+        "7666ed495f31564d"
       ],
-      "offers": [
-        {
-          "sourceRowId": "d8a3f5820819ba88",
-          "provider": "official",
-          "url": "https://candytune.asobisystem.com/news/detail/91529",
-          "urls": [
-            "https://candytune.asobisystem.com/news/detail/91529",
-            "https://candytune.asobisystem.com/live_information/detail/45891"
-          ],
-          "ticketType": "FC先行",
-          "applyStart": "2026-10-02T18:00",
-          "applyEnd": "2026-10-07T23:59",
-          "sourceType": "auto",
-          "primarySource": "official",
-          "sourcePublishedAt": "2026-10-02"
-        }
-      ],
+      "offers": [],
       "eventEndDate": "2026-12-03",
       "eventDates": [
         "2026-12-03"
@@ -19301,9 +17234,9 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "FC先行",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-CANDY-TUNE-2026-12-08-time-19-00",
@@ -19327,8 +17260,6 @@
         }
       ],
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
         "https://candytune.asobisystem.com/news/detail/82537",
         "https://candytune.asobisystem.com/news/detail/85850",
@@ -19359,8 +17290,8 @@
         "https://kawaiilab.asobisystem.com/news/detail/88214",
         "https://kawaiilab.asobisystem.com/news/detail/83517",
         "https://candytune.asobisystem.com/news/detail/88212",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19314",
+        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25960",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
@@ -19415,84 +17346,14 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-12-08|time|19:00",
       "sourceRowIds": [
-        "119c2ef1b0193081",
         "54a369497f59ce96",
-        "e4e0246476c2e42e",
         "12f75454cf2d4fd0",
         "9e39a25b816ecc66",
-        "06bd2c2be995534c",
         "0ae6fcd4694c4c6a",
         "1588eb1d94b8f533",
         "ef9326cb6422c4ea"
       ],
       "offers": [
-        {
-          "sourceRowId": "119c2ef1b0193081",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-01T18:00",
-          "applyEnd": "2026-08-05T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "e4e0246476c2e42e",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T18:00",
-          "applyEnd": "2026-08-16T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "06bd2c2be995534c",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=32739",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=32739",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=57175"
-          ],
-          "ticketType": "ぴあ先行",
-          "ticketProvider": "pia",
-          "applyStart": "2026-09-04",
-          "applyEnd": "2026-09-13T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=32739",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=32739",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
         {
           "sourceRowId": "1588eb1d94b8f533",
           "provider": "resale",
@@ -19568,8 +17429,6 @@
         }
       ],
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
         "https://candytune.asobisystem.com/news/detail/82537",
         "https://candytune.asobisystem.com/news/detail/85850",
@@ -19600,8 +17459,8 @@
         "https://kawaiilab.asobisystem.com/news/detail/88214",
         "https://kawaiilab.asobisystem.com/news/detail/83517",
         "https://candytune.asobisystem.com/news/detail/88212",
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19314",
+        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25960",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
@@ -19656,84 +17515,14 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-12-09|time|18:30",
       "sourceRowIds": [
-        "119c2ef1b0193081",
         "54a369497f59ce96",
-        "e4e0246476c2e42e",
         "12f75454cf2d4fd0",
         "9e39a25b816ecc66",
-        "06bd2c2be995534c",
         "0ae6fcd4694c4c6a",
         "1422d3ac936bb922",
         "8f2ef76c3fbff232"
       ],
       "offers": [
-        {
-          "sourceRowId": "119c2ef1b0193081",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-01T18:00",
-          "applyEnd": "2026-08-05T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "e4e0246476c2e42e",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-08-11T18:00",
-          "applyEnd": "2026-08-16T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "06bd2c2be995534c",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=32739",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=32739",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=57175"
-          ],
-          "ticketType": "ぴあ先行",
-          "ticketProvider": "pia",
-          "applyStart": "2026-09-04",
-          "applyEnd": "2026-09-13T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=32739",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=32739",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
         {
           "sourceRowId": "1422d3ac936bb922",
           "provider": "resale",
@@ -19790,13 +17579,13 @@
     {
       "id": "performance-CANDY-TUNE-2026-12-16-time-19-00",
       "group": "CANDY TUNE",
-      "title": "2026年12月16日(水) 「CANDY TUNE 福山梨乃 生誕祭 2026」開催決定！年会費コース会員限定先行受付開始！",
+      "title": "CANDY TUNE 福山梨乃 生誕祭 2026",
       "eventDate": "2026-12-16",
       "venue": "東京都 SGCホール有明",
       "openTime": "17:30",
       "startTime": "19:00",
       "url": "https://candytune.asobisystem.com/news/detail/91454",
-      "sourceType": "auto",
+      "sourceType": "derived",
       "sourcePublishedAt": "2026-10-02",
       "eventScope": "kawaii-lab",
       "officialScheduleUrl": "https://candytune.asobisystem.com/live_information/detail/45890",
@@ -19812,25 +17601,9 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-12-16|time|19:00",
       "sourceRowIds": [
-        "07c45391d078f1cc"
+        "3757b3716e8c3d03"
       ],
-      "offers": [
-        {
-          "sourceRowId": "07c45391d078f1cc",
-          "provider": "official",
-          "url": "https://candytune.asobisystem.com/news/detail/91454",
-          "urls": [
-            "https://candytune.asobisystem.com/news/detail/91454",
-            "https://candytune.asobisystem.com/live_information/detail/45890"
-          ],
-          "ticketType": "FC先行",
-          "applyStart": "2026-10-02T18:00",
-          "applyEnd": "2026-10-07T23:59",
-          "sourceType": "auto",
-          "primarySource": "official",
-          "sourcePublishedAt": "2026-10-02"
-        }
-      ],
+      "offers": [],
       "eventEndDate": "2026-12-16",
       "eventDates": [
         "2026-12-16"
@@ -19844,9 +17617,9 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "FC先行",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-CUTIE-STREET-2026-09-23-time-17-00",
@@ -20256,13 +18029,21 @@
     {
       "id": "performance-CUTIE-STREET-2026-10-28-time-18-00",
       "group": "CUTIE STREET",
-      "title": "【CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-】@マリンメッセ福岡A館",
-      "eventTitle": "【CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-】@マリンメッセ福岡A館",
+      "title": "CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-",
       "eventDate": "2026-10-28",
       "venue": "福岡県 マリンメッセ福岡A館",
       "openTime": "16:00",
       "startTime": "18:00",
       "url": "https://cutiestreet.asobisystem.com/feature/autumntour",
+      "sourceType": "derived",
+      "sourcePublishedAt": "2026-09-01",
+      "discoverySourceUrl": "https://cutiestreet.asobisystem.com/news/detail/88614",
+      "sourceChannel": "recent-official-body",
+      "primarySource": "official",
+      "sourceCandidates": [
+        "official"
+      ],
+      "officialTourUrl": "https://cutiestreet.asobisystem.com/feature/autumntour",
       "urls": [
         "https://cutiestreet.asobisystem.com/feature/autumntour",
         "https://cutiestreet.asobisystem.com/news/detail/88614",
@@ -20278,19 +18059,10 @@
         "https://cutiestreet.asobisystem.com/live_information/detail/40365",
         "https://cutiestreet.asobisystem.com/news/detail/90591"
       ],
-      "sourceType": "official-schedule",
-      "primarySource": "official",
       "eventScope": "kawaii-lab",
-      "officialTourUrl": "https://cutiestreet.asobisystem.com/feature/autumntour",
-      "entityType": "performance",
-      "performanceEntityVersion": 1,
-      "performanceKey": "CUTIE STREET|2026-10-28|time|18:00",
-      "sourceRowIds": [
-        "a9f07d73f091ca00",
-        "580515cdc46a7f73",
-        "af9b9cae7dd94237"
-      ],
-      "offers": [],
+      "ticketClassificationVerified": true,
+      "ticketClassificationSource": "https://cutiestreet.asobisystem.com/feature/autumntour",
+      "ticketClassificationEvidence": "年会費コース会員先行",
       "eventEndDate": "2026-10-28",
       "eventDates": [
         "2026-10-28"
@@ -20304,6 +18076,22 @@
           "startTime": "18:00"
         }
       ],
+      "venues": [
+        "神奈川県 横浜アリーナ",
+        "東京都 有明アリーナ",
+        "宮城県 セキスイハイムスーパーアリーナ",
+        "福岡県 マリンメッセ福岡A館",
+        "兵庫県 神戸ワールド記念ホール"
+      ],
+      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/40365",
+      "entityType": "performance",
+      "performanceEntityVersion": 1,
+      "performanceKey": "CUTIE STREET|2026-10-28|time|18:00",
+      "sourceRowIds": [
+        "a9f07d73f091ca00",
+        "580515cdc46a7f73"
+      ],
+      "offers": [],
       "ticketType": "現在受付なし",
       "applicationDisplayMode": "schedule-only",
       "applicationStatus": "none"
@@ -20311,13 +18099,21 @@
     {
       "id": "performance-CUTIE-STREET-2026-10-29-time-17-00",
       "group": "CUTIE STREET",
-      "title": "【CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-】@マリンメッセ福岡A館",
-      "eventTitle": "【CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-】@マリンメッセ福岡A館",
+      "title": "CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-",
       "eventDate": "2026-10-29",
       "venue": "福岡県 マリンメッセ福岡A館",
       "openTime": "15:00",
       "startTime": "17:00",
       "url": "https://cutiestreet.asobisystem.com/feature/autumntour",
+      "sourceType": "derived",
+      "sourcePublishedAt": "2026-09-01",
+      "discoverySourceUrl": "https://cutiestreet.asobisystem.com/news/detail/88614",
+      "sourceChannel": "recent-official-body",
+      "primarySource": "official",
+      "sourceCandidates": [
+        "official"
+      ],
+      "officialTourUrl": "https://cutiestreet.asobisystem.com/feature/autumntour",
       "urls": [
         "https://cutiestreet.asobisystem.com/feature/autumntour",
         "https://cutiestreet.asobisystem.com/news/detail/88614",
@@ -20333,19 +18129,10 @@
         "https://cutiestreet.asobisystem.com/live_information/detail/40365",
         "https://cutiestreet.asobisystem.com/news/detail/90591"
       ],
-      "sourceType": "official-schedule",
-      "primarySource": "official",
       "eventScope": "kawaii-lab",
-      "officialTourUrl": "https://cutiestreet.asobisystem.com/feature/autumntour",
-      "entityType": "performance",
-      "performanceEntityVersion": 1,
-      "performanceKey": "CUTIE STREET|2026-10-29|time|17:00",
-      "sourceRowIds": [
-        "a9f07d73f091ca00",
-        "580515cdc46a7f73",
-        "0459e9422056aee7"
-      ],
-      "offers": [],
+      "ticketClassificationVerified": true,
+      "ticketClassificationSource": "https://cutiestreet.asobisystem.com/feature/autumntour",
+      "ticketClassificationEvidence": "年会費コース会員先行",
       "eventEndDate": "2026-10-29",
       "eventDates": [
         "2026-10-29"
@@ -20359,6 +18146,22 @@
           "startTime": "17:00"
         }
       ],
+      "venues": [
+        "神奈川県 横浜アリーナ",
+        "東京都 有明アリーナ",
+        "宮城県 セキスイハイムスーパーアリーナ",
+        "福岡県 マリンメッセ福岡A館",
+        "兵庫県 神戸ワールド記念ホール"
+      ],
+      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/40365",
+      "entityType": "performance",
+      "performanceEntityVersion": 1,
+      "performanceKey": "CUTIE STREET|2026-10-29|time|17:00",
+      "sourceRowIds": [
+        "a9f07d73f091ca00",
+        "580515cdc46a7f73"
+      ],
+      "offers": [],
       "ticketType": "現在受付なし",
       "applicationDisplayMode": "schedule-only",
       "applicationStatus": "none"
@@ -20534,30 +18337,7 @@
       "sourceRowIds": [
         "30fd5394e642a81b"
       ],
-      "offers": [
-        {
-          "sourceRowId": "30fd5394e642a81b",
-          "provider": "official",
-          "url": "https://kawaiilab.asobisystem.com/news/detail/90495",
-          "urls": [
-            "https://kawaiilab.asobisystem.com/news/detail/90495",
-            "https://cutiestreet.asobisystem.com/news/detail/89588"
-          ],
-          "ticketType": "FC先行",
-          "applyStart": "2026-09-16T12:00",
-          "applyEnd": "2026-09-23T23:59",
-          "applicationStatus": "none",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "band",
-          "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/89588",
-          "deadlineSource": "https://cutiestreet.asobisystem.com/news/detail/89588",
-          "sourceType": "derived",
-          "sourceChannel": "kawaii-lab-fc",
-          "primarySource": "official",
-          "sourcePublishedAt": "2026-09-16"
-        }
-      ],
+      "offers": [],
       "eventEndDate": "2026-11-09",
       "eventDates": [
         "2026-11-09"
@@ -20571,9 +18351,9 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "FC先行",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-CUTIE-STREET-2026-11-11-time-19-00",
@@ -20606,30 +18386,7 @@
       "sourceRowIds": [
         "b2851240b2347a25"
       ],
-      "offers": [
-        {
-          "sourceRowId": "b2851240b2347a25",
-          "provider": "official",
-          "url": "https://kawaiilab.asobisystem.com/news/detail/89953",
-          "urls": [
-            "https://kawaiilab.asobisystem.com/news/detail/89953",
-            "https://cutiestreet.asobisystem.com/news/detail/89518"
-          ],
-          "ticketType": "FC先行",
-          "applyStart": "2026-09-16T12:00",
-          "applyEnd": "2026-09-23T23:59",
-          "applicationStatus": "none",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "band",
-          "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/89518",
-          "deadlineSource": "https://cutiestreet.asobisystem.com/news/detail/89518",
-          "sourceType": "derived",
-          "sourceChannel": "kawaii-lab-fc",
-          "primarySource": "official",
-          "sourcePublishedAt": "2026-09-16"
-        }
-      ],
+      "offers": [],
       "eventEndDate": "2026-11-11",
       "eventDates": [
         "2026-11-11"
@@ -20643,9 +18400,9 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "FC先行",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-CUTIE-STREET-2026-11-14-time-16-00",
@@ -20690,36 +18447,12 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CUTIE STREET|2026-11-14|time|16:00",
       "sourceRowIds": [
-        "dfb27d5bda36d787",
-        "ef8a6c26e7518efe"
+        "14c1105f05f46a53"
       ],
-      "offers": [
-        {
-          "sourceRowId": "ef8a6c26e7518efe",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=88970",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=88970",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-09-30T11:00",
-          "applyEnd": "2026-10-06T11:00",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=88970",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=88970",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        }
-      ],
-      "ticketType": "プレリザーブ",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "offers": [],
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-CUTIE-STREET-2026-11-15-time-16-00",
@@ -20764,47 +18497,23 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CUTIE STREET|2026-11-15|time|16:00",
       "sourceRowIds": [
-        "dfb27d5bda36d787",
-        "ef8a6c26e7518efe"
+        "14c1105f05f46a53"
       ],
-      "offers": [
-        {
-          "sourceRowId": "ef8a6c26e7518efe",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=88970",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=88970",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-09-30T11:00",
-          "applyEnd": "2026-10-06T11:00",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=88970",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=88970",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        }
-      ],
-      "ticketType": "プレリザーブ",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "offers": [],
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-CUTIE-STREET-2026-11-26-time-19-00",
       "group": "CUTIE STREET",
-      "title": "2026年11月26日(木) 「CUTIE STREET 佐野愛花 生誕祭 2026」開催決定！CUTIE STREET OFFICIAL FANCLUB会員先行開始！",
+      "title": "CUTIE STREET 佐野愛花 生誕祭 2026",
       "eventDate": "2026-11-26",
       "venue": "SGCホール有明",
       "openTime": "17:30",
       "startTime": "19:00",
       "url": "https://cutiestreet.asobisystem.com/news/detail/90590",
-      "sourceType": "auto",
+      "sourceType": "derived",
       "sourcePublishedAt": "2026-09-28",
       "eventTitle": "CUTIE STREET 佐野愛花 生誕祭 2026",
       "displayTitle": "CUTIE STREET 佐野愛花 生誕祭 2026",
@@ -20813,28 +18522,16 @@
       "sourceCandidates": [
         "official"
       ],
+      "urls": [
+        "https://cutiestreet.asobisystem.com/news/detail/90590"
+      ],
       "entityType": "performance",
       "performanceEntityVersion": 1,
       "performanceKey": "CUTIE STREET|2026-11-26|time|19:00",
       "sourceRowIds": [
-        "eb345348504b9b2e1cb3b9"
+        "d3b63d95b1602c8e"
       ],
-      "offers": [
-        {
-          "sourceRowId": "eb345348504b9b2e1cb3b9",
-          "provider": "official",
-          "url": "https://cutiestreet.asobisystem.com/news/detail/90590",
-          "urls": [
-            "https://cutiestreet.asobisystem.com/news/detail/90590"
-          ],
-          "ticketType": "FC先行",
-          "applyStart": "2026-09-28T12:00",
-          "applyEnd": "2026-10-07T23:59",
-          "sourceType": "auto",
-          "primarySource": "official",
-          "sourcePublishedAt": "2026-09-28"
-        }
-      ],
+      "offers": [],
       "eventEndDate": "2026-11-26",
       "eventDates": [
         "2026-11-26"
@@ -20848,12 +18545,9 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "FC先行",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers",
-      "urls": [
-        "https://cutiestreet.asobisystem.com/news/detail/90590"
-      ]
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-CUTIE-STREET-2026-11-28-time-18-00",
@@ -20874,11 +18568,10 @@
       ],
       "eventCount": 1,
       "venue": "愛知県 IGアリーナ",
-      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29668",
+      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=74753",
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29668",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=74753",
+        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=52216",
         "https://cutiestreet.asobisystem.com/live_information/detail/40368",
         "https://cutiestreet.asobisystem.com/live_information/detail/40369"
@@ -20891,73 +18584,23 @@
         "pia"
       ],
       "historyPreserved": true,
-      "openTime": "16:00",
-      "startTime": "18:00",
-      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/40368",
       "eventScope": "kawaii-lab",
       "venues": [
         "愛知県 IGアリーナ"
       ],
+      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/40368",
+      "openTime": "16:00",
+      "startTime": "18:00",
       "entityType": "performance",
       "performanceEntityVersion": 1,
       "performanceKey": "CUTIE STREET|2026-11-28|time|18:00",
       "sourceRowIds": [
-        "40fee0cdd7e04a15",
-        "4459550fc10b7cb1",
-        "85358098bb34fa8b",
-        "bfaab1795f47582a"
+        "d117d853007fbf7a"
       ],
-      "offers": [
-        {
-          "sourceRowId": "40fee0cdd7e04a15",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29668",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29668",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-09-07",
-          "applyEnd": "2026-09-16T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29668",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29668",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "85358098bb34fa8b",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=52216",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=52216",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
-            "https://cutiestreet.asobisystem.com/live_information/detail/40368",
-            "https://cutiestreet.asobisystem.com/live_information/detail/40369"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-09-19",
-          "applyEnd": "2026-10-04T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=52216",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=52216",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        }
-      ],
-      "ticketType": "複数受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "offers": [],
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-CUTIE-STREET-2026-11-29-time-16-30",
@@ -20978,11 +18621,10 @@
       ],
       "eventCount": 1,
       "venue": "愛知県 IGアリーナ",
-      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29668",
+      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=74753",
       "urls": [
-        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29668",
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=74753",
+        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
         "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=52216",
         "https://cutiestreet.asobisystem.com/live_information/detail/40368",
         "https://cutiestreet.asobisystem.com/live_information/detail/40369"
@@ -20995,73 +18637,23 @@
         "pia"
       ],
       "historyPreserved": true,
-      "openTime": "14:30",
-      "startTime": "16:30",
-      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/40368",
       "eventScope": "kawaii-lab",
       "venues": [
         "愛知県 IGアリーナ"
       ],
+      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/40368",
+      "openTime": "14:30",
+      "startTime": "16:30",
       "entityType": "performance",
       "performanceEntityVersion": 1,
       "performanceKey": "CUTIE STREET|2026-11-29|time|16:30",
       "sourceRowIds": [
-        "40fee0cdd7e04a15",
-        "4459550fc10b7cb1",
-        "85358098bb34fa8b",
-        "bfaab1795f47582a"
+        "d117d853007fbf7a"
       ],
-      "offers": [
-        {
-          "sourceRowId": "40fee0cdd7e04a15",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29668",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29668",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981"
-          ],
-          "ticketType": "プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-09-07",
-          "applyEnd": "2026-09-16T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29668",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29668",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        },
-        {
-          "sourceRowId": "85358098bb34fa8b",
-          "provider": "pia",
-          "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=52216",
-          "urls": [
-            "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=52216",
-            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
-            "https://cutiestreet.asobisystem.com/live_information/detail/40368",
-            "https://cutiestreet.asobisystem.com/live_information/detail/40369"
-          ],
-          "ticketType": "2次プレリザーブ",
-          "ticketProvider": "pia",
-          "applyStart": "2026-09-19",
-          "applyEnd": "2026-10-04T23:59",
-          "applicationStatus": "ended",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "offers",
-          "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=52216",
-          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=52216",
-          "sourceType": "ticket-history-guard",
-          "sourceChannel": "pia-ended-sale",
-          "primarySource": "pia"
-        }
-      ],
-      "ticketType": "複数受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "offers": [],
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-CUTIE-STREET-2027-01-23-time-18-00",
@@ -22060,8 +19652,7 @@
       "performanceEntityVersion": 1,
       "performanceKey": "FRUITS ZIPPER|2026-10-06|time|18:30",
       "sourceRowIds": [
-        "024676b8e98a3faf",
-        "d7b2b6ff7ca27d2e"
+        "024676b8e98a3faf"
       ],
       "offers": [],
       "ticketType": "現在受付なし",
@@ -22155,9 +19746,7 @@
       "performanceEntityVersion": 1,
       "performanceKey": "FRUITS ZIPPER|2026-10-07|time|18:30",
       "sourceRowIds": [
-        "024676b8e98a3faf",
-        "d7b2b6ff7ca27d2e",
-        "16c9049a2c170b35"
+        "024676b8e98a3faf"
       ],
       "offers": [],
       "ticketType": "現在受付なし",
@@ -22793,29 +20382,7 @@
       "sourceRowIds": [
         "7716664bade7e531"
       ],
-      "offers": [
-        {
-          "sourceRowId": "7716664bade7e531",
-          "provider": "official",
-          "url": "https://fruitszipper.asobisystem.com/news/detail/90870",
-          "urls": [
-            "https://fruitszipper.asobisystem.com/news/detail/90870",
-            "https://fruitszipper.asobisystem.com/live_information/detail/45703"
-          ],
-          "ticketType": "FC先行",
-          "applyStart": "2026-09-30T18:00",
-          "applyEnd": "2026-10-05T23:59",
-          "applicationStatus": "none",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "band",
-          "applicationWindowSource": "https://fruitszipper.asobisystem.com/news/detail/90870",
-          "deadlineSource": "https://fruitszipper.asobisystem.com/news/detail/90870",
-          "sourceType": "derived",
-          "primarySource": "official",
-          "sourcePublishedAt": "2026-09-30"
-        }
-      ],
+      "offers": [],
       "eventEndDate": "2026-10-29",
       "eventDates": [
         "2026-10-29"
@@ -22829,9 +20396,9 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "FC先行",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-FRUITS-ZIPPER-2026-11-05-time-18-30",
@@ -23708,29 +21275,7 @@
       "sourceRowIds": [
         "4b531c49e44dc011"
       ],
-      "offers": [
-        {
-          "sourceRowId": "4b531c49e44dc011",
-          "provider": "official",
-          "url": "https://fruitszipper.asobisystem.com/news/detail/90867",
-          "urls": [
-            "https://fruitszipper.asobisystem.com/news/detail/90867",
-            "https://fruitszipper.asobisystem.com/live_information/detail/45704"
-          ],
-          "ticketType": "FC先行",
-          "applyStart": "2026-09-29T12:00",
-          "applyEnd": "2026-10-06T23:59",
-          "applicationStatus": "none",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "band",
-          "applicationWindowSource": "https://fruitszipper.asobisystem.com/news/detail/90867",
-          "deadlineSource": "https://fruitszipper.asobisystem.com/news/detail/90867",
-          "sourceType": "derived",
-          "primarySource": "official",
-          "sourcePublishedAt": "2026-09-29"
-        }
-      ],
+      "offers": [],
       "eventEndDate": "2026-11-24",
       "eventDates": [
         "2026-11-24"
@@ -23744,9 +21289,9 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "FC先行",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-KAWAII-LAB-2026-12-12-time-17-00",
@@ -24003,56 +21548,62 @@
       "applicationStatus": "none"
     },
     {
-      "id": "performance-MORE-STAR-2026-11-25-fallback-morestar-7thstar",
+      "id": "performance-MORE-STAR-2026-11-25-time-18-00",
       "group": "MORE STAR",
       "title": "MORE STAR 単独ライブ 7th STAR",
       "eventTitle": "MORE STAR 単独ライブ 7th STAR",
-      "displayTitle": "MORE STAR 単独ライブ 7th STAR",
-      "eventCategory": "solo-live",
-      "specialDetailsStatus": "awaiting-details",
       "eventDate": "2026-11-25",
       "venue": "東京都 ヒューリックホール東京",
       "url": "https://x.com/MORE_STAR_/status/2092567739969966299",
       "urls": [
         "https://x.com/MORE_STAR_/status/2092567739969966299",
-        "https://morestar.asobisystem.com/live_information/detail/45677"
+        "https://morestar.asobisystem.com/live_information/detail/45677",
+        "https://morestar.asobisystem.com/news/detail/92107"
       ],
-      "sourceType": "derived",
-      "sourceChannel": "official-x",
+      "sourceType": "official-schedule",
       "primarySource": "official",
-      "sourceCandidates": [
-        "official"
-      ],
       "eventScope": "kawaii-lab",
-      "sourceStale": true,
-      "sourceStaleSince": "2026-09-29T23:03:27+09:00",
-      "releaseRetentionReason": "missing-from-current-refresh",
+      "entityType": "performance",
+      "performanceEntityVersion": 1,
+      "performanceKey": "MORE STAR|2026-11-25|time|18:00",
+      "sourceRowIds": [
+        "569bd7a170545248",
+        "1e830eeca8279261",
+        "7d25c846b9eb92ef"
+      ],
+      "offers": [
+        {
+          "sourceRowId": "1e830eeca8279261",
+          "provider": "official",
+          "url": "https://morestar.asobisystem.com/news/detail/92107",
+          "urls": [
+            "https://morestar.asobisystem.com/news/detail/92107"
+          ],
+          "ticketType": "FC先行",
+          "applyStart": "2026-10-07T18:00",
+          "applyEnd": "2026-10-12T23:59",
+          "sourceType": "auto",
+          "sourcePublishedAt": "2026-10-07"
+        }
+      ],
       "eventEndDate": "2026-11-25",
       "eventDates": [
         "2026-11-25"
       ],
       "eventCount": 1,
+      "openTime": "17:00",
+      "startTime": "18:00",
       "schedule": [
         {
           "date": "2026-11-25",
-          "venue": "東京都 ヒューリックホール東京"
+          "venue": "東京都 ヒューリックホール東京",
+          "openTime": "17:00",
+          "startTime": "18:00"
         }
       ],
-      "venues": [
-        "ヒューリックホール東京",
-        "東京都 ヒューリックホール東京"
-      ],
-      "officialScheduleUrl": "https://morestar.asobisystem.com/live_information/detail/45677",
-      "entityType": "performance",
-      "performanceEntityVersion": 1,
-      "performanceKey": "MORE STAR|2026-11-25|fallback|ヒューリックホール東京|morestar単独ライブ7thstar",
-      "sourceRowIds": [
-        "569bd7a170545248"
-      ],
-      "offers": [],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
+      "ticketType": "FC先行",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers"
     },
     {
       "id": "performance-SWEET-STEADY-2026-10-26-time-19-00",
@@ -24083,29 +21634,7 @@
       "sourceRowIds": [
         "bc711a68240aff0c"
       ],
-      "offers": [
-        {
-          "sourceRowId": "bc711a68240aff0c",
-          "provider": "official",
-          "url": "https://sweetsteady.asobisystem.com/news/detail/90455",
-          "urls": [
-            "https://sweetsteady.asobisystem.com/news/detail/90455",
-            "https://sweetsteady.asobisystem.com/live_information/detail/44461"
-          ],
-          "ticketType": "アップグレード抽選",
-          "applyStart": "2026-09-27T12:00",
-          "applyEnd": "2026-10-01T23:59",
-          "applicationStatus": "none",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "band",
-          "applicationWindowSource": "https://sweetsteady.asobisystem.com/news/detail/90455",
-          "deadlineSource": "https://sweetsteady.asobisystem.com/news/detail/90455",
-          "sourceType": "derived",
-          "primarySource": "official",
-          "sourcePublishedAt": "2026-09-27"
-        }
-      ],
+      "offers": [],
       "eventEndDate": "2026-10-26",
       "eventDates": [
         "2026-10-26"
@@ -24119,9 +21648,9 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "アップグレード抽選",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-SWEET-STEADY-2026-11-13-time-18-30",
@@ -24200,7 +21729,6 @@
       "sourceType": "official-schedule",
       "primarySource": "official",
       "eventScope": "kawaii-lab",
-      "officialTourUrl": "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026",
       "entityType": "performance",
       "performanceEntityVersion": 1,
       "performanceKey": "SWEET STEADY|2026-12-03|time|18:30",
@@ -24248,7 +21776,6 @@
       "sourceType": "official-schedule",
       "primarySource": "official",
       "eventScope": "kawaii-lab",
-      "officialTourUrl": "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026",
       "entityType": "performance",
       "performanceEntityVersion": 1,
       "performanceKey": "SWEET STEADY|2026-12-06|time|17:00",
@@ -24308,29 +21835,7 @@
       "sourceRowIds": [
         "b6d43d85e6306aab"
       ],
-      "offers": [
-        {
-          "sourceRowId": "b6d43d85e6306aab",
-          "provider": "official",
-          "url": "https://sweetsteady.asobisystem.com/news/detail/90613",
-          "urls": [
-            "https://sweetsteady.asobisystem.com/news/detail/90613"
-          ],
-          "ticketType": "FC先行",
-          "applyStart": "2026-09-29T12:00",
-          "applyEnd": "2026-10-06T23:59",
-          "applicationStatus": "none",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "band",
-          "applicationWindowSource": "https://sweetsteady.asobisystem.com/news/detail/90613",
-          "deadlineSource": "https://sweetsteady.asobisystem.com/news/detail/90613",
-          "sourceType": "derived",
-          "sourceChannel": "official-birthday-news",
-          "primarySource": "official",
-          "sourcePublishedAt": "2026-09-29"
-        }
-      ],
+      "offers": [],
       "eventEndDate": "2026-12-08",
       "eventDates": [
         "2026-12-08"
@@ -24344,9 +21849,9 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "FC先行",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-SWEET-STEADY-2026-12-18-time-18-30",
@@ -24367,7 +21872,6 @@
       "sourceType": "official-schedule",
       "primarySource": "official",
       "eventScope": "kawaii-lab",
-      "officialTourUrl": "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026",
       "entityType": "performance",
       "performanceEntityVersion": 1,
       "performanceKey": "SWEET STEADY|2026-12-18|time|18:30",
@@ -24599,6 +22103,11 @@
     },
     {
       "checkedAt": "2026-10-08T05:10:44+09:00",
+      "scope": "CANDY TUNE tour render verification",
+      "message": "expected one static CANDY TUNE tour card for 2026-10-04, found 0"
+    },
+    {
+      "checkedAt": "2026-10-08T08:52:52+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one static CANDY TUNE tour card for 2026-10-04, found 0"
     }
