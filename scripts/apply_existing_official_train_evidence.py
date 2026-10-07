@@ -12,6 +12,11 @@ V1 = ROOT / 'data/transit'
 SEIBU_SOURCE = V1 / 'line8-line13/seibu-official-exact-through-trains.json'
 SOTETSU_SOURCE = V1 / 'fukutoshin/sotetsu-official-line13-columns.json'
 
+SOTETSU_BOUNDARY_IDS = {
+    'toyoko-tokyushinyokohama-hiyoshi': 'tokyu-toyoko-shinyokohama-hiyoshi',
+    'tokyushinyokohama-sotetsushinyokohama-shinyokohama': 'tokyu-sotetsu-shinyokohama',
+}
+
 SEIBU_PAIR_SPECS = {
     frozenset({'odpt.Railway:Seibu.Ikebukuro', 'odpt.Railway:Seibu.SeibuYurakucho'}):
         ('seibuyurakucho-ikebukuro-nerima', 'seibu-ikebukuro-yurakucho-nerima'),
@@ -342,7 +347,8 @@ def apply_sotetsu_columns(
 
         target, target_matches = target_candidates[0]
         row = item['row']
-        canonical_boundary_id = str(row.get('canonicalBoundaryId') or '')
+        published_boundary_id = str(row.get('canonicalBoundaryId') or '')
+        canonical_boundary_id = SOTETSU_BOUNDARY_IDS.get(published_boundary_id, published_boundary_id)
         boundary = verified_boundary(indexes, source_railway, target_railway, canonical_boundary_id)
         if not boundary:
             continue
@@ -356,7 +362,8 @@ def apply_sotetsu_columns(
                 'officialSourceUrl': url,
                 'officialPdfPage': row.get('pdfPage'),
                 'officialColumnX': row.get('columnX'),
-                'officialBoundaryId': canonical_boundary_id,
+                'officialBoundaryId': published_boundary_id,
+                'serviceBoundaryId': canonical_boundary_id,
             },
         )
         stats['added'] += 1
