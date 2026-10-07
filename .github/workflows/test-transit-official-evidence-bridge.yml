@@ -53,10 +53,23 @@ jobs:
               if 'operator-official-same-printed-column:sotetsu' in (edge.get('evidence') or [])
           ]
 
+          from collections import Counter
+
+          def pair_counts(rows):
+              return dict(sorted(Counter(
+                  (
+                      str((edge.get('boundary') or {}).get('fromRailway') or ''),
+                      str((edge.get('boundary') or {}).get('toRailway') or ''),
+                  )
+                  for edge in rows
+              ).items()))
+
           print(json.dumps({
               'coverage': coverage['summary'],
               'seibuOfficialEdges': len(seibu),
+              'seibuByBoundaryPair': {f'{a} -> {b}': count for (a, b), count in pair_counts(seibu).items()},
               'sotetsuOfficialEdges': len(sotetsu),
+              'sotetsuByBoundaryPair': {f'{a} -> {b}': count for (a, b), count in pair_counts(sotetsu).items()},
           }, ensure_ascii=False, indent=2))
 
           assert len(seibu) >= 500
