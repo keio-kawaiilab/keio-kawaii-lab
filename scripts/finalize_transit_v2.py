@@ -14,6 +14,7 @@ if str(SCRIPT_DIR) not in sys.path:
 
 import build_transit_v2 as base
 import reviewed_train_evidence as reviewed
+import apply_existing_official_train_evidence as existing_official
 
 ROOT = Path('.')
 V1 = ROOT / 'data/transit'
@@ -376,6 +377,7 @@ def main() -> int:
         indexes,
         V2 / 'reviewed-train-evidence.json',
     )
+    edges = existing_official.apply(fragments, edges, unresolved, indexes)
     from keikyu_internal_runtime import apply as apply_keikyu_internal_network
     edges = apply_keikyu_internal_network(fragments, edges)
 

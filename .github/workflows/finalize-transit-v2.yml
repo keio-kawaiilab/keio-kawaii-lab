@@ -10,6 +10,7 @@ on:
       - 'scripts/audit_transit_v2.py'
       - 'data/transit-v2/service-boundaries.json'
       - 'scripts/reviewed_train_evidence.py'
+      - 'scripts/apply_existing_official_train_evidence.py'
       - 'data/transit-v2/reviewed-train-evidence.json'
       - '.github/workflows/finalize-transit-v2.yml'
 
@@ -32,7 +33,7 @@ jobs:
 
       - name: Finalize strict train identity database
         run: |
-          python -m py_compile scripts/build_transit_v2.py scripts/finalize_transit_v2.py scripts/normalize_transit_v2_physical_destinations.py scripts/audit_transit_v2.py
+          python -m py_compile scripts/build_transit_v2.py scripts/finalize_transit_v2.py scripts/apply_existing_official_train_evidence.py scripts/normalize_transit_v2_physical_destinations.py scripts/audit_transit_v2.py
           if [ -f data/transit/keikyu/timetables/official-internal-network.json ]; then
             python scripts/check_keikyu_internal_source.py
           fi

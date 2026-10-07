@@ -1,0 +1,88 @@
+name: Test transit official evidence bridge
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/apply_existing_official_train_evidence.py'
+      - 'scripts/finalize_transit_v2.py'
+      - 'data/transit/line8-line13/seibu-official-exact-through-trains.json'
+      - 'data/transit/fukutoshin/sotetsu-official-line13-columns.json'
+      - 'data/transit-v2/service-boundaries.json'
+      - '.github/workflows/test-transit-official-evidence-bridge.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Compile transit finalizer
+        run: |
+          python -m py_compile \
+            scripts/apply_existing_official_train_evidence.py \
+            scripts/finalize_transit_v2.py \
+            scripts/audit_transit_v2.py
+
+      - name: Finalize using checked-in official evidence
+        run: |
+          python scripts/finalize_transit_v2.py
+          python scripts/audit_transit_v2.py
+
+      - name: Verify evidence stayed strict and reduced unresolved
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          edges = json.loads(Path('data/transit-v2/same-train-edges.json').read_text(encoding='utf-8'))['edges']
+          coverage = json.loads(Path('data/transit-v2/coverage.json').read_text(encoding='utf-8'))
+          seibu = [
+              edge for edge in edges
+              if 'operator-official-single-train-page:seibu' in (edge.get('evidence') or [])
+          ]
+          sotetsu = [
+              edge for edge in edges
+              if 'operator-official-same-printed-column:sotetsu' in (edge.get('evidence') or [])
+          ]
+
+          from collections import Counter
+
+          def pair_counts(rows):
+              return dict(sorted(Counter(
+                  (
+                      str((edge.get('boundary') or {}).get('fromRailway') or ''),
+                      str((edge.get('boundary') or {}).get('toRailway') or ''),
+                  )
+                  for edge in rows
+              ).items()))
+
+          print(json.dumps({
+              'coverage': coverage['summary'],
+              'seibuOfficialEdges': len(seibu),
+              'seibuByBoundaryPair': {f'{a} -> {b}': count for (a, b), count in pair_counts(seibu).items()},
+              'sotetsuOfficialEdges': len(sotetsu),
+              'sotetsuByBoundaryPair': {f'{a} -> {b}': count for (a, b), count in pair_counts(sotetsu).items()},
+          }, ensure_ascii=False, indent=2))
+
+          assert len(seibu) >= 500
+          assert len(sotetsu) >= 20
+          assert coverage['summary']['unresolved'] < 3300
+
+          for edge in seibu + sotetsu:
+              evidence = '|'.join(edge.get('evidence') or []).lower()
+              assert 'time-proximity' not in evidence
+              assert 'train-number' not in evidence
+              assert edge.get('identityLevel') == 'evidence-backed'
+              alignment = edge.get('alignment') or {}
+              assert alignment.get('mode') == 'exact-published-station-time'
+              assert alignment.get('sourceMatchedStations')
+              assert len(alignment.get('targetMatchedStations') or []) >= 2
+          PY
