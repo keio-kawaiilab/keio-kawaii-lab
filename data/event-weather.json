@@ -1,7 +1,7 @@
 {
   "date": "2026-10-07",
   "horizonDays": 7,
-  "generatedAt": "2026-10-07T05:11+09:00",
+  "generatedAt": "2026-10-07T09:04+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -14,7 +14,7 @@
       "eventIds": [
         "024676b8e98a3faf",
         "d7b2b6ff7ca27d2e",
-        "d7c6c20e3e5a49fe"
+        "16c9049a2c170b35"
       ],
       "areaCode": "040010",
       "areaName": "東部",
@@ -79,6 +79,11 @@
           "time": "19:00",
           "rain": false,
           "validAt": "2026-10-07T19:00+09:00"
+        },
+        {
+          "time": "20:00",
+          "rain": false,
+          "validAt": "2026-10-07T20:00+09:00"
         }
       ]
     },
@@ -127,17 +132,13 @@
       "venue": "宮城県 仙台サンプラザホール",
       "venueKey": "仙台サンプラザホール",
       "eventIds": [
-        "0e9184c1333d3c2b",
         "54a369497f59ce96",
-        "e4e0246476c2e42e",
         "12f75454cf2d4fd0",
         "9e39a25b816ecc66",
         "170dc0ee19ba620b",
-        "223d3d723e6b5fa4",
         "2cd66df3ae3baa26",
         "b00356dc8e715287",
-        "f0b3114072eaa66f",
-        "d577a07b6086ff3d"
+        "f0b3114072eaa66f"
       ],
       "areaCode": "040010",
       "areaName": "東部",
@@ -146,10 +147,10 @@
       "max": 25.0,
       "min": 13.0,
       "pop": "0",
-      "popLabel": "当日最大",
+      "popLabel": "18〜00時",
       "issuedAt": "2026-10-07T05:00:00+09:00",
-      "meshTime": "15:00",
-      "meshTempBand": "20〜24℃",
+      "meshTime": "18:00",
+      "meshTempBand": "15〜19℃",
       "coordinates": {
         "lat": 38.257999,
         "lon": 140.894226
@@ -204,16 +205,12 @@
       "venue": "栃木県 宇都宮市文化会館 大ホール",
       "venueKey": "宇都宮市文化会館",
       "eventIds": [
-        "0e9184c1333d3c2b",
         "54a369497f59ce96",
-        "e4e0246476c2e42e",
         "12f75454cf2d4fd0",
         "9e39a25b816ecc66",
-        "223d3d723e6b5fa4",
         "2cd66df3ae3baa26",
         "f0b3114072eaa66f",
-        "33149fdab7148fee",
-        "d577a07b6086ff3d"
+        "da7e7a8313e7f6d8"
       ],
       "areaCode": "090010",
       "areaName": "栃木県",
@@ -354,7 +351,7 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 37,
+    "occurrencesInRange": 29,
     "uniqueVenueDates": 12,
     "weatherEntries": 11,
     "meshEntries": 2,
