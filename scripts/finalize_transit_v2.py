@@ -13,6 +13,7 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 import build_transit_v2 as base
+import existing_seibu_exact_evidence as existing_seibu
 import reviewed_train_evidence as reviewed
 
 ROOT = Path('.')
@@ -369,6 +370,13 @@ def main() -> int:
     classify_inferred_routes(fragments, indexes, unresolved)
     edges = authoritative_edges(fragments, unresolved)
     edges = base.align_inferred_edges(fragments, indexes, edges, unresolved)
+    edges = existing_seibu.apply_existing_seibu_exact_evidence(
+        fragments,
+        edges,
+        unresolved,
+        indexes,
+        ROOT,
+    )
     edges = reviewed.apply_reviewed_train_evidence(
         fragments,
         edges,
