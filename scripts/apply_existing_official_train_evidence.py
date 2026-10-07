@@ -14,11 +14,11 @@ SOTETSU_SOURCE = V1 / 'fukutoshin/sotetsu-official-line13-columns.json'
 
 SEIBU_PAIR_SPECS = {
     frozenset({'odpt.Railway:Seibu.Ikebukuro', 'odpt.Railway:Seibu.SeibuYurakucho'}):
-        ('seibuyurakucho-ikebukuro-nerima', 'seibuyurakucho-ikebukuro-nerima'),
+        ('seibuyurakucho-ikebukuro-nerima', 'seibu-ikebukuro-yurakucho-nerima'),
     frozenset({'odpt.Railway:Seibu.SeibuYurakucho', 'odpt.Railway:TokyoMetro.Yurakucho'}):
-        ('yurakucho-seibu-kotake-mukaihara', 'yurakucho-seibuyurakucho-kotakemukaihara'),
+        ('yurakucho-seibu-kotake-mukaihara', 'yurakucho-seibu-kotakemukaihara'),
     frozenset({'odpt.Railway:Seibu.SeibuYurakucho', 'odpt.Railway:TokyoMetro.Fukutoshin'}):
-        ('fukutoshin-seibu-kotake-mukaihara', 'fukutoshin-seibuyurakucho-kotakemukaihara'),
+        ('fukutoshin-seibu-kotake-mukaihara', 'fukutoshin-seibu-kotakemukaihara'),
     frozenset({'odpt.Railway:Tokyu.Toyoko', 'odpt.Railway:TokyoMetro.Fukutoshin'}):
         ('metro-tokyu-shibuya', 'toyoko-fukutoshin-shibuya'),
     frozenset({'odpt.Railway:Tokyu.Toyoko', 'manual.Railway:YokohamaMinatomirai.Minatomirai'}):
