@@ -10,6 +10,7 @@ ROOT = Path('.')
 EVIDENCE = Path('data/transit/fukutoshin/seibu-official-linked-through-trains.json')
 ENTITY_FILES = (
     Path('data/transit/seibu/entities.json'),
+    Path('data/transit/tokyu/entities.json'),
     Path('data/transit/tokyo-metro/entities.json'),
 )
 
@@ -201,7 +202,7 @@ def apply_existing_seibu_exact_evidence(
         if (
             not source_id
             or source_id in linked_from
-            or source.get('sourceOperator') != 'seibu'
+            or source.get('sourceOperator') not in {'seibu', 'tokyu'}
             or source.get('sourceKind') != 'station-timetable-reconstruction'
         ):
             continue
