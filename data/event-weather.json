@@ -1,7 +1,7 @@
 {
   "date": "2026-10-08",
   "horizonDays": 7,
-  "generatedAt": "2026-10-08T09:23+09:00",
+  "generatedAt": "2026-10-08T18:25+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -18,11 +18,11 @@
       "areaName": "東京地方",
       "precision": "area",
       "label": "晴れ",
-      "max": 25.0,
-      "min": 25.0,
+      "max": null,
+      "min": null,
       "pop": "0",
       "popLabel": "当日最大",
-      "issuedAt": "2026-10-08T05:00:00+09:00",
+      "issuedAt": "2026-10-08T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -32,7 +32,9 @@
       "venue": "宮城県 仙台サンプラザホール",
       "venueKey": "仙台サンプラザホール",
       "eventIds": [
+        "119c2ef1b0193081",
         "54a369497f59ce96",
+        "e4e0246476c2e42e",
         "12f75454cf2d4fd0",
         "9e39a25b816ecc66",
         "223d3d723e6b5fa4",
@@ -46,47 +48,23 @@
       "areaName": "東部",
       "precision": "mesh5km",
       "label": "晴れ",
-      "max": 24.0,
-      "min": 24.0,
+      "max": null,
+      "min": null,
       "pop": "0",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-10-08T06:00:00+09:00",
-      "meshTime": "18:00",
-      "meshTempBand": "15〜19℃",
+      "popLabel": "当日最大",
+      "issuedAt": "2026-10-08T17:00:00+09:00",
+      "meshTime": "21:00",
+      "meshTempBand": "10〜14℃",
       "coordinates": {
         "lat": 38.257999,
         "lon": 140.894226
       },
       "meshTimeline": [
         {
-          "time": "09:00",
-          "label": "晴れ",
-          "validAt": "2026-10-08T09:00+09:00",
-          "temp": 19
-        },
-        {
-          "time": "12:00",
-          "label": "晴れ",
-          "validAt": "2026-10-08T12:00+09:00",
-          "temp": 23
-        },
-        {
-          "time": "15:00",
-          "label": "晴れ",
-          "validAt": "2026-10-08T15:00+09:00",
-          "temp": 23
-        },
-        {
-          "time": "18:00",
-          "label": "晴れ",
-          "validAt": "2026-10-08T18:00+09:00",
-          "temp": 18
-        },
-        {
           "time": "21:00",
           "label": "晴れ",
           "validAt": "2026-10-08T21:00+09:00",
-          "temp": 15
+          "temp": 14
         },
         {
           "time": "24:00",
@@ -97,19 +75,9 @@
       ],
       "hourlyRain": [
         {
-          "time": "18:00",
+          "time": "17:30",
           "rain": false,
-          "validAt": "2026-10-08T18:00+09:00"
-        },
-        {
-          "time": "19:00",
-          "rain": false,
-          "validAt": "2026-10-08T19:00+09:00"
-        },
-        {
-          "time": "20:00",
-          "rain": false,
-          "validAt": "2026-10-08T20:00+09:00"
+          "validAt": "2026-10-08T17:30+09:00"
         }
       ]
     },
@@ -118,7 +86,9 @@
       "venue": "栃木県 宇都宮市文化会館 大ホール",
       "venueKey": "宇都宮市文化会館",
       "eventIds": [
+        "119c2ef1b0193081",
         "54a369497f59ce96",
+        "e4e0246476c2e42e",
         "12f75454cf2d4fd0",
         "9e39a25b816ecc66",
         "223d3d723e6b5fa4",
@@ -130,12 +100,12 @@
       "areaName": "南部",
       "precision": "mesh5km",
       "label": "晴れ",
-      "max": 26.0,
-      "min": 13.0,
+      "max": 25.0,
+      "min": 11.0,
       "pop": "0",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-10-08T05:00:00+09:00",
-      "meshTime": "18:00",
+      "popLabel": "当日最大",
+      "issuedAt": "2026-10-08T17:00:00+09:00",
+      "meshTime": "15:00",
       "meshTempBand": "20〜24℃",
       "coordinates": {
         "lat": 36.547546,
@@ -146,13 +116,13 @@
           "time": "06:00",
           "label": "晴れ",
           "validAt": "2026-10-09T06:00+09:00",
-          "temp": 12
+          "temp": 11
         },
         {
           "time": "09:00",
           "label": "晴れ",
           "validAt": "2026-10-09T09:00+09:00",
-          "temp": 19
+          "temp": 18
         },
         {
           "time": "12:00",
@@ -164,7 +134,7 @@
           "time": "15:00",
           "label": "晴れ",
           "validAt": "2026-10-09T15:00+09:00",
-          "temp": 25
+          "temp": 24
         },
         {
           "time": "18:00",
@@ -176,13 +146,13 @@
           "time": "21:00",
           "label": "晴れ",
           "validAt": "2026-10-09T21:00+09:00",
-          "temp": 17
+          "temp": 16
         },
         {
           "time": "24:00",
           "label": "晴れ",
           "validAt": "2026-10-10T00:00+09:00",
-          "temp": 15
+          "temp": 14
         }
       ]
     },
@@ -194,14 +164,14 @@
         "ecd4ed6a0442ccfe"
       ],
       "areaCode": "400020",
-      "areaName": "福岡県",
+      "areaName": "北九州地方",
       "precision": "area",
-      "label": "くもり時々晴れ",
-      "max": 29.0,
-      "min": 20.0,
-      "pop": "20",
-      "popLabel": "1日",
-      "issuedAt": "2026-10-07T17:00:00+09:00",
+      "label": "くもり 時々 晴れ",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-10-08T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -217,11 +187,11 @@
       "areaName": "神奈川県",
       "precision": "area",
       "label": "晴れ時々くもり",
-      "max": 26.0,
+      "max": 27.0,
       "min": 16.0,
       "pop": "20",
       "popLabel": "1日",
-      "issuedAt": "2026-10-07T17:00:00+09:00",
+      "issuedAt": "2026-10-08T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -242,7 +212,7 @@
       "min": 16.0,
       "pop": "20",
       "popLabel": "1日",
-      "issuedAt": "2026-10-07T17:00:00+09:00",
+      "issuedAt": "2026-10-08T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -259,10 +229,10 @@
       "precision": "area",
       "label": "くもり時々晴れ",
       "max": 29.0,
-      "min": 20.0,
-      "pop": "20",
+      "min": 21.0,
+      "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-10-07T17:00:00+09:00",
+      "issuedAt": "2026-10-08T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -281,10 +251,10 @@
       "precision": "area",
       "label": "くもり時々晴れ",
       "max": 29.0,
-      "min": 19.0,
-      "pop": "20",
+      "min": 18.0,
+      "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-10-07T17:00:00+09:00",
+      "issuedAt": "2026-10-08T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -305,7 +275,7 @@
       "min": 18.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-10-07T17:00:00+09:00",
+      "issuedAt": "2026-10-08T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -321,36 +291,66 @@
       "areaName": "東京地方",
       "precision": "area",
       "label": "くもり",
-      "max": 25.0,
+      "max": 26.0,
       "min": 16.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-10-07T17:00:00+09:00",
+      "issuedAt": "2026-10-08T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-10-15",
+      "venue": "東京都 MORE STAR YouTube",
+      "venueKey": "morestaryoutube",
+      "eventIds": [
+        "60af619d20df0efd"
+      ],
+      "areaCode": "130010",
+      "areaName": "東京地方",
+      "precision": "area",
+      "label": "くもり時々晴れ",
+      "max": 23.0,
+      "min": 17.0,
+      "pop": "30",
+      "popLabel": "1日",
+      "issuedAt": "2026-10-08T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-10-15",
+      "venue": "愛媛県 松山市民会館 大ホール",
+      "venueKey": "松山市民会館",
+      "eventIds": [
+        "024676b8e98a3faf",
+        "177bc2a9c9d757b9"
+      ],
+      "areaCode": "150010",
+      "areaName": "新潟県",
+      "precision": "area",
+      "label": "くもり",
+      "max": 21.0,
+      "min": 13.0,
+      "pop": "40",
+      "popLabel": "1日",
+      "issuedAt": "2026-10-08T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
     }
   ],
   "stats": {
-    "occurrencesInRange": 31,
+    "occurrencesInRange": 35,
     "uniqueVenueDates": 12,
-    "weatherEntries": 10,
+    "weatherEntries": 12,
     "meshEntries": 2,
-    "failures": 2,
+    "failures": 0,
     "meshTimelineEntries": 2,
-    "meshExactTempSlots": 13,
+    "meshExactTempSlots": 9,
     "hourlyRainEntries": 1
   },
-  "failures": [
-    {
-      "date": "2026-10-15",
-      "venue": "東京都 MORE STAR YouTube",
-      "reason": "開催日の予報がまだありません"
-    },
-    {
-      "date": "2026-10-15",
-      "venue": "愛媛県 松山市民会館 大ホール",
-      "reason": "開催日の予報がまだありません"
-    }
-  ]
+  "failures": []
 }
