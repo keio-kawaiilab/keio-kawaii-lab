@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-09T11:25:35+09:00",
+  "checkedAt": "2026-10-09T14:01:48+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-09T08:34:16+09:00",
     "scannedPages": {
@@ -1504,7 +1504,7 @@
       "sourcePublishedAt": "2026-08-31",
       "eventScope": "kawaii-lab",
       "participants": [],
-      "applicationStatus": "upcoming",
+      "applicationStatus": "open",
       "applicationWindowVerified": true,
       "deadlineVerified": true,
       "applicationDisplayMode": "band",
@@ -3226,7 +3226,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=20981",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=20981",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "kawaii-lab"
     },
     {
       "id": "3edcd98dd32ff61b",
@@ -3422,7 +3423,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25885",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25885",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "external"
     },
     {
       "id": "568f5ac5c94be240",
@@ -4004,7 +4006,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "kawaii-lab"
     },
     {
       "id": "0fb464260791e1c0",
@@ -5019,13 +5022,15 @@
       "applicationStatus": "none",
       "eventDate": "2026-12-03",
       "venue": "大阪府 フェニーチェ堺 大ホール",
-      "url": "https://sweetsteady.asobisystem.com/live_information/detail/43907",
+      "url": "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026",
       "urls": [
+        "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026",
         "https://sweetsteady.asobisystem.com/live_information/detail/43907"
       ],
       "sourceType": "official-schedule",
       "primarySource": "official",
-      "eventScope": "kawaii-lab"
+      "eventScope": "kawaii-lab",
+      "officialTourUrl": "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026"
     },
     {
       "id": "8d210a4920b0cc32",
@@ -5214,13 +5219,15 @@
       "applicationStatus": "none",
       "eventDate": "2026-12-06",
       "venue": "愛知県 Niterra 日本特殊陶業市民会館 フォレストホール",
-      "url": "https://sweetsteady.asobisystem.com/live_information/detail/43908",
+      "url": "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026",
       "urls": [
+        "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026",
         "https://sweetsteady.asobisystem.com/live_information/detail/43908"
       ],
       "sourceType": "official-schedule",
       "primarySource": "official",
-      "eventScope": "kawaii-lab"
+      "eventScope": "kawaii-lab",
+      "officialTourUrl": "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026"
     },
     {
       "id": "0ae6fcd4694c4c6a",
@@ -5583,13 +5590,15 @@
       "applicationStatus": "none",
       "eventDate": "2026-12-18",
       "venue": "東京都 SGC HALL ARIAKE",
-      "url": "https://sweetsteady.asobisystem.com/live_information/detail/43909",
+      "url": "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026",
       "urls": [
+        "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026",
         "https://sweetsteady.asobisystem.com/live_information/detail/43909"
       ],
       "sourceType": "official-schedule",
       "primarySource": "official",
-      "eventScope": "kawaii-lab"
+      "eventScope": "kawaii-lab",
+      "officialTourUrl": "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026"
     },
     {
       "id": "special-aa599eba3876a7f9",
@@ -6176,7 +6185,7 @@
   },
   "publicEventModelVersion": 1,
   "releasePreparation": {
-    "preparedAt": "2026-10-09T09:15:58+09:00",
+    "preparedAt": "2026-10-09T14:01:46+09:00",
     "normalizedSpecialEvents": 3,
     "duplicateIdsRemoved": 0,
     "retainedPreviousRows": 0,
@@ -6194,12 +6203,12 @@
     "knownScheduleCorrections": {
       "hakataSpecialFixed": 0,
       "cutieWrongPiaBundleRemoved": 0,
-      "cutieObsoletePiaRowsRemoved": 2,
+      "cutieObsoletePiaRowsRemoved": 0,
       "cutieIgFixed": 1,
       "staleChristmasRowsRemoved": 0,
-      "fmAichiFixed": 1,
+      "fmAichiFixed": 0,
       "sweetFcSecondStartFixed": 0,
-      "giftMultiVenueFixed": 2,
+      "giftMultiVenueFixed": 0,
       "giftMoreStarAdded": 0,
       "semanticTicketDuplicatesRemoved": 0,
       "semanticTicketDuplicateIds": []
@@ -6227,8 +6236,8 @@
       "remainingDuplicates": []
     },
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-10-09T09:15:58+09:00",
-    "checkedAt": "2026-10-09T09:15:58+09:00"
+    "publicUpdatedAt": "2026-10-09T14:01:46+09:00",
+    "checkedAt": "2026-10-09T14:01:46+09:00"
   },
   "resaleDiagnostics": {
     "articles": 26,
@@ -12719,7 +12728,7 @@
       }
     ]
   },
-  "updatedAt": "2026-10-09T11:25:35+09:00",
+  "updatedAt": "2026-10-09T14:01:48+09:00",
   "publicEvents": [
     {
       "id": "1c60e2be989c564d",
@@ -14065,7 +14074,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25885",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=25885",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "external"
     },
     {
       "id": "568f5ac5c94be240",
@@ -20444,7 +20454,7 @@
           "saleFamily": "resale",
           "applyStart": "2026-10-09T10:00",
           "applyEnd": "2026-10-10T23:59",
-          "applicationStatus": "upcoming",
+          "applicationStatus": "open",
           "applicationWindowVerified": true,
           "deadlineVerified": true,
           "applicationDisplayMode": "band",
@@ -22382,6 +22392,7 @@
       "sourceType": "official-schedule",
       "primarySource": "official",
       "eventScope": "kawaii-lab",
+      "officialTourUrl": "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026",
       "entityType": "performance",
       "performanceEntityVersion": 1,
       "performanceKey": "SWEET STEADY|2026-12-03|time|18:30",
@@ -22429,6 +22440,7 @@
       "sourceType": "official-schedule",
       "primarySource": "official",
       "eventScope": "kawaii-lab",
+      "officialTourUrl": "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026",
       "entityType": "performance",
       "performanceEntityVersion": 1,
       "performanceKey": "SWEET STEADY|2026-12-06|time|17:00",
@@ -22547,6 +22559,7 @@
       "sourceType": "official-schedule",
       "primarySource": "official",
       "eventScope": "kawaii-lab",
+      "officialTourUrl": "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026",
       "entityType": "performance",
       "performanceEntityVersion": 1,
       "performanceKey": "SWEET STEADY|2026-12-18|time|18:30",
@@ -22828,6 +22841,11 @@
     },
     {
       "checkedAt": "2026-10-09T11:25:35+09:00",
+      "scope": "CANDY TUNE tour render verification",
+      "message": "Sendai performance lost its current general sale: []"
+    },
+    {
+      "checkedAt": "2026-10-09T14:01:48+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "Sendai performance lost its current general sale: []"
     }
