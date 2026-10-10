@@ -1,49 +1,12 @@
 {
-  "date": "2026-10-10",
+  "date": "2026-10-11",
   "horizonDays": 7,
-  "generatedAt": "2026-10-10T17:56+09:00",
+  "generatedAt": "2026-10-11T04:14+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
-    {
-      "date": "2026-10-10",
-      "venue": "福岡県 北九州メッセ",
-      "venueKey": "北九州メッセ",
-      "eventIds": [
-        "ecd4ed6a0442ccfe"
-      ],
-      "areaCode": "400020",
-      "areaName": "北九州地方",
-      "precision": "mesh5km",
-      "label": "晴れ",
-      "max": null,
-      "min": null,
-      "pop": "10",
-      "popLabel": "当日最大",
-      "issuedAt": "2026-10-10T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "20〜24℃",
-      "coordinates": {
-        "lat": 33.890919,
-        "lon": 130.8853
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "晴れ",
-          "validAt": "2026-10-10T21:00+09:00",
-          "temp": 23
-        },
-        {
-          "time": "24:00",
-          "label": "くもり",
-          "validAt": "2026-10-11T00:00+09:00",
-          "temp": 22
-        }
-      ]
-    },
     {
       "date": "2026-10-11",
       "venue": "ぴあアリーナ MM（神奈川県横浜市西区みなとみらい3-2-2）",
@@ -108,6 +71,23 @@
           "label": "晴れ",
           "validAt": "2026-10-12T00:00+09:00",
           "temp": 19
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "16:00",
+          "rain": false,
+          "validAt": "2026-10-11T16:00+09:00"
+        },
+        {
+          "time": "17:00",
+          "rain": false,
+          "validAt": "2026-10-11T17:00+09:00"
+        },
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-10-11T18:00+09:00"
         }
       ]
     },
@@ -177,6 +157,18 @@
           "validAt": "2026-10-12T00:00+09:00",
           "temp": 18
         }
+      ],
+      "hourlyRain": [
+        {
+          "time": "17:00",
+          "rain": false,
+          "validAt": "2026-10-11T17:00+09:00"
+        },
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-10-11T18:00+09:00"
+        }
       ]
     },
     {
@@ -244,6 +236,13 @@
           "validAt": "2026-10-12T00:00+09:00",
           "temp": 20
         }
+      ],
+      "hourlyRain": [
+        {
+          "time": "11:00",
+          "rain": false,
+          "validAt": "2026-10-11T11:00+09:00"
+        }
       ]
     },
     {
@@ -257,16 +256,19 @@
       ],
       "areaCode": "400020",
       "areaName": "北九州地方",
-      "precision": "area",
-      "label": "くもり 時々 晴れ",
+      "precision": "mesh5km",
+      "label": "くもり",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
       "issuedAt": "2026-10-10T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "meshTime": "00:00",
+      "meshTempBand": "20〜24℃",
+      "coordinates": {
+        "lat": 33.890919,
+        "lon": 130.8853
+      }
     },
     {
       "date": "2026-10-13",
@@ -412,18 +414,28 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 18,
-    "uniqueVenueDates": 13,
-    "weatherEntries": 12,
+    "occurrencesInRange": 19,
+    "uniqueVenueDates": 14,
+    "weatherEntries": 11,
     "meshEntries": 4,
-    "failures": 1,
-    "meshTimelineEntries": 4,
-    "meshExactTempSlots": 23,
-    "hourlyRainEntries": 0
+    "failures": 3,
+    "meshTimelineEntries": 3,
+    "meshExactTempSlots": 21,
+    "hourlyRainEntries": 3
   },
   "failures": [
     {
       "date": "2026-10-17",
+      "venue": "宮古島コースタルリゾートヒララ",
+      "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-10-18",
+      "venue": "三重県 ナガシマスパーランド内ナガシマスパードーム",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-10-18",
       "venue": "宮古島コースタルリゾートヒララ",
       "reason": "都道府県を解決できません"
     }
