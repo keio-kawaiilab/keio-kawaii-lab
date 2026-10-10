@@ -2642,7 +2642,8 @@
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
       "applicationDisplayMode": "offers",
-      "eventScope": "kawaii-lab"
+      "eventScope": "kawaii-lab",
+      "deadlineCorrectionReason": "application deadline separated from result announcement"
     },
     {
       "id": "b09e5a2f429cb013",
@@ -3721,14 +3722,14 @@
       "eventTitle": "【CUTIE STREET 古澤里紗 生誕祭 2026】",
       "displayTitle": "【CUTIE STREET 古澤里紗 生誕祭 2026】",
       "eventCategory": "solo-live",
-      "ticketType": "年会費コース会員先行",
-      "applicationStatus": "open",
-      "applyStart": "2026-10-09T12:00",
-      "applyEnd": "2026-10-14T23:59",
+      "ticketType": "現在受付なし",
+      "applicationStatus": "none",
+      "applyStart": null,
+      "applyEnd": null,
       "resultDate": null,
       "paymentEnd": null,
       "specialDetailsStatus": "ticket-details-found",
-      "applicationDisplayMode": "band",
+      "applicationDisplayMode": "schedule-only",
       "eventDate": "2026-11-09",
       "venue": "SGCホール有明",
       "url": "https://cutiestreet.asobisystem.com/news/detail/92297",
@@ -3743,11 +3744,10 @@
         "official"
       ],
       "eventScope": "kawaii-lab",
-      "applicationWindowVerified": true,
-      "deadlineVerified": true,
-      "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/92297",
-      "deadlineSource": "https://cutiestreet.asobisystem.com/news/detail/92297",
-      "sourcePublishedAt": "2026-10-09"
+      "sourcePublishedAt": "2026-10-09",
+      "ticketGuardRejected": true,
+      "ticketGuardReason": "upgrade notice cannot be used as the source of an annual-fee ticket sale",
+      "ticketGuardSource": "https://cutiestreet.asobisystem.com/news/detail/92297"
     },
     {
       "id": "036b39a0249895c3",
@@ -3968,14 +3968,14 @@
       "eventTitle": "【CUTIE STREET 板倉可奈 生誕祭 2026】",
       "displayTitle": "【CUTIE STREET 板倉可奈 生誕祭 2026】",
       "eventCategory": "solo-live",
-      "ticketType": "年会費コース会員先行",
-      "applicationStatus": "open",
-      "applyStart": "2026-10-09T12:00",
-      "applyEnd": "2026-10-14T23:59",
+      "ticketType": "現在受付なし",
+      "applicationStatus": "none",
+      "applyStart": null,
+      "applyEnd": null,
       "resultDate": null,
       "paymentEnd": null,
       "specialDetailsStatus": "ticket-details-found",
-      "applicationDisplayMode": "band",
+      "applicationDisplayMode": "schedule-only",
       "eventDate": "2026-11-11",
       "venue": "SGCホール有明",
       "url": "https://cutiestreet.asobisystem.com/news/detail/92298",
@@ -3990,11 +3990,10 @@
         "official"
       ],
       "eventScope": "kawaii-lab",
-      "applicationWindowVerified": true,
-      "deadlineVerified": true,
-      "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/92298",
-      "deadlineSource": "https://cutiestreet.asobisystem.com/news/detail/92298",
-      "sourcePublishedAt": "2026-10-09"
+      "sourcePublishedAt": "2026-10-09",
+      "ticketGuardRejected": true,
+      "ticketGuardReason": "upgrade notice cannot be used as the source of an annual-fee ticket sale",
+      "ticketGuardSource": "https://cutiestreet.asobisystem.com/news/detail/92298"
     },
     {
       "id": "22ba8f96d026e8d4",
@@ -6970,6 +6969,54 @@
       "sourceCandidates": [
         "official"
       ]
+    },
+    {
+      "id": "416d308fd2f04aab",
+      "group": "FRUITS ZIPPER",
+      "title": "FRUITS ZIPPER",
+      "ticketType": "プレリザーブ",
+      "applyStart": "2026-08-14T11:00",
+      "applyEnd": "2026-08-25T23:59",
+      "resultDate": null,
+      "paymentEnd": null,
+      "eventDate": "2026-10-13",
+      "eventEndDate": "2026-10-15",
+      "eventDates": [
+        "2026-10-13",
+        "2026-10-15"
+      ],
+      "schedule": [
+        {
+          "date": "2026-10-13",
+          "venue": null
+        },
+        {
+          "date": "2026-10-15",
+          "venue": null
+        }
+      ],
+      "eventCount": 2,
+      "venue": "複数会場（全2公演）",
+      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=22735",
+      "urls": [
+        "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=22735",
+        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209"
+      ],
+      "sourceType": "ticket-history-guard",
+      "sourcePublishedAt": null,
+      "applicationStatus": "ended",
+      "sourceChannel": "pia-ended-sale",
+      "primarySource": "pia",
+      "ticketProvider": "pia",
+      "sourceCandidates": [
+        "pia"
+      ],
+      "historyPreserved": true,
+      "applicationWindowVerified": true,
+      "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=22735",
+      "deadlineVerified": true,
+      "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=22735",
+      "applicationDisplayMode": "offers"
     }
   ],
   "failures": [],
@@ -13891,7 +13938,7 @@
       }
     ]
   },
-  "updatedAt": "2026-10-10T17:17:49+09:00",
+  "updatedAt": "2026-10-10T17:40:18+09:00",
   "publicEvents": [
     {
       "id": "1c60e2be989c564d",
