@@ -1,7 +1,7 @@
 {
   "date": "2026-10-11",
   "horizonDays": 7,
-  "generatedAt": "2026-10-11T08:48+09:00",
+  "generatedAt": "2026-10-11T18:16+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -18,42 +18,18 @@
       "areaName": "東部",
       "precision": "mesh5km",
       "label": "晴れ",
-      "max": 27.0,
-      "min": 27.0,
+      "max": null,
+      "min": null,
       "pop": "0",
-      "popLabel": "12〜18時",
-      "issuedAt": "2026-10-11T05:00:00+09:00",
-      "meshTime": "18:00",
+      "popLabel": "18〜00時",
+      "issuedAt": "2026-10-11T17:00:00+09:00",
+      "meshTime": "21:00",
       "meshTempBand": "20〜24℃",
       "coordinates": {
         "lat": 35.45565,
         "lon": 139.627914
       },
       "meshTimeline": [
-        {
-          "time": "09:00",
-          "label": "晴れ",
-          "validAt": "2026-10-11T09:00+09:00",
-          "temp": 22
-        },
-        {
-          "time": "12:00",
-          "label": "晴れ",
-          "validAt": "2026-10-11T12:00+09:00",
-          "temp": 25
-        },
-        {
-          "time": "15:00",
-          "label": "晴れ",
-          "validAt": "2026-10-11T15:00+09:00",
-          "temp": 26
-        },
-        {
-          "time": "18:00",
-          "label": "晴れ",
-          "validAt": "2026-10-11T18:00+09:00",
-          "temp": 22
-        },
         {
           "time": "21:00",
           "label": "晴れ",
@@ -97,13 +73,13 @@
       "areaCode": "170010",
       "areaName": "加賀",
       "precision": "mesh5km",
-      "label": "くもり",
-      "max": 26.0,
-      "min": 26.0,
+      "label": "晴れ",
+      "max": null,
+      "min": null,
       "pop": "0",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-10-11T05:00:00+09:00",
-      "meshTime": "18:00",
+      "issuedAt": "2026-10-11T17:00:00+09:00",
+      "meshTime": "21:00",
       "meshTempBand": "20〜24℃",
       "coordinates": {
         "lat": 36.559387,
@@ -111,34 +87,10 @@
       },
       "meshTimeline": [
         {
-          "time": "09:00",
-          "label": "晴れ",
-          "validAt": "2026-10-11T09:00+09:00",
-          "temp": 22
-        },
-        {
-          "time": "12:00",
-          "label": "晴れ",
-          "validAt": "2026-10-11T12:00+09:00",
-          "temp": 25
-        },
-        {
-          "time": "15:00",
-          "label": "晴れ",
-          "validAt": "2026-10-11T15:00+09:00",
-          "temp": 25
-        },
-        {
-          "time": "18:00",
-          "label": "くもり",
-          "validAt": "2026-10-11T18:00+09:00",
-          "temp": 21
-        },
-        {
           "time": "21:00",
           "label": "晴れ",
           "validAt": "2026-10-11T21:00+09:00",
-          "temp": 19
+          "temp": 20
         },
         {
           "time": "24:00",
@@ -157,11 +109,6 @@
           "time": "18:00",
           "rain": false,
           "validAt": "2026-10-11T18:00+09:00"
-        },
-        {
-          "time": "19:00",
-          "rain": false,
-          "validAt": "2026-10-11T19:00+09:00"
         }
       ]
     },
@@ -176,12 +123,12 @@
       "areaName": "北九州地方",
       "precision": "mesh5km",
       "label": "くもり",
-      "max": 27.0,
-      "min": 27.0,
-      "pop": "10",
-      "popLabel": "06〜12時",
-      "issuedAt": "2026-10-11T05:00:00+09:00",
-      "meshTime": "09:00",
+      "max": null,
+      "min": null,
+      "pop": "20",
+      "popLabel": "18〜00時",
+      "issuedAt": "2026-10-11T17:00:00+09:00",
+      "meshTime": "21:00",
       "meshTempBand": "20〜24℃",
       "coordinates": {
         "lat": 33.890919,
@@ -189,40 +136,33 @@
       },
       "meshTimeline": [
         {
-          "time": "09:00",
-          "label": "くもり",
-          "validAt": "2026-10-11T09:00+09:00",
-          "temp": 24
-        },
-        {
-          "time": "12:00",
-          "label": "くもり",
-          "validAt": "2026-10-11T12:00+09:00",
-          "temp": 25
-        },
-        {
-          "time": "15:00",
-          "label": "晴れ",
-          "validAt": "2026-10-11T15:00+09:00",
-          "temp": 25
-        },
-        {
-          "time": "18:00",
-          "label": "くもり",
-          "validAt": "2026-10-11T18:00+09:00",
-          "temp": 23
-        },
-        {
           "time": "21:00",
           "label": "くもり",
           "validAt": "2026-10-11T21:00+09:00",
-          "temp": 22
+          "temp": 23
         },
         {
           "time": "24:00",
           "label": "くもり",
           "validAt": "2026-10-12T00:00+09:00",
           "temp": 22
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "09:00",
+          "rain": false,
+          "validAt": "2026-10-11T09:00+09:00"
+        },
+        {
+          "time": "10:00",
+          "rain": false,
+          "validAt": "2026-10-11T10:00+09:00"
+        },
+        {
+          "time": "11:00",
+          "rain": false,
+          "validAt": "2026-10-11T11:00+09:00"
         }
       ]
     },
@@ -243,7 +183,7 @@
       "min": 19.0,
       "pop": "10",
       "popLabel": "12〜18時",
-      "issuedAt": "2026-10-11T05:00:00+09:00",
+      "issuedAt": "2026-10-11T17:00:00+09:00",
       "meshTime": "15:00",
       "meshTempBand": "25〜29℃",
       "coordinates": {
@@ -261,11 +201,11 @@
           "time": "09:00",
           "label": "くもり",
           "validAt": "2026-10-12T09:00+09:00",
-          "temp": 23
+          "temp": 24
         },
         {
           "time": "12:00",
-          "label": "くもり",
+          "label": "晴れ",
           "validAt": "2026-10-12T12:00+09:00",
           "temp": 25
         },
@@ -283,15 +223,15 @@
         },
         {
           "time": "21:00",
-          "label": "くもり",
+          "label": "晴れ",
           "validAt": "2026-10-12T21:00+09:00",
-          "temp": 23
+          "temp": 22
         },
         {
           "time": "24:00",
           "label": "くもり",
           "validAt": "2026-10-13T00:00+09:00",
-          "temp": 23
+          "temp": 21
         }
       ]
     },
@@ -307,11 +247,11 @@
       "areaName": "香川県",
       "precision": "area",
       "label": "くもり",
-      "max": 27.0,
-      "min": 19.0,
-      "pop": "40",
-      "popLabel": "1日",
-      "issuedAt": "2026-10-10T17:00:00+09:00",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-10-11T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -327,11 +267,11 @@
       "areaName": "東京地方",
       "precision": "area",
       "label": "くもり",
-      "max": 26.0,
+      "max": 27.0,
       "min": 18.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-10-10T17:00:00+09:00",
+      "issuedAt": "2026-10-11T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -347,11 +287,11 @@
       "areaName": "東京地方",
       "precision": "area",
       "label": "くもり時々晴れ",
-      "max": 23.0,
+      "max": 22.0,
       "min": 17.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-10-10T17:00:00+09:00",
+      "issuedAt": "2026-10-11T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -372,7 +312,7 @@
       "min": 12.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-10-10T17:00:00+09:00",
+      "issuedAt": "2026-10-11T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -387,12 +327,12 @@
       "areaCode": "420010",
       "areaName": "長崎県",
       "precision": "area",
-      "label": "くもり",
-      "max": 27.0,
+      "label": "くもり時々晴れ",
+      "max": 28.0,
       "min": 19.0,
-      "pop": "40",
+      "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-10-10T17:00:00+09:00",
+      "issuedAt": "2026-10-11T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -412,7 +352,7 @@
       "min": 18.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-10-10T17:00:00+09:00",
+      "issuedAt": "2026-10-11T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -429,10 +369,30 @@
       "precision": "area",
       "label": "くもり時々晴れ",
       "max": 23.0,
-      "min": 13.0,
+      "min": 10.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-10-10T17:00:00+09:00",
+      "issuedAt": "2026-10-11T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-10-18",
+      "venue": "三重県 ナガシマスパーランド内ナガシマスパードーム",
+      "venueKey": "ナガシマスパーランド内ナガシマスパードーム",
+      "eventIds": [
+        "cc6931354d16afb9"
+      ],
+      "areaCode": "240010",
+      "areaName": "三重県",
+      "precision": "area",
+      "label": "くもり",
+      "max": 23.0,
+      "min": 18.0,
+      "pop": "40",
+      "popLabel": "1日",
+      "issuedAt": "2026-10-11T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -441,23 +401,18 @@
   "stats": {
     "occurrencesInRange": 20,
     "uniqueVenueDates": 14,
-    "weatherEntries": 11,
+    "weatherEntries": 12,
     "meshEntries": 4,
-    "failures": 3,
+    "failures": 2,
     "meshTimelineEntries": 4,
-    "meshExactTempSlots": 25,
-    "hourlyRainEntries": 2
+    "meshExactTempSlots": 13,
+    "hourlyRainEntries": 3
   },
   "failures": [
     {
       "date": "2026-10-17",
       "venue": "宮古島コースタルリゾートヒララ",
       "reason": "都道府県を解決できません"
-    },
-    {
-      "date": "2026-10-18",
-      "venue": "三重県 ナガシマスパーランド内ナガシマスパードーム",
-      "reason": "開催日の予報がまだありません"
     },
     {
       "date": "2026-10-18",
