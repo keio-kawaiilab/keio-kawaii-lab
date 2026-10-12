@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-12T19:45:14+09:00",
+  "checkedAt": "2026-10-13T04:06:32+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-12T07:26:27+09:00",
     "scannedPages": {
@@ -2011,7 +2011,7 @@
       "sourcePublishedAt": "2026-08-31",
       "eventScope": "kawaii-lab",
       "participants": [],
-      "applicationStatus": "open",
+      "applicationStatus": "ended",
       "applicationWindowVerified": true,
       "deadlineVerified": true,
       "applicationDisplayMode": "band",
@@ -7023,11 +7023,11 @@
     "performanceEntityCount": 81,
     "sourceOccurrenceCount": 248,
     "mergedSourceOccurrences": 167,
-    "offerCount": 108
+    "offerCount": 106
   },
   "publicEventModelVersion": 1,
   "releasePreparation": {
-    "preparedAt": "2026-10-12T18:38:25+09:00",
+    "preparedAt": "2026-10-13T04:06:31+09:00",
     "normalizedSpecialEvents": 2,
     "duplicateIdsRemoved": 0,
     "retainedPreviousRows": 0,
@@ -7078,12 +7078,12 @@
       "remainingDuplicates": []
     },
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-10-12T18:38:25+09:00",
-    "checkedAt": "2026-10-12T18:38:25+09:00"
+    "publicUpdatedAt": "2026-10-13T04:06:31+09:00",
+    "checkedAt": "2026-10-13T04:06:31+09:00"
   },
   "resaleDiagnostics": {
-    "articles": 25,
-    "parsedRows": 45,
+    "articles": 24,
+    "parsedRows": 44,
     "pending": 9,
     "failures": []
   },
@@ -13570,7 +13570,7 @@
       }
     ]
   },
-  "updatedAt": "2026-10-13T03:02:52+09:00",
+  "updatedAt": "2026-10-13T04:06:32+09:00",
   "publicEvents": [
     {
       "id": "1c60e2be989c564d",
@@ -21387,29 +21387,7 @@
       "sourceRowIds": [
         "87af5d81917228b4"
       ],
-      "offers": [
-        {
-          "sourceRowId": "87af5d81917228b4",
-          "provider": "official",
-          "url": "https://cutiestreet.asobisystem.com/news/detail/92297",
-          "urls": [
-            "https://cutiestreet.asobisystem.com/news/detail/92297"
-          ],
-          "ticketType": "年会費コース会員先行",
-          "applyStart": "2026-10-09T12:00",
-          "applyEnd": "2026-10-14T23:59",
-          "applicationStatus": "open",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "band",
-          "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/92297",
-          "deadlineSource": "https://cutiestreet.asobisystem.com/news/detail/92297",
-          "sourceType": "auto",
-          "sourceChannel": "official-birthday-news",
-          "primarySource": "official",
-          "sourcePublishedAt": "2026-10-09"
-        }
-      ],
+      "offers": [],
       "eventEndDate": "2026-11-09",
       "eventDates": [
         "2026-11-09"
@@ -21422,9 +21400,9 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "年会費コース会員先行",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-CUTIE-STREET-2026-11-11-time-19-00",
@@ -21460,29 +21438,7 @@
       "sourceRowIds": [
         "ab14c4233b42bc55"
       ],
-      "offers": [
-        {
-          "sourceRowId": "ab14c4233b42bc55",
-          "provider": "official",
-          "url": "https://cutiestreet.asobisystem.com/news/detail/92298",
-          "urls": [
-            "https://cutiestreet.asobisystem.com/news/detail/92298"
-          ],
-          "ticketType": "年会費コース会員先行",
-          "applyStart": "2026-10-09T12:00",
-          "applyEnd": "2026-10-14T23:59",
-          "applicationStatus": "open",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "band",
-          "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/92298",
-          "deadlineSource": "https://cutiestreet.asobisystem.com/news/detail/92298",
-          "sourceType": "auto",
-          "sourceChannel": "official-birthday-news",
-          "primarySource": "official",
-          "sourcePublishedAt": "2026-10-09"
-        }
-      ],
+      "offers": [],
       "eventEndDate": "2026-11-11",
       "eventDates": [
         "2026-11-11"
@@ -21495,9 +21451,9 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "年会費コース会員先行",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none"
     },
     {
       "id": "performance-CUTIE-STREET-2026-11-14-time-16-00",
@@ -23117,7 +23073,7 @@
           "saleFamily": "resale",
           "applyStart": "2026-10-11T10:00",
           "applyEnd": "2026-10-12T23:59",
-          "applicationStatus": "open",
+          "applicationStatus": "ended",
           "applicationWindowVerified": true,
           "deadlineVerified": true,
           "applicationDisplayMode": "band",
@@ -25663,6 +25619,11 @@
     },
     {
       "checkedAt": "2026-10-12T19:45:14+09:00",
+      "scope": "CANDY TUNE tour render verification",
+      "message": "Sendai performance lost its current general sale: ['ぴあプレミアム先行', 'プレリザーブ']"
+    },
+    {
+      "checkedAt": "2026-10-13T04:06:32+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "Sendai performance lost its current general sale: ['ぴあプレミアム先行', 'プレリザーブ']"
     }
