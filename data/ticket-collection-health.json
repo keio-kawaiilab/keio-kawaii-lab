@@ -1,24 +1,25 @@
 {
   "version": 2,
-  "checkedAt": "2026-10-14T11:08:58+09:00",
+  "checkedAt": "2026-10-15T03:52:18+09:00",
   "status": "degraded",
   "safeForTicketFlowPublication": false,
-  "historyEntries": 2247,
+  "historyEntries": 2252,
   "historyNeverShrank": true,
   "officialNewsPagesPerSource": 15,
   "officialCandidateCounts": {
     "MORE STAR": 29,
-    "KAWAII LAB. FC": 106,
-    "SWEET STEADY": 36,
+    "KAWAII LAB. FC": 107,
     "CANDY TUNE": 36,
-    "CUTIE STREET": 42,
+    "CUTIE STREET": 40,
+    "SWEET STEADY": 36,
     "FRUITS ZIPPER": 36
   },
-  "officialCollectorPendingReviewCount": 7,
+  "officialCollectorPendingReviewCount": 8,
   "officialCollectorPendingReviewUrls": [
     "https://candytune.asobisystem.com/news/detail/91665",
     "https://candytune.asobisystem.com/news/detail/92301",
     "https://candytune.asobisystem.com/news/detail/92403",
+    "https://cutiestreet.asobisystem.com/news/detail/43664",
     "https://fruitszipper.asobisystem.com/news/detail/92309",
     "https://fruitszipper.asobisystem.com/news/detail/92628",
     "https://kawaiilab.asobisystem.com/news/detail/92410",
@@ -26,59 +27,64 @@
   ],
   "officialCollectorFailures": [],
   "playguideFailures": [
+    "eplus/FRUITS ZIPPER: HTTPError: 503 Server Error: Service Unavailable for url: https://eplus.jp/sf/word/0000152889",
     "lawson/FRUITS ZIPPER: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=18)",
+    "eplus/CANDY TUNE: HTTPError: 503 Server Error: Service Unavailable for url: https://eplus.jp/sf/word/0000157138",
     "lawson/CANDY TUNE: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=18)",
+    "eplus/SWEET STEADY: HTTPError: 503 Server Error: Service Unavailable for url: https://eplus.jp/sf/word/0000163600",
     "lawson/SWEET STEADY: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=18)",
+    "eplus/CUTIE STREET: HTTPError: 503 Server Error: Service Unavailable for url: https://eplus.jp/sf/word/0000166546",
     "lawson/CUTIE STREET: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=18)",
+    "eplus/MORE STAR: HTTPError: 503 Server Error: Service Unavailable for url: https://eplus.jp/sf/word/0000173782",
     "lawson/MORE STAR: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=18)"
   ],
   "sourceChecks": {
     "eplus:CANDY TUNE": {
       "url": "https://eplus.jp/sf/word/0000157138",
-      "ok": true,
-      "httpStatus": 200,
-      "message": "ok",
+      "ok": false,
+      "httpStatus": null,
+      "message": "HTTPError: 503 Server Error: Service Unavailable for url: https://eplus.jp/sf/word/0000157138",
       "lastSuccessAt": "2026-10-14T11:08:58+09:00",
-      "consecutiveFailures": 0
+      "consecutiveFailures": 1
     },
     "eplus:CUTIE STREET": {
       "url": "https://eplus.jp/sf/word/0000166546",
-      "ok": true,
-      "httpStatus": 200,
-      "message": "ok",
+      "ok": false,
+      "httpStatus": null,
+      "message": "HTTPError: 503 Server Error: Service Unavailable for url: https://eplus.jp/sf/word/0000166546",
       "lastSuccessAt": "2026-10-14T11:08:58+09:00",
-      "consecutiveFailures": 0
+      "consecutiveFailures": 1
     },
     "eplus:FRUITS ZIPPER": {
       "url": "https://eplus.jp/sf/word/0000152889",
-      "ok": true,
-      "httpStatus": 200,
-      "message": "ok",
+      "ok": false,
+      "httpStatus": null,
+      "message": "HTTPError: 503 Server Error: Service Unavailable for url: https://eplus.jp/sf/word/0000152889",
       "lastSuccessAt": "2026-10-14T11:08:58+09:00",
-      "consecutiveFailures": 0
+      "consecutiveFailures": 1
     },
     "eplus:MORE STAR": {
       "url": "https://eplus.jp/sf/word/0000173782",
-      "ok": true,
-      "httpStatus": 200,
-      "message": "ok",
+      "ok": false,
+      "httpStatus": null,
+      "message": "HTTPError: 503 Server Error: Service Unavailable for url: https://eplus.jp/sf/word/0000173782",
       "lastSuccessAt": "2026-10-14T11:08:58+09:00",
-      "consecutiveFailures": 0
+      "consecutiveFailures": 1
     },
     "eplus:SWEET STEADY": {
       "url": "https://eplus.jp/sf/word/0000163600",
-      "ok": true,
-      "httpStatus": 200,
-      "message": "ok",
+      "ok": false,
+      "httpStatus": null,
+      "message": "HTTPError: 503 Server Error: Service Unavailable for url: https://eplus.jp/sf/word/0000163600",
       "lastSuccessAt": "2026-10-14T11:08:58+09:00",
-      "consecutiveFailures": 0
+      "consecutiveFailures": 1
     },
     "group-official:CANDY TUNE:news": {
       "url": "https://candytune.asobisystem.com/news/1/",
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-14T11:08:58+09:00",
+      "lastSuccessAt": "2026-10-15T03:52:18+09:00",
       "consecutiveFailures": 0
     },
     "group-official:CANDY TUNE:schedule": {
@@ -86,7 +92,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-14T11:08:58+09:00",
+      "lastSuccessAt": "2026-10-15T03:52:18+09:00",
       "consecutiveFailures": 0
     },
     "group-official:CUTIE STREET:news": {
@@ -94,7 +100,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-14T11:08:58+09:00",
+      "lastSuccessAt": "2026-10-15T03:52:18+09:00",
       "consecutiveFailures": 0
     },
     "group-official:CUTIE STREET:schedule": {
@@ -102,7 +108,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-14T11:08:58+09:00",
+      "lastSuccessAt": "2026-10-15T03:52:18+09:00",
       "consecutiveFailures": 0
     },
     "group-official:FRUITS ZIPPER:news": {
@@ -110,7 +116,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-14T11:08:58+09:00",
+      "lastSuccessAt": "2026-10-15T03:52:18+09:00",
       "consecutiveFailures": 0
     },
     "group-official:FRUITS ZIPPER:schedule": {
@@ -118,7 +124,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-14T11:08:58+09:00",
+      "lastSuccessAt": "2026-10-15T03:52:18+09:00",
       "consecutiveFailures": 0
     },
     "group-official:MORE STAR:news": {
@@ -126,7 +132,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-14T11:08:58+09:00",
+      "lastSuccessAt": "2026-10-15T03:52:18+09:00",
       "consecutiveFailures": 0
     },
     "group-official:MORE STAR:schedule": {
@@ -134,7 +140,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-14T11:08:58+09:00",
+      "lastSuccessAt": "2026-10-15T03:52:18+09:00",
       "consecutiveFailures": 0
     },
     "group-official:SWEET STEADY:news": {
@@ -142,7 +148,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-14T11:08:58+09:00",
+      "lastSuccessAt": "2026-10-15T03:52:18+09:00",
       "consecutiveFailures": 0
     },
     "group-official:SWEET STEADY:schedule": {
@@ -150,7 +156,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-14T11:08:58+09:00",
+      "lastSuccessAt": "2026-10-15T03:52:18+09:00",
       "consecutiveFailures": 0
     },
     "kawaii-lab-fc:news": {
@@ -158,7 +164,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-14T11:08:58+09:00",
+      "lastSuccessAt": "2026-10-15T03:52:18+09:00",
       "consecutiveFailures": 0
     },
     "lawson:CANDY TUNE": {
@@ -167,7 +173,7 @@
       "httpStatus": null,
       "message": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
       "lastSuccessAt": null,
-      "consecutiveFailures": 340
+      "consecutiveFailures": 341
     },
     "lawson:CUTIE STREET": {
       "url": "https://l-tike.com/artist/000000000973775/",
@@ -175,7 +181,7 @@
       "httpStatus": null,
       "message": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
       "lastSuccessAt": null,
-      "consecutiveFailures": 340
+      "consecutiveFailures": 341
     },
     "lawson:FRUITS ZIPPER": {
       "url": "https://l-tike.com/artist/000000000899959/",
@@ -183,7 +189,7 @@
       "httpStatus": null,
       "message": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
       "lastSuccessAt": null,
-      "consecutiveFailures": 340
+      "consecutiveFailures": 341
     },
     "lawson:MORE STAR": {
       "url": "https://l-tike.com/artist/000000001014114/",
@@ -191,7 +197,7 @@
       "httpStatus": null,
       "message": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
       "lastSuccessAt": null,
-      "consecutiveFailures": 340
+      "consecutiveFailures": 341
     },
     "lawson:SWEET STEADY": {
       "url": "https://l-tike.com/artist/000000000956758/",
@@ -199,14 +205,14 @@
       "httpStatus": null,
       "message": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
       "lastSuccessAt": null,
-      "consecutiveFailures": 340
+      "consecutiveFailures": 341
     },
     "pia:CANDY TUNE": {
       "url": "https://t.pia.jp/pia/artist/artists.do?artistsCd=N1260021",
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-14T11:08:58+09:00",
+      "lastSuccessAt": "2026-10-15T03:52:18+09:00",
       "consecutiveFailures": 0
     },
     "pia:CUTIE STREET": {
@@ -214,7 +220,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-14T11:08:58+09:00",
+      "lastSuccessAt": "2026-10-15T03:52:18+09:00",
       "consecutiveFailures": 0
     },
     "pia:FRUITS ZIPPER": {
@@ -222,7 +228,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-14T11:08:58+09:00",
+      "lastSuccessAt": "2026-10-15T03:52:18+09:00",
       "consecutiveFailures": 0
     },
     "pia:MORE STAR": {
@@ -230,7 +236,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-14T11:08:58+09:00",
+      "lastSuccessAt": "2026-10-15T03:52:18+09:00",
       "consecutiveFailures": 0
     },
     "pia:SWEET STEADY": {
@@ -238,21 +244,19 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-14T11:08:58+09:00",
+      "lastSuccessAt": "2026-10-15T03:52:18+09:00",
       "consecutiveFailures": 0
     }
   },
-  "sourceFailureCount": 5,
+  "sourceFailureCount": 10,
   "hardSourceFailureCount": 5,
   "suddenCandidateDrops": [],
-  "currentActivePlayguideRows": 51,
+  "currentActivePlayguideRows": 28,
   "activePlayguideRowsBySource": {
-    "eplus:CANDY TUNE": 11,
-    "eplus:CUTIE STREET": 8,
-    "eplus:FRUITS ZIPPER": 5,
+    "eplus:CANDY TUNE": 5,
+    "eplus:CUTIE STREET": 2,
     "eplus:KAWAII LAB.合同": 3,
-    "eplus:MORE STAR": 6,
-    "eplus:SWEET STEADY": 2,
+    "eplus:MORE STAR": 2,
     "lawson:CANDY TUNE": 3,
     "lawson:MORE STAR": 1,
     "pia:CANDY TUNE": 8,
@@ -277,20 +281,367 @@
     ],
     "suspiciousMissingFcBeforePlayguide": []
   },
-  "deepLinkAuditRan": false,
-  "deepLinkFailures": [],
-  "deepLinkFailureCount": 0,
+  "deepLinkAuditRan": true,
+  "deepLinkFailures": [
+    {
+      "url": "https://eplus.jp/sf/detail/0401040001-P0030021P021001",
+      "status": null,
+      "error": "HTTPError: 403 Client Error: Forbidden for url: https://w1.green.onlineticket.jp/sf/tkt99/detail/3355580001-P0030002?P4=004&P6=603",
+      "sourceKey": "eplus",
+      "eventDate": "2026-10-17"
+    },
+    {
+      "url": "https://eplus.jp/sf/detail/0401040001-P0030022P021001",
+      "status": null,
+      "error": "HTTPError: 403 Client Error: Forbidden for url: https://w1.green.onlineticket.jp/sf/tkt99/detail/3355580001-P0030002?P4=004&P6=603",
+      "sourceKey": "eplus",
+      "eventDate": "2026-10-18"
+    },
+    {
+      "url": "https://eplus.jp/sf/detail/3923750001-P0030008P021001",
+      "status": null,
+      "error": "HTTPError: 503 Server Error: Service Unavailable for url: https://eplus.jp/sf/detail/3923750001-P0030008P021001",
+      "sourceKey": "eplus",
+      "eventDate": "2026-11-17"
+    },
+    {
+      "url": "https://eplus.jp/sf/detail/3923750001-P0030009P021001",
+      "status": null,
+      "error": "HTTPError: 503 Server Error: Service Unavailable for url: https://eplus.jp/sf/detail/3923750001-P0030009P021001",
+      "sourceKey": "eplus",
+      "eventDate": "2026-11-19"
+    },
+    {
+      "url": "https://eplus.jp/sf/detail/3923750001-P0030012P021001",
+      "status": null,
+      "error": "HTTPError: 403 Client Error: Forbidden for url: https://w1.green.onlineticket.jp/sf/tkt99/detail/3355580001-P0030002?P4=004&P6=603",
+      "sourceKey": "eplus",
+      "eventDate": "2026-11-30"
+    },
+    {
+      "url": "https://eplus.jp/sf/detail/3923750001-P0030013P021001",
+      "status": null,
+      "error": "HTTPError: 503 Server Error: Service Unavailable for url: https://eplus.jp/sf/detail/3923750001-P0030013P021001",
+      "sourceKey": "eplus",
+      "eventDate": "2026-12-01"
+    },
+    {
+      "url": "https://eplus.jp/sf/detail/3923750001-P0030014P021001",
+      "status": null,
+      "error": "HTTPError: 503 Server Error: Service Unavailable for url: https://eplus.jp/sf/detail/3923750001-P0030014P021001",
+      "sourceKey": "eplus",
+      "eventDate": "2026-11-10"
+    },
+    {
+      "url": "https://eplus.jp/sf/detail/3923750001-P0030015P021001",
+      "status": null,
+      "error": "HTTPError: 503 Server Error: Service Unavailable for url: https://eplus.jp/sf/detail/3923750001-P0030015P021001",
+      "sourceKey": "eplus",
+      "eventDate": "2026-11-12"
+    },
+    {
+      "url": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
+      "status": null,
+      "error": "HTTPError: 503 Server Error: Service Unavailable for url: https://eplus.jp/sf/detail/3966130001-P0030004P021001",
+      "sourceKey": "eplus",
+      "eventDate": "2026-11-23"
+    },
+    {
+      "url": "https://eplus.jp/sf/detail/4401630001-P0030002P021001",
+      "status": null,
+      "error": "HTTPError: 503 Server Error: Service Unavailable for url: https://eplus.jp/sf/detail/4401630001-P0030002P021001",
+      "sourceKey": "eplus",
+      "eventDate": "2026-12-05"
+    },
+    {
+      "url": "https://eplus.jp/sf/detail/4401630001-P0030002P021002",
+      "status": null,
+      "error": "HTTPError: 503 Server Error: Service Unavailable for url: https://eplus.jp/sf/detail/4401630001-P0030002P021002",
+      "sourceKey": "eplus",
+      "eventDate": "2026-12-06"
+    },
+    {
+      "url": "https://eplus.jp/sf/detail/4401630001-P0030002P021003",
+      "status": null,
+      "error": "HTTPError: 403 Client Error: Forbidden for url: https://w1.green.onlineticket.jp/sf/tkt99/detail/3355580001-P0030002?P4=004&P6=603",
+      "sourceKey": "eplus",
+      "eventDate": "2026-12-05"
+    },
+    {
+      "url": "https://eplus.jp/sf/detail/4598860001-P0030001P021001",
+      "status": null,
+      "error": "HTTPError: 503 Server Error: Service Unavailable for url: https://eplus.jp/sf/detail/4598860001-P0030001P021001",
+      "sourceKey": "eplus",
+      "eventDate": "2026-10-17"
+    },
+    {
+      "url": "https://eplus.jp/sf/detail/4603220001-P0030001P021001",
+      "status": null,
+      "error": "HTTPError: 503 Server Error: Service Unavailable for url: https://eplus.jp/sf/detail/4603220001-P0030001P021001",
+      "sourceKey": "eplus",
+      "eventDate": "2026-10-17"
+    },
+    {
+      "url": "https://l-tike.com/order/?gBaseVenueCd=35489&gCarrierCd=08&gEntryMthd=02&gLcode=34897&gPfKey=20260731000002263521%2C20260731000002263519%2C20260731000002263520&gScheduleNo=18",
+      "status": null,
+      "error": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
+      "sourceKey": "lawson",
+      "eventDate": "2026-11-01"
+    },
+    {
+      "url": "https://l-tike.com/order/?gBaseVenueCd=36839&gCarrierCd=08&gEntryMthd=02&gLcode=70492&gPfKey=20260803000002265589&gScheduleNo=2",
+      "status": null,
+      "error": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
+      "sourceKey": "lawson",
+      "eventDate": "2026-11-17"
+    },
+    {
+      "url": "https://l-tike.com/order/?gBaseVenueCd=51230&gCarrierCd=08&gEntryMthd=02&gLcode=53526&gPfKey=20260804000002266658&gScheduleNo=1",
+      "status": null,
+      "error": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
+      "sourceKey": "lawson",
+      "eventDate": "2026-11-19"
+    },
+    {
+      "url": "https://l-tike.com/order/?gBaseVenueCd=81158&gCarrierCd=08&gEntryMthd=02&gLcode=82718&gPfKey=20260902000002288974&gPfName=%E3%81%A1%E3%81%8B%E3%81%A3%E3%81%B1%E7%A5%AD%EF%BC%92%EF%BC%90%EF%BC%92%EF%BC%96&gScheduleNo=2",
+      "status": null,
+      "error": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
+      "sourceKey": "lawson",
+      "eventDate": "2026-11-23"
+    },
+    {
+      "url": "https://l-tike.com/order/?gBaseVenueCd=81620&gCarrierCd=08&gEntryMthd=02&gLcode=82218&gPfKey=20260820000002275623&gPfName=%E9%95%B7%E5%B4%8E%E3%82%B9%E3%82%BF%E3%82%B8%E3%82%A2%E3%83%A0%E3%82%B7%E3%83%86%E3%82%A3%E9%96%8B%E6%A5%AD%EF%BC%92%E5%91%A8%E5%B9%B4%E8%A8%98%E5%BF%B5%E3%80%80%E3%80%8C%EF%BC%A8%EF%BC%A1%EF%BC%B0%EF%BC%B0%EF%BC%A9%EF%BC%AE%EF%BC%A5%EF%BC%B3%EF%BC%B3%E3%80%80%EF%BC%AA%EF%BC%A1%EF%BC%AD%E3%80%80%EF%BC%92%EF%BC%90%EF%BC%92%EF%BC%96%E3%80%8D&gScheduleNo=3",
+      "status": null,
+      "error": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
+      "sourceKey": "lawson",
+      "eventDate": "2026-10-17"
+    },
+    {
+      "url": "https://l-tike.com/order/?gBaseVenueCd=84423&gCarrierCd=08&gEntryMthd=03&gLcode=93496&gPfKey=20260814000002271718&gScheduleNo=2",
+      "status": null,
+      "error": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
+      "sourceKey": "lawson",
+      "eventDate": "2026-11-30"
+    },
+    {
+      "url": "https://l-tike.com/order/?gBaseVenueCd=88097&gCarrierCd=08&gEntryMthd=03&gLcode=93496&gPfKey=20260814000002271719&gScheduleNo=2",
+      "status": null,
+      "error": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
+      "sourceKey": "lawson",
+      "eventDate": "2026-12-01"
+    },
+    {
+      "url": "https://l-tike.com/order/?gLcode=29000",
+      "status": null,
+      "error": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
+      "sourceKey": "lawson",
+      "eventDate": "2026-10-17"
+    },
+    {
+      "url": "https://l-tike.com/order/?gLcode=53526",
+      "status": null,
+      "error": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
+      "sourceKey": "lawson",
+      "eventDate": "2026-11-19"
+    },
+    {
+      "url": "https://l-tike.com/order/?gLcode=70492",
+      "status": null,
+      "error": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
+      "sourceKey": "lawson",
+      "eventDate": "2026-11-17"
+    },
+    {
+      "url": "https://l-tike.com/order/?gLcode=93496",
+      "status": null,
+      "error": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
+      "sourceKey": "lawson",
+      "eventDate": "2026-11-30"
+    },
+    {
+      "url": "https://t.pia.jp/pia/ticketInformation.do?eventCd=2629162&rlsCd=001",
+      "status": null,
+      "error": "HTTPError: 429 Client Error: Too Many Requests for url: https://t.pia.jp/pia/ticketInformation.do?eventCd=2629162&rlsCd=001",
+      "sourceKey": "pia",
+      "eventDate": "2026-10-26"
+    },
+    {
+      "url": "https://t.pia.jp/pia/ticketInformation.do?eventCd=2629162&rlsCd=003",
+      "status": null,
+      "error": "HTTPError: 429 Client Error: Too Many Requests for url: https://t.pia.jp/pia/ticketInformation.do?eventCd=2629162&rlsCd=003",
+      "sourceKey": "pia",
+      "eventDate": "2026-10-29"
+    },
+    {
+      "url": "https://t.pia.jp/pia/ticketInformation.do?eventCd=2630960&rlsCd=002",
+      "status": null,
+      "error": "HTTPError: 429 Client Error: Too Many Requests for url: https://t.pia.jp/pia/ticketInformation.do?eventCd=2630960&rlsCd=002",
+      "sourceKey": "pia",
+      "eventDate": "2026-11-19"
+    },
+    {
+      "url": "https://t.pia.jp/pia/ticketInformation.do?eventCd=2631559&rlsCd=001",
+      "status": null,
+      "error": "HTTPError: 429 Client Error: Too Many Requests for url: https://t.pia.jp/pia/ticketInformation.do?eventCd=2631559&rlsCd=001",
+      "sourceKey": "pia",
+      "eventDate": "2026-11-10"
+    },
+    {
+      "url": "https://t.pia.jp/pia/ticketInformation.do?eventCd=2631559&rlsCd=002",
+      "status": null,
+      "error": "HTTPError: 429 Client Error: Too Many Requests for url: https://t.pia.jp/pia/ticketInformation.do?eventCd=2631559&rlsCd=002",
+      "sourceKey": "pia",
+      "eventDate": "2026-11-12"
+    },
+    {
+      "url": "https://t.pia.jp/pia/ticketInformation.do?eventCd=2632905&rlsCd=001",
+      "status": null,
+      "error": "HTTPError: 429 Client Error: Too Many Requests for url: https://t.pia.jp/pia/ticketInformation.do?eventCd=2632905&rlsCd=001",
+      "sourceKey": "pia",
+      "eventDate": "2026-11-30"
+    },
+    {
+      "url": "https://t.pia.jp/pia/ticketInformation.do?eventCd=2635331&rlsCd=001",
+      "status": null,
+      "error": "HTTPError: 429 Client Error: Too Many Requests for url: https://t.pia.jp/pia/ticketInformation.do?eventCd=2635331&rlsCd=001",
+      "sourceKey": "pia",
+      "eventDate": "2026-10-28"
+    },
+    {
+      "url": "https://t.pia.jp/pia/ticketInformation.do?eventCd=2635331&rlsCd=003",
+      "status": null,
+      "error": "HTTPError: 429 Client Error: Too Many Requests for url: https://t.pia.jp/pia/ticketInformation.do?eventCd=2635331&rlsCd=003",
+      "sourceKey": "pia",
+      "eventDate": "2026-11-14"
+    },
+    {
+      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
+      "status": null,
+      "error": "HTTPError: 429 Client Error: Too Many Requests for url: https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=00294",
+      "sourceKey": "pia",
+      "eventDate": "2026-10-26"
+    },
+    {
+      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=05304",
+      "status": null,
+      "error": "HTTPError: 429 Client Error: Too Many Requests for url: https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=05304",
+      "sourceKey": "pia",
+      "eventDate": "2026-11-14"
+    },
+    {
+      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14066",
+      "status": null,
+      "error": "HTTPError: 429 Client Error: Too Many Requests for url: https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14066",
+      "sourceKey": "pia",
+      "eventDate": "2026-11-15"
+    },
+    {
+      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14296",
+      "status": null,
+      "error": "HTTPError: 429 Client Error: Too Many Requests for url: https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14296",
+      "sourceKey": "pia",
+      "eventDate": "2026-11-22"
+    },
+    {
+      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=22728",
+      "status": null,
+      "error": "HTTPError: 429 Client Error: Too Many Requests for url: https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=22728",
+      "sourceKey": "pia",
+      "eventDate": "2026-10-26"
+    },
+    {
+      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=23680",
+      "status": null,
+      "error": "HTTPError: 429 Client Error: Too Many Requests for url: https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=23680",
+      "sourceKey": "pia",
+      "eventDate": "2026-11-22"
+    },
+    {
+      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=24086",
+      "status": null,
+      "error": "HTTPError: 429 Client Error: Too Many Requests for url: https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=24086",
+      "sourceKey": "pia",
+      "eventDate": "2026-10-26"
+    },
+    {
+      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=26281",
+      "status": null,
+      "error": "HTTPError: 429 Client Error: Too Many Requests for url: https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=26281",
+      "sourceKey": "pia",
+      "eventDate": "2026-11-21"
+    },
+    {
+      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30252",
+      "status": null,
+      "error": "HTTPError: 429 Client Error: Too Many Requests for url: https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30252",
+      "sourceKey": "pia",
+      "eventDate": "2026-10-26"
+    },
+    {
+      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=33295",
+      "status": null,
+      "error": "HTTPError: 429 Client Error: Too Many Requests for url: https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=33295",
+      "sourceKey": "pia",
+      "eventDate": "2026-10-26"
+    },
+    {
+      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=35165",
+      "status": null,
+      "error": "HTTPError: 429 Client Error: Too Many Requests for url: https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=35165",
+      "sourceKey": "pia",
+      "eventDate": "2026-10-26"
+    },
+    {
+      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=36521",
+      "status": null,
+      "error": "HTTPError: 429 Client Error: Too Many Requests for url: https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=36521",
+      "sourceKey": "pia",
+      "eventDate": "2026-11-10"
+    },
+    {
+      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=57175",
+      "status": null,
+      "error": "HTTPError: 429 Client Error: Too Many Requests for url: https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=57175",
+      "sourceKey": "pia",
+      "eventDate": "2026-12-08"
+    },
+    {
+      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=74753",
+      "status": null,
+      "error": "HTTPError: 429 Client Error: Too Many Requests for url: https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=74753",
+      "sourceKey": "pia",
+      "eventDate": "2026-10-28"
+    },
+    {
+      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=95188",
+      "status": null,
+      "error": "HTTPError: 429 Client Error: Too Many Requests for url: https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=95188",
+      "sourceKey": "pia",
+      "eventDate": "2026-10-28"
+    },
+    {
+      "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
+      "status": null,
+      "error": "HTTPError: 429 Client Error: Too Many Requests for url: https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
+      "sourceKey": "pia",
+      "eventDate": "2026-10-26"
+    }
+  ],
+  "deepLinkFailureCount": 49,
   "errors": [
     "5 source endpoint(s) failed at least twice consecutively",
-    "playguide collector reported 5 failure(s)"
+    "playguide collector reported 10 failure(s)",
+    "independent eplus/Lawson collector or post-collection audit failed"
   ],
   "warnings": [
-    "7 official ticket article(s) still require safe performance mapping"
+    "5 source endpoint(s) failed this audit for the first time",
+    "8 official ticket article(s) still require safe performance mapping",
+    "49 future-history source link(s) failed deep verification"
   ],
   "independentCollector": {
     "officialExitCode": 0,
     "piaExitCode": 0,
-    "playguideExitCode": 0,
+    "playguideExitCode": 2,
     "sourceAuditOutcome": "success"
   }
 }
