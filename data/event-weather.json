@@ -1,32 +1,12 @@
 {
-  "date": "2026-10-14",
+  "date": "2026-10-15",
   "horizonDays": 7,
-  "generatedAt": "2026-10-14T22:59+09:00",
+  "generatedAt": "2026-10-15T04:18+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
-    {
-      "date": "2026-10-14",
-      "venue": "東京都 MORE STAR YouTube",
-      "venueKey": "morestaryoutube",
-      "eventIds": [
-        "92c79bb044962aff"
-      ],
-      "areaCode": "130010",
-      "areaName": "東京地方",
-      "precision": "area",
-      "label": "晴れ 夜 くもり 所により 雨",
-      "max": null,
-      "min": null,
-      "pop": "20",
-      "popLabel": "当日最大",
-      "issuedAt": "2026-10-14T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
     {
       "date": "2026-10-15",
       "venue": "東京都 MORE STAR YouTube",
@@ -112,6 +92,13 @@
           "label": "晴れ",
           "validAt": "2026-10-16T00:00+09:00",
           "temp": 15
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-10-15T18:00+09:00"
         }
       ]
     },
@@ -219,12 +206,12 @@
   "stats": {
     "occurrencesInRange": 11,
     "uniqueVenueDates": 10,
-    "weatherEntries": 8,
+    "weatherEntries": 7,
     "meshEntries": 1,
-    "failures": 2,
+    "failures": 3,
     "meshTimelineEntries": 1,
     "meshExactTempSlots": 7,
-    "hourlyRainEntries": 0
+    "hourlyRainEntries": 1
   },
   "failures": [
     {
@@ -236,6 +223,11 @@
       "date": "2026-10-18",
       "venue": "宮古島コースタルリゾートヒララ",
       "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-10-22",
+      "venue": "東京都 Shibuya LOVEZ",
+      "reason": "開催日の予報がまだありません"
     }
   ]
 }
