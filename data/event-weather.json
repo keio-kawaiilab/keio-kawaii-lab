@@ -1,7 +1,7 @@
 {
   "date": "2026-10-15",
   "horizonDays": 7,
-  "generatedAt": "2026-10-15T16:42+09:00",
+  "generatedAt": "2026-10-15T22:39+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -40,12 +40,12 @@
       "areaName": "下越",
       "precision": "mesh5km",
       "label": "晴れ",
-      "max": 23.0,
-      "min": 23.0,
+      "max": null,
+      "min": null,
       "pop": "10",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-10-15T11:00:00+09:00",
-      "meshTime": "18:00",
+      "issuedAt": "2026-10-15T17:00:00+09:00",
+      "meshTime": "21:00",
       "meshTempBand": "15〜19℃",
       "coordinates": {
         "lat": 37.913635,
@@ -53,28 +53,33 @@
       },
       "meshTimeline": [
         {
-          "time": "15:00",
-          "label": "晴れ",
-          "validAt": "2026-10-15T15:00+09:00",
-          "temp": 20
-        },
-        {
-          "time": "18:00",
-          "label": "晴れ",
-          "validAt": "2026-10-15T18:00+09:00",
-          "temp": 19
-        },
-        {
           "time": "21:00",
           "label": "晴れ",
           "validAt": "2026-10-15T21:00+09:00",
-          "temp": 16
+          "temp": 17
         },
         {
           "time": "24:00",
           "label": "晴れ",
           "validAt": "2026-10-16T00:00+09:00",
-          "temp": 16
+          "temp": 17
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "17:30",
+          "rain": false,
+          "validAt": "2026-10-15T17:30+09:00"
+        },
+        {
+          "time": "18:30",
+          "rain": false,
+          "validAt": "2026-10-15T18:30+09:00"
+        },
+        {
+          "time": "19:30",
+          "rain": false,
+          "validAt": "2026-10-15T19:30+09:00"
         }
       ]
     },
@@ -133,7 +138,7 @@
       "min": null,
       "pop": null,
       "popLabel": "",
-      "issuedAt": "2026-10-15T11:00:00+09:00",
+      "issuedAt": "2026-10-15T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -206,8 +211,8 @@
     "meshEntries": 1,
     "failures": 4,
     "meshTimelineEntries": 1,
-    "meshExactTempSlots": 4,
-    "hourlyRainEntries": 0
+    "meshExactTempSlots": 2,
+    "hourlyRainEntries": 1
   },
   "failures": [
     {
