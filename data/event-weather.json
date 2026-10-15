@@ -1,7 +1,7 @@
 {
   "date": "2026-10-15",
   "horizonDays": 7,
-  "generatedAt": "2026-10-15T08:24+09:00",
+  "generatedAt": "2026-10-15T16:42+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -17,12 +17,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "くもり 時々 晴れ",
-      "max": 23.0,
-      "min": 23.0,
+      "label": "晴れ 夜 くもり",
+      "max": null,
+      "min": null,
       "pop": "10",
       "popLabel": "当日最大",
-      "issuedAt": "2026-10-15T05:00:00+09:00",
+      "issuedAt": "2026-10-15T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -44,7 +44,7 @@
       "min": 23.0,
       "pop": "10",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-10-15T07:00:00+09:00",
+      "issuedAt": "2026-10-15T11:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "15〜19℃",
       "coordinates": {
@@ -53,22 +53,10 @@
       },
       "meshTimeline": [
         {
-          "time": "09:00",
-          "label": "晴れ",
-          "validAt": "2026-10-15T09:00+09:00",
-          "temp": 18
-        },
-        {
-          "time": "12:00",
-          "label": "晴れ",
-          "validAt": "2026-10-15T12:00+09:00",
-          "temp": 20
-        },
-        {
           "time": "15:00",
           "label": "晴れ",
           "validAt": "2026-10-15T15:00+09:00",
-          "temp": 22
+          "temp": 20
         },
         {
           "time": "18:00",
@@ -80,30 +68,13 @@
           "time": "21:00",
           "label": "晴れ",
           "validAt": "2026-10-15T21:00+09:00",
-          "temp": 17
+          "temp": 16
         },
         {
           "time": "24:00",
           "label": "晴れ",
           "validAt": "2026-10-16T00:00+09:00",
           "temp": 16
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "18:00",
-          "rain": false,
-          "validAt": "2026-10-15T18:00+09:00"
-        },
-        {
-          "time": "19:00",
-          "rain": false,
-          "validAt": "2026-10-15T19:00+09:00"
-        },
-        {
-          "time": "20:00",
-          "rain": false,
-          "validAt": "2026-10-15T20:00+09:00"
         }
       ]
     },
@@ -115,14 +86,14 @@
         "9b20d210f8f56c2f"
       ],
       "areaCode": "420010",
-      "areaName": "長崎県",
+      "areaName": "南部",
       "precision": "area",
-      "label": "晴れ時々くもり",
-      "max": 28.0,
-      "min": 18.0,
-      "pop": "20",
-      "popLabel": "1日",
-      "issuedAt": "2026-10-14T17:00:00+09:00",
+      "label": "晴れ 時々 くもり",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-10-15T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -137,12 +108,12 @@
       "areaCode": "270000",
       "areaName": "大阪府",
       "precision": "area",
-      "label": "晴れ時々くもり",
-      "max": 27.0,
-      "min": 18.0,
-      "pop": "10",
-      "popLabel": "1日",
-      "issuedAt": "2026-10-14T17:00:00+09:00",
+      "label": "晴れ",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-10-15T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -155,14 +126,14 @@
         "af6b4637fdfec58d"
       ],
       "areaCode": "070010",
-      "areaName": "中通り・浜通り",
+      "areaName": "中通り",
       "precision": "area",
-      "label": "晴れ時々くもり",
-      "max": 23.0,
-      "min": 10.0,
-      "pop": "20",
-      "popLabel": "1日",
-      "issuedAt": "2026-10-14T17:00:00+09:00",
+      "label": "晴れ",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-10-15T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -182,7 +153,7 @@
       "min": 18.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-10-14T17:00:00+09:00",
+      "issuedAt": "2026-10-15T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -198,11 +169,31 @@
       "areaName": "東京地方",
       "precision": "area",
       "label": "くもり",
+      "max": 25.0,
+      "min": 19.0,
+      "pop": "40",
+      "popLabel": "1日",
+      "issuedAt": "2026-10-15T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-10-22",
+      "venue": "東京都 Shibuya LOVEZ",
+      "venueKey": "shibuyalovez",
+      "eventIds": [
+        "79aabc4a79091a04"
+      ],
+      "areaCode": "130010",
+      "areaName": "東京地方",
+      "precision": "area",
+      "label": "くもり",
       "max": 23.0,
       "min": 17.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-10-14T17:00:00+09:00",
+      "issuedAt": "2026-10-15T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -211,12 +202,12 @@
   "stats": {
     "occurrencesInRange": 14,
     "uniqueVenueDates": 12,
-    "weatherEntries": 7,
+    "weatherEntries": 8,
     "meshEntries": 1,
-    "failures": 5,
+    "failures": 4,
     "meshTimelineEntries": 1,
-    "meshExactTempSlots": 6,
-    "hourlyRainEntries": 1
+    "meshExactTempSlots": 4,
+    "hourlyRainEntries": 0
   },
   "failures": [
     {
@@ -238,11 +229,6 @@
       "date": "2026-10-20",
       "venue": "その他 オンライン",
       "reason": "都道府県を解決できません"
-    },
-    {
-      "date": "2026-10-22",
-      "venue": "東京都 Shibuya LOVEZ",
-      "reason": "開催日の予報がまだありません"
     }
   ]
 }
