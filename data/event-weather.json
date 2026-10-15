@@ -1,88 +1,12 @@
 {
-  "date": "2026-10-15",
+  "date": "2026-10-16",
   "horizonDays": 7,
-  "generatedAt": "2026-10-15T22:39+09:00",
+  "generatedAt": "2026-10-16T04:04+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
-    {
-      "date": "2026-10-15",
-      "venue": "東京都 MORE STAR YouTube",
-      "venueKey": "morestaryoutube",
-      "eventIds": [
-        "60af619d20df0efd"
-      ],
-      "areaCode": "130010",
-      "areaName": "東京地方",
-      "precision": "area",
-      "label": "晴れ 夜 くもり",
-      "max": null,
-      "min": null,
-      "pop": "10",
-      "popLabel": "当日最大",
-      "issuedAt": "2026-10-15T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
-    {
-      "date": "2026-10-15",
-      "venue": "愛媛県 松山市民会館 大ホール",
-      "venueKey": "松山市民会館",
-      "eventIds": [
-        "024676b8e98a3faf",
-        "177bc2a9c9d757b9",
-        "dd5880f608189fe6"
-      ],
-      "areaCode": "150010",
-      "areaName": "下越",
-      "precision": "mesh5km",
-      "label": "晴れ",
-      "max": null,
-      "min": null,
-      "pop": "10",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-10-15T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "15〜19℃",
-      "coordinates": {
-        "lat": 37.913635,
-        "lon": 139.035461
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "晴れ",
-          "validAt": "2026-10-15T21:00+09:00",
-          "temp": 17
-        },
-        {
-          "time": "24:00",
-          "label": "晴れ",
-          "validAt": "2026-10-16T00:00+09:00",
-          "temp": 17
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "17:30",
-          "rain": false,
-          "validAt": "2026-10-15T17:30+09:00"
-        },
-        {
-          "time": "18:30",
-          "rain": false,
-          "validAt": "2026-10-15T18:30+09:00"
-        },
-        {
-          "time": "19:30",
-          "rain": false,
-          "validAt": "2026-10-15T19:30+09:00"
-        }
-      ]
-    },
     {
       "date": "2026-10-17",
       "venue": "HAPPINESS ARENA",
@@ -92,16 +16,19 @@
       ],
       "areaCode": "420010",
       "areaName": "南部",
-      "precision": "area",
-      "label": "晴れ 時々 くもり",
+      "precision": "mesh5km",
+      "label": "晴れ",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
       "issuedAt": "2026-10-15T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "meshTime": "00:00",
+      "meshTempBand": "15〜19℃",
+      "coordinates": {
+        "lat": 32.759331,
+        "lon": 129.8647
+      }
     },
     {
       "date": "2026-10-17",
@@ -112,16 +39,19 @@
       ],
       "areaCode": "270000",
       "areaName": "大阪府",
-      "precision": "area",
+      "precision": "mesh5km",
       "label": "晴れ",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
       "issuedAt": "2026-10-15T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "meshTime": "00:00",
+      "meshTempBand": "15〜19℃",
+      "coordinates": {
+        "lat": 34.657761,
+        "lon": 135.501358
+      }
     },
     {
       "date": "2026-10-17",
@@ -205,14 +135,14 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 14,
-    "uniqueVenueDates": 12,
-    "weatherEntries": 8,
-    "meshEntries": 1,
+    "occurrencesInRange": 10,
+    "uniqueVenueDates": 10,
+    "weatherEntries": 6,
+    "meshEntries": 2,
     "failures": 4,
-    "meshTimelineEntries": 1,
-    "meshExactTempSlots": 2,
-    "hourlyRainEntries": 1
+    "meshTimelineEntries": 0,
+    "meshExactTempSlots": 0,
+    "hourlyRainEntries": 0
   },
   "failures": [
     {
