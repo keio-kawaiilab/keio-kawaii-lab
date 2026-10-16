@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-16T09:46:21.125532+09:00",
-  "candidateUpdatedAt": "2026-10-16T09:46:21+09:00",
-  "previousEventCount": 133,
-  "candidateEventCount": 133,
-  "protectedPreviousCount": 133,
+  "generatedAt": "2026-10-16T14:26:48.049890+09:00",
+  "candidateUpdatedAt": "2026-10-16T14:26:47+09:00",
+  "previousEventCount": 135,
+  "candidateEventCount": 134,
+  "protectedPreviousCount": 135,
   "errorCount": 0,
-  "warningCount": 19,
+  "warningCount": 20,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / ぴあNICOSカード限定先行",
@@ -27,9 +27,10 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no target product: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no verified purchase/ticket window: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981: 2026-10-28, 2026-10-29, 2026-10-31, 2026-11-01, 2026-11-28, 2026-11-29"
   ],
-  "candidateSha256": "644bfb6a96e967a6d3b46e75582b2aedba07e1fdf95986696aa5650a7cc50c07",
+  "candidateSha256": "58ae7a3e4e93f1a5fbe27a2a41725c1dff6c753ddd90ed8ccf8cf09ca6b86fee",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40731",
@@ -60,7 +61,6 @@
     "url:https://sweetsteady.asobisystem.com/live_information/detail/43909",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
-    "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=09569",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=13707",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14296",
@@ -87,11 +87,12 @@
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=62959",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=79559",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=88970",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
     "url:https://www.gift-idol.jp/"
   ],
   "officialXSharedSourceKeysReconciled": [],
   "reconciledBaseDateMessageCount": 0,
-  "downgradedFalsePositiveCount": 0,
+  "downgradedFalsePositiveCount": 1,
   "legacyProtectedErrorCount": 16,
   "legacyProtectedErrors": [
     {
