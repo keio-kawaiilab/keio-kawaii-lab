@@ -1,7 +1,7 @@
 {
-  "date": "2026-10-16",
+  "date": "2026-10-17",
   "horizonDays": 7,
-  "generatedAt": "2026-10-16T22:30+09:00",
+  "generatedAt": "2026-10-17T03:45+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -78,6 +78,16 @@
           "time": "13:00",
           "rain": false,
           "validAt": "2026-10-17T13:00+09:00"
+        },
+        {
+          "time": "14:00",
+          "rain": false,
+          "validAt": "2026-10-17T14:00+09:00"
+        },
+        {
+          "time": "15:00",
+          "rain": false,
+          "validAt": "2026-10-17T15:00+09:00"
         }
       ]
     },
@@ -145,6 +155,23 @@
           "label": "晴れ",
           "validAt": "2026-10-18T00:00+09:00",
           "temp": 17
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "16:00",
+          "rain": false,
+          "validAt": "2026-10-17T16:00+09:00"
+        },
+        {
+          "time": "17:00",
+          "rain": false,
+          "validAt": "2026-10-17T17:00+09:00"
+        },
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-10-17T18:00+09:00"
         }
       ]
     },
@@ -224,16 +251,19 @@
       ],
       "areaCode": "240010",
       "areaName": "北中部",
-      "precision": "area",
-      "label": "くもり 時々 晴れ",
+      "precision": "mesh5km",
+      "label": "くもり",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
       "issuedAt": "2026-10-16T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "meshTime": "00:00",
+      "meshTempBand": "15〜19℃",
+      "coordinates": {
+        "lat": 35.029049,
+        "lon": 136.729919
+      }
     },
     {
       "date": "2026-10-21",
@@ -280,11 +310,11 @@
     "occurrencesInRange": 10,
     "uniqueVenueDates": 10,
     "weatherEntries": 6,
-    "meshEntries": 3,
+    "meshEntries": 4,
     "failures": 4,
     "meshTimelineEntries": 3,
     "meshExactTempSlots": 21,
-    "hourlyRainEntries": 1
+    "hourlyRainEntries": 2
   },
   "failures": [
     {
