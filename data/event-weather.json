@@ -1,7 +1,7 @@
 {
   "date": "2026-10-18",
   "horizonDays": 7,
-  "generatedAt": "2026-10-18T02:51+09:00",
+  "generatedAt": "2026-10-18T07:37+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -18,11 +18,11 @@
       "areaName": "北中部",
       "precision": "mesh5km",
       "label": "晴れ",
-      "max": 23.0,
-      "min": 18.0,
+      "max": 24.0,
+      "min": 24.0,
       "pop": "10",
       "popLabel": "12〜18時",
-      "issuedAt": "2026-10-17T17:00:00+09:00",
+      "issuedAt": "2026-10-18T05:00:00+09:00",
       "meshTime": "12:00",
       "meshTempBand": "20〜24℃",
       "coordinates": {
@@ -31,28 +31,22 @@
       },
       "meshTimeline": [
         {
-          "time": "06:00",
-          "label": "晴れ",
-          "validAt": "2026-10-18T06:00+09:00",
-          "temp": 17
-        },
-        {
           "time": "09:00",
           "label": "晴れ",
           "validAt": "2026-10-18T09:00+09:00",
-          "temp": 20
+          "temp": 21
         },
         {
           "time": "12:00",
           "label": "晴れ",
           "validAt": "2026-10-18T12:00+09:00",
-          "temp": 23
+          "temp": 24
         },
         {
           "time": "15:00",
           "label": "晴れ",
           "validAt": "2026-10-18T15:00+09:00",
-          "temp": 24
+          "temp": 23
         },
         {
           "time": "18:00",
@@ -64,7 +58,7 @@
           "time": "21:00",
           "label": "晴れ",
           "validAt": "2026-10-18T21:00+09:00",
-          "temp": 20
+          "temp": 21
         },
         {
           "time": "24:00",
@@ -74,16 +68,6 @@
         }
       ],
       "hourlyRain": [
-        {
-          "time": "12:00",
-          "rain": false,
-          "validAt": "2026-10-18T12:00+09:00"
-        },
-        {
-          "time": "13:00",
-          "rain": false,
-          "validAt": "2026-10-18T13:00+09:00"
-        },
         {
           "time": "14:00",
           "rain": false,
@@ -139,7 +123,7 @@
     "meshEntries": 1,
     "failures": 3,
     "meshTimelineEntries": 1,
-    "meshExactTempSlots": 7,
+    "meshExactTempSlots": 6,
     "hourlyRainEntries": 1
   },
   "failures": [
