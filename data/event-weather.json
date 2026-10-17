@@ -1,157 +1,12 @@
 {
-  "date": "2026-10-17",
+  "date": "2026-10-18",
   "horizonDays": 7,
-  "generatedAt": "2026-10-17T21:22+09:00",
+  "generatedAt": "2026-10-18T02:51+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
-    {
-      "date": "2026-10-17",
-      "venue": "HAPPINESS ARENA",
-      "venueKey": "happinessarena",
-      "eventIds": [
-        "9b20d210f8f56c2f"
-      ],
-      "areaCode": "420010",
-      "areaName": "南部",
-      "precision": "mesh5km",
-      "label": "晴れ",
-      "max": null,
-      "min": null,
-      "pop": "0",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-10-17T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "15〜19℃",
-      "coordinates": {
-        "lat": 32.759331,
-        "lon": 129.8647
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "晴れ",
-          "validAt": "2026-10-17T21:00+09:00",
-          "temp": 19
-        },
-        {
-          "time": "24:00",
-          "label": "晴れ",
-          "validAt": "2026-10-18T00:00+09:00",
-          "temp": 19
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "13:00",
-          "rain": false,
-          "validAt": "2026-10-17T13:00+09:00"
-        },
-        {
-          "time": "14:00",
-          "rain": false,
-          "validAt": "2026-10-17T14:00+09:00"
-        },
-        {
-          "time": "15:00",
-          "rain": false,
-          "validAt": "2026-10-17T15:00+09:00"
-        }
-      ]
-    },
-    {
-      "date": "2026-10-17",
-      "venue": "Zepp Namba",
-      "venueKey": "zeppnamba",
-      "eventIds": [
-        "9c9a76acf596123e"
-      ],
-      "areaCode": "270000",
-      "areaName": "大阪府",
-      "precision": "mesh5km",
-      "label": "晴れ",
-      "max": null,
-      "min": null,
-      "pop": "0",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-10-17T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "15〜19℃",
-      "coordinates": {
-        "lat": 34.657761,
-        "lon": 135.501358
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "晴れ",
-          "validAt": "2026-10-17T21:00+09:00",
-          "temp": 18
-        },
-        {
-          "time": "24:00",
-          "label": "晴れ",
-          "validAt": "2026-10-18T00:00+09:00",
-          "temp": 17
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "15:30",
-          "rain": false,
-          "validAt": "2026-10-17T15:30+09:00"
-        },
-        {
-          "time": "16:30",
-          "rain": false,
-          "validAt": "2026-10-17T16:30+09:00"
-        },
-        {
-          "time": "17:30",
-          "rain": false,
-          "validAt": "2026-10-17T17:30+09:00"
-        }
-      ]
-    },
-    {
-      "date": "2026-10-17",
-      "venue": "福島県 福島あづま球場/あづま総合運動公園",
-      "venueKey": "福島あづま球場/あづま総合運動公園",
-      "eventIds": [
-        "af6b4637fdfec58d"
-      ],
-      "areaCode": "070010",
-      "areaName": "中通り",
-      "precision": "mesh5km",
-      "label": "晴れ",
-      "max": null,
-      "min": null,
-      "pop": "0",
-      "popLabel": "当日最大",
-      "issuedAt": "2026-10-17T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "10〜14℃",
-      "coordinates": {
-        "lat": 37.724728,
-        "lon": 140.364899
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "晴れ",
-          "validAt": "2026-10-17T21:00+09:00",
-          "temp": 10
-        },
-        {
-          "time": "24:00",
-          "label": "晴れ",
-          "validAt": "2026-10-18T00:00+09:00",
-          "temp": 8
-        }
-      ]
-    },
     {
       "date": "2026-10-18",
       "venue": "三重県 ナガシマスパーランド内ナガシマスパードーム",
@@ -223,6 +78,16 @@
           "time": "12:00",
           "rain": false,
           "validAt": "2026-10-18T12:00+09:00"
+        },
+        {
+          "time": "13:00",
+          "rain": false,
+          "validAt": "2026-10-18T13:00+09:00"
+        },
+        {
+          "time": "14:00",
+          "rain": false,
+          "validAt": "2026-10-18T14:00+09:00"
         }
       ]
     },
@@ -268,21 +133,16 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 10,
-    "uniqueVenueDates": 10,
-    "weatherEntries": 6,
-    "meshEntries": 4,
-    "failures": 4,
-    "meshTimelineEntries": 4,
-    "meshExactTempSlots": 13,
-    "hourlyRainEntries": 3
+    "occurrencesInRange": 6,
+    "uniqueVenueDates": 6,
+    "weatherEntries": 3,
+    "meshEntries": 1,
+    "failures": 3,
+    "meshTimelineEntries": 1,
+    "meshExactTempSlots": 7,
+    "hourlyRainEntries": 1
   },
   "failures": [
-    {
-      "date": "2026-10-17",
-      "venue": "宮古島コースタルリゾートヒララ",
-      "reason": "都道府県を解決できません"
-    },
     {
       "date": "2026-10-18",
       "venue": "宮古島コースタルリゾートヒララ",
