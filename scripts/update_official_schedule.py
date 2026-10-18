@@ -106,6 +106,7 @@ def participants(event: dict) -> list[str]:
 def event_key(title: object) -> str:
     text = normalize_space(title).upper()
     families = (
+        (r"KAWAII LAB\.?\s*5TH\s+ANNIVERSARY\s+TOUR", "KAWAII-LAB-5TH-TOUR"),
         (r"KAWAII LAB\.?\s*CHRISTMAS SESSION", "KAWAII-LAB-CHRISTMAS"),
         (r"KAWAII LAB\.?\s*COLLECTION", "KAWAII-LAB-COLLECTION"),
         (r"ROCK IN JAPAN", "ROCK-IN-JAPAN"),
