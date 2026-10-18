@@ -33,6 +33,15 @@ const snapshot = JSON.parse(snapshotMatch[1]);
 check(snapshot.events.some(event => event.eventScope === 'kawaii-lab'), 'snapshot has no hosted events');
 check(snapshot.events.some(event => event.eventScope === 'external'), 'snapshot has no external events');
 
+const fifthTour = snapshot.events.filter(event =>
+  /KAWAII LAB\\.?\\s*5th\\s+ANNIVERSARY\\s+TOUR/i.test(String(event.eventTitle || event.title || ''))
+);
+const fifthTourDates = new Set(fifthTour.map(event => String(event.eventDate || '').slice(0, 10)));
+const requiredFifthDates = ['2027-01-30','2027-01-31','2027-02-13','2027-02-14','2027-02-20','2027-02-21','2027-03-20','2027-03-21','2027-04-03','2027-04-04'];
+check(requiredFifthDates.every(day => fifthTourDates.has(day)), '5th anniversary tour is missing a performance date');
+check(page.includes('expandCanonicalOffers(raw).map(normalizeFifthTour)'), '5th tour is not normalized from live JSON');
+check(page.includes("if(fifthTour(e))return ['KAWAII-LAB-5TH-TOUR',day]"), '5th tour cross-group duplicate guard is missing');
+
 const kawacolle = snapshot.events.filter(event => {
   const title = [event.eventTitle, event.displayTitle, event.title].filter(Boolean).join(' ');
   return String(event.eventDate || '').slice(0, 10) === '2026-10-12' && /COLLECTION produced by TGC/i.test(title);
