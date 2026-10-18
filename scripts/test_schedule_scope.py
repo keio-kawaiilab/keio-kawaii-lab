@@ -19,6 +19,16 @@ class ScheduleScopeTests(unittest.TestCase):
         ):
             self.assertEqual(HOSTED, infer_event_scope({"title": title}), title)
 
+    def test_fifth_anniversary_tour_is_hosted_even_with_stale_external_scope(self):
+        from schedule_scope import apply_event_scope
+        event = {
+            "group": "MORE STAR",
+            "title": "KAWAII LAB. 5th ANNIVERSARY TOUR 宮城公演 DAY2",
+            "eventScope": EXTERNAL,
+        }
+        self.assertEqual(HOSTED, infer_event_scope(event))
+        self.assertEqual(HOSTED, apply_event_scope(event)["eventScope"])
+
     def test_external_appearances(self):
         for title in (
             "ROCK IN JAPAN FESTIVAL 2026",
