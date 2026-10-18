@@ -61,6 +61,24 @@ class OfficialScheduleTests(unittest.TestCase):
         ]
         self.assertEqual(1, len(collapse_missing(rows)))
 
+    def test_fifth_tour_listings_collapse_by_date_across_groups(self):
+        titles = (
+            "KAWAII LAB. 5th ANNIVERSARY TOUR@Kアリーナ横浜",
+            "KAWAII LAB. 5th ANNIVERSARY TOUR @Kアリーナ横浜",
+            "KAWAII LAB. 5th ANNIVERSARY TOUR 神奈川公演 DAY1",
+        )
+        groups = ("FRUITS ZIPPER", "CUTIE STREET", "MORE STAR")
+        rows = [
+            OfficialRow(group, "2027-02-13", "LIVE", title, f"https://example.com/{i}", "kawaii-lab")
+            for i, (group, title) in enumerate(zip(groups, titles))
+        ]
+        collapsed = collapse_missing(rows)
+        self.assertEqual(1, len(collapsed))
+        combined = build_event(collapsed[0], {"venue": "神奈川県 Kアリーナ横浜"})
+        self.assertEqual("KAWAII LAB.合同", combined["group"])
+        self.assertEqual("kawaii-lab", combined["eventScope"])
+        self.assertEqual(set(groups), set(combined["participants"]))
+
     def test_ticket_row_inherits_official_performance_scope(self):
         event = {
             "group": "CANDY TUNE", "eventDate": "2026-12-01", "title": "CANDY TUNE",
