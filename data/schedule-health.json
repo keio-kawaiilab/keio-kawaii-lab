@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-18T23:10:13.732268+09:00",
-  "candidateUpdatedAt": "2026-10-18T23:10:13+09:00",
-  "previousEventCount": 156,
-  "candidateEventCount": 156,
-  "protectedPreviousCount": 156,
+  "generatedAt": "2026-10-19T02:24:56.286966+09:00",
+  "candidateUpdatedAt": "2026-10-19T02:24:56+09:00",
+  "previousEventCount": 157,
+  "candidateEventCount": 157,
+  "protectedPreviousCount": 154,
   "errorCount": 0,
-  "warningCount": 21,
+  "warningCount": 22,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -16,6 +16,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:24086: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:22728: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:13707: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:09569: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:25885: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:88970: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / プレリザーブ",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:19887: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / プレリザーブ",
@@ -31,7 +32,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
   ],
-  "candidateSha256": "8b3f73a3f24d33a747f1b4157bdf3b4f5688186832abf1f368ed8a4454905744",
+  "candidateSha256": "3885d92c012cf762e92cf21a8993e322c419d072fd9c5e73bff22420399f6078",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40731",
@@ -104,7 +105,7 @@
   "officialXSharedSourceKeysReconciled": [],
   "reconciledBaseDateMessageCount": 0,
   "downgradedFalsePositiveCount": 0,
-  "legacyProtectedErrorCount": 20,
+  "legacyProtectedErrorCount": 21,
   "legacyProtectedErrors": [
     {
       "error": "duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
@@ -134,6 +135,11 @@
     {
       "error": "duplicate Pia lot pia:13707: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
       "label": "FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "duplicate Pia lot pia:09569: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 現在受付なし",
+      "label": "CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 現在受付なし",
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     },
     {
