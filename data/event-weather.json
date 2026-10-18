@@ -1,7 +1,7 @@
 {
   "date": "2026-10-18",
   "horizonDays": 7,
-  "generatedAt": "2026-10-18T07:37+09:00",
+  "generatedAt": "2026-10-18T16:24+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -22,26 +22,14 @@
       "min": 24.0,
       "pop": "10",
       "popLabel": "12〜18時",
-      "issuedAt": "2026-10-18T05:00:00+09:00",
-      "meshTime": "12:00",
+      "issuedAt": "2026-10-18T11:00:00+09:00",
+      "meshTime": "15:00",
       "meshTempBand": "20〜24℃",
       "coordinates": {
         "lat": 35.029049,
         "lon": 136.729919
       },
       "meshTimeline": [
-        {
-          "time": "09:00",
-          "label": "晴れ",
-          "validAt": "2026-10-18T09:00+09:00",
-          "temp": 21
-        },
-        {
-          "time": "12:00",
-          "label": "晴れ",
-          "validAt": "2026-10-18T12:00+09:00",
-          "temp": 24
-        },
         {
           "time": "15:00",
           "label": "晴れ",
@@ -52,7 +40,7 @@
           "time": "18:00",
           "label": "晴れ",
           "validAt": "2026-10-18T18:00+09:00",
-          "temp": 21
+          "temp": 22
         },
         {
           "time": "21:00",
@@ -68,6 +56,16 @@
         }
       ],
       "hourlyRain": [
+        {
+          "time": "12:00",
+          "rain": false,
+          "validAt": "2026-10-18T12:00+09:00"
+        },
+        {
+          "time": "13:00",
+          "rain": false,
+          "validAt": "2026-10-18T13:00+09:00"
+        },
         {
           "time": "14:00",
           "rain": false,
@@ -86,11 +84,11 @@
       "areaName": "東京地方",
       "precision": "area",
       "label": "くもり",
-      "max": 28.0,
-      "min": 21.0,
+      "max": 29.0,
+      "min": 22.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-10-17T17:00:00+09:00",
+      "issuedAt": "2026-10-18T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -106,11 +104,11 @@
       "areaName": "東京地方",
       "precision": "area",
       "label": "くもり時々晴れ",
-      "max": 23.0,
+      "max": 24.0,
       "min": 17.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-10-17T17:00:00+09:00",
+      "issuedAt": "2026-10-18T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -123,7 +121,7 @@
     "meshEntries": 1,
     "failures": 3,
     "meshTimelineEntries": 1,
-    "meshExactTempSlots": 6,
+    "meshExactTempSlots": 4,
     "hourlyRainEntries": 1
   },
   "failures": [
