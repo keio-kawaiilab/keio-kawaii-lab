@@ -23,6 +23,7 @@ HOSTED_HINT_RE = re.compile(
     re.I,
 )
 KAWAII_LAB_HOSTED_RE = re.compile(r"KAWAII LAB\.?\s*(?:Christmas SESSION|COLLECTION|SESSION|主催)", re.I)
+FIFTH_TOUR_RE = re.compile(r"KAWAII LAB\.?\s*5th\s+ANNIVERSARY\s+TOUR", re.I)
 
 
 def normalized_text(event: dict) -> str:
@@ -47,6 +48,11 @@ def special_event_category(title: object) -> str | None:
 
 def infer_event_scope(event: dict) -> str:
     """Classify conservatively: unknown appearances stay out of the default view."""
+    # The official KAWAII LAB. 5th tour is hosted, even when stale data says external.
+    text = normalized_text(event)
+    if FIFTH_TOUR_RE.search(text):
+        return HOSTED
+
     explicit = str(event.get("eventScope") or "").strip().lower()
     if explicit in VALID_SCOPES:
         return explicit
@@ -55,7 +61,6 @@ def infer_event_scope(event: dict) -> str:
     if category in {"online-benefit", "large-benefit", "release-event"}:
         return HOSTED
 
-    text = normalized_text(event)
     if KAWAII_LAB_HOSTED_RE.search(text):
         return HOSTED
     if EXTERNAL_HINT_RE.search(text):
@@ -70,6 +75,7 @@ def infer_event_scope(event: dict) -> str:
 
 def apply_event_scope(event: dict, *, overwrite: bool = False) -> dict:
     out = dict(event)
-    if overwrite or str(out.get("eventScope") or "").lower() not in VALID_SCOPES:
+    if (overwrite or str(out.get("eventScope") or "").lower() not in VALID_SCOPES
+            or FIFTH_TOUR_RE.search(normalized_text(out))):
         out["eventScope"] = infer_event_scope({key: value for key, value in out.items() if key != "eventScope"})
     return out
