@@ -111,7 +111,7 @@ jobs:
 
       - name: Test official schedule auto-add and parallel collector
         working-directory: scripts
-        run: python -m unittest -v test_update_official_schedule.py test_update_official_schedule_parallel.py test_update_live_events_v2.py test_continuous_official_discovery.py test_reapply_calendar_observations.py test_archive_ticket_history.py
+        run: python -m unittest -v test_update_official_schedule.py test_update_official_schedule_parallel.py test_update_live_events_v2.py test_continuous_official_discovery.py test_reapply_calendar_observations.py test_archive_ticket_history.py test_fifth_tour_ticket_history.py
 
       - name: Collect official, PIA and official schedule data
         id: collect
