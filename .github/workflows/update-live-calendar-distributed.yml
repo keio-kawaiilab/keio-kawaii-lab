@@ -19,6 +19,8 @@ on:
       - "scripts/audit_schedule_release_grouped.py"
       - "scripts/test_audit_schedule_release_grouped.py"
       - "scripts/archive_ticket_history.py"
+      - "scripts/backfill_ticket_history_oneoffs.py"
+      - "data/ticket-history-backfill-oneoffs.json"
       - "scripts/promoter_general_sale_guard.py"
       - "scripts/update_special_events.py"
       - "scripts/normalize_special_event_entities.py"
@@ -501,6 +503,7 @@ jobs:
           python scripts/audit_official_schedule_coverage.py \
             --previous-index /tmp/official-schedule-index-last-good.json
           python scripts/archive_ticket_history.py
+          python scripts/backfill_ticket_history_oneoffs.py
           python scripts/audit_ticket_sources.py --report /tmp/ticket-source-audit.json
           # Record complete source/history coverage without freezing unrelated
           # healthy updates on a transient endpoint failure.
@@ -542,6 +545,7 @@ jobs:
               python scripts/fix_schedule_shell.py
               python scripts/strip_schedule_explanations.py
               python scripts/archive_ticket_history.py
+          python scripts/backfill_ticket_history_oneoffs.py
               python scripts/build_live_runtime_fallback.py
               python scripts/audit_discovery_publication.py
               node --check /tmp/schedule-inline.js
