@@ -68,6 +68,18 @@ async function main(){
   assert.strictEqual(h.api.effectiveBand({...available,applicationStatus:'sold_out'}),null,'sold-out reception still has an application band');
   assert(h.api.effectiveBand({...available,applicationStatus:'open'}),'available reception lost its band');
 
+  const online={id:'online-benefit',group:'CANDY TUNE',eventScope:'kawaii-lab',eventCategory:'online-benefit',applicationDisplayMode:'offers',title:'CANDY TUNE オンライン特典会',eventDate:'2099-09-19',venue:'オンライン（SUKISUKI）',ticketType:'複数受付',url:official,urls:[official],primarySource:'official',offers:[
+    {sourceRowId:'online-lottery',provider:'sukisuki',ticketType:'オンライン特典会・抽選販売',url:'https://sukisuki-shop.com/goods/lottery',applyStart:'2099-09-01T21:00',applyEnd:'2099-09-10T23:59'},
+    {sourceRowId:'online-first-come',provider:'sukisuki',ticketType:'オンライン特典会・先着販売',url:'https://sukisuki-shop.com/goods/first-come',applyStart:'2099-09-18T20:00',applyEnd:'2099-09-19T17:00'}]};
+  const onlinePrepared=h.api.prepare([online]);
+  assert.strictEqual(onlinePrepared.filter(e=>e.canonicalRuntimeRole==='performance').length,1,'online benefit parent was not retained as one event');
+  assert.strictEqual(onlinePrepared.filter(e=>e.canonicalRuntimeRole==='offer').length,2,'online benefit child receptions were not expanded');
+  const onlineModel=h.api.performanceModels(onlinePrepared)[0];
+  assert(onlineModel.online,'online benefit was not rendered as an online event');
+  assert.strictEqual(onlineModel.offers.length,2,'online benefit receptions disappeared from the event card');
+  h.api.renderCards(onlinePrepared);
+  assert(h.get('cards').innerHTML.includes('オンライン特典会・先着販売'),'active online benefit reception is missing from the event card');
+
   const model=h.api.performanceModels(prepared).find(m=>m.date==='2099-09-19'&&m.startTime==='18:00');
   assert.strictEqual(model.offers.length,3,'ticket history was lost');
   h.api.renderCards(prepared);assert(!h.get('cards').innerHTML.includes('受付終了'),'ended reception leaked into application cards');

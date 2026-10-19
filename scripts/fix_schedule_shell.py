@@ -38,7 +38,7 @@ CANONICAL_OFFER_JS = (
     "if(o.venue)x.venue=o.venue;if(d.sourceUrl){x.url=d.sourceUrl;[d.sourceUrl].concat(e.urls||[]).forEach(function(u){if(u&&us.indexOf(u)<0)us.push(u)});x.urls=us}"
     "delete x.sourceUrl;delete x.occurrenceDetails;delete x.displayByOccurrence;out.push(x)})});return out}"
     "function expandCanonicalOffers(raw){raw=expandSpecialOccurrences(raw);var out=[];(raw||[]).forEach(function(e){"
-    "if(!e||e.entityType!=='special-event'||!Array.isArray(e.offers)){out.push(e);return}"
+    "if(!e||!Array.isArray(e.offers)||(e.entityType!=='special-event'&&e.entityType!=='performance'&&e.applicationDisplayMode!=='offers')){out.push(e);return}"
     "var base=Object.assign({},e);delete base.offers;out.push(base);"
     "e.offers.forEach(function(o,i){if(!o||typeof o!=='object')return;var x=Object.assign({},base,o),us=[];"
     "x.id=o.sourceRowId||String(base.id||'special')+'-offer-'+i;"

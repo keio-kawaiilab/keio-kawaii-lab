@@ -215,10 +215,14 @@ def _replace_cards(page: str, visible: list[dict[str, Any]]) -> str:
 def _patch_runtime(page: str) -> str:
     special_only = "if(!e||e.entityType!=='special-event'||!Array.isArray(e.offers)){out.push(e);return}"
     performance_aware = "if(!e||(e.entityType!=='special-event'&&e.entityType!=='performance')||!Array.isArray(e.offers)){out.push(e);return}"
-    if performance_aware not in page:
-        if special_only not in page:
+    offers_aware = "if(!e||!Array.isArray(e.offers)||(e.entityType!=='special-event'&&e.entityType!=='performance'&&e.applicationDisplayMode!=='offers')){out.push(e);return}"
+    if offers_aware not in page:
+        if performance_aware in page:
+            page = page.replace(performance_aware, offers_aware, 1)
+        elif special_only in page:
+            page = page.replace(special_only, offers_aware, 1)
+        else:
             raise RuntimeError("canonical offer adapter changed; performance entities cannot be expanded safely")
-        page = page.replace(special_only, performance_aware, 1)
 
     # When an old raw multi-day tour row is repaired from an official schedule,
     # the official occurrence's OPEN/START must win over a ticket row's top-level
