@@ -24,6 +24,12 @@ GIFT_LOCATIONS = ["東京都 SGC HALL ARIAKE", "東京都 TOYOTA ARENA TOKYO"]
 MORE_STAR_7TH_DAY = "2026-11-25"
 MORE_STAR_7TH_SCHEDULE = "https://morestar.asobisystem.com/live_information/detail/45677"
 MORE_STAR_7TH_NEWS = "https://morestar.asobisystem.com/news/detail/92107"
+CANDY_ONLINE_20261020_DAY = "2026-10-20"
+CANDY_ONLINE_20261020_OFFICIAL = "https://candytune.asobisystem.com/live_information/detail/46277"
+CANDY_ONLINE_20261020_GOODS = {
+    "https://sukisuki-shop.com/goods/6500000004622",
+    "https://sukisuki-shop.com/goods/6500000004623",
+}
 
 HAKATA_PARTS = [
     {"part": "第1部", "content": "2ショットチェキ撮影会（FC限定）", "start": "10:00", "end": "11:00", "receptionStart": "09:40", "receptionEnd": "10:40"},
@@ -329,6 +335,97 @@ def _repair_more_star_seventh(event: dict) -> dict:
     return out
 
 
+def _is_candy_online_20261020(event: dict) -> bool:
+    return (
+        event.get("group") == "CANDY TUNE"
+        and _day(event) == CANDY_ONLINE_20261020_DAY
+        and event.get("eventCategory") == "online-benefit"
+        and "オンライン特典会" in str(event.get("title") or event.get("eventTitle") or "")
+    )
+
+
+def _collapse_candy_online_20261020(events: list[dict]) -> tuple[list[dict], int]:
+    matches = [event for event in events if _is_candy_online_20261020(event)]
+    if len(matches) < 2:
+        return events, 0
+    all_source_urls = list(dict.fromkeys(url for event in matches for url in _urls(event)))
+    if CANDY_ONLINE_20261020_OFFICIAL not in all_source_urls:
+        return events, 0
+    if not CANDY_ONLINE_20261020_GOODS.intersection(all_source_urls):
+        return events, 0
+
+    official_rows = [
+        event for event in matches
+        if CANDY_ONLINE_20261020_OFFICIAL in _urls(event)
+    ]
+    base = deepcopy(official_rows[0])
+    title = "CANDY TUNE オンライン特典会"
+    base.update({
+        "id": "known-candy-tune-online-20261020",
+        "title": title,
+        "eventTitle": title,
+        "displayTitle": title,
+        "eventDate": CANDY_ONLINE_20261020_DAY,
+        "eventEndDate": CANDY_ONLINE_20261020_DAY,
+        "eventDates": [CANDY_ONLINE_20261020_DAY],
+        "eventCount": 1,
+        "startTime": "17:00",
+        "venue": "オンライン（SUKISUKI）",
+        "url": CANDY_ONLINE_20261020_OFFICIAL,
+        "urls": all_source_urls,
+        "officialScheduleUrl": CANDY_ONLINE_20261020_OFFICIAL,
+        "sourceType": "official-schedule",
+        "sourceChannel": "known-official-correction",
+        "primarySource": "official",
+        "sourceCandidates": ["official", "sukisuki"],
+        "sourceRowIds": [str(event.get("id") or "") for event in matches if event.get("id")],
+    })
+
+    offers = []
+    seen = set()
+    for event in matches:
+        ticket_type = str(event.get("ticketType") or "").strip()
+        goods_urls = [url for url in _urls(event) if url in CANDY_ONLINE_20261020_GOODS]
+        if not goods_urls or not ticket_type or ticket_type == "現在受付なし":
+            continue
+        marker = (
+            goods_urls[0],
+            ticket_type,
+            str(event.get("applyStart") or ""),
+            str(event.get("applyEnd") or ""),
+        )
+        if marker in seen:
+            continue
+        seen.add(marker)
+        offer = {
+            "sourceRowId": event.get("id"),
+            "provider": "sukisuki",
+            "url": goods_urls[0],
+            "urls": goods_urls,
+            "ticketType": ticket_type,
+            "sourceType": event.get("sourceType") or "sukisuki",
+            "primarySource": event.get("primarySource") or "sukisuki",
+        }
+        for field in ("applyStart", "applyEnd", "resultDate", "paymentEnd", "sourcePublishedAt"):
+            if event.get(field) is not None:
+                offer[field] = deepcopy(event[field])
+        offers.append(offer)
+
+    for field in ("applyStart", "applyEnd", "resultDate", "paymentEnd", "ticketProvider"):
+        base.pop(field, None)
+    base["offers"] = offers
+    base["ticketType"] = "複数受付" if len(offers) > 1 else (
+        str(offers[0].get("ticketType") or "現在受付なし") if offers else "現在受付なし"
+    )
+    base["applicationDisplayMode"] = "offers" if offers else "schedule-only"
+    base["applicationStatus"] = "offers" if offers else "none"
+
+    first_index = min(index for index, event in enumerate(events) if _is_candy_online_20261020(event))
+    output = [event for event in events if not _is_candy_online_20261020(event)]
+    output.insert(first_index, base)
+    return output, len(matches) - 1
+
+
 def _sale_url(event: dict) -> str:
     value = str(event.get("url") or "").strip().lower()
     return re.sub(r"[?#].*$", "", value).rstrip("/")
@@ -406,6 +503,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "giftMultiVenueFixed": 0,
         "giftMoreStarAdded": 0,
         "moreStarSeventhFixed": 0,
+        "candyOnline20261020RowsCollapsed": 0,
         "semanticTicketDuplicatesRemoved": 0,
         "semanticTicketDuplicateIds": [],
     }
@@ -463,6 +561,9 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
     if gift_more_star:
         out.append(gift_more_star)
         report["giftMoreStarAdded"] += 1
+
+    out, candy_online_removed = _collapse_candy_online_20261020(out)
+    report["candyOnline20261020RowsCollapsed"] = candy_online_removed
 
     out, removed, removed_ids = _dedupe_ticket_rows(out)
     report["semanticTicketDuplicatesRemoved"] = removed

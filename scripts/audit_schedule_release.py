@@ -271,6 +271,23 @@ def build_index(events: Iterable[dict]) -> dict[str, dict]:
     return index
 
 
+def matching_embedded_offer(old: dict, candidate: dict) -> dict | None:
+    """Return the nested offer that preserves an old acquisition row."""
+    offers = candidate.get("offers")
+    if not isinstance(offers, list):
+        return None
+    old_urls = set(urls(old))
+    old_id = str(old.get("id") or "")
+    for offer in offers:
+        if not isinstance(offer, dict):
+            continue
+        if old_id and str(offer.get("sourceRowId") or "") == old_id:
+            return offer
+        if old_urls.intersection(urls(offer)):
+            return offer
+    return None
+
+
 def replaced_by_joint_christmas(old: dict, candidates: Iterable[dict]) -> bool:
     if "チケット先行情報" not in str(old.get("title") or ""):
         return False
@@ -539,7 +556,8 @@ def audit(previous: dict, candidate: dict, now: datetime) -> tuple[list[str], li
             warnings.append(f"performance dates added for {match_key}: {', '.join(added_days)}")
 
         old_end = parse_dt(old.get("applyEnd"))
-        new_end = parse_dt(match.get("applyEnd"))
+        deadline_match = matching_embedded_offer(old, match) or match
+        new_end = parse_dt(deadline_match.get("applyEnd"))
         if old_end and old_end.date() >= today:
             if not new_end:
                 errors.append(f"active deadline disappeared for {match_key}: {label(old)}")
@@ -548,7 +566,7 @@ def audit(previous: dict, candidate: dict, now: datetime) -> tuple[list[str], li
                     f"deadline moved earlier for {match_key}: {old.get('applyEnd')} -> {match.get('applyEnd')} (manual review required)"
                 )
             elif new_end > old_end:
-                if source_evidence_for_deadline(match):
+                if source_evidence_for_deadline(deadline_match):
                     warnings.append(
                         f"deadline extended for {match_key}: {old.get('applyEnd')} -> {match.get('applyEnd')}"
                     )

@@ -5,6 +5,57 @@ from apply_known_schedule_corrections import apply_known_corrections
 
 
 class KnownScheduleCorrectionsTest(unittest.TestCase):
+    def test_candy_online_official_and_sukisuki_rows_become_one_event(self):
+        official = {
+            "id": "official-online",
+            "group": "CANDY TUNE",
+            "title": "CANDY TUNE オンライン特典会",
+            "eventDate": "2026-10-20",
+            "startTime": "17:00",
+            "eventCategory": "online-benefit",
+            "ticketType": "現在受付なし",
+            "url": "https://candytune.asobisystem.com/live_information/detail/46277",
+        }
+        lottery = {
+            "id": "sukisuki-lottery",
+            "group": "CANDY TUNE",
+            "title": "CANDY TUNE オンライン特典会",
+            "eventDate": "2026-10-20",
+            "startTime": "17:00",
+            "eventCategory": "online-benefit",
+            "ticketType": "オンライン特典会・抽選販売",
+            "applyStart": "2026-10-13T21:00",
+            "applyEnd": "2026-10-14T23:59",
+            "resultDate": "2026-10-15",
+            "paymentEnd": "2026-10-17T23:59",
+            "url": "https://sukisuki-shop.com/goods/6500000004622",
+            "sourceType": "sukisuki",
+        }
+        first_come = {
+            "id": "sukisuki-first-come",
+            "group": "CANDY TUNE",
+            "title": "CANDY TUNE オンライン特典会",
+            "eventDate": "2026-10-20",
+            "startTime": "17:00",
+            "eventCategory": "online-benefit",
+            "ticketType": "オンライン特典会・先着販売",
+            "applyStart": "2026-10-18T20:00",
+            "applyEnd": "2026-10-20T17:00",
+            "url": "https://sukisuki-shop.com/goods/6500000004623",
+            "sourceType": "sukisuki",
+        }
+        corrected, report = apply_known_corrections([official, lottery, first_come])
+        self.assertEqual(1, len(corrected))
+        event = corrected[0]
+        self.assertEqual("known-candy-tune-online-20261020", event["id"])
+        self.assertEqual("複数受付", event["ticketType"])
+        self.assertEqual(2, len(event["offers"]))
+        self.assertEqual(
+            {"オンライン特典会・抽選販売", "オンライン特典会・先着販売"},
+            {offer["ticketType"] for offer in event["offers"]},
+        )
+        self.assertEqual(2, report["candyOnline20261020RowsCollapsed"])
+
     def test_more_star_seventh_uses_verified_single_performance_date(self):
         malformed = {
             "id": "more-star-7th",

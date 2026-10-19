@@ -168,6 +168,52 @@ class AuditScheduleReleaseTests(unittest.TestCase):
         errors, _, _ = audit(payload([]), payload([event]), NOW)
         self.assertTrue(any("no SUKISUKI product URL" in error for error in errors))
 
+    def test_online_sale_deadline_survives_inside_consolidated_event(self):
+        goods = "https://sukisuki-shop.com/goods/6500000004623"
+        old = {
+            "id": "sukisuki-first-come",
+            "group": "CANDY TUNE",
+            "eventScope": "kawaii-lab",
+            "title": "CANDY TUNE オンライン特典会",
+            "ticketType": "オンライン特典会・先着販売",
+            "applyStart": "2026-10-18T20:00",
+            "applyEnd": "2026-10-20T17:00",
+            "eventDate": "2026-10-20",
+            "startTime": "17:00",
+            "url": goods,
+            "urls": [goods],
+            "eventCategory": "online-benefit",
+            "applicationStatus": "open",
+        }
+        consolidated = {
+            "id": "known-candy-tune-online-20261020",
+            "group": "CANDY TUNE",
+            "eventScope": "kawaii-lab",
+            "title": "CANDY TUNE オンライン特典会",
+            "ticketType": "複数受付",
+            "eventDate": "2026-10-20",
+            "startTime": "17:00",
+            "url": "https://candytune.asobisystem.com/live_information/detail/46277",
+            "urls": [
+                "https://candytune.asobisystem.com/live_information/detail/46277",
+                goods,
+            ],
+            "eventCategory": "online-benefit",
+            "applicationStatus": "offers",
+            "applicationDisplayMode": "offers",
+            "offers": [{
+                "sourceRowId": "sukisuki-first-come",
+                "provider": "sukisuki",
+                "ticketType": "オンライン特典会・先着販売",
+                "applyStart": "2026-10-18T20:00",
+                "applyEnd": "2026-10-20T17:00",
+                "url": goods,
+                "urls": [goods],
+            }],
+        }
+        errors, _, _ = audit(payload([old]), payload([consolidated]), NOW)
+        self.assertEqual([], errors)
+
     def test_future_performance_date_cannot_silently_vanish(self):
         old = payload([base_pia(eventDates=["2026-11-10", "2026-11-12"])])
         new = payload([base_pia(eventDates=["2026-11-10"])])
