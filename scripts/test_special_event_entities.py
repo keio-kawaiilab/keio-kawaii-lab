@@ -8,6 +8,53 @@ from normalize_special_event_entities import normalize_payload, validate
 
 
 class SpecialEventEntityTests(unittest.TestCase):
+    def online_rows(self):
+        return [
+            {"id": "official", "group": "CANDY TUNE", "title": "CANDY TUNE オンライン特典会",
+             "eventCategory": "online-benefit", "eventDate": "2026-10-19",
+             "eventDates": ["2026-10-19", "2026-10-20"],
+             "schedule": [{"date": "2026-10-19", "venue": "その他 オンライン"},
+                          {"date": "2026-10-20", "venue": "その他 オンライン"}],
+             "ticketType": "現在受付なし", "url": "https://candytune.asobisystem.com/live_information/detail/46277"},
+            {"id": "goods19", "group": "CANDY TUNE", "title": "CANDY TUNE lovers book by LARME オンライン特典会",
+             "eventCategory": "online-benefit", "eventDate": "2026-10-19", "startTime": "17:00",
+             "url": "https://sukisuki-shop.com/goods/6500000004607"},
+            {"id": "goods20", "group": "CANDY TUNE", "title": "CANDY TUNE オンライン特典会",
+             "eventCategory": "online-benefit", "eventDate": "2026-10-20", "startTime": "17:00",
+             "url": "https://sukisuki-shop.com/goods/6500000004622"},
+        ]
+
+    def test_online_official_multiday_placeholder_merges_each_day_into_goods(self):
+        rows = self.online_rows()
+        result, report = normalize_payload({"events": rows})
+        self.assertEqual({"goods19", "goods20"}, {row["id"] for row in result["events"]})
+        self.assertEqual(2, report["onlinePlaceholderOccurrencesMerged"])
+        self.assertEqual("17:00", result["events"][1]["startTime"])
+        self.assertIn(rows[0]["url"], result["events"][1]["urls"])
+        self.assertNotIn("urls", rows[2])  # caller's data is not mutated
+        again, _ = normalize_payload(result)
+        self.assertEqual(result["events"], again["events"])
+
+    def test_online_unmatched_days_are_preserved(self):
+        result, _ = normalize_payload({"events": self.online_rows()[:2]})
+        placeholder = next(row for row in result["events"] if row["id"] == "official")
+        self.assertEqual(["2026-10-20"], placeholder["eventDates"])
+        self.assertEqual("2026-10-20", placeholder["eventDate"])
+
+    def test_online_multiple_goods_are_not_guessed_or_combined(self):
+        rows = self.online_rows()
+        other = dict(rows[2], id="other-session", startTime="19:00", url="https://sukisuki-shop.com/goods/999")
+        result, _ = normalize_payload({"events": rows + [other]})
+        self.assertEqual(4, len(result["events"]))
+        self.assertEqual(["2026-10-20"], next(row for row in result["events"] if row["id"] == "official")["eventDates"])
+
+    def test_online_conflicting_times_and_other_groups_are_not_merged(self):
+        for change in ({"startTime": "19:00"}, {"group": "SWEET STEADY"}):
+            rows = self.online_rows()
+            rows[0].update(change)
+            result, _ = normalize_payload({"events": rows})
+            self.assertEqual(3, len(result["events"]))
+
     def test_duplicate_ordinary_id_same_logical_row_collapses_before_publication(self):
         payload = {"events": [
             {

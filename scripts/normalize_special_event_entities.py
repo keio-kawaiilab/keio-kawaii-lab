@@ -503,11 +503,80 @@ def repair_duplicate_event_ids(events: list[dict]) -> tuple[list[dict], dict]:
     }
 
 
+def reconcile_online_placeholders(events: list[dict]) -> tuple[list[dict], int]:
+    """Attach official schedule occurrences to uniquely identified sales events.
+
+    Official schedules can bundle several days under a generic title. Match
+    each day separately; never combine two goods pages or infer identity from
+    the online venue alone. Ambiguous matches and unmatched days are retained.
+    """
+    events = copy.deepcopy(events)
+
+    def online(event):
+        return event.get("eventCategory") == "online-benefit"
+
+    def goods(event):
+        return any(re.search(r"https://(?:api\.)?sukisuki-shop\.com/goods/\d+", url) for url in all_urls(event))
+
+    detailed = [event for event in events if online(event) and goods(event)]
+    output = []
+    matched = 0
+    for event in events:
+        official_urls = [url for url in all_urls(event) if "asobisystem.com/live_information/detail/" in url]
+        if not (online(event) and not goods(event) and official_urls
+                and not event.get("offers") and not event.get("applyStart") and not event.get("applyEnd")
+                and (event.get("ticketType") == "現在受付なし" or event.get("applicationStatus") == "none")):
+            output.append(event)
+            continue
+        remaining = []
+        for occurrence in schedule_rows(event):
+            day = occurrence["date"]
+            title = normalized_series_title(event)
+            generic = title in {compact("オンライン特典会"), compact("オンラインサイン会")}
+            candidates = []
+            for target in detailed:
+                if target.get("group") != event.get("group"):
+                    continue
+                if not generic and title != normalized_series_title(target):
+                    continue
+                if generic and not normalized_series_title(target).endswith(title):
+                    continue
+                for target_row in schedule_rows(target):
+                    if target_row["date"] != day:
+                        continue
+                    start = occurrence.get("startTime") or event.get("startTime")
+                    target_start = target_row.get("startTime") or target.get("startTime")
+                    if start and target_start and start != target_start:
+                        continue
+                    candidates.append(target)
+                    break
+            if len(candidates) != 1:
+                remaining.append(occurrence)
+                continue
+            target = candidates[0]
+            target["urls"] = list(dict.fromkeys(all_urls(target) + all_urls(event)))
+            if len(schedule_rows(event)) == 1 and len(official_urls) == 1:
+                target.setdefault("officialScheduleUrl", official_urls[0])
+            matched += 1
+        if remaining:
+            if len(remaining) != len(schedule_rows(event)):
+                event["schedule"] = remaining
+                event["eventDates"] = list(dict.fromkeys(row["date"] for row in remaining))
+                event["eventDate"] = event["eventDates"][0]
+                event["eventEndDate"] = event["eventDates"][-1]
+                event["eventCount"] = len(remaining)
+            output.append(event)
+        elif not schedule_rows(event):
+            output.append(event)
+    return output, matched
+
+
 def normalize_payload(payload: dict) -> tuple[dict, dict]:
     rows = [dict(event) for event in payload.get("events", []) if isinstance(event, dict)]
+    rows, online_matched = reconcile_online_placeholders(rows)
     normalized, report = normalize_events(rows)
     normalized, id_report = repair_duplicate_event_ids(normalized)
-    report = {**report, **id_report}
+    report = {**report, **id_report, "onlinePlaceholderOccurrencesMerged": online_matched}
     out = dict(payload)
     out["events"] = normalized
     out["specialEventNormalization"] = report
