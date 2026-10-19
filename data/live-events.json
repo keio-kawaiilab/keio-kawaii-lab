@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-20T04:22:46+09:00",
+  "checkedAt": "2026-10-20T04:23:24+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-19T06:01:52+09:00",
     "scannedPages": {
@@ -1329,56 +1329,73 @@
       "releaseRetentionReason": "missing-from-current-refresh"
     },
     {
-      "id": "52b08940d0dde058",
+      "id": "known-candy-tune-online-20261020",
       "group": "CANDY TUNE",
       "title": "CANDY TUNE オンライン特典会",
-      "ticketType": "オンライン特典会・抽選販売",
-      "applyStart": "2026-10-13T21:00",
-      "applyEnd": "2026-10-14T23:59",
-      "resultDate": "2026-10-15",
-      "paymentEnd": "2026-10-17T23:59",
+      "ticketType": "複数受付",
       "eventDate": "2026-10-20",
       "startTime": "17:00",
       "venue": "オンライン（SUKISUKI）",
-      "url": "https://sukisuki-shop.com/goods/6500000004622",
+      "url": "https://candytune.asobisystem.com/live_information/detail/46277",
       "urls": [
-        "https://sukisuki-shop.com/goods/6500000004622"
-      ],
-      "sourceType": "sukisuki",
-      "eventCategory": "online-benefit",
-      "sourcePublishedAt": null,
-      "primarySource": "sukisuki",
-      "sourceCandidates": [
-        "sukisuki"
-      ],
-      "eventScope": "kawaii-lab"
-    },
-    {
-      "id": "fe14de8563d7de71",
-      "group": "CANDY TUNE",
-      "title": "CANDY TUNE オンライン特典会",
-      "ticketType": "オンライン特典会・先着販売",
-      "applyStart": "2026-10-18T20:00",
-      "applyEnd": "2026-10-20T17:00",
-      "resultDate": null,
-      "paymentEnd": null,
-      "eventDate": "2026-10-20",
-      "startTime": "17:00",
-      "venue": "オンライン（SUKISUKI）",
-      "url": "https://sukisuki-shop.com/goods/6500000004623",
-      "urls": [
+        "https://sukisuki-shop.com/goods/6500000004622",
         "https://sukisuki-shop.com/goods/6500000004623",
         "https://candytune.asobisystem.com/live_information/detail/46277"
       ],
-      "sourceType": "sukisuki",
+      "sourceType": "official-schedule",
       "eventCategory": "online-benefit",
       "sourcePublishedAt": null,
       "officialScheduleUrl": "https://candytune.asobisystem.com/live_information/detail/46277",
-      "primarySource": "sukisuki",
+      "primarySource": "official",
       "sourceCandidates": [
+        "official",
         "sukisuki"
       ],
-      "eventScope": "kawaii-lab"
+      "eventScope": "kawaii-lab",
+      "eventTitle": "CANDY TUNE オンライン特典会",
+      "displayTitle": "CANDY TUNE オンライン特典会",
+      "eventEndDate": "2026-10-20",
+      "eventDates": [
+        "2026-10-20"
+      ],
+      "eventCount": 1,
+      "sourceChannel": "known-official-correction",
+      "sourceRowIds": [
+        "52b08940d0dde058",
+        "fe14de8563d7de71"
+      ],
+      "offers": [
+        {
+          "sourceRowId": "52b08940d0dde058",
+          "provider": "sukisuki",
+          "url": "https://sukisuki-shop.com/goods/6500000004622",
+          "urls": [
+            "https://sukisuki-shop.com/goods/6500000004622"
+          ],
+          "ticketType": "オンライン特典会・抽選販売",
+          "sourceType": "sukisuki",
+          "primarySource": "sukisuki",
+          "applyStart": "2026-10-13T21:00",
+          "applyEnd": "2026-10-14T23:59",
+          "resultDate": "2026-10-15",
+          "paymentEnd": "2026-10-17T23:59"
+        },
+        {
+          "sourceRowId": "fe14de8563d7de71",
+          "provider": "sukisuki",
+          "url": "https://sukisuki-shop.com/goods/6500000004623",
+          "urls": [
+            "https://sukisuki-shop.com/goods/6500000004623"
+          ],
+          "ticketType": "オンライン特典会・先着販売",
+          "sourceType": "sukisuki",
+          "primarySource": "sukisuki",
+          "applyStart": "2026-10-18T20:00",
+          "applyEnd": "2026-10-20T17:00"
+        }
+      ],
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers"
     },
     {
       "id": "f3c16193ec30d6d7",
@@ -6733,8 +6750,8 @@
     "failures": []
   },
   "publicEventModelReport": {
-    "rawEventCount": 153,
-    "passthroughEventCount": 64,
+    "rawEventCount": 152,
+    "passthroughEventCount": 63,
     "performanceEntityCount": 101,
     "sourceOccurrenceCount": 210,
     "mergedSourceOccurrences": 109,
@@ -7686,6 +7703,11 @@
     },
     {
       "checkedAt": "2026-10-20T04:22:46+09:00",
+      "scope": "CANDY TUNE tour render verification",
+      "message": "Sendai performance lost its current general sale: []"
+    },
+    {
+      "checkedAt": "2026-10-20T04:23:24+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "Sendai performance lost its current general sale: []"
     }
@@ -14397,7 +14419,7 @@
       }
     ]
   },
-  "updatedAt": "2026-10-20T04:22:46+09:00",
+  "updatedAt": "2026-10-20T04:23:24+09:00",
   "specialEventNormalization": {
     "sourceSpecialRows": 3,
     "canonicalSpecialEvents": 3,
@@ -14662,56 +14684,73 @@
       "releaseRetentionReason": "missing-from-current-refresh"
     },
     {
-      "id": "52b08940d0dde058",
+      "id": "known-candy-tune-online-20261020",
       "group": "CANDY TUNE",
       "title": "CANDY TUNE オンライン特典会",
-      "ticketType": "オンライン特典会・抽選販売",
-      "applyStart": "2026-10-13T21:00",
-      "applyEnd": "2026-10-14T23:59",
-      "resultDate": "2026-10-15",
-      "paymentEnd": "2026-10-17T23:59",
+      "ticketType": "複数受付",
       "eventDate": "2026-10-20",
       "startTime": "17:00",
       "venue": "オンライン（SUKISUKI）",
-      "url": "https://sukisuki-shop.com/goods/6500000004622",
+      "url": "https://candytune.asobisystem.com/live_information/detail/46277",
       "urls": [
-        "https://sukisuki-shop.com/goods/6500000004622"
-      ],
-      "sourceType": "sukisuki",
-      "eventCategory": "online-benefit",
-      "sourcePublishedAt": null,
-      "primarySource": "sukisuki",
-      "sourceCandidates": [
-        "sukisuki"
-      ],
-      "eventScope": "kawaii-lab"
-    },
-    {
-      "id": "fe14de8563d7de71",
-      "group": "CANDY TUNE",
-      "title": "CANDY TUNE オンライン特典会",
-      "ticketType": "オンライン特典会・先着販売",
-      "applyStart": "2026-10-18T20:00",
-      "applyEnd": "2026-10-20T17:00",
-      "resultDate": null,
-      "paymentEnd": null,
-      "eventDate": "2026-10-20",
-      "startTime": "17:00",
-      "venue": "オンライン（SUKISUKI）",
-      "url": "https://sukisuki-shop.com/goods/6500000004623",
-      "urls": [
+        "https://sukisuki-shop.com/goods/6500000004622",
         "https://sukisuki-shop.com/goods/6500000004623",
         "https://candytune.asobisystem.com/live_information/detail/46277"
       ],
-      "sourceType": "sukisuki",
+      "sourceType": "official-schedule",
       "eventCategory": "online-benefit",
       "sourcePublishedAt": null,
       "officialScheduleUrl": "https://candytune.asobisystem.com/live_information/detail/46277",
-      "primarySource": "sukisuki",
+      "primarySource": "official",
       "sourceCandidates": [
+        "official",
         "sukisuki"
       ],
-      "eventScope": "kawaii-lab"
+      "eventScope": "kawaii-lab",
+      "eventTitle": "CANDY TUNE オンライン特典会",
+      "displayTitle": "CANDY TUNE オンライン特典会",
+      "eventEndDate": "2026-10-20",
+      "eventDates": [
+        "2026-10-20"
+      ],
+      "eventCount": 1,
+      "sourceChannel": "known-official-correction",
+      "sourceRowIds": [
+        "52b08940d0dde058",
+        "fe14de8563d7de71"
+      ],
+      "offers": [
+        {
+          "sourceRowId": "52b08940d0dde058",
+          "provider": "sukisuki",
+          "url": "https://sukisuki-shop.com/goods/6500000004622",
+          "urls": [
+            "https://sukisuki-shop.com/goods/6500000004622"
+          ],
+          "ticketType": "オンライン特典会・抽選販売",
+          "sourceType": "sukisuki",
+          "primarySource": "sukisuki",
+          "applyStart": "2026-10-13T21:00",
+          "applyEnd": "2026-10-14T23:59",
+          "resultDate": "2026-10-15",
+          "paymentEnd": "2026-10-17T23:59"
+        },
+        {
+          "sourceRowId": "fe14de8563d7de71",
+          "provider": "sukisuki",
+          "url": "https://sukisuki-shop.com/goods/6500000004623",
+          "urls": [
+            "https://sukisuki-shop.com/goods/6500000004623"
+          ],
+          "ticketType": "オンライン特典会・先着販売",
+          "sourceType": "sukisuki",
+          "primarySource": "sukisuki",
+          "applyStart": "2026-10-18T20:00",
+          "applyEnd": "2026-10-20T17:00"
+        }
+      ],
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers"
     },
     {
       "id": "79aabc4a79091a04",
