@@ -1,7 +1,7 @@
 {
   "date": "2026-10-19",
   "horizonDays": 7,
-  "generatedAt": "2026-10-19T03:02+09:00",
+  "generatedAt": "2026-10-19T17:03+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -17,12 +17,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "くもり",
-      "max": 29.0,
-      "min": 22.0,
-      "pop": "40",
-      "popLabel": "1日",
-      "issuedAt": "2026-10-18T17:00:00+09:00",
+      "label": "くもり 時々 晴れ",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-10-19T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -38,11 +38,77 @@
       "areaName": "東京地方",
       "precision": "area",
       "label": "くもり時々晴れ",
-      "max": 24.0,
+      "max": 25.0,
       "min": 17.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-10-18T17:00:00+09:00",
+      "issuedAt": "2026-10-19T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-10-26",
+      "venue": "SGCホール有明",
+      "venueKey": "sgcホール有明",
+      "eventIds": [
+        "bc711a68240aff0c"
+      ],
+      "areaCode": "130010",
+      "areaName": "東京地方",
+      "precision": "area",
+      "label": "くもり",
+      "max": 24.0,
+      "min": 18.0,
+      "pop": "40",
+      "popLabel": "1日",
+      "issuedAt": "2026-10-19T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-10-26",
+      "venue": "愛知県 愛知県芸術劇場 大ホール",
+      "venueKey": "愛知県芸術劇場",
+      "eventIds": [
+        "54a369497f59ce96",
+        "12f75454cf2d4fd0",
+        "9e39a25b816ecc66",
+        "62f7299c180e2baa",
+        "b09e5a2f429cb013",
+        "c4356b6a3eb08f58"
+      ],
+      "areaCode": "230010",
+      "areaName": "愛知県",
+      "precision": "area",
+      "label": "くもり",
+      "max": 24.0,
+      "min": 19.0,
+      "pop": "40",
+      "popLabel": "1日",
+      "issuedAt": "2026-10-19T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-10-26",
+      "venue": "福岡県 福岡サンパレス",
+      "venueKey": "福岡サンパレス",
+      "eventIds": [
+        "024676b8e98a3faf",
+        "1fcecf13407d3207"
+      ],
+      "areaCode": "400010",
+      "areaName": "福岡県",
+      "precision": "area",
+      "label": "くもり一時雨",
+      "max": 25.0,
+      "min": 19.0,
+      "pop": "50",
+      "popLabel": "1日",
+      "issuedAt": "2026-10-19T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -51,9 +117,9 @@
   "stats": {
     "occurrencesInRange": 13,
     "uniqueVenueDates": 7,
-    "weatherEntries": 2,
+    "weatherEntries": 5,
     "meshEntries": 0,
-    "failures": 5,
+    "failures": 2,
     "meshTimelineEntries": 0,
     "meshExactTempSlots": 0,
     "hourlyRainEntries": 0
@@ -68,21 +134,6 @@
       "date": "2026-10-20",
       "venue": "その他 オンライン",
       "reason": "都道府県を解決できません"
-    },
-    {
-      "date": "2026-10-26",
-      "venue": "SGCホール有明",
-      "reason": "開催日の予報がまだありません"
-    },
-    {
-      "date": "2026-10-26",
-      "venue": "愛知県 愛知県芸術劇場 大ホール",
-      "reason": "開催日の予報がまだありません"
-    },
-    {
-      "date": "2026-10-26",
-      "venue": "福岡県 福岡サンパレス",
-      "reason": "開催日の予報がまだありません"
     }
   ]
 }
