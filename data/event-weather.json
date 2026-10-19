@@ -1,7 +1,7 @@
 {
-  "date": "2026-10-19",
+  "date": "2026-10-20",
   "horizonDays": 7,
-  "generatedAt": "2026-10-19T17:03+09:00",
+  "generatedAt": "2026-10-20T00:51+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -16,16 +16,19 @@
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
-      "precision": "area",
-      "label": "くもり 時々 晴れ",
+      "precision": "mesh5km",
+      "label": "くもり",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
       "issuedAt": "2026-10-19T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "meshTime": "00:00",
+      "meshTempBand": "20〜24℃",
+      "coordinates": {
+        "lat": 35.658516,
+        "lon": 139.695374
+      }
     },
     {
       "date": "2026-10-22",
@@ -115,25 +118,30 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 13,
-    "uniqueVenueDates": 7,
+    "occurrencesInRange": 20,
+    "uniqueVenueDates": 8,
     "weatherEntries": 5,
-    "meshEntries": 0,
-    "failures": 2,
+    "meshEntries": 1,
+    "failures": 3,
     "meshTimelineEntries": 0,
     "meshExactTempSlots": 0,
     "hourlyRainEntries": 0
   },
   "failures": [
     {
-      "date": "2026-10-19",
+      "date": "2026-10-20",
       "venue": "その他 オンライン",
       "reason": "都道府県を解決できません"
     },
     {
-      "date": "2026-10-20",
-      "venue": "その他 オンライン",
-      "reason": "都道府県を解決できません"
+      "date": "2026-10-27",
+      "venue": "愛知県 愛知県芸術劇場 大ホール",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-10-27",
+      "venue": "熊本県 熊本城ホール メインホール",
+      "reason": "開催日の予報がまだありません"
     }
   ]
 }
