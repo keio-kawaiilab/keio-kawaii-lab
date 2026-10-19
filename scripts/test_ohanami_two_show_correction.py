@@ -141,6 +141,8 @@ class OhanamiTwoShowCorrectionTest(unittest.TestCase):
             self.skipTest("repository data file is unavailable")
 
         payload = json.loads(path.read_text(encoding="utf-8"))
+        if not self._ohanami(payload):
+            self.skipTest("historical Ohanami performances have been archived")
         corrected, report = apply_ohanami_two_show_correction(payload)
         self.assertEqual(report["conflicts"], [])
         shows = sorted(self._ohanami(corrected), key=lambda event: event["startTime"])

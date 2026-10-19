@@ -3,7 +3,9 @@ from __future__ import annotations
 
 import json
 import unittest
+from datetime import date, datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from performance_entities import build_public_events
 
@@ -187,7 +189,11 @@ class PerformanceEntitiesTest(unittest.TestCase):
         event = sendai[0]
         self.assertIn("仙台サンプラザホール", str(event.get("venue") or ""))
         ticket_types = {str(offer.get("ticketType") or "") for offer in event.get("offers") or []}
-        self.assertTrue(any("一般発売" in ticket_type for ticket_type in ticket_types))
+        today_jst = datetime.now(ZoneInfo("Asia/Tokyo")).date()
+        if today_jst <= date.fromisoformat("2026-10-08"):
+            self.assertTrue(any("一般発売" in ticket_type for ticket_type in ticket_types))
+        else:
+            self.assertFalse(any("一般発売" in ticket_type for ticket_type in ticket_types))
         self.assertEqual(len([row for row in public if row.get("id") == "1d39bd5dbf1e137a"]), 0)
 
 
