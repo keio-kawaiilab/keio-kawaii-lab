@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-20T04:14:10+09:00",
+  "checkedAt": "2026-10-20T04:14:51+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-19T06:01:52+09:00",
     "scannedPages": {
@@ -2723,67 +2723,6 @@
       "performanceMatchedToOfficial": true
     },
     {
-      "id": "569bd7a170545248",
-      "group": "MORE STAR",
-      "title": "MORE STAR 単独ライブ 7th STAR",
-      "eventTitle": "MORE STAR 単独ライブ 7th STAR",
-      "displayTitle": "MORE STAR 単独ライブ 7th STAR",
-      "eventCategory": "solo-live",
-      "ticketType": "現在受付なし",
-      "applicationStatus": "none",
-      "applyStart": null,
-      "applyEnd": null,
-      "resultDate": null,
-      "paymentEnd": null,
-      "specialDetailsStatus": "awaiting-details",
-      "applicationDisplayMode": "schedule-only",
-      "eventDate": "2026-11-12",
-      "venue": "複数会場（全2公演）",
-      "url": "https://x.com/MORE_STAR_/status/2092567739969966299",
-      "urls": [
-        "https://x.com/MORE_STAR_/status/2092567739969966299",
-        "https://morestar.asobisystem.com/live_information/detail/45677",
-        "https://morestar.asobisystem.com/news/detail/92107"
-      ],
-      "sourceType": "derived",
-      "sourceChannel": "official-x",
-      "primarySource": "official",
-      "sourceCandidates": [
-        "official"
-      ],
-      "eventScope": "kawaii-lab",
-      "sourceStale": true,
-      "sourceStaleSince": "2026-09-29T23:03:27+09:00",
-      "releaseRetentionReason": "missing-from-current-refresh",
-      "eventEndDate": "2026-11-25",
-      "eventDates": [
-        "2026-11-12",
-        "2026-11-25"
-      ],
-      "eventCount": 2,
-      "schedule": [
-        {
-          "date": "2026-11-12",
-          "venue": "ヒューリックホール東京"
-        },
-        {
-          "date": "2026-11-25",
-          "venue": "ヒューリックホール東京",
-          "openTime": "17:00",
-          "startTime": "18:00"
-        },
-        {
-          "date": "2026-11-25",
-          "venue": "東京都 ヒューリックホール東京"
-        }
-      ],
-      "venues": [
-        "ヒューリックホール東京",
-        "東京都 ヒューリックホール東京"
-      ],
-      "officialScheduleUrl": "https://morestar.asobisystem.com/live_information/detail/45677"
-    },
-    {
       "id": "3ecc0ce54d4088a3",
       "group": "SWEET STEADY",
       "title": "SWEET STEADY JAPAN TOUR 2026 -WINTER-",
@@ -4064,6 +4003,57 @@
         "https://morestar.asobisystem.com/news/detail/92107",
         "https://morestar.asobisystem.com/live_information/detail/45677"
       ]
+    },
+    {
+      "id": "569bd7a170545248",
+      "group": "MORE STAR",
+      "title": "MORE STAR 単独ライブ 7th STAR",
+      "eventTitle": "MORE STAR 単独ライブ 7th STAR",
+      "displayTitle": "MORE STAR 単独ライブ 7th STAR",
+      "eventCategory": "solo-live",
+      "ticketType": "現在受付なし",
+      "applicationStatus": "none",
+      "applyStart": null,
+      "applyEnd": null,
+      "resultDate": null,
+      "paymentEnd": null,
+      "specialDetailsStatus": "awaiting-details",
+      "applicationDisplayMode": "schedule-only",
+      "eventDate": "2026-11-25",
+      "venue": "東京都 ヒューリックホール東京",
+      "url": "https://morestar.asobisystem.com/news/detail/92107",
+      "urls": [
+        "https://morestar.asobisystem.com/news/detail/92107",
+        "https://x.com/MORE_STAR_/status/2092567739969966299",
+        "https://morestar.asobisystem.com/live_information/detail/45677"
+      ],
+      "sourceType": "official-schedule",
+      "sourceChannel": "known-official-correction",
+      "primarySource": "official",
+      "sourceCandidates": [
+        "official"
+      ],
+      "eventScope": "kawaii-lab",
+      "eventEndDate": "2026-11-25",
+      "eventDates": [
+        "2026-11-25"
+      ],
+      "eventCount": 1,
+      "schedule": [
+        {
+          "date": "2026-11-25",
+          "venue": "東京都 ヒューリックホール東京",
+          "openTime": "17:00",
+          "startTime": "18:00"
+        }
+      ],
+      "venues": [
+        "ヒューリックホール東京",
+        "東京都 ヒューリックホール東京"
+      ],
+      "officialScheduleUrl": "https://morestar.asobisystem.com/live_information/detail/45677",
+      "openTime": "17:00",
+      "startTime": "18:00"
     },
     {
       "id": "d3b63d95b1602c8e",
@@ -6758,9 +6748,9 @@
   "publicEventModelReport": {
     "rawEventCount": 154,
     "passthroughEventCount": 65,
-    "performanceEntityCount": 102,
-    "sourceOccurrenceCount": 212,
-    "mergedSourceOccurrences": 110,
+    "performanceEntityCount": 101,
+    "sourceOccurrenceCount": 210,
+    "mergedSourceOccurrences": 109,
     "offerCount": 51
   },
   "publicEventModelVersion": 1,
@@ -7694,6 +7684,11 @@
     },
     {
       "checkedAt": "2026-10-20T04:14:10+09:00",
+      "scope": "CANDY TUNE tour render verification",
+      "message": "Sendai performance lost its current general sale: []"
+    },
+    {
+      "checkedAt": "2026-10-20T04:14:51+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "Sendai performance lost its current general sale: []"
     }
@@ -14409,7 +14404,7 @@
       }
     ]
   },
-  "updatedAt": "2026-10-20T04:14:10+09:00",
+  "updatedAt": "2026-10-20T04:14:51+09:00",
   "publicEvents": [
     {
       "id": "1c60e2be989c564d",
@@ -24720,79 +24715,28 @@
       "applicationStatus": "none"
     },
     {
-      "id": "performance-MORE-STAR-2026-11-12-fallback-morestar-7thstar",
+      "id": "performance-MORE-STAR-2026-11-25-time-18-00",
       "group": "MORE STAR",
       "title": "MORE STAR 単独ライブ 7th STAR",
       "eventTitle": "MORE STAR 単独ライブ 7th STAR",
       "displayTitle": "MORE STAR 単独ライブ 7th STAR",
       "eventCategory": "solo-live",
       "specialDetailsStatus": "awaiting-details",
-      "eventDate": "2026-11-12",
-      "venue": "ヒューリックホール東京",
-      "url": "https://x.com/MORE_STAR_/status/2092567739969966299",
-      "urls": [
-        "https://x.com/MORE_STAR_/status/2092567739969966299",
-        "https://morestar.asobisystem.com/live_information/detail/45677",
-        "https://morestar.asobisystem.com/news/detail/92107"
-      ],
-      "sourceType": "derived",
-      "sourceChannel": "official-x",
-      "primarySource": "official",
-      "sourceCandidates": [
-        "official"
-      ],
-      "eventScope": "kawaii-lab",
-      "sourceStale": true,
-      "sourceStaleSince": "2026-09-29T23:03:27+09:00",
-      "releaseRetentionReason": "missing-from-current-refresh",
-      "eventEndDate": "2026-11-12",
-      "eventDates": [
-        "2026-11-12"
-      ],
-      "eventCount": 1,
-      "schedule": [
-        {
-          "date": "2026-11-12",
-          "venue": "ヒューリックホール東京"
-        }
-      ],
-      "venues": [
-        "ヒューリックホール東京",
-        "東京都 ヒューリックホール東京"
-      ],
-      "officialScheduleUrl": "https://morestar.asobisystem.com/live_information/detail/45677",
-      "entityType": "performance",
-      "performanceEntityVersion": 1,
-      "performanceKey": "MORE STAR|2026-11-12|fallback|ヒューリックホール東京|morestar単独ライブ7thstar",
-      "sourceRowIds": [
-        "569bd7a170545248"
-      ],
-      "offers": [],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
-    },
-    {
-      "id": "performance-MORE-STAR-2026-11-25-time-18-00",
-      "group": "MORE STAR",
-      "title": "2026年11月25日（水）「MORE STAR 単独ライブ 7th STAR」開催決定！KAWAII LAB. OFFICIAL FANCLUB先行受付開始！",
       "eventDate": "2026-11-25",
-      "venue": "ヒューリックホール東京",
-      "openTime": "17:00",
-      "startTime": "18:00",
-      "url": "https://x.com/MORE_STAR_/status/2092567739969966299",
+      "venue": "東京都 ヒューリックホール東京",
+      "url": "https://morestar.asobisystem.com/news/detail/92107",
+      "urls": [
+        "https://morestar.asobisystem.com/news/detail/92107",
+        "https://morestar.asobisystem.com/live_information/detail/45677",
+        "https://x.com/MORE_STAR_/status/2092567739969966299"
+      ],
       "sourceType": "official-schedule",
-      "sourcePublishedAt": "2026-10-17",
       "sourceChannel": "known-official-correction",
-      "eventTitle": "MORE STAR 単独ライブ 7th STAR",
-      "displayTitle": "MORE STAR 単独ライブ 7th STAR",
-      "eventScope": "kawaii-lab",
-      "officialScheduleUrl": "https://morestar.asobisystem.com/live_information/detail/45677",
       "primarySource": "official",
       "sourceCandidates": [
         "official"
       ],
-      "performanceMatchedToOfficial": true,
+      "eventScope": "kawaii-lab",
       "eventEndDate": "2026-11-25",
       "eventDates": [
         "2026-11-25"
@@ -24801,22 +24745,24 @@
       "schedule": [
         {
           "date": "2026-11-25",
-          "venue": "ヒューリックホール東京",
+          "venue": "東京都 ヒューリックホール東京",
           "openTime": "17:00",
           "startTime": "18:00"
         }
       ],
-      "urls": [
-        "https://x.com/MORE_STAR_/status/2092567739969966299",
-        "https://morestar.asobisystem.com/live_information/detail/45677",
-        "https://morestar.asobisystem.com/news/detail/92107"
+      "venues": [
+        "ヒューリックホール東京",
+        "東京都 ヒューリックホール東京"
       ],
+      "officialScheduleUrl": "https://morestar.asobisystem.com/live_information/detail/45677",
+      "openTime": "17:00",
+      "startTime": "18:00",
       "entityType": "performance",
       "performanceEntityVersion": 1,
       "performanceKey": "MORE STAR|2026-11-25|time|18:00",
       "sourceRowIds": [
-        "569bd7a170545248",
-        "f72a7b7fa9832bcc441b89"
+        "f72a7b7fa9832bcc441b89",
+        "569bd7a170545248"
       ],
       "offers": [
         {
