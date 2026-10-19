@@ -1,8 +1,8 @@
 {
-  "checkedAt": "2026-10-20T04:22:48+09:00",
+  "checkedAt": "2026-10-20T04:30:13+09:00",
   "status": "degraded",
   "representedOffers": 15,
-  "archivedEndedOffers": 177,
+  "archivedEndedOffers": 175,
   "missingOffers": [
     {
       "id": "77a0fd92bb9268f9",
@@ -185,6 +185,21 @@
       "url": "https://kawaiilab.asobisystem.com/news/detail/88140"
     }
   ],
-  "sourceFailures": [],
+  "sourceFailures": [
+    {
+      "group": "CUTIE STREET",
+      "url": "https://cutiestreet.asobisystem.com/live_information/detail/46315",
+      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR@宮城セキスイハイムスーパーアリーナ",
+      "stage": "article",
+      "error": "502 Server Error: Bad Gateway for url: https://cutiestreet.asobisystem.com/live_information/detail/46315"
+    },
+    {
+      "group": "SWEET STEADY",
+      "url": "https://sweetsteady.asobisystem.com/news/detail/85443",
+      "title": "2026.07.26 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ 開催決定！FC先行開始！",
+      "stage": "article",
+      "error": "502 Server Error: Bad Gateway for url: https://sweetsteady.asobisystem.com/news/detail/85443"
+    }
+  ],
   "pendingArticles": 7
 }
