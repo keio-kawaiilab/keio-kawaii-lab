@@ -21,6 +21,9 @@ FM_AICHI_OFFICIAL = "https://fma.co.jp/f/event/?id=6g2EwJVP"
 GIFT_OFFICIAL = "https://www.gift-idol.jp/"
 GIFT_MULTI_VENUE = "複数会場（SGCホール有明・TOYOTA ARENA TOKYO）"
 GIFT_LOCATIONS = ["東京都 SGC HALL ARIAKE", "東京都 TOYOTA ARENA TOKYO"]
+MORE_STAR_7TH_DAY = "2026-11-25"
+MORE_STAR_7TH_SCHEDULE = "https://morestar.asobisystem.com/live_information/detail/45677"
+MORE_STAR_7TH_NEWS = "https://morestar.asobisystem.com/news/detail/92107"
 
 HAKATA_PARTS = [
     {"part": "第1部", "content": "2ショットチェキ撮影会（FC限定）", "start": "10:00", "end": "11:00", "receptionStart": "09:40", "receptionEnd": "10:40"},
@@ -218,10 +221,23 @@ def _repair_gift_multi_venue(event: dict) -> dict:
 
 
 def _missing_more_star_gift(events: Iterable[dict]) -> dict | None:
+    events = list(events)
     if any(
         event.get("group") == "MORE STAR"
         and _day(event) == "2026-11-28"
         and "GIFT" in str(event.get("title") or event.get("eventTitle") or "").upper()
+        for event in events
+    ):
+        return None
+    # This correction is an enrichment of a discovered GIFT event, not a
+    # stand-alone event source.  Requiring the verified organizer-backed
+    # CANDY TUNE row prevents this helper from injecting GIFT into unrelated
+    # or partial payloads.
+    if not any(
+        event.get("group") == "CANDY TUNE"
+        and _day(event) == "2026-11-28"
+        and "GIFT" in str(event.get("title") or event.get("eventTitle") or "").upper()
+        and GIFT_OFFICIAL in _urls(event)
         for event in events
     ):
         return None
@@ -274,6 +290,42 @@ def _repair_sweet_second_fc(event: dict) -> dict:
         out["applicationWindowVerified"] = True
         out["applicationWindowSource"] = SWEET_FC_SECOND_ARTICLE
         out["deadlineSource"] = SWEET_FC_SECOND_ARTICLE
+    return out
+
+
+def _repair_more_star_seventh(event: dict) -> dict:
+    out = deepcopy(event)
+    title = str(event.get("title") or event.get("eventTitle") or "")
+    if event.get("group") != "MORE STAR" or "単独ライブ 7th STAR" not in title:
+        return out
+    out.update({
+        "eventDate": MORE_STAR_7TH_DAY,
+        "eventEndDate": MORE_STAR_7TH_DAY,
+        "eventDates": [MORE_STAR_7TH_DAY],
+        "eventCount": 1,
+        "venue": "東京都 ヒューリックホール東京",
+        "openTime": "17:00",
+        "startTime": "18:00",
+        "schedule": [{
+            "date": MORE_STAR_7TH_DAY,
+            "venue": "東京都 ヒューリックホール東京",
+            "openTime": "17:00",
+            "startTime": "18:00",
+        }],
+        "url": MORE_STAR_7TH_NEWS,
+        "officialScheduleUrl": MORE_STAR_7TH_SCHEDULE,
+        "sourceType": "official-schedule",
+        "sourceChannel": "known-official-correction",
+        "primarySource": "official",
+        "sourceCandidates": ["official"],
+    })
+    values = _urls(out)
+    for value in (MORE_STAR_7TH_NEWS, MORE_STAR_7TH_SCHEDULE):
+        if value not in values:
+            values.append(value)
+    out["urls"] = values
+    for key in ("sourceStale", "sourceStaleSince", "releaseRetentionReason"):
+        out.pop(key, None)
     return out
 
 
@@ -353,6 +405,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "sweetFcSecondStartFixed": 0,
         "giftMultiVenueFixed": 0,
         "giftMoreStarAdded": 0,
+        "moreStarSeventhFixed": 0,
         "semanticTicketDuplicatesRemoved": 0,
         "semanticTicketDuplicateIds": [],
     }
@@ -385,6 +438,19 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         current = _repair_sweet_second_fc(current)
         if current.get("applyStart") != before_start:
             report["sweetFcSecondStartFixed"] += 1
+
+        before_more_star_seventh = (
+            current.get("eventDate"),
+            tuple(current.get("eventDates") or []),
+            current.get("officialScheduleUrl"),
+        )
+        current = _repair_more_star_seventh(current)
+        if (
+            current.get("eventDate"),
+            tuple(current.get("eventDates") or []),
+            current.get("officialScheduleUrl"),
+        ) != before_more_star_seventh:
+            report["moreStarSeventhFixed"] += 1
 
         before_venue = (current.get("venue"), tuple(current.get("venueLocations") or []))
         current = _repair_gift_multi_venue(current)

@@ -2,6 +2,7 @@ import json
 import unittest
 from datetime import date
 
+import update_official_x_special_events as base
 import update_official_x_special_events_syndication as s
 
 

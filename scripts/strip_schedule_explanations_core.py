@@ -29,6 +29,7 @@ GENERIC_PERFORMANCE_KEY = (
     "v=v.replace(/^(?:北海道|東京都|京都府|大阪府|.{2,3}県)\\s*/,'').replace(/\\s+/g,'').replace(/[!！・|｜\\-–—_\\[\\]()（）『』「」]/g,'');return v}"
     "function performanceKey(e,o){var day=String((o&&o.date)||e.eventDate||'').slice(0,10),"
     "time=String((o&&o.startTime)||e.startTime||'').replace(/\\s+/g,''),venue=performanceVenueKey(e,o),titleKey=performanceTitleKey(e),group=String(e.group||'').trim();"
+    "if(fifthTour(e))return ['KAWAII-LAB-5TH-TOUR',day].join('|');"
     "if(day&&time)return [group,day,'time',time].join('|');"
     "return [group,day,'fallback',venue,titleKey].join('|')}"
 )
@@ -38,6 +39,7 @@ PERFORMANCE_KEY = (
     "v=v.replace(/^(?:北海道|東京都|京都府|大阪府|.{2,3}県)\\s*/,'').replace(/\\s+/g,'').replace(/[!！・|｜\\-–—_\\[\\]()（）『』「」]/g,'');return v}"
     "function performanceKey(e,o){var day=String((o&&o.date)||e.eventDate||'').slice(0,10),"
     "time=String((o&&o.startTime)||e.startTime||'').replace(/\\s+/g,''),venue=performanceVenueKey(e,o),titleKey=performanceTitleKey(e),group=String(e.group||'').trim();"
+    "if(fifthTour(e))return ['KAWAII-LAB-5TH-TOUR',day].join('|');"
     "if(e.eventCategory==='release-event'||e.eventCategory==='large-benefit')return [group,day,'special'].join('|');"
     "if(day&&time)return [group,day,'time',time].join('|');"
     "return [group,day,'fallback',venue,titleKey].join('|')}"
@@ -47,6 +49,7 @@ OCCURRENCE_PERFORMANCE_MARKERS = (
     "function performanceVenueKey(e,o)",
     "function performanceKey(e,o)",
     "performanceTitleKey(e)",
+    "if(fifthTour(e))return ['KAWAII-LAB-5TH-TOUR',day].join('|')",
     "if(e.eventCategory==='release-event'||e.eventCategory==='large-benefit')return [group,day,'special'].join('|')",
     "if(day&&time)return [group,day,'time',time].join('|')",
     "return [group,day,'fallback',venue,titleKey].join('|')",

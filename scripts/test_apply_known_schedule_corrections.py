@@ -5,6 +5,55 @@ from apply_known_schedule_corrections import apply_known_corrections
 
 
 class KnownScheduleCorrectionsTest(unittest.TestCase):
+    def test_more_star_seventh_uses_verified_single_performance_date(self):
+        malformed = {
+            "id": "more-star-7th",
+            "group": "MORE STAR",
+            "title": "MORE STAR 単独ライブ 7th STAR",
+            "eventDate": "2026-11-12",
+            "eventEndDate": "2026-11-25",
+            "eventDates": ["2026-11-12", "2026-11-25"],
+            "schedule": [
+                {"date": "2026-11-12", "venue": "ヒューリックホール東京"},
+                {"date": "2026-11-25", "venue": "ヒューリックホール東京"},
+            ],
+            "sourceStale": True,
+        }
+        corrected, report = apply_known_corrections([malformed])
+        event = corrected[0]
+        self.assertEqual("2026-11-25", event["eventDate"])
+        self.assertEqual(["2026-11-25"], event["eventDates"])
+        self.assertEqual(1, event["eventCount"])
+        self.assertEqual("17:00", event["openTime"])
+        self.assertEqual("18:00", event["startTime"])
+        self.assertNotIn("sourceStale", event)
+        self.assertEqual(1, report["moreStarSeventhFixed"])
+
+    def test_more_star_gift_requires_verified_discovered_anchor(self):
+        unrelated = [{
+            "id": "other",
+            "group": "CANDY TUNE",
+            "title": "Other event",
+            "eventDate": "2026-11-28",
+        }]
+        corrected, report = apply_known_corrections(unrelated)
+        self.assertEqual(["other"], [row["id"] for row in corrected])
+        self.assertEqual(0, report["giftMoreStarAdded"])
+
+        anchor = {
+            "id": "gift-candy",
+            "group": "CANDY TUNE",
+            "title": "GIFT 〜Girls Idol Festival Tokyo〜",
+            "eventDate": "2026-11-28",
+            "url": "https://www.gift-idol.jp/",
+        }
+        corrected, report = apply_known_corrections([anchor])
+        self.assertEqual(
+            {"gift-candy", "known-gift-more-star-20261128"},
+            {row["id"] for row in corrected},
+        )
+        self.assertEqual(1, report["giftMoreStarAdded"])
+
     def test_verified_corrections_and_semantic_dedupe(self):
         events = [
             {
