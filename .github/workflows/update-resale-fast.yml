@@ -50,7 +50,7 @@ jobs:
           from pathlib import Path
           import re
 
-          version = "202608300345"
+          version = "202610201950"
 
           collector = Path("scripts/update_resale_events.py")
           text = collector.read_text(encoding="utf-8")
@@ -100,6 +100,7 @@ jobs:
           cd ..
           python -m py_compile scripts/update_resale_events.py
           node --check ticket-resale-ui.js
+          node scripts/test_ticket_resale_ui.js
           node --check going-highlight-soften.js
           node --check ticket-flow.js
           node --check ticket-flow-sync.js
@@ -151,3 +152,4 @@ jobs:
             fi
           done
           exit 1
+

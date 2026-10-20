@@ -54,7 +54,7 @@
 (function(){
   "use strict";
   if(!document.getElementById("calendar")||!document.getElementById("cards"))return;
-  var version="202608300345";
+  var version="202610201950";
 
   if(!document.querySelector('link[data-ticket-flow]')){
     var style=document.createElement("link");
@@ -88,3 +88,4 @@
     document.body.appendChild(resale);
   }
 })();
+

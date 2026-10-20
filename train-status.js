@@ -325,7 +325,7 @@
 
   if(!document.querySelector('script[data-going-highlight-soften]')){
     var soften=document.createElement("script");
-    soften.src="./going-highlight-soften.js?v=202608300345";
+    soften.src="./going-highlight-soften.js?v=202610201950";
     soften.setAttribute("data-going-highlight-soften","");
     document.body.appendChild(soften);
   }
@@ -336,3 +336,4 @@
   if(!document.getElementById("calendar")||!document.getElementById("cards"))return;
   import("./special-venue-info.js?v=202608250046").catch(function(){});
 })();
+
