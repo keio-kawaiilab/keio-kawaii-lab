@@ -380,6 +380,32 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
 
 
 class CutieUpgradeReceptionTests(unittest.TestCase):
+    def test_candy_tokyo_presale_is_two_occurrences_and_idempotent(self):
+        anchor = {"id": "tour", "group": "CANDY TUNE", "eventDate": "2026-12-08",
+                  "url": "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026"}
+        result, report = apply_known_corrections([anchor])
+        additions = [row for row in result if row.get("ticketType") == "プリセール（先着先行）"]
+        self.assertEqual(2, report["candyTokyoPresaleAdded"])
+        self.assertEqual([("2026-12-08", "19:00"), ("2026-12-09", "18:30")],
+                         [(row["eventDate"], row["startTime"]) for row in additions])
+        self.assertTrue(all(row["applyStart"] == "2026-10-17T12:00"
+                            and row["applyEnd"] == "2026-10-22T23:59" for row in additions))
+        again, report = apply_known_corrections(result)
+        self.assertEqual(0, report["candyTokyoPresaleAdded"])
+        self.assertEqual(result, again)
+        _, report = apply_known_corrections([dict(anchor, group="SWEET STEADY")])
+        self.assertEqual(0, report["candyTokyoPresaleAdded"])
+
+    def test_collector_tokyo_presale_prevents_known_duplicate(self):
+        event = {"id": "from-pia", "group": "CANDY TUNE", "eventDate": "2026-12-08",
+                 "url": "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
+                 "ticketType": "プリセール", "applyStart": "2026-10-17T12:00",
+                 "applyEnd": "2026-10-22T23:59"}
+        result, report = apply_known_corrections([event])
+        self.assertEqual(1, report["candyTokyoPresaleAdded"])
+        self.assertIn("from-pia", [row["id"] for row in result])
+        self.assertNotIn("known-candy-tokyo-presale-20261208", [row["id"] for row in result])
+
     def fixture(self, day="2026-11-14"):
         return {
             "id": "retained-" + day, "group": "CUTIE STREET",

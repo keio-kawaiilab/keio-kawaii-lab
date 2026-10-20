@@ -611,6 +611,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "cutieHiroshimaPiaFixed": 0,
         "candyBirthdayFactsFilled": 0,
         "cutieUpgradeReceptionFixed": 0,
+        "candyTokyoPresaleAdded": 0,
         "sweetestStoryPerformancesAdded": 0,
         "fruitsJoyFanclubLiveAdded": 0,
         "staleChristmasRowsRemoved": 0,
@@ -725,6 +726,37 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
                 "deadlineVerified": True, "deadlineSource": story_source,
             })
             report["sweetestStoryPerformancesAdded"] += 1
+
+    # Official autumn-tour TICKET section, checked 2026-10-20: this is a
+    # Tokyo-only presale, not the general sales for every tour occurrence.
+    candy_tour = "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026"
+    if any(event.get("group") == "CANDY TUNE" and candy_tour in _urls(event) for event in out):
+        for day, opened, start in (("2026-12-08", "17:30", "19:00"),
+                                   ("2026-12-09", "17:00", "18:30")):
+            represented = any(event.get("group") == "CANDY TUNE"
+                and _day(event) == day and event.get("applyStart") == "2026-10-17T12:00"
+                and event.get("applyEnd") == "2026-10-22T23:59"
+                and any(word in str(event.get("ticketType") or "")
+                        for word in ("プリセール", "先着")) for event in out)
+            if represented:
+                continue
+            title = "CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS"
+            venue = "東京都 東京ガーデンシアター"
+            out.append({
+                "id": "known-candy-tokyo-presale-" + day.replace("-", ""),
+                "group": "CANDY TUNE", "title": title, "eventTitle": title,
+                "eventDate": day, "eventEndDate": day, "eventDates": [day], "eventCount": 1,
+                "venue": venue, "openTime": opened, "startTime": start,
+                "schedule": [{"date": day, "venue": venue, "openTime": opened, "startTime": start}],
+                "ticketType": "プリセール（先着先行）",
+                "applyStart": "2026-10-17T12:00", "applyEnd": "2026-10-22T23:59",
+                "applicationWindowVerified": True, "applicationWindowSource": candy_tour,
+                "deadlineVerified": True, "deadlineSource": candy_tour,
+                "url": candy_tour, "urls": [candy_tour], "primarySource": "official",
+                "sourceType": "official", "sourceChannel": "known-official-correction",
+                "eventScope": "kawaii-lab",
+            })
+            report["candyTokyoPresaleAdded"] += 1
 
     gift_more_star = _missing_more_star_gift(out)
     if gift_more_star:
