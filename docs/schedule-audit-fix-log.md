@@ -1,7 +1,7 @@
 # スケジュール総点検 修正台帳
 
-最終更新: 2026-09-08
-現在の状態: 緊急修正 10/12・10/17 外部主催判定／10/12同一イベント重複 本番反映確認まで完了
+最終更新: 2026-09-09
+現在の状態: 梅田みゆ生誕祭 9/14 一般発売掲載漏れ 本番反映確認まで完了
 次の作業対象: P2-11 「182イベント掲載中」の件数定義不一致
 
 ## 引き継ぎルール
@@ -224,3 +224,20 @@
 - summaryはcanonical publicEventsを優先。同日・同じ会場に関係する路線のみを照合し、同じ公演の重複を除外。別日の公演を表示しない回帰を追加。JS/CSSの読込URLを更新し再生成にも引き継ぐ。
 
 - 本番確認: `115eab6`、再生成後Pages `34797558137` 成功。公開通知で「CUTIE STREET 梅田みゆ 生誕祭 2026」「9/14 開演 19:00 ／ SGCホール有明」「りんかい線 運転状況」を確認。既存路線照合・同一公演重複除外・別日除外テスト成功。
+
+## 2026-09-09 追加修正
+
+- [本番反映確認済み] P1 CUTIE STREET「梅田みゆ 生誕祭 2026」9/14 一般発売掲載漏れ (`P1-umeda-birthday-2026-general-sale`)
+  - 症状: 2026/9/14 SGCホール有明の「CUTIE STREET 梅田みゆ 生誕祭 2026」で、FC先行は保持されていた一方、2026/8/22 10:00開始の一般発売が公開公演のチケット受付 `offers` に存在せず、サイトから一般発売の履歴を確認できなかった。
+  - 公式確認: 一般発売は2026/8/22 10:00開始、チケットぴあ、一般指定席6,500円、1人2枚まで、電子チケットのみ。Hot Stuffで `SOLD OUT`、ぴあで `予定枚数終了` を確認。ぴあに表示された2026/9/9 23:59は売切れ後の表示であるため、検証済みの自然な受付締切としては登録しない。
+  - 分離ルール: 一般発売の `applyEnd` と `resultDate` は `null`。FC限定の「お見送り会付指定席 12,000円」アップグレードは一般発売へ混入させず別扱いとする。
+  - 原因: 収集用 `events` にこの公演のFC先行行しかなく、一般発売の取得行が欠落していたため、公演単位へ束ねる `publicEvents[].offers` にも一般発売が生成されなかった。
+  - 修正: 検証済み一般発売を独立したraw ticket rowとして `events` に1件追加し、`scripts/install_performance_public_view.py` で公演エンティティと `schedule.html` を再生成。既存FC先行と同一の物理公演へofferとして統合した。
+  - 重複防止: 対象一般発売raw rowはちょうど1件、同日19:00の物理公演も1件、一般発売offerも1件であることをCIで強制。既存FC先行offerが残ることも同時検証した。
+  - 誤情報防止: `2026/8/22 10:00`、ぴあ、終了状態、`resultDate: null`、未検証締切を作らないこと、一般発売フィールドへFC限定12,000円が入らないことを明示的に検査。初回CIで注記中の「12,000円」を誤検知したため、実データ項目だけを検査するようテストを修正して再実行した。
+  - 修正ファイル: `data/live-events.json`, `schedule.html`, `.github/workflows/oneoff-fix-umeda-birthday-general-sale.yml`。
+  - 根拠URL: CUTIE STREET公式 `https://cutiestreet.asobisystem.com/news/detail/84114`、Hot Stuff `https://www.red-hot.ne.jp/play/detail.php?pid=py28451`、チケットぴあ `https://t.pia.jp/pia/artist/artists.do?artistsCd=OC140004`。
+  - CI検証: GitHub Actions `One-off fix Umeda birthday general sale` run #2 成功。一般発売raw 1件、公演1件、一般発売offer 1件、FC先行保持、受付開始日時、受付状態、締切/結果発表非混同、FC限定アップグレード非混入、静的HTML表示、`scripts/test_performance_entities.py` を確認。
+  - 本番データcommit: `c59078644c0bc2997daac52a794ea04aef72d2ce` (`fix(schedule): add Umeda birthday general sale`)。
+  - デプロイ: 上記commitに対する GitHub Pages `pages build and deployment` run #2892（run id `34360606406`）の build / deploy とも成功。本番反映確認済み。
+    
