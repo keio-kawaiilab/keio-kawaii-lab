@@ -231,6 +231,43 @@ class PerformanceEntitiesTest(unittest.TestCase):
         self.assertTrue({"tour-master", "fc-sendai", "eplus-sendai", "lawson-multi"}.issubset(set(event["sourceRowIds"])))
         self.assertGreaterEqual(report["mergedSourceOccurrences"], 3)
 
+    def test_same_central_fc_window_with_generic_alias_is_one_offer(self):
+        base = {
+            "group": "CUTIE STREET",
+            "title": "CUTIE STREET 佐野愛花 生誕祭 2026",
+            "eventDate": "2026-11-26",
+            "venue": "SGCホール有明",
+            "startTime": "19:00",
+            "ticketType": "FC先行",
+            "applyStart": "2026-10-20T12:00",
+            "applyEnd": "2026-10-25T23:59",
+            "url": "https://kawaiilab.asobisystem.com/news/detail/92827",
+            "sourceType": "auto",
+            "primarySource": "official",
+            "eventScope": "kawaii-lab",
+        }
+        group_fc = dict(
+            base,
+            id="group-fc",
+            url="https://cutiestreet.asobisystem.com/news/detail/90590",
+            applyStart="2026-09-28T12:00",
+            applyEnd="2026-10-07T23:59",
+        )
+        generic_central = dict(base, id="generic-central")
+        specific_central = dict(base, id="specific-central", ticketType="KAWAII LAB. FC先行")
+
+        public, _ = build_public_events([group_fc, generic_central, specific_central])
+
+        self.assertEqual(len(public), 1)
+        self.assertEqual(
+            [offer["ticketType"] for offer in public[0]["offers"]],
+            ["FC先行", "KAWAII LAB. FC先行"],
+        )
+        self.assertEqual(
+            {"group-fc", "generic-central", "specific-central"},
+            set(public[0]["sourceRowIds"]),
+        )
+
     def test_multiday_schedule_source_is_split_into_physical_performances(self):
         public, _ = build_public_events(self.fixture())
         tour = [

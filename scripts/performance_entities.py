@@ -317,6 +317,45 @@ def _offer_key(offer: dict[str, Any]) -> tuple[str, ...]:
     )
 
 
+def _collapse_central_fc_aliases(offers: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Fold duplicate generic/specific labels for one central FC reception.
+
+    The recent-body and central-FC collectors can both emit the same central
+    article and application window, with only ``ticketType`` differing between
+    ``FC先行`` and ``KAWAII LAB. FC先行``. They are one reception, not two.
+    Keep the more specific central-FC label while leaving group-FC articles,
+    different windows, and all other ticket types untouched.
+    """
+    collapsed: list[dict[str, Any]] = []
+    central_fc_indexes: dict[tuple[str, ...], int] = {}
+    for offer in offers:
+        url = re.sub(r"[?#].*$", "", _text(offer.get("url"))).rstrip("/")
+        ticket_type = _text(offer.get("ticketType"))
+        if (
+            _text(offer.get("provider")).casefold() == "official"
+            and (urlparse(url).hostname or "").casefold() == "kawaiilab.asobisystem.com"
+            and ticket_type in {"FC先行", "KAWAII LAB. FC先行"}
+        ):
+            marker = tuple(
+                _text(value)
+                for value in (
+                    url,
+                    offer.get("applyStart"),
+                    offer.get("applyEnd"),
+                    offer.get("resultDate"),
+                    offer.get("paymentEnd"),
+                )
+            )
+            previous_index = central_fc_indexes.get(marker)
+            if previous_index is not None:
+                if ticket_type == "KAWAII LAB. FC先行":
+                    collapsed[previous_index] = offer
+                continue
+            central_fc_indexes[marker] = len(collapsed)
+        collapsed.append(offer)
+    return collapsed
+
+
 def _base_score(event: dict[str, Any]) -> tuple[int, int, int, int, str]:
     source_type = _text(event.get("sourceType")).casefold()
     primary = _text(event.get("primarySource")).casefold()
@@ -384,6 +423,8 @@ def _canonical_entity(key: str, records: list[dict[str, Any]]) -> dict[str, Any]
             if marker not in seen_offers:
                 offers.append(offer)
                 seen_offers.add(marker)
+
+    offers = _collapse_central_fc_aliases(offers)
 
     for field in TOP_LEVEL_TICKET_FIELDS:
         base.pop(field, None)
