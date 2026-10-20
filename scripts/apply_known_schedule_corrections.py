@@ -537,6 +537,60 @@ def _collapse_candy_online_20261020(events: list[dict]) -> tuple[list[dict], int
     return output, len(matches) - 1
 
 
+def _collapse_sweet_online_20261023(events: list[dict]) -> tuple[list[dict], int]:
+    # SUKISUKI 4624/4625 bodies, rechecked 2026-10-20: same October 23
+    # 15:00 stream, same seven members and ちょーだいHAPPY！ MV costume.
+    # They are the initial and second reception, not two performances. Never
+    # generalize this evidence to other goods, dates, groups or start times.
+    goods = {"https://sukisuki-shop.com/goods/6500000004624",
+             "https://sukisuki-shop.com/goods/6500000004625"}
+
+    def matches(event: dict) -> bool:
+        source_goods = {url for url in _urls(event) if "sukisuki-shop.com/goods/" in url}
+        return (event.get("group") == "SWEET STEADY" and _day(event) == "2026-10-23"
+                and event.get("startTime") == "15:00"
+                and event.get("eventCategory") == "online-benefit"
+                and bool(source_goods) and source_goods.issubset(goods))
+
+    rows = [event for event in events if matches(event)]
+    if len(rows) < 2 or not goods.issubset({url for event in rows for url in _urls(event)}):
+        return events, 0
+    base = deepcopy(rows[0])
+    source_ids = list(dict.fromkeys(str(value) for row in rows for value in
+        (row.get("sourceRowIds") or [row.get("id")]) if value))
+    offers, seen = [], set()
+    for row in rows:
+        for receipt in row.get("offers") or [row]:
+            receipt_goods = [url for url in _urls(receipt) if url in goods]
+            if not receipt_goods:
+                continue
+            offer = deepcopy(receipt) if row.get("offers") else {
+                "sourceRowId": row.get("id"), "provider": "sukisuki",
+                "url": receipt_goods[0], "urls": receipt_goods,
+                "ticketType": row.get("ticketType"), "sourceType": "sukisuki",
+                "primarySource": "sukisuki",
+                **{key: deepcopy(row[key]) for key in
+                   ("applyStart", "applyEnd", "resultDate", "paymentEnd") if key in row},
+            }
+            marker = tuple(str(offer.get(key) or "") for key in
+                           ("url", "ticketType", "applyStart", "applyEnd", "resultDate", "paymentEnd"))
+            if marker not in seen:
+                seen.add(marker)
+                offers.append(offer)
+    base.update({"id": "known-sweet-steady-online-20261023",
+                 "eventEndDate": "2026-10-23", "eventDates": ["2026-10-23"], "eventCount": 1,
+                 "urls": list(dict.fromkeys(url for row in rows for url in _urls(row))),
+                 "sourceRowIds": source_ids, "offers": offers,
+                 "sourceChannel": "known-official-correction", "ticketType": "複数受付",
+                 "applicationDisplayMode": "offers", "applicationStatus": "offers"})
+    for key in ("applyStart", "applyEnd", "resultDate", "paymentEnd", "ticketProvider"):
+        base.pop(key, None)
+    first = next(index for index, row in enumerate(events) if matches(row))
+    out = [row for row in events if not matches(row)]
+    out.insert(first, base)
+    return out, len(rows) - 1
+
+
 def _sale_url(event: dict) -> str:
     value = str(event.get("url") or "").strip().lower()
     return re.sub(r"[?#].*$", "", value).rstrip("/")
@@ -621,6 +675,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "giftMoreStarAdded": 0,
         "moreStarSeventhFixed": 0,
         "candyOnline20261020RowsCollapsed": 0,
+        "sweetOnline20261023RowsCollapsed": 0,
         "semanticTicketDuplicatesRemoved": 0,
         "semanticTicketDuplicateIds": [],
     }
@@ -794,6 +849,9 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
     out, candy_online_removed = _collapse_candy_online_20261020(out)
     report["candyOnline20261020RowsCollapsed"] = candy_online_removed
 
+    out, sweet_online_removed = _collapse_sweet_online_20261023(out)
+    report["sweetOnline20261023RowsCollapsed"] = sweet_online_removed
+
     out, removed, removed_ids = _dedupe_ticket_rows(out)
     report["semanticTicketDuplicatesRemoved"] = removed
     report["semanticTicketDuplicateIds"] = removed_ids
@@ -823,4 +881,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
 

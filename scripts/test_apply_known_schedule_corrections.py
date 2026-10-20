@@ -440,6 +440,47 @@ class CutieUpgradeReceptionTests(unittest.TestCase):
             self.assertEqual(event, repair_cutie_upgrade_reception(event))
 
 
+class SweetOnlineReceptionRoundsTests(unittest.TestCase):
+    def rows(self):
+        common = {"group": "SWEET STEADY", "title": "SWEET STEADY オンライン特典会",
+                  "eventDate": "2026-10-23", "startTime": "15:00", "eventCategory": "online-benefit",
+                  "ticketType": "オンライン特典会・抽選販売", "sourceType": "sukisuki"}
+        return [dict(common, id="first", url="https://sukisuki-shop.com/goods/6500000004624",
+                     applyStart="2026-10-13T15:00", applyEnd="2026-10-14T23:59",
+                     resultDate="2026-10-15", paymentEnd="2026-10-17T23:59"),
+                dict(common, id="second", url="https://sukisuki-shop.com/goods/6500000004625",
+                     applyStart="2026-10-18T15:00", applyEnd="2026-10-19T23:59",
+                     resultDate="2026-10-20", paymentEnd="2026-10-21T23:59")]
+
+    def test_same_stream_is_one_event_with_both_receipts_and_milestones(self):
+        rows = self.rows()
+        result, report = apply_known_corrections(rows)
+        self.assertEqual(1, len(result))
+        self.assertEqual(1, report["sweetOnline20261023RowsCollapsed"])
+        self.assertEqual(["first", "second"], result[0]["sourceRowIds"])
+        self.assertEqual(["2026-10-15", "2026-10-20"], [o["resultDate"] for o in result[0]["offers"]])
+        self.assertEqual(["2026-10-17T23:59", "2026-10-21T23:59"], [o["paymentEnd"] for o in result[0]["offers"]])
+        for key in ("applyStart", "applyEnd", "resultDate", "paymentEnd"):
+            self.assertNotIn(key, result[0])
+        self.assertEqual("オンライン特典会・抽選販売", rows[0]["ticketType"])
+        again, report = apply_known_corrections(result)
+        self.assertEqual(result, again)
+        self.assertEqual(0, report["sweetOnline20261023RowsCollapsed"])
+        refreshed, _ = apply_known_corrections([*result, *rows])
+        self.assertEqual(1, len(refreshed))
+        self.assertEqual(2, len(refreshed[0]["offers"]))
+
+    def test_other_times_dates_goods_or_groups_are_never_forced_together(self):
+        for change in ({"startTime": "18:00"}, {"eventDate": "2026-10-24"},
+                       {"group": "CANDY TUNE"}, {"url": "https://sukisuki-shop.com/goods/unknown"}):
+            rows = self.rows()
+            rows[1].update(change)
+            result, report = apply_known_corrections(rows)
+            self.assertEqual(2, len(result))
+            self.assertEqual(0, report["sweetOnline20261023RowsCollapsed"])
+
+
 if __name__ == "__main__":
     unittest.main()
+
 
