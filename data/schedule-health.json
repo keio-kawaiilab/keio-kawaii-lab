@@ -1,17 +1,19 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-21T04:54:03.303942+09:00",
-  "candidateUpdatedAt": "2026-10-21T04:54:02+09:00",
+  "generatedAt": "2026-10-21T05:48:59.353927+09:00",
+  "candidateUpdatedAt": "2026-10-21T05:48:58+09:00",
   "previousEventCount": 246,
   "candidateEventCount": 245,
   "protectedPreviousCount": 243,
   "errorCount": 0,
-  "warningCount": 26,
+  "warningCount": 28,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: MORE STAR / MORE STAR 単独ライブ 6th STAR / 一般発売",
     "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: SWEET STEADY / SWEET STEADY 庄司なぎさ BIRTHDAY LIVE 2026 ～ DOKI DOKI ♡ NAGYU ADDICTION ～ / 一般発売",
+    "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 一般発売",
     "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: SWEET STEADY / 『SWEET STEADY JAPAN TOUR 2026』 / 一般発売",
+    "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / ぴあ先行",
     "quarantined one event/source update and kept the previous known-good data: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for pia:14296: 2026-10-26, 2026-10-27, 2026-11-05, 2026-11-06, 2026-11-12, 2026-11-15, 2026-11-21",
     "quarantined one event/source update and kept the previous known-good data: protected future/active item disappeared: MORE STAR / 2026.09.18 2026年10月21日（水）「MORE STAR 単独ライブ 6th STAR」開催決定！FC先行受付開始！ / FC先行",
@@ -36,7 +38,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:74753: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN / 現在受付なし"
   ],
-  "candidateSha256": "05f07c7a7cc7b35b81f3cd17c0107618f0c19bcece34dbe0c12ab667bce7e6cd",
+  "candidateSha256": "e5e49b9e49136b58a7ec8c048a12166012a512ddee060a748a3b5f7ed1d6e658",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40731",
@@ -186,7 +188,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 16,
+  "quarantineCount": 18,
   "quarantineActions": [
     {
       "error": "active Pia row has no lotRlsCd detail URL: MORE STAR / MORE STAR 単独ライブ 6th STAR / 一般発売",
@@ -199,7 +201,17 @@
       "restoredPreviousRows": 1
     },
     {
+      "error": "active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 一般発売",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 7
+    },
+    {
       "error": "active Pia row has no lotRlsCd detail URL: SWEET STEADY / 『SWEET STEADY JAPAN TOUR 2026』 / 一般発売",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / ぴあ先行",
       "action": "withheld new/ambiguous row",
       "restoredPreviousRows": 2
     },
