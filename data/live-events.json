@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-21T07:46:00+09:00",
+  "checkedAt": "2026-10-21T07:47:44+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-19T06:01:52+09:00",
     "scannedPages": {
@@ -3850,7 +3850,6 @@
       "sourceRowIds": [
         "special-420e0fa9f721b51b"
       ],
-      "offers": [],
       "schedule": [
         {
           "date": "2026-11-08",
@@ -3864,7 +3863,8 @@
       "eventEndDate": "2026-11-08",
       "venues": [
         "【リリースイベント】石川県 イオンモール白山 平面駐車場"
-      ]
+      ],
+      "offers": []
     },
     {
       "id": "known-fruits-joy-fanclub-live-20261108",
@@ -10552,35 +10552,10 @@
       "releaseEventEntities": 2,
       "largeBenefitEntities": 4,
       "alreadyCanonicalRows": 6,
-      "duplicateEventIdCollisions": 3,
-      "duplicateEventRowsCollapsed": 5,
+      "duplicateEventIdCollisions": 0,
+      "duplicateEventRowsCollapsed": 0,
       "duplicateEventIdsDisambiguated": 0,
-      "duplicateEventIdRepairs": [
-        {
-          "originalId": "54a369497f59ce96",
-          "sourceRows": 3,
-          "logicalRows": 1,
-          "assignedIds": [
-            "54a369497f59ce96"
-          ]
-        },
-        {
-          "originalId": "c4356b6a3eb08f58",
-          "sourceRows": 3,
-          "logicalRows": 1,
-          "assignedIds": [
-            "c4356b6a3eb08f58"
-          ]
-        },
-        {
-          "originalId": "569bd7a170545248",
-          "sourceRows": 2,
-          "logicalRows": 1,
-          "assignedIds": [
-            "569bd7a170545248"
-          ]
-        }
-      ],
+      "duplicateEventIdRepairs": [],
       "onlinePlaceholderOccurrencesMerged": 0
     },
     "specialEventsBeforePhysicalMerge": 6,
@@ -10673,54 +10648,13 @@
     "failures": []
   },
   "releasePreparation": {
-    "preparedAt": "2026-10-21T07:45:29+09:00",
-    "normalizedSpecialEvents": 6,
+    "preparedAt": "2026-10-21T07:47:40+09:00",
+    "normalizedSpecialEvents": 5,
     "duplicateIdsRemoved": 0,
-    "retainedPreviousRows": 5,
-    "retained": [
-      {
-        "id": "2cd66df3ae3baa26",
-        "group": "CANDY TUNE",
-        "title": "CANDY TUNE",
-        "ticketType": "現在受付なし",
-        "provider": "eplus",
-        "applyEnd": null
-      },
-      {
-        "id": "special-134f44ecd651cd4c-schedule",
-        "group": "CUTIE STREET",
-        "title": "CUTIE STREET 大特典会",
-        "ticketType": "現在受付なし",
-        "provider": null,
-        "applyEnd": null
-      },
-      {
-        "id": "eb345348504b9b2e",
-        "group": "CUTIE STREET",
-        "title": "2026.09.28 2026年11月26日(木) 「CUTIE STREET 佐野愛花 生誕祭 2026」開催決定！CUTIE STREET OFFICIAL FANCLUB会員先行開始！",
-        "ticketType": "FC先行",
-        "provider": null,
-        "applyEnd": "2026-10-07T23:59"
-      },
-      {
-        "id": "96c635da5154e9fc",
-        "group": "MORE STAR",
-        "title": "2026.08.22 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード抽選受付のお知らせ",
-        "ticketType": "アップグレード抽選",
-        "provider": null,
-        "applyEnd": "2026-08-30T23:59"
-      },
-      {
-        "id": "d84b519c1890d568",
-        "group": "MORE STAR",
-        "title": "2026.08.22 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード抽選受付のお知らせ",
-        "ticketType": "アップグレード抽選",
-        "provider": null,
-        "applyEnd": "2026-08-30T23:59"
-      }
-    ],
+    "retainedPreviousRows": 0,
+    "retained": [],
     "expandedPreviousSpecialEntities": 6,
-    "expandedCandidateSpecialEntities": 4,
+    "expandedCandidateSpecialEntities": 6,
     "supersededStaleJointRowsRemoved": 0,
     "supersededStaleJointRowIds": [],
     "supersededLegacyReleaseSeriesRemoved": 1,
@@ -10742,26 +10676,26 @@
       "candyTokyoPresaleAdded": 0,
       "sweetestStoryPerformancesAdded": 0,
       "fruitsJoyFanclubLiveAdded": 0,
-      "staleChristmasRowsRemoved": 2,
+      "staleChristmasRowsRemoved": 0,
       "fmAichiFixed": 0,
       "sweetFcSecondStartFixed": 0,
       "giftMultiVenueFixed": 0,
       "giftMoreStarAdded": 0,
       "moreStarSeventhFixed": 0,
       "candyOnline20261020RowsCollapsed": 0,
-      "sweetOnline20261023RowsCollapsed": 1,
+      "sweetOnline20261023RowsCollapsed": 0,
       "sweetEbichu20261116RowsCollapsed": 0,
       "semanticTicketDuplicatesRemoved": 0,
       "semanticTicketDuplicateIds": []
     },
     "physicalEventInvariant": {
       "semanticNormalization": {
-        "sourceSpecialRows": 8,
+        "sourceSpecialRows": 6,
         "canonicalSpecialEvents": 6,
-        "rowsCollapsed": 2,
+        "rowsCollapsed": 0,
         "releaseEventEntities": 2,
         "largeBenefitEntities": 4,
-        "alreadyCanonicalRows": 5,
+        "alreadyCanonicalRows": 6,
         "duplicateEventIdCollisions": 0,
         "duplicateEventRowsCollapsed": 0,
         "duplicateEventIdsDisambiguated": 0,
@@ -10778,8 +10712,8 @@
       "remainingDuplicates": []
     },
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-10-21T07:45:29+09:00",
-    "checkedAt": "2026-10-21T07:45:29+09:00"
+    "publicUpdatedAt": "2026-10-21T07:47:40+09:00",
+    "checkedAt": "2026-10-21T07:47:40+09:00"
   },
   "renderWarnings": [
     {
@@ -12134,6 +12068,11 @@
     },
     {
       "checkedAt": "2026-10-21T07:46:00+09:00",
+      "scope": "CANDY TUNE tour render verification",
+      "message": "Sendai performance lost its current general sale: []"
+    },
+    {
+      "checkedAt": "2026-10-21T07:47:44+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "Sendai performance lost its current general sale: []"
     }
@@ -19020,7 +18959,7 @@
       }
     ]
   },
-  "updatedAt": "2026-10-21T07:46:00+09:00",
+  "updatedAt": "2026-10-21T07:47:44+09:00",
   "publicEvents": [
     {
       "id": "1c60e2be989c564d",
@@ -19989,7 +19928,6 @@
       "sourceRowIds": [
         "special-420e0fa9f721b51b"
       ],
-      "offers": [],
       "schedule": [
         {
           "date": "2026-11-08",
@@ -20003,7 +19941,8 @@
       "eventEndDate": "2026-11-08",
       "venues": [
         "【リリースイベント】石川県 イオンモール白山 平面駐車場"
-      ]
+      ],
+      "offers": []
     },
     {
       "id": "3edcd98dd32ff61b",
