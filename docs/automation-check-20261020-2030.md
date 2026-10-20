@@ -23,4 +23,13 @@
 
 https://sweetsteady.asobisystem.com/news/detail/91244 の本文は11月16日Zepp Haneda(TOKYO)、開場17:30/開演18:30の1公演、FC受付9月29日18:00〜10月4日23:59を明記。再収集で公演の日程行と終了済み受付行が別publicEventsとして残ったため、この公式記事・日付・時刻に限定して1公演へ統合する。外部出演の区分は変えず、終了済みFC受付はoffersと元IDで保持する。他の記事・日付・開演時刻を同一視しない。既存の別商品・別特典会への一般化もしない。
 
-純Python回帰テスト79件成功。受付2件の当落・入金期限、親公演への受付項目の流出防止、冪等性、元行の再取得、別日時等の除外を追加。最新本番データに適用して公開前監査も確認した。公開の最終結果は追記する。
+純Python回帰テスト80件成功。受付2件の当落・入金期限、親公演への受付項目の流出防止、冪等性、元行の再取得、別日時等の除外、外部出演の受付履歴保持を追加。最新本番データへ適用した監査もエラー0・隔離0だった。画面生成、インラインJavaScript構文、申込帯・主催フィルタ・プリセール判定/キャッシュ更新経路のNodeテストも成功。
+
+## 公開完了確認（20:43 日本時間）
+
+- ソース修正: 0afefaa（10月23日オン特）、4edb6a2（11月16日外部出演）。
+- 本文収集・監査・公開 https://github.com/keio-kawaiilab/keio-kawaii-lab/actions/runs/39415443685 成功。次の統合巡回 https://github.com/keio-kawaiilab/keio-kawaii-lab/actions/runs/39415443961 も全取得元・統合公開・情報源監視まで成功。再取得後も両方の統合が維持された。
+- 最新main 121a2df の publicEvents と live-runtime-fallback.js の両方で、10月23日はknown-sweet-steady-online-20261023が1件/2受付、11月16日はknown-sweet-ebichu-20261116が1件/1受付。元IDはそれぞれ2個ずつ保持。
+- Pages https://github.com/keio-kawaiilab/keio-kawaii-lab/actions/runs/39416745255 成功。live.htmlから実際に開き直した公開画面の更新日時は20:41:21。10月23日15:00オン特が1件、当落と入金期限マークが各1個。CANDY本日17:00オン特も1件で終了した販売への有効な申込導線なし。
+- 外部出演を含めるフィルタで11月16日を1件と確認。Zepp Haneda(TOKYO)、開場17:30/開演18:30、終了した9月29日18:00〜10月4日23:59のFC受付履歴を保持。主催のみの既定表示へ戻した。
+- 最新監査はstatus: ok/errorCount: 0。発見・公開照合はmissingOffers/sourceFailuresなし、failureCount: 0。既存の個別保留7件は保持し、問題のない更新を公開した。
