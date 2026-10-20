@@ -4,6 +4,30 @@ import archive_ticket_history as mod
 
 
 class ArchiveTicketHistoryTests(unittest.TestCase):
+    def test_false_annual_fc_observation_is_retained_but_not_republished(self):
+        row = {"id": "keep-original-observation", "group": "CUTIE STREET",
+               "eventTitle": "CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN",
+               "eventDate": "2026-11-14", "startTime": "18:00",
+               "ticketType": "年会費コース会員先行", "sourceKey": "group-official",
+               "sourceUrl": "https://cutiestreet.asobisystem.com/feature/autumntour",
+               "applyStart": "2026-10-15T12:00", "applyEnd": "2026-10-20T23:59",
+               "firstSeenAt": "2026-10-20T06:00:00+09:00", "publishable": True,
+               "flowEligible": True, "observedWindows": [{"applyEnd": "2026-10-20T23:59"}]}
+        result = mod.archive_payload({"events": []}, {"entries": [row]}, self.registry, "2026-10-20T20:00:00+09:00")
+        retained = result["entries"][0]
+        self.assertEqual(1, len(result["entries"]))
+        for key, value in row.items():
+            if key not in {"publishable", "flowEligible"}:
+                self.assertEqual(value, retained[key])
+        self.assertFalse(retained["publishable"])
+        self.assertFalse(retained["flowEligible"])
+        self.assertEqual("アップグレード抽選", retained["classificationCorrection"]["correctTicketType"])
+        for changes in ({"applyEnd": "2026-10-21T23:59"}, {"eventDate": "2026-11-30"},
+                        {"sourceUrl": "https://example.asobisystem.com/news/other"},
+                        {"ticketType": "アップグレード抽選"}):
+            other = dict(row, **changes)
+            self.assertEqual(other, mod.retract_known_upgrade_misclassification(other))
+
     def test_repeated_archive_preserves_two_show_times_without_duplicate_ids(self):
         base = {"group": "CANDY TUNE", "eventTitle": "Two shows", "eventDate": "2099-10-01", "ticketType": "一般発売", "applyStart": "2099-09-01T10:00", "url": "https://example.asobisystem.com/news/detail/two"}
         live = {"events": [dict(base, startTime="14:00"), dict(base, startTime="18:00")]}
@@ -143,3 +167,4 @@ class ArchiveTicketHistoryTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+

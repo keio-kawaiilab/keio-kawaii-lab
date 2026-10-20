@@ -8,6 +8,7 @@ from datetime import datetime
 from pathlib import Path
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 from zoneinfo import ZoneInfo
+from apply_known_schedule_corrections import repair_cutie_upgrade_reception
 
 LIVE_PATH = Path("data/live-events.json")
 HISTORY_PATH = Path("data/ticket-history.json")
@@ -251,10 +252,33 @@ def merge_entry(existing: dict, incoming: dict, now: str) -> dict:
     return out
 
 
+def retract_known_upgrade_misclassification(entry: dict) -> dict:
+    # Permanent history keeps the original observation, but must not continue
+    # presenting an eligibility condition as a real, currently open FC sale.
+    article = "https://cutiestreet.asobisystem.com/news/detail/92733"
+    source = clean(entry.get("sourceUrl"))
+    title = title_for(entry)
+    if source not in {article, "https://cutiestreet.asobisystem.com/feature/autumntour"}:
+        return entry
+    if not ("ARENA TOUR 2026" in title and "AUTUMN" in title):
+        return entry
+    probe = dict(entry, url=article)
+    if repair_cutie_upgrade_reception(probe).get("ticketType") == entry.get("ticketType"):
+        return entry
+    out = dict(entry)
+    out.update({"publishable": False, "flowEligible": False,
+                "classificationCorrection": {
+                    "reason": "annual FC wording is prior-purchaser eligibility, not another reception",
+                    "correctTicketType": "アップグレード抽選", "sourceUrl": article,
+                }})
+    return out
+
+
 def archive_payload(live: dict, history: dict, registry: dict, now: str) -> dict:
     entries = [dict(x) for x in history.get("entries", []) if isinstance(x, dict) and x.get("id")]
     by_id: dict[str, dict] = {}
     for existing in entries:
+        existing = retract_known_upgrade_misclassification(existing)
         canonical_url = canonical_source_url(clean(existing.get("sourceUrl")))
         source_key = clean(existing.get("sourceKey"))
         stub = {
@@ -296,6 +320,7 @@ def archive_payload(live: dict, history: dict, registry: dict, now: str) -> dict
             continue
         for day in event_dates(event):
             incoming = make_entry(event, source_url, source_key, day, registry, now)
+            incoming = retract_known_upgrade_misclassification(incoming)
             current = by_id.get(incoming["id"])
             by_id[incoming["id"]] = merge_entry(current, incoming, now) if current else incoming
 
@@ -364,3 +389,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
