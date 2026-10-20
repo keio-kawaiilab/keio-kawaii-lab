@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import unittest
+from copy import deepcopy
 from datetime import date, datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -11,6 +12,65 @@ from performance_entities import build_public_events
 
 
 class PerformanceEntitiesTest(unittest.TestCase):
+    def christmas_fixture(self):
+        rows = []
+        for day, opened, start in (("2026-12-12", "15:00", "17:00"), ("2026-12-13", "14:00", "16:00")):
+            for group in ("FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR", "KAWAII LAB. MATES", "KAWAII LAB. SOUTH"):
+                rows.append({
+                    "id": group + day, "group": group,
+                    "title": "2026.08.22 KAWAII LAB. Christmas SESSION 2026 アップグレード抽選受付",
+                    "eventDate": day, "venue": "有明アリーナ",
+                    "openTime": opened, "startTime": start,
+                    "url": "https://kawaiilab.asobisystem.com/news/detail/87775",
+                    "ticketType": "アップグレード", "applyStart": "2026-08-22T12:00",
+                    "applyEnd": "2026-08-30T23:59", "sourceType": "auto",
+                    "primarySource": "official", "eventScope": "kawaii-lab",
+                })
+            rows.append({
+                "id": "joint" + day, "group": "KAWAII LAB.合同",
+                "title": "KAWAII LAB. Christmas SESSION 2026 Day" + ("1" if day.endswith("12") else "2"),
+                "eventDate": day, "venue": "有明アリーナ",
+                "schedule": [{"date": day, "venue": "有明アリーナ", "openTime": "15:00", "startTime": "17:00"}],
+                "url": "https://kawaiilab.asobisystem.com/live_information/detail/" + ("44571" if day.endswith("12") else "44572"),
+                "sourceType": "official-schedule", "primarySource": "official",
+                "eventScope": "kawaii-lab",
+            })
+        return rows
+
+    def test_christmas_joint_performances_keep_days_history_and_raw_rows(self):
+        rows = self.christmas_fixture()
+        original = deepcopy(rows)
+        public, _ = build_public_events(rows)
+        self.assertEqual(rows, original)
+        self.assertEqual(len(public), 2)
+        self.assertEqual({(row["eventDate"], row["openTime"], row["startTime"]) for row in public}, {
+            ("2026-12-12", "15:00", "17:00"), ("2026-12-13", "14:00", "16:00"),
+        })
+        for event in public:
+            self.assertEqual(event["group"], "KAWAII LAB.合同")
+            self.assertEqual(len(event["participants"]), 7)
+            self.assertEqual(len(event["sourceRowIds"]), 8)
+            self.assertEqual(len(event["offers"]), 1)
+            self.assertEqual(event["offers"][0]["applyEnd"], "2026-08-30T23:59")
+            self.assertIn("https://kawaiilab.asobisystem.com/news/detail/87775", event["urls"])
+            self.assertEqual(len(event["performanceFactSources"]), 2)
+
+    def test_christmas_unknown_source_date_and_distinct_start_are_not_forced(self):
+        original = self.christmas_fixture()[0]
+        unknown = dict(original, id="unknown", group="CUTIE STREET", url="https://cutiestreet.asobisystem.com/news/detail/99999")
+        other_day = dict(original, id="other-day", eventDate="2026-12-14")
+        other_start = dict(original, id="other-start", startTime="20:00")
+        public, _ = build_public_events([original, unknown, other_day, other_start])
+        self.assertEqual(len(public), 4)
+        self.assertEqual(len([e for e in public if e["group"] == "KAWAII LAB.合同"]), 2)
+        self.assertTrue(any(e.get("startTime") == "20:00" for e in public))
+
+    def test_christmas_day2_new_time_is_not_overwritten_by_old_correction(self):
+        row = self.christmas_fixture()[-1]
+        row["schedule"][0].update(openTime="18:00", startTime="20:00")
+        public, _ = build_public_events([row])
+        self.assertEqual(public[0]["startTime"], "20:00")
+
     def fixture(self):
         return [
             {

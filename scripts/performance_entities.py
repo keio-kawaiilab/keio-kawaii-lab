@@ -155,6 +155,54 @@ def _occurrences(event: dict[str, Any]) -> list[dict[str, Any]]:
     return rows
 
 
+def _reconcile_verified_christmas_session(event: dict[str, Any]) -> None:
+    """Normalize only the source-identified joint Christmas performances.
+
+    The central upgrade article was acquired once for each participant; those
+    are not seven different concerts. Keep the acquisition rows and their
+    offers intact, but give their public copies the joint performance identity.
+    Facts rechecked against central NEWS 87775 and CANDY TUNE NEWS 85442 on
+    2026-10-20. In particular central schedule 44572 inherited Day1's times.
+    """
+    source = "https://kawaiilab.asobisystem.com/news/detail/87775"
+    day2_source = "https://kawaiilab.asobisystem.com/live_information/detail/44572"
+    known_urls = {
+        source,
+        "https://kawaiilab.asobisystem.com/live_information/detail/44571",
+        day2_source,
+        "https://candytune.asobisystem.com/news/detail/85442",
+    }
+    urls = {re.sub(r"[?#].*$", "", value).rstrip("/") for value in _event_urls(event)}
+    title = _title_key(event)
+    occurrences = _occurrences(event)
+    days = {row["date"] for row in occurrences}
+    if not (urls & known_urls) or "christmassession2026" not in title:
+        return
+    if not days or not days <= {"2026-12-12", "2026-12-13"}:
+        return
+    if any("有明アリーナ" not in row["venue"] for row in occurrences):
+        return
+    # Preserve distinct starts unless this is the specifically identified stale
+    # central Day2 schedule row. Never merge arbitrary same-day performances.
+    if (day2_source in urls and days == {"2026-12-13"}
+            and all((row["openTime"], row["startTime"]) == ("15:00", "17:00") for row in occurrences)):
+        event["openTime"], event["startTime"] = "14:00", "16:00"
+        for row in occurrences:
+            row["openTime"], row["startTime"] = "14:00", "16:00"
+        event["schedule"] = occurrences
+    event["group"] = "KAWAII LAB.合同"
+    event["participants"] = [
+        "FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY", "CUTIE STREET",
+        "MORE STAR", "KAWAII LAB. MATES", "KAWAII LAB. SOUTH",
+    ]
+    for field in ("title", "eventTitle", "displayTitle"):
+        event[field] = "KAWAII LAB. Christmas SESSION 2026"
+    event["performanceFactSources"] = _unique_strings([
+        *(event.get("performanceFactSources") or []), source,
+        "https://candytune.asobisystem.com/news/detail/85442",
+    ])
+
+
 def _time_match_keys(event: dict[str, Any], occurrence: dict[str, Any]) -> list[str]:
     group = _text(event.get("group"))
     day = _day(occurrence.get("date"))
@@ -383,6 +431,8 @@ def build_public_events(events: list[dict[str, Any]]) -> tuple[list[dict[str, An
     appearances remain on their existing dedicated paths.
     """
     raw = [deepcopy(event) for event in events if isinstance(event, dict)]
+    for event in raw:
+        _reconcile_verified_christmas_session(event)
     records: list[dict[str, Any]] = []
     passthrough: list[dict[str, Any]] = []
     for index, event in enumerate(raw):
