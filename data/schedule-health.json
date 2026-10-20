@@ -1,14 +1,23 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-21T04:16:47.215931+09:00",
-  "candidateUpdatedAt": "2026-10-21T04:16:30+09:00",
+  "generatedAt": "2026-10-21T04:29:01.696742+09:00",
+  "candidateUpdatedAt": "2026-10-21T04:29:01+09:00",
   "previousEventCount": 237,
-  "candidateEventCount": 237,
+  "candidateEventCount": 247,
   "protectedPreviousCount": 234,
   "errorCount": 0,
-  "warningCount": 10,
+  "warningCount": 19,
   "errors": [],
   "warnings": [
+    "quarantined one event/source update and kept the previous known-good data: missing title: CUTIE STREET / ? / チケット受付",
+    "quarantined one event/source update and kept the previous known-good data: missing title: CANDY TUNE / ? / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: missing title: CUTIE STREET / ? / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: missing title: FRUITS ZIPPER / ? / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: missing title: KAWAII LAB. MATES / ? / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: missing title: KAWAII LAB. SOUTH / ? / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: missing title: MORE STAR / ? / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: missing title: SWEET STEADY / ? / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:74753: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN / 現在受付なし",
@@ -20,7 +29,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
   ],
-  "candidateSha256": "fc7d8e5497c151d5ff228cabe8458cdb966b0fc40c2eed64d6c8bb679cb5c148",
+  "candidateSha256": "954796ff8517e3da67b4bf0fdacd791601cdacc416f69f187f8549f6ddded780",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40731",
@@ -47,6 +56,7 @@
     "url:https://cutiestreet.asobisystem.com/live_information/detail/40366",
     "url:https://cutiestreet.asobisystem.com/live_information/detail/40367",
     "url:https://cutiestreet.asobisystem.com/live_information/detail/40368",
+    "url:https://cutiestreet.asobisystem.com/live_information/detail/40369",
     "url:https://cutiestreet.asobisystem.com/news/detail/90590",
     "url:https://cutiestreet.asobisystem.com/news/detail/90591",
     "url:https://cutiestreet.asobisystem.com/news/detail/92733",
@@ -65,7 +75,7 @@
     "url:https://kawaiilab.asobisystem.com/news/detail/88214",
     "url:https://kawaiilab.asobisystem.com/news/detail/89953",
     "url:https://kawaiilab.asobisystem.com/news/detail/90495",
-    "url:https://kawaiilab.asobisystem.com/news/detail/92173",
+    "url:https://kawaiilab.asobisystem.com/news/detail/90869",
     "url:https://kawaiilab.asobisystem.com/news/detail/92282",
     "url:https://kawaiilab.asobisystem.com/news/detail/92288",
     "url:https://kawaiilab.asobisystem.com/news/detail/92368",
@@ -169,7 +179,63 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 0,
-  "quarantineActions": [],
-  "rowFailuresCanBlockRelease": false
+  "quarantineCount": 9,
+  "quarantineActions": [
+    {
+      "error": "missing title: CUTIE STREET / ? / チケット受付",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 24
+    },
+    {
+      "error": "missing title: CANDY TUNE / ? / FC先行",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 12
+    },
+    {
+      "error": "missing title: CUTIE STREET / ? / FC先行",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 12
+    },
+    {
+      "error": "missing title: FRUITS ZIPPER / ? / FC先行",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 12
+    },
+    {
+      "error": "missing title: KAWAII LAB. MATES / ? / FC先行",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "missing title: KAWAII LAB. SOUTH / ? / FC先行",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "missing title: MORE STAR / ? / FC先行",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 12
+    },
+    {
+      "error": "missing title: SWEET STEADY / ? / FC先行",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 12
+    },
+    {
+      "error": "special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+      "action": "restored previous row",
+      "restoredPreviousRows": 1
+    }
+  ],
+  "rowFailuresCanBlockRelease": false,
+  "officialIndexReconciledAfterQuarantine": {
+    "reassignedCount": 0,
+    "hydratedCount": 0,
+    "ambiguousCount": 0,
+    "unresolvedCount": 0,
+    "reassigned": [],
+    "hydrated": [],
+    "ambiguous": [],
+    "unresolved": []
+  }
 }
