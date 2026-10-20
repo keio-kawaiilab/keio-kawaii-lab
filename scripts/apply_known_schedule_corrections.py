@@ -100,6 +100,36 @@ def repair_sweet_shiraishi_central_fc(event: dict) -> dict:
     return out
 
 
+def repair_candy_oita_eplus_link(offer: dict, group: str, day: str, start_time: str) -> dict:
+    """The Fukuoka eplus page is not an application page for Oita.
+
+    Legacy bundled rows can survive as nested offers on both occurrences.
+    Correct only this verified general-sale window after occurrence expansion.
+    """
+    wrong = "https://eplus.jp/sf/detail/3923750001-P0030012P021001"
+    correct = "https://eplus.jp/sf/detail/3923750001-P0030013P021001"
+    if not (
+        group == "CANDY TUNE" and day == "2026-12-01" and start_time == "18:30"
+        and str(offer.get("url") or "").split("?")[0] == wrong
+        and offer.get("ticketType") == "先着 ★一般発売"
+        and offer.get("applyStart") == "2026-09-26T10:00"
+        and offer.get("applyEnd") == "2026-11-29T20:00"
+        and "eplus" in {offer.get("provider"), offer.get("ticketProvider"), offer.get("primarySource")}
+    ):
+        return offer
+    out = deepcopy(offer)
+    out["url"] = correct
+    out["urls"] = list(dict.fromkeys([
+        correct, *(url for url in (offer.get("urls") or []) if str(url).split("?")[0] != wrong),
+    ]))
+    for field in ("applicationWindowSource", "deadlineSource"):
+        if str(out.get(field) or "").split("?")[0] == wrong:
+            out[field] = correct
+    out["linkCorrection"] = {"originalUrl": wrong, "sourceUrl": correct,
+                             "reason": "2026-12-01 Oita is a separate occurrence from 2026-11-30 Fukuoka"}
+    return out
+
+
 def _is_hakata_special(event: dict) -> bool:
     return (
         event.get("group") == "CUTIE STREET"
@@ -727,6 +757,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "candyBirthdayFactsFilled": 0,
         "cutieUpgradeReceptionFixed": 0,
         "sweetShiraishiCentralFcFixed": 0,
+        "candyOitaEplusLinkFixed": 0,
         "candyTokyoPresaleAdded": 0,
         "sweetestStoryPerformancesAdded": 0,
         "fruitsJoyFanclubLiveAdded": 0,
@@ -761,6 +792,10 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         current = repair_sweet_shiraishi_central_fc(current)
         if current != before_central_fc:
             report["sweetShiraishiCentralFcFixed"] += 1
+        before_oita = current
+        current = repair_candy_oita_eplus_link(current, current.get("group"), _day(current), current.get("startTime"))
+        if current != before_oita:
+            report["candyOitaEplusLinkFixed"] += 1
         before_birthday = current
         current = _repair_candy_birthday_facts(current)
         if current != before_birthday:

@@ -4,6 +4,20 @@ import archive_ticket_history as mod
 
 
 class ArchiveTicketHistoryTests(unittest.TestCase):
+    def test_wrong_oita_link_observation_is_retained_but_not_a_live_link(self):
+        row = {"id": "keep-oita-observation", "group": "CANDY TUNE", "eventDate": "2026-12-01", "startTime": "18:30",
+               "sourceUrl": "https://eplus.jp/sf/detail/3923750001-P0030012P021001", "sourceKey": "eplus",
+               "ticketType": "先着 ★一般発売", "applyStart": "2026-09-26T10:00", "applyEnd": "2026-11-29T20:00",
+               "firstSeenAt": "2026-09-27T06:13:06+09:00", "observedWindows": [{"applyEnd": "2026-11-29T20:00"}]}
+        fixed = mod.retract_known_upgrade_misclassification(row)
+        self.assertFalse(fixed["publishable"])
+        self.assertFalse(fixed["flowEligible"])
+        for key, value in row.items():
+            self.assertEqual(value, fixed[key])
+        self.assertTrue(fixed["classificationCorrection"]["correctSourceUrl"].endswith("P0030013P021001"))
+        fukuoka = dict(row, eventDate="2026-11-30")
+        self.assertEqual(fukuoka, mod.retract_known_upgrade_misclassification(fukuoka))
+
     def test_mislabeled_central_fc_history_is_retained_not_republished(self):
         row = {"id": "central-original", "group": "SWEET STEADY",
                "eventTitle": "SWEET STEADY 白石まゆみ BIRTHDAY LIVE 2026",

@@ -12,6 +12,33 @@ from performance_entities import build_public_events
 
 
 class PerformanceEntitiesTest(unittest.TestCase):
+    def test_verified_oita_offer_does_not_reuse_fukuoka_application_link(self):
+        fukuoka = "https://eplus.jp/sf/detail/3923750001-P0030012P021001"
+        oita = "https://eplus.jp/sf/detail/3923750001-P0030013P021001"
+        offer = {"sourceRowId": "legacy-sale", "provider": "eplus", "url": fukuoka,
+                 "urls": [fukuoka, fukuoka + "?P1=0175", oita], "ticketType": "先着 ★一般発売",
+                 "applyStart": "2026-09-26T10:00", "applyEnd": "2026-11-29T20:00"}
+        bundled = {"id": "legacy-bundle", "group": "CANDY TUNE", "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
+                   "eventScope": "kawaii-lab", "eventDate": "2026-11-30", "eventEndDate": "2026-12-01",
+                   "eventDates": ["2026-11-30", "2026-12-01"], "startTime": "18:30", "offers": [offer],
+                   "schedule": [{"date": "2026-11-30", "venue": "福岡サンパレス", "startTime": "18:30"},
+                                {"date": "2026-12-01", "venue": "大分iichikoグランシアタ", "startTime": "18:30"}]}
+        direct = dict(bundled, id="oita-direct", eventDate="2026-12-01", eventDates=["2026-12-01"],
+                      schedule=[bundled["schedule"][1]], offers=[dict(offer, sourceRowId="oita-sale", url=oita, urls=[oita])])
+        original = deepcopy([bundled, direct])
+        public, _ = build_public_events(original)
+        self.assertEqual([bundled, direct], original)
+        self.assertEqual(2, len(public))
+        by_day = {e["eventDate"]: e for e in public}
+        for day, url in (("2026-11-30", fukuoka), ("2026-12-01", oita)):
+            self.assertEqual(1, len(by_day[day]["offers"]))
+            self.assertEqual(url, by_day[day]["offers"][0]["url"])
+            self.assertEqual("2026-11-29T20:00", by_day[day]["offers"][0]["applyEnd"])
+        self.assertEqual({"legacy-bundle", "oita-direct"}, set(by_day["2026-12-01"]["sourceRowIds"]))
+        again, _ = build_public_events(public)
+        self.assertEqual([(e["eventDate"], e["offers"][0]["url"]) for e in public],
+                         [(e["eventDate"], e["offers"][0]["url"]) for e in again])
+
     def christmas_fixture(self):
         rows = []
         for day, opened, start in (("2026-12-12", "15:00", "17:00"), ("2026-12-13", "14:00", "16:00")):

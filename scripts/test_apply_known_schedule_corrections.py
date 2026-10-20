@@ -440,6 +440,32 @@ class CutieUpgradeReceptionTests(unittest.TestCase):
             self.assertEqual(event, repair_cutie_upgrade_reception(event))
 
 
+class CandyOitaEplusLinkTests(unittest.TestCase):
+    def test_only_verified_occurrence_provider_and_window_are_corrected(self):
+        from apply_known_schedule_corrections import repair_candy_oita_eplus_link
+        wrong = "https://eplus.jp/sf/detail/3923750001-P0030012P021001"
+        correct = "https://eplus.jp/sf/detail/3923750001-P0030013P021001"
+        row = {"id": "keep-id", "group": "CANDY TUNE", "eventDate": "2026-12-01", "startTime": "18:30",
+               "url": wrong, "urls": [wrong, correct], "primarySource": "eplus", "ticketType": "先着 ★一般発売",
+               "applyStart": "2026-09-26T10:00", "applyEnd": "2026-11-29T20:00",
+               "applicationWindowSource": wrong, "deadlineSource": wrong}
+        fixed = repair_candy_oita_eplus_link(row, row["group"], row["eventDate"], row["startTime"])
+        self.assertEqual(correct, fixed["url"])
+        self.assertEqual([correct], fixed["urls"])
+        self.assertEqual(correct, fixed["deadlineSource"])
+        self.assertEqual("keep-id", fixed["id"])
+        self.assertEqual(wrong, row["url"])
+        rows, report = apply_known_corrections([row])
+        self.assertEqual(correct, rows[0]["url"])
+        self.assertEqual(1, report["candyOitaEplusLinkFixed"])
+        for changes in ({"eventDate": "2026-11-30"}, {"eventDate": "2026-12-02"},
+                        {"startTime": "15:00"}, {"group": "CUTIE STREET"},
+                        {"applyEnd": "2026-11-30T20:00"}, {"primarySource": "pia"},
+                        {"ticketType": "抽選 プレオーダー受付"}, {"url": "https://example.com/other"}):
+            other = dict(row, **changes)
+            self.assertEqual(other, repair_candy_oita_eplus_link(other, other["group"], other["eventDate"], other["startTime"]))
+
+
 class SweetCentralFcReceptionTests(unittest.TestCase):
     def fixture(self):
         return {"id": "recent-body", "group": "SWEET STEADY",
@@ -534,5 +560,3 @@ class SweetOnlineReceptionRoundsTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
-

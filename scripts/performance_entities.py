@@ -7,6 +7,7 @@ from typing import Any
 from urllib.parse import urlparse
 
 from schedule_scope import HOSTED, infer_event_scope
+from apply_known_schedule_corrections import repair_candy_oita_eplus_link
 
 
 SPECIAL_CATEGORIES = {"release-event", "large-benefit"}
@@ -371,12 +372,14 @@ def _canonical_entity(key: str, records: list[dict[str, Any]]) -> dict[str, Any]
                 if not isinstance(raw_offer, dict):
                     continue
                 offer = deepcopy(raw_offer)
+                offer = repair_candy_oita_eplus_link(offer, base.get("group"), day, start)
                 marker = _offer_key(offer)
                 if marker not in seen_offers:
                     offers.append(offer)
                     seen_offers.add(marker)
         offer = _offer_from_event(event)
         if offer is not None:
+            offer = repair_candy_oita_eplus_link(offer, base.get("group"), day, start)
             marker = _offer_key(offer)
             if marker not in seen_offers:
                 offers.append(offer)

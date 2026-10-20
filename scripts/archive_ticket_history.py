@@ -8,7 +8,7 @@ from datetime import datetime
 from pathlib import Path
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 from zoneinfo import ZoneInfo
-from apply_known_schedule_corrections import repair_cutie_upgrade_reception, repair_sweet_shiraishi_central_fc
+from apply_known_schedule_corrections import repair_cutie_upgrade_reception, repair_sweet_shiraishi_central_fc, repair_candy_oita_eplus_link
 
 LIVE_PATH = Path("data/live-events.json")
 HISTORY_PATH = Path("data/ticket-history.json")
@@ -253,6 +253,14 @@ def merge_entry(existing: dict, incoming: dict, now: str) -> dict:
 
 
 def retract_known_upgrade_misclassification(entry: dict) -> dict:
+    link_probe = dict(entry, url=entry.get("sourceUrl"), provider="eplus" if entry.get("sourceKey") == "eplus" else "")
+    corrected_link = repair_candy_oita_eplus_link(link_probe, entry.get("group"), entry.get("eventDate"), entry.get("startTime"))
+    if corrected_link.get("url") != link_probe.get("url"):
+        return dict(entry, publishable=False, flowEligible=False,
+                    classificationCorrection={
+                        "reason": "Fukuoka reception wrongly attached to the Oita occurrence",
+                        "correctSourceUrl": corrected_link["url"], "sourceUrl": corrected_link["url"],
+                    })
     central_article = "https://kawaiilab.asobisystem.com/news/detail/92282"
     central_probe = dict(entry, url=entry.get("sourceUrl"))
     if repair_sweet_shiraishi_central_fc(central_probe).get("ticketType") != entry.get("ticketType"):
