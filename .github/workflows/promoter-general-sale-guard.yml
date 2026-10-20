@@ -7,6 +7,11 @@ on:
     paths:
       - "scripts/promoter_general_sale_guard.py"
       - "scripts/test_promoter_general_sale_guard.py"
+      - "scripts/verified_general_sales.py"
+      - "scripts/test_verified_general_sales.py"
+      - "scripts/audit_ticket_sources.py"
+      - "scripts/test_audit_ticket_sources.py"
+      - "data/verified-general-sales.json"
       - ".github/workflows/promoter-general-sale-guard.yml"
   schedule:
     - cron: "17 18 * * *"
