@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-20T15:32:19.869876+09:00",
-  "candidateUpdatedAt": "2026-10-20T15:32:19+09:00",
+  "generatedAt": "2026-10-20T15:47:34.969072+09:00",
+  "candidateUpdatedAt": "2026-10-20T15:47:34+09:00",
   "previousEventCount": 234,
   "candidateEventCount": 233,
   "protectedPreviousCount": 231,
   "errorCount": 0,
-  "warningCount": 29,
+  "warningCount": 31,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: MORE STAR / MORE STAR 単独ライブ 6th STAR / 一般発売",
@@ -25,7 +25,9 @@
     "quarantined one event/source update and kept the previous known-good data: deadline moved earlier for eplus:https://eplus.jp/sf/detail/4401630001-P0030002P021001:days:2026-12-05: 2026-10-31T23:59 -> 2026-10-21T23:59 (manual review required)",
     "quarantined one event/source update and kept the previous known-good data: deadline moved earlier for eplus:https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175:days:2026-12-05: 2026-10-31T23:59 -> 2026-07-30T23:59 (manual review required)",
     "quarantined one event/source update and kept the previous known-good data: deadline moved earlier for eplus:https://eplus.jp/sf/detail/4401630001-P0030002P021002:days:2026-12-06: 2026-10-31T23:59 -> 2026-10-21T23:59 (manual review required)",
+    "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN -「CANDY CIRCUS」公演 リセールサービスのお知らせ / リセール",
     "quarantined one event/source update and kept the previous known-good data: protected future/active item disappeared: SWEET STEADY / SWEET STEADY 白石まゆみ BIRTHDAY LIVE 2026 / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN -「CANDY CIRCUS」公演 リセールサービスのお知らせ / リセール",
     "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for url:https://kawaiilab.asobisystem.com/news/detail/87775: 2026-12-13",
     "quarantined one event/source update and kept the previous known-good data: protected future/active item disappeared: SWEET STEADY / SWEET STEADY 3rd ANNIVERSARY LIVE / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -39,7 +41,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:74753: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN / 現在受付なし"
   ],
-  "candidateSha256": "a345f8966b1670ba690ad3d87ffb889bbbb028e4da4131804c845e1ba6a1d478",
+  "candidateSha256": "111121ea7bde6907651e70d5d8255ac88338a300605c724f44785a8ddbf66e3c",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40731",
@@ -188,7 +190,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 19,
+  "quarantineCount": 21,
   "quarantineActions": [
     {
       "error": "active Pia row has no lotRlsCd detail URL: MORE STAR / MORE STAR 単独ライブ 6th STAR / 一般発売",
@@ -271,9 +273,19 @@
       "restoredPreviousRows": 3
     },
     {
+      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN -「CANDY CIRCUS」公演 リセールサービスのお知らせ / リセール",
+      "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
+      "restoredPreviousRows": 30
+    },
+    {
       "error": "protected future/active item disappeared: SWEET STEADY / SWEET STEADY 白石まゆみ BIRTHDAY LIVE 2026 / FC先行",
       "action": "restored disappeared previous row",
       "restoredPreviousRows": 1
+    },
+    {
+      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN -「CANDY CIRCUS」公演 リセールサービスのお知らせ / リセール",
+      "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
+      "restoredPreviousRows": 30
     },
     {
       "error": "future performance dates disappeared for url:https://kawaiilab.asobisystem.com/news/detail/87775: 2026-12-13",
@@ -290,11 +302,29 @@
   "officialIndexReconciledAfterQuarantine": {
     "reassignedCount": 0,
     "hydratedCount": 0,
-    "ambiguousCount": 9,
+    "ambiguousCount": 11,
     "unresolvedCount": 1,
     "reassigned": [],
     "hydrated": [],
     "ambiguous": [
+      {
+        "group": "CANDY TUNE",
+        "date": "2026-10-26",
+        "url": "https://candytune.asobisystem.com/live_information/detail/40731",
+        "candidateIds": [
+          "54a369497f59ce96",
+          "c4356b6a3eb08f58"
+        ]
+      },
+      {
+        "group": "CANDY TUNE",
+        "date": "2026-10-27",
+        "url": "https://candytune.asobisystem.com/live_information/detail/40732",
+        "candidateIds": [
+          "54a369497f59ce96",
+          "c4356b6a3eb08f58"
+        ]
+      },
       {
         "group": "CUTIE STREET",
         "date": "2026-10-28",
