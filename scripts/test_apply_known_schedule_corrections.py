@@ -5,6 +5,23 @@ from apply_known_schedule_corrections import apply_known_corrections
 
 
 class KnownScheduleCorrectionsTest(unittest.TestCase):
+    def test_sweetest_story_keeps_two_future_starts_after_reception_ends(self):
+        seed = {"id": "sweet", "group": "SWEET STEADY", "url": "https://sweetsteady.asobisystem.com/"}
+        corrected, report = apply_known_corrections([seed])
+        rows = [e for e in corrected if str(e.get("id")).startswith("known-sweetest-story")]
+        self.assertEqual(report["sweetestStoryPerformancesAdded"], 2)
+        self.assertEqual({(r["openTime"], r["startTime"]) for r in rows}, {("14:00", "15:00"), ("17:00", "18:00")})
+        self.assertTrue(all(r["eventDate"] == "2026-11-15" and r["applyEnd"] == "2026-10-18T23:59" for r in rows))
+        self.assertTrue(all(r["eventScope"] == "external" for r in rows))
+        again, report = apply_known_corrections(corrected)
+        self.assertEqual(again, corrected)
+        self.assertEqual(report["sweetestStoryPerformancesAdded"], 0)
+        # An actual collector occurrence replaces, rather than duplicates, one part.
+        collected = {**rows[0], "id": "collector-part1"}
+        corrected, report = apply_known_corrections([seed, collected])
+        self.assertEqual(report["sweetestStoryPerformancesAdded"], 1)
+        self.assertEqual(len(corrected), 3)
+
     def test_candy_birthdays_fill_missing_facts_and_merge_without_losing_sales(self):
         from performance_entities import build_public_events
         for day, person, news, central in (("2026-12-03", "村川緋杏", "92278", "92965"), ("2026-12-16", "福山梨乃", "91454", "92964")):
@@ -343,7 +360,8 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
         self.assertEqual(fm["eventScope"], "external")
         self.assertEqual(fm["organizer"], "FM AICHI")
 
-        sweet = [row for row in corrected if row.get("group") == "SWEET STEADY" and row.get("ticketType") == "FC先行"]
+        sweet = [row for row in corrected if row.get("group") == "SWEET STEADY"
+                 and row.get("ticketType") == "FC先行" and row.get("applyEnd") == "2026-09-28T23:59"]
         self.assertEqual(len(sweet), 1)
         self.assertEqual(sweet[0]["applyStart"], "2026-09-19T20:00")
 

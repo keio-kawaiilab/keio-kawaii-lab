@@ -587,6 +587,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "cutieIgFixed": 0,
         "cutieHiroshimaPiaFixed": 0,
         "candyBirthdayFactsFilled": 0,
+        "sweetestStoryPerformancesAdded": 0,
         "fruitsJoyFanclubLiveAdded": 0,
         "staleChristmasRowsRemoved": 0,
         "fmAichiFixed": 0,
@@ -654,6 +655,49 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
             report["giftMultiVenueFixed"] += 1
 
         out.append(current)
+
+    # Official NEWS 92529 (rechecked 2026-10-20): the FC reception ended
+    # October 18, not the November 15 performances. Preserve the two starts
+    # separately and retain their expired reception as history.
+    story_source = "https://sweetsteady.asobisystem.com/news/detail/92529"
+    has_sweet_official = any(event.get("group") == "SWEET STEADY" and any(
+        value.startswith("https://sweetsteady.asobisystem.com/") for value in _urls(event)
+    ) for event in out)
+    if has_sweet_official:
+        for part, opened, start, feature in (
+            (1, "14:00", "15:00", "1755de4497d5965084df7cdde9a129f9"),
+            (2, "17:00", "18:00", "ac644c49488eda39a7f361d8bdffb681"),
+        ):
+            represented = any(event.get("group") == "SWEET STEADY"
+                and story_source in _urls(event) and _day(event) == "2026-11-15"
+                and (event.get("startTime") == start or any(
+                    row.get("date") == "2026-11-15" and row.get("startTime") == start
+                    for row in event.get("schedule") or [] if isinstance(row, dict)
+                )) for event in out)
+            if represented:
+                continue
+            title = "SWEET STEADYのSWEETEST STORY 第" + str(part) + "部"
+            out.append({
+                "id": "known-sweetest-story-20261115-part" + str(part),
+                "group": "SWEET STEADY", "title": title, "eventTitle": title,
+                "eventDate": "2026-11-15", "eventEndDate": "2026-11-15",
+                "eventDates": ["2026-11-15"], "eventCount": 1,
+                "venue": "東京都 お台場特設会場（フジテレビ湾岸スタジオ）",
+                "openTime": opened, "startTime": start,
+                "schedule": [{"date": "2026-11-15", "venue": "東京都 お台場特設会場（フジテレビ湾岸スタジオ）",
+                              "openTime": opened, "startTime": start}],
+                "url": story_source,
+                "urls": [story_source, "https://sweetsteady.asobisystem.com/feature/" + feature + "?_normalbrowse_=1"],
+                "primarySource": "official", "sourceType": "official",
+                "sourceChannel": "known-official-correction", "sourcePublishedAt": "2026-10-13",
+                # TV production is not proven KAWAII LAB.-hosted. Preserve
+                # the conservative classification instead of widening default UI.
+                "eventScope": "external", "ticketType": "FC先行",
+                "applyStart": "2026-10-15T10:00", "applyEnd": "2026-10-18T23:59",
+                "applicationWindowVerified": True, "applicationWindowSource": story_source,
+                "deadlineVerified": True, "deadlineSource": story_source,
+            })
+            report["sweetestStoryPerformancesAdded"] += 1
 
     gift_more_star = _missing_more_star_gift(out)
     if gift_more_star:
