@@ -15,7 +15,7 @@ class GeneralSalesTest(unittest.TestCase):
         self.observations = json.loads(REGISTRY.read_text())['observations']
         self.raw = [dict(id=r['id']+'-show',group=r['group'],eventDate=r['eventDate'],startTime=r['startTime'],title=r['titleContains'],eventScope='kawaii-lab',ticketType='現在受付なし',venue='東京都 Zepp Shinjuku(TOKYO)' if r['group']=='SWEET STEADY' else '東京都 有明アリーナ') for r in self.observations]
 
-    def test_five_offers_preserve_performance_count_and_survive_rebuild(self):
+    def test_verified_offers_preserve_performance_count_and_survive_rebuild(self):
         public, _ = build_public_events(self.raw)
         before = len(public)
         apply_verified_general_sales(public, self.observations)
@@ -27,7 +27,7 @@ class GeneralSalesTest(unittest.TestCase):
             matches = [e for e in public if e.get('group') == row['group'] and e.get('eventDate') == row['eventDate'] and e.get('startTime') == row['startTime']]
             self.assertEqual(len(matches), 1)
             offer = next(o for o in matches[0]['offers'] if o.get('sourceRowId') == row['id'])
-            self.assertEqual(offer['applyStart'], '2026-09-12T10:00')
+            self.assertEqual(offer['applyStart'], row['offer']['applyStart'])
             self.assertEqual(offer['applyEnd'], row['offer']['applyEnd'])
 
     def test_newer_pia_observation_is_not_overwritten(self):
