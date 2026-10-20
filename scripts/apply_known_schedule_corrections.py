@@ -591,6 +591,49 @@ def _collapse_sweet_online_20261023(events: list[dict]) -> tuple[list[dict], int
     return out, len(rows) - 1
 
 
+def _collapse_sweet_ebichu_20261116(events: list[dict]) -> tuple[list[dict], int]:
+    # NEWS 91244 confirms one external appearance, not another event for its
+    # ended FC reception. Keep the external scope and preserve receipt history.
+    article = "https://sweetsteady.asobisystem.com/news/detail/91244"
+
+    def matches(row: dict) -> bool:
+        return (row.get("group") == "SWEET STEADY" and _day(row) == "2026-11-16"
+                and row.get("startTime") == "18:30" and article in _urls(row))
+
+    rows = [row for row in events if matches(row)]
+    if len(rows) < 2:
+        return events, 0
+    base = deepcopy(next((row for row in rows if row.get("ticketType") == "現在受付なし"), rows[0]))
+    offers, seen = [], set()
+    for row in rows:
+        for receipt in row.get("offers") or [row]:
+            if receipt.get("ticketType") in (None, "", "現在受付なし"):
+                continue
+            offer = deepcopy(receipt) if row.get("offers") else {
+                "sourceRowId": row.get("id"), "provider": "official", "url": article, "urls": [article],
+                "ticketType": row.get("ticketType"), "primarySource": "official",
+                **{key: deepcopy(row[key]) for key in
+                   ("applyStart", "applyEnd", "resultDate", "paymentEnd") if key in row},
+            }
+            marker = tuple(str(offer.get(key) or "") for key in
+                           ("url", "ticketType", "applyStart", "applyEnd", "resultDate", "paymentEnd"))
+            if marker not in seen:
+                seen.add(marker)
+                offers.append(offer)
+    base.update({"id": "known-sweet-ebichu-20261116", "offers": offers,
+                 "sourceRowIds": list(dict.fromkeys(str(value) for row in rows for value in
+                     (row.get("sourceRowIds") or [row.get("id")]) if value)),
+                 "urls": list(dict.fromkeys(url for row in rows for url in _urls(row))),
+                 "sourceChannel": "known-official-correction", "ticketType": "複数受付",
+                 "applicationStatus": "offers", "applicationDisplayMode": "offers"})
+    for key in ("applyStart", "applyEnd", "resultDate", "paymentEnd", "ticketProvider"):
+        base.pop(key, None)
+    first = next(index for index, row in enumerate(events) if matches(row))
+    out = [row for row in events if not matches(row)]
+    out.insert(first, base)
+    return out, len(rows) - 1
+
+
 def _sale_url(event: dict) -> str:
     value = str(event.get("url") or "").strip().lower()
     return re.sub(r"[?#].*$", "", value).rstrip("/")
@@ -676,6 +719,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "moreStarSeventhFixed": 0,
         "candyOnline20261020RowsCollapsed": 0,
         "sweetOnline20261023RowsCollapsed": 0,
+        "sweetEbichu20261116RowsCollapsed": 0,
         "semanticTicketDuplicatesRemoved": 0,
         "semanticTicketDuplicateIds": [],
     }
@@ -851,6 +895,9 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
 
     out, sweet_online_removed = _collapse_sweet_online_20261023(out)
     report["sweetOnline20261023RowsCollapsed"] = sweet_online_removed
+
+    out, sweet_ebichu_removed = _collapse_sweet_ebichu_20261116(out)
+    report["sweetEbichu20261116RowsCollapsed"] = sweet_ebichu_removed
 
     out, removed, removed_ids = _dedupe_ticket_rows(out)
     report["semanticTicketDuplicatesRemoved"] = removed

@@ -441,6 +441,29 @@ class CutieUpgradeReceptionTests(unittest.TestCase):
 
 
 class SweetOnlineReceptionRoundsTests(unittest.TestCase):
+    def test_ebichu_schedule_and_ended_fc_are_one_external_performance(self):
+        from apply_known_schedule_corrections import _collapse_sweet_ebichu_20261116
+        base = {"id": "schedule", "group": "SWEET STEADY", "eventDate": "2026-11-16",
+                "startTime": "18:30", "openTime": "17:30", "eventScope": "external",
+                "title": "私立恵比寿中学 放課後ロッケンロール -HYPER- 2026",
+                "url": "https://sweetsteady.asobisystem.com/news/detail/91244",
+                "ticketType": "現在受付なし"}
+        receipt = dict(base, id="receipt", ticketType="チケット受付",
+                       applyStart="2026-09-29T18:00", applyEnd="2026-10-04T23:59")
+        result, count = _collapse_sweet_ebichu_20261116([base, receipt])
+        self.assertEqual((1, 1), (count, len(result)))
+        self.assertEqual("external", result[0]["eventScope"])
+        self.assertEqual(["schedule", "receipt"], result[0]["sourceRowIds"])
+        self.assertEqual("2026-10-04T23:59", result[0]["offers"][0]["applyEnd"])
+        self.assertEqual((result, 0), _collapse_sweet_ebichu_20261116(result))
+        again, _ = _collapse_sweet_ebichu_20261116([*result, base, receipt])
+        self.assertEqual(1, len(again))
+        self.assertEqual(1, len(again[0]["offers"]))
+        for change in ({"eventDate": "2026-11-17"}, {"startTime": "19:00"},
+                       {"url": "https://sweetsteady.asobisystem.com/news/detail/other"}):
+            untouched = [base, dict(receipt, **change)]
+            self.assertEqual((untouched, 0), _collapse_sweet_ebichu_20261116(untouched))
+
     def rows(self):
         common = {"group": "SWEET STEADY", "title": "SWEET STEADY オンライン特典会",
                   "eventDate": "2026-10-23", "startTime": "15:00", "eventCategory": "online-benefit",
