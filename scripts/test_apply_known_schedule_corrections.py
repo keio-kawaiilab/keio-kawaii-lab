@@ -440,6 +440,35 @@ class CutieUpgradeReceptionTests(unittest.TestCase):
             self.assertEqual(event, repair_cutie_upgrade_reception(event))
 
 
+class SweetCentralFcReceptionTests(unittest.TestCase):
+    def fixture(self):
+        return {"id": "recent-body", "group": "SWEET STEADY",
+                "title": "SWEET STEADY 白石まゆみ BIRTHDAY LIVE 2026",
+                "eventDate": "2026-12-08", "startTime": "19:00", "ticketType": "FC先行",
+                "url": "https://kawaiilab.asobisystem.com/news/detail/92282",
+                "applyStart": "2026-10-14T12:00", "applyEnd": "2026-10-20T23:59"}
+
+    def test_exact_central_sale_label_is_corrected_and_idempotent(self):
+        from apply_known_schedule_corrections import repair_sweet_shiraishi_central_fc
+        original = self.fixture()
+        corrected = repair_sweet_shiraishi_central_fc(original)
+        self.assertEqual(dict(original, ticketType="KAWAII LAB. FC先行"), corrected)
+        self.assertEqual("FC先行", original["ticketType"])
+        self.assertEqual(corrected, repair_sweet_shiraishi_central_fc(corrected))
+        rows, report = apply_known_corrections([original])
+        self.assertEqual(1, report["sweetShiraishiCentralFcFixed"])
+        self.assertEqual("KAWAII LAB. FC先行", rows[0]["ticketType"])
+
+    def test_group_fc_and_other_times_windows_and_articles_remain_separate(self):
+        from apply_known_schedule_corrections import repair_sweet_shiraishi_central_fc
+        for changes in ({"url": "https://sweetsteady.asobisystem.com/news/detail/90613"},
+                        {"eventDate": "2026-12-09"}, {"startTime": "15:00"},
+                        {"group": "CANDY TUNE"}, {"applyStart": "2026-09-29T12:00"},
+                        {"applyEnd": "2026-10-21T23:59"}, {"ticketType": "一般発売"}):
+            row = dict(self.fixture(), **changes)
+            self.assertEqual(row, repair_sweet_shiraishi_central_fc(row))
+
+
 class SweetOnlineReceptionRoundsTests(unittest.TestCase):
     def test_ebichu_schedule_and_ended_fc_are_one_external_performance(self):
         from apply_known_schedule_corrections import _collapse_sweet_ebichu_20261116

@@ -4,6 +4,28 @@ import archive_ticket_history as mod
 
 
 class ArchiveTicketHistoryTests(unittest.TestCase):
+    def test_mislabeled_central_fc_history_is_retained_not_republished(self):
+        row = {"id": "central-original", "group": "SWEET STEADY",
+               "eventTitle": "SWEET STEADY 白石まゆみ BIRTHDAY LIVE 2026",
+               "eventDate": "2026-12-08", "startTime": "19:00", "ticketType": "FC先行",
+               "sourceUrl": "https://kawaiilab.asobisystem.com/news/detail/92282",
+               "applyStart": "2026-10-14T12:00", "applyEnd": "2026-10-20T23:59",
+               "firstSeenAt": "2026-10-20T20:00:00+09:00", "publishable": True,
+               "flowEligible": True, "observedWindows": [{"applyEnd": "2026-10-20T23:59"}]}
+        result = mod.archive_payload({"events": []}, {"entries": [row]}, self.registry, "2026-10-20T21:30:00+09:00")
+        self.assertEqual(1, len(result["entries"]))
+        retained = result["entries"][0]
+        self.assertFalse(retained["publishable"])
+        self.assertFalse(retained["flowEligible"])
+        for key in ("id", "firstSeenAt", "observedWindows", "ticketType", "applyStart", "applyEnd"):
+            self.assertEqual(row[key], retained[key])
+        self.assertEqual("KAWAII LAB. FC先行", retained["classificationCorrection"]["correctTicketType"])
+        for changes in ({"ticketType": "KAWAII LAB. FC先行"},
+                        {"sourceUrl": "https://sweetsteady.asobisystem.com/news/detail/90613"},
+                        {"applyEnd": "2026-10-21T23:59"}, {"startTime": "15:00"}):
+            other = dict(row, **changes)
+            self.assertEqual(other, mod.retract_known_upgrade_misclassification(other))
+
     def test_false_annual_fc_observation_is_retained_but_not_republished(self):
         row = {"id": "keep-original-observation", "group": "CUTIE STREET",
                "eventTitle": "CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN",
@@ -167,4 +189,3 @@ class ArchiveTicketHistoryTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

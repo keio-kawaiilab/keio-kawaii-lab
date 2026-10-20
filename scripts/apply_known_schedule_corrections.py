@@ -82,6 +82,24 @@ def repair_cutie_upgrade_reception(event: dict) -> dict:
     return out
 
 
+def repair_sweet_shiraishi_central_fc(event: dict) -> dict:
+    """NEWS 92282 is the central FC sale, not a second group-FC sale."""
+    article = "https://kawaiilab.asobisystem.com/news/detail/92282"
+    if not (
+        event.get("group") == "SWEET STEADY"
+        and article in [*_urls(event), event.get("discoverySourceUrl")]
+        and _day(event) == "2026-12-08"
+        and event.get("startTime") == "19:00"
+        and event.get("ticketType") == "FC先行"
+        and event.get("applyStart") == "2026-10-14T12:00"
+        and event.get("applyEnd") == "2026-10-20T23:59"
+    ):
+        return event
+    out = deepcopy(event)
+    out["ticketType"] = "KAWAII LAB. FC先行"
+    return out
+
+
 def _is_hakata_special(event: dict) -> bool:
     return (
         event.get("group") == "CUTIE STREET"
@@ -708,6 +726,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "cutieHiroshimaPiaFixed": 0,
         "candyBirthdayFactsFilled": 0,
         "cutieUpgradeReceptionFixed": 0,
+        "sweetShiraishiCentralFcFixed": 0,
         "candyTokyoPresaleAdded": 0,
         "sweetestStoryPerformancesAdded": 0,
         "fruitsJoyFanclubLiveAdded": 0,
@@ -738,6 +757,10 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         current = repair_cutie_upgrade_reception(event)
         if current != event:
             report["cutieUpgradeReceptionFixed"] += 1
+        before_central_fc = current
+        current = repair_sweet_shiraishi_central_fc(current)
+        if current != before_central_fc:
+            report["sweetShiraishiCentralFcFixed"] += 1
         before_birthday = current
         current = _repair_candy_birthday_facts(current)
         if current != before_birthday:
@@ -928,5 +951,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
-

@@ -8,7 +8,7 @@ from datetime import datetime
 from pathlib import Path
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 from zoneinfo import ZoneInfo
-from apply_known_schedule_corrections import repair_cutie_upgrade_reception
+from apply_known_schedule_corrections import repair_cutie_upgrade_reception, repair_sweet_shiraishi_central_fc
 
 LIVE_PATH = Path("data/live-events.json")
 HISTORY_PATH = Path("data/ticket-history.json")
@@ -253,6 +253,14 @@ def merge_entry(existing: dict, incoming: dict, now: str) -> dict:
 
 
 def retract_known_upgrade_misclassification(entry: dict) -> dict:
+    central_article = "https://kawaiilab.asobisystem.com/news/detail/92282"
+    central_probe = dict(entry, url=entry.get("sourceUrl"))
+    if repair_sweet_shiraishi_central_fc(central_probe).get("ticketType") != entry.get("ticketType"):
+        return dict(entry, publishable=False, flowEligible=False,
+                    classificationCorrection={
+                        "reason": "central FC reception mislabeled as a separate group FC reception",
+                        "correctTicketType": "KAWAII LAB. FC先行", "sourceUrl": central_article,
+                    })
     # Permanent history keeps the original observation, but must not continue
     # presenting an eligibility condition as a real, currently open FC sale.
     article = "https://cutiestreet.asobisystem.com/news/detail/92733"
@@ -389,4 +397,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
