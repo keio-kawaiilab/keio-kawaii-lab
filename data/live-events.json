@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-20T20:34:13+09:00",
+  "checkedAt": "2026-10-20T20:37:50+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-19T06:01:52+09:00",
     "scannedPages": {
@@ -2595,7 +2595,7 @@
       "id": "cea85b357b3a94ad",
       "group": "CUTIE STREET",
       "title": "2026.09.28 「CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-」＜福岡・兵庫＞アップグレード2次抽選受付のお知らせ",
-      "ticketType": "年会費コース会員先行",
+      "ticketType": "アップグレード抽選",
       "applyStart": "2026-09-28T12:00",
       "applyEnd": "2026-09-29T23:59",
       "resultDate": null,
@@ -2680,7 +2680,7 @@
       "id": "6a9b9904e33f5ce0",
       "group": "CUTIE STREET",
       "title": "2026.09.28 「CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-」＜福岡・兵庫＞アップグレード2次抽選受付のお知らせ",
-      "ticketType": "年会費コース会員先行",
+      "ticketType": "アップグレード抽選",
       "applyStart": "2026-09-28T12:00",
       "applyEnd": "2026-09-29T23:59",
       "resultDate": null,
@@ -2851,7 +2851,7 @@
       "id": "3b1ae43e651d3183",
       "group": "CUTIE STREET",
       "title": "2026.09.28 「CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-」＜福岡・兵庫＞アップグレード2次抽選受付のお知らせ",
-      "ticketType": "年会費コース会員先行",
+      "ticketType": "アップグレード抽選",
       "applyStart": "2026-09-28T12:00",
       "applyEnd": "2026-09-29T23:59",
       "resultDate": null,
@@ -3042,7 +3042,7 @@
       "id": "ee2075c9db935651",
       "group": "CUTIE STREET",
       "title": "2026.09.28 「CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-」＜福岡・兵庫＞アップグレード2次抽選受付のお知らせ",
-      "ticketType": "年会費コース会員先行",
+      "ticketType": "アップグレード抽選",
       "applyStart": "2026-09-28T12:00",
       "applyEnd": "2026-09-29T23:59",
       "resultDate": null,
@@ -4808,14 +4808,10 @@
       ]
     },
     {
-      "id": "b7a06ba07c840750",
+      "id": "known-sweet-ebichu-20261116",
       "group": "SWEET STEADY",
       "title": "私立恵比寿中学 放課後ロッケンロール -HYPER- 2026",
-      "ticketType": "現在受付なし",
-      "applyStart": null,
-      "applyEnd": null,
-      "resultDate": null,
-      "paymentEnd": null,
+      "ticketType": "複数受付",
       "eventDate": "2026-11-16",
       "venue": "Zepp Haneda(TOKYO)",
       "openTime": "17:30",
@@ -4828,36 +4824,32 @@
       "sourceCandidates": [
         "official"
       ],
-      "applicationStatus": "none",
+      "applicationStatus": "offers",
       "urls": [
         "https://sweetsteady.asobisystem.com/news/detail/91244"
-      ]
-    },
-    {
-      "id": "c0e9c3960a15d7c0",
-      "group": "SWEET STEADY",
-      "title": "2026.09.29 2026年11月16日(月)「私立恵比寿中学 放課後ロッケンロール -HYPER- 2026」出演決定！FC受付開始！",
-      "ticketType": "チケット受付",
-      "applyStart": "2026-09-29T18:00",
-      "applyEnd": "2026-10-04T23:59",
-      "resultDate": null,
-      "paymentEnd": null,
-      "eventDate": "2026-11-16",
-      "venue": "Zepp Haneda(TOKYO)",
-      "openTime": "17:30",
-      "startTime": "18:30",
-      "url": "https://sweetsteady.asobisystem.com/news/detail/91244",
-      "sourceType": "auto",
-      "sourcePublishedAt": "2026-09-29",
-      "discoverySourceUrl": "https://sweetsteady.asobisystem.com/news/detail/91244",
-      "sourceChannel": "recent-official-body",
-      "primarySource": "official",
-      "sourceCandidates": [
-        "official"
       ],
-      "eventTitle": "私立恵比寿中学 放課後ロッケンロール -HYPER- 2026",
-      "performanceMatchedToOfficial": true,
-      "eventScope": "external"
+      "offers": [
+        {
+          "sourceRowId": "c0e9c3960a15d7c0",
+          "provider": "official",
+          "url": "https://sweetsteady.asobisystem.com/news/detail/91244",
+          "urls": [
+            "https://sweetsteady.asobisystem.com/news/detail/91244"
+          ],
+          "ticketType": "チケット受付",
+          "primarySource": "official",
+          "applyStart": "2026-09-29T18:00",
+          "applyEnd": "2026-10-04T23:59",
+          "resultDate": null,
+          "paymentEnd": null
+        }
+      ],
+      "sourceRowIds": [
+        "b7a06ba07c840750",
+        "c0e9c3960a15d7c0"
+      ],
+      "sourceChannel": "known-official-correction",
+      "applicationDisplayMode": "offers"
     },
     {
       "id": "020226c01dd0fc22",
@@ -10439,8 +10431,8 @@
     "failures": []
   },
   "publicEventModelReport": {
-    "rawEventCount": 243,
-    "passthroughEventCount": 70,
+    "rawEventCount": 242,
+    "passthroughEventCount": 69,
     "performanceEntityCount": 100,
     "sourceOccurrenceCount": 319,
     "mergedSourceOccurrences": 219,
@@ -11693,6 +11685,11 @@
     },
     {
       "checkedAt": "2026-10-20T20:34:13+09:00",
+      "scope": "CANDY TUNE tour render verification",
+      "message": "Sendai performance lost its current general sale: []"
+    },
+    {
+      "checkedAt": "2026-10-20T20:37:50+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "Sendai performance lost its current general sale: []"
     }
@@ -18605,7 +18602,7 @@
       }
     ]
   },
-  "updatedAt": "2026-10-20T20:34:13+09:00",
+  "updatedAt": "2026-10-20T20:37:50+09:00",
   "publicEvents": [
     {
       "id": "1c60e2be989c564d",
@@ -19844,14 +19841,10 @@
       ]
     },
     {
-      "id": "b7a06ba07c840750",
+      "id": "known-sweet-ebichu-20261116",
       "group": "SWEET STEADY",
       "title": "私立恵比寿中学 放課後ロッケンロール -HYPER- 2026",
-      "ticketType": "現在受付なし",
-      "applyStart": null,
-      "applyEnd": null,
-      "resultDate": null,
-      "paymentEnd": null,
+      "ticketType": "複数受付",
       "eventDate": "2026-11-16",
       "venue": "Zepp Haneda(TOKYO)",
       "openTime": "17:30",
@@ -19864,36 +19857,32 @@
       "sourceCandidates": [
         "official"
       ],
-      "applicationStatus": "none",
+      "applicationStatus": "offers",
       "urls": [
         "https://sweetsteady.asobisystem.com/news/detail/91244"
-      ]
-    },
-    {
-      "id": "c0e9c3960a15d7c0",
-      "group": "SWEET STEADY",
-      "title": "2026.09.29 2026年11月16日(月)「私立恵比寿中学 放課後ロッケンロール -HYPER- 2026」出演決定！FC受付開始！",
-      "ticketType": "チケット受付",
-      "applyStart": "2026-09-29T18:00",
-      "applyEnd": "2026-10-04T23:59",
-      "resultDate": null,
-      "paymentEnd": null,
-      "eventDate": "2026-11-16",
-      "venue": "Zepp Haneda(TOKYO)",
-      "openTime": "17:30",
-      "startTime": "18:30",
-      "url": "https://sweetsteady.asobisystem.com/news/detail/91244",
-      "sourceType": "auto",
-      "sourcePublishedAt": "2026-09-29",
-      "discoverySourceUrl": "https://sweetsteady.asobisystem.com/news/detail/91244",
-      "sourceChannel": "recent-official-body",
-      "primarySource": "official",
-      "sourceCandidates": [
-        "official"
       ],
-      "eventTitle": "私立恵比寿中学 放課後ロッケンロール -HYPER- 2026",
-      "performanceMatchedToOfficial": true,
-      "eventScope": "external"
+      "offers": [
+        {
+          "sourceRowId": "c0e9c3960a15d7c0",
+          "provider": "official",
+          "url": "https://sweetsteady.asobisystem.com/news/detail/91244",
+          "urls": [
+            "https://sweetsteady.asobisystem.com/news/detail/91244"
+          ],
+          "ticketType": "チケット受付",
+          "primarySource": "official",
+          "applyStart": "2026-09-29T18:00",
+          "applyEnd": "2026-10-04T23:59",
+          "resultDate": null,
+          "paymentEnd": null
+        }
+      ],
+      "sourceRowIds": [
+        "b7a06ba07c840750",
+        "c0e9c3960a15d7c0"
+      ],
+      "sourceChannel": "known-official-correction",
+      "applicationDisplayMode": "offers"
     },
     {
       "id": "0e965c081582cf5e",
@@ -25215,7 +25204,7 @@
             "https://cutiestreet.asobisystem.com/feature/autumntour",
             "https://cutiestreet.asobisystem.com/news/detail/90591"
           ],
-          "ticketType": "年会費コース会員先行",
+          "ticketType": "アップグレード抽選",
           "applyStart": "2026-09-28T12:00",
           "applyEnd": "2026-09-29T23:59",
           "sourceType": "auto",
@@ -25330,7 +25319,7 @@
             "https://cutiestreet.asobisystem.com/feature/autumntour",
             "https://cutiestreet.asobisystem.com/news/detail/90591"
           ],
-          "ticketType": "年会費コース会員先行",
+          "ticketType": "アップグレード抽選",
           "applyStart": "2026-09-28T12:00",
           "applyEnd": "2026-09-29T23:59",
           "sourceType": "auto",
@@ -25436,7 +25425,7 @@
             "https://cutiestreet.asobisystem.com/feature/autumntour",
             "https://cutiestreet.asobisystem.com/news/detail/90591"
           ],
-          "ticketType": "年会費コース会員先行",
+          "ticketType": "アップグレード抽選",
           "applyStart": "2026-09-28T12:00",
           "applyEnd": "2026-09-29T23:59",
           "sourceType": "auto",
@@ -25558,7 +25547,7 @@
             "https://cutiestreet.asobisystem.com/feature/autumntour",
             "https://cutiestreet.asobisystem.com/news/detail/90591"
           ],
-          "ticketType": "年会費コース会員先行",
+          "ticketType": "アップグレード抽選",
           "applyStart": "2026-09-28T12:00",
           "applyEnd": "2026-09-29T23:59",
           "sourceType": "auto",
