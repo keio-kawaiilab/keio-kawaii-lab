@@ -15,6 +15,11 @@
   }
 
   function clean(value){return String(value==null?"":value).normalize("NFKC").trim();}
+  function isResaleText(value){
+    // プリセール contains リセール, just as presale contains resale. Neither
+    // is a resale: remove these complete sale names before category matching.
+    return /リセール|\bresale\b/i.test(clean(value).replace(/プリセール|presale/gi,""));
+  }
   function parseFirstMoment(text){
     var match=clean(text).match(/(20\d{2})\/(\d{1,2})\/(\d{1,2})(?:\s+(\d{1,2}):(\d{2}))?/);
     if(!match)return null;
@@ -26,7 +31,7 @@
     var steps=Array.prototype.slice.call(card.querySelectorAll(".ticket-flow .step"));
     for(var i=0;i<steps.length;i++){
       var title=steps[i].querySelector(".step-title");
-      if(!title||!/リセール|resale/i.test(clean(title.textContent)))continue;
+      if(!title||!isResaleText(title.textContent))continue;
       var source=steps[i].querySelector(".flow-source");
       if(source&&source.href)return source.href;
     }
@@ -40,7 +45,7 @@
     var link=option.querySelector(".ticket-link");
     var state=option.querySelector(".sale-state");
     var text=clean((copy&&copy.textContent)||"")+" "+clean((provider&&provider.textContent)||"");
-    if(!/リセール|resale/i.test(text))return;
+    if(!isResaleText(text))return;
 
     var stateLabel=clean((state&&state.textContent)||"");
     if(stateLabel==="受付終了"||stateLabel==="リセール終了"){
@@ -67,7 +72,7 @@
 
   function decorateStep(step){
     var title=step.querySelector(".step-title");
-    if(!title||!/リセール|resale/i.test(clean(title.textContent)))return;
+    if(!title||!isResaleText(title.textContent))return;
     step.classList.add("resale");
     title.textContent="♻️ 公式リセール";
     var state=step.querySelector(".state");
@@ -98,3 +103,4 @@
 
   run();
 })();
+

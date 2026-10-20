@@ -5,12 +5,19 @@ on:
     branches: [main]
     paths:
       - "ticket-flow.js"
+      - "ticket-resale-ui.js"
+      - "scripts/test_ticket_resale_ui.js"
+      - "scripts/test_archive_ticket_history.py"
       - "scripts/archive_ticket_history.py"
       - "scripts/test_ticket_flow_history_runtime.js"
       - ".github/workflows/ticket-flow-release-check.yml"
   pull_request:
     paths:
       - "ticket-flow.js"
+      - "ticket-resale-ui.js"
+      - "scripts/test_ticket_resale_ui.js"
+      - "scripts/archive_ticket_history.py"
+      - "scripts/test_archive_ticket_history.py"
       - "ticket-flow.css"
       - "going-highlight-soften.js"
       - "scripts/test_ticket_flow_release.py"
@@ -35,6 +42,7 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           node --check ticket-flow.js
+          node --check ticket-resale-ui.js
           node --check going-highlight-soften.js
 
       - name: Verify additive fail-closed release guards
@@ -42,3 +50,11 @@ jobs:
 
       - name: Verify history independent of application visibility
         run: node scripts/test_ticket_flow_history_runtime.js
+
+      - name: Verify presale category and source-backed history retraction
+        env:
+          PYTHONPATH: scripts
+        run: |
+          node scripts/test_ticket_resale_ui.js
+          python -m unittest -v test_archive_ticket_history
+
