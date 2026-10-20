@@ -317,14 +317,14 @@ def _offer_key(offer: dict[str, Any]) -> tuple[str, ...]:
     )
 
 
-def _collapse_central_fc_aliases(offers: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Fold duplicate generic/specific labels for one central FC reception.
+def _collapse_official_fc_aliases(offers: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Fold duplicate generic/specific labels for one official FC reception.
 
     The recent-body and central-FC collectors can both emit the same central
     article and application window, with only ``ticketType`` differing between
     ``FC先行`` and ``KAWAII LAB. FC先行``. They are one reception, not two.
-    Keep the more specific central-FC label while leaving group-FC articles,
-    different windows, and all other ticket types untouched.
+    Keep the more specific central-FC label while leaving different source
+    URLs, different windows, and all other ticket types untouched.
     """
     collapsed: list[dict[str, Any]] = []
     central_fc_indexes: dict[tuple[str, ...], int] = {}
@@ -333,7 +333,6 @@ def _collapse_central_fc_aliases(offers: list[dict[str, Any]]) -> list[dict[str,
         ticket_type = _text(offer.get("ticketType"))
         if (
             _text(offer.get("provider")).casefold() == "official"
-            and (urlparse(url).hostname or "").casefold() == "kawaiilab.asobisystem.com"
             and ticket_type in {"FC先行", "KAWAII LAB. FC先行"}
         ):
             marker = tuple(
@@ -424,7 +423,7 @@ def _canonical_entity(key: str, records: list[dict[str, Any]]) -> dict[str, Any]
                 offers.append(offer)
                 seen_offers.add(marker)
 
-    offers = _collapse_central_fc_aliases(offers)
+    offers = _collapse_official_fc_aliases(offers)
 
     for field in TOP_LEVEL_TICKET_FIELDS:
         base.pop(field, None)

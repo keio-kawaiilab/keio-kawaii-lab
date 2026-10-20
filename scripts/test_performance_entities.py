@@ -268,6 +268,32 @@ class PerformanceEntitiesTest(unittest.TestCase):
             set(public[0]["sourceRowIds"]),
         )
 
+    def test_same_group_article_fc_window_with_central_label_is_one_offer(self):
+        base = {
+            "group": "MORE STAR",
+            "title": "MORE STAR 単独ライブ 7th STAR",
+            "eventDate": "2026-11-25",
+            "venue": "ヒューリックホール東京",
+            "startTime": "18:00",
+            "applyStart": "2026-10-17T18:00",
+            "applyEnd": "2026-10-25T23:59",
+            "url": "https://morestar.asobisystem.com/news/detail/92107",
+            "sourceType": "auto",
+            "primarySource": "official",
+            "eventScope": "kawaii-lab",
+        }
+        generic = dict(base, id="generic", ticketType="FC先行")
+        specific = dict(base, id="specific", ticketType="KAWAII LAB. FC先行")
+
+        public, _ = build_public_events([generic, specific])
+
+        self.assertEqual(len(public), 1)
+        self.assertEqual(
+            ["KAWAII LAB. FC先行"],
+            [offer["ticketType"] for offer in public[0]["offers"]],
+        )
+        self.assertEqual({"generic", "specific"}, set(public[0]["sourceRowIds"]))
+
     def test_multiday_schedule_source_is_split_into_physical_performances(self):
         public, _ = build_public_events(self.fixture())
         tour = [
