@@ -334,6 +334,59 @@ def _repair_sweet_second_fc(event: dict) -> dict:
     return out
 
 
+def _repair_candy_birthday_facts(event: dict) -> dict:
+    """Fill missing occurrence facts only for six verified birthday articles.
+
+    Rechecked 2026-10-20: CANDY NEWS 91529/92278 and 91454/92279.
+    A null venue/time must not produce a second concert next to its known
+    schedule row. Explicit conflicting facts, other dates and all sale windows
+    remain untouched for review instead of being guessed or merged.
+    """
+    out = deepcopy(event)
+    if event.get("group") != "CANDY TUNE":
+        return out
+    verified = {
+        "2026-12-03": ("村川緋杏", ("91529", "92278"), "92965"),
+        "2026-12-16": ("福山梨乃", ("91454", "92279"), "92964"),
+    }
+    day = _day(event)
+    if day not in verified:
+        return out
+    person, articles, central = verified[day]
+    source_urls = {"https://candytune.asobisystem.com/news/detail/" + article for article in articles}
+    source_urls.add("https://kawaiilab.asobisystem.com/news/detail/" + central)
+    actual_urls = {re.sub(r"[?#].*$", "", value).rstrip("/") for value in _urls(event)}
+    title = str(event.get("title") or event.get("eventTitle") or "")
+    if not (source_urls & actual_urls) or person not in title or "生誕祭" not in title:
+        return out
+    dates = {str(value)[:10] for value in event.get("eventDates") or []}
+    schedule = event.get("schedule") or []
+    dates.update(str(row.get("date") or "")[:10] for row in schedule if isinstance(row, dict))
+    if dates - {day}:
+        return out
+    rows = [out, *(row for row in schedule if isinstance(row, dict))]
+    for row in rows:
+        if row.get("openTime") not in (None, "", "17:30") or row.get("startTime") not in (None, "", "19:00"):
+            return out
+        venue = str(row.get("venue") or "")
+        if venue and not ("SGCホール有明" in venue or "SGC HALL ARIAKE" in venue):
+            return out
+    facts = {"venue": "東京都 SGCホール有明", "openTime": "17:30", "startTime": "19:00"}
+    changed = False
+    for row in [out, *(row for row in out.get("schedule") or [] if isinstance(row, dict))]:
+        for field, value in facts.items():
+            if not row.get(field):
+                row[field] = value
+                changed = True
+    if not changed:
+        return out
+    out["performanceFactSources"] = list(dict.fromkeys([
+        *(out.get("performanceFactSources") or []),
+        *("https://candytune.asobisystem.com/news/detail/" + article for article in articles),
+    ]))
+    return out
+
+
 def _repair_more_star_seventh(event: dict) -> dict:
     out = deepcopy(event)
     title = str(event.get("title") or event.get("eventTitle") or "")
@@ -533,6 +586,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "cutieObsoletePiaRowsRemoved": 0,
         "cutieIgFixed": 0,
         "cutieHiroshimaPiaFixed": 0,
+        "candyBirthdayFactsFilled": 0,
         "fruitsJoyFanclubLiveAdded": 0,
         "staleChristmasRowsRemoved": 0,
         "fmAichiFixed": 0,
@@ -557,8 +611,12 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
             continue
 
         current = event
-        current = _repair_cutie_hiroshima_pia(current)
+        current = _repair_candy_birthday_facts(current)
         if current != event:
+            report["candyBirthdayFactsFilled"] += 1
+        before_hiroshima = current
+        current = _repair_cutie_hiroshima_pia(current)
+        if current != before_hiroshima:
             report["cutieHiroshimaPiaFixed"] += 1
         if _is_hakata_special(current):
             current = _repair_hakata(current)

@@ -5,6 +5,44 @@ from apply_known_schedule_corrections import apply_known_corrections
 
 
 class KnownScheduleCorrectionsTest(unittest.TestCase):
+    def test_candy_birthdays_fill_missing_facts_and_merge_without_losing_sales(self):
+        from performance_entities import build_public_events
+        for day, person, news, central in (("2026-12-03", "村川緋杏", "92278", "92965"), ("2026-12-16", "福山梨乃", "91454", "92964")):
+            annual = {"id": "annual", "group": "CANDY TUNE", "eventDate": day,
+                      "title": "CANDY TUNE " + person + " 生誕祭 2026",
+                      "venue": None, "startTime": None, "eventScope": "kawaii-lab",
+                      "url": "https://candytune.asobisystem.com/news/detail/" + news,
+                      "ticketType": "FC先行", "applyStart": "2026-10-02T18:00", "applyEnd": "2026-10-07T23:59"}
+            fc = {**annual, "id": "central", "url": "https://kawaiilab.asobisystem.com/news/detail/" + central,
+                  "ticketType": "KAWAII LAB. FC先行", "applyStart": "2026-10-17T18:00", "applyEnd": "2026-10-22T23:59",
+                  "schedule": [{"date": day, "venue": None}]}
+            known = {**annual, "id": "known", "venue": "SGCホール有明", "openTime": "17:30", "startTime": "19:00"}
+            corrected, report = apply_known_corrections([annual, fc, known])
+            self.assertEqual(report["candyBirthdayFactsFilled"], 2)
+            self.assertIsNone(annual["venue"])
+            self.assertEqual(fc["applyEnd"], corrected[1]["applyEnd"])
+            self.assertEqual("19:00", corrected[1]["schedule"][0]["startTime"])
+            public, _ = build_public_events(corrected)
+            self.assertEqual(len(public), 1)
+            self.assertEqual(set(public[0]["sourceRowIds"]), {"annual", "central", "known"})
+            self.assertEqual(len(public[0]["offers"]), 2)
+            self.assertEqual(public[0]["startTime"], "19:00")
+            again, report = apply_known_corrections(corrected)
+            self.assertEqual(again, corrected)
+            self.assertEqual(report["candyBirthdayFactsFilled"], 0)
+
+    def test_candy_birthday_facts_do_not_override_conflicts_or_unknown_sources(self):
+        row = {"id": "test", "group": "CANDY TUNE", "eventDate": "2026-12-03", "title": "村川緋杏 生誕祭 2026",
+               "url": "https://candytune.asobisystem.com/news/detail/92278"}
+        for changes in ({"startTime": "20:00"}, {"venue": "別会場"}, {"eventDate": "2026-12-04"},
+                        {"group": "CUTIE STREET"}, {"url": "https://candytune.asobisystem.com/news/detail/99999"},
+                        {"schedule": [{"date": "2026-12-03", "startTime": "15:00"}]},
+                        {"eventDates": ["2026-12-03", "2026-12-04"]}):
+            original = {**row, **changes}
+            corrected, report = apply_known_corrections([original])
+            self.assertEqual(corrected, [original])
+            self.assertEqual(report["candyBirthdayFactsFilled"], 0)
+
     def test_joy_live_is_added_without_inventing_ticket_window(self):
         seed = {"id": "fruits-official", "group": "FRUITS ZIPPER", "eventDate": "2026-10-26",
                 "url": "https://fruitszipper.asobisystem.com/feature/2026tour_autumn"}
