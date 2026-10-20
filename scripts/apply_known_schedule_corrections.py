@@ -158,6 +158,41 @@ def _is_joint_christmas(event: dict) -> bool:
     )
 
 
+def _repair_cutie_hiroshima_pia(event: dict) -> dict:
+    """Repair only the verified Hiroshima lot; never merge by title/day alone.
+
+    Official facts: /live_information/detail/40366 and /40367, also
+    /news/detail/92733. The old retained lot copied 16:00 to both days and
+    lost its per-occurrence venue, creating two extra public performances.
+    Keep the acquisition row, ticket history, and original sale URLs intact.
+    """
+    if event.get("group") != "CUTIE STREET" or not any(
+        re.search(r"[?&]lotRlsCd=88970(?:&|$)", value) for value in _urls(event)
+    ):
+        return event
+    facts = {
+        "2026-11-14": ("16:00", "18:00", "40366"),
+        "2026-11-15": ("14:30", "16:30", "40367"),
+    }
+    rows = event.get("schedule") or []
+    days = [str(row.get("date") or "")[:10] for row in rows if isinstance(row, dict)]
+    if not days:
+        days = [str(day)[:10] for day in event.get("eventDates") or [event.get("eventDate")]]
+    if not days or any(day not in facts for day in days):
+        return event
+    out = deepcopy(event)
+    venue = "広島県 広島グリーンアリーナ"
+    out["schedule"] = [{"date": day, "venue": venue,
+                        "openTime": facts[day][0], "startTime": facts[day][1]} for day in days]
+    out.update({"venue": venue, "venues": [venue],
+                "openTime": facts[days[0]][0], "startTime": facts[days[0]][1],
+                "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/" + facts[days[0]][2]})
+    sources = ["https://cutiestreet.asobisystem.com/live_information/detail/" + facts[day][2] for day in days]
+    out["performanceFactSources"] = list(dict.fromkeys([*(out.get("performanceFactSources") or []), *sources]))
+    out["urls"] = list(dict.fromkeys([*_urls(out), *sources]))
+    return out
+
+
 def _is_redundant_more_star_christmas(event: dict, has_joint: bool) -> bool:
     return (
         has_joint
@@ -497,6 +532,8 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "cutieWrongPiaBundleRemoved": 0,
         "cutieObsoletePiaRowsRemoved": 0,
         "cutieIgFixed": 0,
+        "cutieHiroshimaPiaFixed": 0,
+        "fruitsJoyFanclubLiveAdded": 0,
         "staleChristmasRowsRemoved": 0,
         "fmAichiFixed": 0,
         "sweetFcSecondStartFixed": 0,
@@ -520,6 +557,9 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
             continue
 
         current = event
+        current = _repair_cutie_hiroshima_pia(current)
+        if current != event:
+            report["cutieHiroshimaPiaFixed"] += 1
         if _is_hakata_special(current):
             current = _repair_hakata(current)
             report["hakataSpecialFixed"] += 1
@@ -561,6 +601,34 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
     if gift_more_star:
         out.append(gift_more_star)
         report["giftMoreStarAdded"] += 1
+
+    # Official announcement 93201 gives one fixed occurrence but explicitly
+    # says application details will follow. Do not invent an application band.
+    joy_source = "https://fruitszipper.asobisystem.com/news/detail/93201"
+    joy_title = "FRUITS ZIPPER FANCLUB LIVE -じょい！×３-"
+    has_fruits_official = any(event.get("group") == "FRUITS ZIPPER" and any(
+        value.startswith("https://fruitszipper.asobisystem.com/") for value in _urls(event)
+    ) for event in out)
+    if has_fruits_official and not any(event.get("group") == "FRUITS ZIPPER" and (
+        joy_source in _urls(event)
+        or (_day(event) == "2026-11-08" and "FANCLUB LIVE" in str(event.get("title") or "")
+            and "じょい" in str(event.get("title") or ""))
+    ) for event in out):
+        out.append({
+            "id": "known-fruits-joy-fanclub-live-20261108",
+            "group": "FRUITS ZIPPER", "title": joy_title, "eventTitle": joy_title,
+            "eventDate": "2026-11-08", "eventEndDate": "2026-11-08",
+            "eventDates": ["2026-11-08"], "eventCount": 1,
+            "venue": "東京都 東京ガーデンシアター", "openTime": "13:30", "startTime": "15:00",
+            "schedule": [{"date": "2026-11-08", "venue": "東京都 東京ガーデンシアター",
+                          "openTime": "13:30", "startTime": "15:00"}],
+            "url": joy_source, "urls": [joy_source], "primarySource": "official",
+            "sourceType": "official", "sourceChannel": "known-official-correction",
+            "sourcePublishedAt": "2026-10-17", "eventScope": "kawaii-lab",
+            "ticketType": "現在受付なし", "applicationStatus": "none",
+            "applicationDisplayMode": "schedule-only",
+        })
+        report["fruitsJoyFanclubLiveAdded"] = 1
 
     out, candy_online_removed = _collapse_candy_online_20261020(out)
     report["candyOnline20261020RowsCollapsed"] = candy_online_removed

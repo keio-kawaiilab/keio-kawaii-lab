@@ -5,6 +5,65 @@ from apply_known_schedule_corrections import apply_known_corrections
 
 
 class KnownScheduleCorrectionsTest(unittest.TestCase):
+    def test_joy_live_is_added_without_inventing_ticket_window(self):
+        seed = {"id": "fruits-official", "group": "FRUITS ZIPPER", "eventDate": "2026-10-26",
+                "url": "https://fruitszipper.asobisystem.com/feature/2026tour_autumn"}
+        events, report = apply_known_corrections([seed])
+        joy = [e for e in events if e.get("id") == "known-fruits-joy-fanclub-live-20261108"]
+        self.assertEqual(1, len(joy))
+        self.assertEqual("2026-11-08", joy[0]["eventDate"])
+        self.assertEqual("15:00", joy[0]["startTime"])
+        self.assertNotIn("applyStart", joy[0])
+        self.assertNotIn("applyEnd", joy[0])
+        self.assertEqual("none", joy[0]["applicationStatus"])
+        self.assertEqual(1, report["fruitsJoyFanclubLiveAdded"])
+        again, report = apply_known_corrections(events)
+        self.assertEqual(events, again)
+        self.assertEqual(0, report["fruitsJoyFanclubLiveAdded"])
+
+    def test_joy_live_does_not_duplicate_a_collector_row(self):
+        source = {"id": "collected-joy", "group": "FRUITS ZIPPER", "eventDate": "2026-11-08",
+                  "title": "FRUITS ZIPPER FANCLUB LIVE -じょい！×３-",
+                  "url": "https://fruitszipper.asobisystem.com/news/detail/93201",
+                  "applyStart": "2026-10-21T12:00"}
+        corrected, report = apply_known_corrections([source])
+        self.assertEqual([source], corrected)
+        self.assertEqual(0, report["fruitsJoyFanclubLiveAdded"])
+
+    def test_hiroshima_retained_lot_uses_each_official_occurrence(self):
+        row = {"id": "old-pia-hiroshima", "group": "CUTIE STREET",
+               "title": "CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-",
+               "eventDate": "2026-11-14", "eventDates": ["2026-11-14", "2026-11-15"],
+               "schedule": [{"date": "2026-11-14", "venue": None}, {"date": "2026-11-15", "venue": None}],
+               "venue": "複数会場（全2公演）", "openTime": "16:00", "startTime": "16:00",
+               "ticketType": "現在受付なし", "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=88970"}
+        corrected, report = apply_known_corrections([row])
+        self.assertEqual(1, report["cutieHiroshimaPiaFixed"])
+        event = corrected[0]
+        self.assertEqual(["18:00", "16:30"], [r["startTime"] for r in event["schedule"]])
+        self.assertTrue(all(r["venue"] == "広島県 広島グリーンアリーナ" for r in event["schedule"]))
+        self.assertEqual(row["id"], event["id"])
+        self.assertEqual(row["url"], event["url"])
+        from performance_entities import build_public_events
+        official = {**event, "id": "official", "url": "https://cutiestreet.asobisystem.com/news/detail/92733",
+                    "ticketType": "アップグレード抽選", "applyEnd": "2026-10-20T23:59"}
+        public, _ = build_public_events([event, official])
+        self.assertEqual(2, len(public))
+        self.assertEqual({"18:00", "16:30"}, {e["startTime"] for e in public})
+        self.assertTrue(all(e["offers"][0]["applyEnd"] == "2026-10-20T23:59" for e in public))
+        again, report = apply_known_corrections(corrected)
+        self.assertEqual(corrected, again)
+        self.assertEqual(0, report["cutieHiroshimaPiaFixed"])
+
+    def test_hiroshima_repair_does_not_touch_a_different_lot_or_date(self):
+        for lot, day in (("88971", "2026-11-14"), ("88970", "2026-12-14")):
+            row = {"id": lot, "group": "CUTIE STREET", "eventDate": day,
+                   "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=" + lot,
+                   "startTime": "13:00"}
+            corrected, report = apply_known_corrections([row])
+            self.assertEqual(row, corrected[0])
+            self.assertEqual(0, report["cutieHiroshimaPiaFixed"])
+
     def test_candy_online_official_and_sukisuki_rows_become_one_event(self):
         official = {
             "id": "official-online",

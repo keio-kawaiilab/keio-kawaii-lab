@@ -4,8 +4,25 @@ from __future__ import annotations
 import json
 from datetime import datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
-from update_live_events import JST
+JST = ZoneInfo("Asia/Tokyo")
+
+
+def _same_ticket_kind(expected, offer, entity):
+    if offer.get("ticketType") == expected.get("ticketType"):
+        return True
+    # The source collector calls these リセール; the source-priority guard
+    # deliberately labels the same verified window 公式リセール. Require the
+    # original article provenance and an explicit resale channel, not just a
+    # similar title, so a genuinely missing/different sale stays degraded.
+    aliases = {"リセール", "公式リセール"}
+    source_urls = [entity.get("url"), *(entity.get("urls") or []),
+                   offer.get("url"), *(offer.get("urls") or []),
+                   offer.get("applicationWindowSource"), offer.get("deadlineSource")]
+    return (expected.get("ticketType") in aliases and offer.get("ticketType") in aliases
+            and (offer.get("provider") == "resale" or offer.get("saleFamily") == "resale")
+            and expected.get("url") in source_urls)
 
 
 def audit(state, payload, history=None):
@@ -28,7 +45,8 @@ def audit(state, payload, history=None):
                 if expected.get("startTime") and entity.get("startTime") != expected["startTime"]:
                     continue
                 for offer in entity.get("offers", [entity]):
-                    if all(offer.get(key) == expected.get(key) for key in ("ticketType", "applyStart", "applyEnd")):
+                    if (_same_ticket_kind(expected, offer, entity)
+                            and all(offer.get(key) == expected.get(key) for key in ("applyStart", "applyEnd"))):
                         found = True
                         break
                 if found:
