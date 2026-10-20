@@ -21,6 +21,7 @@ from bs4 import BeautifulSoup
 
 import update_live_events as ticket
 import update_special_events as special
+from apply_known_schedule_corrections import repair_cutie_upgrade_reception
 
 DATA_PATH = Path("data/live-events.json")
 LATEST_INDEX_PAGES = 2
@@ -242,6 +243,9 @@ def augment_ticket(payload: dict, articles: list[dict], failures: list[dict]) ->
                 continue
             event = dict(event)
             event["discoverySourceUrl"] = candidate.url
+            # Correct this article before the source-priority resolver groups
+            # receptions, including new IDs returned by the generic parser.
+            event = repair_cutie_upgrade_reception(event)
             event_id = str(event.get("id") or "")
             if event_id:
                 additions[event_id] = event
@@ -350,3 +354,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

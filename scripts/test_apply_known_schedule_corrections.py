@@ -379,5 +379,41 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
         self.assertEqual(report["semanticTicketDuplicatesRemoved"], 2)
 
 
+class CutieUpgradeReceptionTests(unittest.TestCase):
+    def fixture(self, day="2026-11-14"):
+        return {
+            "id": "retained-" + day, "group": "CUTIE STREET",
+            "title": "広島・愛知 アップグレード抽選受付のお知らせ",
+            "eventDate": day, "startTime": "18:00",
+            "ticketType": "年会費コース会員先行",
+            "applyStart": "2026-10-15T12:00", "applyEnd": "2026-10-20T23:59",
+            "urls": ["https://cutiestreet.asobisystem.com/news/detail/92733"],
+        }
+
+    def test_four_occurrences_are_corrected_without_changing_identity_or_window(self):
+        from apply_known_schedule_corrections import repair_cutie_upgrade_reception
+        for day in ("2026-11-14", "2026-11-15", "2026-11-28", "2026-11-29"):
+            original = self.fixture(day)
+            expected = dict(original, ticketType="アップグレード抽選")
+            self.assertEqual(expected, repair_cutie_upgrade_reception(original))
+            self.assertEqual("年会費コース会員先行", original["ticketType"])
+        result, report = apply_known_corrections([self.fixture()])
+        self.assertEqual("アップグレード抽選", result[0]["ticketType"])
+        self.assertEqual(1, report["cutieUpgradeReceptionFixed"])
+        _, again = apply_known_corrections(result)
+        self.assertEqual(0, again["cutieUpgradeReceptionFixed"])
+
+    def test_other_articles_dates_windows_and_sale_types_are_untouched(self):
+        from apply_known_schedule_corrections import repair_cutie_upgrade_reception
+        for changes in (
+            {"urls": ["https://cutiestreet.asobisystem.com/news/detail/other"]},
+            {"eventDate": "2026-11-30"}, {"applyEnd": "2026-10-21T23:59"},
+            {"applyStart": None}, {"ticketType": "一般販売"}, {"group": "CANDY TUNE"},
+        ):
+            event = dict(self.fixture(), **changes)
+            self.assertEqual(event, repair_cutie_upgrade_reception(event))
+
+
 if __name__ == "__main__":
     unittest.main()
+

@@ -59,6 +59,29 @@ def _day(event: dict) -> str:
     return str(event.get("eventDate") or "")[:10]
 
 
+def repair_cutie_upgrade_reception(event: dict) -> dict:
+    """NEWS 92733's annual-FC wording is eligibility, not another sale.
+
+    Keep occurrence identity, times, windows and provenance untouched. Restrict
+    this verified correction to this article's four dates and exact window;
+    other FC receptions (including ones mentioning upgrades) remain separate.
+    """
+    article = "https://cutiestreet.asobisystem.com/news/detail/92733"
+    urls = [*_urls(event), event.get("discoverySourceUrl")]
+    if not (
+        event.get("group") == "CUTIE STREET"
+        and article in urls
+        and _day(event) in {"2026-11-14", "2026-11-15", "2026-11-28", "2026-11-29"}
+        and event.get("ticketType") == "年会費コース会員先行"
+        and event.get("applyStart") == "2026-10-15T12:00"
+        and event.get("applyEnd") == "2026-10-20T23:59"
+    ):
+        return event
+    out = deepcopy(event)
+    out["ticketType"] = "アップグレード抽選"
+    return out
+
+
 def _is_hakata_special(event: dict) -> bool:
     return (
         event.get("group") == "CUTIE STREET"
@@ -587,6 +610,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "cutieIgFixed": 0,
         "cutieHiroshimaPiaFixed": 0,
         "candyBirthdayFactsFilled": 0,
+        "cutieUpgradeReceptionFixed": 0,
         "sweetestStoryPerformancesAdded": 0,
         "fruitsJoyFanclubLiveAdded": 0,
         "staleChristmasRowsRemoved": 0,
@@ -611,9 +635,12 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
             report["staleChristmasRowsRemoved"] += 1
             continue
 
-        current = event
-        current = _repair_candy_birthday_facts(current)
+        current = repair_cutie_upgrade_reception(event)
         if current != event:
+            report["cutieUpgradeReceptionFixed"] += 1
+        before_birthday = current
+        current = _repair_candy_birthday_facts(current)
+        if current != before_birthday:
             report["candyBirthdayFactsFilled"] += 1
         before_hiroshima = current
         current = _repair_cutie_hiroshima_pia(current)
@@ -764,3 +791,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

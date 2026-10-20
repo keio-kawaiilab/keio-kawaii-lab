@@ -2,12 +2,28 @@
 from __future__ import annotations
 
 import unittest
+from unittest.mock import patch
 
-from augment_recent_official_news import merge_discovered_ticket_event
+from augment_recent_official_news import augment_ticket, merge_discovered_ticket_event
 from augment_kawaiilab_official import infer_target_groups
 
 
 class RecentOfficialBodyMergeTests(unittest.TestCase):
+    def test_upgrade_eligibility_does_not_create_an_annual_fc_reception(self):
+        url = "https://cutiestreet.asobisystem.com/news/detail/92733"
+        parsed = {"id": "new-parser-id", "group": "CUTIE STREET",
+                  "eventDate": "2026-11-14", "ticketType": "年会費コース会員先行",
+                  "applyStart": "2026-10-15T12:00", "applyEnd": "2026-10-20T23:59"}
+        article = {"group": "CUTIE STREET", "url": url,
+                   "title": "広島・愛知 アップグレード抽選受付のお知らせ"}
+        with patch("augment_recent_official_news.ticket.parse_candidate", return_value=([parsed], None)), \
+                patch("augment_recent_official_news.has_ticket_signal", return_value=True), \
+                patch("augment_recent_official_news.future_event", return_value=True):
+            result, _ = augment_ticket({"events": []}, [article], [])
+        self.assertEqual("アップグレード抽選", result["events"][0]["ticketType"])
+        self.assertEqual("new-parser-id", result["events"][0]["id"])
+        self.assertEqual(url, result["events"][0]["discoverySourceUrl"])
+
     def test_existing_rich_metadata_is_not_downgraded(self):
         existing = {
             "id": "same-id",
@@ -92,3 +108,4 @@ class KawaiiLabUmbrellaDiscoveryTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
