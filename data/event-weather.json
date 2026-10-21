@@ -1,7 +1,7 @@
 {
   "date": "2026-10-21",
   "horizonDays": 7,
-  "generatedAt": "2026-10-21T08:22+09:00",
+  "generatedAt": "2026-10-21T16:58+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -12,6 +12,7 @@
       "venue": "Spotify O-WEST",
       "venueKey": "spotifyo-west",
       "eventIds": [
+        "6e1945d12ce31736",
         "e8d1d0f48012071c",
         "f3c16193ec30d6d7",
         "727032b801507914"
@@ -20,11 +21,11 @@
       "areaName": "東京地方",
       "precision": "mesh5km",
       "label": "晴れ",
-      "max": 29.0,
-      "min": 29.0,
+      "max": null,
+      "min": null,
       "pop": "20",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-10-21T05:00:00+09:00",
+      "issuedAt": "2026-10-21T17:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "25〜29℃",
       "coordinates": {
@@ -32,18 +33,6 @@
         "lon": 139.695374
       },
       "meshTimeline": [
-        {
-          "time": "09:00",
-          "label": "くもり",
-          "validAt": "2026-10-21T09:00+09:00",
-          "temp": 26
-        },
-        {
-          "time": "12:00",
-          "label": "くもり",
-          "validAt": "2026-10-21T12:00+09:00",
-          "temp": 28
-        },
         {
           "time": "15:00",
           "label": "晴れ",
@@ -68,23 +57,6 @@
           "validAt": "2026-10-22T00:00+09:00",
           "temp": 22
         }
-      ],
-      "hourlyRain": [
-        {
-          "time": "17:00",
-          "rain": false,
-          "validAt": "2026-10-21T17:00+09:00"
-        },
-        {
-          "time": "18:00",
-          "rain": false,
-          "validAt": "2026-10-21T18:00+09:00"
-        },
-        {
-          "time": "19:00",
-          "rain": false,
-          "validAt": "2026-10-21T19:00+09:00"
-        }
       ]
     },
     {
@@ -97,12 +69,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "晴れ 朝晩 くもり",
+      "label": "晴れ 時々 くもり",
       "max": 25.0,
       "min": 19.0,
-      "pop": "10",
+      "pop": "0",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-10-21T05:00:00+09:00",
+      "issuedAt": "2026-10-21T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -117,12 +89,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "くもり",
-      "max": 24.0,
+      "label": "くもり時々雨",
+      "max": 20.0,
       "min": 17.0,
-      "pop": "40",
+      "pop": "70",
       "popLabel": "1日",
-      "issuedAt": "2026-10-20T17:00:00+09:00",
+      "issuedAt": "2026-10-21T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -137,12 +109,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "くもり",
-      "max": 24.0,
+      "label": "くもり時々雨",
+      "max": 20.0,
       "min": 17.0,
-      "pop": "40",
+      "pop": "70",
       "popLabel": "1日",
-      "issuedAt": "2026-10-20T17:00:00+09:00",
+      "issuedAt": "2026-10-21T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -164,12 +136,12 @@
       "areaCode": "230010",
       "areaName": "愛知県",
       "precision": "area",
-      "label": "くもり",
-      "max": 25.0,
-      "min": 18.0,
-      "pop": "40",
+      "label": "くもり時々雨",
+      "max": 24.0,
+      "min": 19.0,
+      "pop": "60",
       "popLabel": "1日",
-      "issuedAt": "2026-10-20T17:00:00+09:00",
+      "issuedAt": "2026-10-21T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -185,12 +157,12 @@
       "areaCode": "400010",
       "areaName": "福岡県",
       "precision": "area",
-      "label": "くもり一時雨",
-      "max": 25.0,
-      "min": 19.0,
-      "pop": "50",
+      "label": "くもり時々雨",
+      "max": 26.0,
+      "min": 21.0,
+      "pop": "60",
       "popLabel": "1日",
-      "issuedAt": "2026-10-20T17:00:00+09:00",
+      "issuedAt": "2026-10-21T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -212,12 +184,12 @@
       "areaCode": "230010",
       "areaName": "愛知県",
       "precision": "area",
-      "label": "くもり",
-      "max": 23.0,
-      "min": 16.0,
-      "pop": "40",
+      "label": "くもり一時雨",
+      "max": 24.0,
+      "min": 17.0,
+      "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-10-20T17:00:00+09:00",
+      "issuedAt": "2026-10-21T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -234,31 +206,52 @@
       "areaName": "熊本県",
       "precision": "area",
       "label": "くもり時々晴れ",
-      "max": 24.0,
-      "min": 15.0,
+      "max": 25.0,
+      "min": 17.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-10-20T17:00:00+09:00",
+      "issuedAt": "2026-10-21T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-10-28",
+      "venue": "福岡県 マリンメッセ福岡A館",
+      "venueKey": "マリンメッセ福岡a館",
+      "eventIds": [
+        "cf74c8ffd83323d5",
+        "17cc29946b768ee5",
+        "2044dd321097ba5f",
+        "69b74a305ceec208",
+        "af9b9cae7dd94237",
+        "bb8f5e7107934b09",
+        "cea85b357b3a94ad",
+        "d07cfc4b79ea8d5b"
+      ],
+      "areaCode": "400010",
+      "areaName": "福岡県",
+      "precision": "area",
+      "label": "晴れ時々くもり",
+      "max": 20.0,
+      "min": 13.0,
+      "pop": "20",
+      "popLabel": "1日",
+      "issuedAt": "2026-10-21T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
     }
   ],
   "stats": {
-    "occurrencesInRange": 34,
+    "occurrencesInRange": 35,
     "uniqueVenueDates": 9,
-    "weatherEntries": 8,
+    "weatherEntries": 9,
     "meshEntries": 1,
-    "failures": 1,
+    "failures": 0,
     "meshTimelineEntries": 1,
-    "meshExactTempSlots": 6,
-    "hourlyRainEntries": 1
+    "meshExactTempSlots": 4,
+    "hourlyRainEntries": 0
   },
-  "failures": [
-    {
-      "date": "2026-10-28",
-      "venue": "福岡県 マリンメッセ福岡A館",
-      "reason": "開催日の予報がまだありません"
-    }
-  ]
+  "failures": []
 }
