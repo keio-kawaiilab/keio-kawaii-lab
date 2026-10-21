@@ -64,9 +64,32 @@ for(var qi=0;qi<queue.length&&qi<40;qi++){
  });
 }
 });
+// Explore a second interchange after changing the departure railway, in addition to shortest-path deviations.
+Array.from(firstLines).slice(0,2).forEach(function(firstRailway){
+var waves=start.nodes.map(node=>({node:node,edges:[]})),seen=new Set(start.nodes),hubs=0;
+for(var wi=0;wi<waves.length&&wi<30&&hubs<28;wi++){
+ var first=waves[wi],next=model.graph.get(first.node)||[];
+ if(first.edges.length)for(const conn of next.filter(e=>e.type==="transfer").slice(0,4)){
+  var target=model.stationById.get(conn.to),second=target&&target["odpt:railway"];
+  if(typeof second!=="string"||second===firstRailway)continue;hubs++;
+  var base=first.edges.concat([{from:first.node,to:conn.to,edge:conn}]);
+  var middles=[{node:conn.to,edges:[]}],memo=new Set([conn.to]);
+  for(var mi=0;mi<middles.length&&mi<22;mi++){
+   var mid=middles[mi],out=model.graph.get(mid.node)||[];
+   if(mid.edges.length&&out.some(x=>x.type==="transfer")){
+    var suffix=search(model,{nodes:[mid.node]},end,settings[0],new Set([firstRailway,second]),profile);
+    if(suffix&&suffix.edges.length)add({edges:base.concat(mid.edges,suffix.edges),cost:0});
+   }
+   if(mid.edges.length>=16)continue;
+   for(const e of out){if(e.type==="ride"&&e.railway===second&&!memo.has(e.to)){memo.add(e.to);middles.push({node:e.to,edges:mid.edges.concat([{from:mid.node,to:e.to,edge:e}])});}}
+  }
+ }
+ if(first.edges.length<16)for(const e of next){if(e.type==="ride"&&e.railway===firstRailway&&!seen.has(e.to)){seen.add(e.to);waves.push({node:e.to,edges:first.edges.concat([{from:first.node,to:e.to,edge:e}])});}}
+}
+});
 if(!paths.length)return[];
 var quickest=Math.min.apply(null,paths.map(x=>x.stats.minutes));
-paths=paths.filter(x=>x.stats.minutes<=quickest+Math.max(24,Math.round(quickest*.42)));
+paths=paths.filter(x=>x.stats.minutes<=quickest+Math.max(15,Math.round(quickest*.22)));
 function effort(x){return x.stats.changes*18+x.stats.walking*1.5+x.stats.minutes*.18;}
 paths.sort((a,b)=>a.stats.minutes-b.stats.minutes||effort(a)-effort(b));
 var picked=[],used=new Set(),corridors=new Set();
