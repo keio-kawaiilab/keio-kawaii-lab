@@ -20,6 +20,32 @@ class DiscoveryPublicationTest(unittest.TestCase):
         self.assertEqual("ok", report["status"])
         self.assertEqual(1, report["representedOffers"])
 
+    def test_verified_central_fc_label_alias_is_represented(self):
+        expected = {
+            "group": "SWEET STEADY", "eventDate": "2099-03-04",
+            "startTime": "18:30", "ticketType": "KAWAII LAB. FC先行",
+            "applyStart": "2098-10-16T12:00", "applyEnd": "2098-10-26T23:59",
+            "url": "https://kawaiilab.asobisystem.com/news/detail/92955",
+        }
+        state = {"observations": [{"expectedOffers": [expected]}]}
+        entity = {
+            "group": expected["group"], "eventDate": expected["eventDate"],
+            "startTime": expected["startTime"], "urls": [expected["url"]],
+            "offers": [{"ticketType": "FC先行", "applyStart": expected["applyStart"],
+                        "applyEnd": expected["applyEnd"]}],
+        }
+        report = audit(state, {"publicEvents": [entity]})
+        self.assertEqual("ok", report["status"])
+        self.assertEqual(1, report["representedOffers"])
+
+        wrong_source = copy.deepcopy(entity)
+        wrong_source["urls"] = ["https://sweetsteady.asobisystem.com/news/detail/other"]
+        self.assertEqual(1, len(audit(state, {"publicEvents": [wrong_source]})["missingOffers"]))
+
+        distinct_window = copy.deepcopy(entity)
+        distinct_window["offers"][0]["applyStart"] = "2098-10-17T12:00"
+        self.assertEqual(1, len(audit(state, {"publicEvents": [distinct_window]})["missingOffers"]))
+
     def test_alias_does_not_hide_real_missing_or_changed_offer(self):
         state, payload = self.fixture()
         for field, value in (("applyEnd", "2099-11-13T20:00"), ("provider", "pia"), ("ticketType", "FC先行")):

@@ -20,9 +20,21 @@ def _same_ticket_kind(expected, offer, entity):
     source_urls = [entity.get("url"), *(entity.get("urls") or []),
                    offer.get("url"), *(offer.get("urls") or []),
                    offer.get("applicationWindowSource"), offer.get("deadlineSource")]
-    return (expected.get("ticketType") in aliases and offer.get("ticketType") in aliases
+    if (expected.get("ticketType") in aliases and offer.get("ticketType") in aliases
             and (offer.get("provider") == "resale" or offer.get("saleFamily") == "resale")
-            and expected.get("url") in source_urls)
+            and expected.get("url") in source_urls):
+        return True
+    # Central KAWAII LAB. discovery and a group's collector can name the same
+    # official reception "KAWAII LAB. FC先行" and "FC先行".  Treat only that
+    # exact label pair as equivalent, with the same official article still
+    # attached to the public entity/offer.  Date, performance time and the full
+    # application window are compared by audit() outside this helper.
+    fc_aliases = {"FC先行", "KAWAII LAB. FC先行"}
+    expected_url = str(expected.get("url") or "")
+    return (expected.get("ticketType") in fc_aliases
+            and offer.get("ticketType") in fc_aliases
+            and "/news/detail/" in expected_url
+            and expected_url in source_urls)
 
 
 def audit(state, payload, history=None):
