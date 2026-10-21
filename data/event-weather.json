@@ -1,7 +1,7 @@
 {
   "date": "2026-10-21",
   "horizonDays": 7,
-  "generatedAt": "2026-10-21T16:58+09:00",
+  "generatedAt": "2026-10-21T23:05+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -20,31 +20,19 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "mesh5km",
-      "label": "晴れ",
+      "label": "くもり",
       "max": null,
       "min": null,
       "pop": "20",
       "popLabel": "18〜00時",
       "issuedAt": "2026-10-21T17:00:00+09:00",
-      "meshTime": "18:00",
-      "meshTempBand": "25〜29℃",
+      "meshTime": "21:00",
+      "meshTempBand": "20〜24℃",
       "coordinates": {
         "lat": 35.658516,
         "lon": 139.695374
       },
       "meshTimeline": [
-        {
-          "time": "15:00",
-          "label": "晴れ",
-          "validAt": "2026-10-21T15:00+09:00",
-          "temp": 28
-        },
-        {
-          "time": "18:00",
-          "label": "晴れ",
-          "validAt": "2026-10-21T18:00+09:00",
-          "temp": 25
-        },
         {
           "time": "21:00",
           "label": "くもり",
@@ -55,7 +43,24 @@
           "time": "24:00",
           "label": "くもり",
           "validAt": "2026-10-22T00:00+09:00",
-          "temp": 22
+          "temp": 23
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "17:00",
+          "rain": false,
+          "validAt": "2026-10-21T17:00+09:00"
+        },
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-10-21T18:00+09:00"
+        },
+        {
+          "time": "19:00",
+          "rain": false,
+          "validAt": "2026-10-21T19:00+09:00"
         }
       ]
     },
@@ -74,6 +79,26 @@
       "min": 19.0,
       "pop": "0",
       "popLabel": "18〜00時",
+      "issuedAt": "2026-10-21T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-10-25",
+      "venue": "千葉県 セブンパークアリオ柏 屋外スマイルパーク",
+      "venueKey": "セブンパークアリオ柏屋外スマイルパーク",
+      "eventIds": [
+        "special-b973228ee19beb94"
+      ],
+      "areaCode": "120010",
+      "areaName": "千葉県",
+      "precision": "area",
+      "label": "くもり時々雨",
+      "max": 24.0,
+      "min": 19.0,
+      "pop": "60",
+      "popLabel": "1日",
       "issuedAt": "2026-10-21T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
@@ -244,14 +269,14 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 35,
-    "uniqueVenueDates": 9,
-    "weatherEntries": 9,
+    "occurrencesInRange": 36,
+    "uniqueVenueDates": 10,
+    "weatherEntries": 10,
     "meshEntries": 1,
     "failures": 0,
     "meshTimelineEntries": 1,
-    "meshExactTempSlots": 4,
-    "hourlyRainEntries": 0
+    "meshExactTempSlots": 2,
+    "hourlyRainEntries": 1
   },
   "failures": []
 }
