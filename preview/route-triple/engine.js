@@ -3,18 +3,18 @@ var api=factory();if(typeof module==="object"&&module.exports)module.exports=api
 })(typeof window!=="undefined"?window:globalThis,function(){
 "use strict";
 function km(a,b){var v=[a&&a["geo:lat"],a&&a["geo:long"],b&&b["geo:lat"],b&&b["geo:long"]].map(Number);if(v.some(x=>!Number.isFinite(x)))return null;var r=Math.PI/180,la=v[0]*r,lb=v[2]*r,dx=(v[2]-v[0])*r,dy=(v[3]-v[1])*r;return 12742000*Math.asin(Math.min(1,Math.sqrt(Math.sin(dx/2)**2+Math.cos(la)*Math.cos(lb)*Math.sin(dy/2)**2)));}
-function rideTime(model,a,b){var d=km(model.stationById.get(a),model.stationById.get(b));return d===null?2.1:Math.max(1.1,d/650+.42);}
+function rideTime(model,a,b,railway,profile){var line=profile&&profile.railways&&profile.railways[railway],record=line&&line.edges&&line.edges[a+"|"+b];if(record&&Number.isFinite(Number(record[0])))return Number(record[0]);var d=km(model.stationById.get(a),model.stationById.get(b));return d===null?2.1:Math.max(1.1,d/650+.42);}
 function Heap(){this.items=[];}
 Heap.prototype.push=function(x){var a=this.items,i=a.length;a.push(x);while(i){var p=(i-1)>>1;if(a[p].cost<=x.cost)break;a[i]=a[p];i=p;}a[i]=x;};
 Heap.prototype.pop=function(){var a=this.items,x=a[0],last=a.pop();if(a.length){var i=0;while(i*2+1<a.length){var c=i*2+1;if(c+1<a.length&&a[c+1].cost<a[c].cost)c++;if(a[c].cost>=last.cost)break;a[i]=a[c];i=c;}a[i]=last;}return x;};
 function state(node,line){return node+"\u0001"+line;}
-function search(model,start,end,weight,blocked){
+function search(model,start,end,weight,blocked,profile,edgeBlock){
 var dist=new Map(),previous=new Map(),heap=new Heap(),targets=new Set(end.nodes),reached=null;
 start.nodes.forEach(function(node){var k=state(node,"");dist.set(k,0);heap.push({node:node,line:"",key:k,cost:0});});
 while(heap.items.length){var cur=heap.pop();if(cur.cost!==dist.get(cur.key))continue;if(targets.has(cur.node)){reached=cur;break;}
-(model.graph.get(cur.node)||[]).forEach(function(edge){if(edge.type==="ride"&&blocked&&blocked.has(edge.railway))return;
+(model.graph.get(cur.node)||[]).forEach(function(edge){if(edge.type==="ride"&&blocked&&blocked.has(edge.railway))return;if(edgeBlock&&edgeBlock.has(cur.node+"|"+edge.to+"|"+edge.railway))return;
 var change=edge.type==="ride"&&cur.line&&cur.line!==edge.railway;
-var travel=edge.type==="ride"?rideTime(model,cur.node,edge.to):0,walk=edge.type==="transfer"?Math.max(1,Number(edge.cost)||4):0;
+var travel=edge.type==="ride"?rideTime(model,cur.node,edge.to,edge.railway,profile):0,walk=edge.type==="transfer"?Math.max(1,Number(edge.cost)||4):0;
 var cost=cur.cost+travel*weight.ride+walk*weight.walk+(change?weight.change:0);
 var line=edge.type==="ride"?edge.railway:cur.line,k=state(edge.to,line);
 if(cost<(dist.has(k)?dist.get(k):Infinity)){dist.set(k,cost);previous.set(k,{parent:cur.key,step:{from:cur.node,to:edge.to,edge:edge}});heap.push({node:edge.to,line:line,key:k,cost:cost});}
@@ -25,25 +25,45 @@ function rulesIndex(data){var map=new Map();function key(a,b,c,d){return[a||"",b
 (data&&data.rules||[]).forEach(function(r){if(!r.fromRailway||!r.toRailway||!Number.isFinite(Number(r.minutes)))return;map.set(key(r.fromStation,r.toStation,r.fromRailway,r.toRailway),r);if(r.bidirectional)map.set(key(r.toStation,r.fromStation,r.toRailway,r.fromRailway),r);});
 return function(a,b,c,d){return map.get(key(a,b,c,d))||null;};
 }
-function measure(model,path,getRule){
+function measure(model,path,getRule,profile,through){
 var legs=[],ride=0,walk=0,changes=0,pendingWalk=0;
 path.edges.forEach(function(step){var e=step.edge;if(e.type==="transfer"){pendingWalk+=Math.max(1,Number(e.cost)||4);return;}
-ride+=rideTime(model,step.from,step.to);var last=legs[legs.length-1];
+ride+=rideTime(model,step.from,step.to,e.railway,profile);var last=legs[legs.length-1];
 if(last&&last.railway===e.railway&&!pendingWalk){last.to=step.to;last.stops++;return;}
-var transfer=null;if(last){changes++;var rule=getRule(last.to,step.from,last.railway,e.railway);var min=rule?Number(rule.minutes):(pendingWalk||4);walk+=min;transfer={station:model.displayStation(last.to),minutes:min,verified:!!(rule&&rule.verifiedAt),label:rule?String(rule.label||"乗換移動"):"暫定の乗換移動"};}else if(pendingWalk){walk+=pendingWalk;}
+var transfer=null;if(last){var direct=through(last.to,step.from,last.railway,e.railway);if(!direct)changes++;var rule=getRule(last.to,step.from,last.railway,e.railway);var min=direct?0:rule?Number(rule.minutes):(pendingWalk||4);walk+=min;transfer={station:model.displayStation(last.to),minutes:min,throughPossible:direct,verified:!!(rule&&rule.verifiedAt),label:direct?"直通可能（実際の列車は時刻確認が必要）":rule?String(rule.label||"乗換移動"):"暫定の乗換移動"};}else if(pendingWalk){walk+=pendingWalk;}
 legs.push({railway:e.railway,label:e.label||e.railway,color:e.color||"#36558b",from:step.from,to:step.to,stops:1,transfer:transfer});pendingWalk=0;});
 walk+=pendingWalk;
-return{legs:legs,changes:changes,walking:walk,riding:ride,minutes:Math.round(ride+walk+changes*4+4)};
+return{legs:legs,changes:changes,walking:walk,riding:ride,minutes:Math.round(ride+walk+changes*3+3)};
 }
 function signature(model,path){return model.segmentsFrom(path).map(s=>s.railway).filter((x,i,a)=>i===0||x!==a[i-1]).join(">");}
 function corridor(model,path){return model.segmentsFrom(path).map(s=>String(s.railway).split(":").pop().split(".")[0]).filter((x,i,a)=>i===0||x!==a[i-1]).join(">");}
-function compare(model,start,end,rules){
+function compare(model,start,end,rules,profile,boundaries){
 if(!model||!start||!end||!start.nodes||!end.nodes)return[];
 var settings=[{ride:1,walk:1,change:5},{ride:.33,walk:1.4,change:21},{ride:.7,walk:2,change:9},{ride:1,walk:1.5,change:14},{ride:.12,walk:1.5,change:32}];
-var map=new Set(),paths=[],base=[],lookup=rulesIndex(rules);
-function add(path){if(!path||!path.edges.length)return;var sig=signature(model,path);if(map.has(sig))return;map.add(sig);paths.push({path:path,id:sig,corridor:corridor(model,path),stats:measure(model,path,lookup)});}
-settings.forEach(function(w){var p=search(model,start,end,w);base.push(p);add(p);});
-base.filter(Boolean).forEach(function(path){Array.from(new Set(model.segmentsFrom(path).map(s=>s.railway))).forEach(function(line){settings.forEach(function(w){add(search(model,start,end,w,new Set([line])));});});});
+var map=new Set(),paths=[],base=[],lookup=rulesIndex(rules);var throughMap=new Set();(boundaries&&boundaries.boundaries||[]).forEach(function(b){if(b.status!=="verified")return;throughMap.add([b.fromStation,b.toStation,b.fromRailway,b.toRailway].join("|"));if(b.bidirectional)throughMap.add([b.toStation,b.fromStation,b.toRailway,b.fromRailway].join("|"));});function through(a,b,r,s){return throughMap.has([a,b,r,s].join("|"));}
+function add(path){if(!path||!path.edges.length)return;var sig=signature(model,path);if(map.has(sig))return;map.add(sig);paths.push({path:path,id:sig,corridor:corridor(model,path),stats:measure(model,path,lookup,profile,through)});}
+settings.forEach(function(w){var p=search(model,start,end,w,null,profile);base.push(p);add(p);});
+base.filter(Boolean).forEach(function(path){Array.from(new Set(model.segmentsFrom(path).map(s=>s.railway))).forEach(function(line){settings.forEach(function(w){add(search(model,start,end,w,new Set([line]),profile));});});});
+// Discover alternative interchanges on the first boarding line, not just deviations at the transfer stations of the cheapest path.
+var firstLines=new Set();
+start.nodes.forEach(function(node){(model.graph.get(node)||[]).forEach(function(e){if(e.type==="ride"&&e.railway)firstLines.add(e.railway);});});
+Array.from(firstLines).slice(0,3).forEach(function(railway){
+var queue=start.nodes.map(function(node){return{node:node,edges:[]};}),visited=new Set(start.nodes);
+for(var qi=0;qi<queue.length&&qi<40;qi++){
+ var item=queue[qi];
+ var out=model.graph.get(item.node)||[];
+ var interchange=out.some(function(edge){return edge.type==="transfer";});
+ if(interchange&&item.edges.length>0){
+   // Suffix cannot continue along the same boarding line; this explores switching to another corridor here.
+   var suffix=search(model,{nodes:[item.node]},end,settings[0],new Set([railway]),profile);
+   if(suffix&&suffix.edges.length)add({edges:item.edges.concat(suffix.edges),cost:0});
+ }
+ if(item.edges.length>=15)continue;
+ out.forEach(function(edge){if(edge.type!=="ride"||edge.railway!==railway||visited.has(edge.to))return;
+ visited.add(edge.to);queue.push({node:edge.to,edges:item.edges.concat([{from:item.node,to:edge.to,edge:edge}])});
+ });
+}
+});
 if(!paths.length)return[];
 var quickest=Math.min.apply(null,paths.map(x=>x.stats.minutes));
 paths=paths.filter(x=>x.stats.minutes<=quickest+Math.max(24,Math.round(quickest*.42)));
