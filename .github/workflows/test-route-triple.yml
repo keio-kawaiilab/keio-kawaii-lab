@@ -1,0 +1,28 @@
+name: Test route-triple preview
+on:
+  pull_request:
+    paths:
+      - 'preview/route-triple/**'
+      - 'route-core.js'
+      - 'data/transit/*/entities.json'
+      - 'data/transit/transfer-rules.json'
+      - 'data/transit/transfer-blocks.json'
+      - '.github/workflows/test-route-triple.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript syntax
+        run: |
+          node --check preview/route-triple/engine.js
+          node --check preview/route-triple/app.js
+          node --check preview/route-triple/test.cjs
+      - name: Check Yashio to Hiyoshi real network
+        run: node preview/route-triple/test.cjs
