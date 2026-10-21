@@ -6,7 +6,7 @@ import copy
 import json
 import re
 import sys
-from collections import defaultdict
+from collections import Counter, defaultdict
 from datetime import date, datetime
 from pathlib import Path
 
@@ -16,6 +16,7 @@ from audit_schedule_release import (
     JST,
     audit,
     event_days,
+    future_or_active,
     is_ticket_listing,
     label,
     load,
@@ -197,12 +198,65 @@ def removed_equivalent_official_fc_offer(previous: dict, candidate: dict, target
     )
 
 
+def audit_official_fc_offer_removals(
+    previous: dict,
+    candidate: dict,
+    today: date,
+) -> tuple[list[str], list[str]]:
+    """Audit FC rows by strict offer identity instead of their shared article URL.
+
+    The base release audit deliberately matches a row by a surviving source URL.
+    That makes identical collector duplicates harmless, but it can also hide the
+    disappearance of a genuinely different FC round published in the same
+    article.  Compare the stricter FC key explicitly: losing an extra copy of a
+    key is a safe dedupe, while losing the last copy remains fail-closed.
+    """
+    previous_rows = [
+        row for row in previous.get("events", [])
+        if isinstance(row, dict) and future_or_active(row, today)
+    ]
+    candidate_rows = [
+        row for row in candidate.get("events", [])
+        if isinstance(row, dict)
+    ]
+    previous_counts = Counter(
+        key for row in previous_rows
+        if (key := official_fc_offer_key(row)) is not None
+    )
+    candidate_counts = Counter(
+        key for row in candidate_rows
+        if (key := official_fc_offer_key(row)) is not None
+    )
+    representatives = {
+        official_fc_offer_key(row): row for row in previous_rows
+        if official_fc_offer_key(row) is not None
+    }
+
+    errors: list[str] = []
+    warnings: list[str] = []
+    for key, before in previous_counts.items():
+        after = candidate_counts.get(key, 0)
+        if after >= before:
+            continue
+        row_label = label(representatives[key])
+        if after:
+            warnings.append(
+                f"duplicate official FC offer removed: {row_label} ({before} -> {after})"
+            )
+        else:
+            errors.append(f"protected future/active official FC offer disappeared: {row_label}")
+    return errors, warnings
+
+
 def audit_grouped(previous: dict, candidate: dict, now: datetime):
     errors, warnings, report = audit(previous, candidate, now)
     today = now.astimezone(JST).date()
     safe_keys = safely_unchanged_shared_source_keys(previous, candidate, today)
     safe_expired_labels = safely_expired_playguide_labels(previous, today)
     x_errors, x_warnings, x_reconciled_keys = reconcile_official_x_shared_dates(
+        previous, candidate, today
+    )
+    fc_errors, fc_warnings = audit_official_fc_offer_removals(
         previous, candidate, today
     )
 
@@ -240,7 +294,12 @@ def audit_grouped(previous: dict, candidate: dict, now: datetime):
         filtered_warnings.append(message)
 
     filtered_errors.extend(x_errors)
+    for message in fc_errors:
+        label_text = message.rsplit(": ", 1)[-1]
+        if not any(label_text in existing for existing in filtered_errors):
+            filtered_errors.append(message)
     filtered_warnings.extend(x_warnings)
+    filtered_warnings.extend(fc_warnings)
     filtered_warnings.extend(downgraded)
 
     report = dict(report)
