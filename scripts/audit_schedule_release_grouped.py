@@ -10,6 +10,8 @@ from collections import defaultdict
 from datetime import date, datetime
 from pathlib import Path
 
+from prepare_release_candidate import official_fc_offer_key
+
 from audit_schedule_release import (
     JST,
     audit,
@@ -181,6 +183,20 @@ def is_safe_pia_date_rebucket(message: str) -> bool:
     return bool(key and "t.pia.jp" in key)
 
 
+
+def removed_equivalent_official_fc_offer(previous: dict, candidate: dict, target_label: str) -> bool:
+    """A strictly identical surviving FC window is not a vanished sale."""
+    vanished = [row for row in previous.get("events", [])
+                if isinstance(row, dict) and label(row) == target_label]
+    surviving = {official_fc_offer_key(row) for row in candidate.get("events", [])
+                 if isinstance(row, dict)}
+    surviving.discard(None)
+    return bool(vanished) and all(
+        official_fc_offer_key(row) in surviving
+        for row in vanished
+    )
+
+
 def audit_grouped(previous: dict, candidate: dict, now: datetime):
     errors, warnings, report = audit(previous, candidate, now)
     today = now.astimezone(JST).date()
@@ -199,6 +215,11 @@ def audit_grouped(previous: dict, candidate: dict, now: datetime):
             reconciled_base_messages += 1
             continue
         if key in safe_keys and message.startswith("future performance dates disappeared"):
+            continue
+        if message.startswith(DISAPPEARED_PREFIX) and removed_equivalent_official_fc_offer(
+            previous, candidate, message[len(DISAPPEARED_PREFIX):]
+        ):
+            downgraded.append("duplicate official FC offer removed: " + message[len(DISAPPEARED_PREFIX):])
             continue
         if message.startswith(DISAPPEARED_PREFIX) and message[len(DISAPPEARED_PREFIX):] in safe_expired_labels:
             downgraded.append("ended playguide row removed: " + message[len(DISAPPEARED_PREFIX):])
