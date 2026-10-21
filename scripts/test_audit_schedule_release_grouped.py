@@ -50,6 +50,49 @@ class GroupedReleaseAuditTests(unittest.TestCase):
         self.assertFalse(any("performance dates added" in item for item in warnings))
         self.assertIn("url:" + SOURCE, report["sharedSourceDateSetsReconciled"])
 
+    def test_removing_only_duplicate_official_fc_offer_is_accepted(self):
+        url = "https://morestar.asobisystem.com/news/detail/92107"
+        base = {
+            "group": "MORE STAR", "eventScope": "kawaii-lab",
+            "eventTitle": "MORE STAR 単独ライブ 7th STAR",
+            "title": "MORE STAR 単独ライブ 7th STAR",
+            "primarySource": "official", "sourceType": "official-schedule",
+            "eventDate": "2026-11-25", "startTime": "18:00",
+            "applyStart": "2026-10-17T18:00",
+            "applyEnd": "2026-10-25T23:59", "url": url, "urls": [url],
+        }
+        kept = {**base, "id": "good", "ticketType": "FC先行"}
+        repeat = {**base, "id": "repeat", "ticketType": "KAWAII LAB. FC先行"}
+        # Set an active date so disappearing offers ordinarily remain protected.
+        now = datetime.fromisoformat("2026-10-21T11:00:00+09:00")
+        errors, warnings, report = audit_grouped(
+            payload([kept, repeat]), payload([kept]), now
+        )
+        self.assertFalse(any("disappeared" in item for item in errors))
+        self.assertTrue(any("duplicate official FC offer removed" in item for item in warnings))
+        self.assertEqual("ok", report["status"])
+
+    def test_missing_distinct_fc_round_still_blocks(self):
+        url = "https://morestar.asobisystem.com/news/detail/92107"
+        base = {
+            "group": "MORE STAR", "eventScope": "kawaii-lab",
+            "eventTitle": "MORE STAR 単独ライブ 7th STAR",
+            "title": "MORE STAR 単独ライブ 7th STAR",
+            "primarySource": "official", "sourceType": "official-schedule",
+            "eventDate": "2026-11-25", "startTime": "18:00",
+            "applyEnd": "2026-10-25T23:59", "url": url, "urls": [url],
+        }
+        kept = {**base, "id": "good", "ticketType": "FC先行",
+                "applyStart": "2026-10-17T18:00"}
+        distinct = {**base, "id": "distinct", "ticketType": "FC先行",
+                    "applyStart": "2026-10-20T18:00"}
+        now = datetime.fromisoformat("2026-10-21T11:00:00+09:00")
+        errors, _, report = audit_grouped(
+            payload([kept, distinct]), payload([kept]), now
+        )
+        self.assertTrue(any("disappeared" in item for item in errors))
+        self.assertEqual("blocked", report["status"])
+
     def test_new_date_on_same_multi_event_x_post_keeps_existing_dates_safe(self):
         title = "『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント"
         old_rows = [
