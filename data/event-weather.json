@@ -1,69 +1,12 @@
 {
-  "date": "2026-10-21",
+  "date": "2026-10-22",
   "horizonDays": 7,
-  "generatedAt": "2026-10-21T23:05+09:00",
+  "generatedAt": "2026-10-22T04:15+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
-    {
-      "date": "2026-10-21",
-      "venue": "Spotify O-WEST",
-      "venueKey": "spotifyo-west",
-      "eventIds": [
-        "6e1945d12ce31736",
-        "e8d1d0f48012071c",
-        "f3c16193ec30d6d7",
-        "727032b801507914"
-      ],
-      "areaCode": "130010",
-      "areaName": "東京地方",
-      "precision": "mesh5km",
-      "label": "くもり",
-      "max": null,
-      "min": null,
-      "pop": "20",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-10-21T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "20〜24℃",
-      "coordinates": {
-        "lat": 35.658516,
-        "lon": 139.695374
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "くもり",
-          "validAt": "2026-10-21T21:00+09:00",
-          "temp": 24
-        },
-        {
-          "time": "24:00",
-          "label": "くもり",
-          "validAt": "2026-10-22T00:00+09:00",
-          "temp": 23
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "17:00",
-          "rain": false,
-          "validAt": "2026-10-21T17:00+09:00"
-        },
-        {
-          "time": "18:00",
-          "rain": false,
-          "validAt": "2026-10-21T18:00+09:00"
-        },
-        {
-          "time": "19:00",
-          "rain": false,
-          "validAt": "2026-10-21T19:00+09:00"
-        }
-      ]
-    },
     {
       "date": "2026-10-22",
       "venue": "東京都 Shibuya LOVEZ",
@@ -149,9 +92,11 @@
       "venue": "愛知県 愛知県芸術劇場 大ホール",
       "venueKey": "愛知県芸術劇場",
       "eventIds": [
+        "0e9184c1333d3c2b",
         "54a369497f59ce96",
         "12f75454cf2d4fd0",
         "9e39a25b816ecc66",
+        "5b03043b5afc32a6",
         "8696a0f8febe4c57",
         "8ba49d34c9f9d7c4",
         "b09e5a2f429cb013",
@@ -197,9 +142,11 @@
       "venue": "愛知県 愛知県芸術劇場 大ホール",
       "venueKey": "愛知県芸術劇場",
       "eventIds": [
+        "0e9184c1333d3c2b",
         "54a369497f59ce96",
         "12f75454cf2d4fd0",
         "9e39a25b816ecc66",
+        "5b03043b5afc32a6",
         "8696a0f8febe4c57",
         "b09e5a2f429cb013",
         "c15645c6e0bc30f6",
@@ -269,14 +216,30 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 36,
-    "uniqueVenueDates": 10,
-    "weatherEntries": 10,
-    "meshEntries": 1,
-    "failures": 0,
-    "meshTimelineEntries": 1,
-    "meshExactTempSlots": 2,
-    "hourlyRainEntries": 1
+    "occurrencesInRange": 56,
+    "uniqueVenueDates": 12,
+    "weatherEntries": 9,
+    "meshEntries": 0,
+    "failures": 3,
+    "meshTimelineEntries": 0,
+    "meshExactTempSlots": 0,
+    "hourlyRainEntries": 0
   },
-  "failures": []
+  "failures": [
+    {
+      "date": "2026-10-29",
+      "venue": "SGCホール有明",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-10-29",
+      "venue": "福岡県 マリンメッセ福岡A館",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-10-29",
+      "venue": "三重県 三重県文化会館大ホール",
+      "reason": "開催日の予報がまだありません"
+    }
+  ]
 }
