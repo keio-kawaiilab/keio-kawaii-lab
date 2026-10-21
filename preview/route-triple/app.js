@@ -8,7 +8,7 @@ function getJSON(url){return fetch(url).then(function(response){if(!response.ok)
 function display(items){if(!items.length){root.innerHTML='<div class="empty">経路を見つけられませんでした。取得できなかった事業者の路線が必要な可能性もあります。</div>';return;}
 root.innerHTML='<div class="cards">'+items.map(function(item){
 var legs=item.legs.map(function(leg){return'<li><b>'+safe(leg.label)+'</b><small>'+safe(model.displayStation(leg.from))+' → '+safe(model.displayStation(leg.to))+' / '+leg.stops+'駅'+(leg.transfer?' / '+safe(leg.transfer.station)+'で路線切替（徒歩目安 '+leg.transfer.minutes+'分）':'')+'</small></li>';}).join("");
-return'<article class="card"><div class="card-head"><span class="tag '+(item.category==="早い"?"fast":item.category==="楽"?"easy":"")+'">'+safe(item.category)+'</span><span class="sub">経路比較候補</span></div><strong class="metric">'+item.estimatedMinutes+'分前後</strong><div class="sub">概算 / 路線切替 '+item.lineChanges+'回・移動目安 '+Math.round(item.walkMinutes)+'分</div><ol class="route-list">'+legs+'</ol><div class="fare-warning">運賃：未判定。直通・接続・急行は未反映</div></article>';
+return'<article class="card"><div class="card-head"><span class="tag '+(item.category.indexOf("早い")>=0?"fast":item.category.indexOf("楽")>=0?"easy":"")+'">'+safe(item.category)+'</span><span class="sub">経路比較候補</span></div><strong class="metric">'+item.estimatedMinutes+'分前後</strong><div class="sub">概算 / 路線切替 '+item.lineChanges+'回・移動目安 '+Math.round(item.walkMinutes)+'分</div><ol class="route-list">'+legs+'</ol><div class="fare-warning">運賃：未判定。直通・接続・急行は未反映</div></article>';
 }).join("")+'</div>';
 }
 function findRoute(){if(!model)return;
