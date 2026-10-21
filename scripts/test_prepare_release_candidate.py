@@ -17,6 +17,43 @@ class PrepareReleaseCandidateTests(unittest.TestCase):
         self.assertEqual(removed, 1)
         self.assertEqual(rows[0]["sourceType"], "official-special")
 
+    def test_duplicate_official_fc_rows_same_article_and_window_are_one(self):
+        url = "https://kawaiilab.asobisystem.com/news/detail/92964"
+        base = {
+            "group": "CANDY TUNE", "eventDate": "2026-12-16",
+            "startTime": "19:00", "primarySource": "official",
+            "url": url, "applyStart": "2026-10-17T18:00",
+            "applyEnd": "2026-10-22T23:59",
+        }
+        canonical = {**base, "id": "original", "ticketType": "FC先行",
+                     "urls": [url, "https://candytune.asobisystem.com/live_information/detail/45891"]}
+        duplicate = {**base, "id": "recollected", "ticketType": "KAWAII LAB. FC先行"}
+        distinct_round = {**base, "id": "round2", "ticketType": "FC2次先行"}
+        distinct_window = {**base, "id": "later", "ticketType": "FC先行",
+                           "applyStart": "2026-10-23T18:00"}
+        distinct_show = {**base, "id": "evening", "ticketType": "FC先行",
+                         "startTime": "20:00"}
+        rows, removed = prep.dedupe_official_fc_offers(
+            [duplicate, canonical, distinct_round, distinct_window, distinct_show]
+        )
+        self.assertEqual(len(rows), 4)
+        self.assertEqual(removed, ["recollected"])
+        self.assertEqual(rows[0]["id"], "original")
+        self.assertIn("https://candytune.asobisystem.com/live_information/detail/45891", rows[0]["urls"])
+
+    def test_different_source_and_group_are_not_deduplicated(self):
+        common = {"ticketType": "FC先行", "group": "MORE STAR",
+                  "eventDate": "2026-11-25", "startTime": "18:00",
+                  "applyStart": "2026-10-17T18:00", "applyEnd": "2026-10-25T23:59",
+                  "url": "https://morestar.asobisystem.com/news/detail/92107"}
+        rows, removed = prep.dedupe_official_fc_offers([
+            {**common, "id": "official", "primarySource": "official"},
+            {**common, "id": "not-official", "primarySource": "eplus"},
+            {**common, "id": "other-group", "group": "CUTIE STREET", "primarySource": "official"},
+        ])
+        self.assertEqual(len(rows), 3)
+        self.assertFalse(removed)
+
     def test_schedule_only_special_is_normalized_from_official_news(self):
         event = {
             "id": "x", "group": "CANDY TUNE", "title": "大特典会", "eventCategory": "large-benefit",
