@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-21T12:41:40.645103+09:00",
-  "candidateUpdatedAt": "2026-10-21T12:41:40+09:00",
-  "previousEventCount": 242,
+  "generatedAt": "2026-10-21T12:51:01.648990+09:00",
+  "candidateUpdatedAt": "2026-10-21T12:51:01+09:00",
+  "previousEventCount": 241,
   "candidateEventCount": 240,
-  "protectedPreviousCount": 239,
+  "protectedPreviousCount": 238,
   "errorCount": 0,
   "warningCount": 14,
   "errors": [],
@@ -24,7 +24,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:74753: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN / 現在受付なし"
   ],
-  "candidateSha256": "3934270f58e5ada57a470818b9ea402bd3c9a9e404015e04ef377e7a9304fa20",
+  "candidateSha256": "22129fed1b2d115c5a673cc1e60e499aca87ca39fd4f70495cb21435d2a6ad55",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40731",
@@ -242,6 +242,11 @@
       "restoredPreviousRows": 2
     },
     {
+      "error": "active deadline disappeared for url:https://morestar.asobisystem.com/news/detail/92107: MORE STAR / 2026年11月25日（水）「MORE STAR 単独ライブ 7th STAR」開催決定！KAWAII LAB. OFFICIAL FANCLUB先行受付開始！ / KAWAII LAB. FC先行",
+      "action": "restored previous rows for url:https://morestar.asobisystem.com/news/detail/92107",
+      "restoredPreviousRows": 2
+    },
+    {
       "error": "deadline moved earlier for eplus:https://eplus.jp/sf/detail/4401630001-P0030002P021001?P1=0175:days:2026-12-05: 2026-10-31T23:59 -> 2026-10-21T23:59 (manual review required)",
       "action": "restored previous rows for eplus:https://eplus.jp/sf/detail/4401630001-P0030002P021001?P1=0175:days:2026-12-05",
       "restoredPreviousRows": 3
@@ -267,7 +272,7 @@
       "restoredPreviousRows": 3
     },
     {
-      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS / プリセール（先着先行）",
+      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN -「CANDY CIRCUS」公演 リセールサービスのお知らせ / リセール",
       "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
       "restoredPreviousRows": 34
     },
@@ -282,11 +287,6 @@
       "restoredPreviousRows": 1
     },
     {
-      "error": "protected future/active official FC offer disappeared: MORE STAR / 2026.10.07 2026年11月25日（水）「MORE STAR 単独ライブ 7th STAR」開催決定！FC先行受付開始！ / FC先行",
-      "action": "last-chance restored implicated previous row",
-      "restoredPreviousRows": 1
-    },
-    {
       "error": "protected future/active official FC offer disappeared: CUTIE STREET / 2026.09.28 2026年11月26日(木) 「CUTIE STREET 佐野愛花 生誕祭 2026」開催決定！CUTIE STREET OFFICIAL FANCLUB会員先行開始！ / FC先行",
       "action": "last-chance restored implicated previous row",
       "restoredPreviousRows": 1
@@ -296,7 +296,7 @@
   "officialIndexReconciledAfterQuarantine": {
     "reassignedCount": 0,
     "hydratedCount": 0,
-    "ambiguousCount": 4,
+    "ambiguousCount": 5,
     "unresolvedCount": 1,
     "reassigned": [],
     "hydrated": [],
@@ -335,6 +335,15 @@
         "candidateIds": [
           "54a369497f59ce96",
           "c4356b6a3eb08f58"
+        ]
+      },
+      {
+        "group": "MORE STAR",
+        "date": "2026-11-25",
+        "url": "https://morestar.asobisystem.com/live_information/detail/45677",
+        "candidateIds": [
+          "1e830eeca8279261",
+          "f72a7b7fa9832bcc441b89"
         ]
       }
     ],
