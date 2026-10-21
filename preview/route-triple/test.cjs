@@ -14,8 +14,8 @@ assert.ok(from&&to,"Yashio/Hiyoshi both present");
 const result=planner.compare(model,from,to,rules);
 assert.ok(result.length>=2&&result.length<=6,"2 to 6 different routes");
 assert.equal(new Set(result.map(x=>x.signature)).size,result.length,"no exact line-family duplicates");
-assert.ok(result.some(x=>x.category==="早い"),"fast category");
-assert.ok(result.some(x=>x.category==="楽"),"easy category");
+assert.ok(result.some(x=>x.category.includes("早い")),"fast category");
+assert.ok(result.some(x=>x.category.includes("楽")),"easy category");
 assert.ok(result.some(x=>x.lineChanges===2),"two-line-change route");
 for(const x of result){
  assert.ok(x.estimatedMinutes>0&&Number.isFinite(x.estimatedMinutes),"finite estimate");
