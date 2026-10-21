@@ -50,7 +50,7 @@ paths=paths.filter(x=>x.stats.minutes<=quickest+Math.max(24,Math.round(quickest*
 function effort(x){return x.stats.changes*18+x.stats.walking*1.5+x.stats.minutes*.18;}
 paths.sort((a,b)=>a.stats.minutes-b.stats.minutes||effort(a)-effort(b));
 var picked=[],used=new Set(),corridors=new Set();
-function take(x,tag){if(!x||used.has(x.id))return;picked.push(Object.assign({},x,{tag:tag}));used.add(x.id);corridors.add(x.corridor);}
+function take(x,tag){if(!x)return;if(used.has(x.id)){var existing=picked.find(y=>y.id===x.id);if(existing&&tag==="楽"&&existing.tag==="早い")existing.tag="早い・楽";return;}picked.push(Object.assign({},x,{tag:tag}));used.add(x.id);corridors.add(x.corridor);}
 take(paths[0],"早い");take(paths.slice().sort((a,b)=>effort(a)-effort(b)||a.stats.minutes-b.stats.minutes)[0],"楽");
 var candidates=paths.slice().sort((a,b)=>(a.stats.minutes-quickest)+effort(a)*.22-(corridors.has(a.corridor)?0:10)-((b.stats.minutes-quickest)+effort(b)*.22-(corridors.has(b.corridor)?0:10)));
 candidates.forEach(x=>{if(picked.length<6&&!corridors.has(x.corridor))take(x,"別ルート");});
