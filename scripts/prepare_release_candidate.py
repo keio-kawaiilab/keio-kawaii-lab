@@ -83,6 +83,66 @@ def dedupe_ids(events: list[dict]) -> tuple[list[dict], int]:
     return result, removed
 
 
+
+def official_fc_offer_key(event: dict) -> tuple | None:
+    """Strict identity for duplicate official FC offers, never distinct FC rounds.
+
+    Two collectors may use "FC先行" and "KAWAII LAB. FC先行" for
+    the same official article. Match official article, group, performance
+    dates/time and the entire reception window; other ticket tiers, second
+    rounds and providers are intentionally untouched.
+    """
+    ticket_type = text(event.get("ticketType"))
+    if not re.fullmatch(r"(?:KAWAII\s+LAB\.\s*)?FC先行", ticket_type, re.I):
+        return None
+    if str(event.get("primarySource") or "").lower() != "official":
+        return None
+    article = str(event.get("url") or "").split("?", 1)[0].rstrip("/")
+    if not re.fullmatch(r"https://[^/]+\.asobisystem\.com/news/detail/\d+", article, re.I):
+        return None
+    start, end = text(event.get("applyStart")), text(event.get("applyEnd"))
+    dates = tuple(event_days(event))
+    if not start or not end or not dates:
+        return None
+    return (
+        text(event.get("group")), article.casefold(), dates,
+        text(event.get("startTime")), start, end,
+    )
+
+
+def dedupe_official_fc_offers(events: list[dict]) -> tuple[list[dict], list[str]]:
+    """Collapse only provably identical official FC reception rows."""
+    result: list[dict] = []
+    found: dict[tuple, int] = {}
+    removed: list[str] = []
+    for event in events:
+        key = official_fc_offer_key(event)
+        if key is None or key not in found:
+            if key is not None:
+                found[key] = len(result)
+            result.append(event)
+            continue
+        index = found[key]
+        old = result[index]
+        rank = lambda row: (
+            text(row.get("ticketType")) == "FC先行",
+            richness(row),
+        )
+        winner, loser = (event, old) if rank(event) > rank(old) else (old, event)
+        # Preserve official source links when the losing collector had extras.
+        merged = dict(winner)
+        all_urls = []
+        for source in (winner, loser):
+            for url in [source.get("url"), *(source.get("urls") or [])]:
+                if url and url not in all_urls:
+                    all_urls.append(url)
+        if all_urls:
+            merged["urls"] = all_urls
+        result[index] = merged
+        removed.append(text(loser.get("id")))
+    return result, removed
+
+
 def valid_part(row: object) -> bool:
     if not isinstance(row, dict) or any(not text(row.get(field)) for field in PART_FIELDS):
         return False
@@ -388,12 +448,15 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
     events, duplicate_ids_removed_after_retention = dedupe_ids(events)
     events, official_x_report = official_x_dedupe.collapse(events)
     events, known_correction_report = apply_known_corrections(events)
+    events, duplicate_fc_ids = dedupe_official_fc_offers(events)
     out = dict(candidate)
     out["events"] = events
     out["releasePreparation"] = {
         "preparedAt": now.astimezone(JST).isoformat(timespec="seconds"),
         "normalizedSpecialEvents": normalized,
         "duplicateIdsRemoved": duplicate_ids_removed + duplicate_ids_removed_after_retention,
+        "duplicateOfficialFcOffersRemoved": len(duplicate_fc_ids),
+        "duplicateOfficialFcOfferIdsRemoved": duplicate_fc_ids,
         "retainedPreviousRows": len(retained),
         "retained": retained,
         "expandedPreviousSpecialEntities": previous_expand.get("expandedSpecialEntities", 0),
