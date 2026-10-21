@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-22T05:23:02+09:00",
+  "checkedAt": "2026-10-22T06:46:01+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-19T06:01:52+09:00",
     "scannedPages": {
@@ -11312,12 +11312,38 @@
     "lawson/SWEET STEADY: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=18)"
   ],
   "promoterGeneralSaleDiagnostics": {
-    "checkedAt": "2026-10-21T22:07:20+09:00",
+    "checkedAt": "2026-10-22T06:45:59+09:00",
     "knownPerformancesChecked": 100,
-    "generalSalesObserved": 4,
-    "generalSalesAdded": 4,
+    "generalSalesObserved": 0,
+    "generalSalesAdded": 0,
     "generalSalesEnriched": 0,
-    "failures": []
+    "failures": [
+      {
+        "stage": "group-search",
+        "group": "FRUITS ZIPPER",
+        "error": "HTTPError: 503 Server Error: Service Unavailable for url: https://red-hot.ne.jp/search/?d=&key=FRUITS+ZIPPER&mth=&y="
+      },
+      {
+        "stage": "group-search",
+        "group": "CANDY TUNE",
+        "error": "HTTPError: 503 Server Error: Service Unavailable for url: https://red-hot.ne.jp/search/?d=&key=CANDY+TUNE&mth=&y="
+      },
+      {
+        "stage": "group-search",
+        "group": "SWEET STEADY",
+        "error": "HTTPError: 503 Server Error: Service Unavailable for url: https://red-hot.ne.jp/search/?d=&key=SWEET+STEADY&mth=&y="
+      },
+      {
+        "stage": "group-search",
+        "group": "CUTIE STREET",
+        "error": "HTTPError: 503 Server Error: Service Unavailable for url: https://red-hot.ne.jp/search/?d=&key=CUTIE+STREET&mth=&y="
+      },
+      {
+        "stage": "group-search",
+        "group": "MORE STAR",
+        "error": "HTTPError: 503 Server Error: Service Unavailable for url: https://red-hot.ne.jp/search/?d=&key=MORE+STAR&mth=&y="
+      }
+    ]
   },
   "publicEventModelReport": {
     "rawEventCount": 260,
@@ -12947,6 +12973,11 @@
     },
     {
       "checkedAt": "2026-10-22T05:23:02+09:00",
+      "scope": "CANDY TUNE tour render verification",
+      "message": "Sendai performance lost its current general sale: ['ぴあプレミアム先行']"
+    },
+    {
+      "checkedAt": "2026-10-22T06:46:00+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "Sendai performance lost its current general sale: ['ぴあプレミアム先行']"
     }
@@ -19909,7 +19940,7 @@
       }
     ]
   },
-  "updatedAt": "2026-10-22T05:23:02+09:00",
+  "updatedAt": "2026-10-22T06:46:01+09:00",
   "publicEvents": [
     {
       "id": "1b5fec5f58ba553f",
