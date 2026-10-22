@@ -403,6 +403,33 @@ def review_is_expired(review, today):
     return bool(parsed) and all(day < today for day in parsed)
 
 
+def review_is_already_represented(candidate, review, existing):
+    """Recognize an exact reception already attached to this official URL.
+
+    A schedule detail can be discovered after a richer NEWS/HMV collector has
+    already merged the same performance and reception.  In that case the URL
+    may match both the lightweight schedule row and the enriched special-event
+    row, so fallback_row_from_review() correctly refuses to guess between two
+    raw rows.  The public reception is nevertheless unambiguous when one of
+    those matching rows already carries the exact verified application window.
+    """
+    if not review or not review.get("applyStart") or not review.get("applyEnd"):
+        return False
+    wanted = (str(review["applyStart"]), str(review["applyEnd"]))
+    for event in _future_url_matches(candidate.url, existing):
+        if event.get("group") != candidate.group:
+            continue
+        offers = event.get("offers") or []
+        if not offers and event.get("applyStart"):
+            offers = [event]
+        for offer in offers:
+            if not isinstance(offer, dict):
+                continue
+            if (str(offer.get("applyStart") or ""), str(offer.get("applyEnd") or "")) == wanted:
+                return True
+    return False
+
+
 def explicit_event_days(title, text):
     published = parser.article_date_from_text(text)
     default_year = int(published[:4]) if published else datetime.now(parser.JST).year
@@ -583,6 +610,8 @@ def read_candidate(candidate, existing, headers):
         elif end_only_ticket_window_is_expired(text, today):
             return [], None, "past"
     if not rows and review:
+        if review_is_already_represented(candidate, review, existing):
+            return [], None, "represented"
         fallback = fallback_row_from_review(candidate, title, text, review, existing)
         if fallback:
             rows = [fallback]

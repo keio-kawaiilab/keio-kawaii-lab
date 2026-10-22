@@ -119,6 +119,40 @@ class ContinuousDiscoveryTests(unittest.TestCase):
         review = {"applyStart": "2099-11-01T10:00", "applyEnd": "2099-11-05T23:59"}
         self.assertIsNone(discovery.fallback_row_from_review(candidate, candidate.title, "リセール", review, existing))
 
+    def test_exact_window_on_enriched_matching_event_is_already_represented(self):
+        url = "https://morestar.asobisystem.com/live_information/detail/46447"
+        candidate = discovery.parser.Candidate("MORE STAR", "MORE STAR 大特典", url)
+        existing = {"events": [
+            {
+                "group": "MORE STAR", "eventDate": "2099-11-03",
+                "ticketType": "現在受付なし", "url": url,
+            },
+            {
+                "group": "MORE STAR", "eventDate": "2099-11-03",
+                "urls": [url],
+                "offers": [{
+                    "ticketType": "対象商品予約",
+                    "applyStart": "2099-10-23T21:00",
+                    "applyEnd": "2099-10-27T23:59",
+                }],
+            },
+        ]}
+        review = {"applyStart": "2099-10-23T21:00", "applyEnd": "2099-10-27T23:59"}
+        self.assertTrue(discovery.review_is_already_represented(candidate, review, existing))
+
+    def test_different_window_on_matching_event_is_not_already_represented(self):
+        url = "https://morestar.asobisystem.com/live_information/detail/46447"
+        candidate = discovery.parser.Candidate("MORE STAR", "MORE STAR 大特典", url)
+        existing = {"events": [{
+            "group": "MORE STAR", "eventDate": "2099-11-03", "urls": [url],
+            "offers": [{
+                "applyStart": "2099-10-23T21:00",
+                "applyEnd": "2099-10-27T23:59",
+            }],
+        }]}
+        review = {"applyStart": "2099-10-24T21:00", "applyEnd": "2099-10-27T23:59"}
+        self.assertFalse(discovery.review_is_already_represented(candidate, review, existing))
+
     def test_central_fc_article_uses_existing_joint_event_url(self):
         url = "https://kawaiilab.asobisystem.com/news/detail/87217"
         existing = {"events": [
