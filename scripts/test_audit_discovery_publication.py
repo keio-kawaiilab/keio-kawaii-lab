@@ -63,6 +63,37 @@ class DiscoveryPublicationTest(unittest.TestCase):
         payload["publicEvents"][0]["urls"] = []
         self.assertEqual(1, len(audit(state, payload)["missingOffers"]))
 
+    def test_generic_schedule_ticket_is_represented_by_verified_special_event_offer(self):
+        expected = {
+            "group": "MORE STAR", "eventDate": "2099-11-03", "startTime": "10:00",
+            "ticketType": "チケット受付", "applyStart": "2099-10-23T21:00",
+            "applyEnd": "2099-10-27T23:59",
+            "url": "https://morestar.asobisystem.com/live_information/detail/46447",
+        }
+        entity = {
+            "group": "MORE STAR", "eventDate": "2099-11-03", "startTime": "10:00",
+            "entityType": "special-event", "urls": [expected["url"]],
+            "offers": [{
+                "ticketType": "対象商品予約（参加権付き・先着／予約受付）",
+                "applyStart": expected["applyStart"], "applyEnd": expected["applyEnd"],
+                "applicationWindowVerified": True,
+            }],
+        }
+        state = {"observations": [{"expectedOffers": [expected]}]}
+        self.assertEqual([], audit(state, {"publicEvents": [entity]})["missingOffers"])
+
+        wrong_source = copy.deepcopy(entity)
+        wrong_source["urls"] = ["https://morestar.asobisystem.com/live_information/detail/other"]
+        self.assertEqual(1, len(audit(state, {"publicEvents": [wrong_source]})["missingOffers"]))
+
+        unverified = copy.deepcopy(entity)
+        unverified["offers"][0]["applicationWindowVerified"] = False
+        self.assertEqual(1, len(audit(state, {"publicEvents": [unverified]})["missingOffers"]))
+
+        changed_window = copy.deepcopy(entity)
+        changed_window["offers"][0]["applyEnd"] = "2099-10-27T20:00"
+        self.assertEqual(1, len(audit(state, {"publicEvents": [changed_window]})["missingOffers"]))
+
     def test_other_day_or_start_time_is_not_the_same_performance(self):
         state, payload = self.fixture()
         payload["publicEvents"][0]["eventDate"] = "2099-11-15"

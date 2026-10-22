@@ -31,10 +31,26 @@ def _same_ticket_kind(expected, offer, entity):
     # application window are compared by audit() outside this helper.
     fc_aliases = {"FC先行", "KAWAII LAB. FC先行"}
     expected_url = str(expected.get("url") or "")
-    return (expected.get("ticketType") in fc_aliases
+    if (expected.get("ticketType") in fc_aliases
             and offer.get("ticketType") in fc_aliases
             and "/news/detail/" in expected_url
-            and expected_url in source_urls)
+            and expected_url in source_urls):
+        return True
+
+    # Official SCHEDULE pages sometimes expose a generic ``チケット受付``
+    # row for a physical special event.  The special-event parser intentionally
+    # replaces that label with the concrete, verified purchase method (for
+    # example HMV's 参加権付き対象商品予約) and keeps the schedule URL as
+    # provenance on the entity.  Treat the generic row as represented only
+    # when that exact official schedule URL is attached to the same normalized
+    # special event and the concrete offer carries a verified window.  The
+    # event/group/time and full application window are still compared by
+    # audit(), so a distinct day, part or reception cannot be hidden here.
+    return (expected.get("ticketType") == "チケット受付"
+            and entity.get("entityType") == "special-event"
+            and expected_url in source_urls
+            and bool(offer.get("ticketType"))
+            and offer.get("applicationWindowVerified") is True)
 
 
 def audit(state, payload, history=None):
