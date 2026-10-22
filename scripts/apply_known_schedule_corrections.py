@@ -466,6 +466,16 @@ def _repair_more_star_seventh(event: dict) -> dict:
     title = str(event.get("title") or event.get("eventTitle") or "")
     if event.get("group") != "MORE STAR" or "単独ライブ 7th STAR" not in title:
         return out
+    is_original_fc_reception = (
+        event.get("applyStart") == "2026-10-07T18:00"
+        or event.get("applyEnd") == "2026-10-12T23:59"
+        or event.get("applicationWindowSource") == MORE_STAR_7TH_NEWS
+        or (
+            event.get("sourcePublishedAt") == "2026-10-07"
+            and event.get("discoverySourceUrl") == MORE_STAR_7TH_NEWS
+        )
+        or title.startswith("2026.10.07")
+    )
     out.update({
         "eventDate": MORE_STAR_7TH_DAY,
         "eventEndDate": MORE_STAR_7TH_DAY,
@@ -474,25 +484,44 @@ def _repair_more_star_seventh(event: dict) -> dict:
         "venue": "東京都 ヒューリックホール東京",
         "openTime": "17:00",
         "startTime": "18:00",
-        "ticketType": "KAWAII LAB. FC先行",
-        "applyStart": "2026-10-17T18:00",
-        "applyEnd": "2026-10-25T23:59",
-        "applicationWindowSource": MORE_STAR_7TH_FC,
         "schedule": [{
             "date": MORE_STAR_7TH_DAY,
             "venue": "東京都 ヒューリックホール東京",
             "openTime": "17:00",
             "startTime": "18:00",
         }],
-        "url": MORE_STAR_7TH_FC,
         "officialScheduleUrl": MORE_STAR_7TH_SCHEDULE,
         "sourceType": "official-schedule",
         "sourceChannel": "known-official-correction",
         "primarySource": "official",
         "sourceCandidates": ["official"],
     })
-    values = _urls(out)
-    for value in (MORE_STAR_7TH_NEWS, MORE_STAR_7TH_FC, MORE_STAR_7TH_SCHEDULE):
+    if is_original_fc_reception:
+        out.update({
+            "ticketType": "FC先行",
+            "applyStart": "2026-10-07T18:00",
+            "applyEnd": "2026-10-12T23:59",
+            "applicationWindowSource": MORE_STAR_7TH_NEWS,
+            "url": MORE_STAR_7TH_NEWS,
+        })
+    else:
+        out.update({
+            "ticketType": "KAWAII LAB. FC先行",
+            "applyStart": "2026-10-17T18:00",
+            "applyEnd": "2026-10-25T23:59",
+            "applicationWindowSource": MORE_STAR_7TH_FC,
+            "url": MORE_STAR_7TH_FC,
+        })
+    values = [
+        value for value in _urls(out)
+        if not (is_original_fc_reception and value == MORE_STAR_7TH_FC)
+    ]
+    supporting_urls = (
+        (MORE_STAR_7TH_NEWS, MORE_STAR_7TH_SCHEDULE)
+        if is_original_fc_reception
+        else (MORE_STAR_7TH_NEWS, MORE_STAR_7TH_FC, MORE_STAR_7TH_SCHEDULE)
+    )
+    for value in supporting_urls:
         if value not in values:
             values.append(value)
     out["urls"] = values
@@ -520,6 +549,8 @@ def _repair_disaster_relief_concert(event: dict) -> dict:
         "applicationWindowSource": DISASTER_RELIEF_NEWS,
         "sourceType": "auto",
         "primarySource": "official",
+        "ticketProvider": "pia",
+        "sourceCandidates": ["official", "pia"],
     })
     values = list(dict.fromkeys([*original_urls, *_urls(out)]))
     for value in (DISASTER_RELIEF_PIA, DISASTER_RELIEF_NEWS):
@@ -756,9 +787,22 @@ def _dedupe_ticket_rows(events: Iterable[dict]) -> tuple[list[dict], int, list[s
             and ticket_type == "FC先行"
             and ("FC2次" in str(event.get("title") or "") or SWEET_FC_SECOND_ARTICLE in _urls(event))
         )
-        if not (is_resale or is_sweet_second):
+        is_more_star_seventh_current = (
+            event.get("group") == "MORE STAR"
+            and "単独ライブ 7th STAR" in str(event.get("title") or event.get("eventTitle") or "")
+            and _day(event) == MORE_STAR_7TH_DAY
+            and event.get("ticketType") == "KAWAII LAB. FC先行"
+            and event.get("applyStart") == "2026-10-17T18:00"
+            and event.get("applyEnd") == "2026-10-25T23:59"
+            and event.get("applicationWindowSource") == MORE_STAR_7TH_FC
+        )
+        if not (is_resale or is_sweet_second or is_more_star_seventh_current):
             return None
-        family = "resale" if is_resale else "sweet-fc2"
+        family = (
+            "resale" if is_resale
+            else "sweet-fc2" if is_sweet_second
+            else "more-star-7th-current"
+        )
         return (
             family,
             str(event.get("group") or ""),
@@ -777,6 +821,8 @@ def _dedupe_ticket_rows(events: Iterable[dict]) -> tuple[list[dict], int, list[s
             int(channel == "kawaii-lab-resale"),
             int(event.get("applicationWindowVerified") is True),
             len(_urls(event)),
+            int(bool(event.get("sourcePublishedAt"))),
+            len(str(event.get("title") or "")),
         )
 
     for event in events:

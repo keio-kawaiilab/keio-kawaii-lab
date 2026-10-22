@@ -4,6 +4,8 @@ import unittest
 from apply_known_schedule_corrections import (
     DISASTER_RELIEF_NEWS,
     DISASTER_RELIEF_PIA,
+    MORE_STAR_7TH_FC,
+    MORE_STAR_7TH_NEWS,
     apply_known_corrections,
 )
 
@@ -202,6 +204,71 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
         self.assertNotIn("sourceStale", event)
         self.assertEqual(1, report["moreStarSeventhFixed"])
 
+    def test_more_star_seventh_preserves_distinct_fc_reception_history(self):
+        original = {
+            "id": "original-fc",
+            "group": "MORE STAR",
+            "title": "2026.10.07 2026年11月25日（水）「MORE STAR 単独ライブ 7th STAR」開催決定！FC先行受付開始！",
+            "eventDate": "2026-11-25",
+            "ticketType": "FC先行",
+            "applyStart": "2026-10-07T18:00",
+            "applyEnd": "2026-10-12T23:59",
+            "url": MORE_STAR_7TH_NEWS,
+            "sourcePublishedAt": "2026-10-07",
+            "discoverySourceUrl": MORE_STAR_7TH_NEWS,
+        }
+        kawaii_lab = {
+            "id": "kawaii-lab-fc",
+            "group": "MORE STAR",
+            "title": "2026年11月25日（水）「MORE STAR 単独ライブ 7th STAR」開催決定！KAWAII LAB. OFFICIAL FANCLUB先行受付開始！",
+            "eventDate": "2026-11-25",
+            "ticketType": "KAWAII LAB. FC先行",
+            "applyStart": "2026-10-17T18:00",
+            "applyEnd": "2026-10-25T23:59",
+            "url": MORE_STAR_7TH_NEWS,
+            "sourcePublishedAt": "2026-10-17",
+        }
+        corrected, _ = apply_known_corrections([original, kawaii_lab])
+        self.assertEqual(2, len(corrected))
+        by_id = {event["id"]: event for event in corrected}
+        self.assertEqual("2026-10-07T18:00", by_id["original-fc"]["applyStart"])
+        self.assertEqual("2026-10-12T23:59", by_id["original-fc"]["applyEnd"])
+        self.assertEqual(MORE_STAR_7TH_NEWS, by_id["original-fc"]["url"])
+        self.assertNotIn(MORE_STAR_7TH_FC, by_id["original-fc"]["urls"])
+        self.assertEqual("2026-10-17T18:00", by_id["kawaii-lab-fc"]["applyStart"])
+        self.assertEqual("2026-10-25T23:59", by_id["kawaii-lab-fc"]["applyEnd"])
+        self.assertEqual(MORE_STAR_7TH_FC, by_id["kawaii-lab-fc"]["applicationWindowSource"])
+
+    def test_more_star_seventh_collapses_only_duplicate_current_reception(self):
+        original = {
+            "id": "original-fc", "group": "MORE STAR",
+            "title": "2026.10.07 2026年11月25日（水）「MORE STAR 単独ライブ 7th STAR」開催決定！FC先行受付開始！",
+            "eventDate": "2026-11-25", "ticketType": "FC先行",
+            "applyStart": "2026-10-07T18:00", "applyEnd": "2026-10-12T23:59",
+            "url": MORE_STAR_7TH_NEWS, "sourcePublishedAt": "2026-10-07",
+            "discoverySourceUrl": MORE_STAR_7TH_NEWS,
+        }
+        canonical = {
+            "id": "canonical-current", "group": "MORE STAR",
+            "title": "MORE STAR 単独ライブ 7th STAR", "eventDate": "2026-11-25",
+            "ticketType": "KAWAII LAB. FC先行",
+            "applyStart": "2026-10-17T18:00", "applyEnd": "2026-10-25T23:59",
+            "url": MORE_STAR_7TH_FC,
+        }
+        announcement = {
+            **canonical, "id": "announcement-current",
+            "title": "2026年11月25日（水）「MORE STAR 単独ライブ 7th STAR」開催決定！KAWAII LAB. OFFICIAL FANCLUB先行受付開始！",
+            "sourcePublishedAt": "2026-10-17",
+        }
+        corrected, report = apply_known_corrections([original, canonical, announcement])
+        self.assertEqual(2, len(corrected))
+        self.assertEqual(1, report["semanticTicketDuplicatesRemoved"])
+        self.assertEqual(["canonical-current"], report["semanticTicketDuplicateIds"])
+        self.assertEqual(
+            {"original-fc", "announcement-current"},
+            {event["id"] for event in corrected},
+        )
+
     def test_disaster_relief_concert_gets_verified_joint_facts_and_reception(self):
         row = {
             "id": "charity", "group": "FRUITS ZIPPER",
@@ -214,6 +281,8 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
         self.assertEqual(["FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY"], event["participants"])
         self.assertEqual(("17:00", "18:00"), (event["openTime"], event["startTime"]))
         self.assertEqual(DISASTER_RELIEF_PIA, event["url"])
+        self.assertEqual("pia", event["ticketProvider"])
+        self.assertEqual(["official", "pia"], event["sourceCandidates"])
         self.assertEqual("2026-11-01T23:59", event["applyEnd"])
         self.assertEqual(1, report["disasterReliefConcertFixed"])
 
