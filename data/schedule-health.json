@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-23T03:27:44.044053+09:00",
-  "candidateUpdatedAt": "2026-10-23T03:27:43+09:00",
-  "previousEventCount": 247,
-  "candidateEventCount": 246,
-  "protectedPreviousCount": 247,
+  "generatedAt": "2026-10-23T03:37:57.307049+09:00",
+  "candidateUpdatedAt": "2026-10-23T03:32:20+09:00",
+  "previousEventCount": 246,
+  "candidateEventCount": 245,
+  "protectedPreviousCount": 246,
   "errorCount": 0,
-  "warningCount": 13,
+  "warningCount": 14,
   "errors": [],
   "warnings": [
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
@@ -21,9 +21,10 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no target product: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no verified purchase/ticket window: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+    "performance dates added for url:https://fruitszipper.asobisystem.com/live_information/detail/45872: 2026-12-06"
   ],
-  "candidateSha256": "ec175d56f8f41d4a7ecdf63ed12e72962fd2948d9cf7cbfda06f55ad80483976",
+  "candidateSha256": "c8f6c8169f3e4241b17cefa2b17de14fe22252bb112bf762fe90b75eab9036d3",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40731",
@@ -79,6 +80,7 @@
     "url:https://kawaiilab.asobisystem.com/news/detail/92288",
     "url:https://kawaiilab.asobisystem.com/news/detail/92368",
     "url:https://kawaiilab.asobisystem.com/news/detail/92965",
+    "url:https://kawaiilab.asobisystem.com/news/detail/93036",
     "url:https://morestar.asobisystem.com/live_information/detail/45677",
     "url:https://morestar.asobisystem.com/news/detail/92107",
     "url:https://prtimes.jp/main/html/rd/p/000000907.000017258.html",
@@ -87,6 +89,7 @@
     "url:https://sweetsteady.asobisystem.com/live_information/detail/43907",
     "url:https://sweetsteady.asobisystem.com/live_information/detail/43908",
     "url:https://sweetsteady.asobisystem.com/live_information/detail/43909",
+    "url:https://sweetsteady.asobisystem.com/live_information/detail/46633",
     "url:https://t.pia.jp/",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
@@ -118,7 +121,6 @@
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=36521",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=62959",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=74753",
-    "url:https://www.gift-idol.jp/",
     "url:https://www.hmv.co.jp/login/login/?AUTHTYPE=MEMBERS",
     "url:https://www.hmv.co.jp/members/contacthmv/entry/?qcode=255"
   ],
@@ -193,41 +195,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 3,
-  "quarantineActions": [
-    {
-      "error": "special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
-      "action": "restored previous row",
-      "restoredPreviousRows": 1
-    },
-    {
-      "error": "protected future/active official FC offer disappeared: MORE STAR / 2026.10.07 2026年11月25日（水）「MORE STAR 単独ライブ 7th STAR」開催決定！FC先行受付開始！ / FC先行",
-      "action": "last-chance restored implicated previous row",
-      "restoredPreviousRows": 1
-    },
-    {
-      "error": "protected future/active official FC offer disappeared: MORE STAR / 2026年11月25日（水）「MORE STAR 単独ライブ 7th STAR」開催決定！KAWAII LAB. OFFICIAL FANCLUB先行受付開始！ / KAWAII LAB. FC先行",
-      "action": "last-chance restored implicated previous row",
-      "restoredPreviousRows": 1
-    }
-  ],
-  "rowFailuresCanBlockRelease": false,
-  "officialIndexReconciledAfterQuarantine": {
-    "reassignedCount": 1,
-    "hydratedCount": 0,
-    "ambiguousCount": 0,
-    "unresolvedCount": 0,
-    "reassigned": [
-      {
-        "group": "CANDY TUNE",
-        "date": "2027-01-19",
-        "url": "https://candytune.asobisystem.com/live_information/detail/46043",
-        "from": "74553f349873b69c",
-        "to": "6c1350defdd64f16"
-      }
-    ],
-    "hydrated": [],
-    "ambiguous": [],
-    "unresolved": []
-  }
+  "quarantineCount": 0,
+  "quarantineActions": [],
+  "rowFailuresCanBlockRelease": false
 }
