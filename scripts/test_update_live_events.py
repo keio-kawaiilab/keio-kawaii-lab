@@ -1,5 +1,7 @@
 import unittest
 
+from bs4 import BeautifulSoup
+
 import update_live_events as u
 
 
@@ -94,6 +96,53 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(
             u.extract_performance_time(["開場：16:00／開演：17:00"]),
             ("16:00", "17:00"),
+        )
+
+    def test_japanese_time_before_open_and_start_labels(self):
+        self.assertEqual(
+            u.extract_performance_time(["【時間】17:00開場／18:00開演（両日共通）"]),
+            ("17:00", "18:00"),
+        )
+
+    def test_bracketed_event_labels_include_venue_and_shared_time(self):
+        lines = [
+            "【開催日】2027年1月19日（火）・20日（水）",
+            "【会場】[東京]日本武道館",
+            "【時間】17:00開場／18:00開演（両日共通）",
+        ]
+        self.assertEqual(
+            u.extract_event_occurrences(lines, "災害支援基金コンサート", "2026-10-19"),
+            [("2027-01-19", "[東京]日本武道館", "17:00", "18:00")],
+        )
+
+    def test_multiday_external_performers_are_scoped_to_requested_date(self):
+        text = (
+            "開催日 2027年1月19日・20日\n"
+            "2027年1月19日公演\n"
+            "CANDY TUNE／SWEET STEADY／FRUITS ZIPPER\n"
+            "2027年1月20日公演\n"
+            "OTHER ARTIST"
+        )
+        self.assertEqual(
+            u.extract_target_participants(text, "2027-01-19"),
+            ["FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY"],
+        )
+
+    def test_ticket_support_link_is_not_used_as_application_url(self):
+        soup = BeautifulSoup(
+            '<a href="https://pia.jp/info/ticket_support/">問い合わせ</a>',
+            "html.parser",
+        )
+        self.assertIsNone(u.extract_application_url(soup))
+
+    def test_official_pia_reception_link_is_used(self):
+        soup = BeautifulSoup(
+            '<a href="https://w.pia.jp/t/charityconcert2027/">お申し込みはこちら</a>',
+            "html.parser",
+        )
+        self.assertEqual(
+            u.extract_application_url(soup),
+            "https://w.pia.jp/t/charityconcert2027/",
         )
 
 

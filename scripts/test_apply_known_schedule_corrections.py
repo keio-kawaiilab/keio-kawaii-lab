@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 import unittest
 
-from apply_known_schedule_corrections import apply_known_corrections
+from apply_known_schedule_corrections import (
+    DISASTER_RELIEF_NEWS,
+    DISASTER_RELIEF_PIA,
+    apply_known_corrections,
+)
 
 
 class KnownScheduleCorrectionsTest(unittest.TestCase):
@@ -191,8 +195,45 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
         self.assertEqual(1, event["eventCount"])
         self.assertEqual("17:00", event["openTime"])
         self.assertEqual("18:00", event["startTime"])
+        self.assertEqual("KAWAII LAB. FC先行", event["ticketType"])
+        self.assertEqual("2026-10-17T18:00", event["applyStart"])
+        self.assertEqual("2026-10-25T23:59", event["applyEnd"])
+        self.assertIn("https://kawaiilab.asobisystem.com/news/detail/93036", event["urls"])
         self.assertNotIn("sourceStale", event)
         self.assertEqual(1, report["moreStarSeventhFixed"])
+
+    def test_disaster_relief_concert_gets_verified_joint_facts_and_reception(self):
+        row = {
+            "id": "charity", "group": "FRUITS ZIPPER",
+            "title": "災害支援基金コンサート",
+            "eventDate": "2027-01-19", "url": DISASTER_RELIEF_NEWS,
+        }
+        corrected, report = apply_known_corrections([row])
+        event = corrected[0]
+        self.assertEqual("KAWAII LAB.合同", event["group"])
+        self.assertEqual(["FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY"], event["participants"])
+        self.assertEqual(("17:00", "18:00"), (event["openTime"], event["startTime"]))
+        self.assertEqual(DISASTER_RELIEF_PIA, event["url"])
+        self.assertEqual("2026-11-01T23:59", event["applyEnd"])
+        self.assertEqual(1, report["disasterReliefConcertFixed"])
+
+        duplicate = {**row, "id": "charity-schedule", "group": "CANDY TUNE",
+                     "sourceType": "official-schedule",
+                     "url": "https://candytune.asobisystem.com/live_information/detail/46043"}
+        corrected, report = apply_known_corrections([row, duplicate])
+        self.assertEqual(1, len(corrected))
+        self.assertEqual(1, report["disasterReliefConcertRowsCollapsed"])
+        self.assertIn("https://candytune.asobisystem.com/live_information/detail/46043", corrected[0]["urls"])
+
+    def test_removes_birthday_row_whose_event_year_contradicts_title(self):
+        impossible = {
+            "id": "bad-year", "group": "CANDY TUNE",
+            "title": "CANDY TUNE 小川奈々子 生誕祭 2026",
+            "eventDate": "2027-08-26",
+        }
+        corrected, report = apply_known_corrections([impossible])
+        self.assertEqual([], corrected)
+        self.assertEqual(1, report["impossibleBirthdayYearRowsRemoved"])
 
     def test_more_star_gift_requires_verified_discovered_anchor(self):
         unrelated = [{

@@ -24,6 +24,9 @@ GIFT_LOCATIONS = ["東京都 SGC HALL ARIAKE", "東京都 TOYOTA ARENA TOKYO"]
 MORE_STAR_7TH_DAY = "2026-11-25"
 MORE_STAR_7TH_SCHEDULE = "https://morestar.asobisystem.com/live_information/detail/45677"
 MORE_STAR_7TH_NEWS = "https://morestar.asobisystem.com/news/detail/92107"
+MORE_STAR_7TH_FC = "https://kawaiilab.asobisystem.com/news/detail/93036"
+DISASTER_RELIEF_NEWS = "https://fruitszipper.asobisystem.com/news/detail/93365"
+DISASTER_RELIEF_PIA = "https://w.pia.jp/t/charityconcert2027/"
 CANDY_ONLINE_20261020_DAY = "2026-10-20"
 CANDY_ONLINE_20261020_OFFICIAL = "https://candytune.asobisystem.com/live_information/detail/46277"
 CANDY_ONLINE_20261020_GOODS = {
@@ -471,13 +474,17 @@ def _repair_more_star_seventh(event: dict) -> dict:
         "venue": "東京都 ヒューリックホール東京",
         "openTime": "17:00",
         "startTime": "18:00",
+        "ticketType": "KAWAII LAB. FC先行",
+        "applyStart": "2026-10-17T18:00",
+        "applyEnd": "2026-10-25T23:59",
+        "applicationWindowSource": MORE_STAR_7TH_FC,
         "schedule": [{
             "date": MORE_STAR_7TH_DAY,
             "venue": "東京都 ヒューリックホール東京",
             "openTime": "17:00",
             "startTime": "18:00",
         }],
-        "url": MORE_STAR_7TH_NEWS,
+        "url": MORE_STAR_7TH_FC,
         "officialScheduleUrl": MORE_STAR_7TH_SCHEDULE,
         "sourceType": "official-schedule",
         "sourceChannel": "known-official-correction",
@@ -485,13 +492,54 @@ def _repair_more_star_seventh(event: dict) -> dict:
         "sourceCandidates": ["official"],
     })
     values = _urls(out)
-    for value in (MORE_STAR_7TH_NEWS, MORE_STAR_7TH_SCHEDULE):
+    for value in (MORE_STAR_7TH_NEWS, MORE_STAR_7TH_FC, MORE_STAR_7TH_SCHEDULE):
         if value not in values:
             values.append(value)
     out["urls"] = values
     for key in ("sourceStale", "sourceStaleSince", "releaseRetentionReason"):
         out.pop(key, None)
     return out
+
+
+def _repair_disaster_relief_concert(event: dict) -> dict:
+    out = deepcopy(event)
+    title = str(event.get("title") or event.get("eventTitle") or "")
+    if _day(event) != "2027-01-19" or "災害支援基金コンサート" not in title:
+        return out
+    original_urls = _urls(out)
+    out.update({
+        "group": "KAWAII LAB.合同",
+        "participants": ["FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY"],
+        "venue": "東京都 日本武道館",
+        "openTime": "17:00",
+        "startTime": "18:00",
+        "ticketType": "チケット受付",
+        "applyStart": "2026-10-19T20:00",
+        "applyEnd": "2026-11-01T23:59",
+        "url": DISASTER_RELIEF_PIA,
+        "applicationWindowSource": DISASTER_RELIEF_NEWS,
+        "sourceType": "auto",
+        "primarySource": "official",
+    })
+    values = list(dict.fromkeys([*original_urls, *_urls(out)]))
+    for value in (DISASTER_RELIEF_PIA, DISASTER_RELIEF_NEWS):
+        if value not in values:
+            values.append(value)
+    out["urls"] = values
+    return out
+
+
+def _collapse_disaster_relief_concert(events: list[dict]) -> tuple[list[dict], int]:
+    matches = [event for event in events if _day(event) == "2027-01-19" and
+               "災害支援基金コンサート" in str(event.get("title") or event.get("eventTitle") or "")]
+    if len(matches) < 2:
+        return events, 0
+    winner = max(matches, key=lambda event: (bool(event.get("sourcePublishedAt")), len(_urls(event))))
+    combined_urls = list(dict.fromkeys(url for event in matches for url in _urls(event)))
+    winner["urls"] = combined_urls
+    result = [event for event in events if event not in matches]
+    result.append(winner)
+    return result, len(matches) - 1
 
 
 def _is_candy_online_20261020(event: dict) -> bool:
@@ -501,6 +549,12 @@ def _is_candy_online_20261020(event: dict) -> bool:
         and event.get("eventCategory") == "online-benefit"
         and "オンライン特典会" in str(event.get("title") or event.get("eventTitle") or "")
     )
+
+
+def _has_impossible_birthday_year(event: dict) -> bool:
+    title = str(event.get("title") or event.get("eventTitle") or "")
+    match = re.search(r"生誕祭\s*(20\d{2})", title)
+    return bool(match and _day(event)[:4] and _day(event)[:4] != match.group(1))
 
 
 def _collapse_candy_online_20261020(events: list[dict]) -> tuple[list[dict], int]:
@@ -767,6 +821,9 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "giftMultiVenueFixed": 0,
         "giftMoreStarAdded": 0,
         "moreStarSeventhFixed": 0,
+        "disasterReliefConcertFixed": 0,
+        "disasterReliefConcertRowsCollapsed": 0,
+        "impossibleBirthdayYearRowsRemoved": 0,
         "candyOnline20261020RowsCollapsed": 0,
         "sweetOnline20261023RowsCollapsed": 0,
         "sweetEbichu20261116RowsCollapsed": 0,
@@ -775,6 +832,9 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
     }
 
     for event in source:
+        if _has_impossible_birthday_year(event):
+            report["impossibleBirthdayYearRowsRemoved"] += 1
+            continue
         if _is_cutie_wrong_bundle(event):
             report["cutieWrongPiaBundleRemoved"] += 1
             continue
@@ -833,6 +893,11 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
             current.get("officialScheduleUrl"),
         ) != before_more_star_seventh:
             report["moreStarSeventhFixed"] += 1
+
+        before_disaster_relief = current
+        current = _repair_disaster_relief_concert(current)
+        if current != before_disaster_relief:
+            report["disasterReliefConcertFixed"] += 1
 
         before_venue = (current.get("venue"), tuple(current.get("venueLocations") or []))
         current = _repair_gift_multi_venue(current)
@@ -950,6 +1015,9 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
 
     out, candy_online_removed = _collapse_candy_online_20261020(out)
     report["candyOnline20261020RowsCollapsed"] = candy_online_removed
+
+    out, disaster_relief_removed = _collapse_disaster_relief_concert(out)
+    report["disasterReliefConcertRowsCollapsed"] = disaster_relief_removed
 
     out, sweet_online_removed = _collapse_sweet_online_20261023(out)
     report["sweetOnline20261023RowsCollapsed"] = sweet_online_removed

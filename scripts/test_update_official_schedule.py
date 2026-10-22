@@ -3,7 +3,7 @@ from datetime import date
 
 from update_official_schedule import (
     OfficialRow, build_event, collapse_missing, enrich_existing, event_key, merge,
-    parse_detail, parse_schedule_list, propagate_ticket_scopes,
+    match_existing, parse_detail, parse_schedule_list, propagate_ticket_scopes,
 )
 
 
@@ -60,6 +60,24 @@ class OfficialScheduleTests(unittest.TestCase):
             OfficialRow("SWEET STEADY", "2026-09-19", "EVENT", "TGC 2026", "c", "external"),
         ]
         self.assertEqual(1, len(collapse_missing(rows)))
+
+    def test_external_schedule_row_joins_ticket_article_from_another_group(self):
+        event = {
+            "group": "FRUITS ZIPPER",
+            "eventDate": "2027-01-19",
+            "eventTitle": "2027/1/19・20開催「災害支援基金コンサート」詳細発表＆オフィシャル先行受付スタート！",
+            "ticketType": "チケット受付",
+            "eventScope": "external",
+        }
+        row = OfficialRow(
+            "CANDY TUNE", "2027-01-19", "LIVE", "「災害支援基金コンサート」",
+            "https://example.com/candy", "external",
+        )
+        matched = match_existing(row, [event])
+        self.assertIs(event, matched)
+        enrich_existing(matched, row, {})
+        self.assertEqual("KAWAII LAB.合同", event["group"])
+        self.assertEqual({"FRUITS ZIPPER", "CANDY TUNE"}, set(event["participants"]))
 
     def test_fifth_tour_listings_collapse_by_date_across_groups(self):
         titles = (

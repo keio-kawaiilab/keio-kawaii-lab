@@ -123,7 +123,21 @@ def event_urls(event: dict) -> set[str]:
 def represented_by_fresh(event: dict, fresh_by_id: dict[str, dict], fresh_urls: set[str]) -> bool:
     source_type = event.get("sourceType")
     if source_type == "auto":
-        return bool(event.get("id") and event.get("id") in fresh_by_id)
+        if event.get("id") and event.get("id") in fresh_by_id:
+            return True
+        old_urls = event_urls(event)
+        for fresh in fresh_by_id.values():
+            if fresh.get("sourceType") != "auto":
+                continue
+            if not old_urls.intersection(event_urls(fresh)):
+                continue
+            if any(event.get(field) != fresh.get(field) for field in ("group", "eventDate", "applyStart", "ticketType")):
+                continue
+            old_time, fresh_time = event.get("startTime"), fresh.get("startTime")
+            if old_time and fresh_time and old_time != fresh_time:
+                continue
+            return True
+        return False
     if source_type == "derived":
         urls = event_urls(event)
         return bool(urls) and urls.issubset(fresh_urls)

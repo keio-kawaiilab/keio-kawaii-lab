@@ -52,7 +52,8 @@ def audit(state, payload, history=None):
                     continue
             found = False
             for entity in public:
-                if entity.get("group") != expected.get("group") or entity.get("eventDate") != expected.get("eventDate"):
+                represented_groups = {entity.get("group"), *(entity.get("participants") or [])}
+                if expected.get("group") not in represented_groups or entity.get("eventDate") != expected.get("eventDate"):
                     continue
                 if expected.get("startTime") and entity.get("startTime") != expected["startTime"]:
                     continue

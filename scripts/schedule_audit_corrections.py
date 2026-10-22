@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from copy import deepcopy
 from pathlib import Path
 from typing import Any
@@ -35,6 +36,17 @@ def _day(value: Any) -> str:
 
 def _time(value: Any) -> str:
     return str(value or "").strip()
+
+
+def _venue_key(value: Any) -> str:
+    """Normalize harmless area labels without conflating different venues."""
+    text = re.sub(r"\s+", "", str(value or ""))
+    text = re.sub(r"^[\[［【][^\]］】]+[\]］】]", "", text)
+    return re.sub(r"^(?:東京都|大阪府|京都府|北海道)", "", text)
+
+
+def _same_venue(left: Any, right: Any) -> bool:
+    return bool(_venue_key(left)) and _venue_key(left) == _venue_key(right)
 
 
 def _day1_time_compatible(open_time: Any, start_time: Any) -> bool:
@@ -117,6 +129,9 @@ def apply_christmas_day1_venue_correction(payload: dict[str, Any]) -> tuple[dict
                 event["venue"] = venue
                 report["topLevelFilled"] += 1
                 changed = True
+            elif current != venue and _same_venue(current, venue):
+                event["venue"] = venue
+                changed = True
             elif current != venue:
                 report["conflicts"].append(
                     {
@@ -138,6 +153,9 @@ def apply_christmas_day1_venue_correction(payload: dict[str, Any]) -> tuple[dict
                 if not current:
                     row["venue"] = venue
                     report["scheduleRowsFilled"] += 1
+                    changed = True
+                elif current != venue and _same_venue(current, venue):
+                    row["venue"] = venue
                     changed = True
                 elif current != venue:
                     report["conflicts"].append(

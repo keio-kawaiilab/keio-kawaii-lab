@@ -20,6 +20,14 @@ class DiscoveryPublicationTest(unittest.TestCase):
         self.assertEqual("ok", report["status"])
         self.assertEqual(1, report["representedOffers"])
 
+    def test_joint_external_entity_represents_participant_offer(self):
+        state, payload = self.fixture()
+        payload["publicEvents"][0]["group"] = "KAWAII LAB.合同"
+        payload["publicEvents"][0]["participants"] = ["FRUITS ZIPPER", "CANDY TUNE"]
+        report = audit(state, payload)
+        self.assertEqual("ok", report["status"])
+        self.assertEqual(1, report["representedOffers"])
+
     def test_verified_central_fc_label_alias_is_represented(self):
         expected = {
             "group": "SWEET STEADY", "eventDate": "2099-03-04",

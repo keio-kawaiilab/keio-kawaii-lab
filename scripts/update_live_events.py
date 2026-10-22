@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Iterable
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 
 import requests
 from bs4 import BeautifulSoup
@@ -44,10 +44,15 @@ DATE_ANY_RE = re.compile(
     r"(?:\s*(\d{1,2})[:：](\d{2}))?"
 )
 WINDOW_LABEL_RE = re.compile(r"(?:受付期間|申込期間|お申込期間|お申し込み期間|販売期間)\s*[：:]?")
-EVENT_LABEL_RE = re.compile(r"(?:公演日時|日程|公演日|開催日|日時)\s*[：:]")
-VENUE_RE = re.compile(r"(?:会場|場所)\s*[：:]\s*(.+)")
+EVENT_LABEL_RE = re.compile(
+    r"(?:(?:公演日時|日程|公演日|開催日|日時)\s*[：:]|"
+    r"[【［\[](?:公演日時|日程|公演日|開催日|日時)[】］\]])"
+)
+VENUE_RE = re.compile(r"(?:(?:会場|場所)\s*[：:]|[【［\[](?:会場|場所)[】］\]])\s*(.+)")
 OPEN_TIME_RE = re.compile(r"(?:OPEN|開場)\s*[：:]?\s*(\d{1,2})[:：](\d{2})", re.I)
 START_TIME_RE = re.compile(r"(?:START|開演)\s*[：:]?\s*(\d{1,2})[:：](\d{2})", re.I)
+OPEN_TIME_REVERSE = re.compile(r"(\d{1,2})[:：](\d{2})\s*(?:OPEN|開場)", re.I)
+START_TIME_REVERSE = re.compile(r"(\d{1,2})[:：](\d{2})\s*(?:START|開演)", re.I)
 RESULT_LABELS = ("当落発表", "当選発表", "抽選結果", "結果発表")
 PAYMENT_LABELS = ("入金期限", "入金期間", "支払期限", "お支払い期限")
 
@@ -164,8 +169,8 @@ def extract_ticket_type(title: str, text: str) -> str:
 
 def extract_performance_time(lines: list[str]) -> tuple[str | None, str | None]:
     text = "\n".join(lines)
-    open_match = OPEN_TIME_RE.search(text)
-    start_match = START_TIME_RE.search(text)
+    open_match = OPEN_TIME_RE.search(text) or OPEN_TIME_REVERSE.search(text)
+    start_match = START_TIME_RE.search(text) or START_TIME_REVERSE.search(text)
 
     def value(match: re.Match | None) -> str | None:
         if not match:
@@ -176,6 +181,41 @@ def extract_performance_time(lines: list[str]) -> tuple[str | None, str | None]:
         return f"{hour:02d}:{minute:02d}"
 
     return value(open_match), value(start_match)
+
+
+def extract_target_participants(text: str, event_date: str) -> list[str]:
+    """Return target groups explicitly listed for one dated performance.
+
+    Multi-day external-event articles commonly place each day's performers
+    under a repeated date heading.  Inspect every occurrence of the requested
+    date and keep the most specific (date-to-next-date) block, so an introductory
+    date range cannot accidentally attach the next day's artists.
+    """
+    default_year = int(event_date[:4])
+    matches = list(DATE_ANY_RE.finditer(text))
+    candidates: list[list[str]] = []
+    for index, match in enumerate(matches):
+        value = date_match_to_iso(match, default_year)
+        if not value or value[:10] != event_date:
+            continue
+        end = matches[index + 1].start() if index + 1 < len(matches) else min(len(text), match.end() + 500)
+        block = text[match.end():end]
+        candidates.append([group for group in GROUPS if group in block])
+    return max(candidates, key=len, default=[])
+
+
+def extract_application_url(soup: BeautifulSoup) -> str | None:
+    """Pick a linked official ticket seller while excluding help/contact URLs."""
+    allowed_hosts = ("pia.jp", "l-tike.com", "eplus.jp", "sukisuki-shop.com")
+    for anchor in soup.find_all("a", href=True):
+        href = urljoin("https://example.invalid/", str(anchor.get("href") or "").strip())
+        parsed = urlparse(href)
+        host = parsed.netloc.lower()
+        path = parsed.path.lower()
+        if any(host == allowed or host.endswith("." + allowed) for allowed in allowed_hosts):
+            if not any(marker in path for marker in ("/help", "/guide", "/faq", "/contact", "/info/")):
+                return href
+    return None
 
 
 def extract_event_occurrences(
@@ -293,6 +333,7 @@ def parse_candidate(session: requests.Session, candidate: Candidate) -> tuple[li
 
     window = windows[0]
     occurrences = extract_event_occurrences(lines, candidate.title, article_date)
+    application_url = extract_application_url(soup)
     ticket_type = extract_ticket_type(candidate.title, text)
     apply_year = int(window[0][:4])
     result_date = extract_labeled_date(text, RESULT_LABELS, apply_year)
@@ -310,6 +351,7 @@ def parse_candidate(session: requests.Session, candidate: Candidate) -> tuple[li
 
     events = []
     for event_date, venue, open_time, start_time in occurrences:
+        source_urls = list(dict.fromkeys(url for url in (application_url, candidate.url) if url))
         events.append({
             "id": event_id(candidate.group, candidate.url, event_date, window[0], ticket_type),
             "group": candidate.group,
@@ -323,9 +365,12 @@ def parse_candidate(session: requests.Session, candidate: Candidate) -> tuple[li
             "venue": venue,
             "openTime": open_time,
             "startTime": start_time,
-            "url": candidate.url,
+            "url": application_url or candidate.url,
+            "urls": source_urls,
+            "applicationWindowSource": candidate.url,
             "sourceType": "auto",
             "sourcePublishedAt": article_date,
+            "participants": extract_target_participants(text, event_date),
         })
     return events, None
 

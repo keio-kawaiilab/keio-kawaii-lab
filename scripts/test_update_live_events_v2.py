@@ -55,6 +55,20 @@ class RetentionPolicyTests(unittest.TestCase):
         payload = v2.build_payload(existing, {}, [], [], date(2026, 8, 23))
         self.assertEqual(payload["events"], [])
 
+    def test_reparsed_article_replaces_old_row_when_time_enrichment_changes_id(self):
+        source = "https://example.test/news/detail/1"
+        old = {
+            "id": "old-id", "sourceType": "auto", "group": "FRUITS ZIPPER",
+            "eventDate": "2099-01-19", "startTime": None,
+            "applyStart": "2098-10-19T20:00", "ticketType": "チケット受付", "url": source,
+        }
+        fresh = {
+            **old, "id": "new-id", "startTime": "18:00",
+            "url": "https://w.pia.jp/t/example/", "urls": ["https://w.pia.jp/t/example/", source],
+        }
+        payload = v2.build_payload({"events": [old]}, {"new-id": fresh}, [], [], date(2098, 10, 20))
+        self.assertEqual([row["id"] for row in payload["events"]], ["new-id"])
+
 
 if __name__ == "__main__":
     unittest.main()

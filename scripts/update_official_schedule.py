@@ -116,6 +116,7 @@ def event_key(title: object) -> str:
         (r"HIROSHIMA CONTI", "HIROSHIMA-CONTINEW"),
         (r"MOTOGP", "MOTOGP"),
         (r"AGESTOCK", "AGESTOCK"),
+        (r"災害支援基金コンサート", "DISASTER-RELIEF-CONCERT"),
         (r"KAWAII KON|HONOLULU|HAWAII", "HAWAII"),
     )
     for pattern, key in families:
@@ -228,13 +229,21 @@ def collect(session: requests.Session, today: date) -> tuple[list[OfficialRow], 
 
 
 def match_existing(row: OfficialRow, events: list[dict]) -> dict | None:
+    key = event_key(row.title)
     candidates = [
         event for event in events
-        if row.day in event_days(event) and row.group in participants(event)
+        if row.day in event_days(event)
+        and (
+            row.group in participants(event)
+            or (
+                row.event_scope == EXTERNAL
+                and infer_event_scope(event) == EXTERNAL
+                and event_key(event.get("eventTitle") or event.get("title")) == key
+            )
+        )
     ]
     if not candidates:
         return None
-    key = event_key(row.title)
     def best(values: list[dict]) -> dict | None:
         if not values:
             return None
@@ -266,6 +275,11 @@ def match_existing(row: OfficialRow, events: list[dict]) -> dict | None:
 
 def enrich_existing(event: dict, row: OfficialRow, detail: dict) -> None:
     event["eventScope"] = row.event_scope
+    if row.event_scope == EXTERNAL and row.group not in participants(event):
+        combined = list(dict.fromkeys([*participants(event), row.group]))
+        event["participants"] = combined
+        if len(combined) > 1:
+            event["group"] = "KAWAII LAB.合同"
     values = [str(event.get("url") or ""), *(str(value) for value in event.get("urls") or [])]
     values = [value for value in dict.fromkeys(values) if value]
     if row.url not in values:

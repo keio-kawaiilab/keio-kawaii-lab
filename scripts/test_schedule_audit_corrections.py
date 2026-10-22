@@ -95,6 +95,15 @@ class ScheduleAuditCorrectionsTest(unittest.TestCase):
         self.assertEqual(by_id["candy-upgrade"]["venue"], "別会場")
         self.assertEqual(len(report["conflicts"]), 1)
 
+    def test_normalizes_equivalent_prefecture_prefixed_venue(self):
+        payload = self.fixture()
+        payload["events"][0]["venue"] = "東京都 有明アリーナ"
+        payload["events"][1]["venue"] = "有明アリーナ"
+        corrected, report = apply_christmas_day1_venue_correction(payload)
+        by_id = {event["id"]: event for event in corrected["events"]}
+        self.assertEqual(report["conflicts"], [])
+        self.assertEqual(by_id["candy-upgrade"]["venue"], "東京都 有明アリーナ")
+
     def test_wrong_time_is_not_reconciled(self):
         payload = self.fixture()
         payload["events"][1]["startTime"] = "19:00"
