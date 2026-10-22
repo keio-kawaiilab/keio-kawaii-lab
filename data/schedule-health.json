@@ -1,15 +1,14 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-23T03:47:48.914158+09:00",
-  "candidateUpdatedAt": "2026-10-23T03:47:33+09:00",
-  "previousEventCount": 244,
-  "candidateEventCount": 245,
-  "protectedPreviousCount": 244,
+  "generatedAt": "2026-10-23T03:54:15.077163+09:00",
+  "candidateUpdatedAt": "2026-10-23T03:51:24+09:00",
+  "previousEventCount": 245,
+  "candidateEventCount": 244,
+  "protectedPreviousCount": 245,
   "errorCount": 0,
-  "warningCount": 14,
+  "warningCount": 13,
   "errors": [],
   "warnings": [
-    "quarantined one event/source update and kept the previous known-good data: deadline moved earlier for url:https://morestar.asobisystem.com/news/detail/92107: 2026-10-25T23:59 -> 2026-10-12T23:59 (manual review required)",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: SWEET STEADY / 『SWEET STEADY JAPAN TOUR 2026』 / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
@@ -24,7 +23,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
   ],
-  "candidateSha256": "bfb615b6acc5ff9a92445e1eaa2a97f395b5b5a7f5211aa4ab22d033bb18a265",
+  "candidateSha256": "04bb73e5c211802171703f818429e2d99c760d269bb9f2de74540e281f835406",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40731",
@@ -195,23 +194,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 1,
-  "quarantineActions": [
-    {
-      "error": "deadline moved earlier for url:https://morestar.asobisystem.com/news/detail/92107: 2026-10-25T23:59 -> 2026-10-12T23:59 (manual review required)",
-      "action": "restored previous rows for url:https://morestar.asobisystem.com/news/detail/92107",
-      "restoredPreviousRows": 2
-    }
-  ],
-  "rowFailuresCanBlockRelease": false,
-  "officialIndexReconciledAfterQuarantine": {
-    "reassignedCount": 0,
-    "hydratedCount": 0,
-    "ambiguousCount": 0,
-    "unresolvedCount": 0,
-    "reassigned": [],
-    "hydrated": [],
-    "ambiguous": [],
-    "unresolved": []
-  }
+  "quarantineCount": 0,
+  "quarantineActions": [],
+  "rowFailuresCanBlockRelease": false
 }
