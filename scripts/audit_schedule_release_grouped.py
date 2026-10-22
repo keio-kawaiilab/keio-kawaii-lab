@@ -31,6 +31,7 @@ OFFICIAL_X_STATUS_KEY_RE = re.compile(
     r"^url:https://x\.com/(?:FRUITS_ZIPPER|CANDY_TUNE_|SWEET_STEADY|CUTIE_STREET_|MORE_STAR_)/status/\d+$",
     re.I,
 )
+OFFICIAL_ARTICLE_KEY_RE = re.compile(r"^url:https://(?:[^/]+\.)?asobisystem\.com/", re.I)
 DISAPPEARED_PREFIX = "protected future/active item disappeared: "
 LOCAL_KEY_COLON_ERROR_RE = re.compile(
     r"^(?:future performance dates disappeared|active deadline disappeared|deadline moved earlier) for (.+?)(?: \[[^\]]+\])?: "
@@ -113,13 +114,13 @@ def reconcile_official_x_shared_dates(
     candidate: dict,
     today: date,
 ) -> tuple[list[str], list[str], set[str]]:
-    """Compare multi-event official X posts as group-scoped date sets.
+    """Compare multi-event official sources as group-scoped date sets.
 
-    A single official X post can announce several dates. The base audit indexes a
-    URL to one row, so a newly added earlier date can make an unchanged later row
-    appear to have disappeared. For official status URLs with multiple rows, use
-    the full per-group date set instead. Real removals remain fail-closed at the
-    audit layer and are quarantined by the CLI release path.
+    A single official post or article can announce several dates. The base audit
+    indexes a URL to one row, so splitting a series into physical occurrences can
+    make unchanged dates appear to have disappeared. For official sources with
+    multiple rows, use the full per-group date set instead. Real removals remain
+    fail-closed at the audit layer and are quarantined by the CLI release path.
     """
     prev_sets = source_date_sets(previous, today)
     cand_sets = source_date_sets(candidate, today)
@@ -130,7 +131,7 @@ def reconcile_official_x_shared_dates(
     reconciled: set[str] = set()
 
     for key in sorted(set(prev_sets).intersection(cand_sets)):
-        if not OFFICIAL_X_STATUS_KEY_RE.fullmatch(key):
+        if not (OFFICIAL_X_STATUS_KEY_RE.fullmatch(key) or OFFICIAL_ARTICLE_KEY_RE.match(key)):
             continue
         if max(prev_counts.get(key, 0), cand_counts.get(key, 0)) < 2:
             continue

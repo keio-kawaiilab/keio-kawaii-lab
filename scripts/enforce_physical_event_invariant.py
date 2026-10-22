@@ -8,7 +8,7 @@ import re
 from collections import defaultdict
 from pathlib import Path
 
-from dedupe_official_x_series import category, schedule_rows, text
+from dedupe_official_x_series import category, merge_schedules, schedule_rows, text
 from normalize_special_event_entities import (
     SPECIAL_CATEGORIES,
     make_entity,
@@ -342,7 +342,7 @@ def enforce_payload(payload: dict) -> tuple[dict, dict]:
     components = _components(special)
     merged: list[dict] = []
     collisions: list[dict] = []
-    internal_rows_collapsed = 0
+    internal_rows_collapsed = int(semantic_report.get("internalScheduleRowsCollapsed") or 0)
     for component in components:
         if len(component) == 1:
             entity = component[0]
@@ -360,6 +360,9 @@ def enforce_payload(payload: dict) -> tuple[dict, dict]:
                 "containsIncompleteTime": any(not key[2] for key in occurrences),
             })
             entity = make_entity(component)
+            internal_rows_collapsed += max(
+                0, len(merge_schedules(component)) - len(entity.get("schedule") or [])
+            )
             if len(categories) > 1:
                 entity["sourceEventCategories"] = categories
             entity["physicalInvariantMerged"] = True

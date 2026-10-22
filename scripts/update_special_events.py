@@ -159,7 +159,79 @@ def source_links(soup: BeautifulSoup, page_url: str) -> list[str]:
     return result
 
 
-def product_text(lines: list[str], title: str) -> str:
+def group_section_lines(lines: list[str], group: str) -> list[str]:
+    """Return body lines belonging to a labelled group in a shared article.
+
+    Shared benefit-event announcements commonly repeat angle-bracket headings
+    before each group's parts and sales window. Keeping those sections
+    separate prevents one group's schedule from leaking into another event.
+    """
+    group_names = tuple(GROUPS)
+    marker_re = re.compile(
+        r"^[<＜]\s*(" + "|".join(re.escape(name) for name in group_names) + r")\s*[>＞]$",
+        re.I,
+    )
+    active: str | None = None
+    saw_marker = False
+    result: list[str] = []
+    for line in lines:
+        match = marker_re.match(normalize(line))
+        if match:
+            active = next(
+                (name for name in group_names if name.casefold() == match.group(1).casefold()),
+                match.group(1),
+            )
+            saw_marker = True
+            continue
+        if active == group:
+            result.append(line)
+    return result if saw_marker else []
+
+
+def links_for_group(links: list[str], group: str) -> list[str]:
+    """Drop another group's HMV landing page from a shared announcement."""
+    slugs = {
+        "CUTIE STREET": "cutielandevent_lp",
+        "MORE STAR": "morestarevent_lp",
+    }
+    expected = slugs.get(group)
+    if not expected:
+        return links
+    hmv_event_links = [
+        link for link in links
+        if "hmv.co.jp" in link.lower() and "event_lp" in link.lower()
+    ]
+    matching = [link for link in hmv_event_links if expected in link.lower()]
+    if not matching:
+        return links
+    kept = [
+        link for link in links
+        if link not in hmv_event_links and link not in matching
+    ]
+    if kept and kept[0] == links[0]:
+        return [kept[0], *matching, *kept[1:]]
+    return [*matching, *kept]
+
+
+def product_text(lines: list[str], title: str, group: str | None = None) -> str:
+    if group:
+        group_names = tuple(GROUPS)
+        bullet_re = re.compile(
+            r"^[●・]\s*(" + "|".join(re.escape(name) for name in group_names) + r")\s*$",
+            re.I,
+        )
+        for index, line in enumerate(lines):
+            marker = bullet_re.match(normalize(line))
+            if not marker or marker.group(1).casefold() != group.casefold():
+                continue
+            block: list[str] = []
+            for value in lines[index + 1:index + 12]:
+                if bullet_re.match(normalize(value)) or value.startswith(("■", "□", "◇", "◆")):
+                    break
+                block.append(value)
+            useful = [x for x in block if re.search(r"発売|シングル|アルバム|通常盤|限定盤|税込|¥|￥", x)]
+            if useful:
+                return " ／ ".join(useful[:4]).replace("\\", "¥")
     for index, line in enumerate(lines):
         clean = line.lstrip("■□●◇◆〖〈＜ ").rstrip("〗〉＞ ")
         if clean not in {"対象商品", "イベント参加対象商品"}:
@@ -270,8 +342,9 @@ def parse_page(group: str, url: str, html_text: str, now: datetime | None = None
         return []
     event_date = event_date[:10]
     venue = value_after_heading(lines, ("開催会場", "場所")) or value_after(lines, ("開催場所・会場",)) or "会場未定"
-    links = source_links(soup, url)
-    windows = window_rows(lines, default_year)
+    links = links_for_group(source_links(soup, url), group)
+    scoped_lines = group_section_lines(lines, group)
+    windows = window_rows(scoped_lines or lines, default_year)
     current = (now or datetime.now(JST)).astimezone(JST)
     # Publish the verified occurrence even when the purchase window has not
     # been announced yet.  A later 15-minute refresh upgrades the same row with
@@ -311,9 +384,9 @@ def parse_page(group: str, url: str, html_text: str, now: datetime | None = None
     sales_text = value_after(lines, ("CD販売開始時間", "販売開始時間")) or ""
     gathering_text = value_after(lines, ("優先エリア入場集合時間", "ミニライブ入場集合時間")) or ""
     start_text = value_after(lines, ("開演時間",)) or ""
-    product = product_text(lines, title)
+    product = product_text(lines, title, group)
     calls = call_times(lines)
-    parts = benefit_parts(lines)
+    parts = benefit_parts(scoped_lines or lines)
     tickets = ticket_details(lines)
     full_text = " ".join(lines)
     is_lottery = (
@@ -639,11 +712,21 @@ def merge_payload(payload: dict, fresh: list[dict], today=None) -> dict:
         if fresh_index in consumed_fresh:
             continue
         for index, event in enumerate(payload.get("events", [])):
-            if not isinstance(event, dict) or event.get("sourceType") != "official-schedule":
+            if not isinstance(event, dict):
+                continue
+            is_schedule_shell = (
+                event.get("sourceType") == "official-schedule"
+                or (
+                    event.get("officialScheduleUrl")
+                    and event.get("primarySource") == "official"
+                    and event.get("sourceChannel") == "official-continuous"
+                )
+            )
+            if not is_schedule_shell:
                 continue
             text = f"{event.get('eventTitle', '')} {event.get('title', '')}"
             schedule_category = (
-                "large-benefit" if "大特典会" in text
+                "large-benefit" if re.search(r"大特典(?:会)?", text)
                 else "release-event" if re.search(r"リリースイベント|発売記念イベント", text)
                 else ""
             )

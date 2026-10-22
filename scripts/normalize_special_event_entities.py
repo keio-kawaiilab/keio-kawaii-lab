@@ -15,7 +15,8 @@ DATA_PATH = Path("data/live-events.json")
 SPECIAL_CATEGORIES = {"release-event", "large-benefit"}
 SALE_FIELDS = (
     "ticketProvider", "ticketType", "applyStart", "applyEnd", "resultDate", "paymentEnd",
-    "applicationStatus", "applicationWindowVerified", "purchaseMethod", "ticketIssueMethod",
+    "applicationStatus", "applicationWindowVerified", "applicationWindowSource",
+    "deadlineVerified", "deadlineSource", "purchaseMethod", "ticketIssueMethod",
     "ticketName", "product", "salesStartTime", "gatheringTime",
 )
 LIST_FIELDS = ("participants", "ticketBenefits", "numberedCallTimes", "parts", "sourceCandidates")
@@ -45,6 +46,7 @@ def normalized_product(event: dict) -> str:
 
 def venue_key(value: object) -> str:
     value = text(value).casefold()
+    value = re.sub(r"^[【\[]\s*(?:大特典会|リリースイベント)\s*[】\]]\s*", "", value)
     value = re.sub(r"^(?:北海道|東京都|京都府|大阪府|.{2,3}県)\s*", "", value)
     return compact(value)
 
@@ -211,6 +213,40 @@ def richness(event: dict) -> tuple[int, int, int, int]:
     return official, details, filled, len(all_urls(event))
 
 
+def explode_schedule_only_benefit_series(event: dict) -> list[dict]:
+    """Split a schedule-only benefit series into physical occurrences.
+
+    A later official article may add full sale details for just one date.  If a
+    multi-date placeholder remains intact, that date renders twice and its
+    occurrence-specific parts can leak onto the other dates.  Offer-bearing
+    rows are left intact because their window may intentionally cover a series.
+    """
+    if category(event) != "large-benefit":
+        return [event]
+    if is_offer_row(event) or event.get("offers"):
+        return [event]
+    rows = schedule_rows(event)
+    if len(rows) <= 1:
+        return [event]
+    result: list[dict] = []
+    parent_id = str(event.get("id") or "special-event")
+    for index, row in enumerate(rows):
+        day = str(row.get("date") or "")[:10]
+        if not day:
+            continue
+        occurrence = copy.deepcopy(event)
+        occurrence["id"] = f"{parent_id}--{day}" + (f"-{index}" if index else "")
+        occurrence["eventDate"] = day
+        occurrence["eventEndDate"] = day
+        occurrence["eventDates"] = [day]
+        occurrence["eventCount"] = 1
+        occurrence["schedule"] = [copy.deepcopy(row)]
+        if row.get("venue"):
+            occurrence["venue"] = row["venue"]
+        result.append(occurrence)
+    return result or [event]
+
+
 def distinct_dicts(values: Iterable[object]) -> list:
     output = []
     seen = set()
@@ -251,10 +287,43 @@ def canonical_key(items: list[dict], schedule: list[dict]) -> str:
     return "|".join((group, cat, title, day, venue))
 
 
+def dedupe_schedule_occurrences(rows: list[dict]) -> list[dict]:
+    """Collapse formatting variants of the same physical occurrence.
+
+    Official schedule placeholders sometimes prefix a venue with the event
+    type while the later detail article uses the bare venue.  ``merge_schedules``
+    quite correctly preserves distinct raw dictionaries, but those two labels
+    must still render as one occurrence.  Merge missing fields into the richer
+    row and prefer the cleaner bare venue label.
+    """
+    output: list[dict] = []
+    positions: dict[tuple[str, str], int] = {}
+    for raw in rows:
+        row = copy.deepcopy(raw)
+        key = (str(row.get("date") or "")[:10], venue_key(row.get("venue")))
+        if key not in positions:
+            positions[key] = len(output)
+            output.append(row)
+            continue
+        index = positions[key]
+        current = output[index]
+        current_prefixed = bool(re.match(r"^[【\[]", text(current.get("venue"))))
+        row_prefixed = bool(re.match(r"^[【\[]", text(row.get("venue"))))
+        current_score = (not current_prefixed, sum(value not in (None, "", [], {}) for value in current.values()))
+        row_score = (not row_prefixed, sum(value not in (None, "", [], {}) for value in row.values()))
+        preferred, supplement = (row, current) if row_score > current_score else (current, row)
+        merged = copy.deepcopy(preferred)
+        for field, value in supplement.items():
+            if merged.get(field) in (None, "", [], {}) and value not in (None, "", [], {}):
+                merged[field] = copy.deepcopy(value)
+        output[index] = merged
+    return output
+
+
 def make_entity(items: list[dict]) -> dict:
     representative = max(items, key=richness)
     entity = copy.deepcopy(representative)
-    schedule = merge_schedules(items)
+    schedule = dedupe_schedule_occurrences(merge_schedules(items))
     dates = list(dict.fromkeys(row["date"] for row in schedule if row.get("date")))
     venues = list(dict.fromkeys(text(row.get("venue")) for row in schedule if text(row.get("venue"))))
     key = canonical_key(items, schedule)
@@ -334,8 +403,12 @@ def normalize_events(events: list[dict]) -> tuple[list[dict], dict]:
     releases = []
     benefits = []
     already_canonical = 0
-    for raw in events:
-        event = copy.deepcopy(raw)
+    expanded_events = [
+        occurrence
+        for raw in events
+        for occurrence in explode_schedule_only_benefit_series(copy.deepcopy(raw))
+    ]
+    for event in expanded_events:
         cat = category(event)
         if cat not in SPECIAL_CATEGORIES:
             ordinary.append(event)
@@ -348,7 +421,12 @@ def normalize_events(events: list[dict]) -> tuple[list[dict], dict]:
 
     release_components = components(releases, compatible_release)
     benefit_components = components(benefits, compatible_benefit)
-    entities = [make_entity(component) for component in release_components + benefit_components]
+    all_components = release_components + benefit_components
+    entities = [make_entity(component) for component in all_components]
+    internal_schedule_rows_collapsed = sum(
+        max(0, len(merge_schedules(component)) - len(entity.get("schedule") or []))
+        for component, entity in zip(all_components, entities)
+    )
     result = ordinary + entities
     result.sort(key=lambda event: (
         str(event.get("eventDate") or "9999-12-31"),
@@ -364,6 +442,7 @@ def normalize_events(events: list[dict]) -> tuple[list[dict], dict]:
         "releaseEventEntities": len(release_components),
         "largeBenefitEntities": len(benefit_components),
         "alreadyCanonicalRows": already_canonical,
+        "internalScheduleRowsCollapsed": internal_schedule_rows_collapsed,
     }
 
 

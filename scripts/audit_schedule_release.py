@@ -228,13 +228,6 @@ def audit_canonical_special_offers(event: dict) -> list[str]:
     if not isinstance(offers, list) or not offers:
         return [f"canonical special event is in offers mode without offers: {label(event)}"]
 
-    official_window_source = str(event.get("applicationWindowSource") or "")
-    official_deadline_source = str(event.get("deadlineSource") or "")
-    if "asobisystem.com" not in official_window_source:
-        errors.append(f"canonical special event application window is not backed by an official page: {label(event)}")
-    if event.get("deadlineVerified") is not True or "asobisystem.com" not in official_deadline_source:
-        errors.append(f"canonical special event deadline is not verified by an official page: {label(event)}")
-
     for index, offer in enumerate(offers, start=1):
         if not isinstance(offer, dict):
             errors.append(f"canonical special event offer {index} is invalid: {label(event)}")
@@ -250,6 +243,12 @@ def audit_canonical_special_offers(event: dict) -> list[str]:
             errors.append(f"canonical special event offer has no verified purchase/ticket window: {offer_name}")
         elif start > end:
             errors.append(f"canonical special event offer window is reversed: {offer_name}")
+        window_source = str(offer.get("applicationWindowSource") or "")
+        deadline_source = str(offer.get("deadlineSource") or "")
+        if "asobisystem.com" not in window_source:
+            errors.append(f"canonical special event offer application window is not backed by an official page: {offer_name}")
+        if offer.get("deadlineVerified") is not True or "asobisystem.com" not in deadline_source:
+            errors.append(f"canonical special event offer deadline is not verified by an official page: {offer_name}")
 
         offer_urls = [str(offer.get("url") or ""), *(str(value) for value in offer.get("urls") or [])]
         offer_urls = [value for value in offer_urls if value]

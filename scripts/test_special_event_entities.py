@@ -168,6 +168,58 @@ class SpecialEventEntityTests(unittest.TestCase):
         self.assertEqual(event["ticketType"], "現在受付なし")
         self.assertFalse(validate(normalized))
 
+    def test_multiday_benefit_placeholder_merges_only_matching_detail_day(self):
+        payload = {"events": [
+            {
+                "id": "series",
+                "group": "CUTIE STREET",
+                "eventCategory": "large-benefit",
+                "displayTitle": "CUTIE STREET 大特典会",
+                "eventDate": "2026-11-03",
+                "eventEndDate": "2026-11-23",
+                "eventDates": ["2026-11-03", "2026-11-23"],
+                "schedule": [
+                    {"date": "2026-11-03", "venue": "【大特典会】神奈川県 パシフィコ横浜展示ホールD"},
+                    {"date": "2026-11-23", "venue": "【大特典会】北海道 アクセス札幌"},
+                ],
+                "ticketType": "現在受付なし",
+                "applicationStatus": "none",
+                "url": "https://cutiestreet.asobisystem.com/",
+                "sourceType": "official-special",
+            },
+            {
+                "id": "detail",
+                "group": "CUTIE STREET",
+                "eventCategory": "large-benefit",
+                "displayTitle": "CUTIE STREET 大特典会",
+                "eventDate": "2026-11-03",
+                "venue": "神奈川県 パシフィコ横浜 展示ホールD",
+                "startTime": "10:00",
+                "ticketProvider": "hmv",
+                "ticketType": "対象商品予約",
+                "applyStart": "2026-10-23T21:00",
+                "applyEnd": "2026-10-27T23:59",
+                "parts": [{"part": "第1部", "start": "10:00", "end": "11:00"}],
+                "url": "https://cutiestreet.asobisystem.com/news/detail/93713",
+                "urls": [
+                    "https://cutiestreet.asobisystem.com/news/detail/93713",
+                    "https://img.hmv.co.jp/cont/online/cutielandevent_lp/",
+                ],
+                "sourceType": "official-special",
+            },
+        ]}
+
+        normalized, report = normalize_payload(payload)
+
+        self.assertEqual(2, report["canonicalSpecialEvents"])
+        self.assertEqual(2, len(normalized["events"]))
+        by_day = {event["eventDate"]: event for event in normalized["events"]}
+        self.assertEqual(1, by_day["2026-11-03"]["eventCount"])
+        self.assertEqual(1, len(by_day["2026-11-03"]["offers"]))
+        self.assertEqual("10:00", by_day["2026-11-03"]["parts"][0]["start"])
+        self.assertEqual([], by_day["2026-11-23"]["offers"])
+        self.assertNotIn("parts", by_day["2026-11-23"])
+
     def test_same_physical_event_merges_even_when_titles_differ(self):
         payload = {"events": [
             {
