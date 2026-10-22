@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-22T21:35:27+09:00",
+  "checkedAt": "2026-10-22T21:58:16+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-19T06:01:52+09:00",
     "scannedPages": {
@@ -1469,7 +1469,6 @@
       "sourceRowIds": [
         "special-ada4e14a803af017"
       ],
-      "offers": [],
       "schedule": [
         {
           "date": "2026-10-11",
@@ -1483,7 +1482,8 @@
       "eventEndDate": "2026-10-11",
       "venues": [
         "西日本総合展示場"
-      ]
+      ],
+      "offers": []
     },
     {
       "id": "special-2e17014a29843755",
@@ -1519,7 +1519,6 @@
       "sourceRowIds": [
         "special-2e17014a29843755"
       ],
-      "offers": [],
       "schedule": [
         {
           "date": "2026-10-11",
@@ -1533,7 +1532,8 @@
       "eventEndDate": "2026-10-11",
       "venues": [
         "西日本総合展示場"
-      ]
+      ],
+      "offers": []
     },
     {
       "id": "special-c100fe556d6100b9",
@@ -1569,7 +1569,6 @@
       "sourceRowIds": [
         "special-c100fe556d6100b9"
       ],
-      "offers": [],
       "schedule": [
         {
           "date": "2026-10-11",
@@ -1583,7 +1582,8 @@
       "eventEndDate": "2026-10-11",
       "venues": [
         "西日本総合展示場"
-      ]
+      ],
+      "offers": []
     },
     {
       "id": "d07236d5e3fe49de",
@@ -1795,7 +1795,6 @@
         "official"
       ],
       "sourcePublishedAt": "2026-10-21",
-      "applicationStatus": "none",
       "deadlineVerified": true,
       "applicationDisplayMode": "offers",
       "applicationWindowSource": "https://sweetsteady.asobisystem.com/news/detail/93504",
@@ -1803,6 +1802,22 @@
       "discoverySourceUrl": "https://sweetsteady.asobisystem.com/news/detail/93504",
       "officialScheduleUrl": "https://sweetsteady.asobisystem.com/live_information/detail/46632",
       "eventScope": "kawaii-lab",
+      "schedule": [
+        {
+          "date": "2026-10-25",
+          "venue": "千葉県 セブンパークアリオ柏 屋外スマイルパーク",
+          "startTime": "16:00"
+        }
+      ],
+      "eventCount": 1,
+      "eventDates": [
+        "2026-10-25"
+      ],
+      "eventEndDate": "2026-10-25",
+      "venues": [
+        "千葉県 セブンパークアリオ柏 屋外スマイルパーク"
+      ],
+      "applicationStatus": "none",
       "entityType": "special-event",
       "specialEventEntityVersion": 1,
       "sourceRowIds": [
@@ -1832,21 +1847,6 @@
           "salesStartTime": "12:00",
           "gatheringTime": "15:20"
         }
-      ],
-      "schedule": [
-        {
-          "date": "2026-10-25",
-          "venue": "千葉県 セブンパークアリオ柏 屋外スマイルパーク",
-          "startTime": "16:00"
-        }
-      ],
-      "eventCount": 1,
-      "eventDates": [
-        "2026-10-25"
-      ],
-      "eventEndDate": "2026-10-25",
-      "venues": [
-        "千葉県 セブンパークアリオ柏 屋外スマイルパーク"
       ]
     },
     {
@@ -2289,7 +2289,7 @@
       "primarySource": "official",
       "sourceChannel": "kawaii-lab-resale",
       "sourceCandidates": [
-        "official"
+        "kawaii-lab-resale"
       ],
       "sourcePublishedAt": "2026-08-31",
       "eventScope": "kawaii-lab",
@@ -2300,8 +2300,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://kawaiilab.asobisystem.com/news/detail/88140",
       "deadlineSource": "https://kawaiilab.asobisystem.com/news/detail/88140",
-      "officialTourUrl": "https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
-      "performanceMatchedToOfficial": true
+      "officialTourUrl": "https://fruitszipper.asobisystem.com/feature/2026tour_autumn"
     },
     {
       "id": "dc60d5d019d83f33",
@@ -2489,7 +2488,7 @@
       "primarySource": "official",
       "sourceChannel": "kawaii-lab-resale",
       "sourceCandidates": [
-        "official"
+        "kawaii-lab-resale"
       ],
       "sourcePublishedAt": "2026-08-31",
       "eventScope": "kawaii-lab",
@@ -2500,8 +2499,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://kawaiilab.asobisystem.com/news/detail/88140",
       "deadlineSource": "https://kawaiilab.asobisystem.com/news/detail/88140",
-      "officialTourUrl": "https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
-      "performanceMatchedToOfficial": true
+      "officialTourUrl": "https://fruitszipper.asobisystem.com/feature/2026tour_autumn"
     },
     {
       "id": "17cc29946b768ee5",
@@ -3725,13 +3723,28 @@
         "official"
       ],
       "sourcePublishedAt": "2026-10-22",
-      "applicationStatus": "none",
       "deadlineVerified": true,
       "applicationDisplayMode": "offers",
       "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/93713",
       "deadlineSource": "https://cutiestreet.asobisystem.com/news/detail/93713",
       "discoverySourceUrl": "https://cutiestreet.asobisystem.com/news/detail/93713",
       "eventScope": "kawaii-lab",
+      "schedule": [
+        {
+          "date": "2026-11-03",
+          "venue": "神奈川県 パシフィコ横浜 展示ホールD",
+          "startTime": "10:00"
+        }
+      ],
+      "eventCount": 1,
+      "eventDates": [
+        "2026-11-03"
+      ],
+      "eventEndDate": "2026-11-03",
+      "venues": [
+        "神奈川県 パシフィコ横浜 展示ホールD"
+      ],
+      "applicationStatus": "none",
       "entityType": "special-event",
       "specialEventEntityVersion": 1,
       "sourceRowIds": [
@@ -3760,21 +3773,6 @@
           "ticketName": "メンバー個別2ショットチェキ撮影会参加券",
           "product": "2026年12月2日(水)発売 ／ CUTIE STREET 1stアルバム『CUTIE LAND』 通常盤(KLC-90016)／¥3,300 (税込)"
         }
-      ],
-      "schedule": [
-        {
-          "date": "2026-11-03",
-          "venue": "神奈川県 パシフィコ横浜 展示ホールD",
-          "startTime": "10:00"
-        }
-      ],
-      "eventCount": 1,
-      "eventDates": [
-        "2026-11-03"
-      ],
-      "eventEndDate": "2026-11-03",
-      "venues": [
-        "神奈川県 パシフィコ横浜 展示ホールD"
       ]
     },
     {
@@ -3943,13 +3941,28 @@
         "official"
       ],
       "sourcePublishedAt": "2026-10-22",
-      "applicationStatus": "none",
       "deadlineVerified": true,
       "applicationDisplayMode": "offers",
       "applicationWindowSource": "https://morestar.asobisystem.com/news/detail/93714",
       "deadlineSource": "https://morestar.asobisystem.com/news/detail/93714",
       "discoverySourceUrl": "https://morestar.asobisystem.com/news/detail/93714",
       "eventScope": "kawaii-lab",
+      "schedule": [
+        {
+          "date": "2026-11-03",
+          "venue": "神奈川県 パシフィコ横浜 展示ホールD",
+          "startTime": "10:00"
+        }
+      ],
+      "eventCount": 1,
+      "eventDates": [
+        "2026-11-03"
+      ],
+      "eventEndDate": "2026-11-03",
+      "venues": [
+        "神奈川県 パシフィコ横浜 展示ホールD"
+      ],
+      "applicationStatus": "none",
       "entityType": "special-event",
       "specialEventEntityVersion": 1,
       "sourceRowIds": [
@@ -3980,21 +3993,6 @@
           "ticketName": "メンバー個別2ショットチェキ撮影会参加券",
           "product": "2026年12月2日(水)発売 ／ CUTIE STREET 1stアルバム『CUTIE LAND』 通常盤(KLC-90016)／¥3,300 (税込)"
         }
-      ],
-      "schedule": [
-        {
-          "date": "2026-11-03",
-          "venue": "神奈川県 パシフィコ横浜 展示ホールD",
-          "startTime": "10:00"
-        }
-      ],
-      "eventCount": 1,
-      "eventDates": [
-        "2026-11-03"
-      ],
-      "eventEndDate": "2026-11-03",
-      "venues": [
-        "神奈川県 パシフィコ横浜 展示ホールD"
       ]
     },
     {
@@ -4123,7 +4121,7 @@
       "primarySource": "official",
       "sourceChannel": "kawaii-lab-resale",
       "sourceCandidates": [
-        "official"
+        "kawaii-lab-resale"
       ],
       "sourcePublishedAt": "2026-08-31",
       "eventScope": "kawaii-lab",
@@ -4134,8 +4132,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://kawaiilab.asobisystem.com/news/detail/88140",
       "deadlineSource": "https://kawaiilab.asobisystem.com/news/detail/88140",
-      "officialTourUrl": "https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
-      "performanceMatchedToOfficial": true
+      "officialTourUrl": "https://fruitszipper.asobisystem.com/feature/2026tour_autumn"
     },
     {
       "id": "7a8ed82e4762a81f",
@@ -4162,7 +4159,7 @@
       "primarySource": "official",
       "sourceChannel": "kawaii-lab-resale",
       "sourceCandidates": [
-        "official"
+        "kawaii-lab-resale"
       ],
       "sourcePublishedAt": "2026-08-31",
       "eventScope": "kawaii-lab",
@@ -4173,8 +4170,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://kawaiilab.asobisystem.com/news/detail/88140",
       "deadlineSource": "https://kawaiilab.asobisystem.com/news/detail/88140",
-      "officialTourUrl": "https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
-      "performanceMatchedToOfficial": true
+      "officialTourUrl": "https://fruitszipper.asobisystem.com/feature/2026tour_autumn"
     },
     {
       "id": "1f83b87efa48bf97",
@@ -4783,7 +4779,7 @@
       "primarySource": "official",
       "sourceChannel": "kawaii-lab-resale",
       "sourceCandidates": [
-        "official"
+        "kawaii-lab-resale"
       ],
       "sourcePublishedAt": "2026-08-31",
       "eventScope": "kawaii-lab",
@@ -4794,8 +4790,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://kawaiilab.asobisystem.com/news/detail/88140",
       "deadlineSource": "https://kawaiilab.asobisystem.com/news/detail/88140",
-      "officialTourUrl": "https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
-      "performanceMatchedToOfficial": true
+      "officialTourUrl": "https://fruitszipper.asobisystem.com/feature/2026tour_autumn"
     },
     {
       "id": "61ca157851d7c565",
@@ -5404,7 +5399,7 @@
       "primarySource": "official",
       "sourceChannel": "kawaii-lab-resale",
       "sourceCandidates": [
-        "official"
+        "kawaii-lab-resale"
       ],
       "sourcePublishedAt": "2026-08-31",
       "eventScope": "kawaii-lab",
@@ -5415,8 +5410,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://kawaiilab.asobisystem.com/news/detail/88140",
       "deadlineSource": "https://kawaiilab.asobisystem.com/news/detail/88140",
-      "officialTourUrl": "https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
-      "performanceMatchedToOfficial": true
+      "officialTourUrl": "https://fruitszipper.asobisystem.com/feature/2026tour_autumn"
     },
     {
       "id": "189328fcc6f85207",
@@ -5531,7 +5525,7 @@
       "primarySource": "official",
       "sourceChannel": "kawaii-lab-resale",
       "sourceCandidates": [
-        "official"
+        "kawaii-lab-resale"
       ],
       "sourcePublishedAt": "2026-08-31",
       "eventScope": "kawaii-lab",
@@ -5542,8 +5536,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://kawaiilab.asobisystem.com/news/detail/88140",
       "deadlineSource": "https://kawaiilab.asobisystem.com/news/detail/88140",
-      "officialTourUrl": "https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
-      "performanceMatchedToOfficial": true
+      "officialTourUrl": "https://fruitszipper.asobisystem.com/feature/2026tour_autumn"
     },
     {
       "id": "0867c7fe31b8c844",
@@ -6220,7 +6213,7 @@
       "primarySource": "official",
       "sourceChannel": "kawaii-lab-resale",
       "sourceCandidates": [
-        "official"
+        "kawaii-lab-resale"
       ],
       "sourcePublishedAt": "2026-08-31",
       "eventScope": "kawaii-lab",
@@ -6231,8 +6224,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://kawaiilab.asobisystem.com/news/detail/88140",
       "deadlineSource": "https://kawaiilab.asobisystem.com/news/detail/88140",
-      "officialTourUrl": "https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
-      "performanceMatchedToOfficial": true
+      "officialTourUrl": "https://fruitszipper.asobisystem.com/feature/2026tour_autumn"
     },
     {
       "id": "26d0069375101fa4",
@@ -6286,7 +6278,7 @@
       "primarySource": "official",
       "sourceChannel": "kawaii-lab-resale",
       "sourceCandidates": [
-        "official"
+        "kawaii-lab-resale"
       ],
       "sourcePublishedAt": "2026-08-31",
       "eventScope": "kawaii-lab",
@@ -6297,8 +6289,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://kawaiilab.asobisystem.com/news/detail/88140",
       "deadlineSource": "https://kawaiilab.asobisystem.com/news/detail/88140",
-      "officialTourUrl": "https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
-      "performanceMatchedToOfficial": true
+      "officialTourUrl": "https://fruitszipper.asobisystem.com/feature/2026tour_autumn"
     },
     {
       "id": "6de23ca08e7c06b7",
@@ -11113,13 +11104,103 @@
       "applyStart": "2026-08-29",
       "applyEnd": "2027-08-27T10:00",
       "discoveryMethod": "recent-official-body"
+    },
+    {
+      "group": "KAWAII LAB. resale",
+      "title": "2026.08.21 『CUTIE STREET 2nd ANNIVERSARY LIVE 2026』公演 リセールサービスのお知らせ",
+      "url": "https://kawaiilab.asobisystem.com/news/detail/87827",
+      "reason": "リセール告知を検出しましたが、公演日と受付期間を安全に対応付けできませんでした。",
+      "windows": [],
+      "eventDates": [
+        "2026-08-25",
+        "2026-08-26",
+        "2026-08-23",
+        "2026-08-24"
+      ]
+    },
+    {
+      "group": "KAWAII LAB. resale",
+      "title": "2026.05.21 『CUTIE STREET 増田彩乃 生誕祭 2026』公演 リセールサービスのお知らせ",
+      "url": "https://kawaiilab.asobisystem.com/news/detail/79645",
+      "reason": "リセール告知を検出しましたが、公演日と受付期間を安全に対応付けできませんでした。",
+      "windows": [],
+      "eventDates": [
+        "2026-05-28",
+        "2026-05-22"
+      ]
+    },
+    {
+      "group": "KAWAII LAB. resale",
+      "title": "2026.04.20 「FRUITS ZIPPER 4TH ANNIVERSARY ARENA TOUR「DREAM WITH IN」公演」リセールサービスのお知らせ",
+      "url": "https://kawaiilab.asobisystem.com/news/detail/77120",
+      "reason": "リセール告知を検出しましたが、公演日と受付期間を安全に対応付けできませんでした。",
+      "windows": [],
+      "eventDates": [
+        "2026-05-02",
+        "2026-05-03",
+        "2026-05-05",
+        "2026-05-06",
+        "2026-04-24",
+        "2026-04-21"
+      ]
+    },
+    {
+      "group": "KAWAII LAB. resale",
+      "title": "2026.03.31 『Noel Hayase 1st solo Live “Head above Clouds”』公演 リセールサービスのお知らせ",
+      "url": "https://kawaiilab.asobisystem.com/news/detail/74452",
+      "reason": "リセール告知を検出しましたが、公演日と受付期間を安全に対応付けできませんでした。",
+      "windows": [],
+      "eventDates": [
+        "2026-04-07",
+        "2026-04-01"
+      ]
+    },
+    {
+      "group": "KAWAII LAB. resale",
+      "title": "2026.02.11 『櫻井優衣メジャーデビュー記念ソロコンサート STORY – A Journey into Yui’s Dream –』公演 リセールサービスのお知らせ",
+      "url": "https://kawaiilab.asobisystem.com/news/detail/68830",
+      "reason": "リセール告知を検出しましたが、公演日と受付期間を安全に対応付けできませんでした。",
+      "windows": [],
+      "eventDates": [
+        "2026-02-18",
+        "2026-02-12"
+      ]
+    },
+    {
+      "group": "KAWAII LAB. resale",
+      "title": "2026.02.10 『MORE STAR 単独ライブ 1st STAR』公演 リセールサービスのお知らせ",
+      "url": "https://kawaiilab.asobisystem.com/news/detail/68829",
+      "reason": "リセール告知を検出しましたが、公演日と受付期間を安全に対応付けできませんでした。",
+      "windows": [],
+      "eventDates": [
+        "2026-02-17",
+        "2026-02-11"
+      ]
+    },
+    {
+      "group": "KAWAII LAB. resale",
+      "title": "2026.01.24 FRUITS ZIPPER SPECIAL LIVE 2026 「ENERGY」公演 リセールサービスのお知らせ",
+      "url": "https://kawaiilab.asobisystem.com/news/detail/67505",
+      "reason": "リセール告知を検出しましたが、公演日と受付期間を安全に対応付けできませんでした。",
+      "windows": [],
+      "eventDates": [
+        "2026-02-01"
+      ]
+    },
+    {
+      "group": "KAWAII LAB. resale",
+      "title": "2026.01.02 『SWEET STEADY 奥田彩友 生誕祭 2026』公演 リセールサービスのお知らせ 有料会員",
+      "url": "https://kawaiilab.asobisystem.com/news/detail/64282",
+      "reason": "リセール告知を検出しましたが、公演日と受付期間を安全に対応付けできませんでした。",
+      "windows": [],
+      "eventDates": []
     }
   ],
   "physicalEventInvariant": {
     "semanticNormalization": {
-      "sourceSpecialRows": 9,
+      "sourceSpecialRows": 12,
       "canonicalSpecialEvents": 9,
-      "rowsCollapsed": 0,
+      "rowsCollapsed": 3,
       "releaseEventEntities": 3,
       "largeBenefitEntities": 6,
       "alreadyCanonicalRows": 9,
@@ -11245,17 +11326,15 @@
     "failures": []
   },
   "releasePreparation": {
-    "preparedAt": "2026-10-22T21:35:21+09:00",
-    "normalizedSpecialEvents": 5,
+    "preparedAt": "2026-10-22T21:58:14+09:00",
+    "normalizedSpecialEvents": 8,
     "duplicateIdsRemoved": 0,
-    "duplicateOfficialFcOffersRemoved": 1,
-    "duplicateOfficialFcOfferIdsRemoved": [
-      "f72a7b7fa9832bcc441b89"
-    ],
+    "duplicateOfficialFcOffersRemoved": 0,
+    "duplicateOfficialFcOfferIdsRemoved": [],
     "retainedPreviousRows": 0,
     "retained": [],
-    "expandedPreviousSpecialEntities": 6,
-    "expandedCandidateSpecialEntities": 3,
+    "expandedPreviousSpecialEntities": 9,
+    "expandedCandidateSpecialEntities": 9,
     "supersededStaleJointRowsRemoved": 0,
     "supersededStaleJointRowIds": [],
     "supersededLegacyReleaseSeriesRemoved": 1,
@@ -11282,21 +11361,24 @@
       "sweetFcSecondStartFixed": 0,
       "giftMultiVenueFixed": 0,
       "giftMoreStarAdded": 0,
-      "moreStarSeventhFixed": 1,
+      "moreStarSeventhFixed": 0,
       "candyOnline20261020RowsCollapsed": 0,
       "sweetOnline20261023RowsCollapsed": 0,
       "sweetEbichu20261116RowsCollapsed": 0,
-      "semanticTicketDuplicatesRemoved": 0,
-      "semanticTicketDuplicateIds": []
+      "semanticTicketDuplicatesRemoved": 2,
+      "semanticTicketDuplicateIds": [
+        "ef9326cb6422c4ea",
+        "8f2ef76c3fbff232"
+      ]
     },
     "physicalEventInvariant": {
       "semanticNormalization": {
-        "sourceSpecialRows": 9,
+        "sourceSpecialRows": 12,
         "canonicalSpecialEvents": 9,
-        "rowsCollapsed": 0,
+        "rowsCollapsed": 3,
         "releaseEventEntities": 3,
         "largeBenefitEntities": 6,
-        "alreadyCanonicalRows": 3,
+        "alreadyCanonicalRows": 9,
         "duplicateEventIdCollisions": 0,
         "duplicateEventRowsCollapsed": 0,
         "duplicateEventIdsDisambiguated": 0,
@@ -11313,8 +11395,8 @@
       "remainingDuplicates": []
     },
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-10-22T21:35:21+09:00",
-    "checkedAt": "2026-10-22T21:35:21+09:00"
+    "publicUpdatedAt": "2026-10-22T21:58:14+09:00",
+    "checkedAt": "2026-10-22T21:58:14+09:00"
   },
   "renderWarnings": [
     {
@@ -12929,6 +13011,11 @@
     },
     {
       "checkedAt": "2026-10-22T21:35:27+09:00",
+      "scope": "CANDY TUNE tour render verification",
+      "message": "Sendai performance lost its current general sale: []"
+    },
+    {
+      "checkedAt": "2026-10-22T21:58:16+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "Sendai performance lost its current general sale: []"
     }
@@ -19922,7 +20009,7 @@
       }
     ]
   },
-  "updatedAt": "2026-10-22T21:35:27+09:00",
+  "updatedAt": "2026-10-22T21:58:16+09:00",
   "publicEvents": [
     {
       "id": "1c60e2be989c564d",
@@ -20207,7 +20294,6 @@
       "sourceRowIds": [
         "special-ada4e14a803af017"
       ],
-      "offers": [],
       "schedule": [
         {
           "date": "2026-10-11",
@@ -20221,7 +20307,8 @@
       "eventEndDate": "2026-10-11",
       "venues": [
         "西日本総合展示場"
-      ]
+      ],
+      "offers": []
     },
     {
       "id": "special-2e17014a29843755",
@@ -20257,7 +20344,6 @@
       "sourceRowIds": [
         "special-2e17014a29843755"
       ],
-      "offers": [],
       "schedule": [
         {
           "date": "2026-10-11",
@@ -20271,7 +20357,8 @@
       "eventEndDate": "2026-10-11",
       "venues": [
         "西日本総合展示場"
-      ]
+      ],
+      "offers": []
     },
     {
       "id": "special-c100fe556d6100b9",
@@ -20307,7 +20394,6 @@
       "sourceRowIds": [
         "special-c100fe556d6100b9"
       ],
-      "offers": [],
       "schedule": [
         {
           "date": "2026-10-11",
@@ -20321,7 +20407,8 @@
       "eventEndDate": "2026-10-11",
       "venues": [
         "西日本総合展示場"
-      ]
+      ],
+      "offers": []
     },
     {
       "id": "d07236d5e3fe49de",
@@ -20533,7 +20620,6 @@
         "official"
       ],
       "sourcePublishedAt": "2026-10-21",
-      "applicationStatus": "none",
       "deadlineVerified": true,
       "applicationDisplayMode": "offers",
       "applicationWindowSource": "https://sweetsteady.asobisystem.com/news/detail/93504",
@@ -20541,6 +20627,22 @@
       "discoverySourceUrl": "https://sweetsteady.asobisystem.com/news/detail/93504",
       "officialScheduleUrl": "https://sweetsteady.asobisystem.com/live_information/detail/46632",
       "eventScope": "kawaii-lab",
+      "schedule": [
+        {
+          "date": "2026-10-25",
+          "venue": "千葉県 セブンパークアリオ柏 屋外スマイルパーク",
+          "startTime": "16:00"
+        }
+      ],
+      "eventCount": 1,
+      "eventDates": [
+        "2026-10-25"
+      ],
+      "eventEndDate": "2026-10-25",
+      "venues": [
+        "千葉県 セブンパークアリオ柏 屋外スマイルパーク"
+      ],
+      "applicationStatus": "none",
       "entityType": "special-event",
       "specialEventEntityVersion": 1,
       "sourceRowIds": [
@@ -20570,21 +20672,6 @@
           "salesStartTime": "12:00",
           "gatheringTime": "15:20"
         }
-      ],
-      "schedule": [
-        {
-          "date": "2026-10-25",
-          "venue": "千葉県 セブンパークアリオ柏 屋外スマイルパーク",
-          "startTime": "16:00"
-        }
-      ],
-      "eventCount": 1,
-      "eventDates": [
-        "2026-10-25"
-      ],
-      "eventEndDate": "2026-10-25",
-      "venues": [
-        "千葉県 セブンパークアリオ柏 屋外スマイルパーク"
       ]
     },
     {
@@ -21035,13 +21122,28 @@
         "official"
       ],
       "sourcePublishedAt": "2026-10-22",
-      "applicationStatus": "none",
       "deadlineVerified": true,
       "applicationDisplayMode": "offers",
       "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/93713",
       "deadlineSource": "https://cutiestreet.asobisystem.com/news/detail/93713",
       "discoverySourceUrl": "https://cutiestreet.asobisystem.com/news/detail/93713",
       "eventScope": "kawaii-lab",
+      "schedule": [
+        {
+          "date": "2026-11-03",
+          "venue": "神奈川県 パシフィコ横浜 展示ホールD",
+          "startTime": "10:00"
+        }
+      ],
+      "eventCount": 1,
+      "eventDates": [
+        "2026-11-03"
+      ],
+      "eventEndDate": "2026-11-03",
+      "venues": [
+        "神奈川県 パシフィコ横浜 展示ホールD"
+      ],
+      "applicationStatus": "none",
       "entityType": "special-event",
       "specialEventEntityVersion": 1,
       "sourceRowIds": [
@@ -21070,21 +21172,6 @@
           "ticketName": "メンバー個別2ショットチェキ撮影会参加券",
           "product": "2026年12月2日(水)発売 ／ CUTIE STREET 1stアルバム『CUTIE LAND』 通常盤(KLC-90016)／¥3,300 (税込)"
         }
-      ],
-      "schedule": [
-        {
-          "date": "2026-11-03",
-          "venue": "神奈川県 パシフィコ横浜 展示ホールD",
-          "startTime": "10:00"
-        }
-      ],
-      "eventCount": 1,
-      "eventDates": [
-        "2026-11-03"
-      ],
-      "eventEndDate": "2026-11-03",
-      "venues": [
-        "神奈川県 パシフィコ横浜 展示ホールD"
       ]
     },
     {
@@ -21253,13 +21340,28 @@
         "official"
       ],
       "sourcePublishedAt": "2026-10-22",
-      "applicationStatus": "none",
       "deadlineVerified": true,
       "applicationDisplayMode": "offers",
       "applicationWindowSource": "https://morestar.asobisystem.com/news/detail/93714",
       "deadlineSource": "https://morestar.asobisystem.com/news/detail/93714",
       "discoverySourceUrl": "https://morestar.asobisystem.com/news/detail/93714",
       "eventScope": "kawaii-lab",
+      "schedule": [
+        {
+          "date": "2026-11-03",
+          "venue": "神奈川県 パシフィコ横浜 展示ホールD",
+          "startTime": "10:00"
+        }
+      ],
+      "eventCount": 1,
+      "eventDates": [
+        "2026-11-03"
+      ],
+      "eventEndDate": "2026-11-03",
+      "venues": [
+        "神奈川県 パシフィコ横浜 展示ホールD"
+      ],
+      "applicationStatus": "none",
       "entityType": "special-event",
       "specialEventEntityVersion": 1,
       "sourceRowIds": [
@@ -21290,21 +21392,6 @@
           "ticketName": "メンバー個別2ショットチェキ撮影会参加券",
           "product": "2026年12月2日(水)発売 ／ CUTIE STREET 1stアルバム『CUTIE LAND』 通常盤(KLC-90016)／¥3,300 (税込)"
         }
-      ],
-      "schedule": [
-        {
-          "date": "2026-11-03",
-          "venue": "神奈川県 パシフィコ横浜 展示ホールD",
-          "startTime": "10:00"
-        }
-      ],
-      "eventCount": 1,
-      "eventDates": [
-        "2026-11-03"
-      ],
-      "eventEndDate": "2026-11-03",
-      "venues": [
-        "神奈川県 パシフィコ横浜 展示ホールD"
       ]
     },
     {
