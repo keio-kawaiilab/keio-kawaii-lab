@@ -283,6 +283,8 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
         self.assertEqual(DISASTER_RELIEF_PIA, event["url"])
         self.assertEqual("pia", event["ticketProvider"])
         self.assertEqual(["official", "pia"], event["sourceCandidates"])
+        self.assertTrue(event["applicationWindowVerified"])
+        self.assertTrue(event["deadlineVerified"])
         self.assertEqual("2026-11-01T23:59", event["applyEnd"])
         self.assertEqual(1, report["disasterReliefConcertFixed"])
 
