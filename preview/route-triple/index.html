@@ -1,0 +1,15 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#203b6e"><title>3観点ルート比較・試作 | KAWAII LAB.同好会</title>
+<link rel="stylesheet" href="./style.css">
+</head><body><header><div class="wrap"><a class="brand" href="../../index.html">KAWAII LAB.同好会</a><span class="eyebrow">開発用プレビュー β</span></div></header>
+<main class="wrap"><h1>乗換案内の<span>新しいかたち</span></h1><p class="intro">正確な列車時刻に依存せず、<strong>早い・楽・安い</strong>の3観点で異なる経路を比較する試作です。</p>
+<section class="panel"><form id="search" autocomplete="off"><div class="fields"><label>出発駅<input id="from" list="station-list" value="八潮" required></label><button type="button" id="swap" aria-label="発着駅を入れ替える">⇄</button><label>到着駅<input id="to" list="station-list" value="日吉" required></label></div><datalist id="station-list"></datalist><button class="submit" type="submit" id="submit" disabled>読み込み中...</button></form><div class="note" id="status" role="status">駅と乗換ルールを読み込んでいます...</div></section>
+<section class="section"><div class="heading"><h2>ネットワークから算出した候補</h2><p>時刻表から集計した走行時間の目安で比較。最速や乗れる列車を保証しません。</p></div><div id="results" aria-live="polite"><div class="empty">検索結果を準備しています。</div></div></section>
+<section class="section"><div class="heading"><h2>実例との照合（八潮 → 日吉）</h2><p>2026年7月15日12:27発のジョルダン掲載例。<strong>現在の時刻・運賃ではありません。</strong></p></div>
+<div class="benchmark">
+<div class="benchmark-card"><span class="tag fast">早い</span><strong>71分</strong><span>乗換2回・IC 1,021円</span><small>最速の掲載候補</small></div>
+<div class="benchmark-card"><span class="tag easy">楽</span><strong>78分</strong><span>乗換2回・IC 864円</span><small>乗換回数の少ない掲載候補</small></div>
+<div class="benchmark-card"><span class="tag cheap">安い</span><strong>822円</strong><span>77分・乗換3回</span><small>最安の掲載候補</small></div>
+</div><p class="source">出典：<a href="https://www.jorudan.co.jp/norikae/route/%E5%85%AB%E6%BD%AE_%E6%97%A5%E5%90%89%EF%BC%88%E7%A5%9E%E5%A5%88%E5%B7%9D%EF%BC%89.html" target="_blank" rel="noopener noreferrer">ジョルダン「八潮→日吉」検索結果</a>（2026年7月15日取得例）。上のネットワーク試算とは別の参考データです。</p></section>
+<section class="notice"><h2>検証上の制約</h2><p>「早い」は保存済み列車時刻表から集計した駅間所要時間の中央値（一部は駅発車時刻から推定）に乗換移動・待ち時間の仮定を加えた<strong>概算</strong>です。急行・快速の短縮時間や実際の接続待ちは未評価。未集計路線は距離に基づく推定を使用。「楽」は乗換回数と移動を評価します。確認済み直通区間は乗換なしの可能性を考慮しますが、具体的な乗車日時で直通列車があるかや階段数は未評価です。「安い」は運賃計算DB未接続のため、一般検索では<strong>未判定</strong>と表示します。実際の移動には鉄道各社の最新情報を確認してください。</p></section></main>
+<footer class="wrap">慶應義塾大学登録学生団体 KAWAII LAB.同好会 / 開発用プレビュー</footer>
+<script src="../../route-core.js"></script><script src="./engine.js"></script><script src="./app.js"></script></body></html>
