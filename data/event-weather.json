@@ -1,52 +1,12 @@
 {
-  "date": "2026-10-22",
+  "date": "2026-10-23",
   "horizonDays": 7,
-  "generatedAt": "2026-10-22T16:55+09:00",
+  "generatedAt": "2026-10-23T03:43+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
-    {
-      "date": "2026-10-22",
-      "venue": "東京都 HMV&BOOKS SHIBUYA",
-      "venueKey": "hmv&booksshibuya",
-      "eventIds": [
-        "d07236d5e3fe49de"
-      ],
-      "areaCode": "130010",
-      "areaName": "東京地方",
-      "precision": "area",
-      "label": "くもり",
-      "max": null,
-      "min": null,
-      "pop": "0",
-      "popLabel": "当日最大",
-      "issuedAt": "2026-10-22T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
-    {
-      "date": "2026-10-22",
-      "venue": "東京都 Shibuya LOVEZ",
-      "venueKey": "shibuyalovez",
-      "eventIds": [
-        "79aabc4a79091a04"
-      ],
-      "areaCode": "130010",
-      "areaName": "東京地方",
-      "precision": "area",
-      "label": "くもり",
-      "max": null,
-      "min": null,
-      "pop": "0",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-10-22T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
     {
       "date": "2026-10-25",
       "venue": "千葉県 セブンパークアリオ柏 屋外スマイルパーク",
@@ -307,14 +267,25 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 51,
+    "occurrencesInRange": 52,
     "uniqueVenueDates": 13,
-    "weatherEntries": 13,
+    "weatherEntries": 11,
     "meshEntries": 0,
-    "failures": 0,
+    "failures": 2,
     "meshTimelineEntries": 0,
     "meshExactTempSlots": 0,
     "hourlyRainEntries": 0
   },
-  "failures": []
+  "failures": [
+    {
+      "date": "2026-10-30",
+      "venue": "埼玉県 埼玉スタジアム2002",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-10-30",
+      "venue": "埼玉スタジアム2002 野外特設会場",
+      "reason": "開催日の予報がまだありません"
+    }
+  ]
 }
