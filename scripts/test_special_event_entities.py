@@ -228,6 +228,39 @@ class SpecialEventEntityTests(unittest.TestCase):
         self.assertEqual(1, report["publicEvents"]["rowsCollapsed"])
         self.assertFalse(validate(normalized))
 
+    def test_physical_fc_benefit_repairs_stale_online_offer_label(self):
+        event = {
+            "id": "canonical-event",
+            "group": "CUTIE STREET",
+            "eventCategory": "large-benefit",
+            "displayTitle": "CUTIE STREET 大特典会",
+            "eventDate": "2026-11-03",
+            "venue": "神奈川県 パシフィコ横浜 展示ホールD",
+            "purchaseMethod": "SUKISUKIで対象商品1セットの抽選に応募",
+            "parts": [{"part": "第1部", "content": "2ショットチェキ撮影会(ファンクラブ限定)"}],
+            "url": "https://cutiestreet.asobisystem.com/news/detail/93831",
+            "offers": [{
+                "sourceRowId": "old-retailer-row",
+                "provider": "sukisuki",
+                "ticketProvider": "sukisuki",
+                "ticketType": "オンライン特典会・抽選販売",
+                "applyStart": "2026-10-23T21:00",
+                "applyEnd": "2026-10-24T23:59",
+                "url": "https://sukisuki-shop.com/goods/6500000004719",
+            }],
+            "ticketType": "現在受付なし",
+            "applicationStatus": "none",
+            "sourceType": "official-special",
+        }
+
+        normalized, _ = normalize_payload({"events": [event]})
+
+        self.assertEqual(
+            "FC限定・対象商品応募（抽選／応募受付）",
+            normalized["events"][0]["offers"][0]["ticketType"],
+        )
+        self.assertFalse(validate(normalized))
+
     def test_multiday_benefit_placeholder_merges_only_matching_detail_day(self):
         payload = {"events": [
             {
