@@ -1,7 +1,7 @@
 {
-  "date": "2026-10-23",
+  "date": "2026-10-24",
   "horizonDays": 7,
-  "generatedAt": "2026-10-23T22:46+09:00",
+  "generatedAt": "2026-10-24T03:24+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -308,14 +308,30 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 52,
-    "uniqueVenueDates": 13,
+    "occurrencesInRange": 63,
+    "uniqueVenueDates": 16,
     "weatherEntries": 13,
     "meshEntries": 0,
-    "failures": 0,
+    "failures": 3,
     "meshTimelineEntries": 0,
     "meshExactTempSlots": 0,
     "hourlyRainEntries": 0
   },
-  "failures": []
+  "failures": [
+    {
+      "date": "2026-10-31",
+      "venue": "東京都 ベルサール渋谷ガーデン",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-10-31",
+      "venue": "埼玉スタジアム2002 野外特設会場",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-10-31",
+      "venue": "兵庫県 神戸ワールド記念ホール",
+      "reason": "開催日の予報がまだありません"
+    }
+  ]
 }
