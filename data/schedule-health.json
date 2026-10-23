@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-24T03:17:57.374566+09:00",
-  "candidateUpdatedAt": "2026-10-24T03:17:40+09:00",
-  "previousEventCount": 253,
+  "generatedAt": "2026-10-24T03:31:20.376117+09:00",
+  "candidateUpdatedAt": "2026-10-24T03:31:06+09:00",
+  "previousEventCount": 252,
   "candidateEventCount": 252,
-  "protectedPreviousCount": 250,
+  "protectedPreviousCount": 249,
   "errorCount": 0,
   "warningCount": 13,
   "errors": [],
@@ -23,7 +23,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし"
   ],
-  "candidateSha256": "055eb090651d12c55de1283649cc624f2067f2f79f912c93ccb6b64f87f08fd8",
+  "candidateSha256": "94f967a0ba1d34e132c906bc513362c76eb5fe6e2a97c915ed7ed1df87b9d431",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40731",
@@ -86,6 +86,7 @@
     "url:https://kawaiilab.asobisystem.com/news/detail/92965",
     "url:https://kawaiilab.asobisystem.com/news/detail/93888",
     "url:https://morestar.asobisystem.com/live_information/detail/45677",
+    "url:https://morestar.asobisystem.com/live_information/detail/46447",
     "url:https://morestar.asobisystem.com/news/detail/92107",
     "url:https://prtimes.jp/main/html/rd/p/000000898.000017258.html",
     "url:https://prtimes.jp/main/html/rd/p/000000907.000017258.html",
@@ -181,6 +182,7 @@
     "url:https://kawaiilab.asobisystem.com/news/detail/92965",
     "url:https://kawaiilab.asobisystem.com/news/detail/93888",
     "url:https://morestar.asobisystem.com/live_information/detail/45677",
+    "url:https://morestar.asobisystem.com/live_information/detail/46447",
     "url:https://morestar.asobisystem.com/news/detail/92107",
     "url:https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026",
     "url:https://sweetsteady.asobisystem.com/live_information/detail/43906",
@@ -261,23 +263,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 1,
-  "quarantineActions": [
-    {
-      "error": "protected future/active official FC offer disappeared: CUTIE STREET / CUTIE STREET 板倉可奈 生誕祭 2026 / FC先行",
-      "action": "last-chance restored implicated previous row",
-      "restoredPreviousRows": 1
-    }
-  ],
-  "rowFailuresCanBlockRelease": false,
-  "officialIndexReconciledAfterQuarantine": {
-    "reassignedCount": 0,
-    "hydratedCount": 0,
-    "ambiguousCount": 0,
-    "unresolvedCount": 0,
-    "reassigned": [],
-    "hydrated": [],
-    "ambiguous": [],
-    "unresolved": []
-  }
+  "quarantineCount": 0,
+  "quarantineActions": [],
+  "rowFailuresCanBlockRelease": false
 }
