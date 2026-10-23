@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-23T19:07:04.970069+09:00",
-  "candidateUpdatedAt": "2026-10-23T19:07:04+09:00",
-  "previousEventCount": 248,
-  "candidateEventCount": 252,
-  "protectedPreviousCount": 248,
+  "generatedAt": "2026-10-23T19:22:40.516298+09:00",
+  "candidateUpdatedAt": "2026-10-23T19:22:40+09:00",
+  "previousEventCount": 253,
+  "candidateEventCount": 248,
+  "protectedPreviousCount": 253,
   "errorCount": 0,
-  "warningCount": 13,
+  "warningCount": 18,
   "errors": [],
   "warnings": [
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no official source URL: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
@@ -19,11 +19,16 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: SWEET STEADY / SWEET STEADY 庄司なぎさ BIRTHDAY LIVE 2026 ～ DOKI DOKI ♡ NAGYU ADDICTION ～ / 一般発売",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:74753: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: SWEET STEADY / 『SWEET STEADY JAPAN TOUR 2026』 / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: SWEET STEADY / 『SWEET STEADY JAPAN TOUR 2026』 / 一般発売",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:74753: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN / 現在受付なし"
+    "performance dates added for url:https://cutiestreet.asobisystem.com/live_information/detail/40362 [CUTIE STREET]: 2026-11-14, 2026-11-15, 2026-11-28",
+    "performance dates added for url:https://cutiestreet.asobisystem.com/live_information/detail/40363 [CUTIE STREET]: 2026-11-14, 2026-11-15, 2026-11-28",
+    "performance dates added for url:https://cutiestreet.asobisystem.com/live_information/detail/40364 [CUTIE STREET]: 2026-11-14, 2026-11-15, 2026-11-28",
+    "performance dates added for url:https://cutiestreet.asobisystem.com/live_information/detail/40365 [CUTIE STREET]: 2026-11-14, 2026-11-15, 2026-11-28",
+    "performance dates added for url:https://cutiestreet.asobisystem.com/news/detail/90591 [CUTIE STREET]: 2026-11-14, 2026-11-15, 2026-11-28"
   ],
-  "candidateSha256": "79231064c7b527a1c647894661076ab85f10239d1f3d825935b29cd7ec024153",
+  "candidateSha256": "5f19395adecb01645f7737793c897350ffb11ebecd7aee1fc382abe99dc26ed1",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40731",
@@ -194,7 +199,7 @@
     "url:https://sweetsteady.asobisystem.com/live_information/detail/46635",
     "url:https://sweetsteady.asobisystem.com/news/detail/93491"
   ],
-  "reconciledBaseDateMessageCount": 1,
+  "reconciledBaseDateMessageCount": 5,
   "downgradedFalsePositiveCount": 0,
   "legacyProtectedErrorCount": 13,
   "legacyProtectedErrors": [
@@ -249,22 +254,22 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     },
     {
-      "error": "active Pia row has no lotRlsCd detail URL: SWEET STEADY / 『SWEET STEADY JAPAN TOUR 2026』 / 一般発売",
-      "label": "SWEET STEADY / 『SWEET STEADY JAPAN TOUR 2026』 / 一般発売",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
-      "error": "active Pia row has no lotRlsCd detail URL: SWEET STEADY / 『SWEET STEADY JAPAN TOUR 2026』 / 一般発売",
-      "label": "SWEET STEADY / 『SWEET STEADY JAPAN TOUR 2026』 / 一般発売",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
       "error": "duplicate Pia lot pia:74753: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN / 現在受付なし",
       "label": "CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN / 現在受付なし",
       "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "active Pia row has no lotRlsCd detail URL: SWEET STEADY / 『SWEET STEADY JAPAN TOUR 2026』 / 一般発売",
+      "label": "SWEET STEADY / 『SWEET STEADY JAPAN TOUR 2026』 / 一般発売",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "active Pia row has no lotRlsCd detail URL: SWEET STEADY / 『SWEET STEADY JAPAN TOUR 2026』 / 一般発売",
+      "label": "SWEET STEADY / 『SWEET STEADY JAPAN TOUR 2026』 / 一般発売",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 28,
+  "quarantineCount": 25,
   "quarantineActions": [
     {
       "error": "active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 一般発売",
@@ -292,6 +297,11 @@
       "restoredPreviousRows": 1
     },
     {
+      "error": "active deadline disappeared for url:https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / アップグレード抽選",
+      "action": "restored previous rows for url:https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026",
+      "restoredPreviousRows": 15
+    },
+    {
       "error": "protected future/active item disappeared: SWEET STEADY / 『SWEET STEADY JAPAN TOUR 2026』 / 一般発売",
       "action": "restored disappeared previous row",
       "restoredPreviousRows": 2
@@ -315,26 +325,6 @@
       "error": "protected future/active item disappeared: SWEET STEADY / 『SWEET STEADY JAPAN TOUR 2026』 / 一般発売",
       "action": "restored disappeared previous row",
       "restoredPreviousRows": 2
-    },
-    {
-      "error": "future performance dates disappeared for url:https://cutiestreet.asobisystem.com/live_information/detail/40366 [CUTIE STREET]: 2026-11-28, 2026-11-29",
-      "action": "restored previous rows for url:https://cutiestreet.asobisystem.com/live_information/detail/40366",
-      "restoredPreviousRows": 3
-    },
-    {
-      "error": "future performance dates disappeared for url:https://cutiestreet.asobisystem.com/live_information/detail/40367 [CUTIE STREET]: 2026-11-28, 2026-11-29",
-      "action": "restored previous rows for url:https://cutiestreet.asobisystem.com/live_information/detail/40367",
-      "restoredPreviousRows": 3
-    },
-    {
-      "error": "future performance dates disappeared for url:https://cutiestreet.asobisystem.com/live_information/detail/40368 [CUTIE STREET]: 2026-11-14, 2026-11-15, 2026-11-29",
-      "action": "restored previous rows for url:https://cutiestreet.asobisystem.com/live_information/detail/40368",
-      "restoredPreviousRows": 3
-    },
-    {
-      "error": "future performance dates disappeared for url:https://cutiestreet.asobisystem.com/live_information/detail/40369 [CUTIE STREET]: 2026-11-14, 2026-11-15, 2026-11-28",
-      "action": "restored previous rows for url:https://cutiestreet.asobisystem.com/live_information/detail/40369",
-      "restoredPreviousRows": 4
     },
     {
       "error": "future performance dates disappeared for url:https://cutiestreet.asobisystem.com/live_information/detail/45469 [CUTIE STREET]: 2026-11-23",
