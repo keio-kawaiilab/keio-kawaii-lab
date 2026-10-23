@@ -21,6 +21,13 @@ SALE_FIELDS = (
 )
 LIST_FIELDS = ("participants", "ticketBenefits", "numberedCallTimes", "parts", "sourceCandidates")
 SALES_PROVIDERS = {"sukisuki", "hmv", "tower", "rakuten", "kawaii-store", "pia", "lawson", "eplus"}
+SALE_URL_RE = re.compile(
+    r"https://(?:api\.)?sukisuki-shop\.com/goods/\d+"
+    r"|https://(?:www\.)?hmv\.co\.jp/[^?#]+"
+    r"|https://tower\.jp/article/feature_item/[^?#]+"
+    r"|https://kawaiilab\.goods-order\.com(?:/[^?#]*)?",
+    re.I,
+)
 
 
 def compact(value: object) -> str:
@@ -53,6 +60,20 @@ def venue_key(value: object) -> str:
 
 def occurrence_keys(event: dict) -> set[tuple[str, str]]:
     return {(str(row.get("date") or "")[:10], venue_key(row.get("venue"))) for row in schedule_rows(event)}
+
+
+def sale_urls(event: dict) -> set[str]:
+    """Return stable retailer URLs that can identify one special event.
+
+    A retailer row can temporarily call a physical benefit event "online" and
+    omit its real venue.  An exact shared product/application URL plus the same
+    group and event day is stronger identity evidence than that bad venue.
+    """
+    return {
+        value.rstrip("/")
+        for value in all_urls(event)
+        if SALE_URL_RE.match(value)
+    }
 
 
 def provider(event: dict) -> str:
@@ -133,7 +154,6 @@ def offer_from_event(event: dict) -> dict:
 def offer_key(offer: dict) -> tuple:
     return (
         text(offer.get("provider") or offer.get("ticketProvider")).lower(),
-        compact(offer.get("ticketType")),
         text(offer.get("applyStart")),
         text(offer.get("applyEnd")),
         text(offer.get("url")),
@@ -174,13 +194,15 @@ def compatible_release(a: dict, b: dict) -> bool:
 def compatible_benefit(a: dict, b: dict) -> bool:
     if text(a.get("group")) != text(b.get("group")) or category(a) != category(b):
         return False
-    if normalized_series_title(a) != normalized_series_title(b):
-        return False
     left, right = occurrence_keys(a), occurrence_keys(b)
-    if left.intersection(right):
-        return True
     left_days = {day for day, _ in left}
     right_days = {day for day, _ in right}
+    if left_days.intersection(right_days) and sale_urls(a).intersection(sale_urls(b)):
+        return True
+    if normalized_series_title(a) != normalized_series_title(b):
+        return False
+    if left.intersection(right):
+        return True
     if not left_days.intersection(right_days):
         return False
     return any(not venue for _, venue in left) or any(not venue for _, venue in right)
@@ -320,10 +342,41 @@ def dedupe_schedule_occurrences(rows: list[dict]) -> list[dict]:
     return output
 
 
+def drop_retailer_online_aliases(items: list[dict], rows: list[dict]) -> list[dict]:
+    """Discard a retailer-only online venue when the official physical venue exists.
+
+    This is intentionally limited to large-benefit rows connected by the exact
+    same sales URL on the same day.  Real online benefits and different dates
+    therefore remain independent events.
+    """
+    if not items or category(items[0]) != "large-benefit":
+        return rows
+    linked = any(
+        sale_urls(left).intersection(sale_urls(right))
+        for index, left in enumerate(items)
+        for right in items[index + 1:]
+    )
+    if not linked:
+        return rows
+    physical_days = {
+        str(row.get("date") or "")[:10]
+        for row in rows
+        if "オンライン" not in text(row.get("venue"))
+    }
+    return [
+        row for row in rows
+        if not (
+            str(row.get("date") or "")[:10] in physical_days
+            and "オンライン" in text(row.get("venue"))
+        )
+    ]
+
+
 def make_entity(items: list[dict]) -> dict:
     representative = max(items, key=richness)
     entity = copy.deepcopy(representative)
     schedule = dedupe_schedule_occurrences(merge_schedules(items))
+    schedule = drop_retailer_online_aliases(items, schedule)
     dates = list(dict.fromkeys(row["date"] for row in schedule if row.get("date")))
     venues = list(dict.fromkeys(text(row.get("venue")) for row in schedule if text(row.get("venue"))))
     key = canonical_key(items, schedule)
@@ -658,33 +711,49 @@ def normalize_payload(payload: dict) -> tuple[dict, dict]:
     report = {**report, **id_report, "onlinePlaceholderOccurrencesMerged": online_matched}
     out = dict(payload)
     out["events"] = normalized
+    public = payload.get("publicEvents")
+    if isinstance(public, list):
+        public_rows = [dict(event) for event in public if isinstance(event, dict)]
+        public_rows, public_online_matched = reconcile_online_placeholders(public_rows)
+        public_normalized, public_report = normalize_events(public_rows)
+        public_normalized, public_id_report = repair_duplicate_event_ids(public_normalized)
+        out["publicEvents"] = public_normalized
+        report["publicEvents"] = {
+            **public_report,
+            **public_id_report,
+            "onlinePlaceholderOccurrencesMerged": public_online_matched,
+        }
     out["specialEventNormalization"] = report
     return out, report
 
 
 def validate(payload: dict) -> list[str]:
     errors = []
-    seen_ids = set()
-    for event in payload.get("events", []):
-        if not isinstance(event, dict):
+    for collection in ("events", "publicEvents"):
+        if collection == "publicEvents" and not isinstance(payload.get(collection), list):
             continue
-        event_id = text(event.get("id"))
-        if event_id and event_id in seen_ids:
-            errors.append(f"duplicate event id after normalization: {event_id}")
-        seen_ids.add(event_id)
-        if category(event) not in SPECIAL_CATEGORIES:
-            continue
-        if event.get("entityType") != "special-event" or event.get("specialEventEntityVersion") != 1:
-            errors.append(f"special row is not canonical: {event_id or event.get('title')}")
-        seen_offers = set()
-        for offer in event.get("offers") or []:
-            if not isinstance(offer, dict):
-                errors.append(f"invalid offer child: {event_id}")
+        seen_ids = set()
+        for event in payload.get(collection, []):
+            if not isinstance(event, dict):
                 continue
-            marker = offer_key(offer)
-            if marker in seen_offers:
-                errors.append(f"duplicate offer child: {event_id} {marker}")
-            seen_offers.add(marker)
+            event_id = text(event.get("id"))
+            prefix = "public " if collection == "publicEvents" else ""
+            if event_id and event_id in seen_ids:
+                errors.append(f"duplicate {prefix}event id after normalization: {event_id}")
+            seen_ids.add(event_id)
+            if category(event) not in SPECIAL_CATEGORIES:
+                continue
+            if event.get("entityType") != "special-event" or event.get("specialEventEntityVersion") != 1:
+                errors.append(f"{prefix}special row is not canonical: {event_id or event.get('title')}")
+            seen_offers = set()
+            for offer in event.get("offers") or []:
+                if not isinstance(offer, dict):
+                    errors.append(f"invalid {prefix}offer child: {event_id}")
+                    continue
+                marker = offer_key(offer)
+                if marker in seen_offers:
+                    errors.append(f"duplicate {prefix}offer child: {event_id} {marker}")
+                seen_offers.add(marker)
     return errors
 
 
