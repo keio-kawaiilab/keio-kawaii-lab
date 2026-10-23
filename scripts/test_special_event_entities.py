@@ -168,6 +168,62 @@ class SpecialEventEntityTests(unittest.TestCase):
         self.assertEqual(event["ticketType"], "現在受付なし")
         self.assertFalse(validate(normalized))
 
+    def test_same_day_shared_sukisuki_goods_merges_bad_online_venue_into_official_event(self):
+        duplicate = {
+            "id": "sukisuki-only",
+            "group": "CUTIE STREET",
+            "eventCategory": "large-benefit",
+            "title": "CUTIE STREET大特典会＠パシフィコ横浜【1部・3部・6部】",
+            "eventDate": "2026-11-03",
+            "venue": "オンライン（SUKISUKI）",
+            "ticketProvider": "sukisuki",
+            "ticketType": "オンライン特典会・抽選販売",
+            "applyStart": "2026-10-23T21:00",
+            "applyEnd": "2026-10-24T23:59",
+            "url": "https://sukisuki-shop.com/goods/6500000004719",
+            "sourceType": "sukisuki",
+        }
+        official = {
+            "id": "official-event",
+            "group": "CUTIE STREET",
+            "eventCategory": "large-benefit",
+            "displayTitle": "CUTIE STREET 大特典会",
+            "eventDate": "2026-11-03",
+            "venue": "神奈川県 パシフィコ横浜 展示ホールD",
+            "url": "https://cutiestreet.asobisystem.com/news/detail/93831",
+            "urls": [
+                "https://cutiestreet.asobisystem.com/news/detail/93831",
+                "https://sukisuki-shop.com/goods/6500000004719",
+            ],
+            "offers": [{
+                "sourceRowId": "official-sukisuki-offer",
+                "provider": "sukisuki",
+                "ticketProvider": "sukisuki",
+                "ticketType": "FC限定・対象商品応募（抽選／応募受付）",
+                "applyStart": "2026-10-23T21:00",
+                "applyEnd": "2026-10-24T23:59",
+                "url": "https://sukisuki-shop.com/goods/6500000004719",
+                "urls": ["https://sukisuki-shop.com/goods/6500000004719"],
+            }],
+            "ticketType": "現在受付なし",
+            "applicationStatus": "none",
+            "sourceType": "official-special",
+        }
+        payload = {"events": [duplicate, official], "publicEvents": [duplicate, official]}
+
+        normalized, report = normalize_payload(payload)
+
+        self.assertEqual(1, len(normalized["events"]))
+        self.assertEqual(1, len(normalized["publicEvents"]))
+        for collection in ("events", "publicEvents"):
+            event = normalized[collection][0]
+            self.assertEqual("神奈川県 パシフィコ横浜 展示ホールD", event["venue"])
+            self.assertIn("https://cutiestreet.asobisystem.com/news/detail/93831", event["urls"])
+            self.assertEqual(1, len(event["offers"]))
+        self.assertEqual(1, report["rowsCollapsed"])
+        self.assertEqual(1, report["publicEvents"]["rowsCollapsed"])
+        self.assertFalse(validate(normalized))
+
     def test_multiday_benefit_placeholder_merges_only_matching_detail_day(self):
         payload = {"events": [
             {
