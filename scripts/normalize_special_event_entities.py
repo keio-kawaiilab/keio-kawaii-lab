@@ -169,6 +169,21 @@ def offer_score(offer: dict, parent: dict) -> tuple:
     )
 
 
+def correct_physical_benefit_offer_label(event: dict, offer: dict) -> dict:
+    """Repair a stale online label on a verified physical FC benefit offer."""
+    corrected = copy.deepcopy(offer)
+    if (
+        category(event) == "large-benefit"
+        and provider(offer) == "sukisuki"
+        and "オンライン特典会" in text(offer.get("ticketType"))
+        and "オンライン" not in text(event.get("venue"))
+        and "抽選" in text(event.get("purchaseMethod"))
+        and any("ファンクラブ限定" in text(part.get("content")) for part in event.get("parts") or [] if isinstance(part, dict))
+    ):
+        corrected["ticketType"] = "FC限定・対象商品応募（抽選／応募受付）"
+    return corrected
+
+
 def compatible_release(a: dict, b: dict) -> bool:
     """Merge release-event rows only when they describe the same occurrence.
 
@@ -462,6 +477,7 @@ def make_entity(items: list[dict]) -> dict:
     if any(not item.get("sourceStale") for item in items):
         for field in ("sourceStale", "sourceStaleSince", "releaseRetentionReason"):
             entity.pop(field, None)
+    entity["offers"] = [correct_physical_benefit_offer_label(entity, offer) for offer in offers]
     return entity
 
 
