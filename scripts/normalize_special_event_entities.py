@@ -160,6 +160,15 @@ def offer_key(offer: dict) -> tuple:
     )
 
 
+def offer_score(offer: dict, parent: dict) -> tuple:
+    """Prefer the offer carried by the richer, authoritative event row."""
+    return (
+        richness(parent),
+        sum(value not in (None, "", [], {}) for value in offer.values()),
+        len(all_urls(offer)),
+    )
+
+
 def compatible_release(a: dict, b: dict) -> bool:
     """Merge release-event rows only when they describe the same occurrence.
 
@@ -383,7 +392,7 @@ def make_entity(items: list[dict]) -> dict:
     canonical_id = "special-" + hashlib.sha1(key.encode("utf-8")).hexdigest()[:16]
 
     offers = []
-    seen_offers = set()
+    seen_offers: dict[tuple, tuple[int, tuple]] = {}
     for item in items:
         existing = item.get("offers") if isinstance(item.get("offers"), list) else []
         source_offers = [dict(value) for value in existing if isinstance(value, dict)]
@@ -391,9 +400,14 @@ def make_entity(items: list[dict]) -> dict:
             source_offers.append(offer_from_event(item))
         for offer in source_offers:
             marker = offer_key(offer)
+            score = offer_score(offer, item)
             if marker in seen_offers:
+                index, current_score = seen_offers[marker]
+                if score > current_score:
+                    offers[index] = offer
+                    seen_offers[marker] = (index, score)
                 continue
-            seen_offers.add(marker)
+            seen_offers[marker] = (len(offers), score)
             offers.append(offer)
 
     source_urls = []
