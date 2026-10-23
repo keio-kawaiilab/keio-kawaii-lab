@@ -19,6 +19,8 @@ TICKET_FIELDS = (
     "applyStart",
     "applyEnd",
     "resultDate",
+    "resultDateSource",
+    "resultDeliveryNotice",
     "paymentEnd",
     "applicationStatus",
     "applicationWindowVerified",

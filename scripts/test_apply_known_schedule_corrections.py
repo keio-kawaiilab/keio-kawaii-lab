@@ -670,5 +670,84 @@ class SweetOnlineReceptionRoundsTests(unittest.TestCase):
             self.assertEqual(0, report["sweetOnline20261023RowsCollapsed"])
 
 
+class PiaNoticeAndSweetWinterUpgradeTests(unittest.TestCase):
+    def test_exact_pia_notice_offers_gain_result_time_without_new_band(self):
+        row = {
+            "id": "noel", "group": "FRUITS ZIPPER",
+            "title": "FRUITS ZIPPER 早瀬ノエル 生誕祭 2026",
+            "eventDate": "2026-12-17", "startTime": "19:00",
+            "ticketType": "FC先行", "applyStart": "2026-10-09T12:00",
+            "applyEnd": "2026-10-15T23:59",
+            "url": "https://fruitszipper.asobisystem.com/news/detail/92290",
+        }
+        result, report = apply_known_corrections([row])
+        corrected = next(item for item in result if item.get("id") == "noel")
+        self.assertEqual(1, report["piaResultNoticesAttached"])
+        self.assertEqual("2026-10-22T20:00", corrected["resultDate"])
+        self.assertIn("https://kawaiilab.asobisystem.com/news/detail/93888", corrected["urls"])
+        again, report = apply_known_corrections(result)
+        self.assertEqual(result, again)
+        self.assertEqual(0, report["piaResultNoticesAttached"])
+
+    def test_pia_notice_result_metadata_survives_public_offer_generation(self):
+        from performance_entities import build_public_events
+
+        row = {
+            "id": "noel", "group": "FRUITS ZIPPER",
+            "title": "FRUITS ZIPPER 早瀬ノエル 生誕祭 2026",
+            "eventDate": "2026-12-17", "startTime": "19:00", "venue": "Zepp Shinjuku",
+            "eventScope": "kawaii-lab", "ticketType": "FC先行",
+            "applyStart": "2026-10-09T12:00", "applyEnd": "2026-10-15T23:59",
+            "url": "https://fruitszipper.asobisystem.com/news/detail/92290",
+        }
+        corrected, _ = apply_known_corrections([row])
+        public, _ = build_public_events(corrected)
+        performance = next(item for item in public if item.get("eventDate") == "2026-12-17")
+        offer = performance["offers"][0]
+        self.assertEqual("2026-10-22T20:00", offer["resultDate"])
+        self.assertEqual("https://kawaiilab.asobisystem.com/news/detail/93888", offer["resultDateSource"])
+        self.assertIn("マイページ", offer["resultDeliveryNotice"])
+
+    def test_pia_notice_enriches_fifth_anniversary_tour(self):
+        row = {
+            "id": "tour", "group": "KAWAII LAB.合同", "eventDate": "2027-01-30",
+            "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR", "ticketType": "FC先行",
+            "applyStart": "2026-10-12T18:30", "applyEnd": "2026-10-18T23:59",
+            "url": "https://kawaiilab.asobisystem.com/news/detail/92410",
+        }
+        corrected, report = apply_known_corrections([row])
+        self.assertEqual("2026-10-23T18:00", corrected[0]["resultDate"])
+        self.assertEqual(1, report["piaResultNoticesAttached"])
+
+    def test_sweet_winter_upgrade_is_one_offer_per_occurrence(self):
+        source = "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026"
+        seed = {"id": "tour", "group": "SWEET STEADY",
+                "title": "SWEET STEADY JAPAN TOUR 2026 -WINTER-",
+                "eventDate": "2026-11-13", "eventEndDate": "2026-12-18",
+                "startTime": "18:30", "url": source, "ticketType": "現在受付なし"}
+        result, report = apply_known_corrections([seed])
+        upgrades = [row for row in result if row.get("ticketType") == "アップグレード抽選"]
+        self.assertEqual(4, report["sweetWinterUpgradeOffersAdded"])
+        self.assertEqual({"2026-11-13", "2026-12-03", "2026-12-06", "2026-12-18"},
+                         {row["eventDate"] for row in upgrades})
+        self.assertTrue(all(row["applyStart"] == "2026-10-23T18:00" and
+                            row["applyEnd"] == "2026-10-26T23:59" for row in upgrades))
+        self.assertTrue(all("https://sweetsteady.asobisystem.com/news/detail/93491" in row["urls"]
+                            for row in upgrades))
+        again, report = apply_known_corrections(result)
+        self.assertEqual(result, again)
+        self.assertEqual(0, report["sweetWinterUpgradeOffersAdded"])
+
+    def test_unrelated_rows_do_not_gain_notice_or_upgrade(self):
+        unrelated = {"id": "other", "group": "CANDY TUNE", "eventDate": "2026-12-17",
+                     "title": "Other", "ticketType": "FC先行",
+                     "applyStart": "2026-10-09T12:00", "applyEnd": "2026-10-15T23:59",
+                     "url": "https://candytune.asobisystem.com/news/detail/other"}
+        result, report = apply_known_corrections([unrelated])
+        self.assertEqual([unrelated], result)
+        self.assertEqual(0, report["piaResultNoticesAttached"])
+        self.assertEqual(0, report["sweetWinterUpgradeOffersAdded"])
+
+
 if __name__ == "__main__":
     unittest.main()

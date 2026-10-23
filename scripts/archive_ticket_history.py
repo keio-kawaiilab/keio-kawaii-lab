@@ -8,7 +8,12 @@ from datetime import datetime
 from pathlib import Path
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 from zoneinfo import ZoneInfo
-from apply_known_schedule_corrections import repair_cutie_upgrade_reception, repair_sweet_shiraishi_central_fc, repair_candy_oita_eplus_link
+from apply_known_schedule_corrections import (
+    repair_candy_oita_eplus_link,
+    repair_cutie_upgrade_reception,
+    repair_pia_result_notice,
+    repair_sweet_shiraishi_central_fc,
+)
 
 LIVE_PATH = Path("data/live-events.json")
 HISTORY_PATH = Path("data/ticket-history.json")
@@ -182,6 +187,8 @@ def snapshot_window(event: dict) -> dict:
         "applyStart": event.get("applyStart"),
         "applyEnd": event.get("applyEnd"),
         "resultDate": event.get("resultDate"),
+        "resultDateSource": event.get("resultDateSource"),
+        "resultDeliveryNotice": event.get("resultDeliveryNotice"),
         "paymentEnd": event.get("paymentEnd"),
     }
 
@@ -304,6 +311,8 @@ def archive_payload(live: dict, history: dict, registry: dict, now: str) -> dict
     by_id: dict[str, dict] = {}
     for existing in entries:
         existing = retract_known_upgrade_misclassification(existing)
+        existing = repair_pia_result_notice(dict(existing, url=existing.get("sourceUrl")))
+        existing.pop("url", None)
         canonical_url = canonical_source_url(clean(existing.get("sourceUrl")))
         source_key = clean(existing.get("sourceKey"))
         stub = {

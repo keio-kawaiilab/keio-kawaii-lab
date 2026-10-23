@@ -103,6 +103,42 @@ def repair_sweet_shiraishi_central_fc(event: dict) -> dict:
     return out
 
 
+def repair_pia_result_notice(event: dict) -> dict:
+    """Attach the verified Pia result time and outage notice to exact offers.
+
+    KAWAII LAB. NEWS 93888 is a delivery notice, not a new reception.  It
+    explicitly identifies these already collected offers and their result
+    times, so enrich only exact event/window matches and never create a band.
+    """
+    notice = "https://kawaiilab.asobisystem.com/news/detail/93888"
+    facts = (
+        ("FRUITS ZIPPER", "2026-12-17", "2026-10-09T12:00", "2026-10-15T23:59", "2026-10-22T20:00"),
+        ("FRUITS ZIPPER", "2026-11-24", "2026-10-14T12:00", "2026-10-20T23:59", "2026-10-24T20:00"),
+        ("SWEET STEADY", "2026-12-08", "2026-10-14T12:00", "2026-10-20T23:59", "2026-10-24T20:00"),
+    )
+    matched = next((result for group, day, start, end, result in facts if (
+        event.get("group") == group and _day(event) == day
+        and event.get("applyStart") == start and event.get("applyEnd") == end
+    )), None)
+    if not matched:
+        title = str(event.get("eventTitle") or event.get("title") or "")
+        if (
+            event.get("group") == "KAWAII LAB.合同"
+            and "5th ANNIVERSARY TOUR" in title
+            and event.get("applyStart") == "2026-10-12T18:30"
+            and event.get("applyEnd") == "2026-10-18T23:59"
+        ):
+            matched = "2026-10-23T18:00"
+        else:
+            return event
+    out = deepcopy(event)
+    out["resultDate"] = matched
+    out["urls"] = list(dict.fromkeys([*_urls(out), notice]))
+    out["resultDateSource"] = notice
+    out["resultDeliveryNotice"] = "チケットぴあの結果案内メールが届かない可能性あり。マイページで確認"
+    return out
+
+
 def repair_candy_oita_eplus_link(offer: dict, group: str, day: str, start_time: str) -> dict:
     """The Fukuoka eplus page is not an application page for Oita.
 
@@ -860,6 +896,8 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "candyBirthdayFactsFilled": 0,
         "cutieUpgradeReceptionFixed": 0,
         "sweetShiraishiCentralFcFixed": 0,
+        "piaResultNoticesAttached": 0,
+        "sweetWinterUpgradeOffersAdded": 0,
         "candyOitaEplusLinkFixed": 0,
         "candyTokyoPresaleAdded": 0,
         "sweetestStoryPerformancesAdded": 0,
@@ -901,6 +939,10 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         current = repair_sweet_shiraishi_central_fc(current)
         if current != before_central_fc:
             report["sweetShiraishiCentralFcFixed"] += 1
+        before_result_notice = current
+        current = repair_pia_result_notice(current)
+        if current != before_result_notice:
+            report["piaResultNoticesAttached"] += 1
         before_oita = current
         current = repair_candy_oita_eplus_link(current, current.get("group"), _day(current), current.get("startTime"))
         if current != before_oita:
@@ -1028,6 +1070,45 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
                 "eventScope": "kawaii-lab",
             })
             report["candyTokyoPresaleAdded"] += 1
+
+    # Official feature page and NEWS 93491, checked 2026-10-23: one upgrade
+    # lottery applies to all four winter-tour performances.  Model it as four
+    # offers attached to the existing occurrences, not as another performance.
+    sweet_winter = "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026"
+    sweet_winter_upgrade = "https://sweetsteady.asobisystem.com/news/detail/93491"
+    if any(event.get("group") == "SWEET STEADY" and sweet_winter in _urls(event) for event in out):
+        for day, venue, opened, start in (
+            ("2026-11-13", "神奈川県 厚木市文化会館", "17:30", "18:30"),
+            ("2026-12-03", "大阪府 フェニーチェ堺 大ホール", "17:30", "18:30"),
+            ("2026-12-06", "愛知県 Niterra日本特殊陶業市民会館フォレストホール", "16:00", "17:00"),
+            ("2026-12-18", "東京都 SGC HALL ARIAKE", "17:00", "18:30"),
+        ):
+            represented = any(
+                event.get("group") == "SWEET STEADY" and _day(event) == day
+                and event.get("ticketType") == "アップグレード抽選"
+                and event.get("applyStart") == "2026-10-23T18:00"
+                and event.get("applyEnd") == "2026-10-26T23:59"
+                for event in out
+            )
+            if represented:
+                continue
+            title = "SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle"
+            out.append({
+                "id": "known-sweet-winter-upgrade-" + day.replace("-", ""),
+                "group": "SWEET STEADY", "title": title, "eventTitle": title,
+                "eventDate": day, "eventEndDate": day, "eventDates": [day], "eventCount": 1,
+                "venue": venue, "openTime": opened, "startTime": start,
+                "schedule": [{"date": day, "venue": venue, "openTime": opened, "startTime": start}],
+                "ticketType": "アップグレード抽選",
+                "applyStart": "2026-10-23T18:00", "applyEnd": "2026-10-26T23:59",
+                "applicationWindowVerified": True, "applicationWindowSource": sweet_winter,
+                "deadlineVerified": True, "deadlineSource": sweet_winter,
+                "url": sweet_winter, "urls": [sweet_winter, sweet_winter_upgrade],
+                "primarySource": "official", "sourceType": "official",
+                "sourceChannel": "known-official-correction", "sourcePublishedAt": "2026-10-23",
+                "eventScope": "kawaii-lab",
+            })
+            report["sweetWinterUpgradeOffersAdded"] += 1
 
     gift_more_star = _missing_more_star_gift(out)
     if gift_more_star:

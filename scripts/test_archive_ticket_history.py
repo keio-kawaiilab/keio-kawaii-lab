@@ -4,6 +4,22 @@ import archive_ticket_history as mod
 
 
 class ArchiveTicketHistoryTests(unittest.TestCase):
+    def test_pia_result_notice_enriches_retained_fifth_tour_history(self):
+        row = {
+            "id": "tour-history", "group": "KAWAII LAB.合同",
+            "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR", "eventDate": "2027-01-30",
+            "ticketType": "KAWAII LAB. OFFICIAL FANCLUB 有料会員先行",
+            "applyStart": "2026-10-12T18:30", "applyEnd": "2026-10-18T23:59",
+            "sourceKey": "central-official", "sourceUrl": "https://kawaiilab.asobisystem.com/news/detail/92410",
+            "firstSeenAt": "2026-10-12T18:30:00+09:00", "observedWindows": [],
+        }
+        result = mod.archive_payload({"events": []}, {"entries": [row]}, self.registry,
+                                     "2026-10-23T18:30:00+09:00")
+        retained = result["entries"][0]
+        self.assertEqual("2026-10-23T18:00", retained["resultDate"])
+        self.assertEqual("https://kawaiilab.asobisystem.com/news/detail/93888", retained["resultDateSource"])
+        self.assertIn("マイページ", retained["resultDeliveryNotice"])
+
     def test_rejected_live_row_is_not_archived(self):
         live = {"events": [{
             "id": "rejected-annual",
