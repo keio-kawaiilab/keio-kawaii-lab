@@ -192,6 +192,27 @@ class SpecialEventTests(unittest.TestCase):
         self.assertEqual(event["parts"][0]["receptionStart"], "09:45")
         self.assertIn("参加権", event["purchaseMethod"])
 
+    def test_styled_venue_suffix_and_payment_deadline_are_preserved(self):
+        html = """
+        <html><head><title>CUTIE STREET大特典会</title></head><body>
+        <h1>11/3(火・祝) CUTIE STREET大特典会＠パシフィコ横浜 展示ホールDのファンクラブ限定部 抽選が決定！</h1>
+        <p>2026.10.23</p><p>■開催日程</p><p>2026年11月3日(火・祝)</p>
+        <p><b>■開催会場<br>パシフィコ横浜</b> 展示ホールD</p>
+        <p>イベント参加対象商品 応募期間：10月23日(金)21:00～10月24日(土)23:59</p>
+        <p>■当選発表日時</p><p>2026年10月27日(火) 中</p>
+        <p><b>購入期間</b><span>：</span><span>当選発表後</span><span>～</span><span>10月28日(水)23:59</span></p>
+        <p>2026年12月2日(水)発売</p>
+        <a href="https://sukisuki-shop.com/goods/6500000004719">SUKISUKI</a>
+        </body></html>
+        """
+        events = s.parse_page(
+            "CUTIE STREET", "https://cutiestreet.asobisystem.com/news/detail/93831",
+            html, datetime(2026, 10, 24, tzinfo=JST),
+        )
+        self.assertEqual(1, len(events))
+        self.assertEqual("パシフィコ横浜 展示ホールD", events[0]["venue"])
+        self.assertEqual("2026-10-28T23:59", events[0]["paymentEnd"])
+
     def test_large_benefit_extracts_plain_reservation_period(self):
         html = """
         <html><head><title>FRUITS ZIPPER大特典会</title></head><body>

@@ -33,6 +33,7 @@ CANDY_ONLINE_20261020_GOODS = {
     "https://sukisuki-shop.com/goods/6500000004622",
     "https://sukisuki-shop.com/goods/6500000004623",
 }
+CUTIE_PACIFICO_FC_ARTICLE = "https://cutiestreet.asobisystem.com/news/detail/93831"
 
 HAKATA_PARTS = [
     {"part": "第1部", "content": "2ショットチェキ撮影会（FC限定）", "start": "10:00", "end": "11:00", "receptionStart": "09:40", "receptionEnd": "10:40"},
@@ -136,6 +137,36 @@ def repair_pia_result_notice(event: dict) -> dict:
     out["urls"] = list(dict.fromkeys([*_urls(out), notice]))
     out["resultDateSource"] = notice
     out["resultDeliveryNotice"] = "チケットぴあの結果案内メールが届かない可能性あり。マイページで確認"
+    return out
+
+
+def repair_cutie_pacifico_fc_lottery(event: dict) -> dict:
+    """Keep the FC lottery on the existing 11/3 Pacifico Hall D event.
+
+    The official article styles ``パシフィコ横浜`` and ``展示ホールD`` as
+    separate text nodes.  Older collector output therefore used only the base
+    facility and escaped physical-event consolidation.  The same article also
+    states the exact post-result purchase deadline.
+    """
+    if not (
+        event.get("group") == "CUTIE STREET"
+        and _day(event) == "2026-11-03"
+        and CUTIE_PACIFICO_FC_ARTICLE in _urls(event)
+    ):
+        return event
+    out = deepcopy(event)
+    out["venue"] = "神奈川県 パシフィコ横浜 展示ホールD"
+    if isinstance(out.get("schedule"), list):
+        for row in out["schedule"]:
+            if isinstance(row, dict) and str(row.get("date") or "")[:10] == "2026-11-03":
+                row["venue"] = out["venue"]
+    if out.get("resultDate") == "2026-10-27" and out.get("paymentEnd") == "2026-12-02":
+        out["paymentEnd"] = "2026-10-28T23:59"
+    for offer in out.get("offers") or []:
+        if not isinstance(offer, dict):
+            continue
+        if offer.get("resultDate") == "2026-10-27" and offer.get("paymentEnd") == "2026-12-02":
+            offer["paymentEnd"] = "2026-10-28T23:59"
     return out
 
 
@@ -916,6 +947,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "sweetEbichu20261116RowsCollapsed": 0,
         "semanticTicketDuplicatesRemoved": 0,
         "semanticTicketDuplicateIds": [],
+        "cutiePacificoFcLotteryFixed": 0,
     }
 
     for event in source:
@@ -943,6 +975,10 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         current = repair_pia_result_notice(current)
         if current != before_result_notice:
             report["piaResultNoticesAttached"] += 1
+        before_pacifico = current
+        current = repair_cutie_pacifico_fc_lottery(current)
+        if current != before_pacifico:
+            report["cutiePacificoFcLotteryFixed"] += 1
         before_oita = current
         current = repair_candy_oita_eplus_link(current, current.get("group"), _day(current), current.get("startTime"))
         if current != before_oita:

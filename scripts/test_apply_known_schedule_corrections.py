@@ -738,6 +738,26 @@ class PiaNoticeAndSweetWinterUpgradeTests(unittest.TestCase):
         self.assertEqual(result, again)
         self.assertEqual(0, report["sweetWinterUpgradeOffersAdded"])
 
+    def test_cutie_pacifico_fc_lottery_repairs_occurrence_and_payment_deadline(self):
+        row = {
+            "id": "fc-lottery", "group": "CUTIE STREET",
+            "title": "11/3 CUTIE STREET大特典会",
+            "eventCategory": "large-benefit", "eventDate": "2026-11-03",
+            "venue": "パシフィコ横浜",
+            "schedule": [{"date": "2026-11-03", "venue": "パシフィコ横浜", "startTime": "11:20"}],
+            "ticketType": "FC限定・対象商品応募（抽選）",
+            "resultDate": "2026-10-27", "paymentEnd": "2026-12-02",
+            "url": "https://cutiestreet.asobisystem.com/news/detail/93831",
+        }
+        result, report = apply_known_corrections([row])
+        self.assertEqual(1, report["cutiePacificoFcLotteryFixed"])
+        self.assertEqual("神奈川県 パシフィコ横浜 展示ホールD", result[0]["venue"])
+        self.assertEqual(result[0]["venue"], result[0]["schedule"][0]["venue"])
+        self.assertEqual("2026-10-28T23:59", result[0]["paymentEnd"])
+        again, report = apply_known_corrections(result)
+        self.assertEqual(result, again)
+        self.assertEqual(0, report["cutiePacificoFcLotteryFixed"])
+
     def test_unrelated_rows_do_not_gain_notice_or_upgrade(self):
         unrelated = {"id": "other", "group": "CANDY TUNE", "eventDate": "2026-12-17",
                      "title": "Other", "ticketType": "FC先行",

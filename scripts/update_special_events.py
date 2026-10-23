@@ -104,11 +104,39 @@ def value_after_heading(lines: list[str], labels: tuple[str, ...]) -> str | None
     return None
 
 
+def venue_after_heading(lines: list[str]) -> str | None:
+    """Read a venue while preserving a separately styled hall suffix.
+
+    Fanplus articles sometimes wrap the facility name in ``<b>`` and leave a
+    room such as ``展示ホールD`` in the next text node.  Treating only the
+    first node as the venue creates a second physical event when another
+    official article uses the complete venue name.
+    """
+    for index, line in enumerate(lines):
+        clean = line.lstrip("■□●◇◆ ").strip()
+        if clean not in ("開催会場", "場所"):
+            continue
+        values = [
+            following for following in lines[index + 1:index + 5]
+            if following and not following.startswith(("■", "□", "●", "◇", "◆"))
+        ]
+        if not values:
+            return None
+        venue = values[0]
+        if len(values) >= 2 and re.fullmatch(r"(?:第二)?展示(?:場|ホール)\s*[A-Z0-9-]*", values[1], re.I):
+            venue = f"{venue} {values[1]}"
+        return venue
+    return None
+
+
 def date_after(lines: list[str], labels: tuple[str, ...], default_year: int) -> str | None:
     for index, line in enumerate(lines):
         if not any(label in line for label in labels):
             continue
-        segment = " ".join(lines[index:index + 4])
+        # Styled articles may split a label, separator and date into several
+        # text nodes.  A four-line window missed the actual payment deadline
+        # and later matched an unrelated product release date.
+        segment = " ".join(lines[index:index + 8])
         matches = [match for match in (DATE_RE.search(segment), SLASH_DATE_RE.search(segment)) if match]
         match = min(matches, key=lambda value: value.start()) if matches else None
         if match:
@@ -341,7 +369,7 @@ def parse_page(group: str, url: str, html_text: str, now: datetime | None = None
     if not event_date:
         return []
     event_date = event_date[:10]
-    venue = value_after_heading(lines, ("開催会場", "場所")) or value_after(lines, ("開催場所・会場",)) or "会場未定"
+    venue = venue_after_heading(lines) or value_after(lines, ("開催場所・会場",)) or "会場未定"
     links = links_for_group(source_links(soup, url), group)
     scoped_lines = group_section_lines(lines, group)
     windows = window_rows(scoped_lines or lines, default_year)
