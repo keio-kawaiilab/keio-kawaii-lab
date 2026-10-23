@@ -269,6 +269,15 @@ def retract_known_upgrade_misclassification(entry: dict) -> dict:
                         "reason": "central FC reception mislabeled as a separate group FC reception",
                         "correctTicketType": "KAWAII LAB. FC先行", "sourceUrl": central_article,
                     })
+    furusawa_upgrade_article = "https://cutiestreet.asobisystem.com/news/detail/92297"
+    if (clean(entry.get("sourceUrl")) == furusawa_upgrade_article
+            and clean(entry.get("ticketType")) == "年会費コース会員先行"):
+        return dict(entry, publishable=False, flowEligible=False,
+                    classificationCorrection={
+                        "reason": "upgrade notice cannot support an annual-fee ticket sale",
+                        "correctTicketType": "アップグレード抽選",
+                        "sourceUrl": furusawa_upgrade_article,
+                    })
     # Permanent history keeps the original observation, but must not continue
     # presenting an eligibility condition as a real, currently open FC sale.
     article = "https://cutiestreet.asobisystem.com/news/detail/92733"
@@ -326,6 +335,8 @@ def archive_payload(live: dict, history: dict, registry: dict, now: str) -> dict
 
     for event in observations:
         if not isinstance(event, dict):
+            continue
+        if event.get("ticketGuardRejected") is True:
             continue
         if clean(event.get("ticketType")) in {"", "現在受付なし"}:
             continue

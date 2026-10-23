@@ -191,10 +191,15 @@ def validate_annual_rows(payload: dict, session: requests.Session) -> tuple[list
     return invalid_sources, failures
 
 
-def purge_invalid_history(history: dict, invalid_sources: list[str]) -> int:
+def quarantine_invalid_history(history: dict, invalid_sources: list[str]) -> int:
+    """Retain rejected observations while preventing them from reaching ticket UI.
+
+    ``ticket-history.json`` is an append-only audit log.  A later
+    classification correction must therefore annotate the original observation,
+    not delete it (deletion makes the continuity guard report a history shrink).
+    """
     bad = {canonical_url(value) for value in invalid_sources if value}
-    kept = []
-    removed = 0
+    quarantined = 0
     for entry in history.get("entries", []):
         if not isinstance(entry, dict):
             continue
@@ -202,11 +207,21 @@ def purge_invalid_history(history: dict, invalid_sources: list[str]) -> int:
             normalize(entry.get("ticketType")) == ANNUAL_LABEL
             and canonical_url(entry.get("sourceUrl")) in bad
         ):
-            removed += 1
-            continue
-        kept.append(entry)
-    history["entries"] = kept
-    return removed
+            correction = {
+                "reason": "upgrade notice cannot support an annual-fee ticket sale",
+                "correctTicketType": "アップグレード抽選",
+                "sourceUrl": canonical_url(entry.get("sourceUrl")),
+            }
+            if (
+                entry.get("publishable") is not False
+                or entry.get("flowEligible") is not False
+                or entry.get("classificationCorrection") != correction
+            ):
+                quarantined += 1
+            entry["publishable"] = False
+            entry["flowEligible"] = False
+            entry["classificationCorrection"] = correction
+    return quarantined
 
 
 def run(check: bool = False) -> dict:
@@ -229,7 +244,7 @@ def run(check: bool = False) -> dict:
     finally:
         session.close()
 
-    removed_history = purge_invalid_history(history, invalid_sources)
+    quarantined_history = quarantine_invalid_history(history, invalid_sources)
     changed_live = payload != original_payload
     changed_history = history != original_history
     now = datetime.now(JST).isoformat(timespec="seconds")
@@ -244,7 +259,8 @@ def run(check: bool = False) -> dict:
     return {
         "checkedAt": now,
         "invalidAnnualFeeSources": invalid_sources,
-        "invalidHistoryEntriesRemoved": removed_history,
+        "invalidHistoryEntriesRemoved": 0,
+        "invalidHistoryEntriesQuarantined": quarantined_history,
         "changedLive": changed_live,
         "changedHistory": changed_history,
         "failures": failures,

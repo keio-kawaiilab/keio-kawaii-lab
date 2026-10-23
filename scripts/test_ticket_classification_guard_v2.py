@@ -44,7 +44,7 @@ class TicketClassificationGuardV2Tests(unittest.TestCase):
         )
         self.assertTrue(g.has_explicit_annual_sale(text))
 
-    def test_purge_only_matching_bad_source(self):
+    def test_quarantine_only_matching_bad_source_without_shrinking_history(self):
         history = {"entries": [
             {
                 "id": "bad",
@@ -58,10 +58,17 @@ class TicketClassificationGuardV2Tests(unittest.TestCase):
             },
         ]}
         self.assertEqual(
-            g.purge_invalid_history(history, ["https://cutiestreet.asobisystem.com/news/detail/86338"]),
+            g.quarantine_invalid_history(history, ["https://cutiestreet.asobisystem.com/news/detail/86338"]),
             1,
         )
-        self.assertEqual([x["id"] for x in history["entries"]], ["good"])
+        self.assertEqual([x["id"] for x in history["entries"]], ["bad", "good"])
+        self.assertFalse(history["entries"][0]["publishable"])
+        self.assertFalse(history["entries"][0]["flowEligible"])
+        self.assertEqual(
+            history["entries"][0]["classificationCorrection"]["correctTicketType"],
+            "アップグレード抽選",
+        )
+        self.assertNotIn("classificationCorrection", history["entries"][1])
 
 
 if __name__ == "__main__":

@@ -83,6 +83,33 @@ def dedupe_ids(events: list[dict]) -> tuple[list[dict], int]:
     return result, removed
 
 
+def quarantine_guard_rejected_rows(events: list[dict]) -> tuple[list[dict], int]:
+    """Make a guard rejection survive later collector merges and corrections."""
+    result: list[dict] = []
+    changed = 0
+    for original in events:
+        event = dict(original)
+        if event.get("ticketGuardRejected") is True:
+            before = dict(event)
+            event["ticketType"] = "現在受付なし"
+            event["applicationStatus"] = "none"
+            event["applyStart"] = None
+            event["applyEnd"] = None
+            event["resultDate"] = None
+            event["paymentEnd"] = None
+            event["applicationDisplayMode"] = "schedule-only"
+            for field in (
+                "applicationWindowVerified", "deadlineVerified",
+                "applicationWindowSource", "deadlineSource",
+                "ticketClassificationVerified", "ticketClassificationSource",
+                "ticketClassificationEvidence",
+            ):
+                event.pop(field, None)
+            changed += int(event != before)
+        result.append(event)
+    return result, changed
+
+
 
 def official_fc_offer_key(event: dict) -> tuple | None:
     """Strict identity for duplicate official FC offers, never distinct FC rounds.
@@ -448,6 +475,7 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
     events, duplicate_ids_removed_after_retention = dedupe_ids(events)
     events, official_x_report = official_x_dedupe.collapse(events)
     events, known_correction_report = apply_known_corrections(events)
+    events, guard_rejected_rows_quarantined = quarantine_guard_rejected_rows(events)
     events, duplicate_fc_ids = dedupe_official_fc_offers(events)
     out = dict(candidate)
     out["events"] = events
@@ -467,6 +495,7 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
         "supersededLegacyReleaseSeriesIds": superseded_legacy_release_series,
         **official_x_report,
         "knownScheduleCorrections": known_correction_report,
+        "guardRejectedRowsQuarantined": guard_rejected_rows_quarantined,
     }
 
     # Hard public invariant: source wording, URL and sales channel can never

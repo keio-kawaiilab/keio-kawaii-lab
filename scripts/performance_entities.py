@@ -288,6 +288,8 @@ def _provider_id(event: dict[str, Any]) -> str:
 
 
 def _is_offer(event: dict[str, Any]) -> bool:
+    if event.get("ticketGuardRejected") is True:
+        return False
     ticket_type = _text(event.get("ticketType"))
     if not ticket_type or ticket_type == "現在受付なし":
         return False

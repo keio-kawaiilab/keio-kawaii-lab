@@ -4,6 +4,45 @@ import archive_ticket_history as mod
 
 
 class ArchiveTicketHistoryTests(unittest.TestCase):
+    def test_rejected_live_row_is_not_archived(self):
+        live = {"events": [{
+            "id": "rejected-annual",
+            "group": "CUTIE STREET",
+            "eventTitle": "CUTIE STREET 古澤里紗 生誕祭 2026",
+            "eventDate": "2026-11-09",
+            "startTime": "19:00",
+            "ticketType": "年会費コース会員先行",
+            "applyStart": "2026-10-09T12:00",
+            "applyEnd": "2026-10-14T23:59",
+            "url": "https://cutiestreet.asobisystem.com/news/detail/92297",
+            "ticketGuardRejected": True,
+        }]}
+        result = mod.archive_payload(live, {"entries": []}, self.registry, "2026-10-23T18:00:00+09:00")
+        self.assertEqual([], result["entries"])
+
+    def test_furusawa_upgrade_misclassification_is_retained_but_disabled(self):
+        row = {
+            "id": "false-annual-observation",
+            "group": "CUTIE STREET",
+            "eventTitle": "CUTIE STREET 古澤里紗 生誕祭 2026",
+            "eventDate": "2026-11-09",
+            "startTime": "19:00",
+            "ticketType": "年会費コース会員先行",
+            "sourceKey": "group-official",
+            "sourceUrl": "https://cutiestreet.asobisystem.com/news/detail/92297",
+            "applyStart": "2026-10-09T12:00",
+            "applyEnd": "2026-10-14T23:59",
+            "firstSeenAt": "2026-10-23T12:38:01+09:00",
+            "publishable": True,
+            "flowEligible": True,
+        }
+        result = mod.archive_payload({"events": []}, {"entries": [row]}, self.registry, "2026-10-23T18:00:00+09:00")
+        retained = result["entries"][0]
+        self.assertEqual("false-annual-observation", retained["id"])
+        self.assertFalse(retained["publishable"])
+        self.assertFalse(retained["flowEligible"])
+        self.assertEqual("アップグレード抽選", retained["classificationCorrection"]["correctTicketType"])
+
     def test_wrong_oita_link_observation_is_retained_but_not_a_live_link(self):
         row = {"id": "keep-oita-observation", "group": "CANDY TUNE", "eventDate": "2026-12-01", "startTime": "18:30",
                "sourceUrl": "https://eplus.jp/sf/detail/3923750001-P0030012P021001", "sourceKey": "eplus",

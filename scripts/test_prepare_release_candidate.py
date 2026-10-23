@@ -7,6 +7,28 @@ import prepare_release_candidate as prep
 class PrepareReleaseCandidateTests(unittest.TestCase):
     NOW = datetime.fromisoformat("2026-08-27T19:00:00+09:00")
 
+    def test_guard_rejection_survives_later_field_reintroduction(self):
+        row = {
+            "id": "rejected",
+            "ticketType": "年会費コース会員先行",
+            "applicationStatus": "open",
+            "applyStart": "2026-10-09T12:00",
+            "applyEnd": "2026-10-14T23:59",
+            "applicationWindowVerified": True,
+            "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/92297",
+            "ticketGuardRejected": True,
+            "ticketGuardReason": "upgrade notice cannot support an annual-fee ticket sale",
+        }
+        rows, changed = prep.quarantine_guard_rejected_rows([row])
+        self.assertEqual(1, changed)
+        self.assertEqual("現在受付なし", rows[0]["ticketType"])
+        self.assertEqual("none", rows[0]["applicationStatus"])
+        self.assertIsNone(rows[0]["applyStart"])
+        self.assertIsNone(rows[0]["applyEnd"])
+        self.assertEqual("schedule-only", rows[0]["applicationDisplayMode"])
+        self.assertNotIn("applicationWindowVerified", rows[0])
+        self.assertNotIn("applicationWindowSource", rows[0])
+
     def test_dedupes_same_id_and_keeps_richer_row(self):
         thin = {"id": "same", "group": "X", "title": "A", "eventDate": "2026-09-01", "sourceType": "derived"}
         rich = {

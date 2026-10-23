@@ -12,6 +12,27 @@ from performance_entities import build_public_events
 
 
 class PerformanceEntitiesTest(unittest.TestCase):
+    def test_guard_rejected_ticket_row_is_schedule_only(self):
+        row = {
+            "id": "rejected-annual",
+            "group": "CUTIE STREET",
+            "title": "CUTIE STREET 古澤里紗 生誕祭 2026",
+            "eventDate": "2026-11-09",
+            "startTime": "19:00",
+            "venue": "SGCホール有明",
+            "url": "https://cutiestreet.asobisystem.com/news/detail/92297",
+            "ticketType": "年会費コース会員先行",
+            "applyStart": "2026-10-09T12:00",
+            "applyEnd": "2026-10-14T23:59",
+            "ticketGuardRejected": True,
+            "ticketGuardReason": "upgrade notice cannot support an annual-fee ticket sale",
+        }
+        public, _ = build_public_events([row])
+        self.assertEqual(1, len(public))
+        self.assertEqual([], public[0]["offers"])
+        self.assertEqual("現在受付なし", public[0]["ticketType"])
+        self.assertEqual("schedule-only", public[0]["applicationDisplayMode"])
+
     def test_verified_oita_offer_does_not_reuse_fukuoka_application_link(self):
         fukuoka = "https://eplus.jp/sf/detail/3923750001-P0030012P021001"
         oita = "https://eplus.jp/sf/detail/3923750001-P0030013P021001"
