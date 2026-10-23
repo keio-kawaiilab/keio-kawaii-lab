@@ -220,6 +220,10 @@ class SpecialEventEntityTests(unittest.TestCase):
             self.assertEqual("神奈川県 パシフィコ横浜 展示ホールD", event["venue"])
             self.assertIn("https://cutiestreet.asobisystem.com/news/detail/93831", event["urls"])
             self.assertEqual(1, len(event["offers"]))
+            self.assertEqual(
+                "FC限定・対象商品応募（抽選／応募受付）",
+                event["offers"][0]["ticketType"],
+            )
         self.assertEqual(1, report["rowsCollapsed"])
         self.assertEqual(1, report["publicEvents"]["rowsCollapsed"])
         self.assertFalse(validate(normalized))
