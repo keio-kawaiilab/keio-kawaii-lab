@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-23T08:49:23.973332+09:00",
-  "candidateUpdatedAt": "2026-10-23T08:49:23+09:00",
-  "previousEventCount": 228,
-  "candidateEventCount": 239,
-  "protectedPreviousCount": 225,
+  "generatedAt": "2026-10-23T09:16:35.606101+09:00",
+  "candidateUpdatedAt": "2026-10-23T09:16:35+09:00",
+  "previousEventCount": 240,
+  "candidateEventCount": 241,
+  "protectedPreviousCount": 240,
   "errorCount": 0,
   "warningCount": 13,
   "errors": [],
@@ -23,7 +23,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: SWEET STEADY / 『SWEET STEADY JAPAN TOUR 2026』 / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: SWEET STEADY / 『SWEET STEADY JAPAN TOUR 2026』 / 一般発売"
   ],
-  "candidateSha256": "8eb9179cdf79104339b3d0b41e348c834b234958de68122885a4b06ed38ce9d3",
+  "candidateSha256": "88444157f69663524196ffd03f5555bfe059f583d3bc9ed661718762638b9560",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40731",
@@ -186,7 +186,7 @@
     "url:https://sweetsteady.asobisystem.com/live_information/detail/43909",
     "url:https://sweetsteady.asobisystem.com/live_information/detail/46633"
   ],
-  "reconciledBaseDateMessageCount": 6,
+  "reconciledBaseDateMessageCount": 0,
   "downgradedFalsePositiveCount": 0,
   "legacyProtectedErrorCount": 13,
   "legacyProtectedErrors": [
@@ -256,7 +256,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 19,
+  "quarantineCount": 21,
   "quarantineActions": [
     {
       "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
@@ -289,9 +289,19 @@
       "restoredPreviousRows": 2
     },
     {
+      "error": "deadline moved earlier for url:https://morestar.asobisystem.com/live_information/detail/45677: 2026-10-25T23:59 -> 2026-10-12T23:59 (manual review required)",
+      "action": "restored previous rows for url:https://morestar.asobisystem.com/live_information/detail/45677",
+      "restoredPreviousRows": 2
+    },
+    {
       "error": "future performance dates disappeared for pia:74753: 2026-11-28, 2026-11-29",
       "action": "restored previous rows for pia:74753",
       "restoredPreviousRows": 2
+    },
+    {
+      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN -「CANDY CIRCUS」公演 リセールサービスのお知らせ / リセール",
+      "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
+      "restoredPreviousRows": 33
     },
     {
       "error": "future performance dates disappeared for url:https://w.pia.jp/v/kls-xmas26upg6/?_normalbrowse_=1: 2026-12-13",
@@ -319,6 +329,11 @@
       "restoredPreviousRows": 1
     },
     {
+      "error": "protected future/active official FC offer disappeared: CANDY TUNE / CANDY TUNE 村川緋杏 生誕祭 2026 / FC先行",
+      "action": "restored previous row",
+      "restoredPreviousRows": 1
+    },
+    {
       "error": "protected future/active official FC offer disappeared: CANDY TUNE / CANDY TUNE 福山梨乃 生誕祭 2026 / FC先行",
       "action": "withheld new/ambiguous row",
       "restoredPreviousRows": 1
@@ -334,17 +349,12 @@
       "restoredPreviousRows": 1
     },
     {
-      "error": "protected future/active official FC offer disappeared: MORE STAR / MORE STAR 単独ライブ 7th STAR / FC先行",
-      "action": "last-chance restored implicated previous row",
-      "restoredPreviousRows": 1
-    },
-    {
       "error": "protected future/active official FC offer disappeared: CUTIE STREET / 2026.09.28 2026年11月26日(木) 「CUTIE STREET 佐野愛花 生誕祭 2026」開催決定！CUTIE STREET OFFICIAL FANCLUB会員先行開始！ / FC先行",
       "action": "last-chance restored implicated previous row",
       "restoredPreviousRows": 1
     },
     {
-      "error": "protected future/active official FC offer disappeared: CANDY TUNE / CANDY TUNE 村川緋杏 生誕祭 2026 / FC先行",
+      "error": "protected future/active official FC offer disappeared: CANDY TUNE / 2026.10.10 2026年12月3日(木) 「CANDY TUNE 村川緋杏 生誕祭 2026」開催決定！CANDY TUNE OFFICIAL FANCLUB会員先行開始！ / FC先行",
       "action": "last-chance restored implicated previous row",
       "restoredPreviousRows": 1
     },
@@ -358,7 +368,7 @@
   "officialIndexReconciledAfterQuarantine": {
     "reassignedCount": 1,
     "hydratedCount": 0,
-    "ambiguousCount": 0,
+    "ambiguousCount": 2,
     "unresolvedCount": 1,
     "reassigned": [
       {
@@ -370,7 +380,26 @@
       }
     ],
     "hydrated": [],
-    "ambiguous": [],
+    "ambiguous": [
+      {
+        "group": "CANDY TUNE",
+        "date": "2026-10-26",
+        "url": "https://candytune.asobisystem.com/live_information/detail/40731",
+        "candidateIds": [
+          "54a369497f59ce96",
+          "0d4df5dd15d299dc"
+        ]
+      },
+      {
+        "group": "CANDY TUNE",
+        "date": "2026-10-27",
+        "url": "https://candytune.asobisystem.com/live_information/detail/40732",
+        "candidateIds": [
+          "54a369497f59ce96",
+          "77e025584cee4577"
+        ]
+      }
+    ],
     "unresolved": [
       {
         "group": "FRUITS ZIPPER",
