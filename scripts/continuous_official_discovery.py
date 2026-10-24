@@ -656,6 +656,8 @@ def read_candidate(candidate, existing, headers):
     if not rows and review:
         if review_is_already_represented(candidate, review, existing):
             return [], None, "represented"
+        if source_notice_is_already_represented(candidate, title, existing):
+            return [], None, "represented"
         fallback = fallback_row_from_review(candidate, title, text, review, existing)
         if fallback:
             rows = [fallback]
