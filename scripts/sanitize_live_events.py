@@ -451,6 +451,11 @@ def merge_duplicate_resale_windows(events: list[dict]) -> list[dict]:
         previous = result[match]
         preferred = max((previous, event), key=resale_preference)
         merged = dict(preferred)
+        # Keep verified resale metadata while preserving performance times from
+        # the official schedule row when the resale collector omits them.
+        for field in ("openTime", "startTime"):
+            if not merged.get(field):
+                merged[field] = previous.get(field) or event.get(field)
         merged_urls = distinct(
             url
             for item in (previous, event)

@@ -12,6 +12,8 @@ from __future__ import annotations
 
 import argparse
 import json
+
+import sanitize_live_events as sanitizer
 from pathlib import Path
 
 from update_official_schedule import event_days, participants
@@ -129,7 +131,7 @@ def project_joint_participant_rows(entries: list[dict], by_id: dict[str, dict]) 
     return additions
 
 
-def reconcile(data: dict, index: dict) -> dict:
+def reconcile(data: dict, index: dict, *, finalize: bool = True) -> dict:
     events = [event for event in data.get("events", []) if isinstance(event, dict)]
     by_id = {str(event.get("id") or ""): event for event in events if event.get("id")}
     entries = [entry for entry in index.get("entries", []) if isinstance(entry, dict)]
@@ -191,7 +193,7 @@ def reconcile(data: dict, index: dict) -> dict:
     projected = project_joint_participant_rows(entries, by_id)
     entries.extend(projected)
     index["entries"] = entries
-    return {
+    report = {
         "projectedJointParticipantCount": len(projected),
         "reassignedCount": len(reassigned),
         "hydratedCount": len(hydrated),
@@ -202,6 +204,16 @@ def reconcile(data: dict, index: dict) -> dict:
         "ambiguous": ambiguous,
         "unresolved": unresolved,
     }
+    if finalize:
+        before = len(events)
+        data["events"] = sanitizer.merge_duplicate_resale_windows(events)
+        removed = before - len(data["events"])
+        report["duplicateOfficialResaleWindowsRemoved"] = removed
+        if removed:
+            # Stable merged ids replace collector ids. Reconcile once more so
+            # representedBy never points at a removed row.
+            report["postDedupeReconciliation"] = reconcile(data, index, finalize=False)
+    return report
 
 
 def main() -> int:

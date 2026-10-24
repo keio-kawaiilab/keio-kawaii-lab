@@ -170,5 +170,43 @@ class ReconcileOfficialScheduleIndexTests(unittest.TestCase):
         self.assertEqual(report["unresolvedCount"], 1)
 
 
+    def test_final_boundary_merges_duplicate_official_resale_and_keeps_time(self):
+        tour = "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026"
+        common = {
+            "group": "CANDY TUNE",
+            "eventDate": "2026-12-08",
+            "applyStart": "2026-12-06T10:00",
+            "applyEnd": "2026-12-07T23:59",
+            "url": tour,
+            "urls": [tour],
+        }
+        data = {"events": [
+            {
+                **common,
+                "id": "resale-official",
+                "title": "CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS",
+                "ticketType": "公式リセール",
+                "venue": "東京都 東京ガーデンシアター",
+                "sourceType": "resale-official",
+            },
+            {
+                **common,
+                "id": "official-continuous",
+                "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -「CANDY CIRCUS」公演 リセールサービスのお知らせ",
+                "ticketType": "リセール",
+                "venue": "東京・東京ガーデンシアター",
+                "openTime": "17:30",
+                "startTime": "19:00",
+                "sourceType": "auto",
+            },
+        ]}
+        report = reconcile(data, {"entries": []})
+        self.assertEqual(1, report["duplicateOfficialResaleWindowsRemoved"])
+        self.assertEqual(1, len(data["events"]))
+        self.assertEqual("公式リセール", data["events"][0]["ticketType"])
+        self.assertEqual("17:30", data["events"][0]["openTime"])
+        self.assertEqual("19:00", data["events"][0]["startTime"])
+
+
 if __name__ == "__main__":
     unittest.main()
