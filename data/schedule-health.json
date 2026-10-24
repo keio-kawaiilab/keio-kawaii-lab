@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-24T10:02:30.134793+09:00",
-  "candidateUpdatedAt": "2026-10-24T10:02:29+09:00",
-  "previousEventCount": 233,
-  "candidateEventCount": 234,
-  "protectedPreviousCount": 233,
+  "generatedAt": "2026-10-24T10:14:05.723356+09:00",
+  "candidateUpdatedAt": "2026-10-24T10:14:05+09:00",
+  "previousEventCount": 234,
+  "candidateEventCount": 235,
+  "protectedPreviousCount": 234,
   "errorCount": 0,
   "warningCount": 13,
   "errors": [],
@@ -23,7 +23,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event offer application window is not backed by an official page: CUTIE STREET / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし / offer 1",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event offer deadline is not verified by an official page: CUTIE STREET / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし / offer 1"
   ],
-  "candidateSha256": "d1a380eba77daf469489ea1384713b1b415fdd6796f18fc90ad429c423cbd21b",
+  "candidateSha256": "14ce74a9305c2a2d659ddb9f0221fe88021b28b319665381ac42f156c6c815cd",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40731",
@@ -181,7 +181,7 @@
     "url:https://sweetsteady.asobisystem.com/live_information/detail/46633",
     "url:https://sweetsteady.asobisystem.com/news/detail/93491"
   ],
-  "reconciledBaseDateMessageCount": 1,
+  "reconciledBaseDateMessageCount": 2,
   "downgradedFalsePositiveCount": 0,
   "legacyProtectedErrorCount": 13,
   "legacyProtectedErrors": [
@@ -251,12 +251,17 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 15,
+  "quarantineCount": 16,
   "quarantineActions": [
     {
       "error": "active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 一般発売",
       "action": "withheld new/ambiguous row",
       "restoredPreviousRows": 11
+    },
+    {
+      "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 2
     },
     {
       "error": "canonical special event offer has no verified purchase/ticket window: CUTIE STREET / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし / offer 1",
