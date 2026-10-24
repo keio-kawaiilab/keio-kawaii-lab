@@ -24,6 +24,9 @@ HOSTED_HINT_RE = re.compile(
 )
 KAWAII_LAB_HOSTED_RE = re.compile(r"KAWAII LAB\.?\s*(?:Christmas SESSION|COLLECTION|SESSION|主催)", re.I)
 FIFTH_TOUR_RE = re.compile(r"KAWAII LAB\.?\s*5th\s+ANNIVERSARY\s+TOUR", re.I)
+# A hosted multi-group FC free live is not an external appearance. Match the
+# explicit KAWAII LAB. title to avoid classifying unrelated free stages.
+LAB_FC_FREE_LIVE_RE = re.compile(r"KAWAII LAB\.?\s*.*(?:ファンクラブ|FC)限定.*フリーライブ", re.I)
 
 
 def normalized_text(event: dict) -> str:
@@ -50,7 +53,7 @@ def infer_event_scope(event: dict) -> str:
     """Classify conservatively: unknown appearances stay out of the default view."""
     # The official KAWAII LAB. 5th tour is hosted, even when stale data says external.
     text = normalized_text(event)
-    if FIFTH_TOUR_RE.search(text):
+    if FIFTH_TOUR_RE.search(text) or LAB_FC_FREE_LIVE_RE.search(text):
         return HOSTED
 
     explicit = str(event.get("eventScope") or "").strip().lower()
@@ -76,6 +79,7 @@ def infer_event_scope(event: dict) -> str:
 def apply_event_scope(event: dict, *, overwrite: bool = False) -> dict:
     out = dict(event)
     if (overwrite or str(out.get("eventScope") or "").lower() not in VALID_SCOPES
-            or FIFTH_TOUR_RE.search(normalized_text(out))):
+            or FIFTH_TOUR_RE.search(normalized_text(out))
+            or LAB_FC_FREE_LIVE_RE.search(normalized_text(out))):
         out["eventScope"] = infer_event_scope({key: value for key, value in out.items() if key != "eventScope"})
     return out
