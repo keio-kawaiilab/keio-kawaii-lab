@@ -44,6 +44,40 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
         self.assertEqual(0, second_report["kawaiilabFcFreeLiveAdded"])
         self.assertEqual(0, second_report["kawaiilabFcFreeLiveOffersUpdated"])
 
+    def test_kawaiilab_free_live_restores_official_title_on_collected_schedule_row(self):
+        from performance_entities import build_public_events
+
+        collected = {
+            "id": "collector-free-live",
+            "group": "KAWAII LAB.合同",
+            "title": "KAWAII LAB.",
+            "eventTitle": "KAWAII LAB. ファンクラブ限定フリーライブ",
+            "eventDate": "2026-11-06",
+            "eventDates": ["2026-11-06"],
+            "venue": "東京都 東京ガーデンシアター",
+            "openTime": "16:30",
+            "startTime": "18:00",
+            "url": "https://kawaiilab.asobisystem.com/news/detail/93695",
+        }
+        context = [
+            {"id": group, "group": group, "url": "https://example.com/" + group}
+            for group in ("CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR")
+        ]
+        corrected, report = apply_known_corrections([*context, collected])
+        row = next(item for item in corrected if item.get("id") == "collector-free-live")
+        self.assertEqual("KAWAII LAB. ファンクラブ限定フリーライブ", row["title"])
+        self.assertEqual(row["title"], row["eventTitle"])
+        self.assertEqual(1, report["kawaiilabFcFreeLiveOffersUpdated"])
+
+        public, _ = build_public_events(corrected)
+        free_live = [item for item in public if item.get("eventDate") == "2026-11-06"]
+        self.assertEqual(1, len(free_live))
+        self.assertEqual("KAWAII LAB. ファンクラブ限定フリーライブ", free_live[0]["title"])
+
+        again, second_report = apply_known_corrections(corrected)
+        self.assertEqual(corrected, again)
+        self.assertEqual(0, second_report["kawaiilabFcFreeLiveOffersUpdated"])
+
     def test_kawaiilab_free_live_upgrades_single_candy_route_without_duplication(self):
         legacy = {
             "id": "known-kawaiilab-fc-free-live-20261106",
