@@ -75,6 +75,60 @@ def attach_official_url(event: dict, target_url: str) -> bool:
     return False
 
 
+def project_joint_participant_rows(entries: list[dict], by_id: dict[str, dict]) -> list[dict]:
+    """Give LINE's five-group index one verified entry per participating group.
+
+    The deployed LINE Worker filters official index rows by entry.group and
+    cannot see event.participants. Only project an already represented hosted
+    joint performance when that participant has its own official source URL.
+    Do not invent a URL or multiply ticket offers.
+    """
+    from update_official_schedule import GROUPS
+
+    existing = {
+        (str(row.get("representedBy") or ""), str(row.get("date") or ""),
+         str(row.get("group") or ""))
+        for row in entries
+    }
+    additions = []
+    for entry in list(entries):
+        event_id = str(entry.get("representedBy") or "")
+        event = by_id.get(event_id)
+        if (
+            not event or not event_matches_entry(event, entry)
+            or event.get("group") != "KAWAII LAB.合同"
+            or event.get("eventScope") != "kawaii-lab"
+            or entry.get("eventScope") != "kawaii-lab"
+            or entry.get("category") not in {"LIVE", "EVENT"}
+            or len(participants(event)) < 2
+        ):
+            continue
+        for group in participants(event):
+            key = (event_id, str(entry.get("date") or ""), group)
+            if key in existing:
+                continue
+            base = GROUPS.get(group)
+            if not base:
+                continue
+            official_urls = [
+                url for url in event_urls(event)
+                if url.startswith(base + "/")
+                and ("/news/detail/" in url or "/live_information/detail/" in url)
+            ]
+            if not official_urls:
+                continue
+            # Prefer the participant's own official schedule detail, otherwise
+            # the official announcement. Both are already attached to the event.
+            official_urls.sort(key=lambda url: ("/live_information/detail/" not in url, url))
+            new_row = dict(entry)
+            new_row["group"] = group
+            new_row["url"] = official_urls[0]
+            new_row["projectionSource"] = "joint-participant-official-news"
+            additions.append(new_row)
+            existing.add(key)
+    return additions
+
+
 def reconcile(data: dict, index: dict) -> dict:
     events = [event for event in data.get("events", []) if isinstance(event, dict)]
     by_id = {str(event.get("id") or ""): event for event in events if event.get("id")}
@@ -134,8 +188,11 @@ def reconcile(data: dict, index: dict) -> dict:
                 "representedBy": current_id or None,
             })
 
+    projected = project_joint_participant_rows(entries, by_id)
+    entries.extend(projected)
     index["entries"] = entries
     return {
+        "projectedJointParticipantCount": len(projected),
         "reassignedCount": len(reassigned),
         "hydratedCount": len(hydrated),
         "ambiguousCount": len(ambiguous),
