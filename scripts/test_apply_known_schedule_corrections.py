@@ -229,6 +229,48 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
             self.assertEqual(row, corrected[0])
             self.assertEqual(0, report["cutieHiroshimaPiaFixed"])
 
+
+    def test_christmas_session_gets_current_pia_presale_on_both_days(self):
+        events = [
+            {
+                "id": "christmas-" + day,
+                "group": "KAWAII LAB.合同",
+                "title": "KAWAII LAB. Christmas SESSION 2026",
+                "eventDate": day,
+                "url": "https://kawaiilab.asobisystem.com/news/detail/84218",
+            }
+            for day in ("2026-12-12", "2026-12-13")
+        ]
+        corrected, report = apply_known_corrections(events)
+        self.assertEqual(2, report["christmasPiaPresaleOffersAdded"])
+        self.assertEqual({"2026-12-12", "2026-12-13"}, {row["eventDate"] for row in corrected})
+        for event in corrected:
+            self.assertEqual(1, len(event["offers"]))
+            offer = event["offers"][0]
+            self.assertEqual("プレリザーブ3次", offer["ticketType"])
+            self.assertEqual("2026-10-21T18:00", offer["applyStart"])
+            self.assertEqual("2026-10-25T23:59", offer["applyEnd"])
+            self.assertEqual("2026-10-29T18:00", offer["resultDate"])
+            self.assertEqual(
+                "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30327",
+                offer["url"],
+            )
+
+        again, report = apply_known_corrections(corrected)
+        self.assertEqual(corrected, again)
+        self.assertEqual(0, report["christmasPiaPresaleOffersAdded"])
+
+    def test_christmas_pia_presale_does_not_touch_unrelated_event(self):
+        unrelated = {
+            "id": "other",
+            "group": "KAWAII LAB.合同",
+            "title": "KAWAII LAB. 5th ANNIVERSARY TOUR",
+            "eventDate": "2026-12-12",
+        }
+        corrected, report = apply_known_corrections([unrelated])
+        self.assertEqual([unrelated], corrected)
+        self.assertEqual(0, report["christmasPiaPresaleOffersAdded"])
+
     def test_candy_online_official_and_sukisuki_rows_become_one_event(self):
         official = {
             "id": "official-online",

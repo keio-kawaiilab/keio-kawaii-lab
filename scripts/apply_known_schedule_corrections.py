@@ -40,6 +40,9 @@ FRUITS_SYNERGY_GOODS = {
     "https://sukisuki-shop.com/goods/6500000004023",
     "https://sukisuki-shop.com/goods/6500000004943",
 }
+CHRISTMAS_SESSION_OFFICIAL = "https://kawaiilab.asobisystem.com/news/detail/84218"
+CHRISTMAS_SESSION_PIA = "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30327"
+CHRISTMAS_SESSION_DAYS = {"2026-12-12", "2026-12-13"}
 
 HAKATA_PARTS = [
     {"part": "第1部", "content": "2ショットチェキ撮影会（FC限定）", "start": "10:00", "end": "11:00", "receptionStart": "09:40", "receptionEnd": "10:40"},
@@ -1014,6 +1017,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "fruitsJoyFcOfferAdded": 0,
         "kawaiilabFcFreeLiveAdded": 0,
         "kawaiilabFcFreeLiveOffersUpdated": 0,
+        "christmasPiaPresaleOffersAdded": 0,
         "staleChristmasRowsRemoved": 0,
         "fmAichiFixed": 0,
         "sweetFcSecondStartFixed": 0,
@@ -1428,6 +1432,56 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
             target.pop(field, None)
         if target != before and report["kawaiilabFcFreeLiveAdded"] == 0:
             report["kawaiilabFcFreeLiveOffersUpdated"] = 1
+
+
+    # Ticket Pia's live sales page, checked 2026-10-24, lists one current
+    # Playguide presale for both Christmas SESSION performances.  Keep the
+    # physical performances separate and attach the same verified reception to
+    # each occurrence.  This is intentionally independent from the older FC
+    # article so a lagging ticket collector cannot hide a closing reception.
+    christmas_offer = {
+        "sourceRowId": "known-kawaiilab-christmas-pia-presale3-2026",
+        "provider": "pia",
+        "ticketProvider": "pia",
+        "ticketType": "プレリザーブ3次",
+        "url": CHRISTMAS_SESSION_PIA,
+        "urls": [CHRISTMAS_SESSION_PIA, CHRISTMAS_SESSION_OFFICIAL],
+        "applyStart": "2026-10-21T18:00",
+        "applyEnd": "2026-10-25T23:59",
+        "resultDate": "2026-10-29T18:00",
+        "applicationWindowVerified": True,
+        "applicationWindowSource": CHRISTMAS_SESSION_PIA,
+        "deadlineVerified": True,
+        "deadlineSource": CHRISTMAS_SESSION_PIA,
+        "resultDateSource": CHRISTMAS_SESSION_PIA,
+        "applicationStatus": "open",
+        "sourceType": "pia",
+        "primarySource": "pia",
+        "sourceChannel": "known-official-correction",
+    }
+    for event in out:
+        title = str(event.get("eventTitle") or event.get("title") or "")
+        event_days = {str(event.get("eventDate") or "")[:10], *(
+            str(day)[:10] for day in (event.get("eventDates") or [])
+        )}
+        if not (
+            event.get("group") == "KAWAII LAB.合同"
+            and "Christmas SESSION 2026" in title
+            and event_days & CHRISTMAS_SESSION_DAYS
+        ):
+            continue
+        offers = [deepcopy(offer) for offer in (event.get("offers") or []) if isinstance(offer, dict)]
+        if any(
+            str(offer.get("url") or "").split("?")[0] == CHRISTMAS_SESSION_PIA
+            or offer.get("sourceRowId") == christmas_offer["sourceRowId"]
+            for offer in offers
+        ):
+            continue
+        offers.append(deepcopy(christmas_offer))
+        event["offers"] = offers
+        event["applicationDisplayMode"] = "offers"
+        event["urls"] = list(dict.fromkeys([*_urls(event), CHRISTMAS_SESSION_OFFICIAL, CHRISTMAS_SESSION_PIA]))
+        report["christmasPiaPresaleOffersAdded"] += 1
 
     out, candy_online_removed = _collapse_candy_online_20261020(out)
     report["candyOnline20261020RowsCollapsed"] = candy_online_removed
