@@ -217,5 +217,61 @@ class SanitizerTests(unittest.TestCase):
         self.assertEqual(result[0]["ticketType"], "一般先行")
 
 
+    def test_same_official_resale_from_two_collectors_is_merged(self):
+        common = {
+            "group": "CANDY TUNE",
+            "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
+            "eventDate": "2026-12-08",
+            "venue": "東京ガーデンシアター",
+            "applyStart": "2026-12-06T10:00",
+            "applyEnd": "2026-12-07T23:59",
+            "url": "https://candytune.asobisystem.com/news/detail/99999",
+            "urls": ["https://candytune.asobisystem.com/news/detail/99999"],
+            "applicationWindowVerified": True,
+            "deadlineVerified": True,
+        }
+        payload = {"events": [
+            {
+                **common,
+                "id": "official-fc",
+                "ticketType": "FCリセール",
+                "sourceType": "official",
+                "sourceCandidates": ["official"],
+            },
+            {
+                **common,
+                "id": "resale-collector",
+                "ticketType": "公式リセール",
+                "sourceType": "resale-official",
+                "sourceCandidates": ["kawaii-lab-resale"],
+            },
+        ]}
+        result = s.sanitize_payload(payload, today=date(2026, 12, 6))["events"]
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["ticketType"], "公式リセール")
+        self.assertEqual(result[0]["sourceType"], "resale-official")
+        self.assertEqual(
+            result[0]["sourceCandidates"],
+            ["official", "kawaii-lab-resale"],
+        )
+
+    def test_distinct_resale_urls_with_same_window_stay_separate(self):
+        common = {
+            "group": "CANDY TUNE",
+            "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
+            "ticketType": "公式リセール",
+            "eventDate": "2026-12-08",
+            "venue": "東京ガーデンシアター",
+            "applyStart": "2026-12-06T10:00",
+            "applyEnd": "2026-12-07T23:59",
+        }
+        payload = {"events": [
+            {**common, "id": "one", "url": "https://example.test/resale-one"},
+            {**common, "id": "two", "url": "https://example.test/resale-two"},
+        ]}
+        result = s.sanitize_payload(payload, today=date(2026, 12, 6))["events"]
+        self.assertEqual(len(result), 2)
+
+
 if __name__ == "__main__":
     unittest.main()

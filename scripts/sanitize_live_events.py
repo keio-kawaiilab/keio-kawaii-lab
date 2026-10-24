@@ -349,6 +349,95 @@ def event_identity(event: dict) -> tuple:
     )
 
 
+def is_resale_event(event: dict) -> bool:
+    return "リセール" in str(event.get("ticketType") or "")
+
+
+def resale_source_urls(event: dict) -> set[str]:
+    values = [
+        event.get("url"),
+        *(event.get("urls") or []),
+        event.get("applicationWindowSource"),
+        event.get("deadlineSource"),
+    ]
+    return {str(value).strip() for value in values if str(value or "").strip()}
+
+
+def resale_preference(event: dict) -> tuple:
+    return (
+        str(event.get("sourceType") or "") == "resale-official",
+        str(event.get("ticketType") or "") == "公式リセール",
+        bool(event.get("applicationWindowVerified")),
+        bool(event.get("deadlineVerified")),
+        str(event.get("sourcePublishedAt") or ""),
+    )
+
+
+def merge_duplicate_resale_windows(events: list[dict]) -> list[dict]:
+    """同一公演・同一期間・同一URLの公式リセールを取得経路に関係なく1件に統合する。"""
+    result: list[dict] = []
+    positions: dict[tuple, list[int]] = {}
+
+    for event in events:
+        if not is_resale_event(event):
+            result.append(event)
+            continue
+
+        key = (
+            event.get("group"),
+            tuple(event.get("participants") or []),
+            title_merge_key(event.get("title", "")),
+            event_identity(event),
+            event.get("applyStart"),
+            event.get("applyEnd"),
+            event.get("resultDate"),
+            event.get("paymentEnd"),
+        )
+        urls = resale_source_urls(event)
+        match = next(
+            (
+                index
+                for index in positions.get(key, [])
+                if urls and urls.intersection(resale_source_urls(result[index]))
+            ),
+            None,
+        )
+        if match is None:
+            positions.setdefault(key, []).append(len(result))
+            result.append(event)
+            continue
+
+        previous = result[match]
+        preferred = max((previous, event), key=resale_preference)
+        merged = dict(preferred)
+        merged_urls = distinct(
+            url
+            for item in (previous, event)
+            for url in (item.get("urls") or ([item.get("url")] if item.get("url") else []))
+        )
+        source_candidates = distinct(
+            source
+            for item in (previous, event)
+            for source in (item.get("sourceCandidates") or [])
+        )
+        merged["id"] = stable_id("same-resale-window", key, *merged_urls)
+        merged["ticketType"] = "公式リセール"
+        merged["urls"] = merged_urls
+        merged["url"] = preferred.get("url") or (merged_urls[0] if merged_urls else None)
+        merged["sourceCandidates"] = source_candidates
+        merged["applicationWindowVerified"] = any(
+            bool(item.get("applicationWindowVerified")) for item in (previous, event)
+        )
+        merged["deadlineVerified"] = any(
+            bool(item.get("deadlineVerified")) for item in (previous, event)
+        )
+        published = [str(item.get("sourcePublishedAt") or "") for item in (previous, event)]
+        merged["sourcePublishedAt"] = max(published) or None
+        result[match] = merged
+
+    return result
+
+
 def latest_relevant_ticket_day(event: dict):
     days = [parse_day(event.get(key)) for key in ("applyEnd", "resultDate", "paymentEnd")]
     days = [d for d in days if d]
@@ -424,6 +513,7 @@ def sanitize_payload(payload: dict, today: date | None = None) -> dict:
     events = merge_joint_events(events)
     events = merge_consecutive_days(events)
     events = merge_same_window(events)
+    events = merge_duplicate_resale_windows(events)
     if today is not None:
         events = collapse_expired_application_windows(events, today)
     events.sort(key=lambda e: (
