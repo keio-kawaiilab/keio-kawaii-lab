@@ -19,6 +19,20 @@ class ScheduleScopeTests(unittest.TestCase):
         ):
             self.assertEqual(HOSTED, infer_event_scope({"title": title}), title)
 
+    def test_kawaiilab_fc_free_live_is_hosted_even_with_stale_external_scope(self):
+        from schedule_scope import apply_event_scope
+        event = {
+            "group": "CUTIE STREET",
+            "title": "KAWAII LAB. ファンクラブ限定フリーライブ",
+            "eventScope": EXTERNAL,
+        }
+        self.assertEqual(HOSTED, infer_event_scope(event))
+        self.assertEqual(HOSTED, apply_event_scope(event)["eventScope"])
+        self.assertEqual(
+            EXTERNAL,
+            infer_event_scope({"title": "他社主催 ファンクラブ限定フリーライブ"}),
+        )
+
     def test_fifth_anniversary_tour_is_hosted_even_with_stale_external_scope(self):
         from schedule_scope import apply_event_scope
         event = {
