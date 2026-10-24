@@ -35,6 +35,26 @@ class HardenPiaEventsTests(unittest.TestCase):
     def test_result_announcement_is_not_a_deadline(self):
         text = "抽選受付終了 ～2026/9/6(日) 23:59 抽選結果発表 2026/9/9(水) 18:00"
         self.assertEqual(h.deadline_from_text(text), "2026-09-06T23:59")
+        self.assertEqual(h.result_date_from_text(text), "2026-09-09T18:00")
+
+    def test_verified_period_also_keeps_result_announcement(self):
+        pia = {
+            "id": "pia-third",
+            "group": "CUTIE STREET",
+            "title": "CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-",
+            "ticketType": "3次プレリザーブ",
+            "eventDate": "2026-11-14",
+            "sourceType": "pia",
+            "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=18893",
+            "applicationStatus": "open",
+        }
+        text = (
+            "抽選受付期間 2026/10/17(土) 11:00 ～ 2026/10/26(月) 11:00 "
+            "抽選結果発表 2026/10/28(水) 18:00"
+        )
+        kept, rejected = h.harden([pia], DummySession(text))
+        self.assertFalse(rejected)
+        self.assertEqual(kept[0]["resultDate"], "2026-10-28T18:00")
 
     def test_pia_ui_label_is_never_valid_event_title(self):
         self.assertTrue(h.is_bad_title("行きたい!公演アラート"))

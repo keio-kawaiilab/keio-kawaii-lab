@@ -81,6 +81,18 @@ def deadline_from_text(text: str) -> str | None:
     return None
 
 
+def result_date_from_text(text: str) -> str | None:
+    text = norm(text)
+    for hint in RESULT_HINTS:
+        pos = text.find(hint)
+        if pos < 0:
+            continue
+        match = DATE_RE.search(text[pos:pos + 500])
+        if match:
+            return to_iso(match)
+    return None
+
+
 def event_days(event: dict) -> list[str]:
     days: list[str] = []
     if isinstance(event.get("schedule"), list):
@@ -197,7 +209,7 @@ def repair_title_and_schedule(event: dict, all_events: list[dict]) -> dict:
     return out
 
 
-def fetch_detail_evidence(session: requests.Session, event: dict) -> tuple[str | None, str | None, str | None, str | None]:
+def fetch_detail_evidence(session: requests.Session, event: dict) -> tuple[str | None, str | None, str | None, str | None, str | None]:
     for url in pia_detail_urls(event):
         try:
             response = session.get(url, timeout=12)
@@ -205,13 +217,16 @@ def fetch_detail_evidence(session: requests.Session, event: dict) -> tuple[str |
         except Exception:
             continue
         text = BeautifulSoup(response.text, "html.parser").get_text(" ", strip=True)
+        result_date = result_date_from_text(text)
         start, end = exact_period_from_text(text)
         if start and end:
-            return start, end, end, url
+            return start, end, end, result_date, url
         deadline = deadline_from_text(text)
         if deadline:
-            return None, None, deadline, url
-    return None, None, None, None
+            return None, None, deadline, result_date, url
+        if result_date:
+            return None, None, None, result_date, url
+    return None, None, None, None, None
 
 
 def valid_isoish(value: object) -> bool:
@@ -234,7 +249,10 @@ def harden(events: list[dict], session: requests.Session) -> tuple[list[dict], l
 
         event = repair_title_and_schedule(event, events)
         ended = str(event.get("applicationStatus") or "").strip().lower() in ENDED_STATUSES
-        detail_start, detail_end, detail_deadline, evidence_url = fetch_detail_evidence(session, event)
+        detail_start, detail_end, detail_deadline, detail_result, evidence_url = fetch_detail_evidence(session, event)
+
+        if detail_result:
+            event["resultDate"] = detail_result
 
         if detail_start and detail_end:
             event["applyStart"] = detail_start

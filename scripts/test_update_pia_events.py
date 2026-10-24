@@ -6,6 +6,7 @@ import update_pia_events as p
 class PiaParserTests(unittest.TestCase):
     def test_ticket_type(self):
         self.assertEqual(p.ticket_type("先行 プレリザーブ 抽選受付中"), "プレリザーブ")
+        self.assertEqual(p.ticket_type("CUTIE STREET 3次プレリザーブ"), "3次プレリザーブ")
         self.assertEqual(p.ticket_type("一般発売／CUTIE STREET"), "一般発売")
         self.assertEqual(p.ticket_type("先行 プレミアム ぴあNICOSカード限定"), "ぴあNICOSカード限定先行")
 

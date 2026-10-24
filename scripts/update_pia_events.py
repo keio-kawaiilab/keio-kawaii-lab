@@ -79,6 +79,7 @@ def stable_id(*parts: object) -> str:
 def ticket_type(text: str) -> str:
     text = norm(text)
     patterns = (
+        (r"3次プレリザーブ", "3次プレリザーブ"),
         (r"2次プレリザーブ", "2次プレリザーブ"),
         (r"プレリザーブ2次", "2次プレリザーブ"),
         (r"いち早プレリザーブ", "いち早プレリザーブ"),
@@ -320,7 +321,7 @@ def parse_event_page(
         apply_start, apply_end = sale_window(context)
 
         detail_start, detail_end = (None, None)
-        if href and (apply_start is None and apply_end is None):
+        if href and (apply_start is None or apply_end is None):
             detail_start, detail_end = detail_sale_window(session, href)
         apply_start = detail_start or apply_start
         apply_end = detail_end or apply_end
