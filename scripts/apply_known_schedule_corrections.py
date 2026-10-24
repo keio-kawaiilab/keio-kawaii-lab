@@ -1266,7 +1266,12 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
     free_live_source = "https://candytune.asobisystem.com/news/detail/93706"
     free_live_title = "KAWAII LAB. ファンクラブ限定フリーライブ"
     free_live_day = "2026-11-06"
-    if not any(
+    # Run this site-wide backfill only on a complete multi-group calendar.
+    # Unit tests and partial collector snapshots must remain untouched.
+    has_all_participants = {"CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR"}.issubset(
+        {str(event.get("group") or "") for event in out}
+    )
+    if has_all_participants and not any(
         free_live_day in {str(event.get("eventDate") or "")[:10], *(
             str(day)[:10] for day in (event.get("eventDates") or [])
         )}
