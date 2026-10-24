@@ -220,13 +220,11 @@ class SanitizerTests(unittest.TestCase):
     def test_same_official_resale_from_two_collectors_is_merged(self):
         common = {
             "group": "CANDY TUNE",
-            "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
             "eventDate": "2026-12-08",
-            "venue": "東京ガーデンシアター",
             "applyStart": "2026-12-06T10:00",
             "applyEnd": "2026-12-07T23:59",
-            "url": "https://candytune.asobisystem.com/news/detail/99999",
-            "urls": ["https://candytune.asobisystem.com/news/detail/99999"],
+            "url": "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
+            "urls": ["https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026"],
             "applicationWindowVerified": True,
             "deadlineVerified": True,
         }
@@ -234,6 +232,9 @@ class SanitizerTests(unittest.TestCase):
             {
                 **common,
                 "id": "official-fc",
+                "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -「CANDY CIRCUS」公演 リセールサービスのお知らせ",
+                "venue": "東京・東京ガーデンシアター",
+                "startTime": "19:00",
                 "ticketType": "FCリセール",
                 "sourceType": "official",
                 "sourceCandidates": ["official"],
@@ -241,6 +242,8 @@ class SanitizerTests(unittest.TestCase):
             {
                 **common,
                 "id": "resale-collector",
+                "title": "CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS",
+                "venue": "東京都 東京ガーデンシアター",
                 "ticketType": "公式リセール",
                 "sourceType": "resale-official",
                 "sourceCandidates": ["kawaii-lab-resale"],

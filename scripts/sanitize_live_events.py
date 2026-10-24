@@ -373,6 +373,43 @@ def resale_preference(event: dict) -> tuple:
     )
 
 
+def resale_venue_keys(event: dict) -> set[str]:
+    values = [event.get("venue")]
+    values.extend(item.get("venue") for item in event_schedule(event))
+    result = set()
+    for value in values:
+        raw = str(value or "").strip()
+        if not raw:
+            continue
+        raw = re.sub(r"^(?:北海道|東京都|京都府|大阪府|.{2,3}県)[\s　・]+", "", raw)
+        raw = re.sub(r"^[^・]{1,8}・", "", raw)
+        key = re.sub(r"[\s　・･/／()（）\-－]", "", raw).lower()
+        if key:
+            result.add(key)
+    return result
+
+
+def resale_start_times(event: dict) -> set[str]:
+    values = [event.get("startTime")]
+    values.extend(item.get("startTime") for item in event_schedule(event))
+    return {str(value).strip() for value in values if str(value or "").strip()}
+
+
+def resale_performances_compatible(left: dict, right: dict) -> bool:
+    left_venues = resale_venue_keys(left)
+    right_venues = resale_venue_keys(right)
+    if not left_venues or not right_venues or left_venues.isdisjoint(right_venues):
+        return False
+
+    left_times = resale_start_times(left)
+    right_times = resale_start_times(right)
+    if left_times and right_times:
+        return not left_times.isdisjoint(right_times)
+    if not left_times and not right_times:
+        return title_merge_key(left.get("title", "")) == title_merge_key(right.get("title", ""))
+    return True
+
+
 def merge_duplicate_resale_windows(events: list[dict]) -> list[dict]:
     """同一公演・同一期間・同一URLの公式リセールを取得経路に関係なく1件に統合する。"""
     result: list[dict] = []
@@ -386,8 +423,7 @@ def merge_duplicate_resale_windows(events: list[dict]) -> list[dict]:
         key = (
             event.get("group"),
             tuple(event.get("participants") or []),
-            title_merge_key(event.get("title", "")),
-            event_identity(event),
+            tuple(event_dates(event)),
             event.get("applyStart"),
             event.get("applyEnd"),
             event.get("resultDate"),
@@ -398,7 +434,11 @@ def merge_duplicate_resale_windows(events: list[dict]) -> list[dict]:
             (
                 index
                 for index in positions.get(key, [])
-                if urls and urls.intersection(resale_source_urls(result[index]))
+                if (
+                    urls
+                    and urls.intersection(resale_source_urls(result[index]))
+                    and resale_performances_compatible(event, result[index])
+                )
             ),
             None,
         )

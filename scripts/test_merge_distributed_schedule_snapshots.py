@@ -85,19 +85,32 @@ class DistributedSnapshotMergerTests(unittest.TestCase):
         official_url = "https://candy-tune.asobisystem.com/news/detail/999"
         shared = {
             "group": "CANDY TUNE",
-            "participants": ["CANDY TUNE"],
-            "title": "CANDY TUNE JAPAN TOUR 2026 -TUNE UP!- 東京公演",
+            "participants": [],
             "eventDate": "2026-12-08",
             "eventDates": ["2026-12-08"],
-            "schedule": [{"date": "2026-12-08", "venue": "東京国際フォーラム ホールA"}],
             "applyStart": "2026-11-21T18:00:00+09:00",
             "applyEnd": "2026-12-02T23:59:00+09:00",
             "url": official_url,
             "urls": [official_url],
         }
         core = {"events": [
-            dict(shared, id="fc-resale", sourceType="auto", ticketType="公式 / FC リセール"),
-            dict(shared, id="official-resale", sourceType="resale-official", ticketType="公式リセール"),
+            dict(
+                shared,
+                id="fc-resale",
+                title="CANDY TUNE JAPAN TOUR 2026 - AUTUMN -「CANDY CIRCUS」公演 リセールサービスのお知らせ",
+                venue="東京・東京ガーデンシアター",
+                startTime="19:00",
+                sourceType="auto",
+                ticketType="公式 / FC リセール",
+            ),
+            dict(
+                shared,
+                id="official-resale",
+                title="CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS",
+                venue="東京都 東京ガーデンシアター",
+                sourceType="resale-official",
+                ticketType="公式リセール",
+            ),
         ]}
         result = merger.merge_payloads(core, {"events": []}, {"events": []}, {"events": []})
         matching = [
