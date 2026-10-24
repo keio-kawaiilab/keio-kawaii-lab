@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-25T03:59:06.033259+09:00",
-  "candidateUpdatedAt": "2026-10-25T03:59:05+09:00",
-  "previousEventCount": 247,
-  "candidateEventCount": 246,
-  "protectedPreviousCount": 247,
+  "generatedAt": "2026-10-25T04:11:11.492014+09:00",
+  "candidateUpdatedAt": "2026-10-25T04:11:11+09:00",
+  "previousEventCount": 246,
+  "candidateEventCount": 247,
+  "protectedPreviousCount": 246,
   "errorCount": 0,
   "warningCount": 16,
   "errors": [],
@@ -26,7 +26,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event offer application window is not backed by an official page: CUTIE STREET / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし / offer 1",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event offer deadline is not verified by an official page: CUTIE STREET / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし / offer 1"
   ],
-  "candidateSha256": "3fe3524d9922589508017549e0b79f04ebbcb025f20f3ae6241aebe420a86c41",
+  "candidateSha256": "0e7f760aece93475af21ad8fe44dc2b0e7af29ca26d4cfd8b77d5583eb2ce0b8",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40731",
@@ -291,7 +291,7 @@
     {
       "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
       "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 4
+      "restoredPreviousRows": 3
     },
     {
       "error": "canonical special event offer has no verified purchase/ticket window: CUTIE STREET / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし / offer 1",
@@ -525,6 +525,53 @@
         "url": "https://cutiestreet.asobisystem.com/live_information/detail/46743",
         "representedBy": "ae310bb63fded8fe"
       }
-    ]
+    ],
+    "duplicateOfficialResaleWindowsRemoved": 2,
+    "postDedupeReconciliation": {
+      "projectedJointParticipantCount": 0,
+      "reassignedCount": 0,
+      "hydratedCount": 0,
+      "ambiguousCount": 3,
+      "unresolvedCount": 1,
+      "reassigned": [],
+      "hydrated": [],
+      "ambiguous": [
+        {
+          "group": "CANDY TUNE",
+          "date": "2026-10-26",
+          "url": "https://candytune.asobisystem.com/live_information/detail/40731",
+          "candidateIds": [
+            "54a369497f59ce96",
+            "c4356b6a3eb08f58"
+          ]
+        },
+        {
+          "group": "CANDY TUNE",
+          "date": "2026-10-27",
+          "url": "https://candytune.asobisystem.com/live_information/detail/40732",
+          "candidateIds": [
+            "54a369497f59ce96",
+            "c4356b6a3eb08f58"
+          ]
+        },
+        {
+          "group": "MORE STAR",
+          "date": "2026-11-25",
+          "url": "https://morestar.asobisystem.com/live_information/detail/45677",
+          "candidateIds": [
+            "1e830eeca8279261",
+            "7d25c846b9eb92ef"
+          ]
+        }
+      ],
+      "unresolved": [
+        {
+          "group": "CUTIE STREET",
+          "date": "2026-12-06",
+          "url": "https://cutiestreet.asobisystem.com/live_information/detail/46743",
+          "representedBy": "ae310bb63fded8fe"
+        }
+      ]
+    }
   }
 }
