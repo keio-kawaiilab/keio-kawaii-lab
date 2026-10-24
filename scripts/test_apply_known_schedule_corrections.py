@@ -11,6 +11,42 @@ from apply_known_schedule_corrections import (
 
 
 class KnownScheduleCorrectionsTest(unittest.TestCase):
+    def test_fruits_joy_fc_window_merges_into_the_known_performance(self):
+        from performance_entities import build_public_events
+
+        seed = {
+            "id": "joy-performance",
+            "group": "FRUITS ZIPPER",
+            "title": "FRUITS ZIPPER FANCLUB LIVE -じょい！×３-",
+            "eventDate": "2026-11-08",
+            "venue": "東京都 東京ガーデンシアター",
+            "openTime": "13:30",
+            "startTime": "15:00",
+            "ticketType": "現在受付なし",
+            "applicationStatus": "none",
+            "url": "https://fruitszipper.asobisystem.com/news/detail/93201",
+            "eventScope": "kawaii-lab",
+        }
+        corrected, report = apply_known_corrections([seed])
+        self.assertEqual(1, report["fruitsJoyFcOfferAdded"])
+        offer_rows = [row for row in corrected if row.get("id") == "known-fruits-joy-fc-offer-20261108"]
+        self.assertEqual(1, len(offer_rows))
+        self.assertEqual("2026-10-24T12:00", offer_rows[0]["applyStart"])
+        self.assertEqual("2026-10-27T23:59", offer_rows[0]["applyEnd"])
+        self.assertEqual(
+            "https://fruitszipper.asobisystem.com/news/detail/93670",
+            offer_rows[0]["applicationWindowSource"],
+        )
+
+        public, _ = build_public_events(corrected)
+        joy = next(row for row in public if row.get("eventDate") == "2026-11-08")
+        self.assertEqual(1, len(joy["offers"]))
+        self.assertEqual("FC先行", joy["offers"][0]["ticketType"])
+
+        again, second_report = apply_known_corrections(corrected)
+        self.assertEqual(corrected, again)
+        self.assertEqual(0, second_report["fruitsJoyFcOfferAdded"])
+
     def test_sweetest_story_keeps_two_future_starts_after_reception_ends(self):
         seed = {"id": "sweet", "group": "SWEET STEADY", "url": "https://sweetsteady.asobisystem.com/"}
         corrected, report = apply_known_corrections([seed])
@@ -66,7 +102,7 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
             self.assertEqual(corrected, [original])
             self.assertEqual(report["candyBirthdayFactsFilled"], 0)
 
-    def test_joy_live_is_added_without_inventing_ticket_window(self):
+    def test_joy_live_occurrence_stays_schedule_only_and_verified_offer_is_separate(self):
         seed = {"id": "fruits-official", "group": "FRUITS ZIPPER", "eventDate": "2026-10-26",
                 "url": "https://fruitszipper.asobisystem.com/feature/2026tour_autumn"}
         events, report = apply_known_corrections([seed])
@@ -78,9 +114,14 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
         self.assertNotIn("applyEnd", joy[0])
         self.assertEqual("none", joy[0]["applicationStatus"])
         self.assertEqual(1, report["fruitsJoyFanclubLiveAdded"])
+        offer = [e for e in events if e.get("id") == "known-fruits-joy-fc-offer-20261108"]
+        self.assertEqual(1, len(offer))
+        self.assertEqual("2026-10-24T12:00", offer[0]["applyStart"])
+        self.assertEqual("2026-10-27T23:59", offer[0]["applyEnd"])
         again, report = apply_known_corrections(events)
         self.assertEqual(events, again)
         self.assertEqual(0, report["fruitsJoyFanclubLiveAdded"])
+        self.assertEqual(0, report["fruitsJoyFcOfferAdded"])
 
     def test_joy_live_does_not_duplicate_a_collector_row(self):
         source = {"id": "collected-joy", "group": "FRUITS ZIPPER", "eventDate": "2026-11-08",
@@ -88,8 +129,11 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
                   "url": "https://fruitszipper.asobisystem.com/news/detail/93201",
                   "applyStart": "2026-10-21T12:00"}
         corrected, report = apply_known_corrections([source])
-        self.assertEqual([source], corrected)
+        self.assertEqual(source, corrected[0])
+        self.assertEqual(2, len(corrected))
+        self.assertEqual("known-fruits-joy-fc-offer-20261108", corrected[1]["id"])
         self.assertEqual(0, report["fruitsJoyFanclubLiveAdded"])
+        self.assertEqual(1, report["fruitsJoyFcOfferAdded"])
 
     def test_hiroshima_retained_lot_uses_each_official_occurrence(self):
         row = {"id": "old-pia-hiroshima", "group": "CUTIE STREET",

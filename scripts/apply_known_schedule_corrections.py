@@ -1011,6 +1011,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "candyTokyoPresaleAdded": 0,
         "sweetestStoryPerformancesAdded": 0,
         "fruitsJoyFanclubLiveAdded": 0,
+        "fruitsJoyFcOfferAdded": 0,
         "kawaiilabFcFreeLiveAdded": 0,
         "staleChristmasRowsRemoved": 0,
         "fmAichiFixed": 0,
@@ -1257,6 +1258,49 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
             "applicationDisplayMode": "schedule-only",
         })
         report["fruitsJoyFanclubLiveAdded"] = 1
+
+    # NEWS 93670, checked 2026-10-24, starts the paid-FC member lottery for
+    # the already known 11/8 performance.  The generic discovery parser can
+    # read the application window but currently quarantines it because it
+    # cannot bind the article's Japanese-formatted performance date safely.
+    # Add an offer row only when the exact performance is represented; the
+    # performance entity builder will merge it into that occurrence.
+    joy_fc_source = "https://fruitszipper.asobisystem.com/news/detail/93670"
+    has_joy_performance = any(
+        event.get("group") == "FRUITS ZIPPER"
+        and _day(event) == "2026-11-08"
+        and "FANCLUB LIVE" in str(event.get("eventTitle") or event.get("title") or "")
+        and "じょい" in str(event.get("eventTitle") or event.get("title") or "")
+        for event in out
+    )
+    has_joy_fc_offer = any(
+        event.get("group") == "FRUITS ZIPPER"
+        and _day(event) == "2026-11-08"
+        and event.get("applyStart") == "2026-10-24T12:00"
+        and event.get("applyEnd") == "2026-10-27T23:59"
+        and "FC" in str(event.get("ticketType") or "")
+        for event in out
+    )
+    if has_joy_performance and not has_joy_fc_offer:
+        out.append({
+            "id": "known-fruits-joy-fc-offer-20261108",
+            "group": "FRUITS ZIPPER", "title": joy_title, "eventTitle": joy_title,
+            "eventDate": "2026-11-08", "eventEndDate": "2026-11-08",
+            "eventDates": ["2026-11-08"], "eventCount": 1,
+            "venue": "東京都 東京ガーデンシアター", "openTime": "13:30", "startTime": "15:00",
+            "schedule": [{"date": "2026-11-08", "venue": "東京都 東京ガーデンシアター",
+                          "openTime": "13:30", "startTime": "15:00"}],
+            "ticketType": "FC先行",
+            "applyStart": "2026-10-24T12:00", "applyEnd": "2026-10-27T23:59",
+            "applicationWindowVerified": True, "applicationWindowSource": joy_fc_source,
+            "deadlineVerified": True, "deadlineSource": joy_fc_source,
+            "applicationStatus": "open", "applicationDisplayMode": "band",
+            "url": joy_fc_source, "urls": [joy_source, joy_fc_source],
+            "primarySource": "official", "sourceType": "official",
+            "sourceChannel": "known-official-correction", "sourcePublishedAt": "2026-10-24",
+            "eventScope": "kawaii-lab",
+        })
+        report["fruitsJoyFcOfferAdded"] = 1
 
 
     # Verified 2026-10-24 official announcement.  A four-group FC show must
