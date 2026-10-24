@@ -69,7 +69,24 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
         self.assertEqual(row["title"], row["eventTitle"])
         self.assertEqual(1, report["kawaiilabFcFreeLiveOffersUpdated"])
 
-        public, _ = build_public_events(corrected)
+        # The central official-schedule row is more preferred by the generic
+        # base score but carries only the abbreviated title.  It must not
+        # overwrite the verified NEWS title during entity consolidation.
+        generic_schedule = {
+            "id": "official-schedule-free-live",
+            "group": "KAWAII LAB.",
+            "title": "KAWAII LAB.",
+            "eventTitle": "KAWAII LAB.",
+            "eventDate": "2026-11-06",
+            "eventDates": ["2026-11-06"],
+            "venue": "東京都 東京ガーデンシアター",
+            "openTime": "16:30",
+            "startTime": "18:00",
+            "sourceType": "official-schedule",
+            "primarySource": "official",
+            "url": "https://kawaiilab.asobisystem.com/live_information/detail/46689",
+        }
+        public, _ = build_public_events([*corrected, generic_schedule])
         free_live = [item for item in public if item.get("eventDate") == "2026-11-06"]
         self.assertEqual(1, len(free_live))
         self.assertEqual("KAWAII LAB. ファンクラブ限定フリーライブ", free_live[0]["title"])

@@ -206,6 +206,40 @@ def _reconcile_verified_christmas_session(event: dict[str, Any]) -> None:
     ])
 
 
+def _reconcile_verified_fc_free_live(event: dict[str, Any]) -> None:
+    """Keep the verified Nov 6 joint-show title through source consolidation.
+
+    The central official schedule currently labels this occurrence only
+    KAWAII LAB.  The official NEWS article gives the full event name.
+    Canonicalize every exact joint occurrence before choosing a preferred base
+    so an official-schedule row cannot overwrite the more specific title.
+    """
+    canonical = "KAWAII LAB. ファンクラブ限定フリーライブ"
+    source = "https://kawaiilab.asobisystem.com/news/detail/93695"
+    if _text(event.get("group")) not in {"KAWAII LAB.", "KAWAII LAB.合同"}:
+        return
+    occurrences = _occurrences(event)
+    if not any(
+        row["date"] == "2026-11-06"
+        and "東京ガーデンシアター" in _text(row.get("venue") or event.get("venue"))
+        for row in occurrences
+    ):
+        return
+    title = _text(event.get("eventTitle") or event.get("title"))
+    urls = _event_urls(event)
+    if "ファンクラブ限定フリーライブ" not in title and not any(
+        value.startswith("https://kawaiilab.asobisystem.com/") for value in urls
+    ):
+        return
+    event["group"] = "KAWAII LAB.合同"
+    event["participants"] = ["CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR"]
+    for field in ("title", "eventTitle", "displayTitle"):
+        event[field] = canonical
+    event["performanceFactSources"] = _unique_strings([
+        *(event.get("performanceFactSources") or []), source,
+    ])
+
+
 def _time_match_keys(event: dict[str, Any], occurrence: dict[str, Any]) -> list[str]:
     group = _text(event.get("group"))
     day = _day(occurrence.get("date"))
@@ -480,6 +514,7 @@ def build_public_events(events: list[dict[str, Any]]) -> tuple[list[dict[str, An
     raw = [deepcopy(event) for event in events if isinstance(event, dict)]
     for event in raw:
         _reconcile_verified_christmas_session(event)
+        _reconcile_verified_fc_free_live(event)
     records: list[dict[str, Any]] = []
     passthrough: list[dict[str, Any]] = []
     for index, event in enumerate(raw):
