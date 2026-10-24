@@ -8,6 +8,7 @@ from datetime import datetime
 from pathlib import Path
 
 import dedupe_official_x_series as official_x_dedupe
+import sanitize_live_events as sanitizer
 from apply_known_schedule_corrections import apply_known_corrections
 from expand_special_event_entities import expand_payload
 from enforce_physical_event_invariant import enforce_payload
@@ -477,6 +478,9 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
     events, known_correction_report = apply_known_corrections(events)
     events, guard_rejected_rows_quarantined = quarantine_guard_rejected_rows(events)
     events, duplicate_fc_ids = dedupe_official_fc_offers(events)
+    before_resale_dedupe = len(events)
+    events = sanitizer.merge_duplicate_resale_windows(events)
+    duplicate_resale_windows_removed = before_resale_dedupe - len(events)
     out = dict(candidate)
     out["events"] = events
     out["releasePreparation"] = {
@@ -485,6 +489,7 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
         "duplicateIdsRemoved": duplicate_ids_removed + duplicate_ids_removed_after_retention,
         "duplicateOfficialFcOffersRemoved": len(duplicate_fc_ids),
         "duplicateOfficialFcOfferIdsRemoved": duplicate_fc_ids,
+        "duplicateOfficialResaleWindowsRemoved": duplicate_resale_windows_removed,
         "retainedPreviousRows": len(retained),
         "retained": retained,
         "expandedPreviousSpecialEntities": previous_expand.get("expandedSpecialEntities", 0),

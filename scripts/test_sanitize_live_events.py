@@ -258,6 +258,10 @@ class SanitizerTests(unittest.TestCase):
             ["official", "kawaii-lab-resale"],
         )
 
+    def test_presale_is_not_classified_as_resale(self):
+        self.assertFalse(s.is_resale_event({"ticketType": "プリセール（先着先行）"}))
+        self.assertTrue(s.is_resale_event({"ticketType": "公式 / FCリセール"}))
+
     def test_distinct_resale_urls_with_same_window_stay_separate(self):
         common = {
             "group": "CANDY TUNE",

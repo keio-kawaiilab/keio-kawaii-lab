@@ -350,7 +350,8 @@ def event_identity(event: dict) -> tuple:
 
 
 def is_resale_event(event: dict) -> bool:
-    return "リセール" in str(event.get("ticketType") or "")
+    ticket_type = str(event.get("ticketType") or "")
+    return "リセール" in ticket_type and "プリセール" not in ticket_type
 
 
 def resale_source_urls(event: dict) -> set[str]:

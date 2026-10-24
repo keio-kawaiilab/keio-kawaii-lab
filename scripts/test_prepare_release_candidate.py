@@ -377,6 +377,48 @@ class PrepareReleaseCandidateTests(unittest.TestCase):
         })
         self.assertGreaterEqual(report["supersededLegacyReleaseSeriesRemoved"], 1)
 
+    def test_retained_duplicate_official_resale_is_merged_before_release(self):
+        feature_url = "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026"
+        previous = {"events": [{
+            "id": "old-auto-resale",
+            "group": "CANDY TUNE",
+            "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -「CANDY CIRCUS」公演 リセールサービスのお知らせ",
+            "ticketType": "リセール",
+            "eventDate": "2026-12-08",
+            "venue": "東京・東京ガーデンシアター",
+            "startTime": "19:00",
+            "applyStart": "2026-12-06T10:00",
+            "applyEnd": "2026-12-07T23:59",
+            "url": feature_url,
+            "urls": [feature_url, "https://candytune.asobisystem.com/news/detail/88212"],
+            "sourceType": "auto",
+            "primarySource": "official",
+        }]}
+        candidate = {"events": [{
+            "id": "official-resale",
+            "group": "CANDY TUNE",
+            "title": "CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS",
+            "ticketType": "公式リセール",
+            "eventDate": "2026-12-08",
+            "venue": "東京都 東京ガーデンシアター",
+            "applyStart": "2026-12-06T10:00",
+            "applyEnd": "2026-12-07T23:59",
+            "url": feature_url,
+            "urls": [feature_url, "https://kawaiilab.asobisystem.com/news/detail/88214"],
+            "sourceType": "resale-official",
+            "primarySource": "official",
+        }]}
+
+        prepared, report = prep.prepare(previous, candidate, self.NOW)
+        resales = [
+            row for row in prepared["events"]
+            if row.get("eventDate") == "2026-12-08"
+            and prep.sanitizer.is_resale_event(row)
+        ]
+        self.assertEqual(1, len(resales))
+        self.assertEqual("公式リセール", resales[0]["ticketType"])
+        self.assertEqual(1, report["duplicateOfficialResaleWindowsRemoved"])
+
     def test_observation_clock_only_does_not_advance_public_updated_at(self):
         previous = {
             "updatedAt": "2026-08-27T18:00:00+09:00",
