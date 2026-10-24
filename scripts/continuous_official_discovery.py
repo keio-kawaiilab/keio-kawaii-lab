@@ -634,6 +634,13 @@ def read_candidate(candidate, existing, headers):
                 rows.append(row)
                 existing_keys.add(key)
         review = None
+    # A parser may return a usable historical/partial row and a review at the
+    # same time.  The review is still resolved when the exact official notice
+    # is already attached to a current/future event with the same verified
+    # ticket family and complete window; keep any parsed rows, but do not keep
+    # emitting the already-published notice as pending.
+    if review and source_notice_is_already_represented(candidate, title, existing):
+        review = None
     if not rows and not review:
         published = parser.article_date_from_text(text)
         default_year = int(published[:4]) if published else datetime.now(parser.JST).year
@@ -648,8 +655,6 @@ def read_candidate(candidate, existing, headers):
             return [], None, "past"
     if not rows and review:
         if review_is_already_represented(candidate, review, existing):
-            return [], None, "represented"
-        if source_notice_is_already_represented(candidate, title, existing):
             return [], None, "represented"
         fallback = fallback_row_from_review(candidate, title, text, review, existing)
         if fallback:
