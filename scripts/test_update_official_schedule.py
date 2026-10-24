@@ -35,6 +35,23 @@ class OfficialScheduleTests(unittest.TestCase):
         self.assertEqual(1, len(rows))
         self.assertEqual("external", rows[0].event_scope)
 
+    def test_kawaiilab_fc_free_live_list_row_is_hosted_for_line(self):
+        html = (
+            '<a href="/live_information/detail/46742">'
+            '<span class="block--date__month">11</span>'
+            '<span class="block--date__date">06</span>'
+            '<p class="category">LIVE</p>'
+            '<p class="tit">KAWAII LAB. ファンクラブ限定フリーライブ</p>'
+            '</a>'
+        )
+        rows = parse_schedule_list(
+            html, "CUTIE STREET", "https://cutiestreet.asobisystem.com",
+            2026, 11, date(2026, 10, 24),
+        )
+        self.assertEqual(1, len(rows))
+        self.assertEqual("kawaii-lab", rows[0].event_scope)
+        self.assertEqual("2026-11-06", rows[0].day)
+
     def test_detail_parses_venue_and_times(self):
         html = '''<div class="block--title"><p class="tit">生誕祭</p></div><ul class="block--liveinfo">
         <li><p class="item-tit">公演日</p><p class="item-detail">2026.10.01</p></li>
