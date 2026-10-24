@@ -4,6 +4,57 @@ from reconcile_official_schedule_index import reconcile
 
 
 class ReconcileOfficialScheduleIndexTests(unittest.TestCase):
+    def test_joint_free_live_projects_group_specific_official_links_for_line(self):
+        day = "2026-11-06"
+        official = {
+            "CANDY TUNE": "https://candytune.asobisystem.com/news/detail/93706",
+            "SWEET STEADY": "https://sweetsteady.asobisystem.com/news/detail/93708",
+            "MORE STAR": "https://morestar.asobisystem.com/news/detail/93710",
+        }
+        cutie = "https://cutiestreet.asobisystem.com/live_information/detail/46742"
+        data = {"events": [{
+            "id": "joint", "group": "KAWAII LAB.合同",
+            "participants": ["CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR"],
+            "title": "KAWAII LAB. ファンクラブ限定フリーライブ",
+            "eventDate": day, "eventScope": "kawaii-lab",
+            "url": "https://kawaiilab.asobisystem.com/news/detail/93695",
+            "urls": [cutie, *official.values()],
+        }]}
+        index = {"entries": [{
+            "group": "CUTIE STREET", "date": day, "category": "LIVE",
+            "title": data["events"][0]["title"], "url": cutie,
+            "eventScope": "kawaii-lab", "representedBy": "joint",
+        }]}
+        first = reconcile(data, index)
+        self.assertEqual(3, first["projectedJointParticipantCount"])
+        self.assertEqual(
+            {"CUTIE STREET", *official.keys()},
+            {row["group"] for row in index["entries"]},
+        )
+        self.assertTrue(all(
+            row["url"] == official[row["group"]]
+            for row in index["entries"] if row["group"] in official
+        ))
+        second = reconcile(data, index)
+        self.assertEqual(0, second["projectedJointParticipantCount"])
+        self.assertEqual(4, len(index["entries"]))
+
+    def test_joint_projection_never_invents_official_group_urls(self):
+        data = {"events": [{
+            "id": "joint", "group": "KAWAII LAB.合同",
+            "participants": ["CANDY TUNE", "CUTIE STREET"],
+            "eventDate": "2026-11-06", "eventScope": "kawaii-lab",
+            "url": "https://cutiestreet.asobisystem.com/live_information/detail/46742",
+        }]}
+        entry = {
+            "group": "CUTIE STREET", "date": "2026-11-06",
+            "category": "LIVE", "eventScope": "kawaii-lab",
+            "url": data["events"][0]["url"], "representedBy": "joint",
+        }
+        index = {"entries": [entry]}
+        self.assertEqual(0, reconcile(data, index)["projectedJointParticipantCount"])
+        self.assertEqual([entry], index["entries"])
+
     def test_reconnects_same_official_event_after_richer_row_changes_id(self):
         official_url = "https://sweetsteady.asobisystem.com/live_information/detail/43898"
         data = {
