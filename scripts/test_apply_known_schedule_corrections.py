@@ -769,5 +769,49 @@ class PiaNoticeAndSweetWinterUpgradeTests(unittest.TestCase):
         self.assertEqual(0, report["sweetWinterUpgradeOffersAdded"])
 
 
+class FruitsSynergyOnlineTests(unittest.TestCase):
+    def test_two_reception_rounds_are_one_online_event_with_two_offers(self):
+        official = "https://fruitszipper.asobisystem.com/live_information/detail/44318"
+        first_goods = "https://sukisuki-shop.com/goods/6500000004023"
+        second_goods = "https://sukisuki-shop.com/goods/6500000004943"
+        common = {
+            "group": "FRUITS ZIPPER",
+            "title": "FRUITS ZIPPER 4th Anniversary 写真集 『SYNERGY』オンライン特典会",
+            "eventDate": "2026-11-01", "startTime": "18:00",
+            "venue": "オンライン（SUKISUKI）", "eventCategory": "online-benefit",
+        }
+        rows = [
+            {**common, "id": "initial", "ticketType": "オンライン特典会",
+             "applyStart": "2026-08-28T18:00", "applyEnd": "2026-09-03T23:59",
+             "resultDate": "2026-09-30", "url": first_goods, "urls": [first_goods]},
+            {**common, "id": "additional", "ticketType": "オンライン特典会・先着販売",
+             "applyStart": "2026-10-23T20:00", "applyEnd": "2026-11-01T18:30",
+             "url": second_goods, "urls": [second_goods, official],
+             "officialScheduleUrl": official},
+        ]
+        result, report = apply_known_corrections(rows)
+        self.assertEqual(1, report["fruitsSynergy20261101RowsCollapsed"])
+        synergy = [row for row in result if row.get("id") == "known-fruits-synergy-online-20261101"]
+        self.assertEqual(1, len(synergy))
+        self.assertEqual(official, synergy[0]["url"])
+        self.assertEqual(2, len(synergy[0]["offers"]))
+        self.assertEqual({first_goods, second_goods}, {offer["url"] for offer in synergy[0]["offers"]})
+        self.assertEqual("2026-09-30", synergy[0]["offers"][0]["resultDate"])
+        again, second_report = apply_known_corrections(result)
+        self.assertEqual(result, again)
+        self.assertEqual(0, second_report["fruitsSynergy20261101RowsCollapsed"])
+
+    def test_different_online_event_is_not_collapsed(self):
+        unrelated = {
+            "id": "other", "group": "FRUITS ZIPPER", "title": "別のオンライン特典会",
+            "eventDate": "2026-11-01", "startTime": "18:00",
+            "venue": "オンライン（SUKISUKI）", "eventCategory": "online-benefit",
+            "ticketType": "オンライン特典会", "url": "https://sukisuki-shop.com/goods/other",
+        }
+        result, report = apply_known_corrections([unrelated])
+        self.assertEqual([unrelated], result)
+        self.assertEqual(0, report["fruitsSynergy20261101RowsCollapsed"])
+
+
 if __name__ == "__main__":
     unittest.main()
