@@ -27,7 +27,7 @@ concurrency:
 jobs:
   discover-audit-publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 24
     steps:
       - name: Checkout latest main
         uses: actions/checkout@v4
@@ -131,9 +131,44 @@ jobs:
             echo "Push attempt ${attempt} rejected; rebasing discovery onto latest main."
             git fetch origin main
             if ! git rebase origin/main; then
+              # Never throw away already discovered official shows because
+              # another publisher wrote the same generated JSON/HTML files.
+              # Re-collect against the newest main, then rebuild and re-audit
+              # instead of attempting a blind conflicted merge.
               git rebase --abort || true
-              echo "Concurrent calendar output overlaps this discovery; refusing overwrite and relying on the next automatic scan."
-              exit 1
+              git reset --hard origin/main
+              cp data/live-events.json /tmp/live-events-before-body-discovery.json
+              cp data/official-schedule-index.json /tmp/official-schedule-index-before-body-discovery.json
+
+              python scripts/augment_recent_official_news.py --mode ticket
+              python scripts/augment_recent_official_news.py --mode special
+              python scripts/augment_kawaiilab_official.py
+              python scripts/resolve_source_priority.py
+              python scripts/enrich_event_metadata.py
+              python scripts/apply_event_scopes.py
+              python scripts/prepare_release_candidate.py --previous /tmp/live-events-before-body-discovery.json
+              python scripts/reconcile_official_schedule_index.py \
+                --data data/live-events.json \
+                --index data/official-schedule-index.json \
+                --report /tmp/body-official-index-reconcile.json
+              python scripts/audit_schedule_release_grouped.py \
+                --previous /tmp/live-events-before-body-discovery.json \
+                --candidate data/live-events.json \
+                --report data/schedule-health.json
+              python scripts/audit_official_schedule_coverage.py \
+                --previous-index /tmp/official-schedule-index-before-body-discovery.json
+              python scripts/build_schedule_snapshot.py
+              python scripts/fix_schedule_shell.py
+              python scripts/strip_schedule_explanations.py
+              node --check /tmp/schedule-inline.js
+              node scripts/test_schedule_band_grouping.js
+              node scripts/test_schedule_scope_ui.js
+              git add data/live-events.json data/official-schedule-index.json data/schedule-health.json schedule.html
+              if git diff --cached --quiet; then
+                echo "Latest main already contains the discovered official changes."
+                exit 0
+              fi
+              git commit -m "chore: replay verified official discoveries onto latest calendar"
             fi
           done
           exit 1
