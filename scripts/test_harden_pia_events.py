@@ -56,6 +56,34 @@ class HardenPiaEventsTests(unittest.TestCase):
         self.assertFalse(rejected)
         self.assertEqual(kept[0]["resultDate"], "2026-10-28T18:00")
 
+    def test_exact_sale_history_recovers_slow_detail_page(self):
+        pia = {
+            "id": "pia-third",
+            "group": "CUTIE STREET",
+            "title": "CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-",
+            "ticketType": "3次プレリザーブ",
+            "applyEnd": "2026-10-26T11:00",
+            "eventDate": "2026-11-14",
+            "sourceType": "pia",
+            "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=18893",
+            "applicationStatus": "open",
+        }
+        history = [{
+            "sourceUrl": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=18893",
+            "ticketType": "3次プレリザーブ",
+            "applyStart": "2026-10-17T11:00",
+            "applyEnd": "2026-10-26T11:00",
+            "resultDate": "2026-10-28T18:00",
+            "applicationStatus": "open",
+        }]
+        kept, rejected = h.harden([pia], DummySession("販売情報"), history)
+        self.assertFalse(rejected)
+        fixed = kept[0]
+        self.assertEqual(fixed["applyStart"], "2026-10-17T11:00")
+        self.assertEqual(fixed["applyEnd"], "2026-10-26T11:00")
+        self.assertEqual(fixed["resultDate"], "2026-10-28T18:00")
+        self.assertTrue(fixed["applicationWindowVerified"])
+
     def test_pia_ui_label_is_never_valid_event_title(self):
         self.assertTrue(h.is_bad_title("行きたい!公演アラート"))
         self.assertTrue(h.is_bad_title("メールで通知"))

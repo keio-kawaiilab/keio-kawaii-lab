@@ -6,11 +6,13 @@ import json
 import re
 import unicodedata
 from pathlib import Path
+from urllib.parse import parse_qs, urlparse
 
 import requests
 from bs4 import BeautifulSoup
 
 DATA_PATH = Path("data/live-events.json")
+TICKET_HISTORY_PATH = Path("data/ticket-history.json")
 
 BAD_TITLE_RE = re.compile(
     r"(?:行きたい\s*[!！]?\s*公演アラート|お気に入り(?:登録)?|メールで通知|"
@@ -143,6 +145,44 @@ def pia_detail_urls(event: dict) -> list[str]:
     return result
 
 
+def pia_sale_id(value: object) -> str | None:
+    url = str(value or "")
+    if "t.pia.jp" not in url or "ticketInformation.do" not in url:
+        return None
+    return (parse_qs(urlparse(url).query).get("lotRlsCd") or [None])[0]
+
+
+def history_evidence(event: dict, history: list[dict]) -> tuple[str | None, str | None, str | None, str | None]:
+    sale_ids = {sale_id for value in [event.get("url"), *(event.get("urls") or [])] if (sale_id := pia_sale_id(value))}
+    if not sale_ids:
+        return None, None, None, None
+    current_end = str(event.get("applyEnd") or "")
+    current_type = norm(event.get("ticketType"))
+    candidates = []
+    for row in history:
+        if not isinstance(row, dict) or pia_sale_id(row.get("sourceUrl")) not in sale_ids:
+            continue
+        start, end = str(row.get("applyStart") or ""), str(row.get("applyEnd") or "")
+        if not valid_isoish(start) or not valid_isoish(end) or start > end:
+            continue
+        if current_end and end != current_end:
+            continue
+        score = 0
+        if current_type and norm(row.get("ticketType")) == current_type:
+            score += 4
+        if valid_isoish(row.get("resultDate")):
+            score += 2
+        if str(row.get("applicationStatus") or "").lower() == "open":
+            score += 1
+        candidates.append((score, str(row.get("lastSeenAt") or ""), row))
+    if not candidates:
+        return None, None, None, None
+    row = max(candidates, key=lambda item: (item[0], item[1]))[2]
+    return str(row["applyStart"]), str(row["applyEnd"]), (
+        str(row["resultDate"]) if valid_isoish(row.get("resultDate")) else None
+    ), str(row.get("sourceUrl") or "") or None
+
+
 def official_candidates(all_events: list[dict], target: dict) -> list[dict]:
     group = str(target.get("group") or "")
     target_days = set(event_days(target))
@@ -233,7 +273,7 @@ def valid_isoish(value: object) -> bool:
     return bool(re.match(r"^20\d{2}-\d{2}-\d{2}(?:T\d{2}:\d{2})?$", str(value or "")))
 
 
-def harden(events: list[dict], session: requests.Session) -> tuple[list[dict], list[dict]]:
+def harden(events: list[dict], session: requests.Session, history: list[dict] | None = None) -> tuple[list[dict], list[dict]]:
     kept: list[dict] = []
     rejected: list[dict] = []
 
@@ -250,6 +290,13 @@ def harden(events: list[dict], session: requests.Session) -> tuple[list[dict], l
         event = repair_title_and_schedule(event, events)
         ended = str(event.get("applicationStatus") or "").strip().lower() in ENDED_STATUSES
         detail_start, detail_end, detail_deadline, detail_result, evidence_url = fetch_detail_evidence(session, event)
+
+        if not (detail_start and detail_end):
+            history_start, history_end, history_result, history_url = history_evidence(event, history or [])
+            detail_start = detail_start or history_start
+            detail_end = detail_end or history_end
+            detail_result = detail_result or history_result
+            evidence_url = evidence_url or history_url
 
         if detail_result:
             event["resultDate"] = detail_result
@@ -319,10 +366,12 @@ def main() -> int:
 
     payload = json.loads(DATA_PATH.read_text(encoding="utf-8"))
     events = [dict(x) for x in payload.get("events", []) if isinstance(x, dict)]
+    history_payload = json.loads(TICKET_HISTORY_PATH.read_text(encoding="utf-8")) if TICKET_HISTORY_PATH.exists() else {}
+    history = [dict(x) for x in history_payload.get("entries", []) if isinstance(x, dict)]
     session = requests.Session()
     session.headers.update({"User-Agent": "KeioKawaiiLabCalendarBot/2.3 (+https://keio-kawaiilab.github.io/keio-kawaii-lab/)"})
 
-    hardened, rejected = harden(events, session)
+    hardened, rejected = harden(events, session, history)
     problems = validate_public_pia(hardened)
     print(json.dumps({
         "piaBefore": sum(1 for x in events if is_pia(x)),
