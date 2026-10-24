@@ -262,6 +262,46 @@ class ContinuousDiscoveryTests(unittest.TestCase):
         self.assertIsNone(pending)
         self.assertEqual("represented", status)
 
+    def test_represented_notice_skips_generic_final_fallback_review(self):
+        url = "https://sweetsteady.asobisystem.com/news/detail/93491"
+        candidate = discovery.parser.Candidate(
+            "SWEET STEADY",
+            "SWEET STEADY JAPAN TOUR アップグレード抽選受付のお知らせ",
+            url,
+        )
+        existing = {"events": [{
+            "group": "SWEET STEADY",
+            "eventDate": "2099-11-13",
+            "ticketType": "アップグレード抽選",
+            "applyStart": "2099-10-23T18:00",
+            "applyEnd": "2099-10-26T23:59",
+            "urls": [url],
+        }]}
+
+        class DummyResponse:
+            text = (
+                "<div class='section--detail'><h1>SWEET STEADY JAPAN TOUR "
+                "アップグレード抽選受付のお知らせ</h1><p>チケット受付</p></div>"
+            )
+            def raise_for_status(self):
+                return None
+
+        class DummySession:
+            headers = {}
+            def __enter__(self): return self
+            def __exit__(self, *args): return None
+            def get(self, *args, **kwargs): return DummyResponse()
+
+        with patch.object(discovery.requests, "Session", return_value=DummySession()), \
+             patch.object(discovery.parser, "parse_candidate", return_value=([], None)), \
+             patch.object(discovery, "unlabeled_ticket_window", return_value=None), \
+             patch.object(discovery, "standalone_ticket_window", return_value=None):
+            rows, pending, status = discovery.read_candidate(candidate, existing, {})
+
+        self.assertEqual([], rows)
+        self.assertIsNone(pending)
+        self.assertEqual("represented", status)
+
     def test_different_window_on_matching_event_is_not_already_represented(self):
         url = "https://morestar.asobisystem.com/live_information/detail/46447"
         candidate = discovery.parser.Candidate("MORE STAR", "MORE STAR 大特典", url)
