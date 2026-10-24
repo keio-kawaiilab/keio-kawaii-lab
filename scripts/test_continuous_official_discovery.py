@@ -140,6 +140,43 @@ class ContinuousDiscoveryTests(unittest.TestCase):
         review = {"applyStart": "2099-10-23T21:00", "applyEnd": "2099-10-27T23:59"}
         self.assertTrue(discovery.review_is_already_represented(candidate, review, existing))
 
+    def test_exact_multi_performance_upgrade_notice_is_already_represented(self):
+        url = "https://sweetsteady.asobisystem.com/news/detail/93491"
+        candidate = discovery.parser.Candidate(
+            "SWEET STEADY",
+            "SWEET STEADY JAPAN TOUR アップグレード抽選受付のお知らせ",
+            url,
+        )
+        existing = {"events": [{
+            "group": "SWEET STEADY",
+            "eventDate": "2099-11-13",
+            "ticketType": "アップグレード抽選",
+            "applyStart": "2099-10-23T18:00",
+            "applyEnd": "2099-10-26T23:59",
+            "url": "https://sweetsteady.asobisystem.com/feature/tour",
+            "urls": ["https://sweetsteady.asobisystem.com/feature/tour", url],
+        }]}
+        self.assertTrue(discovery.source_notice_is_already_represented(
+            candidate, candidate.title, existing,
+        ))
+
+    def test_exact_notice_url_does_not_hide_a_different_ticket_family(self):
+        url = "https://sweetsteady.asobisystem.com/news/detail/upgrade"
+        candidate = discovery.parser.Candidate(
+            "SWEET STEADY", "アップグレード抽選受付のお知らせ", url,
+        )
+        existing = {"events": [{
+            "group": "SWEET STEADY",
+            "eventDate": "2099-11-13",
+            "ticketType": "FC先行",
+            "applyStart": "2099-10-01T12:00",
+            "applyEnd": "2099-10-05T23:59",
+            "urls": [url],
+        }]}
+        self.assertFalse(discovery.source_notice_is_already_represented(
+            candidate, candidate.title, existing,
+        ))
+
     def test_different_window_on_matching_event_is_not_already_represented(self):
         url = "https://morestar.asobisystem.com/live_information/detail/46447"
         candidate = discovery.parser.Candidate("MORE STAR", "MORE STAR 大特典", url)
