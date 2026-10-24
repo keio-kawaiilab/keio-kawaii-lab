@@ -686,6 +686,8 @@ def read_candidate(candidate, existing, headers):
         if not any(all(old.get(k) == row.get(k) for k in ("eventDate", "startTime", "ticketType", "applyStart")) for old in rows):
             rows.append(row)
     if not rows and not review:
+        if source_notice_is_already_represented(candidate, title, existing):
+            return [], None, "represented"
         if "/live_information/detail/" in candidate.url:
             return [], None, "schedule-only"
         review = {"group": group, "title": title, "url": candidate.url,
