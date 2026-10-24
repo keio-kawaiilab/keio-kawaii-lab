@@ -980,16 +980,21 @@ class FruitsSynergyOnlineTests(unittest.TestCase):
             "venue": "オンライン（SUKISUKI）", "eventCategory": "online-benefit",
         }
         rows = [
+            {"id": "official", "group": "FRUITS ZIPPER",
+             "title": "FRUITS ZIPPER 4th Anniversary写真集 オンライン特典会",
+             "eventTitle": "FRUITS ZIPPER 4th Anniversary写真集 オンライン特典会",
+             "eventDate": "2026-11-01", "venue": "その他 オンライン",
+             "eventCategory": "online-benefit", "ticketType": "現在受付なし",
+             "url": official, "urls": [official]},
             {**common, "id": "initial", "ticketType": "オンライン特典会",
              "applyStart": "2026-08-28T18:00", "applyEnd": "2026-09-03T23:59",
              "resultDate": "2026-09-30", "url": first_goods, "urls": [first_goods]},
             {**common, "id": "additional", "ticketType": "オンライン特典会・先着販売",
              "applyStart": "2026-10-23T20:00", "applyEnd": "2026-11-01T18:30",
-             "url": second_goods, "urls": [second_goods, official],
-             "officialScheduleUrl": official},
+             "url": second_goods, "urls": [second_goods]},
         ]
         result, report = apply_known_corrections(rows)
-        self.assertEqual(1, report["fruitsSynergy20261101RowsCollapsed"])
+        self.assertEqual(2, report["fruitsSynergy20261101RowsCollapsed"])
         synergy = [row for row in result if row.get("id") == "known-fruits-synergy-online-20261101"]
         self.assertEqual(1, len(synergy))
         self.assertEqual(official, synergy[0]["url"])
