@@ -10,6 +10,7 @@ from typing import Callable
 import guard_birthday_year_consistency as birthday_guard
 import harden_ticket_semantics as ticket_semantics
 import reconcile_physical_performance_times as performance_times
+import sanitize_live_events as sanitizer
 import update_sukisuki_events as sukisuki
 import update_special_events as special
 
@@ -159,6 +160,9 @@ def merge_payloads(core: dict, playguide: dict, sukisuki_payload: dict, special_
     # so bad collector metadata can never create a second physical performance.
     reconciled_payload, performance_time_report = performance_times.reconcile_payload(hardened_payload)
     merged_events = events(reconciled_payload)
+    pre_resale_dedupe_count = len(merged_events)
+    merged_events = sanitizer.merge_duplicate_resale_windows(merged_events)
+    duplicate_resale_windows_merged = pre_resale_dedupe_count - len(merged_events)
 
     merged_events.sort(key=lambda event: (
         str(event.get("eventDate") or "9999"),
@@ -186,6 +190,7 @@ def merge_payloads(core: dict, playguide: dict, sukisuki_payload: dict, special_
         "birthdayYearGuard": birthday_guard_report,
         "ticketSemanticHardening": ticket_semantics_report,
         "physicalPerformanceTimeReconciliation": performance_time_report,
+        "duplicateOfficialResaleWindowsMerged": duplicate_resale_windows_merged,
         "eventCount": len(merged_events),
     }
     return out

@@ -81,6 +81,36 @@ class DistributedSnapshotMergerTests(unittest.TestCase):
         self.assertIn(official_url, event["urls"])
         self.assertEqual(1, result["distributedMergeDiagnostics"]["officialLinksPreserved"])
 
+    def test_final_merge_merges_same_official_resale_window(self):
+        official_url = "https://candy-tune.asobisystem.com/news/detail/999"
+        shared = {
+            "group": "CANDY TUNE",
+            "participants": ["CANDY TUNE"],
+            "title": "CANDY TUNE JAPAN TOUR 2026 -TUNE UP!- 東京公演",
+            "eventDate": "2026-12-08",
+            "eventDates": ["2026-12-08"],
+            "schedule": [{"date": "2026-12-08", "venue": "東京国際フォーラム ホールA"}],
+            "applyStart": "2026-11-21T18:00:00+09:00",
+            "applyEnd": "2026-12-02T23:59:00+09:00",
+            "url": official_url,
+            "urls": [official_url],
+        }
+        core = {"events": [
+            dict(shared, id="fc-resale", sourceType="auto", ticketType="公式 / FC リセール"),
+            dict(shared, id="official-resale", sourceType="resale-official", ticketType="公式リセール"),
+        ]}
+        result = merger.merge_payloads(core, {"events": []}, {"events": []}, {"events": []})
+        matching = [
+            row for row in result["events"]
+            if row.get("eventDate") == "2026-12-08" and "リセール" in row.get("ticketType", "")
+        ]
+        self.assertEqual(1, len(matching))
+        self.assertEqual("公式リセール", matching[0]["ticketType"])
+        self.assertEqual(
+            1,
+            result["distributedMergeDiagnostics"]["duplicateOfficialResaleWindowsMerged"],
+        )
+
     def test_final_merge_rejects_cross_year_birthday_row(self):
         core = {"events": [
             {
