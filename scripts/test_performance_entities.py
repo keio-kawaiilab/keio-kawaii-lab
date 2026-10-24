@@ -103,6 +103,36 @@ class PerformanceEntitiesTest(unittest.TestCase):
             self.assertIn("https://kawaiilab.asobisystem.com/news/detail/87775", event["urls"])
             self.assertEqual(len(event["performanceFactSources"]), 2)
 
+    def test_out_of_scope_solo_groups_are_not_published_but_joint_sources_remain(self):
+        joint_rows = self.christmas_fixture()[:8]
+        solo_rows = [
+            {
+                "id": "mates-solo",
+                "group": "KAWAII LAB. MATES",
+                "title": "KAWAII LAB. MATES 定期公演",
+                "eventDate": "2026-11-12",
+                "venue": "ヒューリックホール東京",
+                "startTime": "19:00",
+                "eventScope": "external",
+            },
+            {
+                "id": "south-solo",
+                "group": "KAWAII LAB. SOUTH",
+                "title": "KAWAII LAB. SOUTH 単独公演",
+                "eventDate": "2026-11-13",
+                "venue": "Zepp Fukuoka",
+                "startTime": "19:00",
+                "eventScope": "external",
+            },
+        ]
+
+        public, report = build_public_events(joint_rows + solo_rows)
+
+        self.assertEqual(["KAWAII LAB.合同"], [event.get("group") for event in public])
+        self.assertIn("KAWAII LAB. MATES", public[0]["participants"])
+        self.assertIn("KAWAII LAB. SOUTH", public[0]["participants"])
+        self.assertEqual(2, report["outOfScopeSoloEventCount"])
+
     def test_christmas_unknown_source_date_and_distinct_start_are_not_forced(self):
         original = self.christmas_fixture()[0]
         unknown = dict(original, id="unknown", group="CUTIE STREET", url="https://cutiestreet.asobisystem.com/news/detail/99999")
