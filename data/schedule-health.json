@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-25T04:11:11.492014+09:00",
-  "candidateUpdatedAt": "2026-10-25T04:11:11+09:00",
-  "previousEventCount": 246,
-  "candidateEventCount": 247,
-  "protectedPreviousCount": 246,
+  "generatedAt": "2026-10-25T04:26:21.516203+09:00",
+  "candidateUpdatedAt": "2026-10-25T04:26:20+09:00",
+  "previousEventCount": 245,
+  "candidateEventCount": 245,
+  "protectedPreviousCount": 245,
   "errorCount": 0,
   "warningCount": 16,
   "errors": [],
@@ -26,7 +26,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event offer application window is not backed by an official page: CUTIE STREET / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし / offer 1",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event offer deadline is not verified by an official page: CUTIE STREET / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし / offer 1"
   ],
-  "candidateSha256": "0e7f760aece93475af21ad8fe44dc2b0e7af29ca26d4cfd8b77d5583eb2ce0b8",
+  "candidateSha256": "93ec978c3595f376e1a4056c201e7c17a59e8b4fd8a7c1b4e3d299c17e8f51eb",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40731",
@@ -196,7 +196,7 @@
     "url:https://sweetsteady.asobisystem.com/live_information/detail/46635",
     "url:https://sweetsteady.asobisystem.com/news/detail/93491"
   ],
-  "reconciledBaseDateMessageCount": 0,
+  "reconciledBaseDateMessageCount": 1,
   "downgradedFalsePositiveCount": 0,
   "legacyProtectedErrorCount": 16,
   "legacyProtectedErrors": [
@@ -281,7 +281,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 25,
+  "quarantineCount": 24,
   "quarantineActions": [
     {
       "error": "active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 一般発売",
@@ -349,11 +349,6 @@
       "restoredPreviousRows": 2
     },
     {
-      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 公式リセール",
-      "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
-      "restoredPreviousRows": 32
-    },
-    {
       "error": "future performance dates disappeared for pia:30327: 2026-12-13",
       "action": "restored previous rows for pia:30327",
       "restoredPreviousRows": 3
@@ -414,7 +409,7 @@
     "projectedJointParticipantCount": 0,
     "reassignedCount": 10,
     "hydratedCount": 0,
-    "ambiguousCount": 3,
+    "ambiguousCount": 1,
     "unresolvedCount": 1,
     "reassigned": [
       {
@@ -491,24 +486,6 @@
     "hydrated": [],
     "ambiguous": [
       {
-        "group": "CANDY TUNE",
-        "date": "2026-10-26",
-        "url": "https://candytune.asobisystem.com/live_information/detail/40731",
-        "candidateIds": [
-          "54a369497f59ce96",
-          "c4356b6a3eb08f58"
-        ]
-      },
-      {
-        "group": "CANDY TUNE",
-        "date": "2026-10-27",
-        "url": "https://candytune.asobisystem.com/live_information/detail/40732",
-        "candidateIds": [
-          "54a369497f59ce96",
-          "c4356b6a3eb08f58"
-        ]
-      },
-      {
         "group": "MORE STAR",
         "date": "2026-11-25",
         "url": "https://morestar.asobisystem.com/live_information/detail/45677",
@@ -526,52 +503,6 @@
         "representedBy": "ae310bb63fded8fe"
       }
     ],
-    "duplicateOfficialResaleWindowsRemoved": 2,
-    "postDedupeReconciliation": {
-      "projectedJointParticipantCount": 0,
-      "reassignedCount": 0,
-      "hydratedCount": 0,
-      "ambiguousCount": 3,
-      "unresolvedCount": 1,
-      "reassigned": [],
-      "hydrated": [],
-      "ambiguous": [
-        {
-          "group": "CANDY TUNE",
-          "date": "2026-10-26",
-          "url": "https://candytune.asobisystem.com/live_information/detail/40731",
-          "candidateIds": [
-            "54a369497f59ce96",
-            "c4356b6a3eb08f58"
-          ]
-        },
-        {
-          "group": "CANDY TUNE",
-          "date": "2026-10-27",
-          "url": "https://candytune.asobisystem.com/live_information/detail/40732",
-          "candidateIds": [
-            "54a369497f59ce96",
-            "c4356b6a3eb08f58"
-          ]
-        },
-        {
-          "group": "MORE STAR",
-          "date": "2026-11-25",
-          "url": "https://morestar.asobisystem.com/live_information/detail/45677",
-          "candidateIds": [
-            "1e830eeca8279261",
-            "7d25c846b9eb92ef"
-          ]
-        }
-      ],
-      "unresolved": [
-        {
-          "group": "CUTIE STREET",
-          "date": "2026-12-06",
-          "url": "https://cutiestreet.asobisystem.com/live_information/detail/46743",
-          "representedBy": "ae310bb63fded8fe"
-        }
-      ]
-    }
+    "duplicateOfficialResaleWindowsRemoved": 0
   }
 }
