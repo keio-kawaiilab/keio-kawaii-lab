@@ -179,9 +179,95 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/ticket-history.json data/ticket-source-health.json data/ticket-collection-health.json
-          git commit -m "chore: archive verified ticket history"
-          git push
+
+          # Other calendar lanes write main frequently. Keep this run's verified
+          # observations, but rebuild its commit on the newest main after a push
+          # race instead of dropping the whole archive run.
+          cp data/ticket-history.json /tmp/ticket-history-incoming.json
+          cp data/ticket-source-health.json /tmp/ticket-source-health-incoming.json
+          cp data/ticket-collection-health.json /tmp/ticket-collection-health-incoming.json
+
+          for attempt in 1 2 3; do
+            echo "Ticket archive publish attempt ${attempt}/3"
+            if [ "$attempt" -gt 1 ]; then
+              git fetch origin main
+              git reset --hard origin/main
+              cp /tmp/ticket-source-health-incoming.json data/ticket-source-health.json
+              cp /tmp/ticket-collection-health-incoming.json data/ticket-collection-health.json
+              PYTHONPATH=scripts python - <<'PY'
+          import json
+          from pathlib import Path
+
+          from archive_ticket_history import clean, merge_entry
+
+          latest_path = Path("data/ticket-history.json")
+          incoming_path = Path("/tmp/ticket-history-incoming.json")
+          latest = json.loads(latest_path.read_text(encoding="utf-8"))
+          incoming = json.loads(incoming_path.read_text(encoding="utf-8"))
+          now = max(str(latest.get("updatedAt") or ""), str(incoming.get("updatedAt") or ""))
+
+          by_id = {
+              str(row["id"]): dict(row)
+              for row in latest.get("entries", [])
+              if isinstance(row, dict) and row.get("id")
+          }
+          for row in incoming.get("entries", []):
+              if not isinstance(row, dict) or not row.get("id"):
+                  continue
+              key = str(row["id"])
+              current = by_id.get(key)
+              if current is None:
+                  by_id[key] = dict(row)
+                  continue
+              merged = merge_entry(current, row, now)
+              first_seen = [
+                  str(value) for value in (current.get("firstSeenAt"), row.get("firstSeenAt")) if value
+              ]
+              last_seen = [
+                  str(value) for value in (current.get("lastSeenAt"), row.get("lastSeenAt")) if value
+              ]
+              if first_seen:
+                  merged["firstSeenAt"] = min(first_seen)
+              if last_seen:
+                  merged["lastSeenAt"] = max(last_seen)
+              by_id[key] = merged
+
+          entries = list(by_id.values())
+          entries.sort(key=lambda row: (
+              clean(row.get("eventDate")) or "9999",
+              clean(row.get("applyStart")) or clean(row.get("applyEnd")) or "9999",
+              clean(row.get("group")),
+              clean(row.get("ticketType")),
+          ))
+          latest.update({
+              "version": max(int(latest.get("version") or 1), int(incoming.get("version") or 1)),
+              "updatedAt": now,
+              "sourceRegistryVersion": incoming.get("sourceRegistryVersion") or latest.get("sourceRegistryVersion"),
+              "entries": entries,
+          })
+          latest_path.write_text(json.dumps(latest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          PY
+              python scripts/audit_ticket_sources.py --report data/ticket-source-health.json
+              python scripts/audit_ticket_collection_continuity.py \
+                --report data/ticket-collection-health.json \
+                --no-fail
+            fi
+
+            git add data/ticket-history.json data/ticket-source-health.json data/ticket-collection-health.json
+            if git diff --cached --quiet; then
+              echo "No ticket-history or health changes after refreshing main."
+              exit 0
+            fi
+            git commit -m "chore: archive verified ticket history"
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "::warning::main advanced during ticket archive publish; rebuilding on latest main."
+            sleep 10
+          done
+
+          echo "::error::Could not publish ticket history after 3 attempts."
+          exit 1
 
       - name: Add ticket collection health to summary
         if: always()
