@@ -48,29 +48,50 @@ jobs:
         run: |
           set -euo pipefail
 
-          # The user-visible timestamp is the source of truth.
+          # A resale-only publication refreshes checkedAt without collecting
+          # newly announced shows.  Track the actual official-news collection
+          # timestamp independently, or fresh resale data can mask missing events.
           published_at="$(jq -r '.checkedAt // .updatedAt // empty' data/live-events.json)"
+          official_collected_at="$(jq -r '.ticketCollectorDiagnostics.collectedAt // empty' data/live-events.json)"
           now="$(date -u +%s)"
           stale=true
           age_minutes="999999.0"
+          official_age_minutes="999999.0"
 
           if [ -n "$published_at" ]; then
             published_epoch="$(date -u -d "$published_at" +%s)"
             age_seconds="$((now - published_epoch))"
             if [ "$age_seconds" -lt 0 ]; then age_seconds=0; fi
             age_minutes="$(awk -v seconds="$age_seconds" 'BEGIN { printf "%.1f", seconds / 60 }')"
-
-            # The primary ingestion targets 15-minute starts. Recover before
-            # two full expected cycles can pass without a public observation.
             if [ "$age_seconds" -le 1500 ]; then
               stale=false
             fi
           fi
 
+          # Never let another collector's publication pass for a new official
+          # scan. Missing, invalid or older-than-25-minute official evidence
+          # requires another full distributed refresh.
+          if [ -n "$official_collected_at" ]; then
+            if official_epoch="$(date -u -d "$official_collected_at" +%s 2>/dev/null)"; then
+              official_age_seconds="$((now - official_epoch))"
+              if [ "$official_age_seconds" -lt 0 ]; then official_age_seconds=0; fi
+              official_age_minutes="$(awk -v seconds="$official_age_seconds" 'BEGIN { printf "%.1f", seconds / 60 }')"
+              if [ "$official_age_seconds" -gt 1500 ]; then
+                stale=true
+              fi
+            else
+              stale=true
+            fi
+          else
+            stale=true
+          fi
+
           echo "stale=$stale" >> "$GITHUB_OUTPUT"
           echo "age_minutes=$age_minutes" >> "$GITHUB_OUTPUT"
+          echo "official_age_minutes=$official_age_minutes" >> "$GITHUB_OUTPUT"
           echo "updated_at=${published_at:-missing}" >> "$GITHUB_OUTPUT"
-          echo "Published calendar timestamp: ${published_at:-missing} (${age_minutes} minutes ago)."
+          echo "official_collected_at=${official_collected_at:-missing}" >> "$GITHUB_OUTPUT"
+          echo "Public calendar: ${published_at:-missing} (${age_minutes} min). Official news: ${official_collected_at:-missing} (${official_age_minutes} min). stale=$stale"
 
       - name: Recover stale distributed calendar
         id: recovery
@@ -168,12 +189,16 @@ jobs:
           STALE: ${{ steps.freshness.outputs.stale }}
           AGE_MINUTES: ${{ steps.freshness.outputs.age_minutes }}
           UPDATED_AT: ${{ steps.freshness.outputs.updated_at }}
+          OFFICIAL_COLLECTED_AT: ${{ steps.freshness.outputs.official_collected_at }}
+          OFFICIAL_AGE_MINUTES: ${{ steps.freshness.outputs.official_age_minutes }}
           RECOVERY_ACTION: ${{ steps.recovery.outputs.action }}
         shell: bash
         run: |
           {
             echo "## Calendar freshness watchdog"
             echo "- published timestamp: ${UPDATED_AT:-missing}"
+            echo "- official news collected: ${OFFICIAL_COLLECTED_AT:-missing}"
+            echo "- official news age: ${OFFICIAL_AGE_MINUTES:-unknown} minutes"
             echo "- age: ${AGE_MINUTES:-unknown} minutes"
             echo "- stale: ${STALE:-unknown}"
             echo "- recovery action: ${RECOVERY_ACTION:-none}"
@@ -192,7 +217,7 @@ jobs:
           set -euo pipefail
           title="🚨 Calendar freshness watchdog active"
           existing="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
-          body="公演情報の公開更新時刻が一定時間進んでいないため、自動復旧を実行しています。\n\npublished timestamp: ${UPDATED_AT}\nage: ${AGE_MINUTES} minutes\naction: ${RECOVERY_ACTION:-unknown}\nwatchdog run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          body="公開カレンダーまたは公式ニュース収集の更新が遅れているため、自動復旧を実行しています。\n\npublished timestamp: ${UPDATED_AT}\nage: ${AGE_MINUTES} minutes\naction: ${RECOVERY_ACTION:-unknown}\nwatchdog run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
           if [ -n "$existing" ]; then
             gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body "$body"
           else
