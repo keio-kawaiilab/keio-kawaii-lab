@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-24T23:08:41+09:00",
+  "checkedAt": "2026-10-24T23:09:16+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-24T06:39:08+09:00",
     "scannedPages": {
@@ -11372,7 +11372,8 @@
     "performanceEntityCount": 100,
     "sourceOccurrenceCount": 346,
     "mergedSourceOccurrences": 246,
-    "offerCount": 107
+    "offerCount": 107,
+    "outOfScopeSoloEventCount": 3
   },
   "publicEventModelVersion": 1,
   "recentOfficialBodyDiscovery": {
@@ -13981,6 +13982,11 @@
     },
     {
       "checkedAt": "2026-10-24T23:08:41+09:00",
+      "scope": "CANDY TUNE tour render verification",
+      "message": "Sendai performance lost its current general sale: []"
+    },
+    {
+      "checkedAt": "2026-10-24T23:09:16+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "Sendai performance lost its current general sale: []"
     }
@@ -20941,7 +20947,7 @@
       }
     ]
   },
-  "updatedAt": "2026-10-24T23:08:41+09:00",
+  "updatedAt": "2026-10-24T23:09:16+09:00",
   "publicEvents": [
     {
       "id": "fa421e6fd8955232",
@@ -21128,52 +21134,6 @@
           "salesStartTime": "12:00",
           "gatheringTime": "15:20"
         }
-      ]
-    },
-    {
-      "id": "f28b9f257f5fea09",
-      "group": "KAWAII LAB. MATES",
-      "title": "IDOL HALLOWEEN JAPAN 2026 Supported by Malymoon @ 埼玉スタジアム2002 野外特設会場",
-      "eventTitle": "IDOL HALLOWEEN JAPAN 2026 Supported by Malymoon @ 埼玉スタジアム2002 野外特設会場",
-      "ticketType": "現在受付なし",
-      "applicationStatus": "none",
-      "eventDate": "2026-10-30",
-      "venue": "埼玉スタジアム2002 野外特設会場",
-      "url": "https://kawaiilab.asobisystem.com/live_information/detail/45607",
-      "urls": [
-        "https://kawaiilab.asobisystem.com/live_information/detail/45607",
-        "https://kawaiilab.asobisystem.com/live_information/detail/45608"
-      ],
-      "sourceType": "derived",
-      "primarySource": "official",
-      "eventScope": "external",
-      "discoverySource": "kawaii-lab-official-schedule",
-      "officialScheduleSource": "KAWAII LAB. OFFICIAL FANCLUB",
-      "sourceCandidates": [
-        "official"
-      ],
-      "eventEndDate": "2026-10-31",
-      "eventDates": [
-        "2026-10-30",
-        "2026-10-31"
-      ],
-      "schedule": [
-        {
-          "date": "2026-10-30",
-          "venue": "埼玉スタジアム2002 野外特設会場"
-        },
-        {
-          "date": "2026-10-31",
-          "venue": "埼玉スタジアム2002 野外特設会場"
-        }
-      ],
-      "eventCount": 2,
-      "venues": [
-        "埼玉スタジアム2002 野外特設会場"
-      ],
-      "officialScheduleUrl": "https://kawaiilab.asobisystem.com/live_information/detail/45607",
-      "participants": [
-        "KAWAII LAB. MATES"
       ]
     },
     {
@@ -21827,78 +21787,6 @@
       "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030014P021001?P1=0175",
       "sourceObservedAt": "2026-10-24T22:47:43+09:00",
       "eventScope": "external"
-    },
-    {
-      "id": "61ca157851d7c565",
-      "group": "KAWAII LAB. MATES",
-      "title": "2026.10.10 11月12日(木)KAWAII LAB. MATES 定期公演Vol.29 〜メイツ祭2026〜 開催決定！FC先行受付開始！",
-      "ticketType": "FC先行",
-      "applyStart": "2026-10-10T18:00",
-      "applyEnd": "2026-10-13T23:59",
-      "resultDate": null,
-      "paymentEnd": null,
-      "eventDate": "2026-11-12",
-      "venue": null,
-      "openTime": "17:00",
-      "startTime": "18:00",
-      "url": "https://kawaiilab.asobisystem.com/news/detail/92368",
-      "urls": [
-        "https://kawaiilab.asobisystem.com/news/detail/92368"
-      ],
-      "applicationWindowSource": "https://kawaiilab.asobisystem.com/news/detail/92368",
-      "sourceType": "auto",
-      "sourcePublishedAt": "2026-10-10",
-      "participants": [],
-      "discoverySourceUrl": "https://kawaiilab.asobisystem.com/news/detail/92368",
-      "sourceChannel": "recent-official-body",
-      "primarySource": "official",
-      "sourceCandidates": [
-        "official"
-      ],
-      "eventScope": "external",
-      "sourceStale": true,
-      "sourceStaleSince": "2026-10-24T09:37:15+09:00",
-      "releaseRetentionReason": "missing-from-current-refresh"
-    },
-    {
-      "id": "ae5f1f9320bce613",
-      "group": "KAWAII LAB. MATES",
-      "title": "11月12日(木)KAWAII LAB. MATES 定期公演Vol.29 〜メイツ祭2026〜",
-      "ticketType": "現在受付なし",
-      "applyStart": null,
-      "applyEnd": null,
-      "resultDate": null,
-      "paymentEnd": null,
-      "eventDate": "2026-11-12",
-      "venue": "ヒューリックホール東京",
-      "openTime": "17:00",
-      "startTime": "18:00",
-      "url": "https://kawaiilab.asobisystem.com/news/detail/92368",
-      "sourceType": "derived",
-      "sourcePublishedAt": "2026-10-10",
-      "discoverySourceUrl": "https://kawaiilab.asobisystem.com/news/detail/92368",
-      "sourceChannel": "recent-official-body",
-      "primarySource": "official",
-      "sourceCandidates": [
-        "official"
-      ],
-      "eventTitle": "KAWAII LAB. MATES 定期公演Vol.29 〜メイツ祭2026〜 @ ヒューリックホール東京",
-      "performanceMatchedToOfficial": true,
-      "eventScope": "external",
-      "sourceStale": true,
-      "sourceStaleSince": "2026-10-20T06:51:51+09:00",
-      "releaseRetentionReason": "missing-from-current-refresh",
-      "urls": [
-        "https://kawaiilab.asobisystem.com/news/detail/92368",
-        "https://kawaiilab.asobisystem.com/live_information/detail/45699"
-      ],
-      "applicationWindowSource": "https://kawaiilab.asobisystem.com/news/detail/92368",
-      "applicationStatus": "none",
-      "participants": [
-        "KAWAII LAB. MATES"
-      ],
-      "officialScheduleUrl": "https://kawaiilab.asobisystem.com/live_information/detail/45699",
-      "discoverySource": "kawaii-lab-official-schedule"
     },
     {
       "id": "0867c7fe31b8c844",
