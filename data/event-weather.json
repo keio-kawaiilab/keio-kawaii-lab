@@ -1,7 +1,7 @@
 {
-  "date": "2026-10-24",
+  "date": "2026-10-25",
   "horizonDays": 7,
-  "generatedAt": "2026-10-24T16:34+09:00",
+  "generatedAt": "2026-10-25T00:34+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -17,12 +17,12 @@
       "areaCode": "120010",
       "areaName": "北西部",
       "precision": "area",
-      "label": "くもり 夕方 から 雨",
+      "label": "くもり 夕方 から 雨 所により 雷 を伴う",
       "max": 26.0,
       "min": 18.0,
       "pop": "50",
       "popLabel": "12〜18時",
-      "issuedAt": "2026-10-24T11:00:00+09:00",
+      "issuedAt": "2026-10-24T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -36,16 +36,19 @@
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
-      "precision": "area",
-      "label": "雨 時々 くもり",
+      "precision": "mesh5km",
+      "label": "雨",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
-      "issuedAt": "2026-10-24T11:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "issuedAt": "2026-10-24T19:00:00+09:00",
+      "meshTime": "00:00",
+      "meshTempBand": "20〜24℃",
+      "coordinates": {
+        "lat": 35.630138,
+        "lon": 139.787827
+      }
     },
     {
       "date": "2026-10-26",
@@ -56,16 +59,19 @@
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
-      "precision": "area",
-      "label": "雨 時々 くもり",
+      "precision": "mesh5km",
+      "label": "雨",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
-      "issuedAt": "2026-10-24T11:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "issuedAt": "2026-10-24T19:00:00+09:00",
+      "meshTime": "00:00",
+      "meshTempBand": "20〜24℃",
+      "coordinates": {
+        "lat": 35.630138,
+        "lon": 139.787827
+      }
     },
     {
       "date": "2026-10-26",
@@ -79,20 +85,25 @@
         "8696a0f8febe4c57",
         "8ba49d34c9f9d7c4",
         "b09e5a2f429cb013",
-        "c15645c6e0bc30f6"
+        "c15645c6e0bc30f6",
+        "0e9184c1333d3c2b",
+        "f6b1d32c2680a7d6"
       ],
       "areaCode": "230010",
       "areaName": "西部",
-      "precision": "area",
-      "label": "雨 時々 くもり",
+      "precision": "mesh5km",
+      "label": "雨",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
-      "issuedAt": "2026-10-24T11:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "issuedAt": "2026-10-24T17:00:00+09:00",
+      "meshTime": "00:00",
+      "meshTempBand": "20〜24℃",
+      "coordinates": {
+        "lat": 35.171875,
+        "lon": 136.910599
+      }
     },
     {
       "date": "2026-10-26",
@@ -104,16 +115,19 @@
       ],
       "areaCode": "400010",
       "areaName": "福岡地方",
-      "precision": "area",
+      "precision": "mesh5km",
       "label": "雨",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
-      "issuedAt": "2026-10-24T11:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "issuedAt": "2026-10-24T17:00:00+09:00",
+      "meshTime": "00:00",
+      "meshTempBand": "20〜24℃",
+      "coordinates": {
+        "lat": 33.603218,
+        "lon": 130.401825
+      }
     },
     {
       "date": "2026-10-27",
@@ -127,7 +141,9 @@
         "b09e5a2f429cb013",
         "c15645c6e0bc30f6",
         "77e025584cee4577",
-        "d355a09d36fa0ca0"
+        "d355a09d36fa0ca0",
+        "0e9184c1333d3c2b",
+        "f6b1d32c2680a7d6"
       ],
       "areaCode": "230010",
       "areaName": "愛知県",
@@ -137,7 +153,7 @@
       "min": 18.0,
       "pop": "60",
       "popLabel": "1日",
-      "issuedAt": "2026-10-24T11:00:00+09:00",
+      "issuedAt": "2026-10-24T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -158,7 +174,7 @@
       "min": 16.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-10-24T11:00:00+09:00",
+      "issuedAt": "2026-10-24T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -176,7 +192,10 @@
         "af9b9cae7dd94237",
         "b7de00ec0f8fd91b",
         "cea85b357b3a94ad",
-        "d07cfc4b79ea8d5b"
+        "d07cfc4b79ea8d5b",
+        "3f99f7bcacecc458",
+        "b929ac13fb654730",
+        "d704ae6bb483f386"
       ],
       "areaCode": "400010",
       "areaName": "福岡県",
@@ -186,7 +205,7 @@
       "min": 14.0,
       "pop": "20",
       "popLabel": "1日",
-      "issuedAt": "2026-10-24T11:00:00+09:00",
+      "issuedAt": "2026-10-24T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -207,7 +226,7 @@
       "min": 11.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-10-24T11:00:00+09:00",
+      "issuedAt": "2026-10-24T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -225,7 +244,10 @@
         "0459e9422056aee7",
         "6a9b9904e33f5ce0",
         "8a85dd9007f99dc5",
-        "b53e3db82fdc3f16"
+        "b53e3db82fdc3f16",
+        "3f99f7bcacecc458",
+        "b929ac13fb654730",
+        "d704ae6bb483f386"
       ],
       "areaCode": "400010",
       "areaName": "福岡県",
@@ -235,7 +257,7 @@
       "min": 12.0,
       "pop": "20",
       "popLabel": "1日",
-      "issuedAt": "2026-10-24T11:00:00+09:00",
+      "issuedAt": "2026-10-24T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -252,7 +274,9 @@
         "b09e5a2f429cb013",
         "c15645c6e0bc30f6",
         "87b3407f7f299440",
-        "a7e8c44cd379b126"
+        "a7e8c44cd379b126",
+        "0e9184c1333d3c2b",
+        "f6b1d32c2680a7d6"
       ],
       "areaCode": "240010",
       "areaName": "三重県",
@@ -262,7 +286,7 @@
       "min": 10.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-10-24T11:00:00+09:00",
+      "issuedAt": "2026-10-24T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -283,7 +307,7 @@
       "min": 11.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-10-24T11:00:00+09:00",
+      "issuedAt": "2026-10-24T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -303,7 +327,7 @@
       "min": 11.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-10-24T11:00:00+09:00",
+      "issuedAt": "2026-10-24T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -323,7 +347,7 @@
       "min": 15.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-10-24T11:00:00+09:00",
+      "issuedAt": "2026-10-24T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -343,7 +367,7 @@
       "min": 14.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-10-24T11:00:00+09:00",
+      "issuedAt": "2026-10-24T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -362,7 +386,9 @@
         "3b1ae43e651d3183",
         "72cbfe0f594cc031",
         "8ef49078d65b4ade",
-        "a7890e2f125fa19f"
+        "a7890e2f125fa19f",
+        "3f99f7bcacecc458",
+        "b929ac13fb654730"
       ],
       "areaCode": "280010",
       "areaName": "兵庫県",
@@ -372,21 +398,37 @@
       "min": 15.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-10-24T11:00:00+09:00",
+      "issuedAt": "2026-10-24T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
     }
   ],
   "stats": {
-    "occurrencesInRange": 66,
-    "uniqueVenueDates": 16,
+    "occurrencesInRange": 94,
+    "uniqueVenueDates": 19,
     "weatherEntries": 16,
-    "meshEntries": 0,
-    "failures": 0,
+    "meshEntries": 4,
+    "failures": 3,
     "meshTimelineEntries": 0,
     "meshExactTempSlots": 0,
     "hourlyRainEntries": 0
   },
-  "failures": []
+  "failures": [
+    {
+      "date": "2026-11-01",
+      "venue": "埼玉県 埼玉スタジアム2002 野外特設会場",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-11-01",
+      "venue": "東京都 新宿住友ビル三角広場",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-11-01",
+      "venue": "兵庫県 神戸ワールド記念ホール",
+      "reason": "開催日の予報がまだありません"
+    }
+  ]
 }
