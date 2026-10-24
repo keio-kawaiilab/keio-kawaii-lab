@@ -4,8 +4,10 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+from collections import defaultdict
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
+from urllib.parse import parse_qs, urlparse
 
 import requests
 
@@ -114,8 +116,29 @@ def _event_urls(event: dict) -> set[str]:
     return {value.split("#", 1)[0] for value in values if value}
 
 
+def _pia_sale_ids(event: dict) -> set[str]:
+    """Return per-sale Pia identifiers, excluding shared event bundle URLs."""
+    result: set[str] = set()
+    for value in _event_urls(event):
+        query = parse_qs(urlparse(value).query)
+        for sale_id in query.get("lotRlsCd", []):
+            if sale_id:
+                result.add(sale_id)
+    return result
+
+
 def same_sale(left: dict, right: dict) -> bool:
-    return bool(_event_urls(left) & _event_urls(right))
+    if left.get("id") and left.get("id") == right.get("id"):
+        return True
+    left_ids = _pia_sale_ids(left)
+    right_ids = _pia_sale_ids(right)
+    if left_ids or right_ids:
+        return bool(left_ids & right_ids)
+
+    # Event-bundle URLs are shared by every sales phase for a tour, so they are
+    # not strong enough to identify one application window.
+    common = _event_urls(left) & _event_urls(right)
+    return any("eventBundleCd=" not in value for value in common)
 
 
 def normalize_guard_row(event: dict) -> dict:
@@ -250,36 +273,41 @@ def collect_ended_sales(
 
 def merge(payload: dict, rows: list[dict]) -> tuple[int, int]:
     events = [dict(x) for x in payload.get("events", []) if isinstance(x, dict)]
-    index = {history_key(event): i for i, event in enumerate(events)}
+    index: dict[tuple[str, str, str, str], list[int]] = defaultdict(list)
+    for i, event in enumerate(events):
+        index[history_key(event)].append(i)
     added = 0
     enriched = 0
     for row in rows:
         key = history_key(row)
-        if key not in index:
+        current_index = next(
+            (i for i in index.get(key, []) if same_sale(events[i], row)),
+            None,
+        )
+        if current_index is None:
             events.append(row)
-            index[key] = len(events) - 1
+            index[key].append(len(events) - 1)
             added += 1
             continue
-        current = events[index[key]]
+        current = events[current_index]
         changed = False
 
         # A fresh observation of the same Pia sale is authoritative for status and
         # its observed deadline. This lets a corrected sale boundary replace a
         # stale value that was previously taken from a result-announcement date.
-        if same_sale(current, row):
-            if row.get("applyEnd") and current.get("applyEnd") != row.get("applyEnd"):
-                current["applyEnd"] = row.get("applyEnd")
+        if row.get("applyEnd") and current.get("applyEnd") != row.get("applyEnd"):
+            current["applyEnd"] = row.get("applyEnd")
+            changed = True
+        if row.get("applicationStatus") in {"ended", "sold_out"} and current.get("applicationStatus") != row.get("applicationStatus"):
+            current["applicationStatus"] = row.get("applicationStatus")
+            changed = True
+        if row.get("applicationStatus") in {"ended", "sold_out"} and current.get("applicationDisplayMode") != "offers":
+            current["applicationDisplayMode"] = "offers"
+            changed = True
+        for stale_key in ("retainedFromPreviousPiaRun", "piaRetentionReason", "deadlineRecoveredFromPreviousRun"):
+            if stale_key in current:
+                current.pop(stale_key, None)
                 changed = True
-            if row.get("applicationStatus") in {"ended", "sold_out"} and current.get("applicationStatus") != row.get("applicationStatus"):
-                current["applicationStatus"] = row.get("applicationStatus")
-                changed = True
-            if row.get("applicationStatus") in {"ended", "sold_out"} and current.get("applicationDisplayMode") != "offers":
-                current["applicationDisplayMode"] = "offers"
-                changed = True
-            for stale_key in ("retainedFromPreviousPiaRun", "piaRetentionReason", "deadlineRecoveredFromPreviousRun"):
-                if stale_key in current:
-                    current.pop(stale_key, None)
-                    changed = True
 
         for field in (
             "applyStart", "applyEnd", "applicationStatus", "applicationWindowVerified",

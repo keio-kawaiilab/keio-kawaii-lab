@@ -110,6 +110,45 @@ class TicketHistoryPiaGuardTests(unittest.TestCase):
         self.assertEqual(row["applicationDisplayMode"], "offers")
         self.assertNotIn("retainedFromPreviousPiaRun", row)
 
+    def test_shared_event_bundle_does_not_merge_distinct_pia_sales(self):
+        payload = {"events": [{
+            "group": "CUTIE STREET",
+            "eventDate": "2026-11-14",
+            "ticketType": "プレリザーブ",
+            "ticketProvider": "pia",
+            "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=18893",
+            "urls": [
+                "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=18893",
+                "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
+            ],
+            "applyStart": "2026-10-17T11:00",
+            "applyEnd": "2026-10-26T11:00",
+            "applicationStatus": "open",
+        }]}
+        ended = g.normalize_guard_row({
+            "group": "CUTIE STREET",
+            "eventDate": "2026-11-14",
+            "ticketType": "プレリザーブ",
+            "applicationStatus": "ended",
+            "applyStart": "2026-09-30T11:00",
+            "applyEnd": "2026-10-06T11:00",
+            "url": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=88970",
+            "urls": [
+                "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=88970",
+                "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
+            ],
+        })
+
+        self.assertFalse(g.same_sale(payload["events"][0], ended))
+        added, enriched = g.merge(payload, [ended])
+        self.assertEqual((added, enriched), (1, 0))
+        self.assertEqual(len(payload["events"]), 2)
+        active = payload["events"][0]
+        self.assertEqual(active["applyStart"], "2026-10-17T11:00")
+        self.assertEqual(active["applyEnd"], "2026-10-26T11:00")
+        self.assertEqual(active["applicationStatus"], "open")
+        self.assertNotIn("lotRlsCd=88970", "\n".join(active["urls"]))
+
     def test_merge_keeps_one_general_sale(self):
         payload = {"events": []}
         row = g.normalize_guard_row({
