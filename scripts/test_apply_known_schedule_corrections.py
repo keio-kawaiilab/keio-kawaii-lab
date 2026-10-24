@@ -11,6 +11,66 @@ from apply_known_schedule_corrections import (
 
 
 class KnownScheduleCorrectionsTest(unittest.TestCase):
+    def test_kawaiilab_free_live_keeps_one_performance_and_each_official_fc_route(self):
+        from performance_entities import build_public_events
+
+        seed = [
+            {"id": group, "group": group, "url": "https://example.com/" + group}
+            for group in ("CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR")
+        ]
+        corrected, report = apply_known_corrections(seed)
+        self.assertEqual(1, report["kawaiilabFcFreeLiveAdded"])
+        rows = [row for row in corrected if row.get("id") == "known-kawaiilab-fc-free-live-20261106"]
+        self.assertEqual(1, len(rows))
+        self.assertEqual(5, len(rows[0]["offers"]))
+        self.assertEqual(
+            {
+                "CANDY TUNE FC先行", "SWEET STEADY FC先行", "CUTIE STREET FC先行",
+                "MORE STAR FC先行", "KAWAII LAB. FC先行",
+            },
+            {offer["ticketType"] for offer in rows[0]["offers"]},
+        )
+        self.assertTrue(all("/feature/" in offer["url"] for offer in rows[0]["offers"]))
+        self.assertTrue(all(offer["applicationWindowVerified"] is True for offer in rows[0]["offers"]))
+
+        public, _ = build_public_events(corrected)
+        free_live = [row for row in public if row.get("eventDate") == "2026-11-06"]
+        self.assertEqual(1, len(free_live))
+        self.assertEqual(5, len(free_live[0]["offers"]))
+        self.assertEqual("複数受付", free_live[0]["ticketType"])
+
+        again, second_report = apply_known_corrections(corrected)
+        self.assertEqual(corrected, again)
+        self.assertEqual(0, second_report["kawaiilabFcFreeLiveAdded"])
+        self.assertEqual(0, second_report["kawaiilabFcFreeLiveOffersUpdated"])
+
+    def test_kawaiilab_free_live_upgrades_single_candy_route_without_duplication(self):
+        legacy = {
+            "id": "known-kawaiilab-fc-free-live-20261106",
+            "group": "KAWAII LAB.合同",
+            "participants": ["CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR"],
+            "title": "KAWAII LAB. ファンクラブ限定フリーライブ",
+            "eventTitle": "KAWAII LAB. ファンクラブ限定フリーライブ",
+            "eventDate": "2026-11-06",
+            "eventDates": ["2026-11-06"],
+            "venue": "東京都 東京ガーデンシアター",
+            "startTime": "18:00",
+            "ticketType": "FC先行",
+            "applyStart": "2026-10-24T12:00",
+            "applyEnd": "2026-10-26T23:59",
+            "url": "https://candytune.asobisystem.com/news/detail/93706",
+        }
+        context = [
+            {"id": group, "group": group, "url": "https://example.com/" + group}
+            for group in ("CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR")
+        ]
+        corrected, report = apply_known_corrections([*context, legacy])
+        rows = [row for row in corrected if "ファンクラブ限定フリーライブ" in str(row.get("title") or "")]
+        self.assertEqual(1, len(rows))
+        self.assertEqual(5, len(rows[0]["offers"]))
+        self.assertNotIn("applyStart", rows[0])
+        self.assertEqual(1, report["kawaiilabFcFreeLiveOffersUpdated"])
+
     def test_fruits_joy_fc_window_merges_into_the_known_performance(self):
         from performance_entities import build_public_events
 

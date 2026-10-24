@@ -1013,6 +1013,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "fruitsJoyFanclubLiveAdded": 0,
         "fruitsJoyFcOfferAdded": 0,
         "kawaiilabFcFreeLiveAdded": 0,
+        "kawaiilabFcFreeLiveOffersUpdated": 0,
         "staleChristmasRowsRemoved": 0,
         "fmAichiFixed": 0,
         "sweetFcSecondStartFixed": 0,
@@ -1307,7 +1308,59 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
     # not disappear merely because each official group's news collector has not
     # discovered the newly published article yet.  Match by performance date
     # and title rather than collector-specific article IDs to stay idempotent.
-    free_live_source = "https://candytune.asobisystem.com/news/detail/93706"
+    free_live_sources = [
+        (
+            "CANDY TUNE FC先行",
+            "https://candytune.asobisystem.com/news/detail/93706",
+            "https://candytune.asobisystem.com/feature/6eb8e3c96d6f97adcc18f9bebd263edc?_normalbrowse_=1",
+        ),
+        (
+            "SWEET STEADY FC先行",
+            "https://sweetsteady.asobisystem.com/news/detail/93708",
+            "https://sweetsteady.asobisystem.com/feature/7b23f21ed498eb6e114982bddcb80be0?_normalbrowse_=1",
+        ),
+        (
+            "CUTIE STREET FC先行",
+            "https://cutiestreet.asobisystem.com/news/detail/93709",
+            "https://cutiestreet.asobisystem.com/feature/b0da2ae3d091956d61d96b98551c772a?_normalbrowse_=1",
+        ),
+        (
+            "MORE STAR FC先行",
+            "https://morestar.asobisystem.com/news/detail/93710",
+            "https://morestar.asobisystem.com/feature/4887f2d087c4dd1ed6a0f466e46d1b56?_normalbrowse_=1",
+        ),
+        (
+            "KAWAII LAB. FC先行",
+            "https://kawaiilab.asobisystem.com/news/detail/93695",
+            "https://kawaiilab.asobisystem.com/feature/952c3d505aa47ae5719a9a05de62fff8?_normalbrowse_=1",
+        ),
+    ]
+    free_live_source = free_live_sources[-1][1]
+    free_live_urls = list(dict.fromkeys(
+        value for _, article, application in free_live_sources
+        for value in (article, application)
+    ))
+    free_live_offers = [
+        {
+            "sourceRowId": "known-kawaiilab-fc-free-live-20261106-" + label.lower().replace(" ", "-"),
+            "provider": "official",
+            "ticketType": label,
+            "url": application,
+            "urls": [application, article],
+            "applyStart": "2026-10-24T12:00",
+            "applyEnd": "2026-10-26T23:59",
+            "applicationWindowVerified": True,
+            "applicationWindowSource": article,
+            "deadlineVerified": True,
+            "deadlineSource": article,
+            "applicationStatus": "open",
+            "sourceType": "official",
+            "primarySource": "official",
+            "sourceChannel": "known-official-correction",
+            "sourcePublishedAt": "2026-10-24",
+        }
+        for label, article, application in free_live_sources
+    ]
     free_live_title = "KAWAII LAB. ファンクラブ限定フリーライブ"
     free_live_day = "2026-11-06"
     # Run this site-wide backfill only on a complete multi-group calendar.
@@ -1315,16 +1368,16 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
     has_all_participants = {"CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR"}.issubset(
         {str(event.get("group") or "") for event in out}
     )
-    if has_all_participants and not any(
+    free_live_matches = [event for event in out if
         free_live_day in {str(event.get("eventDate") or "")[:10], *(
             str(day)[:10] for day in (event.get("eventDates") or [])
         )}
         and "ファンクラブ限定フリーライブ" in str(
             event.get("eventTitle") or event.get("title") or ""
         )
-        for event in out
-    ):
-        out.append({
+    ]
+    if has_all_participants and not free_live_matches:
+        free_live_matches = [{
             "id": "known-kawaiilab-fc-free-live-20261106",
             "group": "KAWAII LAB.合同",
             "participants": ["CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR"],
@@ -1341,22 +1394,40 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
                           "venue": "東京都 東京ガーデンシアター",
                           "openTime": "16:30", "startTime": "18:00"}],
             "url": free_live_source,
-            "urls": [free_live_source],
-            "ticketType": "FC先行",
-            "applyStart": "2026-10-24T12:00",
-            "applyEnd": "2026-10-26T23:59",
-            "applicationWindowVerified": True,
-            "applicationWindowSource": free_live_source,
-            "deadlineVerified": True,
-            "deadlineSource": free_live_source,
-            "applicationStatus": "open",
+            "urls": free_live_urls,
+            "ticketType": "現在受付なし",
+            "applicationStatus": "none",
             "sourceType": "official",
             "primarySource": "official",
             "sourceChannel": "known-official-correction",
             "sourcePublishedAt": "2026-10-24",
             "eventScope": "kawaii-lab",
-        })
+        }]
+        out.extend(free_live_matches)
         report["kawaiilabFcFreeLiveAdded"] = 1
+
+    if has_all_participants and free_live_matches:
+        target = free_live_matches[0]
+        before = deepcopy(target)
+        target.update({
+            "group": "KAWAII LAB.合同",
+            "participants": ["CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR"],
+            "url": free_live_source,
+            "urls": free_live_urls,
+            "ticketType": "現在受付なし",
+            "applicationStatus": "none",
+            "applicationDisplayMode": "offers",
+            "offers": deepcopy(free_live_offers),
+            "primarySource": "official",
+            "eventScope": "kawaii-lab",
+        })
+        for field in (
+            "applyStart", "applyEnd", "applicationWindowVerified", "applicationWindowSource",
+            "deadlineVerified", "deadlineSource",
+        ):
+            target.pop(field, None)
+        if target != before and report["kawaiilabFcFreeLiveAdded"] == 0:
+            report["kawaiilabFcFreeLiveOffersUpdated"] = 1
 
     out, candy_online_removed = _collapse_candy_online_20261020(out)
     report["candyOnline20261020RowsCollapsed"] = candy_online_removed
