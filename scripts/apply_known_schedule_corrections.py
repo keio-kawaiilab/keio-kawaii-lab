@@ -758,14 +758,21 @@ def _collapse_fruits_synergy_20261101(events: list[dict]) -> tuple[list[dict], i
     identity/source fact so unrelated online benefits stay separate.
     """
     def matches(row: dict) -> bool:
+        if row.get("group") != "FRUITS ZIPPER" or _day(row) != FRUITS_SYNERGY_DAY:
+            return False
+        urls = set(_urls(row))
+        if FRUITS_SYNERGY_OFFICIAL in urls:
+            # The official SCHEDULE row is intentionally sparse: it currently
+            # carries neither the 18:00 start nor SUKISUKI's normalized venue.
+            # Its exact stable detail URL is the verified performance identity.
+            title = str(row.get("title") or row.get("eventTitle") or "")
+            return "4th Anniversary写真集" in title and "オンライン特典会" in title
         return (
-            row.get("group") == "FRUITS ZIPPER"
-            and _day(row) == FRUITS_SYNERGY_DAY
-            and row.get("startTime") == "18:00"
+            row.get("startTime") == "18:00"
             and row.get("venue") == "オンライン（SUKISUKI）"
             and row.get("eventCategory") == "online-benefit"
             and "SYNERGY" in str(row.get("title") or row.get("eventTitle") or "")
-            and bool(FRUITS_SYNERGY_GOODS.intersection(_urls(row)))
+            and bool(FRUITS_SYNERGY_GOODS.intersection(urls))
         )
 
     rows = [row for row in events if matches(row)]
