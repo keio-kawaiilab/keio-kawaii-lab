@@ -430,6 +430,43 @@ def review_is_already_represented(candidate, review, existing):
     return False
 
 
+def source_notice_is_already_represented(candidate, title, existing):
+    """Clear a date-less review when its exact official notice is published.
+
+    Some notices cover several already-known performances and the generic
+    parser cannot choose one date, even though a verified correction has
+    attached that exact source URL and reception to every occurrence.  Treat
+    the article as represented only when a current/future row for the same
+    group keeps the exact URL, the notice's ticket family, and a complete
+    application window.  A merely related performance or a different sale
+    therefore remains pending.
+    """
+    family = None
+    if "アップグレード" in title:
+        family = "アップグレード"
+    elif "リセール" in title:
+        family = "リセール"
+    elif re.search(r"一般(?:発売|販売)", title):
+        family = "一般"
+    if not family:
+        return False
+
+    today = datetime.now(parser.JST).date()
+    for event in _future_url_matches(candidate.url, existing):
+        if event.get("group") != candidate.group or not retention.should_show(event, today):
+            continue
+        rows = event.get("offers") or [event]
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            ticket_type = str(row.get("ticketType") or "")
+            if family not in ticket_type:
+                continue
+            if row.get("applyStart") and row.get("applyEnd"):
+                return True
+    return False
+
+
 def explicit_event_days(title, text):
     published = parser.article_date_from_text(text)
     default_year = int(published[:4]) if published else datetime.now(parser.JST).year
@@ -611,6 +648,8 @@ def read_candidate(candidate, existing, headers):
             return [], None, "past"
     if not rows and review:
         if review_is_already_represented(candidate, review, existing):
+            return [], None, "represented"
+        if source_notice_is_already_represented(candidate, title, existing):
             return [], None, "represented"
         fallback = fallback_row_from_review(candidate, title, text, review, existing)
         if fallback:
