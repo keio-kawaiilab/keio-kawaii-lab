@@ -34,6 +34,12 @@ CANDY_ONLINE_20261020_GOODS = {
     "https://sukisuki-shop.com/goods/6500000004623",
 }
 CUTIE_PACIFICO_FC_ARTICLE = "https://cutiestreet.asobisystem.com/news/detail/93831"
+FRUITS_SYNERGY_DAY = "2026-11-01"
+FRUITS_SYNERGY_OFFICIAL = "https://fruitszipper.asobisystem.com/live_information/detail/44318"
+FRUITS_SYNERGY_GOODS = {
+    "https://sukisuki-shop.com/goods/6500000004023",
+    "https://sukisuki-shop.com/goods/6500000004943",
+}
 
 HAKATA_PARTS = [
     {"part": "第1部", "content": "2ショットチェキ撮影会（FC限定）", "start": "10:00", "end": "11:00", "receptionStart": "09:40", "receptionEnd": "10:40"},
@@ -740,6 +746,78 @@ def _collapse_candy_online_20261020(events: list[dict]) -> tuple[list[dict], int
     return output, len(matches) - 1
 
 
+def _collapse_fruits_synergy_20261101(events: list[dict]) -> tuple[list[dict], int]:
+    """Keep the initial and additional SYNERGY sales on one online event.
+
+    The official schedule detail fixes one November 1, 18:00 stream. SUKISUKI
+    goods 4023 and 4943 are two reception rounds for that stream, not two
+    performances. Preserve both windows as offers and require every exact
+    identity/source fact so unrelated online benefits stay separate.
+    """
+    def matches(row: dict) -> bool:
+        return (
+            row.get("group") == "FRUITS ZIPPER"
+            and _day(row) == FRUITS_SYNERGY_DAY
+            and row.get("startTime") == "18:00"
+            and row.get("venue") == "オンライン（SUKISUKI）"
+            and row.get("eventCategory") == "online-benefit"
+            and "SYNERGY" in str(row.get("title") or row.get("eventTitle") or "")
+            and bool(FRUITS_SYNERGY_GOODS.intersection(_urls(row)))
+        )
+
+    rows = [row for row in events if matches(row)]
+    all_urls = list(dict.fromkeys(url for row in rows for url in _urls(row)))
+    if (len(rows) < 2 or FRUITS_SYNERGY_OFFICIAL not in all_urls
+            or not FRUITS_SYNERGY_GOODS.issubset(set(all_urls))):
+        return events, 0
+
+    base = deepcopy(next(row for row in rows if FRUITS_SYNERGY_OFFICIAL in _urls(row)))
+    offers, seen = [], set()
+    for row in rows:
+        for receipt in row.get("offers") or [row]:
+            goods_urls = [url for url in _urls(receipt) if url in FRUITS_SYNERGY_GOODS]
+            if not goods_urls:
+                continue
+            offer = deepcopy(receipt) if row.get("offers") else {
+                "sourceRowId": row.get("id"), "provider": "sukisuki",
+                "url": goods_urls[0], "urls": goods_urls,
+                "ticketType": row.get("ticketType"),
+                "sourceType": row.get("sourceType") or "sukisuki",
+                "primarySource": row.get("primarySource") or "sukisuki",
+                **{key: deepcopy(row[key]) for key in
+                   ("applyStart", "applyEnd", "resultDate", "paymentEnd") if key in row},
+            }
+            marker = tuple(str(offer.get(key) or "") for key in
+                           ("url", "ticketType", "applyStart", "applyEnd", "resultDate", "paymentEnd"))
+            if marker not in seen:
+                seen.add(marker)
+                offers.append(offer)
+
+    title = "FRUITS ZIPPER 4th Anniversary 写真集 『SYNERGY』オンライン特典会"
+    base.update({
+        "id": "known-fruits-synergy-online-20261101",
+        "title": title, "eventTitle": title, "displayTitle": title,
+        "eventDate": FRUITS_SYNERGY_DAY, "eventEndDate": FRUITS_SYNERGY_DAY,
+        "eventDates": [FRUITS_SYNERGY_DAY], "eventCount": 1,
+        "startTime": "18:00", "venue": "オンライン（SUKISUKI）",
+        "url": FRUITS_SYNERGY_OFFICIAL, "urls": all_urls,
+        "officialScheduleUrl": FRUITS_SYNERGY_OFFICIAL,
+        "sourceType": "official-schedule", "sourceChannel": "known-official-correction",
+        "primarySource": "official", "sourceCandidates": ["official", "sukisuki"],
+        "sourceRowIds": list(dict.fromkeys(str(value) for row in rows for value in
+            (row.get("sourceRowIds") or [row.get("id")]) if value)),
+        "offers": offers,
+        "ticketType": "複数受付" if len(offers) > 1 else offers[0]["ticketType"],
+        "applicationDisplayMode": "offers", "applicationStatus": "offers",
+    })
+    for key in ("applyStart", "applyEnd", "resultDate", "paymentEnd", "ticketProvider"):
+        base.pop(key, None)
+    first = next(index for index, row in enumerate(events) if matches(row))
+    out = [row for row in events if not matches(row)]
+    out.insert(first, base)
+    return out, len(rows) - 1
+
+
 def _collapse_sweet_online_20261023(events: list[dict]) -> tuple[list[dict], int]:
     # SUKISUKI 4624/4625 bodies, rechecked 2026-10-20: same October 23
     # 15:00 stream, same seven members and ちょーだいHAPPY！ MV costume.
@@ -1181,6 +1259,9 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
 
     out, candy_online_removed = _collapse_candy_online_20261020(out)
     report["candyOnline20261020RowsCollapsed"] = candy_online_removed
+
+    out, fruits_synergy_removed = _collapse_fruits_synergy_20261101(out)
+    report["fruitsSynergy20261101RowsCollapsed"] = fruits_synergy_removed
 
     out, disaster_relief_removed = _collapse_disaster_relief_concert(out)
     report["disasterReliefConcertRowsCollapsed"] = disaster_relief_removed
