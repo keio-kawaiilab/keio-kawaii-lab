@@ -62,6 +62,9 @@ OPEN_ENDED_OFFER_HTML_JS = "function offerHtml(o){var missingStart=!!o.synthetic
 OPEN_ENDED_BAND_COPY_OLD = "b.innerHTML='<strong>'+esc((loc?loc+'｜':'')+shortTitle(e))+'</strong><span>'+esc(providerName(e)+'｜'+(e.ticketType||'申込')+'｜'+fmt(e.applyEnd)+'まで')+'</span>'"
 OPEN_ENDED_BAND_COPY_NEW = "b.innerHTML='<strong>'+esc((loc?loc+'｜':'')+shortTitle(e))+'</strong><span>'+esc(providerName(e)+'｜'+(e.ticketType||'申込')+'｜'+(r.openEnded?'終了日時未発表':fmt(e.applyEnd)+'まで'))+'</span>'"
 
+TITLE_BOUNDARY_OLD = r"FC\s*(?:会員)?先行|ファンクラブ|OFFICIAL FANCLUB"
+TITLE_BOUNDARY_NEW = r"FC\s*(?:会員)?先行|ファンクラブ(?:会員)?(?:先行|受付|チケット)|OFFICIAL FANCLUB"
+
 PERFORMANCE_RECONCILE_JS = (
     "function performanceTimeMatchKeys(e,o){var day=String((o&&o.date)||e.eventDate||'').slice(0,10),venue=performanceVenueKey(e,o),base=[String(e.group||''),day,venue].join('|'),out=[],tour=String(e.officialTourUrl||'').trim().toLowerCase().replace(/[?#].*$/,'').replace(/\\/$/,'');if(tour)out.push(base+'|tour:'+tour);var t=performanceTitleKey(e);if(t)out.push(base+'|title:'+t);return out}"
     "function reconcilePerformanceTimes(all){var tm={},om={};function add(map,k,v){if(!v)return;(map[k]||(map[k]={}))[String(v).replace(/\\s+/g,'')]=1}function vals(map,ks){var x={};ks.forEach(function(k){Object.keys(map[k]||{}).forEach(function(v){x[v]=1})});return Object.keys(x)};"
@@ -193,6 +196,15 @@ def install_open_ended_general_sales(page: str) -> str:
     return page
 
 
+def install_title_boundaries(page: str) -> str:
+    """Do not truncate verified event names containing ファンクラブ限定."""
+    if TITLE_BOUNDARY_NEW in page:
+        return page
+    if TITLE_BOUNDARY_OLD not in page:
+        raise RuntimeError("schedule title boundary parser changed")
+    return page.replace(TITLE_BOUNDARY_OLD, TITLE_BOUNDARY_NEW, 1)
+
+
 def install_truthful_status(page: str) -> str:
     if STATUS_NEW in page:
         return page
@@ -217,6 +229,7 @@ def main() -> int:
     page = install_performance_reconcile(page)
     page = install_application_band_identity(page)
     page = install_open_ended_general_sales(page)
+    page = install_title_boundaries(page)
     page = install_truthful_status(page)
     page = guard_performance_runtime.transform(page)
 
@@ -235,6 +248,7 @@ def main() -> int:
         "function applicationBandSubjectKey(e)",
         "openEnded",
         "終了日時未発表",
+        "ファンクラブ(?:会員)?(?:先行|受付|チケット)",
         "e.officialTourUrl",
         "function performanceModels(vis)",
         "perfSeen[pk]",

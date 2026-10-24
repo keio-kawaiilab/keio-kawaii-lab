@@ -22,7 +22,7 @@ assert(source.includes("data-band-apply-start"), 'application bands must expose 
 assert(source.includes("data-band-group"), 'application bands must expose their group for safe deduplication');
 source = source.replace(
   /\}\)\(\);\s*$/,
-  "globalThis.__scheduleTest={prepare:prepare,groupedApplicationBands:groupedApplicationBands,eventKind:eventKind,specialHtml:specialHtml,performanceModels:performanceModels,performanceKey:performanceKey};})();",
+  "globalThis.__scheduleTest={prepare:prepare,groupedApplicationBands:groupedApplicationBands,eventKind:eventKind,specialHtml:specialHtml,performanceModels:performanceModels,performanceKey:performanceKey,title:title,shortTitle:shortTitle};})();",
 );
 
 function element() {
@@ -61,6 +61,22 @@ const context = {
 };
 context.globalThis = context;
 vm.runInNewContext(source, context);
+
+const freeLiveTitle = {
+  group: 'KAWAII LAB.合同',
+  title: 'KAWAII LAB. ファンクラブ限定フリーライブ',
+  eventTitle: 'KAWAII LAB. ファンクラブ限定フリーライブ',
+};
+assert.strictEqual(
+  context.__scheduleTest.title(freeLiveTitle),
+  'KAWAII LAB. ファンクラブ限定フリーライブ',
+  'ファンクラブ限定 must remain part of the verified event title',
+);
+assert.strictEqual(
+  context.__scheduleTest.shortTitle(freeLiveTitle),
+  'ファンクラブ限定フリーライブ',
+  'calendar labels may remove only the group prefix',
+);
 
 const common = {
   group: 'CANDY TUNE',
