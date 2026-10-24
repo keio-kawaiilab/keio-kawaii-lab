@@ -351,7 +351,10 @@ def main() -> int:
 
     now = datetime.now(JST)
     today = now.date()
-    events = [dict(x) for x in payload.get("events", []) if isinstance(x, dict)]
+    # The public club calendar covers the five primary groups and joint shows;
+    # MATES-only events are intentionally outside its editorial scope.
+    events = [dict(x) for x in payload.get("events", [])
+              if isinstance(x, dict) and x.get("group") != "KAWAII LAB. MATES"]
     visible = [event for event in events if visible_event(event, today, now)]
     visible.sort(key=lambda event: min([parse_day(x) for x in event_dates(event) if parse_day(x)] or [today]))
     default_visible = [event for event in visible if infer_event_scope(event) == HOSTED]
