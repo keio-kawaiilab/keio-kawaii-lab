@@ -1416,6 +1416,8 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         target.update({
             "group": "KAWAII LAB.合同",
             "participants": ["CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR"],
+            "title": free_live_title,
+            "eventTitle": free_live_title,
             "url": free_live_source,
             "urls": free_live_urls,
             "ticketType": "現在受付なし",
