@@ -59,19 +59,6 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
             "startTime": "18:00",
             "url": "https://kawaiilab.asobisystem.com/news/detail/93695",
         }
-        context = [
-            {"id": group, "group": group, "url": "https://example.com/" + group}
-            for group in ("CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR")
-        ]
-        corrected, report = apply_known_corrections([*context, collected])
-        row = next(item for item in corrected if item.get("id") == "collector-free-live")
-        self.assertEqual("KAWAII LAB. ファンクラブ限定フリーライブ", row["title"])
-        self.assertEqual(row["title"], row["eventTitle"])
-        self.assertEqual(1, report["kawaiilabFcFreeLiveOffersUpdated"])
-
-        # The central official-schedule row is more preferred by the generic
-        # base score but carries only the abbreviated title.  It must not
-        # overwrite the verified NEWS title during entity consolidation.
         generic_schedule = {
             "id": "official-schedule-free-live",
             "group": "KAWAII LAB.",
@@ -86,7 +73,22 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
             "primarySource": "official",
             "url": "https://kawaiilab.asobisystem.com/live_information/detail/46689",
         }
-        public, _ = build_public_events([*corrected, generic_schedule])
+        context = [
+            {"id": group, "group": group, "url": "https://example.com/" + group}
+            for group in ("CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR")
+        ]
+        corrected, report = apply_known_corrections([*context, collected, generic_schedule])
+        row = next(item for item in corrected if item.get("id") == "collector-free-live")
+        self.assertEqual("KAWAII LAB. ファンクラブ限定フリーライブ", row["title"])
+        self.assertEqual(row["title"], row["eventTitle"])
+        schedule_row = next(
+            item for item in corrected if item.get("id") == "official-schedule-free-live"
+        )
+        self.assertEqual(row["title"], schedule_row["title"])
+        self.assertEqual(row["eventTitle"], schedule_row["eventTitle"])
+        self.assertEqual(1, report["kawaiilabFcFreeLiveOffersUpdated"])
+
+        public, _ = build_public_events(corrected)
         free_live = [item for item in public if item.get("eventDate") == "2026-11-06"]
         self.assertEqual(1, len(free_live))
         self.assertEqual("KAWAII LAB. ファンクラブ限定フリーライブ", free_live[0]["title"])

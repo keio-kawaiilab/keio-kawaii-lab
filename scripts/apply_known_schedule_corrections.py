@@ -1372,6 +1372,27 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
     has_all_participants = {"CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR"}.issubset(
         {str(event.get("group") or "") for event in out}
     )
+    # Canonicalize every exact acquisition row, including the abbreviated
+    # central official-schedule row.  Updating only the first NEWS-derived row
+    # lets later schedule rendering select "KAWAII LAB." again.
+    for event in out:
+        event_days = {str(event.get("eventDate") or "")[:10], *(
+            str(day)[:10] for day in (event.get("eventDates") or [])
+        )}
+        title = str(event.get("eventTitle") or event.get("title") or "")
+        if (
+            free_live_day in event_days
+            and str(event.get("group") or "") in {"KAWAII LAB.", "KAWAII LAB.合同"}
+            and "東京ガーデンシアター" in str(event.get("venue") or "")
+            and (
+                "ファンクラブ限定フリーライブ" in title
+                or any(url.startswith("https://kawaiilab.asobisystem.com/") for url in _urls(event))
+            )
+        ):
+            event["group"] = "KAWAII LAB.合同"
+            event["title"] = free_live_title
+            event["eventTitle"] = free_live_title
+
     free_live_matches = [event for event in out if
         free_live_day in {str(event.get("eventDate") or "")[:10], *(
             str(day)[:10] for day in (event.get("eventDates") or [])
