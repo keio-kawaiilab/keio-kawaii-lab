@@ -1011,6 +1011,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "candyTokyoPresaleAdded": 0,
         "sweetestStoryPerformancesAdded": 0,
         "fruitsJoyFanclubLiveAdded": 0,
+        "kawaiilabFcFreeLiveAdded": 0,
         "staleChristmasRowsRemoved": 0,
         "fmAichiFixed": 0,
         "sweetFcSecondStartFixed": 0,
@@ -1256,6 +1257,57 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
             "applicationDisplayMode": "schedule-only",
         })
         report["fruitsJoyFanclubLiveAdded"] = 1
+
+
+    # Verified 2026-10-24 official announcement.  A four-group FC show must
+    # not disappear merely because each official group's news collector has not
+    # discovered the newly published article yet.  Match by performance date
+    # and title rather than collector-specific article IDs to stay idempotent.
+    free_live_source = "https://candytune.asobisystem.com/news/detail/93706"
+    free_live_title = "KAWAII LAB. ファンクラブ限定フリーライブ"
+    free_live_day = "2026-11-06"
+    if not any(
+        free_live_day in {str(event.get("eventDate") or "")[:10], *(
+            str(day)[:10] for day in (event.get("eventDates") or [])
+        )}
+        and "ファンクラブ限定フリーライブ" in str(
+            event.get("eventTitle") or event.get("title") or ""
+        )
+        for event in out
+    ):
+        out.append({
+            "id": "known-kawaiilab-fc-free-live-20261106",
+            "group": "KAWAII LAB.合同",
+            "participants": ["CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR"],
+            "title": free_live_title,
+            "eventTitle": free_live_title,
+            "eventDate": free_live_day,
+            "eventEndDate": free_live_day,
+            "eventDates": [free_live_day],
+            "eventCount": 1,
+            "venue": "東京都 東京ガーデンシアター",
+            "openTime": "16:30",
+            "startTime": "18:00",
+            "schedule": [{"date": free_live_day,
+                          "venue": "東京都 東京ガーデンシアター",
+                          "openTime": "16:30", "startTime": "18:00"}],
+            "url": free_live_source,
+            "urls": [free_live_source],
+            "ticketType": "FC先行",
+            "applyStart": "2026-10-24T12:00",
+            "applyEnd": "2026-10-26T23:59",
+            "applicationWindowVerified": True,
+            "applicationWindowSource": free_live_source,
+            "deadlineVerified": True,
+            "deadlineSource": free_live_source,
+            "applicationStatus": "open",
+            "sourceType": "official",
+            "primarySource": "official",
+            "sourceChannel": "known-official-correction",
+            "sourcePublishedAt": "2026-10-24",
+            "eventScope": "kawaii-lab",
+        })
+        report["kawaiilabFcFreeLiveAdded"] = 1
 
     out, candy_online_removed = _collapse_candy_online_20261020(out)
     report["candyOnline20261020RowsCollapsed"] = candy_online_removed
