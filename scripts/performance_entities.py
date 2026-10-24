@@ -11,6 +11,7 @@ from apply_known_schedule_corrections import repair_candy_oita_eplus_link
 
 
 SPECIAL_CATEGORIES = {"release-event", "large-benefit"}
+OUT_OF_SCOPE_SOLO_GROUPS = {"KAWAII LAB. MATES", "KAWAII LAB. SOUTH"}
 ONLINE_RE = re.compile(r"オンライン(?:特典会|サイン会)", re.I)
 TICKET_FIELDS = (
     "ticketType",
@@ -542,7 +543,13 @@ def build_public_events(events: list[dict[str, Any]]) -> tuple[list[dict[str, An
         grouped.setdefault(key, []).append(record)
 
     canonical = [_canonical_entity(key, grouped[key]) for key in sorted(grouped)]
-    public_events = passthrough + canonical
+    unfiltered_public_events = passthrough + canonical
+    public_events = [
+        event
+        for event in unfiltered_public_events
+        if _text(event.get("group")) not in OUT_OF_SCOPE_SOLO_GROUPS
+    ]
+    out_of_scope_solo_count = len(unfiltered_public_events) - len(public_events)
 
     source_occurrence_count = len(records)
     merged_source_occurrences = max(0, source_occurrence_count - len(canonical))
@@ -553,6 +560,7 @@ def build_public_events(events: list[dict[str, Any]]) -> tuple[list[dict[str, An
         "sourceOccurrenceCount": source_occurrence_count,
         "mergedSourceOccurrences": merged_source_occurrences,
         "offerCount": sum(len(event.get("offers") or []) for event in canonical),
+        "outOfScopeSoloEventCount": out_of_scope_solo_count,
     }
     return public_events, report
 
