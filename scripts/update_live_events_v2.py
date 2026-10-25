@@ -21,6 +21,12 @@ CENTRAL_FC_BASE = "https://kawaiilab.asobisystem.com"
 FC_HINT_RE = re.compile(r"OFFICIAL\s*FANCLUB|ファンクラブ|FC(?:会員)?先行", re.I)
 NEWS_SCAN_PAGES = 15
 NEWS_PAGE_WORKERS = 5
+# Older notices may announce a show without saying チケット/先行 in the
+# headline. The detail body, not the index headline, decides if tickets exist.
+EVENT_NOTICE_HINTS = re.compile(
+    r"ライブ|LIVE|公演|ツアー|TOUR|FES|フェス|生誕祭|特典会|リリースイベント|"
+    r"フリーライブ|チケット|抽選|受付|販売|発売|先行", re.I
+)
 MAX_FETCH_ATTEMPTS = 3
 DISCOVERED_BY_GROUP: dict[str, dict[str, parser_v1.Candidate]] = {}
 FEED_FAILURES: dict[str, list[dict]] = {}
@@ -78,8 +84,14 @@ def deep_candidate_links(session: requests.Session, group: str, base: str) -> li
                 continue
             title = parser_v1.normalize_space(anchor.get_text(" ", strip=True))
             if not title:
+                image = anchor.find("img", alt=True)
+                title = parser_v1.normalize_space(image.get("alt", "")) if image else ""
+            if not title:
                 continue
-            if page > 2 and not any(key in title for key in parser_v1.TICKET_HINTS):
+            if page > 2 and not (
+                any(key in title for key in parser_v1.TICKET_HINTS)
+                or EVENT_NOTICE_HINTS.search(title)
+            ):
                 continue
             if any(key in title for key in parser_v1.IGNORE_TITLE_HINTS):
                 continue
