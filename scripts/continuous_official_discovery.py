@@ -802,7 +802,14 @@ def read_candidate(candidate, existing, headers):
 
 
 def collect(session, existing):
-    candidates = revisit_candidates(existing, datetime.now(parser.JST).date())
+    today = datetime.now(parser.JST).date()
+    candidates = revisit_candidates(existing, today)
+    must_refresh_urls = set(candidates)
+    prior_observations = {
+        str(row.get("url")): row
+        for row in existing.get("officialDiscoveryState", {}).get("observations", [])
+        if isinstance(row, dict) and row.get("url")
+    }
     retracted_urls = retracted_source_urls()
     failures, pending, observations = [], [], []
     counts, fresh = {}, {}
@@ -825,8 +832,32 @@ def collect(session, existing):
         candidates.pop(url, None)
     now = datetime.now(parser.JST).isoformat(timespec="seconds")
     headers = dict(session.headers)
+    to_read = []
+    for item in candidates.values():
+        previous = prior_observations.get(item.url)
+        # Keep the full INVENTORY of every official URL. To avoid hundreds of
+        # irrelevant old notices being downloaded every 15 minutes, reuse only
+        # previously inspected non-ticket notices older than two weeks. Rotate
+        # a deterministic 1/7 of these through a fresh read each day.
+        old_irrelevant = False
+        if previous and previous.get("status") == "irrelevant" and item.url not in must_refresh_urls:
+            date_prefix = re.match(r"^\\s*(20\\d{2})[./-](\\d{1,2})[./-](\\d{1,2})", item.title)
+            if date_prefix and previous.get("title") == item.title:
+                try:
+                    published = datetime(
+                        int(date_prefix.group(1)), int(date_prefix.group(2)), int(date_prefix.group(3)),
+                    ).date()
+                    old_irrelevant = (today - published).days > 14
+                except ValueError:
+                    pass
+        if old_irrelevant and int(hashlib.sha256(item.url.encode()).hexdigest(), 16) % 7 != today.weekday():
+            observations.append({
+                **previous, "listedAt": now, "cached": True,
+            })
+            continue
+        to_read.append(item)
     with ThreadPoolExecutor(max_workers=WORKERS) as pool:
-        futures = {pool.submit(read_candidate, item, existing, headers): item for item in candidates.values()}
+        futures = {pool.submit(read_candidate, item, existing, headers): item for item in to_read}
         for future in as_completed(futures):
             item = futures[future]
             observation = {"group": item.group, "url": item.url, "title": item.title, "checkedAt": now}
