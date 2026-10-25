@@ -7,6 +7,8 @@ on:
       - "scripts/performance_entities.py"
       - "scripts/test_performance_entities.py"
       - "scripts/update_live_events_v2.py"
+      - "scripts/continuous_official_discovery.py"
+      - "scripts/test_continuous_official_discovery.py"
       - "scripts/test_update_live_events_v2.py"
       - "schedule-card-dedupe-v2.js"
       - "ticket-flow-sync.js"
@@ -31,7 +33,7 @@ jobs:
         run: pip install -r scripts/requirements.txt
       - name: Verify public performance deduplication and headline discovery
         working-directory: scripts
-        run: python -m unittest -v test_performance_entities test_update_live_events_v2
+        run: python -m unittest -v test_performance_entities test_update_live_events_v2 test_continuous_official_discovery
       - name: Verify browser deduplication syntax
         run: |
           node --check schedule-card-dedupe-v2.js
