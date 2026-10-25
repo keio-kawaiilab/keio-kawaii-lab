@@ -10,6 +10,7 @@
   var collectionHealth=null;
   var healthAvailable=false;
   var historyAvailable=false;
+  var historyReadFailed=false;
   var mounted=false;
   var MAX_HEALTH_AGE_MS=3*60*60*1000;
 
@@ -94,6 +95,31 @@
     return map;
   }
 
+  // Curated verified receptions are a fallback when the large history cannot load.
+  function curatedHistoryRows(payload){
+    var rows=[];
+    (payload.series||[]).forEach(function(series){
+      if(!series||!series.group||!series.eventTitle)return;
+      (series.phases||[]).forEach(function(phase){
+        if(!phase||!phase.ticketType||!phase.applyEnd||!safeSourceUrl(phase.sourceUrl))return;
+        (series.events||[]).forEach(function(event){
+          if(!event||!event.date)return;
+          if(Array.isArray(phase.dates)&&phase.dates.indexOf(event.date)===-1)return;
+          rows.push({
+            group:series.group,eventTitle:series.eventTitle,eventDate:event.date,
+            ticketType:phase.ticketType,ticketProvider:phase.ticketProvider||"official",
+            applyStart:phase.applyStart||null,applyEnd:phase.applyEnd,
+            resultDate:phase.resultDate||null,paymentEnd:phase.paymentEnd||null,
+            sourceUrl:phase.sourceUrl,sourceLabel:phase.sourceLabel||"公式受付情報",
+            windowCompleteness:phase.applyStart?"full":"end-only",
+            publishable:true,flowEligible:true
+          });
+        });
+      });
+    });
+    return rows;
+  }
+
   function cardIdentity(card){
     var key=clean(card.getAttribute("data-performance-key"));
     var pieces=key.split("|");
@@ -114,7 +140,7 @@
     });
     var seen={};
     return rows.filter(function(row){
-      var signature=[row.ticketProvider,row.ticketType,row.applyStart,row.applyEnd,row.sourceUrl].map(clean).join("|");
+      var signature=[row.ticketProvider,row.ticketType,row.applyStart,row.applyEnd].map(clean).join("|");
       if(seen[signature])return false;
       seen[signature]=true;
       return true;
@@ -160,6 +186,9 @@
     }
     if(!rows.length){
       return '<div class="flow-note caution">現在の履歴データに確認済みの販売履歴はありません。販売がなかったことを意味するものではありません。</div>';
+    }
+    if(historyReadFailed){
+      return '<div class="flow-note caution">主要な販売履歴を読み込めないため、公式・プレイガイドの根拠URLを持つ保存済み受付から表示しています。履歴には抜けがある可能性があります。</div>';
     }
     var state=collectionState();
     if(state==="healthy"){
@@ -216,12 +245,19 @@
     });
   }
 
+  var permanentRows=[];
+  var curatedRows=[];
   var historyRequest=noStoreJson(historyUrl).then(function(history){
-    historyAvailable=true;
-    flowRowsByGroupDate=buildIndex(history);
+    if(!history||!Array.isArray(history.entries))throw new Error("Invalid history");
+    permanentRows=history.entries;
   }).catch(function(){
-    historyAvailable=false;
-    flowRowsByGroupDate={};
+    historyReadFailed=true;
+  });
+
+  var curatedRequest=noStoreJson("./data/ticket-history-backfill-oneoffs.json").then(function(payload){
+    curatedRows=curatedHistoryRows(payload);
+  }).catch(function(){
+    curatedRows=[];
   });
 
   var healthRequest=noStoreJson(healthUrl).then(function(health){
@@ -232,7 +268,9 @@
     collectionHealth=null;
   });
 
-  Promise.all([historyRequest,healthRequest]).then(function(){
+  Promise.all([historyRequest,curatedRequest,healthRequest]).then(function(){
+    historyAvailable=!historyReadFailed||curatedRows.length>0;
+    flowRowsByGroupDate=buildIndex({entries:permanentRows.concat(curatedRows)});
     observe();
     decorateAll();
   });
