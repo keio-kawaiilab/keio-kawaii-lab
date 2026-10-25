@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import re
+import unicodedata
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from types import SimpleNamespace
@@ -608,6 +609,76 @@ def fallback_row_from_review(candidate, title, text, review, existing):
     return row
 
 
+def confirmed_start_only_rows(candidate, title, text, existing):
+    """Publish a verifiable ticket opening even when NEWS gives no closing time.
+
+    Never invent a deadline. Restrict the fallback to an explicit same-sentence
+    reception start announcement and a future performance spelled out on that
+    page; the general full-window parser remains the first choice.
+    """
+    published = parser.article_date_from_text(text)
+    if not published:
+        return []
+    year = int(published[:4])
+    starts = []
+    for line in text.splitlines():
+        line = parser.normalize_space(line)
+        if not re.search(r"(?:先行(?:受付)?|一般(?:販売|発売)|チケット(?:先行)?受付)", line, re.I):
+            continue
+        if not re.search(r"(?:スタート|開始|受付中|受付開始)", line):
+            continue
+        match = parser.DATE_ANY_RE.search(line)
+        if not match:
+            continue
+        value = parser.date_match_to_iso(match, year)
+        if not value or "T" not in value:
+            continue
+        if value not in starts:
+            starts.append(value)
+    if len(starts) != 1:
+        return []
+    start = starts[0]
+    occurrences = parser.extract_event_occurrences(
+        [line for line in text.splitlines() if parser.normalize_space(line)], title, published,
+    )
+    if not occurrences:
+        return []
+    group = candidate.group
+    if group == "KAWAII LAB. FC":
+        group = infer_central_group(title, text, candidate.url, existing)
+        if not group:
+            return []
+    if group == "KAWAII LAB.合同":
+        label = "KAWAII LAB. FC先行"
+    elif re.search(r"(?:FC|FANCLUB|ファンクラブ)", title, re.I):
+        label = f"{group} FC先行"
+    else:
+        label = parser.extract_ticket_type(title, text)
+    today = datetime.now(parser.JST).date().isoformat()
+    source_rows = []
+    for event_date, venue, opened, start_time in occurrences:
+        if event_date < today:
+            continue
+        source_rows.append({
+            "id": parser.event_id(group, candidate.url, event_date, start, label),
+            "group": group, "title": title,
+            "eventTitle": _stable_performance_title(title, group),
+            "ticketType": label, "applyStart": start, "applyEnd": None,
+            "eventDate": event_date, "venue": venue,
+            "openTime": opened, "startTime": start_time,
+            "url": candidate.url, "urls": [candidate.url],
+            "sourceType": "auto", "primarySource": "official",
+            "sourceChannel": "kawaii-lab-fc" if candidate.group == "KAWAII LAB. FC" else "official-continuous",
+            "applicationStartVerified": True,
+            "applicationWindowSource": candidate.url,
+            "sourcePublishedAt": published,
+            "windowCompleteness": "start-only",
+            "participants": parser.extract_target_participants(text, event_date),
+            "eventScope": "kawaii-lab",
+        })
+    return source_rows
+
+
 def read_candidate(candidate, existing, headers):
     with requests.Session() as session:
         session.headers.update(headers)
@@ -621,7 +692,10 @@ def read_candidate(candidate, existing, headers):
     title = parser.normalize_space(heading.get_text(" ", strip=True)) if heading else candidate.title
     if not title or title.upper() in {"NEWS", "INFORMATION", "LIVE", "SCHEDULE"}:
         title = candidate.title
-    text = soup.get_text("\n", strip=True)
+    # Official Fanplus articles sometimes use compatibility CJK characters
+    # (e.g. 2026年11⽉6⽇); normalize before date/window extraction.
+    title = unicodedata.normalize("NFKC", title)
+    text = unicodedata.normalize("NFKC", soup.get_text("\n", strip=True))
     non_sale_title_hints = (
         *parser.IGNORE_TITLE_HINTS,
         "払い戻し", "連動企画", "デジタル整理券", "AUDITION", "ご注意とお願い",
@@ -654,6 +728,8 @@ def read_candidate(candidate, existing, headers):
             }, "pending"
     candidate = parser.Candidate(group, title, candidate.url)
     rows, review = parser.parse_candidate(CachedArticle(str(soup)), candidate)
+    if not rows and not review:
+        rows = confirmed_start_only_rows(candidate, title, text, existing)
     paired_resales = paired_resale_rows(candidate, text)
     if paired_resales:
         existing_keys = {(row.get("eventDate"), row.get("ticketType"), row.get("applyStart"), row.get("applyEnd")) for row in rows}
