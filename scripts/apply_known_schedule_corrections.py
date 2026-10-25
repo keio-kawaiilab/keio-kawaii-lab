@@ -1149,8 +1149,13 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
             "date": "2026-11-15", "venue": "東京都 お台場特設会場（フジテレビ湾岸スタジオ）",
             "openTime": times[start], "startTime": start,
         }]
-        if (event.get("ticketType") != "現在受付なし"
-                and ("FC" in str(event.get("ticketType") or "") or "先行" in str(event.get("ticketType") or ""))):
+        if str(event.get("ticketType") or "") in {
+            "現在受付なし", "FC先行", "SWEET STEADY FC先行",
+        }:
+            # Both public-recording sessions had the same published FC lottery.
+            # A sanitized/expired schedule-only source row must not erase
+            # evidence of its historical reception.
+            event["ticketType"] = "SWEET STEADY FC先行"
             event["applyStart"] = "2026-10-15T10:00"
             event["applyEnd"] = "2026-10-18T23:59"
             event["applicationWindowVerified"] = True
