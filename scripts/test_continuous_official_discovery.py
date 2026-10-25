@@ -443,6 +443,46 @@ class ContinuousDiscoveryTests(unittest.TestCase):
         self.assertIsNone(review)
         self.assertEqual(status, "irrelevant")
 
+    def test_unlabeled_official_fc_window_publishes_both_parts_and_common_venue(self):
+        candidate = discovery.parser.Candidate(
+            "SWEET STEADY", "2026年11月15日「SWEET STEADYのSWEETEST STORY」開催決定！FC先行受付！",
+            "https://sweetsteady.asobisystem.com/news/detail/92529",
+        )
+        html = """
+        <div class="section--detail"><h1>2026年11月15日「SWEET STEADYのSWEETEST STORY」開催決定！FC先行受付！</h1>
+        <p>2026.10.13</p>
+        <p>FC先行受付が10月15日(木)10:00からスタート！</p>
+        <p>〖SWEET STEADYのSWEETEST STORY 第1部〗</p>
+        <p>日程：2026年11月15日(日)</p>
+        <p>時間：開場 14:00 開演 15:00</p>
+        <p>〖SWEET STEADYのSWEETEST STORY 第2部〗</p>
+        <p>日程：2026年11月15日(日)</p>
+        <p>時間：開場 17:00 開演 18:00</p>
+        <p>会場：お台場特設会場（フジテレビ湾岸スタジオ）</p>
+        <p>＜SWEET STEADY OFFICIAL FANCLUB 有料会員先行受付＞</p>
+        <p>2026年10月15日(木)10:00〜2026年10月18日(日)23:59</p>
+        <a href="https://w.pia.jp/t/first/">第1部お申込みはこちら</a>
+        <a href="https://w.pia.jp/t/second/">第2部お申込みはこちら</a></div>"""
+        class Response:
+            text = html
+            def raise_for_status(self): pass
+        class Session:
+            headers = {}
+            def __enter__(self): return self
+            def __exit__(self,*args): return None
+            def get(self,*args,**kwargs): return Response()
+        with patch.object(discovery.requests, "Session", return_value=Session()):
+            rows, pending, status=discovery.read_candidate(candidate, {"events":[]}, {})
+        self.assertEqual("parsed",status,(pending,rows))
+        self.assertIsNone(pending)
+        self.assertEqual(2,len(rows))
+        self.assertEqual({"15:00","18:00"}, {row["startTime"] for row in rows})
+        self.assertEqual(1,len({row["venue"] for row in rows}))
+        self.assertEqual({"2026-10-15T10:00"}, {row["applyStart"] for row in rows})
+        self.assertEqual({"2026-10-18T23:59"}, {row["applyEnd"] for row in rows})
+        self.assertEqual({candidate.url}, {row["url"] for row in rows})
+        self.assertEqual(2,len({row["id"] for row in rows}))
+
     def test_new_official_show_announcement_without_any_ticket_words_is_imported(self):
         candidate = discovery.parser.Candidate(
             "SWEET STEADY", "2026.10.25 SWEET STEADY 新ライブ開催決定！",
