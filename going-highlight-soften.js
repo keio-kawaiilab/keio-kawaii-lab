@@ -23,7 +23,7 @@
   }
   if(!document.querySelector('script[data-schedule-card-dedupe-v2]')){
     var dedupe=document.createElement("script");
-    dedupe.src="./schedule-card-dedupe-v2.js?v=202609061930";
+    dedupe.src="./schedule-card-dedupe-v2.js?v=20261025fc2";
     dedupe.setAttribute("data-schedule-card-dedupe-v2","");
     document.body.appendChild(dedupe);
   }
