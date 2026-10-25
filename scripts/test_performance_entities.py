@@ -389,6 +389,20 @@ class PerformanceEntitiesTest(unittest.TestCase):
         self.assertEqual("16:00", by_day["2027-01-31"]["startTime"])
         self.assertTrue(any(e["group"]=="MORE STAR" and e["venue"]=="Zepp Haneda" for e in public))
 
+    def test_sgc_hall_ariake_japanese_and_english_are_same_venue(self):
+        base = {
+            "group": "SWEET STEADY", "eventDate": "2026-10-26",
+            "eventScope": "kawaii-lab", "startTime": "19:00",
+            "ticketType": "現在受付なし",
+        }
+        english = dict(base, id="english", venue="SGC HALL ARIAKE",
+                       title="庄司なぎさ BIRTHDAY LIVE 2026 ～ DOKI DOKI ～")
+        japanese = dict(base, id="japanese", venue="SGCホール有明",
+                        title="庄司なぎさ BIRTHDAY LIVE 2026")
+        public, _ = build_public_events([english, japanese])
+        self.assertEqual(1, len(public))
+        self.assertEqual({"english", "japanese"}, set(public[0]["sourceRowIds"]))
+
     def test_tbd_and_known_start_are_one_performance(self):
         base = {
             "group": "FRUITS ZIPPER", "eventDate": "2026-11-15",
