@@ -706,6 +706,7 @@ def verified_unlabeled_window_rows(candidate, title, text, existing):
             "deadlineSource": candidate.url,
             "sourcePublishedAt": published,
             "participants": parser.extract_target_participants(text, day),
+            "eventScope": "external" if "出演決定" in title else "kawaii-lab",
         })
     return rows
 
