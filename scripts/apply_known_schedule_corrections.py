@@ -1196,7 +1196,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
                 # the conservative classification instead of widening default UI.
                 "eventScope": "external",
                 "eventScopeSourceUrl": "https://www.fujitv.co.jp/fujitv/news/20261129.html",
-                "ticketType": "FC先行",
+                "ticketType": "SWEET STEADY FC先行",
                 "applyStart": "2026-10-15T10:00", "applyEnd": "2026-10-18T23:59",
                 "applicationWindowVerified": True, "applicationWindowSource": story_source,
                 "deadlineVerified": True, "deadlineSource": story_source,
