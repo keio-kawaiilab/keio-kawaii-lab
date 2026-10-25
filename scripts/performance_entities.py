@@ -256,7 +256,7 @@ def _reconcile_verified_fifth_anniversary(event: dict[str, Any]) -> None:
     do not guess about another joint event or another time slot.
     """
     title = _text(event.get("eventTitle") or event.get("displayTitle") or event.get("title"))
-    if not re.search(r"KAWAII\\s*LAB\\.?\\s*5th\\s*ANNIVERSARY\\s*TOUR", title, re.I):
+    if not re.search(r"KAWAII\s*LAB\.?\s*5th\s*ANNIVERSARY\s*TOUR", title, re.I):
         return
     if _text(event.get("group")) not in {
         "KAWAII LAB.合同", "FRUITS ZIPPER", "CANDY TUNE",
