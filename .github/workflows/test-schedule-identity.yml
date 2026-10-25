@@ -9,6 +9,8 @@ on:
       - "scripts/update_live_events_v2.py"
       - "scripts/test_update_live_events_v2.py"
       - "schedule-card-dedupe-v2.js"
+      - "ticket-flow-sync.js"
+      - "scripts/test_ticket_flow_sync_aliases.js"
       - "going-highlight-soften.js"
       - ".github/workflows/test-schedule-identity.yml"
   workflow_dispatch:
@@ -35,5 +37,6 @@ jobs:
           node --check schedule-card-dedupe-v2.js
           node --check schedule-card-fixes.js
           node --check ticket-flow-sync.js
+          node scripts/test_ticket_flow_sync_aliases.js
           node --check ticket-flow-dedupe.js
           node --check going-highlight-soften.js
