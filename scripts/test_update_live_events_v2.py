@@ -21,7 +21,7 @@ class OfficialHeadlineDiscoveryTests(unittest.TestCase):
         v2.FEED_FAILURES.clear()
         with patch.object(v2, "_fetch_news_page", side_effect=fake_fetch):
             found = v2.deep_candidate_links(requests.Session(), "FRUITS ZIPPER", base)
-        self.assertEqual(["https://fruitszipper.asobisystem.com/news/detail/500"], [row.url for row in found])
+        self.assertEqual(["https://fruitszipper.asobisystem.com/news/detail/500", "https://fruitszipper.asobisystem.com/news/detail/501"], [row.url for row in found])
 
     def test_image_only_official_notice_uses_image_alt(self):
         base = "https://morestar.asobisystem.com"
