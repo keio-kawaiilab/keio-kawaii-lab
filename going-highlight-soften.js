@@ -54,7 +54,7 @@
 (function(){
   "use strict";
   if(!document.getElementById("calendar")||!document.getElementById("cards"))return;
-  var version="20261025ticketflow2";
+  var version="202610252200";
 
   if(!document.querySelector('link[data-ticket-flow]')){
     var style=document.createElement("link");
