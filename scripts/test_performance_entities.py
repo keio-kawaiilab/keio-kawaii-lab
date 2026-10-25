@@ -403,6 +403,30 @@ class PerformanceEntitiesTest(unittest.TestCase):
         self.assertEqual(1, len(public))
         self.assertEqual({"english", "japanese"}, set(public[0]["sourceRowIds"]))
 
+    def test_group_news_fc_offers_join_known_nov6_free_live_without_duplicate_events(self):
+        base = {
+            "title": "KAWAII LAB. ファンクラブ限定フリーライブ",
+            "eventDate": "2026-11-06", "venue": "東京ガーデンシアター",
+            "openTime": "16:30", "startTime": "18:00",
+            "eventScope": "kawaii-lab",
+        }
+        central = dict(base, id="joint", group="KAWAII LAB.合同",
+                       url="https://kawaiilab.asobisystem.com/news/detail/93695",
+                       ticketType="現在受付なし")
+        candy = dict(base, id="candy", group="CANDY TUNE", ticketType="CANDY TUNE FC先行",
+                     applyStart="2026-10-24T12:00",applyEnd=None,
+                     url="https://candytune.asobisystem.com/news/detail/93706")
+        cutie = dict(base, id="cutie", group="CUTIE STREET", ticketType="CUTIE STREET FC先行",
+                     applyStart="2026-10-24T12:00",applyEnd=None,
+                     url="https://cutiestreet.asobisystem.com/news/detail/93709")
+        public,_=build_public_events([central,candy,cutie])
+        self.assertEqual(1,len(public))
+        row=public[0]
+        self.assertEqual("KAWAII LAB.合同",row["group"])
+        self.assertEqual({"joint","candy","cutie"},set(row["sourceRowIds"]))
+        self.assertEqual({"CANDY TUNE FC先行","CUTIE STREET FC先行"},
+                         {offer["ticketType"] for offer in row["offers"]})
+
     def test_tbd_and_known_start_are_one_performance(self):
         base = {
             "group": "FRUITS ZIPPER", "eventDate": "2026-11-15",
