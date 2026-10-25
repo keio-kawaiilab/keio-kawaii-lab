@@ -261,6 +261,25 @@ def infer_central_group(title, text, url, existing):
     explicit = [group for group in parser.GROUPS if group.lower() in combined.lower()]
     if len(explicit) == 1:
         return explicit[0]
+
+    # A joint announcement may list all five artists, making an ordinary
+    # artist-name inference ambiguous. Match its announced series against
+    # the ALREADY published joint SCHEDULE, not against one random subgroup.
+    def series_words(value):
+        raw = re.sub(r"^.*?KAWAII\\s*LAB\\.?\\s*", "", str(value or ""), flags=re.I)
+        raw = re.sub(r"^\\s*[『「〖【(\\[]?\\s*", "", raw)
+        return tuple(re.findall(r"[A-Za-z0-9]+", raw.casefold())[:3])
+
+    headline_words = series_words(title)
+    if "KAWAII" in title.upper() and "LAB" in title.upper() and len(headline_words) >= 2:
+        joint_shows = [
+            row for row in existing.get("events", [])
+            if isinstance(row, dict) and row.get("group") == "KAWAII LAB.合同"
+            and retention.should_show(row, datetime.now(parser.JST).date())
+            and series_words(row.get("eventTitle") or row.get("title"))[:len(headline_words)] == headline_words
+        ]
+        if joint_shows:
+            return "KAWAII LAB.合同"
     return retention.infer_group(title, existing) or retention.infer_group(text, existing)
 
 
