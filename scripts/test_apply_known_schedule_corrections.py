@@ -185,7 +185,23 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
         self.assertTrue(all(r["eventScope"] == "external" for r in kept))
         self.assertEqual({"15:00", "18:00"}, {r["startTime"] for r in kept})
         self.assertTrue(all(r["schedule"][0]["startTime"] == r["startTime"] for r in kept))
-        self.assertEqual("2026-10-18T23:59", kept[1]["applyEnd"])
+        self.assertEqual({"SWEET STEADY FC先行"}, {r["ticketType"] for r in kept})
+        self.assertEqual({"2026-10-15T10:00"}, {r["applyStart"] for r in kept})
+        self.assertEqual({"2026-10-18T23:59"}, {r["applyEnd"] for r in kept})
+        # Archive must retain TWO separate ended-sale rows, not just the
+        # evening show and not a duplicated single performance.
+        import archive_ticket_history as ticket_history
+        registry = {
+            "version": 1,
+            "sources": {"group-official": {"kind": "official", "publishPolicy": "direct"}},
+            "hostRules": {"sweetsteady.asobisystem.com": "group-official"},
+        }
+        history = ticket_history.archive_payload(
+            {"events": kept}, {"entries": []}, registry, "2026-10-26T00:00:00+09:00",
+        )
+        self.assertEqual({"15:00", "18:00"}, {r["startTime"] for r in history["entries"]})
+        self.assertTrue(all(r["publishable"] for r in history["entries"]))
+        self.assertEqual(2, len(history["entries"]))
         again, _ = apply_known_corrections(corrected)
         self.assertEqual(corrected, again)
 
