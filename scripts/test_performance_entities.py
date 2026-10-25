@@ -345,6 +345,81 @@ class PerformanceEntitiesTest(unittest.TestCase):
         )
         self.assertEqual({"generic", "specific"}, set(public[0]["sourceRowIds"]))
 
+    def test_tbd_and_known_start_are_one_performance(self):
+        base = {
+            "group": "FRUITS ZIPPER", "eventDate": "2026-11-15",
+            "venue": "横浜アリーナ", "eventScope": "kawaii-lab",
+            "ticketType": "現在受付なし",
+        }
+        unknown = dict(base, id="announce", title="FRUITS ZIPPER 横浜ライブ", startTime="未定",
+                       url="https://fruitszipper.asobisystem.com/live_information/detail/100")
+        known = dict(base, id="detail", title="FRUITS ZIPPER 横浜ライブ 詳細発表", startTime="18:00",
+                     url="https://fruitszipper.asobisystem.com/news/detail/101")
+        public, _ = build_public_events([unknown, known])
+        self.assertEqual(1, len(public))
+        self.assertEqual("18:00", public[0]["startTime"])
+        self.assertEqual({"announce", "detail"}, set(public[0]["sourceRowIds"]))
+
+    def test_missing_venue_can_join_unique_known_venue(self):
+        base = {
+            "group": "SWEET STEADY", "eventDate": "2026-11-17",
+            "eventScope": "kawaii-lab", "ticketType": "現在受付なし",
+        }
+        unknown = dict(base, id="short-news", title="SWEET STEADY ライブ", startTime="未発表",
+                       venue="",
+                       url="https://sweetsteady.asobisystem.com/news/detail/102")
+        known = dict(base, id="schedule", title="SWEET STEADY ライブ", startTime="19:00",
+                     venue="Zepp Haneda",
+                     url="https://sweetsteady.asobisystem.com/live_information/detail/103")
+        public, _ = build_public_events([unknown, known])
+        self.assertEqual(1, len(public))
+        self.assertEqual("Zepp Haneda", public[0]["venue"])
+        self.assertEqual("19:00", public[0]["startTime"])
+
+    def test_same_day_same_start_different_venues_are_not_merged(self):
+        base = {
+            "group": "MORE STAR", "eventDate": "2026-11-18", "startTime": "19:00",
+            "eventScope": "kawaii-lab", "ticketType": "現在受付なし",
+        }
+        one = dict(base, id="one", venue="Zepp Haneda", title="ライブA")
+        two = dict(base, id="two", venue="有明アリーナ", title="ライブB")
+        public, _ = build_public_events([one, two])
+        self.assertEqual(2, len(public))
+        self.assertEqual({"Zepp Haneda", "有明アリーナ"}, {row["venue"] for row in public})
+
+    def test_fc_generic_and_named_alias_same_signup_are_one_offer(self):
+        base = {
+            "group": "FRUITS ZIPPER", "eventDate": "2026-11-19",
+            "venue": "横浜アリーナ", "startTime": "18:00",
+            "eventScope": "kawaii-lab", "sourceType": "auto", "primarySource": "official",
+            "applyStart": "2026-10-20T12:00", "applyEnd": "2026-10-27T23:59",
+            "url": "https://fruitszipper.asobisystem.com/news/detail/201",
+        }
+        generic = dict(base, id="generic", ticketType="FC先行")
+        named = dict(base, id="named", ticketType="FRUITS ZIPPER FC先行")
+        public, _ = build_public_events([generic, named])
+        self.assertEqual(1, len(public))
+        self.assertEqual(["FRUITS ZIPPER FC先行"], [o["ticketType"] for o in public[0]["offers"]])
+        self.assertEqual({"generic", "named"}, set(public[0]["sourceRowIds"]))
+
+    def test_fc_named_fanclubs_and_different_signup_rounds_stay_distinct(self):
+        base = {
+            "group": "FRUITS ZIPPER", "eventDate": "2026-11-19",
+            "venue": "横浜アリーナ", "startTime": "18:00",
+            "eventScope": "kawaii-lab", "sourceType": "auto", "primarySource": "official",
+            "applyStart": "2026-10-20T12:00", "applyEnd": "2026-10-27T23:59",
+            "url": "https://fruitszipper.asobisystem.com/news/detail/201",
+        }
+        group_fc = dict(base, id="group", ticketType="FRUITS ZIPPER FC先行")
+        lab_fc = dict(base, id="lab", ticketType="KAWAII LAB. FC先行")
+        later = dict(base, id="later", ticketType="FC先行",
+                     applyStart="2026-10-28T12:00", applyEnd="2026-11-01T23:59")
+        different_link = dict(base, id="link", ticketType="FC先行",
+                              url="https://fruitszipper.asobisystem.com/news/detail/202")
+        public, _ = build_public_events([group_fc, lab_fc, later, different_link])
+        self.assertEqual(1, len(public))
+        self.assertEqual(4, len(public[0]["offers"]))
+
     def test_multiday_schedule_source_is_split_into_physical_performances(self):
         public, _ = build_public_events(self.fixture())
         tour = [
