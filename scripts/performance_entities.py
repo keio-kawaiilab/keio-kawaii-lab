@@ -61,7 +61,13 @@ def _day(value: Any) -> str:
 
 
 def _time(value: Any) -> str:
-    return re.sub(r"\s+", "", str(value or "")).strip()
+    value = re.sub(r"\s+", "", str(value or "")).strip()
+    if re.fullmatch(r"(?:(?:開場|開演|開始|時間))?(?:未定|未発表|調整中|確認中|不明)|[-－―]+|--:--|TBD", value, re.I):
+        return ""
+    match = re.fullmatch(r"(\d{1,2})[:：](\d{2})", value)
+    if match and int(match.group(1)) < 24 and int(match.group(2)) < 60:
+        return f"{int(match.group(1)):02d}:{match.group(2)}"
+    return value
 
 
 def _venue_key(value: Any) -> str:
@@ -257,6 +263,20 @@ def _time_match_keys(event: dict[str, Any], occurrence: dict[str, Any]) -> list[
 
 
 def _reconcile_occurrence_times(records: list[dict[str, Any]]) -> None:
+    # A missing venue is not evidence of a second show. Fill it only when
+    # the same artist/date has exactly one known venue.
+    venues: dict[tuple[str, str], dict[str, str]] = {}
+    for record in records:
+        event, occurrence = record["event"], record["occurrence"]
+        venue = _text(occurrence.get("venue") or event.get("venue"))
+        if venue:
+            venues.setdefault((_text(event.get("group")), _day(occurrence.get("date"))), {})[_venue_key(venue)] = venue
+    for record in records:
+        event, occurrence = record["event"], record["occurrence"]
+        if not _text(occurrence.get("venue") or event.get("venue")):
+            possible = venues.get((_text(event.get("group")), _day(occurrence.get("date"))), {})
+            if len(possible) == 1:
+                occurrence["venue"] = next(iter(possible.values()))
     starts: dict[str, set[str]] = {}
     opens: dict[str, set[str]] = {}
     for record in records:
@@ -294,7 +314,9 @@ def _performance_key(event: dict[str, Any], occurrence: dict[str, Any]) -> str:
     day = _day(occurrence.get("date"))
     start = _time(occurrence.get("startTime") or event.get("startTime"))
     if day and start:
-        return "|".join((group, day, "time", start))
+        # Same artist/date/start can still be two different venues. Conversely,
+        # different spellings of the same venue normalize to one key.
+        return "|".join((group, day, "time", start, _venue_key(occurrence.get("venue") or event.get("venue"))))
     return "|".join(
         (
             group,
@@ -357,40 +379,70 @@ def _offer_key(offer: dict[str, Any]) -> tuple[str, ...]:
 
 
 def _collapse_official_fc_aliases(offers: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Fold duplicate generic/specific labels for one official FC reception.
+    """Merge one FC application recorded under generic and branded labels.
 
-    The recent-body and central-FC collectors can both emit the same central
-    article and application window, with only ``ticketType`` differing between
-    ``FC先行`` and ``KAWAII LAB. FC先行``. They are one reception, not two.
-    Keep the more specific central-FC label while leaving different source
-    URLs, different windows, and all other ticket types untouched.
+    Require a shared explicit source/application URL and the same *complete*
+    application period. Two named fanclubs, separate URLs, or separate rounds
+    remain different offers even when their sale periods overlap.
     """
-    collapsed: list[dict[str, Any]] = []
-    central_fc_indexes: dict[tuple[str, ...], int] = {}
-    for offer in offers:
-        url = re.sub(r"[?#].*$", "", _text(offer.get("url"))).rstrip("/")
-        ticket_type = _text(offer.get("ticketType"))
-        if (
-            _text(offer.get("provider")).casefold() == "official"
-            and ticket_type in {"FC先行", "KAWAII LAB. FC先行"}
-        ):
-            marker = tuple(
-                _text(value)
-                for value in (
-                    url,
-                    offer.get("applyStart"),
-                    offer.get("applyEnd"),
-                    offer.get("resultDate"),
-                    offer.get("paymentEnd"),
-                )
-            )
-            previous_index = central_fc_indexes.get(marker)
-            if previous_index is not None:
-                if ticket_type == "KAWAII LAB. FC先行":
-                    collapsed[previous_index] = offer
+    def fc_type(value: Any) -> str:
+        label = _text(value)
+        if "アップグレード" in label or "リセール" in label:
+            return ""
+        return label if re.search(r"(?:\\bFC\\b|ファンクラブ).*?先行", label, re.I) else ""
+
+    def generic(value: str) -> bool:
+        return bool(re.fullmatch(r"(?:FC(?:会員)?先行|ファンクラブ(?:会員)?先行)", value, re.I))
+
+    def urls(offer: dict[str, Any]) -> set[str]:
+        output = set()
+        for raw in [offer.get("url"), *(offer.get("urls") or [])]:
+            url = _text(raw)
+            if not re.match(r"^https?://", url, re.I):
                 continue
-            central_fc_indexes[marker] = len(collapsed)
-        collapsed.append(offer)
+            parsed = urlparse(url)
+            # The source identity includes all meaningful application parameters.
+            query = "&".join(sorted(part for part in parsed.query.split("&") if part and
+                                    not re.match(r"(?i)(?:utm_[^=]*|fbclid|gclid|yclid)=", part)))
+            output.add(parsed.scheme.lower() + "://" + parsed.netloc.lower() +
+                       parsed.path.rstrip("/") + ("?" + query if query else ""))
+        return output
+
+    collapsed: list[dict[str, Any]] = []
+    for offer in offers:
+        current_type = fc_type(offer.get("ticketType"))
+        current_start = _text(offer.get("applyStart"))
+        current_end = _text(offer.get("applyEnd"))
+        current_urls = urls(offer)
+        matched = None
+        if current_type and current_start and current_end and current_urls:
+            for index, previous in enumerate(collapsed):
+                previous_type = fc_type(previous.get("ticketType"))
+                if not previous_type:
+                    continue
+                if (current_start, current_end) != (_text(previous.get("applyStart")), _text(previous.get("applyEnd"))):
+                    continue
+                if not current_urls.intersection(urls(previous)):
+                    continue
+                if (current_type == previous_type or generic(current_type) or generic(previous_type)):
+                    matched = index
+                    break
+        if matched is None:
+            collapsed.append(offer)
+            continue
+        previous = collapsed[matched]
+        # A qualified FC name carries more useful information than generic
+        # FC先行. Preserve *both* official links and richer metadata.
+        current_score = (not generic(current_type), sum(v not in (None, "", [], {}) for v in offer.values()))
+        previous_type = fc_type(previous.get("ticketType"))
+        previous_score = (not generic(previous_type), sum(v not in (None, "", [], {}) for v in previous.values()))
+        preferred, supplement = (offer, previous) if current_score > previous_score else (previous, offer)
+        merged = deepcopy(preferred)
+        merged["urls"] = _unique_strings([*(_event_urls(preferred)), *(_event_urls(supplement))])
+        for field, value in supplement.items():
+            if merged.get(field) in (None, "", [], {}) and value not in (None, "", [], {}):
+                merged[field] = deepcopy(value)
+        collapsed[matched] = merged
     return collapsed
 
 
