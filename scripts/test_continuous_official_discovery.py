@@ -443,6 +443,50 @@ class ContinuousDiscoveryTests(unittest.TestCase):
         self.assertIsNone(review)
         self.assertEqual(status, "irrelevant")
 
+    def test_actual_multi_day_joint_fc_article_parses_official_ticket_and_times(self):
+        title = "2026.10.12 「KAWAII LAB. 5th ANNIVERSARY TOUR」開催決定！FC先行開始！"
+        candidate = discovery.parser.Candidate(
+            "KAWAII LAB. FC", title,
+            "https://kawaiilab.asobisystem.com/news/detail/92410",
+        )
+        body = """
+        <div class="section--detail">
+        <h1>2026.10.12 「KAWAII LAB. 5th ANNIVERSARY TOUR」開催決定！FC先行開始！</h1>
+        <p>2026.10.12</p>
+        <p>日程：2027年1月30日(土)</p><p>時間：OPEN 15:00 / START 17:00</p>
+        <p>会場：宮城県 宮城セキスイハイムスーパーアリーナ</p>
+        <p>日程：2027年1月31日(日)</p><p>時間：OPEN 14:00 / START 16:00</p>
+        <p>会場：宮城県 宮城セキスイハイムスーパーアリーナ</p>
+        <p>出演：FRUITS ZIPPER / CANDY TUNE / SWEET STEADY / CUTIE STREET / MORE STAR</p>
+        <p>＜KAWAII LAB. OFFICIAL FANCLUB 有料会員先行受付＞</p>
+        <p>受付期間：2026年10月12日(月)18:30～2026年10月18日(日)23:59</p>
+        <a href="https://w.pia.jp/t/kawaii-lab-fifth/">お申込みはこちら</a>
+        </div>"""
+        class DummyResponse:
+            text = body
+            def raise_for_status(self): pass
+        class DummySession:
+            headers = {}
+            def __enter__(self): return self
+            def __exit__(self, *args): return None
+            def get(self, *args, **kwargs): return DummyResponse()
+        existing = {"events": [{
+            "group": "KAWAII LAB.合同", "eventDate": "2027-01-30",
+            "title": "KAWAII LAB. 5th ANNIVERSARY TOUR",
+            "venue": "宮城セキスイハイムスーパーアリーナ",
+            "ticketType": "現在受付なし",
+        }]}
+        with patch.object(discovery.requests, "Session", return_value=DummySession()):
+            rows, review, status = discovery.read_candidate(candidate, existing, {})
+        self.assertEqual("parsed", status, (rows, review, status))
+        self.assertIsNone(review)
+        self.assertEqual({"2027-01-30", "2027-01-31"}, {r["eventDate"] for r in rows})
+        self.assertEqual({"KAWAII LAB.合同"}, {r["group"] for r in rows})
+        self.assertEqual({("15:00", "17:00"), ("14:00", "16:00")},
+                         {(r["openTime"], r["startTime"]) for r in rows})
+        self.assertEqual({"2026-10-12T18:30"}, {r["applyStart"] for r in rows})
+        self.assertEqual({"2026-10-18T23:59"}, {r["applyEnd"] for r in rows})
+
     def test_news_publication_date_does_not_hide_future_joint_tour(self):
         title = "2026.10.12 「KAWAII LAB. 5th ANNIVERSARY TOUR」開催決定！FC先行開始！"
         official_body = (
