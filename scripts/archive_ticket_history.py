@@ -149,6 +149,10 @@ def verification_level(event: dict, source_key: str, registry: dict) -> str:
     if event.get("applicationWindowVerified") is True and event.get("deadlineVerified") is True:
         return "verified-fields"
     config = source_config(source_key, registry)
+    if (config.get("kind") == "official"
+            and window_completeness(event) == "start-only"
+            and event.get("applicationStartVerified") is True):
+        return "direct-official-start-only"
     if config.get("kind") == "official" and window_completeness(event) == "full":
         return "direct-official"
     if event.get("applicationWindowVerified") is True or event.get("deadlineVerified") is True:
@@ -163,6 +167,10 @@ def publishable(event: dict, source_key: str, registry: dict) -> bool:
     if window_completeness(event) == "missing":
         return False
     if event.get("applicationWindowVerified") is True or event.get("deadlineVerified") is True:
+        return True
+    if (config.get("kind") == "official"
+            and window_completeness(event) == "start-only"
+            and event.get("applicationStartVerified") is True):
         return True
     return config.get("kind") == "official" and window_completeness(event) == "full"
 
