@@ -212,6 +212,26 @@ class ArchiveTicketHistoryTests(unittest.TestCase):
         retained=mod.archive_payload({"events":[]},again,self.registry,"2026-09-15T11:00:00+09:00")
         self.assertEqual(retained["entries"][0]["id"],row["id"])
 
+    def test_official_verified_start_only_is_published_without_invented_deadline(self):
+        row = {
+            "group": "CANDY TUNE", "eventTitle": "KAWAII LAB. ファンクラブ限定フリーライブ",
+            "eventDate": "2026-11-06", "startTime": "18:00",
+            "ticketType": "CANDY TUNE FC先行",
+            "applyStart": "2026-10-24T12:00", "applyEnd": None,
+            "applicationStartVerified": True,
+            "url": "https://candytune.asobisystem.com/news/detail/93706",
+        }
+        result = mod.archive_payload({"events":[row]}, {"entries":[]}, self.registry, "2026-10-25T23:00:00+09:00")
+        self.assertEqual(1,len(result["entries"]))
+        got=result["entries"][0]
+        self.assertTrue(got["publishable"])
+        self.assertTrue(got["flowEligible"])
+        self.assertEqual("start-only",got["windowCompleteness"])
+        self.assertIsNone(got["applyEnd"])
+        unsafe=dict(row,applicationStartVerified=False)
+        unverified=mod.archive_payload({"events":[unsafe]}, {"entries":[]}, self.registry, "2026-10-25T23:00:00+09:00")
+        self.assertFalse(unverified["entries"][0]["publishable"])
+
     def test_direct_official_full_window_is_archived_and_publishable(self):
         live = {"events": [{
             "group": "CANDY TUNE",
