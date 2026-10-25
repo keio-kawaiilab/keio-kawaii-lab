@@ -609,6 +609,43 @@ def fallback_row_from_review(candidate, title, text, review, existing):
     return row
 
 
+def official_show_announcement_rows(candidate, title, text):
+    """Import a newly announced live show even before any tickets are announced."""
+    if not re.search(r"(?:開催決定|開催のお知らせ|公演決定|出演決定)", title):
+        return []
+    if not re.search(r"(?:ライブ|LIVE|公演|TOUR|ツアー|フェス|FES|生誕祭|コンサート|フリーライブ)", title, re.I):
+        return []
+    published = parser.article_date_from_text(text)
+    if not published:
+        return []
+    occurrences = parser.extract_event_occurrences(
+        [line for line in text.splitlines() if parser.normalize_space(line)], title, published,
+    )
+    today = datetime.now(parser.JST).date().isoformat()
+    title_stable = _stable_performance_title(title, candidate.group)
+    result = []
+    for day, venue, opened, start in occurrences:
+        if day < today:
+            continue
+        # The body must explicitly identify the venue or confirm the schedule
+        # in an official list; do not publish a fabricated venue.
+        if not venue:
+            continue
+        result.append({
+            "id": parser.event_id(candidate.group, candidate.url, day, "", "現在受付なし"),
+            "group": candidate.group, "title": title,
+            "eventTitle": title_stable,
+            "ticketType": "現在受付なし", "applicationStatus": "none",
+            "eventDate": day, "venue": venue,
+            "openTime": opened, "startTime": start,
+            "url": candidate.url, "sourceType": "auto",
+            "primarySource": "official", "sourceChannel": "official-information",
+            "sourcePublishedAt": published,
+            "participants": parser.extract_target_participants(text, day),
+        })
+    return result
+
+
 def confirmed_start_only_rows(candidate, title, text, existing):
     """Publish a verifiable ticket opening even when NEWS gives no closing time.
 
@@ -707,6 +744,15 @@ def read_candidate(candidate, existing, headers):
     if title_is_past_event(title, text, datetime.now(parser.JST).date()):
         return [], None, "past"
     if not any(hint in text or hint in title for hint in (*parser.TICKET_HINTS, "一般販売")):
+        announced = official_show_announcement_rows(candidate, title, text)
+        if announced:
+            return announced, None, "schedule-only"
+        if re.search(r"(?:開催決定|公演決定|出演決定)", title) and re.search(
+            r"(?:ライブ|LIVE|公演|ツアー|TOUR|フェス|FES|生誕祭|コンサート)", title, re.I
+        ):
+            return [], {"group": candidate.group, "title": title, "url": candidate.url,
+                        "reason": "公式INFORMATIONの新公演記事ですが日付・会場を特定できません。公式URLを保存して再試行します。",
+                        "sourcePublishedAt": parser.article_date_from_text(text)}, "pending"
         return [], None, "irrelevant"
     today = datetime.now(parser.JST).date()
     group = candidate.group
