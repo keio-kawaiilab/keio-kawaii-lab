@@ -397,9 +397,19 @@ def ticket_windows_are_all_expired(text, today):
 
 
 def title_is_past_event(title, text, today):
-    """Treat an explicitly dated, already-finished event headline as historical."""
+    """Only an actual past SHOW date can retire a ticket announcement.
+
+    Official news list headings often start with their *publication* date,
+    e.g. '2026.10.12 [Tour] 開催決定'. That is not the performance date.
+    """
     published = parser.article_date_from_text(text)
     default_year = int(published[:4]) if published else today.year
+    title = str(title or "")
+    prefix = re.match(r"^\\s*(20\\d{2})[./-](\\d{1,2})[./-](\\d{1,2})\\s+", title)
+    if prefix and published:
+        prefix_day = f"{int(prefix.group(1)):04d}-{int(prefix.group(2)):02d}-{int(prefix.group(3)):02d}"
+        if prefix_day == published[:10]:
+            title = title[prefix.end():]
     dates = []
     for match in parser.DATE_ANY_RE.finditer(title):
         value = parser.date_match_to_iso(match, default_year)
