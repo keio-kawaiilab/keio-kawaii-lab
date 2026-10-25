@@ -8,6 +8,10 @@ on:
       - "scripts/test_performance_entities.py"
       - "scripts/update_live_events_v2.py"
       - "scripts/continuous_official_discovery.py"
+      - "scripts/apply_known_schedule_corrections.py"
+      - "scripts/test_apply_known_schedule_corrections.py"
+      - "scripts/audit_discovery_publication.py"
+      - "scripts/test_audit_discovery_publication.py"
       - "scripts/test_continuous_official_discovery.py"
       - "scripts/test_update_live_events_v2.py"
       - "schedule-card-dedupe-v2.js"
@@ -34,7 +38,7 @@ jobs:
         run: pip install -r scripts/requirements.txt
       - name: Verify public performance deduplication and headline discovery
         working-directory: scripts
-        run: python -m unittest -v test_performance_entities test_update_live_events_v2 test_continuous_official_discovery
+        run: python -m unittest -v test_performance_entities test_update_live_events_v2 test_continuous_official_discovery test_apply_known_schedule_corrections test_audit_discovery_publication
       - name: Verify browser deduplication syntax
         run: |
           node --check schedule-card-dedupe-v2.js
