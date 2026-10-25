@@ -73,7 +73,11 @@ def _time(value: Any) -> str:
 def _venue_key(value: Any) -> str:
     text = _text(value).casefold()
     text = re.sub(r"^(?:北海道|東京都|京都府|大阪府|.{2,3}県)\s*", "", text)
-    return re.sub(r"[\s　!！・･|｜\-–—_\[\]()（）『』「」,，.。]", "", text)
+    key = re.sub(r"[\s　!！・･|｜\-–—_\[\]()（）『』「」,，.。]", "", text)
+    # The venue owner uses both names for one physical hall.
+    if key in {"sgchallariake", "sgcホール有明"}:
+        return "sgcホール有明"
+    return key
 
 
 def _title_key(event: dict[str, Any]) -> str:
