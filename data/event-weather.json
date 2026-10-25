@@ -1,32 +1,12 @@
 {
-  "date": "2026-10-25",
+  "date": "2026-10-26",
   "horizonDays": 7,
-  "generatedAt": "2026-10-25T22:20+09:00",
+  "generatedAt": "2026-10-26T03:22+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
-    {
-      "date": "2026-10-25",
-      "venue": "千葉県 セブンパークアリオ柏 屋外スマイルパーク",
-      "venueKey": "セブンパークアリオ柏屋外スマイルパーク",
-      "eventIds": [
-        "special-b973228ee19beb94"
-      ],
-      "areaCode": "120010",
-      "areaName": "北西部",
-      "precision": "area",
-      "label": "雨 夜遅く くもり 所により 夜のはじめ頃 まで 雷を伴い 激しく 降る",
-      "max": null,
-      "min": null,
-      "pop": "60",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-10-25T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
     {
       "date": "2026-10-26",
       "venue": "SGC HALL ARIAKE",
@@ -92,6 +72,13 @@
           "validAt": "2026-10-27T00:00+09:00",
           "temp": 17
         }
+      ],
+      "hourlyRain": [
+        {
+          "time": "18:00",
+          "rain": true,
+          "validAt": "2026-10-26T18:00+09:00"
+        }
       ]
     },
     {
@@ -99,7 +86,10 @@
       "venue": "SGCホール有明",
       "venueKey": "sgcホール有明",
       "eventIds": [
-        "8fac22e910e05bed"
+        "4d2a8d59c2c7bfa7",
+        "52ae6d7c6f6cb4411cb3b9",
+        "c39398b0767340f3",
+        "d91c9153bc15e9b71cb3b9"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
@@ -159,6 +149,13 @@
           "validAt": "2026-10-27T00:00+09:00",
           "temp": 17
         }
+      ],
+      "hourlyRain": [
+        {
+          "time": "18:00",
+          "rain": true,
+          "validAt": "2026-10-26T18:00+09:00"
+        }
       ]
     },
     {
@@ -169,11 +166,11 @@
         "54a369497f59ce96",
         "12f75454cf2d4fd0",
         "9e39a25b816ecc66",
+        "0d4df5dd15d299dc",
         "8696a0f8febe4c57",
         "8ba49d34c9f9d7c4",
         "b09e5a2f429cb013",
-        "c15645c6e0bc30f6",
-        "c4356b6a3eb08f58"
+        "c15645c6e0bc30f6"
       ],
       "areaCode": "230010",
       "areaName": "西部",
@@ -232,6 +229,13 @@
           "label": "雨",
           "validAt": "2026-10-27T00:00+09:00",
           "temp": 19
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "18:00",
+          "rain": true,
+          "validAt": "2026-10-26T18:00+09:00"
         }
       ]
     },
@@ -301,6 +305,13 @@
           "validAt": "2026-10-27T00:00+09:00",
           "temp": 23
         }
+      ],
+      "hourlyRain": [
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-10-26T18:00+09:00"
+        }
       ]
     },
     {
@@ -314,21 +325,24 @@
         "8696a0f8febe4c57",
         "b09e5a2f429cb013",
         "c15645c6e0bc30f6",
-        "c4356b6a3eb08f58",
+        "77e025584cee4577",
         "d355a09d36fa0ca0"
       ],
       "areaCode": "230010",
       "areaName": "西部",
-      "precision": "area",
-      "label": "くもり 一時 雨",
+      "precision": "mesh5km",
+      "label": "雨",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
       "issuedAt": "2026-10-25T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "meshTime": "00:00",
+      "meshTempBand": "15〜19℃",
+      "coordinates": {
+        "lat": 35.171875,
+        "lon": 136.910599
+      }
     },
     {
       "date": "2026-10-27",
@@ -340,16 +354,19 @@
       ],
       "areaCode": "430010",
       "areaName": "熊本地方",
-      "precision": "area",
-      "label": "くもり 後 晴れ",
+      "precision": "mesh5km",
+      "label": "くもり",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
       "issuedAt": "2026-10-25T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "meshTime": "00:00",
+      "meshTempBand": "20〜24℃",
+      "coordinates": {
+        "lat": 32.799633,
+        "lon": 130.702332
+      }
     },
     {
       "date": "2026-10-28",
@@ -636,14 +653,14 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 78,
-    "uniqueVenueDates": 19,
-    "weatherEntries": 19,
-    "meshEntries": 4,
+    "occurrencesInRange": 80,
+    "uniqueVenueDates": 18,
+    "weatherEntries": 18,
+    "meshEntries": 6,
     "failures": 0,
     "meshTimelineEntries": 4,
     "meshExactTempSlots": 28,
-    "hourlyRainEntries": 0
+    "hourlyRainEntries": 4
   },
   "failures": []
 }
