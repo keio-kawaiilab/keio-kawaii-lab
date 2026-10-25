@@ -25,8 +25,15 @@ class TicketFlowReleaseTests(unittest.TestCase):
     def test_degraded_collection_does_not_hide_verified_rows(self):
         self.assertIn('collectionState()', JS)
         self.assertIn('一部の情報源を現在確認できていないため、履歴に抜けがある可能性があります。', JS)
-        self.assertIn('Promise.all([historyRequest,healthRequest])', JS)
+        self.assertIn('Promise.all([historyRequest,curatedRequest,healthRequest])', JS)
         self.assertNotIn('if(!freshHealth(health))return null', JS)
+
+    def test_curated_history_survives_permanent_history_load_failure(self):
+        self.assertIn('ticket-history-backfill-oneoffs.json', JS)
+        self.assertIn('curatedHistoryRows(payload)', JS)
+        self.assertIn('historyReadFailed=true', JS)
+        self.assertIn('permanentRows.concat(curatedRows)', JS)
+        self.assertIn('historyAvailable=!historyReadFailed||curatedRows.length>0', JS)
 
     def test_flow_uses_permanent_verified_history(self):
         self.assertIn('ticket-history.json', JS)
