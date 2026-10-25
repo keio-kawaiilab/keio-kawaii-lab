@@ -1,7 +1,39 @@
 import unittest
 from datetime import date
+from unittest.mock import patch
+
+import requests
 
 import update_live_events_v2 as v2
+
+
+class OfficialHeadlineDiscoveryTests(unittest.TestCase):
+    def test_old_live_notice_without_ticket_keyword_is_not_skipped(self):
+        base = "https://fruitszipper.asobisystem.com"
+        def fake_fetch(url, headers):
+            if "page=3" in url:
+                return (
+                    '<a href="/news/detail/500">FRUITS ZIPPER 単独ライブ開催決定</a>'
+                    '<a href="/news/detail/501">新衣装の写真を公開</a>'
+                )
+            return "<html></html>"
+
+        v2.FEED_FAILURES.clear()
+        with patch.object(v2, "_fetch_news_page", side_effect=fake_fetch):
+            found = v2.deep_candidate_links(requests.Session(), "FRUITS ZIPPER", base)
+        self.assertEqual(["https://fruitszipper.asobisystem.com/news/detail/500"], [row.url for row in found])
+
+    def test_image_only_official_notice_uses_image_alt(self):
+        base = "https://morestar.asobisystem.com"
+        def fake_fetch(url, headers):
+            if "page=3" in url:
+                return '<a href="/news/detail/600"><img alt="MORE STAR LIVE 開催決定" src="/notice.png"></a>'
+            return "<html></html>"
+
+        v2.FEED_FAILURES.clear()
+        with patch.object(v2, "_fetch_news_page", side_effect=fake_fetch):
+            found = v2.deep_candidate_links(requests.Session(), "MORE STAR", base)
+        self.assertEqual(["https://morestar.asobisystem.com/news/detail/600"], [row.url for row in found])
 
 
 class RetentionPolicyTests(unittest.TestCase):
