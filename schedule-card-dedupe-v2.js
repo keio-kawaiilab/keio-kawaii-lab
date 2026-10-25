@@ -38,6 +38,15 @@
     var stored=clean(card.getAttribute("data-performance-key"));
     var match=stored.match(/\|time\|[^|]+\|([^|]+)/);
     var venue=match?clean(match[1]):"";
+    if(!venue){
+      var venueNode=card.querySelector(".meta a.venue-link");
+      venue=clean(venueNode&&venueNode.textContent).normalize("NFKC").toLowerCase()
+        .replace(/^(?:北海道|東京都|京都府|大阪府|.{2,3}県)\s*/,"")
+        .replace(/[\s　・\-–—_（）()]/g,"");
+      if(venue==="sgchallariake")venue="sgcホール有明";
+    }
+    // No venue in data-performance-key on existing static cards; use
+    // the actual displayed venue rather than merging two different venues.
     return[group,date,time,venue].join("|");
   }
 
