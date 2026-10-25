@@ -55,7 +55,7 @@ def _fetch_news_page(url: str, headers: dict[str, str]) -> str:
 
 
 def deep_candidate_links(session: requests.Session, group: str, base: str) -> list[parser_v1.Candidate]:
-    """Scan fifteen official news pages, at five-page concurrency, and account for every ticket article."""
+    """Inventory every official article link on scanned pages, including untitled notices."""
     found: dict[str, parser_v1.Candidate] = {}
     page_urls = {page: f"{base}/news/1/?page={page}" for page in range(1, NEWS_SCAN_PAGES + 1)}
     page_urls[0] = f"{base}/"
@@ -87,14 +87,10 @@ def deep_candidate_links(session: requests.Session, group: str, base: str) -> li
                 image = anchor.find("img", alt=True)
                 title = parser_v1.normalize_space(image.get("alt", "")) if image else ""
             if not title:
-                continue
-            if page > 2 and not (
-                any(key in title for key in parser_v1.TICKET_HINTS)
-                or EVENT_NOTICE_HINTS.search(title)
-            ):
-                continue
-            if any(key in title for key in parser_v1.IGNORE_TITLE_HINTS):
-                continue
+                title = "公式INFORMATION記事（見出し未取得）"
+            # An official article's *body*, not its index headline, determines
+            # whether it announces a show or a ticket sale. Never silently
+            # discard official URLs because the title lacks a keyword.
             full = urljoin(base, href)
             if urlparse(full).netloc == urlparse(base).netloc:
                 found[full] = parser_v1.Candidate(group=group, title=title, url=full)
