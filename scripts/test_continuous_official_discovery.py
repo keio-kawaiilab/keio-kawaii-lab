@@ -482,6 +482,10 @@ class ContinuousDiscoveryTests(unittest.TestCase):
         self.assertEqual({"2026-10-18T23:59"}, {row["applyEnd"] for row in rows})
         self.assertEqual({candidate.url}, {row["url"] for row in rows})
         self.assertEqual(2,len({row["id"] for row in rows}))
+        public, _ = build_public_events(rows)
+        self.assertEqual(2, len(public))
+        self.assertEqual({"15:00","18:00"}, {event["startTime"] for event in public})
+        self.assertTrue(all(event["offers"] for event in public))
 
     def test_new_official_show_announcement_without_any_ticket_words_is_imported(self):
         candidate = discovery.parser.Candidate(
