@@ -58,6 +58,11 @@ def audit(state, payload, history=None):
     missing, represented, archived = [], 0, 0
     for observation in state.get("observations", []):
         for expected in observation.get("expectedOffers", []):
+            # An official NEWS article announcing a show but no ticket sale
+            # must be checked by schedule coverage, not misreported as an
+            # absent reception in the ticket-publication audit.
+            if expected.get("ticketType") in (None, "", "現在受付なし"):
+                continue
             if str(expected.get("eventDate") or "") < datetime.now(JST).date().isoformat():
                 continue
             end = str(expected.get("applyEnd") or "")
