@@ -227,7 +227,10 @@ def _reconcile_verified_fc_free_live(event: dict[str, Any]) -> None:
     """
     canonical = "KAWAII LAB. ファンクラブ限定フリーライブ"
     source = "https://kawaiilab.asobisystem.com/news/detail/93695"
-    if _text(event.get("group")) not in {"KAWAII LAB.", "KAWAII LAB.合同"}:
+    if _text(event.get("group")) not in {
+        "KAWAII LAB.", "KAWAII LAB.合同",
+        "CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR",
+    }:
         return
     occurrences = _occurrences(event)
     if not any(
@@ -242,6 +245,8 @@ def _reconcile_verified_fc_free_live(event: dict[str, Any]) -> None:
         value.startswith("https://kawaiilab.asobisystem.com/") for value in urls
     ):
         return
+    # All four member-group INFORMATION pages refer to this same concert.
+    # Keep their different FC receptions as offers; only the SHOW is joint.
     event["group"] = "KAWAII LAB.合同"
     event["participants"] = ["CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR"]
     for field in ("title", "eventTitle", "displayTitle"):
