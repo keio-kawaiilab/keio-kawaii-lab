@@ -646,6 +646,70 @@ def official_show_announcement_rows(candidate, title, text):
     return result
 
 
+def verified_unlabeled_window_rows(candidate, title, text, existing):
+    """Preserve each physical show when official NEWS lists an unlabeled range.
+
+    A two-part live often prints the venue once after both sessions and the
+    ticket window under a separate FC heading. Attach that ONE verified range
+    to both distinct starts, retaining the original NEWS URL for provenance.
+    """
+    published = parser.article_date_from_text(text)
+    if not published:
+        return []
+    year = int(published[:4])
+    window = unlabeled_ticket_window(text, year) or standalone_ticket_window(text, year)
+    if not window:
+        return []
+    occurrences = parser.extract_event_occurrences(
+        [line for line in text.splitlines() if parser.normalize_space(line)], title, published,
+    )
+    if not occurrences:
+        return []
+    venues = {
+        parser.normalize_space(match.group(1))
+        for line in text.splitlines()
+        for match in [parser.VENUE_RE.search(line)]
+        if match
+    }
+    unique_venue = next(iter(venues)) if len(venues) == 1 else None
+    group = candidate.group
+    if group == "KAWAII LAB. FC":
+        group = infer_central_group(title, text, candidate.url, existing)
+        if not group:
+            return []
+    ticket_type = parser.extract_ticket_type(title, text)
+    if ticket_type == "FC先行" and group != "KAWAII LAB.合同":
+        ticket_type = f"{group} FC先行"
+    if candidate.group == "KAWAII LAB. FC" and "FC" in ticket_type:
+        ticket_type = "KAWAII LAB. FC先行"
+    today = datetime.now(parser.JST).date().isoformat()
+    rows = []
+    for day, venue, opened, performance_start in occurrences:
+        if day < today:
+            continue
+        venue = venue or unique_venue
+        if not venue:
+            return []
+        rows.append({
+            "id": parser.event_id(group, candidate.url, day, window[0], ticket_type)
+                  + hashlib.sha1(str(performance_start or opened or day).encode()).hexdigest()[:6],
+            "group": group, "title": title,
+            "eventTitle": _stable_performance_title(title, group),
+            "ticketType": ticket_type, "applyStart": window[0], "applyEnd": window[1],
+            "eventDate": day, "venue": venue,
+            "openTime": opened, "startTime": performance_start,
+            "url": candidate.url, "urls": [candidate.url],
+            "sourceType": "auto", "primarySource": "official",
+            "sourceChannel": "kawaii-lab-fc" if candidate.group == "KAWAII LAB. FC" else "official-continuous",
+            "applicationWindowVerified": True, "deadlineVerified": True,
+            "applicationWindowSource": candidate.url,
+            "deadlineSource": candidate.url,
+            "sourcePublishedAt": published,
+            "participants": parser.extract_target_participants(text, day),
+        })
+    return rows
+
+
 def confirmed_start_only_rows(candidate, title, text, existing):
     """Publish a verifiable ticket opening even when NEWS gives no closing time.
 
@@ -775,7 +839,8 @@ def read_candidate(candidate, existing, headers):
     candidate = parser.Candidate(group, title, candidate.url)
     rows, review = parser.parse_candidate(CachedArticle(str(soup)), candidate)
     if not rows and not review:
-        rows = confirmed_start_only_rows(candidate, title, text, existing)
+        rows = (verified_unlabeled_window_rows(candidate, title, text, existing)
+                or confirmed_start_only_rows(candidate, title, text, existing))
     paired_resales = paired_resale_rows(candidate, text)
     if paired_resales:
         existing_keys = {(row.get("eventDate"), row.get("ticketType"), row.get("applyStart"), row.get("applyEnd")) for row in rows}
