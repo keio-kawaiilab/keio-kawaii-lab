@@ -47,7 +47,9 @@
   }
 
   function semanticKey(title,provider,period,url){
-    return saleFamily(title,provider,url)+"|"+periodKey(period);
+    // A matching sale family/date is not enough: separate signup URLs can
+    // represent different membership tiers or separate playguide lots.
+    return saleFamily(title,provider,url)+"|"+periodKey(period)+"|"+sourceKey(url);
   }
 
   function stepInfo(step){
@@ -200,6 +202,7 @@
       if(previous&&(label===priorLabel||genericFc(label)||genericFc(priorLabel))){
         if(genericFc(priorLabel)&&!genericFc(label)){
           if(previous.classList.contains("current"))step.classList.add("current");
+          delete seen[stepInfo(previous).key];
           previous.remove();
           fcSeen[fcKey]=step;
         }else{
