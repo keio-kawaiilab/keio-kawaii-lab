@@ -161,20 +161,69 @@
     }
   }
 
+  function fcLabel(title){
+    var value=clean(title);
+    return /(?:FC|ファンクラブ).*?先行/i.test(value)&&!/アップグレード|リセール/.test(value)?value:"";
+  }
+
+  function genericFc(title){
+    return /^(?:FC(?:会員)?先行|ファンクラブ(?:会員)?先行)$/i.test(title);
+  }
+
+  function sourceKey(url){
+    if(!safeUrl(url))return"";
+    try{
+      var parsed=new URL(url,location.href);
+      parsed.hash="";
+      var unused=[];
+      parsed.searchParams.forEach(function(_v,k){
+        if(/^utm_/i.test(k)||/^(fbclid|gclid|yclid)$/i.test(k))unused.push(k);
+      });
+      unused.forEach(function(k){parsed.searchParams.delete(k);});
+      parsed.searchParams.sort();
+      return parsed.hostname.toLowerCase()+parsed.pathname.replace(/\/+$/,"")+
+        (parsed.searchParams.toString()?"?"+parsed.searchParams.toString():"");
+    }catch(_error){return clean(url);}
+  }
+
   function dedupeTimeline(timeline){
-    var seen={};
+    var seen={},fcSeen={};
     Array.prototype.slice.call(timeline.querySelectorAll(".step")).forEach(function(step){
       var info=stepInfo(step);
+      var label=fcLabel(info.title),src=sourceKey(info.url);
+      var fcKey=label&&src&&info.period?periodKey(info.period)+"|"+src:"";
+      var previous=fcKey?fcSeen[fcKey]:null;
+      var priorLabel=previous?fcLabel(stepInfo(previous).title):"";
+      // One actual application, two presentation names: FC先行 and
+      // GROUP FC先行. Different named FCs must remain separate even if
+      // their period and shared event landing URL happen to be identical.
+      if(previous&&(label===priorLabel||genericFc(label)||genericFc(priorLabel))){
+        if(genericFc(priorLabel)&&!genericFc(label)){
+          if(previous.classList.contains("current"))step.classList.add("current");
+          previous.remove();
+          fcSeen[fcKey]=step;
+        }else{
+          if(step.classList.contains("current"))previous.classList.add("current");
+          step.remove();
+          return;
+        }
+      }
       if(!info.key)return;
-      if(seen[info.key]){
+      if(seen[info.key]&&seen[info.key]!==step){
         var kept=seen[info.key];
         if(step.classList.contains("current"))kept.classList.add("current");
         step.remove();
       }else{
         seen[info.key]=step;
       }
+      if(fcKey&&!previous)fcSeen[fcKey]=step;
     });
-    return seen;
+    // Return an index of the DOM that actually survived alias replacement.
+    var surviving={};
+    Array.prototype.slice.call(timeline.querySelectorAll(".step")).forEach(function(step){
+      surviving[stepInfo(step).key]=step;
+    });
+    return surviving;
   }
 
   function sortTimeline(timeline){
