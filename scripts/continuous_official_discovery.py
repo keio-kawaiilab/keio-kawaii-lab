@@ -405,7 +405,7 @@ def title_is_past_event(title, text, today):
     published = parser.article_date_from_text(text)
     default_year = int(published[:4]) if published else today.year
     title = str(title or "")
-    prefix = re.match(r"^\\s*(20\\d{2})[./-](\\d{1,2})[./-](\\d{1,2})\\s+", title)
+    prefix = re.match(r"^\s*(20\d{2})[./-](\d{1,2})[./-](\d{1,2})\s+", title)
     if prefix and published:
         prefix_day = f"{int(prefix.group(1)):04d}-{int(prefix.group(2)):02d}-{int(prefix.group(3)):02d}"
         if prefix_day == published[:10]:
