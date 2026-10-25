@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - "ticket-flow.js"
+      - "ticket-flow-sync.js"
+      - "scripts/test_ticket_flow_sync_aliases.js"
       - "ticket-resale-ui.js"
       - "going-highlight-soften.js"
       - "train-status.js"
@@ -50,6 +52,7 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           node --check ticket-flow.js
+          node --check ticket-flow-sync.js
           node --check ticket-resale-ui.js
           node --check going-highlight-soften.js
 
@@ -57,7 +60,9 @@ jobs:
         run: python -m unittest -v scripts.test_ticket_flow_release
 
       - name: Verify history independent of application visibility
-        run: node scripts/test_ticket_flow_history_runtime.js
+        run: |
+          node scripts/test_ticket_flow_history_runtime.js
+          node scripts/test_ticket_flow_sync_aliases.js
 
       - name: Verify presale category and source-backed history retraction
         env:
