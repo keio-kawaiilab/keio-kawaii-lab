@@ -62,7 +62,7 @@ def _day(value: Any) -> str:
 
 def _time(value: Any) -> str:
     value = re.sub(r"\s+", "", str(value or "")).strip()
-    if re.fullmatch(r"(?:(?:開場|開演|開始|時間))?(?:未定|未発表|調整中|確認中|不明)|[-－―]+|--:--|TBD", value, re.I):
+    if re.fullmatch(r"(?:(?:開場|開演|開始|時間|時刻|開場時間|開演時間))?(?:未定|未発表|調整中|確認中|不明)|[-－―]+|--:--|TBD", value, re.I):
         return ""
     match = re.fullmatch(r"(\d{1,2})[:：](\d{2})", value)
     if match and int(match.group(1)) < 24 and int(match.group(2)) < 60:
@@ -389,7 +389,7 @@ def _collapse_official_fc_aliases(offers: list[dict[str, Any]]) -> list[dict[str
         label = _text(value)
         if "アップグレード" in label or "リセール" in label:
             return ""
-        return label if re.search(r"(?:\bFC\b|ファンクラブ).*?先行", label, re.I) else ""
+        return label if re.search(r"(?:FC|ファンクラブ).*?先行", label, re.I) else ""
 
     def generic(value: str) -> bool:
         return bool(re.fullmatch(r"(?:FC(?:会員)?先行|ファンクラブ(?:会員)?先行)", value, re.I))
