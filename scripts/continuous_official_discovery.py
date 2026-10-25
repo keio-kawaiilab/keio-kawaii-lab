@@ -266,8 +266,8 @@ def infer_central_group(title, text, url, existing):
     # artist-name inference ambiguous. Match its announced series against
     # the ALREADY published joint SCHEDULE, not against one random subgroup.
     def series_words(value):
-        raw = re.sub(r"^.*?KAWAII\\s*LAB\\.?\\s*", "", str(value or ""), flags=re.I)
-        raw = re.sub(r"^\\s*[『「〖【(\\[]?\\s*", "", raw)
+        raw = re.sub(r"^.*?KAWAII\s*LAB\.?\s*", "", str(value or ""), flags=re.I)
+        raw = re.sub(r"^\s*[『「〖【(\[]?\s*", "", raw)
         return tuple(re.findall(r"[A-Za-z0-9]+", raw.casefold())[:3])
 
     headline_words = series_words(title)
