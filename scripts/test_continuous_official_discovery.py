@@ -443,6 +443,53 @@ class ContinuousDiscoveryTests(unittest.TestCase):
         self.assertIsNone(review)
         self.assertEqual(status, "irrelevant")
 
+    def test_new_official_show_announcement_without_any_ticket_words_is_imported(self):
+        candidate = discovery.parser.Candidate(
+            "SWEET STEADY", "2026.10.25 SWEET STEADY 新ライブ開催決定！",
+            "https://sweetsteady.asobisystem.com/news/detail/newshow",
+        )
+        html = """
+        <div class="section--detail"><h1>SWEET STEADY 新ライブ開催決定！</h1>
+        <p>2026.10.25</p><p>日程：2026年12月21日(月)</p>
+        <p>会場：Zepp Haneda</p><p>時間：開場 17:00 開演 18:00</p></div>"""
+        class Response:
+            text = html
+            def raise_for_status(self): pass
+        class Session:
+            headers = {}
+            def __enter__(self): return self
+            def __exit__(self, *args): return None
+            def get(self, *args, **kwargs): return Response()
+        with patch.object(discovery.requests, "Session", return_value=Session()):
+            rows, review, status = discovery.read_candidate(candidate, {"events": []}, {})
+        self.assertEqual("schedule-only", status)
+        self.assertIsNone(review)
+        self.assertEqual(1, len(rows))
+        self.assertEqual("2026-12-21", rows[0]["eventDate"])
+        self.assertEqual("Zepp Haneda", rows[0]["venue"])
+        self.assertEqual("18:00", rows[0]["startTime"])
+        self.assertEqual("現在受付なし", rows[0]["ticketType"])
+
+    def test_new_show_without_confirmed_venue_is_kept_as_review_not_ignored(self):
+        candidate = discovery.parser.Candidate(
+            "MORE STAR", "2026.10.25 MORE STAR 単独ライブ開催決定！",
+            "https://morestar.asobisystem.com/news/detail/newshow",
+        )
+        html = "<div class='section--detail'><h1>MORE STAR 単独ライブ開催決定！</h1><p>2026.10.25</p><p>日程：2026年12月23日</p></div>"
+        class Response:
+            text=html
+            def raise_for_status(self): pass
+        class Session:
+            headers={}
+            def __enter__(self): return self
+            def __exit__(self, *args): return None
+            def get(self,*args,**kwargs): return Response()
+        with patch.object(discovery.requests, "Session", return_value=Session()):
+            rows, review, status = discovery.read_candidate(candidate, {"events":[]}, {})
+        self.assertEqual("pending",status)
+        self.assertEqual([],rows)
+        self.assertEqual(candidate.url,review["url"])
+
     def test_real_format_official_fc_opening_without_deadline_is_published(self):
         candidate = discovery.parser.Candidate(
             "CANDY TUNE",
