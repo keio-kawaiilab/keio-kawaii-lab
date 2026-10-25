@@ -247,6 +247,82 @@ def _reconcile_verified_fc_free_live(event: dict[str, Any]) -> None:
     ])
 
 
+def _reconcile_verified_fifth_anniversary(event: dict[str, Any]) -> None:
+    """Use official joint NEWS facts for the 2027 KAWAII LAB. fifth tour.
+
+    Group SCHEDULE pages mirror the same joint performance under their own
+    group headings. They must never become separate concerts. Limit this
+    reconciliation to the explicitly verified 10 dates and venue identities;
+    do not guess about another joint event or another time slot.
+    """
+    title = _text(event.get("eventTitle") or event.get("displayTitle") or event.get("title"))
+    if not re.search(r"KAWAII\\s*LAB\\.?\\s*5th\\s*ANNIVERSARY\\s*TOUR", title, re.I):
+        return
+    if _text(event.get("group")) not in {
+        "KAWAII LAB.合同", "FRUITS ZIPPER", "CANDY TUNE",
+        "SWEET STEADY", "CUTIE STREET", "MORE STAR",
+    }:
+        return
+    if not _is_regular_hosted(event):
+        return
+
+    facts = {
+        "2027-01-30": ("宮城セキスイハイムスーパーアリーナ", "15:00", "17:00"),
+        "2027-01-31": ("宮城セキスイハイムスーパーアリーナ", "14:00", "16:00"),
+        "2027-02-13": ("Kアリーナ横浜", "15:00", "17:00"),
+        "2027-02-14": ("Kアリーナ横浜", "14:00", "16:00"),
+        "2027-02-20": ("IGアリーナ", "15:00", "17:00"),
+        "2027-02-21": ("IGアリーナ", "14:00", "16:00"),
+        "2027-03-20": ("GLION ARENA KOBE", "15:00", "17:00"),
+        "2027-03-21": ("GLION ARENA KOBE", "14:00", "16:00"),
+        "2027-04-03": ("マリンメッセ福岡A館", "15:00", "17:00"),
+        "2027-04-04": ("マリンメッセ福岡A館", "14:00", "16:00"),
+    }
+    def same_venue(actual: str, confirmed: str) -> bool:
+        key, official = _venue_key(actual), _venue_key(confirmed)
+        return bool(key and official and (
+            key == official or
+            (min(len(key), len(official)) >= 7 and (key in official or official in key))
+        ))
+
+    occurrences = _occurrences(event)
+    if not occurrences:
+        return
+    for row in occurrences:
+        fact = facts.get(row["date"])
+        if not fact or not same_venue(row["venue"], fact[0]):
+            return
+
+    old_group = _text(event.get("group"))
+    source = "https://kawaiilab.asobisystem.com/news/detail/92410"
+    event["group"] = "KAWAII LAB.合同"
+    participants = [
+        "FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY",
+        "CUTIE STREET", "MORE STAR",
+    ]
+    if len(occurrences) == 1 and occurrences[0]["date"] == "2027-04-03":
+        participants.remove("SWEET STEADY")
+    event["participants"] = participants
+    for field in ("title", "eventTitle", "displayTitle"):
+        event[field] = "KAWAII LAB. 5th ANNIVERSARY TOUR"
+    normalized = []
+    for row in occurrences:
+        verified_venue, opened, start = facts[row["date"]]
+        normalized.append(dict(row, venue=verified_venue, openTime=opened, startTime=start))
+    event["schedule"] = normalized
+    if len(normalized) == 1:
+        event["venue"] = normalized[0]["venue"]
+        event["openTime"] = normalized[0]["openTime"]
+        event["startTime"] = normalized[0]["startTime"]
+    else:
+        event.pop("openTime", None)
+        event.pop("startTime", None)
+    event["performanceFactSources"] = _unique_strings([
+        *(event.get("performanceFactSources") or []), source,
+    ])
+    event["urls"] = _unique_strings([*_event_urls(event), source])
+
+
 def _time_match_keys(event: dict[str, Any], occurrence: dict[str, Any]) -> list[str]:
     group = _text(event.get("group"))
     day = _day(occurrence.get("date"))
@@ -568,6 +644,7 @@ def build_public_events(events: list[dict[str, Any]]) -> tuple[list[dict[str, An
     for event in raw:
         _reconcile_verified_christmas_session(event)
         _reconcile_verified_fc_free_live(event)
+        _reconcile_verified_fifth_anniversary(event)
     records: list[dict[str, Any]] = []
     passthrough: list[dict[str, Any]] = []
     for index, event in enumerate(raw):
