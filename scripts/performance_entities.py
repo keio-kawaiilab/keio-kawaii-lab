@@ -389,7 +389,7 @@ def _collapse_official_fc_aliases(offers: list[dict[str, Any]]) -> list[dict[str
         label = _text(value)
         if "アップグレード" in label or "リセール" in label:
             return ""
-        return label if re.search(r"(?:\\bFC\\b|ファンクラブ).*?先行", label, re.I) else ""
+        return label if re.search(r"(?:\bFC\b|ファンクラブ).*?先行", label, re.I) else ""
 
     def generic(value: str) -> bool:
         return bool(re.fullmatch(r"(?:FC(?:会員)?先行|ファンクラブ(?:会員)?先行)", value, re.I))
