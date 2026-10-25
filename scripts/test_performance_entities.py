@@ -345,6 +345,50 @@ class PerformanceEntitiesTest(unittest.TestCase):
         )
         self.assertEqual({"generic", "specific"}, set(public[0]["sourceRowIds"]))
 
+    def test_fifth_tour_group_mirrors_are_one_joint_show_with_official_time(self):
+        base = {
+            "eventDate": "2027-01-30", "eventScope": "kawaii-lab",
+            "ticketType": "現在受付なし",
+        }
+        joint = dict(base, id="joint", group="KAWAII LAB.合同",
+                     title="KAWAII LAB. 5th ANNIVERSARY TOUR@宮城セキスイハイムスーパーアリーナ",
+                     venue="宮城県 宮城セキスイハイムスーパーアリーナ",
+                     url="https://fruitszipper.asobisystem.com/live_information/detail/46295",
+                     sourceType="official-schedule", primarySource="official")
+        more = dict(base, id="more", group="MORE STAR",
+                    title="KAWAII LAB. 5th ANNIVERSARY TOUR 宮城公演 DAY1",
+                    venue="宮城セキスイハイムスーパーアリーナ",
+                    url="https://morestar.asobisystem.com/live_information/detail/46449",
+                    sourceType="official-schedule", primarySource="official")
+        public, _ = build_public_events([joint, more])
+        self.assertEqual(1, len(public))
+        event = public[0]
+        self.assertEqual("KAWAII LAB.合同", event["group"])
+        self.assertEqual("15:00", event["openTime"])
+        self.assertEqual("17:00", event["startTime"])
+        self.assertEqual({"joint", "more"}, set(event["sourceRowIds"]))
+        self.assertIn("MORE STAR", event["participants"])
+        self.assertIn("https://kawaiilab.asobisystem.com/news/detail/92410", event["urls"])
+
+    def test_fifth_tour_other_performance_and_second_date_stay_distinct(self):
+        base = {
+            "group": "MORE STAR",
+            "title": "KAWAII LAB. 5th ANNIVERSARY TOUR",
+            "eventScope": "kawaii-lab", "ticketType": "現在受付なし",
+            "venue": "宮城セキスイハイムスーパーアリーナ",
+        }
+        day1 = dict(base, id="day1", eventDate="2027-01-30")
+        day2 = dict(base, id="day2", eventDate="2027-01-31")
+        unrelated = dict(base, id="other", eventDate="2027-01-30", venue="Zepp Haneda",
+                         title="MORE STAR OTHER LIVE")
+        public, _ = build_public_events([day1, day2, unrelated])
+        self.assertEqual(3, len(public))
+        by_day = {e["eventDate"]: e for e in public if e["group"]=="KAWAII LAB.合同"}
+        self.assertEqual({"2027-01-30", "2027-01-31"}, set(by_day))
+        self.assertEqual("17:00", by_day["2027-01-30"]["startTime"])
+        self.assertEqual("16:00", by_day["2027-01-31"]["startTime"])
+        self.assertTrue(any(e["group"]=="MORE STAR" and e["venue"]=="Zepp Haneda" for e in public))
+
     def test_tbd_and_known_start_are_one_performance(self):
         base = {
             "group": "FRUITS ZIPPER", "eventDate": "2026-11-15",
