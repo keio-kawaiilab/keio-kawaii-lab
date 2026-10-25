@@ -443,6 +443,50 @@ class ContinuousDiscoveryTests(unittest.TestCase):
         self.assertIsNone(review)
         self.assertEqual(status, "irrelevant")
 
+    def test_real_format_official_fc_opening_without_deadline_is_published(self):
+        candidate = discovery.parser.Candidate(
+            "CANDY TUNE",
+            "2026年11⽉6⽇(⾦)「KAWAII LAB. ファンクラブ限定フリーライブ」開催決定！FC先行受付開始！",
+            "https://candytune.asobisystem.com/news/detail/93706",
+        )
+        article = """
+        <div class="section--detail">
+        <h1>2026年11⽉6⽇(⾦)「KAWAII LAB. ファンクラブ限定フリーライブ」開催決定！FC先行受付開始！</h1>
+        <p>2026.10.24</p>
+        <p>CANDY TUNE OFFICIAL FANCLUB有料会員様限定のチケット先行受付が10月24日(土)12:00よりスタート！</p>
+        <p>日程：2026年11⽉6⽇(⾦)</p>
+        <p>会場：東京ガーデンシアター</p>
+        <p>時間：開場 16:30 開演 18:00</p>
+        <p>出演者：CANDY TUNE / SWEET STEADY / CUTIE STREET / MORE STAR</p>
+        </div>"""
+        class Response:
+            text = article
+            def raise_for_status(self): pass
+        class Session:
+            headers = {}
+            def __enter__(self): return self
+            def __exit__(self, *_args): pass
+            def get(self, *_args, **_kwargs): return Response()
+        with patch.object(discovery.requests, "Session", return_value=Session()):
+            rows, pending, status = discovery.read_candidate(candidate, {"events": []}, {})
+        self.assertEqual("parsed", status, (pending, rows))
+        self.assertIsNone(pending)
+        self.assertEqual(1, len(rows))
+        self.assertEqual("2026-11-06", rows[0]["eventDate"])
+        self.assertEqual("東京ガーデンシアター", rows[0]["venue"])
+        self.assertEqual("18:00", rows[0]["startTime"])
+        self.assertEqual("2026-10-24T12:00", rows[0]["applyStart"])
+        self.assertIsNone(rows[0]["applyEnd"])
+        self.assertEqual("CANDY TUNE FC先行", rows[0]["ticketType"])
+        self.assertEqual(candidate.url, rows[0]["url"])
+
+    def test_start_only_extractor_rejects_unsourced_opening_and_multiple_windows(self):
+        candidate = discovery.parser.Candidate("MORE STAR", "FC先行受付", "https://morestar.asobisystem.com/news/detail/example")
+        common = "2026.10.24\\n日程：2026年11月6日\\n会場：東京ガーデンシアター\\n開演 18:00\\n"
+        self.assertEqual([], discovery.confirmed_start_only_rows(candidate, candidate.title, common+"受付期間未定", {"events":[]}))
+        text = common+"チケット先行受付が10月24日(土)12:00からスタート！\\nチケット先行受付が10月25日(日)12:00からスタート！"
+        self.assertEqual([], discovery.confirmed_start_only_rows(candidate, candidate.title, text, {"events":[]}))
+
     def test_actual_multi_day_joint_fc_article_parses_official_ticket_and_times(self):
         title = "2026.10.12 「KAWAII LAB. 5th ANNIVERSARY TOUR」開催決定！FC先行開始！"
         candidate = discovery.parser.Candidate(
