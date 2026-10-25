@@ -325,7 +325,7 @@
 
   if(!document.querySelector('script[data-going-highlight-soften]')){
     var soften=document.createElement("script");
-    soften.src="./going-highlight-soften.js?v=202610201950";
+    soften.src="./going-highlight-soften.js?v=202610252200";
     soften.setAttribute("data-going-highlight-soften","");
     document.body.appendChild(soften);
   }
