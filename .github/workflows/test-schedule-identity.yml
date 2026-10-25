@@ -1,0 +1,39 @@
+name: Verify schedule identity and official discovery
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/performance_entities.py"
+      - "scripts/test_performance_entities.py"
+      - "scripts/update_live_events_v2.py"
+      - "scripts/test_update_live_events_v2.py"
+      - "schedule-card-dedupe-v2.js"
+      - "going-highlight-soften.js"
+      - ".github/workflows/test-schedule-identity.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install official collector dependencies
+        run: pip install -r scripts/requirements.txt
+      - name: Verify public performance deduplication and headline discovery
+        working-directory: scripts
+        run: python -m unittest -v test_performance_entities test_update_live_events_v2
+      - name: Verify browser deduplication syntax
+        run: |
+          node --check schedule-card-dedupe-v2.js
+          node --check schedule-card-fixes.js
+          node --check ticket-flow-sync.js
+          node --check ticket-flow-dedupe.js
+          node --check going-highlight-soften.js
