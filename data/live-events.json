@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-25T22:26:27+09:00",
+  "checkedAt": "2026-10-25T22:27:25+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-24T06:39:08+09:00",
     "scannedPages": {
@@ -11400,9 +11400,9 @@
   "publicEventModelReport": {
     "rawEventCount": 245,
     "passthroughEventCount": 67,
-    "performanceEntityCount": 103,
+    "performanceEntityCount": 93,
     "sourceOccurrenceCount": 345,
-    "mergedSourceOccurrences": 242,
+    "mergedSourceOccurrences": 252,
     "offerCount": 105,
     "outOfScopeSoloEventCount": 3
   },
@@ -14527,6 +14527,11 @@
     },
     {
       "checkedAt": "2026-10-25T22:26:27+09:00",
+      "scope": "CANDY TUNE tour render verification",
+      "message": "Sendai performance lost its current general sale: []"
+    },
+    {
+      "checkedAt": "2026-10-25T22:27:25+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "Sendai performance lost its current general sale: []"
     }
@@ -21994,7 +21999,7 @@
       }
     ]
   },
-  "updatedAt": "2026-10-25T22:26:27+09:00",
+  "updatedAt": "2026-10-25T22:27:25+09:00",
   "publicEvents": [
     {
       "id": "fa421e6fd8955232",
@@ -32944,16 +32949,12 @@
       "applicationStatus": "offers"
     },
     {
-      "id": "performance-KAWAII-LAB-2027-01-30-fallback-kawaiilab-5thanniversarytour",
+      "id": "performance-KAWAII-LAB-2027-01-30-time-17-00",
       "group": "KAWAII LAB.合同",
-      "participants": [
-        "FRUITS ZIPPER",
-        "CUTIE STREET"
-      ],
-      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR@宮城セキスイハイムスーパーアリーナ",
-      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR@宮城セキスイハイムスーパーアリーナ",
+      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR",
+      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR",
       "eventDate": "2027-01-30",
-      "venue": "宮城県 宮城セキスイハイムスーパーアリーナ",
+      "venue": "宮城セキスイハイムスーパーアリーナ",
       "url": "https://fruitszipper.asobisystem.com/live_information/detail/46295",
       "urls": [
         "https://fruitszipper.asobisystem.com/live_information/detail/46295",
@@ -32961,52 +32962,61 @@
         "https://fruitszipper.asobisystem.com/live_information/detail/46296",
         "https://cutiestreet.asobisystem.com/live_information/detail/46315",
         "https://kawaiilab.asobisystem.com/live_information/detail/46237",
-        "https://kawaiilab.asobisystem.com/live_information/detail/46238"
+        "https://kawaiilab.asobisystem.com/live_information/detail/46238",
+        "https://kawaiilab.asobisystem.com/news/detail/92410",
+        "https://morestar.asobisystem.com/live_information/detail/46449"
       ],
-      "sourceType": "derived",
+      "sourceType": "official-schedule",
       "primarySource": "official",
       "eventScope": "kawaii-lab",
+      "sourceCandidates": [
+        "official"
+      ],
+      "participants": [
+        "FRUITS ZIPPER",
+        "CANDY TUNE",
+        "SWEET STEADY",
+        "CUTIE STREET",
+        "MORE STAR"
+      ],
+      "displayTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR",
+      "schedule": [
+        {
+          "date": "2027-01-30",
+          "venue": "宮城セキスイハイムスーパーアリーナ",
+          "openTime": "15:00",
+          "startTime": "17:00"
+        }
+      ],
+      "openTime": "15:00",
+      "startTime": "17:00",
+      "performanceFactSources": [
+        "https://kawaiilab.asobisystem.com/news/detail/92410"
+      ],
+      "entityType": "performance",
+      "performanceEntityVersion": 1,
+      "performanceKey": "KAWAII LAB.合同|2027-01-30|time|17:00|宮城セキスイハイムスーパーアリーナ",
+      "sourceRowIds": [
+        "4a7396365dd607d0",
+        "1642e2aee92ee773"
+      ],
+      "offers": [],
       "eventEndDate": "2027-01-30",
       "eventDates": [
         "2027-01-30"
       ],
-      "schedule": [
-        {
-          "date": "2027-01-30",
-          "venue": "宮城県 宮城セキスイハイムスーパーアリーナ"
-        }
-      ],
       "eventCount": 1,
-      "venues": [
-        "宮城県 宮城セキスイハイムスーパーアリーナ"
-      ],
-      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/46315",
-      "sourceCandidates": [
-        "official"
-      ],
-      "discoverySource": "kawaii-lab-official-schedule",
-      "entityType": "performance",
-      "performanceEntityVersion": 1,
-      "performanceKey": "KAWAII LAB.合同|2027-01-30|fallback|宮城セキスイハイムスーパーアリーナ|kawaiilab.5thanniversarytour@宮城セキスイハイムスーパーアリーナ",
-      "sourceRowIds": [
-        "4a7396365dd607d0"
-      ],
-      "offers": [],
       "ticketType": "現在受付なし",
       "applicationDisplayMode": "schedule-only",
       "applicationStatus": "none"
     },
     {
-      "id": "performance-KAWAII-LAB-2027-01-31-fallback-kawaiilab-5thanniversarytour",
+      "id": "performance-KAWAII-LAB-2027-01-31-time-16-00",
       "group": "KAWAII LAB.合同",
-      "participants": [
-        "FRUITS ZIPPER",
-        "CUTIE STREET"
-      ],
-      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR@宮城セキスイハイムスーパーアリーナ",
-      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR@宮城セキスイハイムスーパーアリーナ",
+      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR",
+      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR",
       "eventDate": "2027-01-31",
-      "venue": "宮城県 宮城セキスイハイムスーパーアリーナ",
+      "venue": "宮城セキスイハイムスーパーアリーナ",
       "url": "https://fruitszipper.asobisystem.com/live_information/detail/46295",
       "urls": [
         "https://fruitszipper.asobisystem.com/live_information/detail/46295",
@@ -33014,52 +33024,61 @@
         "https://fruitszipper.asobisystem.com/live_information/detail/46296",
         "https://cutiestreet.asobisystem.com/live_information/detail/46315",
         "https://kawaiilab.asobisystem.com/live_information/detail/46237",
-        "https://kawaiilab.asobisystem.com/live_information/detail/46238"
+        "https://kawaiilab.asobisystem.com/live_information/detail/46238",
+        "https://kawaiilab.asobisystem.com/news/detail/92410",
+        "https://morestar.asobisystem.com/live_information/detail/46451"
       ],
-      "sourceType": "derived",
+      "sourceType": "official-schedule",
       "primarySource": "official",
       "eventScope": "kawaii-lab",
+      "sourceCandidates": [
+        "official"
+      ],
+      "participants": [
+        "FRUITS ZIPPER",
+        "CANDY TUNE",
+        "SWEET STEADY",
+        "CUTIE STREET",
+        "MORE STAR"
+      ],
+      "displayTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR",
+      "schedule": [
+        {
+          "date": "2027-01-31",
+          "venue": "宮城セキスイハイムスーパーアリーナ",
+          "openTime": "14:00",
+          "startTime": "16:00"
+        }
+      ],
+      "openTime": "14:00",
+      "startTime": "16:00",
+      "performanceFactSources": [
+        "https://kawaiilab.asobisystem.com/news/detail/92410"
+      ],
+      "entityType": "performance",
+      "performanceEntityVersion": 1,
+      "performanceKey": "KAWAII LAB.合同|2027-01-31|time|16:00|宮城セキスイハイムスーパーアリーナ",
+      "sourceRowIds": [
+        "4a7396365dd607d0",
+        "6da463309424952d"
+      ],
+      "offers": [],
       "eventEndDate": "2027-01-31",
       "eventDates": [
         "2027-01-31"
       ],
-      "schedule": [
-        {
-          "date": "2027-01-31",
-          "venue": "宮城県 宮城セキスイハイムスーパーアリーナ"
-        }
-      ],
       "eventCount": 1,
-      "venues": [
-        "宮城県 宮城セキスイハイムスーパーアリーナ"
-      ],
-      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/46315",
-      "sourceCandidates": [
-        "official"
-      ],
-      "discoverySource": "kawaii-lab-official-schedule",
-      "entityType": "performance",
-      "performanceEntityVersion": 1,
-      "performanceKey": "KAWAII LAB.合同|2027-01-31|fallback|宮城セキスイハイムスーパーアリーナ|kawaiilab.5thanniversarytour@宮城セキスイハイムスーパーアリーナ",
-      "sourceRowIds": [
-        "4a7396365dd607d0"
-      ],
-      "offers": [],
       "ticketType": "現在受付なし",
       "applicationDisplayMode": "schedule-only",
       "applicationStatus": "none"
     },
     {
-      "id": "performance-KAWAII-LAB-2027-02-13-fallback-k-kawaiilab-5thanniversarytour-k",
+      "id": "performance-KAWAII-LAB-2027-02-13-time-17-00-k",
       "group": "KAWAII LAB.合同",
-      "participants": [
-        "FRUITS ZIPPER",
-        "CUTIE STREET"
-      ],
-      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR@Kアリーナ横浜",
-      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR@Kアリーナ横浜",
+      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR",
+      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR",
       "eventDate": "2027-02-13",
-      "venue": "神奈川県 Kアリーナ横浜",
+      "venue": "Kアリーナ横浜",
       "url": "https://fruitszipper.asobisystem.com/live_information/detail/46297",
       "urls": [
         "https://fruitszipper.asobisystem.com/live_information/detail/46297",
@@ -33067,52 +33086,61 @@
         "https://fruitszipper.asobisystem.com/live_information/detail/46298",
         "https://cutiestreet.asobisystem.com/live_information/detail/46317",
         "https://kawaiilab.asobisystem.com/live_information/detail/46240",
-        "https://kawaiilab.asobisystem.com/live_information/detail/46239"
+        "https://kawaiilab.asobisystem.com/live_information/detail/46239",
+        "https://kawaiilab.asobisystem.com/news/detail/92410",
+        "https://morestar.asobisystem.com/live_information/detail/46450"
       ],
-      "sourceType": "derived",
+      "sourceType": "official-schedule",
       "primarySource": "official",
       "eventScope": "kawaii-lab",
+      "sourceCandidates": [
+        "official"
+      ],
+      "participants": [
+        "FRUITS ZIPPER",
+        "CANDY TUNE",
+        "SWEET STEADY",
+        "CUTIE STREET",
+        "MORE STAR"
+      ],
+      "displayTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR",
+      "schedule": [
+        {
+          "date": "2027-02-13",
+          "venue": "Kアリーナ横浜",
+          "openTime": "15:00",
+          "startTime": "17:00"
+        }
+      ],
+      "openTime": "15:00",
+      "startTime": "17:00",
+      "performanceFactSources": [
+        "https://kawaiilab.asobisystem.com/news/detail/92410"
+      ],
+      "entityType": "performance",
+      "performanceEntityVersion": 1,
+      "performanceKey": "KAWAII LAB.合同|2027-02-13|time|17:00|kアリーナ横浜",
+      "sourceRowIds": [
+        "1e8353b8a702c0a4",
+        "ae8780fc46d9e926"
+      ],
+      "offers": [],
       "eventEndDate": "2027-02-13",
       "eventDates": [
         "2027-02-13"
       ],
-      "schedule": [
-        {
-          "date": "2027-02-13",
-          "venue": "神奈川県 Kアリーナ横浜"
-        }
-      ],
       "eventCount": 1,
-      "venues": [
-        "神奈川県 Kアリーナ横浜"
-      ],
-      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/46317",
-      "sourceCandidates": [
-        "official"
-      ],
-      "discoverySource": "kawaii-lab-official-schedule",
-      "entityType": "performance",
-      "performanceEntityVersion": 1,
-      "performanceKey": "KAWAII LAB.合同|2027-02-13|fallback|kアリーナ横浜|kawaiilab.5thanniversarytour@kアリーナ横浜",
-      "sourceRowIds": [
-        "1e8353b8a702c0a4"
-      ],
-      "offers": [],
       "ticketType": "現在受付なし",
       "applicationDisplayMode": "schedule-only",
       "applicationStatus": "none"
     },
     {
-      "id": "performance-KAWAII-LAB-2027-02-14-fallback-k-kawaiilab-5thanniversarytour-k",
+      "id": "performance-KAWAII-LAB-2027-02-14-time-16-00-k",
       "group": "KAWAII LAB.合同",
-      "participants": [
-        "FRUITS ZIPPER",
-        "CUTIE STREET"
-      ],
-      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR@Kアリーナ横浜",
-      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR@Kアリーナ横浜",
+      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR",
+      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR",
       "eventDate": "2027-02-14",
-      "venue": "神奈川県 Kアリーナ横浜",
+      "venue": "Kアリーナ横浜",
       "url": "https://fruitszipper.asobisystem.com/live_information/detail/46297",
       "urls": [
         "https://fruitszipper.asobisystem.com/live_information/detail/46297",
@@ -33120,52 +33148,61 @@
         "https://fruitszipper.asobisystem.com/live_information/detail/46298",
         "https://cutiestreet.asobisystem.com/live_information/detail/46317",
         "https://kawaiilab.asobisystem.com/live_information/detail/46240",
-        "https://kawaiilab.asobisystem.com/live_information/detail/46239"
+        "https://kawaiilab.asobisystem.com/live_information/detail/46239",
+        "https://kawaiilab.asobisystem.com/news/detail/92410",
+        "https://morestar.asobisystem.com/live_information/detail/46459"
       ],
-      "sourceType": "derived",
+      "sourceType": "official-schedule",
       "primarySource": "official",
       "eventScope": "kawaii-lab",
+      "sourceCandidates": [
+        "official"
+      ],
+      "participants": [
+        "FRUITS ZIPPER",
+        "CANDY TUNE",
+        "SWEET STEADY",
+        "CUTIE STREET",
+        "MORE STAR"
+      ],
+      "displayTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR",
+      "schedule": [
+        {
+          "date": "2027-02-14",
+          "venue": "Kアリーナ横浜",
+          "openTime": "14:00",
+          "startTime": "16:00"
+        }
+      ],
+      "openTime": "14:00",
+      "startTime": "16:00",
+      "performanceFactSources": [
+        "https://kawaiilab.asobisystem.com/news/detail/92410"
+      ],
+      "entityType": "performance",
+      "performanceEntityVersion": 1,
+      "performanceKey": "KAWAII LAB.合同|2027-02-14|time|16:00|kアリーナ横浜",
+      "sourceRowIds": [
+        "1e8353b8a702c0a4",
+        "0621973ff95fedcc"
+      ],
+      "offers": [],
       "eventEndDate": "2027-02-14",
       "eventDates": [
         "2027-02-14"
       ],
-      "schedule": [
-        {
-          "date": "2027-02-14",
-          "venue": "神奈川県 Kアリーナ横浜"
-        }
-      ],
       "eventCount": 1,
-      "venues": [
-        "神奈川県 Kアリーナ横浜"
-      ],
-      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/46317",
-      "sourceCandidates": [
-        "official"
-      ],
-      "discoverySource": "kawaii-lab-official-schedule",
-      "entityType": "performance",
-      "performanceEntityVersion": 1,
-      "performanceKey": "KAWAII LAB.合同|2027-02-14|fallback|kアリーナ横浜|kawaiilab.5thanniversarytour@kアリーナ横浜",
-      "sourceRowIds": [
-        "1e8353b8a702c0a4"
-      ],
-      "offers": [],
       "ticketType": "現在受付なし",
       "applicationDisplayMode": "schedule-only",
       "applicationStatus": "none"
     },
     {
-      "id": "performance-KAWAII-LAB-2027-02-20-fallback-ig-kawaiilab-5thanniversarytour-ig",
+      "id": "performance-KAWAII-LAB-2027-02-20-time-17-00-ig",
       "group": "KAWAII LAB.合同",
-      "participants": [
-        "FRUITS ZIPPER",
-        "CUTIE STREET"
-      ],
-      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR@IGアリーナ",
-      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR@IGアリーナ",
+      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR",
+      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR",
       "eventDate": "2027-02-20",
-      "venue": "愛知県 IGアリーナ",
+      "venue": "IGアリーナ",
       "url": "https://fruitszipper.asobisystem.com/live_information/detail/46299",
       "urls": [
         "https://fruitszipper.asobisystem.com/live_information/detail/46299",
@@ -33173,52 +33210,61 @@
         "https://fruitszipper.asobisystem.com/live_information/detail/46300",
         "https://cutiestreet.asobisystem.com/live_information/detail/46319",
         "https://kawaiilab.asobisystem.com/live_information/detail/46241",
-        "https://kawaiilab.asobisystem.com/live_information/detail/46242"
+        "https://kawaiilab.asobisystem.com/live_information/detail/46242",
+        "https://kawaiilab.asobisystem.com/news/detail/92410",
+        "https://morestar.asobisystem.com/live_information/detail/46452"
       ],
-      "sourceType": "derived",
+      "sourceType": "official-schedule",
       "primarySource": "official",
       "eventScope": "kawaii-lab",
+      "sourceCandidates": [
+        "official"
+      ],
+      "participants": [
+        "FRUITS ZIPPER",
+        "CANDY TUNE",
+        "SWEET STEADY",
+        "CUTIE STREET",
+        "MORE STAR"
+      ],
+      "displayTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR",
+      "schedule": [
+        {
+          "date": "2027-02-20",
+          "venue": "IGアリーナ",
+          "openTime": "15:00",
+          "startTime": "17:00"
+        }
+      ],
+      "openTime": "15:00",
+      "startTime": "17:00",
+      "performanceFactSources": [
+        "https://kawaiilab.asobisystem.com/news/detail/92410"
+      ],
+      "entityType": "performance",
+      "performanceEntityVersion": 1,
+      "performanceKey": "KAWAII LAB.合同|2027-02-20|time|17:00|igアリーナ",
+      "sourceRowIds": [
+        "6728a392ebc459af",
+        "0d5300442b3a01b8"
+      ],
+      "offers": [],
       "eventEndDate": "2027-02-20",
       "eventDates": [
         "2027-02-20"
       ],
-      "schedule": [
-        {
-          "date": "2027-02-20",
-          "venue": "愛知県 IGアリーナ"
-        }
-      ],
       "eventCount": 1,
-      "venues": [
-        "愛知県 IGアリーナ"
-      ],
-      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/46319",
-      "sourceCandidates": [
-        "official"
-      ],
-      "discoverySource": "kawaii-lab-official-schedule",
-      "entityType": "performance",
-      "performanceEntityVersion": 1,
-      "performanceKey": "KAWAII LAB.合同|2027-02-20|fallback|igアリーナ|kawaiilab.5thanniversarytour@igアリーナ",
-      "sourceRowIds": [
-        "6728a392ebc459af"
-      ],
-      "offers": [],
       "ticketType": "現在受付なし",
       "applicationDisplayMode": "schedule-only",
       "applicationStatus": "none"
     },
     {
-      "id": "performance-KAWAII-LAB-2027-02-21-fallback-ig-kawaiilab-5thanniversarytour-ig",
+      "id": "performance-KAWAII-LAB-2027-02-21-time-16-00-ig",
       "group": "KAWAII LAB.合同",
-      "participants": [
-        "FRUITS ZIPPER",
-        "CUTIE STREET"
-      ],
-      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR@IGアリーナ",
-      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR@IGアリーナ",
+      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR",
+      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR",
       "eventDate": "2027-02-21",
-      "venue": "愛知県 IGアリーナ",
+      "venue": "IGアリーナ",
       "url": "https://fruitszipper.asobisystem.com/live_information/detail/46299",
       "urls": [
         "https://fruitszipper.asobisystem.com/live_information/detail/46299",
@@ -33226,52 +33272,61 @@
         "https://fruitszipper.asobisystem.com/live_information/detail/46300",
         "https://cutiestreet.asobisystem.com/live_information/detail/46319",
         "https://kawaiilab.asobisystem.com/live_information/detail/46241",
-        "https://kawaiilab.asobisystem.com/live_information/detail/46242"
+        "https://kawaiilab.asobisystem.com/live_information/detail/46242",
+        "https://kawaiilab.asobisystem.com/news/detail/92410",
+        "https://morestar.asobisystem.com/live_information/detail/46454"
       ],
-      "sourceType": "derived",
+      "sourceType": "official-schedule",
       "primarySource": "official",
       "eventScope": "kawaii-lab",
+      "sourceCandidates": [
+        "official"
+      ],
+      "participants": [
+        "FRUITS ZIPPER",
+        "CANDY TUNE",
+        "SWEET STEADY",
+        "CUTIE STREET",
+        "MORE STAR"
+      ],
+      "displayTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR",
+      "schedule": [
+        {
+          "date": "2027-02-21",
+          "venue": "IGアリーナ",
+          "openTime": "14:00",
+          "startTime": "16:00"
+        }
+      ],
+      "openTime": "14:00",
+      "startTime": "16:00",
+      "performanceFactSources": [
+        "https://kawaiilab.asobisystem.com/news/detail/92410"
+      ],
+      "entityType": "performance",
+      "performanceEntityVersion": 1,
+      "performanceKey": "KAWAII LAB.合同|2027-02-21|time|16:00|igアリーナ",
+      "sourceRowIds": [
+        "6728a392ebc459af",
+        "0eafb3bc1576a902"
+      ],
+      "offers": [],
       "eventEndDate": "2027-02-21",
       "eventDates": [
         "2027-02-21"
       ],
-      "schedule": [
-        {
-          "date": "2027-02-21",
-          "venue": "愛知県 IGアリーナ"
-        }
-      ],
       "eventCount": 1,
-      "venues": [
-        "愛知県 IGアリーナ"
-      ],
-      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/46319",
-      "sourceCandidates": [
-        "official"
-      ],
-      "discoverySource": "kawaii-lab-official-schedule",
-      "entityType": "performance",
-      "performanceEntityVersion": 1,
-      "performanceKey": "KAWAII LAB.合同|2027-02-21|fallback|igアリーナ|kawaiilab.5thanniversarytour@igアリーナ",
-      "sourceRowIds": [
-        "6728a392ebc459af"
-      ],
-      "offers": [],
       "ticketType": "現在受付なし",
       "applicationDisplayMode": "schedule-only",
       "applicationStatus": "none"
     },
     {
-      "id": "performance-KAWAII-LAB-2027-03-20-fallback-glionarenakobe-kawaiilab-5thanniversarytour-glionarenakobe",
+      "id": "performance-KAWAII-LAB-2027-03-20-time-17-00-glionarenakobe",
       "group": "KAWAII LAB.合同",
-      "participants": [
-        "FRUITS ZIPPER",
-        "CUTIE STREET"
-      ],
-      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR@GLION ARENA KOBE",
-      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR@GLION ARENA KOBE",
+      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR",
+      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR",
       "eventDate": "2027-03-20",
-      "venue": "兵庫県 GLION ARENA KOBE",
+      "venue": "GLION ARENA KOBE",
       "url": "https://fruitszipper.asobisystem.com/live_information/detail/46301",
       "urls": [
         "https://fruitszipper.asobisystem.com/live_information/detail/46301",
@@ -33279,52 +33334,61 @@
         "https://fruitszipper.asobisystem.com/live_information/detail/46302",
         "https://cutiestreet.asobisystem.com/live_information/detail/46321",
         "https://kawaiilab.asobisystem.com/live_information/detail/46243",
-        "https://kawaiilab.asobisystem.com/live_information/detail/46244"
+        "https://kawaiilab.asobisystem.com/live_information/detail/46244",
+        "https://kawaiilab.asobisystem.com/news/detail/92410",
+        "https://morestar.asobisystem.com/live_information/detail/46455"
       ],
-      "sourceType": "derived",
+      "sourceType": "official-schedule",
       "primarySource": "official",
       "eventScope": "kawaii-lab",
+      "sourceCandidates": [
+        "official"
+      ],
+      "participants": [
+        "FRUITS ZIPPER",
+        "CANDY TUNE",
+        "SWEET STEADY",
+        "CUTIE STREET",
+        "MORE STAR"
+      ],
+      "displayTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR",
+      "schedule": [
+        {
+          "date": "2027-03-20",
+          "venue": "GLION ARENA KOBE",
+          "openTime": "15:00",
+          "startTime": "17:00"
+        }
+      ],
+      "openTime": "15:00",
+      "startTime": "17:00",
+      "performanceFactSources": [
+        "https://kawaiilab.asobisystem.com/news/detail/92410"
+      ],
+      "entityType": "performance",
+      "performanceEntityVersion": 1,
+      "performanceKey": "KAWAII LAB.合同|2027-03-20|time|17:00|glionarenakobe",
+      "sourceRowIds": [
+        "a1c246382319ef96",
+        "d74937e81afefaa1"
+      ],
+      "offers": [],
       "eventEndDate": "2027-03-20",
       "eventDates": [
         "2027-03-20"
       ],
-      "schedule": [
-        {
-          "date": "2027-03-20",
-          "venue": "兵庫県 GLION ARENA KOBE"
-        }
-      ],
       "eventCount": 1,
-      "venues": [
-        "兵庫県 GLION ARENA KOBE"
-      ],
-      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/46321",
-      "sourceCandidates": [
-        "official"
-      ],
-      "discoverySource": "kawaii-lab-official-schedule",
-      "entityType": "performance",
-      "performanceEntityVersion": 1,
-      "performanceKey": "KAWAII LAB.合同|2027-03-20|fallback|glionarenakobe|kawaiilab.5thanniversarytour@glionarenakobe",
-      "sourceRowIds": [
-        "a1c246382319ef96"
-      ],
-      "offers": [],
       "ticketType": "現在受付なし",
       "applicationDisplayMode": "schedule-only",
       "applicationStatus": "none"
     },
     {
-      "id": "performance-KAWAII-LAB-2027-03-21-fallback-glionarenakobe-kawaiilab-5thanniversarytour-glionarenakobe",
+      "id": "performance-KAWAII-LAB-2027-03-21-time-16-00-glionarenakobe",
       "group": "KAWAII LAB.合同",
-      "participants": [
-        "FRUITS ZIPPER",
-        "CUTIE STREET"
-      ],
-      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR@GLION ARENA KOBE",
-      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR@GLION ARENA KOBE",
+      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR",
+      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR",
       "eventDate": "2027-03-21",
-      "venue": "兵庫県 GLION ARENA KOBE",
+      "venue": "GLION ARENA KOBE",
       "url": "https://fruitszipper.asobisystem.com/live_information/detail/46301",
       "urls": [
         "https://fruitszipper.asobisystem.com/live_information/detail/46301",
@@ -33332,52 +33396,61 @@
         "https://fruitszipper.asobisystem.com/live_information/detail/46302",
         "https://cutiestreet.asobisystem.com/live_information/detail/46321",
         "https://kawaiilab.asobisystem.com/live_information/detail/46243",
-        "https://kawaiilab.asobisystem.com/live_information/detail/46244"
+        "https://kawaiilab.asobisystem.com/live_information/detail/46244",
+        "https://kawaiilab.asobisystem.com/news/detail/92410",
+        "https://morestar.asobisystem.com/live_information/detail/46456"
       ],
-      "sourceType": "derived",
+      "sourceType": "official-schedule",
       "primarySource": "official",
       "eventScope": "kawaii-lab",
+      "sourceCandidates": [
+        "official"
+      ],
+      "participants": [
+        "FRUITS ZIPPER",
+        "CANDY TUNE",
+        "SWEET STEADY",
+        "CUTIE STREET",
+        "MORE STAR"
+      ],
+      "displayTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR",
+      "schedule": [
+        {
+          "date": "2027-03-21",
+          "venue": "GLION ARENA KOBE",
+          "openTime": "14:00",
+          "startTime": "16:00"
+        }
+      ],
+      "openTime": "14:00",
+      "startTime": "16:00",
+      "performanceFactSources": [
+        "https://kawaiilab.asobisystem.com/news/detail/92410"
+      ],
+      "entityType": "performance",
+      "performanceEntityVersion": 1,
+      "performanceKey": "KAWAII LAB.合同|2027-03-21|time|16:00|glionarenakobe",
+      "sourceRowIds": [
+        "a1c246382319ef96",
+        "db9b23ec1b70a1d7"
+      ],
+      "offers": [],
       "eventEndDate": "2027-03-21",
       "eventDates": [
         "2027-03-21"
       ],
-      "schedule": [
-        {
-          "date": "2027-03-21",
-          "venue": "兵庫県 GLION ARENA KOBE"
-        }
-      ],
       "eventCount": 1,
-      "venues": [
-        "兵庫県 GLION ARENA KOBE"
-      ],
-      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/46321",
-      "sourceCandidates": [
-        "official"
-      ],
-      "discoverySource": "kawaii-lab-official-schedule",
-      "entityType": "performance",
-      "performanceEntityVersion": 1,
-      "performanceKey": "KAWAII LAB.合同|2027-03-21|fallback|glionarenakobe|kawaiilab.5thanniversarytour@glionarenakobe",
-      "sourceRowIds": [
-        "a1c246382319ef96"
-      ],
-      "offers": [],
       "ticketType": "現在受付なし",
       "applicationDisplayMode": "schedule-only",
       "applicationStatus": "none"
     },
     {
-      "id": "performance-KAWAII-LAB-2027-04-03-fallback-a-kawaiilab-5thanniversarytour-a",
+      "id": "performance-KAWAII-LAB-2027-04-03-time-17-00-a",
       "group": "KAWAII LAB.合同",
-      "participants": [
-        "FRUITS ZIPPER",
-        "CUTIE STREET"
-      ],
-      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR@マリンメッセ福岡A館",
-      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR@マリンメッセ福岡A館",
+      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR",
+      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR",
       "eventDate": "2027-04-03",
-      "venue": "福岡県 マリンメッセ福岡A館",
+      "venue": "マリンメッセ福岡A館",
       "url": "https://fruitszipper.asobisystem.com/live_information/detail/46304",
       "urls": [
         "https://fruitszipper.asobisystem.com/live_information/detail/46304",
@@ -33385,52 +33458,60 @@
         "https://fruitszipper.asobisystem.com/live_information/detail/46303",
         "https://cutiestreet.asobisystem.com/live_information/detail/46323",
         "https://kawaiilab.asobisystem.com/live_information/detail/46245",
-        "https://kawaiilab.asobisystem.com/live_information/detail/46246"
+        "https://kawaiilab.asobisystem.com/live_information/detail/46246",
+        "https://kawaiilab.asobisystem.com/news/detail/92410",
+        "https://morestar.asobisystem.com/live_information/detail/46457"
       ],
-      "sourceType": "derived",
+      "sourceType": "official-schedule",
       "primarySource": "official",
       "eventScope": "kawaii-lab",
+      "sourceCandidates": [
+        "official"
+      ],
+      "participants": [
+        "FRUITS ZIPPER",
+        "CANDY TUNE",
+        "CUTIE STREET",
+        "MORE STAR"
+      ],
+      "displayTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR",
+      "schedule": [
+        {
+          "date": "2027-04-03",
+          "venue": "マリンメッセ福岡A館",
+          "openTime": "15:00",
+          "startTime": "17:00"
+        }
+      ],
+      "openTime": "15:00",
+      "startTime": "17:00",
+      "performanceFactSources": [
+        "https://kawaiilab.asobisystem.com/news/detail/92410"
+      ],
+      "entityType": "performance",
+      "performanceEntityVersion": 1,
+      "performanceKey": "KAWAII LAB.合同|2027-04-03|time|17:00|マリンメッセ福岡a館",
+      "sourceRowIds": [
+        "e35da84ab73b9511",
+        "d78732d0b6e08ef7"
+      ],
+      "offers": [],
       "eventEndDate": "2027-04-03",
       "eventDates": [
         "2027-04-03"
       ],
-      "schedule": [
-        {
-          "date": "2027-04-03",
-          "venue": "福岡県 マリンメッセ福岡A館"
-        }
-      ],
       "eventCount": 1,
-      "venues": [
-        "福岡県 マリンメッセ福岡A館"
-      ],
-      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/46323",
-      "sourceCandidates": [
-        "official"
-      ],
-      "discoverySource": "kawaii-lab-official-schedule",
-      "entityType": "performance",
-      "performanceEntityVersion": 1,
-      "performanceKey": "KAWAII LAB.合同|2027-04-03|fallback|マリンメッセ福岡a館|kawaiilab.5thanniversarytour@マリンメッセ福岡a館",
-      "sourceRowIds": [
-        "e35da84ab73b9511"
-      ],
-      "offers": [],
       "ticketType": "現在受付なし",
       "applicationDisplayMode": "schedule-only",
       "applicationStatus": "none"
     },
     {
-      "id": "performance-KAWAII-LAB-2027-04-04-fallback-a-kawaiilab-5thanniversarytour-a",
+      "id": "performance-KAWAII-LAB-2027-04-04-time-16-00-a",
       "group": "KAWAII LAB.合同",
-      "participants": [
-        "FRUITS ZIPPER",
-        "CUTIE STREET"
-      ],
-      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR@マリンメッセ福岡A館",
-      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR@マリンメッセ福岡A館",
+      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR",
+      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR",
       "eventDate": "2027-04-04",
-      "venue": "福岡県 マリンメッセ福岡A館",
+      "venue": "マリンメッセ福岡A館",
       "url": "https://fruitszipper.asobisystem.com/live_information/detail/46304",
       "urls": [
         "https://fruitszipper.asobisystem.com/live_information/detail/46304",
@@ -33438,37 +33519,50 @@
         "https://fruitszipper.asobisystem.com/live_information/detail/46303",
         "https://cutiestreet.asobisystem.com/live_information/detail/46323",
         "https://kawaiilab.asobisystem.com/live_information/detail/46245",
-        "https://kawaiilab.asobisystem.com/live_information/detail/46246"
+        "https://kawaiilab.asobisystem.com/live_information/detail/46246",
+        "https://kawaiilab.asobisystem.com/news/detail/92410",
+        "https://morestar.asobisystem.com/live_information/detail/46458"
       ],
-      "sourceType": "derived",
+      "sourceType": "official-schedule",
       "primarySource": "official",
       "eventScope": "kawaii-lab",
+      "sourceCandidates": [
+        "official"
+      ],
+      "participants": [
+        "FRUITS ZIPPER",
+        "CANDY TUNE",
+        "SWEET STEADY",
+        "CUTIE STREET",
+        "MORE STAR"
+      ],
+      "displayTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR",
+      "schedule": [
+        {
+          "date": "2027-04-04",
+          "venue": "マリンメッセ福岡A館",
+          "openTime": "14:00",
+          "startTime": "16:00"
+        }
+      ],
+      "openTime": "14:00",
+      "startTime": "16:00",
+      "performanceFactSources": [
+        "https://kawaiilab.asobisystem.com/news/detail/92410"
+      ],
+      "entityType": "performance",
+      "performanceEntityVersion": 1,
+      "performanceKey": "KAWAII LAB.合同|2027-04-04|time|16:00|マリンメッセ福岡a館",
+      "sourceRowIds": [
+        "e35da84ab73b9511",
+        "1f183101ac403eb1"
+      ],
+      "offers": [],
       "eventEndDate": "2027-04-04",
       "eventDates": [
         "2027-04-04"
       ],
-      "schedule": [
-        {
-          "date": "2027-04-04",
-          "venue": "福岡県 マリンメッセ福岡A館"
-        }
-      ],
       "eventCount": 1,
-      "venues": [
-        "福岡県 マリンメッセ福岡A館"
-      ],
-      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/46323",
-      "sourceCandidates": [
-        "official"
-      ],
-      "discoverySource": "kawaii-lab-official-schedule",
-      "entityType": "performance",
-      "performanceEntityVersion": 1,
-      "performanceKey": "KAWAII LAB.合同|2027-04-04|fallback|マリンメッセ福岡a館|kawaiilab.5thanniversarytour@マリンメッセ福岡a館",
-      "sourceRowIds": [
-        "e35da84ab73b9511"
-      ],
-      "offers": [],
       "ticketType": "現在受付なし",
       "applicationDisplayMode": "schedule-only",
       "applicationStatus": "none"
@@ -33556,396 +33650,6 @@
       "ticketType": "複数受付",
       "applicationDisplayMode": "offers",
       "applicationStatus": "offers"
-    },
-    {
-      "id": "performance-MORE-STAR-2027-01-30-fallback-kawaiilab-5thanniversarytour-day1",
-      "group": "MORE STAR",
-      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR 宮城公演 DAY1",
-      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR 宮城公演 DAY1",
-      "eventDate": "2027-01-30",
-      "venue": "宮城県 セキスイハイムスーパーアリーナ",
-      "url": "https://morestar.asobisystem.com/live_information/detail/46449",
-      "urls": [
-        "https://morestar.asobisystem.com/live_information/detail/46449"
-      ],
-      "sourceType": "official-schedule",
-      "primarySource": "official",
-      "eventScope": "kawaii-lab",
-      "sourceCandidates": [
-        "official"
-      ],
-      "entityType": "performance",
-      "performanceEntityVersion": 1,
-      "performanceKey": "MORE STAR|2027-01-30|fallback|セキスイハイムスーパーアリーナ|kawaiilab.5thanniversarytour宮城公演day1",
-      "sourceRowIds": [
-        "1642e2aee92ee773"
-      ],
-      "offers": [],
-      "eventEndDate": "2027-01-30",
-      "eventDates": [
-        "2027-01-30"
-      ],
-      "eventCount": 1,
-      "schedule": [
-        {
-          "date": "2027-01-30",
-          "venue": "宮城県 セキスイハイムスーパーアリーナ"
-        }
-      ],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
-    },
-    {
-      "id": "performance-MORE-STAR-2027-01-31-fallback-kawaiilab-5thanniversarytour-day2",
-      "group": "MORE STAR",
-      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR 宮城公演 DAY2",
-      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR 宮城公演 DAY2",
-      "eventDate": "2027-01-31",
-      "venue": "宮城県 セキスイハイムスーパーアリーナ",
-      "url": "https://morestar.asobisystem.com/live_information/detail/46451",
-      "urls": [
-        "https://morestar.asobisystem.com/live_information/detail/46451"
-      ],
-      "sourceType": "official-schedule",
-      "primarySource": "official",
-      "eventScope": "kawaii-lab",
-      "sourceCandidates": [
-        "official"
-      ],
-      "entityType": "performance",
-      "performanceEntityVersion": 1,
-      "performanceKey": "MORE STAR|2027-01-31|fallback|セキスイハイムスーパーアリーナ|kawaiilab.5thanniversarytour宮城公演day2",
-      "sourceRowIds": [
-        "6da463309424952d"
-      ],
-      "offers": [],
-      "eventEndDate": "2027-01-31",
-      "eventDates": [
-        "2027-01-31"
-      ],
-      "eventCount": 1,
-      "schedule": [
-        {
-          "date": "2027-01-31",
-          "venue": "宮城県 セキスイハイムスーパーアリーナ"
-        }
-      ],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
-    },
-    {
-      "id": "performance-MORE-STAR-2027-02-13-fallback-k-kawaiilab-5thanniversarytour-day1",
-      "group": "MORE STAR",
-      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR 神奈川公演 DAY1",
-      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR 神奈川公演 DAY1",
-      "eventDate": "2027-02-13",
-      "venue": "神奈川県 Kアリーナ横浜",
-      "url": "https://morestar.asobisystem.com/live_information/detail/46450",
-      "urls": [
-        "https://morestar.asobisystem.com/live_information/detail/46450"
-      ],
-      "sourceType": "official-schedule",
-      "primarySource": "official",
-      "eventScope": "kawaii-lab",
-      "sourceCandidates": [
-        "official"
-      ],
-      "entityType": "performance",
-      "performanceEntityVersion": 1,
-      "performanceKey": "MORE STAR|2027-02-13|fallback|kアリーナ横浜|kawaiilab.5thanniversarytour神奈川公演day1",
-      "sourceRowIds": [
-        "ae8780fc46d9e926"
-      ],
-      "offers": [],
-      "eventEndDate": "2027-02-13",
-      "eventDates": [
-        "2027-02-13"
-      ],
-      "eventCount": 1,
-      "schedule": [
-        {
-          "date": "2027-02-13",
-          "venue": "神奈川県 Kアリーナ横浜"
-        }
-      ],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
-    },
-    {
-      "id": "performance-MORE-STAR-2027-02-14-fallback-k-kawaiilab-5thanniversarytour-day2",
-      "group": "MORE STAR",
-      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR 神奈川公演 DAY2",
-      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR 神奈川公演 DAY2",
-      "eventDate": "2027-02-14",
-      "venue": "神奈川県 Kアリーナ横浜",
-      "url": "https://morestar.asobisystem.com/live_information/detail/46459",
-      "urls": [
-        "https://morestar.asobisystem.com/live_information/detail/46459"
-      ],
-      "sourceType": "official-schedule",
-      "primarySource": "official",
-      "eventScope": "kawaii-lab",
-      "sourceCandidates": [
-        "official"
-      ],
-      "entityType": "performance",
-      "performanceEntityVersion": 1,
-      "performanceKey": "MORE STAR|2027-02-14|fallback|kアリーナ横浜|kawaiilab.5thanniversarytour神奈川公演day2",
-      "sourceRowIds": [
-        "0621973ff95fedcc"
-      ],
-      "offers": [],
-      "eventEndDate": "2027-02-14",
-      "eventDates": [
-        "2027-02-14"
-      ],
-      "eventCount": 1,
-      "schedule": [
-        {
-          "date": "2027-02-14",
-          "venue": "神奈川県 Kアリーナ横浜"
-        }
-      ],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
-    },
-    {
-      "id": "performance-MORE-STAR-2027-02-20-fallback-ig-kawaiilab-5thanniversarytour-day1",
-      "group": "MORE STAR",
-      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR 愛知公演 DAY1",
-      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR 愛知公演 DAY1",
-      "eventDate": "2027-02-20",
-      "venue": "愛知県 IGアリーナ",
-      "url": "https://morestar.asobisystem.com/live_information/detail/46452",
-      "urls": [
-        "https://morestar.asobisystem.com/live_information/detail/46452"
-      ],
-      "sourceType": "official-schedule",
-      "primarySource": "official",
-      "eventScope": "kawaii-lab",
-      "sourceCandidates": [
-        "official"
-      ],
-      "entityType": "performance",
-      "performanceEntityVersion": 1,
-      "performanceKey": "MORE STAR|2027-02-20|fallback|igアリーナ|kawaiilab.5thanniversarytour愛知公演day1",
-      "sourceRowIds": [
-        "0d5300442b3a01b8"
-      ],
-      "offers": [],
-      "eventEndDate": "2027-02-20",
-      "eventDates": [
-        "2027-02-20"
-      ],
-      "eventCount": 1,
-      "schedule": [
-        {
-          "date": "2027-02-20",
-          "venue": "愛知県 IGアリーナ"
-        }
-      ],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
-    },
-    {
-      "id": "performance-MORE-STAR-2027-02-21-fallback-ig-kawaiilab-5thanniversarytour-day2",
-      "group": "MORE STAR",
-      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR 愛知公演 DAY2",
-      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR 愛知公演 DAY2",
-      "eventDate": "2027-02-21",
-      "venue": "愛知県 IGアリーナ",
-      "url": "https://morestar.asobisystem.com/live_information/detail/46454",
-      "urls": [
-        "https://morestar.asobisystem.com/live_information/detail/46454"
-      ],
-      "sourceType": "official-schedule",
-      "primarySource": "official",
-      "eventScope": "kawaii-lab",
-      "sourceCandidates": [
-        "official"
-      ],
-      "entityType": "performance",
-      "performanceEntityVersion": 1,
-      "performanceKey": "MORE STAR|2027-02-21|fallback|igアリーナ|kawaiilab.5thanniversarytour愛知公演day2",
-      "sourceRowIds": [
-        "0eafb3bc1576a902"
-      ],
-      "offers": [],
-      "eventEndDate": "2027-02-21",
-      "eventDates": [
-        "2027-02-21"
-      ],
-      "eventCount": 1,
-      "schedule": [
-        {
-          "date": "2027-02-21",
-          "venue": "愛知県 IGアリーナ"
-        }
-      ],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
-    },
-    {
-      "id": "performance-MORE-STAR-2027-03-20-fallback-glionarenakobe-kawaiilab-5thanniversarytour-day1",
-      "group": "MORE STAR",
-      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR 兵庫公演 DAY1",
-      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR 兵庫公演 DAY1",
-      "eventDate": "2027-03-20",
-      "venue": "兵庫県 GLION ARENA KOBE",
-      "url": "https://morestar.asobisystem.com/live_information/detail/46455",
-      "urls": [
-        "https://morestar.asobisystem.com/live_information/detail/46455"
-      ],
-      "sourceType": "official-schedule",
-      "primarySource": "official",
-      "eventScope": "kawaii-lab",
-      "sourceCandidates": [
-        "official"
-      ],
-      "entityType": "performance",
-      "performanceEntityVersion": 1,
-      "performanceKey": "MORE STAR|2027-03-20|fallback|glionarenakobe|kawaiilab.5thanniversarytour兵庫公演day1",
-      "sourceRowIds": [
-        "d74937e81afefaa1"
-      ],
-      "offers": [],
-      "eventEndDate": "2027-03-20",
-      "eventDates": [
-        "2027-03-20"
-      ],
-      "eventCount": 1,
-      "schedule": [
-        {
-          "date": "2027-03-20",
-          "venue": "兵庫県 GLION ARENA KOBE"
-        }
-      ],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
-    },
-    {
-      "id": "performance-MORE-STAR-2027-03-21-fallback-glionarenakobe-kawaiilab-5thanniversarytour-day2",
-      "group": "MORE STAR",
-      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR 兵庫公演 DAY2",
-      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR 兵庫公演 DAY2",
-      "eventDate": "2027-03-21",
-      "venue": "兵庫県 GLION ARENA KOBE",
-      "url": "https://morestar.asobisystem.com/live_information/detail/46456",
-      "urls": [
-        "https://morestar.asobisystem.com/live_information/detail/46456"
-      ],
-      "sourceType": "official-schedule",
-      "primarySource": "official",
-      "eventScope": "kawaii-lab",
-      "sourceCandidates": [
-        "official"
-      ],
-      "entityType": "performance",
-      "performanceEntityVersion": 1,
-      "performanceKey": "MORE STAR|2027-03-21|fallback|glionarenakobe|kawaiilab.5thanniversarytour兵庫公演day2",
-      "sourceRowIds": [
-        "db9b23ec1b70a1d7"
-      ],
-      "offers": [],
-      "eventEndDate": "2027-03-21",
-      "eventDates": [
-        "2027-03-21"
-      ],
-      "eventCount": 1,
-      "schedule": [
-        {
-          "date": "2027-03-21",
-          "venue": "兵庫県 GLION ARENA KOBE"
-        }
-      ],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
-    },
-    {
-      "id": "performance-MORE-STAR-2027-04-03-fallback-a-kawaiilab-5thanniversarytour-day1",
-      "group": "MORE STAR",
-      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR 福岡公演 DAY1",
-      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR 福岡公演 DAY1",
-      "eventDate": "2027-04-03",
-      "venue": "福岡県 マリンメッセ福岡A館",
-      "url": "https://morestar.asobisystem.com/live_information/detail/46457",
-      "urls": [
-        "https://morestar.asobisystem.com/live_information/detail/46457"
-      ],
-      "sourceType": "official-schedule",
-      "primarySource": "official",
-      "eventScope": "kawaii-lab",
-      "sourceCandidates": [
-        "official"
-      ],
-      "entityType": "performance",
-      "performanceEntityVersion": 1,
-      "performanceKey": "MORE STAR|2027-04-03|fallback|マリンメッセ福岡a館|kawaiilab.5thanniversarytour福岡公演day1",
-      "sourceRowIds": [
-        "d78732d0b6e08ef7"
-      ],
-      "offers": [],
-      "eventEndDate": "2027-04-03",
-      "eventDates": [
-        "2027-04-03"
-      ],
-      "eventCount": 1,
-      "schedule": [
-        {
-          "date": "2027-04-03",
-          "venue": "福岡県 マリンメッセ福岡A館"
-        }
-      ],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
-    },
-    {
-      "id": "performance-MORE-STAR-2027-04-04-fallback-a-kawaiilab-5thanniversarytour-day2",
-      "group": "MORE STAR",
-      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR 福岡公演 DAY2",
-      "eventTitle": "KAWAII LAB. 5th ANNIVERSARY TOUR 福岡公演 DAY2",
-      "eventDate": "2027-04-04",
-      "venue": "福岡県 マリンメッセ福岡A館",
-      "url": "https://morestar.asobisystem.com/live_information/detail/46458",
-      "urls": [
-        "https://morestar.asobisystem.com/live_information/detail/46458"
-      ],
-      "sourceType": "official-schedule",
-      "primarySource": "official",
-      "eventScope": "kawaii-lab",
-      "sourceCandidates": [
-        "official"
-      ],
-      "entityType": "performance",
-      "performanceEntityVersion": 1,
-      "performanceKey": "MORE STAR|2027-04-04|fallback|マリンメッセ福岡a館|kawaiilab.5thanniversarytour福岡公演day2",
-      "sourceRowIds": [
-        "1f183101ac403eb1"
-      ],
-      "offers": [],
-      "eventEndDate": "2027-04-04",
-      "eventDates": [
-        "2027-04-04"
-      ],
-      "eventCount": 1,
-      "schedule": [
-        {
-          "date": "2027-04-04",
-          "venue": "福岡県 マリンメッセ福岡A館"
-        }
-      ],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
     },
     {
       "id": "performance-SWEET-STEADY-2026-10-26-time-19-00-sgchallariake",
