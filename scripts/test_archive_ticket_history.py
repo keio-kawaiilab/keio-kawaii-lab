@@ -213,6 +213,7 @@ class ArchiveTicketHistoryTests(unittest.TestCase):
         self.assertEqual(retained["entries"][0]["id"],row["id"])
 
     def test_official_verified_start_only_is_published_without_invented_deadline(self):
+        self.registry["hostRules"]["candytune.asobisystem.com"] = "group-official"
         row = {
             "group": "CANDY TUNE", "eventTitle": "KAWAII LAB. ファンクラブ限定フリーライブ",
             "eventDate": "2026-11-06", "startTime": "18:00",
