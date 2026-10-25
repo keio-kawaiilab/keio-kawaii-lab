@@ -36,7 +36,7 @@
     // Public performance keys contain the normalized venue. Same artist,
     // date and start time at two distinct venues are NOT duplicate shows.
     var stored=clean(card.getAttribute("data-performance-key"));
-    var match=stored.match(/\\|time\\|[^|]+\\|([^|]+)/);
+    var match=stored.match(/\|time\|[^|]+\|([^|]+)/);
     var venue=match?clean(match[1]):"";
     return[group,date,time,venue].join("|");
   }
