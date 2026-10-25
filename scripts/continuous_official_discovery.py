@@ -609,6 +609,16 @@ def fallback_row_from_review(candidate, title, text, review, existing):
     return row
 
 
+def official_show_scope(title, source_url):
+    """Known externally produced public recordings remain external appearances."""
+    if ("/news/detail/92529" in str(source_url)
+            and "SWEETEST STORY" in str(title).upper()):
+        # Fuji TV is the program's copyright holder/producer; the group's
+        # official fanclub sales page is not evidence of group-hosting.
+        return "external"
+    return "external" if "出演決定" in str(title) else "kawaii-lab"
+
+
 def official_show_announcement_rows(candidate, title, text):
     """Import a newly announced live show even before any tickets are announced."""
     if not re.search(r"(?:開催決定|開催のお知らせ|公演決定|出演決定)", title):
@@ -642,6 +652,7 @@ def official_show_announcement_rows(candidate, title, text):
             "primarySource": "official", "sourceChannel": "official-information",
             "sourcePublishedAt": published,
             "participants": parser.extract_target_participants(text, day),
+            "eventScope": official_show_scope(title, candidate.url),
         })
     return result
 
@@ -706,7 +717,7 @@ def verified_unlabeled_window_rows(candidate, title, text, existing):
             "deadlineSource": candidate.url,
             "sourcePublishedAt": published,
             "participants": parser.extract_target_participants(text, day),
-            "eventScope": "external" if "出演決定" in title else "kawaii-lab",
+            "eventScope": official_show_scope(title, candidate.url),
         })
     return rows
 
@@ -776,7 +787,7 @@ def confirmed_start_only_rows(candidate, title, text, existing):
             "sourcePublishedAt": published,
             "windowCompleteness": "start-only",
             "participants": parser.extract_target_participants(text, event_date),
-            "eventScope": "kawaii-lab",
+            "eventScope": official_show_scope(title, candidate.url),
         })
     return source_rows
 
@@ -839,9 +850,23 @@ def read_candidate(candidate, existing, headers):
             }, "pending"
     candidate = parser.Candidate(group, title, candidate.url)
     rows, review = parser.parse_candidate(CachedArticle(str(soup)), candidate)
+    # A generic parser can already produce one incomplete row and thereby
+    # bypass the richer two-part/complete-window parser. Always check whether
+    # the official article offers a *verified* single full window and multiple
+    # precisely dated/clocked occurrences. Keep unrelated sale rounds intact.
+    enriched = verified_unlabeled_window_rows(candidate, title, text, existing)
+    if len(enriched) >= 2:
+        enriched_keys = {(r.get("eventDate"), r.get("startTime"), r.get("applyStart")) for r in enriched}
+        rows = [r for r in rows if (r.get("eventDate"), r.get("startTime"), r.get("applyStart")) not in enriched_keys
+                and not (r.get("eventDate") in {v["eventDate"] for v in enriched}
+                         and r.get("applyStart") in {v["applyStart"] for v in enriched}
+                         and not r.get("applyEnd"))]
+        rows.extend(enriched)
+        # The new verified rows resolve a generic partial-review message.
+        if review and not review.get("windows"):
+            review = None
     if not rows and not review:
-        rows = (verified_unlabeled_window_rows(candidate, title, text, existing)
-                or confirmed_start_only_rows(candidate, title, text, existing))
+        rows = enriched or confirmed_start_only_rows(candidate, title, text, existing)
     if not rows and not review:
         # An INFORMATION notice can announce a concert and merely mention
         # 'tickets' in its fine print. Keep the verified performance even when
