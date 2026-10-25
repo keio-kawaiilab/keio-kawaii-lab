@@ -446,10 +446,10 @@ class ContinuousDiscoveryTests(unittest.TestCase):
     def test_news_publication_date_does_not_hide_future_joint_tour(self):
         title = "2026.10.12 「KAWAII LAB. 5th ANNIVERSARY TOUR」開催決定！FC先行開始！"
         official_body = (
-            "2026.10.12\\n"
-            "2027年1月30日(土) OPEN 15:00 START 17:00\\n"
-            "2027年1月31日(日) OPEN 14:00 START 16:00\\n"
-            "FRUITS ZIPPER / CANDY TUNE / SWEET STEADY / CUTIE STREET / MORE STAR\\n"
+            "2026.10.12\n"
+            "2027年1月30日(土) OPEN 15:00 START 17:00\n"
+            "2027年1月31日(日) OPEN 14:00 START 16:00\n"
+            "FRUITS ZIPPER / CANDY TUNE / SWEET STEADY / CUTIE STREET / MORE STAR\n"
             "受付期間：2026年10月12日18:30～2026年10月18日23:59"
         )
         self.assertFalse(discovery.title_is_past_event(title, official_body, date(2026, 10, 25)))
