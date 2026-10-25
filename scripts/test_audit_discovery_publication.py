@@ -14,6 +14,15 @@ class DiscoveryPublicationTest(unittest.TestCase):
                   "applyStart": expected["applyStart"], "applyEnd": expected["applyEnd"]}]}
         return {"observations": [{"expectedOffers": [expected]}]}, {"publicEvents": [entity]}
 
+    def test_schedule_only_official_announcement_is_not_missing_ticket(self):
+        state = {"observations": [{"expectedOffers": [
+            {"group": "FRUITS ZIPPER", "eventDate": "2099-01-19",
+             "ticketType": "現在受付なし", "url": "https://fruitszipper.asobisystem.com/news/detail/new"}
+        ]}]}
+        report = audit(state, {"publicEvents": []})
+        self.assertEqual([], report["missingOffers"])
+        self.assertEqual("ok", report["status"])
+
     def test_verified_resale_label_alias_is_represented(self):
         state, payload = self.fixture()
         report = audit(state, payload)
