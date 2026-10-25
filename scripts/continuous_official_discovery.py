@@ -841,7 +841,7 @@ def collect(session, existing):
         # a deterministic 1/7 of these through a fresh read each day.
         old_irrelevant = False
         if previous and previous.get("status") == "irrelevant" and item.url not in must_refresh_urls:
-            date_prefix = re.match(r"^\\s*(20\\d{2})[./-](\\d{1,2})[./-](\\d{1,2})", item.title)
+            date_prefix = re.match(r"^\s*(20\d{2})[./-](\d{1,2})[./-](\d{1,2})", item.title)
             if date_prefix and previous.get("title") == item.title:
                 try:
                     published = datetime(
