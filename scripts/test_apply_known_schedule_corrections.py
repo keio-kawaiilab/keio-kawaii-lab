@@ -160,6 +160,35 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
         self.assertEqual(corrected, again)
         self.assertEqual(0, second_report["fruitsJoyFcOfferAdded"])
 
+    def test_sweetest_story_observed_parts_have_consistent_external_scope_and_verified_times(self):
+        source = "https://sweetsteady.asobisystem.com/news/detail/92529"
+        rows = [
+            {"id": "observed-1", "group": "SWEET STEADY",
+             "eventDate": "2026-11-15",
+             "eventTitle": "SWEET STEADYのSWEETEST STORY 第1部",
+             "venue": "東京都 お台場特設会場（フジテレビ湾岸スタジオ）",
+             "openTime": "14:00", "startTime": "15:00",
+             "schedule": [{"date": "2026-11-15", "startTime": "18:00", "openTime": "17:00"}],
+             "url": source, "eventScope": "external", "ticketType": "現在受付なし"},
+            {"id": "observed-2", "group": "SWEET STEADY",
+             "eventDate": "2026-11-15",
+             "eventTitle": "SWEET STEADYのSWEETEST STORY 第2部",
+             "venue": "東京都 お台場特設会場（フジテレビ湾岸スタジオ）",
+             "openTime": "17:00", "startTime": "18:00", "url": source,
+             "eventScope": "kawaii-lab", "ticketType": "SWEET STEADY FC先行",
+             "applyStart": "2026-10-15T10:00", "applyEnd": None},
+        ]
+        corrected, report = apply_known_corrections(rows)
+        self.assertEqual(0, report["sweetestStoryPerformancesAdded"])
+        kept = [r for r in corrected if r["id"].startswith("observed-")]
+        self.assertEqual(2, len(kept))
+        self.assertTrue(all(r["eventScope"] == "external" for r in kept))
+        self.assertEqual({"15:00", "18:00"}, {r["startTime"] for r in kept})
+        self.assertTrue(all(r["schedule"][0]["startTime"] == r["startTime"] for r in kept))
+        self.assertEqual("2026-10-18T23:59", kept[1]["applyEnd"])
+        again, _ = apply_known_corrections(corrected)
+        self.assertEqual(corrected, again)
+
     def test_sweetest_story_keeps_two_future_starts_after_reception_ends(self):
         seed = {"id": "sweet", "group": "SWEET STEADY", "url": "https://sweetsteady.asobisystem.com/"}
         corrected, report = apply_known_corrections([seed])
