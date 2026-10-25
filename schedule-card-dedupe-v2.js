@@ -33,7 +33,12 @@
     var date=cardDate(card);
     var time=cardStartTime(card);
     if(!group||!date||!time)return"";
-    return[group,date,time].join("|");
+    // Public performance keys contain the normalized venue. Same artist,
+    // date and start time at two distinct venues are NOT duplicate shows.
+    var stored=clean(card.getAttribute("data-performance-key"));
+    var match=stored.match(/\\|time\\|[^|]+\\|([^|]+)/);
+    var venue=match?clean(match[1]):"";
+    return[group,date,time,venue].join("|");
   }
 
   function provider(option){
@@ -75,13 +80,41 @@
     return[d,p,r,u].join("|");
   }
 
+  function fcTitle(option){
+    var label=option.querySelector(".ticket-copy b");
+    if(!label)return"";
+    var clone=label.cloneNode(true);
+    [].slice.call(clone.querySelectorAll(".sale-state")).forEach(function(node){node.remove();});
+    var value=clean(clone.textContent).normalize("NFKC");
+    return /(?:FC|ファンクラブ).*?先行/i.test(value)&&!/アップグレード|リセール/.test(value)?value:"";
+  }
+
+  function genericFc(title){
+    return /^(?:FC(?:会員)?先行|ファンクラブ(?:会員)?先行)$/i.test(title);
+  }
+
   function dedupeOptions(card){
-    var seen={};
+    var seen={},fcSeen={};
     [].slice.call(card.querySelectorAll(".ticket-option")).forEach(function(option){
       var key=strongIdentity(card,option);
-      if(!key)return;
-      if(seen[key]){option.remove();return;}
-      seen[key]=true;
+      if(key&&seen[key]){option.remove();return;}
+      var title=fcTitle(option),url=normalizedUrl(option),r=period(option);
+      // Treat FC先行 and GROUP FC先行 as one offer ONLY if their actual
+      // application URL and displayed period are identical. Do not fold
+      // two different named fanclubs or application rounds.
+      var fcKey=title&&url&&r?[cardDate(card),url,r].join("|"):"";
+      var previous=fcKey?fcSeen[fcKey]:null;
+      var previousTitle=previous?fcTitle(previous):"";
+      if(previous&&(title===previousTitle||genericFc(title)||genericFc(previousTitle))){
+        if(genericFc(previousTitle)&&!genericFc(title)){
+          previous.remove();
+          fcSeen[fcKey]=option;
+          if(key)seen[key]=option;
+        }else{option.remove();}
+        return;
+      }
+      if(key)seen[key]=option;
+      if(fcKey&&!previous)fcSeen[fcKey]=option;
     });
   }
 
