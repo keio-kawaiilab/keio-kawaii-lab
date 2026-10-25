@@ -1129,6 +1129,34 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
     # October 18, not the November 15 performances. Preserve the two starts
     # separately and retain their expired reception as history.
     story_source = "https://sweetsteady.asobisystem.com/news/detail/92529"
+    # Enforce identical scope and truthful occurrence times for the two
+    # November 15 Fuji TV public recordings. Previously an inherited 18:00
+    # schedule inside the 15:00 record hid the matinee from one view.
+    for event in out:
+        if (event.get("group") != "SWEET STEADY"
+                or story_source not in _urls(event)
+                or _day(event) != "2026-11-15"
+                or "SWEETEST STORY" not in str(event.get("eventTitle") or event.get("title") or "").upper()):
+            continue
+        start = str(event.get("startTime") or "")
+        times = {"15:00": "14:00", "18:00": "17:00"}
+        if start not in times:
+            continue
+        event["openTime"] = times[start]
+        event["eventScope"] = "external"   # Fuji TV program production
+        event["eventScopeSourceUrl"] = "https://www.fujitv.co.jp/fujitv/news/20261129.html"
+        event["schedule"] = [{
+            "date": "2026-11-15", "venue": "東京都 お台場特設会場（フジテレビ湾岸スタジオ）",
+            "openTime": times[start], "startTime": start,
+        }]
+        if (event.get("ticketType") != "現在受付なし"
+                and ("FC" in str(event.get("ticketType") or "") or "先行" in str(event.get("ticketType") or ""))):
+            event["applyStart"] = "2026-10-15T10:00"
+            event["applyEnd"] = "2026-10-18T23:59"
+            event["applicationWindowVerified"] = True
+            event["deadlineVerified"] = True
+            event["applicationWindowSource"] = story_source
+            event["deadlineSource"] = story_source
     has_sweet_official = any(event.get("group") == "SWEET STEADY" and any(
         value.startswith("https://sweetsteady.asobisystem.com/") for value in _urls(event)
     ) for event in out)
