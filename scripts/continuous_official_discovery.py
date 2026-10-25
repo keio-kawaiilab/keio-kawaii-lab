@@ -841,6 +841,17 @@ def read_candidate(candidate, existing, headers):
     if not rows and not review:
         rows = (verified_unlabeled_window_rows(candidate, title, text, existing)
                 or confirmed_start_only_rows(candidate, title, text, existing))
+    if not rows and not review:
+        # An INFORMATION notice can announce a concert and merely mention
+        # 'tickets' in its fine print. Keep the verified performance even when
+        # the sale detail cannot yet be extracted.
+        rows = official_show_announcement_rows(candidate, title, text)
+        if rows and any(hint in title for hint in parser.TICKET_HINTS):
+            review = {
+                "group": candidate.group, "title": title, "url": candidate.url,
+                "reason": "公式公演は登録済みですが、記事内の受付条件はまだ抽出できません。受付情報を継続照合します。",
+                "sourcePublishedAt": parser.article_date_from_text(text),
+            }
     paired_resales = paired_resale_rows(candidate, text)
     if paired_resales:
         existing_keys = {(row.get("eventDate"), row.get("ticketType"), row.get("applyStart"), row.get("applyEnd")) for row in rows}
