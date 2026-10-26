@@ -104,6 +104,36 @@ class DistributedSnapshotMergerTests(unittest.TestCase):
         self.assertIn(official_url, event["urls"])
         self.assertEqual(1, result["distributedMergeDiagnostics"]["officialLinksPreserved"])
 
+    def test_replacement_keeps_same_run_core_offer_for_same_special_id(self):
+        core = {"events": [{
+            "id": "joint-benefit",
+            "sourceType": "official-special",
+            "eventCategory": "large-benefit",
+            "group": "KAWAII LAB.合同",
+            "eventDate": "2026-11-03",
+            "title": "CUTIE STREET／MORE STAR 大特典会",
+            "offers": [{
+                "sourceRowId": "more-star-window",
+                "provider": "official",
+                "applyStart": "2026-10-23T21:00",
+                "applyEnd": "2026-10-27T23:59",
+                "url": "https://morestar.asobisystem.com/live_information/detail/46447",
+            }],
+        }]}
+        stale_special = {"events": [{
+            "id": "joint-benefit",
+            "sourceType": "official-special",
+            "eventCategory": "large-benefit",
+            "group": "KAWAII LAB.合同",
+            "eventDate": "2026-11-03",
+            "title": "CUTIE STREET／MORE STAR 大特典会",
+            "offers": [],
+        }]}
+        result = merger.merge_payloads(core, {"events": []}, {"events": []}, stale_special)
+        event = next(row for row in result["events"] if row["id"] == "joint-benefit")
+        self.assertEqual("more-star-window", event["offers"][0]["sourceRowId"])
+        self.assertEqual(1, result["distributedMergeDiagnostics"]["coreSpecialOffersPreserved"])
+
     def test_final_merge_merges_same_official_resale_window(self):
         official_url = "https://candy-tune.asobisystem.com/news/detail/999"
         shared = {

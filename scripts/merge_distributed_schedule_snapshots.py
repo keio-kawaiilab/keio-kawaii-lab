@@ -109,6 +109,58 @@ def replace_special_rows(current: list[dict], snapshot: list[dict]) -> tuple[lis
     }
 
 
+def preserve_core_special_offers(core_rows: list[dict], merged_rows: list[dict]) -> int:
+    """Carry same-run official ticket offers into the special snapshot.
+
+    The core collector can attach a newly verified application window from an
+    official schedule/detail page to an existing canonical special entity.
+    The parallel special snapshot started earlier and may contain the same
+    canonical id without that offer.  Preserve only offers for the exact same
+    event id; later entity normalization still owns physical deduplication.
+    """
+    core_by_id = {
+        str(row.get("id") or ""): row
+        for row in core_rows
+        if row.get("id") and is_special_event(row)
+    }
+    touched = 0
+    for row in merged_rows:
+        core = core_by_id.get(str(row.get("id") or ""))
+        if not core:
+            continue
+        offers = [dict(value) for value in row.get("offers") or [] if isinstance(value, dict)]
+        seen = {
+            (
+                str(value.get("sourceRowId") or ""),
+                str(value.get("provider") or value.get("ticketProvider") or ""),
+                str(value.get("applyStart") or ""),
+                str(value.get("applyEnd") or ""),
+                str(value.get("url") or ""),
+            )
+            for value in offers
+        }
+        changed = False
+        for value in core.get("offers") or []:
+            if not isinstance(value, dict):
+                continue
+            key = (
+                str(value.get("sourceRowId") or ""),
+                str(value.get("provider") or value.get("ticketProvider") or ""),
+                str(value.get("applyStart") or ""),
+                str(value.get("applyEnd") or ""),
+                str(value.get("url") or ""),
+            )
+            if key in seen:
+                continue
+            offers.append(dict(value))
+            seen.add(key)
+            changed = True
+        if changed:
+            row["offers"] = offers
+            touched += 1
+    return touched
+
+
 def preserve_core_official_links(core_rows: list[dict], merged_rows: list[dict]) -> int:
     """Never lose authoritative official-schedule links during source replacement.
 
@@ -173,6 +225,7 @@ def merge_payloads(core: dict, playguide: dict, sukisuki_payload: dict, special_
     merged_events, report["special"] = replace_special_rows(
         merged_events, events(special_payload)
     )
+    core_special_offers_preserved = preserve_core_special_offers(core_rows, merged_events)
     official_links_preserved = preserve_core_official_links(core_rows, merged_events)
 
     # These guards run at the final distributed merge boundary so no collector
@@ -214,6 +267,7 @@ def merge_payloads(core: dict, playguide: dict, sukisuki_payload: dict, special_
     out["distributedMergeDiagnostics"] = {
         "mergedAt": out["updatedAt"],
         "sources": report,
+        "coreSpecialOffersPreserved": core_special_offers_preserved,
         "officialLinksPreserved": official_links_preserved,
         "birthdayYearGuard": birthday_guard_report,
         "ticketSemanticHardening": ticket_semantics_report,
