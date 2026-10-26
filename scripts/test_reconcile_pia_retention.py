@@ -69,6 +69,16 @@ class PiaRetentionTests(unittest.TestCase):
         self.assertTrue(r.is_pia(derived))
         self.assertTrue(r.known_active(derived, self.today))
 
+    def test_official_account_portal_reception_is_not_pia_owned(self):
+        official = self.event(
+            sourceType="auto",
+            primarySource="official",
+            ticketType="アップグレード抽選",
+            url="https://ticket-account.pia.jp/pia/digipoke/list.do",
+        )
+        self.assertFalse(r.is_pia(official))
+        self.assertFalse(r.known_active(official, self.today))
+
 
 if __name__ == "__main__":
     unittest.main()

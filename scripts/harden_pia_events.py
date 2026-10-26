@@ -10,6 +10,7 @@ from urllib.parse import parse_qs, urlparse
 
 import requests
 from bs4 import BeautifulSoup
+from clean_pia_refresh import is_ticket_pia_listing
 
 DATA_PATH = Path("data/live-events.json")
 TICKET_HISTORY_PATH = Path("data/ticket-history.json")
@@ -113,7 +114,7 @@ def is_pia(event: dict) -> bool:
     return (
         str(event.get("sourceType") or "").lower() == "pia"
         or str(event.get("primarySource") or "").lower() == "pia"
-        or any("t.pia.jp" in value for value in urls)
+        or any(is_ticket_pia_listing(value) for value in urls)
     )
 
 

@@ -8,6 +8,8 @@ from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+from clean_pia_refresh import is_ticket_pia_listing
+
 JST = ZoneInfo("Asia/Tokyo")
 DATA_PATH = Path("data/live-events.json")
 LOT_RE = re.compile(r"[?&]lotRlsCd=([A-Za-z0-9_-]+)")
@@ -18,7 +20,7 @@ def is_pia(event: dict) -> bool:
     return (
         str(event.get("sourceType") or "").lower() == "pia"
         or str(event.get("primarySource") or "").lower() == "pia"
-        or any("t.pia.jp" in url for url in urls)
+        or any(is_ticket_pia_listing(url) for url in urls)
     )
 
 
@@ -29,7 +31,7 @@ def source_key(event: dict) -> str | None:
         if match:
             return f"lot:{match.group(1)}"
     for url in urls:
-        if "t.pia.jp" in url:
+        if is_ticket_pia_listing(url):
             return f"url:{url.split('#', 1)[0]}"
     value = str(event.get("id") or "").strip()
     return f"id:{value}" if value else None

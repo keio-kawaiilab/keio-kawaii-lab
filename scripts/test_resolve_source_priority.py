@@ -105,6 +105,13 @@ class SourcePriorityTests(unittest.TestCase):
         out = r.resolve([official_upgrade, pia])
         self.assertEqual(len(out), 2)
 
+    def test_pia_account_portal_remains_an_official_upgrade_source(self):
+        official_upgrade = self.base(
+            ticketType="アップグレード抽選",
+            url="https://ticket-account.pia.jp/pia/digipoke/list.do",
+        )
+        self.assertEqual(r.source_kind(official_upgrade), "official")
+
     def test_additional_fc_round_and_second_performance_survive(self):
         first = self.base(ticketType="FC先行", applyStart="2026-08-01T12:00", applyEnd="2026-08-10T23:59", startTime="14:00")
         second = dict(first, applyStart="2026-08-15T12:00", applyEnd="2026-08-20T23:59")

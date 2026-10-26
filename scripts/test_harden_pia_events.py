@@ -210,6 +210,20 @@ class HardenPiaEventsTests(unittest.TestCase):
             self.assertFalse(kept)
             self.assertTrue(rejected)
 
+    def test_official_upgrade_account_portal_is_not_rejected_as_pia(self):
+        official = {
+            "id": "official-upgrade",
+            "group": "CUTIE STREET",
+            "title": "CUTIE STREET 佐野愛花 生誕祭 2026 アップグレード抽選",
+            "ticketType": "アップグレード抽選",
+            "eventDate": "2026-11-26",
+            "sourceType": "auto",
+            "url": "https://ticket-account.pia.jp/pia/digipoke/list.do",
+        }
+        kept, rejected = h.harden([official], DummySession("販売情報"))
+        self.assertEqual([row["id"] for row in kept], ["official-upgrade"])
+        self.assertEqual(rejected, [])
+
     def test_full_verified_period_keeps_actual_band(self):
         pia = {
             "id": "pia",

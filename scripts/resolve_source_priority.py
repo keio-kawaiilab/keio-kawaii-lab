@@ -7,6 +7,8 @@ import unicodedata
 from pathlib import Path
 from urllib.parse import urlsplit, urlunsplit
 
+from clean_pia_refresh import is_ticket_pia_listing
+
 DATA_PATH = Path("data/live-events.json")
 GROUP_NAMES = (
     "FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR",
@@ -55,7 +57,9 @@ def source_kind(event: dict) -> str:
     primary = normalize_text(event.get("primarySource")).lower()
     if source == "sukisuki" or primary == "sukisuki" or "sukisuki-shop.com" in urls:
         return "sukisuki"
-    if source == "pia" or primary == "pia" or "t.pia.jp" in urls:
+    if source == "pia" or primary == "pia" or any(
+        is_ticket_pia_listing(url) for url in source_urls(event)
+    ):
         return "pia"
     if source == "lawson" or primary == "lawson" or "l-tike.com" in urls:
         return "lawson"
