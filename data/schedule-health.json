@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-26T10:41:51.121631+09:00",
-  "candidateUpdatedAt": "2026-10-26T10:41:50+09:00",
-  "previousEventCount": 250,
-  "candidateEventCount": 251,
-  "protectedPreviousCount": 250,
+  "generatedAt": "2026-10-26T10:48:23.544266+09:00",
+  "candidateUpdatedAt": "2026-10-26T10:48:23+09:00",
+  "previousEventCount": 251,
+  "candidateEventCount": 250,
+  "protectedPreviousCount": 251,
   "errorCount": 0,
   "warningCount": 16,
   "errors": [],
@@ -26,7 +26,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event offer application window is not backed by an official page: KAWAII LAB.合同 / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし / offer 1",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event offer deadline is not verified by an official page: KAWAII LAB.合同 / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし / offer 1"
   ],
-  "candidateSha256": "e495e6c929d33b1cdb73187ac45e12d8181ac1858e664f36c8ea59a175e89f3d",
+  "candidateSha256": "940e7b1dd4275f5508c29a8003ecdc24d5b30d08b2605d625f0396d5cd030248",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/6eb8e3c96d6f97adcc18f9bebd263edc?_normalbrowse_=1",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -218,7 +218,7 @@
     "url:https://sweetsteady.asobisystem.com/news/detail/93491",
     "url:https://sweetsteady.asobisystem.com/news/detail/93708"
   ],
-  "reconciledBaseDateMessageCount": 1,
+  "reconciledBaseDateMessageCount": 2,
   "downgradedFalsePositiveCount": 0,
   "legacyProtectedErrorCount": 16,
   "legacyProtectedErrors": [
@@ -303,17 +303,17 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 25,
+  "quarantineCount": 27,
   "quarantineActions": [
     {
       "error": "active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 一般発売",
       "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 12
+      "restoredPreviousRows": 14
     },
     {
       "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
       "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 3
+      "restoredPreviousRows": 2
     },
     {
       "error": "canonical special event offer has no verified purchase/ticket window: KAWAII LAB.合同 / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし / offer 1",
@@ -338,6 +338,11 @@
     {
       "error": "future performance dates disappeared for pia:74753: 2026-10-28, 2026-10-29",
       "action": "restored previous rows for pia:74753",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "deadline moved earlier for url:https://morestar.asobisystem.com/live_information/detail/46447: 2026-10-27T23:59 -> None (manual review required)",
+      "action": "restored previous rows for url:https://morestar.asobisystem.com/live_information/detail/46447",
       "restoredPreviousRows": 2
     },
     {
@@ -384,6 +389,11 @@
       "error": "future performance dates disappeared for url:https://kawaiilab.asobisystem.com/news/detail/93888 [SWEET STEADY]: 2026-12-08",
       "action": "restored previous rows for url:https://kawaiilab.asobisystem.com/news/detail/93888",
       "restoredPreviousRows": 4
+    },
+    {
+      "error": "future performance dates disappeared for url:https://morestar.asobisystem.com/live_information/detail/46447 [MORE STAR]: 2026-11-03",
+      "action": "restored previous rows for url:https://morestar.asobisystem.com/live_information/detail/46447",
+      "restoredPreviousRows": 2
     },
     {
       "error": "future performance dates disappeared for url:https://sweetsteady.asobisystem.com/live_information/detail/43906 [SWEET STEADY]: 2026-12-03, 2026-12-06, 2026-12-18",
