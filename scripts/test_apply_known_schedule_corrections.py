@@ -976,6 +976,58 @@ class SweetOnlineReceptionRoundsTests(unittest.TestCase):
 
 
 class PiaNoticeAndSweetWinterUpgradeTests(unittest.TestCase):
+    def test_candy_niigata_official_and_playguide_rows_merge_into_one_performance(self):
+        from performance_entities import build_public_events
+
+        official = {
+            "id": "official-niigata", "group": "CANDY TUNE",
+            "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
+            "eventDate": "2026-11-17", "venue": "新潟県 新潟県民会館",
+            "openTime": None, "startTime": None,
+            "ticketType": "現在受付なし", "eventScope": "kawaii-lab",
+            "url": "https://candytune.asobisystem.com/live_information/detail/40736",
+            "schedule": [{"date": "2026-11-17", "venue": "新潟県 新潟県民会館",
+                          "openTime": "17:30", "startTime": "18:30"}],
+        }
+        playguide = {
+            "id": "eplus-niigata", "group": "CANDY TUNE",
+            "title": "JAPAN TOUR 2026 - AUTUMN",
+            "eventDate": "2026-11-17", "venue": "新潟県民会館 大ホール",
+            "openTime": "17:30", "startTime": "18:30",
+            "ticketType": "先着 ★一般発売", "applyStart": "2026-09-19T10:00",
+            "applyEnd": "2026-11-15T18:00", "eventScope": "kawaii-lab",
+            "url": "https://eplus.jp/sf/detail/3923750001",
+        }
+        bundled = {
+            "id": "eplus-bundle", "group": "CANDY TUNE", "title": "CANDY TUNE",
+            "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
+            "eventDate": "2026-11-17", "eventEndDate": "2026-11-19",
+            "venue": "複数会場（全2公演）", "startTime": "18:30",
+            "venues": ["新潟県民会館 大ホール", "本多の森北電ホール"],
+            "schedule": [
+                {"date": "2026-11-17", "venue": "新潟県民会館 大ホール",
+                 "openTime": "17:30", "startTime": "18:30"},
+                {"date": "2026-11-19", "venue": "本多の森北電ホール",
+                 "openTime": "17:30", "startTime": "18:30"},
+            ],
+            "ticketType": "現在受付なし", "eventScope": "kawaii-lab",
+            "url": "https://eplus.jp/sf/detail/3923750001",
+        }
+
+        corrected, report = apply_known_corrections([official, playguide, bundled])
+        public, _ = build_public_events(corrected)
+        niigata = [row for row in public if row.get("eventDate") == "2026-11-17"]
+
+        self.assertEqual(3, report["candyNiigataVenueFixed"])
+        self.assertEqual(1, len(niigata))
+        self.assertEqual("新潟県 新潟県民会館 大ホール", niigata[0]["venue"])
+        self.assertEqual(1, len(niigata[0]["offers"]))
+        self.assertEqual("先着 ★一般発売", niigata[0]["offers"][0]["ticketType"])
+
+        again, second_report = apply_known_corrections(corrected)
+        self.assertEqual(corrected, again)
+        self.assertEqual(0, second_report["candyNiigataVenueFixed"])
+
     def test_exact_pia_notice_offers_gain_result_time_without_new_band(self):
         row = {
             "id": "noel", "group": "FRUITS ZIPPER",
