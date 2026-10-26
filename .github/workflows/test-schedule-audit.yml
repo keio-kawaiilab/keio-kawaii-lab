@@ -48,7 +48,9 @@ jobs:
           python - <<'PY'
           import json
           import re
+          from datetime import datetime
           from pathlib import Path
+          from zoneinfo import ZoneInfo
 
           payload = json.loads(Path("data/live-events.json").read_text(encoding="utf-8"))
           public = payload.get("publicEvents") or []
@@ -65,7 +67,10 @@ jobs:
           assert event.get("openTime") == "17:30"
           offers = event.get("offers") or []
           ticket_types = {str(o.get("ticketType") or "") for o in offers if isinstance(o, dict)}
-          assert any("一般発売" in value for value in ticket_types), ticket_types
+          event_day = datetime.fromisoformat(str(event.get("eventDate"))[:10]).date()
+          today = datetime.now(ZoneInfo("Asia/Tokyo")).date()
+          if event_day >= today:
+              assert any("一般発売" in value for value in ticket_types), ticket_types
 
           html = Path("schedule.html").read_text(encoding="utf-8")
           cards = re.findall(
@@ -75,7 +80,8 @@ jobs:
           )
           matches = [card for card in cards if "仙台サンプラザホール" in card and "JAPAN TOUR 2026" in card]
           assert len(matches) == 1, f"expected one static Sendai tour card, got {len(matches)}"
-          assert "一般発売" in matches[0]
+          if event_day >= today:
+              assert "一般発売" in matches[0]
           assert "data.publicEvents||data.events" in html
           assert "function hasRequiredCandyTuneTour(data)" in html
           assert "if(!hasRequiredCandyTuneTour(data))throw new Error('integrity')" in html
