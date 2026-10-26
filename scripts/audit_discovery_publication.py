@@ -53,6 +53,29 @@ def _same_ticket_kind(expected, offer, entity):
             and offer.get("applicationWindowVerified") is True)
 
 
+def _group_represented(expected, entity, offer):
+    group = expected.get("group")
+    if group in {entity.get("group"), *(entity.get("participants") or [])}:
+        return True
+    # A group FC can sell a joint-tour date even when that group is explicitly
+    # not performing on that one date.  In that case participants must remain
+    # accurate, while the group-specific official offer must still satisfy the
+    # publication audit.  Require both the group-labelled ticket kind and the
+    # exact discovery article as provenance so unrelated offers cannot match.
+    expected_url = str(expected.get("url") or "")
+    source_urls = {
+        str(value) for value in (
+            entity.get("url"), *(entity.get("urls") or []),
+            offer.get("url"), *(offer.get("urls") or []),
+            offer.get("applicationWindowSource"), offer.get("deadlineSource"),
+        ) if value
+    }
+    return (bool(group)
+            and str(offer.get("ticketType") or "").startswith(f"{group} ")
+            and "/news/detail/" in expected_url
+            and expected_url in source_urls)
+
+
 def audit(state, payload, history=None):
     public = payload.get("publicEvents", [])
     missing, represented, archived = [], 0, 0
@@ -73,13 +96,13 @@ def audit(state, payload, history=None):
                     continue
             found = False
             for entity in public:
-                represented_groups = {entity.get("group"), *(entity.get("participants") or [])}
-                if expected.get("group") not in represented_groups or entity.get("eventDate") != expected.get("eventDate"):
+                if entity.get("eventDate") != expected.get("eventDate"):
                     continue
                 if expected.get("startTime") and entity.get("startTime") != expected["startTime"]:
                     continue
                 for offer in entity.get("offers", [entity]):
-                    if (_same_ticket_kind(expected, offer, entity)
+                    if (_group_represented(expected, entity, offer)
+                            and _same_ticket_kind(expected, offer, entity)
                             and all(offer.get(key) == expected.get(key) for key in ("applyStart", "applyEnd"))):
                         found = True
                         break

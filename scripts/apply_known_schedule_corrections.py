@@ -95,6 +95,30 @@ def repair_cutie_upgrade_reception(event: dict) -> dict:
     return out
 
 
+def repair_cutie_sano_upgrade_reception(event: dict) -> dict:
+    """Restore the verified NEWS 93573 upgrade window and performance time.
+
+    The official SCHEDULE row originally exposed START 17:30.  NEWS 93573
+    identifies that value as OPEN and confirms START 19:00.  A stale earlier
+    birthday-news enrichment can also leave the same window labelled as an
+    annual-FC presale, so correct only this exact article/day/window tuple.
+    """
+    article = "https://cutiestreet.asobisystem.com/news/detail/93573"
+    if not (
+        event.get("group") == "CUTIE STREET"
+        and article in [*_urls(event), event.get("discoverySourceUrl")]
+        and _day(event) == "2026-11-26"
+        and event.get("applyStart") == "2026-10-26T12:00"
+        and event.get("applyEnd") == "2026-10-29T23:59"
+    ):
+        return event
+    out = deepcopy(event)
+    out["ticketType"] = "アップグレード抽選"
+    out["openTime"] = "17:30"
+    out["startTime"] = "19:00"
+    return out
+
+
 def repair_sweet_shiraishi_central_fc(event: dict) -> dict:
     """NEWS 92282 is the central FC sale, not a second group-FC sale."""
     article = "https://kawaiilab.asobisystem.com/news/detail/92282"
@@ -1014,6 +1038,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "cutieHiroshimaPiaFixed": 0,
         "candyBirthdayFactsFilled": 0,
         "cutieUpgradeReceptionFixed": 0,
+        "cutieSanoUpgradeReceptionFixed": 0,
         "sweetShiraishiCentralFcFixed": 0,
         "piaResultNoticesAttached": 0,
         "sweetWinterUpgradeOffersAdded": 0,
@@ -1059,6 +1084,10 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         current = repair_cutie_upgrade_reception(event)
         if current != event:
             report["cutieUpgradeReceptionFixed"] += 1
+        before_sano_upgrade = current
+        current = repair_cutie_sano_upgrade_reception(current)
+        if current != before_sano_upgrade:
+            report["cutieSanoUpgradeReceptionFixed"] += 1
         before_central_fc = current
         current = repair_sweet_shiraishi_central_fc(current)
         if current != before_central_fc:

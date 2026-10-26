@@ -37,6 +37,34 @@ class DiscoveryPublicationTest(unittest.TestCase):
         self.assertEqual("ok", report["status"])
         self.assertEqual(1, report["representedOffers"])
 
+    def test_joint_nonparticipant_date_still_represents_group_fc_sales_route(self):
+        source = "https://sweetsteady.asobisystem.com/news/detail/93737"
+        expected = {
+            "group": "SWEET STEADY", "eventDate": "2099-04-03",
+            "startTime": "17:00", "ticketType": "SWEET STEADY FC先行",
+            "applyStart": "2098-10-26T12:00", "applyEnd": "2098-11-09T23:59",
+            "url": source,
+        }
+        entity = {
+            "group": "KAWAII LAB.合同", "eventDate": expected["eventDate"],
+            "startTime": expected["startTime"],
+            "participants": ["FRUITS ZIPPER", "CANDY TUNE", "CUTIE STREET", "MORE STAR"],
+            "offers": [{
+                "ticketType": expected["ticketType"],
+                "applyStart": expected["applyStart"], "applyEnd": expected["applyEnd"],
+                "url": source, "applicationWindowSource": source,
+            }],
+        }
+        state = {"observations": [{"expectedOffers": [expected]}]}
+        report = audit(state, {"publicEvents": [entity]})
+        self.assertEqual([], report["missingOffers"])
+        self.assertEqual(1, report["representedOffers"])
+
+        unrelated = copy.deepcopy(entity)
+        unrelated["offers"][0]["url"] = "https://example.com/not-the-official-article"
+        unrelated["offers"][0]["applicationWindowSource"] = unrelated["offers"][0]["url"]
+        self.assertEqual(1, len(audit(state, {"publicEvents": [unrelated]})["missingOffers"]))
+
     def test_verified_central_fc_label_alias_is_represented(self):
         expected = {
             "group": "SWEET STEADY", "eventDate": "2099-03-04",
