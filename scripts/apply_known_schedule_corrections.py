@@ -1060,6 +1060,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "cutieSanoUpgradeOfferAdded": 0,
         "sweetShiraishiCentralFcFixed": 0,
         "piaResultNoticesAttached": 0,
+        "sweetWinterUpgradeOffersFixed": 0,
         "sweetWinterUpgradeOffersAdded": 0,
         "candyOitaEplusLinkFixed": 0,
         "candyTokyoPresaleAdded": 0,
@@ -1292,8 +1293,35 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
     sweet_winter = "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026"
     sweet_winter_upgrade = "https://sweetsteady.asobisystem.com/news/detail/93491"
     if any(event.get("group") == "SWEET STEADY" and sweet_winter in _urls(event) for event in out):
+        # Earlier backfills used the building name while the official
+        # performance row includes its hall suffix.  They are the same
+        # occurrence; keep the verified official venue spelling so the offer
+        # joins that performance instead of creating a duplicate public card.
+        for event in out:
+            if not (event.get("group") == "SWEET STEADY" and sweet_winter in _urls(event)):
+                continue
+            venue = "神奈川県 厚木市文化会館 大ホール"
+            changed = False
+            if (_day(event) == "2026-11-13"
+                    and event.get("venue") == "神奈川県 厚木市文化会館"):
+                event["venue"] = venue
+                changed = True
+            for occurrence in event.get("schedule") or []:
+                if (isinstance(occurrence, dict)
+                        and str(occurrence.get("date") or "")[:10] == "2026-11-13"
+                        and occurrence.get("venue") == "神奈川県 厚木市文化会館"):
+                    occurrence["venue"] = venue
+                    changed = True
+            if isinstance(event.get("venues"), list):
+                normalized = [venue if value == "神奈川県 厚木市文化会館" else value
+                              for value in event["venues"]]
+                if normalized != event["venues"]:
+                    event["venues"] = normalized
+                    changed = True
+            if changed:
+                report["sweetWinterUpgradeOffersFixed"] += 1
         for day, venue, opened, start in (
-            ("2026-11-13", "神奈川県 厚木市文化会館", "17:30", "18:30"),
+            ("2026-11-13", "神奈川県 厚木市文化会館 大ホール", "17:30", "18:30"),
             ("2026-12-03", "大阪府 フェニーチェ堺 大ホール", "17:30", "18:30"),
             ("2026-12-06", "愛知県 Niterra日本特殊陶業市民会館フォレストホール", "16:00", "17:00"),
             ("2026-12-18", "東京都 SGC HALL ARIAKE", "17:00", "18:30"),
