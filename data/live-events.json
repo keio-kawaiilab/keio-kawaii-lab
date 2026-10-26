@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-26T14:53:06+09:00",
+  "checkedAt": "2026-10-26T14:54:47+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-24T06:39:08+09:00",
     "scannedPages": {
@@ -1292,7 +1292,6 @@
         "2b611de7ce6e0292",
         "fdbef6fe4dc52f4d"
       ],
-      "offers": [],
       "participants": [
         "CANDY TUNE",
         "SWEET STEADY",
@@ -1311,7 +1310,8 @@
       "eventEndDate": "2026-10-11",
       "venues": [
         "西日本総合展示場"
-      ]
+      ],
+      "offers": []
     },
     {
       "id": "0d4df5dd15d299dc",
@@ -6706,27 +6706,29 @@
     {
       "id": "a32f16b9ec9c9756",
       "group": "CUTIE STREET",
-      "title": "佐野愛花 生誕祭 2026 @SGCホール有明",
+      "title": "CUTIE STREET 佐野愛花 生誕祭 2026",
       "eventTitle": "佐野愛花 生誕祭 2026 @SGCホール有明",
       "ticketType": "現在受付なし",
       "applicationStatus": "none",
       "eventDate": "2026-11-26",
       "venue": "東京都 SGCホール有明",
       "startTime": "19:00",
-      "url": "https://cutiestreet.asobisystem.com/live_information/detail/46341",
+      "url": "https://cutiestreet.asobisystem.com/news/detail/90590",
       "urls": [
+        "https://cutiestreet.asobisystem.com/news/detail/90590",
         "https://cutiestreet.asobisystem.com/live_information/detail/46341",
+        "https://kawaiilab.asobisystem.com/news/detail/92827",
         "https://cutiestreet.asobisystem.com/news/detail/93573"
       ],
-      "sourceType": "official-schedule",
+      "sourceType": "derived",
       "primarySource": "official",
       "eventScope": "kawaii-lab",
       "applyStart": null,
       "applyEnd": null,
       "applicationDisplayMode": "schedule-only",
       "specialDetailsStatus": "ticket-details-found",
-      "sourcePublishedAt": "2026-10-26",
-      "discoverySourceUrl": "https://cutiestreet.asobisystem.com/news/detail/93573",
+      "sourcePublishedAt": "2026-09-28",
+      "discoverySourceUrl": "https://cutiestreet.asobisystem.com/news/detail/90590",
       "sourceCandidates": [
         "official"
       ],
@@ -6735,7 +6737,8 @@
       "ticketGuardRejected": true,
       "ticketGuardReason": "upgrade notice cannot be used as the source of an annual-fee ticket sale",
       "ticketGuardSource": "https://cutiestreet.asobisystem.com/news/detail/93573",
-      "openTime": "17:30"
+      "openTime": "17:30",
+      "sourceChannel": "recent-official-body"
     },
     {
       "id": "a536cc1b2de853db",
@@ -14325,9 +14328,9 @@
   ],
   "physicalEventInvariant": {
     "semanticNormalization": {
-      "sourceSpecialRows": 5,
+      "sourceSpecialRows": 8,
       "canonicalSpecialEvents": 5,
-      "rowsCollapsed": 0,
+      "rowsCollapsed": 3,
       "releaseEventEntities": 2,
       "largeBenefitEntities": 3,
       "alreadyCanonicalRows": 5,
@@ -14338,17 +14341,36 @@
       "duplicateEventIdRepairs": [],
       "onlinePlaceholderOccurrencesMerged": 0,
       "publicEvents": {
-        "sourceSpecialRows": 4,
-        "canonicalSpecialEvents": 4,
+        "sourceSpecialRows": 5,
+        "canonicalSpecialEvents": 5,
         "rowsCollapsed": 0,
         "releaseEventEntities": 2,
-        "largeBenefitEntities": 2,
-        "alreadyCanonicalRows": 4,
+        "largeBenefitEntities": 3,
+        "alreadyCanonicalRows": 5,
         "internalScheduleRowsCollapsed": 0,
-        "duplicateEventIdCollisions": 0,
+        "duplicateEventIdCollisions": 2,
         "duplicateEventRowsCollapsed": 0,
-        "duplicateEventIdsDisambiguated": 0,
-        "duplicateEventIdRepairs": [],
+        "duplicateEventIdsDisambiguated": 2,
+        "duplicateEventIdRepairs": [
+          {
+            "originalId": "performance-SWEET-STEADY-2026-11-13-time-18-30",
+            "sourceRows": 2,
+            "logicalRows": 2,
+            "assignedIds": [
+              "performance-SWEET-STEADY-2026-11-13-time-18-30",
+              "performance-SWEET-STEADY-2026-11-13-time-18-30--aeef99d488"
+            ]
+          },
+          {
+            "originalId": "performance-CANDY-TUNE-2026-11-17-time-18-30",
+            "sourceRows": 2,
+            "logicalRows": 2,
+            "assignedIds": [
+              "performance-CANDY-TUNE-2026-11-17-time-18-30",
+              "performance-CANDY-TUNE-2026-11-17-time-18-30--b6caaff426"
+            ]
+          }
+        ],
         "onlinePlaceholderOccurrencesMerged": 0
       }
     },
@@ -14469,16 +14491,16 @@
     "failures": []
   },
   "releasePreparation": {
-    "preparedAt": "2026-10-26T14:53:00+09:00",
-    "normalizedSpecialEvents": 6,
-    "duplicateIdsRemoved": 1,
+    "preparedAt": "2026-10-26T14:54:37+09:00",
+    "normalizedSpecialEvents": 4,
+    "duplicateIdsRemoved": 0,
     "duplicateOfficialFcOffersRemoved": 0,
     "duplicateOfficialFcOfferIdsRemoved": [],
     "duplicateOfficialResaleWindowsRemoved": 0,
     "retainedPreviousRows": 0,
     "retained": [],
-    "expandedPreviousSpecialEntities": 4,
-    "expandedCandidateSpecialEntities": 4,
+    "expandedPreviousSpecialEntities": 5,
+    "expandedCandidateSpecialEntities": 5,
     "supersededStaleJointRowsRemoved": 0,
     "supersededStaleJointRowIds": [],
     "supersededLegacyReleaseSeriesRemoved": 1,
@@ -14495,7 +14517,7 @@
       "cutieHiroshimaPiaFixed": 0,
       "candyBirthdayFactsFilled": 0,
       "cutieUpgradeReceptionFixed": 0,
-      "cutieSanoUpgradeReceptionFixed": 1,
+      "cutieSanoUpgradeReceptionFixed": 0,
       "cutieSanoScheduleTimeFixed": 0,
       "cutieSanoUpgradeOfferAdded": 0,
       "sweetShiraishiCentralFcFixed": 0,
@@ -14514,27 +14536,27 @@
       "sweetFcSecondStartFixed": 0,
       "giftMultiVenueFixed": 0,
       "giftMoreStarAdded": 0,
-      "moreStarSeventhFixed": 1,
-      "disasterReliefConcertFixed": 1,
+      "moreStarSeventhFixed": 0,
+      "disasterReliefConcertFixed": 0,
       "disasterReliefConcertRowsCollapsed": 0,
       "impossibleBirthdayYearRowsRemoved": 0,
       "candyOnline20261020RowsCollapsed": 0,
       "sweetOnline20261023RowsCollapsed": 0,
-      "sweetEbichu20261116RowsCollapsed": 1,
+      "sweetEbichu20261116RowsCollapsed": 0,
       "semanticTicketDuplicatesRemoved": 0,
       "semanticTicketDuplicateIds": [],
-      "cutiePacificoFcLotteryFixed": 1,
+      "cutiePacificoFcLotteryFixed": 0,
       "fruitsSynergy20261101RowsCollapsed": 0
     },
-    "guardRejectedRowsQuarantined": 0,
+    "guardRejectedRowsQuarantined": 1,
     "physicalEventInvariant": {
       "semanticNormalization": {
-        "sourceSpecialRows": 12,
+        "sourceSpecialRows": 8,
         "canonicalSpecialEvents": 5,
-        "rowsCollapsed": 7,
+        "rowsCollapsed": 3,
         "releaseEventEntities": 2,
         "largeBenefitEntities": 3,
-        "alreadyCanonicalRows": 4,
+        "alreadyCanonicalRows": 5,
         "internalScheduleRowsCollapsed": 0,
         "duplicateEventIdCollisions": 0,
         "duplicateEventRowsCollapsed": 0,
@@ -14542,12 +14564,12 @@
         "duplicateEventIdRepairs": [],
         "onlinePlaceholderOccurrencesMerged": 0,
         "publicEvents": {
-          "sourceSpecialRows": 4,
-          "canonicalSpecialEvents": 4,
+          "sourceSpecialRows": 5,
+          "canonicalSpecialEvents": 5,
           "rowsCollapsed": 0,
           "releaseEventEntities": 2,
-          "largeBenefitEntities": 2,
-          "alreadyCanonicalRows": 4,
+          "largeBenefitEntities": 3,
+          "alreadyCanonicalRows": 5,
           "internalScheduleRowsCollapsed": 0,
           "duplicateEventIdCollisions": 2,
           "duplicateEventRowsCollapsed": 0,
@@ -14585,8 +14607,8 @@
       "remainingDuplicates": []
     },
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-10-26T14:53:00+09:00",
-    "checkedAt": "2026-10-26T14:53:00+09:00"
+    "publicUpdatedAt": "2026-10-26T14:54:37+09:00",
+    "checkedAt": "2026-10-26T14:54:37+09:00"
   },
   "renderWarnings": [],
   "resaleDiagnostics": {
@@ -28661,7 +28683,7 @@
       }
     ]
   },
-  "updatedAt": "2026-10-26T14:53:06+09:00",
+  "updatedAt": "2026-10-26T14:54:47+09:00",
   "publicEvents": [
     {
       "id": "fa421e6fd8955232",
@@ -28752,7 +28774,6 @@
         "2b611de7ce6e0292",
         "fdbef6fe4dc52f4d"
       ],
-      "offers": [],
       "participants": [
         "CANDY TUNE",
         "SWEET STEADY",
@@ -28771,7 +28792,8 @@
       "eventEndDate": "2026-10-11",
       "venues": [
         "西日本総合展示場"
-      ]
+      ],
+      "offers": []
     },
     {
       "id": "27e476716f8b1c8b",
@@ -35966,7 +35988,7 @@
     {
       "id": "performance-CUTIE-STREET-2026-11-26-time-19-00-sgc",
       "group": "CUTIE STREET",
-      "title": "佐野愛花 生誕祭 2026 @SGCホール有明",
+      "title": "CUTIE STREET 佐野愛花 生誕祭 2026",
       "eventTitle": "佐野愛花 生誕祭 2026 @SGCホール有明",
       "eventDate": "2026-11-26",
       "venue": "SGCホール有明",
@@ -35979,12 +36001,12 @@
         "https://cutiestreet.asobisystem.com/news/detail/93573",
         "https://ticket-account.pia.jp/pia/digipoke/list.do"
       ],
-      "sourceType": "official-schedule",
+      "sourceType": "derived",
       "primarySource": "official",
       "eventScope": "kawaii-lab",
       "specialDetailsStatus": "ticket-details-found",
-      "sourcePublishedAt": "2026-10-26",
-      "discoverySourceUrl": "https://cutiestreet.asobisystem.com/news/detail/93573",
+      "sourcePublishedAt": "2026-09-28",
+      "discoverySourceUrl": "https://cutiestreet.asobisystem.com/news/detail/90590",
       "sourceCandidates": [
         "official"
       ],
@@ -35992,6 +36014,7 @@
       "ticketGuardReason": "upgrade notice cannot be used as the source of an annual-fee ticket sale",
       "ticketGuardSource": "https://cutiestreet.asobisystem.com/news/detail/93573",
       "openTime": "17:30",
+      "sourceChannel": "recent-official-body",
       "entityType": "performance",
       "performanceEntityVersion": 1,
       "performanceKey": "CUTIE STREET|2026-11-26|time|19:00|sgcホール有明",
@@ -42955,12 +42978,12 @@
     "duplicateEventIdRepairs": [],
     "onlinePlaceholderOccurrencesMerged": 0,
     "publicEvents": {
-      "sourceSpecialRows": 4,
-      "canonicalSpecialEvents": 4,
+      "sourceSpecialRows": 5,
+      "canonicalSpecialEvents": 5,
       "rowsCollapsed": 0,
       "releaseEventEntities": 2,
-      "largeBenefitEntities": 2,
-      "alreadyCanonicalRows": 4,
+      "largeBenefitEntities": 3,
+      "alreadyCanonicalRows": 5,
       "internalScheduleRowsCollapsed": 0,
       "duplicateEventIdCollisions": 0,
       "duplicateEventRowsCollapsed": 0,
