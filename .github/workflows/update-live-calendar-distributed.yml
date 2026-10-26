@@ -31,6 +31,8 @@ on:
       - "data/ticket-history-backfill-oneoffs.json"
       - "scripts/promoter_general_sale_guard.py"
       - "scripts/update_special_events.py"
+      - "scripts/merge_distributed_schedule_snapshots.py"
+      - "scripts/test_merge_distributed_schedule_snapshots.py"
       - "scripts/normalize_special_event_entities.py"
       - "scripts/enforce_physical_event_invariant.py"
       - "scripts/expand_special_event_entities.py"
@@ -650,3 +652,4 @@ jobs:
           else
             gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body "$body"
           fi
+
