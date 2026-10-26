@@ -238,7 +238,9 @@ def install_joint_offer_labels(page: str) -> str:
 
 
 def install_official_candidate_identity(page: str) -> str:
-    start = page.find("function officialCandidates(all,e){")
+    current_start = page.find("function officialCandidateIdentity(e){")
+    legacy_start = page.find("function officialCandidates(all,e){")
+    start = current_start if current_start >= 0 else legacy_start
     end = page.find("function repair(e,all){", start)
     if start < 0 or end < 0:
         raise RuntimeError("schedule official candidate matcher changed")
@@ -302,6 +304,8 @@ def main() -> int:
     missing = [token for token in required if token not in page]
     if missing:
         raise RuntimeError(f"schedule performance identity invariant missing: {missing}")
+    if page.count("function officialCandidateIdentity(e){") != 1:
+        raise RuntimeError("schedule official candidate matcher was installed more than once")
 
     performance_block = page[page.find("function performanceKey(e,o)"):page.find("function performanceKeyForEvent")]
     if "eventKind(e)" in performance_block:
