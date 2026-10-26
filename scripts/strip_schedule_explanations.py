@@ -41,7 +41,9 @@ def main() -> int:
     # disappears from canonical JSON or any upcoming tour card is lost from
     # the generated public snapshot.
     _validate_candy_data(Path("data/live-events.json"))
-    _validate_candy_html(Path("schedule.html"), __import__("datetime").date.today().isoformat())
+    # Use the timestamp embedded by build_schedule_snapshot.py.  The runner's
+    # UTC calendar can still be on the previous day after midnight in Japan.
+    _validate_candy_html(Path("schedule.html"), None)
     _performance_runtime.main()
     subprocess.run(["node", "scripts/test_performance_runtime.js"], check=True)
     return 0
