@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+from urllib.parse import urlparse
 
 DATA_PATH = Path("data/live-events.json")
 
@@ -14,11 +15,26 @@ def urls(event: dict) -> list[str]:
     return [x for x in result if x]
 
 
+def is_ticket_pia_listing(url: str) -> bool:
+    """Return whether URL is a collector-owned Ticket Pia listing.
+
+    The account portal is hosted at ``ticket-account.pia.jp``.  Official NEWS
+    articles can legitimately use that portal for an upgrade application, so
+    a substring check for ``t.pia.jp`` would incorrectly delete those official
+    receptions before the Pia refresh.  The collector-owned listing host is
+    exactly ``t.pia.jp``.
+    """
+    try:
+        return (urlparse(str(url)).hostname or "").lower() == "t.pia.jp"
+    except ValueError:
+        return False
+
+
 def pia_origin(event: dict) -> bool:
     return (
         str(event.get("sourceType") or "").lower() == "pia"
         or str(event.get("primarySource") or "").lower() == "pia"
-        or any("t.pia.jp" in url for url in urls(event))
+        or any(is_ticket_pia_listing(url) for url in urls(event))
     )
 
 

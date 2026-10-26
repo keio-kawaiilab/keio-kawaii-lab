@@ -32,6 +32,21 @@ class CleanPiaRefreshTests(unittest.TestCase):
         self.assertEqual([x["id"] for x in kept], ["official"])
         self.assertEqual(set(removed), {"direct", "derived"})
 
+    def test_drop_all_keeps_official_upgrade_linked_to_pia_account_portal(self):
+        events = [
+            {
+                "id": "official-upgrade",
+                "group": "CUTIE STREET",
+                "sourceType": "auto",
+                "ticketType": "アップグレード抽選",
+                "url": "https://ticket-account.pia.jp/pia/digipoke/list.do",
+                "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/93573",
+            },
+        ]
+        kept, removed = c.clean(events, drop_all=True)
+        self.assertEqual([x["id"] for x in kept], ["official-upgrade"])
+        self.assertEqual(removed, [])
+
 
 if __name__ == "__main__":
     unittest.main()
