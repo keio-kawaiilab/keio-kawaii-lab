@@ -144,7 +144,7 @@ class PrepareReleaseCandidateTests(unittest.TestCase):
         self.assertEqual(report["retainedPreviousRows"], 1)
         self.assertEqual({row.get("ticketProvider") for row in prepared["events"]}, {"lawson", "eplus"})
 
-    def test_stale_joint_special_is_removed_after_every_group_gets_its_own_row(self):
+    def test_explicit_joint_special_remains_one_joint_event_when_group_rows_arrive(self):
         title = "CANDY TUNE／SWEET STEADY 発売記念大特典会"
         shared = {
             "eventCategory": "large-benefit",
@@ -188,9 +188,19 @@ class PrepareReleaseCandidateTests(unittest.TestCase):
             self.NOW,
         )
 
-        groups = {row.get("group") for row in prepared["events"]}
-        self.assertEqual({"CANDY TUNE", "SWEET STEADY"}, groups)
-        self.assertNotIn("KAWAII LAB.合同", groups)
+        matching = [
+            event
+            for event in prepared["events"]
+            if event.get("eventDate") == "2026-09-22"
+            and "発売記念大特典会" in str(event.get("title") or "")
+        ]
+        self.assertEqual(1, len(matching))
+        event = matching[0]
+        self.assertEqual("KAWAII LAB.合同", event.get("group"))
+        self.assertEqual(
+            {"CANDY TUNE", "SWEET STEADY"},
+            set(event.get("participants") or []),
+        )
         self.assertGreaterEqual(report["supersededStaleJointRowsRemoved"], 1)
 
     def test_joint_special_stays_until_all_participant_rows_are_present(self):
