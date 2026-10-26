@@ -40,6 +40,10 @@ FALLBACK_RE = re.compile(
     r"\s*window\.KL_LIVE_FALLBACK\s*=\s*(\[.*\])\s*;\s*",
     re.DOTALL,
 )
+SNAPSHOT_DATE_RE = re.compile(
+    r'id=["\']snapshot-data["\'][^>]*>\s*\{\s*"updatedAt"\s*:\s*"(\d{4}-\d{2}-\d{2})',
+    re.DOTALL,
+)
 JST = timezone(timedelta(hours=9))
 
 
@@ -47,6 +51,11 @@ def jst_today_iso(now: datetime | None = None) -> str:
     """Return the publication date in the same timezone as the schedule builder."""
     current = now or datetime.now(JST)
     return current.astimezone(JST).date().isoformat()
+
+
+def snapshot_publication_date(html: str) -> str | None:
+    match = SNAPSHOT_DATE_RE.search(html)
+    return match.group(1) if match else None
 
 
 def _text(event: dict) -> str:
@@ -183,9 +192,11 @@ class TourCardParser(HTMLParser):
                 self.current_text.append(value)
 
 
-def validate_html(path: Path, from_date: str) -> None:
+def validate_html(path: Path, from_date: str | None) -> None:
+    html = path.read_text(encoding="utf-8")
     parser = TourCardParser()
-    parser.feed(path.read_text(encoding="utf-8"))
+    parser.feed(html)
+    from_date = from_date or snapshot_publication_date(html) or jst_today_iso()
     found = {
         day
         for day, text in parser.cards
@@ -206,7 +217,7 @@ def main() -> int:
     parser.add_argument("--data", default="data/live-events.json")
     parser.add_argument("--html")
     parser.add_argument("--fallback")
-    parser.add_argument("--from-date", default=jst_today_iso())
+    parser.add_argument("--from-date")
     args = parser.parse_args()
 
     validate_data(Path(args.data))
