@@ -1,16 +1,16 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-26T09:36:02.321221+09:00",
-  "candidateUpdatedAt": "2026-10-26T09:36:02+09:00",
-  "previousEventCount": 254,
-  "candidateEventCount": 254,
-  "protectedPreviousCount": 253,
+  "generatedAt": "2026-10-26T09:44:44.931706+09:00",
+  "candidateUpdatedAt": "2026-10-26T09:44:44+09:00",
+  "previousEventCount": 266,
+  "candidateEventCount": 266,
+  "protectedPreviousCount": 265,
   "errorCount": 0,
-  "warningCount": 18,
+  "warningCount": 20,
   "errors": [],
   "warnings": [
+    "quarantined one event/source update and kept the previous known-good data: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
     "quarantined one event/source update and kept the previous known-good data: canonical special event offer has no verified purchase/ticket window: KAWAII LAB.合同 / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし / offer 1",
-    "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 公式リセール",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: SWEET STEADY / SWEET STEADY 庄司なぎさ BIRTHDAY LIVE 2026 ～ DOKI DOKI ♡ NAGYU ADDICTION ～ / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: SWEET STEADY / 『SWEET STEADY JAPAN TOUR 2026』 / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:74753: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN / 現在受付なし",
@@ -24,11 +24,13 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no verified purchase/ticket window: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event applicationWindowSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event deadlineSource is not backed by an official page: MORE STAR / 『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント / 現在受付なし",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: missing or invalid eventScope: FRUITS ZIPPER / FRUITS ZIPPER / ぴあNICOSカード限定先行",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / ぴあNICOSカード限定先行",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event offer has no verified purchase/ticket window: KAWAII LAB.合同 / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし / offer 1",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event offer application window is not backed by an official page: KAWAII LAB.合同 / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし / offer 1",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event offer deadline is not verified by an official page: KAWAII LAB.合同 / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし / offer 1"
   ],
-  "candidateSha256": "6685cf7969c8f0e6e81db1ca815fbe194e4895a70be000a4c40c39a43891cc8c",
+  "candidateSha256": "42ca3eddc91b8925069fc632745879f87852f1549e510bb58f51c409a4e4ffdb",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/6eb8e3c96d6f97adcc18f9bebd263edc?_normalbrowse_=1",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -117,9 +119,11 @@
     "url:https://sweetsteady.asobisystem.com/news/detail/93491",
     "url:https://sweetsteady.asobisystem.com/news/detail/93708",
     "url:https://t.pia.jp/",
+    "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=09569",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14296",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19934",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=20981",
@@ -131,7 +135,10 @@
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30327",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30338",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=32739",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=36521",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=74753",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=79559",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=97161",
     "url:https://w.pia.jp/v/kls-xmas26upg6/?_normalbrowse_=1",
     "url:https://www.gift-idol.jp/"
   ],
@@ -224,7 +231,7 @@
   ],
   "reconciledBaseDateMessageCount": 0,
   "downgradedFalsePositiveCount": 0,
-  "legacyProtectedErrorCount": 16,
+  "legacyProtectedErrorCount": 18,
   "legacyProtectedErrors": [
     {
       "error": "active Pia row has no lotRlsCd detail URL: SWEET STEADY / SWEET STEADY 庄司なぎさ BIRTHDAY LIVE 2026 ～ DOKI DOKI ♡ NAGYU ADDICTION ～ / 一般発売",
@@ -292,6 +299,16 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     },
     {
+      "error": "missing or invalid eventScope: FRUITS ZIPPER / FRUITS ZIPPER / ぴあNICOSカード限定先行",
+      "label": "FRUITS ZIPPER / FRUITS ZIPPER / ぴあNICOSカード限定先行",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / ぴあNICOSカード限定先行",
+      "label": "FRUITS ZIPPER / FRUITS ZIPPER / ぴあNICOSカード限定先行",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
       "error": "canonical special event offer has no verified purchase/ticket window: KAWAII LAB.合同 / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし / offer 1",
       "label": "KAWAII LAB.合同 / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし",
       "action": "retained unchanged previous row; validator regression downgraded to warning"
@@ -310,14 +327,14 @@
   "quarantineCount": 2,
   "quarantineActions": [
     {
+      "error": "duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
+      "action": "restored previous Pia lot rows",
+      "restoredPreviousRows": 2
+    },
+    {
       "error": "canonical special event offer has no verified purchase/ticket window: KAWAII LAB.合同 / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし / offer 1",
       "action": "restored previous row",
       "restoredPreviousRows": 1
-    },
-    {
-      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 公式リセール",
-      "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
-      "restoredPreviousRows": 33
     }
   ],
   "rowFailuresCanBlockRelease": false,
