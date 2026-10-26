@@ -1,20 +1,20 @@
 {
   "version": 2,
-  "checkedAt": "2026-10-26T09:08:20+09:00",
+  "checkedAt": "2026-10-26T09:50:56+09:00",
   "status": "degraded",
   "safeForTicketFlowPublication": false,
-  "historyEntries": 3251,
+  "historyEntries": 3256,
   "historyNeverShrank": true,
   "officialNewsPagesPerSource": 15,
   "officialCandidateCounts": {
     "MORE STAR": 104,
-    "CANDY TUNE": 153,
-    "SWEET STEADY": 152,
+    "KAWAII LAB. FC": 153,
     "CUTIE STREET": 154,
-    "FRUITS ZIPPER": 155,
-    "KAWAII LAB. FC": 153
+    "SWEET STEADY": 152,
+    "CANDY TUNE": 153,
+    "FRUITS ZIPPER": 155
   },
-  "officialCollectorPendingReviewCount": 19,
+  "officialCollectorPendingReviewCount": 20,
   "officialCollectorPendingReviewUrls": [
     "https://candytune.asobisystem.com/news/detail/80464",
     "https://candytune.asobisystem.com/news/detail/91665",
@@ -31,12 +31,21 @@
     "https://kawaiilab.asobisystem.com/news/detail/84093",
     "https://kawaiilab.asobisystem.com/news/detail/84194",
     "https://kawaiilab.asobisystem.com/news/detail/93888",
+    "https://morestar.asobisystem.com/live_information/detail/46447",
     "https://morestar.asobisystem.com/news/detail/64527",
     "https://morestar.asobisystem.com/news/detail/65520",
     "https://morestar.asobisystem.com/news/detail/82787",
     "https://morestar.asobisystem.com/news/detail/83212"
   ],
-  "officialCollectorFailures": [],
+  "officialCollectorFailures": [
+    {
+      "group": "CANDY TUNE",
+      "url": "https://candytune.asobisystem.com/news/detail/80381",
+      "title": "2026.05.29 CANDY TUNE 3rd ANNIVERSARY LIVE 2026「CANDY CANDY CANDY PARTY」 リセールサービスのお知らせ",
+      "stage": "article",
+      "error": "500 Server Error: Internal Server Error for url: https://candytune.asobisystem.com/news/detail/80381"
+    }
+  ],
   "playguideFailures": [
     "lawson/CANDY TUNE: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=18)",
     "lawson/CUTIE STREET: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=18)",
@@ -50,7 +59,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-26T09:08:20+09:00",
+      "lastSuccessAt": "2026-10-26T09:50:56+09:00",
       "consecutiveFailures": 0
     },
     "eplus:CUTIE STREET": {
@@ -58,7 +67,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-26T09:08:20+09:00",
+      "lastSuccessAt": "2026-10-26T09:50:56+09:00",
       "consecutiveFailures": 0
     },
     "eplus:FRUITS ZIPPER": {
@@ -66,7 +75,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-26T09:08:20+09:00",
+      "lastSuccessAt": "2026-10-26T09:50:56+09:00",
       "consecutiveFailures": 0
     },
     "eplus:MORE STAR": {
@@ -74,7 +83,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-26T09:08:20+09:00",
+      "lastSuccessAt": "2026-10-26T09:50:56+09:00",
       "consecutiveFailures": 0
     },
     "eplus:SWEET STEADY": {
@@ -82,7 +91,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-26T09:08:20+09:00",
+      "lastSuccessAt": "2026-10-26T09:50:56+09:00",
       "consecutiveFailures": 0
     },
     "group-official:CANDY TUNE:news": {
@@ -90,7 +99,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-26T09:08:20+09:00",
+      "lastSuccessAt": "2026-10-26T09:50:56+09:00",
       "consecutiveFailures": 0
     },
     "group-official:CANDY TUNE:schedule": {
@@ -98,7 +107,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-26T09:08:20+09:00",
+      "lastSuccessAt": "2026-10-26T09:50:56+09:00",
       "consecutiveFailures": 0
     },
     "group-official:CUTIE STREET:news": {
@@ -106,7 +115,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-26T09:08:20+09:00",
+      "lastSuccessAt": "2026-10-26T09:50:56+09:00",
       "consecutiveFailures": 0
     },
     "group-official:CUTIE STREET:schedule": {
@@ -114,7 +123,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-26T09:08:20+09:00",
+      "lastSuccessAt": "2026-10-26T09:50:56+09:00",
       "consecutiveFailures": 0
     },
     "group-official:FRUITS ZIPPER:news": {
@@ -122,7 +131,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-26T09:08:20+09:00",
+      "lastSuccessAt": "2026-10-26T09:50:56+09:00",
       "consecutiveFailures": 0
     },
     "group-official:FRUITS ZIPPER:schedule": {
@@ -130,7 +139,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-26T09:08:20+09:00",
+      "lastSuccessAt": "2026-10-26T09:50:56+09:00",
       "consecutiveFailures": 0
     },
     "group-official:MORE STAR:news": {
@@ -138,7 +147,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-26T09:08:20+09:00",
+      "lastSuccessAt": "2026-10-26T09:50:56+09:00",
       "consecutiveFailures": 0
     },
     "group-official:MORE STAR:schedule": {
@@ -146,7 +155,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-26T09:08:20+09:00",
+      "lastSuccessAt": "2026-10-26T09:50:56+09:00",
       "consecutiveFailures": 0
     },
     "group-official:SWEET STEADY:news": {
@@ -154,7 +163,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-26T09:08:20+09:00",
+      "lastSuccessAt": "2026-10-26T09:50:56+09:00",
       "consecutiveFailures": 0
     },
     "group-official:SWEET STEADY:schedule": {
@@ -162,7 +171,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-26T09:08:20+09:00",
+      "lastSuccessAt": "2026-10-26T09:50:56+09:00",
       "consecutiveFailures": 0
     },
     "kawaii-lab-fc:news": {
@@ -170,7 +179,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-26T09:08:20+09:00",
+      "lastSuccessAt": "2026-10-26T09:50:56+09:00",
       "consecutiveFailures": 0
     },
     "lawson:CANDY TUNE": {
@@ -179,7 +188,7 @@
       "httpStatus": null,
       "message": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
       "lastSuccessAt": "2026-10-24T03:18:01+09:00",
-      "consecutiveFailures": 117
+      "consecutiveFailures": 118
     },
     "lawson:CUTIE STREET": {
       "url": "https://l-tike.com/artist/000000000973775/",
@@ -187,7 +196,7 @@
       "httpStatus": null,
       "message": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
       "lastSuccessAt": "2026-10-24T03:18:01+09:00",
-      "consecutiveFailures": 117
+      "consecutiveFailures": 118
     },
     "lawson:FRUITS ZIPPER": {
       "url": "https://l-tike.com/artist/000000000899959/",
@@ -195,7 +204,7 @@
       "httpStatus": null,
       "message": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
       "lastSuccessAt": "2026-10-24T03:18:01+09:00",
-      "consecutiveFailures": 117
+      "consecutiveFailures": 118
     },
     "lawson:MORE STAR": {
       "url": "https://l-tike.com/artist/000000001014114/",
@@ -203,7 +212,7 @@
       "httpStatus": null,
       "message": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
       "lastSuccessAt": "2026-10-24T03:18:01+09:00",
-      "consecutiveFailures": 117
+      "consecutiveFailures": 118
     },
     "lawson:SWEET STEADY": {
       "url": "https://l-tike.com/artist/000000000956758/",
@@ -211,14 +220,14 @@
       "httpStatus": null,
       "message": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
       "lastSuccessAt": "2026-10-24T03:18:01+09:00",
-      "consecutiveFailures": 117
+      "consecutiveFailures": 118
     },
     "pia:CANDY TUNE": {
       "url": "https://t.pia.jp/pia/artist/artists.do?artistsCd=N1260021",
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-26T09:08:20+09:00",
+      "lastSuccessAt": "2026-10-26T09:50:56+09:00",
       "consecutiveFailures": 0
     },
     "pia:CUTIE STREET": {
@@ -226,7 +235,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-26T09:08:20+09:00",
+      "lastSuccessAt": "2026-10-26T09:50:56+09:00",
       "consecutiveFailures": 0
     },
     "pia:FRUITS ZIPPER": {
@@ -234,7 +243,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-26T09:08:20+09:00",
+      "lastSuccessAt": "2026-10-26T09:50:56+09:00",
       "consecutiveFailures": 0
     },
     "pia:MORE STAR": {
@@ -242,7 +251,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-26T09:08:20+09:00",
+      "lastSuccessAt": "2026-10-26T09:50:56+09:00",
       "consecutiveFailures": 0
     },
     "pia:SWEET STEADY": {
@@ -250,7 +259,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-10-26T09:08:20+09:00",
+      "lastSuccessAt": "2026-10-26T09:50:56+09:00",
       "consecutiveFailures": 0
     }
   },
@@ -332,9 +341,10 @@
   "deepLinkFailureCount": 0,
   "errors": [
     "5 source endpoint(s) failed at least twice consecutively",
+    "official collector reported 1 failure(s)",
     "playguide collector reported 5 failure(s)"
   ],
   "warnings": [
-    "19 official ticket article(s) still require safe performance mapping"
+    "20 official ticket article(s) still require safe performance mapping"
   ]
 }
