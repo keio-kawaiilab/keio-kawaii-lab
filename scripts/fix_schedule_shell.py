@@ -26,6 +26,7 @@ PERFORMANCE_KEY_JS = (
     "function performanceKey(e,o){var day=String((o&&o.date)||e.eventDate||'').slice(0,10),"
     "time=String((o&&o.startTime)||e.startTime||'').replace(/\\s+/g,''),venue=performanceVenueKey(e,o),titleKey=performanceTitleKey(e),group=String(e.group||'').trim();"
     "if(fifthTour(e))return ['KAWAII-LAB-5TH-TOUR',day].join('|');"
+    "if(e.eventCategory==='release-event'||e.eventCategory==='large-benefit')return [group,day,'special'].join('|');"
     "if(day&&time)return [group,day,'time',time].join('|');"
     "return [group,day,'fallback',venue,titleKey].join('|')}"
 )
@@ -64,6 +65,11 @@ OPEN_ENDED_BAND_COPY_NEW = "b.innerHTML='<strong>'+esc((loc?loc+'｜':'')+shortT
 
 TITLE_BOUNDARY_OLD = r"FC\s*(?:会員)?先行|ファンクラブ|OFFICIAL FANCLUB"
 TITLE_BOUNDARY_NEW = r"FC\s*(?:会員)?先行|ファンクラブ(?:会員)?(?:先行|受付|チケット)|OFFICIAL FANCLUB"
+
+TITLE_DISPLAY_OLD = "function title(e){var t=String(e.eventTitle||e.title||'').trim()"
+TITLE_DISPLAY_NEW = "function title(e){var t=String(e.displayTitle||e.eventTitle||e.title||'').trim()"
+OFFER_LABEL_OLD = "label:providerName(e),url:u,ticketType:e.ticketType||'受付'"
+OFFER_LABEL_NEW = "label:(e.sourceGroup&&e.sourceGroup!=='KAWAII LAB.合同'?e.sourceGroup+' / ':'')+providerName(e),url:u,ticketType:e.ticketType||'受付'"
 
 PERFORMANCE_RECONCILE_JS = (
     "function performanceTimeMatchKeys(e,o){var day=String((o&&o.date)||e.eventDate||'').slice(0,10),venue=performanceVenueKey(e,o),base=[String(e.group||''),day,venue].join('|'),out=[],tour=String(e.officialTourUrl||'').trim().toLowerCase().replace(/[?#].*$/,'').replace(/\\/$/,'');if(tour)out.push(base+'|tour:'+tour);var t=performanceTitleKey(e);if(t)out.push(base+'|title:'+t);return out}"
@@ -205,6 +211,18 @@ def install_title_boundaries(page: str) -> str:
     return page.replace(TITLE_BOUNDARY_OLD, TITLE_BOUNDARY_NEW, 1)
 
 
+def install_joint_offer_labels(page: str) -> str:
+    if TITLE_DISPLAY_NEW not in page:
+        if TITLE_DISPLAY_OLD not in page:
+            raise RuntimeError("schedule title renderer changed; displayTitle could not be installed")
+        page = page.replace(TITLE_DISPLAY_OLD, TITLE_DISPLAY_NEW, 1)
+    if OFFER_LABEL_NEW not in page:
+        if OFFER_LABEL_OLD not in page:
+            raise RuntimeError("schedule offer renderer changed; joint offer labels could not be installed")
+        page = page.replace(OFFER_LABEL_OLD, OFFER_LABEL_NEW, 1)
+    return page
+
+
 def install_truthful_status(page: str) -> str:
     if STATUS_NEW in page:
         return page
@@ -230,6 +248,7 @@ def main() -> int:
     page = install_application_band_identity(page)
     page = install_open_ended_general_sales(page)
     page = install_title_boundaries(page)
+    page = install_joint_offer_labels(page)
     page = install_truthful_status(page)
     page = guard_performance_runtime.transform(page)
 

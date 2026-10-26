@@ -80,6 +80,19 @@ async function main(){
   h.api.renderCards(onlinePrepared);
   assert(h.get('cards').innerHTML.includes('オンライン特典会・先着販売'),'active online benefit reception is missing from the event card');
 
+  const joint={id:'joint-benefit',entityType:'special-event',group:'KAWAII LAB.合同',participants:['CUTIE STREET','MORE STAR'],displayTitle:'CUTIE STREET／MORE STAR 大特典会',eventCategory:'large-benefit',eventScope:'kawaii-lab',applicationDisplayMode:'offers',title:'1stアルバム発売記念！CUTIE STREET/MORE STAR大特典会を開催決定！',eventDate:'2099-09-19',startTime:'11:20',venue:'神奈川県 パシフィコ横浜 展示ホールD',url:official,offers:[
+    {sourceRowId:'cutie-hmv',sourceGroup:'CUTIE STREET',provider:'hmv',ticketType:'対象商品予約',url:'https://img.hmv.co.jp/cont/online/cutielandevent_lp/',applyStart:'2099-09-18T21:00',applyEnd:'2099-09-20T23:59'},
+    {sourceRowId:'more-hmv',sourceGroup:'MORE STAR',provider:'hmv',ticketType:'対象商品予約',url:'https://img.hmv.co.jp/cont/online/morestarevent_lp/',applyStart:'2099-09-18T21:00',applyEnd:'2099-09-20T23:59'}]};
+  const jointPrepared=h.api.prepare([joint]);
+  const jointModel=h.api.performanceModels(jointPrepared)[0];
+  assert.strictEqual(jointModel.title,joint.displayTitle,'canonical display title was ignored');
+  assert.strictEqual(jointModel.offers.length,2,'same-provider joint offers were collapsed');
+  h.api.renderCards(jointPrepared);
+  assert(h.get('cards').innerHTML.includes('cutielandevent_lp'),'CUTIE STREET HMV reception is missing');
+  assert(h.get('cards').innerHTML.includes('morestarevent_lp'),'MORE STAR HMV reception is missing');
+  assert(h.get('cards').innerHTML.includes('CUTIE STREET / HMV'),'CUTIE STREET HMV label is ambiguous');
+  assert(h.get('cards').innerHTML.includes('MORE STAR / HMV'),'MORE STAR HMV label is ambiguous');
+
   const model=h.api.performanceModels(prepared).find(m=>m.date==='2099-09-19'&&m.startTime==='18:00');
   assert.strictEqual(model.offers.length,3,'ticket history was lost');
   h.api.renderCards(prepared);assert(!h.get('cards').innerHTML.includes('受付終了'),'ended reception leaked into application cards');

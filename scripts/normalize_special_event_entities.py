@@ -170,6 +170,22 @@ def offer_from_event(event: dict) -> dict:
     return offer
 
 
+def offer_source_group(offer: dict) -> str:
+    """Recover the artist identity for a child offer carried by a joint event."""
+    explicit = text(offer.get("sourceGroup"))
+    if explicit and explicit != "KAWAII LAB.合同":
+        return explicit
+    joined = " ".join(all_urls(offer)).lower()
+    domains = (
+        ("fruitszipper.asobisystem.com", "FRUITS ZIPPER"),
+        ("candytune.asobisystem.com", "CANDY TUNE"),
+        ("sweetsteady.asobisystem.com", "SWEET STEADY"),
+        ("cutiestreet.asobisystem.com", "CUTIE STREET"),
+        ("morestar.asobisystem.com", "MORE STAR"),
+    )
+    return next((group for domain, group in domains if domain in joined), explicit)
+
+
 def offer_key(offer: dict) -> tuple:
     return (
         text(offer.get("provider") or offer.get("ticketProvider")).lower(),
@@ -472,6 +488,9 @@ def make_entity(items: list[dict]) -> dict:
         if is_offer_row(item):
             source_offers.append(offer_from_event(item))
         for offer in source_offers:
+            source_group = offer_source_group(offer)
+            if source_group:
+                offer["sourceGroup"] = source_group
             marker = offer_key(offer)
             score = offer_score(offer, item)
             if marker in seen_offers:

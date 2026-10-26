@@ -210,6 +210,10 @@ class SpecialEventEntityTests(unittest.TestCase):
         self.assertEqual("KAWAII LAB.合同", event["group"])
         self.assertEqual(["CUTIE STREET", "MORE STAR"], event["participants"])
         self.assertEqual(2, len(event["offers"]))
+        self.assertEqual(
+            {"CUTIE STREET", "MORE STAR"},
+            {offer["sourceGroup"] for offer in event["offers"]},
+        )
         self.assertIn("https://cutiestreet.asobisystem.com/news/detail/93713", event["urls"])
         self.assertIn("https://morestar.asobisystem.com/news/detail/93714", event["urls"])
         again, _ = normalize_payload(normalized)
@@ -683,6 +687,7 @@ class SpecialEventEntityTests(unittest.TestCase):
         normalized, _ = normalize_payload(payload)
         self.assertEqual(1, len(normalized["events"]))
         self.assertEqual(["hmv"], [offer["sourceRowId"] for offer in normalized["events"][0]["offers"]])
+        self.assertEqual("MORE STAR", normalized["events"][0]["offers"][0]["sourceGroup"])
 
 
 if __name__ == "__main__":
