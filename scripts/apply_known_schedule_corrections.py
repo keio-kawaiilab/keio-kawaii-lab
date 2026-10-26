@@ -1039,6 +1039,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "candyBirthdayFactsFilled": 0,
         "cutieUpgradeReceptionFixed": 0,
         "cutieSanoUpgradeReceptionFixed": 0,
+        "cutieSanoUpgradeOfferAdded": 0,
         "sweetShiraishiCentralFcFixed": 0,
         "piaResultNoticesAttached": 0,
         "sweetWinterUpgradeOffersAdded": 0,
@@ -1377,6 +1378,51 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
             "eventScope": "kawaii-lab",
         })
         report["fruitsJoyFcOfferAdded"] = 1
+
+    # NEWS 93573, checked 2026-10-26, opens the seat-upgrade lottery for the
+    # already represented Sano birthday performance.  The official schedule
+    # row has no ticket fields after refresh and the account portal is not a
+    # browsable Pia listing, so retain the verified NEWS provenance explicitly.
+    sano_upgrade_source = "https://cutiestreet.asobisystem.com/news/detail/93573"
+    sano_upgrade_application = "https://ticket-account.pia.jp/pia/digipoke/list.do"
+    has_sano_performance = any(
+        event.get("group") == "CUTIE STREET"
+        and _day(event) == "2026-11-26"
+        and event.get("startTime") == "19:00"
+        and "佐野愛花" in str(event.get("eventTitle") or event.get("title") or "")
+        for event in out
+    )
+    has_sano_upgrade_offer = any(
+        event.get("group") == "CUTIE STREET"
+        and _day(event) == "2026-11-26"
+        and event.get("startTime") == "19:00"
+        and event.get("ticketType") == "アップグレード抽選"
+        and event.get("applyStart") == "2026-10-26T12:00"
+        and event.get("applyEnd") == "2026-10-29T23:59"
+        for event in out
+    )
+    if has_sano_performance and not has_sano_upgrade_offer:
+        sano_title = "CUTIE STREET 佐野愛花 生誕祭 2026"
+        out.append({
+            "id": "known-cutie-sano-upgrade-20261126",
+            "group": "CUTIE STREET", "title": sano_title, "eventTitle": sano_title,
+            "eventDate": "2026-11-26", "eventEndDate": "2026-11-26",
+            "eventDates": ["2026-11-26"], "eventCount": 1,
+            "venue": "東京都 SGCホール有明", "openTime": "17:30", "startTime": "19:00",
+            "schedule": [{"date": "2026-11-26", "venue": "東京都 SGCホール有明",
+                          "openTime": "17:30", "startTime": "19:00"}],
+            "ticketType": "アップグレード抽選",
+            "applyStart": "2026-10-26T12:00", "applyEnd": "2026-10-29T23:59",
+            "applicationWindowVerified": True, "applicationWindowSource": sano_upgrade_source,
+            "deadlineVerified": True, "deadlineSource": sano_upgrade_source,
+            "applicationStatus": "open", "applicationDisplayMode": "band",
+            "url": sano_upgrade_application,
+            "urls": [sano_upgrade_application, sano_upgrade_source],
+            "primarySource": "official", "sourceType": "official",
+            "sourceChannel": "known-official-correction", "sourcePublishedAt": "2026-10-26",
+            "discoverySourceUrl": sano_upgrade_source, "eventScope": "kawaii-lab",
+        })
+        report["cutieSanoUpgradeOfferAdded"] = 1
 
 
     # Verified 2026-10-24 official announcement.  A four-group FC show must

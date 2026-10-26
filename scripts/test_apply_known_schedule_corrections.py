@@ -36,6 +36,25 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
         self.assertEqual(corrected, again)
         self.assertEqual(0, second_report["cutieSanoUpgradeReceptionFixed"])
 
+    def test_cutie_sano_upgrade_offer_is_backfilled_on_verified_performance(self):
+        performance = {
+            "id": "sano-birthday-performance", "group": "CUTIE STREET",
+            "title": "CUTIE STREET 佐野愛花 生誕祭 2026",
+            "eventDate": "2026-11-26", "venue": "SGCホール有明",
+            "openTime": "17:30", "startTime": "19:00",
+            "ticketType": "現在受付なし", "eventScope": "kawaii-lab",
+        }
+        corrected, report = apply_known_corrections([performance])
+        offer = next(row for row in corrected if row.get("id") == "known-cutie-sano-upgrade-20261126")
+        self.assertEqual("アップグレード抽選", offer["ticketType"])
+        self.assertEqual("2026-10-26T12:00", offer["applyStart"])
+        self.assertEqual("2026-10-29T23:59", offer["applyEnd"])
+        self.assertEqual(1, report["cutieSanoUpgradeOfferAdded"])
+
+        again, second_report = apply_known_corrections(corrected)
+        self.assertEqual(corrected, again)
+        self.assertEqual(0, second_report["cutieSanoUpgradeOfferAdded"])
+
     def test_kawaiilab_free_live_keeps_one_performance_and_each_official_fc_route(self):
         from performance_entities import build_public_events
 
