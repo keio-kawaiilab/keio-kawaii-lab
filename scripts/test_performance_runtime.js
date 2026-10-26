@@ -93,6 +93,16 @@ async function main(){
   assert(h.get('cards').innerHTML.includes('CUTIE STREET / HMV'),'CUTIE STREET HMV label is ambiguous');
   assert(h.get('cards').innerHTML.includes('MORE STAR / HMV'),'MORE STAR HMV label is ambiguous');
 
+  const sameDaySpecial={id:'same-day-special',entityType:'special-event',group:'CUTIE STREET',eventCategory:'large-benefit',eventScope:'kawaii-lab',title:'大特典会 in 大阪',eventDate:'2099-09-19',venue:'大阪府 某所※後日詳細発表',url:'https://cutiestreet.asobisystem.com/live_information/special'};
+  const festivalOfficial={id:'festival-official',entityType:'performance',group:'CUTIE STREET',eventScope:'external',title:'HIROSHIMA CONTI-NeW FeS 2099',eventDate:'2099-09-19',eventDates:['2099-09-19'],startTime:'11:30',venue:'広島県 広島グリーンアリーナ',schedule:[{date:'2099-09-19',startTime:'11:30',venue:'広島県 広島グリーンアリーナ'}],url:'https://cutiestreet.asobisystem.com/live_information/festival'};
+  const festivalTicket={id:'festival-ticket',group:'CUTIE STREET',eventScope:'external',title:'HIROSHIMA CONTI-NeW FeS 2099',eventDate:'2099-09-19',venue:'広島グリーンアリーナ',primarySource:'eplus',ticketProvider:'eplus',ticketType:'一般発売',applyStart:'2099-09-01T12:00',applyEnd:'2099-09-18T20:00',url:'https://eplus.jp/festival'};
+  const sameDayPrepared=h.api.prepare([sameDaySpecial,festivalOfficial,festivalTicket]);
+  const repairedFestival=sameDayPrepared.find(e=>e.id==='festival-ticket');
+  assert.strictEqual(repairedFestival.venue,'広島県 広島グリーンアリーナ','same-day special event contaminated the festival venue');
+  assert.strictEqual(repairedFestival.schedule[0].startTime,'11:30','same-day special event prevented the official festival time match');
+  const festivalModel=h.api.performanceModels(sameDayPrepared).find(m=>/HIROSHIMA CONTI-NeW/.test(m.title));
+  assert.strictEqual(festivalModel.venue,'広島県 広島グリーンアリーナ','festival card inherited the same-day special-event venue');
+
   const model=h.api.performanceModels(prepared).find(m=>m.date==='2099-09-19'&&m.startTime==='18:00');
   assert.strictEqual(model.offers.length,3,'ticket history was lost');
   h.api.renderCards(prepared);assert(!h.get('cards').innerHTML.includes('受付終了'),'ended reception leaked into application cards');

@@ -71,6 +71,20 @@ TITLE_DISPLAY_NEW = "function title(e){var t=String(e.displayTitle||e.eventTitle
 OFFER_LABEL_OLD = "label:providerName(e),url:u,ticketType:e.ticketType||'受付'"
 OFFER_LABEL_NEW = "label:(e.sourceGroup&&e.sourceGroup!=='KAWAII LAB.合同'?e.sourceGroup+' / ':'')+providerName(e),url:u,ticketType:e.ticketType||'受付'"
 
+# A playguide row may share its group/date with more than one official event.
+# In that case, date overlap alone is not enough to borrow the official venue:
+# it can attach a concert ticket to an unrelated release/benefit event held on
+# the same day.  Prefer an exact tour/title or venue identity; only use the old
+# date-only fallback when the playguide title is generic and exactly one
+# official candidate exists.
+OFFICIAL_CANDIDATES_JS = (
+    "function officialCandidateIdentity(e){var u=String(e.officialTourUrl||'').trim().toLowerCase().replace(/[?#].*$/,'').replace(/\\/$/,'');"
+    "if(u)return'tour:'+u;var t=performanceTitleKey(e);return t?'title:'+t:''}"
+    "function officialCandidates(all,e){if(!playguide(e))return[];var ed=days(e),id=officialCandidateIdentity(e),venue=performanceVenueKey(e,{}),candidates=all.filter(function(x){return!playguide(x)&&x.group===e.group&&overlap(ed,days(x))>0&&!generic(x)}),exact=candidates.filter(function(x){var xid=officialCandidateIdentity(x),xvenue=performanceVenueKey(x,{});return(id&&xid&&id===xid)||(venue&&xvenue&&venue===xvenue)});"
+    "if(exact.length)candidates=exact;else if(!generic(e)||candidates.length!==1)return[];"
+    "return candidates.sort(function(a,b){var ad=days(a),bd=days(b);return(overlap(ed,bd)+(ed.every(function(x){return bd.indexOf(x)>=0})?100:0))-(overlap(ed,ad)+(ed.every(function(x){return ad.indexOf(x)>=0})?100:0))})}"
+)
+
 PERFORMANCE_RECONCILE_JS = (
     "function performanceTimeMatchKeys(e,o){var day=String((o&&o.date)||e.eventDate||'').slice(0,10),venue=performanceVenueKey(e,o),base=[String(e.group||''),day,venue].join('|'),out=[],tour=String(e.officialTourUrl||'').trim().toLowerCase().replace(/[?#].*$/,'').replace(/\\/$/,'');if(tour)out.push(base+'|tour:'+tour);var t=performanceTitleKey(e);if(t)out.push(base+'|title:'+t);return out}"
     "function reconcilePerformanceTimes(all){var tm={},om={};function add(map,k,v){if(!v)return;(map[k]||(map[k]={}))[String(v).replace(/\\s+/g,'')]=1}function vals(map,ks){var x={};ks.forEach(function(k){Object.keys(map[k]||{}).forEach(function(v){x[v]=1})});return Object.keys(x)};"
@@ -223,6 +237,14 @@ def install_joint_offer_labels(page: str) -> str:
     return page
 
 
+def install_official_candidate_identity(page: str) -> str:
+    start = page.find("function officialCandidates(all,e){")
+    end = page.find("function repair(e,all){", start)
+    if start < 0 or end < 0:
+        raise RuntimeError("schedule official candidate matcher changed")
+    return page[:start] + OFFICIAL_CANDIDATES_JS + page[end:]
+
+
 def install_truthful_status(page: str) -> str:
     if STATUS_NEW in page:
         return page
@@ -249,6 +271,7 @@ def main() -> int:
     page = install_open_ended_general_sales(page)
     page = install_title_boundaries(page)
     page = install_joint_offer_labels(page)
+    page = install_official_candidate_identity(page)
     page = install_truthful_status(page)
     page = guard_performance_runtime.transform(page)
 
@@ -274,6 +297,7 @@ def main() -> int:
         "data-performance-key",
         "最終更新:",
         "data.checkedAt",
+        "function officialCandidateIdentity(e)",
     )
     missing = [token for token in required if token not in page]
     if missing:
