@@ -167,6 +167,24 @@ class OfficialScheduleTests(unittest.TestCase):
         self.assertEqual("18:00", event["startTime"])
         self.assertEqual("official-schedule", event["sourceType"])
 
+    def test_same_group_date_scope_does_not_merge_different_hosted_events(self):
+        existing = {
+            "id": "hosted-live",
+            "group": "CUTIE STREET",
+            "eventDate": "2026-12-06",
+            "title": "CUTIE STREET 単独ライブ",
+            "eventScope": "kawaii-lab",
+        }
+        row = OfficialRow(
+            "CUTIE STREET",
+            "2026-12-06",
+            "EVENT",
+            "『大特典会 in 大阪』",
+            "https://cutiestreet.asobisystem.com/live_information/detail/46743",
+            "kawaii-lab",
+        )
+        self.assertIsNone(match_existing(row, [existing]))
+
 
 if __name__ == "__main__":
     unittest.main()

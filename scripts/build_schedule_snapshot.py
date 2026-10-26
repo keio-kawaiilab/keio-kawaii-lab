@@ -207,7 +207,15 @@ def display_title(event: dict) -> str:
     if quoted:
         return quoted.group(1).strip()
     text = re.sub(r"^(?:20\d{2}年)?\d{1,2}月\d{1,2}日(?:\([^)]*\)|（[^）]*）)?\s*", "", text)
-    for group in ("FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR", "KAWAII LAB.合同", "KAWAII LAB."):
+    event_group = str(event.get("group") or "").strip()
+    groups = (
+        ("KAWAII LAB.合同", "KAWAII LAB.")
+        if event_group in {"KAWAII LAB.合同", "KAWAII LAB."}
+        else (event_group, "KAWAII LAB.")
+    )
+    for group in groups:
+        if not group:
+            continue
         text = re.sub(rf"^{re.escape(group)}\s*", "", text, flags=re.I)
     return text.strip(" !！-|｜–—") or f"{event.get('group') or 'KAWAII LAB.'} 公演"
 

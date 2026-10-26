@@ -269,8 +269,13 @@ def match_existing(row: OfficialRow, events: list[dict]) -> dict | None:
     selected = best(same_family)
     if selected:
         return selected
-    same_scope = [event for event in candidates if infer_event_scope(event) == row.event_scope]
-    return best(same_scope)
+    # A shared group/date/scope is not an event identity.  A group can have a
+    # hosted live and a large-benefit event on the same day, and accepting the
+    # only same-scope candidate here silently makes the second official row
+    # disappear.  Exact title/family matches above remain safe; otherwise add
+    # a separate schedule-backed event and let the later physical-occurrence
+    # reconciler merge it only when venue/time evidence actually agrees.
+    return None
 
 
 def enrich_existing(event: dict, row: OfficialRow, detail: dict) -> None:

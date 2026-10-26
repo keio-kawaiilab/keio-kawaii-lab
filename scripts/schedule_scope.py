@@ -18,7 +18,7 @@ EXTERNAL_HINT_RE = re.compile(
 HOSTED_HINT_RE = re.compile(
     r"(?:KAWAII LAB\.?\s*(?:Christmas SESSION|COLLECTION|SESSION|主催)|"
     r"JAPAN (?:ARENA )?TOUR|ANNIVERSARY LIVE|生誕祭|BIRTHDAY|"
-    r"大特典会|リリースイベント|発売記念イベント|オンライン(?:特典会|サイン会)|"
+    r"大特典(?:会|@|＠)|リリースイベント|発売記念イベント|オンライン(?:特典会|サイン会)|"
     r"ワンマン|単独(?:公演|ライブ)|ファンミーティング)",
     re.I,
 )
@@ -40,7 +40,7 @@ def normalized_text(event: dict) -> str:
 def special_event_category(title: object) -> str | None:
     """Return the public special-event category encoded in an official title."""
     text = unicodedata.normalize("NFKC", str(title or ""))
-    if "大特典会" in text:
+    if re.search(r"大特典(?:会|@|＠)", text):
         return "large-benefit"
     if re.search(r"リリースイベント|発売記念イベント", text):
         return "release-event"

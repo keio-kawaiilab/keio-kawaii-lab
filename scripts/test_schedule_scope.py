@@ -7,6 +7,7 @@ from schedule_scope import EXTERNAL, HOSTED, infer_event_scope, special_event_ca
 class ScheduleScopeTests(unittest.TestCase):
     def test_official_special_title_category(self):
         self.assertEqual("large-benefit", special_event_category("発売記念リリースイベント 大特典会"))
+        self.assertEqual("large-benefit", special_event_category("MORE STAR 大特典@パシフィコ横浜展示ホールD"))
         self.assertEqual("release-event", special_event_category("CD発売記念リリースイベント"))
 
     def test_hosted_events(self):
@@ -16,6 +17,7 @@ class ScheduleScopeTests(unittest.TestCase):
             "KAWAII LAB. Christmas SESSION 2026",
             "KAWAII LAB. COLLECTION produced by TGC",
             "5thシングルCD発売記念イベント 大特典会",
+            "MORE STAR 大特典@パシフィコ横浜展示ホールD",
         ):
             self.assertEqual(HOSTED, infer_event_scope({"title": title}), title)
 

@@ -45,6 +45,29 @@ class DistributedSnapshotMergerTests(unittest.TestCase):
         }
         self.assertTrue(merger.is_special_event(event))
 
+    def test_fresh_core_special_placeholder_survives_stale_special_snapshot(self):
+        placeholder = {
+            "id": "new-schedule-benefit",
+            "sourceType": "official-schedule",
+            "eventCategory": "large-benefit",
+            "group": "CUTIE STREET",
+            "eventDate": "2026-12-06",
+            "title": "『大特典会 in 大阪』",
+            "eventScope": "kawaii-lab",
+        }
+        result = merger.merge_payloads(
+            {"events": [placeholder]},
+            {"events": []},
+            {"events": []},
+            {"events": []},
+        )
+        self.assertIn("new-schedule-benefit", {row["id"] for row in result["events"]})
+        self.assertEqual(
+            1,
+            result["distributedMergeDiagnostics"]["sources"]["special"]
+            ["coreSchedulePlaceholdersPreserved"],
+        )
+
     def test_playguide_diagnostics_are_taken_from_playguide_snapshot(self):
         result = merger.merge_payloads(
             {"events": []},

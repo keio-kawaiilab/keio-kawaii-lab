@@ -51,6 +51,16 @@ class ScheduleSnapshotTests(unittest.TestCase):
             "SWEET STEADY 3rd ANNIVERSARY LIVE 2027",
         )
 
+    def test_joint_special_keeps_participant_names(self):
+        event = {
+            "group": "KAWAII LAB.合同",
+            "displayTitle": "CUTIE STREET／MORE STAR 大特典会",
+        }
+        self.assertEqual(
+            "CUTIE STREET／MORE STAR 大特典会",
+            b.display_title(event),
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -81,6 +81,34 @@ def replace_owned_rows(
     }
 
 
+def replace_special_rows(current: list[dict], snapshot: list[dict]) -> tuple[list[dict], dict]:
+    """Replace special-collector rows without deleting fresh core placeholders.
+
+    Every distributed collector starts from the previous release.  The core
+    official-schedule collector can discover a new special event during this
+    run, while the independently running special collector cannot yet have
+    that new schedule URL in its starting snapshot.  Treating every event with
+    a special category as special-owned therefore dropped the new core row at
+    merge time.  Official-schedule placeholders belong to the core collector;
+    the special collector owns the richer non-schedule rows.
+    """
+    previous_owned = [row for row in current if is_special_event(row)]
+    new_owned = [
+        row for row in snapshot
+        if is_special_event(row) and str(row.get("sourceType") or "").lower() != "official-schedule"
+    ]
+    core_schedule = [
+        row for row in current
+        if is_special_event(row) and str(row.get("sourceType") or "").lower() == "official-schedule"
+    ]
+    merged = [row for row in current if not is_special_event(row)] + core_schedule + new_owned
+    return dedupe_by_id(merged), {
+        "previous": len(previous_owned),
+        "replacement": len(new_owned),
+        "coreSchedulePlaceholdersPreserved": len(core_schedule),
+    }
+
+
 def preserve_core_official_links(core_rows: list[dict], merged_rows: list[dict]) -> int:
     """Never lose authoritative official-schedule links during source replacement.
 
@@ -142,8 +170,8 @@ def merge_payloads(core: dict, playguide: dict, sukisuki_payload: dict, special_
     merged_events, report["sukisuki"] = replace_owned_rows(
         merged_events, events(sukisuki_payload), is_sukisuki_event
     )
-    merged_events, report["special"] = replace_owned_rows(
-        merged_events, events(special_payload), is_special_event
+    merged_events, report["special"] = replace_special_rows(
+        merged_events, events(special_payload)
     )
     official_links_preserved = preserve_core_official_links(core_rows, merged_events)
 
