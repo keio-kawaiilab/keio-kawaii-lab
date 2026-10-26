@@ -33,6 +33,8 @@ CANDY_ONLINE_20261020_GOODS = {
     "https://sukisuki-shop.com/goods/6500000004622",
     "https://sukisuki-shop.com/goods/6500000004623",
 }
+CANDY_NIIGATA_DAY = "2026-11-17"
+CANDY_NIIGATA_VENUE = "新潟県 新潟県民会館 大ホール"
 CUTIE_PACIFICO_FC_ARTICLE = "https://cutiestreet.asobisystem.com/news/detail/93831"
 FRUITS_SYNERGY_DAY = "2026-11-01"
 FRUITS_SYNERGY_OFFICIAL = "https://fruitszipper.asobisystem.com/live_information/detail/44318"
@@ -247,6 +249,57 @@ def repair_candy_oita_eplus_link(offer: dict, group: str, day: str, start_time: 
             out[field] = correct
     out["linkCorrection"] = {"originalUrl": wrong, "sourceUrl": correct,
                              "reason": "2026-12-01 Oita is a separate occurrence from 2026-11-30 Fukuoka"}
+    return out
+
+
+def repair_candy_niigata_venue(event: dict) -> dict:
+    """Use one canonical venue for the 11/17 Niigata tour occurrence.
+
+    The official schedule shortens the venue to ``新潟県民会館`` while Pia,
+    Lawson and eplus all identify the booked room as ``大ホール``.  Without
+    this exact occurrence correction the official row and playguide offers
+    become two public cards even though their date and times are identical.
+    """
+    aliases = {
+        "新潟県 新潟県民会館",
+        "新潟県民会館",
+        "新潟県 新潟県民会館 大ホール",
+        "新潟県民会館 大ホール",
+    }
+    if event.get("group") != "CANDY TUNE":
+        return event
+    top_match = (
+        _day(event) == CANDY_NIIGATA_DAY
+        and str(event.get("startTime") or "") in {"", "18:30"}
+        and str(event.get("venue") or "") in aliases
+    )
+    schedule_matches = [
+        occurrence for occurrence in event.get("schedule") or []
+        if (
+            isinstance(occurrence, dict)
+            and str(occurrence.get("date") or "")[:10] == CANDY_NIIGATA_DAY
+            and str(occurrence.get("startTime") or event.get("startTime") or "") in {"", "18:30"}
+            and str(occurrence.get("venue") or "") in aliases
+        )
+    ]
+    if not top_match and not schedule_matches:
+        return event
+    out = deepcopy(event)
+    if top_match:
+        out["venue"] = CANDY_NIIGATA_VENUE
+    for occurrence in out.get("schedule") or []:
+        if (
+            isinstance(occurrence, dict)
+            and str(occurrence.get("date") or "")[:10] == CANDY_NIIGATA_DAY
+            and str(occurrence.get("startTime") or out.get("startTime") or "") in {"", "18:30"}
+            and str(occurrence.get("venue") or "") in aliases
+        ):
+            occurrence["venue"] = CANDY_NIIGATA_VENUE
+    if isinstance(out.get("venues"), list):
+        out["venues"] = [
+            CANDY_NIIGATA_VENUE if venue in aliases else venue
+            for venue in out["venues"]
+        ]
     return out
 
 
@@ -1063,6 +1116,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "sweetWinterUpgradeOffersFixed": 0,
         "sweetWinterUpgradeOffersAdded": 0,
         "candyOitaEplusLinkFixed": 0,
+        "candyNiigataVenueFixed": 0,
         "candyTokyoPresaleAdded": 0,
         "sweetestStoryPerformancesAdded": 0,
         "fruitsJoyFanclubLiveAdded": 0,
@@ -1128,6 +1182,10 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         current = repair_candy_oita_eplus_link(current, current.get("group"), _day(current), current.get("startTime"))
         if current != before_oita:
             report["candyOitaEplusLinkFixed"] += 1
+        before_niigata = current
+        current = repair_candy_niigata_venue(current)
+        if current != before_niigata:
+            report["candyNiigataVenueFixed"] += 1
         before_birthday = current
         current = _repair_candy_birthday_facts(current)
         if current != before_birthday:
