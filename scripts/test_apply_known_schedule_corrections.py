@@ -6,11 +6,43 @@ from apply_known_schedule_corrections import (
     DISASTER_RELIEF_PIA,
     MORE_STAR_7TH_FC,
     MORE_STAR_7TH_NEWS,
+    SWEET_IDOL_HALLOWEEN_OFFICIAL,
+    SWEET_IDOL_HALLOWEEN_SCHEDULE,
+    SWEET_IDOL_HALLOWEEN_TICKET,
     apply_known_corrections,
 )
 
 
 class KnownScheduleCorrectionsTest(unittest.TestCase):
+    def test_sweet_idol_halloween_event_span_is_not_published_as_sale_window(self):
+        stale = {
+            "id": "misread-festival-span",
+            "group": "SWEET STEADY",
+            "title": "『IDOL HALLOWEEN JAPAN 2026 Supported by Malymoon』",
+            "eventDate": "2026-10-30",
+            "venue": "埼玉県 埼玉スタジアム2002",
+            "ticketType": "チケット受付",
+            "applyStart": "2026-10-30",
+            "applyEnd": "2026-11-01",
+            "url": SWEET_IDOL_HALLOWEEN_SCHEDULE,
+            "sourceType": "auto",
+            "sourceChannel": "official-continuous",
+            "applicationWindowVerified": True,
+        }
+        corrected, report = apply_known_corrections([stale])
+        self.assertEqual(1, report["sweetIdolHalloweenSaleFixed"])
+        self.assertEqual("一般発売", corrected[0]["ticketType"])
+        self.assertEqual("2026-09-25T17:00", corrected[0]["applyStart"])
+        self.assertEqual("2026-10-29T23:59", corrected[0]["applyEnd"])
+        self.assertEqual(SWEET_IDOL_HALLOWEEN_TICKET, corrected[0]["url"])
+        self.assertEqual(SWEET_IDOL_HALLOWEEN_OFFICIAL, corrected[0]["applicationWindowSource"])
+        self.assertTrue(corrected[0]["deadlineVerified"])
+        self.assertIn(SWEET_IDOL_HALLOWEEN_SCHEDULE, corrected[0]["urls"])
+
+        again, second_report = apply_known_corrections(corrected)
+        self.assertEqual(corrected, again)
+        self.assertEqual(0, second_report["sweetIdolHalloweenSaleFixed"])
+
     def test_official_upgrade_title_overrides_misread_annual_course_eligibility(self):
         stale = {
             "id": "body-discovery-upgrade",

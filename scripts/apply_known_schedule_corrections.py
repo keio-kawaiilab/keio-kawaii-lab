@@ -45,6 +45,10 @@ FRUITS_SYNERGY_GOODS = {
 CHRISTMAS_SESSION_OFFICIAL = "https://kawaiilab.asobisystem.com/news/detail/84218"
 CHRISTMAS_SESSION_PIA = "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30327"
 CHRISTMAS_SESSION_DAYS = {"2026-12-12", "2026-12-13"}
+SWEET_IDOL_HALLOWEEN_DAY = "2026-10-30"
+SWEET_IDOL_HALLOWEEN_SCHEDULE = "https://sweetsteady.asobisystem.com/live_information/detail/46633"
+SWEET_IDOL_HALLOWEEN_OFFICIAL = "https://idolhalloweenjapan.com/"
+SWEET_IDOL_HALLOWEEN_TICKET = "https://ticketdive.com/event/IHJ2026"
 
 HAKATA_PARTS = [
     {"part": "第1部", "content": "2ショットチェキ撮影会（FC限定）", "start": "10:00", "end": "11:00", "receptionStart": "09:40", "receptionEnd": "10:40"},
@@ -72,6 +76,53 @@ def _urls(event: dict) -> list[str]:
 
 def _day(event: dict) -> str:
     return str(event.get("eventDate") or "")[:10]
+
+
+def _repair_sweet_idol_halloween_sale(event: dict) -> dict:
+    """Replace a festival-date range misread as a ticket window.
+
+    SWEET STEADY's schedule detail prints the festival span (10/30-11/1)
+    beside its ticket link. That span is not a reception period. The
+    organizer's official page instead states general sale from 9/25 17:00
+    until the day before each performance, making 10/29 23:59 the verified
+    deadline for SWEET STEADY's 10/30 appearance.
+    """
+    urls = _urls(event)
+    title = str(event.get("eventTitle") or event.get("title") or "")
+    if not (
+        event.get("group") == "SWEET STEADY"
+        and _day(event) == SWEET_IDOL_HALLOWEEN_DAY
+        and (SWEET_IDOL_HALLOWEEN_SCHEDULE in urls or "IDOL HALLOWEEN JAPAN 2026" in title)
+        and str(event.get("applyStart") or "")[:10] == "2026-10-30"
+        and str(event.get("applyEnd") or "")[:10] == "2026-11-01"
+    ):
+        return deepcopy(event)
+    out = deepcopy(event)
+    out.update({
+        "id": "known-sweet-idol-halloween-20261030-general",
+        "ticketType": "一般発売",
+        "ticketProvider": "ticketdive",
+        "applyStart": "2026-09-25T17:00",
+        "applyEnd": "2026-10-29T23:59",
+        "url": SWEET_IDOL_HALLOWEEN_TICKET,
+        "urls": list(dict.fromkeys([
+            SWEET_IDOL_HALLOWEEN_TICKET,
+            SWEET_IDOL_HALLOWEEN_SCHEDULE,
+            SWEET_IDOL_HALLOWEEN_OFFICIAL,
+            *urls,
+        ])),
+        "sourceType": "official-organizer",
+        "sourceChannel": "known-official-correction",
+        "primarySource": "official",
+        "sourceCandidates": ["official", "ticketdive"],
+        "applicationStatus": "open",
+        "applicationWindowVerified": True,
+        "applicationWindowSource": SWEET_IDOL_HALLOWEEN_OFFICIAL,
+        "deadlineVerified": True,
+        "deadlineSource": SWEET_IDOL_HALLOWEEN_OFFICIAL,
+        "eventScope": "external",
+    })
+    return out
 
 
 def repair_cutie_upgrade_reception(event: dict) -> dict:
@@ -1162,6 +1213,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "semanticTicketDuplicatesRemoved": 0,
         "semanticTicketDuplicateIds": [],
         "cutiePacificoFcLotteryFixed": 0,
+        "sweetIdolHalloweenSaleFixed": 0,
     }
 
     for event in source:
@@ -1237,6 +1289,11 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         current = _repair_sweet_second_fc(current)
         if current.get("applyStart") != before_start:
             report["sweetFcSecondStartFixed"] += 1
+
+        before_idol_halloween = current
+        current = _repair_sweet_idol_halloween_sale(current)
+        if current != before_idol_halloween:
+            report["sweetIdolHalloweenSaleFixed"] += 1
 
         before_more_star_seventh = (
             current.get("eventDate"),
