@@ -97,6 +97,28 @@ def repair_cutie_upgrade_reception(event: dict) -> dict:
     return out
 
 
+def repair_title_declared_upgrade_reception(event: dict) -> dict:
+    """Prefer an official NEWS title that explicitly declares an upgrade lottery.
+
+    The generic article parser can mistake annual-course eligibility text in
+    the article body for the sale type.  When the official title itself says
+    ``アップグレード抽選``, that label is the authoritative reception type.
+    Restrict the repair to official-origin rows so playguide labels and
+    unrelated text are never rewritten.
+    """
+    title = str(event.get("title") or "")
+    source = str(event.get("primarySource") or event.get("sourceType") or "").lower()
+    if not (
+        "アップグレード抽選" in title
+        and event.get("ticketType") == "年会費コース会員先行"
+        and source in {"official", "auto", "official-schedule"}
+    ):
+        return event
+    out = deepcopy(event)
+    out["ticketType"] = "アップグレード抽選"
+    return out
+
+
 def repair_cutie_sano_upgrade_reception(event: dict) -> dict:
     """Restore the verified NEWS 93573 upgrade window and performance time.
 
@@ -1108,6 +1130,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "cutieHiroshimaPiaFixed": 0,
         "candyBirthdayFactsFilled": 0,
         "cutieUpgradeReceptionFixed": 0,
+        "titleDeclaredUpgradeReceptionFixed": 0,
         "cutieSanoUpgradeReceptionFixed": 0,
         "cutieSanoScheduleTimeFixed": 0,
         "cutieSanoUpgradeOfferAdded": 0,
@@ -1158,6 +1181,10 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         current = repair_cutie_upgrade_reception(event)
         if current != event:
             report["cutieUpgradeReceptionFixed"] += 1
+        before_title_upgrade = current
+        current = repair_title_declared_upgrade_reception(current)
+        if current != before_title_upgrade:
+            report["titleDeclaredUpgradeReceptionFixed"] += 1
         before_sano_upgrade = current
         current = repair_cutie_sano_upgrade_reception(current)
         if current != before_sano_upgrade:
