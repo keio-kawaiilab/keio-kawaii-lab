@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-26T20:29:17+09:00",
+  "checkedAt": "2026-10-26T21:20:11+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-24T06:39:08+09:00",
     "scannedPages": {
@@ -3990,7 +3990,6 @@
       "sourceRowIds": [
         "17e77f47e1bb119c"
       ],
-      "offers": [],
       "schedule": [
         {
           "date": "2026-11-08",
@@ -4004,7 +4003,8 @@
       "eventEndDate": "2026-11-08",
       "venues": [
         "【リリースイベント】石川県 イオンモール白山 平面駐車場"
-      ]
+      ],
+      "offers": []
     },
     {
       "id": "known-fruits-joy-fanclub-live-20261108",
@@ -14060,9 +14060,9 @@
   ],
   "physicalEventInvariant": {
     "semanticNormalization": {
-      "sourceSpecialRows": 4,
+      "sourceSpecialRows": 7,
       "canonicalSpecialEvents": 4,
-      "rowsCollapsed": 0,
+      "rowsCollapsed": 3,
       "releaseEventEntities": 2,
       "largeBenefitEntities": 2,
       "alreadyCanonicalRows": 4,
@@ -14073,12 +14073,12 @@
       "duplicateEventIdRepairs": [],
       "onlinePlaceholderOccurrencesMerged": 0,
       "publicEvents": {
-        "sourceSpecialRows": 5,
-        "canonicalSpecialEvents": 5,
+        "sourceSpecialRows": 4,
+        "canonicalSpecialEvents": 4,
         "rowsCollapsed": 0,
         "releaseEventEntities": 2,
-        "largeBenefitEntities": 3,
-        "alreadyCanonicalRows": 5,
+        "largeBenefitEntities": 2,
+        "alreadyCanonicalRows": 4,
         "internalScheduleRowsCollapsed": 0,
         "duplicateEventIdCollisions": 0,
         "duplicateEventRowsCollapsed": 0,
@@ -14204,65 +14204,16 @@
     "failures": []
   },
   "releasePreparation": {
-    "preparedAt": "2026-10-26T20:28:38+09:00",
+    "preparedAt": "2026-10-26T21:20:02+09:00",
     "normalizedSpecialEvents": 3,
-    "duplicateIdsRemoved": 1,
+    "duplicateIdsRemoved": 0,
     "duplicateOfficialFcOffersRemoved": 0,
     "duplicateOfficialFcOfferIdsRemoved": [],
     "duplicateOfficialResaleWindowsRemoved": 0,
-    "retainedPreviousRows": 6,
-    "retained": [
-      {
-        "id": "2cd66df3ae3baa26",
-        "group": "CANDY TUNE",
-        "title": "CANDY TUNE",
-        "ticketType": "現在受付なし",
-        "provider": "eplus",
-        "applyEnd": null
-      },
-      {
-        "id": "46b77d47cc8b36da",
-        "group": "CANDY TUNE",
-        "title": "CANDY TUNE",
-        "ticketType": "現在受付なし",
-        "provider": "eplus",
-        "applyEnd": null
-      },
-      {
-        "id": "a32f16b9ec9c9756",
-        "group": "CUTIE STREET",
-        "title": "CUTIE STREET 佐野愛花 生誕祭 2026",
-        "ticketType": "現在受付なし",
-        "provider": null,
-        "applyEnd": null
-      },
-      {
-        "id": "1a44bbbef5fe94eb",
-        "group": "CANDY TUNE",
-        "title": "2026.10.17 2026年12月3日(木) 「CANDY TUNE 村川緋杏 生誕祭 2026」開催決定！KAWAII LAB. OFFICIAL FANCLUB会員先行開始！",
-        "ticketType": "FC先行",
-        "provider": null,
-        "applyEnd": "2026-10-22T23:59"
-      },
-      {
-        "id": "96c635da5154e9fc",
-        "group": "MORE STAR",
-        "title": "2026.08.22 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード抽選受付のお知らせ",
-        "ticketType": "アップグレード抽選",
-        "provider": null,
-        "applyEnd": "2026-08-30T23:59"
-      },
-      {
-        "id": "d84b519c1890d568",
-        "group": "MORE STAR",
-        "title": "2026.08.22 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード抽選受付のお知らせ",
-        "ticketType": "アップグレード抽選",
-        "provider": null,
-        "applyEnd": "2026-08-30T23:59"
-      }
-    ],
-    "expandedPreviousSpecialEntities": 5,
-    "expandedCandidateSpecialEntities": 2,
+    "retainedPreviousRows": 0,
+    "retained": [],
+    "expandedPreviousSpecialEntities": 4,
+    "expandedCandidateSpecialEntities": 4,
     "supersededStaleJointRowsRemoved": 0,
     "supersededStaleJointRowIds": [],
     "supersededLegacyReleaseSeriesRemoved": 1,
@@ -14285,24 +14236,24 @@
       "cutieSanoUpgradeOfferAdded": 0,
       "sweetShiraishiCentralFcFixed": 0,
       "piaResultNoticesAttached": 0,
-      "sweetWinterUpgradeOffersFixed": 1,
+      "sweetWinterUpgradeOffersFixed": 0,
       "sweetWinterUpgradeOffersAdded": 0,
       "candyOitaEplusLinkFixed": 0,
-      "candyNiigataVenueFixed": 3,
+      "candyNiigataVenueFixed": 0,
       "candyTokyoPresaleAdded": 0,
       "sweetestStoryPerformancesAdded": 0,
       "fruitsJoyFanclubLiveAdded": 0,
       "fruitsJoyFcOfferAdded": 0,
       "kawaiilabFcFreeLiveAdded": 0,
-      "kawaiilabFcFreeLiveOffersUpdated": 1,
+      "kawaiilabFcFreeLiveOffersUpdated": 0,
       "christmasPiaPresaleOffersAdded": 0,
-      "staleChristmasRowsRemoved": 2,
+      "staleChristmasRowsRemoved": 0,
       "fmAichiFixed": 0,
       "sweetFcSecondStartFixed": 0,
       "giftMultiVenueFixed": 0,
       "giftMoreStarAdded": 0,
       "moreStarSeventhFixed": 0,
-      "disasterReliefConcertFixed": 1,
+      "disasterReliefConcertFixed": 0,
       "disasterReliefConcertRowsCollapsed": 0,
       "impossibleBirthdayYearRowsRemoved": 0,
       "candyOnline20261020RowsCollapsed": 0,
@@ -14310,18 +14261,18 @@
       "sweetEbichu20261116RowsCollapsed": 0,
       "semanticTicketDuplicatesRemoved": 0,
       "semanticTicketDuplicateIds": [],
-      "cutiePacificoFcLotteryFixed": 1,
+      "cutiePacificoFcLotteryFixed": 0,
       "fruitsSynergy20261101RowsCollapsed": 0
     },
-    "guardRejectedRowsQuarantined": 4,
+    "guardRejectedRowsQuarantined": 1,
     "physicalEventInvariant": {
       "semanticNormalization": {
-        "sourceSpecialRows": 9,
+        "sourceSpecialRows": 7,
         "canonicalSpecialEvents": 4,
-        "rowsCollapsed": 5,
+        "rowsCollapsed": 3,
         "releaseEventEntities": 2,
         "largeBenefitEntities": 2,
-        "alreadyCanonicalRows": 2,
+        "alreadyCanonicalRows": 4,
         "internalScheduleRowsCollapsed": 0,
         "duplicateEventIdCollisions": 0,
         "duplicateEventRowsCollapsed": 0,
@@ -14329,12 +14280,12 @@
         "duplicateEventIdRepairs": [],
         "onlinePlaceholderOccurrencesMerged": 0,
         "publicEvents": {
-          "sourceSpecialRows": 5,
-          "canonicalSpecialEvents": 5,
+          "sourceSpecialRows": 4,
+          "canonicalSpecialEvents": 4,
           "rowsCollapsed": 0,
           "releaseEventEntities": 2,
-          "largeBenefitEntities": 3,
-          "alreadyCanonicalRows": 5,
+          "largeBenefitEntities": 2,
+          "alreadyCanonicalRows": 4,
           "internalScheduleRowsCollapsed": 0,
           "duplicateEventIdCollisions": 0,
           "duplicateEventRowsCollapsed": 0,
@@ -14353,8 +14304,8 @@
       "remainingDuplicates": []
     },
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-10-26T20:28:38+09:00",
-    "checkedAt": "2026-10-26T20:28:38+09:00"
+    "publicUpdatedAt": "2026-10-26T21:20:02+09:00",
+    "checkedAt": "2026-10-26T21:20:02+09:00"
   },
   "renderWarnings": [],
   "resaleDiagnostics": {
@@ -28473,7 +28424,7 @@
       }
     ]
   },
-  "updatedAt": "2026-10-26T20:29:17+09:00",
+  "updatedAt": "2026-10-26T21:20:11+09:00",
   "publicEvents": [
     {
       "id": "fa421e6fd8955232",
@@ -29082,7 +29033,6 @@
       "sourceRowIds": [
         "17e77f47e1bb119c"
       ],
-      "offers": [],
       "schedule": [
         {
           "date": "2026-11-08",
@@ -29096,7 +29046,8 @@
       "eventEndDate": "2026-11-08",
       "venues": [
         "【リリースイベント】石川県 イオンモール白山 平面駐車場"
-      ]
+      ],
+      "offers": []
     },
     {
       "id": "3edcd98dd32ff61b",
@@ -42555,12 +42506,12 @@
     "duplicateEventIdRepairs": [],
     "onlinePlaceholderOccurrencesMerged": 0,
     "publicEvents": {
-      "sourceSpecialRows": 5,
-      "canonicalSpecialEvents": 5,
+      "sourceSpecialRows": 4,
+      "canonicalSpecialEvents": 4,
       "rowsCollapsed": 0,
       "releaseEventEntities": 2,
-      "largeBenefitEntities": 3,
-      "alreadyCanonicalRows": 5,
+      "largeBenefitEntities": 2,
+      "alreadyCanonicalRows": 4,
       "internalScheduleRowsCollapsed": 0,
       "duplicateEventIdCollisions": 0,
       "duplicateEventRowsCollapsed": 0,
