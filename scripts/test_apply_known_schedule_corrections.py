@@ -55,6 +55,23 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
         self.assertEqual(corrected, again)
         self.assertEqual(0, second_report["cutieSanoUpgradeOfferAdded"])
 
+    def test_cutie_sano_official_schedule_start_is_reconciled_to_news(self):
+        schedule = "https://cutiestreet.asobisystem.com/live_information/detail/46341"
+        stale = {
+            "id": "official-schedule-sano", "group": "CUTIE STREET",
+            "title": "佐野愛花 生誕祭 2026 @SGCホール有明",
+            "eventDate": "2026-11-26", "venue": "東京都 SGCホール有明",
+            "startTime": "17:30", "ticketType": "現在受付なし", "url": schedule,
+        }
+        corrected, report = apply_known_corrections([stale])
+        self.assertEqual("17:30", corrected[0]["openTime"])
+        self.assertEqual("19:00", corrected[0]["startTime"])
+        self.assertEqual(1, report["cutieSanoScheduleTimeFixed"])
+
+        again, second_report = apply_known_corrections(corrected)
+        self.assertEqual(corrected, again)
+        self.assertEqual(0, second_report["cutieSanoScheduleTimeFixed"])
+
     def test_kawaiilab_free_live_keeps_one_performance_and_each_official_fc_route(self):
         from performance_entities import build_public_events
 

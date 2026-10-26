@@ -119,6 +119,23 @@ def repair_cutie_sano_upgrade_reception(event: dict) -> dict:
     return out
 
 
+def repair_cutie_sano_schedule_time(event: dict) -> dict:
+    """Correct SCHEDULE 46341's stale START value from verified NEWS 93573."""
+    schedule = "https://cutiestreet.asobisystem.com/live_information/detail/46341"
+    if not (
+        event.get("group") == "CUTIE STREET"
+        and schedule in _urls(event)
+        and _day(event) == "2026-11-26"
+        and event.get("startTime") == "17:30"
+        and "佐野愛花" in str(event.get("eventTitle") or event.get("title") or "")
+    ):
+        return event
+    out = deepcopy(event)
+    out["openTime"] = "17:30"
+    out["startTime"] = "19:00"
+    return out
+
+
 def repair_sweet_shiraishi_central_fc(event: dict) -> dict:
     """NEWS 92282 is the central FC sale, not a second group-FC sale."""
     article = "https://kawaiilab.asobisystem.com/news/detail/92282"
@@ -1039,6 +1056,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "candyBirthdayFactsFilled": 0,
         "cutieUpgradeReceptionFixed": 0,
         "cutieSanoUpgradeReceptionFixed": 0,
+        "cutieSanoScheduleTimeFixed": 0,
         "cutieSanoUpgradeOfferAdded": 0,
         "sweetShiraishiCentralFcFixed": 0,
         "piaResultNoticesAttached": 0,
@@ -1089,6 +1107,10 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         current = repair_cutie_sano_upgrade_reception(current)
         if current != before_sano_upgrade:
             report["cutieSanoUpgradeReceptionFixed"] += 1
+        before_sano_schedule = current
+        current = repair_cutie_sano_schedule_time(current)
+        if current != before_sano_schedule:
+            report["cutieSanoScheduleTimeFixed"] += 1
         before_central_fc = current
         current = repair_sweet_shiraishi_central_fc(current)
         if current != before_central_fc:
