@@ -21,6 +21,7 @@ SALE_FIELDS = (
 )
 LIST_FIELDS = ("participants", "ticketBenefits", "numberedCallTimes", "parts", "sourceCandidates")
 SALES_PROVIDERS = {"sukisuki", "hmv", "tower", "rakuten", "kawaii-store", "pia", "lawson", "eplus"}
+TRACKED_GROUPS = ("FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR")
 SALE_URL_RE = re.compile(
     r"https://(?:api\.)?sukisuki-shop\.com/goods/\d+"
     r"|https://(?:www\.)?hmv\.co\.jp/[^?#]+"
@@ -60,6 +61,23 @@ def venue_key(value: object) -> str:
 
 def occurrence_keys(event: dict) -> set[tuple[str, str]]:
     return {(str(row.get("date") or "")[:10], venue_key(row.get("venue"))) for row in schedule_rows(event)}
+
+
+def participant_groups(events: Iterable[dict]) -> list[str]:
+    groups = set()
+    for event in events:
+        group = text(event.get("group"))
+        if group in TRACKED_GROUPS:
+            groups.add(group)
+        for participant in event.get("participants") or []:
+            if text(participant) in TRACKED_GROUPS:
+                groups.add(text(participant))
+    return [group for group in TRACKED_GROUPS if group in groups]
+
+
+def named_groups(event: dict) -> set[str]:
+    value = " ".join(text(event.get(field)) for field in ("title", "eventTitle", "displayTitle"))
+    return {group for group in TRACKED_GROUPS if group.casefold() in value.casefold()}
 
 
 def sale_urls(event: dict) -> set[str]:
@@ -216,8 +234,20 @@ def compatible_release(a: dict, b: dict) -> bool:
 
 
 def compatible_benefit(a: dict, b: dict) -> bool:
-    if text(a.get("group")) != text(b.get("group")) or category(a) != category(b):
+    if category(a) != category(b):
         return False
+    if text(a.get("group")) != text(b.get("group")):
+        # Official sites often publish one joint benefit event once per
+        # participating group.  Merge those source rows only when both group
+        # names are explicitly present in an article title and the physical
+        # occurrence is identical.  Same-day events that merely share a venue
+        # remain independent.
+        groups = set(participant_groups((a, b)))
+        if len(groups) < 2 or not any(groups.issubset(named_groups(event)) for event in (a, b)):
+            return False
+        if not occurrence_keys(a).intersection(occurrence_keys(b)):
+            return False
+        return True
     left, right = occurrence_keys(a), occurrence_keys(b)
     left_days = {day for day, _ in left}
     right_days = {day for day, _ in right}
@@ -316,9 +346,12 @@ def merge_list_fields(entity: dict, items: list[dict]) -> None:
 
 def canonical_key(items: list[dict], schedule: list[dict]) -> str:
     first = items[0]
-    group = text(first.get("group"))
+    participants = participant_groups(items)
+    group = "/".join(participants) if participants else text(first.get("group"))
     cat = category(first)
     title = normalized_series_title(first)
+    if cat == "large-benefit" and len(participants) > 1:
+        title = "joint-large-benefit"
     product = next((normalized_product(item) for item in items if normalized_product(item)), "")
     occurrence = schedule[0] if schedule else {}
     day = str(occurrence.get("date") or "")
@@ -430,7 +463,14 @@ def make_entity(items: list[dict]) -> dict:
         for value in all_urls(item):
             if value not in source_urls:
                 source_urls.append(value)
-    source_row_ids = list(dict.fromkeys(str(item.get("id")) for item in items if item.get("id")))
+    source_row_ids = []
+    for item in items:
+        existing_ids = item.get("sourceRowIds") if isinstance(item.get("sourceRowIds"), list) else []
+        values = existing_ids or ([item.get("id")] if item.get("id") else [])
+        for value in values:
+            value = str(value)
+            if value and value not in source_row_ids:
+                source_row_ids.append(value)
 
     entity["id"] = canonical_id
     entity["entityType"] = "special-event"
@@ -438,6 +478,11 @@ def make_entity(items: list[dict]) -> dict:
     entity["sourceRowIds"] = source_row_ids
     entity["offers"] = offers
     entity["eventCategory"] = category(representative)
+    participants = participant_groups(items)
+    if len(participants) > 1:
+        entity["group"] = "KAWAII LAB.合同"
+        entity["participants"] = participants
+        entity["displayTitle"] = f"{'／'.join(participants)} 大特典会"
     entity["schedule"] = schedule
     entity["eventCount"] = len(schedule)
     if dates:
