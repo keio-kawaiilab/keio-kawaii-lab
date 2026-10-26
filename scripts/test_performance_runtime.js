@@ -102,6 +102,13 @@ async function main(){
   assert.strictEqual(repairedFestival.schedule[0].startTime,'11:30','same-day special event prevented the official festival time match');
   const festivalModel=h.api.performanceModels(sameDayPrepared).find(m=>/HIROSHIMA CONTI-NeW/.test(m.title));
   assert.strictEqual(festivalModel.venue,'広島県 広島グリーンアリーナ','festival card inherited the same-day special-event venue');
+  const festivalCutie={...festivalOfficial,id:'festival-cutie',group:'CUTIE STREET',participants:['CUTIE STREET']};
+  const festivalFruits={...festivalOfficial,id:'festival-fruits',group:'FRUITS ZIPPER',participants:['FRUITS ZIPPER']};
+  const festivalJoint={...festivalOfficial,id:'festival-joint',group:'KAWAII LAB.合同',participants:['CUTIE STREET','FRUITS ZIPPER']};
+  const externalModels=h.api.performanceModels(h.api.prepare([festivalCutie,festivalFruits,festivalJoint]));
+  assert.strictEqual(externalModels.length,1,'same external festival was duplicated by participating group');
+  assert.strictEqual(externalModels[0].group,'KAWAII LAB.合同','merged external festival lost its joint group identity');
+  assert.strictEqual([...externalModels[0].participants].sort().join('|'),'CUTIE STREET|FRUITS ZIPPER','merged external festival lost participants');
 
   const model=h.api.performanceModels(prepared).find(m=>m.date==='2099-09-19'&&m.startTime==='18:00');
   assert.strictEqual(model.offers.length,3,'ticket history was lost');

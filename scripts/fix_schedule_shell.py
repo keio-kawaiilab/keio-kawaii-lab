@@ -27,6 +27,7 @@ PERFORMANCE_KEY_JS = (
     "time=String((o&&o.startTime)||e.startTime||'').replace(/\\s+/g,''),venue=performanceVenueKey(e,o),titleKey=performanceTitleKey(e),group=String(e.group||'').trim();"
     "if(fifthTour(e))return ['KAWAII-LAB-5TH-TOUR',day].join('|');"
     "if(e.eventCategory==='release-event'||e.eventCategory==='large-benefit')return [group,day,'special'].join('|');"
+    "if(scopeOf(e)==='external')return ['EXTERNAL',day,time?'time':'fallback',time||'',venue,titleKey].join('|');"
     "if(day&&time)return [group,day,'time',time].join('|');"
     "return [group,day,'fallback',venue,titleKey].join('|')}"
 )
@@ -70,6 +71,8 @@ TITLE_DISPLAY_OLD = "function title(e){var t=String(e.eventTitle||e.title||'').t
 TITLE_DISPLAY_NEW = "function title(e){var t=String(e.displayTitle||e.eventTitle||e.title||'').trim()"
 OFFER_LABEL_OLD = "label:providerName(e),url:u,ticketType:e.ticketType||'受付'"
 OFFER_LABEL_NEW = "label:(e.sourceGroup&&e.sourceGroup!=='KAWAII LAB.合同'?e.sourceGroup+' / ':'')+providerName(e),url:u,ticketType:e.ticketType||'受付'"
+EXTERNAL_PARTICIPANTS_OLD = "}else{if(!playguide(e)&&!online(e)){m.event=e;m.title=title(e);m.venue=o.venue||m.venue}"
+EXTERNAL_PARTICIPANTS_NEW = "}else{parts(e).forEach(function(g){if(m.participants.indexOf(g)<0)m.participants.push(g)});if(m.participants.length>1)m.group='KAWAII LAB.合同';if(!playguide(e)&&!online(e)){m.event=e;m.title=title(e);m.venue=o.venue||m.venue}"
 
 # A playguide row may share its group/date with more than one official event.
 # In that case, date overlap alone is not enough to borrow the official venue:
@@ -237,6 +240,14 @@ def install_joint_offer_labels(page: str) -> str:
     return page
 
 
+def install_external_participant_merge(page: str) -> str:
+    if EXTERNAL_PARTICIPANTS_NEW in page:
+        return page
+    if EXTERNAL_PARTICIPANTS_OLD not in page:
+        raise RuntimeError("schedule performance model merger changed")
+    return page.replace(EXTERNAL_PARTICIPANTS_OLD, EXTERNAL_PARTICIPANTS_NEW, 1)
+
+
 def install_official_candidate_identity(page: str) -> str:
     current_start = page.find("function officialCandidateIdentity(e){")
     legacy_start = page.find("function officialCandidates(all,e){")
@@ -273,6 +284,7 @@ def main() -> int:
     page = install_open_ended_general_sales(page)
     page = install_title_boundaries(page)
     page = install_joint_offer_labels(page)
+    page = install_external_participant_merge(page)
     page = install_official_candidate_identity(page)
     page = install_truthful_status(page)
     page = guard_performance_runtime.transform(page)
@@ -300,6 +312,8 @@ def main() -> int:
         "最終更新:",
         "data.checkedAt",
         "function officialCandidateIdentity(e)",
+        "if(scopeOf(e)==='external')return ['EXTERNAL'",
+        "if(m.participants.length>1)m.group='KAWAII LAB.合同'",
     )
     missing = [token for token in required if token not in page]
     if missing:
