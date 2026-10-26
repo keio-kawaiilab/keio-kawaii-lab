@@ -6,6 +6,31 @@ import update_official_x_birthday_events as birthday
 
 
 class OfficialBirthdayNewsTests(unittest.TestCase):
+    def test_upgrade_notice_is_left_to_continuous_official_collector(self):
+        payload = {"events": [{
+            "id": "schedule-placeholder",
+            "group": "CUTIE STREET",
+            "title": "CUTIE STREET 佐野愛花 生誕祭 2026",
+            "eventDate": "2026-11-26",
+            "openTime": "17:30",
+            "startTime": "17:30",
+            "ticketType": "現在受付なし",
+            "sourceType": "official-schedule",
+        }]}
+        text = (
+            "CUTIE STREET 佐野愛花 生誕祭 2026 アップグレード抽選受付\n"
+            "年会費コース会員対象\n"
+            "受付期間：2026年10月26日 12:00〜2026年10月29日 23:59\n"
+        )
+        rows = news.article_events(
+            payload,
+            "CUTIE STREET",
+            "https://cutiestreet.asobisystem.com/news/detail/93573",
+            text,
+            date(2026, 10, 26),
+        )
+        self.assertEqual(rows, [])
+
     def test_shoji_official_news_enriches_promoter_row_in_place(self):
         payload = {"events": [{
             "id": "shoji-stable",
