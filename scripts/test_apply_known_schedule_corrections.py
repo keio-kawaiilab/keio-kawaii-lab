@@ -11,6 +11,40 @@ from apply_known_schedule_corrections import (
 
 
 class KnownScheduleCorrectionsTest(unittest.TestCase):
+    def test_official_upgrade_title_overrides_misread_annual_course_eligibility(self):
+        stale = {
+            "id": "body-discovery-upgrade",
+            "group": "CUTIE STREET",
+            "title": "2026.10.09 「CUTIE STREET 古澤里紗 生誕祭 2026」 アップグレード抽選受付のお知らせ",
+            "eventDate": "2026-11-09",
+            "ticketType": "年会費コース会員先行",
+            "primarySource": "official",
+            "sourceType": "auto",
+        }
+        corrected, report = apply_known_corrections([stale])
+        self.assertEqual("アップグレード抽選", corrected[0]["ticketType"])
+        self.assertEqual(1, report["titleDeclaredUpgradeReceptionFixed"])
+
+        again, second_report = apply_known_corrections(corrected)
+        self.assertEqual(corrected, again)
+        self.assertEqual(0, second_report["titleDeclaredUpgradeReceptionFixed"])
+
+    def test_title_declared_upgrade_does_not_rewrite_unrelated_or_nonofficial_rows(self):
+        from apply_known_schedule_corrections import repair_title_declared_upgrade_reception
+
+        base = {
+            "title": "アップグレード抽選受付のお知らせ",
+            "ticketType": "年会費コース会員先行",
+            "primarySource": "official",
+        }
+        for changes in (
+            {"title": "年会費コース会員先行受付のお知らせ"},
+            {"ticketType": "FC先行"},
+            {"primarySource": "pia"},
+        ):
+            row = dict(base, **changes)
+            self.assertEqual(row, repair_title_declared_upgrade_reception(row))
+
     def test_cutie_sano_upgrade_restores_verified_open_start_and_offer_kind(self):
         source = "https://cutiestreet.asobisystem.com/news/detail/93573"
         stale = {
