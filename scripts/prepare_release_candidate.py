@@ -214,6 +214,97 @@ def normalize_special(event: dict) -> tuple[dict, bool]:
     return event, changed
 
 
+def drop_redundant_official_schedule_shadows(events: list[dict]) -> tuple[list[dict], list[str]]:
+    """Drop raw schedule rows already represented by a canonical special entity.
+
+    Official schedule and news collectors can describe one joint benefit event
+    with different group labels.  A raw row is removable only when the
+    canonical entity names that group as a participant, shares a date and
+    source URL, and (for a reception row) contains the same exact offer window.
+    """
+    entities = [
+        event for event in events
+        if event.get("entityType") == "special-event"
+        and official_x_dedupe.category(event) in SPECIAL_CATEGORIES
+    ]
+    kept: list[dict] = []
+    removed: list[str] = []
+    for event in events:
+        if event.get("entityType") == "special-event" or official_x_dedupe.category(event) not in SPECIAL_CATEGORIES:
+            kept.append(event)
+            continue
+        group = text(event.get("group"))
+        event_urls = set(urls(event))
+        event_dates = set(event_days(event))
+        matched = False
+        for entity in entities:
+            participants = {text(value) for value in entity.get("participants") or [] if value}
+            participants.add(text(entity.get("group")))
+            if group not in participants or not event_dates.intersection(event_days(entity)):
+                continue
+            entity_urls = set(urls(entity))
+            for offer in entity.get("offers") or []:
+                if isinstance(offer, dict):
+                    entity_urls.update(urls(offer))
+            if not event_urls.intersection(entity_urls):
+                continue
+            start, end = text(event.get("applyStart")), text(event.get("applyEnd"))
+            if start or end:
+                same_offer = any(
+                    isinstance(offer, dict)
+                    and text(offer.get("applyStart")) == start
+                    and text(offer.get("applyEnd")) == end
+                    and event_urls.intersection(urls(offer))
+                    for offer in entity.get("offers") or []
+                )
+                if not same_offer:
+                    continue
+            matched = True
+            break
+        if matched:
+            removed.append(text(event.get("id")))
+        else:
+            kept.append(event)
+    return kept, removed
+
+
+def drop_redundant_special_offers(events: list[dict]) -> tuple[list[dict], list[str]]:
+    """Remove generic official-window offers already backed by a sales offer."""
+    removed: list[str] = []
+    output: list[dict] = []
+    for original in events:
+        event = dict(original)
+        raw_offers = event.get("offers") if isinstance(event.get("offers"), list) else []
+        offers = [dict(offer) for offer in raw_offers if isinstance(offer, dict)]
+        if event.get("entityType") != "special-event" or len(offers) < 2:
+            output.append(event)
+            continue
+        kept: list[dict] = []
+        for offer in offers:
+            provider = text(offer.get("provider") or offer.get("ticketProvider")).casefold()
+            generic = provider == "official" and text(offer.get("ticketType")) in {"チケット受付", "受付"}
+            if not generic:
+                kept.append(offer)
+                continue
+            start, end = text(offer.get("applyStart")), text(offer.get("applyEnd"))
+            offer_urls = set(urls(offer))
+            replacement = any(
+                other is not offer
+                and text(other.get("provider") or other.get("ticketProvider")).casefold() != "official"
+                and text(other.get("applyStart")) == start
+                and text(other.get("applyEnd")) == end
+                and bool(offer_urls.intersection(urls(other)))
+                for other in offers
+            )
+            if replacement:
+                removed.append(text(offer.get("sourceRowId")))
+            else:
+                kept.append(offer)
+        event["offers"] = kept
+        output.append(event)
+    return output, removed
+
+
 def physical_places(event: dict) -> set[tuple[str, str]]:
     """Return date/venue identities without the display group.
 
@@ -476,6 +567,7 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
     events, duplicate_ids_removed_after_retention = dedupe_ids(events)
     events, official_x_report = official_x_dedupe.collapse(events)
     events, known_correction_report = apply_known_corrections(events)
+    events, redundant_schedule_shadows = drop_redundant_official_schedule_shadows(events)
     events, guard_rejected_rows_quarantined = quarantine_guard_rejected_rows(events)
     events, duplicate_fc_ids = dedupe_official_fc_offers(events)
     before_resale_dedupe = len(events)
@@ -500,6 +592,8 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
         "supersededLegacyReleaseSeriesIds": superseded_legacy_release_series,
         **official_x_report,
         "knownScheduleCorrections": known_correction_report,
+        "redundantOfficialScheduleShadowsRemoved": len(redundant_schedule_shadows),
+        "redundantOfficialScheduleShadowIds": redundant_schedule_shadows,
         "guardRejectedRowsQuarantined": guard_rejected_rows_quarantined,
     }
 
@@ -508,6 +602,9 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
     # Same group + same date + same start time + same venue is one real event.
     out, physical_report = enforce_payload(out)
     out["releasePreparation"]["physicalEventInvariant"] = physical_report
+    out["events"], redundant_special_offer_ids = drop_redundant_special_offers(out.get("events", []))
+    out["releasePreparation"]["redundantSpecialOffersRemoved"] = len(redundant_special_offer_ids)
+    out["releasePreparation"]["redundantSpecialOfferIds"] = redundant_special_offer_ids
 
     checked_at = now.astimezone(JST).isoformat(timespec="seconds")
     out["checkedAt"] = checked_at

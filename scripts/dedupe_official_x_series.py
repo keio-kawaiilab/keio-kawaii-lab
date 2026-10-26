@@ -32,7 +32,7 @@ def category(event: dict) -> str:
     if value in {"release-event", "large-benefit"}:
         return value
     title = text(event.get("displayTitle") or event.get("eventTitle") or event.get("title"))
-    if "大特典会" in title:
+    if re.search(r"大特典(?:会|[@＠])", title):
         return "large-benefit"
     if re.search(r"リリースイベント|リリイベ|発売記念イベント", title):
         return "release-event"

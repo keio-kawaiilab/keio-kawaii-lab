@@ -89,6 +89,59 @@ class PrepareReleaseCandidateTests(unittest.TestCase):
         self.assertEqual(normalized["specialDetailsStatus"], "awaiting-details")
         self.assertEqual(normalized["applicationDisplayMode"], "schedule-only")
 
+    def test_joint_entity_drops_same_window_official_schedule_shadow(self):
+        source = "https://morestar.asobisystem.com/live_information/detail/46447"
+        offer = {
+            "provider": "hmv", "applyStart": "2026-10-23T21:00",
+            "applyEnd": "2026-10-27T23:59", "url": "https://img.hmv.co.jp/more/",
+            "urls": [source, "https://img.hmv.co.jp/more/"],
+        }
+        entity = {
+            "id": "joint", "entityType": "special-event", "eventCategory": "large-benefit",
+            "group": "KAWAII LAB.合同", "participants": ["CUTIE STREET", "MORE STAR"],
+            "eventDate": "2026-11-03", "url": "https://cutiestreet.asobisystem.com/news/detail/1",
+            "urls": [source], "offers": [offer],
+        }
+        shadow = {
+            "id": "shadow", "group": "MORE STAR",
+            "title": "MORE STAR 大特典@パシフィコ横浜展示ホールD",
+            "eventDate": "2026-11-03", "applyStart": "2026-10-23T21:00",
+            "applyEnd": "2026-10-27T23:59", "url": source,
+        }
+        rows, removed = prep.drop_redundant_official_schedule_shadows([entity, shadow])
+        self.assertEqual(["joint"], [row["id"] for row in rows])
+        self.assertEqual(["shadow"], removed)
+
+    def test_distinct_reception_window_is_not_dropped_as_shadow(self):
+        source = "https://morestar.asobisystem.com/live_information/detail/46447"
+        entity = {
+            "id": "joint", "entityType": "special-event", "eventCategory": "large-benefit",
+            "group": "KAWAII LAB.合同", "participants": ["MORE STAR"],
+            "eventDate": "2026-11-03", "urls": [source],
+            "offers": [{"applyStart": "2026-10-23T21:00", "applyEnd": "2026-10-27T23:59", "urls": [source]}],
+        }
+        second_round = {
+            "id": "round-2", "group": "MORE STAR", "title": "MORE STAR 大特典@横浜",
+            "eventDate": "2026-11-03", "applyStart": "2026-10-28T21:00",
+            "applyEnd": "2026-10-29T23:59", "url": source,
+        }
+        rows, removed = prep.drop_redundant_official_schedule_shadows([entity, second_round])
+        self.assertEqual(2, len(rows))
+        self.assertFalse(removed)
+
+    def test_generic_official_offer_is_removed_when_sales_offer_has_same_window_and_source(self):
+        source = "https://morestar.asobisystem.com/live_information/detail/46447"
+        event = {
+            "id": "joint", "entityType": "special-event", "eventCategory": "large-benefit",
+            "offers": [
+                {"sourceRowId": "hmv", "provider": "hmv", "applyStart": "2026-10-23T21:00", "applyEnd": "2026-10-27T23:59", "urls": [source, "https://img.hmv.co.jp/more/"]},
+                {"sourceRowId": "raw", "provider": "official", "ticketType": "チケット受付", "applyStart": "2026-10-23T21:00", "applyEnd": "2026-10-27T23:59", "url": source},
+            ],
+        }
+        rows, removed = prep.drop_redundant_special_offers([event])
+        self.assertEqual(["hmv"], [offer["sourceRowId"] for offer in rows[0]["offers"]])
+        self.assertEqual(["raw"], removed)
+
     def test_expired_playguide_row_is_not_retained(self):
         event = {
             "group": "CANDY TUNE", "title": "Tour", "ticketType": "抽選 プレリク",

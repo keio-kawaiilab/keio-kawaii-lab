@@ -4,6 +4,12 @@ import dedupe_official_x_series as dedupe
 
 
 class OfficialXSeriesDedupeTests(unittest.TestCase):
+    def test_large_benefit_at_abbreviation_is_classified(self):
+        self.assertEqual(
+            "large-benefit",
+            dedupe.category({"title": "MORE STAR 大特典@パシフィコ横浜展示ホールD"}),
+        )
+
     def test_split_more_star_release_series_is_recombined(self):
         shared = "https://x.com/MORE_STAR_/status/2093324279639392675"
         older = "https://x.com/MORE_STAR_/status/2092956382366744633"

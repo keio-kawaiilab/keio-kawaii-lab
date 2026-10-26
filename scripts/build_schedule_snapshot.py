@@ -24,6 +24,18 @@ GROUP_VAR = {
     "MORE STAR": "--more",
     "KAWAII LAB.合同": "--lab",
 }
+PROVIDER_LABELS = {
+    "pia": "チケットぴあ",
+    "lawson": "ローチケ",
+    "eplus": "イープラス",
+    "official": "公式 / FC",
+    "resale": "公式リセール",
+    "sukisuki": "SUKISUKI",
+    "kawaii-store": "KAWAII LAB. STORE",
+    "rakuten": "楽天チケット",
+    "hmv": "HMV",
+    "tower": "タワーレコード",
+}
 BAD_UI_TITLE_RE = re.compile(r"行きたい\s*[!！]?\s*公演アラート|お気に入り(?:登録)?|メールで通知", re.I)
 OFFICIAL_ONLY_RE = re.compile(r"アップグレード|(?:^|\s)FC(?:\s|$)|ファンクラブ|年会費コース", re.I)
 
@@ -242,7 +254,69 @@ def visible_event(event: dict, today, now=None) -> bool:
     return True
 
 
-def build_card(event: dict) -> str:
+def current_offer_rows(event: dict, now=None) -> list[tuple[dict, str]]:
+    now = now or datetime.now(JST)
+    result: list[tuple[dict, str]] = []
+    for raw in event.get("offers") or []:
+        if not isinstance(raw, dict):
+            continue
+        offer = dict(raw)
+        if str(offer.get("applicationStatus") or "").lower() == "sold_out":
+            continue
+        start = parse_moment(offer.get("applyStart"))
+        end = parse_moment(offer.get("applyEnd"), end_of_day=True)
+        if end and end < now:
+            continue
+        state = "受付予定" if start and start > now else "受付中"
+        result.append((offer, state))
+    return sorted(result, key=lambda item: (
+        str(item[0].get("applyEnd") or "9999-12-31"),
+        str(item[0].get("applyStart") or ""),
+        str(item[0].get("ticketType") or ""),
+    ))
+
+
+def offer_options_html(rows: list[tuple[dict, str]]) -> str:
+    if not rows:
+        return ""
+    parts = ['<div class="ticket-options">']
+    for offer, state in rows:
+        provider = str(offer.get("provider") or offer.get("ticketProvider") or "official").lower()
+        label = PROVIDER_LABELS.get(provider, provider or "公式")
+        source_hint = " ".join(str(offer.get(field) or "") for field in (
+            "applicationWindowSource", "deadlineSource",
+        )).lower()
+        source_group = str(offer.get("sourceGroup") or "").strip()
+        if "cutiestreet.asobisystem.com" in source_hint:
+            source_group = "CUTIE STREET"
+        elif "morestar.asobisystem.com" in source_hint:
+            source_group = "MORE STAR"
+        if source_group and source_group != "KAWAII LAB.合同":
+            label = f"{source_group} / {label}"
+        start = fmt(offer.get("applyStart"))
+        end = fmt(offer.get("applyEnd"))
+        period = f"{start}〜{end}" if start != "—" and end != "—" else (
+            f"{start}〜" if start != "—" else (f"〜{end}" if end != "—" else "受付期間未取得")
+        )
+        status_class = "scheduled" if state == "受付予定" else "open"
+        url = str(offer.get("url") or next((value for value in offer.get("urls") or [] if value), ""))
+        link = (
+            f'<a class="ticket-link" data-action-mode="apply" href="{esc(url)}" target="_blank" rel="noopener">申込先 →</a>'
+            if url else '<span class="ticket-link" aria-disabled="true">リンク未取得</span>'
+        )
+        parts.append(
+            f'<div class="ticket-option" data-sale-status="{esc(offer.get("applicationStatus") or "")}">'
+            f'<span class="provider {esc(provider)}">{esc(label)}</span>'
+            f'<span class="ticket-copy"><b>{esc(offer.get("ticketType") or "チケット受付")}'
+            f'<span class="sale-state {status_class}">{state}</span></b><small>{esc(period)}</small></span>'
+            f'{link}</div>'
+        )
+    parts.append("</div>")
+    return "".join(parts)
+
+
+def build_card(event: dict, now=None) -> str:
+    now = now or datetime.now(JST)
     online = is_online(event)
     kind = event_kind(event)
     pia = is_pia(event)
@@ -251,8 +325,16 @@ def build_card(event: dict) -> str:
     group = str(event.get("group") or "KAWAII LAB.")
     color = GROUP_VAR.get(group, "--lab")
     url = source_url(event)
+    offer_rows = current_offer_rows(event, now)
     synthetic = pia and bool(event.get("applyEnd")) and not event.get("applyStart")
-    start_text = "開始日時未取得" if synthetic else fmt(event.get("applyStart"))
+    if offer_rows:
+        ticket_text = f"{'受付中' if any(state == '受付中' for _, state in offer_rows) else '受付予定'}（{len(offer_rows)}件）"
+        start_text = fmt(offer_rows[0][0].get("applyStart")) if len(offer_rows) == 1 else "各受付欄を確認"
+        end_text = fmt(offer_rows[0][0].get("applyEnd")) if len(offer_rows) == 1 else "各受付欄を確認"
+    else:
+        ticket_text = str(event.get("ticketType") or "未定")
+        start_text = "開始日時未取得" if synthetic else fmt(event.get("applyStart"))
+        end_text = fmt(event.get("applyEnd"))
     icon = event_icon(event)
     css = "card online-card" if online else ("card release-card" if kind == "release" else ("card benefit-card" if kind == "benefit" else "card"))
     parts = [
@@ -263,9 +345,9 @@ def build_card(event: dict) -> str:
         f'<div><b>グループ</b>{esc(group)}</div>',
         f'<div><b>{"配信日" if online else "開催日"}</b>{esc(date_text)}</div>',
         f'<div><b>会場</b>{venue_html(event, online)}</div>',
-        f'<div><b>受付</b>{esc(event.get("ticketType") or "未定")}</div>',
+        f'<div><b>受付</b>{esc(ticket_text)}</div>',
         f'<div><b>申込開始</b>{esc(start_text)}</div>',
-        f'<div><b>申込締切</b>{esc(fmt(event.get("applyEnd")))}</div>',
+        f'<div><b>申込締切</b>{esc(end_text)}</div>',
         '</div>',
     ]
     if synthetic:
@@ -323,6 +405,8 @@ def build_card(event: dict) -> str:
             detail.append('</div>')
         detail.append('</section>')
         parts.extend(detail)
+    if offer_rows:
+        parts.append(offer_options_html(offer_rows))
     if url:
         label = "チケットぴあを確認 →" if pia else ("SUKISUKIを確認 →" if "sukisuki-shop.com" in url else "情報源を確認 →")
         parts.append(f'<a class="src" href="{esc(url)}" target="_blank" rel="noopener">{label}</a>')
@@ -377,7 +461,7 @@ def main() -> int:
         flags=re.S,
     )
 
-    cards = "\n".join(build_card(event) for event in default_visible)
+    cards = "\n".join(build_card(event, now) for event in default_visible)
     page = re.sub(
         r'(<div class="cards" id="cards">).*?(</div>\s*<script id="snapshot-data")',
         lambda m: m.group(1) + "\n" + cards + "\n" + m.group(2),

@@ -158,6 +158,7 @@ def offer_from_event(event: dict) -> dict:
     )), values[0] if values else "")
     offer = {
         "sourceRowId": event.get("id"),
+        "sourceGroup": event.get("group"),
         "provider": p,
         "url": preferred,
         "urls": values,

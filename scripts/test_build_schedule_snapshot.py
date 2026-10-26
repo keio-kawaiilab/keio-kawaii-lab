@@ -1,4 +1,5 @@
 import unittest
+from datetime import datetime
 
 import build_schedule_snapshot as b
 
@@ -60,6 +61,29 @@ class ScheduleSnapshotTests(unittest.TestCase):
             "CUTIE STREET／MORE STAR 大特典会",
             b.display_title(event),
         )
+
+    def test_special_card_renders_each_current_offer_instead_of_parent_none(self):
+        event = {
+            "id": "joint",
+            "group": "KAWAII LAB.合同",
+            "eventScope": "kawaii-lab",
+            "eventCategory": "large-benefit",
+            "displayTitle": "CUTIE STREET／MORE STAR 大特典会",
+            "eventDate": "2026-11-03",
+            "venue": "パシフィコ横浜 展示ホールD",
+            "ticketType": "現在受付なし",
+            "offers": [
+                {"sourceGroup": "KAWAII LAB.合同", "provider": "hmv", "ticketType": "対象商品予約", "applyStart": "2026-10-23T21:00", "applyEnd": "2026-10-27T23:59", "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/1", "url": "https://example.com/cutie"},
+                {"sourceGroup": "KAWAII LAB.合同", "provider": "hmv", "ticketType": "対象商品予約", "applyStart": "2026-10-23T21:00", "applyEnd": "2026-10-27T23:59", "applicationWindowSource": "https://morestar.asobisystem.com/news/detail/2", "url": "https://example.com/more"},
+                {"sourceGroup": "CUTIE STREET", "provider": "sukisuki", "ticketType": "FC抽選", "applyStart": "2026-10-23T21:00", "applyEnd": "2026-10-24T23:59", "url": "https://example.com/ended"},
+            ],
+        }
+        page = b.build_card(event, datetime(2026, 10, 27, 2, 0, tzinfo=b.JST))
+        self.assertIn("受付中（2件）", page)
+        self.assertIn("CUTIE STREET / HMV", page)
+        self.assertIn("MORE STAR / HMV", page)
+        self.assertNotIn("https://example.com/ended", page)
+        self.assertNotIn("<b>受付</b>現在受付なし", page)
 
 
 if __name__ == "__main__":
