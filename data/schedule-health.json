@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-27T02:14:42.510745+09:00",
-  "candidateUpdatedAt": "2026-10-27T02:08:57+09:00",
-  "previousEventCount": 301,
+  "generatedAt": "2026-10-27T02:23:14.338873+09:00",
+  "candidateUpdatedAt": "2026-10-27T02:17:46+09:00",
+  "previousEventCount": 302,
   "candidateEventCount": 302,
-  "protectedPreviousCount": 300,
+  "protectedPreviousCount": 301,
   "errorCount": 0,
-  "warningCount": 20,
+  "warningCount": 19,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: duplicate Pia lot pia:74753: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 2次プレリザーブ",
@@ -27,10 +27,9 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event offer has no verified purchase/ticket window: KAWAII LAB.合同 / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし / offer 1",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event offer application window is not backed by an official page: KAWAII LAB.合同 / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし / offer 1",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event offer deadline is not verified by an official page: KAWAII LAB.合同 / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし / offer 1",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event offer deadline is not verified by an official page: KAWAII LAB.合同 / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし / offer 4",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:74753: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN / 現在受付なし"
   ],
-  "candidateSha256": "18a66a5a94c2fec73a50c107ad4af184fc4818fc8ea34a25e4ef4613a2cae933",
+  "candidateSha256": "04cdb04a8ed3200af5e44d66227fc455f24f5a348e523756f0a50e0faca92613",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40732",
@@ -266,7 +265,7 @@
   ],
   "reconciledBaseDateMessageCount": 0,
   "downgradedFalsePositiveCount": 0,
-  "legacyProtectedErrorCount": 19,
+  "legacyProtectedErrorCount": 18,
   "legacyProtectedErrors": [
     {
       "error": "active Pia row has no lotRlsCd detail URL: SWEET STEADY / 『SWEET STEADY JAPAN TOUR 2026』 / 一般発売",
@@ -350,11 +349,6 @@
     },
     {
       "error": "canonical special event offer deadline is not verified by an official page: KAWAII LAB.合同 / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし / offer 1",
-      "label": "KAWAII LAB.合同 / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
-      "error": "canonical special event offer deadline is not verified by an official page: KAWAII LAB.合同 / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし / offer 4",
       "label": "KAWAII LAB.合同 / 1stアルバム発売記念！11/3(火・祝) CUTIE STREET/MORE STAR大特典会をパシフィコ横浜 展示ホールDにて開催決定！｜ / 現在受付なし",
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     },
