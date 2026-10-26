@@ -168,6 +168,73 @@ class SpecialEventEntityTests(unittest.TestCase):
         self.assertEqual(event["ticketType"], "現在受付なし")
         self.assertFalse(validate(normalized))
 
+    def test_joint_large_benefit_articles_become_one_joint_event(self):
+        payload = {"events": [
+            {
+                "id": "cutie",
+                "group": "CUTIE STREET",
+                "eventCategory": "large-benefit",
+                "title": "11/3 CUTIE STREET/MORE STAR大特典会をパシフィコ横浜で開催決定！",
+                "eventDate": "2026-11-03",
+                "venue": "神奈川県 パシフィコ横浜 展示ホールD",
+                "ticketProvider": "hmv",
+                "ticketType": "対象商品予約",
+                "applyStart": "2026-10-23T21:00",
+                "applyEnd": "2026-10-27T23:59",
+                "url": "https://cutiestreet.asobisystem.com/news/detail/93713",
+                "urls": ["https://cutiestreet.asobisystem.com/news/detail/93713", "https://img.hmv.co.jp/cont/online/cutielandevent_lp/"],
+                "sourceType": "official-special",
+            },
+            {
+                "id": "more",
+                "group": "MORE STAR",
+                "eventCategory": "large-benefit",
+                "title": "11/3 CUTIE STREET/MORE STAR大特典会をパシフィコ横浜で開催決定！",
+                "eventDate": "2026-11-03",
+                "venue": "神奈川県 パシフィコ横浜 展示ホールD",
+                "ticketProvider": "hmv",
+                "ticketType": "対象商品予約",
+                "applyStart": "2026-10-23T21:00",
+                "applyEnd": "2026-10-27T23:59",
+                "url": "https://morestar.asobisystem.com/news/detail/93714",
+                "urls": ["https://morestar.asobisystem.com/news/detail/93714", "https://img.hmv.co.jp/cont/online/morestarevent_lp/"],
+                "sourceType": "official-special",
+            },
+        ]}
+
+        normalized, report = normalize_payload(payload)
+
+        self.assertEqual(1, report["largeBenefitEntities"])
+        self.assertEqual(1, len(normalized["events"]))
+        event = normalized["events"][0]
+        self.assertEqual("KAWAII LAB.合同", event["group"])
+        self.assertEqual(["CUTIE STREET", "MORE STAR"], event["participants"])
+        self.assertEqual(2, len(event["offers"]))
+        self.assertIn("https://cutiestreet.asobisystem.com/news/detail/93713", event["urls"])
+        self.assertIn("https://morestar.asobisystem.com/news/detail/93714", event["urls"])
+        again, _ = normalize_payload(normalized)
+        self.assertEqual(normalized["events"], again["events"])
+        self.assertFalse(validate(normalized))
+
+    def test_same_day_same_venue_different_groups_without_joint_title_stay_separate(self):
+        rows = []
+        for group in ("CUTIE STREET", "MORE STAR"):
+            rows.append({
+                "id": group,
+                "group": group,
+                "eventCategory": "large-benefit",
+                "title": f"{group} 大特典会",
+                "eventDate": "2026-11-03",
+                "venue": "神奈川県 パシフィコ横浜 展示ホールD",
+                "ticketType": "現在受付なし",
+                "sourceType": "official-special",
+            })
+
+        normalized, report = normalize_payload({"events": rows})
+
+        self.assertEqual(2, report["largeBenefitEntities"])
+        self.assertEqual(2, len(normalized["events"]))
+
     def test_same_day_shared_sukisuki_goods_merges_bad_online_venue_into_official_event(self):
         duplicate = {
             "id": "sukisuki-only",
