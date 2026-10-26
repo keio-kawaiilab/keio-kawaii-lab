@@ -1043,6 +1043,38 @@ class PiaNoticeAndSweetWinterUpgradeTests(unittest.TestCase):
         self.assertEqual(result, again)
         self.assertEqual(0, report["sweetWinterUpgradeOffersAdded"])
 
+    def test_sweet_winter_atsugi_upgrade_merges_with_the_official_performance(self):
+        from performance_entities import build_public_events
+
+        source = "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026"
+        official = {
+            "id": "atsugi-official", "group": "SWEET STEADY",
+            "title": "SWEET STEADY JAPAN TOUR 2026 -WINTER-",
+            "eventDate": "2026-11-13", "venue": "神奈川県 厚木市文化会館 大ホール",
+            "openTime": "17:30", "startTime": "18:30", "url": source,
+            "ticketType": "現在受付なし", "eventScope": "kawaii-lab",
+            "primarySource": "official",
+        }
+        legacy_upgrade = {
+            "id": "known-sweet-winter-upgrade-20261113", "group": "SWEET STEADY",
+            "title": "SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle",
+            "eventDate": "2026-11-13", "venue": "神奈川県 厚木市文化会館",
+            "openTime": "17:30", "startTime": "18:30", "url": source,
+            "urls": [source, "https://sweetsteady.asobisystem.com/news/detail/93491"],
+            "ticketType": "アップグレード抽選", "applyStart": "2026-10-23T18:00",
+            "applyEnd": "2026-10-26T23:59", "eventScope": "kawaii-lab",
+            "primarySource": "official",
+        }
+        corrected, report = apply_known_corrections([official, legacy_upgrade])
+        public, _ = build_public_events(corrected)
+        atsugi = [row for row in public if row.get("eventDate") == "2026-11-13"]
+
+        self.assertEqual(1, report["sweetWinterUpgradeOffersFixed"])
+        self.assertEqual(1, len(atsugi))
+        self.assertEqual("神奈川県 厚木市文化会館 大ホール", atsugi[0]["venue"])
+        self.assertEqual(1, len(atsugi[0]["offers"]))
+        self.assertEqual("アップグレード抽選", atsugi[0]["offers"][0]["ticketType"])
+
     def test_cutie_pacifico_fc_lottery_repairs_occurrence_and_payment_deadline(self):
         row = {
             "id": "fc-lottery", "group": "CUTIE STREET",
