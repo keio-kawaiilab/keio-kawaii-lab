@@ -1292,6 +1292,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
     # offers attached to the existing occurrences, not as another performance.
     sweet_winter = "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026"
     sweet_winter_upgrade = "https://sweetsteady.asobisystem.com/news/detail/93491"
+    sweet_winter_atsugi_venue = "神奈川県 厚木市文化会館 大ホール"
     if any(event.get("group") == "SWEET STEADY" and sweet_winter in _urls(event) for event in out):
         # Earlier backfills used the building name while the official
         # performance row includes its hall suffix.  They are the same
@@ -1300,7 +1301,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         for event in out:
             if not (event.get("group") == "SWEET STEADY" and sweet_winter in _urls(event)):
                 continue
-            venue = "神奈川県 厚木市文化会館 大ホール"
+            venue = sweet_winter_atsugi_venue
             changed = False
             if (_day(event) == "2026-11-13"
                     and event.get("venue") == "神奈川県 厚木市文化会館"):
@@ -1321,7 +1322,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
             if changed:
                 report["sweetWinterUpgradeOffersFixed"] += 1
         for day, venue, opened, start in (
-            ("2026-11-13", "神奈川県 厚木市文化会館 大ホール", "17:30", "18:30"),
+            ("2026-11-13", sweet_winter_atsugi_venue, "17:30", "18:30"),
             ("2026-12-03", "大阪府 フェニーチェ堺 大ホール", "17:30", "18:30"),
             ("2026-12-06", "愛知県 Niterra日本特殊陶業市民会館フォレストホール", "16:00", "17:00"),
             ("2026-12-18", "東京都 SGC HALL ARIAKE", "17:00", "18:30"),
