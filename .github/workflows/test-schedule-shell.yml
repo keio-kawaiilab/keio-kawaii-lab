@@ -10,6 +10,7 @@ on:
       - "data/verified-general-sales.json"
       - "scripts/test_general_sale_runtime.js"
       - "scripts/fix_schedule_shell.py"
+      - "scripts/enforce_physical_performance_identity.py"
       - "scripts/guard_performance_runtime.py"
       - "scripts/test_performance_runtime.js"
       - "scripts/test_guard_performance_runtime.py"
@@ -43,6 +44,8 @@ jobs:
         run: python scripts/fix_schedule_shell.py
       - name: Strip schedule explanations
         run: python scripts/strip_schedule_explanations.py
+      - name: Enforce final performance identity
+        run: python scripts/enforce_physical_performance_identity.py
       - name: Check inline JavaScript syntax
         run: node --check /tmp/schedule-inline.js
       - name: Test application band grouping
