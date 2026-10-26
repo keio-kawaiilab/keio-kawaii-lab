@@ -4,7 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
-from datetime import date
+from datetime import datetime, timedelta, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -40,6 +40,13 @@ FALLBACK_RE = re.compile(
     r"\s*window\.KL_LIVE_FALLBACK\s*=\s*(\[.*\])\s*;\s*",
     re.DOTALL,
 )
+JST = timezone(timedelta(hours=9))
+
+
+def jst_today_iso(now: datetime | None = None) -> str:
+    """Return the publication date in the same timezone as the schedule builder."""
+    current = now or datetime.now(JST)
+    return current.astimezone(JST).date().isoformat()
 
 
 def _text(event: dict) -> str:
@@ -199,7 +206,7 @@ def main() -> int:
     parser.add_argument("--data", default="data/live-events.json")
     parser.add_argument("--html")
     parser.add_argument("--fallback")
-    parser.add_argument("--from-date", default=date.today().isoformat())
+    parser.add_argument("--from-date", default=jst_today_iso())
     args = parser.parse_args()
 
     validate_data(Path(args.data))

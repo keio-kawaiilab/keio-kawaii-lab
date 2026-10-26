@@ -671,7 +671,9 @@ class ContinuousDiscoveryTests(unittest.TestCase):
             "url": "https://sweetsteady.asobisystem.com/news/detail/88494",
         }]}
         review = {"applyStart": "2026-09-18T12:00", "applyEnd": "2026-09-24T23:59"}
-        row = discovery.fallback_row_from_review(candidate, candidate.title, "2026.09.18", review, existing)
+        row = discovery.fallback_row_from_review(
+            candidate, candidate.title, "2026.09.18", review, existing, today=date(2026, 9, 18)
+        )
         self.assertIsNotNone(row)
         self.assertEqual(row["eventDate"], "2026-10-26")
         self.assertEqual(row["applyStart"], "2026-09-18T12:00")

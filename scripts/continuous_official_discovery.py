@@ -510,7 +510,7 @@ def explicit_event_days(title, text):
     return days
 
 
-def fallback_row_from_review(candidate, title, text, review, existing):
+def fallback_row_from_review(candidate, title, text, review, existing, today=None):
     """Attach a ticket window to one uniquely matching known future performance.
 
     Some official ticket articles intentionally omit the performance date because
@@ -530,7 +530,7 @@ def fallback_row_from_review(candidate, title, text, review, existing):
     if not wanted:
         return None
 
-    today = datetime.now(parser.JST).date()
+    today = today or datetime.now(parser.JST).date()
     performances = {}
     direct_matches = [
         event for event in _future_url_matches(candidate.url, existing)
