@@ -30,6 +30,7 @@ PROVIDER_LABELS = {
     "hmv": "HMV",
     "tower": "タワーレコード",
 }
+TOUR_RENDER_WARNING_SCOPE = "CANDY TUNE tour render verification"
 
 
 def _text(value: Any) -> str:
@@ -271,6 +272,13 @@ def _tour_performance(
     return matches[0]
 
 
+def _requires_current_ticket_offer(event: dict[str, Any], today=None) -> bool:
+    """Only require an actionable offer while the performance is not over."""
+    event_day = build_schedule_snapshot.parse_day(event.get("eventDate"))
+    current_day = today or datetime.now(JST).date()
+    return bool(event_day and event_day >= current_day)
+
+
 def _verify_tour_times(payload: dict[str, Any], page: str) -> None:
     # Two dates deliberately use different times. Keeping both in the check
     # prevents a tour-level fallback from silently stamping one time on all days.
@@ -294,7 +302,7 @@ def _verify_tour_times(payload: dict[str, Any], page: str) -> None:
     # Ended FC phases belong to the append-only ticket-flow history and may be
     # absent from the current application UI.  The public card must, however,
     # retain the currently actionable general sale.
-    if not any("一般発売" in value for value in ticket_types):
+    if _requires_current_ticket_offer(sendai) and not any("一般発売" in value for value in ticket_types):
         raise RuntimeError(f"Sendai performance lost its current general sale: {sorted(ticket_types)}")
 
     # Parse each <article> independently. The previous regex could cross card
@@ -307,10 +315,10 @@ def _verify_tour_times(payload: dict[str, Any], page: str) -> None:
         and 'class="card' in card.split(">", 1)[0]
     ]
 
-    checks = (
+    checks = tuple(item for item in (
         (hakodate, "2026/10/4 ／ 開場 16:30 ／ 開演 17:30", "函館市民会館"),
         (sendai, "2026/10/8 ／ 開場 17:30 ／ 開演 18:30", "仙台サンプラザホール"),
-    )
+    ) if _requires_current_ticket_offer(item[0]))
     for event, expected_datetime, venue_fragment in checks:
         day_text = build_schedule_snapshot.fmt(event.get("eventDate"))
         matching = [
@@ -327,18 +335,18 @@ def _verify_tour_times(payload: dict[str, Any], page: str) -> None:
                 f"static tour card lost per-day OPEN/START for {event.get('eventDate')}"
             )
 
-    sendai_day = build_schedule_snapshot.fmt(sendai.get("eventDate"))
-    matching_sendai = [
-        card for card in candy_cards
-        if sendai_day in card and "仙台サンプラザホール" in card and "JAPAN TOUR 2026" in card
-    ]
-    if len(matching_sendai) != 1:
-        raise RuntimeError(
-            f"expected one static CANDY TUNE tour card for {sendai.get('eventDate')}, found {len(matching_sendai)}"
-        )
-    card = matching_sendai[0]
-    if "一般発売" not in card:
-        raise RuntimeError("static Sendai performance card does not expose its current general sale")
+    if _requires_current_ticket_offer(sendai):
+        sendai_day = build_schedule_snapshot.fmt(sendai.get("eventDate"))
+        matching_sendai = [
+            card for card in candy_cards
+            if sendai_day in card and "仙台サンプラザホール" in card and "JAPAN TOUR 2026" in card
+        ]
+        if len(matching_sendai) != 1:
+            raise RuntimeError(
+                f"expected one static CANDY TUNE tour card for {sendai.get('eventDate')}, found {len(matching_sendai)}"
+            )
+        if "一般発売" not in matching_sendai[0]:
+            raise RuntimeError("static Sendai performance card does not expose its current general sale")
 
 
 def main() -> int:
@@ -348,6 +356,14 @@ def main() -> int:
     payload["publicEvents"] = public_events
     payload["publicEventModelVersion"] = 1
     payload["publicEventModelReport"] = model_report
+    # A transient event-specific warning must be one current observation, not
+    # an append-only log. Clear prior copies before re-evaluating the guard.
+    payload["renderWarnings"] = [
+        warning
+        for warning in payload.get("renderWarnings") or []
+        if not isinstance(warning, dict)
+        or warning.get("scope") != TOUR_RENDER_WARNING_SCOPE
+    ]
     DATA.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     visible, display_report = _public_display_events(payload)
@@ -365,7 +381,7 @@ def main() -> int:
     except RuntimeError as exc:
         warning = {
             "checkedAt": datetime.now(JST).isoformat(timespec="seconds"),
-            "scope": "CANDY TUNE tour render verification",
+            "scope": TOUR_RENDER_WARNING_SCOPE,
             "message": str(exc),
         }
         payload.setdefault("renderWarnings", []).append(warning)
