@@ -662,6 +662,28 @@ class SpecialEventEntityTests(unittest.TestCase):
         self.assertEqual(offer["provider"], "tower")
         self.assertIn("tower.jp", offer["url"])
 
+    def test_generic_schedule_offer_does_not_duplicate_same_hmv_window(self):
+        source = "https://morestar.asobisystem.com/live_information/detail/46447"
+        payload = {"events": [
+            {
+                "id": "joint", "entityType": "special-event", "group": "KAWAII LAB.合同",
+                "participants": ["CUTIE STREET", "MORE STAR"], "eventCategory": "large-benefit",
+                "displayTitle": "CUTIE STREET／MORE STAR 大特典会", "eventDate": "2026-11-03",
+                "venue": "パシフィコ横浜 展示ホールD", "ticketType": "現在受付なし",
+                "offers": [{"sourceRowId": "hmv", "provider": "hmv", "ticketType": "対象商品予約", "applyStart": "2026-10-23T21:00", "applyEnd": "2026-10-27T23:59", "urls": [source, "https://img.hmv.co.jp/more/"]}],
+            },
+            {
+                "id": "raw", "group": "MORE STAR", "eventCategory": "large-benefit",
+                "title": "MORE STAR 大特典@パシフィコ横浜展示ホールD",
+                "eventDate": "2026-11-03", "venue": "パシフィコ横浜展示ホールD",
+                "ticketType": "チケット受付", "applyStart": "2026-10-23T21:00",
+                "applyEnd": "2026-10-27T23:59", "url": source,
+            },
+        ]}
+        normalized, _ = normalize_payload(payload)
+        self.assertEqual(1, len(normalized["events"]))
+        self.assertEqual(["hmv"], [offer["sourceRowId"] for offer in normalized["events"][0]["offers"]])
+
 
 if __name__ == "__main__":
     unittest.main()

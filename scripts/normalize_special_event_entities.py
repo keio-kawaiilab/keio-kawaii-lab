@@ -188,6 +188,30 @@ def offer_score(offer: dict, parent: dict) -> tuple:
     )
 
 
+def drop_redundant_generic_offers(offers: list[dict]) -> list[dict]:
+    """Prefer a verified sales-provider offer over its generic schedule alias."""
+    kept: list[dict] = []
+    for offer in offers:
+        p = provider(offer)
+        generic = p == "official" and text(offer.get("ticketType")) in {"チケット受付", "受付"}
+        if not generic:
+            kept.append(offer)
+            continue
+        start, end = text(offer.get("applyStart")), text(offer.get("applyEnd"))
+        source_urls = set(all_urls(offer))
+        duplicate = any(
+            other is not offer
+            and provider(other) != "official"
+            and text(other.get("applyStart")) == start
+            and text(other.get("applyEnd")) == end
+            and bool(source_urls.intersection(all_urls(other)))
+            for other in offers
+        )
+        if not duplicate:
+            kept.append(offer)
+    return kept
+
+
 def correct_physical_benefit_offer_label(event: dict, offer: dict) -> dict:
     """Repair a stale online label on a verified physical FC benefit offer."""
     corrected = copy.deepcopy(offer)
@@ -477,6 +501,7 @@ def make_entity(items: list[dict]) -> dict:
     entity["entityType"] = "special-event"
     entity["specialEventEntityVersion"] = 1
     entity["sourceRowIds"] = source_row_ids
+    offers = drop_redundant_generic_offers(offers)
     entity["offers"] = offers
     entity["eventCategory"] = category(representative)
     participants = participant_groups(items)
