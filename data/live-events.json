@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-28T04:04:46+09:00",
+  "checkedAt": "2026-10-28T04:05:34+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-27T07:54:16+09:00",
     "scannedPages": {
@@ -261,6 +261,60 @@
       "sourceCandidates": [
         "official"
       ]
+    },
+    {
+      "id": "known-candy-aichi-20261027-same-day",
+      "group": "CANDY TUNE",
+      "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN - 愛知公演 当日券",
+      "ticketType": "当日券（注釈付き指定席・会場販売）",
+      "applyStart": "2026-10-27T17:30",
+      "applyEnd": null,
+      "resultDate": null,
+      "paymentEnd": null,
+      "eventDate": "2026-10-27",
+      "venue": "愛知県 愛知県芸術劇場 大ホール",
+      "openTime": "17:30",
+      "startTime": "18:30",
+      "url": "https://candytune.asobisystem.com/news/detail/94161",
+      "urls": [
+        "https://candytune.asobisystem.com/news/detail/94161",
+        "https://candytune.asobisystem.com/live_information/detail/40733"
+      ],
+      "applicationWindowSource": "https://candytune.asobisystem.com/news/detail/94161",
+      "sourceType": "official-ticket",
+      "sourcePublishedAt": "2026-10-27",
+      "participants": [],
+      "eventEndDate": "2026-10-27",
+      "eventDates": [
+        "2026-10-27"
+      ],
+      "eventCount": 1,
+      "schedule": [
+        {
+          "date": "2026-10-27",
+          "venue": "愛知県 愛知県芸術劇場 大ホール",
+          "openTime": "17:30",
+          "startTime": "18:30"
+        }
+      ],
+      "venues": [
+        "愛知県 愛知県芸術劇場 大ホール"
+      ],
+      "applicationStatus": "observed",
+      "eventScope": "kawaii-lab",
+      "officialScheduleUrl": "https://candytune.asobisystem.com/live_information/detail/40733",
+      "officialTourUrl": "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
+      "primarySource": "official",
+      "sourceCandidates": [
+        "official"
+      ],
+      "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
+      "ticketProvider": "official",
+      "sourceChannel": "known-official-correction",
+      "applicationDisplayMode": "offers",
+      "applicationStartVerified": true,
+      "applicationWindowVerified": true,
+      "windowCompleteness": "start-only"
     },
     {
       "id": "933b035dad6018f9",
@@ -4699,7 +4753,7 @@
       "id": "380b7bb73eb8e539",
       "group": "CANDY TUNE",
       "title": "2026.10.26 「CANDY TUNE 村川緋杏 生誕祭 2026」 アップグレード抽選受付のお知らせ",
-      "ticketType": "現在受付なし",
+      "ticketType": "アップグレード抽選",
       "applyStart": null,
       "applyEnd": null,
       "resultDate": null,
@@ -10555,12 +10609,12 @@
     ]
   },
   "publicEventModelReport": {
-    "rawEventCount": 250,
+    "rawEventCount": 251,
     "passthroughEventCount": 59,
     "performanceEntityCount": 62,
-    "sourceOccurrenceCount": 295,
-    "mergedSourceOccurrences": 233,
-    "offerCount": 145,
+    "sourceOccurrenceCount": 296,
+    "mergedSourceOccurrences": 234,
+    "offerCount": 146,
     "outOfScopeSoloEventCount": 3
   },
   "publicEventModelVersion": 1,
@@ -10719,7 +10773,7 @@
   },
   "renderWarnings": [
     {
-      "checkedAt": "2026-10-28T04:04:46+09:00",
+      "checkedAt": "2026-10-28T04:05:34+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one CANDY TUNE tour performance for 2026-10-04 OPEN 16:30 / START 17:30, found 0"
     }
@@ -24088,7 +24142,7 @@
       }
     ]
   },
-  "updatedAt": "2026-10-28T04:04:46+09:00",
+  "updatedAt": "2026-10-28T04:05:34+09:00",
   "publicEvents": [
     {
       "id": "d4040d09144b5964",
@@ -26040,7 +26094,8 @@
         "https://candytune.asobisystem.com/live_information/detail/40740",
         "https://candytune.asobisystem.com/live_information/detail/40741",
         "https://candytune.asobisystem.com/live_information/detail/40742",
-        "https://candytune.asobisystem.com/live_information/detail/40743"
+        "https://candytune.asobisystem.com/live_information/detail/40743",
+        "https://candytune.asobisystem.com/news/detail/94161"
       ],
       "sourceType": "derived",
       "sourcePublishedAt": "2026-07-30",
@@ -26082,12 +26137,34 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-10-27|time|18:30|愛知県芸術劇場大ホール",
       "sourceRowIds": [
-        "f641c49b15d0f20a"
+        "f641c49b15d0f20a",
+        "known-candy-aichi-20261027-same-day"
       ],
-      "offers": [],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
+      "offers": [
+        {
+          "sourceRowId": "known-candy-aichi-20261027-same-day",
+          "provider": "official",
+          "url": "https://candytune.asobisystem.com/news/detail/94161",
+          "urls": [
+            "https://candytune.asobisystem.com/news/detail/94161",
+            "https://candytune.asobisystem.com/live_information/detail/40733"
+          ],
+          "ticketType": "当日券（注釈付き指定席・会場販売）",
+          "ticketProvider": "official",
+          "applyStart": "2026-10-27T17:30",
+          "applicationStatus": "observed",
+          "applicationWindowVerified": true,
+          "applicationDisplayMode": "offers",
+          "applicationWindowSource": "https://candytune.asobisystem.com/news/detail/94161",
+          "sourceType": "official-ticket",
+          "sourceChannel": "known-official-correction",
+          "primarySource": "official",
+          "sourcePublishedAt": "2026-10-27"
+        }
+      ],
+      "ticketType": "当日券（注釈付き指定席・会場販売）",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers"
     },
     {
       "id": "performance-CANDY-TUNE-2026-10-29-time-18-30",
