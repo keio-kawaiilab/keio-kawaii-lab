@@ -93,6 +93,29 @@ class GroupedReleaseAuditTests(unittest.TestCase):
         self.assertTrue(any("disappeared" in item for item in errors))
         self.assertEqual("blocked", report["status"])
 
+    def test_filling_missing_performance_time_keeps_same_fc_offer(self):
+        url = "https://sweetsteady.asobisystem.com/news/detail/94087"
+        base = {
+            "id": "okuda", "group": "SWEET STEADY",
+            "eventScope": "kawaii-lab",
+            "eventTitle": "SWEET STEADY 奥田彩友 BIRTHDAY LIVE 2027",
+            "title": "SWEET STEADY 奥田彩友 BIRTHDAY LIVE 2027",
+            "primarySource": "official", "sourceType": "auto",
+            "eventDate": "2027-01-07", "ticketType": "FC先行",
+            "applyStart": "2026-10-27T20:00",
+            "applyEnd": "2026-11-04T23:59", "url": url, "urls": [url],
+        }
+        previous = dict(base)
+        candidate = {**base, "openTime": "17:30", "startTime": "19:00"}
+        now = datetime.fromisoformat("2026-10-27T23:00:00+09:00")
+
+        errors, warnings, report = audit_grouped(
+            payload([previous]), payload([candidate]), now
+        )
+        self.assertFalse(any("official FC offer disappeared" in item for item in errors))
+        self.assertTrue(any("performance time enriched" in item for item in warnings))
+        self.assertEqual("ok", report["status"])
+
     def test_new_date_on_same_multi_event_x_post_keeps_existing_dates_safe(self):
         title = "『サマーゴー！！/WITH KAWAII論』発売記念リリースイベント"
         old_rows = [
