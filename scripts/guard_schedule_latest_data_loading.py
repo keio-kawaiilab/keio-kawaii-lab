@@ -14,7 +14,7 @@ HELPER = (
     "fetch(url,{cache:'no-store'}).then(function(response){if(settled)return;settled=true;resolve(response)},"
     "function(error){if(settled)return;settled=true;reject(error)})})}\n"
 )
-INTEGRITY_HELPER = (
+INTEGRITY_HELPER_BASE = (
     "function hasRequiredCandyTuneTour(data){"
     "var required=['2026-08-29','2026-08-30','2026-09-04','2026-09-09','2026-09-10','2026-09-19','2026-10-02','2026-10-04','2026-10-08','2026-10-09','2026-10-26','2026-10-27','2026-10-29','2026-11-10','2026-11-12','2026-11-17','2026-11-19','2026-11-24','2026-11-26','2026-11-30','2026-12-01','2026-12-08','2026-12-09'],"
     "rows=Array.isArray(data&&data.publicEvents)?data.publicEvents:Array.isArray(data&&data.events)?data.events:[],found={};"
@@ -28,6 +28,11 @@ INTEGRITY_HELPER = (
     "(e.schedule||[]).forEach(function(v){if(v&&typeof v==='object')add(v.date)})});"
     "return required.every(function(day){return found[day]===1})}\n"
 )
+INTEGRITY_HELPER = INTEGRITY_HELPER_BASE.replace(
+    "return required.every(function(day){return found[day]===1})}",
+    "required=required.filter(function(day){return day>=new Date(Date.now()+32400000).toISOString().slice(0,10)});"
+    "return required.every(function(day){return found[day]===1})}",
+)
 
 
 def install_guard(page: str) -> str:
@@ -38,7 +43,9 @@ def install_guard(page: str) -> str:
     if "function fetchLatestScheduleData(url,timeoutMs)" not in page:
         page = page[:fetch_anchor] + HELPER + page[fetch_anchor:]
         fetch_anchor += len(HELPER)
-    if "function hasRequiredCandyTuneTour(data)" not in page:
+    if INTEGRITY_HELPER_BASE in page:
+        page = page.replace(INTEGRITY_HELPER_BASE, INTEGRITY_HELPER, 1)
+    elif "function hasRequiredCandyTuneTour(data)" not in page:
         page = page[:fetch_anchor] + INTEGRITY_HELPER + page[fetch_anchor:]
 
     page = page.replace(LEGACY_FETCH, GUARDED_FETCH, 1)

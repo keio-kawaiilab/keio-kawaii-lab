@@ -32,6 +32,15 @@ class LatestScheduleDataLoadingGuardTests(unittest.TestCase):
         once = guard.install_guard(self.legacy_page())
         self.assertEqual(once, guard.install_guard(once))
 
+    def test_upgrades_guard_that_requires_expired_tour_dates(self):
+        page = self.legacy_page().replace(
+            guard.LEGACY_FETCH,
+            guard.HELPER + guard.INTEGRITY_HELPER_BASE + guard.GUARDED_FETCH,
+        ).replace(guard.RAW_LATEST_SWAP, guard.GUARDED_LATEST_SWAP)
+        result = guard.install_guard(page)
+        self.assertNotIn(guard.INTEGRITY_HELPER_BASE, result)
+        self.assertIn("Date.now()+32400000", result)
+
     def test_refuses_unknown_latest_assignment_shape(self):
         page = guard.HELPER + guard.GUARDED_FETCH + ".then(function(data){events=[]})"
         with self.assertRaisesRegex(RuntimeError, "assignment changed"):
