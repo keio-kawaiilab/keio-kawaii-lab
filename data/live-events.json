@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-27T15:42:31+09:00",
+  "checkedAt": "2026-10-27T15:43:12+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-27T07:54:16+09:00",
     "scannedPages": {
@@ -294,6 +294,60 @@
       "sourceCandidates": [
         "official"
       ]
+    },
+    {
+      "id": "known-candy-aichi-20261027-same-day",
+      "group": "CANDY TUNE",
+      "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN - 愛知公演 当日券",
+      "ticketType": "当日券（注釈付き指定席・会場販売）",
+      "applyStart": "2026-10-27T17:30",
+      "applyEnd": null,
+      "resultDate": null,
+      "paymentEnd": null,
+      "eventDate": "2026-10-27",
+      "venue": "愛知県 愛知県芸術劇場 大ホール",
+      "openTime": "17:30",
+      "startTime": "18:30",
+      "url": "https://candytune.asobisystem.com/news/detail/94161",
+      "urls": [
+        "https://candytune.asobisystem.com/news/detail/94161",
+        "https://candytune.asobisystem.com/live_information/detail/40733"
+      ],
+      "applicationWindowSource": "https://candytune.asobisystem.com/news/detail/94161",
+      "sourceType": "official-ticket",
+      "sourcePublishedAt": "2026-10-27",
+      "participants": [],
+      "eventEndDate": "2026-10-27",
+      "eventDates": [
+        "2026-10-27"
+      ],
+      "eventCount": 1,
+      "schedule": [
+        {
+          "date": "2026-10-27",
+          "venue": "愛知県 愛知県芸術劇場 大ホール",
+          "openTime": "17:30",
+          "startTime": "18:30"
+        }
+      ],
+      "venues": [
+        "愛知県 愛知県芸術劇場 大ホール"
+      ],
+      "applicationStatus": "observed",
+      "eventScope": "kawaii-lab",
+      "officialScheduleUrl": "https://candytune.asobisystem.com/live_information/detail/40733",
+      "officialTourUrl": "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
+      "primarySource": "official",
+      "sourceCandidates": [
+        "official"
+      ],
+      "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
+      "ticketProvider": "official",
+      "sourceChannel": "known-official-correction",
+      "applicationDisplayMode": "offers",
+      "applicationStartVerified": true,
+      "applicationWindowVerified": true,
+      "windowCompleteness": "start-only"
     },
     {
       "id": "933b035dad6018f9",
@@ -10474,12 +10528,12 @@
     ]
   },
   "publicEventModelReport": {
-    "rawEventCount": 252,
+    "rawEventCount": 253,
     "passthroughEventCount": 60,
     "performanceEntityCount": 60,
-    "sourceOccurrenceCount": 295,
-    "mergedSourceOccurrences": 235,
-    "offerCount": 140,
+    "sourceOccurrenceCount": 296,
+    "mergedSourceOccurrences": 236,
+    "offerCount": 141,
     "outOfScopeSoloEventCount": 3
   },
   "publicEventModelVersion": 1,
@@ -10653,7 +10707,7 @@
   },
   "renderWarnings": [
     {
-      "checkedAt": "2026-10-27T15:42:31+09:00",
+      "checkedAt": "2026-10-27T15:43:12+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one CANDY TUNE tour performance for 2026-10-04 OPEN 16:30 / START 17:30, found 0"
     }
@@ -10677,7 +10731,21 @@
     "duplicateEventRowsCollapsed": 0,
     "duplicateEventIdsDisambiguated": 0,
     "duplicateEventIdRepairs": [],
-    "onlinePlaceholderOccurrencesMerged": 0
+    "onlinePlaceholderOccurrencesMerged": 0,
+    "publicEvents": {
+      "sourceSpecialRows": 5,
+      "canonicalSpecialEvents": 5,
+      "rowsCollapsed": 0,
+      "releaseEventEntities": 1,
+      "largeBenefitEntities": 4,
+      "alreadyCanonicalRows": 5,
+      "internalScheduleRowsCollapsed": 0,
+      "duplicateEventIdCollisions": 0,
+      "duplicateEventRowsCollapsed": 0,
+      "duplicateEventIdsDisambiguated": 0,
+      "duplicateEventIdRepairs": [],
+      "onlinePlaceholderOccurrencesMerged": 0
+    }
   },
   "ticketCollectorDiagnostics": {
     "collectedAt": "2026-10-27T15:37:32+09:00",
@@ -24127,7 +24195,7 @@
       }
     ]
   },
-  "updatedAt": "2026-10-27T15:42:31+09:00",
+  "updatedAt": "2026-10-27T15:43:12+09:00",
   "publicEvents": [
     {
       "id": "d4040d09144b5964",
@@ -26105,7 +26173,8 @@
         "https://candytune.asobisystem.com/live_information/detail/40740",
         "https://candytune.asobisystem.com/live_information/detail/40741",
         "https://candytune.asobisystem.com/live_information/detail/40742",
-        "https://candytune.asobisystem.com/live_information/detail/40743"
+        "https://candytune.asobisystem.com/live_information/detail/40743",
+        "https://candytune.asobisystem.com/news/detail/94161"
       ],
       "sourceType": "derived",
       "sourcePublishedAt": "2026-07-30",
@@ -26148,7 +26217,8 @@
       "performanceKey": "CANDY TUNE|2026-10-27|time|18:30|愛知県芸術劇場大ホール",
       "sourceRowIds": [
         "d355a09d36fa0ca0",
-        "f641c49b15d0f20a"
+        "f641c49b15d0f20a",
+        "known-candy-aichi-20261027-same-day"
       ],
       "offers": [
         {
@@ -26167,9 +26237,29 @@
           "sourceChannel": "recent-official-body",
           "primarySource": "official",
           "sourcePublishedAt": "2026-07-05"
+        },
+        {
+          "sourceRowId": "known-candy-aichi-20261027-same-day",
+          "provider": "official",
+          "url": "https://candytune.asobisystem.com/news/detail/94161",
+          "urls": [
+            "https://candytune.asobisystem.com/news/detail/94161",
+            "https://candytune.asobisystem.com/live_information/detail/40733"
+          ],
+          "ticketType": "当日券（注釈付き指定席・会場販売）",
+          "ticketProvider": "official",
+          "applyStart": "2026-10-27T17:30",
+          "applicationStatus": "observed",
+          "applicationWindowVerified": true,
+          "applicationDisplayMode": "offers",
+          "applicationWindowSource": "https://candytune.asobisystem.com/news/detail/94161",
+          "sourceType": "official-ticket",
+          "sourceChannel": "known-official-correction",
+          "primarySource": "official",
+          "sourcePublishedAt": "2026-10-27"
         }
       ],
-      "ticketType": "FC先行",
+      "ticketType": "複数受付",
       "applicationDisplayMode": "offers",
       "applicationStatus": "offers"
     },
