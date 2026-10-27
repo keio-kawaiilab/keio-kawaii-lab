@@ -91,6 +91,38 @@ class DiscoveryPublicationTest(unittest.TestCase):
         distinct_window["offers"][0]["applyStart"] = "2098-10-17T12:00"
         self.assertEqual(1, len(audit(state, {"publicEvents": [distinct_window]})["missingOffers"]))
 
+    def test_verified_same_day_ticket_detail_is_represented(self):
+        source = "https://candytune.asobisystem.com/news/detail/94161"
+        expected = {
+            "group": "CANDY TUNE", "eventDate": "2099-10-27",
+            "startTime": "18:30", "ticketType": "当日券",
+            "applyStart": "2099-10-27T17:30", "applyEnd": None,
+            "url": source,
+        }
+        entity = {
+            "group": expected["group"], "eventDate": expected["eventDate"],
+            "startTime": expected["startTime"],
+            "offers": [{
+                "ticketType": "当日券（注釈付き指定席・会場販売）",
+                "applyStart": expected["applyStart"], "applyEnd": None,
+                "url": source, "applicationWindowVerified": True,
+            }],
+        }
+        state = {"observations": [{"expectedOffers": [expected]}]}
+        self.assertEqual([], audit(state, {"publicEvents": [entity]})["missingOffers"])
+
+        wrong_source = copy.deepcopy(entity)
+        wrong_source["offers"][0]["url"] = "https://example.com/other"
+        self.assertEqual(1, len(audit(state, {"publicEvents": [wrong_source]})["missingOffers"]))
+
+        unverified = copy.deepcopy(entity)
+        unverified["offers"][0]["applicationWindowVerified"] = False
+        self.assertEqual(1, len(audit(state, {"publicEvents": [unverified]})["missingOffers"]))
+
+        changed_window = copy.deepcopy(entity)
+        changed_window["offers"][0]["applyStart"] = "2099-10-27T18:00"
+        self.assertEqual(1, len(audit(state, {"publicEvents": [changed_window]})["missingOffers"]))
+
     def test_alias_does_not_hide_real_missing_or_changed_offer(self):
         state, payload = self.fixture()
         for field, value in (("applyEnd", "2099-11-13T20:00"), ("provider", "pia"), ("ticketType", "FC先行")):
