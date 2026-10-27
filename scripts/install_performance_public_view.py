@@ -135,7 +135,10 @@ def _build_public_card(event: dict[str, Any]) -> str:
         raise RuntimeError("generated performance card date field changed; performance times cannot be installed safely")
     card = card.replace(old_date, new_date, 1)
 
-    options = _ticket_options_html(event)
+    # build_card() already renders every current offer.  The performance
+    # installer only needs to add the empty-state message; rendering the full
+    # offer list again produced two identical application panels.
+    options = "" if build_schedule_snapshot.current_offer_rows(event) else _ticket_options_html(event)
     anchor = card.rfind('<a class="src"')
     if anchor >= 0:
         return card[:anchor] + options + card[anchor:]

@@ -135,6 +135,66 @@ def general_sale_rows(candidate, text, existing):
     return rows
 
 
+def same_day_counter_sale_rows(candidate, title, text):
+    """Parse a venue same-day sale without inventing a closing time.
+
+    Same-day notices commonly put ``受付開始時間`` several sections after
+    the performance date.  The generic sale parser intentionally refuses to
+    cross those section boundaries, so handle this narrowly: one official
+    notice, one unambiguous performance occurrence and one labelled sale time.
+    """
+    if "当日券" not in f"{title}\n{text}":
+        return []
+    published = parser.article_date_from_text(text)
+    raw_lines = [parser.normalize_space(line) for line in text.splitlines() if parser.normalize_space(line)]
+    # The CMS often puts a section label and its value in adjacent nodes.
+    # Join only those known labels before invoking the ordinary occurrence
+    # parser; this preserves its date/venue/time validation.
+    lines = []
+    for index, line in enumerate(raw_lines):
+        if index + 1 < len(raw_lines) and (
+            (re.fullmatch(r"(?:公演日時|日程|公演日|開催日|日時)[：:]?", line)
+             and not parser.DATE_ANY_RE.search(line))
+            or (re.fullmatch(r"(?:会場|場所)[：:]?", line) and not parser.VENUE_RE.search(line))
+        ):
+            lines.append(f"{line}：{raw_lines[index + 1]}")
+        else:
+            lines.append(line)
+    occurrences = parser.extract_event_occurrences(lines, title, published)
+    unique = list(dict.fromkeys(occurrences))
+    if len(unique) != 1:
+        return []
+    lines = raw_lines
+    times = []
+    for index, line in enumerate(lines):
+        if not re.search(r"受付開始(?:時間|時刻)?", line):
+            continue
+        segment = " ".join(lines[index:index + 3])
+        match = re.search(r"(?:受付開始(?:時間|時刻)?[^0-9]{0,20})?(\d{1,2}):(\d{2})(?:より|から|開始)?", segment)
+        if match:
+            times.append(f"{int(match.group(1)):02d}:{match.group(2)}")
+    times = list(dict.fromkeys(times))
+    if len(times) != 1:
+        return []
+    day, venue, open_time, start_time = unique[0]
+    apply_start = f"{day}T{times[0]}"
+    return [{
+        "id": parser.event_id(candidate.group, candidate.url, day, apply_start, "当日券")
+              + hashlib.sha1(str(start_time or "").encode()).hexdigest()[:6],
+        "group": candidate.group, "title": title,
+        "eventTitle": _stable_performance_title(title, candidate.group),
+        "ticketType": "当日券", "eventDate": day, "venue": venue,
+        "openTime": open_time, "startTime": start_time,
+        "applyStart": apply_start, "applyEnd": None,
+        "url": candidate.url, "urls": [candidate.url],
+        "sourceType": "auto", "sourceChannel": "official-continuous",
+        "primarySource": "official", "applicationStatus": "observed",
+        "applicationStartVerified": True, "applicationWindowVerified": True,
+        "applicationWindowSource": candidate.url, "windowCompleteness": "start-only",
+        "sourcePublishedAt": published, "eventScope": official_show_scope(title, candidate.url),
+    }]
+
+
 def paired_resale_rows(candidate, text):
     """Parse tour resale tables as one reception window per performance.
 
@@ -850,6 +910,12 @@ def read_candidate(candidate, existing, headers):
             }, "pending"
     candidate = parser.Candidate(group, title, candidate.url)
     rows, review = parser.parse_candidate(CachedArticle(str(soup)), candidate)
+    same_day_rows = same_day_counter_sale_rows(candidate, title, text)
+    if same_day_rows:
+        keys = {(row.get("eventDate"), row.get("ticketType"), row.get("applyStart")) for row in rows}
+        rows.extend(row for row in same_day_rows
+                    if (row.get("eventDate"), row.get("ticketType"), row.get("applyStart")) not in keys)
+        review = None
     # A generic parser can already produce one incomplete row and thereby
     # bypass the richer two-part/complete-window parser. Always check whether
     # the official article offers a *verified* single full window and multiple

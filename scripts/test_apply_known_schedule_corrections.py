@@ -6,6 +6,9 @@ from apply_known_schedule_corrections import (
     DISASTER_RELIEF_PIA,
     MORE_STAR_7TH_FC,
     MORE_STAR_7TH_NEWS,
+    MORE_STAR_PACIFICO_HMV,
+    MORE_STAR_PACIFICO_NEWS,
+    MORE_STAR_PACIFICO_SCHEDULE,
     SWEET_IDOL_HALLOWEEN_OFFICIAL,
     SWEET_IDOL_HALLOWEEN_SCHEDULE,
     SWEET_IDOL_HALLOWEEN_TICKET,
@@ -14,6 +17,27 @@ from apply_known_schedule_corrections import (
 
 
 class KnownScheduleCorrectionsTest(unittest.TestCase):
+    def test_more_star_pacifico_hmv_reservation_is_restored_once(self):
+        schedule_only = {
+            "id": "official-more-star-pacifico", "group": "MORE STAR",
+            "title": "MORE STAR 大特典@パシフィコ横浜展示ホールD",
+            "eventDate": "2026-11-03", "venue": "神奈川県 パシフィコ横浜展示ホールD",
+            "ticketType": "現在受付なし", "applicationStatus": "none",
+            "url": MORE_STAR_PACIFICO_SCHEDULE, "urls": [MORE_STAR_PACIFICO_SCHEDULE],
+            "sourceType": "official-schedule", "primarySource": "official",
+            "eventCategory": "large-benefit", "specialDetailsStatus": "awaiting-details",
+        }
+        corrected, report = apply_known_corrections([schedule_only])
+        self.assertEqual(1, report["moreStarPacificoHmvOfferAdded"])
+        sale = next(row for row in corrected if row["id"] == "known-more-star-pacifico-20261103-hmv")
+        self.assertEqual(MORE_STAR_PACIFICO_HMV, sale["url"])
+        self.assertEqual(MORE_STAR_PACIFICO_NEWS, sale["applicationWindowSource"])
+        self.assertEqual("2026-10-27T23:59", sale["applyEnd"])
+        self.assertEqual(6, len(sale["parts"]))
+        again, second_report = apply_known_corrections(corrected)
+        self.assertEqual(corrected, again)
+        self.assertEqual(0, second_report["moreStarPacificoHmvOfferAdded"])
+
     def test_sweet_idol_halloween_event_span_is_not_published_as_sale_window(self):
         stale = {
             "id": "misread-festival-span",

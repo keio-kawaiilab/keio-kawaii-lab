@@ -49,6 +49,19 @@ SWEET_IDOL_HALLOWEEN_DAY = "2026-10-30"
 SWEET_IDOL_HALLOWEEN_SCHEDULE = "https://sweetsteady.asobisystem.com/live_information/detail/46633"
 SWEET_IDOL_HALLOWEEN_OFFICIAL = "https://idolhalloweenjapan.com/"
 SWEET_IDOL_HALLOWEEN_TICKET = "https://ticketdive.com/event/IHJ2026"
+MORE_STAR_PACIFICO_DAY = "2026-11-03"
+MORE_STAR_PACIFICO_SCHEDULE = "https://morestar.asobisystem.com/live_information/detail/46447"
+MORE_STAR_PACIFICO_NEWS = "https://morestar.asobisystem.com/news/detail/93714"
+MORE_STAR_PACIFICO_HMV = "https://img.hmv.co.jp/cont/online/morestarevent_lp/"
+
+MORE_STAR_PACIFICO_PARTS = [
+    {"part": "第1部", "content": "個別2ショットチェキ撮影会", "start": "10:00", "end": "11:00", "receptionStart": "09:45", "receptionEnd": "10:40"},
+    {"part": "第2部", "content": "個別2ショットチェキ撮影会", "start": "11:20", "end": "12:20", "receptionStart": "11:05", "receptionEnd": "12:00"},
+    {"part": "第3部", "content": "個別2ショットチェキ撮影会", "start": "12:50", "end": "13:50", "receptionStart": "12:35", "receptionEnd": "13:30"},
+    {"part": "第4部", "content": "個別2ショットチェキ撮影会", "start": "15:00", "end": "16:00", "receptionStart": "14:45", "receptionEnd": "15:40"},
+    {"part": "第5部", "content": "個別2ショットチェキ撮影会", "start": "16:30", "end": "17:30", "receptionStart": "16:15", "receptionEnd": "17:10"},
+    {"part": "第6部", "content": "個別2ショットチェキ撮影会", "start": "17:50", "end": "18:50", "receptionStart": "17:35", "receptionEnd": "18:30"},
+]
 
 HAKATA_PARTS = [
     {"part": "第1部", "content": "2ショットチェキ撮影会（FC限定）", "start": "10:00", "end": "11:00", "receptionStart": "09:40", "receptionEnd": "10:40"},
@@ -153,6 +166,44 @@ def _build_sweet_idol_halloween_sale(schedule_event: dict) -> dict:
         "eventScope": "external",
     })
     for key in ("offers", "canonicalRuntimeRole"):
+        out.pop(key, None)
+    return out
+
+
+def _build_more_star_pacifico_hmv_sale(schedule_event: dict) -> dict:
+    """Restore the verified HMV reservation omitted by the schedule feed."""
+    out = deepcopy(schedule_event)
+    out.update({
+        "id": "known-more-star-pacifico-20261103-hmv",
+        "title": "MORE STAR 大特典@パシフィコ横浜展示ホールD",
+        "eventTitle": "MORE STAR 大特典@パシフィコ横浜展示ホールD",
+        "eventDate": MORE_STAR_PACIFICO_DAY,
+        "venue": "神奈川県 パシフィコ横浜展示ホールD",
+        "eventCategory": "large-benefit",
+        "ticketType": "対象商品予約（参加権付き・先着）",
+        "ticketProvider": "hmv",
+        "ticketName": "個別2ショットチェキ撮影券",
+        "product": "MORE STAR 1stシングル 通常盤 2枚（1セット）",
+        "purchaseMethod": "HMV&BOOKS onlineで対象商品を先着予約（1セットにつき撮影券1枚）",
+        "parts": deepcopy(MORE_STAR_PACIFICO_PARTS),
+        "applyStart": "2026-10-23T21:00",
+        "applyEnd": "2026-10-27T23:59",
+        "url": MORE_STAR_PACIFICO_HMV,
+        "urls": [MORE_STAR_PACIFICO_HMV, MORE_STAR_PACIFICO_NEWS, MORE_STAR_PACIFICO_SCHEDULE],
+        "sourceType": "official-special",
+        "sourceChannel": "known-official-correction",
+        "primarySource": "official",
+        "sourceCandidates": ["official", "hmv"],
+        "applicationStatus": "open",
+        "applicationDisplayMode": "offers",
+        "applicationWindowVerified": True,
+        "applicationWindowSource": MORE_STAR_PACIFICO_NEWS,
+        "deadlineVerified": True,
+        "deadlineSource": MORE_STAR_PACIFICO_NEWS,
+        "eventScope": "kawaii-lab",
+        "specialDetailsStatus": "verified",
+    })
+    for key in ("offers", "canonicalRuntimeRole", "entityType", "specialEventEntityVersion", "sourceRowIds"):
         out.pop(key, None)
     return out
 
@@ -1247,6 +1298,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "cutiePacificoFcLotteryFixed": 0,
         "sweetIdolHalloweenSaleFixed": 0,
         "sweetIdolHalloweenSaleAdded": 0,
+        "moreStarPacificoHmvOfferAdded": 0,
     }
 
     for event in source:
@@ -1371,6 +1423,23 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         if schedule_event is not None:
             out.append(_build_sweet_idol_halloween_sale(schedule_event))
             report["sweetIdolHalloweenSaleAdded"] += 1
+
+    has_more_star_pacifico_hmv = any(
+        MORE_STAR_PACIFICO_HMV in _urls(event)
+        and event.get("group") == "MORE STAR"
+        and _day(event) == MORE_STAR_PACIFICO_DAY
+        for event in out
+    )
+    if not has_more_star_pacifico_hmv:
+        schedule_event = next((
+            event for event in out
+            if event.get("group") == "MORE STAR"
+            and _day(event) == MORE_STAR_PACIFICO_DAY
+            and MORE_STAR_PACIFICO_SCHEDULE in _urls(event)
+        ), None)
+        if schedule_event is not None:
+            out.append(_build_more_star_pacifico_hmv_sale(schedule_event))
+            report["moreStarPacificoHmvOfferAdded"] += 1
 
     # Official NEWS 92529 (rechecked 2026-10-20): the FC reception ended
     # October 18, not the November 15 performances. Preserve the two starts
