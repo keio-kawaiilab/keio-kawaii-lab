@@ -208,6 +208,25 @@ def fallback_events_from_existing(
 
 
 
+def official_event_times(article_text: str) -> dict:
+    result = {}
+    for key, labels in (
+        ("openTime", r"(?:開場|OPEN)"),
+        ("startTime", r"(?:開演|START)"),
+    ):
+        match = re.search(
+            rf"{labels}\s*[:：]?\s*(\d{{1,2}}):(\d{{2}})",
+            article_text,
+            re.I,
+        )
+        if not match:
+            continue
+        hour, minute = (int(value) for value in match.groups())
+        if 0 <= hour < 24 and 0 <= minute < 60:
+            result[key] = f"{hour:02d}:{minute:02d}"
+    return result
+
+
 def canonical_birthday_event_text(listing_title: str, article_text: str) -> str:
     """Prefer the dated birthday headline when the body repeats that day with a stale year."""
     listing_title = normalize(listing_title)
@@ -263,8 +282,11 @@ def article_events(
     # schedule, that existing event identity is authoritative for the physical
     # date. Do not re-infer the event date from a page that also contains FC
     # application dates; doing so can bind the ticket window to the wrong day.
+    times = official_event_times(article_text)
     matched = fallback_events_from_existing(payload, group, article_url, article_text, details)
     if matched:
+        for event in matched:
+            event.update(times)
         return matched
 
     # Only discover a brand-new birthday event from article text when there is
@@ -278,6 +300,7 @@ def article_events(
         details,
     )
     for event in parsed:
+        event.update(times)
         event["sourceType"] = "auto"
         event["sourceChannel"] = "official-birthday-news"
         event["primarySource"] = "official"

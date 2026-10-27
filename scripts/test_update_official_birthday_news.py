@@ -51,6 +51,8 @@ class OfficialBirthdayNewsTests(unittest.TestCase):
         )
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]["eventDate"], "2027-01-07")
+        self.assertEqual(rows[0]["openTime"], "17:30")
+        self.assertEqual(rows[0]["startTime"], "19:00")
         self.assertEqual(rows[0]["applyStart"], "2026-10-27T20:00")
         self.assertEqual(rows[0]["applyEnd"], "2026-11-04T23:59")
         self.assertEqual(rows[0]["url"], article_url)
