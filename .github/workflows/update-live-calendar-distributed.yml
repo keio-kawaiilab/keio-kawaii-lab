@@ -556,6 +556,11 @@ jobs:
               git reset --hard origin/main
               cp data/live-events.json /tmp/calendar-latest-main.json
               python scripts/reapply_calendar_observations.py --base /tmp/calendar-base --collected /tmp/calendar-collected
+              # Reapply reviewed corrections after resetting to a newer main.
+              # Otherwise a concurrent publication can restore collected rows
+              # without their verified offer detail, and the audit records a
+              # false publication-missing incident until the hardener catches up.
+              python scripts/apply_known_schedule_corrections.py
               python scripts/reconcile_official_schedule_index.py
               python scripts/audit_schedule_release_grouped.py --previous /tmp/calendar-latest-main.json --candidate data/live-events.json --report data/schedule-health.json
               python scripts/build_schedule_snapshot.py
@@ -563,7 +568,7 @@ jobs:
               python scripts/install_performance_public_view.py
               python scripts/strip_schedule_explanations.py
               python scripts/archive_ticket_history.py
-          python scripts/backfill_ticket_history_oneoffs.py
+              python scripts/backfill_ticket_history_oneoffs.py
               python scripts/build_live_runtime_fallback.py
               python scripts/audit_discovery_publication.py
               node --check /tmp/schedule-inline.js
