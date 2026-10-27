@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-28T01:06:52.135478+09:00",
-  "candidateUpdatedAt": "2026-10-28T01:06:51+09:00",
-  "previousEventCount": 249,
+  "generatedAt": "2026-10-28T01:58:35.764259+09:00",
+  "candidateUpdatedAt": "2026-10-28T01:58:35+09:00",
+  "previousEventCount": 250,
   "candidateEventCount": 249,
-  "protectedPreviousCount": 247,
+  "protectedPreviousCount": 248,
   "errorCount": 0,
   "warningCount": 9,
   "errors": [],
@@ -19,7 +19,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
     "ended playguide row removed: KAWAII LAB.合同 / KAWAII LAB. Christmas SESSION 2026 / 現在受付なし"
   ],
-  "candidateSha256": "912360df818ee91b3ad422082a8ae32d2450ea198fb3ebb2047ff6027816ad06",
+  "candidateSha256": "0290869baf2b6859268ab79fa8fa7f6d2ca76d74403c806b7267818e327a150b",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -92,6 +92,7 @@
     "url:https://sweetsteady.asobisystem.com/news/detail/92529",
     "url:https://sweetsteady.asobisystem.com/news/detail/93491",
     "url:https://sweetsteady.asobisystem.com/news/detail/93737",
+    "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
     "url:https://ticket-account.pia.jp/pia/digipoke/list.do",
     "url:https://w.pia.jp/v/kls-xmas26upg6/?_normalbrowse_=1",
     "url:https://www.gift-idol.jp/"
@@ -214,7 +215,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 13,
+  "quarantineCount": 14,
   "quarantineActions": [
     {
       "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
@@ -224,12 +225,12 @@
     {
       "error": "active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 一般発売",
       "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 13
+      "restoredPreviousRows": 10
     },
     {
       "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
       "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 1
+      "restoredPreviousRows": 2
     },
     {
       "error": "Pia row contains FC/upgrade-only sale: CUTIE STREET / 「CUTIE STREET 佐野愛花 生誕祭 2026」 アップグレード抽選受付のお知らせ / 現在受付なし",
@@ -240,6 +241,11 @@
       "error": "Pia row contains FC/upgrade-only sale: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
       "action": "restored previous row",
       "restoredPreviousRows": 1
+    },
+    {
+      "error": "active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / 「FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - Secret Code」公演 リセールサービスのお知らせ / リセール",
+      "action": "restored previous rows for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
+      "restoredPreviousRows": 8
     },
     {
       "error": "active deadline disappeared for url:https://candytune.asobisystem.com/news/detail/94060: CANDY TUNE / 「CANDY TUNE 村川緋杏 生誕祭 2026」 アップグレード抽選受付のお知らせ / アップグレード抽選",
@@ -288,7 +294,7 @@
     "reassignedCount": 10,
     "hydratedCount": 0,
     "ambiguousCount": 1,
-    "unresolvedCount": 10,
+    "unresolvedCount": 11,
     "reassigned": [
       {
         "group": "CANDY TUNE",
@@ -433,6 +439,12 @@
         "date": "2026-12-13",
         "url": "https://morestar.asobisystem.com/live_information/detail/45680",
         "representedBy": "faac1ea09a3581c6"
+      },
+      {
+        "group": "MORE STAR",
+        "date": "2026-11-03",
+        "url": "https://morestar.asobisystem.com/live_information/detail/46447",
+        "representedBy": "6125d45dbdb01a65"
       }
     ],
     "duplicateOfficialResaleWindowsRemoved": 0
