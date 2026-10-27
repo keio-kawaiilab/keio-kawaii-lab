@@ -141,6 +141,8 @@ def ticket_details_from_official_article(text: str, url: str, today: date) -> di
     if len(windows) == 1:
         apply_start, apply_end = windows[0]
         ticket_type = birthday.ticket_parser.extract_ticket_type("", text)
+        if "先行" in text and re.search(r"(?:\\bFC\\b|FANCLUB|ファンクラブ)", text, re.I):
+            ticket_type = "FC先行"
         status = "none"
         try:
             start_day = date.fromisoformat(apply_start[:10])
