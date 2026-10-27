@@ -210,8 +210,7 @@ class OfficialBirthdayNewsTests(unittest.TestCase):
         )
         text = (
             f"{listing_title}\n"
-            "日程：2026年1月7日(木)\n"
-            "時間：開場17:30 / 開演19:00\n"
+            "日程：2026年1月7日(木) 時間：開場17:30 / 開演19:00\n"
             "会場：SGCホール有明\n"
             "SWEET STEADY OFFICIAL FANCLUB会員先行\n"
             "受付期間：2026年10月27日 20:00〜2026年11月4日 23:59\n"
@@ -219,6 +218,8 @@ class OfficialBirthdayNewsTests(unittest.TestCase):
 
         canonical = news.canonical_birthday_event_text(listing_title, text)
         self.assertNotIn("日程：2026年1月7日", canonical)
+        self.assertIn("日程：2027年1月7日", canonical)
+        self.assertIn("開場17:30 / 開演19:00", canonical)
         self.assertIn("受付期間：2026年10月27日", canonical)
 
         rows = news.article_events(
@@ -230,6 +231,8 @@ class OfficialBirthdayNewsTests(unittest.TestCase):
         )
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]["eventDate"], "2027-01-07")
+        self.assertEqual(rows[0]["openTime"], "17:30")
+        self.assertEqual(rows[0]["startTime"], "19:00")
         self.assertEqual(rows[0]["applyStart"], "2026-10-27T20:00")
         self.assertEqual(rows[0]["applyEnd"], "2026-11-04T23:59")
         self.assertEqual(rows[0]["url"], article_url)
