@@ -240,6 +240,23 @@ def audit_official_fc_offer_removals(
         if after >= before:
             continue
         row_label = label(representatives[key])
+        if not key[3]:
+            # Filling a previously unknown performance time changes the strict
+            # FC-offer key, but it does not remove the reception. Accept the
+            # enrichment only when the official article, group, performance
+            # dates, and complete application window are unchanged. Distinct
+            # presale rounds therefore remain protected.
+            without_time = key[:3] + key[4:]
+            enriched = sum(
+                count for candidate_key, count in candidate_counts.items()
+                if candidate_key[3]
+                and candidate_key[:3] + candidate_key[4:] == without_time
+            )
+            if enriched >= before:
+                warnings.append(
+                    f"official FC offer performance time enriched: {row_label}"
+                )
+                continue
         if after:
             warnings.append(
                 f"duplicate official FC offer removed: {row_label} ({before} -> {after})"
