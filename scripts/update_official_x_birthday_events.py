@@ -506,6 +506,28 @@ def merge_birthday_events(payload: dict, birthday_events: list[dict]) -> dict:
                     events = [event for event in events if event is not schedule_only]
                     events.append(enriched)
                     changed = True
+                else:
+                    # A previous run may already have attached this exact
+                    # reception before the official article parser learned the
+                    # OPEN/START fields. Enrich only the row with the same
+                    # application identity so a different presale round is not
+                    # collapsed into it.
+                    same_reception = next((
+                        event for event in official_rows
+                        if all(
+                            normalize_text(event.get(field)) == normalize_text(fresh.get(field))
+                            for field in ("ticketType", "applyStart", "applyEnd")
+                        )
+                    ), None)
+                    if same_reception is not None:
+                        enriched = dict(same_reception)
+                        for field in ("openTime", "startTime"):
+                            if not enriched.get(field) and fresh.get(field) is not None:
+                                enriched[field] = fresh.get(field)
+                        if enriched != same_reception:
+                            events = [event for event in events if event is not same_reception]
+                            events.append(enriched)
+                            changed = True
             # An official page/ticket row is authoritative. Social/promoter rows are
             # fallback evidence only and must not render as duplicate events.
             before = len(events)
