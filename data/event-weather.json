@@ -1,122 +1,12 @@
 {
-  "date": "2026-10-27",
+  "date": "2026-10-28",
   "horizonDays": 7,
-  "generatedAt": "2026-10-27T23:53+09:00",
+  "generatedAt": "2026-10-28T05:01+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
-    {
-      "date": "2026-10-27",
-      "venue": "愛知県 愛知県芸術劇場 大ホール",
-      "venueKey": "愛知県芸術劇場",
-      "eventIds": [
-        "d355a09d36fa0ca0",
-        "f641c49b15d0f20a",
-        "known-candy-aichi-20261027-same-day"
-      ],
-      "areaCode": "230010",
-      "areaName": "西部",
-      "precision": "mesh5km",
-      "label": "くもり",
-      "max": null,
-      "min": null,
-      "pop": "0",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-10-27T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "15〜19℃",
-      "coordinates": {
-        "lat": 35.171875,
-        "lon": 136.910599
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "くもり",
-          "validAt": "2026-10-27T21:00+09:00",
-          "temp": 19
-        },
-        {
-          "time": "24:00",
-          "label": "晴れ",
-          "validAt": "2026-10-28T00:00+09:00",
-          "temp": 17
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "17:30",
-          "rain": false,
-          "validAt": "2026-10-27T17:30+09:00"
-        },
-        {
-          "time": "18:30",
-          "rain": false,
-          "validAt": "2026-10-27T18:30+09:00"
-        },
-        {
-          "time": "19:30",
-          "rain": false,
-          "validAt": "2026-10-27T19:30+09:00"
-        }
-      ]
-    },
-    {
-      "date": "2026-10-27",
-      "venue": "熊本県 熊本城ホール メインホール",
-      "venueKey": "熊本城ホールメインホール",
-      "eventIds": [
-        "933b035dad6018f9"
-      ],
-      "areaCode": "430010",
-      "areaName": "熊本地方",
-      "precision": "mesh5km",
-      "label": "晴れ",
-      "max": null,
-      "min": null,
-      "pop": "10",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-10-27T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "15〜19℃",
-      "coordinates": {
-        "lat": 32.799633,
-        "lon": 130.702332
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "晴れ",
-          "validAt": "2026-10-27T21:00+09:00",
-          "temp": 17
-        },
-        {
-          "time": "24:00",
-          "label": "晴れ",
-          "validAt": "2026-10-28T00:00+09:00",
-          "temp": 15
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "17:30",
-          "rain": false,
-          "validAt": "2026-10-27T17:30+09:00"
-        },
-        {
-          "time": "18:30",
-          "rain": false,
-          "validAt": "2026-10-27T18:30+09:00"
-        },
-        {
-          "time": "19:30",
-          "rain": false,
-          "validAt": "2026-10-27T19:30+09:00"
-        }
-      ]
-    },
     {
       "date": "2026-10-28",
       "venue": "福岡県 マリンメッセ福岡A館",
@@ -131,11 +21,11 @@
       "areaName": "福岡地方",
       "precision": "mesh5km",
       "label": "晴れ",
-      "max": 20.0,
-      "min": 15.0,
+      "max": 21.0,
+      "min": 21.0,
       "pop": "0",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-10-27T17:00:00+09:00",
+      "issuedAt": "2026-10-28T05:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "15〜19℃",
       "coordinates": {
@@ -185,6 +75,23 @@
           "validAt": "2026-10-29T00:00+09:00",
           "temp": 14
         }
+      ],
+      "hourlyRain": [
+        {
+          "time": "17:00",
+          "rain": false,
+          "validAt": "2026-10-28T17:00+09:00"
+        },
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-10-28T18:00+09:00"
+        },
+        {
+          "time": "19:00",
+          "rain": false,
+          "validAt": "2026-10-28T19:00+09:00"
+        }
       ]
     },
     {
@@ -197,16 +104,19 @@
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
-      "precision": "area",
-      "label": "くもり 時々 晴れ",
-      "max": null,
-      "min": null,
-      "pop": null,
-      "popLabel": "",
-      "issuedAt": "2026-10-27T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "precision": "mesh5km",
+      "label": "晴れ",
+      "max": 18.0,
+      "min": 12.0,
+      "pop": "10",
+      "popLabel": "18〜00時",
+      "issuedAt": "2026-10-28T05:00:00+09:00",
+      "meshTime": "00:00",
+      "meshTempBand": "10〜14℃",
+      "coordinates": {
+        "lat": 35.630138,
+        "lon": 139.787827
+      }
     },
     {
       "date": "2026-10-29",
@@ -223,16 +133,19 @@
       ],
       "areaCode": "400010",
       "areaName": "福岡地方",
-      "precision": "area",
-      "label": "晴れ 後 くもり",
-      "max": null,
-      "min": null,
-      "pop": null,
-      "popLabel": "",
-      "issuedAt": "2026-10-27T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "precision": "mesh5km",
+      "label": "晴れ",
+      "max": 20.0,
+      "min": 12.0,
+      "pop": "10",
+      "popLabel": "12〜18時",
+      "issuedAt": "2026-10-28T05:00:00+09:00",
+      "meshTime": "00:00",
+      "meshTempBand": "10〜14℃",
+      "coordinates": {
+        "lat": 33.606712,
+        "lon": 130.401901
+      }
     },
     {
       "date": "2026-10-29",
@@ -244,16 +157,19 @@
       ],
       "areaCode": "240010",
       "areaName": "北中部",
-      "precision": "area",
-      "label": "晴れ 後 くもり",
-      "max": null,
-      "min": null,
-      "pop": null,
-      "popLabel": "",
-      "issuedAt": "2026-10-27T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "precision": "mesh5km",
+      "label": "晴れ",
+      "max": 20.0,
+      "min": 10.0,
+      "pop": "10",
+      "popLabel": "18〜00時",
+      "issuedAt": "2026-10-28T05:00:00+09:00",
+      "meshTime": "00:00",
+      "meshTempBand": "10〜14℃",
+      "coordinates": {
+        "lat": 34.744926,
+        "lon": 136.500809
+      }
     },
     {
       "date": "2026-10-30",
@@ -430,10 +346,10 @@
     },
     {
       "date": "2026-11-03",
-      "venue": "神奈川県 パシフィコ横浜展示ホールD",
+      "venue": "神奈川県 パシフィコ横浜 展示ホールD",
       "venueKey": "パシフィコ横浜展示ホールd",
       "eventIds": [
-        "special-8292809d04fc4881"
+        "special-fc93a2eb32475c80"
       ],
       "areaCode": "140010",
       "areaName": "神奈川県",
@@ -450,20 +366,14 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 42,
-    "uniqueVenueDates": 16,
-    "weatherEntries": 15,
-    "meshEntries": 3,
-    "failures": 1,
-    "meshTimelineEntries": 3,
-    "meshExactTempSlots": 11,
-    "hourlyRainEntries": 2
+    "occurrencesInRange": 37,
+    "uniqueVenueDates": 13,
+    "weatherEntries": 13,
+    "meshEntries": 4,
+    "failures": 0,
+    "meshTimelineEntries": 1,
+    "meshExactTempSlots": 7,
+    "hourlyRainEntries": 1
   },
-  "failures": [
-    {
-      "date": "2026-11-03",
-      "venue": "オンライン（SUKISUKI）",
-      "reason": "都道府県を解決できません"
-    }
-  ]
+  "failures": []
 }
