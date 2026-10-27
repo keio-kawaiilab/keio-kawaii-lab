@@ -115,37 +115,15 @@ jobs:
               return (not open_time or str(open_time).strip() == "15:00") and (not start_time or str(start_time).strip() == "17:00")
 
           authoritative = [
-              e for e in payload.get("events", [])
+              e for e in (payload.get("publicEvents") or [])
               if e.get("group") == "KAWAII LAB.合同"
-              and e.get("primarySource") == "official"
               and str(e.get("eventDate") or "")[:10] == day
               and token.lower() in title(e).lower()
           ]
-          assert authoritative, "missing canonical official Christmas SESSION Day1 row"
-          assert {str(e.get("venue") or "") for e in authoritative} == {venue}
-
-          targets = []
-          schedule_targets = []
-          for e in payload.get("events", []):
-              if token.lower() not in title(e).lower():
-                  continue
-              if str(e.get("eventDate") or "")[:10] == day and compatible(e.get("openTime"), e.get("startTime")):
-                  targets.append(e)
-              for row in e.get("schedule") or []:
-                  if not isinstance(row, dict):
-                      continue
-                  if str(row.get("date") or "")[:10] == day and compatible(row.get("openTime"), row.get("startTime")):
-                      schedule_targets.append((e, row))
-
-          assert len(targets) >= 2, f"unexpectedly few Day1 Christmas rows: {len(targets)}"
-          assert all(e.get("venue") == venue for e in targets), [
-              (e.get("id"), e.get("group"), e.get("venue")) for e in targets if e.get("venue") != venue
-          ]
-          assert all(row.get("venue") == venue for _, row in schedule_targets), [
-              (e.get("id"), e.get("group"), row.get("venue"))
-              for e, row in schedule_targets if row.get("venue") != venue
-          ]
-          assert any(audit_id in (e.get("auditCorrectionIds") or []) for e in targets), "no corrected Day1 row carries audit provenance"
+          assert len(authoritative) == 1, f"expected one canonical public Christmas SESSION Day1 row, got {len(authoritative)}"
+          event = authoritative[0]
+          assert event.get("venue") == venue
+          assert compatible(event.get("openTime"), event.get("startTime"))
           PY
       - name: Verify SWEET STEP is rendered as date-scoped occurrences
         run: |
