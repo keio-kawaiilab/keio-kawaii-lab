@@ -1,7 +1,7 @@
 {
   "date": "2026-10-27",
   "horizonDays": 7,
-  "generatedAt": "2026-10-27T00:26+09:00",
+  "generatedAt": "2026-10-27T09:03+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -12,24 +12,17 @@
       "venue": "愛知県 愛知県芸術劇場 大ホール",
       "venueKey": "愛知県芸術劇場",
       "eventIds": [
-        "54a369497f59ce96",
-        "12f75454cf2d4fd0",
-        "9e39a25b816ecc66",
-        "76cf9c18748aa413",
-        "b09e5a2f429cb013",
-        "c4356b6a3eb08f58",
-        "da3bf77615b98be4",
-        "d355a09d36fa0ca0"
+        "e6cc1eafe127497a"
       ],
       "areaCode": "230010",
       "areaName": "西部",
       "precision": "mesh5km",
       "label": "晴れ",
       "max": 26.0,
-      "min": 18.0,
-      "pop": "0",
+      "min": 26.0,
+      "pop": "10",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-10-26T17:00:00+09:00",
+      "issuedAt": "2026-10-27T05:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "20〜24℃",
       "coordinates": {
@@ -38,16 +31,10 @@
       },
       "meshTimeline": [
         {
-          "time": "06:00",
-          "label": "くもり",
-          "validAt": "2026-10-27T06:00+09:00",
-          "temp": 18
-        },
-        {
           "time": "09:00",
           "label": "晴れ",
           "validAt": "2026-10-27T09:00+09:00",
-          "temp": 21
+          "temp": 20
         },
         {
           "time": "12:00",
@@ -69,7 +56,7 @@
         },
         {
           "time": "21:00",
-          "label": "晴れ",
+          "label": "くもり",
           "validAt": "2026-10-27T21:00+09:00",
           "temp": 19
         },
@@ -79,6 +66,23 @@
           "validAt": "2026-10-28T00:00+09:00",
           "temp": 18
         }
+      ],
+      "hourlyRain": [
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-10-27T18:00+09:00"
+        },
+        {
+          "time": "19:00",
+          "rain": false,
+          "validAt": "2026-10-27T19:00+09:00"
+        },
+        {
+          "time": "20:00",
+          "rain": false,
+          "validAt": "2026-10-27T20:00+09:00"
+        }
       ]
     },
     {
@@ -86,31 +90,24 @@
       "venue": "熊本県 熊本城ホール メインホール",
       "venueKey": "熊本城ホールメインホール",
       "eventIds": [
-        "024676b8e98a3faf",
-        "0904c182aaace14f"
+        "de2082b37d9844f4"
       ],
       "areaCode": "430010",
       "areaName": "熊本地方",
       "precision": "mesh5km",
       "label": "晴れ",
-      "max": 24.0,
-      "min": 19.0,
+      "max": 25.0,
+      "min": 25.0,
       "pop": "0",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-10-26T17:00:00+09:00",
+      "issuedAt": "2026-10-27T05:00:00+09:00",
       "meshTime": "18:00",
-      "meshTempBand": "20〜24℃",
+      "meshTempBand": "15〜19℃",
       "coordinates": {
         "lat": 32.799633,
         "lon": 130.702332
       },
       "meshTimeline": [
-        {
-          "time": "06:00",
-          "label": "くもり",
-          "validAt": "2026-10-27T06:00+09:00",
-          "temp": 19
-        },
         {
           "time": "09:00",
           "label": "くもり",
@@ -121,19 +118,19 @@
           "time": "12:00",
           "label": "くもり",
           "validAt": "2026-10-27T12:00+09:00",
-          "temp": 23
+          "temp": 24
         },
         {
           "time": "15:00",
           "label": "くもり",
           "validAt": "2026-10-27T15:00+09:00",
-          "temp": 23
+          "temp": 22
         },
         {
           "time": "18:00",
           "label": "晴れ",
           "validAt": "2026-10-27T18:00+09:00",
-          "temp": 20
+          "temp": 19
         },
         {
           "time": "21:00",
@@ -147,6 +144,23 @@
           "validAt": "2026-10-28T00:00+09:00",
           "temp": 15
         }
+      ],
+      "hourlyRain": [
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-10-27T18:00+09:00"
+        },
+        {
+          "time": "19:00",
+          "rain": false,
+          "validAt": "2026-10-27T19:00+09:00"
+        },
+        {
+          "time": "20:00",
+          "rain": false,
+          "validAt": "2026-10-27T20:00+09:00"
+        }
       ]
     },
     {
@@ -154,40 +168,76 @@
       "venue": "福岡県 マリンメッセ福岡A館",
       "venueKey": "マリンメッセ福岡a館",
       "eventIds": [
-        "bc21c6b7fbf04423",
-        "2044dd321097ba5f",
-        "69b74a305ceec208",
-        "6e3a95a88cc632cb",
+        "17cc29946b768ee5",
         "af9b9cae7dd94237",
-        "b7de00ec0f8fd91b",
-        "c378627977fbbe2d",
-        "cea85b357b3a94ad",
         "d07cfc4b79ea8d5b"
       ],
       "areaCode": "400010",
       "areaName": "福岡地方",
       "precision": "mesh5km",
       "label": "晴れ",
-      "max": null,
-      "min": null,
-      "pop": null,
-      "popLabel": "",
-      "issuedAt": "2026-10-26T17:00:00+09:00",
-      "meshTime": "00:00",
+      "max": 20.0,
+      "min": 15.0,
+      "pop": "0",
+      "popLabel": "18〜00時",
+      "issuedAt": "2026-10-27T05:00:00+09:00",
+      "meshTime": "18:00",
       "meshTempBand": "15〜19℃",
       "coordinates": {
         "lat": 33.606712,
         "lon": 130.401901
-      }
+      },
+      "meshTimeline": [
+        {
+          "time": "06:00",
+          "label": "くもり",
+          "validAt": "2026-10-28T06:00+09:00",
+          "temp": 16
+        },
+        {
+          "time": "09:00",
+          "label": "くもり",
+          "validAt": "2026-10-28T09:00+09:00",
+          "temp": 17
+        },
+        {
+          "time": "12:00",
+          "label": "晴れ",
+          "validAt": "2026-10-28T12:00+09:00",
+          "temp": 18
+        },
+        {
+          "time": "15:00",
+          "label": "晴れ",
+          "validAt": "2026-10-28T15:00+09:00",
+          "temp": 19
+        },
+        {
+          "time": "18:00",
+          "label": "晴れ",
+          "validAt": "2026-10-28T18:00+09:00",
+          "temp": 17
+        },
+        {
+          "time": "21:00",
+          "label": "晴れ",
+          "validAt": "2026-10-28T21:00+09:00",
+          "temp": 15
+        },
+        {
+          "time": "24:00",
+          "label": "晴れ",
+          "validAt": "2026-10-29T00:00+09:00",
+          "temp": 13
+        }
+      ]
     },
     {
       "date": "2026-10-29",
       "venue": "SGCホール有明",
       "venueKey": "sgcホール有明",
       "eventIds": [
-        "14adcbfd942a69b7",
-        "b3cc4d5dd2949ab6",
-        "ca7a18bc90c386e81cb3b9"
+        "14adcbfd942a69b7"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
@@ -207,15 +257,9 @@
       "venue": "福岡県 マリンメッセ福岡A館",
       "venueKey": "マリンメッセ福岡a館",
       "eventIds": [
-        "bc21c6b7fbf04423",
-        "69b74a305ceec208",
-        "6e3a95a88cc632cb",
-        "c378627977fbbe2d",
+        "17cc29946b768ee5",
         "d07cfc4b79ea8d5b",
-        "0459e9422056aee7",
-        "6a9b9904e33f5ce0",
-        "8a85dd9007f99dc5",
-        "b53e3db82fdc3f16"
+        "0459e9422056aee7"
       ],
       "areaCode": "400010",
       "areaName": "福岡県",
@@ -235,14 +279,7 @@
       "venue": "三重県 三重県文化会館大ホール",
       "venueKey": "三重県文化会館",
       "eventIds": [
-        "54a369497f59ce96",
-        "12f75454cf2d4fd0",
-        "9e39a25b816ecc66",
-        "76cf9c18748aa413",
-        "b09e5a2f429cb013",
-        "da3bf77615b98be4",
-        "87b3407f7f299440",
-        "a7e8c44cd379b126"
+        "e6cc1eafe127497a"
       ],
       "areaCode": "240010",
       "areaName": "三重県",
@@ -262,28 +299,7 @@
       "venue": "埼玉県 埼玉スタジアム2002",
       "venueKey": "埼玉スタジアム2002",
       "eventIds": [
-        "27e476716f8b1c8b",
         "d4040d09144b5964"
-      ],
-      "areaCode": "110010",
-      "areaName": "埼玉県",
-      "precision": "area",
-      "label": "くもり",
-      "max": 21.0,
-      "min": 11.0,
-      "pop": "40",
-      "popLabel": "1日",
-      "issuedAt": "2026-10-26T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
-    {
-      "date": "2026-10-30",
-      "venue": "埼玉スタジアム2002 野外特設会場",
-      "venueKey": "埼玉スタジアム2002野外特設会場",
-      "eventIds": [
-        "f28b9f257f5fea09"
       ],
       "areaCode": "110010",
       "areaName": "埼玉県",
@@ -320,38 +336,11 @@
     },
     {
       "date": "2026-10-31",
-      "venue": "埼玉スタジアム2002 野外特設会場",
-      "venueKey": "埼玉スタジアム2002野外特設会場",
-      "eventIds": [
-        "f28b9f257f5fea09"
-      ],
-      "areaCode": "110010",
-      "areaName": "埼玉県",
-      "precision": "area",
-      "label": "くもり",
-      "max": 24.0,
-      "min": 12.0,
-      "pop": "40",
-      "popLabel": "1日",
-      "issuedAt": "2026-10-26T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
-    {
-      "date": "2026-10-31",
       "venue": "兵庫県 神戸ワールド記念ホール",
       "venueKey": "神戸ワールド記念ホール",
       "eventIds": [
-        "bc21c6b7fbf04423",
-        "6e3a95a88cc632cb",
-        "b7de00ec0f8fd91b",
-        "c378627977fbbe2d",
+        "17cc29946b768ee5",
         "d07cfc4b79ea8d5b",
-        "8a85dd9007f99dc5",
-        "3b1ae43e651d3183",
-        "72cbfe0f594cc031",
-        "8ef49078d65b4ade",
         "a7890e2f125fa19f"
       ],
       "areaCode": "280010",
@@ -392,7 +381,7 @@
       "venue": "東京都 新宿住友ビル三角広場",
       "venueKey": "新宿住友ビル三角広場",
       "eventIds": [
-        "7fcdea343036ec34"
+        "b6d25bc857a0015d"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
@@ -412,16 +401,9 @@
       "venue": "兵庫県 神戸ワールド記念ホール",
       "venueKey": "神戸ワールド記念ホール",
       "eventIds": [
-        "bc21c6b7fbf04423",
-        "6e3a95a88cc632cb",
-        "b7de00ec0f8fd91b",
-        "c378627977fbbe2d",
+        "17cc29946b768ee5",
         "d07cfc4b79ea8d5b",
-        "8a85dd9007f99dc5",
-        "8ef49078d65b4ade",
-        "33a8b3584b98898c",
-        "792d9ed8d8be5ca6",
-        "ee2075c9db935651"
+        "33a8b3584b98898c"
       ],
       "areaCode": "280010",
       "areaName": "兵庫県",
@@ -438,19 +420,24 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 68,
-    "uniqueVenueDates": 15,
-    "weatherEntries": 14,
+    "occurrencesInRange": 22,
+    "uniqueVenueDates": 14,
+    "weatherEntries": 12,
     "meshEntries": 3,
-    "failures": 1,
-    "meshTimelineEntries": 2,
-    "meshExactTempSlots": 14,
-    "hourlyRainEntries": 0
+    "failures": 2,
+    "meshTimelineEntries": 3,
+    "meshExactTempSlots": 19,
+    "hourlyRainEntries": 2
   },
   "failures": [
     {
       "date": "2026-11-03",
-      "venue": "神奈川県 パシフィコ横浜 展示ホールD",
+      "venue": "オンライン（SUKISUKI）",
+      "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-11-03",
+      "venue": "神奈川県 パシフィコ横浜展示ホールD",
       "reason": "開催日の予報がまだありません"
     }
   ]
