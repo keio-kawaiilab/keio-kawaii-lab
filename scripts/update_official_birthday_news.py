@@ -99,17 +99,20 @@ def scoped_ticket_details_from_article(text: str, today: date) -> dict:
     lines = [normalize(line) for line in text.splitlines() if normalize(line)]
     candidates: dict[tuple[str, str], dict] = {}
     full_ticket_type = birthday.ticket_parser.extract_ticket_type("", text)
-    if full_ticket_type in {None, "チケット受付"} and "先行" in text:
+    explicit_presale_type = None
+    if "先行" in text:
         if re.search(r"KAWAII\s*LAB\.?\s*(?:OFFICIAL\s*)?(?:FANCLUB|FC)", text, re.I):
-            full_ticket_type = "KAWAII LAB. FC先行"
+            explicit_presale_type = "KAWAII LAB. FC先行"
         elif re.search(r"(?:\bFC\b|FANCLUB|ファンクラブ)", text, re.I):
-            full_ticket_type = "FC先行"
+            explicit_presale_type = "FC先行"
+    if explicit_presale_type:
+        full_ticket_type = explicit_presale_type
     for index, line in enumerate(lines):
         if not re.search(r"(?:受付|申込)(?:期間|日時)", line):
             continue
         snippet = "\n".join(lines[max(0, index - 4): index + 5])
         details = birthday.ticket_details_from_text(snippet, today)
-        if full_ticket_type and details.get("ticketType") == "チケット受付":
+        if full_ticket_type and normalize(details.get("ticketType")) in {"", "チケット受付"}:
             details["ticketType"] = full_ticket_type
         apply_start = details.get("applyStart")
         apply_end = details.get("applyEnd")
