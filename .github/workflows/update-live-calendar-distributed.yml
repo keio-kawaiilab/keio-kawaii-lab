@@ -492,6 +492,10 @@ jobs:
           python scripts/resolve_source_priority.py
           python scripts/enrich_event_metadata.py
           python scripts/apply_event_scopes.py
+          # Exact, reviewed source corrections must be applied to the merged
+          # snapshot itself. Merely testing this script lets the next scheduled
+          # refresh overwrite those verified offers.
+          python scripts/apply_known_schedule_corrections.py
           # Promoter pages are matched against the freshly merged canonical
           # performance list. This is part of every 15-minute discovery pass,
           # not a once-daily birthday-only repair.
