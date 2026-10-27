@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-27T22:51:31+09:00",
+  "checkedAt": "2026-10-27T22:53:44+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-27T07:54:16+09:00",
     "scannedPages": {
@@ -2018,7 +2018,6 @@
       "sourceRowIds": [
         "17e77f47e1bb119c"
       ],
-      "offers": [],
       "schedule": [
         {
           "date": "2026-11-08",
@@ -2032,7 +2031,8 @@
       "eventEndDate": "2026-11-08",
       "venues": [
         "【リリースイベント】石川県 イオンモール白山 平面駐車場"
-      ]
+      ],
+      "offers": []
     },
     {
       "id": "known-fruits-joy-fc-offer-20261108",
@@ -10368,26 +10368,17 @@
   ],
   "physicalEventInvariant": {
     "semanticNormalization": {
-      "sourceSpecialRows": 5,
+      "sourceSpecialRows": 7,
       "canonicalSpecialEvents": 5,
-      "rowsCollapsed": 0,
+      "rowsCollapsed": 2,
       "releaseEventEntities": 1,
       "largeBenefitEntities": 4,
       "alreadyCanonicalRows": 5,
       "internalScheduleRowsCollapsed": 0,
-      "duplicateEventIdCollisions": 1,
-      "duplicateEventRowsCollapsed": 9,
+      "duplicateEventIdCollisions": 0,
+      "duplicateEventRowsCollapsed": 0,
       "duplicateEventIdsDisambiguated": 0,
-      "duplicateEventIdRepairs": [
-        {
-          "originalId": "19996a9e1d5f7afb",
-          "sourceRows": 10,
-          "logicalRows": 1,
-          "assignedIds": [
-            "19996a9e1d5f7afb"
-          ]
-        }
-      ],
+      "duplicateEventIdRepairs": [],
       "onlinePlaceholderOccurrencesMerged": 0,
       "publicEvents": {
         "sourceSpecialRows": 5,
@@ -10397,10 +10388,29 @@
         "largeBenefitEntities": 4,
         "alreadyCanonicalRows": 5,
         "internalScheduleRowsCollapsed": 0,
-        "duplicateEventIdCollisions": 0,
+        "duplicateEventIdCollisions": 2,
         "duplicateEventRowsCollapsed": 0,
-        "duplicateEventIdsDisambiguated": 0,
-        "duplicateEventIdRepairs": [],
+        "duplicateEventIdsDisambiguated": 2,
+        "duplicateEventIdRepairs": [
+          {
+            "originalId": "performance-CANDY-TUNE-2026-12-08-time-19-00",
+            "sourceRows": 2,
+            "logicalRows": 2,
+            "assignedIds": [
+              "performance-CANDY-TUNE-2026-12-08-time-19-00",
+              "performance-CANDY-TUNE-2026-12-08-time-19-00--da5344f840"
+            ]
+          },
+          {
+            "originalId": "performance-CANDY-TUNE-2026-12-09-time-18-30",
+            "sourceRows": 2,
+            "logicalRows": 2,
+            "assignedIds": [
+              "performance-CANDY-TUNE-2026-12-09-time-18-30",
+              "performance-CANDY-TUNE-2026-12-09-time-18-30--c3e0f925ed"
+            ]
+          }
+        ],
         "onlinePlaceholderOccurrencesMerged": 0
       }
     },
@@ -10512,49 +10522,16 @@
     "failures": []
   },
   "releasePreparation": {
-    "preparedAt": "2026-10-27T22:49:46+09:00",
-    "normalizedSpecialEvents": 5,
+    "preparedAt": "2026-10-27T22:53:40+09:00",
+    "normalizedSpecialEvents": 6,
     "duplicateIdsRemoved": 0,
     "duplicateOfficialFcOffersRemoved": 0,
     "duplicateOfficialFcOfferIdsRemoved": [],
     "duplicateOfficialResaleWindowsRemoved": 0,
-    "retainedPreviousRows": 4,
-    "retained": [
-      {
-        "id": "special-8292809d04fc4881-schedule",
-        "group": "MORE STAR",
-        "title": "MORE STAR 大特典@パシフィコ横浜展示ホールD",
-        "ticketType": "現在受付なし",
-        "provider": null,
-        "applyEnd": null
-      },
-      {
-        "id": "380b7bb73eb8e539",
-        "group": "CANDY TUNE",
-        "title": "2026.10.17 2026年12月3日(木) 「CANDY TUNE 村川緋杏 生誕祭 2026」開催決定！KAWAII LAB. OFFICIAL FANCLUB会員先行開始！",
-        "ticketType": "現在受付なし",
-        "provider": null,
-        "applyEnd": null
-      },
-      {
-        "id": "96c635da5154e9fc",
-        "group": "MORE STAR",
-        "title": "2026.08.22 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード抽選受付のお知らせ",
-        "ticketType": "アップグレード抽選",
-        "provider": null,
-        "applyEnd": "2026-08-30T23:59"
-      },
-      {
-        "id": "d84b519c1890d568",
-        "group": "MORE STAR",
-        "title": "2026.08.22 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード抽選受付のお知らせ",
-        "ticketType": "アップグレード抽選",
-        "provider": null,
-        "applyEnd": "2026-08-30T23:59"
-      }
-    ],
+    "retainedPreviousRows": 0,
+    "retained": [],
     "expandedPreviousSpecialEntities": 5,
-    "expandedCandidateSpecialEntities": 3,
+    "expandedCandidateSpecialEntities": 5,
     "supersededStaleJointRowsRemoved": 0,
     "supersededStaleJointRowIds": [],
     "supersededLegacyReleaseSeriesRemoved": 0,
@@ -10586,7 +10563,7 @@
       "kawaiilabFcFreeLiveAdded": 0,
       "kawaiilabFcFreeLiveOffersUpdated": 0,
       "christmasPiaPresaleOffersAdded": 0,
-      "staleChristmasRowsRemoved": 2,
+      "staleChristmasRowsRemoved": 0,
       "fmAichiFixed": 0,
       "sweetFcSecondStartFixed": 0,
       "giftMultiVenueFixed": 0,
@@ -10611,16 +10588,16 @@
     },
     "redundantOfficialScheduleShadowsRemoved": 0,
     "redundantOfficialScheduleShadowIds": [],
-    "guardRejectedRowsQuarantined": 1,
+    "guardRejectedRowsQuarantined": 2,
     "physicalEventInvariant": {
       "semanticNormalization": {
-        "sourceSpecialRows": 9,
-        "canonicalSpecialEvents": 4,
-        "rowsCollapsed": 5,
+        "sourceSpecialRows": 7,
+        "canonicalSpecialEvents": 5,
+        "rowsCollapsed": 2,
         "releaseEventEntities": 1,
-        "largeBenefitEntities": 3,
-        "alreadyCanonicalRows": 4,
-        "internalScheduleRowsCollapsed": 1,
+        "largeBenefitEntities": 4,
+        "alreadyCanonicalRows": 5,
+        "internalScheduleRowsCollapsed": 0,
         "duplicateEventIdCollisions": 0,
         "duplicateEventRowsCollapsed": 0,
         "duplicateEventIdsDisambiguated": 0,
@@ -10634,17 +10611,36 @@
           "largeBenefitEntities": 4,
           "alreadyCanonicalRows": 5,
           "internalScheduleRowsCollapsed": 0,
-          "duplicateEventIdCollisions": 0,
+          "duplicateEventIdCollisions": 2,
           "duplicateEventRowsCollapsed": 0,
-          "duplicateEventIdsDisambiguated": 0,
-          "duplicateEventIdRepairs": [],
+          "duplicateEventIdsDisambiguated": 2,
+          "duplicateEventIdRepairs": [
+            {
+              "originalId": "performance-CANDY-TUNE-2026-12-08-time-19-00",
+              "sourceRows": 2,
+              "logicalRows": 2,
+              "assignedIds": [
+                "performance-CANDY-TUNE-2026-12-08-time-19-00",
+                "performance-CANDY-TUNE-2026-12-08-time-19-00--da5344f840"
+              ]
+            },
+            {
+              "originalId": "performance-CANDY-TUNE-2026-12-09-time-18-30",
+              "sourceRows": 2,
+              "logicalRows": 2,
+              "assignedIds": [
+                "performance-CANDY-TUNE-2026-12-09-time-18-30",
+                "performance-CANDY-TUNE-2026-12-09-time-18-30--c3e0f925ed"
+              ]
+            }
+          ],
           "onlinePlaceholderOccurrencesMerged": 0
         }
       },
-      "specialEventsBeforePhysicalMerge": 4,
-      "specialEventsAfterPhysicalMerge": 4,
+      "specialEventsBeforePhysicalMerge": 5,
+      "specialEventsAfterPhysicalMerge": 5,
       "physicalRowsCollapsed": 0,
-      "internalScheduleRowsCollapsed": 1,
+      "internalScheduleRowsCollapsed": 0,
       "collisionCount": 0,
       "collisions": [],
       "remainingDuplicateCount": 0,
@@ -10653,12 +10649,12 @@
     "redundantSpecialOffersRemoved": 0,
     "redundantSpecialOfferIds": [],
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-10-27T22:49:46+09:00",
-    "checkedAt": "2026-10-27T22:49:46+09:00"
+    "publicUpdatedAt": "2026-10-27T22:53:40+09:00",
+    "checkedAt": "2026-10-27T22:53:40+09:00"
   },
   "renderWarnings": [
     {
-      "checkedAt": "2026-10-27T22:51:31+09:00",
+      "checkedAt": "2026-10-27T22:53:44+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one CANDY TUNE tour performance for 2026-10-04 OPEN 16:30 / START 17:30, found 0"
     }
@@ -24125,35 +24121,7 @@
       }
     ]
   },
-  "updatedAt": "2026-10-27T22:51:31+09:00",
-  "specialEventNormalization": {
-    "sourceSpecialRows": 5,
-    "canonicalSpecialEvents": 5,
-    "rowsCollapsed": 0,
-    "releaseEventEntities": 1,
-    "largeBenefitEntities": 4,
-    "alreadyCanonicalRows": 5,
-    "internalScheduleRowsCollapsed": 0,
-    "duplicateEventIdCollisions": 0,
-    "duplicateEventRowsCollapsed": 0,
-    "duplicateEventIdsDisambiguated": 0,
-    "duplicateEventIdRepairs": [],
-    "onlinePlaceholderOccurrencesMerged": 0,
-    "publicEvents": {
-      "sourceSpecialRows": 5,
-      "canonicalSpecialEvents": 5,
-      "rowsCollapsed": 0,
-      "releaseEventEntities": 1,
-      "largeBenefitEntities": 4,
-      "alreadyCanonicalRows": 5,
-      "internalScheduleRowsCollapsed": 0,
-      "duplicateEventIdCollisions": 0,
-      "duplicateEventRowsCollapsed": 0,
-      "duplicateEventIdsDisambiguated": 0,
-      "duplicateEventIdRepairs": [],
-      "onlinePlaceholderOccurrencesMerged": 0
-    }
-  },
+  "updatedAt": "2026-10-27T22:53:44+09:00",
   "publicEvents": [
     {
       "id": "d4040d09144b5964",
@@ -24614,7 +24582,6 @@
       "sourceRowIds": [
         "17e77f47e1bb119c"
       ],
-      "offers": [],
       "schedule": [
         {
           "date": "2026-11-08",
@@ -24628,7 +24595,8 @@
       "eventEndDate": "2026-11-08",
       "venues": [
         "【リリースイベント】石川県 イオンモール白山 平面駐車場"
-      ]
+      ],
+      "offers": []
     },
     {
       "id": "3edcd98dd32ff61b",
@@ -33751,5 +33719,33 @@
       "applicationDisplayMode": "offers",
       "applicationStatus": "offers"
     }
-  ]
+  ],
+  "specialEventNormalization": {
+    "sourceSpecialRows": 5,
+    "canonicalSpecialEvents": 5,
+    "rowsCollapsed": 0,
+    "releaseEventEntities": 1,
+    "largeBenefitEntities": 4,
+    "alreadyCanonicalRows": 5,
+    "internalScheduleRowsCollapsed": 0,
+    "duplicateEventIdCollisions": 0,
+    "duplicateEventRowsCollapsed": 0,
+    "duplicateEventIdsDisambiguated": 0,
+    "duplicateEventIdRepairs": [],
+    "onlinePlaceholderOccurrencesMerged": 0,
+    "publicEvents": {
+      "sourceSpecialRows": 5,
+      "canonicalSpecialEvents": 5,
+      "rowsCollapsed": 0,
+      "releaseEventEntities": 1,
+      "largeBenefitEntities": 4,
+      "alreadyCanonicalRows": 5,
+      "internalScheduleRowsCollapsed": 0,
+      "duplicateEventIdCollisions": 0,
+      "duplicateEventRowsCollapsed": 0,
+      "duplicateEventIdsDisambiguated": 0,
+      "duplicateEventIdRepairs": [],
+      "onlinePlaceholderOccurrencesMerged": 0
+    }
+  }
 }
