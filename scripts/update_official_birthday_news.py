@@ -26,7 +26,7 @@ GROUPS = {
     "MORE STAR": "https://morestar.asobisystem.com",
 }
 PERSON_RE = re.compile(r"([一-龠々〆ヵヶぁ-んァ-ヶー]{2,12})\s*(?:生誕祭|BIRTHDAY)", re.I)
-FULL_EVENT_DATE_RE = re.compile(r"(?<!\\d)(20\\d{2})年\\s*(\\d{1,2})月\\s*(\\d{1,2})日")
+FULL_EVENT_DATE_RE = re.compile(r"(?<!\d)(20\d{2})年\s*(\d{1,2})月\s*(\d{1,2})日")
 
 
 def normalize(value: object) -> str:
@@ -98,11 +98,14 @@ def scoped_ticket_details_from_article(text: str, today: date) -> dict:
     """Extract one FC window near an explicit reception-period label."""
     lines = [normalize(line) for line in text.splitlines() if normalize(line)]
     candidates: dict[tuple[str, str], dict] = {}
+    full_ticket_type = birthday.ticket_parser.extract_ticket_type("", text)
     for index, line in enumerate(lines):
         if not re.search(r"(?:受付|申込)(?:期間|日時)", line):
             continue
         snippet = "\n".join(lines[max(0, index - 4): index + 5])
         details = birthday.ticket_details_from_text(snippet, today)
+        if full_ticket_type and details.get("ticketType") == "チケット受付":
+            details["ticketType"] = full_ticket_type
         apply_start = details.get("applyStart")
         apply_end = details.get("applyEnd")
         if details.get("ticketType") and apply_start and apply_end:
