@@ -1,7 +1,7 @@
 {
   "date": "2026-10-27",
   "horizonDays": 7,
-  "generatedAt": "2026-10-27T09:03+09:00",
+  "generatedAt": "2026-10-27T13:17+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -12,6 +12,8 @@
       "venue": "愛知県 愛知県芸術劇場 大ホール",
       "venueKey": "愛知県芸術劇場",
       "eventIds": [
+        "5d413242d39ae18a",
+        "d83540c87817b4eb",
         "e6cc1eafe127497a"
       ],
       "areaCode": "230010",
@@ -21,27 +23,15 @@
       "max": 26.0,
       "min": 26.0,
       "pop": "10",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-10-27T05:00:00+09:00",
-      "meshTime": "18:00",
+      "popLabel": "当日最大",
+      "issuedAt": "2026-10-27T11:00:00+09:00",
+      "meshTime": "15:00",
       "meshTempBand": "20〜24℃",
       "coordinates": {
         "lat": 35.171875,
         "lon": 136.910599
       },
       "meshTimeline": [
-        {
-          "time": "09:00",
-          "label": "晴れ",
-          "validAt": "2026-10-27T09:00+09:00",
-          "temp": 20
-        },
-        {
-          "time": "12:00",
-          "label": "晴れ",
-          "validAt": "2026-10-27T12:00+09:00",
-          "temp": 25
-        },
         {
           "time": "15:00",
           "label": "晴れ",
@@ -52,7 +42,7 @@
           "time": "18:00",
           "label": "晴れ",
           "validAt": "2026-10-27T18:00+09:00",
-          "temp": 21
+          "temp": 20
         },
         {
           "time": "21:00",
@@ -65,23 +55,6 @@
           "label": "晴れ",
           "validAt": "2026-10-28T00:00+09:00",
           "temp": 18
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "18:00",
-          "rain": false,
-          "validAt": "2026-10-27T18:00+09:00"
-        },
-        {
-          "time": "19:00",
-          "rain": false,
-          "validAt": "2026-10-27T19:00+09:00"
-        },
-        {
-          "time": "20:00",
-          "rain": false,
-          "validAt": "2026-10-27T20:00+09:00"
         }
       ]
     },
@@ -100,7 +73,7 @@
       "min": 25.0,
       "pop": "0",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-10-27T05:00:00+09:00",
+      "issuedAt": "2026-10-27T11:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "15〜19℃",
       "coordinates": {
@@ -108,18 +81,6 @@
         "lon": 130.702332
       },
       "meshTimeline": [
-        {
-          "time": "09:00",
-          "label": "くもり",
-          "validAt": "2026-10-27T09:00+09:00",
-          "temp": 22
-        },
-        {
-          "time": "12:00",
-          "label": "くもり",
-          "validAt": "2026-10-27T12:00+09:00",
-          "temp": 24
-        },
         {
           "time": "15:00",
           "label": "くもり",
@@ -136,30 +97,13 @@
           "time": "21:00",
           "label": "晴れ",
           "validAt": "2026-10-27T21:00+09:00",
-          "temp": 17
+          "temp": 16
         },
         {
           "time": "24:00",
           "label": "晴れ",
           "validAt": "2026-10-28T00:00+09:00",
-          "temp": 15
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "18:00",
-          "rain": false,
-          "validAt": "2026-10-27T18:00+09:00"
-        },
-        {
-          "time": "19:00",
-          "rain": false,
-          "validAt": "2026-10-27T19:00+09:00"
-        },
-        {
-          "time": "20:00",
-          "rain": false,
-          "validAt": "2026-10-27T20:00+09:00"
+          "temp": 14
         }
       ]
     },
@@ -180,7 +124,7 @@
       "min": 15.0,
       "pop": "0",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-10-27T05:00:00+09:00",
+      "issuedAt": "2026-10-27T11:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "15〜19℃",
       "coordinates": {
@@ -242,12 +186,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "くもり",
-      "max": 16.0,
-      "min": 11.0,
-      "pop": "40",
-      "popLabel": "1日",
-      "issuedAt": "2026-10-26T17:00:00+09:00",
+      "label": "くもり 時々 晴れ",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-10-27T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -262,14 +206,14 @@
         "0459e9422056aee7"
       ],
       "areaCode": "400010",
-      "areaName": "福岡県",
+      "areaName": "福岡地方",
       "precision": "area",
-      "label": "くもり時々晴れ",
-      "max": 21.0,
-      "min": 12.0,
-      "pop": "30",
-      "popLabel": "1日",
-      "issuedAt": "2026-10-26T17:00:00+09:00",
+      "label": "晴れ 後 くもり",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-10-27T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -279,17 +223,19 @@
       "venue": "三重県 三重県文化会館大ホール",
       "venueKey": "三重県文化会館",
       "eventIds": [
+        "5d413242d39ae18a",
+        "d83540c87817b4eb",
         "e6cc1eafe127497a"
       ],
       "areaCode": "240010",
-      "areaName": "三重県",
+      "areaName": "北中部",
       "precision": "area",
-      "label": "晴れのちくもり",
-      "max": 19.0,
-      "min": 9.0,
-      "pop": "20",
-      "popLabel": "1日",
-      "issuedAt": "2026-10-26T17:00:00+09:00",
+      "label": "晴れ 後 くもり",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-10-27T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -299,17 +245,18 @@
       "venue": "埼玉県 埼玉スタジアム2002",
       "venueKey": "埼玉スタジアム2002",
       "eventIds": [
-        "d4040d09144b5964"
+        "d4040d09144b5964",
+        "known-sweet-idol-halloween-20261030-general"
       ],
       "areaCode": "110010",
       "areaName": "埼玉県",
       "precision": "area",
       "label": "くもり",
-      "max": 21.0,
-      "min": 11.0,
+      "max": 20.0,
+      "min": 12.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-10-26T17:00:00+09:00",
+      "issuedAt": "2026-10-27T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -329,7 +276,7 @@
       "min": 14.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-10-26T17:00:00+09:00",
+      "issuedAt": "2026-10-27T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -347,11 +294,11 @@
       "areaName": "兵庫県",
       "precision": "area",
       "label": "くもり",
-      "max": 23.0,
-      "min": 15.0,
+      "max": 22.0,
+      "min": 16.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-10-26T17:00:00+09:00",
+      "issuedAt": "2026-10-27T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -371,7 +318,7 @@
       "min": 10.0,
       "pop": "20",
       "popLabel": "1日",
-      "issuedAt": "2026-10-26T17:00:00+09:00",
+      "issuedAt": "2026-10-27T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -391,7 +338,7 @@
       "min": 12.0,
       "pop": "20",
       "popLabel": "1日",
-      "issuedAt": "2026-10-26T17:00:00+09:00",
+      "issuedAt": "2026-10-27T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -413,32 +360,47 @@
       "min": 14.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-10-26T17:00:00+09:00",
+      "issuedAt": "2026-10-27T11:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-11-03",
+      "venue": "神奈川県 パシフィコ横浜展示ホールD",
+      "venueKey": "パシフィコ横浜展示ホールd",
+      "eventIds": [
+        "special-8292809d04fc4881"
+      ],
+      "areaCode": "140010",
+      "areaName": "神奈川県",
+      "precision": "area",
+      "label": "くもり時々晴れ",
+      "max": 19.0,
+      "min": 13.0,
+      "pop": "30",
+      "popLabel": "1日",
+      "issuedAt": "2026-10-27T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
     }
   ],
   "stats": {
-    "occurrencesInRange": 22,
+    "occurrencesInRange": 27,
     "uniqueVenueDates": 14,
-    "weatherEntries": 12,
+    "weatherEntries": 13,
     "meshEntries": 3,
-    "failures": 2,
+    "failures": 1,
     "meshTimelineEntries": 3,
-    "meshExactTempSlots": 19,
-    "hourlyRainEntries": 2
+    "meshExactTempSlots": 15,
+    "hourlyRainEntries": 0
   },
   "failures": [
     {
       "date": "2026-11-03",
       "venue": "オンライン（SUKISUKI）",
       "reason": "都道府県を解決できません"
-    },
-    {
-      "date": "2026-11-03",
-      "venue": "神奈川県 パシフィコ横浜展示ホールD",
-      "reason": "開催日の予報がまだありません"
     }
   ]
 }
