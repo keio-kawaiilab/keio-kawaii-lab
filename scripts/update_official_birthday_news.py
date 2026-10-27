@@ -112,7 +112,7 @@ def scoped_ticket_details_from_article(text: str, today: date) -> dict:
             continue
         snippet = "\n".join(lines[max(0, index - 4): index + 5])
         details = birthday.ticket_details_from_text(snippet, today)
-        if full_ticket_type and details.get("ticketType") == "チケット受付":
+        if full_ticket_type and normalize(details.get("ticketType")) in {"", "チケット受付"}:
             details["ticketType"] = full_ticket_type
         apply_start = details.get("applyStart")
         apply_end = details.get("applyEnd")
