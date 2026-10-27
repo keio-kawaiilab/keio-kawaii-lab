@@ -2,6 +2,8 @@
 import unittest
 
 from apply_known_schedule_corrections import (
+    CANDY_AICHI_SAME_DAY_NEWS,
+    CANDY_AICHI_SCHEDULE,
     DISASTER_RELIEF_NEWS,
     DISASTER_RELIEF_PIA,
     MORE_STAR_7TH_FC,
@@ -17,6 +19,29 @@ from apply_known_schedule_corrections import (
 
 
 class KnownScheduleCorrectionsTest(unittest.TestCase):
+    def test_candy_aichi_same_day_sale_is_scoped_to_one_tour_date(self):
+        tour = {
+            "id": "tour", "group": "CANDY TUNE", "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
+            "eventDate": "2026-10-27", "eventEndDate": "2026-10-29",
+            "eventDates": ["2026-10-27", "2026-10-29"],
+            "url": "https://candytune.asobisystem.com/feature/tour",
+            "urls": [CANDY_AICHI_SCHEDULE],
+            "schedule": [
+                {"date": "2026-10-27", "venue": "愛知県 愛知県芸術劇場 大ホール", "openTime": "17:30", "startTime": "18:30"},
+                {"date": "2026-10-29", "venue": "三重県 三重県文化会館大ホール", "openTime": "17:30", "startTime": "18:30"},
+            ],
+        }
+        corrected, report = apply_known_corrections([tour])
+        self.assertEqual(1, report["candyAichiSameDayOfferAdded"])
+        sale = next(row for row in corrected if row["id"] == "known-candy-aichi-20261027-same-day")
+        self.assertEqual(["2026-10-27"], sale["eventDates"])
+        self.assertEqual("2026-10-27T17:30", sale["applyStart"])
+        self.assertIsNone(sale["applyEnd"])
+        self.assertEqual(CANDY_AICHI_SAME_DAY_NEWS, sale["applicationWindowSource"])
+        again, second_report = apply_known_corrections(corrected)
+        self.assertEqual(corrected, again)
+        self.assertEqual(0, second_report["candyAichiSameDayOfferAdded"])
+
     def test_more_star_pacifico_hmv_reservation_is_restored_once(self):
         schedule_only = {
             "id": "official-more-star-pacifico", "group": "MORE STAR",
