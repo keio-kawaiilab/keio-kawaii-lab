@@ -101,7 +101,18 @@ class OfficialBirthdayNewsTests(unittest.TestCase):
         # the reception is already present, but OPEN/START are still missing.
         event.pop("openTime")
         event.pop("startTime")
-        retry_payload = {"events": [event]}
+        retry_payload = {
+            "events": [event],
+            "publicEvents": [{
+                "id": "performance-okuda",
+                "group": "SWEET STEADY",
+                "title": "SWEET STEADY 奥田彩友 BIRTHDAY LIVE 2027",
+                "eventTitle": "SWEET STEADY 奥田彩友 BIRTHDAY LIVE 2027",
+                "eventDate": "2027-01-07",
+                "openTime": None,
+                "startTime": None,
+            }],
+        }
         retry_rows = news.article_events(
             retry_payload, "SWEET STEADY", article_url, text, date(2026, 10, 27)
         )
@@ -110,6 +121,8 @@ class OfficialBirthdayNewsTests(unittest.TestCase):
         self.assertEqual(retried["events"][0]["id"], "okuda-stable")
         self.assertEqual(retried["events"][0]["openTime"], "17:30")
         self.assertEqual(retried["events"][0]["startTime"], "19:00")
+        self.assertEqual(retried["publicEvents"][0]["openTime"], "17:30")
+        self.assertEqual(retried["publicEvents"][0]["startTime"], "19:00")
 
     def test_shoji_official_news_enriches_promoter_row_in_place(self):
         payload = {"events": [{
