@@ -125,6 +125,38 @@ def _repair_sweet_idol_halloween_sale(event: dict) -> dict:
     return out
 
 
+def _build_sweet_idol_halloween_sale(schedule_event: dict) -> dict:
+    """Build the verified sale row when refresh kept only the schedule row."""
+    out = deepcopy(schedule_event)
+    out.update({
+        "id": "known-sweet-idol-halloween-20261030-general",
+        "ticketType": "一般発売",
+        "ticketProvider": "ticketdive",
+        "applyStart": "2026-09-25T17:00",
+        "applyEnd": "2026-10-29T23:59",
+        "url": SWEET_IDOL_HALLOWEEN_TICKET,
+        "urls": [
+            SWEET_IDOL_HALLOWEEN_TICKET,
+            SWEET_IDOL_HALLOWEEN_SCHEDULE,
+            SWEET_IDOL_HALLOWEEN_OFFICIAL,
+        ],
+        "sourceType": "official-organizer",
+        "sourceChannel": "known-official-correction",
+        "primarySource": "official",
+        "sourceCandidates": ["official", "ticketdive"],
+        "applicationStatus": "open",
+        "applicationDisplayMode": "offers",
+        "applicationWindowVerified": True,
+        "applicationWindowSource": SWEET_IDOL_HALLOWEEN_OFFICIAL,
+        "deadlineVerified": True,
+        "deadlineSource": SWEET_IDOL_HALLOWEEN_OFFICIAL,
+        "eventScope": "external",
+    })
+    for key in ("offers", "canonicalRuntimeRole"):
+        out.pop(key, None)
+    return out
+
+
 def repair_cutie_upgrade_reception(event: dict) -> dict:
     """NEWS 92733's annual-FC wording is eligibility, not another sale.
 
@@ -1214,6 +1246,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "semanticTicketDuplicateIds": [],
         "cutiePacificoFcLotteryFixed": 0,
         "sweetIdolHalloweenSaleFixed": 0,
+        "sweetIdolHalloweenSaleAdded": 0,
     }
 
     for event in source:
@@ -1319,6 +1352,25 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
             report["giftMultiVenueFixed"] += 1
 
         out.append(current)
+
+    has_sweet_idol_halloween_sale = any(
+        event.get("id") == "known-sweet-idol-halloween-20261030-general"
+        or SWEET_IDOL_HALLOWEEN_TICKET in _urls(event)
+        for event in out
+    )
+    if not has_sweet_idol_halloween_sale:
+        schedule_event = next((
+            event for event in out
+            if event.get("group") == "SWEET STEADY"
+            and _day(event) == SWEET_IDOL_HALLOWEEN_DAY
+            and (
+                SWEET_IDOL_HALLOWEEN_SCHEDULE in _urls(event)
+                or "IDOL HALLOWEEN JAPAN 2026" in str(event.get("eventTitle") or event.get("title") or "")
+            )
+        ), None)
+        if schedule_event is not None:
+            out.append(_build_sweet_idol_halloween_sale(schedule_event))
+            report["sweetIdolHalloweenSaleAdded"] += 1
 
     # Official NEWS 92529 (rechecked 2026-10-20): the FC reception ended
     # October 18, not the November 15 performances. Preserve the two starts

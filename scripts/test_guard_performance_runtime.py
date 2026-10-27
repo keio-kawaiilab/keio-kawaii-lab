@@ -9,6 +9,12 @@ class RuntimeGuardTests(unittest.TestCase):
         page = Path('schedule.html').read_text(encoding='utf-8')
         self.assertEqual(transform(page), transform(transform(page)))
 
+    def test_ticketdive_is_rendered_as_the_application_provider(self):
+        page = transform(Path('schedule.html').read_text(encoding='utf-8'))
+        self.assertIn("tower|ticketdive)$", page)
+        self.assertIn("ticketdive:'TicketDive'", page)
+        self.assertIn("id==='ticketdive'?/ticketdive\\.com/", page)
+
     def test_unknown_runtime_shape_fails_closed(self):
         with self.assertRaises(RuntimeError):
             transform('<html>unknown runtime</html>')

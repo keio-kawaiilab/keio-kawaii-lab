@@ -13,7 +13,20 @@ def replace_once(page: str, old: str, new: str) -> str:
 
 def transform(page: str) -> str:
     # An explicit offer provider wins over unrelated links attached to a show.
-    page = replace_once(page, "function providerId(e){", "function providerId(e){var explicit=String(e.ticketProvider||e.primarySource||'').toLowerCase();if(/^(official|pia|lawson|eplus|sukisuki|kawaii-store|rakuten|hmv|tower)$/.test(explicit))return explicit;")
+    previous_provider_guard = "function providerId(e){var explicit=String(e.ticketProvider||e.primarySource||'').toLowerCase();if(/^(official|pia|lawson|eplus|sukisuki|kawaii-store|rakuten|hmv|tower)$/.test(explicit))return explicit;"
+    provider_guard = "function providerId(e){var explicit=String(e.ticketProvider||e.primarySource||'').toLowerCase();if(/^(official|pia|lawson|eplus|sukisuki|kawaii-store|rakuten|hmv|tower|ticketdive)$/.test(explicit))return explicit;"
+    if provider_guard not in page:
+        page = replace_once(page, previous_provider_guard if previous_provider_guard in page else "function providerId(e){", provider_guard)
+    page = replace_once(
+        page,
+        "tower:'タワーレコード',official:'公式／FC'",
+        "tower:'タワーレコード',ticketdive:'TicketDive',official:'公式／FC'",
+    )
+    page = replace_once(
+        page,
+        "id==='tower'?/tower\\.jp/:/asobisystem\\.com/",
+        "id==='tower'?/tower\\.jp/:id==='ticketdive'?/ticketdive\\.com/:/asobisystem\\.com/",
+    )
     # A show is not a sale. Never inherit a ticket deadline onto the show row.
     page = replace_once(page,
         "var base=Object.assign({},e);delete base.offers;out.push(base);",

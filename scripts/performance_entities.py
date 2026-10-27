@@ -416,7 +416,7 @@ def _performance_key(event: dict[str, Any], occurrence: dict[str, Any]) -> str:
 def _provider_id(event: dict[str, Any]) -> str:
     for value in (event.get("ticketProvider"), event.get("primarySource"), event.get("sourceType")):
         token = _text(value).casefold()
-        if token in {"pia", "lawson", "eplus", "official", "resale", "sukisuki", "kawaii-store", "rakuten", "hmv", "tower"}:
+        if token in {"pia", "lawson", "eplus", "official", "resale", "sukisuki", "kawaii-store", "rakuten", "hmv", "tower", "ticketdive"}:
             return token
     for url in _event_urls(event):
         host = urlparse(url).netloc.casefold()
@@ -428,6 +428,8 @@ def _provider_id(event: dict[str, Any]) -> str:
             return "eplus"
         if "sukisuki" in host:
             return "sukisuki"
+        if "ticketdive.com" in host:
+            return "ticketdive"
     return "official"
 
 

@@ -43,6 +43,32 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
         self.assertEqual(corrected, again)
         self.assertEqual(0, second_report["sweetIdolHalloweenSaleFixed"])
 
+    def test_sweet_idol_halloween_verified_sale_is_restored_after_refresh_drops_it(self):
+        schedule_only = {
+            "id": "official-schedule-idol-halloween",
+            "group": "SWEET STEADY",
+            "title": "『IDOL HALLOWEEN JAPAN 2026 Supported by Malymoon』",
+            "eventDate": "2026-10-30",
+            "venue": "埼玉県 埼玉スタジアム2002",
+            "ticketType": "現在受付なし",
+            "applicationStatus": "none",
+            "url": SWEET_IDOL_HALLOWEEN_SCHEDULE,
+            "urls": [SWEET_IDOL_HALLOWEEN_SCHEDULE],
+            "sourceType": "official-schedule",
+            "primarySource": "official",
+            "eventScope": "external",
+        }
+        corrected, report = apply_known_corrections([schedule_only])
+        self.assertEqual(1, report["sweetIdolHalloweenSaleAdded"])
+        relevant = [row for row in corrected if row.get("eventDate") == "2026-10-30"]
+        self.assertEqual(2, len(relevant))
+        sale = next(row for row in corrected if row["id"] == "known-sweet-idol-halloween-20261030-general")
+        self.assertEqual("ticketdive", sale["ticketProvider"])
+        self.assertEqual("2026-10-29T23:59", sale["applyEnd"])
+        again, second_report = apply_known_corrections(corrected)
+        self.assertEqual(corrected, again)
+        self.assertEqual(0, second_report["sweetIdolHalloweenSaleAdded"])
+
     def test_official_upgrade_title_overrides_misread_annual_course_eligibility(self):
         stale = {
             "id": "body-discovery-upgrade",

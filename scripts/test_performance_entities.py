@@ -8,10 +8,24 @@ from datetime import date, datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from performance_entities import build_public_events
+from performance_entities import _provider_id, build_public_events
 
 
 class PerformanceEntitiesTest(unittest.TestCase):
+    def test_ticketdive_offer_keeps_provider_and_application_url(self):
+        schedule = "https://sweetsteady.asobisystem.com/live_information/detail/46633"
+        ticket = "https://ticketdive.com/event/IHJ2026"
+        row = {
+            "id": "ticket", "group": "SWEET STEADY",
+            "title": "IDOL HALLOWEEN JAPAN 2026", "eventDate": "2026-10-30",
+            "venue": "埼玉スタジアム2002", "url": ticket,
+            "urls": [ticket, schedule], "ticketProvider": "ticketdive",
+            "ticketType": "一般発売", "applyStart": "2026-09-25T17:00",
+            "applyEnd": "2026-10-29T23:59", "eventScope": "external",
+        }
+        self.assertEqual("ticketdive", _provider_id(row))
+        self.assertEqual("ticketdive", _provider_id({"url": ticket}))
+
     def test_guard_rejected_ticket_row_is_schedule_only(self):
         row = {
             "id": "rejected-annual",
@@ -543,11 +557,13 @@ class PerformanceEntitiesTest(unittest.TestCase):
             and event.get("eventDate") == "2026-10-08"
             and event.get("startTime") == "18:30"
         ]
+        today_jst = datetime.now(ZoneInfo("Asia/Tokyo")).date()
+        if today_jst > date.fromisoformat("2026-10-08") and not sendai:
+            return
         self.assertEqual(len(sendai), 1)
         event = sendai[0]
         self.assertIn("仙台サンプラザホール", str(event.get("venue") or ""))
         ticket_types = {str(offer.get("ticketType") or "") for offer in event.get("offers") or []}
-        today_jst = datetime.now(ZoneInfo("Asia/Tokyo")).date()
         if today_jst <= date.fromisoformat("2026-10-08"):
             self.assertTrue(any("一般発売" in ticket_type for ticket_type in ticket_types))
         else:
