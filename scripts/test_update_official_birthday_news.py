@@ -155,5 +155,26 @@ class OfficialBirthdayNewsTests(unittest.TestCase):
         self.assertEqual(rows[0]["url"], article_url)
 
 
+    def test_multiple_page_ranges_use_the_unique_scoped_fc_reception(self):
+        article_url = "https://sweetsteady.asobisystem.com/news/detail/94087"
+        text = (
+            "2026.10.27\n"
+            "2027年1月7日(木) SWEET STEADY 奥田彩友 BIRTHDAY LIVE 2027\n"
+            "SWEET STEADY OFFICIAL FANCLUB会員先行\n"
+            "受付期間\n"
+            "2026年10月27日 20:00〜2026年11月4日 23:59\n"
+            "関連公演\n"
+            "2027年1月30日 17:00〜2027年1月31日 16:00\n"
+        )
+        details = news.ticket_details_from_official_article(
+            text, article_url, date(2026, 10, 27)
+        )
+        self.assertEqual(details["ticketType"], "FC先行")
+        self.assertEqual(details["applyStart"], "2026-10-27T20:00")
+        self.assertEqual(details["applyEnd"], "2026-11-04T23:59")
+        self.assertTrue(details["applicationWindowVerified"])
+        self.assertEqual(details["applicationWindowSource"], article_url)
+
+
 if __name__ == "__main__":
     unittest.main()
