@@ -64,6 +64,18 @@ def _same_ticket_kind(expected, offer, entity):
             and expected_url in source_urls):
         return True
 
+    # Discovery intentionally records the broad official label ``当日券``.
+    # A verified correction may preserve the official article's more precise
+    # wording (for example ``当日券（注釈付き指定席・会場販売）``).  Accept that
+    # one-way refinement only when the exact discovery article remains attached
+    # and the published application window is explicitly verified.  The
+    # performance identity and full window are still checked by audit().
+    if (expected.get("ticketType") == "当日券"
+            and str(offer.get("ticketType") or "").startswith("当日券（")
+            and expected_url in source_urls
+            and offer.get("applicationWindowVerified") is True):
+        return True
+
     # Official SCHEDULE pages sometimes expose a generic ``チケット受付``
     # row for a physical special event.  The special-event parser intentionally
     # replaces that label with the concrete, verified purchase method (for
