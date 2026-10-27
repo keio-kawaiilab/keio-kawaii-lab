@@ -55,6 +55,18 @@ MORE_STAR_PACIFICO_NEWS = "https://morestar.asobisystem.com/news/detail/93714"
 MORE_STAR_PACIFICO_HMV = "https://img.hmv.co.jp/cont/online/morestarevent_lp/"
 CANDY_AICHI_SAME_DAY_NEWS = "https://candytune.asobisystem.com/news/detail/94161"
 CANDY_AICHI_SCHEDULE = "https://candytune.asobisystem.com/live_information/detail/40733"
+CUTIE_FUKUOKA_TOUR = "https://cutiestreet.asobisystem.com/feature/autumntour"
+CUTIE_FUKUOKA_PIA = "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981"
+CUTIE_FUKUOKA_DAYS = {
+    "2026-10-28": {
+        "schedule": "https://cutiestreet.asobisystem.com/live_information/detail/40362",
+        "openTime": "16:00", "startTime": "18:00", "applyEnd": "2026-10-27T23:59",
+    },
+    "2026-10-29": {
+        "schedule": "https://cutiestreet.asobisystem.com/live_information/detail/40363",
+        "openTime": "15:00", "startTime": "17:00", "applyEnd": "2026-10-28T23:59",
+    },
+}
 
 MORE_STAR_PACIFICO_PARTS = [
     {"part": "第1部", "content": "個別2ショットチェキ撮影会", "start": "10:00", "end": "11:00", "receptionStart": "09:45", "receptionEnd": "10:40"},
@@ -244,6 +256,48 @@ def _build_candy_aichi_same_day_sale(schedule_event: dict) -> dict:
         "applicationWindowVerified": True,
         "applicationWindowSource": CANDY_AICHI_SAME_DAY_NEWS,
         "windowCompleteness": "start-only",
+        "eventScope": "kawaii-lab",
+    })
+    for key in ("offers", "canonicalRuntimeRole", "entityType", "specialEventEntityVersion", "sourceRowIds"):
+        out.pop(key, None)
+    return out
+
+
+def _build_cutie_fukuoka_door_exchange_sale(schedule_event: dict, day: str) -> dict:
+    """Restore the official Fukuoka door-exchange sale for one performance."""
+    details = CUTIE_FUKUOKA_DAYS[day]
+    out = deepcopy(schedule_event)
+    out.update({
+        "id": f"known-cutie-fukuoka-{day.replace('-', '')}-door-exchange",
+        "title": "CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券",
+        "eventTitle": "CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-",
+        "eventDate": day,
+        "eventEndDate": day,
+        "eventDates": [day],
+        "eventCount": 1,
+        "venue": "福岡県 マリンメッセ福岡A館",
+        "venues": ["福岡県 マリンメッセ福岡A館"],
+        "openTime": details["openTime"], "startTime": details["startTime"],
+        "schedule": [{
+            "date": day, "venue": "福岡県 マリンメッセ福岡A館",
+            "openTime": details["openTime"], "startTime": details["startTime"],
+        }],
+        "ticketType": "当日引換券",
+        "ticketProvider": "pia",
+        "applyStart": "2026-10-21T10:00",
+        "applyEnd": details["applyEnd"],
+        "url": CUTIE_FUKUOKA_PIA,
+        "urls": [CUTIE_FUKUOKA_PIA, CUTIE_FUKUOKA_TOUR, details["schedule"]],
+        "sourceType": "official-ticket",
+        "sourceChannel": "known-official-correction",
+        "primarySource": "official",
+        "sourceCandidates": ["official", "pia"],
+        "applicationStatus": "open",
+        "applicationDisplayMode": "offers",
+        "applicationWindowVerified": True,
+        "applicationWindowSource": CUTIE_FUKUOKA_TOUR,
+        "deadlineVerified": True,
+        "deadlineSource": CUTIE_FUKUOKA_TOUR,
         "eventScope": "kawaii-lab",
     })
     for key in ("offers", "canonicalRuntimeRole", "entityType", "specialEventEntityVersion", "sourceRowIds"):
@@ -1343,6 +1397,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "sweetIdolHalloweenSaleAdded": 0,
         "moreStarPacificoHmvOfferAdded": 0,
         "candyAichiSameDayOfferAdded": 0,
+        "cutieFukuokaDoorExchangeOffersAdded": 0,
     }
 
     for event in source:
@@ -1505,6 +1560,33 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         if schedule_event is not None:
             out.append(_build_candy_aichi_same_day_sale(schedule_event))
             report["candyAichiSameDayOfferAdded"] += 1
+
+    for day, details in CUTIE_FUKUOKA_DAYS.items():
+        has_door_exchange = any(
+            event.get("group") == "CUTIE STREET"
+            and _day(event) == day
+            and event.get("ticketType") == "当日引換券"
+            and CUTIE_FUKUOKA_TOUR in _urls(event)
+            for event in out
+        )
+        if has_door_exchange:
+            continue
+        schedule_event = next((
+            event for event in out
+            if event.get("group") == "CUTIE STREET"
+            and (
+                (details["schedule"] in _urls(event) and (_day(event) == day or day in (event.get("eventDates") or [])))
+                or (_day(event) == day and "マリンメッセ福岡" in str(event.get("venue") or ""))
+                or any(
+                    str(row.get("date") or "")[:10] == day
+                    and "マリンメッセ福岡" in str(row.get("venue") or "")
+                    for row in event.get("schedule") or [] if isinstance(row, dict)
+                )
+            )
+        ), None)
+        if schedule_event is not None:
+            out.append(_build_cutie_fukuoka_door_exchange_sale(schedule_event, day))
+            report["cutieFukuokaDoorExchangeOffersAdded"] += 1
 
     # Official NEWS 92529 (rechecked 2026-10-20): the FC reception ended
     # October 18, not the November 15 performances. Preserve the two starts

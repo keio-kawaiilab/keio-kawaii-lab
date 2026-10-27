@@ -4,6 +4,9 @@ import unittest
 from apply_known_schedule_corrections import (
     CANDY_AICHI_SAME_DAY_NEWS,
     CANDY_AICHI_SCHEDULE,
+    CUTIE_FUKUOKA_DAYS,
+    CUTIE_FUKUOKA_PIA,
+    CUTIE_FUKUOKA_TOUR,
     DISASTER_RELIEF_NEWS,
     DISASTER_RELIEF_PIA,
     MORE_STAR_7TH_FC,
@@ -19,6 +22,37 @@ from apply_known_schedule_corrections import (
 
 
 class KnownScheduleCorrectionsTest(unittest.TestCase):
+    def test_cutie_fukuoka_door_exchange_sales_are_one_offer_per_date(self):
+        tour = {
+            "id": "fukuoka-tour", "group": "CUTIE STREET",
+            "title": "CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-",
+            "eventDate": "2026-10-28", "eventEndDate": "2026-10-29",
+            "eventDates": ["2026-10-28", "2026-10-29"],
+            "url": CUTIE_FUKUOKA_TOUR,
+            "urls": [details["schedule"] for details in CUTIE_FUKUOKA_DAYS.values()],
+            "schedule": [
+                {
+                    "date": day, "venue": "福岡県 マリンメッセ福岡A館",
+                    "openTime": details["openTime"], "startTime": details["startTime"],
+                }
+                for day, details in CUTIE_FUKUOKA_DAYS.items()
+            ],
+        }
+        corrected, report = apply_known_corrections([tour])
+        self.assertEqual(2, report["cutieFukuokaDoorExchangeOffersAdded"])
+        offers = [row for row in corrected if row.get("ticketType") == "当日引換券"]
+        self.assertEqual(["2026-10-28", "2026-10-29"], sorted(row["eventDate"] for row in offers))
+        self.assertEqual(
+            ["2026-10-27T23:59", "2026-10-28T23:59"],
+            sorted(row["applyEnd"] for row in offers),
+        )
+        self.assertTrue(all(row["applyStart"] == "2026-10-21T10:00" for row in offers))
+        self.assertTrue(all(row["url"] == CUTIE_FUKUOKA_PIA for row in offers))
+        self.assertTrue(all(row["applicationWindowSource"] == CUTIE_FUKUOKA_TOUR for row in offers))
+        again, second_report = apply_known_corrections(corrected)
+        self.assertEqual(corrected, again)
+        self.assertEqual(0, second_report["cutieFukuokaDoorExchangeOffersAdded"])
+
     def test_candy_aichi_same_day_sale_is_scoped_to_one_tour_date(self):
         tour = {
             "id": "tour", "group": "CANDY TUNE", "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
