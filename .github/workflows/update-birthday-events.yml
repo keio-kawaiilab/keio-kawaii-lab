@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - "scripts/update_official_birthday_news.py"
+      - "scripts/test_update_official_birthday_news.py"
       - "scripts/update_official_x_birthday_events.py"
       - "scripts/test_update_official_x_birthday_events.py"
       - "scripts/reconcile_birthday_ticket_rows.py"
@@ -69,7 +70,7 @@ jobs:
         working-directory: scripts
         run: |
           python -m py_compile update_official_birthday_news.py reconcile_birthday_ticket_rows.py guard_birthday_year_consistency.py
-          python -m unittest -v test_update_official_x_birthday_events.py test_schedule_scope.py
+          python -m unittest -v test_update_official_birthday_news.py test_update_official_x_birthday_events.py test_schedule_scope.py
 
       - name: Collect birthday announcements and ticket windows
         if: steps.control.outputs.frozen != 'true'
