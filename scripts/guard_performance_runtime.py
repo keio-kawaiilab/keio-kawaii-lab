@@ -13,6 +13,7 @@ def replace_once(page: str, old: str, new: str) -> str:
 
 def transform(page: str) -> str:
     # An explicit offer provider wins over unrelated links attached to a show.
+    # Keep explicit providers from being replaced by an unrelated official URL.
     previous_provider_guard = "function providerId(e){var explicit=String(e.ticketProvider||e.primarySource||'').toLowerCase();if(/^(official|pia|lawson|eplus|sukisuki|kawaii-store|rakuten|hmv|tower)$/.test(explicit))return explicit;"
     provider_guard = "function providerId(e){var explicit=String(e.ticketProvider||e.primarySource||'').toLowerCase();if(/^(official|pia|lawson|eplus|sukisuki|kawaii-store|rakuten|hmv|tower|ticketdive)$/.test(explicit))return explicit;"
     if provider_guard not in page:

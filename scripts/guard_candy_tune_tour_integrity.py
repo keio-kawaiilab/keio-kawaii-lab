@@ -101,9 +101,15 @@ def event_dates(event: dict) -> set[str]:
     return found
 
 
-def validate_event_list(events: object, label: str) -> None:
+def validate_event_list(events: object, label: str, from_date: str | None = None) -> None:
     if not isinstance(events, list):
         raise SystemExit(f"CANDY TUNE guard: {label} has no event list")
+
+    from_date = from_date or jst_today_iso()
+    required = {day for day in EXPECTED_DATES if day >= from_date}
+    if not required:
+        print(f"CANDY TUNE {label} integrity OK: tour has ended")
+        return
 
     targets = [event for event in events if isinstance(event, dict) and is_target(event)]
     if not targets:
@@ -113,17 +119,17 @@ def validate_event_list(events: object, label: str) -> None:
     for event in targets:
         found.update(event_dates(event))
 
-    missing = sorted(EXPECTED_DATES - found)
+    missing = sorted(required - found)
     if missing:
         raise SystemExit(
             f"CANDY TUNE guard: refusing publication; {label} is missing official tour dates: "
             + ", ".join(missing)
         )
 
-    print(f"CANDY TUNE {label} integrity OK: {len(EXPECTED_DATES)}/{len(EXPECTED_DATES)} dates")
+    print(f"CANDY TUNE {label} integrity OK: {len(required)}/{len(required)} upcoming dates from {from_date}")
 
 
-def validate_data(path: Path) -> None:
+def validate_data(path: Path, from_date: str | None = None) -> None:
     payload = json.loads(path.read_text(encoding="utf-8"))
     if isinstance(payload, list):
         events = payload
@@ -133,10 +139,10 @@ def validate_data(path: Path) -> None:
         events = payload.get("events", [])
     else:
         events = None
-    validate_event_list(events, "canonical tour")
+    validate_event_list(events, "canonical tour", from_date)
 
 
-def validate_fallback(path: Path) -> None:
+def validate_fallback(path: Path, from_date: str | None = None) -> None:
     text = path.read_text(encoding="utf-8")
     match = FALLBACK_RE.fullmatch(text)
     if not match:
@@ -147,7 +153,7 @@ def validate_fallback(path: Path) -> None:
         events = json.loads(match.group(1))
     except json.JSONDecodeError as exc:
         raise SystemExit(f"CANDY TUNE guard: runtime fallback JSON is invalid: {exc}") from exc
-    validate_event_list(events, "runtime fallback")
+    validate_event_list(events, "runtime fallback", from_date)
 
 
 class TourCardParser(HTMLParser):
@@ -220,11 +226,11 @@ def main() -> int:
     parser.add_argument("--from-date")
     args = parser.parse_args()
 
-    validate_data(Path(args.data))
+    validate_data(Path(args.data), args.from_date)
     if args.html:
         validate_html(Path(args.html), args.from_date)
     if args.fallback:
-        validate_fallback(Path(args.fallback))
+        validate_fallback(Path(args.fallback), args.from_date)
     return 0
 
 
