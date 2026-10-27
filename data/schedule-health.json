@@ -1,30 +1,36 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-28T07:29:26.160224+09:00",
-  "candidateUpdatedAt": "2026-10-28T07:29:25+09:00",
-  "previousEventCount": 265,
-  "candidateEventCount": 264,
+  "generatedAt": "2026-10-28T07:35:01.881223+09:00",
+  "candidateUpdatedAt": "2026-10-28T07:35:01+09:00",
+  "previousEventCount": 264,
+  "candidateEventCount": 254,
   "protectedPreviousCount": 263,
   "errorCount": 0,
-  "warningCount": 11,
+  "warningCount": 18,
   "errors": [],
   "warnings": [
-    "quarantined one event/source update and kept the previous known-good data: Pia row contains FC/upgrade-only sale: CUTIE STREET / 「CUTIE STREET 佐野愛花 生誕祭 2026」 アップグレード抽選受付のお知らせ / 現在受付なし",
-    "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / 「FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - Secret Code」公演 リセールサービスのお知らせ / リセール",
-    "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / 「CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS 」公演 リセールサービスのお知らせ / リセール",
+    "residual row-scoped audit failure isolated after best-effort quarantine; unrelated updates remain publishable: protected future/active official FC offer disappeared: MORE STAR / 2026.10.17 2026年11月25日（水）「MORE STAR 単独ライブ 7th STAR」開催決定！KAWAII LAB. OFFICIAL FANCLUB先行受付開始！ / KAWAII LAB. FC先行",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia row contains FC/upgrade-only sale: CUTIE STREET / 「CUTIE STREET 佐野愛花 生誕祭 2026」 アップグレード抽選受付のお知らせ / アップグレード抽選",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia row contains FC/upgrade-only sale: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia row contains FC/upgrade-only sale: CUTIE STREET / 「CUTIE STREET 佐野愛花 生誕祭 2026」 アップグレード抽選受付のお知らせ / アップグレード抽選"
+    "ended playguide row removed: FRUITS ZIPPER / FRUITS ZIPPER / ぴあNICOSカード限定先行",
+    "ended playguide row removed: FRUITS ZIPPER / FRUITS ZIPPER / プレイガイド最速先行",
+    "ended playguide row removed: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 3次プレリザーブ",
+    "ended playguide row removed: FRUITS ZIPPER / FRUITS ZIPPER / 2次プレリザーブ",
+    "ended playguide row removed: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / プレリザーブ",
+    "ended playguide row removed: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
+    "ended playguide row removed: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 3次プレリザーブ",
+    "ended playguide row removed: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 2次プレリザーブ",
+    "ended playguide row removed: KAWAII LAB.合同 / KAWAII LAB. Christmas SESSION 2026 / 現在受付なし"
   ],
-  "candidateSha256": "199576c58cf8fcc9a912e4d6c9862e458e9939ae6c089bde776ecde7ddf1c63e",
+  "candidateSha256": "f90d930fa2ca3613ec9cf2121bbbaca79d303e7a99118ef6565d8593647537b1",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
-    "url:https://candytune.asobisystem.com/live_information/detail/40733",
     "url:https://candytune.asobisystem.com/live_information/detail/40743",
     "url:https://candytune.asobisystem.com/live_information/detail/45890",
     "url:https://candytune.asobisystem.com/news/detail/88212",
@@ -38,6 +44,10 @@
     "url:https://cutiestreet.asobisystem.com/live_information/detail/40363",
     "url:https://cutiestreet.asobisystem.com/live_information/detail/40364",
     "url:https://cutiestreet.asobisystem.com/live_information/detail/40365",
+    "url:https://cutiestreet.asobisystem.com/live_information/detail/40366",
+    "url:https://cutiestreet.asobisystem.com/live_information/detail/40367",
+    "url:https://cutiestreet.asobisystem.com/live_information/detail/40368",
+    "url:https://cutiestreet.asobisystem.com/live_information/detail/40369",
     "url:https://cutiestreet.asobisystem.com/live_information/detail/46247",
     "url:https://cutiestreet.asobisystem.com/live_information/detail/46315",
     "url:https://cutiestreet.asobisystem.com/live_information/detail/46316",
@@ -98,8 +108,6 @@
     "url:https://sweetsteady.asobisystem.com/news/detail/92529",
     "url:https://sweetsteady.asobisystem.com/news/detail/93491",
     "url:https://sweetsteady.asobisystem.com/news/detail/93737",
-    "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209",
-    "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
     "url:https://ticket-account.pia.jp/pia/digipoke/list.do",
     "url:https://w.pia.jp/v/kls-xmas26upg6/?_normalbrowse_=1",
@@ -107,7 +115,6 @@
   ],
   "officialXSharedSourceKeysReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
-    "url:https://candytune.asobisystem.com/live_information/detail/40733",
     "url:https://candytune.asobisystem.com/live_information/detail/40743",
     "url:https://candytune.asobisystem.com/live_information/detail/45890",
     "url:https://candytune.asobisystem.com/news/detail/88212",
@@ -121,6 +128,10 @@
     "url:https://cutiestreet.asobisystem.com/live_information/detail/40363",
     "url:https://cutiestreet.asobisystem.com/live_information/detail/40364",
     "url:https://cutiestreet.asobisystem.com/live_information/detail/40365",
+    "url:https://cutiestreet.asobisystem.com/live_information/detail/40366",
+    "url:https://cutiestreet.asobisystem.com/live_information/detail/40367",
+    "url:https://cutiestreet.asobisystem.com/live_information/detail/40368",
+    "url:https://cutiestreet.asobisystem.com/live_information/detail/40369",
     "url:https://cutiestreet.asobisystem.com/live_information/detail/46247",
     "url:https://cutiestreet.asobisystem.com/live_information/detail/46315",
     "url:https://cutiestreet.asobisystem.com/live_information/detail/46316",
@@ -182,8 +193,8 @@
     "url:https://sweetsteady.asobisystem.com/news/detail/93491",
     "url:https://sweetsteady.asobisystem.com/news/detail/93737"
   ],
-  "reconciledBaseDateMessageCount": 0,
-  "downgradedFalsePositiveCount": 0,
+  "reconciledBaseDateMessageCount": 3,
+  "downgradedFalsePositiveCount": 9,
   "legacyProtectedErrorCount": 8,
   "legacyProtectedErrors": [
     {
@@ -207,6 +218,11 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     },
     {
+      "error": "Pia row contains FC/upgrade-only sale: CUTIE STREET / 「CUTIE STREET 佐野愛花 生誕祭 2026」 アップグレード抽選受付のお知らせ / アップグレード抽選",
+      "label": "CUTIE STREET / 「CUTIE STREET 佐野愛花 生誕祭 2026」 アップグレード抽選受付のお知らせ / アップグレード抽選",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
       "error": "Pia row contains FC/upgrade-only sale: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
       "label": "CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
       "action": "retained unchanged previous row; validator regression downgraded to warning"
@@ -220,17 +236,37 @@
       "error": "Pia deadline claims verified without detail-page evidence: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
       "label": "CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
       "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
-      "error": "Pia row contains FC/upgrade-only sale: CUTIE STREET / 「CUTIE STREET 佐野愛花 生誕祭 2026」 アップグレード抽選受付のお知らせ / アップグレード抽選",
-      "label": "CUTIE STREET / 「CUTIE STREET 佐野愛花 生誕祭 2026」 アップグレード抽選受付のお知らせ / アップグレード抽選",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 3,
+  "residualLocalIsolationCount": 1,
+  "residualLocalIsolations": [
+    "protected future/active official FC offer disappeared: MORE STAR / 2026.10.17 2026年11月25日（水）「MORE STAR 単独ライブ 7th STAR」開催決定！KAWAII LAB. OFFICIAL FANCLUB先行受付開始！ / KAWAII LAB. FC先行"
+  ],
+  "rowFailuresCanBlockRelease": false,
+  "quarantineCount": 15,
   "quarantineActions": [
     {
+      "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
+      "action": "restored previous row",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 一般発売",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 10
+    },
+    {
+      "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 2
+    },
+    {
       "error": "Pia row contains FC/upgrade-only sale: CUTIE STREET / 「CUTIE STREET 佐野愛花 生誕祭 2026」 アップグレード抽選受付のお知らせ / 現在受付なし",
+      "action": "restored previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "Pia row contains FC/upgrade-only sale: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
       "action": "restored previous row",
       "restoredPreviousRows": 1
     },
@@ -240,22 +276,209 @@
       "restoredPreviousRows": 8
     },
     {
+      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/news/detail/94060: CANDY TUNE / 「CANDY TUNE 村川緋杏 生誕祭 2026」 アップグレード抽選受付のお知らせ / アップグレード抽選",
+      "action": "restored previous rows for url:https://candytune.asobisystem.com/news/detail/94060",
+      "restoredPreviousRows": 3
+    },
+    {
       "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / 「CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS 」公演 リセールサービスのお知らせ / リセール",
       "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
       "restoredPreviousRows": 16
+    },
+    {
+      "error": "future performance dates disappeared for url:https://w.pia.jp/v/kls-xmas26upg6/?_normalbrowse_=1: 2026-12-13",
+      "action": "restored previous rows for url:https://w.pia.jp/v/kls-xmas26upg6/?_normalbrowse_=1",
+      "restoredPreviousRows": 14
+    },
+    {
+      "error": "protected future/active item disappeared: SWEET STEADY / 2026.10.16 2027年3月4日(木)「SWEET STEADY 3rd ANNIVERSARY LIVE」@日本武道館 開催決定！FC先行スタート！ / FC先行",
+      "action": "restored disappeared previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "future performance dates disappeared for url:https://kawaiilab.asobisystem.com/news/detail/85221 [CUTIE STREET]: 2026-10-29, 2026-11-15, 2026-11-29",
+      "action": "restored previous rows for url:https://kawaiilab.asobisystem.com/news/detail/85221",
+      "restoredPreviousRows": 8
+    },
+    {
+      "error": "future performance dates disappeared for url:https://kawaiilab.asobisystem.com/news/detail/87775 [MORE STAR]: 2026-12-12, 2026-12-13",
+      "action": "restored previous rows for url:https://kawaiilab.asobisystem.com/news/detail/87775",
+      "restoredPreviousRows": 14
+    },
+    {
+      "error": "protected future/active official FC offer disappeared: MORE STAR / MORE STAR 単独ライブ 7th STAR / FC先行",
+      "action": "last-chance restored implicated previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "protected future/active official FC offer disappeared: SWEET STEADY / 2026.10.14 2026年12月8日(火)「SWEET STEADY 白石まゆみ BIRTHDAY LIVE 2026」開催決定！KAWAII LAB. OFFICIAL FANCLUB会員先行開始！ / KAWAII LAB. FC先行",
+      "action": "last-chance restored implicated previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "protected future/active official FC offer disappeared: CANDY TUNE / 2026.10.17 2026年12月16日(水) 「CANDY TUNE 福山梨乃 生誕祭 2026」開催決定！KAWAII LAB. OFFICIAL FANCLUB会員先行開始！ / FC先行",
+      "action": "last-chance restored implicated previous row",
+      "restoredPreviousRows": 1
     }
   ],
-  "rowFailuresCanBlockRelease": false,
   "officialIndexReconciledAfterQuarantine": {
     "projectedJointParticipantCount": 0,
-    "reassignedCount": 0,
+    "reassignedCount": 10,
     "hydratedCount": 0,
-    "ambiguousCount": 0,
-    "unresolvedCount": 0,
-    "reassigned": [],
+    "ambiguousCount": 1,
+    "unresolvedCount": 11,
+    "reassigned": [
+      {
+        "group": "CANDY TUNE",
+        "date": "2026-12-01",
+        "url": "https://candytune.asobisystem.com/live_information/detail/40741",
+        "from": "a5c5ef493ab42782",
+        "to": "f641c49b15d0f20a"
+      },
+      {
+        "group": "CANDY TUNE",
+        "date": "2026-12-08",
+        "url": "https://candytune.asobisystem.com/live_information/detail/40742",
+        "from": "3ec7b2716c3af44e",
+        "to": "f641c49b15d0f20a"
+      },
+      {
+        "group": "CANDY TUNE",
+        "date": "2026-11-10",
+        "url": "https://candytune.asobisystem.com/live_information/detail/40734",
+        "from": "4c9822d074190104",
+        "to": "f641c49b15d0f20a"
+      },
+      {
+        "group": "CANDY TUNE",
+        "date": "2026-11-12",
+        "url": "https://candytune.asobisystem.com/live_information/detail/40735",
+        "from": "dcc8b6da5f6dcb4e",
+        "to": "f641c49b15d0f20a"
+      },
+      {
+        "group": "CANDY TUNE",
+        "date": "2026-11-17",
+        "url": "https://candytune.asobisystem.com/live_information/detail/40736",
+        "from": "139746069f25f2c2",
+        "to": "f641c49b15d0f20a"
+      },
+      {
+        "group": "CANDY TUNE",
+        "date": "2026-11-19",
+        "url": "https://candytune.asobisystem.com/live_information/detail/40737",
+        "from": "85a5bda8a18aa71b",
+        "to": "f641c49b15d0f20a"
+      },
+      {
+        "group": "CANDY TUNE",
+        "date": "2026-11-24",
+        "url": "https://candytune.asobisystem.com/live_information/detail/40738",
+        "from": "dc16b3829517c48f",
+        "to": "f641c49b15d0f20a"
+      },
+      {
+        "group": "CANDY TUNE",
+        "date": "2026-11-26",
+        "url": "https://candytune.asobisystem.com/live_information/detail/40739",
+        "from": "f73a0925d6c1907a",
+        "to": "f641c49b15d0f20a"
+      },
+      {
+        "group": "CANDY TUNE",
+        "date": "2026-11-30",
+        "url": "https://candytune.asobisystem.com/live_information/detail/40740",
+        "from": "b06e8974b7ace2be",
+        "to": "f641c49b15d0f20a"
+      },
+      {
+        "group": "CANDY TUNE",
+        "date": "2026-10-29",
+        "url": "https://candytune.asobisystem.com/live_information/detail/40733",
+        "from": "a7e8c44cd379b126",
+        "to": "f641c49b15d0f20a"
+      }
+    ],
     "hydrated": [],
-    "ambiguous": [],
-    "unresolved": [],
+    "ambiguous": [
+      {
+        "group": "CANDY TUNE",
+        "date": "2026-12-09",
+        "url": "https://candytune.asobisystem.com/live_information/detail/40743",
+        "candidateIds": [
+          "f641c49b15d0f20a",
+          "3f4ad4c1b602984b"
+        ]
+      }
+    ],
+    "unresolved": [
+      {
+        "group": "FRUITS ZIPPER",
+        "date": "2026-12-12",
+        "url": "https://fruitszipper.asobisystem.com/live_information/detail/42961",
+        "representedBy": "faac1ea09a3581c6"
+      },
+      {
+        "group": "FRUITS ZIPPER",
+        "date": "2026-12-13",
+        "url": "https://fruitszipper.asobisystem.com/live_information/detail/42962",
+        "representedBy": "faac1ea09a3581c6"
+      },
+      {
+        "group": "CANDY TUNE",
+        "date": "2026-12-12",
+        "url": "https://candytune.asobisystem.com/live_information/detail/44993",
+        "representedBy": "faac1ea09a3581c6"
+      },
+      {
+        "group": "CANDY TUNE",
+        "date": "2026-12-13",
+        "url": "https://candytune.asobisystem.com/live_information/detail/44994",
+        "representedBy": "faac1ea09a3581c6"
+      },
+      {
+        "group": "SWEET STEADY",
+        "date": "2026-12-12",
+        "url": "https://sweetsteady.asobisystem.com/live_information/detail/44467",
+        "representedBy": "faac1ea09a3581c6"
+      },
+      {
+        "group": "SWEET STEADY",
+        "date": "2026-12-13",
+        "url": "https://sweetsteady.asobisystem.com/live_information/detail/46636",
+        "representedBy": "faac1ea09a3581c6"
+      },
+      {
+        "group": "CUTIE STREET",
+        "date": "2026-12-12",
+        "url": "https://cutiestreet.asobisystem.com/live_information/detail/46376",
+        "representedBy": "faac1ea09a3581c6"
+      },
+      {
+        "group": "CUTIE STREET",
+        "date": "2026-12-13",
+        "url": "https://cutiestreet.asobisystem.com/live_information/detail/46375",
+        "representedBy": "faac1ea09a3581c6"
+      },
+      {
+        "group": "MORE STAR",
+        "date": "2026-11-03",
+        "url": "https://morestar.asobisystem.com/live_information/detail/46447",
+        "representedBy": "6125d45dbdb01a65"
+      },
+      {
+        "group": "MORE STAR",
+        "date": "2026-12-12",
+        "url": "https://morestar.asobisystem.com/live_information/detail/45679",
+        "representedBy": "faac1ea09a3581c6"
+      },
+      {
+        "group": "MORE STAR",
+        "date": "2026-12-13",
+        "url": "https://morestar.asobisystem.com/live_information/detail/45680",
+        "representedBy": "faac1ea09a3581c6"
+      }
+    ],
     "duplicateOfficialResaleWindowsRemoved": 0
   }
 }
