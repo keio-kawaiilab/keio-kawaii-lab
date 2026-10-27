@@ -93,6 +93,23 @@ def scan_news_candidates(
     return list(candidates.values()), failures
 
 
+
+def scoped_ticket_details_from_article(text: str, today: date) -> dict:
+    """Extract one FC window near an explicit reception-period label."""
+    lines = [normalize(line) for line in text.splitlines() if normalize(line)]
+    candidates: dict[tuple[str, str], dict] = {}
+    for index, line in enumerate(lines):
+        if not re.search(r"(?:受付|申込)(?:期間|日時)", line):
+            continue
+        snippet = "\n".join(lines[max(0, index - 4): index + 5])
+        details = birthday.ticket_details_from_text(snippet, today)
+        apply_start = details.get("applyStart")
+        apply_end = details.get("applyEnd")
+        if details.get("ticketType") and apply_start and apply_end:
+            candidates[(str(apply_start), str(apply_end))] = details
+    return next(iter(candidates.values())) if len(candidates) == 1 else {}
+
+
 def ticket_details_from_official_article(text: str, url: str, today: date) -> dict:
     # The conservative parser is tried first. If the article uses a compact
     # social-style range, the birthday parser handles that exact FC window.
@@ -100,7 +117,16 @@ def ticket_details_from_official_article(text: str, url: str, today: date) -> di
     default_year = int(article_date[:4]) if article_date else today.year
     windows = birthday.ticket_parser.extract_windows(text, default_year)
     if len(windows) > 1:
-        return {}
+        scoped = scoped_ticket_details_from_article(text, today)
+        if not scoped:
+            return {}
+        scoped["applicationWindowVerified"] = True
+        scoped["deadlineVerified"] = True
+        scoped["applicationWindowSource"] = url
+        scoped["deadlineSource"] = url
+        if article_date:
+            scoped["sourcePublishedAt"] = article_date
+        return scoped
     if len(windows) == 1:
         apply_start, apply_end = windows[0]
         ticket_type = birthday.ticket_parser.extract_ticket_type("", text)
