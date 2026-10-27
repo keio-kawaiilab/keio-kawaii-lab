@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-27T22:13:00+09:00",
+  "checkedAt": "2026-10-27T22:16:57+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-27T07:54:16+09:00",
     "scannedPages": {
@@ -4766,10 +4766,11 @@
       "url": "https://kawaiilab.asobisystem.com/news/detail/92965",
       "urls": [
         "https://kawaiilab.asobisystem.com/news/detail/92965",
-        "https://candytune.asobisystem.com/news/detail/94060"
+        "https://candytune.asobisystem.com/news/detail/94060",
+        "https://candytune.asobisystem.com/news/detail/92278"
       ],
       "sourceType": "auto",
-      "sourcePublishedAt": "2026-10-17",
+      "sourcePublishedAt": "2026-10-10",
       "participants": [
         "CANDY TUNE"
       ],
@@ -4782,12 +4783,13 @@
       "sourceStale": true,
       "sourceStaleSince": "2026-10-27T13:32:02+09:00",
       "releaseRetentionReason": "missing-from-current-refresh",
-      "discoverySourceUrl": "https://kawaiilab.asobisystem.com/news/detail/92965",
+      "discoverySourceUrl": "https://candytune.asobisystem.com/news/detail/92278",
       "primarySource": "official",
       "sourceCandidates": [
         "official"
       ],
-      "sourceChannel": "recent-official-body"
+      "sourceChannel": "recent-official-body",
+      "specialDetailsStatus": "ticket-details-found"
     },
     {
       "id": "6fba7fd0de69052b",
@@ -6732,6 +6734,41 @@
       "sourceCandidates": [
         "official"
       ]
+    },
+    {
+      "id": "bea24302c25554d8",
+      "group": "SWEET STEADY",
+      "title": "SWEET STEADY 奥田彩友 BIRTHDAY LIVE 2027",
+      "eventTitle": "SWEET STEADY 奥田彩友 BIRTHDAY LIVE 2027",
+      "displayTitle": "SWEET STEADY 奥田彩友 BIRTHDAY LIVE 2027",
+      "eventCategory": "solo-live",
+      "ticketType": "FC先行",
+      "applicationStatus": "open",
+      "applyStart": "2026-10-27T20:00",
+      "applyEnd": "2026-11-04T23:59",
+      "resultDate": null,
+      "paymentEnd": null,
+      "specialDetailsStatus": "ticket-details-found",
+      "applicationDisplayMode": "band",
+      "eventDate": "2027-01-07",
+      "venue": "SGCホール有明",
+      "url": "https://sweetsteady.asobisystem.com/news/detail/94087",
+      "urls": [
+        "https://sweetsteady.asobisystem.com/news/detail/94087"
+      ],
+      "discoverySourceUrl": "https://sweetsteady.asobisystem.com/news/detail/94087",
+      "sourceType": "auto",
+      "sourceChannel": "official-birthday-news",
+      "primarySource": "official",
+      "sourceCandidates": [
+        "official"
+      ],
+      "eventScope": "kawaii-lab",
+      "applicationWindowVerified": true,
+      "deadlineVerified": true,
+      "deadlineSource": "https://sweetsteady.asobisystem.com/news/detail/94087",
+      "applicationWindowSource": "https://sweetsteady.asobisystem.com/news/detail/94087",
+      "sourcePublishedAt": "2026-10-27"
     },
     {
       "id": "13964f3fd279af7e1cb3b9",
@@ -10578,12 +10615,12 @@
     ]
   },
   "publicEventModelReport": {
-    "rawEventCount": 255,
+    "rawEventCount": 256,
     "passthroughEventCount": 60,
-    "performanceEntityCount": 61,
-    "sourceOccurrenceCount": 298,
+    "performanceEntityCount": 62,
+    "sourceOccurrenceCount": 299,
     "mergedSourceOccurrences": 237,
-    "offerCount": 144,
+    "offerCount": 145,
     "outOfScopeSoloEventCount": 3
   },
   "publicEventModelVersion": 1,
@@ -10604,23 +10641,14 @@
     "failures": []
   },
   "releasePreparation": {
-    "preparedAt": "2026-10-27T22:12:57+09:00",
+    "preparedAt": "2026-10-27T22:16:55+09:00",
     "normalizedSpecialEvents": 6,
     "duplicateIdsRemoved": 0,
     "duplicateOfficialFcOffersRemoved": 0,
     "duplicateOfficialFcOfferIdsRemoved": [],
     "duplicateOfficialResaleWindowsRemoved": 0,
-    "retainedPreviousRows": 1,
-    "retained": [
-      {
-        "id": "1a44bbbef5fe94eb",
-        "group": "CANDY TUNE",
-        "title": "2026.10.17 2026年12月3日(木) 「CANDY TUNE 村川緋杏 生誕祭 2026」開催決定！KAWAII LAB. OFFICIAL FANCLUB会員先行開始！",
-        "ticketType": "FC先行",
-        "provider": null,
-        "applyEnd": "2026-10-22T23:59"
-      }
-    ],
+    "retainedPreviousRows": 0,
+    "retained": [],
     "expandedPreviousSpecialEntities": 5,
     "expandedCandidateSpecialEntities": 5,
     "supersededStaleJointRowsRemoved": 0,
@@ -10740,12 +10768,12 @@
     "redundantSpecialOffersRemoved": 0,
     "redundantSpecialOfferIds": [],
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-10-27T22:12:57+09:00",
-    "checkedAt": "2026-10-27T22:12:57+09:00"
+    "publicUpdatedAt": "2026-10-27T22:16:55+09:00",
+    "checkedAt": "2026-10-27T22:16:55+09:00"
   },
   "renderWarnings": [
     {
-      "checkedAt": "2026-10-27T22:13:00+09:00",
+      "checkedAt": "2026-10-27T22:16:57+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one CANDY TUNE tour performance for 2026-10-04 OPEN 16:30 / START 17:30, found 0"
     }
@@ -24213,7 +24241,7 @@
       }
     ]
   },
-  "updatedAt": "2026-10-27T22:13:00+09:00",
+  "updatedAt": "2026-10-27T22:16:57+09:00",
   "publicEvents": [
     {
       "id": "d4040d09144b5964",
@@ -27415,12 +27443,12 @@
       "urls": [
         "https://kawaiilab.asobisystem.com/news/detail/92965",
         "https://candytune.asobisystem.com/news/detail/94060",
-        "https://candytune.asobisystem.com/news/detail/91529",
         "https://candytune.asobisystem.com/news/detail/92278",
+        "https://candytune.asobisystem.com/news/detail/91529",
         "https://candytune.asobisystem.com/live_information/detail/45891"
       ],
       "sourceType": "auto",
-      "sourcePublishedAt": "2026-10-17",
+      "sourcePublishedAt": "2026-10-10",
       "participants": [
         "CANDY TUNE"
       ],
@@ -27431,12 +27459,13 @@
       "sourceStale": true,
       "sourceStaleSince": "2026-10-27T13:32:02+09:00",
       "releaseRetentionReason": "missing-from-current-refresh",
-      "discoverySourceUrl": "https://kawaiilab.asobisystem.com/news/detail/92965",
+      "discoverySourceUrl": "https://candytune.asobisystem.com/news/detail/92278",
       "primarySource": "official",
       "sourceCandidates": [
         "official"
       ],
       "sourceChannel": "recent-official-body",
+      "specialDetailsStatus": "ticket-details-found",
       "entityType": "performance",
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-12-03|time|19:00|sgcホール有明",
@@ -33577,6 +33606,73 @@
         }
       ],
       "ticketType": "複数受付",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers"
+    },
+    {
+      "id": "performance-SWEET-STEADY-2027-01-07-fallback-sgc-sweetsteady-birthdaylive2027",
+      "group": "SWEET STEADY",
+      "title": "SWEET STEADY 奥田彩友 BIRTHDAY LIVE 2027",
+      "eventTitle": "SWEET STEADY 奥田彩友 BIRTHDAY LIVE 2027",
+      "displayTitle": "SWEET STEADY 奥田彩友 BIRTHDAY LIVE 2027",
+      "eventCategory": "solo-live",
+      "specialDetailsStatus": "ticket-details-found",
+      "eventDate": "2027-01-07",
+      "venue": "SGCホール有明",
+      "url": "https://sweetsteady.asobisystem.com/news/detail/94087",
+      "urls": [
+        "https://sweetsteady.asobisystem.com/news/detail/94087"
+      ],
+      "discoverySourceUrl": "https://sweetsteady.asobisystem.com/news/detail/94087",
+      "sourceType": "auto",
+      "sourceChannel": "official-birthday-news",
+      "primarySource": "official",
+      "sourceCandidates": [
+        "official"
+      ],
+      "eventScope": "kawaii-lab",
+      "sourcePublishedAt": "2026-10-27",
+      "entityType": "performance",
+      "performanceEntityVersion": 1,
+      "performanceKey": "SWEET STEADY|2027-01-07|fallback|sgcホール有明|sweetsteady奥田彩友birthdaylive2027",
+      "sourceRowIds": [
+        "bea24302c25554d8"
+      ],
+      "offers": [
+        {
+          "sourceRowId": "bea24302c25554d8",
+          "provider": "official",
+          "url": "https://sweetsteady.asobisystem.com/news/detail/94087",
+          "urls": [
+            "https://sweetsteady.asobisystem.com/news/detail/94087"
+          ],
+          "ticketType": "FC先行",
+          "applyStart": "2026-10-27T20:00",
+          "applyEnd": "2026-11-04T23:59",
+          "applicationStatus": "open",
+          "applicationWindowVerified": true,
+          "deadlineVerified": true,
+          "applicationDisplayMode": "band",
+          "applicationWindowSource": "https://sweetsteady.asobisystem.com/news/detail/94087",
+          "deadlineSource": "https://sweetsteady.asobisystem.com/news/detail/94087",
+          "sourceType": "auto",
+          "sourceChannel": "official-birthday-news",
+          "primarySource": "official",
+          "sourcePublishedAt": "2026-10-27"
+        }
+      ],
+      "eventEndDate": "2027-01-07",
+      "eventDates": [
+        "2027-01-07"
+      ],
+      "eventCount": 1,
+      "schedule": [
+        {
+          "date": "2027-01-07",
+          "venue": "SGCホール有明"
+        }
+      ],
+      "ticketType": "FC先行",
       "applicationDisplayMode": "offers",
       "applicationStatus": "offers"
     },
