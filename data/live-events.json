@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-27T14:35:47+09:00",
+  "checkedAt": "2026-10-27T14:36:26+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-27T07:54:16+09:00",
     "scannedPages": {
@@ -224,6 +224,60 @@
       "sourceCandidates": [
         "official"
       ]
+    },
+    {
+      "id": "known-candy-aichi-20261027-same-day",
+      "group": "CANDY TUNE",
+      "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN - 愛知公演 当日券",
+      "ticketType": "当日券（注釈付き指定席・会場販売）",
+      "applyStart": "2026-10-27T17:30",
+      "applyEnd": null,
+      "resultDate": null,
+      "paymentEnd": null,
+      "eventDate": "2026-10-27",
+      "venue": "愛知県 愛知県芸術劇場 大ホール",
+      "openTime": "17:30",
+      "startTime": "18:30",
+      "url": "https://candytune.asobisystem.com/news/detail/94161",
+      "urls": [
+        "https://candytune.asobisystem.com/news/detail/94161",
+        "https://candytune.asobisystem.com/live_information/detail/40733"
+      ],
+      "applicationWindowSource": "https://candytune.asobisystem.com/news/detail/94161",
+      "sourceType": "official-ticket",
+      "sourcePublishedAt": "2026-10-27",
+      "participants": [],
+      "eventEndDate": "2026-10-27",
+      "eventDates": [
+        "2026-10-27"
+      ],
+      "eventCount": 1,
+      "schedule": [
+        {
+          "date": "2026-10-27",
+          "venue": "愛知県 愛知県芸術劇場 大ホール",
+          "openTime": "17:30",
+          "startTime": "18:30"
+        }
+      ],
+      "venues": [
+        "愛知県 愛知県芸術劇場 大ホール"
+      ],
+      "applicationStatus": "observed",
+      "eventScope": "kawaii-lab",
+      "officialScheduleUrl": "https://candytune.asobisystem.com/live_information/detail/40733",
+      "officialTourUrl": "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
+      "primarySource": "official",
+      "sourceCandidates": [
+        "official"
+      ],
+      "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
+      "ticketProvider": "official",
+      "sourceChannel": "known-official-correction",
+      "applicationDisplayMode": "offers",
+      "applicationStartVerified": true,
+      "applicationWindowVerified": true,
+      "windowCompleteness": "start-only"
     },
     {
       "id": "933b035dad6018f9",
@@ -6001,12 +6055,12 @@
     ]
   },
   "publicEventModelReport": {
-    "rawEventCount": 131,
+    "rawEventCount": 132,
     "passthroughEventCount": 56,
     "performanceEntityCount": 60,
-    "sourceOccurrenceCount": 171,
-    "mergedSourceOccurrences": 111,
-    "offerCount": 96,
+    "sourceOccurrenceCount": 172,
+    "mergedSourceOccurrences": 112,
+    "offerCount": 97,
     "outOfScopeSoloEventCount": 0
   },
   "publicEventModelVersion": 1,
@@ -6139,7 +6193,7 @@
   },
   "renderWarnings": [
     {
-      "checkedAt": "2026-10-27T14:35:47+09:00",
+      "checkedAt": "2026-10-27T14:36:26+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one CANDY TUNE tour performance for 2026-10-04 OPEN 16:30 / START 17:30, found 0"
     }
@@ -6157,7 +6211,21 @@
     "duplicateEventRowsCollapsed": 0,
     "duplicateEventIdsDisambiguated": 0,
     "duplicateEventIdRepairs": [],
-    "onlinePlaceholderOccurrencesMerged": 0
+    "onlinePlaceholderOccurrencesMerged": 0,
+    "publicEvents": {
+      "sourceSpecialRows": 5,
+      "canonicalSpecialEvents": 5,
+      "rowsCollapsed": 0,
+      "releaseEventEntities": 1,
+      "largeBenefitEntities": 4,
+      "alreadyCanonicalRows": 5,
+      "internalScheduleRowsCollapsed": 0,
+      "duplicateEventIdCollisions": 0,
+      "duplicateEventRowsCollapsed": 0,
+      "duplicateEventIdsDisambiguated": 0,
+      "duplicateEventIdRepairs": [],
+      "onlinePlaceholderOccurrencesMerged": 0
+    }
   },
   "ticketCollectorDiagnostics": {
     "collectedAt": "2026-10-27T14:31:27+09:00",
@@ -19455,7 +19523,7 @@
       }
     ]
   },
-  "updatedAt": "2026-10-27T14:35:47+09:00",
+  "updatedAt": "2026-10-27T14:36:26+09:00",
   "publicEvents": [
     {
       "id": "d4040d09144b5964",
@@ -21380,7 +21448,8 @@
         "https://candytune.asobisystem.com/live_information/detail/40740",
         "https://candytune.asobisystem.com/live_information/detail/40741",
         "https://candytune.asobisystem.com/live_information/detail/40742",
-        "https://candytune.asobisystem.com/live_information/detail/40743"
+        "https://candytune.asobisystem.com/live_information/detail/40743",
+        "https://candytune.asobisystem.com/news/detail/94161"
       ],
       "sourceType": "derived",
       "sourcePublishedAt": "2026-07-30",
@@ -21422,12 +21491,34 @@
       "performanceEntityVersion": 1,
       "performanceKey": "CANDY TUNE|2026-10-27|time|18:30|愛知県芸術劇場大ホール",
       "sourceRowIds": [
-        "f641c49b15d0f20a"
+        "f641c49b15d0f20a",
+        "known-candy-aichi-20261027-same-day"
       ],
-      "offers": [],
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
+      "offers": [
+        {
+          "sourceRowId": "known-candy-aichi-20261027-same-day",
+          "provider": "official",
+          "url": "https://candytune.asobisystem.com/news/detail/94161",
+          "urls": [
+            "https://candytune.asobisystem.com/news/detail/94161",
+            "https://candytune.asobisystem.com/live_information/detail/40733"
+          ],
+          "ticketType": "当日券（注釈付き指定席・会場販売）",
+          "ticketProvider": "official",
+          "applyStart": "2026-10-27T17:30",
+          "applicationStatus": "observed",
+          "applicationWindowVerified": true,
+          "applicationDisplayMode": "offers",
+          "applicationWindowSource": "https://candytune.asobisystem.com/news/detail/94161",
+          "sourceType": "official-ticket",
+          "sourceChannel": "known-official-correction",
+          "primarySource": "official",
+          "sourcePublishedAt": "2026-10-27"
+        }
+      ],
+      "ticketType": "当日券（注釈付き指定席・会場販売）",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers"
     },
     {
       "id": "performance-CANDY-TUNE-2026-10-29-time-18-30",
