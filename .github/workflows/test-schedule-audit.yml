@@ -48,12 +48,21 @@ jobs:
           python - <<'PY'
           import json
           import re
-          from datetime import datetime
+          from datetime import date, datetime
           from pathlib import Path
           from zoneinfo import ZoneInfo
 
           payload = json.loads(Path("data/live-events.json").read_text(encoding="utf-8"))
           public = payload.get("publicEvents") or []
+          today = datetime.now(ZoneInfo("Asia/Tokyo")).date()
+          if date(2026, 10, 8) < today:
+              html = Path("schedule.html").read_text(encoding="utf-8")
+              assert "data.publicEvents||data.events" in html
+              assert "function hasRequiredCandyTuneTour(data)" in html
+              assert "if(!hasRequiredCandyTuneTour(data))throw new Error('integrity')" in html
+              assert "e.entityType!=='special-event'&&e.entityType!=='performance'" in html
+              raise SystemExit(0)
+
           sendai = [
               e for e in public
               if e.get("entityType") == "performance"
