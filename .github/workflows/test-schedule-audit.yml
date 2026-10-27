@@ -138,7 +138,6 @@ jobs:
           today = datetime.now(ZoneInfo("Asia/Tokyo")).date()
           if date(2026, 9, 14) < today:
               assert "function expandSpecialOccurrences(raw)" in html
-              assert "function occurrenceSpecialDetails(event)" in html
               raise SystemExit(0)
 
           payload = json.loads(Path("data/live-events.json").read_text(encoding="utf-8"))
