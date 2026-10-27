@@ -122,5 +122,38 @@ class OfficialBirthdayNewsTests(unittest.TestCase):
             self.assertEqual(by_id[event_id]["applyEnd"], deadline)
 
 
+    def test_listing_title_wins_over_stale_body_year_for_same_birthday_day(self):
+        article_url = "https://sweetsteady.asobisystem.com/news/detail/94087"
+        listing_title = (
+            "2027年1月7日(木)「SWEET STEADY 奥田彩友 BIRTHDAY LIVE 2027」"
+            "開催決定！SWEET STEADY OFFICIAL FANCLUB会員先行開始！"
+        )
+        text = (
+            f"{listing_title}\n"
+            "日程：2026年1月7日(木)\n"
+            "時間：開場17:30 / 開演19:00\n"
+            "会場：SGCホール有明\n"
+            "SWEET STEADY OFFICIAL FANCLUB会員先行\n"
+            "受付期間：2026年10月27日 20:00〜2026年11月4日 23:59\n"
+        )
+
+        canonical = news.canonical_birthday_event_text(listing_title, text)
+        self.assertNotIn("日程：2026年1月7日", canonical)
+        self.assertIn("受付期間：2026年10月27日", canonical)
+
+        rows = news.article_events(
+            {"events": []},
+            "SWEET STEADY",
+            article_url,
+            canonical,
+            date(2026, 10, 27),
+        )
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["eventDate"], "2027-01-07")
+        self.assertEqual(rows[0]["applyStart"], "2026-10-27T20:00")
+        self.assertEqual(rows[0]["applyEnd"], "2026-11-04T23:59")
+        self.assertEqual(rows[0]["url"], article_url)
+
+
 if __name__ == "__main__":
     unittest.main()

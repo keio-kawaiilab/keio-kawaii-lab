@@ -26,6 +26,7 @@ GROUPS = {
     "MORE STAR": "https://morestar.asobisystem.com",
 }
 PERSON_RE = re.compile(r"([一-龠々〆ヵヶぁ-んァ-ヶー]{2,12})\s*(?:生誕祭|BIRTHDAY)", re.I)
+FULL_EVENT_DATE_RE = re.compile(r"(?<!\\d)(20\\d{2})年\\s*(\\d{1,2})月\\s*(\\d{1,2})日")
 
 
 def normalize(value: object) -> str:
@@ -180,6 +181,35 @@ def fallback_events_from_existing(
     return result
 
 
+
+def canonical_birthday_event_text(listing_title: str, article_text: str) -> str:
+    """Prefer the dated birthday headline when the body repeats that day with a stale year."""
+    listing_title = normalize(listing_title)
+    if not social_base.BIRTHDAY_RE.search(listing_title):
+        return article_text
+
+    title_dates = {
+        (int(year), int(month), int(day))
+        for year, month, day in FULL_EVENT_DATE_RE.findall(listing_title)
+    }
+    if len(title_dates) != 1:
+        return "\n".join(value for value in (listing_title, article_text) if value)
+
+    title_year, title_month, title_day = next(iter(title_dates))
+    kept_lines = []
+    for line in article_text.splitlines():
+        conflicting_repeat = any(
+            int(year) != title_year
+            and int(month) == title_month
+            and int(day) == title_day
+            for year, month, day in FULL_EVENT_DATE_RE.findall(line)
+        )
+        if not conflicting_repeat:
+            kept_lines.append(line)
+
+    return "\n".join(value for value in (listing_title, *kept_lines) if value)
+
+
 def article_events(
     payload: dict,
     group: str,
@@ -265,12 +295,13 @@ def collect(
             response.raise_for_status()
             soup = BeautifulSoup(response.text, "html.parser")
             text = soup.get_text("\n", strip=True)
-            if not social_base.BIRTHDAY_RE.search(text):
+            event_text = canonical_birthday_event_text(candidate.get("title") or "", text)
+            if not social_base.BIRTHDAY_RE.search(event_text):
                 continue
-            groups = infer_groups(payload, candidate.get("group"), text)
+            groups = infer_groups(payload, candidate.get("group"), event_text)
             produced = []
             for group in groups:
-                produced.extend(article_events(payload, group, candidate["url"], text, today))
+                produced.extend(article_events(payload, group, candidate["url"], event_text, today))
             if produced:
                 articles_with_ticket_details += 1
                 events.extend(produced)
