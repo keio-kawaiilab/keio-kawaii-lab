@@ -1,28 +1,29 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-27T16:02:23.325486+09:00",
-  "candidateUpdatedAt": "2026-10-27T15:57:03+09:00",
+  "generatedAt": "2026-10-27T16:17:06.755329+09:00",
+  "candidateUpdatedAt": "2026-10-27T16:17:06+09:00",
   "previousEventCount": 253,
-  "candidateEventCount": 253,
+  "candidateEventCount": 251,
   "protectedPreviousCount": 253,
   "errorCount": 0,
-  "warningCount": 12,
+  "warningCount": 13,
   "errors": [],
   "warnings": [
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia row contains FC/upgrade-only sale: CUTIE STREET / 「CUTIE STREET 佐野愛花 生誕祭 2026」 アップグレード抽選受付のお知らせ / アップグレード抽選",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia row contains FC/upgrade-only sale: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event offer has no verified purchase/ticket window: CUTIE STREET / CUTIE STREET大特典会＠パシフィコ横浜【1部・3部・6部】 / 現在受付なし / offer 1",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event offer application window is not backed by an official page: CUTIE STREET / CUTIE STREET大特典会＠パシフィコ横浜【1部・3部・6部】 / 現在受付なし / offer 1",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: canonical special event offer deadline is not verified by an official page: CUTIE STREET / CUTIE STREET大特典会＠パシフィコ横浜【1部・3部・6部】 / 現在受付なし / offer 1",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: large benefit event has no part schedule: CUTIE STREET / CUTIE STREET大特典会＠パシフィコ横浜【1部・3部・6部】 / 現在受付なし",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia row contains FC/upgrade-only sale: CUTIE STREET / 「CUTIE STREET 佐野愛花 生誕祭 2026」 アップグレード抽選受付のお知らせ / アップグレード抽選",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia row contains FC/upgrade-only sale: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選"
+    "ended playguide row removed: KAWAII LAB.合同 / KAWAII LAB. Christmas SESSION 2026 / 現在受付なし"
   ],
-  "candidateSha256": "9a611a22ec9fb842a651b0095eda2ee5b929d0b36deecbdf38b300ce4ac849eb",
+  "candidateSha256": "3166801c09a9befc5a43c7191d8d763f6b982f9c6ef996e43452797b8166c135",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -165,8 +166,8 @@
     "url:https://sweetsteady.asobisystem.com/news/detail/93491",
     "url:https://sweetsteady.asobisystem.com/news/detail/93737"
   ],
-  "reconciledBaseDateMessageCount": 0,
-  "downgradedFalsePositiveCount": 0,
+  "reconciledBaseDateMessageCount": 1,
+  "downgradedFalsePositiveCount": 1,
   "legacyProtectedErrorCount": 12,
   "legacyProtectedErrors": [
     {
@@ -190,26 +191,6 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     },
     {
-      "error": "canonical special event offer has no verified purchase/ticket window: CUTIE STREET / CUTIE STREET大特典会＠パシフィコ横浜【1部・3部・6部】 / 現在受付なし / offer 1",
-      "label": "CUTIE STREET / CUTIE STREET大特典会＠パシフィコ横浜【1部・3部・6部】 / 現在受付なし",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
-      "error": "canonical special event offer application window is not backed by an official page: CUTIE STREET / CUTIE STREET大特典会＠パシフィコ横浜【1部・3部・6部】 / 現在受付なし / offer 1",
-      "label": "CUTIE STREET / CUTIE STREET大特典会＠パシフィコ横浜【1部・3部・6部】 / 現在受付なし",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
-      "error": "canonical special event offer deadline is not verified by an official page: CUTIE STREET / CUTIE STREET大特典会＠パシフィコ横浜【1部・3部・6部】 / 現在受付なし / offer 1",
-      "label": "CUTIE STREET / CUTIE STREET大特典会＠パシフィコ横浜【1部・3部・6部】 / 現在受付なし",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
-      "error": "large benefit event has no part schedule: CUTIE STREET / CUTIE STREET大特典会＠パシフィコ横浜【1部・3部・6部】 / 現在受付なし",
-      "label": "CUTIE STREET / CUTIE STREET大特典会＠パシフィコ横浜【1部・3部・6部】 / 現在受付なし",
-      "action": "retained unchanged previous row; validator regression downgraded to warning"
-    },
-    {
       "error": "Pia row contains FC/upgrade-only sale: CUTIE STREET / 「CUTIE STREET 佐野愛花 生誕祭 2026」 アップグレード抽選受付のお知らせ / アップグレード抽選",
       "label": "CUTIE STREET / 「CUTIE STREET 佐野愛花 生誕祭 2026」 アップグレード抽選受付のお知らせ / アップグレード抽選",
       "action": "retained unchanged previous row; validator regression downgraded to warning"
@@ -228,9 +209,237 @@
       "error": "Pia deadline claims verified without detail-page evidence: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
       "label": "CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
       "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "canonical special event offer has no verified purchase/ticket window: CUTIE STREET / CUTIE STREET大特典会＠パシフィコ横浜【1部・3部・6部】 / 現在受付なし / offer 1",
+      "label": "CUTIE STREET / CUTIE STREET大特典会＠パシフィコ横浜【1部・3部・6部】 / 現在受付なし",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "canonical special event offer application window is not backed by an official page: CUTIE STREET / CUTIE STREET大特典会＠パシフィコ横浜【1部・3部・6部】 / 現在受付なし / offer 1",
+      "label": "CUTIE STREET / CUTIE STREET大特典会＠パシフィコ横浜【1部・3部・6部】 / 現在受付なし",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "canonical special event offer deadline is not verified by an official page: CUTIE STREET / CUTIE STREET大特典会＠パシフィコ横浜【1部・3部・6部】 / 現在受付なし / offer 1",
+      "label": "CUTIE STREET / CUTIE STREET大特典会＠パシフィコ横浜【1部・3部・6部】 / 現在受付なし",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "large benefit event has no part schedule: CUTIE STREET / CUTIE STREET大特典会＠パシフィコ横浜【1部・3部・6部】 / 現在受付なし",
+      "label": "CUTIE STREET / CUTIE STREET大特典会＠パシフィコ横浜【1部・3部・6部】 / 現在受付なし",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 0,
-  "quarantineActions": [],
-  "rowFailuresCanBlockRelease": false
+  "quarantineCount": 21,
+  "quarantineActions": [
+    {
+      "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
+      "action": "restored previous row",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 一般発売",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 11
+    },
+    {
+      "error": "canonical special event offer has no verified purchase/ticket window: KAWAII LAB.合同 / MORE STAR 大特典@パシフィコ横浜展示ホールD / 現在受付なし / offer 1",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "Pia row contains FC/upgrade-only sale: CUTIE STREET / 「CUTIE STREET 佐野愛花 生誕祭 2026」 アップグレード抽選受付のお知らせ / 現在受付なし",
+      "action": "restored previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "Pia row contains FC/upgrade-only sale: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
+      "action": "restored previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "protected future/active item disappeared: CUTIE STREET / 2026.09.28 2026年11月9日(月) 「CUTIE STREET 古澤里紗 生誕祭 2026」開催決定！KAWAII LAB. OFFICIAL FANCLUB会員先行開始！ / FC先行",
+      "action": "restored disappeared previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "protected future/active item disappeared: CUTIE STREET / 2026.09.28 2026年11月11日(水) 「CUTIE STREET 板倉可奈 生誕祭 2026」開催決定！KAWAII LAB. OFFICIAL FANCLUB会員先行開始！ / FC先行",
+      "action": "restored disappeared previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/news/detail/94060: CANDY TUNE / 「CANDY TUNE 村川緋杏 生誕祭 2026」 アップグレード抽選受付のお知らせ / アップグレード抽選",
+      "action": "restored previous rows for url:https://candytune.asobisystem.com/news/detail/94060",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / 「CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS 」公演 リセールサービスのお知らせ / リセール",
+      "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
+      "restoredPreviousRows": 17
+    },
+    {
+      "error": "future performance dates disappeared for url:https://w.pia.jp/v/kls-xmas26upg6/?_normalbrowse_=1: 2026-12-13",
+      "action": "restored previous rows for url:https://w.pia.jp/v/kls-xmas26upg6/?_normalbrowse_=1",
+      "restoredPreviousRows": 14
+    },
+    {
+      "error": "protected future/active item disappeared: CANDY TUNE / 2026.10.17 2026年12月16日(水) 「CANDY TUNE 福山梨乃 生誕祭 2026」開催決定！KAWAII LAB. OFFICIAL FANCLUB会員先行開始！ / FC先行",
+      "action": "restored disappeared previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "protected future/active item disappeared: SWEET STEADY / 2026.10.16 2027年3月4日(木)「SWEET STEADY 3rd ANNIVERSARY LIVE」@日本武道館 開催決定！FC先行スタート！ / FC先行",
+      "action": "restored disappeared previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "future performance dates disappeared for url:https://kawaiilab.asobisystem.com/news/detail/83517 [CANDY TUNE]: 2026-10-27",
+      "action": "restored previous rows for url:https://kawaiilab.asobisystem.com/news/detail/83517",
+      "restoredPreviousRows": 12
+    },
+    {
+      "error": "future performance dates disappeared for url:https://kawaiilab.asobisystem.com/news/detail/85221 [CUTIE STREET]: 2026-10-29, 2026-11-15, 2026-11-29",
+      "action": "restored previous rows for url:https://kawaiilab.asobisystem.com/news/detail/85221",
+      "restoredPreviousRows": 8
+    },
+    {
+      "error": "future performance dates disappeared for url:https://kawaiilab.asobisystem.com/news/detail/87775 [MORE STAR]: 2026-12-12, 2026-12-13",
+      "action": "restored previous rows for url:https://kawaiilab.asobisystem.com/news/detail/87775",
+      "restoredPreviousRows": 14
+    },
+    {
+      "error": "future performance dates disappeared for url:https://kawaiilab.asobisystem.com/news/detail/93888 [FRUITS ZIPPER]: 2026-11-24",
+      "action": "restored previous rows for url:https://kawaiilab.asobisystem.com/news/detail/93888",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "protected future/active item disappeared: CUTIE STREET / CUTIE STREET大特典会＠パシフィコ横浜【1部・3部・6部】 / 現在受付なし",
+      "action": "restored disappeared previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "protected future/active item disappeared: MORE STAR / MORE STAR 大特典@パシフィコ横浜展示ホールD / 現在受付なし",
+      "action": "restored disappeared previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "protected future/active item disappeared: SWEET STEADY / 『SWEET STEADY 白石まゆみ BIRTHDAY LIVE 2026』 / 現在受付なし",
+      "action": "restored disappeared previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "protected future/active official FC offer disappeared: CANDY TUNE / 2026.10.10 2026年12月16日(水) 「CANDY TUNE 福山梨乃 生誕祭 2026」開催決定！CANDY TUNE OFFICIAL FANCLUB会員先行開始！ / FC先行",
+      "action": "last-chance restored implicated previous row",
+      "restoredPreviousRows": 1
+    }
+  ],
+  "rowFailuresCanBlockRelease": false,
+  "officialIndexReconciledAfterQuarantine": {
+    "projectedJointParticipantCount": 0,
+    "reassignedCount": 4,
+    "hydratedCount": 0,
+    "ambiguousCount": 0,
+    "unresolvedCount": 10,
+    "reassigned": [
+      {
+        "group": "CANDY TUNE",
+        "date": "2026-12-03",
+        "url": "https://candytune.asobisystem.com/live_information/detail/45891",
+        "from": "73cec3deb85534e3",
+        "to": "6fba7fd0de69052b"
+      },
+      {
+        "group": "SWEET STEADY",
+        "date": "2026-12-08",
+        "url": "https://sweetsteady.asobisystem.com/live_information/detail/46635",
+        "from": "e60956f0decd9a50",
+        "to": "d71815b04293ec45"
+      },
+      {
+        "group": "CUTIE STREET",
+        "date": "2026-11-03",
+        "url": "https://cutiestreet.asobisystem.com/live_information/detail/45469",
+        "from": "special-fc93a2eb32475c80",
+        "to": "special-c9c0d1ee49552e4e"
+      },
+      {
+        "group": "MORE STAR",
+        "date": "2026-11-03",
+        "url": "https://morestar.asobisystem.com/live_information/detail/46447",
+        "from": "special-fc93a2eb32475c80",
+        "to": "special-8292809d04fc4881"
+      }
+    ],
+    "hydrated": [],
+    "ambiguous": [],
+    "unresolved": [
+      {
+        "group": "FRUITS ZIPPER",
+        "date": "2026-12-12",
+        "url": "https://fruitszipper.asobisystem.com/live_information/detail/42961",
+        "representedBy": "faac1ea09a3581c6"
+      },
+      {
+        "group": "FRUITS ZIPPER",
+        "date": "2026-12-13",
+        "url": "https://fruitszipper.asobisystem.com/live_information/detail/42962",
+        "representedBy": "faac1ea09a3581c6"
+      },
+      {
+        "group": "CANDY TUNE",
+        "date": "2026-12-12",
+        "url": "https://candytune.asobisystem.com/live_information/detail/44993",
+        "representedBy": "faac1ea09a3581c6"
+      },
+      {
+        "group": "CANDY TUNE",
+        "date": "2026-12-13",
+        "url": "https://candytune.asobisystem.com/live_information/detail/44994",
+        "representedBy": "faac1ea09a3581c6"
+      },
+      {
+        "group": "SWEET STEADY",
+        "date": "2026-12-12",
+        "url": "https://sweetsteady.asobisystem.com/live_information/detail/44467",
+        "representedBy": "faac1ea09a3581c6"
+      },
+      {
+        "group": "SWEET STEADY",
+        "date": "2026-12-13",
+        "url": "https://sweetsteady.asobisystem.com/live_information/detail/46636",
+        "representedBy": "faac1ea09a3581c6"
+      },
+      {
+        "group": "CUTIE STREET",
+        "date": "2026-12-12",
+        "url": "https://cutiestreet.asobisystem.com/live_information/detail/46376",
+        "representedBy": "faac1ea09a3581c6"
+      },
+      {
+        "group": "CUTIE STREET",
+        "date": "2026-12-13",
+        "url": "https://cutiestreet.asobisystem.com/live_information/detail/46375",
+        "representedBy": "faac1ea09a3581c6"
+      },
+      {
+        "group": "MORE STAR",
+        "date": "2026-12-12",
+        "url": "https://morestar.asobisystem.com/live_information/detail/45679",
+        "representedBy": "faac1ea09a3581c6"
+      },
+      {
+        "group": "MORE STAR",
+        "date": "2026-12-13",
+        "url": "https://morestar.asobisystem.com/live_information/detail/45680",
+        "representedBy": "faac1ea09a3581c6"
+      }
+    ],
+    "duplicateOfficialResaleWindowsRemoved": 0
+  }
 }
