@@ -256,14 +256,16 @@ def canonical_birthday_event_text(listing_title: str, article_text: str) -> str:
     title_year, title_month, title_day = next(iter(title_dates))
     kept_lines = []
     for line in article_text.splitlines():
-        conflicting_repeat = any(
-            int(year) != title_year
-            and int(month) == title_month
-            and int(day) == title_day
-            for year, month, day in FULL_EVENT_DATE_RE.findall(line)
-        )
-        if not conflicting_repeat:
-            kept_lines.append(line)
+        # Some articles put the stale event year and the authoritative
+        # OPEN/START values on the same line. Correct only the repeated date;
+        # dropping the whole line would silently discard verified times.
+        def correct_repeated_date(match: re.Match) -> str:
+            year, month, day = (int(value) for value in match.groups())
+            if year != title_year and month == title_month and day == title_day:
+                return f"{title_year}年{month}月{day}日"
+            return match.group(0)
+
+        kept_lines.append(FULL_EVENT_DATE_RE.sub(correct_repeated_date, line))
 
     return "\n".join(value for value in (listing_title, *kept_lines) if value)
 
