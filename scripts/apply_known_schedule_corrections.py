@@ -263,6 +263,25 @@ def _build_candy_aichi_same_day_sale(schedule_event: dict) -> dict:
     return out
 
 
+def _repair_candy_aichi_same_day_sale(event: dict) -> dict:
+    """Upgrade the collector's generic same-day row to the verified offer."""
+    if not (
+        event.get("group") == "CANDY TUNE"
+        and _day(event) == "2026-10-27"
+        and CANDY_AICHI_SAME_DAY_NEWS in _urls(event)
+    ):
+        return deepcopy(event)
+    if (
+        event.get("ticketType") == "当日券（注釈付き指定席・会場販売）"
+        and event.get("applyStart") == "2026-10-27T17:30"
+        and event.get("applyEnd") is None
+        and event.get("applicationWindowVerified") is True
+        and event.get("applicationWindowSource") == CANDY_AICHI_SAME_DAY_NEWS
+    ):
+        return deepcopy(event)
+    return _build_candy_aichi_same_day_sale(event)
+
+
 def _build_cutie_fukuoka_door_exchange_sale(schedule_event: dict, day: str) -> dict:
     """Restore the official Fukuoka door-exchange sale for one performance."""
     details = CUTIE_FUKUOKA_DAYS[day]
@@ -1396,6 +1415,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "sweetIdolHalloweenSaleFixed": 0,
         "sweetIdolHalloweenSaleAdded": 0,
         "moreStarPacificoHmvOfferAdded": 0,
+        "candyAichiSameDayOfferFixed": 0,
         "candyAichiSameDayOfferAdded": 0,
         "cutieFukuokaDoorExchangeOffersAdded": 0,
     }
@@ -1478,6 +1498,11 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         current = _repair_sweet_idol_halloween_sale(current)
         if current != before_idol_halloween:
             report["sweetIdolHalloweenSaleFixed"] += 1
+
+        before_candy_aichi_same_day = current
+        current = _repair_candy_aichi_same_day_sale(current)
+        if current != before_candy_aichi_same_day:
+            report["candyAichiSameDayOfferFixed"] += 1
 
         before_more_star_seventh = (
             current.get("eventDate"),

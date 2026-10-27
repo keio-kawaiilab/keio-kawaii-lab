@@ -76,6 +76,32 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
         self.assertEqual(corrected, again)
         self.assertEqual(0, second_report["candyAichiSameDayOfferAdded"])
 
+    def test_candy_aichi_generic_collector_row_is_upgraded_without_duplication(self):
+        generic = {
+            "id": "official-news-candy-aichi",
+            "group": "CANDY TUNE",
+            "title": "愛知公演 当日券販売のお知らせ",
+            "eventDate": "2026-10-27",
+            "startTime": "18:30",
+            "ticketType": "当日券",
+            "applyStart": "2026-10-27T17:30",
+            "applyEnd": None,
+            "url": CANDY_AICHI_SAME_DAY_NEWS,
+        }
+        corrected, report = apply_known_corrections([generic])
+        self.assertEqual(1, len(corrected))
+        self.assertEqual(1, report["candyAichiSameDayOfferFixed"])
+        self.assertEqual(0, report["candyAichiSameDayOfferAdded"])
+        sale = corrected[0]
+        self.assertEqual("known-candy-aichi-20261027-same-day", sale["id"])
+        self.assertEqual("当日券（注釈付き指定席・会場販売）", sale["ticketType"])
+        self.assertTrue(sale["applicationWindowVerified"])
+        self.assertEqual(CANDY_AICHI_SAME_DAY_NEWS, sale["applicationWindowSource"])
+        again, second_report = apply_known_corrections(corrected)
+        self.assertEqual(corrected, again)
+        self.assertEqual(0, second_report["candyAichiSameDayOfferFixed"])
+        self.assertEqual(0, second_report["candyAichiSameDayOfferAdded"])
+
     def test_more_star_pacifico_hmv_reservation_is_restored_once(self):
         schedule_only = {
             "id": "official-more-star-pacifico", "group": "MORE STAR",
