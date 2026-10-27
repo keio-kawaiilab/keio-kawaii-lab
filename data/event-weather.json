@@ -1,7 +1,7 @@
 {
   "date": "2026-10-27",
   "horizonDays": 7,
-  "generatedAt": "2026-10-27T17:20+09:00",
+  "generatedAt": "2026-10-27T23:53+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -44,6 +44,23 @@
           "validAt": "2026-10-28T00:00+09:00",
           "temp": 17
         }
+      ],
+      "hourlyRain": [
+        {
+          "time": "17:30",
+          "rain": false,
+          "validAt": "2026-10-27T17:30+09:00"
+        },
+        {
+          "time": "18:30",
+          "rain": false,
+          "validAt": "2026-10-27T18:30+09:00"
+        },
+        {
+          "time": "19:30",
+          "rain": false,
+          "validAt": "2026-10-27T19:30+09:00"
+        }
       ]
     },
     {
@@ -81,6 +98,23 @@
           "validAt": "2026-10-28T00:00+09:00",
           "temp": 15
         }
+      ],
+      "hourlyRain": [
+        {
+          "time": "17:30",
+          "rain": false,
+          "validAt": "2026-10-27T17:30+09:00"
+        },
+        {
+          "time": "18:30",
+          "rain": false,
+          "validAt": "2026-10-27T18:30+09:00"
+        },
+        {
+          "time": "19:30",
+          "rain": false,
+          "validAt": "2026-10-27T19:30+09:00"
+        }
       ]
     },
     {
@@ -91,7 +125,6 @@
         "12fc6b6af5559477",
         "17cc29946b768ee5",
         "2044dd321097ba5f",
-        "af9b9cae7dd94237",
         "known-cutie-fukuoka-20261028-door-exchange"
       ],
       "areaCode": "400010",
@@ -417,14 +450,14 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 43,
+    "occurrencesInRange": 42,
     "uniqueVenueDates": 16,
     "weatherEntries": 15,
     "meshEntries": 3,
     "failures": 1,
     "meshTimelineEntries": 3,
     "meshExactTempSlots": 11,
-    "hourlyRainEntries": 0
+    "hourlyRainEntries": 2
   },
   "failures": [
     {
