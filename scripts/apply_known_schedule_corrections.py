@@ -53,6 +53,8 @@ MORE_STAR_PACIFICO_DAY = "2026-11-03"
 MORE_STAR_PACIFICO_SCHEDULE = "https://morestar.asobisystem.com/live_information/detail/46447"
 MORE_STAR_PACIFICO_NEWS = "https://morestar.asobisystem.com/news/detail/93714"
 MORE_STAR_PACIFICO_HMV = "https://img.hmv.co.jp/cont/online/morestarevent_lp/"
+CANDY_AICHI_SAME_DAY_NEWS = "https://candytune.asobisystem.com/news/detail/94161"
+CANDY_AICHI_SCHEDULE = "https://candytune.asobisystem.com/live_information/detail/40733"
 
 MORE_STAR_PACIFICO_PARTS = [
     {"part": "第1部", "content": "個別2ショットチェキ撮影会", "start": "10:00", "end": "11:00", "receptionStart": "09:45", "receptionEnd": "10:40"},
@@ -202,6 +204,47 @@ def _build_more_star_pacifico_hmv_sale(schedule_event: dict) -> dict:
         "deadlineSource": MORE_STAR_PACIFICO_NEWS,
         "eventScope": "kawaii-lab",
         "specialDetailsStatus": "verified",
+    })
+    for key in ("offers", "canonicalRuntimeRole", "entityType", "specialEventEntityVersion", "sourceRowIds"):
+        out.pop(key, None)
+    return out
+
+
+def _build_candy_aichi_same_day_sale(schedule_event: dict) -> dict:
+    """Publish the official venue-counter same-day sale for the Aichi date."""
+    out = deepcopy(schedule_event)
+    out.update({
+        "id": "known-candy-aichi-20261027-same-day",
+        "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN - 愛知公演 当日券",
+        "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
+        "eventDate": "2026-10-27",
+        "eventEndDate": "2026-10-27",
+        "eventDates": ["2026-10-27"],
+        "eventCount": 1,
+        "venue": "愛知県 愛知県芸術劇場 大ホール",
+        "venues": ["愛知県 愛知県芸術劇場 大ホール"],
+        "openTime": "17:30", "startTime": "18:30",
+        "schedule": [{
+            "date": "2026-10-27", "venue": "愛知県 愛知県芸術劇場 大ホール",
+            "openTime": "17:30", "startTime": "18:30",
+        }],
+        "ticketType": "当日券（注釈付き指定席・会場販売）",
+        "ticketProvider": "official",
+        "applyStart": "2026-10-27T17:30", "applyEnd": None,
+        "url": CANDY_AICHI_SAME_DAY_NEWS,
+        "urls": [CANDY_AICHI_SAME_DAY_NEWS, CANDY_AICHI_SCHEDULE],
+        "sourceType": "official-ticket",
+        "sourceChannel": "known-official-correction",
+        "primarySource": "official",
+        "sourceCandidates": ["official"],
+        "sourcePublishedAt": "2026-10-27",
+        "applicationStatus": "observed",
+        "applicationDisplayMode": "offers",
+        "applicationStartVerified": True,
+        "applicationWindowVerified": True,
+        "applicationWindowSource": CANDY_AICHI_SAME_DAY_NEWS,
+        "windowCompleteness": "start-only",
+        "eventScope": "kawaii-lab",
     })
     for key in ("offers", "canonicalRuntimeRole", "entityType", "specialEventEntityVersion", "sourceRowIds"):
         out.pop(key, None)
@@ -1299,6 +1342,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "sweetIdolHalloweenSaleFixed": 0,
         "sweetIdolHalloweenSaleAdded": 0,
         "moreStarPacificoHmvOfferAdded": 0,
+        "candyAichiSameDayOfferAdded": 0,
     }
 
     for event in source:
@@ -1440,6 +1484,27 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         if schedule_event is not None:
             out.append(_build_more_star_pacifico_hmv_sale(schedule_event))
             report["moreStarPacificoHmvOfferAdded"] += 1
+
+    has_candy_aichi_same_day = any(
+        CANDY_AICHI_SAME_DAY_NEWS in _urls(event)
+        and event.get("group") == "CANDY TUNE"
+        and _day(event) == "2026-10-27"
+        for event in out
+    )
+    if not has_candy_aichi_same_day:
+        schedule_event = next((
+            event for event in out
+            if event.get("group") == "CANDY TUNE"
+            and (
+                CANDY_AICHI_SCHEDULE in _urls(event)
+                or any(str(row.get("date") or "")[:10] == "2026-10-27"
+                       and "愛知県芸術劇場" in str(row.get("venue") or "")
+                       for row in event.get("schedule") or [] if isinstance(row, dict))
+            )
+        ), None)
+        if schedule_event is not None:
+            out.append(_build_candy_aichi_same_day_sale(schedule_event))
+            report["candyAichiSameDayOfferAdded"] += 1
 
     # Official NEWS 92529 (rechecked 2026-10-20): the FC reception ended
     # October 18, not the November 15 performances. Preserve the two starts
