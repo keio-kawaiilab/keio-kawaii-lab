@@ -31,6 +31,30 @@ class OfficialBirthdayNewsTests(unittest.TestCase):
         )
         self.assertEqual(rows, [])
 
+    def test_event_announcement_with_later_upgrade_notes_is_collected(self):
+        article_url = "https://sweetsteady.asobisystem.com/news/detail/94087"
+        text = (
+            "2027年1月7日(木) SWEET STEADY 奥田彩友 BIRTHDAY LIVE 2027 開催決定！FC先行受付開始！\n"
+            "会場：SGCホール有明\n"
+            "時間：開場17:30 / 開演19:00\n"
+            "＜アップグレードにつきまして＞\n"
+            "後日、座席のアップグレードを実施いたします。\n"
+            "SWEET STEADY OFFICIAL FANCLUB 有料会員先行受付\n"
+            "受付期間：2026年10月27日 20:00〜2026年11月4日 23:59\n"
+        )
+        rows = news.article_events(
+            {"events": []},
+            "SWEET STEADY",
+            article_url,
+            text,
+            date(2026, 10, 27),
+        )
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["eventDate"], "2027-01-07")
+        self.assertEqual(rows[0]["applyStart"], "2026-10-27T20:00")
+        self.assertEqual(rows[0]["applyEnd"], "2026-11-04T23:59")
+        self.assertEqual(rows[0]["url"], article_url)
+
     def test_shoji_official_news_enriches_promoter_row_in_place(self):
         payload = {"events": [{
             "id": "shoji-stable",

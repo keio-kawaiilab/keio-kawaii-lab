@@ -249,7 +249,11 @@ def article_events(
     # upgrade there can turn OPEN into a second apparent START and can also
     # misread annual-course eligibility text as an FC presale.  Leave these
     # notices to the authoritative collector instead of publishing a shadow row.
-    if "アップグレード" in article_text:
+    first_line = next(
+        (normalize(line) for line in article_text.splitlines() if normalize(line)),
+        "",
+    )
+    if "アップグレード" in first_line:
         return []
     details = ticket_details_from_official_article(article_text, article_url, today)
     if not details or not details.get("ticketType") or details.get("ticketType") == "現在受付なし":
