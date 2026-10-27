@@ -1,8 +1,8 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-28T04:44:14.497480+09:00",
-  "candidateUpdatedAt": "2026-10-28T04:44:14+09:00",
-  "previousEventCount": 251,
+  "generatedAt": "2026-10-28T05:41:30.513195+09:00",
+  "candidateUpdatedAt": "2026-10-28T05:41:29+09:00",
+  "previousEventCount": 250,
   "candidateEventCount": 249,
   "protectedPreviousCount": 250,
   "errorCount": 0,
@@ -19,10 +19,9 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
     "ended playguide row removed: KAWAII LAB.合同 / KAWAII LAB. Christmas SESSION 2026 / 現在受付なし"
   ],
-  "candidateSha256": "ceb92e8677ddd8a80591302835583cc46128deaa1122f154c04bc89659221f73",
+  "candidateSha256": "aa2ca26c9bc0465dd938199478a801fb3ebb90333353b885c134d90db04872de",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
-    "url:https://candytune.asobisystem.com/live_information/detail/40733",
     "url:https://candytune.asobisystem.com/live_information/detail/40743",
     "url:https://candytune.asobisystem.com/live_information/detail/45890",
     "url:https://candytune.asobisystem.com/news/detail/88212",
@@ -101,7 +100,6 @@
   ],
   "officialXSharedSourceKeysReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
-    "url:https://candytune.asobisystem.com/live_information/detail/40733",
     "url:https://candytune.asobisystem.com/live_information/detail/40743",
     "url:https://candytune.asobisystem.com/live_information/detail/45890",
     "url:https://candytune.asobisystem.com/news/detail/88212",
@@ -219,12 +217,22 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 12,
+  "quarantineCount": 14,
   "quarantineActions": [
     {
       "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
       "action": "restored previous row",
       "restoredPreviousRows": 2
+    },
+    {
+      "error": "active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 一般発売",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 11
+    },
+    {
+      "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 1
     },
     {
       "error": "Pia row contains FC/upgrade-only sale: CUTIE STREET / 「CUTIE STREET 佐野愛花 生誕祭 2026」 アップグレード抽選受付のお知らせ / 現在受付なし",
