@@ -7,6 +7,33 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 JST = ZoneInfo("Asia/Tokyo")
+SWEET_IDOL_HALLOWEEN_SCHEDULE = "https://sweetsteady.asobisystem.com/live_information/detail/46633"
+SWEET_IDOL_HALLOWEEN_TICKET = "https://ticketdive.com/event/IHJ2026"
+
+
+def _verified_replacement_represented(expected, public):
+    """Accept a narrowly verified correction to a known source misparse."""
+    if not (
+        expected.get("url") == SWEET_IDOL_HALLOWEEN_SCHEDULE
+        and expected.get("group") == "SWEET STEADY"
+        and expected.get("eventDate") == "2026-10-30"
+        and str(expected.get("applyStart") or "")[:10] == "2026-10-30"
+        and str(expected.get("applyEnd") or "")[:10] == "2026-11-01"
+    ):
+        return False
+    for entity in public:
+        if entity.get("eventDate") != "2026-10-30" or entity.get("group") != "SWEET STEADY":
+            continue
+        entity_urls = {str(value) for value in [entity.get("url"), *(entity.get("urls") or [])] if value}
+        for offer in entity.get("offers", [entity]):
+            urls = entity_urls | {str(value) for value in [offer.get("url"), *(offer.get("urls") or [])] if value}
+            if (SWEET_IDOL_HALLOWEEN_SCHEDULE in urls
+                    and SWEET_IDOL_HALLOWEEN_TICKET in urls
+                    and offer.get("applyStart") == "2026-09-25T17:00"
+                    and offer.get("applyEnd") == "2026-10-29T23:59"
+                    and offer.get("applicationWindowVerified") is True):
+                return True
+    return False
 
 
 def _same_ticket_kind(expected, offer, entity):
@@ -87,6 +114,9 @@ def audit(state, payload, history=None):
             if expected.get("ticketType") in (None, "", "現在受付なし"):
                 continue
             if str(expected.get("eventDate") or "") < datetime.now(JST).date().isoformat():
+                continue
+            if _verified_replacement_represented(expected, public):
+                represented += 1
                 continue
             end = str(expected.get("applyEnd") or "")
             if end and end[:10] < datetime.now(JST).date().isoformat():

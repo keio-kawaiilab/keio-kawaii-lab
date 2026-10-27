@@ -11,6 +11,51 @@ from resolve_source_priority import resolve
 
 
 class ContinuousDiscoveryTests(unittest.TestCase):
+    def test_publication_audit_accepts_verified_halloween_window_correction(self):
+        expected = {
+            "group": "SWEET STEADY", "eventDate": "2026-10-30", "ticketType": "チケット受付",
+            "applyStart": "2026-10-30", "applyEnd": "2026-11-01",
+            "url": publication.SWEET_IDOL_HALLOWEEN_SCHEDULE,
+        }
+        public = [{
+            "group": "SWEET STEADY", "eventDate": "2026-10-30",
+            "urls": [publication.SWEET_IDOL_HALLOWEEN_SCHEDULE],
+            "offers": [{
+                "ticketType": "一般発売", "applyStart": "2026-09-25T17:00",
+                "applyEnd": "2026-10-29T23:59", "applicationWindowVerified": True,
+                "url": publication.SWEET_IDOL_HALLOWEEN_TICKET,
+            }],
+        }]
+        report = publication.audit({"observations": [{"expectedOffers": [expected]}]}, {"publicEvents": public})
+        self.assertEqual(1, report["representedOffers"])
+        self.assertEqual([], report["missingOffers"])
+
+    def test_same_day_counter_sale_uses_labelled_start_and_no_invented_end(self):
+        candidate = discovery.parser.Candidate(
+            "CANDY TUNE", "愛知公演 当日券販売のお知らせ",
+            "https://candytune.asobisystem.com/news/detail/94161",
+        )
+        text = """2026.10.27
+公演日時
+2026年10月27日(火) 開場17:30 開演18:30
+会場
+愛知県芸術劇場 大ホール
+当日券を販売いたします。
+受付開始時間
+17:30より、先着順にて販売いたします。
+"""
+        rows = discovery.same_day_counter_sale_rows(candidate, candidate.title, text)
+        self.assertEqual(1, len(rows))
+        self.assertEqual("2026-10-27T17:30", rows[0]["applyStart"])
+        self.assertIsNone(rows[0]["applyEnd"])
+        self.assertEqual("18:30", rows[0]["startTime"])
+        self.assertEqual("当日券", rows[0]["ticketType"])
+
+    def test_same_day_counter_sale_rejects_multiple_performances(self):
+        candidate = discovery.parser.Candidate("CANDY TUNE", "当日券", "https://example.com")
+        text = "2026年10月27日 開演18:30\n2026年10月28日 開演18:30\n受付開始時間\n17:30より"
+        self.assertEqual([], discovery.same_day_counter_sale_rows(candidate, candidate.title, text))
+
     def test_homepage_article_survives_one_broken_news_page(self):
         retention.FEED_FAILURES.clear()
         def fetch(url, headers):
