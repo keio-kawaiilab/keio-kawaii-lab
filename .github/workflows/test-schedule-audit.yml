@@ -130,7 +130,16 @@ jobs:
           python - <<'PY'
           import json
           import re
+          from datetime import date, datetime
           from pathlib import Path
+          from zoneinfo import ZoneInfo
+
+          html = Path("schedule.html").read_text(encoding="utf-8")
+          today = datetime.now(ZoneInfo("Asia/Tokyo")).date()
+          if date(2026, 9, 14) < today:
+              assert "function expandSpecialOccurrences(raw)" in html
+              assert "function occurrenceSpecialDetails(event)" in html
+              raise SystemExit(0)
 
           payload = json.loads(Path("data/live-events.json").read_text(encoding="utf-8"))
           matches = [
