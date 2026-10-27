@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-27T18:42:47.812891+09:00",
-  "candidateUpdatedAt": "2026-10-27T18:42:47+09:00",
-  "previousEventCount": 248,
+  "generatedAt": "2026-10-27T19:41:40.031533+09:00",
+  "candidateUpdatedAt": "2026-10-27T19:41:39+09:00",
+  "previousEventCount": 249,
   "candidateEventCount": 248,
-  "protectedPreviousCount": 248,
+  "protectedPreviousCount": 249,
   "errorCount": 0,
   "warningCount": 13,
   "errors": [],
@@ -23,7 +23,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: large benefit event has no part schedule: CUTIE STREET / CUTIE STREET大特典会＠パシフィコ横浜【1部・3部・6部】 / 現在受付なし",
     "ended playguide row removed: KAWAII LAB.合同 / KAWAII LAB. Christmas SESSION 2026 / 現在受付なし"
   ],
-  "candidateSha256": "70647cdf035be147a060c33149514241282cb397158c7b72c70f50c58afe7495",
+  "candidateSha256": "7547f54792917665a080e0485214e620838477be5087b903339a1f5b396f8a54",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -233,12 +233,12 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 22,
+  "quarantineCount": 21,
   "quarantineActions": [
     {
       "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / 一般発売",
       "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 2
+      "restoredPreviousRows": 3
     },
     {
       "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
@@ -248,7 +248,7 @@
     {
       "error": "active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 一般発売",
       "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 12
+      "restoredPreviousRows": 14
     },
     {
       "error": "canonical special event offer has no verified purchase/ticket window: KAWAII LAB.合同 / MORE STAR 大特典@パシフィコ横浜展示ホールD / 現在受付なし / offer 1",
@@ -264,11 +264,6 @@
       "error": "Pia row contains FC/upgrade-only sale: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
       "action": "restored previous row",
       "restoredPreviousRows": 1
-    },
-    {
-      "error": "active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / 「FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - Secret Code」公演 リセールサービスのお知らせ / リセール",
-      "action": "restored previous rows for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
-      "restoredPreviousRows": 8
     },
     {
       "error": "active deadline disappeared for url:https://candytune.asobisystem.com/news/detail/94060: CANDY TUNE / 「CANDY TUNE 村川緋杏 生誕祭 2026」 アップグレード抽選受付のお知らせ / アップグレード抽選",
