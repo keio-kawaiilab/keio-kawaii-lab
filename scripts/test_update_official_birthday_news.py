@@ -56,6 +56,8 @@ class OfficialBirthdayNewsTests(unittest.TestCase):
         self.assertEqual(rows[0]["startTime"], "19:00")
         self.assertEqual(rows[0]["applyStart"], "2026-10-27T20:00")
         self.assertEqual(rows[0]["applyEnd"], "2026-11-04T23:59")
+        self.assertEqual(rows[0]["applicationWindowSource"], article_url)
+        self.assertEqual(rows[0]["deadlineSource"], article_url)
         self.assertEqual(rows[0]["url"], article_url)
 
     def test_shoji_official_news_enriches_promoter_row_in_place(self):
