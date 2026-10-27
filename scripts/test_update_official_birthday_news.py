@@ -35,6 +35,7 @@ class OfficialBirthdayNewsTests(unittest.TestCase):
         article_url = "https://sweetsteady.asobisystem.com/news/detail/94087"
         text = (
             "2027年1月7日(木) SWEET STEADY 奥田彩友 BIRTHDAY LIVE 2027 開催決定！FC先行受付開始！\n"
+            "日程：2027年1月7日(木)\n"
             "会場：SGCホール有明\n"
             "時間：開場17:30 / 開演19:00\n"
             "＜アップグレードにつきまして＞\n"
