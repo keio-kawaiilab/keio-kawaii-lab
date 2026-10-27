@@ -472,12 +472,26 @@ def merge_birthday_events(payload: dict, birthday_events: list[dict]) -> dict:
         return payload
 
     events = [dict(event) for event in payload.get("events", []) if isinstance(event, dict)]
+    public_events = (
+        [dict(event) for event in payload.get("publicEvents", []) if isinstance(event, dict)]
+        if isinstance(payload.get("publicEvents"), list)
+        else None
+    )
     changed = False
 
     for fresh in birthday_events:
         key = birthday_key(fresh)
         if not key:
             continue
+        if public_events is not None:
+            for public_event in public_events:
+                if birthday_key(public_event) != key:
+                    continue
+                before_public = dict(public_event)
+                for field in ("openTime", "startTime"):
+                    if not public_event.get(field) and fresh.get(field) is not None:
+                        public_event[field] = fresh.get(field)
+                changed = changed or public_event != before_public
         matching = [event for event in events if birthday_key(event) == key]
         promoter_rows = [event for event in matching if str(event.get("sourceType") or "").lower() == "promoter"]
         social_rows = [event for event in matching if str(event.get("sourceType") or "").lower() == "official-social"]
@@ -564,6 +578,8 @@ def merge_birthday_events(payload: dict, birthday_events: list[dict]) -> dict:
     ))
     out = dict(payload)
     out["events"] = events
+    if public_events is not None:
+        out["publicEvents"] = public_events
     if changed:
         out["updatedAt"] = datetime.now(base.JST).isoformat(timespec="seconds")
     return out
