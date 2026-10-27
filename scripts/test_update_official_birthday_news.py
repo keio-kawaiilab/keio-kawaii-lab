@@ -97,6 +97,20 @@ class OfficialBirthdayNewsTests(unittest.TestCase):
         self.assertEqual(event["applyStart"], "2026-10-27T20:00")
         self.assertEqual(event["applyEnd"], "2026-11-04T23:59")
 
+        # Reproduce the persisted state from the earlier collector version:
+        # the reception is already present, but OPEN/START are still missing.
+        event.pop("openTime")
+        event.pop("startTime")
+        retry_payload = {"events": [event]}
+        retry_rows = news.article_events(
+            retry_payload, "SWEET STEADY", article_url, text, date(2026, 10, 27)
+        )
+        retried = birthday.merge_birthday_events(retry_payload, retry_rows)
+        self.assertEqual(len(retried["events"]), 1)
+        self.assertEqual(retried["events"][0]["id"], "okuda-stable")
+        self.assertEqual(retried["events"][0]["openTime"], "17:30")
+        self.assertEqual(retried["events"][0]["startTime"], "19:00")
+
     def test_shoji_official_news_enriches_promoter_row_in_place(self):
         payload = {"events": [{
             "id": "shoji-stable",
