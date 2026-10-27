@@ -117,7 +117,7 @@ jobs:
           authoritative = [
               e for e in payload.get("events", [])
               if e.get("group") == "KAWAII LAB.合同"
-              and e.get("sourceType") == "official-schedule"
+              and e.get("primarySource") == "official"
               and str(e.get("eventDate") or "")[:10] == day
               and token.lower() in title(e).lower()
           ]
