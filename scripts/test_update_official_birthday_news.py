@@ -60,6 +60,43 @@ class OfficialBirthdayNewsTests(unittest.TestCase):
         self.assertEqual(rows[0]["deadlineSource"], article_url)
         self.assertEqual(rows[0]["url"], article_url)
 
+    def test_official_article_times_enrich_existing_schedule_placeholder(self):
+        article_url = "https://sweetsteady.asobisystem.com/news/detail/94087"
+        payload = {"events": [{
+            "id": "okuda-stable",
+            "group": "SWEET STEADY",
+            "title": "SWEET STEADY 奥田彩友 BIRTHDAY LIVE 2027",
+            "eventTitle": "SWEET STEADY 奥田彩友 BIRTHDAY LIVE 2027",
+            "eventDate": "2027-01-07",
+            "venue": "SGCホール有明",
+            "ticketType": "現在受付なし",
+            "applicationStatus": "none",
+            "applyStart": None,
+            "applyEnd": None,
+            "sourceType": "official-schedule",
+            "primarySource": "official",
+        }]}
+        text = (
+            "2027年1月7日(木) SWEET STEADY 奥田彩友 BIRTHDAY LIVE 2027\n"
+            "時間：開場17:30 / 開演19:00\n"
+            "会場：SGCホール有明\n"
+            "SWEET STEADY OFFICIAL FANCLUB会員先行\n"
+            "受付期間：2026年10月27日 20:00〜2026年11月4日 23:59\n"
+        )
+
+        rows = news.article_events(
+            payload, "SWEET STEADY", article_url, text, date(2026, 10, 27)
+        )
+        self.assertEqual(rows[0]["openTime"], "17:30")
+        self.assertEqual(rows[0]["startTime"], "19:00")
+
+        merged = birthday.merge_birthday_events(payload, rows)
+        event = next(row for row in merged["events"] if row.get("id") == "okuda-stable")
+        self.assertEqual(event["openTime"], "17:30")
+        self.assertEqual(event["startTime"], "19:00")
+        self.assertEqual(event["applyStart"], "2026-10-27T20:00")
+        self.assertEqual(event["applyEnd"], "2026-11-04T23:59")
+
     def test_shoji_official_news_enriches_promoter_row_in_place(self):
         payload = {"events": [{
             "id": "shoji-stable",

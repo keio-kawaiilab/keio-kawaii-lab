@@ -491,6 +491,14 @@ def merge_birthday_events(payload: dict, birthday_events: list[dict]) -> dict:
                     for field in TICKET_FIELDS:
                         if field in fresh and fresh.get(field) is not None:
                             enriched[field] = fresh.get(field)
+                    # Official birthday articles can add OPEN/START after the
+                    # schedule placeholder was first published. Carry those
+                    # verified times into the authoritative existing row along
+                    # with the ticket window instead of leaving the public card
+                    # at "time TBA".
+                    for field in ("openTime", "startTime"):
+                        if fresh.get(field) is not None:
+                            enriched[field] = fresh.get(field)
                     for field in ("specialDetailsStatus", "sourcePublishedAt", "discoverySourceUrl"):
                         if fresh.get(field) is not None:
                             enriched[field] = fresh.get(field)
