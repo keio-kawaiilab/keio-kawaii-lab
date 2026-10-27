@@ -32,12 +32,13 @@ concurrency:
 jobs:
   birthday-fallback:
     runs-on: ubuntu-latest
-    timeout-minutes: 6
+    timeout-minutes: 12
     steps:
       - name: Checkout latest main
         uses: actions/checkout@v4
         with:
           ref: main
+          fetch-depth: 0
 
       - name: Read emergency freeze control
         id: control
@@ -130,4 +131,46 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/live-events.json data/schedule-health.json schedule.html
           git commit -m "chore: publish birthday event fallback refresh"
-          git push origin HEAD:main
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then exit 0; fi
+            echo "::warning::Birthday refresh push attempt ${attempt} rejected; replaying on latest main."
+            git fetch origin main
+            if git rebase origin/main; then
+              continue
+            fi
+
+            # Generated JSON/HTML commonly conflict when another calendar lane
+            # publishes after checkout. Re-run the authoritative birthday merge
+            # and all release guards from the new main instead of choosing one
+            # side of a generated-file conflict.
+            git rebase --abort || true
+            git reset --hard origin/main
+            cp data/live-events.json /tmp/live-events-before-birthday.json
+            python scripts/guard_birthday_year_consistency.py
+            timeout --signal=TERM --kill-after=10s 180s python scripts/update_official_birthday_news.py || \
+              echo "::warning::Official birthday news retry failed; keeping latest-main birthday data."
+            timeout --signal=TERM --kill-after=10s 90s python scripts/update_official_x_birthday_events.py || \
+              echo "::warning::Official X birthday retry failed; keeping official-news/latest-main data."
+            python scripts/guard_birthday_year_consistency.py
+            python scripts/reconcile_birthday_ticket_rows.py
+            python scripts/guard_birthday_year_consistency.py
+            python scripts/apply_event_scopes.py
+            python scripts/prepare_release_candidate.py --previous /tmp/live-events-before-birthday.json
+            python scripts/audit_schedule_release_grouped.py \
+              --previous /tmp/live-events-before-birthday.json \
+              --candidate data/live-events.json \
+              --report data/schedule-health.json
+            python scripts/build_schedule_snapshot.py
+            python scripts/fix_schedule_shell.py
+            python scripts/strip_schedule_explanations.py
+            node --check /tmp/schedule-inline.js
+            node scripts/test_schedule_band_grouping.js
+            node scripts/test_schedule_scope_ui.js
+            git add data/live-events.json data/schedule-health.json schedule.html
+            if git diff --cached --quiet; then
+              echo "Latest main already contains the audited birthday refresh."
+              exit 0
+            fi
+            git commit -m "chore: replay birthday refresh onto latest calendar"
+          done
+          exit 1
