@@ -81,6 +81,40 @@ class SpecialEventTests(unittest.TestCase):
         self.assertEqual(events, [])
         self.assertTrue(any(failure.get("critical") for failure in failures))
 
+    def test_empty_h1_ancillary_announcement_is_not_a_parse_failure(self):
+        base = "https://cutiestreet.asobisystem.com"
+        article_url = f"{base}/news/detail/94307"
+        home = f'<a href="{article_url}">11/3（火・祝）CUTIE STREET 大特典会 物販情報</a>'
+        article = """
+        <html><head><title>11/3（火・祝）CUTIE STREET 大特典会 物販情報｜CUTIE STREET</title></head><body>
+        <h1></h1><div>11/3（火・祝）CUTIE STREET 大特典会 物販情報</div>
+        <p>2026.10.28</p><p>会場：パシフィコ横浜展示ホールD</p>
+        <p>販売時間：9:30〜18:00予定</p>
+        </body></html>
+        """
+
+        class Response:
+            def __init__(self, text):
+                self.text = text
+
+            def raise_for_status(self):
+                return None
+
+        class Session:
+            def get(self, url, timeout=20):
+                if url == f"{base}/":
+                    return Response(home)
+                if url == article_url:
+                    return Response(article)
+                return Response('<a href="/news/detail/1">通常のお知らせ</a>')
+
+        events, failures, reachable = s.discover(
+            Session(), "CUTIE STREET", base, today=datetime(2026, 10, 28).date()
+        )
+        self.assertTrue(reachable)
+        self.assertEqual(events, [])
+        self.assertEqual(failures, [])
+
     def test_homepage_master_article_can_delegate_to_linked_live_detail(self):
         base = "https://morestar.asobisystem.com"
         article_url = f"{base}/news/detail/12345"
