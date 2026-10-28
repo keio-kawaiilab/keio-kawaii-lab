@@ -56,6 +56,28 @@ class ContinuousDiscoveryTests(unittest.TestCase):
         text = "2026年10月27日 開演18:30\n2026年10月28日 開演18:30\n受付開始時間\n17:30より"
         self.assertEqual([], discovery.same_day_counter_sale_rows(candidate, candidate.title, text))
 
+    def test_same_day_counter_sale_accepts_matching_compact_title_date(self):
+        candidate = discovery.parser.Candidate(
+            "CUTIE STREET",
+            "10/28(水) CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 『CUTIE LAND』福岡公演 Day1 当日券販売のお知らせ",
+            "https://cutiestreet.asobisystem.com/news/detail/94316",
+        )
+        text = """2026.10.28
+本日10/28(水) CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 『CUTIE LAND』公演で当日券を販売いたします。
+開場：16:00／開演：18:00
+会場：マリンメッセ福岡A館
+＜受付開始時間＞
+16:00よりご購入希望の方の整列を開始し、先着順で販売いたします。
+"""
+        rows = discovery.same_day_counter_sale_rows(candidate, candidate.title, text)
+        self.assertEqual(1, len(rows))
+        self.assertEqual("2026-10-28", rows[0]["eventDate"])
+        self.assertEqual("マリンメッセ福岡A館", rows[0]["venue"])
+        self.assertEqual("16:00", rows[0]["openTime"])
+        self.assertEqual("18:00", rows[0]["startTime"])
+        self.assertEqual("2026-10-28T16:00", rows[0]["applyStart"])
+        self.assertIsNone(rows[0]["applyEnd"])
+
     def test_homepage_article_survives_one_broken_news_page(self):
         retention.FEED_FAILURES.clear()
         def fetch(url, headers):

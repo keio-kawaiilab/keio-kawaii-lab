@@ -161,6 +161,38 @@ def same_day_counter_sale_rows(candidate, title, text):
         else:
             lines.append(line)
     occurrences = parser.extract_event_occurrences(lines, title, published)
+    if not occurrences and published:
+        # Some same-day notices use the article date plus a compact ``10/28``
+        # in the title instead of repeating a labelled ``公演日`` in the body.
+        # Accept that shape only when the title date exactly matches the
+        # article date and the body has one unambiguous venue/open/start set.
+        title_days = {
+            value[:10]
+            for match in parser.DATE_ANY_RE.finditer(title)
+            if (value := parser.date_match_to_iso(match, int(published[:4])))
+        }
+        venues = list(dict.fromkeys(
+            parser.normalize_space(match.group(1))
+            for line in raw_lines
+            if (match := parser.VENUE_RE.search(line))
+        ))
+        open_times = list(dict.fromkeys(
+            f"{int(match.group(1)):02d}:{match.group(2)}"
+            for line in raw_lines
+            if (match := parser.OPEN_TIME_RE.search(line))
+        ))
+        start_times = list(dict.fromkeys(
+            f"{int(match.group(1)):02d}:{match.group(2)}"
+            for line in raw_lines
+            if (match := parser.START_TIME_RE.search(line))
+        ))
+        if (
+            title_days == {published}
+            and len(venues) == 1
+            and len(open_times) == 1
+            and len(start_times) == 1
+        ):
+            occurrences = [(published, venues[0], open_times[0], start_times[0])]
     unique = list(dict.fromkeys(occurrences))
     if len(unique) != 1:
         return []
