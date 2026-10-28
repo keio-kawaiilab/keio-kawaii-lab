@@ -2,9 +2,18 @@ import unittest
 from datetime import datetime
 
 import build_schedule_snapshot as b
+import fix_schedule_shell as shell
 
 
 class ScheduleSnapshotTests(unittest.TestCase):
+    def test_runtime_parses_ticket_moments_as_jst(self):
+        page = "<script>" + shell.MOMENT_LOCAL_JS + "</script>"
+        patched = shell.install_jst_ticket_moments(page)
+        self.assertIn("Date.UTC", patched)
+        self.assertIn("h-9", patched)
+        self.assertNotIn("return new Date(+m[1],+m[2]-1,+m[3]", patched)
+        self.assertEqual(patched, shell.install_jst_ticket_moments(patched))
+
     def test_short_multi_date_schedule_lists_each_venue(self):
         event = {
             "schedule": [
