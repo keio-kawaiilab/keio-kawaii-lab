@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-28T23:58:38+09:00",
+  "checkedAt": "2026-10-28T23:58:53+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-27T07:54:16+09:00",
     "scannedPages": {
@@ -11529,7 +11529,7 @@
     "lawson/SWEET STEADY: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=18)"
   ],
   "promoterGeneralSaleDiagnostics": {
-    "checkedAt": "2026-10-28T22:06:57+09:00",
+    "checkedAt": "2026-10-28T23:58:52+09:00",
     "knownPerformancesChecked": 62,
     "generalSalesObserved": 0,
     "generalSalesAdded": 0,
@@ -11774,7 +11774,7 @@
   },
   "renderWarnings": [
     {
-      "checkedAt": "2026-10-28T23:58:38+09:00",
+      "checkedAt": "2026-10-28T23:58:53+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one CANDY TUNE tour performance for 2026-10-04 OPEN 16:30 / START 17:30, found 0"
     }
@@ -25201,7 +25201,7 @@
       }
     ]
   },
-  "updatedAt": "2026-10-28T23:58:38+09:00",
+  "updatedAt": "2026-10-28T23:58:53+09:00",
   "publicEvents": [
     {
       "id": "1c60e2be989c564d",
@@ -36136,10 +36136,29 @@
       "largeBenefitEntities": 3,
       "alreadyCanonicalRows": 4,
       "internalScheduleRowsCollapsed": 0,
-      "duplicateEventIdCollisions": 0,
+      "duplicateEventIdCollisions": 2,
       "duplicateEventRowsCollapsed": 0,
-      "duplicateEventIdsDisambiguated": 0,
-      "duplicateEventIdRepairs": [],
+      "duplicateEventIdsDisambiguated": 2,
+      "duplicateEventIdRepairs": [
+        {
+          "originalId": "performance-CANDY-TUNE-2026-12-08-time-19-00",
+          "sourceRows": 2,
+          "logicalRows": 2,
+          "assignedIds": [
+            "performance-CANDY-TUNE-2026-12-08-time-19-00",
+            "performance-CANDY-TUNE-2026-12-08-time-19-00--da5344f840"
+          ]
+        },
+        {
+          "originalId": "performance-CANDY-TUNE-2026-12-09-time-18-30",
+          "sourceRows": 2,
+          "logicalRows": 2,
+          "assignedIds": [
+            "performance-CANDY-TUNE-2026-12-09-time-18-30",
+            "performance-CANDY-TUNE-2026-12-09-time-18-30--c3e0f925ed"
+          ]
+        }
+      ],
       "onlinePlaceholderOccurrencesMerged": 0
     }
   }
