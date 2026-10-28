@@ -711,6 +711,31 @@ class SpecialEventEntityTests(unittest.TestCase):
         normalized, _ = normalize_payload(payload)
         self.assertEqual("MORE STAR", normalized["events"][0]["offers"][0]["sourceGroup"])
 
+    def test_hmv_offer_prefers_event_page_over_account_and_help_links(self):
+        official = "https://morestar.asobisystem.com/news/detail/94386"
+        landing = "https://img.hmv.co.jp/cont/online/morestar17354910/"
+        payload = {"events": [{
+            "id": "joint", "entityType": "special-event", "group": "KAWAII LAB.合同",
+            "participants": ["CUTIE STREET", "MORE STAR"], "eventCategory": "large-benefit",
+            "displayTitle": "CUTIE STREET／MORE STAR 大特典会", "eventDate": "2026-11-03",
+            "venue": "パシフィコ横浜 展示ホールD", "ticketType": "現在受付なし",
+            "offers": [{
+                "sourceRowId": "more-star-second-sale", "sourceGroup": "MORE STAR",
+                "provider": "hmv", "ticketType": "対象商品予約",
+                "applyStart": "2026-10-29T21:00", "applyEnd": "2026-10-30T23:59",
+                "url": "https://www.hmv.co.jp/login/newcustomer/",
+                "applicationWindowSource": official,
+                "urls": [
+                    official,
+                    "https://www.hmv.co.jp/login/newcustomer/",
+                    "https://www.hmv.co.jp/help/?q=005000041",
+                    landing,
+                ],
+            }],
+        }]}
+        normalized, _ = normalize_payload(payload)
+        self.assertEqual(landing, normalized["events"][0]["offers"][0]["url"])
+
 
 if __name__ == "__main__":
     unittest.main()

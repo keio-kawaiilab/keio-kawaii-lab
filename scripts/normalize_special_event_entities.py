@@ -143,19 +143,53 @@ def official_source_urls(event: dict) -> list[str]:
     return values
 
 
+def preferred_sales_url(values: list[str], provider_id: str) -> str:
+    """Choose the actionable sales page, not an account/help link.
+
+    Retailer articles often include registration, login, FAQ and contact links
+    before the actual event page. The old first-domain-match rule therefore
+    sent HMV offers to the new-customer form even when the article also exposed
+    its event-specific landing page.
+    """
+    provider_id = text(provider_id).lower()
+
+    def matches(value: str) -> bool:
+        lower = value.lower()
+        return (
+            (provider_id == "sukisuki" and "sukisuki-shop.com" in lower)
+            or (provider_id == "hmv" and "hmv.co.jp" in lower)
+            or (provider_id == "tower" and "tower.jp" in lower)
+            or (provider_id == "rakuten" and ("rakuten" in lower or "r10.to" in lower))
+            or (provider_id == "kawaii-store" and "kawaiilab.goods-order.com" in lower)
+            or (provider_id == "pia" and "t.pia.jp" in lower)
+            or (provider_id == "lawson" and "l-tike.com" in lower)
+            or (provider_id == "eplus" and "eplus.jp" in lower)
+        )
+
+    candidates = [value for value in values if matches(value)]
+    if not candidates:
+        return values[0] if values else ""
+
+    def score(value: str) -> tuple[int, int]:
+        lower = value.lower()
+        if provider_id == "hmv":
+            if any(token in lower for token in (
+                "/login/", "/help/", "/members/contact", "/newcustomer",
+            )):
+                return (0, -len(value))
+            if "img.hmv.co.jp/cont/online/" in lower:
+                return (100, -len(value))
+            if "/product/detail/" in lower:
+                return (90, -len(value))
+        return (50, -len(value))
+
+    return max(candidates, key=score)
+
+
 def offer_from_event(event: dict) -> dict:
     values = all_urls(event)
     p = provider(event)
-    preferred = next((u for u in values if (
-        (p == "sukisuki" and "sukisuki-shop.com" in u)
-        or (p == "hmv" and "hmv.co.jp" in u)
-        or (p == "tower" and "tower.jp" in u)
-        or (p == "rakuten" and ("rakuten" in u or "r10.to" in u))
-        or (p == "kawaii-store" and "kawaiilab.goods-order.com" in u)
-        or (p == "pia" and "t.pia.jp" in u)
-        or (p == "lawson" and "l-tike.com" in u)
-        or (p == "eplus" and "eplus.jp" in u)
-    )), values[0] if values else "")
+    preferred = preferred_sales_url(values, p)
     offer = {
         "sourceRowId": event.get("id"),
         "sourceGroup": event.get("group"),
@@ -504,6 +538,8 @@ def make_entity(items: list[dict]) -> dict:
         if is_offer_row(item):
             source_offers.append(offer_from_event(item))
         for offer in source_offers:
+            offer_values = all_urls(offer)
+            offer["url"] = preferred_sales_url(offer_values, provider(offer))
             source_group = offer_source_group(offer)
             if source_group:
                 offer["sourceGroup"] = source_group
