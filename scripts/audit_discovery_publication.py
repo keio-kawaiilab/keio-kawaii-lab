@@ -9,10 +9,38 @@ from zoneinfo import ZoneInfo
 JST = ZoneInfo("Asia/Tokyo")
 SWEET_IDOL_HALLOWEEN_SCHEDULE = "https://sweetsteady.asobisystem.com/live_information/detail/46633"
 SWEET_IDOL_HALLOWEEN_TICKET = "https://ticketdive.com/event/IHJ2026"
+SWEET_WINTER_ANNOUNCEMENT = "https://sweetsteady.asobisystem.com/news/detail/87795"
+SWEET_WINTER_FEATURE = "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026"
 
 
 def _verified_replacement_represented(expected, public):
     """Accept a narrowly verified correction to a known source misparse."""
+    if (expected.get("url") == SWEET_WINTER_ANNOUNCEMENT
+            and expected.get("group") == "SWEET STEADY"
+            and expected.get("ticketType") == "SWEET STEADY FC先行"
+            and expected.get("applyStart") == "2026-08-23T20:00"
+            and expected.get("applyEnd") == "2026-11-13"):
+        for entity in public:
+            if (entity.get("eventDate") != expected.get("eventDate")
+                    or entity.get("group") != "SWEET STEADY"):
+                continue
+            if expected.get("startTime") and entity.get("startTime") != expected["startTime"]:
+                continue
+            entity_urls = {str(value) for value in [entity.get("url"), *(entity.get("urls") or [])] if value}
+            for offer in entity.get("offers", [entity]):
+                urls = entity_urls | {str(value) for value in [offer.get("url"), *(offer.get("urls") or []),
+                                                               offer.get("applicationWindowSource"),
+                                                               offer.get("deadlineSource")] if value}
+                if (SWEET_WINTER_ANNOUNCEMENT in urls
+                        and SWEET_WINTER_FEATURE in urls
+                        and offer.get("ticketType") == "SWEET STEADY FC先行"
+                        and offer.get("applyStart") == "2026-08-23T20:00"
+                        and offer.get("applyEnd") == "2026-09-13T23:59"
+                        and offer.get("applicationWindowVerified") is True
+                        and offer.get("deadlineVerified") is True):
+                    return True
+        return False
+
     if not (
         expected.get("url") == SWEET_IDOL_HALLOWEEN_SCHEDULE
         and expected.get("group") == "SWEET STEADY"
