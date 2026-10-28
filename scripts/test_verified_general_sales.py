@@ -39,6 +39,25 @@ class GeneralSalesTest(unittest.TestCase):
         apply_verified_general_sales(public, self.observations)
         self.assertEqual(offer['applicationStatus'], 'open')
 
+    def test_furusawa_birthday_general_sale_is_registered_once(self):
+        public, _ = build_public_events(self.raw)
+        apply_verified_general_sales(public, self.observations)
+        event = next(
+            e for e in public
+            if e.get('group') == 'CUTIE STREET'
+            and e.get('eventDate') == '2026-11-09'
+            and e.get('startTime') == '19:00'
+        )
+        offers = [
+            offer for offer in event['offers']
+            if offer.get('sourceRowId') == 'verified-general-CUTIE-STREET-2026-11-09-1900'
+        ]
+        self.assertEqual(len(offers), 1)
+        self.assertEqual(offers[0]['applyStart'], '2026-10-24T10:00')
+        self.assertEqual(offers[0]['applyEnd'], '2026-11-04T23:59')
+        self.assertEqual(offers[0]['applicationStatus'], 'open')
+        self.assertEqual(offers[0]['url'], 'https://t.pia.jp/pia/event/event.do?eventCd=2635640')
+
     def test_regular_promoter_show_and_sale_section(self):
         public, _ = build_public_events(self.raw)
         html = '<nav>一般発売</nav>' + '<p>navigation</p>' * 100 + '''
