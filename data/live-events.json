@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-28T23:58:09+09:00",
+  "checkedAt": "2026-10-28T23:58:38+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-27T07:54:16+09:00",
     "scannedPages": {
@@ -553,6 +553,60 @@
       "sourceCandidates": [
         "official"
       ]
+    },
+    {
+      "id": "known-candy-aichi-20261027-same-day",
+      "group": "CANDY TUNE",
+      "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN - 愛知公演 当日券",
+      "ticketType": "当日券（注釈付き指定席・会場販売）",
+      "applyStart": "2026-10-27T17:30",
+      "applyEnd": null,
+      "resultDate": null,
+      "paymentEnd": null,
+      "eventDate": "2026-10-27",
+      "eventEndDate": "2026-10-27",
+      "eventDates": [
+        "2026-10-27"
+      ],
+      "schedule": [
+        {
+          "date": "2026-10-27",
+          "venue": "愛知県 愛知県芸術劇場 大ホール",
+          "openTime": "17:30",
+          "startTime": "18:30"
+        }
+      ],
+      "eventCount": 1,
+      "venue": "愛知県 愛知県芸術劇場 大ホール",
+      "url": "https://candytune.asobisystem.com/news/detail/94161",
+      "urls": [
+        "https://candytune.asobisystem.com/news/detail/94161",
+        "https://candytune.asobisystem.com/live_information/detail/40733"
+      ],
+      "sourceType": "official-ticket",
+      "sourcePublishedAt": "2026-10-27",
+      "applicationStatus": "observed",
+      "sourceChannel": "known-official-correction",
+      "primarySource": "official",
+      "ticketProvider": "official",
+      "sourceCandidates": [
+        "official"
+      ],
+      "historyPreserved": true,
+      "applicationWindowVerified": true,
+      "applicationWindowSource": "https://candytune.asobisystem.com/news/detail/94161",
+      "deadlineVerified": true,
+      "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=26986",
+      "applicationDisplayMode": "offers",
+      "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
+      "venues": [
+        "愛知県 愛知県芸術劇場 大ホール"
+      ],
+      "openTime": "17:30",
+      "startTime": "18:30",
+      "applicationStartVerified": true,
+      "windowCompleteness": "start-only",
+      "eventScope": "kawaii-lab"
     },
     {
       "id": "933b035dad6018f9",
@@ -11509,12 +11563,12 @@
     ]
   },
   "publicEventModelReport": {
-    "rawEventCount": 268,
+    "rawEventCount": 269,
     "passthroughEventCount": 64,
     "performanceEntityCount": 62,
-    "sourceOccurrenceCount": 335,
-    "mergedSourceOccurrences": 273,
-    "offerCount": 185,
+    "sourceOccurrenceCount": 336,
+    "mergedSourceOccurrences": 274,
+    "offerCount": 186,
     "outOfScopeSoloEventCount": 3
   },
   "publicEventModelVersion": 1,
@@ -11720,7 +11774,7 @@
   },
   "renderWarnings": [
     {
-      "checkedAt": "2026-10-28T23:58:09+09:00",
+      "checkedAt": "2026-10-28T23:58:38+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one CANDY TUNE tour performance for 2026-10-04 OPEN 16:30 / START 17:30, found 0"
     }
@@ -25147,7 +25201,7 @@
       }
     ]
   },
-  "updatedAt": "2026-10-28T23:58:09+09:00",
+  "updatedAt": "2026-10-28T23:58:38+09:00",
   "publicEvents": [
     {
       "id": "1c60e2be989c564d",
@@ -27407,7 +27461,8 @@
         "https://candytune.asobisystem.com/live_information/detail/40740",
         "https://candytune.asobisystem.com/live_information/detail/40741",
         "https://candytune.asobisystem.com/live_information/detail/40742",
-        "https://candytune.asobisystem.com/live_information/detail/40743"
+        "https://candytune.asobisystem.com/live_information/detail/40743",
+        "https://candytune.asobisystem.com/news/detail/94161"
       ],
       "sourceType": "derived",
       "sourcePublishedAt": "2026-07-30",
@@ -27451,7 +27506,8 @@
       "sourceRowIds": [
         "9dfde12963eddb40",
         "ac1228324b5a2910",
-        "f641c49b15d0f20a"
+        "f641c49b15d0f20a",
+        "known-candy-aichi-20261027-same-day"
       ],
       "offers": [
         {
@@ -27497,6 +27553,28 @@
           "sourceType": "ticket-history-guard",
           "sourceChannel": "pia-ended-sale",
           "primarySource": "pia"
+        },
+        {
+          "sourceRowId": "known-candy-aichi-20261027-same-day",
+          "provider": "official",
+          "url": "https://candytune.asobisystem.com/news/detail/94161",
+          "urls": [
+            "https://candytune.asobisystem.com/news/detail/94161",
+            "https://candytune.asobisystem.com/live_information/detail/40733"
+          ],
+          "ticketType": "当日券（注釈付き指定席・会場販売）",
+          "ticketProvider": "official",
+          "applyStart": "2026-10-27T17:30",
+          "applicationStatus": "observed",
+          "applicationWindowVerified": true,
+          "deadlineVerified": true,
+          "applicationDisplayMode": "offers",
+          "applicationWindowSource": "https://candytune.asobisystem.com/news/detail/94161",
+          "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=26986",
+          "sourceType": "official-ticket",
+          "sourceChannel": "known-official-correction",
+          "primarySource": "official",
+          "sourcePublishedAt": "2026-10-27"
         }
       ],
       "ticketType": "複数受付",
