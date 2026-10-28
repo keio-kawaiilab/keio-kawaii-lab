@@ -346,18 +346,26 @@ def provider(links: list[str], category: str) -> str:
     return "official"
 
 
-def parse_page(group: str, url: str, html_text: str, now: datetime | None = None) -> list[dict]:
-    soup = BeautifulSoup(html_text, "html.parser")
-    lines = [normalize(x) for x in soup.get_text("\n", strip=True).splitlines() if normalize(x)]
-    title_candidates = [
+def page_title(soup: BeautifulSoup, lines: list[str]) -> str:
+    """Return the announcement title even when Fanplus renders an empty h1."""
+    candidates = [
         normalize(node.get_text(" ", strip=True))
         for node in soup.find_all("h1")
         if node and normalize(node.get_text(" ", strip=True))
     ]
-    title_candidates.extend(line for line in lines[:100] if SPECIAL_RE.search(line))
+    candidates.extend(line for line in lines[:100] if SPECIAL_RE.search(line))
     if soup.find("title") and normalize(soup.find("title").get_text(" ", strip=True)):
-        title_candidates.append(normalize(soup.find("title").get_text(" ", strip=True)))
-    title = next((value for value in title_candidates if SPECIAL_RE.search(value)), title_candidates[0] if title_candidates else "")
+        candidates.append(normalize(soup.find("title").get_text(" ", strip=True)))
+    return next(
+        (value for value in candidates if SPECIAL_RE.search(value)),
+        candidates[0] if candidates else "",
+    )
+
+
+def parse_page(group: str, url: str, html_text: str, now: datetime | None = None) -> list[dict]:
+    soup = BeautifulSoup(html_text, "html.parser")
+    lines = [normalize(x) for x in soup.get_text("\n", strip=True).splitlines() if normalize(x)]
+    title = page_title(soup, lines)
     if not SPECIAL_RE.search(title + " " + " ".join(lines[:80])):
         return []
     preliminary_links = source_links(soup, url)
@@ -653,8 +661,8 @@ def discover(
                 linked_live.append(href)
         if not parsed and not linked_live:
             lines = [normalize(x) for x in soup.get_text("\n", strip=True).splitlines() if normalize(x)]
-            page_title = normalize(soup.find("h1").get_text(" ", strip=True)) if soup.find("h1") else ""
-            if ANCILLARY_SPECIAL_RE.search(page_title):
+            announcement_title = page_title(soup, lines)
+            if ANCILLARY_SPECIAL_RE.search(announcement_title):
                 time.sleep(0.08)
                 continue
             published = article_date(lines)
