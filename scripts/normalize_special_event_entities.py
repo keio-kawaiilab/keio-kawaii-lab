@@ -173,9 +173,19 @@ def offer_from_event(event: dict) -> dict:
 def offer_source_group(offer: dict) -> str:
     """Recover the artist identity for a child offer carried by a joint event."""
     explicit = text(offer.get("sourceGroup"))
-    if explicit and explicit != "KAWAII LAB.合同":
-        return explicit
-    joined = " ".join(all_urls(offer)).lower()
+    # A canonical joint row may be rebuilt with the representative artist's
+    # sourceGroup.  Do not let that inherited label overwrite the artist named
+    # by the offer's own official deadline/article URL.  These fields are more
+    # specific than the entity-wide URL list, which legitimately contains both
+    # participants' sources.
+    authoritative = " ".join(
+        text(offer.get(field)).lower()
+        for field in (
+            "applicationWindowSource", "deadlineSource",
+            "ticketClassificationSource", "discoverySourceUrl",
+        )
+        if offer.get(field)
+    )
     domains = (
         ("fruitszipper.asobisystem.com", "FRUITS ZIPPER"),
         ("candytune.asobisystem.com", "CANDY TUNE"),
@@ -183,6 +193,12 @@ def offer_source_group(offer: dict) -> str:
         ("cutiestreet.asobisystem.com", "CUTIE STREET"),
         ("morestar.asobisystem.com", "MORE STAR"),
     )
+    inferred = {group for domain, group in domains if domain in authoritative}
+    if len(inferred) == 1:
+        return inferred.pop()
+    if explicit and explicit != "KAWAII LAB.合同":
+        return explicit
+    joined = " ".join(all_urls(offer)).lower()
     return next((group for domain, group in domains if domain in joined), explicit)
 
 
