@@ -56,6 +56,13 @@ STATUS_LEGACY = "document.getElementById('status').textContent='最終データ�
 STATUS_DOUBLE = "document.getElementById('status').textContent='最終確認: '+(data.checkedAt||'不明')+' ／ 最終データ更新: '+(data.updatedAt||'不明');render()"
 STATUS_NEW = "document.getElementById('status').textContent='最終更新: '+(data.checkedAt||data.updatedAt||'不明');render()"
 
+# Ticket timestamps without an explicit offset are published in Japan time.
+# Parsing them with the browser's local timezone makes an already-open sale
+# appear "scheduled" for users west of Japan (and can close it early east of
+# Japan). Keep calendar-only dates local, but interpret ticket moments as JST.
+MOMENT_LOCAL_JS = "function moment(v,endOfDay){var m=String(v||'').match(/^(\\d{4})-(\\d{2})-(\\d{2})(?:T(\\d{2}):(\\d{2}))?/);if(!m)return null;return new Date(+m[1],+m[2]-1,+m[3],m[4]?+m[4]:(endOfDay?23:0),m[5]?+m[5]:(endOfDay?59:0),endOfDay&&!m[4]?59:0,0)}"
+MOMENT_JST_JS = "function moment(v,endOfDay){var m=String(v||'').match(/^(\\d{4})-(\\d{2})-(\\d{2})(?:T(\\d{2}):(\\d{2}))?/);if(!m)return null;var h=m[4]?+m[4]:(endOfDay?23:0),min=m[5]?+m[5]:(endOfDay?59:0),sec=endOfDay&&!m[4]?59:0;return new Date(Date.UTC(+m[1],+m[2]-1,+m[3],h-9,min,sec,0))}"
+
 APPLICATION_BAND_KEY_LEGACY = "function applicationBandKey(e,index){if(!playguide(e))return'event|'+index;return[String(e.group||''),parts(e).slice().sort().join(','),providerId(e),String(e.ticketType||''),String(e.applyStart||''),String(e.applyEnd||''),performanceTitleKey(e)].join('|')}"
 APPLICATION_BAND_KEY_NEW = "function applicationBandSubjectKey(e){var u=String(e.officialTourUrl||'').trim();if(u)return'tour:'+u.toLowerCase().replace(/[?#].*$/,'').replace(/\\/$/,'');var t=String(title(e)||'').toLowerCase().replace(/^\\s*20\\d{2}[.\\/-]\\d{1,2}[.\\/-]\\d{1,2}\\s*/,'').replace(/\\s+/g,'').replace(/[!！・|｜\\-–—_\\[\\]()（）『』「」]/g,'');return'title:'+t}function applicationBandKey(e,index){var tour=String(e.officialTourUrl||'').trim();if(!playguide(e)&&!tour)return'event|'+index;return[String(e.group||''),parts(e).slice().sort().join(','),providerId(e),String(e.ticketType||''),String(e.applyStart||''),String(e.applyEnd||''),applicationBandSubjectKey(e)].join('|')}"
 
@@ -268,6 +275,15 @@ def install_truthful_status(page: str) -> str:
     raise RuntimeError("schedule status renderer changed; public update timestamp could not be installed")
 
 
+def install_jst_ticket_moments(page: str) -> str:
+    """Parse offset-less application windows as JST in every browser."""
+    if MOMENT_JST_JS in page:
+        return page
+    if MOMENT_LOCAL_JS not in page:
+        raise RuntimeError("schedule moment parser changed; JST ticket windows could not be installed")
+    return page.replace(MOMENT_LOCAL_JS, MOMENT_JST_JS, 1)
+
+
 def main() -> int:
     # This is the final release boundary. Collectors/audits may temporarily work
     # with one row per source, but no source row may change physical performance
@@ -287,6 +303,7 @@ def main() -> int:
     page = install_external_participant_merge(page)
     page = install_official_candidate_identity(page)
     page = install_truthful_status(page)
+    page = install_jst_ticket_moments(page)
     page = guard_performance_runtime.transform(page)
 
     required = (
@@ -311,6 +328,7 @@ def main() -> int:
         "data-performance-key",
         "最終更新:",
         "data.checkedAt",
+        "return new Date(Date.UTC(+m[1],+m[2]-1,+m[3],h-9,min,sec,0))",
         "function officialCandidateIdentity(e)",
         "if(scopeOf(e)==='external')return ['EXTERNAL'",
         "if(m.participants.length>1)m.group='KAWAII LAB.合同'",
