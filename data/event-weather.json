@@ -1,93 +1,39 @@
 {
-  "date": "2026-10-28",
+  "date": "2026-10-29",
   "horizonDays": 7,
-  "generatedAt": "2026-10-28T17:57+09:00",
+  "generatedAt": "2026-10-29T05:13+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
     {
-      "date": "2026-10-28",
-      "venue": "福岡県 マリンメッセ福岡A館",
-      "venueKey": "マリンメッセ福岡a館",
-      "eventIds": [
-        "12fc6b6af5559477",
-        "17cc29946b768ee5",
-        "2044dd321097ba5f",
-        "a6b72561bebcbdf6441b89",
-        "known-cutie-fukuoka-20261028-door-exchange"
-      ],
-      "areaCode": "400010",
-      "areaName": "福岡地方",
-      "precision": "mesh5km",
-      "label": "晴れ",
-      "max": null,
-      "min": null,
-      "pop": "0",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-10-28T17:00:00+09:00",
-      "meshTime": "21:00",
-      "meshTempBand": "15〜19℃",
-      "coordinates": {
-        "lat": 33.606712,
-        "lon": 130.401901
-      },
-      "meshTimeline": [
-        {
-          "time": "21:00",
-          "label": "晴れ",
-          "validAt": "2026-10-28T21:00+09:00",
-          "temp": 16
-        },
-        {
-          "time": "24:00",
-          "label": "晴れ",
-          "validAt": "2026-10-29T00:00+09:00",
-          "temp": 14
-        }
-      ],
-      "hourlyRain": [
-        {
-          "time": "17:00",
-          "rain": false,
-          "validAt": "2026-10-28T17:00+09:00"
-        }
-      ]
-    },
-    {
       "date": "2026-10-29",
       "venue": "SGCホール有明",
       "venueKey": "sgcホール有明",
       "eventIds": [
-        "b3cc4d5dd2949ab6",
-        "ca7a18bc90c386e81cb3b9"
+        "14adcbfd942a69b7",
+        "b3cc4d5dd2949ab6"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "mesh5km",
       "label": "くもり",
       "max": 18.0,
-      "min": 12.0,
+      "min": 18.0,
       "pop": "20",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-10-28T17:00:00+09:00",
+      "issuedAt": "2026-10-29T05:00:00+09:00",
       "meshTime": "18:00",
-      "meshTempBand": "10〜14℃",
+      "meshTempBand": "15〜19℃",
       "coordinates": {
         "lat": 35.630138,
         "lon": 139.787827
       },
       "meshTimeline": [
         {
-          "time": "06:00",
-          "label": "晴れ",
-          "validAt": "2026-10-29T06:00+09:00",
-          "temp": 13
-        },
-        {
           "time": "09:00",
-          "label": "晴れ",
+          "label": "くもり",
           "validAt": "2026-10-29T09:00+09:00",
           "temp": 15
         },
@@ -95,7 +41,7 @@
           "time": "12:00",
           "label": "くもり",
           "validAt": "2026-10-29T12:00+09:00",
-          "temp": 16
+          "temp": 17
         },
         {
           "time": "15:00",
@@ -107,19 +53,31 @@
           "time": "18:00",
           "label": "くもり",
           "validAt": "2026-10-29T18:00+09:00",
-          "temp": 14
+          "temp": 16
         },
         {
           "time": "21:00",
           "label": "くもり",
           "validAt": "2026-10-29T21:00+09:00",
-          "temp": 15
+          "temp": 16
         },
         {
           "time": "24:00",
-          "label": "晴れ",
+          "label": "雨",
           "validAt": "2026-10-30T00:00+09:00",
-          "temp": 15
+          "temp": 16
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-10-29T18:00+09:00"
+        },
+        {
+          "time": "19:00",
+          "rain": false,
+          "validAt": "2026-10-29T19:00+09:00"
         }
       ]
     },
@@ -133,31 +91,26 @@
         "0459e9422056aee7",
         "6a9b9904e33f5ce0",
         "8a85dd9007f99dc5",
+        "ae37d43a3057e590",
         "b53e3db82fdc3f16",
         "known-cutie-fukuoka-20261029-door-exchange"
       ],
       "areaCode": "400010",
       "areaName": "福岡地方",
       "precision": "mesh5km",
-      "label": "雨",
-      "max": 20.0,
-      "min": 12.0,
+      "label": "くもり",
+      "max": 21.0,
+      "min": 21.0,
       "pop": "20",
       "popLabel": "12〜18時",
-      "issuedAt": "2026-10-28T17:00:00+09:00",
+      "issuedAt": "2026-10-29T05:00:00+09:00",
       "meshTime": "18:00",
-      "meshTempBand": "15〜19℃",
+      "meshTempBand": "20〜24℃",
       "coordinates": {
         "lat": 33.606712,
         "lon": 130.401901
       },
       "meshTimeline": [
-        {
-          "time": "06:00",
-          "label": "晴れ",
-          "validAt": "2026-10-29T06:00+09:00",
-          "temp": 12
-        },
         {
           "time": "09:00",
           "label": "晴れ",
@@ -178,9 +131,9 @@
         },
         {
           "time": "18:00",
-          "label": "雨",
+          "label": "くもり",
           "validAt": "2026-10-29T18:00+09:00",
-          "temp": 19
+          "temp": 20
         },
         {
           "time": "21:00",
@@ -192,7 +145,24 @@
           "time": "24:00",
           "label": "雨",
           "validAt": "2026-10-30T00:00+09:00",
-          "temp": 17
+          "temp": 18
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "16:00",
+          "rain": false,
+          "validAt": "2026-10-29T16:00+09:00"
+        },
+        {
+          "time": "17:00",
+          "rain": false,
+          "validAt": "2026-10-29T17:00+09:00"
+        },
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-10-29T18:00+09:00"
         }
       ]
     },
@@ -209,10 +179,10 @@
       "precision": "mesh5km",
       "label": "くもり",
       "max": 19.0,
-      "min": 9.0,
+      "min": 19.0,
       "pop": "10",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-10-28T17:00:00+09:00",
+      "issuedAt": "2026-10-29T05:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "15〜19℃",
       "coordinates": {
@@ -221,28 +191,22 @@
       },
       "meshTimeline": [
         {
-          "time": "06:00",
-          "label": "晴れ",
-          "validAt": "2026-10-29T06:00+09:00",
-          "temp": 10
-        },
-        {
           "time": "09:00",
           "label": "晴れ",
           "validAt": "2026-10-29T09:00+09:00",
-          "temp": 14
+          "temp": 15
         },
         {
           "time": "12:00",
-          "label": "くもり",
+          "label": "晴れ",
           "validAt": "2026-10-29T12:00+09:00",
           "temp": 17
         },
         {
           "time": "15:00",
-          "label": "くもり",
+          "label": "晴れ",
           "validAt": "2026-10-29T15:00+09:00",
-          "temp": 19
+          "temp": 18
         },
         {
           "time": "18:00",
@@ -262,6 +226,18 @@
           "validAt": "2026-10-30T00:00+09:00",
           "temp": 16
         }
+      ],
+      "hourlyRain": [
+        {
+          "time": "18:00",
+          "rain": false,
+          "validAt": "2026-10-29T18:00+09:00"
+        },
+        {
+          "time": "19:00",
+          "rain": false,
+          "validAt": "2026-10-29T19:00+09:00"
+        }
       ]
     },
     {
@@ -274,16 +250,63 @@
       ],
       "areaCode": "110010",
       "areaName": "南部",
-      "precision": "area",
-      "label": "くもり",
-      "max": null,
-      "min": null,
-      "pop": null,
-      "popLabel": "",
-      "issuedAt": "2026-10-28T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "precision": "mesh5km",
+      "label": "雨",
+      "max": 18.0,
+      "min": 12.0,
+      "pop": "20",
+      "popLabel": "当日最大",
+      "issuedAt": "2026-10-29T05:00:00+09:00",
+      "meshTime": "15:00",
+      "meshTempBand": "15〜19℃",
+      "coordinates": {
+        "lat": 35.902477,
+        "lon": 139.713974
+      },
+      "meshTimeline": [
+        {
+          "time": "06:00",
+          "label": "くもり",
+          "validAt": "2026-10-30T06:00+09:00",
+          "temp": 13
+        },
+        {
+          "time": "09:00",
+          "label": "くもり",
+          "validAt": "2026-10-30T09:00+09:00",
+          "temp": 15
+        },
+        {
+          "time": "12:00",
+          "label": "くもり",
+          "validAt": "2026-10-30T12:00+09:00",
+          "temp": 17
+        },
+        {
+          "time": "15:00",
+          "label": "雨",
+          "validAt": "2026-10-30T15:00+09:00",
+          "temp": 18
+        },
+        {
+          "time": "18:00",
+          "label": "雨",
+          "validAt": "2026-10-30T18:00+09:00",
+          "temp": 16
+        },
+        {
+          "time": "21:00",
+          "label": "くもり",
+          "validAt": "2026-10-30T21:00+09:00",
+          "temp": 16
+        },
+        {
+          "time": "24:00",
+          "label": "晴れ",
+          "validAt": "2026-10-31T00:00+09:00",
+          "temp": 15
+        }
+      ]
     },
     {
       "date": "2026-10-30",
@@ -294,16 +317,63 @@
       ],
       "areaCode": "110010",
       "areaName": "南部",
-      "precision": "area",
-      "label": "くもり",
-      "max": null,
-      "min": null,
-      "pop": null,
-      "popLabel": "",
-      "issuedAt": "2026-10-28T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "precision": "mesh5km",
+      "label": "雨",
+      "max": 18.0,
+      "min": 12.0,
+      "pop": "20",
+      "popLabel": "当日最大",
+      "issuedAt": "2026-10-29T05:00:00+09:00",
+      "meshTime": "15:00",
+      "meshTempBand": "15〜19℃",
+      "coordinates": {
+        "lat": 35.902477,
+        "lon": 139.713974
+      },
+      "meshTimeline": [
+        {
+          "time": "06:00",
+          "label": "くもり",
+          "validAt": "2026-10-30T06:00+09:00",
+          "temp": 13
+        },
+        {
+          "time": "09:00",
+          "label": "くもり",
+          "validAt": "2026-10-30T09:00+09:00",
+          "temp": 15
+        },
+        {
+          "time": "12:00",
+          "label": "くもり",
+          "validAt": "2026-10-30T12:00+09:00",
+          "temp": 17
+        },
+        {
+          "time": "15:00",
+          "label": "雨",
+          "validAt": "2026-10-30T15:00+09:00",
+          "temp": 18
+        },
+        {
+          "time": "18:00",
+          "label": "雨",
+          "validAt": "2026-10-30T18:00+09:00",
+          "temp": 16
+        },
+        {
+          "time": "21:00",
+          "label": "くもり",
+          "validAt": "2026-10-30T21:00+09:00",
+          "temp": 16
+        },
+        {
+          "time": "24:00",
+          "label": "晴れ",
+          "validAt": "2026-10-31T00:00+09:00",
+          "temp": 15
+        }
+      ]
     },
     {
       "date": "2026-10-31",
@@ -353,9 +423,10 @@
         "12fc6b6af5559477",
         "17cc29946b768ee5",
         "8a85dd9007f99dc5",
+        "ae37d43a3057e590",
         "3b1ae43e651d3183",
+        "6afcc10348ab274e",
         "72cbfe0f594cc031",
-        "8ef49078d65b4ade",
         "a7890e2f125fa19f"
       ],
       "areaCode": "280010",
@@ -439,7 +510,8 @@
         "12fc6b6af5559477",
         "17cc29946b768ee5",
         "8a85dd9007f99dc5",
-        "8ef49078d65b4ade",
+        "ae37d43a3057e590",
+        "6afcc10348ab274e",
         "33a8b3584b98898c",
         "792d9ed8d8be5ca6",
         "ee2075c9db935651"
@@ -481,12 +553,18 @@
   "stats": {
     "occurrencesInRange": 39,
     "uniqueVenueDates": 14,
-    "weatherEntries": 14,
-    "meshEntries": 4,
-    "failures": 0,
-    "meshTimelineEntries": 4,
-    "meshExactTempSlots": 23,
-    "hourlyRainEntries": 1
+    "weatherEntries": 13,
+    "meshEntries": 5,
+    "failures": 1,
+    "meshTimelineEntries": 5,
+    "meshExactTempSlots": 32,
+    "hourlyRainEntries": 3
   },
-  "failures": []
+  "failures": [
+    {
+      "date": "2026-11-05",
+      "venue": "広島県 広島文化学園HBGホール",
+      "reason": "開催日の予報がまだありません"
+    }
+  ]
 }
