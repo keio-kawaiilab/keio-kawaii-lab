@@ -189,6 +189,17 @@ def _replace_snapshot(page: str, payload: dict[str, Any], visible: list[dict[str
         count=1,
         flags=re.S,
     )
+    if count == 0:
+        # A runtime-only hotfix once removed the entire embedded snapshot while
+        # editing the one-line generated page.  Recreate the canonical block so
+        # the next guarded publication can self-heal instead of failing forever.
+        anchor = "</main>\n<script>"
+        if page.count(anchor) == 1:
+            before_main = page.split(anchor, 1)[0]
+            cards_close = "" if before_main.rstrip().endswith("</div>") else "</div>\n"
+            block = f'<script id="snapshot-data" type="application/json">{snapshot}</script>\n'
+            page = page.replace(anchor, cards_close + block + anchor, 1)
+            count = 1
     if count != 1:
         raise RuntimeError("could not replace public snapshot-data")
     return page
