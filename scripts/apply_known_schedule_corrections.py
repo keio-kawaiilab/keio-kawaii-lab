@@ -1388,6 +1388,8 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "piaResultNoticesAttached": 0,
         "sweetWinterUpgradeOffersFixed": 0,
         "sweetWinterUpgradeOffersAdded": 0,
+        "sweetWinterTicketFactsFixed": 0,
+        "sweetWinterPresaleOffersAdded": 0,
         "candyOitaEplusLinkFixed": 0,
         "candyNiigataVenueFixed": 0,
         "candyTokyoPresaleAdded": 0,
@@ -1722,11 +1724,16 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
             })
             report["candyTokyoPresaleAdded"] += 1
 
-    # Official feature page and NEWS 93491, checked 2026-10-23: one upgrade
-    # lottery applies to all four winter-tour performances.  Model it as four
-    # offers attached to the existing occurrences, not as another performance.
+    # The official feature page is the canonical source for this tour.  It
+    # currently names the show "Snow Sparkle", closes the first FC lottery on
+    # 2026-09-13 (not on the first performance date), and publishes one Pia
+    # pre-reserve for all four performances.  Keep those facts here because a
+    # date-only fallback in the page parser can otherwise turn the performance
+    # date into a false application deadline.
     sweet_winter = "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026"
     sweet_winter_upgrade = "https://sweetsteady.asobisystem.com/news/detail/93491"
+    sweet_winter_presale = "https://w.pia.jp/t/sweetsteady-winter2026/"
+    sweet_winter_title = "SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle"
     sweet_winter_atsugi_venue = "神奈川県 厚木市文化会館 大ホール"
     if any(event.get("group") == "SWEET STEADY" and sweet_winter in _urls(event) for event in out):
         # Earlier backfills used the building name while the official
@@ -1737,25 +1744,40 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
             if not (event.get("group") == "SWEET STEADY" and sweet_winter in _urls(event)):
                 continue
             venue = sweet_winter_atsugi_venue
-            changed = False
+            venue_changed = False
+            ticket_changed = False
+            if event.get("eventTitle") != sweet_winter_title:
+                event["eventTitle"] = sweet_winter_title
+                ticket_changed = True
+            if (event.get("ticketType") == "SWEET STEADY FC先行"
+                    and event.get("applyStart") == "2026-08-23T20:00"
+                    and event.get("applyEnd") != "2026-09-13T23:59"):
+                event["applyEnd"] = "2026-09-13T23:59"
+                event["applicationWindowVerified"] = True
+                event["deadlineVerified"] = True
+                event["applicationWindowSource"] = sweet_winter
+                event["deadlineSource"] = sweet_winter
+                ticket_changed = True
             if (_day(event) == "2026-11-13"
                     and event.get("venue") == "神奈川県 厚木市文化会館"):
                 event["venue"] = venue
-                changed = True
+                venue_changed = True
             for occurrence in event.get("schedule") or []:
                 if (isinstance(occurrence, dict)
                         and str(occurrence.get("date") or "")[:10] == "2026-11-13"
                         and occurrence.get("venue") == "神奈川県 厚木市文化会館"):
                     occurrence["venue"] = venue
-                    changed = True
+                    venue_changed = True
             if isinstance(event.get("venues"), list):
                 normalized = [venue if value == "神奈川県 厚木市文化会館" else value
                               for value in event["venues"]]
                 if normalized != event["venues"]:
                     event["venues"] = normalized
-                    changed = True
-            if changed:
+                    venue_changed = True
+            if venue_changed:
                 report["sweetWinterUpgradeOffersFixed"] += 1
+            if venue_changed or ticket_changed:
+                report["sweetWinterTicketFactsFixed"] += 1
         for day, venue, opened, start in (
             ("2026-11-13", sweet_winter_atsugi_venue, "17:30", "18:30"),
             ("2026-12-03", "大阪府 フェニーチェ堺 大ホール", "17:30", "18:30"),
@@ -1769,10 +1791,9 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
                 and event.get("applyEnd") == "2026-10-26T23:59"
                 for event in out
             )
-            if represented:
-                continue
-            title = "SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle"
-            out.append({
+            title = sweet_winter_title
+            if not represented:
+                out.append({
                 "id": "known-sweet-winter-upgrade-" + day.replace("-", ""),
                 "group": "SWEET STEADY", "title": title, "eventTitle": title,
                 "eventDate": day, "eventEndDate": day, "eventDates": [day], "eventCount": 1,
@@ -1786,8 +1807,33 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
                 "primarySource": "official", "sourceType": "official",
                 "sourceChannel": "known-official-correction", "sourcePublishedAt": "2026-10-23",
                 "eventScope": "kawaii-lab",
-            })
-            report["sweetWinterUpgradeOffersAdded"] += 1
+                })
+                report["sweetWinterUpgradeOffersAdded"] += 1
+
+            represented_presale = any(
+                event.get("group") == "SWEET STEADY" and _day(event) == day
+                and event.get("ticketType") == "プレリザーブ"
+                and event.get("applyStart") == "2026-10-25T12:00"
+                and event.get("applyEnd") == "2026-10-28T23:59"
+                for event in out
+            )
+            if not represented_presale:
+                out.append({
+                    "id": "known-sweet-winter-presale-" + day.replace("-", ""),
+                    "group": "SWEET STEADY", "title": title, "eventTitle": title,
+                    "eventDate": day, "eventEndDate": day, "eventDates": [day], "eventCount": 1,
+                    "venue": venue, "openTime": opened, "startTime": start,
+                    "schedule": [{"date": day, "venue": venue, "openTime": opened, "startTime": start}],
+                    "ticketType": "プレリザーブ", "ticketProvider": "pia",
+                    "applyStart": "2026-10-25T12:00", "applyEnd": "2026-10-28T23:59",
+                    "applicationWindowVerified": True, "applicationWindowSource": sweet_winter,
+                    "deadlineVerified": True, "deadlineSource": sweet_winter,
+                    "url": sweet_winter_presale, "urls": [sweet_winter_presale, sweet_winter],
+                    "primarySource": "pia", "sourceType": "pia",
+                    "sourceChannel": "known-official-correction", "sourcePublishedAt": "2026-10-25",
+                    "eventScope": "kawaii-lab",
+                })
+                report["sweetWinterPresaleOffersAdded"] += 1
 
     gift_more_star = _missing_more_star_gift(out)
     if gift_more_star:

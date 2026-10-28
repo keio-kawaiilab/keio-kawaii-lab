@@ -1,7 +1,7 @@
 import copy
 import unittest
 
-from audit_discovery_publication import audit
+from audit_discovery_publication import _verified_replacement_represented, audit
 
 
 class DiscoveryPublicationTest(unittest.TestCase):
@@ -122,6 +122,30 @@ class DiscoveryPublicationTest(unittest.TestCase):
         changed_window = copy.deepcopy(entity)
         changed_window["offers"][0]["applyStart"] = "2099-10-27T18:00"
         self.assertEqual(1, len(audit(state, {"publicEvents": [changed_window]})["missingOffers"]))
+
+    def test_verified_sweet_winter_fc_deadline_replaces_event_date_misparse(self):
+        announcement = "https://sweetsteady.asobisystem.com/news/detail/87795"
+        feature = "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026"
+        expected = {
+            "group": "SWEET STEADY", "eventDate": "2026-11-13", "startTime": "18:30",
+            "ticketType": "SWEET STEADY FC先行", "applyStart": "2026-08-23T20:00",
+            "applyEnd": "2026-11-13", "url": announcement,
+        }
+        entity = {
+            "group": "SWEET STEADY", "eventDate": "2026-11-13", "startTime": "18:30",
+            "urls": [feature, announcement],
+            "offers": [{
+                "ticketType": "SWEET STEADY FC先行",
+                "applyStart": "2026-08-23T20:00", "applyEnd": "2026-09-13T23:59",
+                "url": feature, "urls": [feature, announcement],
+                "applicationWindowVerified": True, "deadlineVerified": True,
+            }],
+        }
+        self.assertTrue(_verified_replacement_represented(expected, [entity]))
+
+        wrong_deadline = copy.deepcopy(entity)
+        wrong_deadline["offers"][0]["applyEnd"] = "2026-09-14T23:59"
+        self.assertFalse(_verified_replacement_represented(expected, [wrong_deadline]))
 
     def test_alias_does_not_hide_real_missing_or_changed_offer(self):
         state, payload = self.fixture()

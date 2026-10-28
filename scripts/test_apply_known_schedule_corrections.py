@@ -1296,6 +1296,38 @@ class PiaNoticeAndSweetWinterUpgradeTests(unittest.TestCase):
         self.assertEqual(result, again)
         self.assertEqual(0, report["sweetWinterUpgradeOffersAdded"])
 
+    def test_sweet_winter_repairs_fc_deadline_title_and_current_presale(self):
+        source = "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026"
+        seed = {
+            "id": "tour", "group": "SWEET STEADY",
+            "title": "「SWEET STEADY JAPAN TOUR 2026 -WINTER-」 開催決定!FC先行開始!",
+            "eventTitle": "SWEET STEADY JAPAN TOUR 2026 -WINTER-」 開催決定",
+            "eventDate": "2026-11-13", "eventEndDate": "2026-12-18",
+            "venue": "複数会場（全4公演）", "startTime": "18:30",
+            "url": source, "urls": [source], "ticketType": "SWEET STEADY FC先行",
+            "applyStart": "2026-08-23T20:00", "applyEnd": "2026-11-13",
+        }
+        result, report = apply_known_corrections([seed])
+        repaired = next(row for row in result if row.get("id") == "tour")
+        self.assertEqual("2026-09-13T23:59", repaired["applyEnd"])
+        self.assertEqual(
+            "SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle",
+            repaired["eventTitle"],
+        )
+        presales = [row for row in result if row.get("ticketType") == "プレリザーブ"]
+        self.assertEqual(4, report["sweetWinterPresaleOffersAdded"])
+        self.assertEqual(
+            {"2026-11-13", "2026-12-03", "2026-12-06", "2026-12-18"},
+            {row["eventDate"] for row in presales},
+        )
+        self.assertTrue(all(row["applyStart"] == "2026-10-25T12:00" and
+                            row["applyEnd"] == "2026-10-28T23:59" for row in presales))
+        self.assertTrue(all(row["url"] == "https://w.pia.jp/t/sweetsteady-winter2026/"
+                            for row in presales))
+        again, report = apply_known_corrections(result)
+        self.assertEqual(result, again)
+        self.assertEqual(0, report["sweetWinterPresaleOffersAdded"])
+
     def test_sweet_winter_atsugi_upgrade_merges_with_the_official_performance(self):
         from performance_entities import build_public_events
 
@@ -1325,8 +1357,11 @@ class PiaNoticeAndSweetWinterUpgradeTests(unittest.TestCase):
         self.assertEqual(1, report["sweetWinterUpgradeOffersFixed"])
         self.assertEqual(1, len(atsugi))
         self.assertEqual("神奈川県 厚木市文化会館 大ホール", atsugi[0]["venue"])
-        self.assertEqual(1, len(atsugi[0]["offers"]))
-        self.assertEqual("アップグレード抽選", atsugi[0]["offers"][0]["ticketType"])
+        self.assertEqual(2, len(atsugi[0]["offers"]))
+        self.assertEqual(
+            {"アップグレード抽選", "プレリザーブ"},
+            {offer["ticketType"] for offer in atsugi[0]["offers"]},
+        )
 
     def test_cutie_pacifico_fc_lottery_repairs_occurrence_and_payment_deadline(self):
         row = {
