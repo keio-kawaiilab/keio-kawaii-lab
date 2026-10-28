@@ -147,10 +147,13 @@ def date_after(lines: list[str], labels: tuple[str, ...], default_year: int) -> 
 def window_rows(lines: list[str], default_year: int) -> list[tuple[str, str, str]]:
     rows: list[tuple[str, str, str]] = []
     for index, line in enumerate(lines):
-        if not re.search(r"受付(?:時間|期間)|予約期間|応募期間|エントリー受付|\d次受付", line):
+        if not re.search(r"受付(?:時間|期間)|予約期間|応募期間|抽選対象期間|エントリー受付|\d次受付", line):
             continue
         segment = " ".join(lines[index:index + 3])
-        matches = list(DATE_RE.finditer(segment))
+        matches = sorted(
+            [*DATE_RE.finditer(segment), *SLASH_DATE_RE.finditer(segment)],
+            key=lambda match: match.start(),
+        )
         if len(matches) < 2:
             continue
         start = iso(matches[0], default_year)
@@ -159,12 +162,14 @@ def window_rows(lines: list[str], default_year: int) -> list[tuple[str, str, str
         if not start or not end or "T" not in start or "T" not in end:
             continue
         label_match = re.search(
-            r"((?:(?:第?\d+部)[、・／/]\s*)*(?:第?\d+部)\s*\d次エントリー受付|\d次エントリー受付|応募期間|(?:\d次)?受付)",
+            r"((?:(?:第?\d+部)[、・／/]\s*)*(?:第?\d+部)\s*\d次エントリー受付|\d次エントリー受付|応募期間|抽選対象期間|(?:\d次)?受付)",
             line,
         )
         label = label_match.group(1).replace("、", "・") if label_match else "予約受付"
         if label == "応募期間":
             label = "応募受付"
+        elif label == "抽選対象期間":
+            label = "事前抽選対象期間"
         row = (label, start, end)
         duplicate_index = next(
             (row_index for row_index, existing in enumerate(rows) if existing[1:] == row[1:]),
@@ -355,7 +360,13 @@ def parse_page(group: str, url: str, html_text: str, now: datetime | None = None
     title = next((value for value in title_candidates if SPECIAL_RE.search(value)), title_candidates[0] if title_candidates else "")
     if not SPECIAL_RE.search(title + " " + " ".join(lines[:80])):
         return []
-    if ANCILLARY_SPECIAL_RE.search(title):
+    preliminary_links = source_links(soup, url)
+    is_advance_purchase_lottery = bool(
+        ANCILLARY_SPECIAL_RE.search(title)
+        and any("sukisuki-shop.com/goods/" in link.lower() for link in preliminary_links)
+        and re.search(r"抽選対象期間", " ".join(lines))
+    )
+    if ANCILLARY_SPECIAL_RE.search(title) and not is_advance_purchase_lottery:
         return []
     category = "large-benefit" if "大特典会" in title else "release-event"
     display_title = re.split(r"\s*@|\s*＠", title, maxsplit=1)[0]
@@ -365,12 +376,21 @@ def parse_page(group: str, url: str, html_text: str, now: datetime | None = None
         display_title = f"{group} {release.group(1) + ' ' if release else ''}大特典会"
     published = article_date(lines)
     default_year = int(published[:4]) if published else (now or datetime.now(JST)).year
-    event_date = date_after(lines, ("開催日程", "開催日時", "公演日"), default_year)
+    event_date = date_after(lines, ("開催日程", "開催日時", "公演日", "対象イベント"), default_year)
     if not event_date:
         return []
     event_date = event_date[:10]
-    venue = venue_after_heading(lines) or value_after(lines, ("開催場所・会場",)) or "会場未定"
-    links = links_for_group(source_links(soup, url), group)
+    venue = venue_after_heading(lines) or value_after(lines, ("開催場所・会場",))
+    if not venue:
+        target_event = ""
+        for index, line in enumerate(lines):
+            if "対象イベント" not in line:
+                continue
+            target_event = lines[index + 1] if index + 1 < len(lines) else line
+            break
+        venue_match = re.search(r"[＠@]\s*(.+)$", target_event)
+        venue = normalize(venue_match.group(1)) if venue_match else "会場未定"
+    links = links_for_group(preliminary_links, group)
     scoped_lines = group_section_lines(lines, group)
     windows = window_rows(scoped_lines or lines, default_year)
     current = (now or datetime.now(JST)).astimezone(JST)
@@ -420,7 +440,7 @@ def parse_page(group: str, url: str, html_text: str, now: datetime | None = None
     is_lottery = (
         category == "large-benefit"
         and any("sukisuki-shop.com/goods/" in link.lower() for link in links)
-        and bool(re.search(r"応募期間|エントリー受付", full_text))
+        and bool(re.search(r"応募期間|抽選対象期間|エントリー受付", full_text))
     )
     is_fc_lottery = is_lottery and bool(re.search(r"ファンクラブ|FC限定|FC会員", full_text, re.I))
     result_date = date_after(lines, ("当選発表日時", "当選発表"), default_year) if is_lottery else None
@@ -439,15 +459,25 @@ def parse_page(group: str, url: str, html_text: str, now: datetime | None = None
             issue_method = "KAWAII LAB. STOREアプリ（1人1回・先着順）"
         else:
             ticket_type = (
+                f"対象商品予約・事前抽選（{round_label}）"
+                if is_advance_purchase_lottery else
                 f"{'FC限定・' if is_fc_lottery else ''}対象商品応募（抽選／{round_label}）"
                 if is_lottery else f"対象商品予約（参加権付き・先着／{round_label}）"
             )
             purchase_method = (
+                "SUKISUKIで対象商品を予約購入し、購入完了後にS賞／A賞の抽選へ参加"
+                if is_advance_purchase_lottery else
                 f"SUKISUKIで対象商品{'3枚' if '対象商品3枚' in full_text else ''}1セットの抽選に応募し、当選後に購入すると選択した部／メンバーの参加券が付与"
                 if is_lottery else "指定の参加権付き対象商品を予約・購入すると、選択した部／メンバーの参加券が付与"
             )
-            ticket_name = "メンバー個別2ショットチェキ撮影会参加券" if "2ショットチェキ" in full_text else "大特典会参加券"
+            ticket_name = (
+                "事前抽選会（S賞／A賞）"
+                if is_advance_purchase_lottery else
+                "メンバー個別2ショットチェキ撮影会参加券" if "2ショットチェキ" in full_text else "大特典会参加券"
+            )
             issue_method = (
+                "購入完了後に抽選画面へ自動遷移"
+                if is_advance_purchase_lottery else
                 "SUKISUKIマイページへ電子チケットを付与"
                 + (
                     f"（{int(ticket_issue_date[5:7])}月{int(ticket_issue_date[8:10])}日中予定）"
@@ -457,6 +487,8 @@ def parse_page(group: str, url: str, html_text: str, now: datetime | None = None
             )
             if not tickets:
                 tickets = [
+                    "S賞：私物サイン会／A賞：直筆お名前入りCUTIE LANDシールお渡し会"
+                    if is_advance_purchase_lottery else
                     "対象商品3枚1セットで、選択した部／メンバーの個別2ショットチェキ撮影会へ1口応募"
                     if is_lottery else "参加権付き対象商品1セットにつき、選択した部／メンバーの大特典会参加券1枚"
                 ]
@@ -499,6 +531,7 @@ def parse_page(group: str, url: str, html_text: str, now: datetime | None = None
             "applicationDisplayMode": "band" if apply_start and apply_end else "schedule-only",
             "applicationWindowSource": url if apply_start and apply_end else None,
             "deadlineSource": url if apply_end else None,
+            "mergeAsOfferOnly": is_advance_purchase_lottery,
         }
         events.append(event)
     return events
@@ -572,7 +605,9 @@ def discover(
             href = urljoin(base, anchor.get("href", ""))
             if "/news/detail/" in href:
                 news_links_found = True
-            if "/news/detail/" in href and SPECIAL_RE.search(label) and not ANCILLARY_SPECIAL_RE.search(label):
+            # Most ancillary pages are ignored by parse_page, but a verified
+            # SUKISUKI pre-purchase lottery enriches an existing benefit event.
+            if "/news/detail/" in href and SPECIAL_RE.search(label):
                 pages[href] = "article"
                 page_origins.setdefault(href, set()).add(origin)
         if news_links_found or origin not in {"home", "index-1"}:
@@ -675,6 +710,54 @@ def merge_payload(payload: dict, fresh: list[dict], today=None) -> dict:
     fresh_urls = {event.get("url") for event in fresh}
     replacements: dict[int, dict] = {}
     consumed_fresh: set[int] = set()
+
+    # A pre-purchase prize lottery is an offer attached to an existing benefit
+    # event, not a second physical event. Update a canonical entity in place so
+    # later expansion/normalization retains one card with multiple offers.
+    for fresh_index, fresh_event in enumerate(fresh):
+        if not fresh_event.get("mergeAsOfferOnly"):
+            continue
+        candidates = [
+            (index, event) for index, event in enumerate(payload.get("events", []))
+            if isinstance(event, dict)
+            and event.get("entityType") == "special-event"
+            and event.get("group") == fresh_event.get("group")
+            and event.get("eventCategory") == fresh_event.get("eventCategory")
+            and str(event.get("eventDate") or "")[:10] == str(fresh_event.get("eventDate") or "")[:10]
+        ]
+        if len(candidates) != 1:
+            continue
+        index, existing = candidates[0]
+        merged = dict(existing)
+        offer = {
+            "sourceRowId": fresh_event.get("id"),
+            "sourceGroup": fresh_event.get("group"),
+            "provider": fresh_event.get("ticketProvider") or "official",
+            "ticketProvider": fresh_event.get("ticketProvider") or "official",
+            "url": next(
+                (value for value in fresh_event.get("urls", []) if "sukisuki-shop.com/goods/" in value),
+                fresh_event.get("url"),
+            ),
+            "urls": list(dict.fromkeys([fresh_event.get("url"), *(fresh_event.get("urls") or [])])),
+        }
+        for field in (
+            "ticketType", "applyStart", "applyEnd", "resultDate", "paymentEnd",
+            "applicationStatus", "applicationWindowVerified", "applicationWindowSource",
+            "deadlineVerified", "deadlineSource", "purchaseMethod", "ticketIssueMethod",
+            "ticketName", "product",
+        ):
+            if fresh_event.get(field) not in (None, "", [], {}):
+                offer[field] = fresh_event[field]
+        offers = [dict(value) for value in existing.get("offers", []) if isinstance(value, dict)]
+        offers = [value for value in offers if value.get("sourceRowId") != offer["sourceRowId"]]
+        offers.append(offer)
+        merged["offers"] = offers
+        merged["urls"] = list(dict.fromkeys([
+            *(existing.get("urls") or []), fresh_event.get("url"), *(fresh_event.get("urls") or []),
+        ]))
+        merged["applicationDisplayMode"] = "offers"
+        replacements[index] = merged
+        consumed_fresh.add(fresh_index)
 
     # The official schedule often announces only a date and venue first.  When
     # the later news article adds the purchase window, replace that placeholder

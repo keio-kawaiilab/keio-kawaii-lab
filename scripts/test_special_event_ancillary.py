@@ -29,6 +29,47 @@ class AncillarySpecialEventTests(unittest.TestCase):
         '''
         self.assertEqual(s.parse_page('MORE STAR', 'https://example.com/goods', html, datetime(2026, 8, 11, tzinfo=JST)), [])
 
+    def test_advance_purchase_lottery_enriches_existing_event_without_duplicate(self):
+        html = '''
+        <html><body>
+          <h1>11/3（火・祝）CUTIE STREET大特典会 特別抽選会開催決定！</h1>
+          <p>2026.10.27</p>
+          <p>【抽選対象期間】</p><p>10/27(火)20:00〜10/28(水)23:59</p>
+          <p>【対象イベント】</p><p>2026年11月3日(火・祝)＠パシフィコ横浜 展示ホールD</p>
+          <p>対象商品を予約購入し、購入完了後に抽選へご参加ください。</p>
+          <p>S賞：私物サイン会　A賞：ステッカーお渡し会</p>
+          <a href="https://sukisuki-shop.com/goods/6500000004721">対象商品</a>
+        </body></html>
+        '''
+        now = datetime(2026, 10, 27, 21, 0, tzinfo=JST)
+        parsed = s.parse_page('CUTIE STREET', 'https://cutiestreet.asobisystem.com/news/detail/94146', html, now)
+        self.assertEqual(len(parsed), 1)
+        self.assertEqual(parsed[0]['applyStart'], '2026-10-27T20:00')
+        self.assertEqual(parsed[0]['applyEnd'], '2026-10-28T23:59')
+        self.assertEqual(parsed[0]['ticketProvider'], 'sukisuki')
+        self.assertEqual(parsed[0]['venue'], 'パシフィコ横浜 展示ホールD')
+        self.assertTrue(parsed[0]['mergeAsOfferOnly'])
+        self.assertIn('予約購入', parsed[0]['purchaseMethod'])
+        self.assertEqual(parsed[0]['ticketName'], '事前抽選会（S賞／A賞）')
+        self.assertIn('購入完了後', parsed[0]['ticketIssueMethod'])
+
+        payload = {'events': [{
+            'id': 'special-existing',
+            'entityType': 'special-event',
+            'specialEventEntityVersion': 1,
+            'group': 'CUTIE STREET',
+            'eventCategory': 'large-benefit',
+            'eventDate': '2026-11-03',
+            'venue': 'オンライン（SUKISUKI）',
+            'offers': [{'sourceRowId': 'old-offer', 'provider': 'sukisuki'}],
+            'urls': ['https://cutiestreet.asobisystem.com/live_information/detail/45469'],
+        }]}
+        merged = s.merge_payload(payload, parsed, now.date())
+        self.assertEqual(len(merged['events']), 1)
+        self.assertEqual(merged['events'][0]['id'], 'special-existing')
+        self.assertEqual(len(merged['events'][0]['offers']), 2)
+        self.assertIn('https://cutiestreet.asobisystem.com/news/detail/94146', merged['events'][0]['urls'])
+
     def test_main_release_announcement_is_still_parsed(self):
         html = '''
         <html><body>
