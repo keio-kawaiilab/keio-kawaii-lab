@@ -5,6 +5,18 @@ import install_performance_public_view as public_view
 
 
 class CurrentTicketOfferGuardTests(unittest.TestCase):
+    def test_missing_snapshot_block_is_recreated_once(self):
+        page = '<main>\n<div class="cards" id="cards"></div>\n</main>\n<script>runtime</script>'
+        repaired = public_view._replace_snapshot(page, {"updatedAt": "now"}, [])
+        self.assertEqual(1, repaired.count('<script id="snapshot-data" type="application/json">'))
+        self.assertIn('"updatedAt":"now"', repaired)
+
+    def test_missing_cards_close_is_recreated_with_snapshot(self):
+        page = '<main>\n<div class="cards" id="cards"><article></article>\n</main>\n<script>runtime</script>'
+        repaired = public_view._replace_snapshot(page, {"updatedAt": "now"}, [])
+        replaced = public_view._replace_cards(repaired, [])
+        self.assertIn('<div class="cards" id="cards">\n\n</div>', replaced)
+
     def test_performance_offer_is_rendered_exactly_once(self):
         event = {
             "id": "performance", "entityType": "performance", "group": "FRUITS ZIPPER",
