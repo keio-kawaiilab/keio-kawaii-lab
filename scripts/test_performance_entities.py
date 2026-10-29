@@ -417,6 +417,41 @@ class PerformanceEntitiesTest(unittest.TestCase):
         self.assertEqual(1, len(public))
         self.assertEqual({"english", "japanese"}, set(public[0]["sourceRowIds"]))
 
+    def test_tokyo_region_prefix_does_not_split_resale_from_performance(self):
+        base = {
+            "group": "CANDY TUNE",
+            "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS",
+            "eventDate": "2026-12-08",
+            "openTime": "17:30",
+            "startTime": "19:00",
+            "eventScope": "kawaii-lab",
+            "primarySource": "official",
+        }
+        performance = dict(
+            base,
+            id="official-performance",
+            venue="東京都 東京ガーデンシアター",
+            ticketType="現在受付なし",
+            url="https://candytune.asobisystem.com/live_information/detail/40742",
+            sourceType="official-schedule",
+        )
+        resale = dict(
+            base,
+            id="official-resale",
+            venue="東京・東京ガーデンシアター",
+            ticketType="公式 / FCリセール",
+            applyStart="2026-12-06T10:00",
+            applyEnd="2026-12-07T23:59",
+            url="https://candytune.asobisystem.com/news/detail/90000",
+            sourceType="resale-official",
+        )
+
+        public, _ = build_public_events([performance, resale])
+
+        self.assertEqual(1, len(public))
+        self.assertEqual({"official-performance", "official-resale"}, set(public[0]["sourceRowIds"]))
+        self.assertEqual(["公式 / FCリセール"], [offer["ticketType"] for offer in public[0]["offers"]])
+
     def test_group_news_fc_offers_join_known_nov6_free_live_without_duplicate_events(self):
         base = {
             "title": "KAWAII LAB. ファンクラブ限定フリーライブ",

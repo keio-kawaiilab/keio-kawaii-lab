@@ -73,6 +73,11 @@ def _time(value: Any) -> str:
 def _venue_key(value: Any) -> str:
     text = _text(value).casefold()
     text = re.sub(r"^(?:北海道|東京都|京都府|大阪府|.{2,3}県)\s*", "", text)
+    # Official resale notices sometimes prefix a Tokyo venue with the compact
+    # region label ``東京・`` while schedule pages use ``東京都 ``.  Both name
+    # the same physical venue; leaving the compact label in the key splits one
+    # performance into a base card and a resale-only card.
+    text = re.sub(r"^東京[・･]\s*", "", text)
     key = re.sub(r"[\s　!！・･|｜\-–—_\[\]()（）『』「」,，.。]", "", text)
     # The venue owner uses both names for one physical hall.
     if key in {"sgchallariake", "sgcホール有明"}:
