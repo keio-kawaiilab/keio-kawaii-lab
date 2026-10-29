@@ -4,6 +4,7 @@ import unittest
 from apply_known_schedule_corrections import (
     CANDY_AICHI_SAME_DAY_NEWS,
     CANDY_AICHI_SCHEDULE,
+    CUTIE_PACIFICO_SCHEDULE,
     CUTIE_FUKUOKA_DAYS,
     CUTIE_FUKUOKA_PIA,
     CUTIE_FUKUOKA_TOUR,
@@ -14,6 +15,7 @@ from apply_known_schedule_corrections import (
     MORE_STAR_PACIFICO_HMV,
     MORE_STAR_PACIFICO_NEWS,
     MORE_STAR_PACIFICO_SCHEDULE,
+    MORE_STAR_PACIFICO_SECOND_HMV,
     SWEET_IDOL_HALLOWEEN_OFFICIAL,
     SWEET_IDOL_HALLOWEEN_SCHEDULE,
     SWEET_IDOL_HALLOWEEN_TICKET,
@@ -122,6 +124,43 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
         again, second_report = apply_known_corrections(corrected)
         self.assertEqual(corrected, again)
         self.assertEqual(0, second_report["moreStarPacificoHmvOfferAdded"])
+
+    def test_cutie_more_pacifico_rows_collapse_and_keep_second_sale(self):
+        cutie = {
+            "id": "cutie-schedule", "group": "CUTIE STREET", "eventCategory": "large-benefit",
+            "title": "大特典会 in 神奈川", "eventDate": "2026-11-03",
+            "venue": "神奈川県 パシフィコ横浜展示ホールD", "ticketType": "現在受付なし",
+            "applicationStatus": "none", "url": CUTIE_PACIFICO_SCHEDULE,
+        }
+        goods = {
+            "id": "cutie-goods", "group": "CUTIE STREET", "eventCategory": "large-benefit",
+            "title": "CUTIE STREET 大特典会＠パシフィコ横浜【事前抽選会】",
+            "eventDate": "2026-11-03", "venue": "オンライン（SUKISUKI）",
+            "ticketType": "オンライン特典会", "ticketProvider": "sukisuki",
+            "applyEnd": "2026-12-02", "url": "https://sukisuki-shop.com/goods/6500000004721",
+        }
+        more = {
+            "id": "more-schedule", "group": "MORE STAR", "eventCategory": "large-benefit",
+            "title": "MORE STAR 大特典@パシフィコ横浜展示ホールD",
+            "eventDate": "2026-11-03", "venue": "神奈川県 パシフィコ横浜展示ホールD",
+            "ticketType": "現在受付なし", "applicationStatus": "none",
+            "url": MORE_STAR_PACIFICO_SCHEDULE,
+        }
+        result, report = apply_known_corrections([cutie, goods, more])
+        joint = next(row for row in result if row["id"] == "known-cutie-more-pacifico-20261103")
+        self.assertEqual(1, len(result))
+        self.assertEqual(3, report["cutieMorePacificoRowsCollapsed"])
+        self.assertEqual(["CUTIE STREET", "MORE STAR"], joint["participants"])
+        self.assertEqual("10:00", joint["startTime"])
+        second = next(offer for offer in joint["offers"] if offer["url"] == MORE_STAR_PACIFICO_SECOND_HMV)
+        self.assertEqual("2026-10-29T21:00", second["applyStart"])
+        self.assertEqual("2026-10-30T23:59", second["applyEnd"])
+        lottery = next(offer for offer in joint["offers"] if "sukisuki-shop.com" in offer["url"])
+        self.assertEqual("2026-10-27T20:00", lottery["applyStart"])
+        self.assertEqual("2026-10-28T23:59", lottery["applyEnd"])
+        again, second_report = apply_known_corrections(result)
+        self.assertEqual(result, again)
+        self.assertEqual(0, second_report["cutieMorePacificoRowsCollapsed"])
 
     def test_sweet_idol_halloween_event_span_is_not_published_as_sale_window(self):
         stale = {

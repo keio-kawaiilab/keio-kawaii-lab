@@ -53,6 +53,12 @@ MORE_STAR_PACIFICO_DAY = "2026-11-03"
 MORE_STAR_PACIFICO_SCHEDULE = "https://morestar.asobisystem.com/live_information/detail/46447"
 MORE_STAR_PACIFICO_NEWS = "https://morestar.asobisystem.com/news/detail/93714"
 MORE_STAR_PACIFICO_HMV = "https://img.hmv.co.jp/cont/online/morestarevent_lp/"
+CUTIE_MORE_PACIFICO_NEWS = "https://cutiestreet.asobisystem.com/news/detail/93713"
+CUTIE_PACIFICO_SCHEDULE = "https://cutiestreet.asobisystem.com/live_information/detail/45469"
+CUTIE_PACIFICO_HMV = "https://img.hmv.co.jp/cont/online/cutielandevent_lp/"
+CUTIE_PACIFICO_LOTTERY_NEWS = "https://cutiestreet.asobisystem.com/news/detail/94146"
+MORE_STAR_PACIFICO_SECOND_NEWS = "https://morestar.asobisystem.com/news/detail/94386"
+MORE_STAR_PACIFICO_SECOND_HMV = "https://img.hmv.co.jp/cont/online/morestar17354910/"
 CANDY_AICHI_SAME_DAY_NEWS = "https://candytune.asobisystem.com/news/detail/94161"
 CANDY_AICHI_SCHEDULE = "https://candytune.asobisystem.com/live_information/detail/40733"
 CUTIE_FUKUOKA_TOUR = "https://cutiestreet.asobisystem.com/feature/autumntour"
@@ -220,6 +226,119 @@ def _build_more_star_pacifico_hmv_sale(schedule_event: dict) -> dict:
     for key in ("offers", "canonicalRuntimeRole", "entityType", "specialEventEntityVersion", "sourceRowIds"):
         out.pop(key, None)
     return out
+
+
+def _collapse_cutie_more_pacifico(events: list[dict]) -> tuple[list[dict], int]:
+    """Keep the officially announced 11/3 joint benefit event as one entity."""
+    def is_match(event: dict) -> bool:
+        if _day(event) != MORE_STAR_PACIFICO_DAY or event.get("eventCategory") != "large-benefit":
+            return False
+        groups = {event.get("group"), *(event.get("participants") or [])}
+        if not groups.intersection({"CUTIE STREET", "MORE STAR"}):
+            return False
+        joined = " ".join([str(event.get("title") or event.get("eventTitle") or ""),
+                           str(event.get("venue") or ""), " ".join(_urls(event))])
+        return "パシフィコ横浜" in joined or event.get("id") == "known-cutie-more-pacifico-20261103"
+
+    matches = [event for event in events if is_match(event)]
+    participant_set = {group for event in matches
+                       for group in [event.get("group"), *(event.get("participants") or [])]
+                       if group in {"CUTIE STREET", "MORE STAR"}}
+    if participant_set != {"CUTIE STREET", "MORE STAR"}:
+        return events, 0
+    existing_joint = next((event for event in matches if event.get("id") == "known-cutie-more-pacifico-20261103"), None)
+    if len(matches) == 1 and existing_joint is not None and any(
+        offer.get("url") == MORE_STAR_PACIFICO_SECOND_HMV
+        and offer.get("applyStart") == "2026-10-29T21:00"
+        and offer.get("applyEnd") == "2026-10-30T23:59"
+        for offer in existing_joint.get("offers") or []
+    ) and all(
+        "sukisuki-shop.com/goods/65000000047" not in str(offer.get("url") or "")
+        or (offer.get("applyStart") == "2026-10-27T20:00" and offer.get("applyEnd") == "2026-10-28T23:59")
+        for offer in existing_joint.get("offers") or []
+    ):
+        return events, 0
+
+    base = deepcopy(existing_joint or max(matches, key=lambda event: len(event.get("parts") or [])))
+    offers: list[dict] = []
+    for event in matches:
+        if event.get("offers"):
+            offers.extend(deepcopy(event["offers"]))
+        elif event.get("ticketType") != "現在受付なし" and (
+            event.get("applyStart") or event.get("applyEnd") or event.get("ticketProvider")
+        ):
+            offer = {key: deepcopy(event[key]) for key in (
+                "ticketProvider", "ticketType", "applyStart", "applyEnd", "applicationStatus",
+                "applicationWindowVerified", "applicationWindowSource", "deadlineVerified",
+                "deadlineSource", "purchaseMethod", "ticketName", "product", "url", "urls",
+            ) if event.get(key) not in (None, "", [], {})}
+            offer["sourceRowId"] = event.get("id")
+            offer["sourceGroup"] = event.get("group")
+            offer["provider"] = event.get("ticketProvider") or "official"
+            offers.append(offer)
+
+    for offer in offers:
+        if "sukisuki-shop.com/goods/65000000047" in str(offer.get("url") or ""):
+            offer.update({
+                "ticketType": "事前抽選会対象商品予約",
+                "applyStart": "2026-10-27T20:00",
+                "applyEnd": "2026-10-28T23:59",
+                "applicationWindowVerified": True,
+                "applicationWindowSource": CUTIE_PACIFICO_LOTTERY_NEWS,
+                "deadlineVerified": True,
+                "deadlineSource": CUTIE_PACIFICO_LOTTERY_NEWS,
+            })
+
+    offers.extend([
+        {
+            "sourceRowId": "known-cutie-pacifico-20261103-hmv", "sourceGroup": "CUTIE STREET",
+            "provider": "hmv", "ticketProvider": "hmv", "ticketType": "対象商品予約（参加権付き・先着）",
+            "applyStart": "2026-10-23T21:00", "applyEnd": "2026-10-27T23:59", "url": CUTIE_PACIFICO_HMV,
+            "urls": [CUTIE_PACIFICO_HMV, CUTIE_MORE_PACIFICO_NEWS, CUTIE_PACIFICO_SCHEDULE],
+            "applicationWindowVerified": True, "applicationWindowSource": CUTIE_MORE_PACIFICO_NEWS,
+            "deadlineVerified": True, "deadlineSource": CUTIE_MORE_PACIFICO_NEWS,
+        },
+        {
+            "sourceRowId": "known-more-star-pacifico-20261103-second-hmv", "sourceGroup": "MORE STAR",
+            "provider": "hmv", "ticketProvider": "hmv", "ticketType": "対象商品予約（参加権付き・先着・2次販売）",
+            "applyStart": "2026-10-29T21:00", "applyEnd": "2026-10-30T23:59", "url": MORE_STAR_PACIFICO_SECOND_HMV,
+            "urls": [MORE_STAR_PACIFICO_SECOND_HMV, MORE_STAR_PACIFICO_SECOND_NEWS, CUTIE_MORE_PACIFICO_NEWS],
+            "applicationWindowVerified": True, "applicationWindowSource": MORE_STAR_PACIFICO_SECOND_NEWS,
+            "deadlineVerified": True, "deadlineSource": MORE_STAR_PACIFICO_SECOND_NEWS,
+        },
+    ])
+    deduped: list[dict] = []
+    seen = set()
+    for offer in offers:
+        key = (offer.get("sourceGroup"), offer.get("url"), offer.get("applyStart"), offer.get("applyEnd"))
+        if key not in seen:
+            seen.add(key)
+            deduped.append(offer)
+
+    all_source_urls = list(dict.fromkeys([
+        CUTIE_MORE_PACIFICO_NEWS, MORE_STAR_PACIFICO_SECOND_NEWS,
+        CUTIE_PACIFICO_SCHEDULE, MORE_STAR_PACIFICO_SCHEDULE, CUTIE_PACIFICO_LOTTERY_NEWS,
+        *(url for event in matches for url in _urls(event)),
+    ]))
+    base.update({
+        "id": "known-cutie-more-pacifico-20261103", "entityType": "special-event",
+        "group": "KAWAII LAB.合同", "participants": ["CUTIE STREET", "MORE STAR"],
+        "title": "CUTIE STREET／MORE STAR 大特典会", "eventTitle": "CUTIE STREET／MORE STAR 大特典会",
+        "displayTitle": "CUTIE STREET／MORE STAR 大特典会", "eventDate": MORE_STAR_PACIFICO_DAY,
+        "eventEndDate": MORE_STAR_PACIFICO_DAY, "eventDates": [MORE_STAR_PACIFICO_DAY], "eventCount": 1,
+        "venue": "神奈川県 パシフィコ横浜 展示ホールD", "startTime": "10:00",
+        "schedule": [{"date": MORE_STAR_PACIFICO_DAY, "venue": "神奈川県 パシフィコ横浜 展示ホールD", "startTime": "10:00"}],
+        "url": CUTIE_MORE_PACIFICO_NEWS, "urls": all_source_urls, "offers": deduped,
+        "ticketType": "現在受付なし", "applicationStatus": "none", "applicationDisplayMode": "offers",
+        "sourceType": "official-special", "sourceChannel": "known-official-correction", "primarySource": "official",
+        "sourceCandidates": ["official", "hmv", "sukisuki"], "eventScope": "kawaii-lab",
+        "specialDetailsStatus": "verified",
+    })
+    base["parts"] = [{key: value for key, value in part.items() if key != "content"}
+                     for part in MORE_STAR_PACIFICO_PARTS]
+    result = [event for event in events if event not in matches]
+    result.append(base)
+    return result, max(0, len(matches) - 1)
 
 
 def _build_candy_aichi_same_day_sale(schedule_event: dict) -> dict:
@@ -1417,6 +1536,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "sweetIdolHalloweenSaleFixed": 0,
         "sweetIdolHalloweenSaleAdded": 0,
         "moreStarPacificoHmvOfferAdded": 0,
+        "cutieMorePacificoRowsCollapsed": 0,
         "candyAichiSameDayOfferFixed": 0,
         "candyAichiSameDayOfferAdded": 0,
         "cutieFukuokaDoorExchangeOffersAdded": 0,
@@ -2169,6 +2289,9 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
 
     out, sweet_ebichu_removed = _collapse_sweet_ebichu_20261116(out)
     report["sweetEbichu20261116RowsCollapsed"] = sweet_ebichu_removed
+
+    out, pacifico_removed = _collapse_cutie_more_pacifico(out)
+    report["cutieMorePacificoRowsCollapsed"] = pacifico_removed
 
     out, removed, removed_ids = _dedupe_ticket_rows(out)
     report["semanticTicketDuplicatesRemoved"] = removed
