@@ -209,11 +209,11 @@ def install_application_band_identity(page: str) -> str:
 def install_fifth_tour_presale_grouping(page: str) -> str:
     """One visible FC window per round, with all group-specific offers retained in event details."""
     replacements = (
-        (r"function applicationBandKey(e,index){var tour=", r"function applicationBandKey(e,index){if(fifthTour(e)&&e.canonicalRuntimeRole==='offer'&&/FC先行/.test(String(e.ticketType||''))&&providerId(e)==='official'&&e.applyStart&&e.applyEnd)return['kawaii-lab-5th-tour-fc',String(e.applyStart),String(e.applyEnd)].join('|');var tour="),
-        (r"out.forEach(function(m){m.location=locationLabel(m.events);var sorted=", r"out.forEach(function(m){m.location=locationLabel(m.events);if(fifthTour(m.event)&&m.event.canonicalRuntimeRole==='offer'&&/FC先行/.test(String(m.event.ticketType||''))){var fc={};m.events.forEach(function(e){var k=String(e.ticketType||'').replace(/\\s*FC先行$/,'');if(k)fc[k]=1});m.ticketDisplay='FC先行（'+Object.keys(fc).length+'グループ）';m.location='全公演'}var sorted="),
-        (r"band:r,location:item.location,performanceKey:item.performanceKey", r"band:r,location:item.location,ticketDisplay:item.ticketDisplay,performanceKey:item.performanceKey"),
-        (r"providerName(e)+'｜'+(e.ticketType||'申込')+'｜'", r"providerName(e)+'｜'+(item.ticketDisplay||e.ticketType||'申込')+'｜'"),
-        (r"providerName(x.event)+'｜'+(x.event.ticketType||'申込')+'｜'", r"providerName(x.event)+'｜'+(x.ticketDisplay||x.event.ticketType||'申込')+'｜'"),
+        ("function applicationBandKey(e,index){var tour=", "function applicationBandKey(e,index){if(fifthTour(e)&&e.canonicalRuntimeRole==='offer'&&/FC先行/.test(String(e.ticketType||''))&&providerId(e)==='official'&&e.applyStart&&e.applyEnd)return['kawaii-lab-5th-tour-fc',String(e.applyStart),String(e.applyEnd)].join('|');var tour="),
+        ("out.forEach(function(m){m.location=locationLabel(m.events);var sorted=", "out.forEach(function(m){m.location=locationLabel(m.events);if(fifthTour(m.event)&&m.event.canonicalRuntimeRole==='offer'&&/FC先行/.test(String(m.event.ticketType||''))){var fc={};m.events.forEach(function(e){var k=String(e.ticketType||'').replace(/\\s*FC先行$/,'');if(k)fc[k]=1});m.ticketDisplay='FC先行（'+Object.keys(fc).length+'グループ）';m.location='全公演'}var sorted="),
+        ("band:r,location:item.location,performanceKey:item.performanceKey", "band:r,location:item.location,ticketDisplay:item.ticketDisplay,performanceKey:item.performanceKey"),
+        ("providerName(e)+'｜'+(e.ticketType||'申込')+'｜'", "providerName(e)+'｜'+(item.ticketDisplay||e.ticketType||'申込')+'｜'"),
+        ("providerName(x.event)+'｜'+(x.event.ticketType||'申込')+'｜'", "providerName(x.event)+'｜'+(x.ticketDisplay||x.event.ticketType||'申込')+'｜'"),
     )
     for old, new in replacements:
         if new in page:
