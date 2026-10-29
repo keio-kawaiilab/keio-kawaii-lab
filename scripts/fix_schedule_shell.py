@@ -237,7 +237,7 @@ def install_open_ended_general_sales(page: str) -> str:
         raise RuntimeError("schedule offerHtml() block not found")
     page = page[:start] + OPEN_ENDED_OFFER_HTML_JS + page[end:]
 
-    if OPEN_ENDED_BAND_COPY_NEW not in page:
+    if OPEN_ENDED_BAND_COPY_NEW not in page and "item.ticketDisplay||e.ticketType||'申込'" not in page:
         if OPEN_ENDED_BAND_COPY_OLD not in page:
             raise RuntimeError("schedule band label renderer changed")
         page = page.replace(OPEN_ENDED_BAND_COPY_OLD, OPEN_ENDED_BAND_COPY_NEW, 1)
