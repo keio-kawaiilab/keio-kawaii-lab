@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-10-29T10:54:17.017062+09:00",
-  "candidateUpdatedAt": "2026-10-29T10:54:16+09:00",
-  "previousEventCount": 266,
+  "generatedAt": "2026-10-29T11:57:31.656819+09:00",
+  "candidateUpdatedAt": "2026-10-29T11:57:31+09:00",
+  "previousEventCount": 280,
   "candidateEventCount": 265,
-  "protectedPreviousCount": 265,
+  "protectedPreviousCount": 279,
   "errorCount": 0,
-  "warningCount": 17,
+  "warningCount": 33,
   "errors": [],
   "warnings": [
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
@@ -25,9 +25,25 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
-    "ended playguide row removed: KAWAII LAB.合同 / KAWAII LAB. Christmas SESSION 2026 / 現在受付なし"
+    "performance dates added for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981: 2026-11-14, 2026-11-15",
+    "performance dates added for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981: 2026-11-14, 2026-11-15",
+    "ended playguide row removed: KAWAII LAB.合同 / KAWAII LAB. Christmas SESSION 2026 / 現在受付なし",
+    "ended playguide row removed: FRUITS ZIPPER / FRUITS ZIPPER / ぴあNICOSカード限定先行",
+    "ended playguide row removed: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
+    "ended playguide row removed: FRUITS ZIPPER / FRUITS ZIPPER / プレリザーブ",
+    "ended playguide row removed: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / ぴあプレミアム先行",
+    "ended playguide row removed: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 2次プレリザーブ",
+    "ended playguide row removed: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / プレリザーブ",
+    "ended playguide row removed: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 2次プレリザーブ",
+    "ended playguide row removed: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / ぴあ先行",
+    "ended playguide row removed: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / プレリザーブ",
+    "ended playguide row removed: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / プレリザーブ",
+    "ended playguide row removed: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / ぴあ先行",
+    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981: 2026-10-29, 2026-10-31, 2026-11-01, 2026-11-28, 2026-11-29",
+    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981: 2026-10-29",
+    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981: 2026-11-28, 2026-11-29"
   ],
-  "candidateSha256": "8d42176dd21b85c99654f79dd08334dbdbce586ea49fd2c82172480b8dfa4130",
+  "candidateSha256": "f33773f2410737f86ceb0ff64b60acc7e7ea4cbdcfbc838b22189cdbc59c74e7",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40743",
@@ -109,7 +125,6 @@
     "url:https://sweetsteady.asobisystem.com/news/detail/92529",
     "url:https://sweetsteady.asobisystem.com/news/detail/93491",
     "url:https://sweetsteady.asobisystem.com/news/detail/93737",
-    "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
     "url:https://ticket-account.pia.jp/pia/digipoke/list.do",
     "url:https://w.pia.jp/t/sweetsteady-winter2026/",
     "url:https://w.pia.jp/v/kls-xmas26upg6/?_normalbrowse_=1",
@@ -198,7 +213,7 @@
     "url:https://sweetsteady.asobisystem.com/news/detail/93737"
   ],
   "reconciledBaseDateMessageCount": 0,
-  "downgradedFalsePositiveCount": 1,
+  "downgradedFalsePositiveCount": 15,
   "legacyProtectedErrorCount": 16,
   "legacyProtectedErrors": [
     {
@@ -292,7 +307,7 @@
     {
       "error": "active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 一般発売",
       "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 11
+      "restoredPreviousRows": 12
     },
     {
       "error": "active Pia row has no lotRlsCd detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
@@ -350,6 +365,20 @@
     "reassigned": [
       {
         "group": "CANDY TUNE",
+        "date": "2026-12-01",
+        "url": "https://candytune.asobisystem.com/live_information/detail/40741",
+        "from": "a5c5ef493ab42782",
+        "to": "f641c49b15d0f20a"
+      },
+      {
+        "group": "CANDY TUNE",
+        "date": "2026-12-08",
+        "url": "https://candytune.asobisystem.com/live_information/detail/40742",
+        "from": "3ec7b2716c3af44e",
+        "to": "f641c49b15d0f20a"
+      },
+      {
+        "group": "CANDY TUNE",
         "date": "2026-11-10",
         "url": "https://candytune.asobisystem.com/live_information/detail/40734",
         "from": "4c9822d074190104",
@@ -395,20 +424,6 @@
         "date": "2026-11-30",
         "url": "https://candytune.asobisystem.com/live_information/detail/40740",
         "from": "b06e8974b7ace2be",
-        "to": "f641c49b15d0f20a"
-      },
-      {
-        "group": "CANDY TUNE",
-        "date": "2026-12-01",
-        "url": "https://candytune.asobisystem.com/live_information/detail/40741",
-        "from": "a5c5ef493ab42782",
-        "to": "f641c49b15d0f20a"
-      },
-      {
-        "group": "CANDY TUNE",
-        "date": "2026-12-08",
-        "url": "https://candytune.asobisystem.com/live_information/detail/40742",
-        "from": "3ec7b2716c3af44e",
         "to": "f641c49b15d0f20a"
       },
       {
