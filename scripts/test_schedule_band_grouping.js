@@ -68,6 +68,43 @@ const context = {
 context.globalThis = context;
 vm.runInNewContext(source, context);
 
+// The same fifth-anniversary FC round appears on ten physical performance dates
+// and has five group-specific application URLs. It is one calendar window, not ten.
+const fifthGroups = ['FRUITS ZIPPER', 'CANDY TUNE', 'SWEET STEADY', 'CUTIE STREET', 'MORE STAR'];
+const fifthRound = Array.from({ length: 10 }, (_, i) => ({
+  id: 'fifth-' + i,
+  group: 'KAWAII LAB.合同',
+  title: 'KAWAII LAB. 5th ANNIVERSARY TOUR',
+  eventTitle: 'KAWAII LAB. 5th ANNIVERSARY TOUR',
+  entityType: 'performance',
+  eventDate: '2099-11-' + String(i + 8).padStart(2, '0'),
+  venue: 'テスト会場',
+  startTime: '17:00',
+  eventScope: 'kawaii-lab',
+  offers: fifthGroups.map(group => ({
+    ticketType: group + ' FC先行',
+    provider: 'official',
+    applyStart: '2099-09-01T12:00',
+    applyEnd: '2099-09-10T23:59',
+    url: 'https://' + group.toLowerCase().replace(/\s+/g, '') + '.asobisystem.com/news/detail/1111',
+  })),
+}));
+const preparedFifth = context.__scheduleTest.prepare(fifthRound);
+const groupedFifth = context.__scheduleTest.groupedApplicationBands(preparedFifth);
+assert.strictEqual(groupedFifth.length, 1, 'same 5th tour FC round must be one visible calendar window across all performances and FCs');
+assert.strictEqual(groupedFifth[0].ticketDisplay, 'FC先行（5グループ）', 'group-specific application options must be announced');
+assert.strictEqual(new Set(groupedFifth[0].events.map(x => x.url)).size, 5, 'all five unique FC links must remain available');
+const fifthPerformances = context.__scheduleTest.performanceModels(preparedFifth);
+assert.strictEqual(fifthPerformances.length, 10, 'do not remove any physical fifth tour performances');
+assert(fifthPerformances.every(p => p.offers.length === 5), 'keep all five FC application links in each performance detail card');
+const otherFifthRound = structuredClone(fifthRound[0]);
+otherFifthRound.id = 'different-fifth-round';
+otherFifthRound.offers = [Object.assign({}, otherFifthRound.offers[0], {
+  applyStart: '2099-09-12T12:00', applyEnd: '2099-09-16T23:59',
+})];
+const groupedTwoRounds = context.__scheduleTest.groupedApplicationBands(context.__scheduleTest.prepare(fifthRound.concat([otherFifthRound])));
+assert.strictEqual(groupedTwoRounds.length, 2, 'different FC application windows must not be merged');
+
 const freeLiveTitle = {
   group: 'KAWAII LAB.合同',
   title: 'KAWAII LAB. ファンクラブ限定フリーライブ',
