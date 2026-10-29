@@ -199,11 +199,29 @@ def install_performance_reconcile(page: str) -> str:
 
 
 def install_application_band_identity(page: str) -> str:
-    if APPLICATION_BAND_KEY_NEW in page:
+    if "kawaii-lab-5th-tour-fc" in page or APPLICATION_BAND_KEY_NEW in page:
         return page
     if APPLICATION_BAND_KEY_LEGACY not in page:
         raise RuntimeError("schedule applicationBandKey() changed; stable tour identity could not be installed")
     return page.replace(APPLICATION_BAND_KEY_LEGACY, APPLICATION_BAND_KEY_NEW, 1)
+
+
+def install_fifth_tour_presale_grouping(page: str) -> str:
+    """One visible FC window per round, with all group-specific offers retained in event details."""
+    replacements = (
+        (r"function applicationBandKey(e,index){var tour=", r"function applicationBandKey(e,index){if(fifthTour(e)&&e.canonicalRuntimeRole==='offer'&&/FC先行/.test(String(e.ticketType||''))&&providerId(e)==='official'&&e.applyStart&&e.applyEnd)return['kawaii-lab-5th-tour-fc',String(e.applyStart),String(e.applyEnd)].join('|');var tour="),
+        (r"out.forEach(function(m){m.location=locationLabel(m.events);var sorted=", r"out.forEach(function(m){m.location=locationLabel(m.events);if(fifthTour(m.event)&&m.event.canonicalRuntimeRole==='offer'&&/FC先行/.test(String(m.event.ticketType||''))){var fc={};m.events.forEach(function(e){var k=String(e.ticketType||'').replace(/\\s*FC先行$/,'');if(k)fc[k]=1});m.ticketDisplay='FC先行（'+Object.keys(fc).length+'グループ）';m.location='全公演'}var sorted="),
+        (r"band:r,location:item.location,performanceKey:item.performanceKey", r"band:r,location:item.location,ticketDisplay:item.ticketDisplay,performanceKey:item.performanceKey"),
+        (r"providerName(e)+'｜'+(e.ticketType||'申込')+'｜'", r"providerName(e)+'｜'+(item.ticketDisplay||e.ticketType||'申込')+'｜'"),
+        (r"providerName(x.event)+'｜'+(x.event.ticketType||'申込')+'｜'", r"providerName(x.event)+'｜'+(x.ticketDisplay||x.event.ticketType||'申込')+'｜'"),
+    )
+    for old, new in replacements:
+        if new in page:
+            continue
+        if page.count(old) != 1:
+            raise RuntimeError("5th tour presale grouping cannot be installed safely")
+        page = page.replace(old, new, 1)
+    return page
 
 
 def install_open_ended_general_sales(page: str) -> str:
@@ -297,6 +315,7 @@ def main() -> int:
     page = install_offer_adapter(page)
     page = install_performance_reconcile(page)
     page = install_application_band_identity(page)
+    page = install_fifth_tour_presale_grouping(page)
     page = install_open_ended_general_sales(page)
     page = install_title_boundaries(page)
     page = install_joint_offer_labels(page)
