@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-31T10:56:59+09:00",
+  "checkedAt": "2026-10-31T11:27:47+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-29T07:50:44+09:00",
     "scannedPages": {
@@ -26,7 +26,7 @@
   },
   "demo": false,
   "distributedMergeDiagnostics": {
-    "mergedAt": "2026-10-31T10:56:10+09:00",
+    "mergedAt": "2026-10-31T11:27:11+09:00",
     "sources": {
       "playguide": {
         "previous": 53,
@@ -57,7 +57,7 @@
       "fixes": []
     },
     "duplicateOfficialResaleWindowsMerged": 0,
-    "eventCount": 328
+    "eventCount": 342
   },
   "events": [
     {
@@ -106,7 +106,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14066",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14066",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "external"
     },
     {
       "id": "1c60e2be989c564d",
@@ -203,7 +204,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=23680",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=23680",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "external"
     },
     {
       "id": "cef28f5ce34f3020",
@@ -451,7 +453,10 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19210",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
+      "performanceMatchedToOfficial": true,
+      "eventScope": "kawaii-lab"
     },
     {
       "id": "cde8a2920f62d533",
@@ -1944,50 +1949,7 @@
       "ticketIssueMethod": "対象商品の購入後に案内される電子チケットまたは参加券",
       "product": "2026年12月2日(水)発売 ／ CUTIE STREET 1stアルバム『CUTIE LAND』 通常盤(KLC-90016)／¥3,300 (税込)",
       "numberedCallTimes": [],
-      "parts": [
-        {
-          "part": "第1部",
-          "start": "10:00",
-          "end": "11:00",
-          "receptionStart": "09:45",
-          "receptionEnd": "10:40"
-        },
-        {
-          "part": "第2部",
-          "start": "11:20",
-          "end": "12:20",
-          "receptionStart": "11:05",
-          "receptionEnd": "12:00"
-        },
-        {
-          "part": "第3部",
-          "start": "12:50",
-          "end": "13:50",
-          "receptionStart": "12:35",
-          "receptionEnd": "13:30"
-        },
-        {
-          "part": "第4部",
-          "start": "15:00",
-          "end": "16:00",
-          "receptionStart": "14:45",
-          "receptionEnd": "15:40"
-        },
-        {
-          "part": "第5部",
-          "start": "16:30",
-          "end": "17:30",
-          "receptionStart": "16:15",
-          "receptionEnd": "17:10"
-        },
-        {
-          "part": "第6部",
-          "start": "17:50",
-          "end": "18:50",
-          "receptionStart": "17:35",
-          "receptionEnd": "18:30"
-        }
-      ],
+      "parts": [],
       "ticketBenefits": [
         "参加権付き対象商品1セットにつき、選択した部／メンバーの大特典会参加券1枚"
       ],
@@ -2053,14 +2015,14 @@
       "offers": [
         {
           "ticketProvider": "sukisuki",
-          "ticketType": "事前抽選会対象商品予約",
-          "applyStart": "2026-10-27T20:00",
-          "applyEnd": "2026-10-28T23:59",
+          "ticketType": "FC限定・対象商品応募（抽選／応募受付）",
+          "applyStart": "2026-10-23T21:00",
+          "applyEnd": "2026-10-24T23:59",
           "applicationStatus": "none",
           "applicationWindowVerified": true,
-          "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/94146",
+          "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/93831",
           "deadlineVerified": true,
-          "deadlineSource": "https://cutiestreet.asobisystem.com/news/detail/94146",
+          "deadlineSource": "https://cutiestreet.asobisystem.com/news/detail/93831",
           "purchaseMethod": "SUKISUKIで対象商品1セットの抽選に応募し、当選後に購入すると選択した部／メンバーの参加券が付与",
           "ticketName": "メンバー個別2ショットチェキ撮影会参加券",
           "product": "2026年12月2日(水)発売 ／ CUTIE STREET1st アルバム『CUTIE LAND』 通常盤(KLC-90016)／¥3,300 (税込)",
@@ -2125,7 +2087,7 @@
         },
         {
           "ticketProvider": "sukisuki",
-          "ticketType": "事前抽選会対象商品予約",
+          "ticketType": "対象商品予約・事前抽選（事前抽選対象期間）",
           "applyStart": "2026-10-27T20:00",
           "applyEnd": "2026-10-28T23:59",
           "applicationStatus": "none",
@@ -2180,7 +2142,7 @@
         }
       ],
       "sourceChannel": "known-official-correction",
-      "specialDetailsStatus": "verified",
+      "specialDetailsStatus": "awaiting-details",
       "partsStatus": "awaiting-details",
       "specialEventEntityVersion": 1,
       "sourceRowIds": [
@@ -2707,7 +2669,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/0599290001-P0030252P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/0599290001-P0030252P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -2740,7 +2702,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/0599290001-P0030252P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/0599290001-P0030252P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -2773,7 +2735,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/0599290001-P0030252P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/0599290001-P0030252P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -2806,7 +2768,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/0599290001-P0030252P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/0599290001-P0030252P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -2839,7 +2801,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/0599290001-P0030252P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/0599290001-P0030252P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -2872,7 +2834,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/0599290001-P0030252P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/0599290001-P0030252P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -3084,7 +3046,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3923750001-P0030014P021001?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030014P021001?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventScope": "external"
     },
     {
@@ -3276,7 +3238,10 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=36521",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=36521",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
+      "performanceMatchedToOfficial": true,
+      "eventScope": "kawaii-lab"
     },
     {
       "id": "d193583799747ab5",
@@ -3420,7 +3385,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3923750001-P0030015P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030015P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
       "performanceMatchedToOfficial": true,
       "eventScope": "kawaii-lab"
@@ -4175,7 +4140,10 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=05304",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=05304",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventTitle": "CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-",
+      "performanceMatchedToOfficial": true,
+      "eventScope": "kawaii-lab"
     },
     {
       "id": "42a84f963d3daecc",
@@ -4321,7 +4289,10 @@
       "performanceFactSources": [
         "https://cutiestreet.asobisystem.com/live_information/detail/40366",
         "https://cutiestreet.asobisystem.com/live_information/detail/40367"
-      ]
+      ],
+      "eventTitle": "CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-",
+      "performanceMatchedToOfficial": true,
+      "eventScope": "kawaii-lab"
     },
     {
       "id": "943395a81d9f05c3",
@@ -4676,7 +4647,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/0599290001-P0030255P021001?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/0599290001-P0030255P021001?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventScope": "external"
     },
     {
@@ -4741,7 +4712,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3923750001-P0030008P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030008P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventScope": "external"
     },
     {
@@ -4796,7 +4767,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3923750001-P0030008P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030008P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventScope": "external"
     },
     {
@@ -4891,7 +4862,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3923750001-P0030008P021001?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030008P021001?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventScope": "external"
     },
     {
@@ -4959,7 +4930,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/0599290001-P0030255P021002",
       "deadlineSource": "https://eplus.jp/sf/detail/0599290001-P0030255P021002",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -5029,7 +5000,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3923750001-P0030009P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030009P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
       "performanceMatchedToOfficial": true,
       "eventScope": "kawaii-lab"
@@ -5064,7 +5035,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3923750001-P0030009P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030009P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
       "performanceMatchedToOfficial": true,
       "eventScope": "kawaii-lab"
@@ -5099,7 +5070,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3923750001-P0030009P021001?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030009P021001?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
       "performanceMatchedToOfficial": true,
       "eventScope": "kawaii-lab"
@@ -5194,7 +5165,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=26281",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=26281",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "external"
     },
     {
       "id": "8c9dafbc35ac88d9",
@@ -5242,7 +5214,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14224",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14224",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "external"
     },
     {
       "id": "aec98a196b90b4d6",
@@ -5477,7 +5450,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:24:43+09:00",
       "eventScope": "external"
     },
     {
@@ -5510,7 +5483,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:24:43+09:00",
       "eventScope": "external"
     },
     {
@@ -5543,7 +5516,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:24:43+09:00",
       "eventScope": "external"
     },
     {
@@ -5577,7 +5550,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:24:43+09:00",
       "officialScheduleUrl": "https://morestar.asobisystem.com/live_information/detail/45676",
       "eventScope": "external"
     },
@@ -5627,7 +5600,10 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=62959",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=62959",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
+      "performanceMatchedToOfficial": true,
+      "eventScope": "kawaii-lab"
     },
     {
       "id": "927c54f5934f25ad",
@@ -5762,7 +5738,10 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21416",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21416",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
+      "performanceMatchedToOfficial": true,
+      "eventScope": "kawaii-lab"
     },
     {
       "id": "dc16b3829517c48f",
@@ -6235,7 +6214,10 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29668",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29668",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventTitle": "CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-",
+      "performanceMatchedToOfficial": true,
+      "eventScope": "kawaii-lab"
     },
     {
       "id": "43fb0ffb8ac81d35",
@@ -6352,7 +6334,10 @@
       "applicationDisplayMode": "offers",
       "openTime": "16:00",
       "startTime": "18:00",
-      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/40368"
+      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/40368",
+      "eventTitle": "CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-",
+      "performanceMatchedToOfficial": true,
+      "eventScope": "kawaii-lab"
     },
     {
       "id": "b9ee77bc9abd8819",
@@ -6627,7 +6612,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3923750001-P0030012P021001?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030012P021001?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
       "performanceMatchedToOfficial": true,
@@ -6832,7 +6817,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3923750001-P0030012P021001?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030012P021001?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
       "performanceMatchedToOfficial": true,
@@ -6867,7 +6852,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3923750001-P0030012P021001?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030012P021001?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
       "performanceMatchedToOfficial": true,
@@ -6902,7 +6887,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3923750001-P0030012P021001?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030012P021001?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
       "performanceMatchedToOfficial": true,
@@ -6954,7 +6939,10 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30314",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30314",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
+      "performanceMatchedToOfficial": true,
+      "eventScope": "kawaii-lab"
     },
     {
       "id": "2d07beca08d41a77",
@@ -6985,7 +6973,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3923750001-P0030013P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030013P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
       "performanceMatchedToOfficial": true,
@@ -7020,7 +7008,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3923750001-P0030013P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030013P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
       "performanceMatchedToOfficial": true,
@@ -7055,7 +7043,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3923750001-P0030013P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030013P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
       "performanceMatchedToOfficial": true,
@@ -7148,7 +7136,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3923750001-P0030013P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030013P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
       "performanceMatchedToOfficial": true,
@@ -7425,7 +7413,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventScope": "external"
     },
     {
@@ -7458,7 +7446,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021001?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021001?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventScope": "external"
     },
     {
@@ -7491,7 +7479,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021001?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021001?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventScope": "external"
     },
     {
@@ -7524,7 +7512,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventScope": "external"
     },
     {
@@ -7557,7 +7545,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventScope": "external"
     },
     {
@@ -7590,7 +7578,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventScope": "external"
     },
     {
@@ -7623,7 +7611,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:24:43+09:00",
       "eventScope": "external"
     },
     {
@@ -7656,7 +7644,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:24:43+09:00",
       "eventScope": "external"
     },
     {
@@ -7689,7 +7677,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:24:43+09:00",
       "eventScope": "external"
     },
     {
@@ -7722,7 +7710,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:24:43+09:00",
       "eventScope": "external"
     },
     {
@@ -7755,7 +7743,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021001?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021001?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:24:43+09:00",
       "eventScope": "external"
     },
     {
@@ -7788,7 +7776,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:24:43+09:00",
       "eventScope": "external"
     },
     {
@@ -7924,7 +7912,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021002",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021002",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -7957,7 +7945,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021002",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021002",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -8035,7 +8023,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021002",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021002",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:24:43+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -8068,7 +8056,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021002",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021002",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:24:43+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -8277,7 +8265,10 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=32739",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=32739",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
+      "performanceMatchedToOfficial": true,
+      "eventScope": "kawaii-lab"
     },
     {
       "id": "1b3005f2e645ce2f",
@@ -11115,7 +11106,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/0599290001-P0030254P021002",
       "deadlineSource": "https://eplus.jp/sf/detail/0599290001-P0030254P021002",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -11148,7 +11139,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/0599290001-P0030254P021002",
       "deadlineSource": "https://eplus.jp/sf/detail/0599290001-P0030254P021002",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -11181,7 +11172,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/0599290001-P0030254P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/0599290001-P0030254P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -11214,7 +11205,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/0599290001-P0030254P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/0599290001-P0030254P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -13862,26 +13853,24 @@
     "remainingDuplicates": []
   },
   "playguideDiagnostics": {
-    "collectedAt": "2026-10-31T10:54:53+09:00",
+    "collectedAt": "2026-10-31T11:25:53+09:00",
     "collectorMode": "parallel",
     "workerCount": 10,
-    "durationSeconds": 54.414,
+    "durationSeconds": 54.406,
     "freshCounts": {
       "eplus:CANDY TUNE": 24,
       "eplus:CUTIE STREET": 14,
-      "eplus:FRUITS ZIPPER": 14,
-      "eplus:MORE STAR": 8,
       "eplus:SWEET STEADY": 13
     },
     "refreshedSources": [
       "eplus:CANDY TUNE",
       "eplus:CUTIE STREET",
-      "eplus:FRUITS ZIPPER",
-      "eplus:MORE STAR",
       "eplus:SWEET STEADY"
     ],
-    "failureCount": 5,
+    "failureCount": 7,
     "failures": [
+      "eplus/FRUITS ZIPPER: HTTPError: 503 Server Error: Service Unavailable for url: https://eplus.jp/sf/detail/4401630001",
+      "eplus/MORE STAR: HTTPError: 503 Server Error: Service Unavailable for url: https://eplus.jp/sf/word/0000173782",
       "lawson/CANDY TUNE: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=18)",
       "lawson/CUTIE STREET: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=18)",
       "lawson/FRUITS ZIPPER: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=18)",
@@ -13893,6 +13882,8 @@
     "expiredRowsPruned": 0
   },
   "playguideFailures": [
+    "eplus/FRUITS ZIPPER: HTTPError: 503 Server Error: Service Unavailable for url: https://eplus.jp/sf/detail/4401630001",
+    "eplus/MORE STAR: HTTPError: 503 Server Error: Service Unavailable for url: https://eplus.jp/sf/word/0000173782",
     "lawson/CANDY TUNE: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=18)",
     "lawson/CUTIE STREET: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=18)",
     "lawson/FRUITS ZIPPER: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=18)",
@@ -13900,7 +13891,7 @@
     "lawson/SWEET STEADY: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=18)"
   ],
   "promoterGeneralSaleDiagnostics": {
-    "checkedAt": "2026-10-31T10:56:13+09:00",
+    "checkedAt": "2026-10-31T11:27:14+09:00",
     "knownPerformancesChecked": 60,
     "generalSalesObserved": 0,
     "generalSalesAdded": 0,
@@ -13960,7 +13951,7 @@
     "failures": []
   },
   "releasePreparation": {
-    "preparedAt": "2026-10-31T10:56:13+09:00",
+    "preparedAt": "2026-10-31T11:27:14+09:00",
     "normalizedSpecialEvents": 4,
     "duplicateIdsRemoved": 0,
     "duplicateOfficialFcOffersRemoved": 0,
@@ -13997,7 +13988,7 @@
       "hakataSpecialFixed": 0,
       "cutieWrongPiaBundleRemoved": 0,
       "cutieObsoletePiaRowsRemoved": 0,
-      "cutieIgFixed": 0,
+      "cutieIgFixed": 1,
       "cutieHiroshimaPiaFixed": 0,
       "candyBirthdayFactsFilled": 0,
       "cutieUpgradeReceptionFixed": 0,
@@ -14088,12 +14079,12 @@
     "redundantSpecialOffersRemoved": 0,
     "redundantSpecialOfferIds": [],
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-10-31T10:56:13+09:00",
-    "checkedAt": "2026-10-31T10:56:13+09:00"
+    "publicUpdatedAt": "2026-10-31T11:27:14+09:00",
+    "checkedAt": "2026-10-31T11:27:14+09:00"
   },
   "renderWarnings": [
     {
-      "checkedAt": "2026-10-31T10:56:59+09:00",
+      "checkedAt": "2026-10-31T11:27:47+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one CANDY TUNE tour performance for 2026-10-04 OPEN 16:30 / START 17:30, found 0"
     }
@@ -14105,20 +14096,6 @@
     "failures": []
   },
   "source": "KAWAII LAB.各グループ公式公開情報 + チケットぴあ・ローチケ・イープラス公開情報 + SUKISUKI公開オンライン特典会情報 + 公式大特典会・リリースイベント情報",
-  "specialEventNormalization": {
-    "sourceSpecialRows": 4,
-    "canonicalSpecialEvents": 4,
-    "rowsCollapsed": 0,
-    "releaseEventEntities": 1,
-    "largeBenefitEntities": 3,
-    "alreadyCanonicalRows": 4,
-    "internalScheduleRowsCollapsed": 0,
-    "duplicateEventIdCollisions": 0,
-    "duplicateEventRowsCollapsed": 0,
-    "duplicateEventIdsDisambiguated": 0,
-    "duplicateEventIdRepairs": [],
-    "onlinePlaceholderOccurrencesMerged": 0
-  },
   "ticketCollectorDiagnostics": {
     "collectedAt": "2026-10-30T22:33:02+09:00",
     "newsPagesScannedPerOfficialSource": 15,
@@ -27358,7 +27335,7 @@
       }
     ]
   },
-  "updatedAt": "2026-10-31T10:56:59+09:00",
+  "updatedAt": "2026-10-31T11:27:47+09:00",
   "publicEvents": [
     {
       "id": "1b5fec5f58ba553f",
@@ -27406,7 +27383,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14066",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14066",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "external"
     },
     {
       "id": "1c60e2be989c564d",
@@ -27503,7 +27481,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=23680",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=23680",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "external"
     },
     {
       "id": "cef28f5ce34f3020",
@@ -27726,50 +27705,7 @@
       "ticketIssueMethod": "対象商品の購入後に案内される電子チケットまたは参加券",
       "product": "2026年12月2日(水)発売 ／ CUTIE STREET 1stアルバム『CUTIE LAND』 通常盤(KLC-90016)／¥3,300 (税込)",
       "numberedCallTimes": [],
-      "parts": [
-        {
-          "part": "第1部",
-          "start": "10:00",
-          "end": "11:00",
-          "receptionStart": "09:45",
-          "receptionEnd": "10:40"
-        },
-        {
-          "part": "第2部",
-          "start": "11:20",
-          "end": "12:20",
-          "receptionStart": "11:05",
-          "receptionEnd": "12:00"
-        },
-        {
-          "part": "第3部",
-          "start": "12:50",
-          "end": "13:50",
-          "receptionStart": "12:35",
-          "receptionEnd": "13:30"
-        },
-        {
-          "part": "第4部",
-          "start": "15:00",
-          "end": "16:00",
-          "receptionStart": "14:45",
-          "receptionEnd": "15:40"
-        },
-        {
-          "part": "第5部",
-          "start": "16:30",
-          "end": "17:30",
-          "receptionStart": "16:15",
-          "receptionEnd": "17:10"
-        },
-        {
-          "part": "第6部",
-          "start": "17:50",
-          "end": "18:50",
-          "receptionStart": "17:35",
-          "receptionEnd": "18:30"
-        }
-      ],
+      "parts": [],
       "ticketBenefits": [
         "参加権付き対象商品1セットにつき、選択した部／メンバーの大特典会参加券1枚"
       ],
@@ -27835,14 +27771,14 @@
       "offers": [
         {
           "ticketProvider": "sukisuki",
-          "ticketType": "事前抽選会対象商品予約",
-          "applyStart": "2026-10-27T20:00",
-          "applyEnd": "2026-10-28T23:59",
+          "ticketType": "FC限定・対象商品応募（抽選／応募受付）",
+          "applyStart": "2026-10-23T21:00",
+          "applyEnd": "2026-10-24T23:59",
           "applicationStatus": "none",
           "applicationWindowVerified": true,
-          "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/94146",
+          "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/93831",
           "deadlineVerified": true,
-          "deadlineSource": "https://cutiestreet.asobisystem.com/news/detail/94146",
+          "deadlineSource": "https://cutiestreet.asobisystem.com/news/detail/93831",
           "purchaseMethod": "SUKISUKIで対象商品1セットの抽選に応募し、当選後に購入すると選択した部／メンバーの参加券が付与",
           "ticketName": "メンバー個別2ショットチェキ撮影会参加券",
           "product": "2026年12月2日(水)発売 ／ CUTIE STREET1st アルバム『CUTIE LAND』 通常盤(KLC-90016)／¥3,300 (税込)",
@@ -27907,7 +27843,7 @@
         },
         {
           "ticketProvider": "sukisuki",
-          "ticketType": "事前抽選会対象商品予約",
+          "ticketType": "対象商品予約・事前抽選（事前抽選対象期間）",
           "applyStart": "2026-10-27T20:00",
           "applyEnd": "2026-10-28T23:59",
           "applicationStatus": "none",
@@ -27962,7 +27898,7 @@
         }
       ],
       "sourceChannel": "known-official-correction",
-      "specialDetailsStatus": "verified",
+      "specialDetailsStatus": "awaiting-details",
       "partsStatus": "awaiting-details",
       "specialEventEntityVersion": 1,
       "sourceRowIds": [
@@ -28145,7 +28081,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/0599290001-P0030252P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/0599290001-P0030252P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -28178,7 +28114,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/0599290001-P0030252P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/0599290001-P0030252P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -28211,7 +28147,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/0599290001-P0030252P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/0599290001-P0030252P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -28244,7 +28180,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/0599290001-P0030252P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/0599290001-P0030252P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -28277,7 +28213,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/0599290001-P0030252P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/0599290001-P0030252P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -28310,7 +28246,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/0599290001-P0030252P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/0599290001-P0030252P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -28344,7 +28280,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3923750001-P0030014P021001?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030014P021001?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventScope": "external"
     },
     {
@@ -28471,7 +28407,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/0599290001-P0030255P021001?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/0599290001-P0030255P021001?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventScope": "external"
     },
     {
@@ -28536,7 +28472,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3923750001-P0030008P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030008P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventScope": "external"
     },
     {
@@ -28569,7 +28505,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3923750001-P0030008P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030008P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventScope": "external"
     },
     {
@@ -28664,7 +28600,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3923750001-P0030008P021001?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030008P021001?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventScope": "external"
     },
     {
@@ -28696,7 +28632,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/0599290001-P0030255P021002",
       "deadlineSource": "https://eplus.jp/sf/detail/0599290001-P0030255P021002",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -28768,7 +28704,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=26281",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=26281",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "external"
     },
     {
       "id": "8c9dafbc35ac88d9",
@@ -28816,7 +28753,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14224",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14224",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "external"
     },
     {
       "id": "26d0069375101fa4",
@@ -28977,7 +28915,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:24:43+09:00",
       "eventScope": "external"
     },
     {
@@ -29010,7 +28948,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:24:43+09:00",
       "eventScope": "external"
     },
     {
@@ -29043,7 +28981,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:24:43+09:00",
       "eventScope": "external"
     },
     {
@@ -29077,7 +29015,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:24:43+09:00",
       "officialScheduleUrl": "https://morestar.asobisystem.com/live_information/detail/45676",
       "eventScope": "external"
     },
@@ -29252,7 +29190,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventScope": "external"
     },
     {
@@ -29285,7 +29223,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021001?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021001?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventScope": "external"
     },
     {
@@ -29318,7 +29256,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021001?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021001?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventScope": "external"
     },
     {
@@ -29351,7 +29289,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventScope": "external"
     },
     {
@@ -29384,7 +29322,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventScope": "external"
     },
     {
@@ -29417,7 +29355,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "eventScope": "external"
     },
     {
@@ -29450,7 +29388,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:24:43+09:00",
       "eventScope": "external"
     },
     {
@@ -29483,7 +29421,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:24:43+09:00",
       "eventScope": "external"
     },
     {
@@ -29516,7 +29454,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:24:43+09:00",
       "eventScope": "external"
     },
     {
@@ -29549,7 +29487,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:24:43+09:00",
       "eventScope": "external"
     },
     {
@@ -29582,7 +29520,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021001?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021001?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:24:43+09:00",
       "eventScope": "external"
     },
     {
@@ -29615,7 +29553,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021003?P1=0175",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:24:43+09:00",
       "eventScope": "external"
     },
     {
@@ -29751,7 +29689,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021002",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021002",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -29784,7 +29722,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021002",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021002",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -29862,7 +29800,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021002",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021002",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:24:43+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -29895,7 +29833,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021002",
       "deadlineSource": "https://eplus.jp/sf/detail/4401630001-P0030002P021002",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:24:43+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -30086,7 +30024,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/0599290001-P0030254P021002",
       "deadlineSource": "https://eplus.jp/sf/detail/0599290001-P0030254P021002",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -30119,7 +30057,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/0599290001-P0030254P021002",
       "deadlineSource": "https://eplus.jp/sf/detail/0599290001-P0030254P021002",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -30152,7 +30090,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/0599290001-P0030254P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/0599290001-P0030254P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -30185,7 +30123,7 @@
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://eplus.jp/sf/detail/0599290001-P0030254P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/0599290001-P0030254P021001",
-      "sourceObservedAt": "2026-10-31T10:54:53+09:00",
+      "sourceObservedAt": "2026-10-31T11:25:53+09:00",
       "sourceStale": false,
       "eventScope": "external"
     },
@@ -30978,7 +30916,7 @@
           "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030015P021001",
           "sourceType": "eplus",
           "primarySource": "eplus",
-          "sourceObservedAt": "2026-10-31T10:54:53+09:00"
+          "sourceObservedAt": "2026-10-31T11:25:53+09:00"
         },
         {
           "sourceRowId": "89a68278917da812",
@@ -31332,7 +31270,7 @@
           "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030009P021001",
           "sourceType": "eplus",
           "primarySource": "eplus",
-          "sourceObservedAt": "2026-10-31T10:54:53+09:00"
+          "sourceObservedAt": "2026-10-31T11:25:53+09:00"
         },
         {
           "sourceRowId": "3c8de7c838bb83ac",
@@ -31354,7 +31292,7 @@
           "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030009P021001",
           "sourceType": "eplus",
           "primarySource": "eplus",
-          "sourceObservedAt": "2026-10-31T10:54:53+09:00"
+          "sourceObservedAt": "2026-10-31T11:25:53+09:00"
         },
         {
           "sourceRowId": "4921fa8e120fadab",
@@ -31376,7 +31314,7 @@
           "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030009P021001?P1=0175",
           "sourceType": "eplus",
           "primarySource": "eplus",
-          "sourceObservedAt": "2026-10-31T10:54:53+09:00"
+          "sourceObservedAt": "2026-10-31T11:25:53+09:00"
         }
       ],
       "eventEndDate": "2026-11-19",
@@ -32000,7 +31938,7 @@
           "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030012P021001?P1=0175",
           "sourceType": "eplus",
           "primarySource": "eplus",
-          "sourceObservedAt": "2026-10-31T10:54:53+09:00"
+          "sourceObservedAt": "2026-10-31T11:25:53+09:00"
         },
         {
           "sourceRowId": "697132af5e3523ee",
@@ -32082,7 +32020,7 @@
           "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030012P021001?P1=0175",
           "sourceType": "eplus",
           "primarySource": "eplus",
-          "sourceObservedAt": "2026-10-31T10:54:53+09:00"
+          "sourceObservedAt": "2026-10-31T11:25:53+09:00"
         },
         {
           "sourceRowId": "dfdfb8cf55638bd2",
@@ -32103,7 +32041,7 @@
           "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030012P021001?P1=0175",
           "sourceType": "eplus",
           "primarySource": "eplus",
-          "sourceObservedAt": "2026-10-31T10:54:53+09:00"
+          "sourceObservedAt": "2026-10-31T11:25:53+09:00"
         },
         {
           "sourceRowId": "fbfa9a0ab6aea9e3",
@@ -32365,7 +32303,7 @@
           "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030013P021001",
           "sourceType": "eplus",
           "primarySource": "eplus",
-          "sourceObservedAt": "2026-10-31T10:54:53+09:00"
+          "sourceObservedAt": "2026-10-31T11:25:53+09:00"
         },
         {
           "sourceRowId": "2ee823ecc449ca17",
@@ -32386,7 +32324,7 @@
           "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030013P021001",
           "sourceType": "eplus",
           "primarySource": "eplus",
-          "sourceObservedAt": "2026-10-31T10:54:53+09:00"
+          "sourceObservedAt": "2026-10-31T11:25:53+09:00"
         },
         {
           "sourceRowId": "3f2663fcd062b478",
@@ -32407,7 +32345,7 @@
           "deadlineSource": "https://eplus.jp/sf/detail/3923750001-P0030013P021001",
           "sourceType": "eplus",
           "primarySource": "eplus",
-          "sourceObservedAt": "2026-10-31T10:54:53+09:00"
+          "sourceObservedAt": "2026-10-31T11:25:53+09:00"
         },
         {
           "sourceRowId": "626ded615916c384",
@@ -39455,5 +39393,33 @@
       "applicationDisplayMode": "offers",
       "applicationStatus": "offers"
     }
-  ]
+  ],
+  "specialEventNormalization": {
+    "sourceSpecialRows": 4,
+    "canonicalSpecialEvents": 4,
+    "rowsCollapsed": 0,
+    "releaseEventEntities": 1,
+    "largeBenefitEntities": 3,
+    "alreadyCanonicalRows": 4,
+    "internalScheduleRowsCollapsed": 0,
+    "duplicateEventIdCollisions": 0,
+    "duplicateEventRowsCollapsed": 0,
+    "duplicateEventIdsDisambiguated": 0,
+    "duplicateEventIdRepairs": [],
+    "onlinePlaceholderOccurrencesMerged": 0,
+    "publicEvents": {
+      "sourceSpecialRows": 4,
+      "canonicalSpecialEvents": 4,
+      "rowsCollapsed": 0,
+      "releaseEventEntities": 1,
+      "largeBenefitEntities": 3,
+      "alreadyCanonicalRows": 4,
+      "internalScheduleRowsCollapsed": 0,
+      "duplicateEventIdCollisions": 0,
+      "duplicateEventRowsCollapsed": 0,
+      "duplicateEventIdsDisambiguated": 0,
+      "duplicateEventIdRepairs": [],
+      "onlinePlaceholderOccurrencesMerged": 0
+    }
+  }
 }
