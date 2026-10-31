@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-01T04:37:33+09:00",
+  "checkedAt": "2026-11-01T05:10:37+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-29T07:50:44+09:00",
     "scannedPages": {
@@ -14190,33 +14190,16 @@
     "failures": []
   },
   "releasePreparation": {
-    "preparedAt": "2026-11-01T04:36:38+09:00",
+    "preparedAt": "2026-11-01T05:10:32+09:00",
     "normalizedSpecialEvents": 9,
     "duplicateIdsRemoved": 0,
     "duplicateOfficialFcOffersRemoved": 0,
     "duplicateOfficialFcOfferIdsRemoved": [],
     "duplicateOfficialResaleWindowsRemoved": 0,
-    "retainedPreviousRows": 2,
-    "retained": [
-      {
-        "id": "4c0a670ca186f65c",
-        "group": "CANDY TUNE",
-        "title": "CANDY TUNE",
-        "ticketType": "現在受付なし",
-        "provider": "eplus",
-        "applyEnd": null
-      },
-      {
-        "id": "850f9d39ec4fd5e8",
-        "group": "CANDY TUNE",
-        "title": "CANDY TUNE",
-        "ticketType": "先着 ★一般発売",
-        "provider": "eplus",
-        "applyEnd": "2026-11-29T20:00"
-      }
-    ],
+    "retainedPreviousRows": 0,
+    "retained": [],
     "expandedPreviousSpecialEntities": 4,
-    "expandedCandidateSpecialEntities": 3,
+    "expandedCandidateSpecialEntities": 4,
     "supersededStaleJointRowsRemoved": 0,
     "supersededStaleJointRowIds": [],
     "supersededLegacyReleaseSeriesRemoved": 0,
@@ -14262,8 +14245,18 @@
       "candyOnline20261020RowsCollapsed": 0,
       "sweetOnline20261023RowsCollapsed": 0,
       "sweetEbichu20261116RowsCollapsed": 0,
-      "semanticTicketDuplicatesRemoved": 0,
-      "semanticTicketDuplicateIds": [],
+      "semanticTicketDuplicatesRemoved": 9,
+      "semanticTicketDuplicateIds": [
+        "87c361b03ed58495",
+        "75877477f8e3de26",
+        "b0b0f1c99a28d68f",
+        "943395a81d9f05c3",
+        "c6fa1da4ad53fabd",
+        "aec98a196b90b4d6",
+        "c0b5d76fb2b896a5",
+        "cd5483c6c103b41a",
+        "3f4ad4c1b602984b"
+      ],
       "cutiePacificoFcLotteryFixed": 0,
       "sweetIdolHalloweenSaleFixed": 0,
       "sweetIdolHalloweenSaleAdded": 0,
@@ -14284,7 +14277,7 @@
         "rowsCollapsed": 0,
         "releaseEventEntities": 1,
         "largeBenefitEntities": 3,
-        "alreadyCanonicalRows": 3,
+        "alreadyCanonicalRows": 4,
         "internalScheduleRowsCollapsed": 0,
         "duplicateEventIdCollisions": 0,
         "duplicateEventRowsCollapsed": 0,
@@ -14318,12 +14311,12 @@
     "redundantSpecialOffersRemoved": 0,
     "redundantSpecialOfferIds": [],
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-11-01T04:36:38+09:00",
-    "checkedAt": "2026-11-01T04:36:38+09:00"
+    "publicUpdatedAt": "2026-11-01T05:10:32+09:00",
+    "checkedAt": "2026-11-01T05:10:32+09:00"
   },
   "renderWarnings": [
     {
-      "checkedAt": "2026-11-01T04:37:32+09:00",
+      "checkedAt": "2026-11-01T05:10:37+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one CANDY TUNE tour performance for 2026-10-04 OPEN 16:30 / START 17:30, found 0"
     }
@@ -27574,21 +27567,7 @@
       }
     ]
   },
-  "updatedAt": "2026-11-01T04:37:33+09:00",
-  "specialEventNormalization": {
-    "sourceSpecialRows": 4,
-    "canonicalSpecialEvents": 4,
-    "rowsCollapsed": 0,
-    "releaseEventEntities": 1,
-    "largeBenefitEntities": 3,
-    "alreadyCanonicalRows": 4,
-    "internalScheduleRowsCollapsed": 0,
-    "duplicateEventIdCollisions": 0,
-    "duplicateEventRowsCollapsed": 0,
-    "duplicateEventIdsDisambiguated": 0,
-    "duplicateEventIdRepairs": [],
-    "onlinePlaceholderOccurrencesMerged": 0
-  },
+  "updatedAt": "2026-11-01T05:10:37+09:00",
   "publicEvents": [
     {
       "id": "1b5fec5f58ba553f",
@@ -40148,5 +40127,33 @@
       "applicationDisplayMode": "offers",
       "applicationStatus": "offers"
     }
-  ]
+  ],
+  "specialEventNormalization": {
+    "sourceSpecialRows": 4,
+    "canonicalSpecialEvents": 4,
+    "rowsCollapsed": 0,
+    "releaseEventEntities": 1,
+    "largeBenefitEntities": 3,
+    "alreadyCanonicalRows": 4,
+    "internalScheduleRowsCollapsed": 0,
+    "duplicateEventIdCollisions": 0,
+    "duplicateEventRowsCollapsed": 0,
+    "duplicateEventIdsDisambiguated": 0,
+    "duplicateEventIdRepairs": [],
+    "onlinePlaceholderOccurrencesMerged": 0,
+    "publicEvents": {
+      "sourceSpecialRows": 4,
+      "canonicalSpecialEvents": 4,
+      "rowsCollapsed": 0,
+      "releaseEventEntities": 1,
+      "largeBenefitEntities": 3,
+      "alreadyCanonicalRows": 4,
+      "internalScheduleRowsCollapsed": 0,
+      "duplicateEventIdCollisions": 0,
+      "duplicateEventRowsCollapsed": 0,
+      "duplicateEventIdsDisambiguated": 0,
+      "duplicateEventIdRepairs": [],
+      "onlinePlaceholderOccurrencesMerged": 0
+    }
+  }
 }
