@@ -130,6 +130,73 @@
     return{group:group,day:day,title:title,titleKey:titleKey(title,group)};
   }
 
+  // A generic general sale from a group's official announcement may also
+  // appear as a direct playguide listing. Keep the actionable direct URL,
+  // but do not combine distinct guides, allocations or incomplete windows.
+  function plainGeneralSaleRow(row){
+    var title=clean(row.ticketType).normalize("NFKC")
+      .replace(/^(?:チケットぴあ|ぴあ|ローチケ|イープラス|eplus)\s*[｜|:：\s]*/i,"");
+    return /^一般(?:発売|販売)$/.test(title);
+  }
+
+  function guideOfUrl(value){
+    var url=safeSourceUrl(value);
+    if(!url)return "";
+    try{
+      var host=new URL(url).hostname.toLowerCase();
+      if(host==="t.pia.jp")return "pia";
+      if(host==="eplus.jp"||host.endsWith(".eplus.jp"))return "eplus";
+      if(host==="l-tike.com"||host.endsWith(".l-tike.com"))return "lawson";
+    }catch(_error){}
+    return "";
+  }
+
+  function officialAnnouncementUrl(value){
+    var url=safeSourceUrl(value);
+    if(!url)return false;
+    try{
+      var host=new URL(url).hostname.toLowerCase();
+      return host==="asobisystem.com"||host.endsWith(".asobisystem.com");
+    }catch(_error){return false;}
+  }
+
+  function guideOfHistoryRow(row){
+    var provider=clean(row.ticketProvider).toLowerCase();
+    if(provider==="pia"||provider==="eplus"||provider==="lawson")return provider;
+    var label=clean(row.ticketType);
+    if(/チケットぴあ|ぴあ/.test(label))return "pia";
+    if(/イープラス|eplus/i.test(label))return "eplus";
+    if(/ローチケ/.test(label))return "lawson";
+    return guideOfUrl(row.sourceUrl);
+  }
+
+  function sameCompleteWindow(a,b){
+    var start=clean(a.applyStart),end=clean(a.applyEnd);
+    return !!(start&&end&&start===clean(b.applyStart)&&end===clean(b.applyEnd));
+  }
+
+  function mergeGeneralSaleAnnouncementAliases(rows){
+    var direct=rows.filter(function(row){
+      return plainGeneralSaleRow(row)&&!!guideOfUrl(row.sourceUrl);
+    });
+    var removed=new Set();
+    rows.forEach(function(announcement){
+      if(!plainGeneralSaleRow(announcement)||!officialAnnouncementUrl(announcement.sourceUrl))return;
+      var statedGuide=guideOfHistoryRow(announcement);
+      var matches=direct.filter(function(candidate){
+        var directGuide=guideOfUrl(candidate.sourceUrl);
+        return candidate!==announcement&&sameCompleteWindow(announcement,candidate)&&
+          (!statedGuide||statedGuide===directGuide);
+      });
+      // Do not guess if multiple direct sales might be distinct.
+      if(matches.length===1)removed.add(announcement);
+    });
+    return rows.filter(function(row){return !removed.has(row);}).map(function(row){
+      var directGuide=plainGeneralSaleRow(row)?guideOfUrl(row.sourceUrl):"";
+      return directGuide?Object.assign({},row,{ticketProvider:directGuide}):row;
+    });
+  }
+
   function safeRowsForCard(card){
     var id=cardIdentity(card);
     if(!id.group||!id.day||!id.titleKey)return[];
@@ -139,12 +206,13 @@
       return rowKey===id.titleKey||(Math.min(rowKey.length,id.titleKey.length)>=8&&(rowKey.indexOf(id.titleKey)>=0||id.titleKey.indexOf(rowKey)>=0));
     });
     var seen={};
-    return rows.filter(function(row){
+    var unique=rows.filter(function(row){
       var signature=[row.ticketProvider,row.ticketType,row.applyStart,row.applyEnd].map(clean).join("|");
       if(seen[signature])return false;
       seen[signature]=true;
       return true;
     });
+    return mergeGeneralSaleAnnouncementAliases(unique);
   }
 
   function providerLabel(row){
