@@ -1,7 +1,7 @@
 {
   "date": "2026-11-02",
   "horizonDays": 7,
-  "generatedAt": "2026-11-02T08:51+09:00",
+  "generatedAt": "2026-11-02T18:54+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -17,12 +17,12 @@
       "areaCode": "140010",
       "areaName": "東部",
       "precision": "mesh5km",
-      "label": "くもり",
-      "max": 20.0,
-      "min": 14.0,
+      "label": "晴れ",
+      "max": 19.0,
+      "min": 13.0,
       "pop": "0",
       "popLabel": "06〜12時",
-      "issuedAt": "2026-11-02T05:00:00+09:00",
+      "issuedAt": "2026-11-02T17:00:00+09:00",
       "meshTime": "09:00",
       "meshTempBand": "15〜19℃",
       "coordinates": {
@@ -32,13 +32,13 @@
       "meshTimeline": [
         {
           "time": "06:00",
-          "label": "くもり",
+          "label": "晴れ",
           "validAt": "2026-11-03T06:00+09:00",
-          "temp": 14
+          "temp": 13
         },
         {
           "time": "09:00",
-          "label": "くもり",
+          "label": "晴れ",
           "validAt": "2026-11-03T09:00+09:00",
           "temp": 17
         },
@@ -46,7 +46,7 @@
           "time": "12:00",
           "label": "晴れ",
           "validAt": "2026-11-03T12:00+09:00",
-          "temp": 19
+          "temp": 18
         },
         {
           "time": "15:00",
@@ -72,6 +72,13 @@
           "validAt": "2026-11-04T00:00+09:00",
           "temp": 16
         }
+      ],
+      "hourlyRain": [
+        {
+          "time": "09:00",
+          "rain": false,
+          "validAt": "2026-11-03T09:00+09:00"
+        }
       ]
     },
     {
@@ -87,10 +94,10 @@
       "precision": "area",
       "label": "くもり",
       "max": 21.0,
-      "min": 14.0,
+      "min": 15.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-11-01T17:00:00+09:00",
+      "issuedAt": "2026-11-02T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -107,11 +114,11 @@
       "areaName": "南部",
       "precision": "area",
       "label": "くもり時々晴れ",
-      "max": 23.0,
-      "min": 15.0,
+      "max": 22.0,
+      "min": 14.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-11-01T17:00:00+09:00",
+      "issuedAt": "2026-11-02T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -128,11 +135,11 @@
       "areaName": "東京地方",
       "precision": "area",
       "label": "くもり時々晴れ",
-      "max": 22.0,
-      "min": 14.0,
+      "max": 23.0,
+      "min": 15.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-11-01T17:00:00+09:00",
+      "issuedAt": "2026-11-02T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -148,11 +155,11 @@
       "areaName": "東京地方",
       "precision": "area",
       "label": "晴れ時々くもり",
-      "max": 20.0,
-      "min": 12.0,
+      "max": 19.0,
+      "min": 11.0,
       "pop": "20",
       "popLabel": "1日",
-      "issuedAt": "2026-11-01T17:00:00+09:00",
+      "issuedAt": "2026-11-02T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -167,12 +174,12 @@
       "areaCode": "170010",
       "areaName": "石川県",
       "precision": "area",
-      "label": "くもり時々晴れ",
-      "max": 14.0,
-      "min": 7.0,
-      "pop": "30",
+      "label": "くもり一時雨",
+      "max": 15.0,
+      "min": 8.0,
+      "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-11-01T17:00:00+09:00",
+      "issuedAt": "2026-11-02T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -187,12 +194,12 @@
       "areaCode": "170010",
       "areaName": "石川県",
       "precision": "area",
-      "label": "くもり時々晴れ",
-      "max": 14.0,
-      "min": 7.0,
-      "pop": "30",
+      "label": "くもり一時雨",
+      "max": 15.0,
+      "min": 8.0,
+      "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-11-01T17:00:00+09:00",
+      "issuedAt": "2026-11-02T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -207,12 +214,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "晴れ時々くもり",
+      "label": "くもり時々晴れ",
       "max": 16.0,
-      "min": 10.0,
-      "pop": "20",
+      "min": 9.0,
+      "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-11-01T17:00:00+09:00",
+      "issuedAt": "2026-11-02T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -228,12 +235,33 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "晴れ時々くもり",
+      "label": "くもり時々晴れ",
       "max": 16.0,
-      "min": 10.0,
-      "pop": "20",
+      "min": 9.0,
+      "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-11-01T17:00:00+09:00",
+      "issuedAt": "2026-11-02T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-11-09",
+      "venue": "SGCホール有明",
+      "venueKey": "sgcホール有明",
+      "eventIds": [
+        "7982e4aa80108307",
+        "9bc14a8efd906321"
+      ],
+      "areaCode": "130010",
+      "areaName": "東京地方",
+      "precision": "area",
+      "label": "くもり時々晴れ",
+      "max": 17.0,
+      "min": 10.0,
+      "pop": "30",
+      "popLabel": "1日",
+      "issuedAt": "2026-11-02T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -242,23 +270,18 @@
   "stats": {
     "occurrencesInRange": 21,
     "uniqueVenueDates": 11,
-    "weatherEntries": 9,
+    "weatherEntries": 10,
     "meshEntries": 1,
-    "failures": 2,
+    "failures": 1,
     "meshTimelineEntries": 1,
     "meshExactTempSlots": 7,
-    "hourlyRainEntries": 0
+    "hourlyRainEntries": 1
   },
   "failures": [
     {
       "date": "2026-11-08",
       "venue": "神戸国際会館 こくさいホール",
       "reason": "都道府県を解決できません"
-    },
-    {
-      "date": "2026-11-09",
-      "venue": "SGCホール有明",
-      "reason": "開催日の予報がまだありません"
     }
   ]
 }
