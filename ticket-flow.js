@@ -207,7 +207,9 @@
     });
     var seen={};
     var unique=rows.filter(function(row){
-      var signature=[row.ticketProvider,row.ticketType,row.applyStart,row.applyEnd].map(clean).join("|");
+      // Separate direct playguide allocations can share a type and window.
+      var directUrl=plainGeneralSaleRow(row)&&guideOfUrl(row.sourceUrl)?clean(row.sourceUrl):"";
+      var signature=[row.ticketProvider,row.ticketType,row.applyStart,row.applyEnd,directUrl].map(clean).join("|");
       if(seen[signature])return false;
       seen[signature]=true;
       return true;
