@@ -27,3 +27,40 @@ for(const day of ['2026-12-12','2026-12-13']){
   assert(!flow.includes('プレリザーブ（初回）'),'unverified August sale unexpectedly published');
 }
 console.log('Christmas session fallback history: both dates validated');
+
+
+// Generic general sale alias regression: an official announcement and its
+// direct playguide application must be one row, without losing other offers.
+function saleCard(){
+  return {
+    getAttribute(name){
+      return name==='data-group'?'CUTIE STREET':'CUTIE STREET|2026-11-09|19:00';
+    },
+    querySelector(selector){
+      return selector==='h3'?{textContent:'🎤 古澤里紗 生誕祭 2026'}:null;
+    }
+  };
+}
+const saleBase={
+  publishable:true,flowEligible:true,windowCompleteness:'full',
+  group:'CUTIE STREET',eventDate:'2026-11-09',eventTitle:'古澤里紗 生誕祭 2026',
+  ticketType:'一般発売',applyStart:'2026-10-24T10:00',applyEnd:'2026-11-04T23:59'
+};
+const officialSale={...saleBase,ticketProvider:'pia',sourceUrl:'https://cutiestreet.asobisystem.com/news/detail/43664'};
+const directPia={...saleBase,ticketProvider:'official',sourceUrl:'https://t.pia.jp/pia/event/event.do?eventCd=2635640'};
+const secondGuide={...saleBase,ticketProvider:'eplus',sourceUrl:'https://eplus.jp/second-guide'};
+const differentWindow={...directPia,applyEnd:'2026-11-05T23:59'};
+const differentType={...directPia,ticketType:'一般発売（当日引換券）'};
+function stepCount(rows){
+  const output=context.flowTest.show({entries:rows},saleCard());
+  return {count:(output.match(/class="step(?: current)?"/g)||[]).length,output};
+}
+const single=stepCount([officialSale,directPia]);
+assert.strictEqual(single.count,1,'same pia general sale appeared twice');
+assert(single.output.includes('eventCd=2635640'),'direct application URL lost');
+assert(single.output.includes('チケットぴあ｜一般発売'),'provider label lost');
+assert.strictEqual(stepCount([officialSale,directPia,secondGuide]).count,2,'other guide was hidden');
+assert.strictEqual(stepCount([officialSale,differentWindow]).count,2,'different window was hidden');
+assert.strictEqual(stepCount([officialSale,differentType]).count,2,'different ticket type was hidden');
+assert.strictEqual(stepCount([officialSale,directPia,{...directPia,sourceUrl:'https://t.pia.jp/pia/event/event.do?eventCd=8765432'}]).count,3,'ambiguous lots were hidden');
+console.log('Generic general sale alias regression: passed');
