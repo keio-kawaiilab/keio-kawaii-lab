@@ -52,31 +52,6 @@
     return saleFamily(title,provider,url)+"|"+periodKey(period)+"|"+sourceKey(url);
   }
 
-  // An official announcement and a playguide application URL can describe
-  // one general sale. Match only plain general-sale aliases from the same
-  // provider and with identical, complete application windows.
-  function plainGeneralSale(title){
-    var value=clean(title).replace(/\s*[｜|]\s*/g,"|");
-    return /(?:^|\|)一般(?:発売|販売)$/.test(value);
-  }
-
-  function matchingGeneralHistoryStep(timeline,info){
-    if(!plainGeneralSale(info.title))return null;
-    var family=saleFamily(info.title,info.provider,info.url);
-    if(family!=="pia"&&family!=="eplus"&&family!=="lawson")return null;
-    var windowKey=periodKey(info.period);
-    if(!/^\d{2}-\d{2}T\d{2}:\d{2}\|\d{2}-\d{2}T\d{2}:\d{2}$/.test(windowKey))return null;
-    var matches=Array.prototype.slice.call(timeline.querySelectorAll(".step")).filter(function(step){
-      if(step.hasAttribute("data-ticket-flow-current"))return false;
-      var past=stepInfo(step);
-      return plainGeneralSale(past.title)&&
-        periodKey(past.period)===windowKey&&
-        saleFamily(past.title,"",past.url)===family;
-    });
-    // Ambiguous multiple matches could be separate ticket allocations.
-    return matches.length===1?matches[0]:null;
-  }
-
   function stepInfo(step){
     var titleNode=step.querySelector(".step-title");
     var periodNode=step.querySelector(".period");
@@ -278,16 +253,9 @@
       if(seen[info.key]){
         updateExistingStep(seen[info.key],info);
       }else{
-        var matchingHistory=matchingGeneralHistoryStep(timeline,info);
-        if(matchingHistory){
-          // Keep the history but prefer the current direct application link.
-          updateExistingStep(matchingHistory,info);
-          seen[info.key]=matchingHistory;
-        }else{
-          var step=makeStep(info);
-          timeline.appendChild(step);
-          seen[info.key]=step;
-        }
+        var step=makeStep(info);
+        timeline.appendChild(step);
+        seen[info.key]=step;
       }
     });
 
