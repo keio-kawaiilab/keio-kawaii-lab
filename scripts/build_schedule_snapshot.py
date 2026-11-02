@@ -439,7 +439,7 @@ def main() -> int:
     # Load the history renderer directly with a versioned URL so older indirect
     # loaders cannot keep using pre-sold-out history status logic.
     if 'data-ticket-flow' not in page:
-        page = page.replace('</body>', '<script src="./ticket-flow.js?v=20260914-history" data-ticket-flow defer></script>\n</body>', 1)
+        page = page.replace('</body>', '<script src="./ticket-flow.js?v=20261103-general-sale-dedupe" data-ticket-flow defer></script>\n</body>', 1)
 
     now = datetime.now(JST)
     today = now.date()
