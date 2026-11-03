@@ -1,7 +1,7 @@
 {
   "date": "2026-11-04",
   "horizonDays": 7,
-  "generatedAt": "2026-11-04T01:29+09:00",
+  "generatedAt": "2026-11-04T05:56+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -18,18 +18,62 @@
       "areaCode": "340010",
       "areaName": "南部",
       "precision": "mesh5km",
-      "label": "くもり",
-      "max": null,
-      "min": null,
-      "pop": null,
-      "popLabel": "",
-      "issuedAt": "2026-11-03T17:00:00+09:00",
-      "meshTime": "00:00",
-      "meshTempBand": "10〜14℃",
+      "label": "雨",
+      "max": 20.0,
+      "min": 14.0,
+      "pop": "40",
+      "popLabel": "18〜00時",
+      "issuedAt": "2026-11-04T05:00:00+09:00",
+      "meshTime": "18:00",
+      "meshTempBand": "15〜19℃",
       "coordinates": {
         "lat": 34.389542,
         "lon": 132.448868
-      }
+      },
+      "meshTimeline": [
+        {
+          "time": "06:00",
+          "label": "くもり",
+          "validAt": "2026-11-05T06:00+09:00",
+          "temp": 13
+        },
+        {
+          "time": "09:00",
+          "label": "くもり",
+          "validAt": "2026-11-05T09:00+09:00",
+          "temp": 15
+        },
+        {
+          "time": "12:00",
+          "label": "くもり",
+          "validAt": "2026-11-05T12:00+09:00",
+          "temp": 18
+        },
+        {
+          "time": "15:00",
+          "label": "雨",
+          "validAt": "2026-11-05T15:00+09:00",
+          "temp": 19
+        },
+        {
+          "time": "18:00",
+          "label": "雨",
+          "validAt": "2026-11-05T18:00+09:00",
+          "temp": 19
+        },
+        {
+          "time": "21:00",
+          "label": "くもり",
+          "validAt": "2026-11-05T21:00+09:00",
+          "temp": 19
+        },
+        {
+          "time": "24:00",
+          "label": "くもり",
+          "validAt": "2026-11-06T00:00+09:00",
+          "temp": 18
+        }
+      ]
     },
     {
       "date": "2026-11-06",
@@ -253,8 +297,8 @@
     "weatherEntries": 11,
     "meshEntries": 1,
     "failures": 2,
-    "meshTimelineEntries": 0,
-    "meshExactTempSlots": 0,
+    "meshTimelineEntries": 1,
+    "meshExactTempSlots": 7,
     "hourlyRainEntries": 0
   },
   "failures": [
