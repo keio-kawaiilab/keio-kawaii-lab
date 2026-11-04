@@ -17,9 +17,13 @@ PAGE = Path("schedule.html")
 
 KAWACOLLE_FAMILY = "kawacolle-tgc"
 LIVE_OR_TREAT_FAMILY = "fm-osaka-live-or-treat-2026"
+TGC_TOYAMA_FAMILY = "tgc-toyama-2026"
 
 KAWACOLLE_RE = re.compile(r"(?:KAWAII\s*LAB\.?\s*)?COLLECTION\s+produced\s+by\s+TGC", re.I)
 LIVE_OR_TREAT_RE = re.compile(r"FM(?:大阪|\s*OSAKA).*Live\s*or\s*Treat\s*2026", re.I)
+TGC_TOYAMA_RE = re.compile(
+    r"(?:TGC\s+TOYAMA\s+2026|TOKYO\s+GIRLS\s+COLLECTION\s+富山\s+2026)", re.I
+)
 ANNOUNCEMENT_RE = re.compile(r"開催決定|出演決定|受付開始|抽選受付|お知らせ", re.I)
 
 FAMILY_PROVENANCE = {
@@ -32,6 +36,11 @@ FAMILY_PROVENANCE = {
         "correctionId": "P2-external-fm-osaka-live-or-treat-2026",
         "sourceUrl": "https://morestar.asobisystem.com/news/detail/89194",
         "organizer": "FM大阪",
+    },
+    TGC_TOYAMA_FAMILY: {
+        "correctionId": "P2-external-tgc-toyama-2026",
+        "sourceUrl": "https://tgc.girlswalker.com/toyama/2026/ticket/",
+        "organizer": "株式会社W TOKYO",
     },
 }
 
@@ -63,6 +72,8 @@ def _family(event: dict[str, Any]) -> str:
         return KAWACOLLE_FAMILY
     if LIVE_OR_TREAT_RE.search(text):
         return LIVE_OR_TREAT_FAMILY
+    if TGC_TOYAMA_RE.search(text):
+        return TGC_TOYAMA_FAMILY
     return ""
 
 
@@ -104,7 +115,11 @@ def _merge_unique(values: list[Any]) -> list[str]:
 
 def _candidate_titles(rows: list[dict[str, Any]], family: str) -> list[str]:
     candidates: list[str] = []
-    matcher = KAWACOLLE_RE if family == KAWACOLLE_FAMILY else LIVE_OR_TREAT_RE
+    matcher = {
+        KAWACOLLE_FAMILY: KAWACOLLE_RE,
+        LIVE_OR_TREAT_FAMILY: LIVE_OR_TREAT_RE,
+        TGC_TOYAMA_FAMILY: TGC_TOYAMA_RE,
+    }[family]
     for row in rows:
         for field in ("eventTitle", "displayTitle", "title"):
             value = _text(row.get(field))
@@ -117,6 +132,8 @@ def _canonical_title(rows: list[dict[str, Any]], family: str) -> str:
     candidates = _candidate_titles(rows, family)
     if not candidates:
         return _text(rows[0].get("eventTitle") or rows[0].get("displayTitle") or rows[0].get("title"))
+    if family == TGC_TOYAMA_FAMILY:
+        return "TGC TOYAMA 2026 by TOKYO GIRLS COLLECTION"
 
     def score(value: str) -> tuple[int, int, int]:
         full_name = 0
@@ -216,6 +233,29 @@ def _merge_family_rows(rows: list[dict[str, Any]], family: str) -> dict[str, Any
     opened = _text(base.get("openTime")) or next((_text(row.get("openTime")) for row in rows if _text(row.get("openTime"))), "")
     venue = _text(base.get("venue")) or next((_text(row.get("venue")) for row in rows if _text(row.get("venue"))), "")
 
+    if family == TGC_TOYAMA_FAMILY:
+        day = "2026-11-21"
+        opened = "12:30"
+        start = "14:00"
+        venue = venue or "富山県 YKK AP ARENA"
+        source_url = FAMILY_PROVENANCE[TGC_TOYAMA_FAMILY]["sourceUrl"]
+        source_row_id = "known-tgc-toyama-eplus-extra-sale-20261121"
+        if not any(offer.get("sourceRowId") == source_row_id for offer in offers):
+            offers.append({
+                "sourceRowId": source_row_id,
+                "provider": "eplus",
+                "ticketProvider": "eplus",
+                "ticketType": "追加販売（先着）",
+                "url": source_url,
+                "urls": [source_url, "https://eplus.jp/sf/detail/0132130034"],
+                "applyStart": "2026-11-07T10:00",
+                "applicationWindowVerified": True,
+                "applicationWindowSource": source_url,
+                "sourceType": "official",
+                "primarySource": "official",
+                "sourceChannel": "known-official-correction",
+            })
+
     source_ids = _merge_unique(
         [
             value
@@ -268,6 +308,11 @@ def _merge_family_rows(rows: list[dict[str, Any]], family: str) -> dict[str, Any
         preferred = next((url for url in urls if family == KAWACOLLE_FAMILY and "kawaiilab.asobisystem.com" in url), "")
         if not preferred and family == LIVE_OR_TREAT_FAMILY:
             preferred = next((url for url in urls if "morestar.asobisystem.com" in url), "")
+        if family == TGC_TOYAMA_FAMILY:
+            preferred = provenance["sourceUrl"]
+            if preferred not in urls:
+                urls.append(preferred)
+                base["urls"] = urls
         base["url"] = preferred or urls[0]
 
     if title:
@@ -275,7 +320,7 @@ def _merge_family_rows(rows: list[dict[str, Any]], family: str) -> dict[str, Any
         base["eventTitle"] = title
         base["displayTitle"] = title
 
-    if family == KAWACOLLE_FAMILY:
+    if family in {KAWACOLLE_FAMILY, TGC_TOYAMA_FAMILY}:
         base["group"] = "KAWAII LAB.合同"
         base["participants"] = participants
     elif participants:
@@ -392,6 +437,23 @@ def _validate_known_public_events(events: list[dict[str, Any]]) -> None:
             raise RuntimeError(f"Kawacolle 2026-10-12 must be one public event, got {len(kawacolle)}")
         if kawacolle[0].get("eventScope") != "external":
             raise RuntimeError("Kawacolle 2026-10-12 is not external in the public model")
+
+    tgc_toyama = [
+        event for event in events
+        if _family(event) == TGC_TOYAMA_FAMILY and _day(event) == "2026-11-21"
+    ]
+    if tgc_toyama:
+        if len(tgc_toyama) != 1:
+            raise RuntimeError(f"TGC Toyama 2026-11-21 must be one public event, got {len(tgc_toyama)}")
+        event = tgc_toyama[0]
+        if event.get("eventScope") != "external" or event.get("group") != "KAWAII LAB.合同":
+            raise RuntimeError("TGC Toyama 2026-11-21 is not one external joint event")
+        if event.get("openTime") != "12:30" or event.get("startTime") != "14:00":
+            raise RuntimeError("TGC Toyama 2026-11-21 has incorrect official times")
+        if not {"CANDY TUNE", "SWEET STEADY", "MORE STAR"}.issubset(set(event.get("participants") or [])):
+            raise RuntimeError("TGC Toyama 2026-11-21 is missing confirmed KAWAII LAB. participants")
+        if not any(offer.get("applyStart") == "2026-11-07T10:00" for offer in event.get("offers") or []):
+            raise RuntimeError("TGC Toyama 2026-11-21 is missing the verified eplus extra sale")
 
     live_or_treat = [
         event for event in events
