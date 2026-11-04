@@ -1,7 +1,7 @@
 {
-  "date": "2026-11-04",
+  "date": "2026-11-05",
   "horizonDays": 7,
-  "generatedAt": "2026-11-04T18:47+09:00",
+  "generatedAt": "2026-11-05T06:15+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -13,17 +13,17 @@
       "venueKey": "広島文化学園hbgホール",
       "eventIds": [
         "933b035dad6018f9",
-        "87c361b03ed58495"
+        "d8513aba1d82ecae"
       ],
       "areaCode": "340010",
       "areaName": "南部",
       "precision": "mesh5km",
       "label": "雨",
       "max": 20.0,
-      "min": 13.0,
-      "pop": "50",
+      "min": 20.0,
+      "pop": "40",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-11-04T17:00:00+09:00",
+      "issuedAt": "2026-11-05T05:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "15〜19℃",
       "coordinates": {
@@ -32,22 +32,16 @@
       },
       "meshTimeline": [
         {
-          "time": "06:00",
-          "label": "くもり",
-          "validAt": "2026-11-05T06:00+09:00",
-          "temp": 12
-        },
-        {
           "time": "09:00",
           "label": "くもり",
           "validAt": "2026-11-05T09:00+09:00",
-          "temp": 15
+          "temp": 14
         },
         {
           "time": "12:00",
-          "label": "くもり",
+          "label": "雨",
           "validAt": "2026-11-05T12:00+09:00",
-          "temp": 17
+          "temp": 18
         },
         {
           "time": "15:00",
@@ -59,19 +53,36 @@
           "time": "18:00",
           "label": "雨",
           "validAt": "2026-11-05T18:00+09:00",
-          "temp": 19
+          "temp": 17
         },
         {
           "time": "21:00",
           "label": "くもり",
           "validAt": "2026-11-05T21:00+09:00",
-          "temp": 19
+          "temp": 17
         },
         {
           "time": "24:00",
           "label": "くもり",
           "validAt": "2026-11-06T00:00+09:00",
-          "temp": 17
+          "temp": 16
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "18:00",
+          "rain": true,
+          "validAt": "2026-11-05T18:00+09:00"
+        },
+        {
+          "time": "19:00",
+          "rain": false,
+          "validAt": "2026-11-05T19:00+09:00"
+        },
+        {
+          "time": "20:00",
+          "rain": false,
+          "validAt": "2026-11-05T20:00+09:00"
         }
       ]
     },
@@ -85,37 +96,131 @@
       ],
       "areaCode": "340010",
       "areaName": "南部",
-      "precision": "area",
-      "label": "晴れ 時々 くもり",
-      "max": null,
-      "min": null,
-      "pop": null,
-      "popLabel": "",
-      "issuedAt": "2026-11-04T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "precision": "mesh5km",
+      "label": "晴れ",
+      "max": 21.0,
+      "min": 14.0,
+      "pop": "0",
+      "popLabel": "18〜00時",
+      "issuedAt": "2026-11-05T05:00:00+09:00",
+      "meshTime": "18:00",
+      "meshTempBand": "15〜19℃",
+      "coordinates": {
+        "lat": 34.389542,
+        "lon": 132.448868
+      },
+      "meshTimeline": [
+        {
+          "time": "06:00",
+          "label": "晴れ",
+          "validAt": "2026-11-06T06:00+09:00",
+          "temp": 15
+        },
+        {
+          "time": "09:00",
+          "label": "晴れ",
+          "validAt": "2026-11-06T09:00+09:00",
+          "temp": 17
+        },
+        {
+          "time": "12:00",
+          "label": "晴れ",
+          "validAt": "2026-11-06T12:00+09:00",
+          "temp": 19
+        },
+        {
+          "time": "15:00",
+          "label": "晴れ",
+          "validAt": "2026-11-06T15:00+09:00",
+          "temp": 20
+        },
+        {
+          "time": "18:00",
+          "label": "晴れ",
+          "validAt": "2026-11-06T18:00+09:00",
+          "temp": 15
+        },
+        {
+          "time": "21:00",
+          "label": "晴れ",
+          "validAt": "2026-11-06T21:00+09:00",
+          "temp": 13
+        },
+        {
+          "time": "24:00",
+          "label": "晴れ",
+          "validAt": "2026-11-07T00:00+09:00",
+          "temp": 12
+        }
+      ]
     },
     {
       "date": "2026-11-06",
       "venue": "東京都 東京ガーデンシアター",
       "venueKey": "東京ガーデンシアター",
       "eventIds": [
-        "2dbde6ab2348f141",
+        "12ab4274126d6dc2",
         "fa3d8146d4557bb2"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
-      "precision": "area",
-      "label": "晴れ 時々 くもり",
-      "max": null,
-      "min": null,
-      "pop": null,
-      "popLabel": "",
-      "issuedAt": "2026-11-04T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "precision": "mesh5km",
+      "label": "くもり",
+      "max": 24.0,
+      "min": 14.0,
+      "pop": "0",
+      "popLabel": "18〜00時",
+      "issuedAt": "2026-11-05T05:00:00+09:00",
+      "meshTime": "18:00",
+      "meshTempBand": "20〜24℃",
+      "coordinates": {
+        "lat": 35.637161,
+        "lon": 139.790894
+      },
+      "meshTimeline": [
+        {
+          "time": "06:00",
+          "label": "晴れ",
+          "validAt": "2026-11-06T06:00+09:00",
+          "temp": 16
+        },
+        {
+          "time": "09:00",
+          "label": "晴れ",
+          "validAt": "2026-11-06T09:00+09:00",
+          "temp": 20
+        },
+        {
+          "time": "12:00",
+          "label": "晴れ",
+          "validAt": "2026-11-06T12:00+09:00",
+          "temp": 24
+        },
+        {
+          "time": "15:00",
+          "label": "晴れ",
+          "validAt": "2026-11-06T15:00+09:00",
+          "temp": 22
+        },
+        {
+          "time": "18:00",
+          "label": "くもり",
+          "validAt": "2026-11-06T18:00+09:00",
+          "temp": 21
+        },
+        {
+          "time": "21:00",
+          "label": "晴れ",
+          "validAt": "2026-11-06T21:00+09:00",
+          "temp": 19
+        },
+        {
+          "time": "24:00",
+          "label": "晴れ",
+          "validAt": "2026-11-07T00:00+09:00",
+          "temp": 17
+        }
+      ]
     },
     {
       "date": "2026-11-07",
@@ -306,19 +411,34 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 28,
-    "uniqueVenueDates": 13,
+    "occurrencesInRange": 37,
+    "uniqueVenueDates": 16,
     "weatherEntries": 12,
-    "meshEntries": 1,
-    "failures": 1,
-    "meshTimelineEntries": 1,
-    "meshExactTempSlots": 7,
-    "hourlyRainEntries": 0
+    "meshEntries": 3,
+    "failures": 4,
+    "meshTimelineEntries": 3,
+    "meshExactTempSlots": 20,
+    "hourlyRainEntries": 1
   },
   "failures": [
     {
       "date": "2026-11-08",
       "venue": "神戸国際会館 こくさいホール",
+      "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-11-12",
+      "venue": "ヒューリックホール東京",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-11-12",
+      "venue": "広島県 広島文化学園HBGホール",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-11-12",
+      "venue": "北海道 札幌文化芸術劇場 hitaru",
       "reason": "都道府県を解決できません"
     }
   ]
