@@ -213,13 +213,24 @@ def install_fifth_tour_presale_grouping(page: str) -> str:
         ("out.forEach(function(m){m.location=locationLabel(m.events);var sorted=", "out.forEach(function(m){m.location=locationLabel(m.events);if(fifthTour(m.event)&&m.event.canonicalRuntimeRole==='offer'&&/FC先行/.test(String(m.event.ticketType||''))){var fc={};m.events.forEach(function(e){var k=String(e.ticketType||'').replace(/\\s*FC先行$/,'');if(k)fc[k]=1});m.ticketDisplay='FC先行（'+Object.keys(fc).length+'グループ）';m.location='全公演'}var sorted="),
         ("band:r,location:item.location,performanceKey:item.performanceKey", "band:r,location:item.location,ticketDisplay:item.ticketDisplay,performanceKey:item.performanceKey"),
         ("providerName(e)+'｜'+(e.ticketType||'申込')+'｜'", "providerName(e)+'｜'+(item.ticketDisplay||e.ticketType||'申込')+'｜'"),
-        ("providerName(x.event)+'｜'+(x.event.ticketType||'申込')+'｜'", "providerName(x.event)+'｜'+(x.ticketDisplay||x.event.ticketType||'申込')+'｜'"),
     )
     for old, new in replacements:
         if new in page:
             continue
         if page.count(old) != 1:
             raise RuntimeError("5th tour presale grouping cannot be installed safely")
+        page = page.replace(old, new, 1)
+
+    # Older shells rendered a second, overflow-only band list. That renderer
+    # was removed when every reception was moved into its date-aligned week,
+    # so neither its old nor patched expression is expected in current pages.
+    # Keep upgrading it when found in a historical shell, without requiring
+    # obsolete markup to remain present in every newly generated page.
+    old = "providerName(x.event)+'｜'+(x.event.ticketType||'申込')+'｜'"
+    new = "providerName(x.event)+'｜'+(x.ticketDisplay||x.event.ticketType||'申込')+'｜'"
+    if old in page and new not in page:
+        if page.count(old) != 1:
+            raise RuntimeError("5th tour legacy band grouping cannot be installed safely")
         page = page.replace(old, new, 1)
     return page
 
