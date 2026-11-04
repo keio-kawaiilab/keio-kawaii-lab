@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - "scripts/build_schedule_snapshot.py"
+      - "scripts/test_build_schedule_snapshot.py"
       - "scripts/verified_general_sales.py"
       - "data/verified-general-sales.json"
       - "scripts/test_general_sale_runtime.js"
@@ -40,6 +41,8 @@ jobs:
           python-version: "3.12"
       - name: Build schedule snapshot
         run: python scripts/build_schedule_snapshot.py
+      - name: Test schedule snapshot helpers
+        run: python scripts/test_build_schedule_snapshot.py
       - name: Apply schedule shell guards
         run: python scripts/fix_schedule_shell.py
       - name: Strip schedule explanations
