@@ -37,6 +37,7 @@ on:
       - "scripts/merge_distributed_schedule_snapshots.py"
       - "scripts/test_merge_distributed_schedule_snapshots.py"
       - "scripts/normalize_special_event_entities.py"
+      - "scripts/normalize_external_event_public_view.py"
       - "scripts/enforce_physical_event_invariant.py"
       - "scripts/expand_special_event_entities.py"
       - "scripts/apply_known_schedule_corrections.py"
@@ -536,6 +537,7 @@ jobs:
           python scripts/fix_schedule_shell.py
           python scripts/install_performance_public_view.py
           python scripts/strip_schedule_explanations.py
+          python scripts/normalize_external_event_public_view.py
           node --check /tmp/schedule-inline.js
           node scripts/test_schedule_band_grouping.js
           node scripts/test_schedule_scope_ui.js
