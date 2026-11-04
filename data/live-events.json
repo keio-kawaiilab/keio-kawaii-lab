@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-05T01:42:47+09:00",
+  "checkedAt": "2026-11-05T01:44:04+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-29T07:50:44+09:00",
     "scannedPages": {
@@ -12209,7 +12209,7 @@
   },
   "renderWarnings": [
     {
-      "checkedAt": "2026-11-05T01:42:47+09:00",
+      "checkedAt": "2026-11-05T01:44:03+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one CANDY TUNE tour performance for 2026-10-04 OPEN 16:30 / START 17:30, found 0"
     }
@@ -25427,7 +25427,7 @@
       }
     ]
   },
-  "updatedAt": "2026-11-05T01:42:47+09:00",
+  "updatedAt": "2026-11-05T01:44:04+09:00",
   "specialEventNormalization": {
     "sourceSpecialRows": 3,
     "canonicalSpecialEvents": 3,
@@ -25440,7 +25440,21 @@
     "duplicateEventRowsCollapsed": 0,
     "duplicateEventIdsDisambiguated": 0,
     "duplicateEventIdRepairs": [],
-    "onlinePlaceholderOccurrencesMerged": 0
+    "onlinePlaceholderOccurrencesMerged": 0,
+    "publicEvents": {
+      "sourceSpecialRows": 3,
+      "canonicalSpecialEvents": 3,
+      "rowsCollapsed": 0,
+      "releaseEventEntities": 1,
+      "largeBenefitEntities": 2,
+      "alreadyCanonicalRows": 3,
+      "internalScheduleRowsCollapsed": 0,
+      "duplicateEventIdCollisions": 0,
+      "duplicateEventRowsCollapsed": 0,
+      "duplicateEventIdsDisambiguated": 0,
+      "duplicateEventIdRepairs": [],
+      "onlinePlaceholderOccurrencesMerged": 0
+    }
   },
   "publicEvents": [
     {
@@ -26284,10 +26298,10 @@
       "startTime": "14:00",
       "url": "https://tgc.girlswalker.com/toyama/2026/ticket/",
       "urls": [
+        "https://tgc.girlswalker.com/toyama/2026/ticket/",
         "https://candytune.asobisystem.com/live_information/detail/44995",
         "https://sweetsteady.asobisystem.com/live_information/detail/44463",
-        "https://morestar.asobisystem.com/live_information/detail/45675",
-        "https://tgc.girlswalker.com/toyama/2026/ticket/"
+        "https://morestar.asobisystem.com/live_information/detail/45675"
       ],
       "sourceType": "official-schedule",
       "primarySource": "official",
@@ -26334,16 +26348,12 @@
           "sourceChannel": "known-official-correction"
         }
       ],
-      "ticketType": "追加販売（先着）",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers",
       "sourceRowIds": [
         "ecdd86be6e667177",
         "26d0069375101fa4"
       ],
       "mergedPublicEventIds": [
-        "ecdd86be6e667177",
-        "26d0069375101fa4"
+        "performance-external-tgc-toyama-2026-2026-11-21-14-00-ykkaparena"
       ],
       "displayTitle": "TGC TOYAMA 2026 by TOKYO GIRLS COLLECTION",
       "participants": [
@@ -26351,7 +26361,10 @@
         "SWEET STEADY",
         "MORE STAR"
       ],
-      "performanceKey": "external|tgc-toyama-2026|2026-11-21|14:00|ykkaparena"
+      "performanceKey": "external|tgc-toyama-2026|2026-11-21|14:00|ykkaparena",
+      "ticketType": "追加販売（先着）",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers"
     },
     {
       "id": "6de23ca08e7c06b7",
