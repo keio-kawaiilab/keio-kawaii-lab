@@ -1,7 +1,7 @@
 {
   "date": "2026-11-04",
   "horizonDays": 7,
-  "generatedAt": "2026-11-04T09:51+09:00",
+  "generatedAt": "2026-11-04T18:47+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -20,10 +20,10 @@
       "precision": "mesh5km",
       "label": "雨",
       "max": 20.0,
-      "min": 14.0,
-      "pop": "40",
+      "min": 13.0,
+      "pop": "50",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-11-04T05:00:00+09:00",
+      "issuedAt": "2026-11-04T17:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "15〜19℃",
       "coordinates": {
@@ -35,7 +35,7 @@
           "time": "06:00",
           "label": "くもり",
           "validAt": "2026-11-05T06:00+09:00",
-          "temp": 13
+          "temp": 12
         },
         {
           "time": "09:00",
@@ -47,7 +47,7 @@
           "time": "12:00",
           "label": "くもり",
           "validAt": "2026-11-05T12:00+09:00",
-          "temp": 18
+          "temp": 17
         },
         {
           "time": "15:00",
@@ -71,7 +71,7 @@
           "time": "24:00",
           "label": "くもり",
           "validAt": "2026-11-06T00:00+09:00",
-          "temp": 18
+          "temp": 17
         }
       ]
     },
@@ -86,12 +86,12 @@
       "areaCode": "340010",
       "areaName": "南部",
       "precision": "area",
-      "label": "晴れ時々くもり",
-      "max": 22.0,
-      "min": 14.0,
-      "pop": "20",
-      "popLabel": "1日",
-      "issuedAt": "2026-11-03T17:00:00+09:00",
+      "label": "晴れ 時々 くもり",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-11-04T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -107,12 +107,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "くもり時々晴れ",
-      "max": 24.0,
-      "min": 16.0,
-      "pop": "30",
-      "popLabel": "1日",
-      "issuedAt": "2026-11-03T17:00:00+09:00",
+      "label": "晴れ 時々 くもり",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-11-04T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -132,7 +132,7 @@
       "min": 12.0,
       "pop": "20",
       "popLabel": "1日",
-      "issuedAt": "2026-11-03T17:00:00+09:00",
+      "issuedAt": "2026-11-04T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -148,11 +148,11 @@
       "areaName": "石川県",
       "precision": "area",
       "label": "くもり一時雨",
-      "max": 14.0,
-      "min": 8.0,
+      "max": 15.0,
+      "min": 7.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-11-03T17:00:00+09:00",
+      "issuedAt": "2026-11-04T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -168,11 +168,11 @@
       "areaName": "石川県",
       "precision": "area",
       "label": "くもり一時雨",
-      "max": 14.0,
-      "min": 8.0,
+      "max": 15.0,
+      "min": 7.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-11-03T17:00:00+09:00",
+      "issuedAt": "2026-11-04T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -192,7 +192,7 @@
       "min": 10.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-11-03T17:00:00+09:00",
+      "issuedAt": "2026-11-04T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -213,7 +213,7 @@
       "min": 10.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-11-03T17:00:00+09:00",
+      "issuedAt": "2026-11-04T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -234,7 +234,7 @@
       "min": 10.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-11-03T17:00:00+09:00",
+      "issuedAt": "2026-11-04T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -244,28 +244,21 @@
       "venue": "鳥取県 米子コンベンションセンター",
       "venueKey": "米子コンベンションセンター",
       "eventIds": [
-        "960fda0ccfa073c9",
-        "9dfde12963eddb40",
-        "ac1228324b5a2910",
-        "cde8a2920f62d533",
         "f641c49b15d0f20a",
         "cd207cc6c067e7dc",
-        "036b39a0249895c3",
-        "3090876e64521ccf",
         "4c9822d074190104",
         "ac05040f2cd5e240",
-        "b71342205537f8ba",
         "d193583799747ab5"
       ],
       "areaCode": "310020",
       "areaName": "鳥取県",
       "precision": "area",
       "label": "くもり一時雨",
-      "max": 16.0,
-      "min": 8.0,
+      "max": 15.0,
+      "min": 7.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-11-03T17:00:00+09:00",
+      "issuedAt": "2026-11-04T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -281,22 +274,43 @@
       "areaName": "鳥取県",
       "precision": "area",
       "label": "くもり一時雨",
-      "max": 16.0,
-      "min": 8.0,
+      "max": 15.0,
+      "min": 7.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-11-03T17:00:00+09:00",
+      "issuedAt": "2026-11-04T17:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-11-11",
+      "venue": "SGCホール有明",
+      "venueKey": "sgcホール有明",
+      "eventIds": [
+        "c6319240c83b4dde",
+        "f8da529712bde619"
+      ],
+      "areaCode": "130010",
+      "areaName": "東京地方",
+      "precision": "area",
+      "label": "くもり時々晴れ",
+      "max": 16.0,
+      "min": 7.0,
+      "pop": "30",
+      "popLabel": "1日",
+      "issuedAt": "2026-11-04T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
     }
   ],
   "stats": {
-    "occurrencesInRange": 35,
+    "occurrencesInRange": 28,
     "uniqueVenueDates": 13,
-    "weatherEntries": 11,
+    "weatherEntries": 12,
     "meshEntries": 1,
-    "failures": 2,
+    "failures": 1,
     "meshTimelineEntries": 1,
     "meshExactTempSlots": 7,
     "hourlyRainEntries": 0
@@ -306,11 +320,6 @@
       "date": "2026-11-08",
       "venue": "神戸国際会館 こくさいホール",
       "reason": "都道府県を解決できません"
-    },
-    {
-      "date": "2026-11-11",
-      "venue": "SGCホール有明",
-      "reason": "開催日の予報がまだありません"
     }
   ]
 }
