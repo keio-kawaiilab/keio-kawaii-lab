@@ -26,7 +26,11 @@ class ContinuousDiscoveryTests(unittest.TestCase):
                 "url": publication.SWEET_IDOL_HALLOWEEN_TICKET,
             }],
         }]
-        report = publication.audit({"observations": [{"expectedOffers": [expected]}]}, {"publicEvents": public})
+        report = publication.audit(
+            {"observations": [{"expectedOffers": [expected]}]},
+            {"publicEvents": public},
+            today=date(2026, 10, 30),
+        )
         self.assertEqual(1, report["representedOffers"])
         self.assertEqual([], report["missingOffers"])
 
