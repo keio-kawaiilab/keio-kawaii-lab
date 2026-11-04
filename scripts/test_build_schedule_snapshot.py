@@ -1,11 +1,17 @@
 import unittest
 from datetime import datetime
+from pathlib import Path
 
 import build_schedule_snapshot as b
 import fix_schedule_shell as shell
 
 
 class ScheduleSnapshotTests(unittest.TestCase):
+    def test_fifth_tour_grouping_accepts_current_shell_without_removed_overflow_list(self):
+        page = Path("schedule.html").read_text(encoding="utf-8")
+        self.assertNotIn("providerName(x.event)", page)
+        self.assertEqual(page, shell.install_fifth_tour_presale_grouping(page))
+
     def test_runtime_parses_ticket_moments_as_jst(self):
         page = "<script>" + shell.MOMENT_LOCAL_JS + "</script>"
         patched = shell.install_jst_ticket_moments(page)
