@@ -11,6 +11,8 @@ on:
       - "scripts/test_augment_recent_official_news.py"
       - "scripts/apply_known_schedule_corrections.py"
       - "scripts/test_apply_known_schedule_corrections.py"
+      - "scripts/dedupe_verified_free_live.py"
+      - "scripts/test_dedupe_verified_free_live.py"
   schedule:
     # Offset from the primary :00/:15/:30/:45 distributed refresh.
     - cron: "7,22,37,52 * * * *"
@@ -47,7 +49,7 @@ jobs:
 
       - name: Test discovery merge and umbrella inference
         working-directory: scripts
-        run: python -m unittest -v test_augment_recent_official_news.py test_apply_known_schedule_corrections.py
+        run: python -m unittest -v test_augment_recent_official_news.py test_apply_known_schedule_corrections.py test_dedupe_verified_free_live.py
 
       - name: Preserve last-good public data
         shell: bash

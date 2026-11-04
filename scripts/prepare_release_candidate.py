@@ -8,6 +8,7 @@ from datetime import datetime
 from pathlib import Path
 
 import dedupe_official_x_series as official_x_dedupe
+import dedupe_verified_free_live as verified_free_live
 import sanitize_live_events as sanitizer
 from apply_known_schedule_corrections import apply_known_corrections
 from expand_special_event_entities import expand_payload
@@ -567,6 +568,7 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
     events, duplicate_ids_removed_after_retention = dedupe_ids(events)
     events, official_x_report = official_x_dedupe.collapse(events)
     events, known_correction_report = apply_known_corrections(events)
+    events, verified_free_live_report = verified_free_live.collapse(events)
     events, redundant_schedule_shadows = drop_redundant_official_schedule_shadows(events)
     events, guard_rejected_rows_quarantined = quarantine_guard_rejected_rows(events)
     events, duplicate_fc_ids = dedupe_official_fc_offers(events)
@@ -591,6 +593,7 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
         "supersededLegacyReleaseSeriesRemoved": len(superseded_legacy_release_series),
         "supersededLegacyReleaseSeriesIds": superseded_legacy_release_series,
         **official_x_report,
+        **verified_free_live_report,
         "knownScheduleCorrections": known_correction_report,
         "redundantOfficialScheduleShadowsRemoved": len(redundant_schedule_shadows),
         "redundantOfficialScheduleShadowIds": redundant_schedule_shadows,
