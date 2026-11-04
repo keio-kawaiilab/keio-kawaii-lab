@@ -1,7 +1,7 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-04T18:10:34.839493+09:00",
-  "candidateUpdatedAt": "2026-11-04T18:10:34+09:00",
+  "generatedAt": "2026-11-04T18:54:25.263648+09:00",
+  "candidateUpdatedAt": "2026-11-04T18:54:24+09:00",
   "previousEventCount": 281,
   "candidateEventCount": 280,
   "protectedPreviousCount": 278,
@@ -27,7 +27,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
     "ended playguide row removed: KAWAII LAB.合同 / KAWAII LAB. Christmas SESSION 2026 / 現在受付なし"
   ],
-  "candidateSha256": "313d791f4d5f15f98ca058e67bbb60bf5bcfe9ae5102f0315d32561394069ef1",
+  "candidateSha256": "b513ad5c4fac91f8b1690bb8d03e8720eff4e57c7cb86722d93018a59dacc77e",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -322,11 +322,6 @@
       "restoredPreviousRows": 4
     },
     {
-      "error": "result date is before application deadline: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / プレリザーブ",
-      "action": "restored previous row",
-      "restoredPreviousRows": 1
-    },
-    {
       "error": "Pia row contains FC/upgrade-only sale: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / FC先行",
       "action": "withheld new/ambiguous row",
       "restoredPreviousRows": 1
@@ -345,6 +340,11 @@
       "error": "active Pia row has no lotRlsCd detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
       "action": "restored previous row",
       "restoredPreviousRows": 4
+    },
+    {
+      "error": "active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / 「FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - Secret Code」公演 リセールサービスのお知らせ / リセール",
+      "action": "restored previous rows for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
+      "restoredPreviousRows": 8
     },
     {
       "error": "future performance dates disappeared for url:https://w.pia.jp/v/kls-xmas26upg6/?_normalbrowse_=1: 2026-12-13",
