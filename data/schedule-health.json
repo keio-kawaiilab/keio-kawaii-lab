@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-04T20:27:35.590549+09:00",
-  "candidateUpdatedAt": "2026-11-04T20:27:34+09:00",
-  "previousEventCount": 281,
-  "candidateEventCount": 284,
-  "protectedPreviousCount": 278,
+  "generatedAt": "2026-11-04T20:42:47.179215+09:00",
+  "candidateUpdatedAt": "2026-11-04T20:42:46+09:00",
+  "previousEventCount": 284,
+  "candidateEventCount": 283,
+  "protectedPreviousCount": 280,
   "errorCount": 0,
   "warningCount": 29,
   "errors": [],
@@ -39,7 +39,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ"
   ],
-  "candidateSha256": "cb57bb3008ebd0639fa3eab9b7c1606e6ad0f41239be7963002487707a367ea1",
+  "candidateSha256": "cb5f03080158e47a631430fbcf35f198f0e2414616461b421cb75af3c17ae7e1",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/6eb8e3c96d6f97adcc18f9bebd263edc?_normalbrowse_=1",
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
@@ -414,11 +414,18 @@
     "reassignedCount": 0,
     "hydratedCount": 0,
     "ambiguousCount": 0,
-    "unresolvedCount": 0,
+    "unresolvedCount": 1,
     "reassigned": [],
     "hydrated": [],
     "ambiguous": [],
-    "unresolved": [],
+    "unresolved": [
+      {
+        "group": "CUTIE STREET",
+        "date": "2026-11-06",
+        "url": "https://cutiestreet.asobisystem.com/live_information/detail/46742",
+        "representedBy": "2dbde6ab2348f141"
+      }
+    ],
     "duplicateOfficialResaleWindowsRemoved": 0
   }
 }
