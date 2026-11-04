@@ -45,6 +45,7 @@ jobs:
           python scripts/install_performance_public_view.py
           python scripts/strip_schedule_explanations.py
           python scripts/enforce_physical_performance_identity.py
+          python scripts/normalize_external_event_public_view.py
           python scripts/guard_candy_tune_tour_integrity.py --data data/live-events.json --html schedule.html
           node --check /tmp/schedule-inline.js
 
