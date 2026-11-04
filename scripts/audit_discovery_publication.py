@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -143,7 +143,14 @@ def _group_represented(expected, entity, offer):
             and expected_url in source_urls)
 
 
-def audit(state, payload, history=None):
+def audit(state, payload, history=None, *, today: date | None = None):
+    """Compare collected offers with the public model for one publication day.
+
+    ``today`` is injectable so date-bound source corrections remain testable
+    after their event date.  Production callers omit it and continue to use
+    the current JST calendar day.
+    """
+    today_iso = (today or datetime.now(JST).date()).isoformat()
     public = payload.get("publicEvents", [])
     missing, represented, archived = [], 0, 0
     for observation in state.get("observations", []):
@@ -153,13 +160,13 @@ def audit(state, payload, history=None):
             # absent reception in the ticket-publication audit.
             if expected.get("ticketType") in (None, "", "現在受付なし"):
                 continue
-            if str(expected.get("eventDate") or "") < datetime.now(JST).date().isoformat():
+            if str(expected.get("eventDate") or "") < today_iso:
                 continue
             if _verified_replacement_represented(expected, public):
                 represented += 1
                 continue
             end = str(expected.get("applyEnd") or "")
-            if end and end[:10] < datetime.now(JST).date().isoformat():
+            if end and end[:10] < today_iso:
                 if any(all(entry.get(key) == expected.get(key) for key in ("group", "eventDate", "ticketType", "applyStart", "applyEnd"))
                        for entry in (history or {}).get("entries", [])):
                     archived += 1
