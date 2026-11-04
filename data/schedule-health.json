@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-04T17:18:06.108381+09:00",
-  "candidateUpdatedAt": "2026-11-04T17:18:05+09:00",
-  "previousEventCount": 288,
+  "generatedAt": "2026-11-04T18:10:34.839493+09:00",
+  "candidateUpdatedAt": "2026-11-04T18:10:34+09:00",
+  "previousEventCount": 281,
   "candidateEventCount": 280,
-  "protectedPreviousCount": 285,
+  "protectedPreviousCount": 278,
   "errorCount": 0,
-  "warningCount": 30,
+  "warningCount": 17,
   "errors": [],
   "warnings": [
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
@@ -25,22 +25,9 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
-    "performance dates added for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981: 2026-11-14, 2026-11-15",
-    "performance dates added for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981: 2026-11-14, 2026-11-15",
-    "performance dates added for url:https://sweetsteady.asobisystem.com/live_information/detail/47119 [KAWAII LAB.合同]: 2027-01-31",
-    "performance dates added for url:https://sweetsteady.asobisystem.com/live_information/detail/47120 [KAWAII LAB.合同]: 2027-01-30",
-    "performance dates added for url:https://sweetsteady.asobisystem.com/live_information/detail/47125 [KAWAII LAB.合同]: 2027-03-21",
-    "performance dates added for url:https://sweetsteady.asobisystem.com/live_information/detail/47126 [KAWAII LAB.合同]: 2027-03-20",
-    "ended playguide row removed: KAWAII LAB.合同 / KAWAII LAB. Christmas SESSION 2026 / 現在受付なし",
-    "ended playguide row removed: FRUITS ZIPPER / FRUITS ZIPPER / ぴあNICOSカード限定先行",
-    "ended playguide row removed: FRUITS ZIPPER / FRUITS ZIPPER / 2次プレリザーブ",
-    "ended playguide row removed: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / ぴあプレミアム先行",
-    "ended playguide row removed: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / ぴあ先行",
-    "ended playguide row removed: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 3次プレリザーブ",
-    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981: 2026-11-28, 2026-11-29",
-    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981: 2026-11-28, 2026-11-29"
+    "ended playguide row removed: KAWAII LAB.合同 / KAWAII LAB. Christmas SESSION 2026 / 現在受付なし"
   ],
-  "candidateSha256": "1440c3a685ac6349df90e80880b66d415736429d9ed757634d5e2d44e4f7efb5",
+  "candidateSha256": "313d791f4d5f15f98ca058e67bbb60bf5bcfe9ae5102f0315d32561394069ef1",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -133,6 +120,7 @@
     "url:https://sweetsteady.asobisystem.com/news/detail/92529",
     "url:https://sweetsteady.asobisystem.com/news/detail/93491",
     "url:https://sweetsteady.asobisystem.com/news/detail/93737",
+    "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
     "url:https://ticket-account.pia.jp/pia/digipoke/list.do",
     "url:https://w.pia.jp/t/sweetsteady-winter2026/",
     "url:https://w.pia.jp/v/kls-xmas26upg6/?_normalbrowse_=1",
@@ -231,8 +219,8 @@
     "url:https://sweetsteady.asobisystem.com/news/detail/93491",
     "url:https://sweetsteady.asobisystem.com/news/detail/93737"
   ],
-  "reconciledBaseDateMessageCount": 2,
-  "downgradedFalsePositiveCount": 8,
+  "reconciledBaseDateMessageCount": 0,
+  "downgradedFalsePositiveCount": 1,
   "legacyProtectedErrorCount": 16,
   "legacyProtectedErrors": [
     {
@@ -316,7 +304,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 13,
+  "quarantineCount": 14,
   "quarantineActions": [
     {
       "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
@@ -326,12 +314,17 @@
     {
       "error": "active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS / 一般発売",
       "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 10
+      "restoredPreviousRows": 11
     },
     {
       "error": "active Pia row has no lotRlsCd detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
       "action": "restored previous row",
       "restoredPreviousRows": 4
+    },
+    {
+      "error": "result date is before application deadline: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- / プレリザーブ",
+      "action": "restored previous row",
+      "restoredPreviousRows": 1
     },
     {
       "error": "Pia row contains FC/upgrade-only sale: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / FC先行",
