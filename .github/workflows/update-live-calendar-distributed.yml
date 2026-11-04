@@ -25,6 +25,8 @@ on:
       - "scripts/resolve_source_priority.py"
       - "scripts/reapply_calendar_observations.py"
       - "scripts/audit_discovery_publication.py"
+      - "scripts/fix_schedule_shell.py"
+      - "scripts/test_build_schedule_snapshot.py"
       - "scripts/audit_schedule_release_grouped.py"
       - "scripts/test_audit_schedule_release_grouped.py"
       - "scripts/archive_ticket_history.py"
