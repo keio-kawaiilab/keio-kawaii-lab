@@ -1,14 +1,16 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-06T01:54:51.023836+09:00",
-  "candidateUpdatedAt": "2026-11-06T01:54:50+09:00",
-  "previousEventCount": 279,
+  "generatedAt": "2026-11-06T01:55:55.088108+09:00",
+  "candidateUpdatedAt": "2026-11-06T01:55:54+09:00",
+  "previousEventCount": 275,
   "candidateEventCount": 275,
   "protectedPreviousCount": 271,
   "errorCount": 0,
-  "warningCount": 15,
+  "warningCount": 17,
   "errors": [],
   "warnings": [
+    "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / 「FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - Secret Code」公演 リセールサービスのお知らせ / リセール",
+    "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / 「CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS 」公演 リセールサービスのお知らせ / リセール",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
@@ -25,7 +27,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ"
   ],
-  "candidateSha256": "39c3761bb02efbd0f2f16bc08379d9a57aa527510174e3242bc30767f9366b17",
+  "candidateSha256": "f4ee725b4c983558f067b54507c52ae2e75f7cfbf5c6964af9cf65c19d2bc706",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -300,7 +302,49 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 0,
-  "quarantineActions": [],
-  "rowFailuresCanBlockRelease": false
+  "quarantineCount": 2,
+  "quarantineActions": [
+    {
+      "error": "active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / 「FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - Secret Code」公演 リセールサービスのお知らせ / リセール",
+      "action": "restored previous rows for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
+      "restoredPreviousRows": 8
+    },
+    {
+      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / 「CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS 」公演 リセールサービスのお知らせ / リセール",
+      "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
+      "restoredPreviousRows": 29
+    }
+  ],
+  "rowFailuresCanBlockRelease": false,
+  "officialIndexReconciledAfterQuarantine": {
+    "projectedJointParticipantCount": 0,
+    "reassignedCount": 0,
+    "hydratedCount": 0,
+    "ambiguousCount": 0,
+    "unresolvedCount": 3,
+    "reassigned": [],
+    "hydrated": [],
+    "ambiguous": [],
+    "unresolved": [
+      {
+        "group": "CANDY TUNE",
+        "date": "2026-11-06",
+        "url": "https://candytune.asobisystem.com/live_information/detail/47226",
+        "representedBy": "b202a16d05ae9d12"
+      },
+      {
+        "group": "CUTIE STREET",
+        "date": "2026-11-06",
+        "url": "https://cutiestreet.asobisystem.com/live_information/detail/46742",
+        "representedBy": "2dbde6ab2348f141"
+      },
+      {
+        "group": "CUTIE STREET",
+        "date": "2026-11-08",
+        "url": "https://cutiestreet.asobisystem.com/live_information/detail/45466",
+        "representedBy": "8352b46ec1441ea9"
+      }
+    ],
+    "duplicateOfficialResaleWindowsRemoved": 0
+  }
 }
