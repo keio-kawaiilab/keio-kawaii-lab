@@ -540,13 +540,10 @@ jobs:
         run: |
           # Coverage audit may restore a last-known official schedule row.
           # Resolve any resulting shadow against the richer canonical special
-          # entity at the final publication boundary, then audit that exact
-          # candidate before rendering it.
+          # entity at the final publication boundary.  The physical-event
+          # invariant checks that exact candidate without restoring old rows.
           python scripts/prepare_release_candidate.py --previous /tmp/live-events-last-good.json
-          python scripts/audit_schedule_release_grouped.py \
-            --previous /tmp/live-events-last-good.json \
-            --candidate data/live-events.json \
-            --report data/schedule-health.json
+          python scripts/enforce_physical_event_invariant.py --check
           python scripts/build_schedule_snapshot.py
           python scripts/fix_schedule_shell.py
           python scripts/install_performance_public_view.py
@@ -587,10 +584,13 @@ jobs:
               # index, so retrying a push cannot bring back duplicate cards.
               python scripts/prepare_release_candidate.py --previous /tmp/calendar-latest-main.json
               python scripts/reconcile_official_schedule_index.py
-              # The index may re-add an official-schedule shadow, so the
-              # retry must finish with the same canonical release boundary.
-              python scripts/prepare_release_candidate.py --previous /tmp/calendar-latest-main.json
+              # Audit the reconciled candidate before its fail-closed
+              # retention can be resolved at the final release boundary.
               python scripts/audit_schedule_release_grouped.py --previous /tmp/calendar-latest-main.json --candidate data/live-events.json --report data/schedule-health.json
+              # Grouped audit is fail-closed and may retain an old row.  The
+              # canonical boundary must therefore be the final mutating step.
+              python scripts/prepare_release_candidate.py --previous /tmp/calendar-latest-main.json
+              python scripts/enforce_physical_event_invariant.py --check
               python scripts/build_schedule_snapshot.py
               python scripts/fix_schedule_shell.py
               python scripts/install_performance_public_view.py
