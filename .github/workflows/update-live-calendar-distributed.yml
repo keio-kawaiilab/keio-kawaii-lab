@@ -509,6 +509,11 @@ jobs:
             --data data/live-events.json \
             --index data/official-schedule-index.json \
             --report /tmp/official-index-reconcile.json
+          # Reconciliation can restore a thin official-schedule row from the
+          # index after its richer special-event entity has already won the
+          # release boundary.  Reapply that boundary after reconciliation so
+          # the published snapshot cannot contain both cards.
+          python scripts/prepare_release_candidate.py --previous /tmp/live-events-last-good.json
 
       - name: Integrated release audit with event-level isolation
         shell: bash
@@ -573,6 +578,9 @@ jobs:
               # index, so retrying a push cannot bring back duplicate cards.
               python scripts/prepare_release_candidate.py --previous /tmp/calendar-latest-main.json
               python scripts/reconcile_official_schedule_index.py
+              # The index may re-add an official-schedule shadow, so the
+              # retry must finish with the same canonical release boundary.
+              python scripts/prepare_release_candidate.py --previous /tmp/calendar-latest-main.json
               python scripts/audit_schedule_release_grouped.py --previous /tmp/calendar-latest-main.json --candidate data/live-events.json --report data/schedule-health.json
               python scripts/build_schedule_snapshot.py
               python scripts/fix_schedule_shell.py
