@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-05T14:58:42+09:00",
+  "checkedAt": "2026-11-05T14:59:41+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-29T07:50:44+09:00",
     "scannedPages": {
@@ -12393,7 +12393,7 @@
   },
   "renderWarnings": [
     {
-      "checkedAt": "2026-11-05T14:58:42+09:00",
+      "checkedAt": "2026-11-05T14:59:41+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one CANDY TUNE tour performance for 2026-10-04 OPEN 16:30 / START 17:30, found 0"
     }
@@ -25607,7 +25607,7 @@
       }
     ]
   },
-  "updatedAt": "2026-11-05T14:58:42+09:00",
+  "updatedAt": "2026-11-05T14:59:41+09:00",
   "specialEventNormalization": {
     "sourceSpecialRows": 3,
     "canonicalSpecialEvents": 3,
@@ -25620,7 +25620,21 @@
     "duplicateEventRowsCollapsed": 0,
     "duplicateEventIdsDisambiguated": 0,
     "duplicateEventIdRepairs": [],
-    "onlinePlaceholderOccurrencesMerged": 0
+    "onlinePlaceholderOccurrencesMerged": 0,
+    "publicEvents": {
+      "sourceSpecialRows": 3,
+      "canonicalSpecialEvents": 3,
+      "rowsCollapsed": 0,
+      "releaseEventEntities": 1,
+      "largeBenefitEntities": 2,
+      "alreadyCanonicalRows": 3,
+      "internalScheduleRowsCollapsed": 0,
+      "duplicateEventIdCollisions": 0,
+      "duplicateEventRowsCollapsed": 0,
+      "duplicateEventIdsDisambiguated": 0,
+      "duplicateEventIdRepairs": [],
+      "onlinePlaceholderOccurrencesMerged": 0
+    }
   },
   "publicEvents": [
     {
@@ -26530,10 +26544,10 @@
       "startTime": "14:00",
       "url": "https://tgc.girlswalker.com/toyama/2026/ticket/",
       "urls": [
+        "https://tgc.girlswalker.com/toyama/2026/ticket/",
         "https://candytune.asobisystem.com/live_information/detail/44995",
         "https://sweetsteady.asobisystem.com/live_information/detail/44463",
-        "https://morestar.asobisystem.com/live_information/detail/45675",
-        "https://tgc.girlswalker.com/toyama/2026/ticket/"
+        "https://morestar.asobisystem.com/live_information/detail/45675"
       ],
       "sourceType": "official-schedule",
       "primarySource": "official",
@@ -26580,16 +26594,12 @@
           "sourceChannel": "known-official-correction"
         }
       ],
-      "ticketType": "追加販売（先着）",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers",
       "sourceRowIds": [
         "ecdd86be6e667177",
         "26d0069375101fa4"
       ],
       "mergedPublicEventIds": [
-        "ecdd86be6e667177",
-        "26d0069375101fa4"
+        "performance-external-tgc-toyama-2026-2026-11-21-14-00-ykkaparena"
       ],
       "displayTitle": "TGC TOYAMA 2026 by TOKYO GIRLS COLLECTION",
       "participants": [
@@ -26597,7 +26607,10 @@
         "SWEET STEADY",
         "MORE STAR"
       ],
-      "performanceKey": "external|tgc-toyama-2026|2026-11-21|14:00|ykkaparena"
+      "performanceKey": "external|tgc-toyama-2026|2026-11-21|14:00|ykkaparena",
+      "ticketType": "追加販売（先着）",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers"
     },
     {
       "id": "6de23ca08e7c06b7",
@@ -26946,9 +26959,6 @@
           "sourceObservedAt": "2026-11-05T14:54:43+09:00"
         }
       ],
-      "ticketType": "複数受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers",
       "sourceRowIds": [
         "cfbbfe7a4e136b4a",
         "2c117f3728ce3c02",
@@ -26957,14 +26967,13 @@
         "baac3381c93d98a3"
       ],
       "mergedPublicEventIds": [
-        "cfbbfe7a4e136b4a",
-        "2c117f3728ce3c02",
-        "4919495adeca9a4c",
-        "8a40af447079424c",
-        "baac3381c93d98a3"
+        "performance-external-chikappa-2026-2026-11-23-11-00-b"
       ],
       "displayTitle": "ちかっぱ祭2026",
-      "performanceKey": "external|chikappa-2026|2026-11-23|11:00|福岡マリンメッセ福岡b館"
+      "performanceKey": "external|chikappa-2026|2026-11-23|11:00|福岡マリンメッセ福岡b館",
+      "ticketType": "複数受付",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers"
     },
     {
       "id": "a7b325c43cc6c33e",
