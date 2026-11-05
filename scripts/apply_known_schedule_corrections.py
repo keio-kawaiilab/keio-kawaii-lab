@@ -1524,6 +1524,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "giftMultiVenueFixed": 0,
         "giftMoreStarAdded": 0,
         "moreStarSeventhFixed": 0,
+        "moreStarSeventhFcOfferAdded": 0,
         "disasterReliefConcertFixed": 0,
         "disasterReliefConcertRowsCollapsed": 0,
         "impossibleBirthdayYearRowsRemoved": 0,
@@ -1650,6 +1651,64 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
             report["giftMultiVenueFixed"] += 1
 
         out.append(current)
+
+    # The group FC and the umbrella KAWAII LAB. FC published separate
+    # reception windows for the same 7th STAR performance.  The umbrella
+    # article is still parsed by official discovery, but an expired-offer
+    # cleanup can remove that row before release preparation.  Recreate only
+    # the missing, independently sourced reception; do not merge it into the
+    # earlier MORE STAR FC window.
+    has_more_star_seventh = any(
+        event.get("group") == "MORE STAR"
+        and _day(event) == MORE_STAR_7TH_DAY
+        and "単独ライブ 7th STAR" in str(event.get("title") or event.get("eventTitle") or "")
+        for event in out
+    )
+    has_more_star_seventh_fc = any(
+        event.get("group") == "MORE STAR"
+        and _day(event) == MORE_STAR_7TH_DAY
+        and event.get("applyStart") == "2026-10-17T18:00"
+        and event.get("applyEnd") == "2026-10-25T23:59"
+        and MORE_STAR_7TH_FC in _urls(event)
+        for event in out
+    )
+    if has_more_star_seventh and not has_more_star_seventh_fc:
+        title = "MORE STAR 単独ライブ 7th STAR"
+        venue = "東京都 ヒューリックホール東京"
+        out.append({
+            "id": "known-more-star-7th-kawaii-lab-fc-20261125",
+            "group": "MORE STAR",
+            "title": title,
+            "eventTitle": title,
+            "eventDate": MORE_STAR_7TH_DAY,
+            "eventEndDate": MORE_STAR_7TH_DAY,
+            "eventDates": [MORE_STAR_7TH_DAY],
+            "eventCount": 1,
+            "venue": venue,
+            "openTime": "17:00",
+            "startTime": "18:00",
+            "schedule": [{
+                "date": MORE_STAR_7TH_DAY,
+                "venue": venue,
+                "openTime": "17:00",
+                "startTime": "18:00",
+            }],
+            "ticketType": "KAWAII LAB. FC先行",
+            "applyStart": "2026-10-17T18:00",
+            "applyEnd": "2026-10-25T23:59",
+            "applicationWindowVerified": True,
+            "applicationWindowSource": MORE_STAR_7TH_FC,
+            "deadlineVerified": True,
+            "deadlineSource": MORE_STAR_7TH_FC,
+            "url": MORE_STAR_7TH_FC,
+            "urls": [MORE_STAR_7TH_FC, MORE_STAR_7TH_NEWS, MORE_STAR_7TH_SCHEDULE],
+            "primarySource": "official",
+            "sourceType": "official",
+            "sourceChannel": "known-official-correction",
+            "sourcePublishedAt": "2026-10-17",
+            "eventScope": "kawaii-lab",
+        })
+        report["moreStarSeventhFcOfferAdded"] += 1
 
     has_sweet_idol_halloween_sale = any(
         event.get("id") == "known-sweet-idol-halloween-20261030-general"
