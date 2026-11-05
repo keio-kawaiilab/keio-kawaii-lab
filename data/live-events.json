@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-05T10:53:09+09:00",
+  "checkedAt": "2026-11-05T11:16:13+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-29T07:50:44+09:00",
     "scannedPages": {
@@ -4203,7 +4203,11 @@
       "sourceStale": true,
       "sourceStaleSince": "2026-10-29T08:49:47+09:00",
       "releaseRetentionReason": "missing-from-current-refresh",
-      "officialScheduleUrl": "https://kawaiilab.asobisystem.com/live_information/detail/43936"
+      "officialScheduleUrl": "https://kawaiilab.asobisystem.com/live_information/detail/43936",
+      "eventScopeCorrectionId": "P2-external-chikappa-2026",
+      "eventScopeSource": "verified-organizer",
+      "eventScopeSourceUrl": "https://morestar.asobisystem.com/live_information/detail/45676",
+      "organizer": "株式会社おはなみ"
     },
     {
       "id": "2c117f3728ce3c02",
@@ -4236,7 +4240,11 @@
       "applicationWindowSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
       "deadlineSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
       "sourceObservedAt": "2026-11-05T10:48:16+09:00",
-      "eventScope": "external"
+      "eventScope": "external",
+      "eventScopeCorrectionId": "P2-external-chikappa-2026",
+      "eventScopeSource": "verified-organizer",
+      "eventScopeSourceUrl": "https://morestar.asobisystem.com/live_information/detail/45676",
+      "organizer": "株式会社おはなみ"
     },
     {
       "id": "4919495adeca9a4c",
@@ -4269,7 +4277,11 @@
       "applicationWindowSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
       "sourceObservedAt": "2026-11-05T10:48:16+09:00",
-      "eventScope": "external"
+      "eventScope": "external",
+      "eventScopeCorrectionId": "P2-external-chikappa-2026",
+      "eventScopeSource": "verified-organizer",
+      "eventScopeSourceUrl": "https://morestar.asobisystem.com/live_information/detail/45676",
+      "organizer": "株式会社おはなみ"
     },
     {
       "id": "8a40af447079424c",
@@ -4302,7 +4314,11 @@
       "applicationWindowSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
       "deadlineSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
       "sourceObservedAt": "2026-11-05T10:48:16+09:00",
-      "eventScope": "external"
+      "eventScope": "external",
+      "eventScopeCorrectionId": "P2-external-chikappa-2026",
+      "eventScopeSource": "verified-organizer",
+      "eventScopeSourceUrl": "https://morestar.asobisystem.com/live_information/detail/45676",
+      "organizer": "株式会社おはなみ"
     },
     {
       "id": "baac3381c93d98a3",
@@ -4337,7 +4353,11 @@
       "deadlineSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
       "sourceObservedAt": "2026-11-05T10:48:16+09:00",
       "officialScheduleUrl": "https://morestar.asobisystem.com/live_information/detail/45676",
-      "eventScope": "external"
+      "eventScope": "external",
+      "eventScopeCorrectionId": "P2-external-chikappa-2026",
+      "eventScopeSource": "verified-organizer",
+      "eventScopeSourceUrl": "https://morestar.asobisystem.com/live_information/detail/45676",
+      "organizer": "株式会社おはなみ"
     },
     {
       "id": "927c54f5934f25ad",
@@ -12385,7 +12405,7 @@
   },
   "renderWarnings": [
     {
-      "checkedAt": "2026-11-05T10:53:09+09:00",
+      "checkedAt": "2026-11-05T11:16:13+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one CANDY TUNE tour performance for 2026-10-04 OPEN 16:30 / START 17:30, found 0"
     }
@@ -25601,7 +25621,7 @@
       }
     ]
   },
-  "updatedAt": "2026-11-05T10:53:09+09:00",
+  "updatedAt": "2026-11-05T11:16:13+09:00",
   "publicEvents": [
     {
       "id": "b08903abe4b5a0e0",
@@ -26555,10 +26575,10 @@
       "startTime": "14:00",
       "url": "https://tgc.girlswalker.com/toyama/2026/ticket/",
       "urls": [
-        "https://tgc.girlswalker.com/toyama/2026/ticket/",
         "https://candytune.asobisystem.com/live_information/detail/44995",
         "https://sweetsteady.asobisystem.com/live_information/detail/44463",
-        "https://morestar.asobisystem.com/live_information/detail/45675"
+        "https://morestar.asobisystem.com/live_information/detail/45675",
+        "https://tgc.girlswalker.com/toyama/2026/ticket/"
       ],
       "sourceType": "official-schedule",
       "primarySource": "official",
@@ -26605,12 +26625,16 @@
           "sourceChannel": "known-official-correction"
         }
       ],
+      "ticketType": "追加販売（先着）",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers",
       "sourceRowIds": [
         "ecdd86be6e667177",
         "26d0069375101fa4"
       ],
       "mergedPublicEventIds": [
-        "performance-external-tgc-toyama-2026-2026-11-21-14-00-ykkaparena"
+        "ecdd86be6e667177",
+        "26d0069375101fa4"
       ],
       "displayTitle": "TGC TOYAMA 2026 by TOKYO GIRLS COLLECTION",
       "participants": [
@@ -26618,10 +26642,7 @@
         "SWEET STEADY",
         "MORE STAR"
       ],
-      "performanceKey": "external|tgc-toyama-2026|2026-11-21|14:00|ykkaparena",
-      "ticketType": "追加販売（先着）",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "performanceKey": "external|tgc-toyama-2026|2026-11-21|14:00|ykkaparena"
     },
     {
       "id": "6de23ca08e7c06b7",
@@ -26828,23 +26849,24 @@
       ]
     },
     {
-      "id": "cfbbfe7a4e136b4a",
+      "id": "performance-external-chikappa-2026-2026-11-23-11-00-b",
       "group": "KAWAII LAB.合同",
       "participants": [
         "MORE STAR",
         "KAWAII LAB. SOUTH"
       ],
-      "title": "ちかっぱ祭2026 @ マリンメッセ福岡B館",
-      "eventTitle": "ちかっぱ祭2026 @ マリンメッセ福岡B館",
-      "ticketType": "現在受付なし",
-      "applicationStatus": "none",
+      "title": "ちかっぱ祭2026",
+      "eventTitle": "ちかっぱ祭2026",
       "eventDate": "2026-11-23",
       "venue": "福岡・マリンメッセ福岡B館",
       "openTime": "10:00",
       "startTime": "11:00",
       "url": "https://kawaiilab.asobisystem.com/live_information/detail/43936",
       "urls": [
-        "https://kawaiilab.asobisystem.com/live_information/detail/43936"
+        "https://kawaiilab.asobisystem.com/live_information/detail/43936",
+        "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
+        "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
+        "https://morestar.asobisystem.com/live_information/detail/45676"
       ],
       "sourceType": "official-schedule",
       "primarySource": "official",
@@ -26857,141 +26879,137 @@
       "sourceStale": true,
       "sourceStaleSince": "2026-10-29T08:49:47+09:00",
       "releaseRetentionReason": "missing-from-current-refresh",
-      "officialScheduleUrl": "https://kawaiilab.asobisystem.com/live_information/detail/43936"
-    },
-    {
-      "id": "2c117f3728ce3c02",
-      "group": "MORE STAR",
-      "title": "ちかっぱ祭 2026",
-      "ticketType": "抽選 プレオーダー受付",
-      "ticketProvider": "eplus",
-      "applyStart": "2026-09-22T12:00",
-      "applyEnd": "2026-10-05T23:59",
-      "resultDate": null,
-      "paymentEnd": null,
-      "eventDate": "2026-11-23",
-      "venue": "マリンメッセ福岡B館",
-      "openTime": "10:00",
-      "startTime": "11:00",
-      "url": "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
-      "urls": [
-        "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
-        "https://eplus.jp/sf/detail/3966130001-P0030004P021001"
+      "officialScheduleUrl": "https://kawaiilab.asobisystem.com/live_information/detail/43936",
+      "eventScopeCorrectionId": "P2-external-chikappa-2026",
+      "eventScopeSource": "verified-organizer",
+      "eventScopeSourceUrl": "https://morestar.asobisystem.com/live_information/detail/45676",
+      "organizer": "株式会社おはなみ",
+      "externalEventFamily": "chikappa-2026",
+      "entityType": "performance",
+      "performanceEntityVersion": 1,
+      "eventEndDate": "2026-11-23",
+      "eventDates": [
+        "2026-11-23"
       ],
-      "sourceType": "eplus",
-      "primarySource": "eplus",
-      "sourceCandidates": [
-        "eplus"
+      "eventCount": 1,
+      "schedule": [
+        {
+          "date": "2026-11-23",
+          "venue": "福岡・マリンメッセ福岡B館",
+          "openTime": "10:00",
+          "startTime": "11:00"
+        }
       ],
-      "applicationStatus": "ended",
-      "applicationWindowVerified": true,
-      "deadlineVerified": true,
-      "applicationDisplayMode": "band",
-      "applicationWindowSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
-      "deadlineSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
-      "sourceObservedAt": "2026-11-05T10:48:16+09:00",
-      "eventScope": "external"
-    },
-    {
-      "id": "4919495adeca9a4c",
-      "group": "MORE STAR",
-      "title": "ちかっぱ祭 2026",
-      "ticketType": "先着 <VIP席>先着先行受付",
-      "ticketProvider": "eplus",
-      "applyStart": "2026-09-05T12:00",
-      "applyEnd": "2026-10-23T23:59",
-      "resultDate": null,
-      "paymentEnd": null,
-      "eventDate": "2026-11-23",
-      "venue": "マリンメッセ福岡B館",
-      "openTime": "10:00",
-      "startTime": "11:00",
-      "url": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
-      "urls": [
-        "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
-        "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175"
+      "offers": [
+        {
+          "sourceRowId": "2c117f3728ce3c02",
+          "provider": "eplus",
+          "url": "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
+          "urls": [
+            "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
+            "https://eplus.jp/sf/detail/3966130001-P0030004P021001"
+          ],
+          "ticketType": "抽選 プレオーダー受付",
+          "ticketProvider": "eplus",
+          "applyStart": "2026-09-22T12:00",
+          "applyEnd": "2026-10-05T23:59",
+          "applicationStatus": "ended",
+          "applicationWindowVerified": true,
+          "deadlineVerified": true,
+          "applicationDisplayMode": "band",
+          "applicationWindowSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
+          "deadlineSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
+          "sourceType": "eplus",
+          "primarySource": "eplus",
+          "sourceObservedAt": "2026-11-05T10:48:16+09:00"
+        },
+        {
+          "sourceRowId": "4919495adeca9a4c",
+          "provider": "eplus",
+          "url": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
+          "urls": [
+            "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
+            "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175"
+          ],
+          "ticketType": "先着 <VIP席>先着先行受付",
+          "ticketProvider": "eplus",
+          "applyStart": "2026-09-05T12:00",
+          "applyEnd": "2026-10-23T23:59",
+          "applicationStatus": "ended",
+          "applicationWindowVerified": true,
+          "deadlineVerified": true,
+          "applicationDisplayMode": "band",
+          "applicationWindowSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
+          "deadlineSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
+          "sourceType": "eplus",
+          "primarySource": "eplus",
+          "sourceObservedAt": "2026-11-05T10:48:16+09:00"
+        },
+        {
+          "sourceRowId": "8a40af447079424c",
+          "provider": "eplus",
+          "url": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
+          "urls": [
+            "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
+            "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175"
+          ],
+          "ticketType": "抽選 2次プレオーダー受付",
+          "ticketProvider": "eplus",
+          "applyStart": "2026-10-08T18:00",
+          "applyEnd": "2026-10-18T23:59",
+          "applicationStatus": "ended",
+          "applicationWindowVerified": true,
+          "deadlineVerified": true,
+          "applicationDisplayMode": "band",
+          "applicationWindowSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
+          "deadlineSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
+          "sourceType": "eplus",
+          "primarySource": "eplus",
+          "sourceObservedAt": "2026-11-05T10:48:16+09:00"
+        },
+        {
+          "sourceRowId": "baac3381c93d98a3",
+          "provider": "eplus",
+          "url": "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
+          "urls": [
+            "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
+            "https://morestar.asobisystem.com/live_information/detail/45676",
+            "https://eplus.jp/sf/detail/3966130001-P0030004P021001"
+          ],
+          "ticketType": "先着 ★一般発売",
+          "ticketProvider": "eplus",
+          "applyStart": "2026-10-24T10:00",
+          "applyEnd": "2026-11-22T23:59",
+          "applicationStatus": "open",
+          "applicationWindowVerified": true,
+          "deadlineVerified": true,
+          "applicationDisplayMode": "band",
+          "applicationWindowSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
+          "deadlineSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
+          "sourceType": "eplus",
+          "primarySource": "eplus",
+          "sourceObservedAt": "2026-11-05T10:48:16+09:00"
+        }
       ],
-      "sourceType": "eplus",
-      "primarySource": "eplus",
-      "sourceCandidates": [
-        "eplus"
+      "ticketType": "複数受付",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers",
+      "sourceRowIds": [
+        "cfbbfe7a4e136b4a",
+        "2c117f3728ce3c02",
+        "4919495adeca9a4c",
+        "8a40af447079424c",
+        "baac3381c93d98a3"
       ],
-      "applicationStatus": "ended",
-      "applicationWindowVerified": true,
-      "deadlineVerified": true,
-      "applicationDisplayMode": "band",
-      "applicationWindowSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
-      "deadlineSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
-      "sourceObservedAt": "2026-11-05T10:48:16+09:00",
-      "eventScope": "external"
-    },
-    {
-      "id": "8a40af447079424c",
-      "group": "MORE STAR",
-      "title": "ちかっぱ祭 2026",
-      "ticketType": "抽選 2次プレオーダー受付",
-      "ticketProvider": "eplus",
-      "applyStart": "2026-10-08T18:00",
-      "applyEnd": "2026-10-18T23:59",
-      "resultDate": null,
-      "paymentEnd": null,
-      "eventDate": "2026-11-23",
-      "venue": "マリンメッセ福岡B館",
-      "openTime": "10:00",
-      "startTime": "11:00",
-      "url": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
-      "urls": [
-        "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
-        "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175"
+      "mergedPublicEventIds": [
+        "cfbbfe7a4e136b4a",
+        "2c117f3728ce3c02",
+        "4919495adeca9a4c",
+        "8a40af447079424c",
+        "baac3381c93d98a3"
       ],
-      "sourceType": "eplus",
-      "primarySource": "eplus",
-      "sourceCandidates": [
-        "eplus"
-      ],
-      "applicationStatus": "ended",
-      "applicationWindowVerified": true,
-      "deadlineVerified": true,
-      "applicationDisplayMode": "band",
-      "applicationWindowSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
-      "deadlineSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
-      "sourceObservedAt": "2026-11-05T10:48:16+09:00",
-      "eventScope": "external"
-    },
-    {
-      "id": "baac3381c93d98a3",
-      "group": "MORE STAR",
-      "title": "ちかっぱ祭 2026",
-      "ticketType": "先着 ★一般発売",
-      "ticketProvider": "eplus",
-      "applyStart": "2026-10-24T10:00",
-      "applyEnd": "2026-11-22T23:59",
-      "resultDate": null,
-      "paymentEnd": null,
-      "eventDate": "2026-11-23",
-      "venue": "マリンメッセ福岡B館",
-      "openTime": "10:00",
-      "startTime": "11:00",
-      "url": "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
-      "urls": [
-        "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
-        "https://morestar.asobisystem.com/live_information/detail/45676",
-        "https://eplus.jp/sf/detail/3966130001-P0030004P021001"
-      ],
-      "sourceType": "eplus",
-      "primarySource": "eplus",
-      "sourceCandidates": [
-        "eplus"
-      ],
-      "applicationStatus": "open",
-      "applicationWindowVerified": true,
-      "deadlineVerified": true,
-      "applicationDisplayMode": "band",
-      "applicationWindowSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
-      "deadlineSource": "https://eplus.jp/sf/detail/3966130001-P0030004P021001?P1=0175",
-      "sourceObservedAt": "2026-11-05T10:48:16+09:00",
-      "officialScheduleUrl": "https://morestar.asobisystem.com/live_information/detail/45676",
-      "eventScope": "external"
+      "displayTitle": "ちかっぱ祭2026",
+      "performanceKey": "external|chikappa-2026|2026-11-23|11:00|福岡マリンメッセ福岡b館"
     },
     {
       "id": "a7b325c43cc6c33e",
