@@ -13,6 +13,7 @@ import sanitize_live_events as sanitizer
 from apply_known_schedule_corrections import apply_known_corrections
 from expand_special_event_entities import expand_payload
 from enforce_physical_event_invariant import enforce_payload
+from normalize_special_event_entities import venue_key
 from audit_schedule_release import (
     JST,
     clock_minutes,
@@ -231,7 +232,11 @@ def drop_redundant_official_schedule_shadows(events: list[dict]) -> tuple[list[d
     kept: list[dict] = []
     removed: list[str] = []
     for event in events:
-        if event.get("entityType") == "special-event" or official_x_dedupe.category(event) not in SPECIAL_CATEGORIES:
+        official_schedule_shadow = str(event.get("sourceType") or "") == "official-schedule"
+        if event.get("entityType") == "special-event" or (
+            official_x_dedupe.category(event) not in SPECIAL_CATEGORIES
+            and not official_schedule_shadow
+        ):
             kept.append(event)
             continue
         group = text(event.get("group"))
@@ -247,7 +252,37 @@ def drop_redundant_official_schedule_shadows(events: list[dict]) -> tuple[list[d
             for offer in entity.get("offers") or []:
                 if isinstance(offer, dict):
                     entity_urls.update(urls(offer))
-            if not event_urls.intersection(entity_urls):
+            shared_source = bool(event_urls.intersection(entity_urls))
+            # A schedule index and a detailed NEWS article commonly have
+            # different URLs.  Treat an official-schedule row as the same
+            # special event only when group, date, normalized physical venue
+            # and category-specific wording all agree.  This retires the thin
+            # schedule card after the rich release/benefit article arrives,
+            # without collapsing separate sales rounds or unrelated shows.
+            same_official_occurrence = False
+            if str(event.get("sourceType") or "") == "official-schedule":
+                event_venues = {
+                    venue_key(row.get("venue") or event.get("venue"))
+                    for row in (event.get("schedule") or [{}])
+                    if isinstance(row, dict)
+                }
+                entity_venues = {
+                    venue_key(row.get("venue") or entity.get("venue"))
+                    for row in (entity.get("schedule") or [{}])
+                    if isinstance(row, dict)
+                }
+                title = text(event.get("eventTitle") or event.get("title"))
+                category = official_x_dedupe.category(entity)
+                category_hint = (
+                    bool(re.search(r"リリース|ミニライブ|お渡し会", title))
+                    if category == "release-event"
+                    else bool(re.search(r"大特典|特典会", title))
+                )
+                same_official_occurrence = bool(
+                    category_hint
+                    and event_venues.intersection(entity_venues)
+                )
+            if not shared_source and not same_official_occurrence:
                 continue
             start, end = text(event.get("applyStart")), text(event.get("applyEnd"))
             if start or end:

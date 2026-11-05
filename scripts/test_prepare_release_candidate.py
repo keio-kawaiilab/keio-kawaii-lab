@@ -129,6 +129,58 @@ class PrepareReleaseCandidateTests(unittest.TestCase):
         self.assertEqual(2, len(rows))
         self.assertFalse(removed)
 
+    def test_release_news_replaces_abbreviated_official_schedule_shadow(self):
+        entity = {
+            "id": "release", "entityType": "special-event",
+            "eventCategory": "release-event", "group": "CUTIE STREET",
+            "eventDate": "2026-11-08",
+            "venue": "石川県 イオンモール白山 平面B駐車場 特設ステージ",
+            "title": "1stアルバム発売記念リリースイベント",
+            "url": "https://cutiestreet.asobisystem.com/news/detail/95087",
+            "offers": [],
+        }
+        shadow = {
+            "id": "schedule", "group": "CUTIE STREET",
+            "title": "ミニライブ&お渡し会 @イオンモール白山 平面駐車場",
+            "eventDate": "2026-11-08",
+            "venue": "石川県 イオンモール白山 平面駐車場",
+            "url": "https://cutiestreet.asobisystem.com/live_information/detail/45466",
+            "sourceType": "official-schedule",
+        }
+
+        rows, removed = prep.drop_redundant_official_schedule_shadows([entity, shadow])
+
+        self.assertEqual(["release"], [row["id"] for row in rows])
+        self.assertEqual(["schedule"], removed)
+
+    def test_release_detail_merges_stale_parking_lot_placeholder(self):
+        common = {
+            "group": "CUTIE STREET", "eventCategory": "release-event",
+            "eventDate": "2026-11-08", "ticketType": "現在受付なし",
+            "applicationStatus": "none", "sourceType": "official-special",
+            "primarySource": "official",
+        }
+        stale = {
+            **common, "id": "stale", "title": "CUTIE STREET リリースイベント",
+            "venue": "【リリースイベント】石川県 イオンモール白山 平面駐車場",
+            "url": "https://cutiestreet.asobisystem.com/", "sourceStale": True,
+        }
+        detail = {
+            **common, "id": "detail", "title": "1stアルバム発売記念リリースイベント",
+            "venue": "石川県 イオンモール白山 平面B駐車場 特設ステージ",
+            "startTime": "14:30",
+            "url": "https://cutiestreet.asobisystem.com/news/detail/95087",
+        }
+
+        prepared, report = prep.prepare(
+            {"events": [stale]}, {"events": [detail]}, self.NOW,
+        )
+
+        releases = [row for row in prepared["events"] if row.get("eventCategory") == "release-event"]
+        self.assertEqual(1, len(releases))
+        self.assertEqual("14:30", releases[0].get("startTime"))
+        self.assertEqual(0, report["physicalEventInvariant"]["remainingDuplicateCount"])
+
     def test_generic_official_offer_is_removed_when_sales_offer_has_same_window_and_source(self):
         source = "https://morestar.asobisystem.com/live_information/detail/46447"
         event = {

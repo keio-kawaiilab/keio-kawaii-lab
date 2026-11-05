@@ -56,6 +56,18 @@ def venue_key(value: object) -> str:
     value = text(value).casefold()
     value = re.sub(r"^[【\[]\s*(?:大特典会|リリースイベント)\s*[】\]]\s*", "", value)
     value = re.sub(r"^(?:北海道|東京都|京都府|大阪府|.{2,3}県)\s*", "", value)
+    # Official SCHEDULE often abbreviates shopping-centre outdoor venues while
+    # the later NEWS article names the exact parking block and stage.  Those are
+    # source-detail differences, not separate physical events (for example
+    # "イオンモール白山 平面駐車場" vs
+    # "イオンモール白山 平面B駐車場 特設ステージ").  Remove only a trailing
+    # parking/stage qualifier so distinct halls or stores remain independent.
+    value = re.sub(
+        r"\s*(?:平面\s*)?[a-z0-9]*\s*駐車場(?:\s*特設ステージ)?\s*$",
+        "",
+        value,
+        flags=re.I,
+    )
     return compact(value)
 
 
