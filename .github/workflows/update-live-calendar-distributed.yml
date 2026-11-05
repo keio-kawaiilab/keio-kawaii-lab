@@ -538,6 +538,15 @@ jobs:
 
       - name: Build final public schedule
         run: |
+          # Coverage audit may restore a last-known official schedule row.
+          # Resolve any resulting shadow against the richer canonical special
+          # entity at the final publication boundary, then audit that exact
+          # candidate before rendering it.
+          python scripts/prepare_release_candidate.py --previous /tmp/live-events-last-good.json
+          python scripts/audit_schedule_release_grouped.py \
+            --previous /tmp/live-events-last-good.json \
+            --candidate data/live-events.json \
+            --report data/schedule-health.json
           python scripts/build_schedule_snapshot.py
           python scripts/fix_schedule_shell.py
           python scripts/install_performance_public_view.py
