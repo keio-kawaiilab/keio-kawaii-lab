@@ -1091,10 +1091,15 @@ def _repair_more_star_seventh(event: dict) -> dict:
     return out
 
 
+def _is_disaster_relief_concert(event: dict) -> bool:
+    title = str(event.get("title") or event.get("eventTitle") or "")
+    title_key = re.sub(r"[\s　『』「」]", "", title)
+    return _day(event) == "2027-01-19" and "災害支援基金コンサート" in title_key
+
+
 def _repair_disaster_relief_concert(event: dict) -> dict:
     out = deepcopy(event)
-    title = str(event.get("title") or event.get("eventTitle") or "")
-    if _day(event) != "2027-01-19" or "災害支援基金コンサート" not in title:
+    if not _is_disaster_relief_concert(event):
         return out
     original_urls = _urls(out)
     out.update({
@@ -1125,8 +1130,7 @@ def _repair_disaster_relief_concert(event: dict) -> dict:
 
 
 def _collapse_disaster_relief_concert(events: list[dict]) -> tuple[list[dict], int]:
-    matches = [event for event in events if _day(event) == "2027-01-19" and
-               "災害支援基金コンサート" in str(event.get("title") or event.get("eventTitle") or "")]
+    matches = [event for event in events if _is_disaster_relief_concert(event)]
     if len(matches) < 2:
         return events, 0
     winner = max(matches, key=lambda event: (bool(event.get("sourcePublishedAt")), len(_urls(event))))
