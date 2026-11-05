@@ -18,12 +18,14 @@ PAGE = Path("schedule.html")
 KAWACOLLE_FAMILY = "kawacolle-tgc"
 LIVE_OR_TREAT_FAMILY = "fm-osaka-live-or-treat-2026"
 TGC_TOYAMA_FAMILY = "tgc-toyama-2026"
+CHIKAPPA_2026_FAMILY = "chikappa-2026"
 
 KAWACOLLE_RE = re.compile(r"(?:KAWAII\s*LAB\.?\s*)?COLLECTION\s+produced\s+by\s+TGC", re.I)
 LIVE_OR_TREAT_RE = re.compile(r"FM(?:大阪|\s*OSAKA).*Live\s*or\s*Treat\s*2026", re.I)
 TGC_TOYAMA_RE = re.compile(
     r"(?:TGC\s+TOYAMA\s+2026|TOKYO\s+GIRLS\s+COLLECTION\s+富山\s+2026)", re.I
 )
+CHIKAPPA_2026_RE = re.compile(r"ちかっぱ祭\s*2026", re.I)
 ANNOUNCEMENT_RE = re.compile(r"開催決定|出演決定|受付開始|抽選受付|お知らせ", re.I)
 
 FAMILY_PROVENANCE = {
@@ -41,6 +43,11 @@ FAMILY_PROVENANCE = {
         "correctionId": "P2-external-tgc-toyama-2026",
         "sourceUrl": "https://tgc.girlswalker.com/toyama/2026/ticket/",
         "organizer": "株式会社W TOKYO",
+    },
+    CHIKAPPA_2026_FAMILY: {
+        "correctionId": "P2-external-chikappa-2026",
+        "sourceUrl": "https://morestar.asobisystem.com/live_information/detail/45676",
+        "organizer": "株式会社おはなみ",
     },
 }
 
@@ -74,6 +81,8 @@ def _family(event: dict[str, Any]) -> str:
         return LIVE_OR_TREAT_FAMILY
     if TGC_TOYAMA_RE.search(text):
         return TGC_TOYAMA_FAMILY
+    if CHIKAPPA_2026_RE.search(text):
+        return CHIKAPPA_2026_FAMILY
     return ""
 
 
@@ -119,6 +128,7 @@ def _candidate_titles(rows: list[dict[str, Any]], family: str) -> list[str]:
         KAWACOLLE_FAMILY: KAWACOLLE_RE,
         LIVE_OR_TREAT_FAMILY: LIVE_OR_TREAT_RE,
         TGC_TOYAMA_FAMILY: TGC_TOYAMA_RE,
+        CHIKAPPA_2026_FAMILY: CHIKAPPA_2026_RE,
     }[family]
     for row in rows:
         for field in ("eventTitle", "displayTitle", "title"):
@@ -134,12 +144,16 @@ def _canonical_title(rows: list[dict[str, Any]], family: str) -> str:
         return _text(rows[0].get("eventTitle") or rows[0].get("displayTitle") or rows[0].get("title"))
     if family == TGC_TOYAMA_FAMILY:
         return "TGC TOYAMA 2026 by TOKYO GIRLS COLLECTION"
+    if family == CHIKAPPA_2026_FAMILY:
+        return "ちかっぱ祭2026"
 
     def score(value: str) -> tuple[int, int, int]:
         full_name = 0
         if family == KAWACOLLE_FAMILY and re.search(r"KAWAII\s*LAB\.?\s*COLLECTION", value, re.I):
             full_name = 1
         if family == LIVE_OR_TREAT_FAMILY and re.search(r"FM(?:大阪|\s*OSAKA)", value, re.I):
+            full_name = 1
+        if family == CHIKAPPA_2026_FAMILY and value == "ちかっぱ祭2026":
             full_name = 1
         clean = int(not ANNOUNCEMENT_RE.search(value) and not re.match(r"^20\d{2}[.年/-]", value))
         return full_name, clean, -len(value)
@@ -159,7 +173,7 @@ def _prefer_offer_url(current: str, candidate: str, family: str) -> str:
         return candidate
     if not candidate:
         return current
-    if family == KAWACOLLE_FAMILY:
+    if family in {KAWACOLLE_FAMILY, CHIKAPPA_2026_FAMILY}:
         current_central = "kawaiilab.asobisystem.com" in current
         candidate_central = "kawaiilab.asobisystem.com" in candidate
         if candidate_central and not current_central:
@@ -305,7 +319,7 @@ def _merge_family_rows(rows: list[dict[str, Any]], family: str) -> dict[str, Any
     base["mergedPublicEventIds"] = public_ids
     if urls:
         base["urls"] = urls
-        preferred = next((url for url in urls if family == KAWACOLLE_FAMILY and "kawaiilab.asobisystem.com" in url), "")
+        preferred = next((url for url in urls if family in {KAWACOLLE_FAMILY, CHIKAPPA_2026_FAMILY} and "kawaiilab.asobisystem.com" in url), "")
         if not preferred and family == LIVE_OR_TREAT_FAMILY:
             preferred = next((url for url in urls if "morestar.asobisystem.com" in url), "")
         if family == TGC_TOYAMA_FAMILY:
@@ -320,7 +334,7 @@ def _merge_family_rows(rows: list[dict[str, Any]], family: str) -> dict[str, Any
         base["eventTitle"] = title
         base["displayTitle"] = title
 
-    if family in {KAWACOLLE_FAMILY, TGC_TOYAMA_FAMILY}:
+    if family in {KAWACOLLE_FAMILY, TGC_TOYAMA_FAMILY, CHIKAPPA_2026_FAMILY}:
         base["group"] = "KAWAII LAB.合同"
         base["participants"] = participants
     elif participants:
@@ -464,6 +478,19 @@ def _validate_known_public_events(events: list[dict[str, Any]]) -> None:
             raise RuntimeError(f"Live or Treat 2026-10-17 must be one public event, got {len(live_or_treat)}")
         if live_or_treat[0].get("eventScope") != "external":
             raise RuntimeError("Live or Treat 2026-10-17 is not external in the public model")
+
+    chikappa = [
+        event for event in events
+        if _family(event) == CHIKAPPA_2026_FAMILY and _day(event) == "2026-11-23"
+    ]
+    if chikappa:
+        if len(chikappa) != 1:
+            raise RuntimeError(f"Chikappa 2026-11-23 must be one public event, got {len(chikappa)}")
+        event = chikappa[0]
+        if event.get("eventScope") != "external" or event.get("group") != "KAWAII LAB.合同":
+            raise RuntimeError("Chikappa 2026-11-23 is not one external joint event")
+        if event.get("openTime") != "10:00" or event.get("startTime") != "11:00":
+            raise RuntimeError("Chikappa 2026-11-23 has incorrect official times")
 
 
 def main() -> int:

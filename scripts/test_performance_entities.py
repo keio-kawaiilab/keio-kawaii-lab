@@ -9,9 +9,43 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from performance_entities import _provider_id, build_public_events
+from normalize_external_event_public_view import normalize_public_events
 
 
 class PerformanceEntitiesTest(unittest.TestCase):
+    def test_verified_chikappa_external_rows_become_one_public_performance(self):
+        central = {
+            "id": "central", "group": "KAWAII LAB.合同",
+            "participants": ["MORE STAR", "KAWAII LAB. SOUTH"],
+            "title": "ちかっぱ祭2026 @ マリンメッセ福岡B館",
+            "eventDate": "2026-11-23", "venue": "福岡・マリンメッセ福岡B館",
+            "openTime": "10:00", "startTime": "11:00", "eventScope": "external",
+            "url": "https://kawaiilab.asobisystem.com/live_information/detail/43936",
+            "sourceType": "official-schedule", "primarySource": "official",
+        }
+        sale = {
+            "id": "sale", "group": "MORE STAR", "title": "ちかっぱ祭 2026",
+            "eventDate": "2026-11-23", "venue": "マリンメッセ福岡B館",
+            "openTime": "10:00", "startTime": "11:00", "eventScope": "external",
+            "ticketType": "先着 ★一般発売", "ticketProvider": "eplus",
+            "applyStart": "2026-10-24T10:00", "applyEnd": "2026-11-22T23:59",
+            "url": "https://eplus.jp/sf/detail/3966130001-P0030004P021001",
+            "officialScheduleUrl": "https://morestar.asobisystem.com/live_information/detail/45676",
+        }
+
+        normalized, report = normalize_public_events([central, sale])
+
+        self.assertEqual(1, len(normalized))
+        self.assertEqual(1, report["publicRowsCollapsed"])
+        event = normalized[0]
+        self.assertEqual("ちかっぱ祭2026", event["title"])
+        self.assertEqual("KAWAII LAB.合同", event["group"])
+        self.assertEqual(["MORE STAR", "KAWAII LAB. SOUTH"], event["participants"])
+        self.assertEqual(1, len(event["offers"]))
+        self.assertEqual("2026-11-22T23:59", event["offers"][0]["applyEnd"])
+        self.assertIn(central["url"], event["urls"])
+        self.assertIn(sale["url"], event["urls"])
+
     def test_ticketdive_offer_keeps_provider_and_application_url(self):
         schedule = "https://sweetsteady.asobisystem.com/live_information/detail/46633"
         ticket = "https://ticketdive.com/event/IHJ2026"
