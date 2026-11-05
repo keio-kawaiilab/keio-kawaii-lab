@@ -12,6 +12,7 @@ from apply_known_schedule_corrections import (
     DISASTER_RELIEF_PIA,
     MORE_STAR_7TH_FC,
     MORE_STAR_7TH_NEWS,
+    MORE_STAR_7TH_SCHEDULE,
     MORE_STAR_PACIFICO_HMV,
     MORE_STAR_PACIFICO_NEWS,
     MORE_STAR_PACIFICO_SCHEDULE,
@@ -783,6 +784,36 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
         self.assertEqual("2026-10-17T18:00", by_id["kawaii-lab-fc"]["applyStart"])
         self.assertEqual("2026-10-25T23:59", by_id["kawaii-lab-fc"]["applyEnd"])
         self.assertEqual(MORE_STAR_7TH_FC, by_id["kawaii-lab-fc"]["applicationWindowSource"])
+
+    def test_more_star_seventh_restores_missing_kawaii_lab_fc_reception(self):
+        original = {
+            "id": "original-fc",
+            "group": "MORE STAR",
+            "title": "MORE STAR 単独ライブ 7th STAR",
+            "eventDate": "2026-11-25",
+            "venue": "東京都 ヒューリックホール東京",
+            "openTime": "17:00",
+            "startTime": "18:00",
+            "ticketType": "FC先行",
+            "applyStart": "2026-10-07T18:00",
+            "applyEnd": "2026-10-12T23:59",
+            "url": MORE_STAR_7TH_NEWS,
+            "urls": [MORE_STAR_7TH_NEWS, MORE_STAR_7TH_SCHEDULE],
+            "applicationWindowSource": MORE_STAR_7TH_NEWS,
+        }
+
+        corrected, report = apply_known_corrections([original])
+
+        self.assertEqual(2, len(corrected))
+        restored = next(
+            event for event in corrected
+            if event.get("applyStart") == "2026-10-17T18:00"
+        )
+        self.assertEqual("KAWAII LAB. FC先行", restored["ticketType"])
+        self.assertEqual("2026-10-25T23:59", restored["applyEnd"])
+        self.assertEqual(MORE_STAR_7TH_FC, restored["applicationWindowSource"])
+        self.assertIn(MORE_STAR_7TH_FC, restored["urls"])
+        self.assertEqual(1, report["moreStarSeventhFcOfferAdded"])
 
     def test_more_star_seventh_collapses_only_duplicate_current_reception(self):
         original = {
