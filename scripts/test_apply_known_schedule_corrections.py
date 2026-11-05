@@ -864,13 +864,17 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
         self.assertEqual("2026-11-01T23:59", event["applyEnd"])
         self.assertEqual(1, report["disasterReliefConcertFixed"])
 
-        duplicate = {**row, "id": "charity-schedule", "group": "CANDY TUNE",
+        duplicate = {**row, "id": "charity-schedule", "group": "SWEET STEADY",
+                     "title": "『日本災害支援基金 コンサート』",
+                     "openTime": "17:00", "startTime": "17:00",
                      "sourceType": "official-schedule",
-                     "url": "https://candytune.asobisystem.com/live_information/detail/46043"}
+                     "url": "https://sweetsteady.asobisystem.com/live_information/detail/47118"}
         corrected, report = apply_known_corrections([row, duplicate])
         self.assertEqual(1, len(corrected))
         self.assertEqual(1, report["disasterReliefConcertRowsCollapsed"])
-        self.assertIn("https://candytune.asobisystem.com/live_information/detail/46043", corrected[0]["urls"])
+        self.assertEqual("KAWAII LAB.合同", corrected[0]["group"])
+        self.assertEqual(("17:00", "18:00"), (corrected[0]["openTime"], corrected[0]["startTime"]))
+        self.assertIn("https://sweetsteady.asobisystem.com/live_information/detail/47118", corrected[0]["urls"])
 
     def test_removes_birthday_row_whose_event_year_contradicts_title(self):
         impossible = {
