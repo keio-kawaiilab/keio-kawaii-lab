@@ -566,6 +566,12 @@ jobs:
               # without their verified offer detail, and the audit records a
               # false publication-missing incident until the hardener catches up.
               python scripts/apply_known_schedule_corrections.py
+              # A concurrent publication can reintroduce a thin official-
+              # schedule placeholder after the rich official special-event
+              # article was merged.  Run the same canonical release boundary
+              # used by the first attempt before reconciling the schedule
+              # index, so retrying a push cannot bring back duplicate cards.
+              python scripts/prepare_release_candidate.py --previous /tmp/calendar-latest-main.json
               python scripts/reconcile_official_schedule_index.py
               python scripts/audit_schedule_release_grouped.py --previous /tmp/calendar-latest-main.json --candidate data/live-events.json --report data/schedule-health.json
               python scripts/build_schedule_snapshot.py
