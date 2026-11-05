@@ -104,6 +104,30 @@ class ScheduleAuditCorrectionsTest(unittest.TestCase):
         self.assertEqual(report["conflicts"], [])
         self.assertEqual(by_id["candy-upgrade"]["venue"], "東京都 有明アリーナ")
 
+    def test_replaces_aggregate_label_when_all_schedule_rows_prove_same_venue(self):
+        payload = self.fixture()
+        aggregate = payload["events"][2]
+        aggregate["venue"] = "複数会場（全2公演）"
+        aggregate["schedule"][0]["venue"] = "東京都 有明アリーナ"
+
+        corrected, report = apply_christmas_day1_venue_correction(payload)
+        by_id = {event["id"]: event for event in corrected["events"]}
+
+        self.assertEqual(report["conflicts"], [])
+        self.assertEqual(by_id["multi-day"]["venue"], "有明アリーナ")
+
+    def test_keeps_aggregate_label_conflict_when_schedule_has_multiple_venues(self):
+        payload = self.fixture()
+        aggregate = payload["events"][2]
+        aggregate["venue"] = "複数会場（全2公演）"
+        aggregate["schedule"][1]["venue"] = "別会場"
+
+        corrected, report = apply_christmas_day1_venue_correction(payload)
+        by_id = {event["id"]: event for event in corrected["events"]}
+
+        self.assertEqual(by_id["multi-day"]["venue"], "複数会場（全2公演）")
+        self.assertEqual(len(report["conflicts"]), 1)
+
     def test_wrong_time_is_not_reconciled(self):
         payload = self.fixture()
         payload["events"][1]["startTime"] = "19:00"

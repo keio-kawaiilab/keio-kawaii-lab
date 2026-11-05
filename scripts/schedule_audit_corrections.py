@@ -49,6 +49,29 @@ def _same_venue(left: Any, right: Any) -> bool:
     return bool(_venue_key(left)) and _venue_key(left) == _venue_key(right)
 
 
+def _is_aggregate_venue_label(value: Any) -> bool:
+    return bool(re.fullmatch(r"複数会場（全\d+公演）", str(value or "").strip()))
+
+
+def _aggregate_venue_can_collapse(event: dict[str, Any], authoritative_venue: str) -> bool:
+    """Return true only when every dated row proves the same physical venue.
+
+    Sanitization may temporarily put an aggregate display label in ``venue``
+    even when all performances are at one venue.  Such a label is not a
+    conflicting venue fact, but it is safe to replace only when the event's
+    own dated schedule agrees with the authoritative official row throughout.
+    """
+    schedule = event.get("schedule")
+    if not isinstance(schedule, list):
+        return False
+    venues = [
+        str(row.get("venue") or "").strip()
+        for row in schedule
+        if isinstance(row, dict) and str(row.get("venue") or "").strip()
+    ]
+    return bool(venues) and all(_same_venue(value, authoritative_venue) for value in venues)
+
+
 def _day1_time_compatible(open_time: Any, start_time: Any) -> bool:
     """Reject known conflicting times while allowing a missing field to be filled safely."""
     open_text = _time(open_time)
@@ -130,6 +153,9 @@ def apply_christmas_day1_venue_correction(payload: dict[str, Any]) -> tuple[dict
                 report["topLevelFilled"] += 1
                 changed = True
             elif current != venue and _same_venue(current, venue):
+                event["venue"] = venue
+                changed = True
+            elif _is_aggregate_venue_label(current) and _aggregate_venue_can_collapse(event, venue):
                 event["venue"] = venue
                 changed = True
             elif current != venue:
