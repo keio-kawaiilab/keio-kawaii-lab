@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-05T10:08:55+09:00",
+  "checkedAt": "2026-11-05T10:15:28+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-10-29T07:50:44+09:00",
     "scannedPages": {
@@ -1226,7 +1226,6 @@
       "startTime": "18:00",
       "url": "https://kawaiilab.asobisystem.com/news/detail/93695",
       "urls": [
-        "https://kawaiilab.asobisystem.com/news/detail/93695",
         "https://candytune.asobisystem.com/news/detail/93706",
         "https://candytune.asobisystem.com/feature/6eb8e3c96d6f97adcc18f9bebd263edc?_normalbrowse_=1",
         "https://sweetsteady.asobisystem.com/news/detail/93708",
@@ -1235,6 +1234,7 @@
         "https://cutiestreet.asobisystem.com/feature/b0da2ae3d091956d61d96b98551c772a?_normalbrowse_=1",
         "https://morestar.asobisystem.com/news/detail/93710",
         "https://morestar.asobisystem.com/feature/4887f2d087c4dd1ed6a0f466e46d1b56?_normalbrowse_=1",
+        "https://kawaiilab.asobisystem.com/news/detail/93695",
         "https://kawaiilab.asobisystem.com/feature/952c3d505aa47ae5719a9a05de62fff8?_normalbrowse_=1"
       ],
       "sourceType": "official-schedule",
@@ -4588,6 +4588,47 @@
       "sourceCandidates": [
         "official"
       ]
+    },
+    {
+      "id": "known-more-star-7th-kawaii-lab-fc-20261125",
+      "group": "MORE STAR",
+      "title": "MORE STAR 単独ライブ 7th STAR",
+      "eventTitle": "MORE STAR 単独ライブ 7th STAR",
+      "eventDate": "2026-11-25",
+      "eventEndDate": "2026-11-25",
+      "eventDates": [
+        "2026-11-25"
+      ],
+      "eventCount": 1,
+      "venue": "東京都 ヒューリックホール東京",
+      "openTime": "17:00",
+      "startTime": "18:00",
+      "schedule": [
+        {
+          "date": "2026-11-25",
+          "venue": "東京都 ヒューリックホール東京",
+          "openTime": "17:00",
+          "startTime": "18:00"
+        }
+      ],
+      "ticketType": "KAWAII LAB. FC先行",
+      "applyStart": "2026-10-17T18:00",
+      "applyEnd": "2026-10-25T23:59",
+      "applicationWindowVerified": true,
+      "applicationWindowSource": "https://kawaiilab.asobisystem.com/news/detail/93036",
+      "deadlineVerified": true,
+      "deadlineSource": "https://kawaiilab.asobisystem.com/news/detail/93036",
+      "url": "https://kawaiilab.asobisystem.com/news/detail/93036",
+      "urls": [
+        "https://kawaiilab.asobisystem.com/news/detail/93036",
+        "https://morestar.asobisystem.com/news/detail/92107",
+        "https://morestar.asobisystem.com/live_information/detail/45677"
+      ],
+      "primarySource": "official",
+      "sourceType": "official",
+      "sourceChannel": "known-official-correction",
+      "sourcePublishedAt": "2026-10-17",
+      "eventScope": "kawaii-lab"
     },
     {
       "id": "bc75928de9dfc365",
@@ -12143,12 +12184,12 @@
     ]
   },
   "publicEventModelReport": {
-    "rawEventCount": 280,
+    "rawEventCount": 281,
     "passthroughEventCount": 74,
     "performanceEntityCount": 61,
-    "sourceOccurrenceCount": 341,
-    "mergedSourceOccurrences": 280,
-    "offerCount": 142,
+    "sourceOccurrenceCount": 342,
+    "mergedSourceOccurrences": 281,
+    "offerCount": 143,
     "outOfScopeSoloEventCount": 3
   },
   "publicEventModelVersion": 1,
@@ -12328,7 +12369,7 @@
   },
   "renderWarnings": [
     {
-      "checkedAt": "2026-11-05T10:08:55+09:00",
+      "checkedAt": "2026-11-05T10:15:28+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one CANDY TUNE tour performance for 2026-10-04 OPEN 16:30 / START 17:30, found 0"
     }
@@ -25544,7 +25585,7 @@
       }
     ]
   },
-  "updatedAt": "2026-11-05T10:08:55+09:00",
+  "updatedAt": "2026-11-05T10:15:28+09:00",
   "publicEvents": [
     {
       "id": "b08903abe4b5a0e0",
@@ -34697,7 +34738,8 @@
       "url": "https://morestar.asobisystem.com/news/detail/92107",
       "urls": [
         "https://morestar.asobisystem.com/news/detail/92107",
-        "https://morestar.asobisystem.com/live_information/detail/45677"
+        "https://morestar.asobisystem.com/live_information/detail/45677",
+        "https://kawaiilab.asobisystem.com/news/detail/93036"
       ],
       "sourceType": "official-schedule",
       "sourcePublishedAt": "2026-10-07",
@@ -34728,7 +34770,8 @@
       "performanceEntityVersion": 1,
       "performanceKey": "MORE STAR|2026-11-25|time|18:00|ヒューリックホール東京",
       "sourceRowIds": [
-        "fac90e0751523a07"
+        "fac90e0751523a07",
+        "known-more-star-7th-kawaii-lab-fc-20261125"
       ],
       "offers": [
         {
@@ -34748,9 +34791,30 @@
           "sourceChannel": "known-official-correction",
           "primarySource": "official",
           "sourcePublishedAt": "2026-10-07"
+        },
+        {
+          "sourceRowId": "known-more-star-7th-kawaii-lab-fc-20261125",
+          "provider": "official",
+          "url": "https://kawaiilab.asobisystem.com/news/detail/93036",
+          "urls": [
+            "https://kawaiilab.asobisystem.com/news/detail/93036",
+            "https://morestar.asobisystem.com/news/detail/92107",
+            "https://morestar.asobisystem.com/live_information/detail/45677"
+          ],
+          "ticketType": "KAWAII LAB. FC先行",
+          "applyStart": "2026-10-17T18:00",
+          "applyEnd": "2026-10-25T23:59",
+          "applicationWindowVerified": true,
+          "deadlineVerified": true,
+          "applicationWindowSource": "https://kawaiilab.asobisystem.com/news/detail/93036",
+          "deadlineSource": "https://kawaiilab.asobisystem.com/news/detail/93036",
+          "sourceType": "official",
+          "sourceChannel": "known-official-correction",
+          "primarySource": "official",
+          "sourcePublishedAt": "2026-10-17"
         }
       ],
-      "ticketType": "FC先行",
+      "ticketType": "複数受付",
       "applicationDisplayMode": "offers",
       "applicationStatus": "offers"
     },
@@ -35760,12 +35824,12 @@
     "duplicateEventIdRepairs": [],
     "onlinePlaceholderOccurrencesMerged": 0,
     "publicEvents": {
-      "sourceSpecialRows": 3,
-      "canonicalSpecialEvents": 3,
+      "sourceSpecialRows": 4,
+      "canonicalSpecialEvents": 4,
       "rowsCollapsed": 0,
-      "releaseEventEntities": 1,
+      "releaseEventEntities": 2,
       "largeBenefitEntities": 2,
-      "alreadyCanonicalRows": 3,
+      "alreadyCanonicalRows": 4,
       "internalScheduleRowsCollapsed": 0,
       "duplicateEventIdCollisions": 0,
       "duplicateEventRowsCollapsed": 0,
