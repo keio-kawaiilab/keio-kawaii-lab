@@ -1,7 +1,7 @@
 {
   "date": "2026-11-06",
   "horizonDays": 7,
-  "generatedAt": "2026-11-06T06:27+09:00",
+  "generatedAt": "2026-11-06T10:05+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -91,7 +91,8 @@
       "venue": "東京都 東京ガーデンシアター",
       "venueKey": "東京ガーデンシアター",
       "eventIds": [
-        "12ab4274126d6dc2",
+        "2dbde6ab2348f141",
+        "b202a16d05ae9d12",
         "fa3d8146d4557bb2"
       ],
       "areaCode": "130010",
@@ -100,8 +101,8 @@
       "label": "晴れ",
       "max": 25.0,
       "min": 25.0,
-      "pop": "10",
-      "popLabel": "18〜00時",
+      "pop": "0",
+      "popLabel": "12〜18時",
       "issuedAt": "2026-11-06T05:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "20〜24℃",
@@ -298,7 +299,6 @@
       "venue": "SGCホール有明",
       "venueKey": "sgcホール有明",
       "eventIds": [
-        "7982e4aa80108307",
         "9bc14a8efd906321"
       ],
       "areaCode": "130010",
@@ -320,10 +320,7 @@
       "venueKey": "米子コンベンションセンター",
       "eventIds": [
         "f641c49b15d0f20a",
-        "cd207cc6c067e7dc",
-        "4c9822d074190104",
-        "ac05040f2cd5e240",
-        "d193583799747ab5"
+        "ac05040f2cd5e240"
       ],
       "areaCode": "310020",
       "areaName": "鳥取県",
@@ -363,7 +360,6 @@
       "venue": "SGCホール有明",
       "venueKey": "sgcホール有明",
       "eventIds": [
-        "c6319240c83b4dde",
         "f8da529712bde619"
       ],
       "areaCode": "130010",
@@ -381,35 +377,12 @@
     },
     {
       "date": "2026-11-12",
-      "venue": "ヒューリックホール東京",
-      "venueKey": "ヒューリックホール東京",
-      "eventIds": [
-        "ae5f1f9320bce613--77953ab340"
-      ],
-      "areaCode": "130010",
-      "areaName": "東京地方",
-      "precision": "area",
-      "label": "晴れ時々くもり",
-      "max": 18.0,
-      "min": 8.0,
-      "pop": "20",
-      "popLabel": "1日",
-      "issuedAt": "2026-11-05T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
-    {
-      "date": "2026-11-12",
       "venue": "広島県 広島文化学園HBGホール",
       "venueKey": "広島文化学園hbgホール",
       "eventIds": [
         "f641c49b15d0f20a",
-        "cd207cc6c067e7dc",
         "ac05040f2cd5e240",
-        "22ba8f96d026e8d4",
-        "89a68278917da812",
-        "dcc8b6da5f6dcb4e"
+        "22ba8f96d026e8d4"
       ],
       "areaCode": "340010",
       "areaName": "南部",
@@ -426,16 +399,21 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 39,
+    "occurrencesInRange": 31,
     "uniqueVenueDates": 15,
-    "weatherEntries": 12,
+    "weatherEntries": 11,
     "meshEntries": 3,
-    "failures": 3,
+    "failures": 4,
     "meshTimelineEntries": 3,
     "meshExactTempSlots": 19,
     "hourlyRainEntries": 2
   },
   "failures": [
+    {
+      "date": "2026-11-08",
+      "venue": "オンライン（SUKISUKI）",
+      "reason": "都道府県を解決できません"
+    },
     {
       "date": "2026-11-08",
       "venue": "神戸国際会館 こくさいホール",
