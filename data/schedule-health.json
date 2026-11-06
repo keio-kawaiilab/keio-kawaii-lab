@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-07T06:09:03.510264+09:00",
-  "candidateUpdatedAt": "2026-11-07T06:09:03+09:00",
+  "generatedAt": "2026-11-07T07:00:59.290816+09:00",
+  "candidateUpdatedAt": "2026-11-07T07:00:58+09:00",
   "previousEventCount": 249,
-  "candidateEventCount": 248,
-  "protectedPreviousCount": 244,
+  "candidateEventCount": 249,
+  "protectedPreviousCount": 245,
   "errorCount": 0,
-  "warningCount": 51,
+  "warningCount": 54,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
@@ -51,6 +51,9 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: special event has no official source URL: CUTIE STREET / CUTIE STREET リリースイベント＠イオンモール白山【事前抽選会】 / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: release event has no KAWAII LAB. STORE URL: CUTIE STREET / CUTIE STREET リリースイベント＠イオンモール白山【事前抽選会】 / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: release event is missing a verified sales/gathering/start time: CUTIE STREET / CUTIE STREET リリースイベント＠イオンモール白山【事前抽選会】 / 現在受付なし",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia row contains FC/upgrade-only sale: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:30327: KAWAII LAB.合同 / KAWAII LAB. Christmas SESSION 2026 @有明アリーナ / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
@@ -61,7 +64,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ"
   ],
-  "candidateSha256": "3f4ff1f2fd38ccf410c554f49d33387ca52a4f758fa9d80338d4d016375d02b7",
+  "candidateSha256": "5ab348abd62cd8f4129d61d0267612e8e646807a5ebbb28b75bdd235d17f9cba",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -87,6 +90,7 @@
     "url:https://cutiestreet.asobisystem.com/live_information/detail/46322",
     "url:https://cutiestreet.asobisystem.com/live_information/detail/46323",
     "url:https://cutiestreet.asobisystem.com/live_information/detail/46341",
+    "url:https://cutiestreet.asobisystem.com/news/detail/93573",
     "url:https://cutiestreet.asobisystem.com/news/detail/93741",
     "url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
     "url:https://fruitszipper.asobisystem.com/live_information/detail/40049",
@@ -156,6 +160,7 @@
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30327",
+    "url:https://ticket-account.pia.jp/pia/digipoke/list.do",
     "url:https://w.pia.jp/t/sweetsteady-winter2026/",
     "url:https://w.pia.jp/v/kls-xmas26upg6/?_normalbrowse_=1",
     "url:https://www.gift-idol.jp/"
@@ -185,6 +190,7 @@
     "url:https://cutiestreet.asobisystem.com/live_information/detail/46322",
     "url:https://cutiestreet.asobisystem.com/live_information/detail/46323",
     "url:https://cutiestreet.asobisystem.com/live_information/detail/46341",
+    "url:https://cutiestreet.asobisystem.com/news/detail/93573",
     "url:https://cutiestreet.asobisystem.com/news/detail/93741",
     "url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
     "url:https://fruitszipper.asobisystem.com/live_information/detail/40049",
@@ -245,7 +251,7 @@
   ],
   "reconciledBaseDateMessageCount": 0,
   "downgradedFalsePositiveCount": 0,
-  "legacyProtectedErrorCount": 40,
+  "legacyProtectedErrorCount": 43,
   "legacyProtectedErrors": [
     {
       "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
@@ -400,6 +406,21 @@
     {
       "error": "release event is missing a verified sales/gathering/start time: CUTIE STREET / CUTIE STREET リリースイベント＠イオンモール白山【事前抽選会】 / 現在受付なし",
       "label": "CUTIE STREET / CUTIE STREET リリースイベント＠イオンモール白山【事前抽選会】 / 現在受付なし",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "Pia row contains FC/upgrade-only sale: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
+      "label": "CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
+      "label": "CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
+      "action": "retained unchanged previous row; validator regression downgraded to warning"
+    },
+    {
+      "error": "Pia deadline claims verified without detail-page evidence: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
+      "label": "CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     },
     {
