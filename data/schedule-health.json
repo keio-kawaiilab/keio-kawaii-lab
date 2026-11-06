@@ -1,24 +1,26 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-07T03:33:28.102851+09:00",
-  "candidateUpdatedAt": "2026-11-07T03:33:27+09:00",
+  "generatedAt": "2026-11-07T05:53:36.452828+09:00",
+  "candidateUpdatedAt": "2026-11-07T05:53:35+09:00",
   "previousEventCount": 249,
-  "candidateEventCount": 249,
+  "candidateEventCount": 250,
   "protectedPreviousCount": 245,
   "errorCount": 0,
-  "warningCount": 54,
+  "warningCount": 56,
   "errors": [],
   "warnings": [
-    "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
-    "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CUTIE STREET / 11月9日(月)に開催を予定しております、『CUTIE STREET 古澤里紗 生誕祭 2026』公演ですが、チケットを購入されたお客様へは高額転売への対策としてリセールサービスの運用を実施します。 / 一般発売",
     "quarantined one event/source update and kept the previous known-good data: canonical special event offer has no verified purchase/ticket window: CUTIE STREET / CUTIE STREET リリースイベント＠イオンモール白山【事前抽選会】 / 現在受付なし / offer 1",
-    "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET 板倉可奈 生誕祭 2026 / 一般発売",
     "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
-    "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / 一般発売",
     "quarantined one event/source update and kept the previous known-good data: Pia row contains FC/upgrade-only sale: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
     "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
-    "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売",
+    "quarantined one event/source update and kept the previous known-good data: missing title: CANDY TUNE / ? / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: missing title: CUTIE STREET / ? / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: missing title: FRUITS ZIPPER / ? / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: missing title: KAWAII LAB. MATES / ? / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: missing title: KAWAII LAB. SOUTH / ? / FC先行",
     "quarantined one event/source update and kept the previous known-good data: duplicate Pia lot pia:30327: KAWAII LAB.合同 / KAWAII LAB. Christmas SESSION 2026 @有明アリーナ / 現在受付なし",
+    "quarantined one event/source update and kept the previous known-good data: missing title: MORE STAR / ? / FC先行",
+    "quarantined one event/source update and kept the previous known-good data: missing title: SWEET STEADY / ? / FC先行",
     "quarantined one event/source update and kept the previous known-good data: active Pia row has no lotRlsCd detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
@@ -64,7 +66,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no lotRlsCd detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ"
   ],
-  "candidateSha256": "c5c005fb163bafac1f349b9804911467759171822e58f1b82d5f71ff0b784a0c",
+  "candidateSha256": "687a5fb4d1b3dcb5f44eb2b4da15e66d3e55c1006320a5dfb5f31837013399c1",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -469,37 +471,17 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 11,
+  "quarantineCount": 13,
   "quarantineActions": [
-    {
-      "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
-      "action": "restored previous row",
-      "restoredPreviousRows": 2
-    },
-    {
-      "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / 11月9日(月)に開催を予定しております、『CUTIE STREET 古澤里紗 生誕祭 2026』公演ですが、チケットを購入されたお客様へは高額転売への対策としてリセールサービスの運用を実施します。 / 一般発売",
-      "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 1
-    },
     {
       "error": "canonical special event offer has no verified purchase/ticket window: CUTIE STREET / CUTIE STREET リリースイベント＠イオンモール白山【事前抽選会】 / 現在受付なし / offer 1",
       "action": "restored previous row",
       "restoredPreviousRows": 1
     },
     {
-      "error": "active Pia row has no lotRlsCd detail URL: CUTIE STREET / CUTIE STREET 板倉可奈 生誕祭 2026 / 一般発売",
-      "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 1
-    },
-    {
       "error": "active Pia row has no lotRlsCd detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
       "action": "restored previous row",
       "restoredPreviousRows": 4
-    },
-    {
-      "error": "active Pia row has no lotRlsCd detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / 一般発売",
-      "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 2
     },
     {
       "error": "Pia row contains FC/upgrade-only sale: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / アップグレード抽選",
@@ -512,7 +494,27 @@
       "restoredPreviousRows": 4
     },
     {
-      "error": "active Pia row has no lotRlsCd detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売",
+      "error": "missing title: CANDY TUNE / ? / FC先行",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 12
+    },
+    {
+      "error": "missing title: CUTIE STREET / ? / FC先行",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 12
+    },
+    {
+      "error": "missing title: FRUITS ZIPPER / ? / FC先行",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 12
+    },
+    {
+      "error": "missing title: KAWAII LAB. MATES / ? / FC先行",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "missing title: KAWAII LAB. SOUTH / ? / FC先行",
       "action": "withheld new/ambiguous row",
       "restoredPreviousRows": 2
     },
@@ -520,6 +522,16 @@
       "error": "duplicate Pia lot pia:30327: KAWAII LAB.合同 / KAWAII LAB. Christmas SESSION 2026 @有明アリーナ / 現在受付なし",
       "action": "restored previous Pia lot rows",
       "restoredPreviousRows": 2
+    },
+    {
+      "error": "missing title: MORE STAR / ? / FC先行",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 12
+    },
+    {
+      "error": "missing title: SWEET STEADY / ? / FC先行",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 12
     },
     {
       "error": "active Pia row has no lotRlsCd detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
