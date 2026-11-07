@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-08T05:35:16+09:00",
+  "checkedAt": "2026-11-08T06:55:09+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-11-07T08:31:03+09:00",
     "scannedPages": {
@@ -7339,6 +7339,45 @@
       "officialTourUrl": "https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026"
     },
     {
+      "id": "cd384d344f753e98",
+      "group": "CANDY TUNE",
+      "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
+      "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
+      "displayTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN -",
+      "eventCategory": "solo-live",
+      "ticketType": "一般発売",
+      "ticketProvider": "pia",
+      "applyStart": "2026-10-24T10:00",
+      "applyEnd": null,
+      "resultDate": null,
+      "paymentEnd": null,
+      "applicationStatus": "observed",
+      "applicationDisplayMode": "offers",
+      "applicationWindowVerified": true,
+      "applicationWindowSource": "https://red-hot.ne.jp/play/detail.php?pid=py28330",
+      "eventDate": "2026-12-09",
+      "venue": "東京都 東京ガーデンシアター",
+      "openTime": "17:00",
+      "startTime": "18:30",
+      "url": "https://red-hot.ne.jp/play/detail.php?pid=py28330",
+      "urls": [
+        "https://red-hot.ne.jp/play/detail.php?pid=py28330",
+        "https://t.pia.jp/guide/resale-guide.jsp",
+        "https://t.pia.jp/help/index.jsp"
+      ],
+      "sourceType": "ticket-history-guard",
+      "sourceChannel": "promoter-general-sale",
+      "primarySource": "promoter",
+      "sourceCandidates": [
+        "promoter",
+        "pia"
+      ],
+      "eventScope": "kawaii-lab",
+      "historyPreserved": true,
+      "soldOutObserved": false,
+      "sourceObservedAt": "2026-11-08T06:55:00+09:00"
+    },
+    {
       "id": "6a54a4186af13484",
       "group": "CANDY TUNE",
       "title": "2026.08.22 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード抽選受付のお知らせ",
@@ -12355,7 +12394,7 @@
     "lawson/SWEET STEADY: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=18)"
   ],
   "promoterGeneralSaleDiagnostics": {
-    "checkedAt": "2026-11-08T05:34:47+09:00",
+    "checkedAt": "2026-11-08T06:55:08+09:00",
     "knownPerformancesChecked": 62,
     "generalSalesObserved": 5,
     "generalSalesAdded": 1,
@@ -12363,12 +12402,12 @@
     "failures": []
   },
   "publicEventModelReport": {
-    "rawEventCount": 272,
+    "rawEventCount": 273,
     "passthroughEventCount": 84,
     "performanceEntityCount": 62,
-    "sourceOccurrenceCount": 346,
-    "mergedSourceOccurrences": 284,
-    "offerCount": 203,
+    "sourceOccurrenceCount": 347,
+    "mergedSourceOccurrences": 285,
+    "offerCount": 204,
     "outOfScopeSoloEventCount": 3
   },
   "publicEventModelVersion": 1,
@@ -12508,7 +12547,7 @@
   },
   "renderWarnings": [
     {
-      "checkedAt": "2026-11-08T05:35:16+09:00",
+      "checkedAt": "2026-11-08T06:55:09+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one CANDY TUNE tour performance for 2026-10-04 OPEN 16:30 / START 17:30, found 0"
     }
@@ -25702,7 +25741,7 @@
       }
     ]
   },
-  "updatedAt": "2026-11-08T05:35:16+09:00",
+  "updatedAt": "2026-11-08T06:55:09+09:00",
   "publicEvents": [
     {
       "id": "1b5fec5f58ba553f",
@@ -27044,10 +27083,10 @@
       "startTime": "14:00",
       "url": "https://tgc.girlswalker.com/toyama/2026/ticket/",
       "urls": [
-        "https://tgc.girlswalker.com/toyama/2026/ticket/",
         "https://candytune.asobisystem.com/live_information/detail/44995",
         "https://sweetsteady.asobisystem.com/live_information/detail/44463",
-        "https://morestar.asobisystem.com/live_information/detail/45675"
+        "https://morestar.asobisystem.com/live_information/detail/45675",
+        "https://tgc.girlswalker.com/toyama/2026/ticket/"
       ],
       "sourceType": "official-schedule",
       "primarySource": "official",
@@ -27094,12 +27133,16 @@
           "sourceChannel": "known-official-correction"
         }
       ],
+      "ticketType": "追加販売（先着）",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers",
       "sourceRowIds": [
         "ecdd86be6e667177",
         "26d0069375101fa4"
       ],
       "mergedPublicEventIds": [
-        "performance-external-tgc-toyama-2026-2026-11-21-14-00-ykkaparena"
+        "ecdd86be6e667177",
+        "26d0069375101fa4"
       ],
       "displayTitle": "TGC TOYAMA 2026 by TOKYO GIRLS COLLECTION",
       "participants": [
@@ -27107,10 +27150,7 @@
         "SWEET STEADY",
         "MORE STAR"
       ],
-      "performanceKey": "external|tgc-toyama-2026|2026-11-21|14:00|ykkaparena",
-      "ticketType": "追加販売（先着）",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "performanceKey": "external|tgc-toyama-2026|2026-11-21|14:00|ykkaparena"
     },
     {
       "id": "457b1636e10a5379",
@@ -27468,6 +27508,9 @@
           "sourceObservedAt": "2026-11-08T05:33:10+09:00"
         }
       ],
+      "ticketType": "複数受付",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers",
       "sourceRowIds": [
         "cfbbfe7a4e136b4a",
         "2c117f3728ce3c02",
@@ -27476,13 +27519,14 @@
         "baac3381c93d98a3"
       ],
       "mergedPublicEventIds": [
-        "performance-external-chikappa-2026-2026-11-23-11-00-b"
+        "cfbbfe7a4e136b4a",
+        "2c117f3728ce3c02",
+        "4919495adeca9a4c",
+        "8a40af447079424c",
+        "baac3381c93d98a3"
       ],
       "displayTitle": "ちかっぱ祭2026",
-      "performanceKey": "external|chikappa-2026|2026-11-23|11:00|福岡マリンメッセ福岡b館",
-      "ticketType": "複数受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "performanceKey": "external|chikappa-2026|2026-11-23|11:00|福岡マリンメッセ福岡b館"
     },
     {
       "id": "a7b325c43cc6c33e",
@@ -31747,7 +31791,8 @@
         "78e266f66b3db5b5",
         "3eed3007b9990db8",
         "3f4ad4c1b602984b",
-        "known-candy-tokyo-presale-20261209"
+        "known-candy-tokyo-presale-20261209",
+        "cd384d344f753e98"
       ],
       "offers": [
         {
@@ -31942,6 +31987,27 @@
           "sourceType": "official",
           "sourceChannel": "known-official-correction",
           "primarySource": "official"
+        },
+        {
+          "sourceRowId": "cd384d344f753e98",
+          "provider": "pia",
+          "url": "https://red-hot.ne.jp/play/detail.php?pid=py28330",
+          "urls": [
+            "https://red-hot.ne.jp/play/detail.php?pid=py28330",
+            "https://t.pia.jp/guide/resale-guide.jsp",
+            "https://t.pia.jp/help/index.jsp"
+          ],
+          "ticketType": "一般発売",
+          "ticketProvider": "pia",
+          "applyStart": "2026-10-24T10:00",
+          "applicationStatus": "observed",
+          "applicationWindowVerified": true,
+          "applicationDisplayMode": "offers",
+          "applicationWindowSource": "https://red-hot.ne.jp/play/detail.php?pid=py28330",
+          "sourceType": "ticket-history-guard",
+          "sourceChannel": "promoter-general-sale",
+          "primarySource": "promoter",
+          "sourceObservedAt": "2026-11-08T06:55:00+09:00"
         }
       ],
       "ticketType": "複数受付",
