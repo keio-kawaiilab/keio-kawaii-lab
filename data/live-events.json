@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-08T08:06:41+09:00",
+  "checkedAt": "2026-11-08T08:07:41+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-11-08T07:17:03+09:00",
     "scannedPages": {
@@ -106,7 +106,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14066",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14066",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "external"
     },
     {
       "id": "1c60e2be989c564d",
@@ -154,7 +155,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14296",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14296",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "external"
     },
     {
       "id": "37895c0d415d27e5",
@@ -1675,14 +1677,13 @@
       "startTime": "19:00",
       "url": "https://kawaiilab.asobisystem.com/news/detail/94963",
       "urls": [
-        "https://kawaiilab.asobisystem.com/news/detail/94963",
-        "https://cutiestreet.asobisystem.com/live_information/detail/46336"
+        "https://kawaiilab.asobisystem.com/news/detail/94963"
       ],
       "sourceType": "resale-official",
       "primarySource": "official",
       "sourceChannel": "kawaii-lab-resale",
       "sourceCandidates": [
-        "official"
+        "kawaii-lab-resale"
       ],
       "sourcePublishedAt": "2026-11-06",
       "eventScope": "kawaii-lab",
@@ -1694,8 +1695,7 @@
       "deadlineVerified": true,
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://kawaiilab.asobisystem.com/news/detail/94963",
-      "deadlineSource": "https://kawaiilab.asobisystem.com/news/detail/94963",
-      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/46336"
+      "deadlineSource": "https://kawaiilab.asobisystem.com/news/detail/94963"
     },
     {
       "id": "108565e7c162eecb",
@@ -3600,7 +3600,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=62959",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=62959",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "kawaii-lab"
     },
     {
       "id": "5103efcdf3b526de",
@@ -3704,7 +3705,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21416",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21416",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "kawaii-lab"
     },
     {
       "id": "93449f36c95a621b",
@@ -9157,7 +9159,21 @@
       "duplicateEventRowsCollapsed": 0,
       "duplicateEventIdsDisambiguated": 0,
       "duplicateEventIdRepairs": [],
-      "onlinePlaceholderOccurrencesMerged": 0
+      "onlinePlaceholderOccurrencesMerged": 0,
+      "publicEvents": {
+        "sourceSpecialRows": 5,
+        "canonicalSpecialEvents": 5,
+        "rowsCollapsed": 0,
+        "releaseEventEntities": 3,
+        "largeBenefitEntities": 2,
+        "alreadyCanonicalRows": 5,
+        "internalScheduleRowsCollapsed": 0,
+        "duplicateEventIdCollisions": 0,
+        "duplicateEventRowsCollapsed": 0,
+        "duplicateEventIdsDisambiguated": 0,
+        "duplicateEventIdRepairs": [],
+        "onlinePlaceholderOccurrencesMerged": 0
+      }
     },
     "specialEventsBeforePhysicalMerge": 5,
     "specialEventsAfterPhysicalMerge": 5,
@@ -9241,14 +9257,23 @@
     "failures": []
   },
   "releasePreparation": {
-    "preparedAt": "2026-11-08T08:06:40+09:00",
+    "preparedAt": "2026-11-08T08:07:37+09:00",
     "normalizedSpecialEvents": 6,
     "duplicateIdsRemoved": 0,
     "duplicateOfficialFcOffersRemoved": 0,
     "duplicateOfficialFcOfferIdsRemoved": [],
     "duplicateOfficialResaleWindowsRemoved": 0,
-    "retainedPreviousRows": 0,
-    "retained": [],
+    "retainedPreviousRows": 1,
+    "retained": [
+      {
+        "id": "a32f16b9ec9c9756",
+        "group": "CUTIE STREET",
+        "title": "佐野愛花 生誕祭 2026 @SGCホール有明",
+        "ticketType": "現在受付なし",
+        "provider": null,
+        "applyEnd": null
+      }
+    ],
     "expandedPreviousSpecialEntities": 5,
     "expandedCandidateSpecialEntities": 5,
     "supersededStaleJointRowsRemoved": 0,
@@ -9299,8 +9324,16 @@
       "candyOnline20261020RowsCollapsed": 0,
       "sweetOnline20261023RowsCollapsed": 0,
       "sweetEbichu20261116RowsCollapsed": 0,
-      "semanticTicketDuplicatesRemoved": 0,
-      "semanticTicketDuplicateIds": [],
+      "semanticTicketDuplicatesRemoved": 7,
+      "semanticTicketDuplicateIds": [
+        "b0b0f1c99a28d68f",
+        "943395a81d9f05c3",
+        "c6fa1da4ad53fabd",
+        "aec98a196b90b4d6",
+        "c0b5d76fb2b896a5",
+        "cd5483c6c103b41a",
+        "3f4ad4c1b602984b"
+      ],
       "cutiePacificoFcLotteryFixed": 0,
       "sweetIdolHalloweenSaleFixed": 0,
       "sweetIdolHalloweenSaleAdded": 0,
@@ -9327,7 +9360,21 @@
         "duplicateEventRowsCollapsed": 0,
         "duplicateEventIdsDisambiguated": 0,
         "duplicateEventIdRepairs": [],
-        "onlinePlaceholderOccurrencesMerged": 0
+        "onlinePlaceholderOccurrencesMerged": 0,
+        "publicEvents": {
+          "sourceSpecialRows": 5,
+          "canonicalSpecialEvents": 5,
+          "rowsCollapsed": 0,
+          "releaseEventEntities": 3,
+          "largeBenefitEntities": 2,
+          "alreadyCanonicalRows": 5,
+          "internalScheduleRowsCollapsed": 0,
+          "duplicateEventIdCollisions": 0,
+          "duplicateEventRowsCollapsed": 0,
+          "duplicateEventIdsDisambiguated": 0,
+          "duplicateEventIdRepairs": [],
+          "onlinePlaceholderOccurrencesMerged": 0
+        }
       },
       "specialEventsBeforePhysicalMerge": 5,
       "specialEventsAfterPhysicalMerge": 5,
@@ -9341,12 +9388,12 @@
     "redundantSpecialOffersRemoved": 0,
     "redundantSpecialOfferIds": [],
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-11-08T08:06:40+09:00",
-    "checkedAt": "2026-11-08T08:06:40+09:00"
+    "publicUpdatedAt": "2026-11-08T08:07:37+09:00",
+    "checkedAt": "2026-11-08T08:07:37+09:00"
   },
   "renderWarnings": [
     {
-      "checkedAt": "2026-11-08T08:06:41+09:00",
+      "checkedAt": "2026-11-08T08:07:40+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one CANDY TUNE tour performance for 2026-10-04 OPEN 16:30 / START 17:30, found 0"
     }
@@ -22540,21 +22587,7 @@
       }
     ]
   },
-  "updatedAt": "2026-11-08T08:06:41+09:00",
-  "specialEventNormalization": {
-    "sourceSpecialRows": 5,
-    "canonicalSpecialEvents": 5,
-    "rowsCollapsed": 0,
-    "releaseEventEntities": 3,
-    "largeBenefitEntities": 2,
-    "alreadyCanonicalRows": 5,
-    "internalScheduleRowsCollapsed": 0,
-    "duplicateEventIdCollisions": 0,
-    "duplicateEventRowsCollapsed": 0,
-    "duplicateEventIdsDisambiguated": 0,
-    "duplicateEventIdRepairs": [],
-    "onlinePlaceholderOccurrencesMerged": 0
-  },
+  "updatedAt": "2026-11-08T08:07:41+09:00",
   "publicEvents": [
     {
       "id": "1b5fec5f58ba553f",
@@ -22602,7 +22635,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14066",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14066",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "external"
     },
     {
       "id": "1c60e2be989c564d",
@@ -22650,7 +22684,8 @@
       "applicationWindowSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14296",
       "deadlineVerified": true,
       "deadlineSource": "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14296",
-      "applicationDisplayMode": "offers"
+      "applicationDisplayMode": "offers",
+      "eventScope": "external"
     },
     {
       "id": "37895c0d415d27e5",
@@ -27461,21 +27496,19 @@
       "startTime": "19:00",
       "url": "https://kawaiilab.asobisystem.com/news/detail/94963",
       "urls": [
-        "https://kawaiilab.asobisystem.com/news/detail/94963",
-        "https://cutiestreet.asobisystem.com/live_information/detail/46336"
+        "https://kawaiilab.asobisystem.com/news/detail/94963"
       ],
       "sourceType": "resale-official",
       "primarySource": "official",
       "sourceChannel": "kawaii-lab-resale",
       "sourceCandidates": [
-        "official"
+        "kawaii-lab-resale"
       ],
       "sourcePublishedAt": "2026-11-06",
       "eventScope": "kawaii-lab",
       "participants": [
         "CUTIE STREET"
       ],
-      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/46336",
       "entityType": "performance",
       "performanceEntityVersion": 1,
       "performanceKey": "CUTIE STREET|2026-11-09|time|19:00|sgcホール有明",
@@ -27488,8 +27521,7 @@
           "provider": "resale",
           "url": "https://kawaiilab.asobisystem.com/news/detail/94963",
           "urls": [
-            "https://kawaiilab.asobisystem.com/news/detail/94963",
-            "https://cutiestreet.asobisystem.com/live_information/detail/46336"
+            "https://kawaiilab.asobisystem.com/news/detail/94963"
           ],
           "ticketType": "公式リセール",
           "ticketProvider": "resale",
@@ -32404,5 +32436,33 @@
       "applicationDisplayMode": "schedule-only",
       "applicationStatus": "none"
     }
-  ]
+  ],
+  "specialEventNormalization": {
+    "sourceSpecialRows": 5,
+    "canonicalSpecialEvents": 5,
+    "rowsCollapsed": 0,
+    "releaseEventEntities": 3,
+    "largeBenefitEntities": 2,
+    "alreadyCanonicalRows": 5,
+    "internalScheduleRowsCollapsed": 0,
+    "duplicateEventIdCollisions": 0,
+    "duplicateEventRowsCollapsed": 0,
+    "duplicateEventIdsDisambiguated": 0,
+    "duplicateEventIdRepairs": [],
+    "onlinePlaceholderOccurrencesMerged": 0,
+    "publicEvents": {
+      "sourceSpecialRows": 5,
+      "canonicalSpecialEvents": 5,
+      "rowsCollapsed": 0,
+      "releaseEventEntities": 3,
+      "largeBenefitEntities": 2,
+      "alreadyCanonicalRows": 5,
+      "internalScheduleRowsCollapsed": 0,
+      "duplicateEventIdCollisions": 0,
+      "duplicateEventRowsCollapsed": 0,
+      "duplicateEventIdsDisambiguated": 0,
+      "duplicateEventIdRepairs": [],
+      "onlinePlaceholderOccurrencesMerged": 0
+    }
+  }
 }
