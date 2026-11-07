@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-08T03:19:11+09:00",
+  "checkedAt": "2026-11-08T03:30:33+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-11-07T08:31:03+09:00",
     "scannedPages": {
@@ -393,7 +393,6 @@
         "2b611de7ce6e0292",
         "fdbef6fe4dc52f4d"
       ],
-      "offers": [],
       "participants": [
         "CANDY TUNE",
         "SWEET STEADY",
@@ -412,7 +411,8 @@
       "eventEndDate": "2026-10-11",
       "venues": [
         "西日本総合展示場"
-      ]
+      ],
+      "offers": []
     },
     {
       "id": "960fda0ccfa073c9",
@@ -1816,7 +1816,6 @@
         "official"
       ],
       "sourcePublishedAt": "2026-11-05",
-      "applicationStatus": "none",
       "deadlineVerified": true,
       "applicationDisplayMode": "offers",
       "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/95087",
@@ -1824,6 +1823,23 @@
       "mergeAsOfferOnly": false,
       "discoverySourceUrl": "https://cutiestreet.asobisystem.com/news/detail/95087",
       "eventScope": "kawaii-lab",
+      "schedule": [
+        {
+          "date": "2026-11-08",
+          "venue": "石川県 イオンモール白山 平面B駐車場 特設ステージ",
+          "startTime": "14:30"
+        }
+      ],
+      "eventCount": 1,
+      "eventDates": [
+        "2026-11-08"
+      ],
+      "eventEndDate": "2026-11-08",
+      "venues": [
+        "石川県 イオンモール白山 平面B駐車場 特設ステージ"
+      ],
+      "sourceGroup": "CUTIE STREET",
+      "applicationStatus": "none",
       "entityType": "special-event",
       "specialEventEntityVersion": 1,
       "sourceRowIds": [
@@ -1856,21 +1872,6 @@
           "salesStartTime": "09:00",
           "gatheringTime": "13:30"
         }
-      ],
-      "schedule": [
-        {
-          "date": "2026-11-08",
-          "venue": "石川県 イオンモール白山 平面B駐車場 特設ステージ",
-          "startTime": "14:30"
-        }
-      ],
-      "eventCount": 1,
-      "eventDates": [
-        "2026-11-08"
-      ],
-      "eventEndDate": "2026-11-08",
-      "venues": [
-        "石川県 イオンモール白山 平面B駐車場 特設ステージ"
       ]
     },
     {
@@ -4915,49 +4916,6 @@
       ],
       "eventTitle": "CUTIE STREET 佐野愛花 生誕祭 2026",
       "performanceMatchedToOfficial": true,
-      "eventScope": "kawaii-lab"
-    },
-    {
-      "id": "known-cutie-sano-upgrade-20261126",
-      "group": "CUTIE STREET",
-      "title": "CUTIE STREET 佐野愛花 生誕祭 2026",
-      "eventTitle": "CUTIE STREET 佐野愛花 生誕祭 2026",
-      "eventDate": "2026-11-26",
-      "eventEndDate": "2026-11-26",
-      "eventDates": [
-        "2026-11-26"
-      ],
-      "eventCount": 1,
-      "venue": "東京都 SGCホール有明",
-      "openTime": "17:30",
-      "startTime": "19:00",
-      "schedule": [
-        {
-          "date": "2026-11-26",
-          "venue": "東京都 SGCホール有明",
-          "openTime": "17:30",
-          "startTime": "19:00"
-        }
-      ],
-      "ticketType": "アップグレード抽選",
-      "applyStart": "2026-10-26T12:00",
-      "applyEnd": "2026-10-29T23:59",
-      "applicationWindowVerified": true,
-      "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/93573",
-      "deadlineVerified": true,
-      "deadlineSource": "https://cutiestreet.asobisystem.com/news/detail/93573",
-      "applicationStatus": "open",
-      "applicationDisplayMode": "band",
-      "url": "https://ticket-account.pia.jp/pia/digipoke/list.do",
-      "urls": [
-        "https://ticket-account.pia.jp/pia/digipoke/list.do",
-        "https://cutiestreet.asobisystem.com/news/detail/93573"
-      ],
-      "primarySource": "official",
-      "sourceType": "official",
-      "sourceChannel": "known-official-correction",
-      "sourcePublishedAt": "2026-10-26",
-      "discoverySourceUrl": "https://cutiestreet.asobisystem.com/news/detail/93573",
       "eventScope": "kawaii-lab"
     },
     {
@@ -12235,9 +12193,9 @@
   ],
   "physicalEventInvariant": {
     "semanticNormalization": {
-      "sourceSpecialRows": 6,
+      "sourceSpecialRows": 17,
       "canonicalSpecialEvents": 6,
-      "rowsCollapsed": 0,
+      "rowsCollapsed": 11,
       "releaseEventEntities": 3,
       "largeBenefitEntities": 3,
       "alreadyCanonicalRows": 6,
@@ -12248,12 +12206,12 @@
       "duplicateEventIdRepairs": [],
       "onlinePlaceholderOccurrencesMerged": 0,
       "publicEvents": {
-        "sourceSpecialRows": 5,
-        "canonicalSpecialEvents": 5,
+        "sourceSpecialRows": 6,
+        "canonicalSpecialEvents": 6,
         "rowsCollapsed": 0,
         "releaseEventEntities": 3,
-        "largeBenefitEntities": 2,
-        "alreadyCanonicalRows": 5,
+        "largeBenefitEntities": 3,
+        "alreadyCanonicalRows": 6,
         "internalScheduleRowsCollapsed": 0,
         "duplicateEventIdCollisions": 0,
         "duplicateEventRowsCollapsed": 0,
@@ -12318,12 +12276,12 @@
     "failures": []
   },
   "publicEventModelReport": {
-    "rawEventCount": 271,
+    "rawEventCount": 270,
     "passthroughEventCount": 85,
     "performanceEntityCount": 62,
-    "sourceOccurrenceCount": 342,
-    "mergedSourceOccurrences": 280,
-    "offerCount": 199,
+    "sourceOccurrenceCount": 341,
+    "mergedSourceOccurrences": 279,
+    "offerCount": 198,
     "outOfScopeSoloEventCount": 3
   },
   "publicEventModelVersion": 1,
@@ -12344,8 +12302,8 @@
     "failures": []
   },
   "releasePreparation": {
-    "preparedAt": "2026-11-08T03:19:07+09:00",
-    "normalizedSpecialEvents": 8,
+    "preparedAt": "2026-11-08T03:30:29+09:00",
+    "normalizedSpecialEvents": 7,
     "duplicateIdsRemoved": 0,
     "duplicateOfficialFcOffersRemoved": 0,
     "duplicateOfficialFcOfferIdsRemoved": [],
@@ -12361,8 +12319,8 @@
         "applyEnd": null
       }
     ],
-    "expandedPreviousSpecialEntities": 5,
-    "expandedCandidateSpecialEntities": 4,
+    "expandedPreviousSpecialEntities": 6,
+    "expandedCandidateSpecialEntities": 6,
     "supersededStaleJointRowsRemoved": 0,
     "supersededStaleJointRowIds": [],
     "supersededLegacyReleaseSeriesRemoved": 0,
@@ -12379,7 +12337,7 @@
       "cutieHiroshimaPiaFixed": 0,
       "candyBirthdayFactsFilled": 0,
       "cutieUpgradeReceptionFixed": 0,
-      "titleDeclaredUpgradeReceptionFixed": 2,
+      "titleDeclaredUpgradeReceptionFixed": 0,
       "cutieSanoUpgradeReceptionFixed": 0,
       "cutieSanoScheduleTimeFixed": 0,
       "cutieSanoUpgradeOfferAdded": 0,
@@ -12395,34 +12353,32 @@
       "sweetestStoryPerformancesAdded": 0,
       "fruitsJoyFanclubLiveAdded": 0,
       "fruitsJoyFcOfferAdded": 0,
-      "kawaiilabFcFreeLiveAdded": 1,
-      "kawaiilabFcFreeLiveOffersUpdated": 0,
-      "christmasPiaPresaleOffersAdded": 2,
+      "kawaiilabFcFreeLiveAdded": 0,
+      "kawaiilabFcFreeLiveOffersUpdated": 1,
+      "christmasPiaPresaleOffersAdded": 0,
       "staleChristmasRowsRemoved": 0,
       "fmAichiFixed": 0,
       "sweetFcSecondStartFixed": 0,
       "giftMultiVenueFixed": 0,
       "giftMoreStarAdded": 0,
-      "moreStarSeventhFixed": 1,
+      "moreStarSeventhFixed": 0,
       "moreStarSeventhFcOfferAdded": 0,
-      "disasterReliefConcertFixed": 1,
+      "disasterReliefConcertFixed": 0,
       "disasterReliefConcertRowsCollapsed": 0,
       "impossibleBirthdayYearRowsRemoved": 0,
       "candyOnline20261020RowsCollapsed": 0,
       "sweetOnline20261023RowsCollapsed": 0,
       "sweetEbichu20261116RowsCollapsed": 0,
-      "semanticTicketDuplicatesRemoved": 1,
-      "semanticTicketDuplicateIds": [
-        "f134613457acb373"
-      ],
+      "semanticTicketDuplicatesRemoved": 0,
+      "semanticTicketDuplicateIds": [],
       "cutiePacificoFcLotteryFixed": 0,
       "sweetIdolHalloweenSaleFixed": 0,
       "sweetIdolHalloweenSaleAdded": 0,
       "moreStarPacificoHmvOfferAdded": 0,
       "cutieMorePacificoRowsCollapsed": 0,
       "candyAichiSameDayOfferFixed": 0,
-      "candyAichiSameDayOfferAdded": 1,
-      "cutieFukuokaDoorExchangeOffersAdded": 2,
+      "candyAichiSameDayOfferAdded": 0,
+      "cutieFukuokaDoorExchangeOffersAdded": 0,
       "fruitsSynergy20261101RowsCollapsed": 0
     },
     "redundantOfficialScheduleShadowsRemoved": 0,
@@ -12430,25 +12386,25 @@
     "guardRejectedRowsQuarantined": 0,
     "physicalEventInvariant": {
       "semanticNormalization": {
-        "sourceSpecialRows": 21,
+        "sourceSpecialRows": 17,
         "canonicalSpecialEvents": 6,
-        "rowsCollapsed": 15,
+        "rowsCollapsed": 11,
         "releaseEventEntities": 3,
         "largeBenefitEntities": 3,
-        "alreadyCanonicalRows": 4,
-        "internalScheduleRowsCollapsed": 3,
+        "alreadyCanonicalRows": 6,
+        "internalScheduleRowsCollapsed": 0,
         "duplicateEventIdCollisions": 0,
         "duplicateEventRowsCollapsed": 0,
         "duplicateEventIdsDisambiguated": 0,
         "duplicateEventIdRepairs": [],
         "onlinePlaceholderOccurrencesMerged": 0,
         "publicEvents": {
-          "sourceSpecialRows": 5,
-          "canonicalSpecialEvents": 5,
+          "sourceSpecialRows": 6,
+          "canonicalSpecialEvents": 6,
           "rowsCollapsed": 0,
           "releaseEventEntities": 3,
-          "largeBenefitEntities": 2,
-          "alreadyCanonicalRows": 5,
+          "largeBenefitEntities": 3,
+          "alreadyCanonicalRows": 6,
           "internalScheduleRowsCollapsed": 0,
           "duplicateEventIdCollisions": 0,
           "duplicateEventRowsCollapsed": 0,
@@ -12460,7 +12416,7 @@
       "specialEventsBeforePhysicalMerge": 6,
       "specialEventsAfterPhysicalMerge": 6,
       "physicalRowsCollapsed": 0,
-      "internalScheduleRowsCollapsed": 3,
+      "internalScheduleRowsCollapsed": 0,
       "collisionCount": 0,
       "collisions": [],
       "remainingDuplicateCount": 0,
@@ -12469,12 +12425,12 @@
     "redundantSpecialOffersRemoved": 0,
     "redundantSpecialOfferIds": [],
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-11-08T03:19:07+09:00",
-    "checkedAt": "2026-11-08T03:19:07+09:00"
+    "publicUpdatedAt": "2026-11-08T03:30:29+09:00",
+    "checkedAt": "2026-11-08T03:30:29+09:00"
   },
   "renderWarnings": [
     {
-      "checkedAt": "2026-11-08T03:19:11+09:00",
+      "checkedAt": "2026-11-08T03:30:33+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one CANDY TUNE tour performance for 2026-10-04 OPEN 16:30 / START 17:30, found 0"
     }
@@ -25668,7 +25624,7 @@
       }
     ]
   },
-  "updatedAt": "2026-11-08T03:19:11+09:00",
+  "updatedAt": "2026-11-08T03:30:33+09:00",
   "publicEvents": [
     {
       "id": "1b5fec5f58ba553f",
@@ -26003,7 +25959,6 @@
         "2b611de7ce6e0292",
         "fdbef6fe4dc52f4d"
       ],
-      "offers": [],
       "participants": [
         "CANDY TUNE",
         "SWEET STEADY",
@@ -26022,7 +25977,8 @@
       "eventEndDate": "2026-10-11",
       "venues": [
         "西日本総合展示場"
-      ]
+      ],
+      "offers": []
     },
     {
       "id": "7d06d0bd6452d4f4",
@@ -26325,7 +26281,6 @@
         "official"
       ],
       "sourcePublishedAt": "2026-11-05",
-      "applicationStatus": "none",
       "deadlineVerified": true,
       "applicationDisplayMode": "offers",
       "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/95087",
@@ -26333,6 +26288,23 @@
       "mergeAsOfferOnly": false,
       "discoverySourceUrl": "https://cutiestreet.asobisystem.com/news/detail/95087",
       "eventScope": "kawaii-lab",
+      "schedule": [
+        {
+          "date": "2026-11-08",
+          "venue": "石川県 イオンモール白山 平面B駐車場 特設ステージ",
+          "startTime": "14:30"
+        }
+      ],
+      "eventCount": 1,
+      "eventDates": [
+        "2026-11-08"
+      ],
+      "eventEndDate": "2026-11-08",
+      "venues": [
+        "石川県 イオンモール白山 平面B駐車場 特設ステージ"
+      ],
+      "sourceGroup": "CUTIE STREET",
+      "applicationStatus": "none",
       "entityType": "special-event",
       "specialEventEntityVersion": 1,
       "sourceRowIds": [
@@ -26365,21 +26337,6 @@
           "salesStartTime": "09:00",
           "gatheringTime": "13:30"
         }
-      ],
-      "schedule": [
-        {
-          "date": "2026-11-08",
-          "venue": "石川県 イオンモール白山 平面B駐車場 特設ステージ",
-          "startTime": "14:30"
-        }
-      ],
-      "eventCount": 1,
-      "eventDates": [
-        "2026-11-08"
-      ],
-      "eventEndDate": "2026-11-08",
-      "venues": [
-        "石川県 イオンモール白山 平面B駐車場 特設ステージ"
       ]
     },
     {
@@ -32797,8 +32754,7 @@
         "0682808f6820420f",
         "2514d736bba82d42",
         "a32f16b9ec9c9756",
-        "a536cc1b2de853db",
-        "known-cutie-sano-upgrade-20261126"
+        "a536cc1b2de853db"
       ],
       "offers": [
         {
@@ -32816,28 +32772,6 @@
           "sourceChannel": "recent-official-body",
           "primarySource": "official",
           "sourcePublishedAt": "2026-10-20"
-        },
-        {
-          "sourceRowId": "known-cutie-sano-upgrade-20261126",
-          "provider": "official",
-          "url": "https://ticket-account.pia.jp/pia/digipoke/list.do",
-          "urls": [
-            "https://ticket-account.pia.jp/pia/digipoke/list.do",
-            "https://cutiestreet.asobisystem.com/news/detail/93573"
-          ],
-          "ticketType": "アップグレード抽選",
-          "applyStart": "2026-10-26T12:00",
-          "applyEnd": "2026-10-29T23:59",
-          "applicationStatus": "open",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "band",
-          "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/93573",
-          "deadlineSource": "https://cutiestreet.asobisystem.com/news/detail/93573",
-          "sourceType": "official",
-          "sourceChannel": "known-official-correction",
-          "primarySource": "official",
-          "sourcePublishedAt": "2026-10-26"
         }
       ],
       "eventEndDate": "2026-11-26",
@@ -32853,7 +32787,7 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "複数受付",
+      "ticketType": "FC先行",
       "applicationDisplayMode": "offers",
       "applicationStatus": "offers"
     },
@@ -37907,12 +37841,12 @@
     "duplicateEventIdRepairs": [],
     "onlinePlaceholderOccurrencesMerged": 0,
     "publicEvents": {
-      "sourceSpecialRows": 5,
-      "canonicalSpecialEvents": 5,
+      "sourceSpecialRows": 6,
+      "canonicalSpecialEvents": 6,
       "rowsCollapsed": 0,
       "releaseEventEntities": 3,
-      "largeBenefitEntities": 2,
-      "alreadyCanonicalRows": 5,
+      "largeBenefitEntities": 3,
+      "alreadyCanonicalRows": 6,
       "internalScheduleRowsCollapsed": 0,
       "duplicateEventIdCollisions": 0,
       "duplicateEventRowsCollapsed": 0,
