@@ -238,15 +238,10 @@ def detail_sale_window_from_text(value: str) -> tuple[str | None, str | None]:
 
 
 def detail_sale_window(session: requests.Session, detail_url: str) -> tuple[str | None, str | None]:
-    response = None
-    for _ in range(3):
-        try:
-            response = session.get(detail_url, timeout=8)
-            response.raise_for_status()
-            break
-        except Exception:
-            response = None
-    if response is None:
+    try:
+        response = session.get(detail_url, timeout=8)
+        response.raise_for_status()
+    except Exception:
         return None, None
 
     text = BeautifulSoup(response.text, "html.parser").get_text(" ", strip=True)
@@ -277,20 +272,29 @@ def official_schedule(existing: list[dict], group: str, title: str, start: str, 
                     continue
                 day = str(item.get("date") or "")[:10]
                 if start <= day <= finish:
-                    candidates.append({"date": day, "venue": item.get("venue")})
+                    candidates.append({
+                        "date": day,
+                        "venue": item.get("venue"),
+                        "openTime": item.get("openTime") or event.get("openTime"),
+                        "startTime": item.get("startTime") or event.get("startTime"),
+                    })
         elif event.get("eventDate"):
             day = str(event.get("eventDate"))[:10]
             if start <= day <= finish:
-                candidates.append({"date": day, "venue": event.get("venue")})
+                candidates.append({
+                    "date": day,
+                    "venue": event.get("venue"),
+                    "openTime": event.get("openTime"),
+                    "startTime": event.get("startTime"),
+                })
 
-    seen = set()
-    result = []
+    by_day: dict[str, dict] = {}
     for item in sorted(candidates, key=lambda x: x["date"]):
-        if item["date"] in seen:
-            continue
-        seen.add(item["date"])
-        result.append(item)
-    return result
+        current = by_day.setdefault(item["date"], {"date": item["date"]})
+        for field in ("venue", "openTime", "startTime"):
+            if item.get(field) and not current.get(field):
+                current[field] = item[field]
+    return list(by_day.values())
 
 
 def candidate_anchors(soup: BeautifulSoup):
@@ -390,6 +394,8 @@ def parse_event_page(
             "schedule": schedule if len(schedule) > 1 else None,
             "eventCount": len(event_dates) if len(event_dates) > 1 else None,
             "venue": venue,
+            "openTime": schedule[0].get("openTime") if len(schedule) == 1 else None,
+            "startTime": schedule[0].get("startTime") if len(schedule) == 1 else None,
             "url": href or event_url,
             "urls": [href or event_url, event_url] if href and href != event_url else [event_url],
             "sourceType": "pia",

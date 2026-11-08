@@ -59,6 +59,40 @@ class PiaParserTests(unittest.TestCase):
         text = "販売期間中 ～2026/11/9(月) 23:59"
         self.assertEqual(p.detail_sale_window_from_text(text), (None, "2026-11-09T23:59"))
 
+    def test_official_schedule_keeps_richest_time_for_same_date(self):
+        existing = [
+            {
+                "group": "CANDY TUNE",
+                "title": "CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS",
+                "sourceType": "derived",
+                "schedule": [{"date": "2026-11-12", "venue": "広島文化学園HBGホール"}],
+            },
+            {
+                "group": "CANDY TUNE",
+                "title": "CANDY TUNE JAPAN TOUR 2026 -AUTUMN-",
+                "sourceType": "official-schedule",
+                "eventDate": "2026-11-12",
+                "venue": "広島文化学園HBGホール",
+                "openTime": "17:30",
+                "startTime": "18:30",
+            },
+        ]
+        self.assertEqual(
+            p.official_schedule(
+                existing,
+                "CANDY TUNE",
+                "CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS",
+                "2026-11-12",
+                None,
+            ),
+            [{
+                "date": "2026-11-12",
+                "venue": "広島文化学園HBGホール",
+                "openTime": "17:30",
+                "startTime": "18:30",
+            }],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
