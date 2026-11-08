@@ -262,6 +262,53 @@ class SanitizerTests(unittest.TestCase):
         self.assertFalse(s.is_resale_event({"ticketType": "プリセール（先着先行）"}))
         self.assertTrue(s.is_resale_event({"ticketType": "公式 / FCリセール"}))
 
+    def test_same_official_resale_with_central_and_group_notice_urls_is_merged(self):
+        common = {
+            "group": "CUTIE STREET",
+            "title": "CUTIE STREET 板倉可奈 生誕祭 2026",
+            "eventDate": "2026-11-11",
+            "venue": "SGCホール有明",
+            "startTime": "19:00",
+            "applyStart": "2026-11-09T10:00",
+            "applyEnd": "2026-11-10T23:59",
+            "primarySource": "official",
+            "applicationWindowVerified": True,
+            "deadlineVerified": True,
+        }
+        payload = {"events": [
+            {
+                **common,
+                "id": "group-notice",
+                "ticketType": "リセール",
+                "url": "https://cutiestreet.asobisystem.com/news/detail/94166",
+                "sourceType": "derived",
+                "sourceChannel": "recent-official-body",
+                "sourceCandidates": ["official"],
+            },
+            {
+                **common,
+                "id": "central-notice",
+                "ticketType": "公式リセール",
+                "url": "https://kawaiilab.asobisystem.com/news/detail/95013",
+                "sourceType": "resale-official",
+                "sourceChannel": "kawaii-lab-resale",
+                "sourceCandidates": ["kawaii-lab-resale"],
+            },
+        ]}
+
+        result = s.sanitize_payload(payload, today=date(2026, 11, 9))["events"]
+
+        self.assertEqual(1, len(result))
+        self.assertEqual("公式リセール", result[0]["ticketType"])
+        self.assertEqual(
+            {
+                "https://cutiestreet.asobisystem.com/news/detail/94166",
+                "https://kawaiilab.asobisystem.com/news/detail/95013",
+            },
+            set(result[0]["urls"]),
+        )
+        self.assertEqual(["official", "kawaii-lab-resale"], result[0]["sourceCandidates"])
+
     def test_distinct_resale_urls_with_same_window_stay_separate(self):
         common = {
             "group": "CANDY TUNE",

@@ -374,6 +374,15 @@ def resale_preference(event: dict) -> tuple:
     )
 
 
+def official_resale_provenance(event: dict) -> bool:
+    """Return true only for resale rows derived from an official notice."""
+    return (
+        str(event.get("primarySource") or "") == "official"
+        or str(event.get("sourceType") or "") == "resale-official"
+        or str(event.get("sourceChannel") or "") in {"recent-official-body", "kawaii-lab-resale"}
+    )
+
+
 def resale_venue_keys(event: dict) -> set[str]:
     values = [event.get("venue")]
     values.extend(item.get("venue") for item in event_schedule(event))
@@ -412,7 +421,7 @@ def resale_performances_compatible(left: dict, right: dict) -> bool:
 
 
 def merge_duplicate_resale_windows(events: list[dict]) -> list[dict]:
-    """同一公演・同一期間・同一URLの公式リセールを取得経路に関係なく1件に統合する。"""
+    """同一公演・同一期間の公式リセールを取得経路に関係なく1件に統合する。"""
     result: list[dict] = []
     positions: dict[tuple, list[int]] = {}
 
@@ -436,9 +445,23 @@ def merge_duplicate_resale_windows(events: list[dict]) -> list[dict]:
                 index
                 for index in positions.get(key, [])
                 if (
-                    urls
-                    and urls.intersection(resale_source_urls(result[index]))
-                    and resale_performances_compatible(event, result[index])
+                    resale_performances_compatible(event, result[index])
+                    and (
+                        (
+                            urls
+                            and urls.intersection(resale_source_urls(result[index]))
+                        )
+                        or (
+                            official_resale_provenance(event)
+                            and official_resale_provenance(result[index])
+                            and (
+                                str(event.get("sourceType") or "") == "resale-official"
+                                or str(result[index].get("sourceType") or "") == "resale-official"
+                            )
+                            and title_merge_key(event.get("title", ""))
+                            == title_merge_key(result[index].get("title", ""))
+                        )
+                    )
                 )
             ),
             None,
