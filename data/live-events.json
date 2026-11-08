@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-09T08:19:56+09:00",
+  "checkedAt": "2026-11-09T08:20:36+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-11-09T07:27:55+09:00",
     "scannedPages": {
@@ -798,7 +798,6 @@
       ],
       "url": "https://kawaiilab.asobisystem.com/news/detail/93695",
       "urls": [
-        "https://kawaiilab.asobisystem.com/news/detail/93695",
         "https://candytune.asobisystem.com/news/detail/93706",
         "https://candytune.asobisystem.com/feature/6eb8e3c96d6f97adcc18f9bebd263edc?_normalbrowse_=1",
         "https://sweetsteady.asobisystem.com/news/detail/93708",
@@ -807,6 +806,7 @@
         "https://cutiestreet.asobisystem.com/feature/b0da2ae3d091956d61d96b98551c772a?_normalbrowse_=1",
         "https://morestar.asobisystem.com/news/detail/93710",
         "https://morestar.asobisystem.com/feature/4887f2d087c4dd1ed6a0f466e46d1b56?_normalbrowse_=1",
+        "https://kawaiilab.asobisystem.com/news/detail/93695",
         "https://kawaiilab.asobisystem.com/feature/952c3d505aa47ae5719a9a05de62fff8?_normalbrowse_=1"
       ],
       "ticketType": "現在受付なし",
@@ -11160,7 +11160,7 @@
   },
   "renderWarnings": [
     {
-      "checkedAt": "2026-11-09T08:19:56+09:00",
+      "checkedAt": "2026-11-09T08:20:36+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one CANDY TUNE tour performance for 2026-10-04 OPEN 16:30 / START 17:30, found 0"
     }
@@ -24207,7 +24207,7 @@
       }
     ]
   },
-  "updatedAt": "2026-11-09T08:19:56+09:00",
+  "updatedAt": "2026-11-09T08:20:36+09:00",
   "specialEventNormalization": {
     "sourceSpecialRows": 2,
     "canonicalSpecialEvents": 2,
@@ -24220,7 +24220,21 @@
     "duplicateEventRowsCollapsed": 0,
     "duplicateEventIdsDisambiguated": 0,
     "duplicateEventIdRepairs": [],
-    "onlinePlaceholderOccurrencesMerged": 0
+    "onlinePlaceholderOccurrencesMerged": 0,
+    "publicEvents": {
+      "sourceSpecialRows": 2,
+      "canonicalSpecialEvents": 2,
+      "rowsCollapsed": 0,
+      "releaseEventEntities": 0,
+      "largeBenefitEntities": 2,
+      "alreadyCanonicalRows": 2,
+      "internalScheduleRowsCollapsed": 0,
+      "duplicateEventIdCollisions": 0,
+      "duplicateEventRowsCollapsed": 0,
+      "duplicateEventIdsDisambiguated": 0,
+      "duplicateEventIdRepairs": [],
+      "onlinePlaceholderOccurrencesMerged": 0
+    }
   },
   "publicEvents": [
     {
@@ -24711,10 +24725,10 @@
       "startTime": "14:00",
       "url": "https://tgc.girlswalker.com/toyama/2026/ticket/",
       "urls": [
+        "https://tgc.girlswalker.com/toyama/2026/ticket/",
         "https://candytune.asobisystem.com/live_information/detail/44995",
         "https://sweetsteady.asobisystem.com/live_information/detail/44463",
-        "https://morestar.asobisystem.com/live_information/detail/45675",
-        "https://tgc.girlswalker.com/toyama/2026/ticket/"
+        "https://morestar.asobisystem.com/live_information/detail/45675"
       ],
       "sourceType": "official-schedule",
       "primarySource": "official",
@@ -24761,16 +24775,12 @@
           "sourceChannel": "known-official-correction"
         }
       ],
-      "ticketType": "追加販売（先着）",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers",
       "sourceRowIds": [
         "ecdd86be6e667177",
         "26d0069375101fa4"
       ],
       "mergedPublicEventIds": [
-        "ecdd86be6e667177",
-        "26d0069375101fa4"
+        "performance-external-tgc-toyama-2026-2026-11-21-14-00-ykkaparena"
       ],
       "displayTitle": "TGC TOYAMA 2026 by TOKYO GIRLS COLLECTION",
       "participants": [
@@ -24778,7 +24788,10 @@
         "SWEET STEADY",
         "MORE STAR"
       ],
-      "performanceKey": "external|tgc-toyama-2026|2026-11-21|14:00|ykkaparena"
+      "performanceKey": "external|tgc-toyama-2026|2026-11-21|14:00|ykkaparena",
+      "ticketType": "追加販売（先着）",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers"
     },
     {
       "id": "593ec53a5d74ac13",
@@ -25097,9 +25110,6 @@
           "sourceObservedAt": "2026-11-09T08:15:19+09:00"
         }
       ],
-      "ticketType": "複数受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers",
       "sourceRowIds": [
         "cfbbfe7a4e136b4a",
         "2c117f3728ce3c02",
@@ -25108,14 +25118,13 @@
         "baac3381c93d98a3"
       ],
       "mergedPublicEventIds": [
-        "cfbbfe7a4e136b4a",
-        "2c117f3728ce3c02",
-        "4919495adeca9a4c",
-        "8a40af447079424c",
-        "baac3381c93d98a3"
+        "performance-external-chikappa-2026-2026-11-23-11-00-b"
       ],
       "displayTitle": "ちかっぱ祭2026",
-      "performanceKey": "external|chikappa-2026|2026-11-23|11:00|福岡マリンメッセ福岡b館"
+      "performanceKey": "external|chikappa-2026|2026-11-23|11:00|福岡マリンメッセ福岡b館",
+      "ticketType": "複数受付",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers"
     },
     {
       "id": "a7b325c43cc6c33e",
