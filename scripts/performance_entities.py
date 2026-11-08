@@ -203,8 +203,21 @@ def _reconcile_verified_christmas_session(event: dict[str, Any]) -> None:
         return
     if not days or not days <= {"2026-12-12", "2026-12-13"}:
         return
-    if any("有明アリーナ" not in row["venue"] for row in occurrences):
+    # The group SCHEDULE mirrors can temporarily omit the venue while the
+    # central joint schedule already identifies the same dated performance.
+    # For these exact, source-identified Christmas rows, an empty venue is
+    # incomplete metadata rather than evidence of another concert.  A
+    # conflicting non-empty venue still remains independent.
+    if any(row["venue"] and "有明アリーナ" not in row["venue"] for row in occurrences):
         return
+    for row in occurrences:
+        if not row["venue"]:
+            row["venue"] = "有明アリーナ"
+    if any(not _text(row.get("venue")) for row in occurrences):
+        return
+    event["schedule"] = occurrences
+    if len(occurrences) == 1:
+        event["venue"] = occurrences[0]["venue"]
     # Preserve distinct starts unless this is the specifically identified stale
     # central Day2 schedule row. Never merge arbitrary same-day performances.
     if (day2_source in urls and days == {"2026-12-13"}

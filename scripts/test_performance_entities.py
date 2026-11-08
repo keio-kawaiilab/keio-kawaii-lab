@@ -203,6 +203,20 @@ class PerformanceEntitiesTest(unittest.TestCase):
         self.assertIn("KAWAII LAB. SOUTH", public[0]["participants"])
         self.assertEqual(2, report["outOfScopeSoloEventCount"])
 
+    def test_christmas_group_mirror_without_venue_joins_verified_joint_show(self):
+        rows = self.christmas_fixture()[:8]
+        rows[0]["venue"] = ""
+        rows[0].pop("schedule", None)
+
+        public, _ = build_public_events(rows)
+
+        self.assertEqual(1, len(public))
+        event = public[0]
+        self.assertEqual("KAWAII LAB.合同", event["group"])
+        self.assertEqual("有明アリーナ", event["venue"])
+        self.assertEqual(8, len(event["sourceRowIds"]))
+        self.assertEqual(1, len(event["offers"]))
+
     def test_christmas_unknown_source_date_and_distinct_start_are_not_forced(self):
         original = self.christmas_fixture()[0]
         unknown = dict(original, id="unknown", group="CUTIE STREET", url="https://cutiestreet.asobisystem.com/news/detail/99999")
