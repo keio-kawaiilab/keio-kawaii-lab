@@ -467,6 +467,15 @@ def _merge_source_metadata(target: dict, *rows: dict) -> dict:
     return out
 
 
+def _official_notice_urls(event: dict) -> set[str]:
+    values = {
+        str(event.get("discoverySourceUrl") or ""),
+        str(event.get("applicationWindowSource") or ""),
+        str(event.get("deadlineSource") or ""),
+    }
+    return {value for value in values if value and "asobisystem.com/news/detail/" in value}
+
+
 def merge_birthday_events(payload: dict, birthday_events: list[dict]) -> dict:
     if not birthday_events:
         return payload
@@ -542,6 +551,34 @@ def merge_birthday_events(payload: dict, birthday_events: list[dict]) -> dict:
                             events = [event for event in events if event is not same_reception]
                             events.append(enriched)
                             changed = True
+                    else:
+                        # Re-parse corrections must replace a row previously
+                        # produced from the same official notice (for example a
+                        # resale body containing "アップグレードは対象外").
+                        # A genuinely different notice/window is an additional
+                        # ticket round and must be retained instead of being
+                        # dropped merely because this birthday already has an
+                        # FC or general-sale row.
+                        fresh_notices = _official_notice_urls(fresh)
+                        same_notice = next((
+                            event for event in official_rows
+                            if fresh_notices & _official_notice_urls(event)
+                        ), None)
+                        if same_notice is not None:
+                            corrected = dict(same_notice)
+                            for field in ("id", "title", "eventTitle", "url", *TICKET_FIELDS):
+                                if field in fresh and fresh.get(field) is not None:
+                                    corrected[field] = fresh.get(field)
+                            corrected = _merge_source_metadata(
+                                corrected, fresh, *promoter_rows, *social_rows
+                            )
+                            events = [event for event in events if event is not same_notice]
+                            events.append(corrected)
+                        else:
+                            events.append(_merge_source_metadata(
+                                fresh, *promoter_rows, *social_rows
+                            ))
+                        changed = True
             # An official page/ticket row is authoritative. Social/promoter rows are
             # fallback evidence only and must not render as duplicate events.
             before = len(events)

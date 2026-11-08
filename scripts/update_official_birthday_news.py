@@ -52,6 +52,15 @@ def known_birthday_people(payload: dict) -> set[str]:
     return result
 
 
+def subject_reception_type(text: str) -> str | None:
+    subject = next((normalize(line) for line in text.splitlines() if normalize(line)), "")
+    if "リセール" in subject:
+        return "リセール"
+    if "アップグレード" in subject:
+        return "アップグレード抽選"
+    return None
+
+
 def scan_news_candidates(
     session: requests.Session,
     base_url: str,
@@ -98,7 +107,7 @@ def scoped_ticket_details_from_article(text: str, today: date) -> dict:
     """Extract one FC window near an explicit reception-period label."""
     lines = [normalize(line) for line in text.splitlines() if normalize(line)]
     candidates: dict[tuple[str, str], dict] = {}
-    full_ticket_type = birthday.ticket_parser.extract_ticket_type("", text)
+    full_ticket_type = subject_reception_type(text) or birthday.ticket_parser.extract_ticket_type("", text)
     explicit_presale_type = None
     if "先行" in text:
         if re.search(r"KAWAII\s*LAB\.?\s*(?:OFFICIAL\s*)?(?:FANCLUB|FC)", text, re.I):
@@ -141,8 +150,13 @@ def ticket_details_from_official_article(text: str, url: str, today: date) -> di
     if len(windows) == 1:
         apply_start, apply_end = windows[0]
         ticket_type = birthday.ticket_parser.extract_ticket_type("", text)
+        # The article subject is authoritative for the reception family.  A
+        # resale notice commonly says "アップグレードは対象外" in its body;
+        # scanning the whole page for the word alone must not turn that resale
+        # window into an upgrade lottery.
         if "先行" in text and re.search(r"(?:\\bFC\\b|FANCLUB|ファンクラブ)", text, re.I):
             ticket_type = "FC先行"
+        ticket_type = subject_reception_type(text) or ticket_type
         status = "none"
         try:
             start_day = date.fromisoformat(apply_start[:10])
@@ -167,6 +181,8 @@ def ticket_details_from_official_article(text: str, url: str, today: date) -> di
         return result
 
     result = birthday.ticket_details_from_text(text, today)
+    if subject_type := subject_reception_type(text):
+        result["ticketType"] = subject_type
     if result.get("applyEnd"):
         result["deadlineSource"] = url
         result["deadlineVerified"] = True
@@ -201,7 +217,17 @@ def fallback_events_from_existing(
 ) -> list[dict]:
     result = []
     for existing in matching_existing_birthdays(payload, group, article_text):
-        if birthday._has_application(existing):
+        notice_sources = {
+            str(existing.get("discoverySourceUrl") or ""),
+            str(existing.get("applicationWindowSource") or ""),
+            str(existing.get("deadlineSource") or ""),
+        }
+        same_notice = article_url in notice_sources
+        # Normally an existing ticket-rich row is a different reception and
+        # must not be overwritten.  The exception is the same official notice:
+        # re-reading it is how parser fixes repair a previously misclassified
+        # row already persisted in the calendar.
+        if birthday._has_application(existing) and not same_notice:
             continue
         event = dict(existing)
         event["url"] = article_url

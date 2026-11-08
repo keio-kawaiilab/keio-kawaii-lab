@@ -6,6 +6,54 @@ import update_official_x_birthday_events as birthday
 
 
 class OfficialBirthdayNewsTests(unittest.TestCase):
+    def test_resale_subject_beats_negative_upgrade_mention_and_repairs_same_notice(self):
+        article_url = "https://cutiestreet.asobisystem.com/news/detail/94166"
+        text = (
+            "『CUTIE STREET 板倉可奈 生誕祭 2026』公演 リセールサービスのお知らせ\n"
+            "日程：2026年11月11日(水)\n"
+            "会場：SGCホール有明\n"
+            "時間：開場17:30 開演19:00\n"
+            "対象券種：一般指定席 ※アップグレードは対象外\n"
+            "受付期間：2026年11月9日(月)10:00〜2026年11月10日(火)23:59\n"
+        )
+        payload = {"events": [{
+            "id": "misclassified",
+            "group": "CUTIE STREET",
+            "title": "CUTIE STREET 板倉可奈 生誕祭 2026",
+            "eventTitle": "CUTIE STREET 板倉可奈 生誕祭 2026",
+            "eventDate": "2026-11-11",
+            "venue": "SGCホール有明",
+            "openTime": "17:30",
+            "startTime": "19:00",
+            "ticketType": "アップグレード抽選",
+            "applyStart": "2026-11-09T10:00",
+            "applyEnd": "2026-11-10T23:59",
+            "applicationWindowSource": article_url,
+            "deadlineSource": article_url,
+            "discoverySourceUrl": article_url,
+            "sourceType": "auto",
+            "sourceChannel": "official-birthday-news",
+            "primarySource": "official",
+        }]}
+
+        rows = news.article_events(
+            payload, "CUTIE STREET", article_url, text, date(2026, 11, 9)
+        )
+        self.assertEqual(1, len(rows))
+        self.assertEqual("リセール", rows[0]["ticketType"])
+        self.assertEqual("2026-11-09T10:00", rows[0]["applyStart"])
+        self.assertEqual("2026-11-10T23:59", rows[0]["applyEnd"])
+
+        merged = birthday.merge_birthday_events(payload, rows)
+        matches = [
+            event for event in merged["events"]
+            if event.get("eventDate") == "2026-11-11"
+            and event.get("applyStart") == "2026-11-09T10:00"
+        ]
+        self.assertEqual(1, len(matches))
+        self.assertEqual("リセール", matches[0]["ticketType"])
+        self.assertEqual(article_url, matches[0]["url"])
+
     def test_upgrade_notice_is_left_to_continuous_official_collector(self):
         payload = {"events": [{
             "id": "schedule-placeholder",
