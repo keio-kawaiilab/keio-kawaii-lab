@@ -1513,6 +1513,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "sweetWinterUpgradeOffersAdded": 0,
         "sweetWinterTicketFactsFixed": 0,
         "sweetWinterPresaleOffersAdded": 0,
+        "sweetWinterPresale2OffersAdded": 0,
         "candyOitaEplusLinkFixed": 0,
         "candyNiigataVenueFixed": 0,
         "candyTokyoPresaleAdded": 0,
@@ -2017,6 +2018,31 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
                     "eventScope": "kawaii-lab",
                 })
                 report["sweetWinterPresaleOffersAdded"] += 1
+
+            represented_presale2 = any(
+                event.get("group") == "SWEET STEADY" and _day(event) == day
+                and event.get("ticketType") == "プレリザーブ2次"
+                and event.get("applyStart") == "2026-11-07T11:00"
+                and event.get("applyEnd") == "2026-11-15T23:59"
+                for event in out
+            )
+            if not represented_presale2:
+                out.append({
+                    "id": "known-sweet-winter-presale2-" + day.replace("-", ""),
+                    "group": "SWEET STEADY", "title": title, "eventTitle": title,
+                    "eventDate": day, "eventEndDate": day, "eventDates": [day], "eventCount": 1,
+                    "venue": venue, "openTime": opened, "startTime": start,
+                    "schedule": [{"date": day, "venue": venue, "openTime": opened, "startTime": start}],
+                    "ticketType": "プレリザーブ2次", "ticketProvider": "pia",
+                    "applyStart": "2026-11-07T11:00", "applyEnd": "2026-11-15T23:59",
+                    "applicationWindowVerified": True, "applicationWindowSource": sweet_winter,
+                    "deadlineVerified": True, "deadlineSource": sweet_winter,
+                    "url": sweet_winter_presale, "urls": [sweet_winter_presale, sweet_winter],
+                    "primarySource": "pia", "sourceType": "pia",
+                    "sourceChannel": "known-official-correction", "sourcePublishedAt": "2026-11-07",
+                    "eventScope": "kawaii-lab",
+                })
+                report["sweetWinterPresale2OffersAdded"] += 1
 
     gift_more_star = _missing_more_star_gift(out)
     if gift_more_star:

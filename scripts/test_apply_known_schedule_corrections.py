@@ -1402,6 +1402,25 @@ class PiaNoticeAndSweetWinterUpgradeTests(unittest.TestCase):
         self.assertEqual(result, again)
         self.assertEqual(0, report["sweetWinterPresaleOffersAdded"])
 
+    def test_sweet_winter_second_presale_is_one_offer_per_occurrence(self):
+        source = "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026"
+        seed = {"id": "tour", "group": "SWEET STEADY",
+                "title": "SWEET STEADY JAPAN TOUR 2026 -WINTER-",
+                "eventDate": "2026-11-13", "eventEndDate": "2026-12-18",
+                "startTime": "18:30", "url": source, "ticketType": "現在受付なし"}
+        result, report = apply_known_corrections([seed])
+        presales = [row for row in result if row.get("ticketType") == "プレリザーブ2次"]
+        self.assertEqual(4, report["sweetWinterPresale2OffersAdded"])
+        self.assertEqual({"2026-11-13", "2026-12-03", "2026-12-06", "2026-12-18"},
+                         {row["eventDate"] for row in presales})
+        self.assertTrue(all(row["applyStart"] == "2026-11-07T11:00" and
+                            row["applyEnd"] == "2026-11-15T23:59" for row in presales))
+        self.assertTrue(all(row["url"] == "https://w.pia.jp/t/sweetsteady-winter2026/"
+                            for row in presales))
+        again, report = apply_known_corrections(result)
+        self.assertEqual(result, again)
+        self.assertEqual(0, report["sweetWinterPresale2OffersAdded"])
+
     def test_sweet_winter_atsugi_upgrade_merges_with_the_official_performance(self):
         from performance_entities import build_public_events
 
@@ -1431,9 +1450,9 @@ class PiaNoticeAndSweetWinterUpgradeTests(unittest.TestCase):
         self.assertEqual(1, report["sweetWinterUpgradeOffersFixed"])
         self.assertEqual(1, len(atsugi))
         self.assertEqual("神奈川県 厚木市文化会館 大ホール", atsugi[0]["venue"])
-        self.assertEqual(2, len(atsugi[0]["offers"]))
+        self.assertEqual(3, len(atsugi[0]["offers"]))
         self.assertEqual(
-            {"アップグレード抽選", "プレリザーブ"},
+            {"アップグレード抽選", "プレリザーブ", "プレリザーブ2次"},
             {offer["ticketType"] for offer in atsugi[0]["offers"]},
         )
 
