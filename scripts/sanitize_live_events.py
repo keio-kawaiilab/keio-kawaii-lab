@@ -405,6 +405,12 @@ def resale_start_times(event: dict) -> set[str]:
     return {str(value).strip() for value in values if str(value or "").strip()}
 
 
+def resale_participants_compatible(left: dict, right: dict) -> bool:
+    left_participants = {str(value).strip() for value in (left.get("participants") or []) if str(value).strip()}
+    right_participants = {str(value).strip() for value in (right.get("participants") or []) if str(value).strip()}
+    return not left_participants or not right_participants or not left_participants.isdisjoint(right_participants)
+
+
 def resale_performances_compatible(left: dict, right: dict) -> bool:
     left_venues = resale_venue_keys(left)
     right_venues = resale_venue_keys(right)
@@ -432,7 +438,6 @@ def merge_duplicate_resale_windows(events: list[dict]) -> list[dict]:
 
         key = (
             event.get("group"),
-            tuple(event.get("participants") or []),
             tuple(event_dates(event)),
             event.get("applyStart"),
             event.get("applyEnd"),
@@ -446,6 +451,7 @@ def merge_duplicate_resale_windows(events: list[dict]) -> list[dict]:
                 for index in positions.get(key, [])
                 if (
                     resale_performances_compatible(event, result[index])
+                    and resale_participants_compatible(event, result[index])
                     and (
                         (
                             urls

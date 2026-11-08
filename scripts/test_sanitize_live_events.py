@@ -288,6 +288,7 @@ class SanitizerTests(unittest.TestCase):
             {
                 **common,
                 "id": "central-notice",
+                "participants": ["CUTIE STREET"],
                 "ticketType": "公式リセール",
                 "url": "https://kawaiilab.asobisystem.com/news/detail/95013",
                 "sourceType": "resale-official",
@@ -325,6 +326,25 @@ class SanitizerTests(unittest.TestCase):
         ]}
         result = s.sanitize_payload(payload, today=date(2026, 12, 6))["events"]
         self.assertEqual(len(result), 2)
+
+    def test_official_resales_with_conflicting_participants_stay_separate(self):
+        common = {
+            "group": "KAWAII LAB.合同",
+            "title": "KAWAII LAB. SESSION 2026",
+            "ticketType": "公式リセール",
+            "eventDate": "2026-12-12",
+            "venue": "有明アリーナ",
+            "startTime": "17:00",
+            "applyStart": "2026-12-10T10:00",
+            "applyEnd": "2026-12-11T23:59",
+            "primarySource": "official",
+        }
+        payload = {"events": [
+            {**common, "id": "one", "participants": ["FRUITS ZIPPER"], "url": "https://example.test/one", "sourceType": "resale-official"},
+            {**common, "id": "two", "participants": ["CANDY TUNE"], "url": "https://example.test/two", "sourceType": "derived"},
+        ]}
+        result = s.sanitize_payload(payload, today=date(2026, 12, 10))["events"]
+        self.assertEqual(2, len(result))
 
 
 if __name__ == "__main__":
