@@ -1351,6 +1351,38 @@ class PiaNoticeAndSweetWinterUpgradeTests(unittest.TestCase):
         self.assertEqual("2026-10-23T18:00", corrected[0]["resultDate"])
         self.assertEqual(1, report["piaResultNoticesAttached"])
 
+    def test_itakura_official_resale_sources_are_merged(self):
+        legacy = {
+            "id": "legacy", "group": "CUTIE STREET",
+            "title": "板倉可奈 生誕祭 2026", "eventDate": "2026-11-11",
+            "startTime": "19:00", "ticketType": "リセール",
+            "applyStart": "2026-11-09T10:00", "applyEnd": "2026-11-10T23:59",
+            "url": "https://cutiestreet.asobisystem.com/live_information/detail/46338",
+            "urls": [
+                "https://cutiestreet.asobisystem.com/live_information/detail/46338",
+                "https://cutiestreet.asobisystem.com/news/detail/94166",
+            ],
+        }
+        current = {
+            "id": "current", "group": "CUTIE STREET",
+            "title": "板倉可奈 生誕祭 2026", "eventDate": "2026-11-11",
+            "startTime": "19:00", "ticketType": "公式リセール",
+            "applyStart": "2026-11-09T10:00", "applyEnd": "2026-11-10T23:59",
+            "url": "https://kawaiilab.asobisystem.com/news/detail/95013",
+        }
+        result, report = apply_known_corrections([legacy, current])
+        resales = [row for row in result if "リセール" in str(row.get("ticketType") or "")]
+        self.assertEqual(1, len(resales))
+        self.assertEqual("公式リセール", resales[0]["ticketType"])
+        self.assertIn("https://kawaiilab.asobisystem.com/news/detail/95013", resales[0]["urls"])
+        self.assertIn("https://cutiestreet.asobisystem.com/news/detail/94166", resales[0]["urls"])
+        self.assertEqual(2, report["itakuraOfficialResaleFixed"])
+        self.assertEqual(1, report["semanticTicketDuplicatesRemoved"])
+        again, report = apply_known_corrections(result)
+        self.assertEqual(result, again)
+        self.assertEqual(0, report["itakuraOfficialResaleFixed"])
+        self.assertEqual(0, report["semanticTicketDuplicatesRemoved"])
+
     def test_sweet_winter_upgrade_is_one_offer_per_occurrence(self):
         source = "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026"
         seed = {"id": "tour", "group": "SWEET STEADY",

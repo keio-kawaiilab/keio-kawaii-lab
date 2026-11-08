@@ -1546,6 +1546,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "candyAichiSameDayOfferFixed": 0,
         "candyAichiSameDayOfferAdded": 0,
         "cutieFukuokaDoorExchangeOffersAdded": 0,
+        "itakuraOfficialResaleFixed": 0,
     }
 
     for event in source:
@@ -1654,6 +1655,35 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         current = _repair_gift_multi_venue(current)
         if (current.get("venue"), tuple(current.get("venueLocations") or [])) != before_venue:
             report["giftMultiVenueFixed"] += 1
+
+        before_itakura_resale = current
+        if (
+            current.get("group") == "CUTIE STREET"
+            and _day(current) == "2026-11-11"
+            and "板倉可奈" in str(current.get("title") or current.get("eventTitle") or "")
+            and "リセール" in str(current.get("ticketType") or "")
+            and current.get("applyStart") == "2026-11-09T10:00"
+            and current.get("applyEnd") == "2026-11-10T23:59"
+        ):
+            current = deepcopy(current)
+            current.update({
+                "ticketType": "公式リセール",
+                "ticketProvider": "resale",
+                "url": "https://kawaiilab.asobisystem.com/news/detail/95013",
+                "sourceType": "resale-official",
+                "primarySource": "official",
+                "sourceChannel": "kawaii-lab-resale",
+                "applicationWindowVerified": True,
+                "applicationWindowSource": "https://kawaiilab.asobisystem.com/news/detail/95013",
+                "deadlineVerified": True,
+                "deadlineSource": "https://kawaiilab.asobisystem.com/news/detail/95013",
+            })
+            current["urls"] = list(dict.fromkeys([
+                "https://kawaiilab.asobisystem.com/news/detail/95013",
+                *_urls(before_itakura_resale),
+            ]))
+        if current != before_itakura_resale:
+            report["itakuraOfficialResaleFixed"] += 1
 
         out.append(current)
 
