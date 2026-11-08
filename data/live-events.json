@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-08T18:31:08+09:00",
+  "checkedAt": "2026-11-08T18:32:13+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-11-08T07:17:03+09:00",
     "scannedPages": {
@@ -2109,14 +2109,13 @@
       "startTime": "19:00",
       "url": "https://kawaiilab.asobisystem.com/news/detail/94963",
       "urls": [
-        "https://kawaiilab.asobisystem.com/news/detail/94963",
-        "https://cutiestreet.asobisystem.com/live_information/detail/46336"
+        "https://kawaiilab.asobisystem.com/news/detail/94963"
       ],
       "sourceType": "resale-official",
       "primarySource": "official",
       "sourceChannel": "kawaii-lab-resale",
       "sourceCandidates": [
-        "official"
+        "kawaii-lab-resale"
       ],
       "sourcePublishedAt": "2026-11-06",
       "eventScope": "kawaii-lab",
@@ -2128,8 +2127,7 @@
       "deadlineVerified": true,
       "applicationDisplayMode": "band",
       "applicationWindowSource": "https://kawaiilab.asobisystem.com/news/detail/94963",
-      "deadlineSource": "https://kawaiilab.asobisystem.com/news/detail/94963",
-      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/46336"
+      "deadlineSource": "https://kawaiilab.asobisystem.com/news/detail/94963"
     },
     {
       "id": "036b39a0249895c3",
@@ -13054,14 +13052,23 @@
     "failures": []
   },
   "releasePreparation": {
-    "preparedAt": "2026-11-08T18:31:06+09:00",
+    "preparedAt": "2026-11-08T18:32:08+09:00",
     "normalizedSpecialEvents": 6,
     "duplicateIdsRemoved": 0,
     "duplicateOfficialFcOffersRemoved": 0,
     "duplicateOfficialFcOfferIdsRemoved": [],
     "duplicateOfficialResaleWindowsRemoved": 0,
-    "retainedPreviousRows": 0,
-    "retained": [],
+    "retainedPreviousRows": 1,
+    "retained": [
+      {
+        "id": "a32f16b9ec9c9756",
+        "group": "CUTIE STREET",
+        "title": "佐野愛花 生誕祭 2026 @SGCホール有明",
+        "ticketType": "現在受付なし",
+        "provider": null,
+        "applyEnd": null
+      }
+    ],
     "expandedPreviousSpecialEntities": 5,
     "expandedCandidateSpecialEntities": 5,
     "supersededStaleJointRowsRemoved": 0,
@@ -13112,8 +13119,16 @@
       "candyOnline20261020RowsCollapsed": 0,
       "sweetOnline20261023RowsCollapsed": 0,
       "sweetEbichu20261116RowsCollapsed": 0,
-      "semanticTicketDuplicatesRemoved": 0,
-      "semanticTicketDuplicateIds": [],
+      "semanticTicketDuplicatesRemoved": 7,
+      "semanticTicketDuplicateIds": [
+        "b0b0f1c99a28d68f",
+        "943395a81d9f05c3",
+        "c6fa1da4ad53fabd",
+        "aec98a196b90b4d6",
+        "c0b5d76fb2b896a5",
+        "cd5483c6c103b41a",
+        "3f4ad4c1b602984b"
+      ],
       "cutiePacificoFcLotteryFixed": 0,
       "sweetIdolHalloweenSaleFixed": 0,
       "sweetIdolHalloweenSaleAdded": 0,
@@ -13168,12 +13183,12 @@
     "redundantSpecialOffersRemoved": 0,
     "redundantSpecialOfferIds": [],
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-11-08T18:31:06+09:00",
-    "checkedAt": "2026-11-08T18:31:06+09:00"
+    "publicUpdatedAt": "2026-11-08T18:32:08+09:00",
+    "checkedAt": "2026-11-08T18:32:08+09:00"
   },
   "renderWarnings": [
     {
-      "checkedAt": "2026-11-08T18:31:08+09:00",
+      "checkedAt": "2026-11-08T18:32:13+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one CANDY TUNE tour performance for 2026-10-04 OPEN 16:30 / START 17:30, found 0"
     }
@@ -26367,7 +26382,7 @@
       }
     ]
   },
-  "updatedAt": "2026-11-08T18:31:08+09:00",
+  "updatedAt": "2026-11-08T18:32:13+09:00",
   "publicEvents": [
     {
       "id": "1b5fec5f58ba553f",
@@ -27845,10 +27860,10 @@
       "startTime": "14:00",
       "url": "https://tgc.girlswalker.com/toyama/2026/ticket/",
       "urls": [
-        "https://tgc.girlswalker.com/toyama/2026/ticket/",
         "https://candytune.asobisystem.com/live_information/detail/44995",
         "https://sweetsteady.asobisystem.com/live_information/detail/44463",
-        "https://morestar.asobisystem.com/live_information/detail/45675"
+        "https://morestar.asobisystem.com/live_information/detail/45675",
+        "https://tgc.girlswalker.com/toyama/2026/ticket/"
       ],
       "sourceType": "official-schedule",
       "primarySource": "official",
@@ -27895,12 +27910,16 @@
           "sourceChannel": "known-official-correction"
         }
       ],
+      "ticketType": "追加販売（先着）",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers",
       "sourceRowIds": [
         "ecdd86be6e667177",
         "26d0069375101fa4"
       ],
       "mergedPublicEventIds": [
-        "performance-external-tgc-toyama-2026-2026-11-21-14-00-ykkaparena"
+        "ecdd86be6e667177",
+        "26d0069375101fa4"
       ],
       "displayTitle": "TGC TOYAMA 2026 by TOKYO GIRLS COLLECTION",
       "participants": [
@@ -27908,10 +27927,7 @@
         "SWEET STEADY",
         "MORE STAR"
       ],
-      "performanceKey": "external|tgc-toyama-2026|2026-11-21|14:00|ykkaparena",
-      "ticketType": "追加販売（先着）",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "performanceKey": "external|tgc-toyama-2026|2026-11-21|14:00|ykkaparena"
     },
     {
       "id": "34b4d0a22c8deee7",
@@ -28318,6 +28334,9 @@
           "sourceObservedAt": "2026-11-08T18:28:57+09:00"
         }
       ],
+      "ticketType": "複数受付",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers",
       "sourceRowIds": [
         "cfbbfe7a4e136b4a",
         "2c117f3728ce3c02",
@@ -28326,13 +28345,14 @@
         "baac3381c93d98a3"
       ],
       "mergedPublicEventIds": [
-        "performance-external-chikappa-2026-2026-11-23-11-00-b"
+        "cfbbfe7a4e136b4a",
+        "2c117f3728ce3c02",
+        "4919495adeca9a4c",
+        "8a40af447079424c",
+        "baac3381c93d98a3"
       ],
       "displayTitle": "ちかっぱ祭2026",
-      "performanceKey": "external|chikappa-2026|2026-11-23|11:00|福岡マリンメッセ福岡b館",
-      "ticketType": "複数受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "performanceKey": "external|chikappa-2026|2026-11-23|11:00|福岡マリンメッセ福岡b館"
     },
     {
       "id": "a7b325c43cc6c33e",
@@ -33039,21 +33059,19 @@
       "url": "https://kawaiilab.asobisystem.com/news/detail/90495",
       "urls": [
         "https://kawaiilab.asobisystem.com/news/detail/90495",
-        "https://kawaiilab.asobisystem.com/news/detail/94963",
-        "https://cutiestreet.asobisystem.com/live_information/detail/46336"
+        "https://kawaiilab.asobisystem.com/news/detail/94963"
       ],
       "sourceType": "resale-official",
       "primarySource": "official",
       "sourceChannel": "kawaii-lab-resale",
       "sourceCandidates": [
-        "official"
+        "kawaii-lab-resale"
       ],
       "sourcePublishedAt": "2026-11-06",
       "eventScope": "kawaii-lab",
       "participants": [
         "CUTIE STREET"
       ],
-      "officialScheduleUrl": "https://cutiestreet.asobisystem.com/live_information/detail/46336",
       "entityType": "performance",
       "performanceEntityVersion": 1,
       "performanceKey": "CUTIE STREET|2026-11-09|time|19:00|sgcホール有明",
@@ -33083,8 +33101,7 @@
           "provider": "resale",
           "url": "https://kawaiilab.asobisystem.com/news/detail/94963",
           "urls": [
-            "https://kawaiilab.asobisystem.com/news/detail/94963",
-            "https://cutiestreet.asobisystem.com/live_information/detail/46336"
+            "https://kawaiilab.asobisystem.com/news/detail/94963"
           ],
           "ticketType": "公式リセール",
           "ticketProvider": "resale",
