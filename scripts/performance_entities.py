@@ -82,6 +82,10 @@ def _venue_key(value: Any) -> str:
     # The venue owner uses both names for one physical hall.
     if key in {"sgchallariake", "sgcホール有明"}:
         return "sgcホール有明"
+    # Ticket vendors alternately publish the hall nickname and the official
+    # schedule's prefecture prefix for the same Yonago venue.
+    if key in {"米子コンベンションセンター", "米子コンベンションセンターbigship"}:
+        return "米子コンベンションセンター"
     return key
 
 

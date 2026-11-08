@@ -219,11 +219,18 @@ def detail_sale_window_from_text(value: str) -> tuple[str | None, str | None]:
         if pos < 0:
             continue
         tail = text[pos:pos + 700]
-        deadline_match = DATE_RE.search(tail[len(status_token):])
+        date_matches = list(DATE_RE.finditer(tail[len(status_token):]))
         start_pos = tail.find("発売開始")
         start_match = DATE_RE.search(tail[start_pos + len("発売開始"):]) if start_pos >= 0 else None
-        deadline = to_iso(deadline_match) if deadline_match else None
         start = to_iso(start_match) if start_match else None
+        # Pia has emitted both ``deadline -> 発売開始 start`` and
+        # ``発売開始 start -> deadline`` text orders.  The explicit
+        # 発売開始 date is the start; the other dated endpoint is the
+        # deadline regardless of its position.
+        candidates = [to_iso(match) for match in date_matches]
+        deadline = next((value for value in reversed(candidates) if value != start), None)
+        if deadline is None and not start and candidates:
+            deadline = candidates[-1]
         if start or deadline:
             return start, deadline
 

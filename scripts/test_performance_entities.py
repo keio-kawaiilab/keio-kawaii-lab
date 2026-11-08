@@ -13,6 +13,28 @@ from normalize_external_event_public_view import normalize_public_events
 
 
 class PerformanceEntitiesTest(unittest.TestCase):
+    def test_yonago_vendor_venue_aliases_merge_into_one_performance(self):
+        eplus = {
+            "id": "eplus", "group": "CANDY TUNE", "title": "CANDY TUNE",
+            "eventDate": "2026-11-10", "venue": "米子コンベンションセンター BiG SHiP",
+            "openTime": "17:30", "startTime": "18:30", "eventScope": "kawaii-lab",
+            "ticketType": "先着 ★一般発売", "ticketProvider": "eplus",
+            "applyEnd": "2026-11-09T20:00", "url": "https://eplus.jp/example",
+        }
+        pia = {
+            "id": "pia", "group": "CANDY TUNE",
+            "title": "CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS",
+            "eventDate": "2026-11-10", "venue": "鳥取県 米子コンベンションセンター",
+            "openTime": "17:30", "startTime": "18:30", "eventScope": "kawaii-lab",
+            "ticketType": "一般発売", "sourceType": "pia",
+            "applyEnd": "2026-11-09T23:59", "url": "https://t.pia.jp/example",
+        }
+
+        public, _ = build_public_events([eplus, pia])
+
+        self.assertEqual(1, len(public))
+        self.assertEqual({"eplus", "pia"}, {offer["provider"] for offer in public[0]["offers"]})
+
     def test_verified_chikappa_external_rows_become_one_public_performance(self):
         central = {
             "id": "central", "group": "KAWAII LAB.合同",

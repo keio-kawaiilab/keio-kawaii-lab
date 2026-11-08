@@ -55,6 +55,13 @@ class PiaParserTests(unittest.TestCase):
             ("2026-10-03T10:00", "2026-11-11T23:59"),
         )
 
+    def test_detail_window_with_sale_start_before_deadline(self):
+        text = "販売期間中 発売開始 2026/10/3(土) 10:00～ ～2026/11/9(月) 23:59"
+        self.assertEqual(
+            p.detail_sale_window_from_text(text),
+            ("2026-10-03T10:00", "2026-11-09T23:59"),
+        )
+
     def test_detail_lone_deadline_is_not_sale_start(self):
         text = "販売期間中 ～2026/11/9(月) 23:59"
         self.assertEqual(p.detail_sale_window_from_text(text), (None, "2026-11-09T23:59"))
