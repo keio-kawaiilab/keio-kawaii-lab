@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-08T17:02:40+09:00",
+  "checkedAt": "2026-11-08T17:05:32+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-11-08T07:17:03+09:00",
     "scannedPages": {
@@ -1292,6 +1292,7 @@
       ],
       "url": "https://kawaiilab.asobisystem.com/news/detail/93695",
       "urls": [
+        "https://kawaiilab.asobisystem.com/news/detail/93695",
         "https://candytune.asobisystem.com/news/detail/93706",
         "https://candytune.asobisystem.com/feature/6eb8e3c96d6f97adcc18f9bebd263edc?_normalbrowse_=1",
         "https://sweetsteady.asobisystem.com/news/detail/93708",
@@ -1300,7 +1301,6 @@
         "https://cutiestreet.asobisystem.com/feature/b0da2ae3d091956d61d96b98551c772a?_normalbrowse_=1",
         "https://morestar.asobisystem.com/news/detail/93710",
         "https://morestar.asobisystem.com/feature/4887f2d087c4dd1ed6a0f466e46d1b56?_normalbrowse_=1",
-        "https://kawaiilab.asobisystem.com/news/detail/93695",
         "https://kawaiilab.asobisystem.com/feature/952c3d505aa47ae5719a9a05de62fff8?_normalbrowse_=1"
       ],
       "ticketType": "現在受付なし",
@@ -5200,49 +5200,6 @@
       ],
       "eventTitle": "CUTIE STREET 佐野愛花 生誕祭 2026",
       "performanceMatchedToOfficial": true,
-      "eventScope": "kawaii-lab"
-    },
-    {
-      "id": "known-cutie-sano-upgrade-20261126",
-      "group": "CUTIE STREET",
-      "title": "CUTIE STREET 佐野愛花 生誕祭 2026",
-      "eventTitle": "CUTIE STREET 佐野愛花 生誕祭 2026",
-      "eventDate": "2026-11-26",
-      "eventEndDate": "2026-11-26",
-      "eventDates": [
-        "2026-11-26"
-      ],
-      "eventCount": 1,
-      "venue": "東京都 SGCホール有明",
-      "openTime": "17:30",
-      "startTime": "19:00",
-      "schedule": [
-        {
-          "date": "2026-11-26",
-          "venue": "東京都 SGCホール有明",
-          "openTime": "17:30",
-          "startTime": "19:00"
-        }
-      ],
-      "ticketType": "アップグレード抽選",
-      "applyStart": "2026-10-26T12:00",
-      "applyEnd": "2026-10-29T23:59",
-      "applicationWindowVerified": true,
-      "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/93573",
-      "deadlineVerified": true,
-      "deadlineSource": "https://cutiestreet.asobisystem.com/news/detail/93573",
-      "applicationStatus": "open",
-      "applicationDisplayMode": "band",
-      "url": "https://ticket-account.pia.jp/pia/digipoke/list.do",
-      "urls": [
-        "https://ticket-account.pia.jp/pia/digipoke/list.do",
-        "https://cutiestreet.asobisystem.com/news/detail/93573"
-      ],
-      "primarySource": "official",
-      "sourceType": "official",
-      "sourceChannel": "known-official-correction",
-      "sourcePublishedAt": "2026-10-26",
-      "discoverySourceUrl": "https://cutiestreet.asobisystem.com/news/detail/93573",
       "eventScope": "kawaii-lab"
     },
     {
@@ -12909,12 +12866,12 @@
       "duplicateEventIdRepairs": [],
       "onlinePlaceholderOccurrencesMerged": 0,
       "publicEvents": {
-        "sourceSpecialRows": 6,
-        "canonicalSpecialEvents": 6,
+        "sourceSpecialRows": 5,
+        "canonicalSpecialEvents": 5,
         "rowsCollapsed": 0,
         "releaseEventEntities": 3,
-        "largeBenefitEntities": 3,
-        "alreadyCanonicalRows": 6,
+        "largeBenefitEntities": 2,
+        "alreadyCanonicalRows": 5,
         "internalScheduleRowsCollapsed": 0,
         "duplicateEventIdCollisions": 0,
         "duplicateEventRowsCollapsed": 0,
@@ -12979,12 +12936,12 @@
     "failures": []
   },
   "publicEventModelReport": {
-    "rawEventCount": 285,
+    "rawEventCount": 284,
     "passthroughEventCount": 87,
     "performanceEntityCount": 62,
-    "sourceOccurrenceCount": 355,
-    "mergedSourceOccurrences": 293,
-    "offerCount": 200,
+    "sourceOccurrenceCount": 354,
+    "mergedSourceOccurrences": 292,
+    "offerCount": 199,
     "outOfScopeSoloEventCount": 2
   },
   "publicEventModelVersion": 1,
@@ -13005,15 +12962,24 @@
     "failures": []
   },
   "releasePreparation": {
-    "preparedAt": "2026-11-08T17:01:59+09:00",
+    "preparedAt": "2026-11-08T17:05:28+09:00",
     "normalizedSpecialEvents": 6,
     "duplicateIdsRemoved": 0,
     "duplicateOfficialFcOffersRemoved": 0,
     "duplicateOfficialFcOfferIdsRemoved": [],
     "duplicateOfficialResaleWindowsRemoved": 0,
-    "retainedPreviousRows": 0,
-    "retained": [],
-    "expandedPreviousSpecialEntities": 6,
+    "retainedPreviousRows": 1,
+    "retained": [
+      {
+        "id": "a32f16b9ec9c9756",
+        "group": "CUTIE STREET",
+        "title": "佐野愛花 生誕祭 2026 @SGCホール有明",
+        "ticketType": "現在受付なし",
+        "provider": null,
+        "applyEnd": null
+      }
+    ],
+    "expandedPreviousSpecialEntities": 5,
     "expandedCandidateSpecialEntities": 5,
     "supersededStaleJointRowsRemoved": 0,
     "supersededStaleJointRowIds": [],
@@ -13048,7 +13014,7 @@
       "fruitsJoyFanclubLiveAdded": 0,
       "fruitsJoyFcOfferAdded": 0,
       "kawaiilabFcFreeLiveAdded": 0,
-      "kawaiilabFcFreeLiveOffersUpdated": 1,
+      "kawaiilabFcFreeLiveOffersUpdated": 0,
       "christmasPiaPresaleOffersAdded": 0,
       "staleChristmasRowsRemoved": 0,
       "fmAichiFixed": 0,
@@ -13093,12 +13059,12 @@
         "duplicateEventIdRepairs": [],
         "onlinePlaceholderOccurrencesMerged": 0,
         "publicEvents": {
-          "sourceSpecialRows": 6,
-          "canonicalSpecialEvents": 6,
+          "sourceSpecialRows": 5,
+          "canonicalSpecialEvents": 5,
           "rowsCollapsed": 0,
           "releaseEventEntities": 3,
-          "largeBenefitEntities": 3,
-          "alreadyCanonicalRows": 6,
+          "largeBenefitEntities": 2,
+          "alreadyCanonicalRows": 5,
           "internalScheduleRowsCollapsed": 0,
           "duplicateEventIdCollisions": 0,
           "duplicateEventRowsCollapsed": 0,
@@ -13119,12 +13085,12 @@
     "redundantSpecialOffersRemoved": 0,
     "redundantSpecialOfferIds": [],
     "eventPayloadChanged": true,
-    "publicUpdatedAt": "2026-11-08T17:01:59+09:00",
-    "checkedAt": "2026-11-08T17:01:59+09:00"
+    "publicUpdatedAt": "2026-11-08T17:05:28+09:00",
+    "checkedAt": "2026-11-08T17:05:28+09:00"
   },
   "renderWarnings": [
     {
-      "checkedAt": "2026-11-08T17:02:40+09:00",
+      "checkedAt": "2026-11-08T17:05:32+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one CANDY TUNE tour performance for 2026-10-04 OPEN 16:30 / START 17:30, found 0"
     }
@@ -26318,7 +26284,7 @@
       }
     ]
   },
-  "updatedAt": "2026-11-08T17:02:40+09:00",
+  "updatedAt": "2026-11-08T17:05:32+09:00",
   "publicEvents": [
     {
       "id": "1b5fec5f58ba553f",
@@ -27796,10 +27762,10 @@
       "startTime": "14:00",
       "url": "https://tgc.girlswalker.com/toyama/2026/ticket/",
       "urls": [
-        "https://tgc.girlswalker.com/toyama/2026/ticket/",
         "https://candytune.asobisystem.com/live_information/detail/44995",
         "https://sweetsteady.asobisystem.com/live_information/detail/44463",
-        "https://morestar.asobisystem.com/live_information/detail/45675"
+        "https://morestar.asobisystem.com/live_information/detail/45675",
+        "https://tgc.girlswalker.com/toyama/2026/ticket/"
       ],
       "sourceType": "official-schedule",
       "primarySource": "official",
@@ -27846,12 +27812,16 @@
           "sourceChannel": "known-official-correction"
         }
       ],
+      "ticketType": "追加販売（先着）",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers",
       "sourceRowIds": [
         "ecdd86be6e667177",
         "26d0069375101fa4"
       ],
       "mergedPublicEventIds": [
-        "performance-external-tgc-toyama-2026-2026-11-21-14-00-ykkaparena"
+        "ecdd86be6e667177",
+        "26d0069375101fa4"
       ],
       "displayTitle": "TGC TOYAMA 2026 by TOKYO GIRLS COLLECTION",
       "participants": [
@@ -27859,10 +27829,7 @@
         "SWEET STEADY",
         "MORE STAR"
       ],
-      "performanceKey": "external|tgc-toyama-2026|2026-11-21|14:00|ykkaparena",
-      "ticketType": "追加販売（先着）",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "performanceKey": "external|tgc-toyama-2026|2026-11-21|14:00|ykkaparena"
     },
     {
       "id": "457b1636e10a5379",
@@ -28220,6 +28187,9 @@
           "sourceObservedAt": "2026-11-08T16:59:50+09:00"
         }
       ],
+      "ticketType": "複数受付",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers",
       "sourceRowIds": [
         "cfbbfe7a4e136b4a",
         "2c117f3728ce3c02",
@@ -28228,13 +28198,14 @@
         "baac3381c93d98a3"
       ],
       "mergedPublicEventIds": [
-        "performance-external-chikappa-2026-2026-11-23-11-00-b"
+        "cfbbfe7a4e136b4a",
+        "2c117f3728ce3c02",
+        "4919495adeca9a4c",
+        "8a40af447079424c",
+        "baac3381c93d98a3"
       ],
       "displayTitle": "ちかっぱ祭2026",
-      "performanceKey": "external|chikappa-2026|2026-11-23|11:00|福岡マリンメッセ福岡b館",
-      "ticketType": "複数受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "performanceKey": "external|chikappa-2026|2026-11-23|11:00|福岡マリンメッセ福岡b館"
     },
     {
       "id": "a7b325c43cc6c33e",
@@ -33435,8 +33406,7 @@
         "0682808f6820420f",
         "2514d736bba82d42",
         "a32f16b9ec9c9756",
-        "a536cc1b2de853db",
-        "known-cutie-sano-upgrade-20261126"
+        "a536cc1b2de853db"
       ],
       "offers": [
         {
@@ -33454,28 +33424,6 @@
           "sourceChannel": "recent-official-body",
           "primarySource": "official",
           "sourcePublishedAt": "2026-10-20"
-        },
-        {
-          "sourceRowId": "known-cutie-sano-upgrade-20261126",
-          "provider": "official",
-          "url": "https://ticket-account.pia.jp/pia/digipoke/list.do",
-          "urls": [
-            "https://ticket-account.pia.jp/pia/digipoke/list.do",
-            "https://cutiestreet.asobisystem.com/news/detail/93573"
-          ],
-          "ticketType": "アップグレード抽選",
-          "applyStart": "2026-10-26T12:00",
-          "applyEnd": "2026-10-29T23:59",
-          "applicationStatus": "open",
-          "applicationWindowVerified": true,
-          "deadlineVerified": true,
-          "applicationDisplayMode": "band",
-          "applicationWindowSource": "https://cutiestreet.asobisystem.com/news/detail/93573",
-          "deadlineSource": "https://cutiestreet.asobisystem.com/news/detail/93573",
-          "sourceType": "official",
-          "sourceChannel": "known-official-correction",
-          "primarySource": "official",
-          "sourcePublishedAt": "2026-10-26"
         }
       ],
       "eventEndDate": "2026-11-26",
@@ -33491,7 +33439,7 @@
           "startTime": "19:00"
         }
       ],
-      "ticketType": "複数受付",
+      "ticketType": "FC先行",
       "applicationDisplayMode": "offers",
       "applicationStatus": "offers"
     },
