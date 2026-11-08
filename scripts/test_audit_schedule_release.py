@@ -141,6 +141,28 @@ class AuditScheduleReleaseTests(unittest.TestCase):
         errors, _, _ = audit(payload([]), payload([first, second]), NOW)
         self.assertTrue(any("duplicate Pia lot" in error for error in errors))
 
+    def test_pia_general_sale_event_release_detail_is_valid(self):
+        detail = "https://t.pia.jp/pia/ticketInformation.do?eventCd=2631559&rlsCd=003"
+        event = base_pia(
+            id="pia-general",
+            ticketType="一般発売",
+            applyStart=None,
+            applyEnd="2026-11-09T23:59",
+            eventDate="2026-11-10",
+            eventDates=None,
+            url=detail,
+            urls=[detail, "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"],
+            applicationWindowVerified=False,
+            applicationDisplayMode="band-from-today",
+            applicationWindowSource=None,
+            deadlineSource=detail,
+        )
+
+        errors, _, report = audit(payload([]), payload([event]), NOW)
+
+        self.assertEqual([], errors)
+        self.assertEqual("ok", report["status"])
+
     def test_reversed_application_window_is_blocked(self):
         event = base_pia(applyStart="2026-08-26T10:00", applyEnd="2026-08-25T23:59")
         errors, _, _ = audit(payload([]), payload([event]), NOW)

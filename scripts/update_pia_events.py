@@ -232,7 +232,11 @@ def detail_sale_window_from_text(value: str) -> tuple[str | None, str | None]:
         if pos < 0:
             continue
         start, end = _range_from_tail(text[pos:pos + 520])
-        if start or end:
+        # A lone date after a generic period heading is ambiguous: on current
+        # Pia pages it can be either the opening time or the deadline.  Keep
+        # the more reliable list-page value unless the detail page exposes an
+        # explicit two-ended range.
+        if start and end:
             return start, end
     return None, None
 

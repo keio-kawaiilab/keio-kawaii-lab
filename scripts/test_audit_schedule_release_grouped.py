@@ -219,6 +219,40 @@ class GroupedReleaseAuditTests(unittest.TestCase):
         self.assertEqual({"stable"}, ids)
         self.assertGreaterEqual(len(actions), 1)
 
+    def test_release_repair_keeps_new_pia_general_sale_provider(self):
+        stable = event("stable", "2026-11-10", "CANDY TUNE JAPAN TOUR 2026 -AUTUMN-")
+        detail = "https://t.pia.jp/pia/ticketInformation.do?eventCd=2631559&rlsCd=003"
+        pia = {
+            "id": "pia-general",
+            "group": "CANDY TUNE",
+            "eventScope": "kawaii-lab",
+            "title": "CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS",
+            "ticketType": "一般発売",
+            "applyEnd": "2026-11-09T23:59",
+            "eventDate": "2026-11-10",
+            "venue": "鳥取県 米子コンベンションセンター",
+            "openTime": "17:30",
+            "startTime": "18:30",
+            "url": detail,
+            "urls": [detail, "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827"],
+            "sourceType": "pia",
+            "primarySource": "pia",
+            "applicationStatus": "open",
+            "applicationWindowVerified": False,
+            "deadlineVerified": True,
+            "applicationDisplayMode": "band-from-today",
+            "deadlineSource": detail,
+        }
+
+        repaired, errors, _, report, actions = repair_local_errors(
+            payload([stable]), payload([copy.deepcopy(stable), pia]), NOW
+        )
+
+        self.assertEqual([], errors)
+        self.assertIn("pia-general", {row["id"] for row in repaired["events"]})
+        self.assertEqual([], actions)
+        self.assertEqual("ok", report["status"])
+
     def test_last_chance_isolation_prevents_row_error_from_freezing_release(self):
         stable = event("stable", "2026-09-24", "既存公演")
         bad = event("bad-new", "2026-10-01", "壊れた新規公演")

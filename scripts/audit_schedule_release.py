@@ -22,6 +22,10 @@ OFFICIAL_ONLY_RE = re.compile(
     re.I,
 )
 PIA_LOT_RE = re.compile(r"[?&]lotRlsCd=([A-Za-z0-9_-]+)")
+PIA_EVENT_RELEASE_RE = re.compile(
+    r"[?&]eventCd=([A-Za-z0-9_-]+).*?[?&]rlsCd=([A-Za-z0-9_-]+)",
+    re.I,
+)
 SUKISUKI_GOODS_RE = re.compile(r"sukisuki-shop\.com/goods/(\d+)")
 PLACEHOLDER_RE = re.compile(r"^(?:会場未定|未定|TBD|公式ページ記載(?:のイベント参加対象商品)?)$", re.I)
 SPECIAL_OFFER_PROVIDER_MARKERS = {
@@ -140,6 +144,12 @@ def lot_key(event: dict) -> str | None:
         match = PIA_LOT_RE.search(value)
         if match:
             return f"pia:{match.group(1)}"
+        # Pia's public general-sale detail pages use eventCd + rlsCd instead
+        # of lotRlsCd.  They are still a specific sale-detail identity and
+        # must not be rejected merely because they are not lottery lots.
+        match = PIA_EVENT_RELEASE_RE.search(value)
+        if match:
+            return f"pia:event:{match.group(1)}:{match.group(2)}"
     return None
 
 
@@ -419,7 +429,7 @@ def audit(previous: dict, candidate: dict, now: datetime) -> tuple[list[str], li
                 errors.append(f"Pia row contains FC/upgrade-only sale: {label(event)}")
             key = lot_key(event)
             if is_ticket_listing(event) and not key:
-                errors.append(f"active Pia row has no lotRlsCd detail URL: {label(event)}")
+                errors.append(f"active Pia row has no sale-detail URL: {label(event)}")
             if key:
                 if key in seen_lots:
                     errors.append(f"duplicate Pia lot {key}: {label(event)}")

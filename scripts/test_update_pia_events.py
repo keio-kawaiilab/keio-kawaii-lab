@@ -59,6 +59,10 @@ class PiaParserTests(unittest.TestCase):
         text = "販売期間中 ～2026/11/9(月) 23:59"
         self.assertEqual(p.detail_sale_window_from_text(text), (None, "2026-11-09T23:59"))
 
+    def test_generic_lone_period_date_is_left_ambiguous(self):
+        text = "販売期間 2026/10/3(土) 10:00"
+        self.assertEqual(p.detail_sale_window_from_text(text), (None, None))
+
     def test_official_schedule_keeps_richest_time_for_same_date(self):
         existing = [
             {
