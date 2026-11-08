@@ -207,14 +207,26 @@ def sale_window(context: str) -> tuple[str | None, str | None]:
     return None, None
 
 
-def detail_sale_window(session: requests.Session, detail_url: str) -> tuple[str | None, str | None]:
-    try:
-        response = session.get(detail_url, timeout=8)
-        response.raise_for_status()
-    except Exception:
-        return None, None
+def detail_sale_window_from_text(value: str) -> tuple[str | None, str | None]:
+    text = norm(value)
 
-    text = norm(BeautifulSoup(response.text, "html.parser").get_text(" ", strip=True))
+    # Current Pia detail pages put the deadline before the opening time:
+    #   販売期間中 ～2026/11/9(月) 23:59 発売開始 2026/10/3(土) 10:00～
+    # Treating the first date as the start reverses the window and can make a
+    # valid provider offer disappear during publication.
+    for status_token in ("販売期間中", "受付期間中", "抽選受付中"):
+        pos = text.find(status_token)
+        if pos < 0:
+            continue
+        tail = text[pos:pos + 700]
+        deadline_match = DATE_RE.search(tail[len(status_token):])
+        start_pos = tail.find("発売開始")
+        start_match = DATE_RE.search(tail[start_pos + len("発売開始"):]) if start_pos >= 0 else None
+        deadline = to_iso(deadline_match) if deadline_match else None
+        start = to_iso(start_match) if start_match else None
+        if start or deadline:
+            return start, deadline
+
     for token in ("受付期間", "申込期間", "販売期間", "発売期間", "抽選受付期間"):
         pos = text.find(token)
         if pos < 0:
@@ -223,6 +235,22 @@ def detail_sale_window(session: requests.Session, detail_url: str) -> tuple[str 
         if start or end:
             return start, end
     return None, None
+
+
+def detail_sale_window(session: requests.Session, detail_url: str) -> tuple[str | None, str | None]:
+    response = None
+    for _ in range(3):
+        try:
+            response = session.get(detail_url, timeout=8)
+            response.raise_for_status()
+            break
+        except Exception:
+            response = None
+    if response is None:
+        return None, None
+
+    text = BeautifulSoup(response.text, "html.parser").get_text(" ", strip=True)
+    return detail_sale_window_from_text(text)
 
 
 def official_schedule(existing: list[dict], group: str, title: str, start: str, end: str | None) -> list[dict]:
@@ -300,6 +328,7 @@ def parse_event_page(
     live_title = extract_live_title(page_text, fallback_title)
     out: list[dict] = []
     seen = set()
+    detail_windows: dict[str, tuple[str | None, str | None]] = {}
 
     for anchor in candidate_anchors(soup):
         context = context_for_detail(anchor)
@@ -322,7 +351,9 @@ def parse_event_page(
 
         detail_start, detail_end = (None, None)
         if href and (apply_start is None or apply_end is None):
-            detail_start, detail_end = detail_sale_window(session, href)
+            if href not in detail_windows:
+                detail_windows[href] = detail_sale_window(session, href)
+            detail_start, detail_end = detail_windows[href]
         apply_start = detail_start or apply_start
         apply_end = detail_end or apply_end
 

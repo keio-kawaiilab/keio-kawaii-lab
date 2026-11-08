@@ -41,6 +41,24 @@ class PiaParserTests(unittest.TestCase):
         seeded = dict(p.SEEDED_EVENT_PAGES)["CANDY TUNE"] if False else p.SEEDED_EVENT_PAGES["CANDY TUNE"]
         self.assertTrue(any("b2669827" in url for url, _ in seeded))
 
+    def test_detail_window_with_deadline_before_sale_start(self):
+        text = "販売期間中 ～2026/11/9(月) 23:59 発売開始 2026/10/3(土) 10:00～"
+        self.assertEqual(
+            p.detail_sale_window_from_text(text),
+            ("2026-10-03T10:00", "2026-11-09T23:59"),
+        )
+
+    def test_detail_window_with_hiroshima_deadline(self):
+        text = "販売期間中 ～2026/11/11(水) 23:59 発売開始 2026/10/3(土) 10:00～"
+        self.assertEqual(
+            p.detail_sale_window_from_text(text),
+            ("2026-10-03T10:00", "2026-11-11T23:59"),
+        )
+
+    def test_detail_lone_deadline_is_not_sale_start(self):
+        text = "販売期間中 ～2026/11/9(月) 23:59"
+        self.assertEqual(p.detail_sale_window_from_text(text), (None, "2026-11-09T23:59"))
+
 
 if __name__ == "__main__":
     unittest.main()
