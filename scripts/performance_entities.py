@@ -665,6 +665,37 @@ def build_public_events(events: list[dict[str, Any]]) -> tuple[list[dict[str, An
         _reconcile_verified_christmas_session(event)
         _reconcile_verified_fc_free_live(event)
         _reconcile_verified_fifth_anniversary(event)
+
+    # A vendor sometimes publishes only the artist name, which is too sparse
+    # for the generic scope classifier and is conservatively marked external.
+    # Admit it to a hosted performance only when its exact artist/date/start/
+    # venue coordinates match a separately verified hosted row.
+    hosted_coordinates: set[tuple[str, str, str, str]] = set()
+    for event in raw:
+        if not _is_regular_hosted(event):
+            continue
+        for occurrence in _occurrences(event):
+            hosted_coordinates.add((
+                _text(event.get("group")),
+                _day(occurrence.get("date")),
+                _time(occurrence.get("startTime") or event.get("startTime")),
+                _venue_key(occurrence.get("venue") or event.get("venue")),
+            ))
+    for event in raw:
+        if _is_regular_hosted(event) or not _is_offer(event):
+            continue
+        coordinates = {
+            (
+                _text(event.get("group")),
+                _day(occurrence.get("date")),
+                _time(occurrence.get("startTime") or event.get("startTime")),
+                _venue_key(occurrence.get("venue") or event.get("venue")),
+            )
+            for occurrence in _occurrences(event)
+        }
+        if coordinates and coordinates.issubset(hosted_coordinates):
+            event["eventScope"] = HOSTED
+            event["performanceMatchedToOfficial"] = True
     records: list[dict[str, Any]] = []
     passthrough: list[dict[str, Any]] = []
     for index, event in enumerate(raw):

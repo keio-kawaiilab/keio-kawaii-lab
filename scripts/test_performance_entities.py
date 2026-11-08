@@ -17,7 +17,7 @@ class PerformanceEntitiesTest(unittest.TestCase):
         eplus = {
             "id": "eplus", "group": "CANDY TUNE", "title": "CANDY TUNE",
             "eventDate": "2026-11-10", "venue": "米子コンベンションセンター BiG SHiP",
-            "openTime": "17:30", "startTime": "18:30", "eventScope": "kawaii-lab",
+            "openTime": "17:30", "startTime": "18:30", "eventScope": "external",
             "ticketType": "先着 ★一般発売", "ticketProvider": "eplus",
             "applyEnd": "2026-11-09T20:00", "url": "https://eplus.jp/example",
         }
