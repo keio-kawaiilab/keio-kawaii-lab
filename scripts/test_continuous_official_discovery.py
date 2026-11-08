@@ -1,5 +1,5 @@
 import unittest
-from datetime import date
+from datetime import date, datetime
 from unittest.mock import patch
 
 import audit_discovery_publication as publication
@@ -607,6 +607,11 @@ class ContinuousDiscoveryTests(unittest.TestCase):
         self.assertEqual(candidate.url,review["url"])
 
     def test_real_format_official_fc_opening_without_deadline_is_published(self):
+        class FrozenDateTime(datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return cls(2026, 10, 24, 12, 0, tzinfo=tz)
+
         candidate = discovery.parser.Candidate(
             "CANDY TUNE",
             "2026年11⽉6⽇(⾦)「KAWAII LAB. ファンクラブ限定フリーライブ」開催決定！FC先行受付開始！",
@@ -630,7 +635,8 @@ class ContinuousDiscoveryTests(unittest.TestCase):
             def __enter__(self): return self
             def __exit__(self, *_args): pass
             def get(self, *_args, **_kwargs): return Response()
-        with patch.object(discovery.requests, "Session", return_value=Session()):
+        with patch.object(discovery, "datetime", FrozenDateTime), \
+                patch.object(discovery.requests, "Session", return_value=Session()):
             rows, pending, status = discovery.read_candidate(candidate, {"events": []}, {})
         self.assertEqual("parsed", status, (pending, rows))
         self.assertIsNone(pending)
