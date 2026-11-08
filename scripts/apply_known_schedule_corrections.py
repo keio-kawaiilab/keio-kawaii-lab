@@ -1656,6 +1656,9 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         if (current.get("venue"), tuple(current.get("venueLocations") or [])) != before_venue:
             report["giftMultiVenueFixed"] += 1
 
+        # The original group article and the newer KAWAII LAB. board article
+        # describe the same official resale window.  Canonicalize both source
+        # rows so semantic deduplication can preserve every citation once.
         before_itakura_resale = current
         if (
             current.get("group") == "CUTIE STREET"
