@@ -91,6 +91,8 @@ def _needs_detail(row: official.OfficialRow, events: list[dict]) -> bool:
         source in official.PLAYGUIDE_SOURCES
         or bool(official.GENERIC_TITLE_RE.fullmatch(current_title))
         or not matched.get("venue")
+        # Retailer snapshots can call a physical benefit event online; fetch
+        # the official detail so the canonical occurrence can correct it.
         or (
             official.special_event_category(row.title) == "large-benefit"
             and "オンライン" in official.normalize_space(matched.get("venue"))
