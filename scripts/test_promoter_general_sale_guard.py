@@ -105,6 +105,65 @@ class PromoterGeneralSaleGuardTests(unittest.TestCase):
         self.assertEqual(payload["events"][0]["applyEnd"], "2026-09-09T23:59")
         self.assertTrue(payload["events"][0]["soldOutObserved"])
 
+    def test_fresh_detail_identity_removes_legacy_related_show_row(self):
+        source = "https://red-hot.ne.jp/play/detail.php?pid=py28689"
+        payload = {"events": [{
+            "id": "legacy-wrong-date",
+            "group": "CUTIE STREET",
+            "title": "CUTIE STREET 板倉可奈 生誕祭 2026",
+            "eventDate": "2026-11-09",
+            "startTime": "19:00",
+            "ticketType": "一般発売",
+            "url": source,
+            "urls": [source, "https://t.pia.jp/pia/event/event.do?eventCd=2635650"],
+            "sourceChannel": "promoter-general-sale",
+        }]}
+        fresh = {
+            "id": "fresh-correct-date",
+            "group": "CUTIE STREET",
+            "title": "CUTIE STREET 板倉可奈 生誕祭 2026",
+            "eventDate": "2026-11-11",
+            "startTime": "19:00",
+            "ticketType": "一般発売",
+            "applyStart": "2026-10-25T10:00",
+            "url": source,
+            "urls": [source, "https://t.pia.jp/pia/event/event.do?eventCd=2635650"],
+            "sourceChannel": "promoter-general-sale",
+        }
+
+        payload["events"], removed = g.purge_mismatched_promoter_rows(
+            payload["events"], [fresh]
+        )
+        added, enriched = g.merge(payload, [fresh])
+
+        self.assertEqual((added, enriched, removed), (1, 0, 1))
+        self.assertEqual(len(payload["events"]), 1)
+        self.assertEqual(payload["events"][0]["eventDate"], "2026-11-11")
+        self.assertNotIn("2026-11-09", [event["eventDate"] for event in payload["events"]])
+
+    def test_known_performance_ignores_resale_notice_date(self):
+        html = '''
+        <div class="detail_r478">
+          <div>CUTIE STREET 板倉可奈 生誕祭 2026</div>
+          <div class="qamenu">受付期間：2026年11月9日(月)10:00〜</div>
+          <div class="conbox_t20 bdr_b">
+            <div>2026年11月11日(水)</div>
+            <a href="venue/detail.php?id=pl1297">SGC HALL ARIAKE</a>
+            <span>OPEN 17:30</span><span>START 19:00</span>
+          </div>
+        </div>
+        '''
+        known = [{
+            "entityType": "performance",
+            "group": "CUTIE STREET",
+            "eventDate": "2026-11-11",
+            "venue": "SGC HALL ARIAKE",
+            "startTime": "19:00",
+        }]
+        event = g.parse_known_performance(html, known, __import__("datetime").date(2026, 11, 9))
+        self.assertIsNotNone(event)
+        self.assertEqual(event["eventDate"], "2026-11-11")
+
     def test_sale_year_rolls_back_across_new_year(self):
         self.assertEqual(
             g.parse_sale_start("一般発売 12/20(日)10:00〜", "2027-01-15"),
