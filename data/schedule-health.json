@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-09T14:15:45.821229+09:00",
-  "candidateUpdatedAt": "2026-11-09T14:15:45+09:00",
-  "previousEventCount": 257,
+  "generatedAt": "2026-11-09T15:05:34.133134+09:00",
+  "candidateUpdatedAt": "2026-11-09T15:05:33+09:00",
+  "previousEventCount": 263,
   "candidateEventCount": 257,
-  "protectedPreviousCount": 251,
+  "protectedPreviousCount": 257,
   "errorCount": 0,
-  "warningCount": 33,
+  "warningCount": 37,
   "errors": [],
   "warnings": [
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
@@ -41,9 +41,13 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売"
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売",
+    "performance dates added for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827: 2026-11-10, 2026-11-12, 2026-11-17, 2026-11-19, 2026-11-24, 2026-11-26, 2026-11-30, 2026-12-01",
+    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827: 2026-12-08, 2026-12-09",
+    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827: 2026-12-08, 2026-12-09",
+    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827: 2026-12-08, 2026-12-09"
   ],
-  "candidateSha256": "135511cd990937ef58e9a058259ccfdaeeba6f306fe67c051cb32591870c4f53",
+  "candidateSha256": "dea889af264f20eeadf770ab82e11881d99935927e92221002333d8cd5cde236",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -129,9 +133,11 @@
     "url:https://t.pia.jp/guide/resale-guide.jsp",
     "url:https://t.pia.jp/help/index.jsp",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209",
-    "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14296",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=23680",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29056",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30314",
     "url:https://ticket-account.pia.jp/pia/digipoke/list.do",
     "url:https://w.pia.jp/t/sweetsteady-winter2026/",
     "url:https://w.pia.jp/v/kls-xmas26upg6/?_normalbrowse_=1",
@@ -220,7 +226,7 @@
     "url:https://sweetsteady.asobisystem.com/news/detail/93737"
   ],
   "reconciledBaseDateMessageCount": 0,
-  "downgradedFalsePositiveCount": 0,
+  "downgradedFalsePositiveCount": 3,
   "legacyProtectedErrorCount": 33,
   "legacyProtectedErrors": [
     {
@@ -389,7 +395,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 30,
+  "quarantineCount": 29,
   "quarantineActions": [
     {
       "error": "active Pia row has no sale-detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
@@ -482,8 +488,8 @@
       "restoredPreviousRows": 3
     },
     {
-      "error": "deadline moved earlier for id:aa8631d99d724b4a: 2026-11-11T23:59 -> 2026-10-03T10:00 (manual review required)",
-      "action": "restored previous rows for id:aa8631d99d724b4a",
+      "error": "deadline moved earlier for id:e278bc4636ac6fa0: 2026-11-09T23:59 -> 2026-10-03T10:00 (manual review required)",
+      "action": "restored previous rows for id:e278bc4636ac6fa0",
       "restoredPreviousRows": 1
     },
     {
@@ -492,18 +498,13 @@
       "restoredPreviousRows": 6
     },
     {
-      "error": "deadline moved earlier for id:e87ec5c18b4922aa: 2026-11-12T23:59 -> 2026-09-19T10:00 (manual review required)",
-      "action": "restored previous rows for id:e87ec5c18b4922aa",
+      "error": "deadline moved earlier for id:c253afa617345c6d: 2026-11-19T23:59 -> 2026-10-24T10:00 (manual review required)",
+      "action": "restored previous rows for id:c253afa617345c6d",
       "restoredPreviousRows": 1
     },
     {
-      "error": "active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / 「FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - Secret Code」公演 リセールサービスのお知らせ / リセール",
-      "action": "restored previous rows for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
-      "restoredPreviousRows": 6
-    },
-    {
-      "error": "deadline moved earlier for pia:event:2632906:001: 2026-11-26T23:59 -> 2026-09-26T10:00 (manual review required)",
-      "action": "restored previous rows for pia:event:2632906:001",
+      "error": "deadline moved earlier for id:0fe2835f4c0c0028: 2026-11-26T23:59 -> 2026-09-26T10:00 (manual review required)",
+      "action": "restored previous rows for id:0fe2835f4c0c0028",
       "restoredPreviousRows": 1
     },
     {
