@@ -89,6 +89,25 @@ class PrepareReleaseCandidateTests(unittest.TestCase):
         self.assertEqual(normalized["specialDetailsStatus"], "awaiting-details")
         self.assertEqual(normalized["applicationDisplayMode"], "schedule-only")
 
+    def test_physical_benefit_title_repairs_online_retailer_venue(self):
+        event = {
+            "id": "osaka-benefit",
+            "group": "CUTIE STREET",
+            "title": "CUTIE STREET大特典会＠インテックス大阪【1部・3部・6部】",
+            "eventCategory": "large-benefit",
+            "eventDate": "2026-12-06",
+            "venue": "オンライン（SUKISUKI）",
+            "schedule": [{"date": "2026-12-06", "venue": "オンライン（SUKISUKI）"}],
+            "venues": ["オンライン（SUKISUKI）"],
+        }
+
+        normalized, changed = prep.normalize_special(event)
+
+        self.assertTrue(changed)
+        self.assertEqual("インテックス大阪", normalized["venue"])
+        self.assertEqual("インテックス大阪", normalized["schedule"][0]["venue"])
+        self.assertEqual(["インテックス大阪"], normalized["venues"])
+
     def test_joint_entity_drops_same_window_official_schedule_shadow(self):
         source = "https://morestar.asobisystem.com/live_information/detail/46447"
         offer = {
