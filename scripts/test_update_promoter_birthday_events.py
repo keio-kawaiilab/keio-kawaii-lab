@@ -62,6 +62,27 @@ class PromoterBirthdayTests(unittest.TestCase):
         self.assertEqual(event["sourceType"], "promoter")
         self.assertEqual(event["eventScope"], "kawaii-lab")
 
+    def test_detail_uses_performance_date_not_resale_notice_date(self):
+        html = '''
+        <html><body><div class="detail_r478">
+          <h3>CUTIE STREET</h3>
+          <div>CUTIE STREET 板倉可奈 生誕祭 2026</div>
+          <div class="qamenu">受付期間：2026年11月9日(月)10:00〜</div>
+          <div class="conbox_t20 bdr_b">
+            <div class="d_playdate">2026年11月11日(水)</div>
+            <a href="venue/detail.php?id=pl1297">SGC HALL ARIAKE</a>
+            <p>OPEN 17:30</p><p>START 19:00</p>
+          </div>
+        </div></body></html>
+        '''
+        event = p.parse_detail(
+            "https://red-hot.ne.jp/play/detail.php?pid=py28689",
+            html,
+            date(2026, 11, 9),
+        )
+        self.assertEqual(event["eventDate"], "2026-11-11")
+        self.assertEqual(event["startTime"], "19:00")
+
     def test_detail_ignores_non_birthday_event(self):
         html = '''
         <html><body>
