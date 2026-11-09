@@ -36,6 +36,9 @@ class PhysicalBenefitSession:
         self.calls += 1
         return DummyResponse('''
         <div class="block--title"><p class="tit">CUTIE STREET大特典会＠インテックス大阪【1部・3部・6部】</p></div>
+        <ul class="block--liveinfo">
+          <li><p class="item-tit">開催場所・会場</p><p class="item-detail">オンライン（SUKISUKI）</p></li>
+        </ul>
         ''')
 
 
