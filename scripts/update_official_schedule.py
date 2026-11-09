@@ -303,8 +303,37 @@ def enrich_existing(event: dict, row: OfficialRow, detail: dict) -> None:
             event["specialDetailsStatus"] = "awaiting-details"
             event["applicationDisplayMode"] = "schedule-only"
     for field in ("venue", "openTime", "startTime"):
-        if detail.get(field) and not event.get(field):
-            event[field] = detail[field]
+        value = detail.get(field)
+        if not value:
+            continue
+        if not event.get(field):
+            event[field] = value
+            continue
+        # SUKISUKI sales pages describe the purchase channel as an online
+        # venue.  A later official SCHEDULE row for a large-benefit event is
+        # the authoritative source for the real occurrence venue and must
+        # replace that retailer placeholder instead of preserving it forever.
+        if (
+            field == "venue"
+            and special_category == "large-benefit"
+            and "オンライン" in normalize_space(event.get("venue"))
+            and "オンライン" not in normalize_space(value)
+        ):
+            event[field] = value
+            schedule = event.get("schedule") if isinstance(event.get("schedule"), list) else []
+            for occurrence in schedule:
+                if (
+                    isinstance(occurrence, dict)
+                    and str(occurrence.get("date") or "")[:10] == row.day
+                    and "オンライン" in normalize_space(occurrence.get("venue"))
+                ):
+                    occurrence["venue"] = value
+            if schedule:
+                event["venues"] = list(dict.fromkeys(
+                    normalize_space(occurrence.get("venue"))
+                    for occurrence in schedule
+                    if isinstance(occurrence, dict) and normalize_space(occurrence.get("venue"))
+                ))
 
 
 def build_event(rows: list[OfficialRow], detail: dict) -> dict:
