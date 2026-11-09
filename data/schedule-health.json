@@ -1,7 +1,7 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-09T18:45:53.137190+09:00",
-  "candidateUpdatedAt": "2026-11-09T18:45:52+09:00",
+  "generatedAt": "2026-11-09T18:51:51.771831+09:00",
+  "candidateUpdatedAt": "2026-11-09T18:51:51+09:00",
   "previousEventCount": 259,
   "candidateEventCount": 259,
   "protectedPreviousCount": 253,
@@ -43,7 +43,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:14296: FRUITS ZIPPER / FRUITS ZIPPER / 現在受付なし",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売"
   ],
-  "candidateSha256": "3dec5a6c405731465b23c92a7d71f76c39183d805b503030ae28615ed947bd11",
+  "candidateSha256": "0ad167eb9fa04e154a726a1741360a1720dacba63b0b7abeeac82e412d12162f",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -389,7 +389,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 28,
+  "quarantineCount": 27,
   "quarantineActions": [
     {
       "error": "active Pia row has no sale-detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
@@ -482,18 +482,13 @@
       "restoredPreviousRows": 3
     },
     {
-      "error": "deadline moved earlier for id:aa8631d99d724b4a: 2026-11-11T23:59 -> 2026-10-03T10:00 (manual review required)",
-      "action": "restored previous rows for id:aa8631d99d724b4a",
+      "error": "deadline moved earlier for pia:event:2631559:003: 2026-11-09T23:59 -> 2026-10-03T10:00 (manual review required)",
+      "action": "restored previous rows for pia:event:2631559:003",
       "restoredPreviousRows": 1
     },
     {
-      "error": "deadline moved earlier for id:e87ec5c18b4922aa: 2026-11-12T23:59 -> 2026-09-19T10:00 (manual review required)",
-      "action": "restored previous rows for id:e87ec5c18b4922aa",
-      "restoredPreviousRows": 1
-    },
-    {
-      "error": "deadline moved earlier for id:d807ec7f8ed46008: 2026-11-19T23:59 -> 2026-11-07T10:00 (manual review required)",
-      "action": "restored previous rows for id:d807ec7f8ed46008",
+      "error": "deadline moved earlier for id:c253afa617345c6d: 2026-11-19T23:59 -> 2026-10-24T10:00 (manual review required)",
+      "action": "restored previous rows for id:c253afa617345c6d",
       "restoredPreviousRows": 1
     },
     {
