@@ -211,6 +211,48 @@ def preserve_core_official_links(core_rows: list[dict], merged_rows: list[dict])
     return touched
 
 
+def preserve_core_physical_special_venues(core_rows: list[dict], merged_rows: list[dict]) -> int:
+    """Keep an official physical venue when a parallel retailer snapshot is stale."""
+    core_by_id = {
+        str(row.get("id") or ""): row
+        for row in core_rows
+        if row.get("id") and is_special_event(row)
+    }
+    touched = 0
+    for row in merged_rows:
+        core = core_by_id.get(str(row.get("id") or ""))
+        if not core or not is_special_event(row):
+            continue
+        core_venue = str(core.get("venue") or "").strip()
+        merged_venue = str(row.get("venue") or "").strip()
+        if not core_venue or "オンライン" in core_venue or "オンライン" not in merged_venue:
+            continue
+        row["venue"] = core_venue
+        schedule = row.get("schedule") if isinstance(row.get("schedule"), list) else []
+        core_days = {
+            str(value.get("date") or "")[:10]
+            for value in core.get("schedule") or []
+            if isinstance(value, dict) and str(value.get("venue") or "").strip() == core_venue
+        }
+        if not core_days:
+            core_days = {str(core.get("eventDate") or "")[:10]}
+        for occurrence in schedule:
+            if (
+                isinstance(occurrence, dict)
+                and str(occurrence.get("date") or "")[:10] in core_days
+                and "オンライン" in str(occurrence.get("venue") or "")
+            ):
+                occurrence["venue"] = core_venue
+        if schedule:
+            row["venues"] = list(dict.fromkeys(
+                str(value.get("venue") or "").strip()
+                for value in schedule
+                if isinstance(value, dict) and str(value.get("venue") or "").strip()
+            ))
+        touched += 1
+    return touched
+
+
 def merge_payloads(core: dict, playguide: dict, sukisuki_payload: dict, special_payload: dict) -> dict:
     core_rows = events(core)
     merged_events = [dict(row) for row in core_rows]
@@ -227,6 +269,7 @@ def merge_payloads(core: dict, playguide: dict, sukisuki_payload: dict, special_
     )
     core_special_offers_preserved = preserve_core_special_offers(core_rows, merged_events)
     official_links_preserved = preserve_core_official_links(core_rows, merged_events)
+    official_physical_venues_preserved = preserve_core_physical_special_venues(core_rows, merged_events)
 
     # These guards run at the final distributed merge boundary so no collector
     # can reintroduce an impossible cross-year birthday row or misclassify an
@@ -269,6 +312,7 @@ def merge_payloads(core: dict, playguide: dict, sukisuki_payload: dict, special_
         "sources": report,
         "coreSpecialOffersPreserved": core_special_offers_preserved,
         "officialLinksPreserved": official_links_preserved,
+        "officialPhysicalVenuesPreserved": official_physical_venues_preserved,
         "birthdayYearGuard": birthday_guard_report,
         "ticketSemanticHardening": ticket_semantics_report,
         "physicalPerformanceTimeReconciliation": performance_time_report,
