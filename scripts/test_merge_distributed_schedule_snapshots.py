@@ -104,6 +104,39 @@ class DistributedSnapshotMergerTests(unittest.TestCase):
         self.assertIn(official_url, event["urls"])
         self.assertEqual(1, result["distributedMergeDiagnostics"]["officialLinksPreserved"])
 
+    def test_replacement_keeps_core_physical_venue_over_online_placeholder(self):
+        core = {"events": [{
+            "id": "osaka-benefit",
+            "sourceType": "official-special",
+            "eventCategory": "large-benefit",
+            "eventDate": "2026-12-06",
+            "title": "CUTIE STREET大特典会＠インテックス大阪",
+            "venue": "インテックス大阪",
+            "schedule": [{"date": "2026-12-06", "venue": "インテックス大阪"}],
+            "venues": ["インテックス大阪"],
+        }]}
+        stale_special = {"events": [{
+            "id": "osaka-benefit",
+            "sourceType": "official-special",
+            "eventCategory": "large-benefit",
+            "eventDate": "2026-12-06",
+            "title": "CUTIE STREET大特典会＠インテックス大阪",
+            "venue": "オンライン（SUKISUKI）",
+            "schedule": [{"date": "2026-12-06", "venue": "オンライン（SUKISUKI）"}],
+            "venues": ["オンライン（SUKISUKI）"],
+        }]}
+
+        result = merger.merge_payloads(core, {"events": []}, {"events": []}, stale_special)
+
+        event = next(row for row in result["events"] if row["id"] == "osaka-benefit")
+        self.assertEqual("インテックス大阪", event["venue"])
+        self.assertEqual("インテックス大阪", event["schedule"][0]["venue"])
+        self.assertEqual(["インテックス大阪"], event["venues"])
+        self.assertEqual(
+            1,
+            result["distributedMergeDiagnostics"]["officialPhysicalVenuesPreserved"],
+        )
+
     def test_replacement_keeps_same_run_core_offer_for_same_special_id(self):
         core = {"events": [{
             "id": "joint-benefit",
