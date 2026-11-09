@@ -224,8 +224,10 @@ def parse_known_performance(html: str, known_events: list[dict], today: date) ->
     A match requires group, date, start time and venue together.
     """
     soup = BeautifulSoup(html, "html.parser")
-    text = normalize(unicodedata.normalize("NFKC", soup.get_text(" ", strip=True)))
-    text = text.split("関連公演", 1)[0]
+    scope = promoter.performance_scope(soup)
+    text = normalize(unicodedata.normalize("NFKC", scope.get_text(" ", strip=True)))
+    identity_scope = soup.select_one(".detail_r478") or soup
+    identity_text = normalize(unicodedata.normalize("NFKC", identity_scope.get_text(" ", strip=True)))
     day_match = promoter.DATE_RE.search(text)
     start = promoter.first_match(promoter.START_RE, text)
     if not day_match or not start:
@@ -237,10 +239,10 @@ def parse_known_performance(html: str, known_events: list[dict], today: date) ->
         value = unicodedata.normalize("NFKC", str(value or ""))
         value = re.sub(r"^(?:東京都|北海道|京都府|大阪府|.{2,3}県)\s*", "", value)
         return re.sub(r"[\s()（）]", "", value).casefold()
-    venues = [venue_key(a.get_text(" ", strip=True)) for a in soup.find_all("a", href=True)
+    venues = [venue_key(a.get_text(" ", strip=True)) for a in scope.find_all("a", href=True)
               if "venue/detail.php" in str(a.get("href"))]
     matches = [e for e in known_events if e.get("entityType") == "performance"
-               and e.get("group") in promoter.GROUPS and e["group"] in text
+               and e.get("group") in promoter.GROUPS and e["group"] in identity_text
                and e.get("eventDate") == day and e.get("startTime") == start
                and venue_key(e.get("venue")) in venues[:1]]
     return deepcopy(matches[0]) if len(matches) == 1 else None
@@ -329,6 +331,42 @@ def general_sale_key(event: dict) -> tuple[str, str, str, str] | None:
     return group, day, str(event.get("startTime") or ""), "一般発売"
 
 
+def purge_mismatched_promoter_rows(events: list[dict], rows: list[dict]) -> tuple[list[dict], int]:
+    """Drop stale promoter rows whose direct detail URL now proves another show.
+
+    Older collector versions could read a related-performance block before the
+    main performance and persist the related show's date with the current
+    detail page's title and ticket links.  Those rows survive normal merges
+    because their incorrect date gives them a different general-sale key.
+
+    A HOT STUFF detail URL identifies one performance.  When a fresh, strictly
+    parsed observation for that same URL disagrees with a previously generated
+    promoter row, the fresh observation is authoritative and the stale row must
+    not remain attached to another performance.
+    """
+    fresh_keys_by_url: dict[str, tuple[str, str, str, str]] = {}
+    for row in rows:
+        source_url = canonical_url(row.get("url"))
+        key = general_sale_key(row)
+        if source_url and key:
+            fresh_keys_by_url[source_url] = key
+
+    kept: list[dict] = []
+    removed = 0
+    for event in events:
+        source_url = canonical_url(event.get("url"))
+        fresh_key = fresh_keys_by_url.get(source_url)
+        if (
+            fresh_key
+            and normalize(event.get("sourceChannel")) == "promoter-general-sale"
+            and general_sale_key(event) != fresh_key
+        ):
+            removed += 1
+            continue
+        kept.append(event)
+    return kept, removed
+
+
 def merge(payload: dict, rows: list[dict]) -> tuple[int, int]:
     events = [dict(x) for x in payload.get("events", []) if isinstance(x, dict)]
     index: dict[tuple[str, str, str, str], int] = {}
@@ -412,11 +450,15 @@ def run(check: bool = False, today: date | None = None) -> dict:
     finally:
         session.close()
 
+    payload["events"], removed = purge_mismatched_promoter_rows(
+        [dict(x) for x in payload.get("events", []) if isinstance(x, dict)], rows
+    )
     added, enriched = merge(payload, rows)
     payload["promoterGeneralSaleDiagnostics"] = {
         "checkedAt": datetime.now(JST).isoformat(timespec="seconds"),
         "knownPerformancesChecked": len(performances), "generalSalesObserved": len(rows),
-        "generalSalesAdded": added, "generalSalesEnriched": enriched, "failures": failures,
+        "generalSalesAdded": added, "generalSalesEnriched": enriched,
+        "mismatchedPromoterRowsRemoved": removed, "failures": failures,
     }
     changed = payload != original
     if changed and not check:
