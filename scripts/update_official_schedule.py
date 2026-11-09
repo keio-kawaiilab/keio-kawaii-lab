@@ -143,6 +143,15 @@ def event_family(title: object) -> str:
     return ""
 
 
+def physical_venue_from_title(title: object) -> str:
+    text = normalize_space(title)
+    match = re.search(r"[@＠]\s*([^【（(]+)", text)
+    if not match:
+        return ""
+    venue = normalize_space(match.group(1))
+    return "" if "オンライン" in venue else venue
+
+
 def parse_schedule_list(html: str, group: str, base: str, year: int, month: int, today: date) -> list[OfficialRow]:
     soup = BeautifulSoup(html, "html.parser")
     result = []
@@ -302,6 +311,14 @@ def enrich_existing(event: dict, row: OfficialRow, detail: dict) -> None:
         if source == "official-schedule":
             event["specialDetailsStatus"] = "awaiting-details"
             event["applicationDisplayMode"] = "schedule-only"
+    if (
+        special_category == "large-benefit"
+        and "オンライン" in normalize_space(event.get("venue"))
+        and not normalize_space(detail.get("venue"))
+    ):
+        venue = physical_venue_from_title(detail.get("title") or row.title)
+        if venue:
+            detail = {**detail, "venue": venue}
     for field in ("venue", "openTime", "startTime"):
         value = detail.get(field)
         if not value:
