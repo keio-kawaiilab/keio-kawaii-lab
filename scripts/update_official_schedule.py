@@ -448,6 +448,10 @@ def merge(payload: dict, rows: list[OfficialRow], session: requests.Session) -> 
                 source in PLAYGUIDE_SOURCES
                 or bool(GENERIC_TITLE_RE.fullmatch(current_title))
                 or not matched.get("venue")
+                or (
+                    special_event_category(row.title) == "large-benefit"
+                    and "オンライン" in normalize_space(matched.get("venue"))
+                )
                 or (single_performance and not (matched.get("openTime") and matched.get("startTime")))
             )
             enrich_existing(matched, row, detail(row) if needs_detail else {})
