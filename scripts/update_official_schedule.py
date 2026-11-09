@@ -314,10 +314,10 @@ def enrich_existing(event: dict, row: OfficialRow, detail: dict) -> None:
     if (
         special_category == "large-benefit"
         and "オンライン" in normalize_space(event.get("venue"))
-        and not normalize_space(detail.get("venue"))
     ):
         venue = physical_venue_from_title(detail.get("title") or row.title)
-        if venue:
+        detail_venue = normalize_space(detail.get("venue"))
+        if venue and (not detail_venue or "オンライン" in detail_venue):
             detail = {**detail, "venue": venue}
     for field in ("venue", "openTime", "startTime"):
         value = detail.get(field)
