@@ -108,6 +108,28 @@ class OfficialScheduleParallelTests(unittest.TestCase):
         }]}
         self.assertEqual([], parallel.detail_urls_needed(payload, [row]))
 
+    def test_online_large_benefit_placeholder_needs_official_detail_prefetch(self):
+        row = parallel.official.OfficialRow(
+            "CUTIE STREET",
+            "2026-12-06",
+            "EVENT",
+            "『大特典会 in 大阪』@インテックス大阪",
+            "https://cutiestreet.asobisystem.com/live_information/detail/46743",
+            "kawaii-lab",
+        )
+        payload = {"events": [{
+            "id": "special-dfe9270997481f22",
+            "group": "CUTIE STREET",
+            "title": "CUTIE STREET大特典会＠インテックス大阪【1部・3部・6部】",
+            "eventDate": "2026-12-06",
+            "sourceType": "official-special",
+            "eventCategory": "large-benefit",
+            "venue": "オンライン（SUKISUKI）",
+            "eventScope": "kawaii-lab",
+        }]}
+
+        self.assertEqual([row.url], parallel.detail_urls_needed(payload, [row]))
+
     def test_main_refresh_enriches_birthday_placeholder_with_open_fc_window(self):
         payload = {"events": [{
             "id": "shoji-stable",
