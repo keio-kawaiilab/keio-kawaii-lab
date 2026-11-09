@@ -146,6 +146,32 @@ class OfficialScheduleTests(unittest.TestCase):
         self.assertEqual("large-benefit", event["eventCategory"])
         self.assertEqual("schedule-only", event["applicationDisplayMode"])
 
+    def test_physical_large_benefit_schedule_overrides_sukisuki_venue(self):
+        event = {
+            "sourceType": "official-special",
+            "group": "CUTIE STREET",
+            "title": "CUTIE STREET大特典会＠インテックス大阪【1部・3部・6部】",
+            "eventDate": "2026-12-06",
+            "eventCategory": "large-benefit",
+            "venue": "オンライン（SUKISUKI）",
+            "schedule": [{"date": "2026-12-06", "venue": "オンライン（SUKISUKI）"}],
+            "venues": ["オンライン（SUKISUKI）"],
+            "url": "https://sukisuki-shop.com/goods/6500000005354",
+        }
+        row = OfficialRow(
+            "CUTIE STREET", "2026-12-06", "EVENT",
+            "『大特典会 in 大阪』@インテックス大阪",
+            "https://cutiestreet.asobisystem.com/live_information/detail/46743",
+            "kawaii-lab",
+        )
+
+        enrich_existing(event, row, {"venue": "大阪府 インテックス大阪 3号館"})
+
+        self.assertEqual("大阪府 インテックス大阪 3号館", event["venue"])
+        self.assertEqual("大阪府 インテックス大阪 3号館", event["schedule"][0]["venue"])
+        self.assertEqual(["大阪府 インテックス大阪 3号館"], event["venues"])
+        self.assertEqual(row.url, event["officialScheduleUrl"])
+
     def test_unmatched_official_schedule_row_is_automatically_added(self):
         row = OfficialRow(
             "CANDY TUNE",
