@@ -191,6 +191,24 @@ def normalize_special(event: dict) -> tuple[dict, bool]:
         return event, False
 
     changed = False
+    if category == "large-benefit" and "オンライン" in text(event.get("venue")):
+        title = text(event.get("displayTitle") or event.get("eventTitle") or event.get("title"))
+        match = re.search(r"[@＠]\s*([^【（(]+)", title)
+        physical_venue = text(match.group(1)) if match else ""
+        if physical_venue and "オンライン" not in physical_venue:
+            event["venue"] = physical_venue
+            schedule = event.get("schedule") if isinstance(event.get("schedule"), list) else []
+            for occurrence in schedule:
+                if isinstance(occurrence, dict) and "オンライン" in text(occurrence.get("venue")):
+                    occurrence["venue"] = physical_venue
+            if schedule:
+                event["venues"] = list(dict.fromkeys(
+                    text(occurrence.get("venue"))
+                    for occurrence in schedule
+                    if isinstance(occurrence, dict) and text(occurrence.get("venue"))
+                ))
+            changed = True
+
     official_urls = [value for value in urls(event) if "asobisystem.com" in value]
     no_window = not (event.get("applyStart") or event.get("applyEnd"))
     no_reception = event.get("applicationStatus") == "none" or str(event.get("ticketType") or "") == "現在受付なし"
