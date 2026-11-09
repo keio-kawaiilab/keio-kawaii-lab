@@ -91,6 +91,10 @@ def _needs_detail(row: official.OfficialRow, events: list[dict]) -> bool:
         source in official.PLAYGUIDE_SOURCES
         or bool(official.GENERIC_TITLE_RE.fullmatch(current_title))
         or not matched.get("venue")
+        or (
+            official.special_event_category(row.title) == "large-benefit"
+            and "オンライン" in official.normalize_space(matched.get("venue"))
+        )
         or (single_performance and not (matched.get("openTime") and matched.get("startTime")))
     )
 
