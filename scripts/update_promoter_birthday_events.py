@@ -134,6 +134,15 @@ def first_match(pattern: re.Pattern, text: str) -> str | None:
     return f"{hour:02d}:{minute:02d}"
 
 
+def performance_scope(soup: BeautifulSoup) -> BeautifulSoup:
+    """Return the main date/venue/time block, excluding notices and related shows.
+
+    HOT STUFF can place a news accordion before the actual performance fields.
+    Dates in a resale notice are application dates, not the performance date.
+    """
+    return soup.select_one(".detail_r478 .conbox_t20.bdr_b") or soup
+
+
 def parse_detail(url: str, html: str, today: date | None = None) -> dict | None:
     today = today or datetime.now(JST).date()
     soup = BeautifulSoup(html, "html.parser")
@@ -151,7 +160,9 @@ def parse_detail(url: str, html: str, today: date | None = None) -> dict | None:
     if not title:
         return None
 
-    date_match = DATE_RE.search(text)
+    scope = performance_scope(soup)
+    scope_text = normalize(scope.get_text(" ", strip=True))
+    date_match = DATE_RE.search(scope_text)
     if not date_match:
         return None
     try:
@@ -162,7 +173,7 @@ def parse_detail(url: str, html: str, today: date | None = None) -> dict | None:
         return None
 
     venue = None
-    for anchor in soup.find_all("a", href=True):
+    for anchor in scope.find_all("a", href=True):
         href = str(anchor.get("href") or "")
         if "/venue/detail.php" not in href and "venue/detail.php" not in href:
             continue
@@ -189,8 +200,8 @@ def parse_detail(url: str, html: str, today: date | None = None) -> dict | None:
         "applicationDisplayMode": "schedule-only",
         "eventDate": day.isoformat(),
         "venue": venue,
-        "openTime": first_match(OPEN_RE, text),
-        "startTime": first_match(START_RE, text),
+        "openTime": first_match(OPEN_RE, scope_text),
+        "startTime": first_match(START_RE, scope_text),
         "url": url,
         "urls": [url],
         "sourceType": "promoter",
