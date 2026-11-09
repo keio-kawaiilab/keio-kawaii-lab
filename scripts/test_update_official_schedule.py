@@ -3,7 +3,8 @@ from datetime import date
 
 from update_official_schedule import (
     OfficialRow, build_event, collapse_missing, enrich_existing, event_key, merge,
-    match_existing, parse_detail, parse_schedule_list, propagate_ticket_scopes,
+    match_existing, parse_detail, parse_schedule_list, physical_venue_from_title,
+    propagate_ticket_scopes,
 )
 
 
@@ -34,10 +35,7 @@ class PhysicalBenefitSession:
     def get(self, _url, timeout=25):
         self.calls += 1
         return DummyResponse('''
-        <div class="block--title"><p class="tit">『大特典会 in 大阪』</p></div>
-        <ul class="block--liveinfo">
-          <li><p class="item-tit">開催場所・会場</p><p class="item-detail">大阪府 インテックス大阪 3号館</p></li>
-        </ul>
+        <div class="block--title"><p class="tit">CUTIE STREET大特典会＠インテックス大阪【1部・3部・6部】</p></div>
         ''')
 
 
@@ -75,6 +73,17 @@ class OfficialScheduleTests(unittest.TestCase):
         self.assertEqual("東京都 Veats Shibuya", row["venue"])
         self.assertEqual("17:30", row["openTime"])
         self.assertEqual("19:00", row["startTime"])
+
+    def test_physical_venue_is_parsed_from_official_title(self):
+        self.assertEqual(
+            "インテックス大阪",
+            physical_venue_from_title("『大特典会 in 大阪』@インテックス大阪"),
+        )
+        self.assertEqual(
+            "インテックス大阪",
+            physical_venue_from_title("CUTIE STREET大特典会＠インテックス大阪【1部・3部・6部】"),
+        )
+        self.assertEqual("", physical_venue_from_title("オンライン特典会＠オンライン"))
 
     def test_shared_external_rows_collapse(self):
         rows = [
@@ -209,8 +218,8 @@ class OfficialScheduleTests(unittest.TestCase):
         merged, _diagnostics = merge({"events": [event]}, [row], session)
 
         self.assertEqual(1, session.calls)
-        self.assertEqual("大阪府 インテックス大阪 3号館", merged["events"][0]["venue"])
-        self.assertEqual("大阪府 インテックス大阪 3号館", merged["events"][0]["schedule"][0]["venue"])
+        self.assertEqual("インテックス大阪", merged["events"][0]["venue"])
+        self.assertEqual("インテックス大阪", merged["events"][0]["schedule"][0]["venue"])
 
     def test_unmatched_official_schedule_row_is_automatically_added(self):
         row = OfficialRow(
