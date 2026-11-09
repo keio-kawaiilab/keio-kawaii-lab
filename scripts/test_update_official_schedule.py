@@ -27,6 +27,20 @@ class DummySession:
         ''')
 
 
+class PhysicalBenefitSession:
+    def __init__(self):
+        self.calls = 0
+
+    def get(self, _url, timeout=25):
+        self.calls += 1
+        return DummyResponse('''
+        <div class="block--title"><p class="tit">『大特典会 in 大阪』</p></div>
+        <ul class="block--liveinfo">
+          <li><p class="item-tit">開催場所・会場</p><p class="item-detail">大阪府 インテックス大阪 3号館</p></li>
+        </ul>
+        ''')
+
+
 class OfficialScheduleTests(unittest.TestCase):
     def test_list_parses_only_live_and_event(self):
         html = '''<a href="/live_information/detail/1"><span class="block--date__month">09</span><span class="block--date__date">20</span><p class="category">EVENT</p><p class="tit">IDOL RUNWAY COLLECTION</p></a>
@@ -171,6 +185,32 @@ class OfficialScheduleTests(unittest.TestCase):
         self.assertEqual("大阪府 インテックス大阪 3号館", event["schedule"][0]["venue"])
         self.assertEqual(["大阪府 インテックス大阪 3号館"], event["venues"])
         self.assertEqual(row.url, event["officialScheduleUrl"])
+
+    def test_merge_fetches_official_detail_for_online_large_benefit_placeholder(self):
+        event = {
+            "id": "special-dfe9270997481f22",
+            "sourceType": "official-special",
+            "group": "CUTIE STREET",
+            "title": "CUTIE STREET大特典会＠インテックス大阪【1部・3部・6部】",
+            "eventDate": "2026-12-06",
+            "eventCategory": "large-benefit",
+            "venue": "オンライン（SUKISUKI）",
+            "schedule": [{"date": "2026-12-06", "venue": "オンライン（SUKISUKI）"}],
+            "venues": ["オンライン（SUKISUKI）"],
+        }
+        row = OfficialRow(
+            "CUTIE STREET", "2026-12-06", "EVENT",
+            "『大特典会 in 大阪』@インテックス大阪",
+            "https://cutiestreet.asobisystem.com/live_information/detail/46743",
+            "kawaii-lab",
+        )
+        session = PhysicalBenefitSession()
+
+        merged, _diagnostics = merge({"events": [event]}, [row], session)
+
+        self.assertEqual(1, session.calls)
+        self.assertEqual("大阪府 インテックス大阪 3号館", merged["events"][0]["venue"])
+        self.assertEqual("大阪府 インテックス大阪 3号館", merged["events"][0]["schedule"][0]["venue"])
 
     def test_unmatched_official_schedule_row_is_automatically_added(self):
         row = OfficialRow(
