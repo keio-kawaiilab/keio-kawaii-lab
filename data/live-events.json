@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-10T09:39:08+09:00",
+  "checkedAt": "2026-11-10T10:36:26+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-11-09T07:27:55+09:00",
     "scannedPages": {
@@ -3785,6 +3785,44 @@
       "sourcePublishedAt": "2026-10-26",
       "discoverySourceUrl": "https://cutiestreet.asobisystem.com/news/detail/93573",
       "eventScope": "kawaii-lab"
+    },
+    {
+      "id": "f252890aae3f1ee0",
+      "group": "CUTIE STREET",
+      "title": "CUTIE STREET 佐野愛花 生誕祭 2026",
+      "eventTitle": "CUTIE STREET 佐野愛花 生誕祭 2026",
+      "displayTitle": "CUTIE STREET 佐野愛花 生誕祭 2026",
+      "eventCategory": "solo-live",
+      "ticketType": "一般発売",
+      "ticketProvider": "pia",
+      "applyStart": "2026-11-09T20:00",
+      "applyEnd": null,
+      "resultDate": null,
+      "paymentEnd": null,
+      "applicationStatus": "observed",
+      "applicationDisplayMode": "offers",
+      "applicationWindowVerified": true,
+      "applicationWindowSource": "https://red-hot.ne.jp/play/detail.php?pid=py28690",
+      "eventDate": "2026-11-26",
+      "venue": "SGC HALL ARIAKE",
+      "openTime": "17:30",
+      "startTime": "19:00",
+      "url": "https://red-hot.ne.jp/play/detail.php?pid=py28690",
+      "urls": [
+        "https://red-hot.ne.jp/play/detail.php?pid=py28690",
+        "https://t.pia.jp/"
+      ],
+      "sourceType": "ticket-history-guard",
+      "sourceChannel": "promoter-general-sale",
+      "primarySource": "promoter",
+      "sourceCandidates": [
+        "promoter",
+        "pia"
+      ],
+      "eventScope": "kawaii-lab",
+      "historyPreserved": true,
+      "soldOutObserved": false,
+      "sourceObservedAt": "2026-11-10T10:36:20+09:00"
     },
     {
       "id": "a7b325c43cc6c33e",
@@ -11674,21 +11712,21 @@
     "lawson/SWEET STEADY: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=18)"
   ],
   "promoterGeneralSaleDiagnostics": {
-    "checkedAt": "2026-11-10T09:38:33+09:00",
-    "knownPerformancesChecked": 62,
+    "checkedAt": "2026-11-10T10:36:25+09:00",
+    "knownPerformancesChecked": 61,
     "generalSalesObserved": 6,
-    "generalSalesAdded": 4,
-    "generalSalesEnriched": 2,
+    "generalSalesAdded": 1,
+    "generalSalesEnriched": 0,
     "mismatchedPromoterRowsRemoved": 0,
     "failures": []
   },
   "publicEventModelReport": {
-    "rawEventCount": 261,
+    "rawEventCount": 262,
     "passthroughEventCount": 71,
     "performanceEntityCount": 61,
-    "sourceOccurrenceCount": 325,
-    "mergedSourceOccurrences": 264,
-    "offerCount": 107,
+    "sourceOccurrenceCount": 326,
+    "mergedSourceOccurrences": 265,
+    "offerCount": 108,
     "outOfScopeSoloEventCount": 3
   },
   "publicEventModelVersion": 1,
@@ -11841,7 +11879,7 @@
   },
   "renderWarnings": [
     {
-      "checkedAt": "2026-11-10T09:39:08+09:00",
+      "checkedAt": "2026-11-10T10:36:26+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one CANDY TUNE tour performance for 2026-10-04 OPEN 16:30 / START 17:30, found 0"
     }
@@ -24861,7 +24899,7 @@
       }
     ]
   },
-  "updatedAt": "2026-11-10T09:39:08+09:00",
+  "updatedAt": "2026-11-10T10:36:26+09:00",
   "publicEvents": [
     {
       "id": "1c60e2be989c564d",
@@ -25456,10 +25494,10 @@
       "startTime": "14:00",
       "url": "https://tgc.girlswalker.com/toyama/2026/ticket/",
       "urls": [
-        "https://tgc.girlswalker.com/toyama/2026/ticket/",
         "https://candytune.asobisystem.com/live_information/detail/44995",
         "https://sweetsteady.asobisystem.com/live_information/detail/44463",
-        "https://morestar.asobisystem.com/live_information/detail/45675"
+        "https://morestar.asobisystem.com/live_information/detail/45675",
+        "https://tgc.girlswalker.com/toyama/2026/ticket/"
       ],
       "sourceType": "official-schedule",
       "primarySource": "official",
@@ -25506,12 +25544,16 @@
           "sourceChannel": "known-official-correction"
         }
       ],
+      "ticketType": "追加販売（先着）",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers",
       "sourceRowIds": [
         "ecdd86be6e667177",
         "26d0069375101fa4"
       ],
       "mergedPublicEventIds": [
-        "performance-external-tgc-toyama-2026-2026-11-21-14-00-ykkaparena"
+        "ecdd86be6e667177",
+        "26d0069375101fa4"
       ],
       "displayTitle": "TGC TOYAMA 2026 by TOKYO GIRLS COLLECTION",
       "participants": [
@@ -25519,10 +25561,7 @@
         "SWEET STEADY",
         "MORE STAR"
       ],
-      "performanceKey": "external|tgc-toyama-2026|2026-11-21|14:00|ykkaparena",
-      "ticketType": "追加販売（先着）",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "performanceKey": "external|tgc-toyama-2026|2026-11-21|14:00|ykkaparena"
     },
     {
       "id": "593ec53a5d74ac13",
@@ -25845,6 +25884,9 @@
           "sourceObservedAt": "2026-11-10T09:35:10+09:00"
         }
       ],
+      "ticketType": "複数受付",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers",
       "sourceRowIds": [
         "cfbbfe7a4e136b4a",
         "2c117f3728ce3c02",
@@ -25853,13 +25895,14 @@
         "baac3381c93d98a3"
       ],
       "mergedPublicEventIds": [
-        "performance-external-chikappa-2026-2026-11-23-11-00-b"
+        "cfbbfe7a4e136b4a",
+        "2c117f3728ce3c02",
+        "4919495adeca9a4c",
+        "8a40af447079424c",
+        "baac3381c93d98a3"
       ],
       "displayTitle": "ちかっぱ祭2026",
-      "performanceKey": "external|chikappa-2026|2026-11-23|11:00|福岡マリンメッセ福岡b館",
-      "ticketType": "複数受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "performanceKey": "external|chikappa-2026|2026-11-23|11:00|福岡マリンメッセ福岡b館"
     },
     {
       "id": "a7b325c43cc6c33e",
@@ -29818,7 +29861,9 @@
         "https://ticket-account.pia.jp/pia/digipoke/list.do",
         "https://cutiestreet.asobisystem.com/news/detail/93573",
         "https://cutiestreet.asobisystem.com/live_information/detail/46341",
-        "https://kawaiilab.asobisystem.com/news/detail/92827"
+        "https://kawaiilab.asobisystem.com/news/detail/92827",
+        "https://red-hot.ne.jp/play/detail.php?pid=py28690",
+        "https://t.pia.jp/"
       ],
       "sourceType": "official-schedule",
       "primarySource": "official",
@@ -29834,7 +29879,8 @@
         "0682808f6820420f",
         "a32f16b9ec9c9756",
         "a536cc1b2de853db",
-        "known-cutie-sano-upgrade-20261126"
+        "known-cutie-sano-upgrade-20261126",
+        "f252890aae3f1ee0"
       ],
       "offers": [
         {
@@ -29874,6 +29920,26 @@
           "sourceChannel": "known-official-correction",
           "primarySource": "official",
           "sourcePublishedAt": "2026-10-26"
+        },
+        {
+          "sourceRowId": "f252890aae3f1ee0",
+          "provider": "pia",
+          "url": "https://red-hot.ne.jp/play/detail.php?pid=py28690",
+          "urls": [
+            "https://red-hot.ne.jp/play/detail.php?pid=py28690",
+            "https://t.pia.jp/"
+          ],
+          "ticketType": "一般発売",
+          "ticketProvider": "pia",
+          "applyStart": "2026-11-09T20:00",
+          "applicationStatus": "observed",
+          "applicationWindowVerified": true,
+          "applicationDisplayMode": "offers",
+          "applicationWindowSource": "https://red-hot.ne.jp/play/detail.php?pid=py28690",
+          "sourceType": "ticket-history-guard",
+          "sourceChannel": "promoter-general-sale",
+          "primarySource": "promoter",
+          "sourceObservedAt": "2026-11-10T10:36:20+09:00"
         }
       ],
       "eventEndDate": "2026-11-26",
