@@ -1,7 +1,7 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-10T19:25:19.090070+09:00",
-  "candidateUpdatedAt": "2026-11-10T19:25:18+09:00",
+  "generatedAt": "2026-11-10T19:31:22.436403+09:00",
+  "candidateUpdatedAt": "2026-11-10T19:31:22+09:00",
   "previousEventCount": 256,
   "candidateEventCount": 255,
   "protectedPreviousCount": 250,
@@ -36,7 +36,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売"
   ],
-  "candidateSha256": "efd58b88f4d33451a80f97cb6517c5674bae782fb05def94df5ef3219c7803a8",
+  "candidateSha256": "a451f5693784c06e06133024e91f738e0207c2a9b13d9447953958041df5f206",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -84,7 +84,6 @@
     "url:https://kawaiilab.asobisystem.com/news/detail/92173",
     "url:https://kawaiilab.asobisystem.com/news/detail/92282",
     "url:https://kawaiilab.asobisystem.com/news/detail/92368",
-    "url:https://kawaiilab.asobisystem.com/news/detail/92964",
     "url:https://kawaiilab.asobisystem.com/news/detail/92965",
     "url:https://kawaiilab.asobisystem.com/news/detail/93433",
     "url:https://kawaiilab.asobisystem.com/news/detail/93888",
@@ -177,7 +176,6 @@
     "url:https://kawaiilab.asobisystem.com/news/detail/92173",
     "url:https://kawaiilab.asobisystem.com/news/detail/92282",
     "url:https://kawaiilab.asobisystem.com/news/detail/92368",
-    "url:https://kawaiilab.asobisystem.com/news/detail/92964",
     "url:https://kawaiilab.asobisystem.com/news/detail/92965",
     "url:https://kawaiilab.asobisystem.com/news/detail/93433",
     "url:https://kawaiilab.asobisystem.com/news/detail/93888",
@@ -211,7 +209,7 @@
     "url:https://sweetsteady.asobisystem.com/news/detail/93491",
     "url:https://sweetsteady.asobisystem.com/news/detail/93737"
   ],
-  "reconciledBaseDateMessageCount": 1,
+  "reconciledBaseDateMessageCount": 0,
   "downgradedFalsePositiveCount": 0,
   "legacyProtectedErrorCount": 26,
   "legacyProtectedErrors": [
@@ -346,7 +344,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 29,
+  "quarantineCount": 30,
   "quarantineActions": [
     {
       "error": "active Pia row has no sale-detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
@@ -434,11 +432,6 @@
       "restoredPreviousRows": 1
     },
     {
-      "error": "deadline moved earlier for id:aa8631d99d724b4a: 2026-11-11T23:59 -> 2026-10-03T10:00 (manual review required)",
-      "action": "restored previous rows for id:aa8631d99d724b4a",
-      "restoredPreviousRows": 1
-    },
-    {
       "error": "active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / 「FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - Secret Code」公演 リセールサービスのお知らせ / リセール",
       "action": "restored previous rows for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
       "restoredPreviousRows": 6
@@ -449,6 +442,11 @@
       "restoredPreviousRows": 1
     },
     {
+      "error": "deadline moved earlier for id:05b044d669a80bf5: 2026-11-12T23:59 -> 2026-09-19T10:00 (manual review required)",
+      "action": "restored previous rows for id:05b044d669a80bf5",
+      "restoredPreviousRows": 1
+    },
+    {
       "error": "active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / 「FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - Secret Code」公演 リセールサービスのお知らせ / リセール",
       "action": "restored previous rows for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
       "restoredPreviousRows": 6
@@ -456,6 +454,11 @@
     {
       "error": "future performance dates disappeared for pia:event:2629434:001: 2026-11-26",
       "action": "restored previous rows for pia:event:2629434:001",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "deadline moved earlier for id:9d24b90755d6d0cf: 2026-11-19T23:59 -> 2026-10-24T10:00 (manual review required)",
+      "action": "restored previous rows for id:9d24b90755d6d0cf",
       "restoredPreviousRows": 1
     },
     {
