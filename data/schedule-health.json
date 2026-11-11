@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-11T19:03:22.805251+09:00",
-  "candidateUpdatedAt": "2026-11-11T19:03:22+09:00",
+  "generatedAt": "2026-11-11T20:05:13.292979+09:00",
+  "candidateUpdatedAt": "2026-11-11T20:05:12+09:00",
   "previousEventCount": 267,
   "candidateEventCount": 267,
   "protectedPreviousCount": 261,
   "errorCount": 0,
-  "warningCount": 62,
+  "warningCount": 63,
   "errors": [],
   "warnings": [
     "quarantined one event/source update and kept the previous known-good data: active Pia row has no sale-detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
@@ -32,12 +32,13 @@
     "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for pia:88970: 2026-11-14, 2026-11-15",
     "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / 「FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - Secret Code」公演 リセールサービスのお知らせ / リセール",
     "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for pia:event:2630960:001: 2026-11-19",
+    "quarantined one event/source update and kept the previous known-good data: deadline moved earlier for id:05b044d669a80bf5: 2026-11-12T23:59 -> 2026-09-19T10:00 (manual review required)",
     "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / 「FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - Secret Code」公演 リセールサービスのお知らせ / リセール",
     "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for pia:event:2629434:001: 2026-11-26",
-    "quarantined one event/source update and kept the previous known-good data: deadline moved earlier for id:9d24b90755d6d0cf: 2026-11-19T23:59 -> 2026-10-24T10:00 (manual review required)",
-    "quarantined one event/source update and kept the previous known-good data: deadline moved earlier for id:f9ecb883d4d5f9b4: 2026-11-19T23:59 -> 2026-11-07T10:00 (manual review required)",
     "quarantined one event/source update and kept the previous known-good data: deadline moved earlier for url:https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026: 2026-12-05T23:59 -> 2026-09-13T23:59 (manual review required)",
+    "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / 「CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS 」公演 リセールサービスのお知らせ / リセール",
     "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for url:https://red-hot.ne.jp/play/detail.php?pid=py28329: 2026-12-09",
+    "quarantined one event/source update and kept the previous known-good data: active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / 「CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS 」公演 リセールサービスのお知らせ / リセール",
     "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for url:https://w.pia.jp/v/kls-xmas26upg6/?_normalbrowse_=1: 2026-12-13",
     "quarantined one event/source update and kept the previous known-good data: protected future/active item disappeared: SWEET STEADY / 2026.10.16 2027年3月4日(木)「SWEET STEADY 3rd ANNIVERSARY LIVE」@日本武道館 開催決定！FC先行スタート！ / FC先行",
     "quarantined one event/source update and kept the previous known-good data: future performance dates disappeared for url:https://kawaiilab.asobisystem.com/news/detail/87775 [MORE STAR]: 2026-12-12, 2026-12-13",
@@ -72,7 +73,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ2次",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売"
   ],
-  "candidateSha256": "dc3abd26bc2236affdd591a2c741af4c4b4e098e40d0d27f45b2e00988656b54",
+  "candidateSha256": "9e99ac5d0aa09695645c35464b56f680e4f62b3e23e407c006fba85c6b81f706",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -400,7 +401,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 33,
+  "quarantineCount": 34,
   "quarantineActions": [
     {
       "error": "active Pia row has no sale-detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
@@ -518,6 +519,11 @@
       "restoredPreviousRows": 1
     },
     {
+      "error": "deadline moved earlier for id:05b044d669a80bf5: 2026-11-12T23:59 -> 2026-09-19T10:00 (manual review required)",
+      "action": "restored previous rows for id:05b044d669a80bf5",
+      "restoredPreviousRows": 1
+    },
+    {
       "error": "active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / 「FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - Secret Code」公演 リセールサービスのお知らせ / リセール",
       "action": "restored previous rows for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
       "restoredPreviousRows": 6
@@ -528,24 +534,24 @@
       "restoredPreviousRows": 1
     },
     {
-      "error": "deadline moved earlier for id:9d24b90755d6d0cf: 2026-11-19T23:59 -> 2026-10-24T10:00 (manual review required)",
-      "action": "restored previous rows for id:9d24b90755d6d0cf",
-      "restoredPreviousRows": 1
-    },
-    {
-      "error": "deadline moved earlier for id:f9ecb883d4d5f9b4: 2026-11-19T23:59 -> 2026-11-07T10:00 (manual review required)",
-      "action": "restored previous rows for id:f9ecb883d4d5f9b4",
-      "restoredPreviousRows": 1
-    },
-    {
       "error": "deadline moved earlier for url:https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026: 2026-12-05T23:59 -> 2026-09-13T23:59 (manual review required)",
       "action": "restored previous rows for url:https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026",
       "restoredPreviousRows": 25
     },
     {
+      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / 「CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS 」公演 リセールサービスのお知らせ / リセール",
+      "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
+      "restoredPreviousRows": 7
+    },
+    {
       "error": "future performance dates disappeared for url:https://red-hot.ne.jp/play/detail.php?pid=py28329: 2026-12-09",
       "action": "restored previous rows for url:https://red-hot.ne.jp/play/detail.php?pid=py28329",
       "restoredPreviousRows": 1
+    },
+    {
+      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / 「CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS 」公演 リセールサービスのお知らせ / リセール",
+      "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
+      "restoredPreviousRows": 7
     },
     {
       "error": "future performance dates disappeared for url:https://w.pia.jp/v/kls-xmas26upg6/?_normalbrowse_=1: 2026-12-13",
