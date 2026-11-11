@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "checkedAt": "2026-11-12T00:43:16+09:00",
+  "checkedAt": "2026-11-12T01:16:43+09:00",
   "status": "degraded",
   "safeForTicketFlowPublication": false,
   "historyEntries": 3881,
@@ -8,13 +8,13 @@
   "officialNewsPagesPerSource": 15,
   "officialCandidateCounts": {
     "MORE STAR": 113,
-    "SWEET STEADY": 152,
     "KAWAII LAB. FC": 151,
-    "CANDY TUNE": 155,
+    "SWEET STEADY": 152,
     "CUTIE STREET": 154,
-    "FRUITS ZIPPER": 156
+    "FRUITS ZIPPER": 156,
+    "CANDY TUNE": 155
   },
-  "officialCollectorPendingReviewCount": 19,
+  "officialCollectorPendingReviewCount": 18,
   "officialCollectorPendingReviewUrls": [
     "https://candytune.asobisystem.com/news/detail/80464",
     "https://cutiestreet.asobisystem.com/news/detail/85655",
@@ -33,12 +33,242 @@
     "https://morestar.asobisystem.com/news/detail/64527",
     "https://morestar.asobisystem.com/news/detail/65520",
     "https://morestar.asobisystem.com/news/detail/67975",
-    "https://morestar.asobisystem.com/news/detail/82787",
-    "https://morestar.asobisystem.com/news/detail/83212"
+    "https://morestar.asobisystem.com/news/detail/82787"
   ],
-  "officialCollectorFailures": [],
+  "officialCollectorFailures": [
+    {
+      "group": "FRUITS ZIPPER",
+      "url": "https://fruitszipper.asobisystem.com/live_information/detail/40046",
+      "title": "FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN -",
+      "stage": "article",
+      "error": "504 Server Error: Gateway Time-out for url: https://fruitszipper.asobisystem.com/live_information/detail/40046"
+    },
+    {
+      "group": "CANDY TUNE",
+      "url": "https://candytune.asobisystem.com/live_information/detail/46912",
+      "title": "COUNTDOWN JAPAN 26/27@幕張メッセ",
+      "stage": "article",
+      "error": "502 Server Error: Bad Gateway for url: https://candytune.asobisystem.com/live_information/detail/46912"
+    },
+    {
+      "group": "KAWAII LAB. FC",
+      "url": "https://kawaiilab.asobisystem.com/live_information/detail/47255",
+      "title": "sound stock Vol.22 @ Zepp Shinjuku",
+      "stage": "article",
+      "error": "504 Server Error: Gateway Time-out for url: https://kawaiilab.asobisystem.com/live_information/detail/47255"
+    },
+    {
+      "group": "CANDY TUNE",
+      "url": "https://candytune.asobisystem.com/news/detail/92278",
+      "title": "2026.10.10 2026年12月3日(木) 「CANDY TUNE 村川緋杏 生誕祭 2026」開催決定！CANDY TUNE OFFICIAL FANCLUB会員先行開始！",
+      "stage": "article",
+      "error": "504 Server Error: Gateway Time-out for url: https://candytune.asobisystem.com/news/detail/92278"
+    },
+    {
+      "group": "FRUITS ZIPPER",
+      "url": "https://fruitszipper.asobisystem.com/live_information/detail/46190",
+      "title": "FRUITS ZIPPER 早瀬ノエル 生誕祭 2026",
+      "stage": "article",
+      "error": "504 Server Error: Gateway Time-out for url: https://fruitszipper.asobisystem.com/live_information/detail/46190"
+    },
+    {
+      "group": "CUTIE STREET",
+      "url": "https://cutiestreet.asobisystem.com/live_information/detail/40365",
+      "title": "CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-",
+      "stage": "article",
+      "error": "HTTPSConnectionPool(host='cutiestreet.asobisystem.com', port=443): Read timed out. (read timeout=18)"
+    },
+    {
+      "group": "FRUITS ZIPPER",
+      "url": "https://fruitszipper.asobisystem.com/live_information/detail/46296",
+      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR@宮城セキスイハイムスーパーアリーナ",
+      "stage": "article",
+      "error": "502 Server Error: Bad Gateway for url: https://fruitszipper.asobisystem.com/live_information/detail/46296"
+    },
+    {
+      "group": "SWEET STEADY",
+      "url": "https://sweetsteady.asobisystem.com/live_information/detail/43907",
+      "title": "SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle",
+      "stage": "article",
+      "error": "HTTPSConnectionPool(host='sweetsteady.asobisystem.com', port=443): Read timed out. (read timeout=18)"
+    },
+    {
+      "group": "CUTIE STREET",
+      "url": "https://cutiestreet.asobisystem.com/live_information/detail/47104",
+      "title": "CUTIE STREET 大特典会",
+      "stage": "article",
+      "error": "HTTPSConnectionPool(host='cutiestreet.asobisystem.com', port=443): Read timed out. (read timeout=18)"
+    },
+    {
+      "group": "FRUITS ZIPPER",
+      "url": "https://fruitszipper.asobisystem.com/live_information/detail/45704",
+      "title": "FRUITS ZIPPER 鎮西寿々歌 生誕祭 2026",
+      "stage": "article",
+      "error": "HTTPSConnectionPool(host='fruitszipper.asobisystem.com', port=443): Read timed out. (read timeout=18)"
+    },
+    {
+      "group": "MORE STAR",
+      "url": "https://morestar.asobisystem.com/news/detail/92107",
+      "title": "2026.10.07 2026年11月25日（水）「MORE STAR 単独ライブ 7th STAR」開催決定！FC先行受付開始！",
+      "stage": "article",
+      "error": "HTTPSConnectionPool(host='morestar.asobisystem.com', port=443): Read timed out. (read timeout=18)"
+    },
+    {
+      "group": "MORE STAR",
+      "url": "https://morestar.asobisystem.com/live_information/detail/47350",
+      "title": "ッスッゴイライブ-8th Annivarsry SP-",
+      "stage": "article",
+      "error": "HTTPSConnectionPool(host='morestar.asobisystem.com', port=443): Read timed out. (read timeout=18)"
+    },
+    {
+      "group": "MORE STAR",
+      "url": "https://morestar.asobisystem.com/live_information/detail/46454",
+      "title": "KAWAII LAB. 5th ANNIVERSARY TOUR@IGアリーナ",
+      "stage": "article",
+      "error": "504 Server Error: Gateway Time-out for url: https://morestar.asobisystem.com/live_information/detail/46454"
+    },
+    {
+      "group": "CUTIE STREET",
+      "url": "https://cutiestreet.asobisystem.com/live_information/detail/46375",
+      "title": "KAWAII LAB. Christmas SESSION 2026",
+      "stage": "article",
+      "error": "HTTPSConnectionPool(host='cutiestreet.asobisystem.com', port=443): Read timed out. (read timeout=18)"
+    },
+    {
+      "group": "CANDY TUNE",
+      "url": "https://candytune.asobisystem.com/news/detail/95730",
+      "title": "2026.11.10 「CANDY TUNE 福山梨乃 生誕祭 2026」 アップグレード抽選受付のお知らせ",
+      "stage": "article",
+      "error": "HTTPSConnectionPool(host='candytune.asobisystem.com', port=443): Read timed out. (read timeout=18)"
+    },
+    {
+      "group": "MORE STAR",
+      "url": "https://morestar.asobisystem.com/live_information/detail/47090",
+      "title": "Pococha presents HBCアイドル祭り2027 なまら推ささるアイドルWinter!",
+      "stage": "article",
+      "error": "504 Server Error: Gateway Time-out for url: https://morestar.asobisystem.com/live_information/detail/47090"
+    },
+    {
+      "group": "SWEET STEADY",
+      "url": "https://sweetsteady.asobisystem.com/live_information/detail/47116",
+      "title": "SWEET STEADY 奥田彩友 BIRTHDAY LIVE 2027",
+      "stage": "article",
+      "error": "HTTPSConnectionPool(host='sweetsteady.asobisystem.com', port=443): Read timed out. (read timeout=18)"
+    },
+    {
+      "group": "MORE STAR",
+      "url": "https://morestar.asobisystem.com/news/detail/84094",
+      "title": "2026.07.07 期間限定・事後通販【7/8(水)〜7/20(月・祝)】MORE STAR 1stワンマンライブ『𝑴𝑰𝑳𝑲𝒀 𝑺𝑻𝑨𝑹』",
+      "stage": "article",
+      "error": "504 Server Error: Gateway Time-out for url: https://morestar.asobisystem.com/news/detail/84094"
+    },
+    {
+      "group": "MORE STAR",
+      "url": "https://morestar.asobisystem.com/news/detail/83212",
+      "title": "2026.07.04 MORE STAR 1stワンマンライブ「MILKY STAR」FC連動会場企画&オンライン企画実施決定！",
+      "stage": "article",
+      "error": "504 Server Error: Gateway Time-out for url: https://morestar.asobisystem.com/news/detail/83212"
+    },
+    {
+      "group": "MORE STAR",
+      "url": "https://morestar.asobisystem.com/news/detail/78839",
+      "title": "2026.05.12 「KAWAII LAB. SESSION in SENDAI」@ゼビオアリーナ仙台 開催決定！FC先行受付開始！",
+      "stage": "article",
+      "error": "504 Server Error: Gateway Time-out for url: https://morestar.asobisystem.com/news/detail/78839"
+    },
+    {
+      "group": "MORE STAR",
+      "url": "https://morestar.asobisystem.com/news/detail/69253",
+      "title": "2026.02.16 「MORE STAR 単独ライブ 1st STAR」開催記念！FC会員限定オンラインくじ「もあすたくじ」実施決定！",
+      "stage": "article",
+      "error": "504 Server Error: Gateway Time-out for url: https://morestar.asobisystem.com/news/detail/69253"
+    },
+    {
+      "group": "KAWAII LAB. FC",
+      "url": "https://kawaiilab.asobisystem.com/news/detail/81419",
+      "title": "2026.06.09 「FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN -」KAWAII LAB. OFFICIAL FANCLUB会員先行受付開始！",
+      "stage": "article",
+      "error": "504 Server Error: Gateway Time-out for url: https://kawaiilab.asobisystem.com/news/detail/81419"
+    },
+    {
+      "group": "KAWAII LAB. FC",
+      "url": "https://kawaiilab.asobisystem.com/news/detail/95067",
+      "title": "2026.11.03 KAWAII LAB. 所属メンバーのXアカウントについて",
+      "stage": "article",
+      "error": "HTTPSConnectionPool(host='kawaiilab.asobisystem.com', port=443): Read timed out. (read timeout=18)"
+    },
+    {
+      "group": "KAWAII LAB. FC",
+      "url": "https://kawaiilab.asobisystem.com/news/detail/90869",
+      "title": "2026.09.26 「MORE STAR 単独ライブ 6th STAR」開催決定！KAWAII LAB. OFFICIAL FANCLUB先行受付開始！",
+      "stage": "article",
+      "error": "HTTPSConnectionPool(host='kawaiilab.asobisystem.com', port=443): Read timed out. (read timeout=18)"
+    },
+    {
+      "group": "SWEET STEADY",
+      "url": "https://sweetsteady.asobisystem.com/news/detail/95615",
+      "title": "2026.11.07 【重要】外部メール配信サービスへの不正アクセスについて",
+      "stage": "article",
+      "error": "504 Server Error: Gateway Time-out for url: https://sweetsteady.asobisystem.com/news/detail/95615"
+    },
+    {
+      "group": "SWEET STEADY",
+      "url": "https://sweetsteady.asobisystem.com/news/detail/95022",
+      "title": "2026.11.02 11/6(金)「KAWAII LAB. ファンクラブ限定フリーライブ」@東京ガーデンシアターにて特別抽選会開催が決定！",
+      "stage": "article",
+      "error": "504 Server Error: Gateway Time-out for url: https://sweetsteady.asobisystem.com/news/detail/95022"
+    },
+    {
+      "group": "SWEET STEADY",
+      "url": "https://sweetsteady.asobisystem.com/news/detail/90455",
+      "title": "2026.09.27 「SWEET STEADY 庄司なぎさ BIRTHDAY LIVE 2026」 アップグレード抽選受付のお知らせ",
+      "stage": "article",
+      "error": "504 Server Error: Gateway Time-out for url: https://sweetsteady.asobisystem.com/news/detail/90455"
+    },
+    {
+      "group": "KAWAII LAB. FC",
+      "url": "https://kawaiilab.asobisystem.com/news/detail/80560",
+      "title": "2026.05.31 2026年6月29日(月) 「CUTIE STREET 真鍋凪咲 生誕祭 2026」開催決定！FC会員先行＆プレリザーブ先行実施決定！",
+      "stage": "article",
+      "error": "HTTPSConnectionPool(host='kawaiilab.asobisystem.com', port=443): Read timed out. (read timeout=18)"
+    },
+    {
+      "group": "SWEET STEADY",
+      "url": "https://sweetsteady.asobisystem.com/news/detail/87676",
+      "title": "2026.08.18 SWEET STEADYぴあアリーナ単独公演グッズ情報",
+      "stage": "article",
+      "error": "504 Server Error: Gateway Time-out for url: https://sweetsteady.asobisystem.com/news/detail/87676"
+    },
+    {
+      "group": "KAWAII LAB. FC",
+      "url": "https://kawaiilab.asobisystem.com/news/detail/73097",
+      "title": "2026.03.17 『CUTIE STREET桜庭遥花 生誕祭 2026』公演 リセールサービスのお知らせ",
+      "stage": "article",
+      "error": "HTTPSConnectionPool(host='kawaiilab.asobisystem.com', port=443): Read timed out. (read timeout=18)"
+    },
+    {
+      "group": "KAWAII LAB. FC",
+      "url": "https://kawaiilab.asobisystem.com/news/detail/73029",
+      "title": "2026.03.09 4月12日（日）KAWAII LAB. MATES 定期公演vol.27 開催決定！FC先行受付開始！",
+      "stage": "article",
+      "error": "HTTPSConnectionPool(host='kawaiilab.asobisystem.com', port=443): Read timed out. (read timeout=18)"
+    },
+    {
+      "group": "KAWAII LAB. FC",
+      "url": "https://kawaiilab.asobisystem.com/news/detail/69879",
+      "title": "2026.03.03 『CANDY TUNE 南なつ 生誕祭 2026』公演 リセールサービスのお知らせ",
+      "stage": "article",
+      "error": "HTTPSConnectionPool(host='kawaiilab.asobisystem.com', port=443): Read timed out. (read timeout=18)"
+    },
+    {
+      "group": "KAWAII LAB. FC",
+      "url": "https://kawaiilab.asobisystem.com/news/detail/69324",
+      "title": "2026.02.20 『SWEET STEADY 山内咲奈 生誕祭 2026』公演 リセールサービスのお知らせ",
+      "stage": "article",
+      "error": "HTTPSConnectionPool(host='kawaiilab.asobisystem.com', port=443): Read timed out. (read timeout=18)"
+    }
+  ],
   "playguideFailures": [
-    "eplus/CANDY TUNE: HTTPError: 503 Server Error: Service Unavailable for url: https://eplus.jp/sf/detail/3923750001",
     "lawson/CANDY TUNE: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=18)",
     "lawson/CUTIE STREET: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=18)",
     "lawson/FRUITS ZIPPER: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=18)",
@@ -51,7 +281,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-11-12T00:43:16+09:00",
+      "lastSuccessAt": "2026-11-12T01:16:43+09:00",
       "consecutiveFailures": 0
     },
     "eplus:CUTIE STREET": {
@@ -59,7 +289,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-11-12T00:43:16+09:00",
+      "lastSuccessAt": "2026-11-12T01:16:43+09:00",
       "consecutiveFailures": 0
     },
     "eplus:FRUITS ZIPPER": {
@@ -67,7 +297,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-11-12T00:43:16+09:00",
+      "lastSuccessAt": "2026-11-12T01:16:43+09:00",
       "consecutiveFailures": 0
     },
     "eplus:MORE STAR": {
@@ -75,7 +305,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-11-12T00:43:16+09:00",
+      "lastSuccessAt": "2026-11-12T01:16:43+09:00",
       "consecutiveFailures": 0
     },
     "eplus:SWEET STEADY": {
@@ -83,7 +313,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-11-12T00:43:16+09:00",
+      "lastSuccessAt": "2026-11-12T01:16:43+09:00",
       "consecutiveFailures": 0
     },
     "group-official:CANDY TUNE:news": {
@@ -91,7 +321,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-11-12T00:43:16+09:00",
+      "lastSuccessAt": "2026-11-12T01:16:43+09:00",
       "consecutiveFailures": 0
     },
     "group-official:CANDY TUNE:schedule": {
@@ -99,7 +329,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-11-12T00:43:16+09:00",
+      "lastSuccessAt": "2026-11-12T01:16:43+09:00",
       "consecutiveFailures": 0
     },
     "group-official:CUTIE STREET:news": {
@@ -107,7 +337,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-11-12T00:43:16+09:00",
+      "lastSuccessAt": "2026-11-12T01:16:43+09:00",
       "consecutiveFailures": 0
     },
     "group-official:CUTIE STREET:schedule": {
@@ -115,7 +345,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-11-12T00:43:16+09:00",
+      "lastSuccessAt": "2026-11-12T01:16:43+09:00",
       "consecutiveFailures": 0
     },
     "group-official:FRUITS ZIPPER:news": {
@@ -123,7 +353,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-11-12T00:43:16+09:00",
+      "lastSuccessAt": "2026-11-12T01:16:43+09:00",
       "consecutiveFailures": 0
     },
     "group-official:FRUITS ZIPPER:schedule": {
@@ -131,7 +361,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-11-12T00:43:16+09:00",
+      "lastSuccessAt": "2026-11-12T01:16:43+09:00",
       "consecutiveFailures": 0
     },
     "group-official:MORE STAR:news": {
@@ -139,7 +369,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-11-12T00:43:16+09:00",
+      "lastSuccessAt": "2026-11-12T01:16:43+09:00",
       "consecutiveFailures": 0
     },
     "group-official:MORE STAR:schedule": {
@@ -147,7 +377,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-11-12T00:43:16+09:00",
+      "lastSuccessAt": "2026-11-12T01:16:43+09:00",
       "consecutiveFailures": 0
     },
     "group-official:SWEET STEADY:news": {
@@ -155,7 +385,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-11-12T00:43:16+09:00",
+      "lastSuccessAt": "2026-11-12T01:16:43+09:00",
       "consecutiveFailures": 0
     },
     "group-official:SWEET STEADY:schedule": {
@@ -163,7 +393,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-11-12T00:43:16+09:00",
+      "lastSuccessAt": "2026-11-12T01:16:43+09:00",
       "consecutiveFailures": 0
     },
     "kawaii-lab-fc:news": {
@@ -171,7 +401,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-11-12T00:43:16+09:00",
+      "lastSuccessAt": "2026-11-12T01:16:43+09:00",
       "consecutiveFailures": 0
     },
     "lawson:CANDY TUNE": {
@@ -180,7 +410,7 @@
       "httpStatus": null,
       "message": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
       "lastSuccessAt": "2026-10-24T03:18:01+09:00",
-      "consecutiveFailures": 582
+      "consecutiveFailures": 583
     },
     "lawson:CUTIE STREET": {
       "url": "https://l-tike.com/artist/000000000973775/",
@@ -188,7 +418,7 @@
       "httpStatus": null,
       "message": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
       "lastSuccessAt": "2026-10-24T03:18:01+09:00",
-      "consecutiveFailures": 582
+      "consecutiveFailures": 583
     },
     "lawson:FRUITS ZIPPER": {
       "url": "https://l-tike.com/artist/000000000899959/",
@@ -196,7 +426,7 @@
       "httpStatus": null,
       "message": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
       "lastSuccessAt": "2026-10-24T03:18:01+09:00",
-      "consecutiveFailures": 582
+      "consecutiveFailures": 583
     },
     "lawson:MORE STAR": {
       "url": "https://l-tike.com/artist/000000001014114/",
@@ -204,7 +434,7 @@
       "httpStatus": null,
       "message": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
       "lastSuccessAt": "2026-10-24T03:18:01+09:00",
-      "consecutiveFailures": 582
+      "consecutiveFailures": 583
     },
     "lawson:SWEET STEADY": {
       "url": "https://l-tike.com/artist/000000000956758/",
@@ -212,14 +442,14 @@
       "httpStatus": null,
       "message": "ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=10)",
       "lastSuccessAt": "2026-10-24T03:18:01+09:00",
-      "consecutiveFailures": 582
+      "consecutiveFailures": 583
     },
     "pia:CANDY TUNE": {
       "url": "https://t.pia.jp/pia/artist/artists.do?artistsCd=N1260021",
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-11-12T00:43:16+09:00",
+      "lastSuccessAt": "2026-11-12T01:16:43+09:00",
       "consecutiveFailures": 0
     },
     "pia:CUTIE STREET": {
@@ -227,7 +457,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-11-12T00:43:16+09:00",
+      "lastSuccessAt": "2026-11-12T01:16:43+09:00",
       "consecutiveFailures": 0
     },
     "pia:FRUITS ZIPPER": {
@@ -235,7 +465,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-11-12T00:43:16+09:00",
+      "lastSuccessAt": "2026-11-12T01:16:43+09:00",
       "consecutiveFailures": 0
     },
     "pia:MORE STAR": {
@@ -243,7 +473,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-11-12T00:43:16+09:00",
+      "lastSuccessAt": "2026-11-12T01:16:43+09:00",
       "consecutiveFailures": 0
     },
     "pia:SWEET STEADY": {
@@ -251,7 +481,7 @@
       "ok": true,
       "httpStatus": 200,
       "message": "ok",
-      "lastSuccessAt": "2026-11-12T00:43:16+09:00",
+      "lastSuccessAt": "2026-11-12T01:16:43+09:00",
       "consecutiveFailures": 0
     }
   },
@@ -302,10 +532,11 @@
   "deepLinkFailureCount": 0,
   "errors": [
     "5 source endpoint(s) failed at least twice consecutively",
-    "playguide collector reported 6 failure(s)"
+    "official collector reported 33 failure(s)",
+    "playguide collector reported 5 failure(s)"
   ],
   "warnings": [
-    "19 official ticket article(s) still require safe performance mapping",
+    "18 official ticket article(s) still require safe performance mapping",
     "2 active Pia row(s) were retained after a scrape miss"
   ]
 }
