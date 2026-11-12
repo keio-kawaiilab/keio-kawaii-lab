@@ -1,7 +1,7 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-12T21:58:16.152091+09:00",
-  "candidateUpdatedAt": "2026-11-12T21:58:15+09:00",
+  "generatedAt": "2026-11-12T22:05:15.383891+09:00",
+  "candidateUpdatedAt": "2026-11-12T22:05:15+09:00",
   "previousEventCount": 250,
   "candidateEventCount": 249,
   "protectedPreviousCount": 244,
@@ -36,7 +36,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ2次",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売"
   ],
-  "candidateSha256": "eb299fb90cc72a94c82c52db533944f399b32e661d5b2afb653ae8bc228f183f",
+  "candidateSha256": "cfc9ecf753971bbdc0c08f184c5c970f8d2697bab9b562f02b3dc7e9faddb8d4",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -343,7 +343,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 33,
+  "quarantineCount": 31,
   "quarantineActions": [
     {
       "error": "active Pia row has no sale-detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
@@ -436,11 +436,6 @@
       "restoredPreviousRows": 21
     },
     {
-      "error": "active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / 「FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - Secret Code」公演 リセールサービスのお知らせ / リセール",
-      "action": "restored previous rows for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
-      "restoredPreviousRows": 6
-    },
-    {
       "error": "future performance dates disappeared for pia:event:2630960:001: 2026-11-19",
       "action": "restored previous rows for pia:event:2630960:001",
       "restoredPreviousRows": 1
@@ -449,11 +444,6 @@
       "error": "deadline moved earlier for pia:event:2630960:002: 2026-11-12T23:59 -> 2026-09-19T10:00 (manual review required)",
       "action": "restored previous rows for pia:event:2630960:002",
       "restoredPreviousRows": 1
-    },
-    {
-      "error": "active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / 「FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - Secret Code」公演 リセールサービスのお知らせ / リセール",
-      "action": "restored previous rows for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
-      "restoredPreviousRows": 6
     },
     {
       "error": "future performance dates disappeared for pia:event:2629434:001: 2026-11-26",
