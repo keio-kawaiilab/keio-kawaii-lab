@@ -1,7 +1,7 @@
 {
   "date": "2026-11-12",
   "horizonDays": 7,
-  "generatedAt": "2026-11-12T10:59+09:00",
+  "generatedAt": "2026-11-12T19:13+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -18,47 +18,23 @@
       "areaName": "東京地方",
       "precision": "mesh5km",
       "label": "晴れ",
-      "max": 18.0,
-      "min": 18.0,
+      "max": null,
+      "min": null,
       "pop": "0",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-11-12T11:00:00+09:00",
-      "meshTime": "18:00",
-      "meshTempBand": "15〜19℃",
+      "issuedAt": "2026-11-12T17:00:00+09:00",
+      "meshTime": "21:00",
+      "meshTempBand": "10〜14℃",
       "coordinates": {
         "lat": 35.673576,
         "lon": 139.762802
       },
       "meshTimeline": [
         {
-          "time": "09:00",
-          "label": "くもり",
-          "validAt": "2026-11-12T09:00+09:00",
-          "temp": 12
-        },
-        {
-          "time": "12:00",
-          "label": "晴れ",
-          "validAt": "2026-11-12T12:00+09:00",
-          "temp": 16
-        },
-        {
-          "time": "15:00",
-          "label": "晴れ",
-          "validAt": "2026-11-12T15:00+09:00",
-          "temp": 17
-        },
-        {
-          "time": "18:00",
-          "label": "晴れ",
-          "validAt": "2026-11-12T18:00+09:00",
-          "temp": 16
-        },
-        {
           "time": "21:00",
           "label": "晴れ",
           "validAt": "2026-11-12T21:00+09:00",
-          "temp": 15
+          "temp": 14
         },
         {
           "time": "24:00",
@@ -77,11 +53,6 @@
           "time": "18:00",
           "rain": false,
           "validAt": "2026-11-12T18:00+09:00"
-        },
-        {
-          "time": "19:00",
-          "rain": false,
-          "validAt": "2026-11-12T19:00+09:00"
         }
       ]
     },
@@ -98,42 +69,18 @@
       "areaName": "南部",
       "precision": "mesh5km",
       "label": "晴れ",
-      "max": 20.0,
-      "min": 20.0,
-      "pop": "0",
+      "max": null,
+      "min": null,
+      "pop": "10",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-11-12T11:00:00+09:00",
-      "meshTime": "18:00",
-      "meshTempBand": "15〜19℃",
+      "issuedAt": "2026-11-12T17:00:00+09:00",
+      "meshTime": "21:00",
+      "meshTempBand": "10〜14℃",
       "coordinates": {
         "lat": 34.389542,
         "lon": 132.448868
       },
       "meshTimeline": [
-        {
-          "time": "09:00",
-          "label": "晴れ",
-          "validAt": "2026-11-12T09:00+09:00",
-          "temp": 10
-        },
-        {
-          "time": "12:00",
-          "label": "晴れ",
-          "validAt": "2026-11-12T12:00+09:00",
-          "temp": 17
-        },
-        {
-          "time": "15:00",
-          "label": "くもり",
-          "validAt": "2026-11-12T15:00+09:00",
-          "temp": 19
-        },
-        {
-          "time": "18:00",
-          "label": "晴れ",
-          "validAt": "2026-11-12T18:00+09:00",
-          "temp": 17
-        },
         {
           "time": "21:00",
           "label": "晴れ",
@@ -142,26 +89,21 @@
         },
         {
           "time": "24:00",
-          "label": "晴れ",
+          "label": "くもり",
           "validAt": "2026-11-13T00:00+09:00",
           "temp": 13
         }
       ],
       "hourlyRain": [
         {
-          "time": "18:00",
+          "time": "17:30",
           "rain": false,
-          "validAt": "2026-11-12T18:00+09:00"
+          "validAt": "2026-11-12T17:30+09:00"
         },
         {
-          "time": "19:00",
+          "time": "18:30",
           "rain": false,
-          "validAt": "2026-11-12T19:00+09:00"
-        },
-        {
-          "time": "20:00",
-          "rain": false,
-          "validAt": "2026-11-12T20:00+09:00"
+          "validAt": "2026-11-12T18:30+09:00"
         }
       ]
     },
@@ -174,8 +116,7 @@
         "a4b80f161c97016c",
         "bac3290544275dc5",
         "known-sweet-winter-presale-20261113",
-        "known-sweet-winter-upgrade-20261113",
-        "aae3d8d4f990071c"
+        "known-sweet-winter-upgrade-20261113"
       ],
       "areaCode": "140020",
       "areaName": "西部",
@@ -185,7 +126,7 @@
       "min": 9.0,
       "pop": "0",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-11-12T11:00:00+09:00",
+      "issuedAt": "2026-11-12T17:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "15〜19℃",
       "coordinates": {
@@ -215,7 +156,7 @@
           "time": "15:00",
           "label": "晴れ",
           "validAt": "2026-11-13T15:00+09:00",
-          "temp": 20
+          "temp": 19
         },
         {
           "time": "18:00",
@@ -254,7 +195,7 @@
       "min": null,
       "pop": null,
       "popLabel": "",
-      "issuedAt": "2026-11-12T11:00:00+09:00",
+      "issuedAt": "2026-11-12T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -275,7 +216,7 @@
       "min": null,
       "pop": null,
       "popLabel": "",
-      "issuedAt": "2026-11-12T11:00:00+09:00",
+      "issuedAt": "2026-11-12T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -296,7 +237,7 @@
       "min": 12.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-11-12T11:00:00+09:00",
+      "issuedAt": "2026-11-12T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -316,7 +257,7 @@
       "min": 12.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-11-12T11:00:00+09:00",
+      "issuedAt": "2026-11-12T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -338,7 +279,7 @@
       "min": 17.0,
       "pop": "70",
       "popLabel": "1日",
-      "issuedAt": "2026-11-12T11:00:00+09:00",
+      "issuedAt": "2026-11-12T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -359,7 +300,7 @@
       "min": 12.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-11-12T11:00:00+09:00",
+      "issuedAt": "2026-11-12T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -380,7 +321,7 @@
       "min": 12.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-11-12T11:00:00+09:00",
+      "issuedAt": "2026-11-12T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -400,7 +341,7 @@
       "min": 11.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-11-12T11:00:00+09:00",
+      "issuedAt": "2026-11-12T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -426,7 +367,7 @@
       "min": 5.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-11-12T11:00:00+09:00",
+      "issuedAt": "2026-11-12T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -446,7 +387,7 @@
       "min": 10.0,
       "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-11-12T11:00:00+09:00",
+      "issuedAt": "2026-11-12T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -460,10 +401,10 @@
         "de97c75c56f09ae2",
         "1c5ecb0518b883f3",
         "531f1f210cf23339",
+        "05b044d669a80bf5",
         "0fb464260791e1c0",
         "3c8de7c838bb83ac",
-        "4921fa8e120fadab",
-        "6d49eccd480fb58f"
+        "4921fa8e120fadab"
       ],
       "areaCode": "170010",
       "areaName": "石川県",
@@ -473,20 +414,20 @@
       "min": 6.0,
       "pop": "60",
       "popLabel": "1日",
-      "issuedAt": "2026-11-12T11:00:00+09:00",
+      "issuedAt": "2026-11-12T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
     }
   ],
   "stats": {
-    "occurrencesInRange": 45,
+    "occurrencesInRange": 44,
     "uniqueVenueDates": 16,
     "weatherEntries": 14,
     "meshEntries": 3,
     "failures": 2,
     "meshTimelineEntries": 3,
-    "meshExactTempSlots": 19,
+    "meshExactTempSlots": 11,
     "hourlyRainEntries": 2
   },
   "failures": [
