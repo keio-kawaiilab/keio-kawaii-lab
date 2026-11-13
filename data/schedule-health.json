@@ -1,7 +1,7 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-14T07:15:25.827389+09:00",
-  "candidateUpdatedAt": "2026-11-14T07:15:25+09:00",
+  "generatedAt": "2026-11-14T07:57:27.083777+09:00",
+  "candidateUpdatedAt": "2026-11-14T07:57:26+09:00",
   "previousEventCount": 277,
   "candidateEventCount": 276,
   "protectedPreviousCount": 269,
@@ -49,7 +49,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia row contains FC/upgrade-only sale: KAWAII LAB.合同 / 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード2次抽選受付のお知らせ / アップグレード抽選",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:30327: KAWAII LAB.合同 / 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード2次抽選受付のお知らせ / アップグレード抽選"
   ],
-  "candidateSha256": "f82ed0feeac9ab16f36bb6c8126e094ed498524e75d229a671ae26bed3eb14c4",
+  "candidateSha256": "3dcd54879386f4595a35241dbd05a906b78d73508fcbc0a456aac06cda3ae1c4",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -504,13 +504,13 @@
       "restoredPreviousRows": 1
     },
     {
-      "error": "active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / 「FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - Secret Code」公演 リセールサービスのお知らせ / リセール",
-      "action": "restored previous rows for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
-      "restoredPreviousRows": 5
-    },
-    {
       "error": "future performance dates disappeared for pia:event:2629434:001: 2026-11-26",
       "action": "restored previous rows for pia:event:2629434:001",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "deadline moved earlier for id:9d24b90755d6d0cf: 2026-11-19T23:59 -> 2026-10-24T10:00 (manual review required)",
+      "action": "restored previous rows for id:9d24b90755d6d0cf",
       "restoredPreviousRows": 1
     },
     {
