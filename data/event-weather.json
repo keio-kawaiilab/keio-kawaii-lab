@@ -1,7 +1,7 @@
 {
   "date": "2026-11-14",
   "horizonDays": 7,
-  "generatedAt": "2026-11-14T06:23+09:00",
+  "generatedAt": "2026-11-14T10:00+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -33,8 +33,7 @@
       "venueKey": "広島グリーンアリーナ",
       "eventIds": [
         "12fc6b6af5559477",
-        "7ef411e97b8ef3f6",
-        "fae31ed39cfbf2e5"
+        "7ef411e97b8ef3f6"
       ],
       "areaCode": "340010",
       "areaName": "南部",
@@ -209,32 +208,11 @@
     },
     {
       "date": "2026-11-15",
-      "venue": "東京都 ウラハラキャットストリート",
-      "venueKey": "ウラハラキャットストリート",
-      "eventIds": [
-        "d3727db1e517b135"
-      ],
-      "areaCode": "130010",
-      "areaName": "東京地方",
-      "precision": "area",
-      "label": "雨 朝晩 くもり",
-      "max": 14.0,
-      "min": 12.0,
-      "pop": "80",
-      "popLabel": "当日最大",
-      "issuedAt": "2026-11-14T05:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
-    {
-      "date": "2026-11-15",
       "venue": "広島県 広島グリーンアリーナ",
       "venueKey": "広島グリーンアリーナ",
       "eventIds": [
         "12fc6b6af5559477",
-        "7ef411e97b8ef3f6",
-        "fae31ed39cfbf2e5"
+        "7ef411e97b8ef3f6"
       ],
       "areaCode": "340010",
       "areaName": "南部",
@@ -477,21 +455,16 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 35,
-    "uniqueVenueDates": 15,
-    "weatherEntries": 12,
+    "occurrencesInRange": 31,
+    "uniqueVenueDates": 13,
+    "weatherEntries": 11,
     "meshEntries": 4,
-    "failures": 3,
+    "failures": 2,
     "meshTimelineEntries": 4,
     "meshExactTempSlots": 26,
     "hourlyRainEntries": 2
   },
   "failures": [
-    {
-      "date": "2026-11-17",
-      "venue": "Zepp Shinjuku",
-      "reason": "都道府県を解決できません"
-    },
     {
       "date": "2026-11-21",
       "venue": "富山県 YKK AP ARENA",
