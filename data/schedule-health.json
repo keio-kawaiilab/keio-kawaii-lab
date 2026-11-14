@@ -1,16 +1,17 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-15T02:27:21.570642+09:00",
-  "candidateUpdatedAt": "2026-11-15T02:27:21+09:00",
-  "previousEventCount": 270,
+  "generatedAt": "2026-11-15T04:16:42.086213+09:00",
+  "candidateUpdatedAt": "2026-11-15T04:16:41+09:00",
+  "previousEventCount": 269,
   "candidateEventCount": 268,
   "protectedPreviousCount": 261,
   "errorCount": 0,
-  "warningCount": 58,
+  "warningCount": 59,
   "errors": [],
   "warnings": [
     "residual row-scoped audit failure isolated after best-effort quarantine; unrelated updates remain publishable: deadline moved earlier for id:aca3de887cef940c: 2026-11-19T23:59 -> 2026-11-19T23:59 (manual review required)",
     "residual row-scoped audit failure isolated after best-effort quarantine; unrelated updates remain publishable: deadline moved earlier for id:fd0e67fe2fdbbabe: 2026-11-19T23:59 -> 2026-11-19T23:59 (manual review required)",
+    "residual row-scoped audit failure isolated after best-effort quarantine; unrelated updates remain publishable: protected future/active official FC offer disappeared: SWEET STEADY / 2026.10.26 「KAWAII LAB. 5th ANNIVERSARY TOUR」開催決定！FC先行開始！ / FC先行",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
@@ -68,7 +69,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia row contains FC/upgrade-only sale: KAWAII LAB.合同 / 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード2次抽選受付のお知らせ / アップグレード抽選",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:30327: KAWAII LAB.合同 / 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード2次抽選受付のお知らせ / アップグレード抽選"
   ],
-  "candidateSha256": "82eb1b73e929a359251e6eca681b632986f3206b59f1cb860af9708a1059add5",
+  "candidateSha256": "bd2a5d562f3b744cc2338f1ca4c9defa8fe1f7a9e6b8ff63f52b6760e9a91626",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -78,7 +79,6 @@
     "url:https://candytune.asobisystem.com/news/detail/88212",
     "url:https://candytune.asobisystem.com/news/detail/93735",
     "url:https://candytune.asobisystem.com/news/detail/94060",
-    "url:https://candytune.asobisystem.com/news/detail/95730",
     "url:https://candytune.asobisystem.com/news/detail/96000",
     "url:https://cutiestreet.asobisystem.com/feature/autumntour",
     "url:https://cutiestreet.asobisystem.com/live_information/detail/40362",
@@ -190,7 +190,6 @@
     "url:https://candytune.asobisystem.com/news/detail/88212",
     "url:https://candytune.asobisystem.com/news/detail/93735",
     "url:https://candytune.asobisystem.com/news/detail/94060",
-    "url:https://candytune.asobisystem.com/news/detail/95730",
     "url:https://candytune.asobisystem.com/news/detail/96000",
     "url:https://cutiestreet.asobisystem.com/feature/autumntour",
     "url:https://cutiestreet.asobisystem.com/live_information/detail/40362",
@@ -559,13 +558,14 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "residualLocalIsolationCount": 2,
+  "residualLocalIsolationCount": 3,
   "residualLocalIsolations": [
     "deadline moved earlier for id:aca3de887cef940c: 2026-11-19T23:59 -> 2026-11-19T23:59 (manual review required)",
-    "deadline moved earlier for id:fd0e67fe2fdbbabe: 2026-11-19T23:59 -> 2026-11-19T23:59 (manual review required)"
+    "deadline moved earlier for id:fd0e67fe2fdbbabe: 2026-11-19T23:59 -> 2026-11-19T23:59 (manual review required)",
+    "protected future/active official FC offer disappeared: SWEET STEADY / 2026.10.26 「KAWAII LAB. 5th ANNIVERSARY TOUR」開催決定！FC先行開始！ / FC先行"
   ],
   "rowFailuresCanBlockRelease": false,
-  "quarantineCount": 37,
+  "quarantineCount": 38,
   "quarantineActions": [
     {
       "error": "active Pia row has no sale-detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
@@ -623,11 +623,6 @@
       "restoredPreviousRows": 1
     },
     {
-      "error": "deadline moved earlier for id:352df9989cd30cd8: 2026-11-17T23:59 -> 2026-09-19T10:00 (manual review required)",
-      "action": "restored previous rows for id:352df9989cd30cd8",
-      "restoredPreviousRows": 1
-    },
-    {
       "error": "active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / 「FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - Secret Code」公演 リセールサービスのお知らせ / リセール",
       "action": "restored previous rows for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
       "restoredPreviousRows": 4
@@ -638,13 +633,8 @@
       "restoredPreviousRows": 1
     },
     {
-      "error": "deadline moved earlier for id:c3695e1952b4ddb7: 2026-11-19T23:59 -> 2026-11-07T10:00 (manual review required)",
-      "action": "restored previous rows for id:c3695e1952b4ddb7",
-      "restoredPreviousRows": 1
-    },
-    {
-      "error": "deadline moved earlier for id:0fe2835f4c0c0028: 2026-11-26T23:59 -> 2026-09-26T10:00 (manual review required)",
-      "action": "restored previous rows for id:0fe2835f4c0c0028",
+      "error": "deadline moved earlier for id:d807ec7f8ed46008: 2026-11-19T23:59 -> 2026-11-07T10:00 (manual review required)",
+      "action": "restored previous rows for id:d807ec7f8ed46008",
       "restoredPreviousRows": 1
     },
     {
@@ -698,6 +688,11 @@
       "restoredPreviousRows": 4
     },
     {
+      "error": "protected future/active official FC offer disappeared: SWEET STEADY / 2026.10.26 「KAWAII LAB. 5th ANNIVERSARY TOUR」開催決定！FC先行開始！ / FC先行",
+      "action": "restored previous row",
+      "restoredPreviousRows": 9
+    },
+    {
       "error": "deadline moved earlier for url:https://w.pia.jp/t/sweetsteady-winter2026/: 2026-11-15T23:59 -> 2026-10-28T23:59 (manual review required)",
       "action": "restored previous rows for url:https://w.pia.jp/t/sweetsteady-winter2026/",
       "restoredPreviousRows": 9
@@ -718,6 +713,11 @@
       "restoredPreviousRows": 1
     },
     {
+      "error": "protected future/active official FC offer disappeared: SWEET STEADY / 2026.10.26 「KAWAII LAB. 5th ANNIVERSARY TOUR」開催決定！FC先行開始！ / FC先行",
+      "action": "restored previous row",
+      "restoredPreviousRows": 9
+    },
+    {
       "error": "deadline moved earlier for id:aca3de887cef940c: 2026-11-19T23:59 -> 2026-11-19T23:59 (manual review required)",
       "action": "restored previous rows for id:aca3de887cef940c",
       "restoredPreviousRows": 1
@@ -726,6 +726,11 @@
       "error": "deadline moved earlier for id:fd0e67fe2fdbbabe: 2026-11-19T23:59 -> 2026-11-19T23:59 (manual review required)",
       "action": "restored previous rows for id:fd0e67fe2fdbbabe",
       "restoredPreviousRows": 1
+    },
+    {
+      "error": "protected future/active official FC offer disappeared: SWEET STEADY / 2026.10.26 「KAWAII LAB. 5th ANNIVERSARY TOUR」開催決定！FC先行開始！ / FC先行",
+      "action": "restored previous row",
+      "restoredPreviousRows": 9
     },
     {
       "error": "deadline moved earlier for id:aca3de887cef940c: 2026-11-19T23:59 -> 2026-11-19T23:59 (manual review required)",
@@ -743,14 +748,14 @@
       "restoredPreviousRows": 1
     },
     {
-      "error": "protected future/active official FC offer disappeared: FRUITS ZIPPER / 2026.10.26 2026年12月17日(木)「FRUITS ZIPPER 早瀬ノエル 生誕祭 2026」開催決定！FRUITS ZIPPER OFFICIAL FANCLUB会員先行開始！ / FC先行",
+      "error": "protected future/active official FC offer disappeared: CUTIE STREET / CUTIE STREET 桜庭遥花 生誕祭 2027 / FC先行",
       "action": "last-chance restored implicated previous row",
       "restoredPreviousRows": 1
     },
     {
-      "error": "protected future/active official FC offer disappeared: CUTIE STREET / CUTIE STREET 桜庭遥花 生誕祭 2027 / FC先行",
-      "action": "last-chance restored implicated previous row",
-      "restoredPreviousRows": 1
+      "error": "protected future/active official FC offer disappeared: SWEET STEADY / 2026.10.26 「KAWAII LAB. 5th ANNIVERSARY TOUR」開催決定！FC先行開始！ / FC先行",
+      "action": "last-chance restored previous row",
+      "restoredPreviousRows": 9
     }
   ],
   "officialIndexReconciledAfterQuarantine": {
