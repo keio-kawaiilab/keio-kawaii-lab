@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-16T01:49:21.970026+09:00",
-  "candidateUpdatedAt": "2026-11-16T01:49:21+09:00",
-  "previousEventCount": 268,
+  "generatedAt": "2026-11-16T02:18:23.020785+09:00",
+  "candidateUpdatedAt": "2026-11-16T02:18:22+09:00",
+  "previousEventCount": 267,
   "candidateEventCount": 267,
-  "protectedPreviousCount": 257,
+  "protectedPreviousCount": 256,
   "errorCount": 0,
   "warningCount": 58,
   "errors": [],
@@ -68,7 +68,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia row contains FC/upgrade-only sale: KAWAII LAB.合同 / 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード2次抽選受付のお知らせ / アップグレード抽選",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:30327: KAWAII LAB.合同 / 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード2次抽選受付のお知らせ / アップグレード抽選"
   ],
-  "candidateSha256": "c32c0aa75a6e98a296dac08a95bb4ec05e3af4fe2a3a5ece3dc821aef16f595b",
+  "candidateSha256": "1e8756ab08255d0e1567adb86725eff44202ae19ce485fa1b56e831668fed46b",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -272,7 +272,7 @@
     "url:https://sweetsteady.asobisystem.com/news/detail/93737",
     "url:https://sweetsteady.asobisystem.com/news/detail/96001"
   ],
-  "reconciledBaseDateMessageCount": 1,
+  "reconciledBaseDateMessageCount": 0,
   "downgradedFalsePositiveCount": 0,
   "legacyProtectedErrorCount": 56,
   "legacyProtectedErrors": [
@@ -611,23 +611,18 @@
       "restoredPreviousRows": 1
     },
     {
+      "error": "deadline moved earlier for id:7904ec8144bca2b3: 2026-11-16T23:59 -> 2026-09-19T10:00 (manual review required)",
+      "action": "restored previous rows for id:7904ec8144bca2b3",
+      "restoredPreviousRows": 1
+    },
+    {
       "error": "deadline moved earlier for id:74d97051a5834775: 2026-11-17T23:59 -> 2026-09-19T10:00 (manual review required)",
       "action": "restored previous rows for id:74d97051a5834775",
       "restoredPreviousRows": 1
     },
     {
-      "error": "active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / 「FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - Secret Code」公演 リセールサービスのお知らせ / リセール",
-      "action": "restored previous rows for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
-      "restoredPreviousRows": 3
-    },
-    {
       "error": "future performance dates disappeared for pia:event:2629434:001: 2026-11-26",
       "action": "restored previous rows for pia:event:2629434:001",
-      "restoredPreviousRows": 1
-    },
-    {
-      "error": "deadline moved earlier for id:9d24b90755d6d0cf: 2026-11-19T23:59 -> 2026-10-24T10:00 (manual review required)",
-      "action": "restored previous rows for id:9d24b90755d6d0cf",
       "restoredPreviousRows": 1
     },
     {
@@ -644,6 +639,11 @@
       "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / 「CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS 」公演 リセールサービスのお知らせ / リセール",
       "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
       "restoredPreviousRows": 6
+    },
+    {
+      "error": "deadline moved earlier for id:47365286c9595afe: 2026-12-03T23:59 -> 2026-10-24T10:00 (manual review required)",
+      "action": "restored previous rows for id:47365286c9595afe",
+      "restoredPreviousRows": 1
     },
     {
       "error": "deadline moved earlier for id:aca3de887cef940c: 2026-11-19T23:59 -> 2026-11-19T23:59 (manual review required)",
