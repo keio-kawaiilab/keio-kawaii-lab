@@ -1,7 +1,7 @@
 {
   "date": "2026-11-15",
   "horizonDays": 7,
-  "generatedAt": "2026-11-15T04:53+09:00",
+  "generatedAt": "2026-11-15T09:12+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -23,26 +23,6 @@
       "min": 14.0,
       "pop": "80",
       "popLabel": "12〜18時",
-      "issuedAt": "2026-11-15T05:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
-    {
-      "date": "2026-11-15",
-      "venue": "東京都 ウラハラキャットストリート",
-      "venueKey": "ウラハラキャットストリート",
-      "eventIds": [
-        "d3727db1e517b135"
-      ],
-      "areaCode": "130010",
-      "areaName": "東京地方",
-      "precision": "area",
-      "label": "雨 朝晩 くもり",
-      "max": 14.0,
-      "min": 14.0,
-      "pop": "80",
-      "popLabel": "当日最大",
       "issuedAt": "2026-11-15T05:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
@@ -72,12 +52,6 @@
       },
       "meshTimeline": [
         {
-          "time": "06:00",
-          "label": "雨",
-          "validAt": "2026-11-15T06:00+09:00",
-          "temp": 16
-        },
-        {
           "time": "09:00",
           "label": "雨",
           "validAt": "2026-11-15T09:00+09:00",
@@ -87,7 +61,7 @@
           "time": "12:00",
           "label": "雨",
           "validAt": "2026-11-15T12:00+09:00",
-          "temp": 16
+          "temp": 17
         },
         {
           "time": "15:00",
@@ -105,7 +79,7 @@
           "time": "21:00",
           "label": "晴れ",
           "validAt": "2026-11-15T21:00+09:00",
-          "temp": 16
+          "temp": 17
         },
         {
           "time": "24:00",
@@ -115,11 +89,6 @@
         }
       ],
       "hourlyRain": [
-        {
-          "time": "16:00",
-          "rain": false,
-          "validAt": "2026-11-15T16:00+09:00"
-        },
         {
           "time": "17:00",
           "rain": false,
@@ -157,12 +126,6 @@
       },
       "meshTimeline": [
         {
-          "time": "06:00",
-          "label": "くもり",
-          "validAt": "2026-11-15T06:00+09:00",
-          "temp": 13
-        },
-        {
           "time": "09:00",
           "label": "雨",
           "validAt": "2026-11-15T09:00+09:00",
@@ -178,7 +141,7 @@
           "time": "15:00",
           "label": "雨",
           "validAt": "2026-11-15T15:00+09:00",
-          "temp": 14
+          "temp": 13
         },
         {
           "time": "18:00",
@@ -190,13 +153,13 @@
           "time": "21:00",
           "label": "雨",
           "validAt": "2026-11-15T21:00+09:00",
-          "temp": 13
+          "temp": 14
         },
         {
           "time": "24:00",
           "label": "くもり",
           "validAt": "2026-11-16T00:00+09:00",
-          "temp": 15
+          "temp": 14
         }
       ],
       "hourlyRain": [
@@ -234,12 +197,56 @@
       "pop": "10",
       "popLabel": "18〜00時",
       "issuedAt": "2026-11-15T05:00:00+09:00",
-      "meshTime": "00:00",
+      "meshTime": "18:00",
       "meshTempBand": "15〜19℃",
       "coordinates": {
         "lat": 35.547756,
         "lon": 139.753922
-      }
+      },
+      "meshTimeline": [
+        {
+          "time": "06:00",
+          "label": "晴れ",
+          "validAt": "2026-11-16T06:00+09:00",
+          "temp": 16
+        },
+        {
+          "time": "09:00",
+          "label": "晴れ",
+          "validAt": "2026-11-16T09:00+09:00",
+          "temp": 16
+        },
+        {
+          "time": "12:00",
+          "label": "晴れ",
+          "validAt": "2026-11-16T12:00+09:00",
+          "temp": 18
+        },
+        {
+          "time": "15:00",
+          "label": "くもり",
+          "validAt": "2026-11-16T15:00+09:00",
+          "temp": 16
+        },
+        {
+          "time": "18:00",
+          "label": "くもり",
+          "validAt": "2026-11-16T18:00+09:00",
+          "temp": 15
+        },
+        {
+          "time": "21:00",
+          "label": "くもり",
+          "validAt": "2026-11-16T21:00+09:00",
+          "temp": 14
+        },
+        {
+          "time": "24:00",
+          "label": "くもり",
+          "validAt": "2026-11-17T00:00+09:00",
+          "temp": 14
+        }
+      ]
     },
     {
       "date": "2026-11-17",
@@ -316,9 +323,9 @@
         "de97c75c56f09ae2",
         "1c5ecb0518b883f3",
         "0fb464260791e1c0",
+        "352df9989cd30cd8",
         "3c8de7c838bb83ac",
-        "4921fa8e120fadab",
-        "74d97051a5834775"
+        "4921fa8e120fadab"
       ],
       "areaCode": "170010",
       "areaName": "石川県",
@@ -356,30 +363,20 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 32,
-    "uniqueVenueDates": 14,
-    "weatherEntries": 10,
+    "occurrencesInRange": 29,
+    "uniqueVenueDates": 11,
+    "weatherEntries": 9,
     "meshEntries": 3,
-    "failures": 4,
-    "meshTimelineEntries": 2,
-    "meshExactTempSlots": 14,
+    "failures": 2,
+    "meshTimelineEntries": 3,
+    "meshExactTempSlots": 19,
     "hourlyRainEntries": 2
   },
   "failures": [
     {
-      "date": "2026-11-17",
-      "venue": "Zepp Shinjuku",
-      "reason": "都道府県を解決できません"
-    },
-    {
       "date": "2026-11-21",
       "venue": "沖縄県 沖縄コンベンションセンター 劇場棟",
       "reason": "都道府県を解決できません"
-    },
-    {
-      "date": "2026-11-22",
-      "venue": "東京都 ステラボール",
-      "reason": "開催日の予報がまだありません"
     },
     {
       "date": "2026-11-22",
