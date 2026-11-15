@@ -151,6 +151,36 @@ assert.strictEqual(eplus.location, '新潟・福島');
 assert.strictEqual(lawson.location, '新潟・福島');
 assert.strictEqual(lawson.events.length, 2);
 
+const hiroshimaMirrors = ['CUTIE STREET', 'FRUITS ZIPPER', 'KAWAII LAB.合同', 'MORE STAR'].map((group, index) => ({
+  id: 'hiroshima-' + index,
+  group,
+  participants: group === 'KAWAII LAB.合同' ? ['FRUITS ZIPPER', 'CUTIE STREET', 'MORE STAR'] : [group],
+  title: 'HIROSHIMA CONTI-NeW FeS 2099',
+  eventTitle: 'HIROSHIMA CONTI-NeW FeS 2099',
+  ticketType: '先着 ★<12/5>一般発売',
+  ticketProvider: 'eplus',
+  sourceType: 'eplus',
+  applicationStatus: 'open',
+  applicationWindowVerified: true,
+  applyStart: '2099-10-22T12:00',
+  applyEnd: '2099-12-04T20:00',
+  eventDate: '2099-12-05',
+  venue: '広島県 広島クラブクアトロ',
+  url: 'https://eplus.jp/sf/detail/4401630001-P0030002P021001' + (index % 2 ? '?P1=0175' : ''),
+}));
+const hiroshimaTwoDay = {
+  ...hiroshimaMirrors[0],
+  id: 'hiroshima-two-day',
+  ticketType: '先着 ★<2日券>一般発売',
+  url: 'https://eplus.jp/sf/detail/4401630001-P0030002P021003',
+};
+const hiroshimaGrouped = context.__scheduleTest.groupedApplicationBands(
+  context.__scheduleTest.prepare(hiroshimaMirrors.concat([hiroshimaTwoDay])),
+);
+assert.strictEqual(hiroshimaGrouped.length, 2, 'the same playguide reception mirrored by several groups must render once');
+assert.strictEqual(hiroshimaGrouped.find((item) => /12\/5/.test(item.event.ticketType)).events.length, 4, 'all mirrored sources must remain represented in the consolidated reception');
+assert(hiroshimaGrouped.some((item) => /2日券/.test(item.event.ticketType)), 'a genuinely different ticket product must remain separate');
+
 const openEndedRows = [{
   id: 'open-ended-general',
   group: 'CANDY TUNE',
