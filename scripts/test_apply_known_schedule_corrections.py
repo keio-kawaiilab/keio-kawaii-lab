@@ -629,6 +629,57 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
             self.assertEqual(row, corrected[0])
             self.assertEqual(0, report["cutieHiroshimaPiaFixed"])
 
+    def test_cutie_ig_current_pia_sale_uses_each_official_occurrence(self):
+        row = {
+            "id": "pia-ig-general",
+            "group": "CUTIE STREET",
+            "title": "CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN-",
+            "eventDate": "2026-11-28",
+            "eventEndDate": "2026-11-29",
+            "eventDates": ["2026-11-28", "2026-11-29"],
+            "venue": "愛知県 IGアリーナ",
+            "openTime": "16:00",
+            "startTime": "18:00",
+            "schedule": [
+                {"date": "2026-11-28", "venue": "愛知県 IGアリーナ"},
+                {"date": "2026-11-29", "venue": "愛知県 IGアリーナ"},
+            ],
+            "url": "https://t.pia.jp/pia/ticketInformation.do?eventCd=2635016&rlsCd=001",
+        }
+        corrected, report = apply_known_corrections([row])
+        self.assertEqual(1, report["cutieIgFixed"])
+        event = corrected[0]
+        self.assertEqual(["18:00", "16:30"], [item["startTime"] for item in event["schedule"]])
+        self.assertEqual(["16:00", "14:30"], [item["openTime"] for item in event["schedule"]])
+        self.assertIn("https://cutiestreet.asobisystem.com/live_information/detail/40369", event["urls"])
+
+        from performance_entities import build_public_events
+        public, _ = build_public_events(corrected)
+        self.assertEqual(
+            [("2026-11-28", "18:00"), ("2026-11-29", "16:30")],
+            sorted((item["eventDate"], item["startTime"]) for item in public),
+        )
+
+        again, report = apply_known_corrections(corrected)
+        self.assertEqual(corrected, again)
+        self.assertEqual(1, report["cutieIgFixed"])
+
+    def test_cutie_ig_repair_does_not_touch_another_pia_sale(self):
+        for url in (
+            "https://t.pia.jp/pia/ticketInformation.do?eventCd=2635016&rlsCd=002",
+            "https://t.pia.jp/pia/ticketInformation.do?eventCd=2635017&rlsCd=001",
+        ):
+            row = {
+                "id": "pia-other",
+                "group": "CUTIE STREET",
+                "eventDate": "2026-11-29",
+                "startTime": "16:30",
+                "url": url,
+            }
+            corrected, report = apply_known_corrections([row])
+            self.assertEqual([row], corrected)
+            self.assertEqual(0, report["cutieIgFixed"])
+
 
     def test_christmas_session_gets_current_pia_presale_on_both_days(self):
         events = [

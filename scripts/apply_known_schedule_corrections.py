@@ -761,6 +761,13 @@ def _is_cutie_ig_offer(event: dict) -> bool:
     days = {str(row.get("date") or "")[:10] for row in event.get("schedule") or [] if isinstance(row, dict)}
     return (
         any("lotRlsCd=52216" in value for value in values)
+        # Pia's current general-sale row (rlsCd=001) spans both IG Arena
+        # dates but exposes only the first day's top-level time.  Without the
+        # official per-occurrence schedule, 16:00/18:00 leaks onto 11/29 and
+        # creates a false second performance beside the official 14:30/16:30
+        # occurrence.  Match the exact event code so unrelated tour listings
+        # are never rewritten by title/date alone.
+        or any("eventCd=2635016&rlsCd=001" in value for value in values)
         or ("IGアリーナ" in str(event.get("title") or "") and bool(days.intersection(CUTIE_IG_DAYS)))
     )
 
