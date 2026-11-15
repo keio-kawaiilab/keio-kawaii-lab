@@ -1402,6 +1402,39 @@ class PiaNoticeAndSweetWinterUpgradeTests(unittest.TestCase):
         self.assertEqual(result, again)
         self.assertEqual(0, report["sweetWinterUpgradeOffersAdded"])
 
+    def test_sweet_winter_resale_without_time_joins_verified_occurrence(self):
+        from performance_entities import build_public_events
+
+        feature = "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026"
+        official = {
+            "id": "osaka-official", "group": "SWEET STEADY",
+            "title": "SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle",
+            "eventDate": "2026-12-03", "venue": "大阪府 フェニーチェ堺 大ホール",
+            "openTime": "17:30", "startTime": "18:30", "url": feature,
+            "ticketType": "現在受付なし", "eventScope": "kawaii-lab",
+        }
+        resale = {
+            "id": "resale", "group": "SWEET STEADY",
+            "title": "『SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle』公演 リセールサービスのお知らせ",
+            "eventDate": "2026-12-03", "ticketType": "公式リセール",
+            "applyStart": "2026-12-01T10:00", "applyEnd": "2026-12-02T23:59",
+            "url": "https://sweetsteady.asobisystem.com/news/detail/92636",
+            "sourceType": "resale-official", "eventScope": "kawaii-lab",
+        }
+
+        corrected, report = apply_known_corrections([official, resale])
+        repaired = next(row for row in corrected if row.get("id") == "resale")
+        self.assertEqual("18:30", repaired["startTime"])
+        self.assertEqual("大阪府 フェニーチェ堺 大ホール", repaired["venue"])
+        self.assertEqual("resale", repaired["ticketProvider"])
+        self.assertEqual("resale", repaired["saleFamily"])
+        public, _ = build_public_events(corrected)
+        performances = [row for row in public if row.get("group") == "SWEET STEADY"
+                        and row.get("eventDate") == "2026-12-03"]
+        self.assertEqual(1, len(performances))
+        self.assertIn("公式リセール", [offer["ticketType"] for offer in performances[0]["offers"]])
+        self.assertGreaterEqual(report["sweetWinterTicketFactsFixed"], 1)
+
     def test_sweet_winter_repairs_fc_deadline_title_and_current_presale(self):
         source = "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026"
         seed = {
@@ -1452,6 +1485,24 @@ class PiaNoticeAndSweetWinterUpgradeTests(unittest.TestCase):
         again, report = apply_known_corrections(result)
         self.assertEqual(result, again)
         self.assertEqual(0, report["sweetWinterPresale2OffersAdded"])
+
+    def test_sweet_winter_incomplete_multiday_presale_does_not_create_false_time(self):
+        feature = "https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026"
+        pia = "https://w.pia.jp/t/sweetsteady-winter2026/"
+        official = {"id": "tour", "group": "SWEET STEADY",
+                    "title": "SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle",
+                    "eventDate": "2026-11-13", "eventEndDate": "2026-12-18",
+                    "url": feature, "ticketType": "現在受付なし"}
+        incomplete = {"id": "legacy", "group": "SWEET STEADY",
+                      "title": "SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle",
+                      "eventDate": "2026-12-03", "eventEndDate": "2026-12-18",
+                      "eventDates": ["2026-12-03", "2026-12-06", "2026-12-18"],
+                      "startTime": "18:30", "ticketType": "プレリザーブ2次",
+                      "applyStart": None, "applyEnd": "2026-11-15T23:59",
+                      "url": pia, "urls": [pia, feature]}
+        result, report = apply_known_corrections([official, incomplete])
+        self.assertNotIn("legacy", [row.get("id") for row in result])
+        self.assertEqual(1, report["sweetWinterIncompletePresaleRowsRemoved"])
 
     def test_sweet_winter_atsugi_upgrade_merges_with_the_official_performance(self):
         from performance_entities import build_public_events
