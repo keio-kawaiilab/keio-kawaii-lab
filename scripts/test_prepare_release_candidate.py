@@ -241,6 +241,29 @@ class PrepareReleaseCandidateTests(unittest.TestCase):
         self.assertEqual(report["retainedPreviousRows"], 1)
         self.assertTrue(prepared["events"][0]["sourceStale"])
 
+    def test_old_retailer_special_card_is_not_retained_when_offer_is_rediscovered(self):
+        goods = "https://sukisuki-shop.com/goods/6500000005609"
+        old = {
+            "id": "old-retailer-card", "group": "CUTIE STREET",
+            "title": "CUTIE STREET 大特典会＠インテックス大阪【事前抽選会】",
+            "eventCategory": "large-benefit", "eventDate": "2026-12-06",
+            "venue": "インテックス大阪", "ticketType": "現在受付なし",
+            "applicationStatus": "none", "urls": [goods],
+        }
+        current = {
+            "id": "official-offer", "group": "CUTIE STREET",
+            "title": "12/6 CUTIE STREET大特典会 事前抽選会",
+            "eventCategory": "large-benefit", "eventDate": "2026-12-06",
+            "venue": "インテックス大阪 3号館", "mergeAsOfferOnly": True,
+            "url": "https://cutiestreet.asobisystem.com/news/detail/96212",
+            "urls": ["https://cutiestreet.asobisystem.com/news/detail/96212", goods],
+        }
+
+        prepared, report = prep.prepare({"events": [old]}, {"events": [current]}, self.NOW)
+
+        self.assertEqual(0, report["retainedPreviousRows"])
+        self.assertNotIn("old-retailer-card", {row.get("id") for row in prepared["events"]})
+
     def test_different_ticket_providers_are_never_semantically_collapsed(self):
         base = {
             "group": "CANDY TUNE", "title": "CANDY TUNE", "ticketType": "抽選 プレリク",

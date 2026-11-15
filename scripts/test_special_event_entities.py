@@ -332,6 +332,33 @@ class SpecialEventEntityTests(unittest.TestCase):
         )
         self.assertFalse(validate(normalized))
 
+    def test_newer_official_benefit_article_replaces_older_part_timetable(self):
+        base = {
+            "group": "CUTIE STREET", "eventCategory": "large-benefit",
+            "displayTitle": "CUTIE STREET 大特典会", "eventDate": "2026-12-06",
+            "venue": "インテックス大阪 3号館", "ticketType": "現在受付なし",
+            "applicationStatus": "none", "sourceType": "official-special",
+        }
+        older = {
+            **base, "id": "older", "sourcePublishedAt": "2026-11-04",
+            "url": "https://cutiestreet.asobisystem.com/news/detail/95083",
+            "purchaseMethod": "旧受付方法",
+            "parts": [{"part": "第3部", "content": "チェキ", "start": "12:50"}],
+        }
+        newer = {
+            **base, "id": "newer", "sourcePublishedAt": "2026-11-14",
+            "url": "https://cutiestreet.asobisystem.com/news/detail/96353",
+            "purchaseMethod": "最新受付方法",
+            "parts": [{"part": "第3部", "content": "チェキ", "start": "13:20"}],
+        }
+
+        normalized, _ = normalize_payload({"events": [older, newer]})
+
+        self.assertEqual(1, len(normalized["events"]))
+        event = normalized["events"][0]
+        self.assertEqual("最新受付方法", event["purchaseMethod"])
+        self.assertEqual([{"part": "第3部", "content": "チェキ", "start": "13:20"}], event["parts"])
+
     def test_multiday_benefit_placeholder_merges_only_matching_detail_day(self):
         payload = {"events": [
             {

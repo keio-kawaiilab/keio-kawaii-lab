@@ -122,6 +122,19 @@ class SukisukiParserTests(unittest.TestCase):
         self.assertEqual("17:00", event["startTime"])
         self.assertEqual("オンライン特典会", event["ticketType"])
 
+    def test_physical_large_benefit_is_not_misclassified_by_shop_navigation(self):
+        url = "https://sukisuki-shop.com/goods/6500000005616"
+        html = """<html><h1>CUTIE STREET 大特典会＠インテックス大阪【事前抽選会】</h1>
+        <nav>オンライン特典会</nav>
+        <p>配信予定日：配信はございません。</p>
+        <p>対象イベント：2026年12月6日(日)＠インテックス大阪 3号館</p>
+        <p>2026年12月2日(水)発売 CUTIE STREET 1stアルバム『CUTIE LAND』</p>
+        </html>"""
+
+        event = s.parse_goods(FakeSession({url: html}), url, date(2026, 11, 16))
+
+        self.assertIsNone(event)
+
     def test_api_goods_detail_url_is_normalized_to_shop_host(self):
         self.assertEqual(
             s.canonical_goods_url("https://api.sukisuki-shop.com/goods/6500000004999?sku=1"),

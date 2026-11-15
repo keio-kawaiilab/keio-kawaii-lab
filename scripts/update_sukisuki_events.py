@@ -246,6 +246,22 @@ def parse_goods(session: requests.Session, url: str, today) -> dict | None:
     if not group or not any(hint in corpus for hint in ONLINE_HINTS):
         return None
 
+    # A physical large-benefit product page can contain the shop-wide
+    # "オンライン特典会" navigation label even though the item itself is only
+    # an in-person prize/participation lottery.  Treating that navigation text
+    # as event evidence turns the product release date into a fake application
+    # deadline and publishes one false online offer per member.  The product
+    # title is authoritative for this boundary: a page explicitly titled as a
+    # 大特典会 is not an online benefit unless the title itself says so.
+    title_has_online_hint = any(hint in title for hint in ONLINE_HINTS)
+    if "大特典会" in title and not title_has_online_hint:
+        return None
+    if (
+        not title_has_online_hint
+        and re.search(r"配信予定日\s*[：:]?\s*(?:配信はございません|配信なし)", text)
+    ):
+        return None
+
     year_hint = explicit_year_hint(text)
     stream_time = None
     for label in ("配信予定日", "開催日時"):

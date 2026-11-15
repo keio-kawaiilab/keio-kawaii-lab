@@ -31,6 +31,13 @@ DATA_PATH = Path("data/live-events.json")
 PART_FIELDS = ("part", "content", "start", "end", "receptionStart", "receptionEnd")
 SPECIAL_CATEGORIES = {"large-benefit", "release-event"}
 JOINT_GROUPS = {"KAWAII LAB.合同", "KAWAII LAB."}
+RETAIL_SALE_URL_RE = re.compile(
+    r"https://(?:api\.)?sukisuki-shop\.com/goods/\d+"
+    r"|https://(?:www\.)?hmv\.co\.jp/[^?#]+"
+    r"|https://tower\.jp/article/feature_item/[^?#]+"
+    r"|https://kawaiilab\.goods-order\.com(?:/[^?#]*)?",
+    re.I,
+)
 # Observation timestamps are refreshed when a source is checked. They prove that
 # the collector ran, but they are not a change to the public event information.
 # Excluding them keeps `updatedAt` truthful: it moves only when event data changes.
@@ -499,6 +506,38 @@ def should_retain_previous(event: dict, today) -> bool:
     return bool(end and end.date() >= today)
 
 
+def stale_special_replaced_by_current(old: dict, current: list[dict]) -> bool:
+    """Do not resurrect a stale special-event card rediscovered as an offer.
+
+    A retailer page can previously have been misclassified as its own physical
+    event, while a later official article correctly contributes that same page
+    as an offer to the real event.  The exact shared retailer URL is a stronger
+    identity signal than venue wording (for example ``インテックス大阪`` vs
+    ``インテックス大阪 3号館``), so the old card must not be retained.
+    """
+    category = str(old.get("eventCategory") or "")
+    if category not in SPECIAL_CATEGORIES:
+        return False
+    old_sale_urls = {value for value in urls(old) if RETAIL_SALE_URL_RE.search(value)}
+    if not old_sale_urls:
+        return False
+    old_days = set(event_days(old))
+    old_group = str(old.get("group") or "")
+    for event in current:
+        if not isinstance(event, dict):
+            continue
+        if str(event.get("group") or "") != old_group:
+            continue
+        if str(event.get("eventCategory") or "") != category:
+            continue
+        if old_days.isdisjoint(event_days(event)):
+            continue
+        current_sale_urls = {value for value in urls(event) if RETAIL_SALE_URL_RE.search(value)}
+        if old_sale_urls.intersection(current_sale_urls):
+            return True
+    return False
+
+
 def semantic_key(event: dict) -> tuple:
     """Fallback identity that never collapses different ticket providers/receptions."""
     group = str(event.get("group") or "")
@@ -593,6 +632,8 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
         if not isinstance(old, dict) or not should_retain_previous(old, today):
             continue
         if stale_joint_replaced_by_participant_rows(old, events):
+            continue
+        if stale_special_replaced_by_current(old, events):
             continue
         if legacy_release_series_replaced_by_current_occurrences(old, events):
             superseded_legacy_release_series.append(str(old.get("id") or ""))

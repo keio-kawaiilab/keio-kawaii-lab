@@ -442,6 +442,22 @@ def distinct_dicts(values: Iterable[object]) -> list:
 
 def merge_list_fields(entity: dict, items: list[dict]) -> None:
     for field in LIST_FIELDS:
+        if field in {"parts", "numberedCallTimes"}:
+            candidates = [item for item in items if isinstance(item.get(field), list) and item.get(field)]
+            if candidates:
+                # Later official articles can revise the timetable.  Appending
+                # both revisions creates duplicate part numbers and conflicting
+                # times, so keep the newest sourced timetable as one unit.
+                latest = max(
+                    candidates,
+                    key=lambda item: (
+                        bool(official_source_urls(item)),
+                        text(item.get("sourcePublishedAt")),
+                        richness(item),
+                    ),
+                )
+                entity[field] = copy.deepcopy(latest[field])
+            continue
         merged = distinct_dicts(value for item in items for value in (item.get(field) or []) if isinstance(item.get(field), list))
         if merged:
             entity[field] = merged
@@ -533,7 +549,14 @@ def drop_retailer_online_aliases(items: list[dict], rows: list[dict]) -> list[di
 
 
 def make_entity(items: list[dict]) -> dict:
-    representative = max(items, key=richness)
+    representative = max(
+        items,
+        key=lambda item: (
+            bool(official_source_urls(item)),
+            text(item.get("sourcePublishedAt")),
+            richness(item),
+        ),
+    )
     entity = copy.deepcopy(representative)
     schedule = dedupe_schedule_occurrences(merge_schedules(items))
     schedule = drop_retailer_online_aliases(items, schedule)
