@@ -194,6 +194,15 @@ def _reconcile_verified_christmas_session(event: dict[str, Any]) -> None:
         "https://kawaiilab.asobisystem.com/live_information/detail/44571",
         day2_source,
         "https://candytune.asobisystem.com/news/detail/85442",
+        # Second upgrade lottery mirrors published on 2026-11-12.  Each
+        # participant has its own application path, but all articles describe
+        # the same two joint performances and link back to central NEWS 95985.
+        "https://kawaiilab.asobisystem.com/news/detail/95985",
+        "https://fruitszipper.asobisystem.com/news/detail/95999",
+        "https://candytune.asobisystem.com/news/detail/96000",
+        "https://sweetsteady.asobisystem.com/news/detail/96001",
+        "https://cutiestreet.asobisystem.com/news/detail/96002",
+        "https://morestar.asobisystem.com/news/detail/96004",
     }
     urls = {re.sub(r"[?#].*$", "", value).rstrip("/") for value in _event_urls(event)}
     title = _title_key(event)
@@ -555,6 +564,53 @@ def _collapse_official_fc_aliases(offers: list[dict[str, Any]]) -> list[dict[str
     return collapsed
 
 
+def _collapse_verified_christmas_upgrade_mirrors(
+    offers: list[dict[str, Any]], title: Any, day: str,
+) -> list[dict[str, Any]]:
+    """Collapse participant links for one verified Christmas upgrade round.
+
+    The participant articles intentionally use different Pia application URLs,
+    while also carrying the same central official article.  They are alternate
+    paths into one reception, not separate receptions.  Keep every source and
+    application URL on the surviving offer.
+    """
+    if day not in {"2026-12-12", "2026-12-13"} or "christmassession2026" not in _title_key({"title": title}):
+        return offers
+
+    central_sources = {
+        "https://kawaiilab.asobisystem.com/news/detail/87775",
+        "https://kawaiilab.asobisystem.com/news/detail/95985",
+    }
+    collapsed: list[dict[str, Any]] = []
+    mirror_index: dict[tuple[str, str, str, str, str], int] = {}
+    for offer in offers:
+        ticket_type = _text(offer.get("ticketType"))
+        normalized_urls = {
+            re.sub(r"[?#].*$", "", value).rstrip("/")
+            for value in _event_urls(offer)
+        }
+        shared_source = sorted(normalized_urls & central_sources)
+        start = _text(offer.get("applyStart"))
+        end = _text(offer.get("applyEnd"))
+        if "アップグレード" not in ticket_type or not shared_source or not start or not end:
+            collapsed.append(offer)
+            continue
+        marker = (ticket_type, start, end, _text(offer.get("resultDate")), shared_source[0])
+        if marker not in mirror_index:
+            mirror_index[marker] = len(collapsed)
+            collapsed.append(offer)
+            continue
+        index = mirror_index[marker]
+        previous = collapsed[index]
+        merged = deepcopy(previous)
+        merged["urls"] = _unique_strings([*_event_urls(previous), *_event_urls(offer)])
+        for field, value in offer.items():
+            if merged.get(field) in (None, "", [], {}) and value not in (None, "", [], {}):
+                merged[field] = deepcopy(value)
+        collapsed[index] = merged
+    return collapsed
+
+
 def _base_score(event: dict[str, Any]) -> tuple[int, int, int, int, str]:
     source_type = _text(event.get("sourceType")).casefold()
     primary = _text(event.get("primarySource")).casefold()
@@ -624,6 +680,11 @@ def _canonical_entity(key: str, records: list[dict[str, Any]]) -> dict[str, Any]
                 seen_offers.add(marker)
 
     offers = _collapse_official_fc_aliases(offers)
+    offers = _collapse_verified_christmas_upgrade_mirrors(
+        offers,
+        base.get("eventTitle") or base.get("displayTitle") or base.get("title"),
+        day,
+    )
 
     for field in TOP_LEVEL_TICKET_FIELDS:
         base.pop(field, None)

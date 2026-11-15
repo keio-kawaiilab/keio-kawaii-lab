@@ -217,6 +217,42 @@ class PerformanceEntitiesTest(unittest.TestCase):
         self.assertEqual(8, len(event["sourceRowIds"]))
         self.assertEqual(1, len(event["offers"]))
 
+    def test_christmas_second_upgrade_group_articles_are_one_show_and_one_offer(self):
+        central = "https://kawaiilab.asobisystem.com/news/detail/95985"
+        article_urls = {
+            "FRUITS ZIPPER": "https://fruitszipper.asobisystem.com/news/detail/95999",
+            "CANDY TUNE": "https://candytune.asobisystem.com/news/detail/96000",
+            "SWEET STEADY": "https://sweetsteady.asobisystem.com/news/detail/96001",
+            "CUTIE STREET": "https://cutiestreet.asobisystem.com/news/detail/96002",
+            "MORE STAR": "https://morestar.asobisystem.com/news/detail/96004",
+        }
+        rows = []
+        for index, (group, article) in enumerate(article_urls.items(), start=1):
+            application = f"https://w.pia.jp/v/kls-xmas26-2upg{index}/?_normalbrowse_=1"
+            rows.append({
+                "id": f"second-{index}", "group": group,
+                "title": "2026.11.12 KAWAII LAB. Christmas SESSION 2026 アップグレード2次抽選受付",
+                "eventDate": "2026-12-12", "venue": "有明アリーナ",
+                "openTime": "15:00", "startTime": "17:00",
+                "ticketType": "アップグレード抽選",
+                "applyStart": "2026-11-12T18:00", "applyEnd": "2026-11-19T23:59",
+                "url": application, "urls": [application, article, central],
+                "primarySource": "official", "eventScope": "kawaii-lab",
+            })
+
+        public, _ = build_public_events(rows)
+
+        self.assertEqual(1, len(public))
+        event = public[0]
+        self.assertEqual("KAWAII LAB.合同", event["group"])
+        self.assertEqual(set(article_urls), set(event["participants"]) & set(article_urls))
+        self.assertEqual(set(article_urls.values()) | {central},
+                         (set(event["urls"]) & (set(article_urls.values()) | {central})))
+        self.assertEqual(1, len(event["offers"]))
+        for index in range(1, 6):
+            self.assertTrue(any(f"kls-xmas26-2upg{index}" in url
+                                for url in event["offers"][0]["urls"]))
+
     def test_christmas_unknown_source_date_and_distinct_start_are_not_forced(self):
         original = self.christmas_fixture()[0]
         unknown = dict(original, id="unknown", group="CUTIE STREET", url="https://cutiestreet.asobisystem.com/news/detail/99999")
