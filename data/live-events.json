@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-16T08:31:37+09:00",
+  "checkedAt": "2026-11-16T08:35:45+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-11-16T08:09:21+09:00",
     "scannedPages": {
@@ -6544,7 +6544,7 @@
   },
   "renderWarnings": [
     {
-      "checkedAt": "2026-11-16T08:31:37+09:00",
+      "checkedAt": "2026-11-16T08:35:45+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one CANDY TUNE tour performance for 2026-10-04 OPEN 16:30 / START 17:30, found 0"
     }
@@ -19483,7 +19483,7 @@
       }
     ]
   },
-  "updatedAt": "2026-11-16T08:31:37+09:00",
+  "updatedAt": "2026-11-16T08:35:45+09:00",
   "publicEvents": [
     {
       "id": "fa421e6fd8955232",
@@ -19908,10 +19908,10 @@
       "startTime": "14:00",
       "url": "https://tgc.girlswalker.com/toyama/2026/ticket/",
       "urls": [
-        "https://tgc.girlswalker.com/toyama/2026/ticket/",
         "https://candytune.asobisystem.com/live_information/detail/44995",
         "https://sweetsteady.asobisystem.com/live_information/detail/44463",
-        "https://morestar.asobisystem.com/live_information/detail/45675"
+        "https://morestar.asobisystem.com/live_information/detail/45675",
+        "https://tgc.girlswalker.com/toyama/2026/ticket/"
       ],
       "sourceType": "official-schedule",
       "primarySource": "official",
@@ -19958,12 +19958,16 @@
           "sourceChannel": "known-official-correction"
         }
       ],
+      "ticketType": "追加販売（先着）",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers",
       "sourceRowIds": [
         "ecdd86be6e667177",
         "26d0069375101fa4"
       ],
       "mergedPublicEventIds": [
-        "performance-external-tgc-toyama-2026-2026-11-21-14-00-ykkaparena"
+        "ecdd86be6e667177",
+        "26d0069375101fa4"
       ],
       "displayTitle": "TGC TOYAMA 2026 by TOKYO GIRLS COLLECTION",
       "participants": [
@@ -19971,10 +19975,7 @@
         "SWEET STEADY",
         "MORE STAR"
       ],
-      "performanceKey": "external|tgc-toyama-2026|2026-11-21|14:00|ykkaparena",
-      "ticketType": "追加販売（先着）",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "performanceKey": "external|tgc-toyama-2026|2026-11-21|14:00|ykkaparena"
     },
     {
       "id": "6de23ca08e7c06b7",
@@ -20111,20 +20112,20 @@
           "sourceObservedAt": "2026-11-16T07:16:23+09:00"
         }
       ],
+      "ticketType": "先着 ★一般発売",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers",
       "sourceRowIds": [
         "baac3381c93d98a3"
       ],
       "mergedPublicEventIds": [
-        "performance-external-chikappa-2026-2026-11-23-11-00-b"
+        "baac3381c93d98a3"
       ],
       "displayTitle": "ちかっぱ祭2026",
       "participants": [
         "MORE STAR"
       ],
-      "performanceKey": "external|chikappa-2026|2026-11-23|11:00|マリンメッセ福岡b館",
-      "ticketType": "先着 ★一般発売",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "performanceKey": "external|chikappa-2026|2026-11-23|11:00|マリンメッセ福岡b館"
     },
     {
       "id": "performance-external-gift-idol-2026-2026-11-27-18-00-sgc",
@@ -20139,9 +20140,9 @@
       "venue": "東京都 SGCホール有明",
       "url": "https://www.gift-idol.jp/outline.html",
       "urls": [
-        "https://www.gift-idol.jp/outline.html",
         "https://fruitszipper.asobisystem.com/live_information/detail/44009",
-        "https://cutiestreet.asobisystem.com/live_information/detail/43800"
+        "https://cutiestreet.asobisystem.com/live_information/detail/43800",
+        "https://www.gift-idol.jp/outline.html"
       ],
       "sourceType": "official-schedule",
       "primarySource": "official",
@@ -20172,17 +20173,17 @@
         }
       ],
       "offers": [],
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none",
       "sourceRowIds": [
         "a7b325c43cc6c33e"
       ],
       "mergedPublicEventIds": [
-        "performance-external-gift-idol-2026-2026-11-27-18-00-sgc"
+        "a7b325c43cc6c33e"
       ],
       "displayTitle": "GIFT ～Girls Idol Festival Tokyo～ supported by ABEMA",
-      "performanceKey": "external|gift-idol-2026|2026-11-27|18:00|sgcホール有明",
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
+      "performanceKey": "external|gift-idol-2026|2026-11-27|18:00|sgcホール有明"
     },
     {
       "id": "performance-external-gift-idol-2026-2026-11-28-13-00-sgc-toyotaarenatokyo",
@@ -20213,10 +20214,10 @@
       ],
       "url": "https://www.gift-idol.jp/outline.html",
       "urls": [
-        "https://www.gift-idol.jp/outline.html",
         "https://www.gift-idol.jp/",
         "https://candytune.asobisystem.com/live_information/detail/45190",
-        "https://morestar.asobisystem.com/live_information/detail/47367"
+        "https://morestar.asobisystem.com/live_information/detail/47367",
+        "https://www.gift-idol.jp/outline.html"
       ],
       "officialScheduleUrl": "https://candytune.asobisystem.com/live_information/detail/45190",
       "sourceType": "official-organizer",
@@ -20238,17 +20239,18 @@
       "entityType": "performance",
       "performanceEntityVersion": 1,
       "offers": [],
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none",
       "sourceRowIds": [
         "known-gift-more-star-20261128",
         "c0a088d3e52c2c19"
       ],
       "mergedPublicEventIds": [
-        "performance-external-gift-idol-2026-2026-11-28-13-00-sgc-toyotaarenatokyo"
+        "known-gift-more-star-20261128",
+        "c0a088d3e52c2c19"
       ],
-      "performanceKey": "external|gift-idol-2026|2026-11-28|13:00|複数会場sgcホール有明toyotaarenatokyo",
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
+      "performanceKey": "external|gift-idol-2026|2026-11-28|13:00|複数会場sgcホール有明toyotaarenatokyo"
     },
     {
       "id": "performance-external-gift-idol-2026-2026-11-29-13-00-sgc-toyotaarenatokyo",
@@ -20260,10 +20262,10 @@
       "startTime": "13:00",
       "url": "https://www.gift-idol.jp/outline.html",
       "urls": [
-        "https://www.gift-idol.jp/outline.html",
         "https://fruitszipper.asobisystem.com/live_information/detail/44010",
         "https://sweetsteady.asobisystem.com/live_information/detail/44466",
-        "https://www.gift-idol.jp/"
+        "https://www.gift-idol.jp/",
+        "https://www.gift-idol.jp/outline.html"
       ],
       "sourceType": "official-schedule",
       "primarySource": "official",
@@ -20298,22 +20300,23 @@
       "performanceEntityVersion": 1,
       "openTime": "11:30",
       "offers": [],
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none",
       "sourceRowIds": [
         "6ee46d3223139c1c",
         "10ef61196272f561"
       ],
       "mergedPublicEventIds": [
-        "performance-external-gift-idol-2026-2026-11-29-13-00-sgc-toyotaarenatokyo"
+        "6ee46d3223139c1c",
+        "10ef61196272f561"
       ],
       "displayTitle": "GIFT ～Girls Idol Festival Tokyo～ supported by ABEMA",
       "participants": [
         "FRUITS ZIPPER",
         "SWEET STEADY"
       ],
-      "performanceKey": "external|gift-idol-2026|2026-11-29|13:00|複数会場sgcホール有明toyotaarenatokyo",
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
+      "performanceKey": "external|gift-idol-2026|2026-11-29|13:00|複数会場sgcホール有明toyotaarenatokyo"
     },
     {
       "id": "198b1371e4c6edcc",
@@ -20540,9 +20543,9 @@
         "official"
       ],
       "urls": [
-        "https://ticketdive.com/event/1210_ssuggoi_8th_lovez",
         "https://kawaiilab.asobisystem.com/live_information/detail/47375",
-        "https://morestar.asobisystem.com/live_information/detail/47350"
+        "https://morestar.asobisystem.com/live_information/detail/47350",
+        "https://ticketdive.com/event/1210_ssuggoi_8th_lovez"
       ],
       "officialScheduleUrl": "https://kawaiilab.asobisystem.com/live_information/detail/47375",
       "discoverySource": "kawaii-lab-official-schedule",
@@ -20585,18 +20588,19 @@
           "sourcePublishedAt": "2026-12-10"
         }
       ],
+      "ticketType": "チケット受付",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers",
       "sourceRowIds": [
         "2262486ffd2bf72fb94111",
         "5d9deb04397064c2"
       ],
       "mergedPublicEventIds": [
-        "performance-external-ssuggoi-8th-2026-2026-12-10-12-15-lovez"
+        "2262486ffd2bf72fb94111",
+        "5d9deb04397064c2"
       ],
       "displayTitle": "ッスッゴイライブ -8th Anniversary SP-",
-      "performanceKey": "external|ssuggoi-8th-2026|2026-12-10|12:15|渋谷lovez",
-      "ticketType": "チケット受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "performanceKey": "external|ssuggoi-8th-2026|2026-12-10|12:15|渋谷lovez"
     },
     {
       "id": "9c0b5c0e71a48ccc",
@@ -20682,14 +20686,14 @@
       "startTime": "18:00",
       "url": "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2671791",
       "urls": [
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2671791",
         "https://w.pia.jp/t/charityconcert2027/",
         "https://fruitszipper.asobisystem.com/live_information/detail/46305",
         "https://candytune.asobisystem.com/live_information/detail/46043",
         "https://fruitszipper.asobisystem.com/news/detail/93365",
         "https://candytune.asobisystem.com/news/detail/92301",
         "https://fruitszipper.asobisystem.com/news/detail/92309",
-        "https://sweetsteady.asobisystem.com/live_information/detail/47118"
+        "https://sweetsteady.asobisystem.com/live_information/detail/47118",
+        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2671791"
       ],
       "sourceType": "derived",
       "sourcePublishedAt": "2026-10-19",
@@ -20727,19 +20731,20 @@
         }
       ],
       "offers": [],
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none",
       "sourceRowIds": [
         "fcc5896f4bf2d09b",
         "f106024bbdc2e3b9"
       ],
       "mergedPublicEventIds": [
-        "performance-external-disaster-relief-concert-2027-2027-01-19-18-00"
+        "fcc5896f4bf2d09b",
+        "f106024bbdc2e3b9"
       ],
       "eventTitle": "災害支援基金コンサート",
       "displayTitle": "災害支援基金コンサート",
-      "performanceKey": "external|disaster-relief-concert-2027|2027-01-19|18:00|日本武道館",
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
+      "performanceKey": "external|disaster-relief-concert-2027|2027-01-19|18:00|日本武道館"
     },
     {
       "id": "64e109f5224038c6",
