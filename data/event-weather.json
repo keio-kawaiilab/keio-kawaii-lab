@@ -1,7 +1,7 @@
 {
   "date": "2026-11-16",
   "horizonDays": 7,
-  "generatedAt": "2026-11-16T05:20+09:00",
+  "generatedAt": "2026-11-16T06:21+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -78,6 +78,11 @@
           "time": "19:00",
           "rain": false,
           "validAt": "2026-11-16T19:00+09:00"
+        },
+        {
+          "time": "20:00",
+          "rain": false,
+          "validAt": "2026-11-16T20:00+09:00"
         }
       ]
     },
@@ -310,19 +315,29 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 33,
-    "uniqueVenueDates": 14,
+    "occurrencesInRange": 35,
+    "uniqueVenueDates": 16,
     "weatherEntries": 7,
     "meshEntries": 3,
-    "failures": 7,
+    "failures": 9,
     "meshTimelineEntries": 3,
     "meshExactTempSlots": 20,
     "hourlyRainEntries": 1
   },
   "failures": [
     {
+      "date": "2026-11-16",
+      "venue": "オンライン（SUKISUKI）",
+      "reason": "都道府県を解決できません"
+    },
+    {
       "date": "2026-11-17",
       "venue": "Zepp Shinjuku",
+      "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-11-17",
+      "venue": "オンライン（SUKISUKI）",
       "reason": "都道府県を解決できません"
     },
     {
