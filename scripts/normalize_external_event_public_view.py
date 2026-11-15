@@ -19,6 +19,9 @@ KAWACOLLE_FAMILY = "kawacolle-tgc"
 LIVE_OR_TREAT_FAMILY = "fm-osaka-live-or-treat-2026"
 TGC_TOYAMA_FAMILY = "tgc-toyama-2026"
 CHIKAPPA_2026_FAMILY = "chikappa-2026"
+GIFT_2026_FAMILY = "gift-idol-2026"
+SSUGGOI_2026_FAMILY = "ssuggoi-8th-2026"
+DISASTER_RELIEF_2027_FAMILY = "disaster-relief-concert-2027"
 
 KAWACOLLE_RE = re.compile(r"(?:KAWAII\s*LAB\.?\s*)?COLLECTION\s+produced\s+by\s+TGC", re.I)
 LIVE_OR_TREAT_RE = re.compile(r"FM(?:大阪|\s*OSAKA).*Live\s*or\s*Treat\s*2026", re.I)
@@ -26,6 +29,9 @@ TGC_TOYAMA_RE = re.compile(
     r"(?:TGC\s+TOYAMA\s+2026|TOKYO\s+GIRLS\s+COLLECTION\s+富山\s+2026)", re.I
 )
 CHIKAPPA_2026_RE = re.compile(r"ちかっぱ祭\s*2026", re.I)
+GIFT_2026_RE = re.compile(r"GIFT\s*[〜~～-]*\s*Girls\s+Idol\s+Festival\s+Tokyo", re.I)
+SSUGGOI_2026_RE = re.compile(r"ッスッゴイライブ\s*-?\s*8th\s+Anniv(?:ersary|arsry)\s+SP", re.I)
+DISASTER_RELIEF_2027_RE = re.compile(r"(?:日本)?災害支援基金\s*コンサート", re.I)
 ANNOUNCEMENT_RE = re.compile(r"開催決定|出演決定|受付開始|抽選受付|お知らせ", re.I)
 
 FAMILY_PROVENANCE = {
@@ -48,6 +54,21 @@ FAMILY_PROVENANCE = {
         "correctionId": "P2-external-chikappa-2026",
         "sourceUrl": "https://morestar.asobisystem.com/live_information/detail/45676",
         "organizer": "株式会社おはなみ",
+    },
+    GIFT_2026_FAMILY: {
+        "correctionId": "P2-external-gift-idol-2026",
+        "sourceUrl": "https://www.gift-idol.jp/outline.html",
+        "organizer": "テレビ朝日",
+    },
+    SSUGGOI_2026_FAMILY: {
+        "correctionId": "P2-external-ssuggoi-8th-2026",
+        "sourceUrl": "https://ticketdive.com/event/1210_ssuggoi_8th_lovez",
+        "organizer": "ッスッゴイ株式会社",
+    },
+    DISASTER_RELIEF_2027_FAMILY: {
+        "correctionId": "P2-external-disaster-relief-concert-2027",
+        "sourceUrl": "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2671791",
+        "organizer": "災害支援基金 実行委員会",
     },
 }
 
@@ -83,6 +104,12 @@ def _family(event: dict[str, Any]) -> str:
         return TGC_TOYAMA_FAMILY
     if CHIKAPPA_2026_RE.search(text):
         return CHIKAPPA_2026_FAMILY
+    if GIFT_2026_RE.search(text):
+        return GIFT_2026_FAMILY
+    if SSUGGOI_2026_RE.search(text):
+        return SSUGGOI_2026_FAMILY
+    if DISASTER_RELIEF_2027_RE.search(text):
+        return DISASTER_RELIEF_2027_FAMILY
     return ""
 
 
@@ -129,6 +156,9 @@ def _candidate_titles(rows: list[dict[str, Any]], family: str) -> list[str]:
         LIVE_OR_TREAT_FAMILY: LIVE_OR_TREAT_RE,
         TGC_TOYAMA_FAMILY: TGC_TOYAMA_RE,
         CHIKAPPA_2026_FAMILY: CHIKAPPA_2026_RE,
+        GIFT_2026_FAMILY: GIFT_2026_RE,
+        SSUGGOI_2026_FAMILY: SSUGGOI_2026_RE,
+        DISASTER_RELIEF_2027_FAMILY: DISASTER_RELIEF_2027_RE,
     }[family]
     for row in rows:
         for field in ("eventTitle", "displayTitle", "title"):
@@ -146,6 +176,12 @@ def _canonical_title(rows: list[dict[str, Any]], family: str) -> str:
         return "TGC TOYAMA 2026 by TOKYO GIRLS COLLECTION"
     if family == CHIKAPPA_2026_FAMILY:
         return "ちかっぱ祭2026"
+    if family == GIFT_2026_FAMILY:
+        return "GIFT ～Girls Idol Festival Tokyo～ supported by ABEMA"
+    if family == SSUGGOI_2026_FAMILY:
+        return "ッスッゴイライブ -8th Anniversary SP-"
+    if family == DISASTER_RELIEF_2027_FAMILY:
+        return "災害支援基金コンサート"
 
     def score(value: str) -> tuple[int, int, int]:
         full_name = 0
@@ -269,6 +305,26 @@ def _merge_family_rows(rows: list[dict[str, Any]], family: str) -> dict[str, Any
                 "primarySource": "official",
                 "sourceChannel": "known-official-correction",
             })
+    elif family == GIFT_2026_FAMILY:
+        facts = {
+            "2026-11-27": ("17:00", "18:00", "東京都 SGCホール有明"),
+            "2026-11-28": ("11:30", "13:00", "複数会場（SGCホール有明・TOYOTA ARENA TOKYO）"),
+            "2026-11-29": ("11:30", "13:00", "複数会場（SGCホール有明・TOYOTA ARENA TOKYO）"),
+        }
+        if day in facts:
+            opened, start, venue = facts[day]
+    elif family == SSUGGOI_2026_FAMILY:
+        day = "2026-12-10"
+        opened = "11:30"
+        start = "12:15"
+        venue = "東京都 渋谷LOVEZ"
+        participants = ["MORE STAR"]
+    elif family == DISASTER_RELIEF_2027_FAMILY:
+        day = "2027-01-19"
+        opened = "17:00"
+        start = "18:00"
+        venue = "東京都 日本武道館"
+        participants = ["FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY"]
 
     source_ids = _merge_unique(
         [
@@ -327,6 +383,11 @@ def _merge_family_rows(rows: list[dict[str, Any]], family: str) -> dict[str, Any
             if preferred not in urls:
                 urls.append(preferred)
                 base["urls"] = urls
+        if family in {GIFT_2026_FAMILY, SSUGGOI_2026_FAMILY, DISASTER_RELIEF_2027_FAMILY}:
+            preferred = provenance["sourceUrl"]
+            if preferred not in urls:
+                urls.append(preferred)
+                base["urls"] = urls
         base["url"] = preferred or urls[0]
 
     if title:
@@ -334,8 +395,11 @@ def _merge_family_rows(rows: list[dict[str, Any]], family: str) -> dict[str, Any
         base["eventTitle"] = title
         base["displayTitle"] = title
 
-    if family in {KAWACOLLE_FAMILY, TGC_TOYAMA_FAMILY, CHIKAPPA_2026_FAMILY}:
+    if family in {KAWACOLLE_FAMILY, TGC_TOYAMA_FAMILY, CHIKAPPA_2026_FAMILY, GIFT_2026_FAMILY, DISASTER_RELIEF_2027_FAMILY}:
         base["group"] = "KAWAII LAB.合同"
+        base["participants"] = participants
+    elif family == SSUGGOI_2026_FAMILY:
+        base["group"] = "MORE STAR"
         base["participants"] = participants
     elif participants:
         base["participants"] = participants

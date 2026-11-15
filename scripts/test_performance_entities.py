@@ -13,6 +13,91 @@ from normalize_external_event_public_view import normalize_public_events
 
 
 class PerformanceEntitiesTest(unittest.TestCase):
+    def test_verified_gift_group_rows_collapse_by_official_day(self):
+        candy = {
+            "id": "gift-candy", "group": "CANDY TUNE",
+            "title": "GIFT 〜Girls Idol Festival Tokyo〜",
+            "eventDate": "2026-11-28", "venue": "SGCホール有明・TOYOTA ARENA TOKYO",
+            "openTime": "11:30", "startTime": "13:00", "eventScope": "external",
+            "url": "https://candytune.asobisystem.com/live_information/detail/45190",
+        }
+        more = {
+            "id": "gift-more", "group": "MORE STAR",
+            "title": "GIFT〜Girls Idol Festival Tokyo〜 DAY2",
+            "eventDate": "2026-11-28", "venue": "複数会場（SGCホール有明・TOYOTA ARENA TOKYO）",
+            "openTime": "11:30", "startTime": "13:00", "eventScope": "external",
+            "url": "https://morestar.asobisystem.com/live_information/detail/47367",
+        }
+
+        normalized, report = normalize_public_events([candy, more])
+
+        self.assertEqual(1, len(normalized))
+        self.assertEqual(1, report["publicRowsCollapsed"])
+        event = normalized[0]
+        self.assertEqual("KAWAII LAB.合同", event["group"])
+        self.assertEqual(["CANDY TUNE", "MORE STAR"], event["participants"])
+        self.assertEqual(("11:30", "13:00"), (event["openTime"], event["startTime"]))
+        self.assertEqual("https://www.gift-idol.jp/outline.html", event["url"])
+
+    def test_verified_ssuggoi_rows_collapse_and_repair_start_time(self):
+        central = {
+            "id": "ssuggoi-central", "group": "KAWAII LAB.",
+            "participants": ["KAWAII LAB."],
+            "title": "ッスッゴイライブ -8th Anniversary SP-@渋谷LOVEZ",
+            "eventDate": "2026-12-10", "venue": "東京都 渋谷LOVEZ",
+            "openTime": "11:30", "startTime": "11:30", "eventScope": "external",
+            "ticketType": "チケット受付", "applyStart": "2026-11-09T21:00",
+            "applyEnd": "2026-12-09T23:59",
+            "url": "https://kawaiilab.asobisystem.com/live_information/detail/47375",
+        }
+        more = {
+            "id": "ssuggoi-more", "group": "MORE STAR",
+            "title": "ッスッゴイライブ-8th Annivarsry SP-",
+            "eventDate": "2026-12-10", "venue": "東京都 渋谷LOVEZ",
+            "openTime": "11:30", "startTime": "12:15", "eventScope": "external",
+            "url": "https://morestar.asobisystem.com/live_information/detail/47350",
+        }
+
+        normalized, report = normalize_public_events([central, more])
+
+        self.assertEqual(1, len(normalized))
+        self.assertEqual(1, report["publicRowsCollapsed"])
+        event = normalized[0]
+        self.assertEqual("MORE STAR", event["group"])
+        self.assertEqual(["MORE STAR"], event["participants"])
+        self.assertEqual(("11:30", "12:15"), (event["openTime"], event["startTime"]))
+        self.assertEqual("https://ticketdive.com/event/1210_ssuggoi_8th_lovez", event["url"])
+        self.assertEqual(1, len(event["offers"]))
+
+    def test_verified_disaster_relief_rows_collapse_and_repair_time(self):
+        joint = {
+            "id": "relief-joint", "group": "KAWAII LAB.合同",
+            "participants": ["FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY"],
+            "title": "災害支援基金コンサート", "eventDate": "2027-01-19",
+            "venue": "東京都 日本武道館", "openTime": "17:00", "startTime": "18:00",
+            "eventScope": "external", "url": "https://w.pia.jp/t/charityconcert2027/",
+        }
+        sweet = {
+            "id": "relief-sweet", "group": "SWEET STEADY",
+            "title": "『日本災害支援基金 コンサート』", "eventDate": "2027-01-19",
+            "venue": "東京都 日本武道館", "openTime": "17:00", "startTime": "17:00",
+            "eventScope": "external",
+            "url": "https://sweetsteady.asobisystem.com/live_information/detail/47118",
+        }
+
+        normalized, report = normalize_public_events([joint, sweet])
+
+        self.assertEqual(1, len(normalized))
+        self.assertEqual(1, report["publicRowsCollapsed"])
+        event = normalized[0]
+        self.assertEqual("KAWAII LAB.合同", event["group"])
+        self.assertEqual(["FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY"], event["participants"])
+        self.assertEqual(("17:00", "18:00"), (event["openTime"], event["startTime"]))
+        self.assertEqual(
+            "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2671791",
+            event["url"],
+        )
+
     def test_yonago_vendor_venue_aliases_merge_into_one_performance(self):
         eplus = {
             "id": "eplus", "group": "CANDY TUNE", "title": "CANDY TUNE",
