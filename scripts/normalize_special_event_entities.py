@@ -31,6 +31,13 @@ SALE_URL_RE = re.compile(
 )
 
 
+def event_category(event: dict) -> str:
+    """Return the local canonical category, including online benefit rows."""
+    if str(event.get("eventCategory") or "").lower() == "online-benefit":
+        return "online-benefit"
+    return category(event)
+
+
 def compact(value: object) -> str:
     return re.sub(r"[\s　・･·|｜!！?？\-–—_()（）\[\]【】『』「」]+", "", text(value)).casefold()
 
@@ -365,6 +372,41 @@ def compatible_benefit(a: dict, b: dict) -> bool:
     return any(not venue for _, venue in left) or any(not venue for _, venue in right)
 
 
+def compatible_online_sales(a: dict, b: dict) -> bool:
+    """Merge sale rounds only when they identify the exact same stream.
+
+    SUKISUKI publishes a new goods URL for an additional/first-come sale of an
+    existing online benefit stream.  Those URLs are separate offers, not
+    separate event cards.  Keep this deliberately stricter than the physical
+    special-event matcher: title, group, day, start time and online venue must
+    all be present and identical.  This preserves genuinely different member
+    sessions and never guesses from a generic online venue alone.
+    """
+    if event_category(a) != "online-benefit" or event_category(b) != "online-benefit":
+        return False
+    if text(a.get("group")) != text(b.get("group")):
+        return False
+    title = normalized_series_title(a)
+    if not title or title != normalized_series_title(b):
+        return False
+    left_rows, right_rows = schedule_rows(a), schedule_rows(b)
+    if len(left_rows) != 1 or len(right_rows) != 1:
+        return False
+    left, right = left_rows[0], right_rows[0]
+    left_day, right_day = str(left.get("date") or "")[:10], str(right.get("date") or "")[:10]
+    left_time = text(left.get("startTime") or a.get("startTime"))
+    right_time = text(right.get("startTime") or b.get("startTime"))
+    left_venue = venue_key(left.get("venue") or a.get("venue"))
+    right_venue = venue_key(right.get("venue") or b.get("venue"))
+    return bool(
+        left_day and left_day == right_day
+        and left_time and left_time == right_time
+        and left_venue and left_venue == right_venue
+        and "オンライン" in text(left.get("venue") or a.get("venue"))
+        and "オンライン" in text(right.get("venue") or b.get("venue"))
+    )
+
+
 def components(items: list[dict], related) -> list[list[dict]]:
     remaining = list(items)
     output: list[list[dict]] = []
@@ -467,7 +509,7 @@ def canonical_key(items: list[dict], schedule: list[dict]) -> str:
     first = items[0]
     participants = participant_groups(items)
     group = "/".join(participants) if participants else text(first.get("group"))
-    cat = category(first)
+    cat = event_category(first)
     title = normalized_series_title(first)
     if cat == "large-benefit" and len(participants) > 1:
         title = "joint-large-benefit"
@@ -482,6 +524,9 @@ def canonical_key(items: list[dict], schedule: list[dict]) -> str:
     # Include the physical occurrence in every special-event canonical id.
     if cat == "release-event":
         return "|".join((group, cat, title, product, day, venue))
+    if cat == "online-benefit":
+        start = text(occurrence.get("startTime") or first.get("startTime"))
+        return "|".join((group, cat, title, day, start, venue))
     return "|".join((group, cat, title, day, venue))
 
 
@@ -609,7 +654,7 @@ def make_entity(items: list[dict]) -> dict:
     entity["sourceRowIds"] = source_row_ids
     offers = drop_redundant_generic_offers(offers)
     entity["offers"] = offers
-    entity["eventCategory"] = category(representative)
+    entity["eventCategory"] = event_category(representative)
     participants = participant_groups(items)
     if len(participants) > 1:
         entity["group"] = "KAWAII LAB.合同"
@@ -662,6 +707,7 @@ def normalize_events(events: list[dict]) -> tuple[list[dict], dict]:
     ordinary = []
     releases = []
     benefits = []
+    online = []
     already_canonical = 0
     expanded_events = [
         occurrence
@@ -669,8 +715,10 @@ def normalize_events(events: list[dict]) -> tuple[list[dict], dict]:
         for occurrence in explode_schedule_only_benefit_series(copy.deepcopy(raw))
     ]
     for event in expanded_events:
-        cat = category(event)
-        if cat not in SPECIAL_CATEGORIES:
+        cat = event_category(event)
+        if cat == "online-benefit":
+            online.append(event)
+        elif cat not in SPECIAL_CATEGORIES:
             ordinary.append(event)
         elif cat == "release-event":
             releases.append(event)
@@ -683,11 +731,16 @@ def normalize_events(events: list[dict]) -> tuple[list[dict], dict]:
     benefit_components = components(benefits, compatible_benefit)
     all_components = release_components + benefit_components
     entities = [make_entity(component) for component in all_components]
+    online_components = components(online, compatible_online_sales)
+    online_entities = [
+        make_entity(component) if len(component) > 1 else component[0]
+        for component in online_components
+    ]
     internal_schedule_rows_collapsed = sum(
         max(0, len(merge_schedules(component)) - len(entity.get("schedule") or []))
         for component, entity in zip(all_components, entities)
     )
-    result = ordinary + entities
+    result = ordinary + entities + online_entities
     result.sort(key=lambda event: (
         str(event.get("eventDate") or "9999-12-31"),
         str(event.get("group") or ""),
@@ -701,6 +754,8 @@ def normalize_events(events: list[dict]) -> tuple[list[dict], dict]:
         "rowsCollapsed": max(0, source_special_rows - len(entities)),
         "releaseEventEntities": len(release_components),
         "largeBenefitEntities": len(benefit_components),
+        "onlineBenefitEntities": len(online_components),
+        "onlineSaleRowsCollapsed": sum(max(0, len(component) - 1) for component in online_components),
         "alreadyCanonicalRows": already_canonical,
         "internalScheduleRowsCollapsed": internal_schedule_rows_collapsed,
     }

@@ -55,6 +55,70 @@ class SpecialEventEntityTests(unittest.TestCase):
             result, _ = normalize_payload({"events": rows})
             self.assertEqual(3, len(result["events"]))
 
+    def test_same_online_stream_different_sale_rounds_becomes_one_card(self):
+        payload = {"events": [
+            {
+                "id": "lottery",
+                "group": "FRUITS ZIPPER",
+                "title": "月足天音 生誕 オンライン特典会",
+                "eventCategory": "online-benefit",
+                "eventDate": "2026-11-17",
+                "startTime": "18:00",
+                "venue": "オンライン（SUKISUKI）",
+                "ticketType": "オンライン特典会・抽選販売",
+                "applyStart": "2026-11-10T18:00",
+                "applyEnd": "2026-11-11T23:59",
+                "url": "https://sukisuki-shop.com/goods/6500000005471",
+                "sourceType": "sukisuki",
+            },
+            {
+                "id": "first-come",
+                "group": "FRUITS ZIPPER",
+                "title": "月足天音 生誕 オンライン特典会",
+                "eventCategory": "online-benefit",
+                "eventDate": "2026-11-17",
+                "startTime": "18:00",
+                "venue": "オンライン（SUKISUKI）",
+                "ticketType": "オンライン特典会・先着販売",
+                "applyStart": "2026-11-15T17:00",
+                "applyEnd": "2026-11-17T18:00",
+                "url": "https://sukisuki-shop.com/goods/6500000005472",
+                "sourceType": "sukisuki",
+            },
+        ]}
+
+        normalized, report = normalize_payload(payload)
+
+        self.assertEqual(1, len(normalized["events"]))
+        event = normalized["events"][0]
+        self.assertEqual("special-event", event["entityType"])
+        self.assertEqual(2, len(event["offers"]))
+        self.assertEqual({"lottery", "first-come"}, set(event["sourceRowIds"]))
+        self.assertEqual(1, report["onlineSaleRowsCollapsed"])
+        again, _ = normalize_payload(normalized)
+        self.assertEqual(normalized["events"], again["events"])
+
+    def test_online_streams_with_different_start_times_remain_separate(self):
+        rows = [
+            {
+                "id": "early", "group": "MORE STAR", "title": "MORE STAR オンライン特典会",
+                "eventCategory": "online-benefit", "eventDate": "2026-11-16", "startTime": "18:00",
+                "venue": "オンライン（SUKISUKI）", "applyEnd": "2026-11-15T23:59",
+                "url": "https://sukisuki-shop.com/goods/1", "sourceType": "sukisuki",
+            },
+            {
+                "id": "late", "group": "MORE STAR", "title": "MORE STAR オンライン特典会",
+                "eventCategory": "online-benefit", "eventDate": "2026-11-16", "startTime": "20:00",
+                "venue": "オンライン（SUKISUKI）", "applyEnd": "2026-11-15T23:59",
+                "url": "https://sukisuki-shop.com/goods/2", "sourceType": "sukisuki",
+            },
+        ]
+
+        normalized, _ = normalize_payload({"events": rows})
+
+        self.assertEqual(2, len(normalized["events"]))
+        self.assertEqual({"early", "late"}, {event["id"] for event in normalized["events"]})
+
     def test_duplicate_ordinary_id_same_logical_row_collapses_before_publication(self):
         payload = {"events": [
             {
