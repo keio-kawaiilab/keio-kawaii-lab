@@ -302,7 +302,20 @@ def enrich_existing(event: dict, row: OfficialRow, detail: dict) -> None:
     event["officialScheduleUrl"] = row.url
     current_title = normalize_space(event.get("eventTitle") or event.get("title"))
     source = str(event.get("sourceType") or event.get("primarySource") or "").lower()
-    if source in PLAYGUIDE_SOURCES or GENERIC_TITLE_RE.fullmatch(current_title):
+    # Retailer product pages can expose a clipped campaign title (for example
+    # "/18日 MORE STAR オンライン特典会").  Once the matching official
+    # SCHEDULE detail has been fetched, its heading is the authoritative event
+    # name.  Limit this override to online benefit rows so distinct live or
+    # physical event titles are never broadened accidentally.
+    if (
+        source in PLAYGUIDE_SOURCES
+        or GENERIC_TITLE_RE.fullmatch(current_title)
+        or (
+            special_event_category(row.title) == "online-benefit"
+            and source == "sukisuki"
+            and detail.get("title")
+        )
+    ):
         event["title"] = detail.get("title") or row.title
         event["eventTitle"] = event["title"]
     special_category = special_event_category(row.title)
@@ -389,6 +402,27 @@ def build_event(rows: list[OfficialRow], detail: dict) -> dict:
     return {key: value for key, value in event.items() if value is not None}
 
 
+def needs_official_detail(row: OfficialRow, event: dict) -> bool:
+    """Return whether the official detail can safely enrich a matched row."""
+    source = str(event.get("sourceType") or event.get("primarySource") or "").lower()
+    current_title = normalize_space(event.get("eventTitle") or event.get("title"))
+    single_performance = len(event_days(event)) == 1
+    special_category = special_event_category(row.title)
+    return (
+        source in PLAYGUIDE_SOURCES
+        or bool(GENERIC_TITLE_RE.fullmatch(current_title))
+        or not event.get("venue")
+        or (special_category == "online-benefit" and source == "sukisuki")
+        # Retailer snapshots can call a physical benefit event online; fetch
+        # the official detail so the canonical occurrence can correct it.
+        or (
+            special_category == "large-benefit"
+            and "オンライン" in normalize_space(event.get("venue"))
+        )
+        or (single_performance and not (event.get("openTime") and event.get("startTime")))
+    )
+
+
 def collapse_missing(rows: list[OfficialRow]) -> list[list[OfficialRow]]:
     buckets: dict[tuple[str, str, str], list[OfficialRow]] = {}
     for row in rows:
@@ -458,20 +492,7 @@ def merge(payload: dict, rows: list[OfficialRow], session: requests.Session) -> 
     for row in rows:
         matched = match_existing(row, events)
         if matched:
-            source = str(matched.get("sourceType") or matched.get("primarySource") or "").lower()
-            current_title = normalize_space(matched.get("eventTitle") or matched.get("title"))
-            single_performance = len(event_days(matched)) == 1
-            needs_detail = (
-                source in PLAYGUIDE_SOURCES
-                or bool(GENERIC_TITLE_RE.fullmatch(current_title))
-                or not matched.get("venue")
-                or (
-                    special_event_category(row.title) == "large-benefit"
-                    and "オンライン" in normalize_space(matched.get("venue"))
-                )
-                or (single_performance and not (matched.get("openTime") and matched.get("startTime")))
-            )
-            enrich_existing(matched, row, detail(row) if needs_detail else {})
+            enrich_existing(matched, row, detail(row) if needs_official_detail(row, matched) else {})
             row.represented_by = str(matched.get("id") or "")
         else:
             missing.append(row)

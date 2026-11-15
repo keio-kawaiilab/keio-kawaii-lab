@@ -42,6 +42,22 @@ class PhysicalBenefitSession:
         ''')
 
 
+class OnlineBenefitSession:
+    def __init__(self):
+        self.calls = 0
+
+    def get(self, _url, timeout=25):
+        self.calls += 1
+        return DummyResponse('''
+        <div class="block--title"><p class="tit">☀️Dreamy衣装💫 オンライン特典会</p></div>
+        <ul class="block--liveinfo">
+          <li><p class="item-tit">公演日</p><p class="item-detail">2026.11.16</p></li>
+          <li><p class="item-tit">開催場所・会場</p><p class="item-detail">MORE STAR YouTube</p></li>
+        </ul>
+        <div>START 18:00</div>
+        ''')
+
+
 class OfficialScheduleTests(unittest.TestCase):
     def test_list_parses_only_live_and_event(self):
         html = '''<a href="/live_information/detail/1"><span class="block--date__month">09</span><span class="block--date__date">20</span><p class="category">EVENT</p><p class="tit">IDOL RUNWAY COLLECTION</p></a>
@@ -223,6 +239,34 @@ class OfficialScheduleTests(unittest.TestCase):
         self.assertEqual(1, session.calls)
         self.assertEqual("インテックス大阪", merged["events"][0]["venue"])
         self.assertEqual("インテックス大阪", merged["events"][0]["schedule"][0]["venue"])
+
+    def test_online_retailer_title_is_replaced_by_official_detail_heading(self):
+        event = {
+            "id": "special-more-star-online",
+            "sourceType": "sukisuki",
+            "primarySource": "sukisuki",
+            "group": "MORE STAR",
+            "title": "/18日 MORE STAR オンライン特典会",
+            "eventDate": "2026-11-16",
+            "eventCategory": "online-benefit",
+            "startTime": "18:00",
+            "venue": "オンライン（SUKISUKI）",
+            "url": "https://sukisuki-shop.com/goods/6500000005430",
+        }
+        row = OfficialRow(
+            "MORE STAR", "2026-11-16", "EVENT",
+            "/18日 MORE STAR オンライン特典会",
+            "https://morestar.asobisystem.com/live_information/detail/47369",
+            "kawaii-lab",
+        )
+        session = OnlineBenefitSession()
+
+        merged, _diagnostics = merge({"events": [event]}, [row], session)
+
+        self.assertEqual(1, session.calls)
+        self.assertEqual("☀️Dreamy衣装💫 オンライン特典会", merged["events"][0]["title"])
+        self.assertEqual(merged["events"][0]["title"], merged["events"][0]["eventTitle"])
+        self.assertEqual(row.url, merged["events"][0]["officialScheduleUrl"])
 
     def test_unmatched_official_schedule_row_is_automatically_added(self):
         row = OfficialRow(
