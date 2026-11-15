@@ -1514,6 +1514,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "sweetWinterTicketFactsFixed": 0,
         "sweetWinterPresaleOffersAdded": 0,
         "sweetWinterPresale2OffersAdded": 0,
+        "sweetWinterIncompletePresaleRowsRemoved": 0,
         "candyOitaEplusLinkFixed": 0,
         "candyNiigataVenueFixed": 0,
         "candyTokyoPresaleAdded": 0,
@@ -1953,6 +1954,22 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
     sweet_winter_title = "SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle"
     sweet_winter_atsugi_venue = "神奈川県 厚木市文化会館 大ホール"
     if any(event.get("group") == "SWEET STEADY" and sweet_winter in _urls(event) for event in out):
+        # A retained Pia fallback once represented the 2nd pre-reserve as one
+        # multi-date row with no verified start.  Its first occurrence time was
+        # then copied onto every date, creating a false 18:30 Aichi performance
+        # beside the official 17:00 show.  Exact per-occurrence rows below
+        # already preserve this same verified deadline, so discard only this
+        # incomplete duplicate shape.
+        before_incomplete_presale = len(out)
+        out = [event for event in out if not (
+            event.get("group") == "SWEET STEADY"
+            and event.get("ticketType") == "プレリザーブ2次"
+            and event.get("applyStart") in (None, "")
+            and event.get("applyEnd") == "2026-11-15T23:59"
+            and sweet_winter_presale in _urls(event)
+            and len(event.get("eventDates") or []) > 1
+        )]
+        report["sweetWinterIncompletePresaleRowsRemoved"] += before_incomplete_presale - len(out)
         # Earlier backfills used the building name while the official
         # performance row includes its hall suffix.  They are the same
         # occurrence; keep the verified official venue spelling so the offer
@@ -1994,6 +2011,53 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
             if venue_changed:
                 report["sweetWinterUpgradeOffersFixed"] += 1
             if venue_changed or ticket_changed:
+                report["sweetWinterTicketFactsFixed"] += 1
+
+        # The group and central resale notices list the performance date and
+        # reception window, but omit the performance time.  A date-only row is
+        # otherwise emitted as a second public performance beside the verified
+        # tour occurrence.  Attach every official Snow Sparkle resale row to
+        # the exact occurrence before semantic resale deduplication.
+        sweet_winter_occurrences = {
+            "2026-11-13": (sweet_winter_atsugi_venue, "17:30", "18:30"),
+            "2026-12-03": ("大阪府 フェニーチェ堺 大ホール", "17:30", "18:30"),
+            "2026-12-06": ("愛知県 Niterra日本特殊陶業市民会館フォレストホール", "16:00", "17:00"),
+            "2026-12-18": ("東京都 SGC HALL ARIAKE", "17:00", "18:30"),
+        }
+        for event in out:
+            day = _day(event)
+            if not (
+                event.get("group") == "SWEET STEADY"
+                and "リセール" in str(event.get("ticketType") or "")
+                and day in sweet_winter_occurrences
+                and "Snow Sparkle" in str(event.get("title") or event.get("eventTitle") or "")
+            ):
+                continue
+            venue, opened, start = sweet_winter_occurrences[day]
+            changed = any((
+                event.get("eventTitle") != sweet_winter_title,
+                event.get("venue") != venue,
+                event.get("openTime") != opened,
+                event.get("startTime") != start,
+                event.get("ticketProvider") != "resale",
+                event.get("saleFamily") != "resale",
+                event.get("schedule") != [{"date": day, "venue": venue,
+                                           "openTime": opened, "startTime": start}],
+            ))
+            event.update({
+                "eventTitle": sweet_winter_title,
+                "venue": venue,
+                "openTime": opened,
+                "startTime": start,
+                "ticketProvider": "resale",
+                "saleFamily": "resale",
+                "eventEndDate": day,
+                "eventDates": [day],
+                "eventCount": 1,
+                "schedule": [{"date": day, "venue": venue,
+                              "openTime": opened, "startTime": start}],
+            })
+            if changed:
                 report["sweetWinterTicketFactsFixed"] += 1
         for day, venue, opened, start in (
             ("2026-11-13", sweet_winter_atsugi_venue, "17:30", "18:30"),
