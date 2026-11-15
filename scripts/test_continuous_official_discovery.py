@@ -542,7 +542,19 @@ class ContinuousDiscoveryTests(unittest.TestCase):
             def __enter__(self): return self
             def __exit__(self,*args): return None
             def get(self,*args,**kwargs): return Response()
-        with patch.object(discovery.requests, "Session", return_value=Session()):
+        class FixedDateTime(datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return cls(2026, 10, 16, tzinfo=tz)
+
+        # Keep this parser regression independent of the wall clock. The
+        # fixture intentionally represents an upcoming Nov 15 performance;
+        # after that real date it must not turn into a test for past-event
+        # filtering instead.
+        with (
+            patch.object(discovery.requests, "Session", return_value=Session()),
+            patch.object(discovery, "datetime", FixedDateTime),
+        ):
             rows, pending, status=discovery.read_candidate(candidate, {"events":[]}, {})
         self.assertEqual("parsed",status,(pending,rows))
         self.assertIsNone(pending)
