@@ -1,7 +1,7 @@
 {
   "date": "2026-11-16",
   "horizonDays": 7,
-  "generatedAt": "2026-11-16T13:46+09:00",
+  "generatedAt": "2026-11-16T19:07+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -13,36 +13,25 @@
       "venueKey": "zepphanedatokyo",
       "eventIds": [
         "0d134acb77728d86",
-        "4a780e2203866490"
+        "4a780e2203866490",
+        "b6d02be7ede30d0e"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "mesh5km",
       "label": "くもり",
-      "max": 20.0,
-      "min": 20.0,
+      "max": null,
+      "min": null,
       "pop": "10",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-11-16T11:00:00+09:00",
-      "meshTime": "18:00",
-      "meshTempBand": "15〜19℃",
+      "issuedAt": "2026-11-16T17:00:00+09:00",
+      "meshTime": "21:00",
+      "meshTempBand": "10〜14℃",
       "coordinates": {
         "lat": 35.547756,
         "lon": 139.753922
       },
       "meshTimeline": [
-        {
-          "time": "15:00",
-          "label": "晴れ",
-          "validAt": "2026-11-16T15:00+09:00",
-          "temp": 18
-        },
-        {
-          "time": "18:00",
-          "label": "くもり",
-          "validAt": "2026-11-16T18:00+09:00",
-          "temp": 15
-        },
         {
           "time": "21:00",
           "label": "くもり",
@@ -54,6 +43,18 @@
           "label": "くもり",
           "validAt": "2026-11-17T00:00+09:00",
           "temp": 14
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "17:30",
+          "rain": false,
+          "validAt": "2026-11-16T17:30+09:00"
+        },
+        {
+          "time": "18:30",
+          "rain": false,
+          "validAt": "2026-11-16T18:30+09:00"
         }
       ]
     },
@@ -70,9 +71,9 @@
       "label": "雨",
       "max": 13.0,
       "min": 11.0,
-      "pop": "70",
+      "pop": "80",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-11-16T11:00:00+09:00",
+      "issuedAt": "2026-11-16T17:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "10〜14℃",
       "coordinates": {
@@ -100,7 +101,7 @@
         },
         {
           "time": "15:00",
-          "label": "くもり",
+          "label": "雨",
           "validAt": "2026-11-17T15:00+09:00",
           "temp": 13
         },
@@ -108,13 +109,13 @@
           "time": "18:00",
           "label": "雨",
           "validAt": "2026-11-17T18:00+09:00",
-          "temp": 13
+          "temp": 12
         },
         {
           "time": "21:00",
           "label": "雨",
           "validAt": "2026-11-17T21:00+09:00",
-          "temp": 12
+          "temp": 11
         },
         {
           "time": "24:00",
@@ -133,20 +134,20 @@
         "de97c75c56f09ae2",
         "0e965c081582cf5e",
         "1c5ecb0518b883f3",
+        "25de2c25f94a4a88",
         "3dd00d4d78b68a7b",
         "7904ec8144bca2b3",
-        "a7827b50bb58076d",
-        "e4387cb595e46a06"
+        "ac1228324b5a2910"
       ],
       "areaCode": "150010",
       "areaName": "下越",
       "precision": "mesh5km",
       "label": "くもり",
-      "max": 14.0,
-      "min": 7.0,
-      "pop": "40",
+      "max": 15.0,
+      "min": 8.0,
+      "pop": "50",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-11-16T11:00:00+09:00",
+      "issuedAt": "2026-11-16T17:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "10〜14℃",
       "coordinates": {
@@ -170,7 +171,7 @@
           "time": "12:00",
           "label": "くもり",
           "validAt": "2026-11-17T12:00+09:00",
-          "temp": 13
+          "temp": 14
         },
         {
           "time": "15:00",
@@ -182,7 +183,7 @@
           "time": "18:00",
           "label": "くもり",
           "validAt": "2026-11-17T18:00+09:00",
-          "temp": 13
+          "temp": 14
         },
         {
           "time": "21:00",
@@ -192,9 +193,9 @@
         },
         {
           "time": "24:00",
-          "label": "くもり",
+          "label": "雨",
           "validAt": "2026-11-18T00:00+09:00",
-          "temp": 11
+          "temp": 10
         }
       ]
     },
@@ -208,12 +209,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "雨 後 くもり",
+      "label": "くもり 一時 雨",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
-      "issuedAt": "2026-11-16T11:00:00+09:00",
+      "issuedAt": "2026-11-16T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -226,11 +227,11 @@
         "f641c49b15d0f20a",
         "de97c75c56f09ae2",
         "1c5ecb0518b883f3",
-        "e4387cb595e46a06",
         "0fb464260791e1c0",
-        "352df9989cd30cd8",
         "3c8de7c838bb83ac",
-        "4921fa8e120fadab"
+        "4921fa8e120fadab",
+        "86b08500885a073b",
+        "ac1228324b5a2910"
       ],
       "areaCode": "170010",
       "areaName": "石川県",
@@ -240,7 +241,7 @@
       "min": 6.0,
       "pop": "70",
       "popLabel": "1日",
-      "issuedAt": "2026-11-16T11:00:00+09:00",
+      "issuedAt": "2026-11-16T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -261,7 +262,7 @@
       "min": 4.0,
       "pop": "70",
       "popLabel": "1日",
-      "issuedAt": "2026-11-16T11:00:00+09:00",
+      "issuedAt": "2026-11-16T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -281,7 +282,7 @@
       "min": 5.0,
       "pop": "20",
       "popLabel": "1日",
-      "issuedAt": "2026-11-16T11:00:00+09:00",
+      "issuedAt": "2026-11-16T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -304,7 +305,7 @@
       "min": 8.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-11-16T11:00:00+09:00",
+      "issuedAt": "2026-11-16T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -324,21 +325,21 @@
       "min": 8.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-11-16T11:00:00+09:00",
+      "issuedAt": "2026-11-16T17:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
     }
   ],
   "stats": {
-    "occurrencesInRange": 37,
+    "occurrencesInRange": 39,
     "uniqueVenueDates": 16,
     "weatherEntries": 9,
     "meshEntries": 3,
     "failures": 7,
     "meshTimelineEntries": 3,
-    "meshExactTempSlots": 18,
-    "hourlyRainEntries": 0
+    "meshExactTempSlots": 16,
+    "hourlyRainEntries": 1
   },
   "failures": [
     {
