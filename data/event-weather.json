@@ -1,7 +1,7 @@
 {
   "date": "2026-11-16",
   "horizonDays": 7,
-  "generatedAt": "2026-11-16T09:19+09:00",
+  "generatedAt": "2026-11-16T13:41+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -19,11 +19,11 @@
       "areaName": "東京地方",
       "precision": "mesh5km",
       "label": "くもり",
-      "max": 19.0,
-      "min": 19.0,
+      "max": 20.0,
+      "min": 20.0,
       "pop": "10",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-11-16T05:00:00+09:00",
+      "issuedAt": "2026-11-16T11:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "15〜19℃",
       "coordinates": {
@@ -32,22 +32,10 @@
       },
       "meshTimeline": [
         {
-          "time": "09:00",
-          "label": "晴れ",
-          "validAt": "2026-11-16T09:00+09:00",
-          "temp": 16
-        },
-        {
-          "time": "12:00",
-          "label": "晴れ",
-          "validAt": "2026-11-16T12:00+09:00",
-          "temp": 18
-        },
-        {
           "time": "15:00",
           "label": "晴れ",
           "validAt": "2026-11-16T15:00+09:00",
-          "temp": 17
+          "temp": 18
         },
         {
           "time": "18:00",
@@ -67,23 +55,6 @@
           "validAt": "2026-11-17T00:00+09:00",
           "temp": 14
         }
-      ],
-      "hourlyRain": [
-        {
-          "time": "18:00",
-          "rain": false,
-          "validAt": "2026-11-16T18:00+09:00"
-        },
-        {
-          "time": "19:00",
-          "rain": false,
-          "validAt": "2026-11-16T19:00+09:00"
-        },
-        {
-          "time": "20:00",
-          "rain": false,
-          "validAt": "2026-11-16T20:00+09:00"
-        }
       ]
     },
     {
@@ -101,7 +72,7 @@
       "min": 11.0,
       "pop": "70",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-11-16T05:00:00+09:00",
+      "issuedAt": "2026-11-16T11:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "10〜14℃",
       "coordinates": {
@@ -125,7 +96,7 @@
           "time": "12:00",
           "label": "くもり",
           "validAt": "2026-11-17T12:00+09:00",
-          "temp": 13
+          "temp": 14
         },
         {
           "time": "15:00",
@@ -164,7 +135,8 @@
         "1c5ecb0518b883f3",
         "3dd00d4d78b68a7b",
         "7904ec8144bca2b3",
-        "a7827b50bb58076d"
+        "a7827b50bb58076d",
+        "e4387cb595e46a06"
       ],
       "areaCode": "150010",
       "areaName": "下越",
@@ -174,7 +146,7 @@
       "min": 7.0,
       "pop": "40",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-11-16T05:00:00+09:00",
+      "issuedAt": "2026-11-16T11:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "10〜14℃",
       "coordinates": {
@@ -236,12 +208,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "くもり時々雨",
-      "max": 17.0,
-      "min": 9.0,
-      "pop": "70",
-      "popLabel": "1日",
-      "issuedAt": "2026-11-15T17:00:00+09:00",
+      "label": "雨 後 くもり",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-11-16T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -254,20 +226,21 @@
         "f641c49b15d0f20a",
         "de97c75c56f09ae2",
         "1c5ecb0518b883f3",
+        "e4387cb595e46a06",
         "0fb464260791e1c0",
+        "352df9989cd30cd8",
         "3c8de7c838bb83ac",
-        "4921fa8e120fadab",
-        "74d97051a5834775"
+        "4921fa8e120fadab"
       ],
       "areaCode": "170010",
       "areaName": "石川県",
       "precision": "area",
       "label": "くもり時々雨",
-      "max": 14.0,
+      "max": 15.0,
       "min": 6.0,
       "pop": "70",
       "popLabel": "1日",
-      "issuedAt": "2026-11-15T17:00:00+09:00",
+      "issuedAt": "2026-11-16T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -284,30 +257,98 @@
       "areaName": "富山県",
       "precision": "area",
       "label": "くもり",
-      "max": 7.0,
+      "max": 8.0,
       "min": 4.0,
       "pop": "70",
       "popLabel": "1日",
-      "issuedAt": "2026-11-15T17:00:00+09:00",
+      "issuedAt": "2026-11-16T11:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-11-22",
+      "venue": "東京都 ステラボール",
+      "venueKey": "ステラボール",
+      "eventIds": [
+        "593ec53a5d74ac13"
+      ],
+      "areaCode": "130010",
+      "areaName": "東京地方",
+      "precision": "area",
+      "label": "晴れ時々くもり",
+      "max": 14.0,
+      "min": 5.0,
+      "pop": "20",
+      "popLabel": "1日",
+      "issuedAt": "2026-11-16T11:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-11-23",
+      "venue": "マリンメッセ福岡B館",
+      "venueKey": "マリンメッセ福岡b館",
+      "eventIds": [
+        "2c117f3728ce3c02",
+        "4919495adeca9a4c",
+        "8a40af447079424c",
+        "baac3381c93d98a3"
+      ],
+      "areaCode": "400010",
+      "areaName": "福岡県",
+      "precision": "area",
+      "label": "くもり時々晴れ",
+      "max": 18.0,
+      "min": 8.0,
+      "pop": "30",
+      "popLabel": "1日",
+      "issuedAt": "2026-11-16T11:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-11-23",
+      "venue": "福岡・マリンメッセ福岡B館",
+      "venueKey": "福岡マリンメッセ福岡b館",
+      "eventIds": [
+        "cfbbfe7a4e136b4a"
+      ],
+      "areaCode": "400010",
+      "areaName": "福岡県",
+      "precision": "area",
+      "label": "くもり時々晴れ",
+      "max": 18.0,
+      "min": 8.0,
+      "pop": "30",
+      "popLabel": "1日",
+      "issuedAt": "2026-11-16T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
     }
   ],
   "stats": {
-    "occurrencesInRange": 32,
-    "uniqueVenueDates": 13,
-    "weatherEntries": 6,
+    "occurrencesInRange": 37,
+    "uniqueVenueDates": 16,
+    "weatherEntries": 9,
     "meshEntries": 3,
     "failures": 7,
     "meshTimelineEntries": 3,
-    "meshExactTempSlots": 20,
-    "hourlyRainEntries": 1
+    "meshExactTempSlots": 18,
+    "hourlyRainEntries": 0
   },
   "failures": [
     {
       "date": "2026-11-16",
       "venue": "オンライン（SUKISUKI）",
+      "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-11-17",
+      "venue": "Zepp Shinjuku",
       "reason": "都道府県を解決できません"
     },
     {
@@ -334,11 +375,6 @@
       "date": "2026-11-23",
       "venue": "アクセスサッポロ",
       "reason": "都道府県を解決できません"
-    },
-    {
-      "date": "2026-11-23",
-      "venue": "マリンメッセ福岡B館",
-      "reason": "開催日の予報がまだありません"
     }
   ]
 }
