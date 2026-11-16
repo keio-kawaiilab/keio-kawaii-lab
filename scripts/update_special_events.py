@@ -481,6 +481,8 @@ def parse_page(group: str, url: str, html_text: str, now: datetime | None = None
             ticket_name = (
                 "事前抽選会（S賞／A賞）"
                 if is_advance_purchase_lottery else
+                "メンバー個別プリントチェキお渡し会参加券"
+                if "メンバー個別プリントチェキお渡し会参加券" in full_text else
                 "メンバー個別2ショットチェキ撮影会参加券" if "2ショットチェキ" in full_text else "大特典会参加券"
             )
             issue_method = (

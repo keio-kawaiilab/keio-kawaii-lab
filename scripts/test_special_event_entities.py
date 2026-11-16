@@ -404,15 +404,20 @@ class SpecialEventEntityTests(unittest.TestCase):
             "applicationStatus": "none", "sourceType": "official-special",
         }
         older = {
-            **base, "id": "older", "sourcePublishedAt": "2026-11-04",
+            **base, "id": "older", "sourcePublishedAt": "2026-11-14",
+            "entityType": "special-event",
+            "_expandedSpecialEntity": True,
             "url": "https://cutiestreet.asobisystem.com/news/detail/95083",
+            "discoverySourceUrl": "https://cutiestreet.asobisystem.com/news/detail/96353",
             "purchaseMethod": "旧受付方法",
+            "ticketName": "メンバー個別2ショットチェキ撮影会参加券",
             "parts": [{"part": "第3部", "content": "チェキ", "start": "12:50"}],
         }
         newer = {
             **base, "id": "newer", "sourcePublishedAt": "2026-11-14",
             "url": "https://cutiestreet.asobisystem.com/news/detail/96353",
             "purchaseMethod": "最新受付方法",
+            "ticketName": "メンバー個別プリントチェキお渡し会参加券",
             "parts": [{"part": "第3部", "content": "チェキ", "start": "13:20"}],
         }
 
@@ -421,6 +426,8 @@ class SpecialEventEntityTests(unittest.TestCase):
         self.assertEqual(1, len(normalized["events"]))
         event = normalized["events"][0]
         self.assertEqual("最新受付方法", event["purchaseMethod"])
+        self.assertEqual("メンバー個別プリントチェキお渡し会参加券", event["ticketName"])
+        self.assertEqual("https://cutiestreet.asobisystem.com/news/detail/96353", event["url"])
         self.assertEqual([{"part": "第3部", "content": "チェキ", "start": "13:20"}], event["parts"])
 
     def test_multiday_benefit_placeholder_merges_only_matching_detail_day(self):

@@ -226,6 +226,32 @@ class SpecialEventTests(unittest.TestCase):
         self.assertEqual(event["parts"][0]["receptionStart"], "09:45")
         self.assertIn("参加権", event["purchaseMethod"])
 
+    def test_general_print_cheki_sale_does_not_inherit_fc_2shot_ticket_name(self):
+        html = """
+        <html><head><title>CUTIE STREET大特典会</title></head><body>
+        <h1>12/6(日) CUTIE STREET 大特典会</h1><p>2026.11.14</p>
+        <p>■開催日程</p><p>2026年12月6日(日)</p>
+        <p>■開催会場</p><p>インテックス大阪 3号館</p>
+        <p>&lt;第1部&gt; 2ショットチェキ撮影会 10:00〜11:00 (受付開始9:45／受付終了10:40)</p>
+        <p>&lt;第2部&gt; プリントチェキお渡し会 11:20〜12:20 (受付開始11:05／受付終了12:00)</p>
+        <p>イベント参加対象商品 1次受付：11月16日(月)18:00～11月18日(水)23:59</p>
+        <p>メンバー個別プリントチェキお渡し会参加券付き対象商品</p>
+        <a href="https://tower.jp/article/feature_item/2026/11/11/0703">タワーレコード</a>
+        </body></html>
+        """
+        events = s.parse_page(
+            "CUTIE STREET",
+            "https://cutiestreet.asobisystem.com/news/detail/96353",
+            html,
+            datetime(2026, 11, 16, tzinfo=JST),
+        )
+
+        self.assertEqual(1, len(events))
+        self.assertEqual(
+            "メンバー個別プリントチェキお渡し会参加券",
+            events[0]["ticketName"],
+        )
+
     def test_styled_venue_suffix_and_payment_deadline_are_preserved(self):
         html = """
         <html><head><title>CUTIE STREET大特典会</title></head><body>

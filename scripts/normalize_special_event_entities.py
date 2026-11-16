@@ -267,6 +267,9 @@ def offer_key(offer: dict) -> tuple:
 def offer_score(offer: dict, parent: dict) -> tuple:
     """Prefer the offer carried by the richer, authoritative event row."""
     return (
+        text(parent.get("sourcePublishedAt")),
+        not parent.get("_expandedSpecialEntity"),
+        parent.get("entityType") != "special-event",
         richness(parent),
         sum(value not in (None, "", [], {}) for value in offer.values()),
         len(all_urls(offer)),
@@ -495,6 +498,8 @@ def merge_list_fields(entity: dict, items: list[dict]) -> None:
                     key=lambda item: (
                         bool(official_source_urls(item)),
                         text(item.get("sourcePublishedAt")),
+                        not item.get("_expandedSpecialEntity"),
+                        item.get("entityType") != "special-event",
                         richness(item),
                     ),
                 )
@@ -599,6 +604,8 @@ def make_entity(items: list[dict]) -> dict:
         key=lambda item: (
             bool(official_source_urls(item)),
             text(item.get("sourcePublishedAt")),
+            not item.get("_expandedSpecialEntity"),
+            item.get("entityType") != "special-event",
             richness(item),
         ),
     )
@@ -670,7 +677,19 @@ def make_entity(items: list[dict]) -> dict:
         entity["venues"] = venues
         entity["venue"] = venues[0] if len(venues) == 1 else f"複数会場（全{len(schedule)}公演）"
     entity["urls"] = source_urls
-    official = next((u for u in source_urls if "asobisystem.com" in u), None) or next(
+    representative_url = next(
+        (
+            text(representative.get(field))
+            for field in ("discoverySourceUrl", "applicationWindowSource", "deadlineSource", "url")
+            if "asobisystem.com" in text(representative.get(field))
+        ),
+        "",
+    )
+    official = (
+        representative_url
+        if "asobisystem.com" in representative_url
+        else next((u for u in source_urls if "asobisystem.com" in u), None)
+    ) or next(
         (u for u in source_urls if re.search(r"https://x\.com/[^/]+/status/\d+", u, re.I)), None
     )
     if official:
@@ -700,6 +719,9 @@ def make_entity(items: list[dict]) -> dict:
         for field in ("sourceStale", "sourceStaleSince", "releaseRetentionReason"):
             entity.pop(field, None)
     entity["offers"] = [correct_physical_benefit_offer_label(entity, offer) for offer in offers]
+    entity.pop("_expandedSpecialEntity", None)
+    for offer in entity["offers"]:
+        offer.pop("_expandedSpecialEntity", None)
     return entity
 
 

@@ -32,6 +32,7 @@ def expand_entity(event: dict) -> list[dict]:
     parent["ticketType"] = "現在受付なし"
     parent["applicationStatus"] = "none"
     parent["applicationDisplayMode"] = "schedule-only"
+    parent["_expandedSpecialEntity"] = True
     for field in ("ticketProvider", "applyStart", "applyEnd", "resultDate", "paymentEnd", "applicationWindowVerified"):
         parent.pop(field, None)
 
@@ -49,6 +50,7 @@ def expand_entity(event: dict) -> list[dict]:
         # "no reception" and silently drop it.
         row.pop("applicationStatus", None)
         row["applicationDisplayMode"] = "sale"
+        row["_expandedSpecialEntity"] = True
         for key, value in offer.items():
             if key in {"sourceRowId", "provider"}:
                 continue
