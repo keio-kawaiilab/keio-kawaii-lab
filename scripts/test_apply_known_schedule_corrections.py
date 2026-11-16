@@ -13,6 +13,8 @@ from apply_known_schedule_corrections import (
     MORE_STAR_7TH_FC,
     MORE_STAR_7TH_NEWS,
     MORE_STAR_7TH_SCHEDULE,
+    MORE_STAR_DREAMY_ONLINE_SCHEDULE,
+    MORE_STAR_DREAMY_ONLINE_TITLE,
     MORE_STAR_PACIFICO_HMV,
     MORE_STAR_PACIFICO_NEWS,
     MORE_STAR_PACIFICO_SCHEDULE,
@@ -25,6 +27,25 @@ from apply_known_schedule_corrections import (
 
 
 class KnownScheduleCorrectionsTest(unittest.TestCase):
+    def test_more_star_dreamy_online_clipped_retailer_title_is_repaired(self):
+        stale = {
+            "id": "special-c87bd8d1f175d457",
+            "group": "MORE STAR",
+            "title": "/18日 MORE STAR オンライン特典会",
+            "eventDate": "2026-11-16",
+            "eventCategory": "online-benefit",
+            "officialScheduleUrl": MORE_STAR_DREAMY_ONLINE_SCHEDULE,
+            "url": "https://sukisuki-shop.com/goods/6500000005430",
+        }
+        corrected, report = apply_known_corrections([stale])
+        self.assertEqual(MORE_STAR_DREAMY_ONLINE_TITLE, corrected[0]["title"])
+        self.assertEqual(MORE_STAR_DREAMY_ONLINE_TITLE, corrected[0]["eventTitle"])
+        self.assertEqual(1, report["moreStarDreamyOnlineTitleFixed"])
+
+        again, second_report = apply_known_corrections(corrected)
+        self.assertEqual(corrected, again)
+        self.assertEqual(0, second_report["moreStarDreamyOnlineTitleFixed"])
+
     def test_cutie_fukuoka_door_exchange_sales_are_one_offer_per_date(self):
         tour = {
             "id": "fukuoka-tour", "group": "CUTIE STREET",

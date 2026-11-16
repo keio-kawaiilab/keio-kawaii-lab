@@ -25,6 +25,9 @@ MORE_STAR_7TH_DAY = "2026-11-25"
 MORE_STAR_7TH_SCHEDULE = "https://morestar.asobisystem.com/live_information/detail/45677"
 MORE_STAR_7TH_NEWS = "https://morestar.asobisystem.com/news/detail/92107"
 MORE_STAR_7TH_FC = "https://kawaiilab.asobisystem.com/news/detail/93036"
+MORE_STAR_DREAMY_ONLINE_DAY = "2026-11-16"
+MORE_STAR_DREAMY_ONLINE_SCHEDULE = "https://morestar.asobisystem.com/live_information/detail/47369"
+MORE_STAR_DREAMY_ONLINE_TITLE = "☀️Dreamy衣装💫 オンライン特典会"
 DISASTER_RELIEF_NEWS = "https://fruitszipper.asobisystem.com/news/detail/93365"
 DISASTER_RELIEF_PIA = "https://w.pia.jp/t/charityconcert2027/"
 CANDY_ONLINE_20261020_DAY = "2026-10-20"
@@ -109,6 +112,24 @@ def _urls(event: dict) -> list[str]:
 
 def _day(event: dict) -> str:
     return str(event.get("eventDate") or "")[:10]
+
+
+def _repair_more_star_dreamy_online_title(event: dict) -> dict:
+    """Restore the official heading after a clipped retailer title wins merge."""
+    if not (
+        event.get("group") == "MORE STAR"
+        and _day(event) == MORE_STAR_DREAMY_ONLINE_DAY
+        and event.get("eventCategory") == "online-benefit"
+        and (
+            event.get("officialScheduleUrl") == MORE_STAR_DREAMY_ONLINE_SCHEDULE
+            or MORE_STAR_DREAMY_ONLINE_SCHEDULE in _urls(event)
+        )
+    ):
+        return deepcopy(event)
+    out = deepcopy(event)
+    out["title"] = MORE_STAR_DREAMY_ONLINE_TITLE
+    out["eventTitle"] = MORE_STAR_DREAMY_ONLINE_TITLE
+    return out
 
 
 def _repair_sweet_idol_halloween_sale(event: dict) -> dict:
@@ -1537,6 +1558,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "giftMultiVenueFixed": 0,
         "giftMoreStarAdded": 0,
         "moreStarSeventhFixed": 0,
+        "moreStarDreamyOnlineTitleFixed": 0,
         "moreStarSeventhFcOfferAdded": 0,
         "disasterReliefConcertFixed": 0,
         "disasterReliefConcertRowsCollapsed": 0,
@@ -1574,6 +1596,10 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         current = repair_cutie_upgrade_reception(event)
         if current != event:
             report["cutieUpgradeReceptionFixed"] += 1
+        before_dreamy_title = current
+        current = _repair_more_star_dreamy_online_title(current)
+        if current != before_dreamy_title:
+            report["moreStarDreamyOnlineTitleFixed"] += 1
         before_title_upgrade = current
         current = repair_title_declared_upgrade_reception(current)
         if current != before_title_upgrade:
