@@ -1,7 +1,7 @@
 {
   "date": "2026-11-17",
   "horizonDays": 7,
-  "generatedAt": "2026-11-17T08:43+09:00",
+  "generatedAt": "2026-11-17T12:06+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -19,10 +19,10 @@
       "precision": "mesh5km",
       "label": "雨",
       "max": 15.0,
-      "min": 14.0,
+      "min": 13.0,
       "pop": "100",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-11-17T05:00:00+09:00",
+      "issuedAt": "2026-11-17T11:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "10〜14℃",
       "coordinates": {
@@ -30,18 +30,6 @@
         "lon": 139.753922
       },
       "meshTimeline": [
-        {
-          "time": "09:00",
-          "label": "雨",
-          "validAt": "2026-11-17T09:00+09:00",
-          "temp": 14
-        },
-        {
-          "time": "12:00",
-          "label": "くもり",
-          "validAt": "2026-11-17T12:00+09:00",
-          "temp": 14
-        },
         {
           "time": "15:00",
           "label": "雨",
@@ -58,7 +46,7 @@
           "time": "21:00",
           "label": "雨",
           "validAt": "2026-11-17T21:00+09:00",
-          "temp": 12
+          "temp": 11
         },
         {
           "time": "24:00",
@@ -68,11 +56,6 @@
         }
       ],
       "hourlyRain": [
-        {
-          "time": "18:00",
-          "rain": true,
-          "validAt": "2026-11-17T18:00+09:00"
-        },
         {
           "time": "19:00",
           "rain": true,
@@ -105,7 +88,7 @@
       "min": 15.0,
       "pop": "70",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-11-17T08:00:00+09:00",
+      "issuedAt": "2026-11-17T11:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "10〜14℃",
       "coordinates": {
@@ -113,18 +96,6 @@
         "lon": 139.035461
       },
       "meshTimeline": [
-        {
-          "time": "09:00",
-          "label": "くもり",
-          "validAt": "2026-11-17T09:00+09:00",
-          "temp": 11
-        },
-        {
-          "time": "12:00",
-          "label": "くもり",
-          "validAt": "2026-11-17T12:00+09:00",
-          "temp": 15
-        },
         {
           "time": "15:00",
           "label": "くもり",
@@ -135,7 +106,7 @@
           "time": "18:00",
           "label": "くもり",
           "validAt": "2026-11-17T18:00+09:00",
-          "temp": 13
+          "temp": 12
         },
         {
           "time": "21:00",
@@ -147,15 +118,10 @@
           "time": "24:00",
           "label": "雨",
           "validAt": "2026-11-18T00:00+09:00",
-          "temp": 12
+          "temp": 11
         }
       ],
       "hourlyRain": [
-        {
-          "time": "18:00",
-          "rain": false,
-          "validAt": "2026-11-17T18:00+09:00"
-        },
         {
           "time": "19:00",
           "rain": false,
@@ -183,7 +149,7 @@
       "min": 9.0,
       "pop": "70",
       "popLabel": "当日最大",
-      "issuedAt": "2026-11-17T05:00:00+09:00",
+      "issuedAt": "2026-11-17T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -202,14 +168,14 @@
         "86b08500885a073b"
       ],
       "areaCode": "170010",
-      "areaName": "石川県",
+      "areaName": "加賀",
       "precision": "area",
-      "label": "くもり時々雨",
-      "max": 15.0,
-      "min": 6.0,
-      "pop": "70",
-      "popLabel": "1日",
-      "issuedAt": "2026-11-16T17:00:00+09:00",
+      "label": "雨 時々 くもり",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-11-17T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -228,29 +194,9 @@
       "label": "くもり",
       "max": 8.0,
       "min": 4.0,
-      "pop": "70",
+      "pop": "80",
       "popLabel": "1日",
-      "issuedAt": "2026-11-16T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
-    {
-      "date": "2026-11-22",
-      "venue": "東京都 ステラボール",
-      "venueKey": "ステラボール",
-      "eventIds": [
-        "593ec53a5d74ac13"
-      ],
-      "areaCode": "130010",
-      "areaName": "東京地方",
-      "precision": "area",
-      "label": "晴れ時々くもり",
-      "max": 14.0,
-      "min": 5.0,
-      "pop": "20",
-      "popLabel": "1日",
-      "issuedAt": "2026-11-16T17:00:00+09:00",
+      "issuedAt": "2026-11-17T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -270,51 +216,69 @@
       "precision": "area",
       "label": "くもり時々晴れ",
       "max": 18.0,
-      "min": 8.0,
+      "min": 7.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-11-16T17:00:00+09:00",
+      "issuedAt": "2026-11-17T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
     },
     {
-      "date": "2026-11-23",
-      "venue": "福岡・マリンメッセ福岡B館",
-      "venueKey": "福岡マリンメッセ福岡b館",
+      "date": "2026-11-24",
+      "venue": "SGCホール有明",
+      "venueKey": "sgcホール有明",
       "eventIds": [
-        "cfbbfe7a4e136b4a"
+        "93449f36c95a621b",
+        "ae89a23867c4da97"
       ],
-      "areaCode": "400010",
-      "areaName": "福岡県",
+      "areaCode": "130010",
+      "areaName": "東京地方",
       "precision": "area",
-      "label": "くもり時々晴れ",
+      "label": "くもり",
+      "max": 17.0,
+      "min": 6.0,
+      "pop": "40",
+      "popLabel": "1日",
+      "issuedAt": "2026-11-17T11:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-11-24",
+      "venue": "高知県 新来島高知重工ホール オレンジホール（高知県立県民文化ホール）",
+      "venueKey": "新来島高知重工ホールオレンジホール高知県立県民文化ホール",
+      "eventIds": [
+        "f641c49b15d0f20a",
+        "de97c75c56f09ae2",
+        "b72656c03f66558a"
+      ],
+      "areaCode": "390010",
+      "areaName": "高知県",
+      "precision": "area",
+      "label": "くもり一時雨",
       "max": 18.0,
       "min": 8.0,
-      "pop": "30",
+      "pop": "50",
       "popLabel": "1日",
-      "issuedAt": "2026-11-16T17:00:00+09:00",
+      "issuedAt": "2026-11-17T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
     }
   ],
   "stats": {
-    "occurrencesInRange": 40,
-    "uniqueVenueDates": 17,
+    "occurrencesInRange": 35,
+    "uniqueVenueDates": 14,
     "weatherEntries": 8,
     "meshEntries": 2,
-    "failures": 9,
+    "failures": 6,
     "meshTimelineEntries": 2,
-    "meshExactTempSlots": 12,
+    "meshExactTempSlots": 8,
     "hourlyRainEntries": 2
   },
   "failures": [
-    {
-      "date": "2026-11-17",
-      "venue": "Zepp Shinjuku",
-      "reason": "都道府県を解決できません"
-    },
     {
       "date": "2026-11-17",
       "venue": "オンライン（SUKISUKI）",
@@ -344,16 +308,6 @@
       "date": "2026-11-24",
       "venue": "MBS本社(大阪・梅田)",
       "reason": "都道府県を解決できません"
-    },
-    {
-      "date": "2026-11-24",
-      "venue": "SGCホール有明",
-      "reason": "開催日の予報がまだありません"
-    },
-    {
-      "date": "2026-11-24",
-      "venue": "高知県 新来島高知重工ホール オレンジホール（高知県立県民文化ホール）",
-      "reason": "開催日の予報がまだありません"
     }
   ]
 }
