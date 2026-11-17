@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-17T11:45:59.337272+09:00",
-  "candidateUpdatedAt": "2026-11-17T11:45:59+09:00",
+  "generatedAt": "2026-11-17T12:13:33.475224+09:00",
+  "candidateUpdatedAt": "2026-11-17T12:13:33+09:00",
   "previousEventCount": 175,
-  "candidateEventCount": 174,
+  "candidateEventCount": 175,
   "protectedPreviousCount": 164,
   "errorCount": 0,
   "warningCount": 35,
@@ -45,7 +45,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia row contains FC/upgrade-only sale: KAWAII LAB.合同 / 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード2次抽選受付のお知らせ / アップグレード抽選",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:30327: KAWAII LAB.合同 / 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード2次抽選受付のお知らせ / アップグレード抽選"
   ],
-  "candidateSha256": "14c2a4d031f53025fee3c253dbd00d5fe19a8a8fed42c9dda21639f538b3c94e",
+  "candidateSha256": "8b8f7fcd595a7b15b0608c58f95408a1fbc150fc61df91b445cabecb9177d748",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -422,7 +422,7 @@
     "deadline moved earlier for id:fd0e67fe2fdbbabe: 2026-11-19T23:59 -> 2026-11-19T23:59 (manual review required)"
   ],
   "rowFailuresCanBlockRelease": false,
-  "quarantineCount": 38,
+  "quarantineCount": 40,
   "quarantineActions": [
     {
       "error": "active Pia row has no sale-detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
@@ -520,18 +520,28 @@
       "restoredPreviousRows": 1
     },
     {
+      "error": "deadline moved earlier for id:86b08500885a073b: 2026-11-18T23:59 -> 2026-09-19T10:00 (manual review required)",
+      "action": "restored previous rows for id:86b08500885a073b",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / 「FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - Secret Code」公演 リセールサービスのお知らせ / リセール",
+      "action": "restored previous rows for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
+      "restoredPreviousRows": 3
+    },
+    {
       "error": "future performance dates disappeared for pia:event:2629434:001: 2026-11-26",
       "action": "restored previous rows for pia:event:2629434:001",
       "restoredPreviousRows": 1
     },
     {
-      "error": "deadline moved earlier for id:513d2f655a5158cc: 2026-11-29 -> 2026-11-13T10:00 (manual review required)",
-      "action": "restored previous rows for id:513d2f655a5158cc",
+      "error": "deadline moved earlier for pia:event:2629434:002: 2026-11-19T23:59 -> 2026-10-24T10:00 (manual review required)",
+      "action": "restored previous rows for pia:event:2629434:002",
       "restoredPreviousRows": 1
     },
     {
-      "error": "deadline moved earlier for id:0fe2835f4c0c0028: 2026-11-26T23:59 -> 2026-09-26T10:00 (manual review required)",
-      "action": "restored previous rows for id:0fe2835f4c0c0028",
+      "error": "deadline moved earlier for id:513d2f655a5158cc: 2026-11-29 -> 2026-11-13T10:00 (manual review required)",
+      "action": "restored previous rows for id:513d2f655a5158cc",
       "restoredPreviousRows": 1
     },
     {
@@ -618,24 +628,11 @@
   "officialIndexReconciledAfterQuarantine": {
     "projectedJointParticipantCount": 0,
     "reassignedCount": 0,
-    "hydratedCount": 2,
+    "hydratedCount": 0,
     "ambiguousCount": 9,
     "unresolvedCount": 0,
     "reassigned": [],
-    "hydrated": [
-      {
-        "group": "MORE STAR",
-        "date": "2026-12-12",
-        "url": "https://morestar.asobisystem.com/live_information/detail/45679",
-        "eventId": "c55d4648f3f8ce8868ca76"
-      },
-      {
-        "group": "MORE STAR",
-        "date": "2026-12-13",
-        "url": "https://morestar.asobisystem.com/live_information/detail/45680",
-        "eventId": "4a8f61161c9e01d057fe3b"
-      }
-    ],
+    "hydrated": [],
     "ambiguous": [
       {
         "group": "FRUITS ZIPPER",
