@@ -1,7 +1,7 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-19T03:04:42.675415+09:00",
-  "candidateUpdatedAt": "2026-11-19T03:04:42+09:00",
+  "generatedAt": "2026-11-19T03:28:57.834170+09:00",
+  "candidateUpdatedAt": "2026-11-19T03:28:57+09:00",
   "previousEventCount": 260,
   "candidateEventCount": 259,
   "protectedPreviousCount": 249,
@@ -47,7 +47,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia row contains FC/upgrade-only sale: KAWAII LAB.合同 / 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード2次抽選受付のお知らせ / アップグレード抽選",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:30327: KAWAII LAB.合同 / 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード2次抽選受付のお知らせ / アップグレード抽選"
   ],
-  "candidateSha256": "58dda57b9255ad0ace6bf2617facd36a7b8a633e08a3a34638d3eb173d57bd77",
+  "candidateSha256": "a1b67b3a22c0488dd2d1e47a744d762010186ee2cb8641c708b3d01286025035",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -449,7 +449,7 @@
     "deadline moved earlier for id:91b967cce7ebf1ff: 2026-11-19T23:59 -> 2026-11-19T23:59 (manual review required)"
   ],
   "rowFailuresCanBlockRelease": false,
-  "quarantineCount": 37,
+  "quarantineCount": 38,
   "quarantineActions": [
     {
       "error": "active Pia row has no sale-detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
@@ -527,8 +527,8 @@
       "restoredPreviousRows": 1
     },
     {
-      "error": "deadline moved earlier for id:2aa43b27d0af6849: 2026-11-19T23:59 -> 2026-10-24T10:00 (manual review required)",
-      "action": "restored previous rows for id:2aa43b27d0af6849",
+      "error": "deadline moved earlier for id:d807ec7f8ed46008: 2026-11-19T23:59 -> 2026-11-07T10:00 (manual review required)",
+      "action": "restored previous rows for id:d807ec7f8ed46008",
       "restoredPreviousRows": 1
     },
     {
@@ -545,6 +545,11 @@
       "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / 「CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS 」公演 リセールサービスのお知らせ / リセール",
       "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
       "restoredPreviousRows": 5
+    },
+    {
+      "error": "deadline moved earlier for id:47365286c9595afe: 2026-12-03T23:59 -> 2026-10-24T10:00 (manual review required)",
+      "action": "restored previous rows for id:47365286c9595afe",
+      "restoredPreviousRows": 1
     },
     {
       "error": "deadline moved earlier for id:e3dac998875b6f17: 2026-11-19T23:59 -> 2026-11-19T23:59 (manual review required)",
