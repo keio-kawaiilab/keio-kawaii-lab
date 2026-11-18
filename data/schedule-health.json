@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-18T11:00:57.063458+09:00",
-  "candidateUpdatedAt": "2026-11-18T11:00:56+09:00",
-  "previousEventCount": 169,
-  "candidateEventCount": 167,
-  "protectedPreviousCount": 158,
+  "generatedAt": "2026-11-18T11:40:24.764896+09:00",
+  "candidateUpdatedAt": "2026-11-18T11:40:24+09:00",
+  "previousEventCount": 175,
+  "candidateEventCount": 168,
+  "protectedPreviousCount": 164,
   "errorCount": 0,
-  "warningCount": 37,
+  "warningCount": 41,
   "errors": [],
   "warnings": [
     "residual row-scoped audit failure isolated after best-effort quarantine; unrelated updates remain publishable: deadline moved earlier for id:e3dac998875b6f17: 2026-11-19T23:59 -> 2026-11-19T23:59 (manual review required)",
@@ -45,9 +45,13 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia row contains FC/upgrade-only sale: KAWAII LAB.合同 / 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード2次抽選受付のお知らせ / アップグレード抽選",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:30327: KAWAII LAB.合同 / 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード2次抽選受付のお知らせ / アップグレード抽選",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia row contains FC/upgrade-only sale: KAWAII LAB.合同 / 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード2次抽選受付のお知らせ / アップグレード抽選",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:30327: KAWAII LAB.合同 / 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード2次抽選受付のお知らせ / アップグレード抽選"
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:30327: KAWAII LAB.合同 / 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード2次抽選受付のお知らせ / アップグレード抽選",
+    "performance dates added for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827: 2026-11-10, 2026-11-12, 2026-11-17, 2026-11-19, 2026-11-24, 2026-11-26, 2026-11-30, 2026-12-01",
+    "performance dates added for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827: 2026-11-10, 2026-11-12, 2026-11-17, 2026-11-19, 2026-11-30, 2026-12-01",
+    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827: 2026-12-08, 2026-12-09",
+    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827: 2026-12-08, 2026-12-09"
   ],
-  "candidateSha256": "b5518b3738768109dd420560d7f595cb3869049203cf891ae3308dc1b91ba969",
+  "candidateSha256": "c0969b1cd883992b209c14ae5559c545dd4887713c22e196f7a97b66a4152d78",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -139,10 +143,13 @@
     "url:https://t.pia.jp/",
     "url:https://t.pia.jp/guide/resale-guide.jsp",
     "url:https://t.pia.jp/help/index.jsp",
-    "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
+    "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
     "url:https://t.pia.jp/pia/ticketInformation.do?eventCd=2629434&rlsCd=002",
     "url:https://t.pia.jp/pia/ticketInformation.do?eventCd=2635016&rlsCd=002",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14296",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=19887",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30314",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30327",
     "url:https://ticket-account.pia.jp/pia/digipoke/list.do",
     "url:https://w.pia.jp/t/sweetsteady-winter2026/",
@@ -243,7 +250,7 @@
     "url:https://sweetsteady.asobisystem.com/news/detail/96001"
   ],
   "reconciledBaseDateMessageCount": 0,
-  "downgradedFalsePositiveCount": 0,
+  "downgradedFalsePositiveCount": 2,
   "legacyProtectedErrorCount": 35,
   "legacyProtectedErrors": [
     {
@@ -428,7 +435,7 @@
     "deadline moved earlier for id:91b967cce7ebf1ff: 2026-11-19T23:59 -> 2026-11-19T23:59 (manual review required)"
   ],
   "rowFailuresCanBlockRelease": false,
-  "quarantineCount": 34,
+  "quarantineCount": 36,
   "quarantineActions": [
     {
       "error": "active Pia row has no sale-detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
@@ -491,11 +498,6 @@
       "restoredPreviousRows": 4
     },
     {
-      "error": "active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売",
-      "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 1
-    },
-    {
       "error": "Pia row contains FC/upgrade-only sale: KAWAII LAB.合同 / 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード2次抽選受付のお知らせ / アップグレード抽選",
       "action": "withheld new/ambiguous row",
       "restoredPreviousRows": 1
@@ -536,9 +538,24 @@
       "restoredPreviousRows": 1
     },
     {
+      "error": "deadline moved earlier for id:86b08500885a073b: 2026-11-18T23:59 -> 2026-09-19T10:00 (manual review required)",
+      "action": "restored previous rows for id:86b08500885a073b",
+      "restoredPreviousRows": 1
+    },
+    {
       "error": "active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / 「FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - Secret Code」公演 リセールサービスのお知らせ / リセール",
       "action": "restored previous rows for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
       "restoredPreviousRows": 3
+    },
+    {
+      "error": "future performance dates disappeared for pia:event:2629434:001: 2026-11-26",
+      "action": "restored previous rows for pia:event:2629434:001",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "deadline moved earlier for id:d807ec7f8ed46008: 2026-11-19T23:59 -> 2026-11-07T10:00 (manual review required)",
+      "action": "restored previous rows for id:d807ec7f8ed46008",
+      "restoredPreviousRows": 1
     },
     {
       "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / 「CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS 」公演 リセールサービスのお知らせ / リセール",
@@ -604,7 +621,7 @@
   "officialIndexReconciledAfterQuarantine": {
     "projectedJointParticipantCount": 4,
     "reassignedCount": 6,
-    "hydratedCount": 2,
+    "hydratedCount": 0,
     "ambiguousCount": 2,
     "unresolvedCount": 1,
     "reassigned": [
@@ -651,20 +668,7 @@
         "to": "4d0ee61eb1e85eee"
       }
     ],
-    "hydrated": [
-      {
-        "group": "MORE STAR",
-        "date": "2026-12-12",
-        "url": "https://morestar.asobisystem.com/live_information/detail/45679",
-        "eventId": "c55d4648f3f8ce8868ca76"
-      },
-      {
-        "group": "MORE STAR",
-        "date": "2026-12-13",
-        "url": "https://morestar.asobisystem.com/live_information/detail/45680",
-        "eventId": "4a8f61161c9e01d057fe3b"
-      }
-    ],
+    "hydrated": [],
     "ambiguous": [
       {
         "group": "CANDY TUNE",
