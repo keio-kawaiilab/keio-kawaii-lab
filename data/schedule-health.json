@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-18T18:37:10.581498+09:00",
-  "candidateUpdatedAt": "2026-11-18T18:37:10+09:00",
-  "previousEventCount": 260,
+  "generatedAt": "2026-11-18T19:49:11.471127+09:00",
+  "candidateUpdatedAt": "2026-11-18T19:49:11+09:00",
+  "previousEventCount": 270,
   "candidateEventCount": 261,
-  "protectedPreviousCount": 249,
+  "protectedPreviousCount": 259,
   "errorCount": 0,
-  "warningCount": 37,
+  "warningCount": 41,
   "errors": [],
   "warnings": [
     "residual row-scoped audit failure isolated after best-effort quarantine; unrelated updates remain publishable: deadline moved earlier for id:e3dac998875b6f17: 2026-11-19T23:59 -> 2026-11-19T23:59 (manual review required)",
@@ -45,9 +45,13 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia row contains FC/upgrade-only sale: KAWAII LAB.合同 / 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード2次抽選受付のお知らせ / アップグレード抽選",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:30327: KAWAII LAB.合同 / 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード2次抽選受付のお知らせ / アップグレード抽選",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia row contains FC/upgrade-only sale: KAWAII LAB.合同 / 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード2次抽選受付のお知らせ / アップグレード抽選",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:30327: KAWAII LAB.合同 / 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード2次抽選受付のお知らせ / アップグレード抽選"
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:30327: KAWAII LAB.合同 / 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード2次抽選受付のお知らせ / アップグレード抽選",
+    "performance dates added for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209: 2026-09-03",
+    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669209: 2026-11-21",
+    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827: 2026-12-08, 2026-12-09",
+    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827: 2026-12-08, 2026-12-09"
   ],
-  "candidateSha256": "fde8c9eab8488a56a9189a4d6379e4ec1136dc386456b2fad1bfc06e6fda9e0c",
+  "candidateSha256": "c117f25b282d9babcc8c1ad7e88cba18e628f7034f05334f7a5f4a8d89f29f87",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -149,11 +153,13 @@
     "url:https://t.pia.jp/",
     "url:https://t.pia.jp/guide/resale-guide.jsp",
     "url:https://t.pia.jp/help/index.jsp",
-    "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
     "url:https://t.pia.jp/pia/ticketInformation.do?eventCd=2629434&rlsCd=002",
     "url:https://t.pia.jp/pia/ticketInformation.do?eventCd=2635016&rlsCd=002",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=14296",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29682",
     "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30327",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30338",
     "url:https://ticket-account.pia.jp/pia/digipoke/list.do",
     "url:https://w.pia.jp/t/sweetsteady-winter2026/",
     "url:https://w.pia.jp/v/kls-xmas26-2upg1/?_normalbrowse_=1",
@@ -264,7 +270,7 @@
     "url:https://sweetsteady.asobisystem.com/news/detail/96001"
   ],
   "reconciledBaseDateMessageCount": 0,
-  "downgradedFalsePositiveCount": 0,
+  "downgradedFalsePositiveCount": 3,
   "legacyProtectedErrorCount": 35,
   "legacyProtectedErrors": [
     {
@@ -532,8 +538,8 @@
       "restoredPreviousRows": 1
     },
     {
-      "error": "deadline moved earlier for id:d807ec7f8ed46008: 2026-11-19T23:59 -> 2026-11-07T10:00 (manual review required)",
-      "action": "restored previous rows for id:d807ec7f8ed46008",
+      "error": "deadline moved earlier for id:c3695e1952b4ddb7: 2026-11-19T23:59 -> 2026-11-07T10:00 (manual review required)",
+      "action": "restored previous rows for id:c3695e1952b4ddb7",
       "restoredPreviousRows": 1
     },
     {
