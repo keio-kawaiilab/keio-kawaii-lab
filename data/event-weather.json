@@ -1,7 +1,7 @@
 {
   "date": "2026-11-18",
   "horizonDays": 7,
-  "generatedAt": "2026-11-18T07:51+09:00",
+  "generatedAt": "2026-11-18T11:33+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -17,12 +17,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "晴れ 時々 くもり 明け方 まで 雨",
+      "label": "晴れ",
       "max": 21.0,
       "min": 21.0,
-      "pop": "20",
+      "pop": "10",
       "popLabel": "当日最大",
-      "issuedAt": "2026-11-18T05:00:00+09:00",
+      "issuedAt": "2026-11-18T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -38,7 +38,9 @@
         "0fb464260791e1c0",
         "3c8de7c838bb83ac",
         "4921fa8e120fadab",
-        "86b08500885a073b"
+        "86b08500885a073b",
+        "9dfde12963eddb40",
+        "e4387cb595e46a06"
       ],
       "areaCode": "170010",
       "areaName": "加賀",
@@ -48,7 +50,7 @@
       "min": 10.0,
       "pop": "90",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-11-18T05:00:00+09:00",
+      "issuedAt": "2026-11-18T11:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "5〜9℃",
       "coordinates": {
@@ -112,31 +114,11 @@
       "areaName": "富山県",
       "precision": "area",
       "label": "くもり",
-      "max": 8.0,
-      "min": 4.0,
+      "max": 7.0,
+      "min": 5.0,
       "pop": "80",
       "popLabel": "1日",
-      "issuedAt": "2026-11-17T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
-    {
-      "date": "2026-11-22",
-      "venue": "東京都 ステラボール",
-      "venueKey": "ステラボール",
-      "eventIds": [
-        "593ec53a5d74ac13"
-      ],
-      "areaCode": "130010",
-      "areaName": "東京地方",
-      "precision": "area",
-      "label": "晴れ時々くもり",
-      "max": 14.0,
-      "min": 5.0,
-      "pop": "20",
-      "popLabel": "1日",
-      "issuedAt": "2026-11-17T17:00:00+09:00",
+      "issuedAt": "2026-11-18T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -154,32 +136,12 @@
       "areaCode": "400010",
       "areaName": "福岡県",
       "precision": "area",
-      "label": "くもり時々晴れ",
-      "max": 18.0,
-      "min": 7.0,
-      "pop": "30",
+      "label": "くもり",
+      "max": 17.0,
+      "min": 6.0,
+      "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-11-17T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
-    {
-      "date": "2026-11-23",
-      "venue": "福岡・マリンメッセ福岡B館",
-      "venueKey": "福岡マリンメッセ福岡b館",
-      "eventIds": [
-        "cfbbfe7a4e136b4a"
-      ],
-      "areaCode": "400010",
-      "areaName": "福岡県",
-      "precision": "area",
-      "label": "くもり時々晴れ",
-      "max": 18.0,
-      "min": 7.0,
-      "pop": "30",
-      "popLabel": "1日",
-      "issuedAt": "2026-11-17T17:00:00+09:00",
+      "issuedAt": "2026-11-18T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -189,7 +151,6 @@
       "venue": "SGCホール有明",
       "venueKey": "sgcホール有明",
       "eventIds": [
-        "817aadbdcb8e0bb6",
         "93449f36c95a621b",
         "ae89a23867c4da97"
       ],
@@ -197,11 +158,11 @@
       "areaName": "東京地方",
       "precision": "area",
       "label": "くもり",
-      "max": 17.0,
-      "min": 6.0,
+      "max": 16.0,
+      "min": 8.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-11-17T17:00:00+09:00",
+      "issuedAt": "2026-11-18T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -213,28 +174,51 @@
       "eventIds": [
         "f641c49b15d0f20a",
         "de97c75c56f09ae2",
-        "b72656c03f66558a"
+        "b72656c03f66558a",
+        "9dfde12963eddb40",
+        "bd6a53c9768d176c"
       ],
       "areaCode": "390010",
       "areaName": "高知県",
       "precision": "area",
-      "label": "くもり一時雨",
-      "max": 18.0,
-      "min": 8.0,
-      "pop": "50",
+      "label": "くもり時々雨",
+      "max": 17.0,
+      "min": 9.0,
+      "pop": "60",
       "popLabel": "1日",
-      "issuedAt": "2026-11-17T17:00:00+09:00",
+      "issuedAt": "2026-11-18T11:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-11-25",
+      "venue": "東京都 ヒューリックホール東京",
+      "venueKey": "ヒューリックホール東京",
+      "eventIds": [
+        "fac90e0751523a07",
+        "10bd0d3fce2bfda7"
+      ],
+      "areaCode": "130010",
+      "areaName": "東京地方",
+      "precision": "area",
+      "label": "くもり時々晴れ",
+      "max": 16.0,
+      "min": 9.0,
+      "pop": "30",
+      "popLabel": "1日",
+      "issuedAt": "2026-11-18T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
     }
   ],
   "stats": {
-    "occurrencesInRange": 32,
-    "uniqueVenueDates": 15,
-    "weatherEntries": 8,
+    "occurrencesInRange": 33,
+    "uniqueVenueDates": 13,
+    "weatherEntries": 7,
     "meshEntries": 1,
-    "failures": 7,
+    "failures": 6,
     "meshTimelineEntries": 1,
     "meshExactTempSlots": 7,
     "hourlyRainEntries": 0
@@ -269,11 +253,6 @@
       "date": "2026-11-24",
       "venue": "MBS本社(大阪・梅田)",
       "reason": "都道府県を解決できません"
-    },
-    {
-      "date": "2026-11-25",
-      "venue": "東京都 ヒューリックホール東京",
-      "reason": "開催日の予報がまだありません"
     }
   ]
 }
