@@ -1,32 +1,12 @@
 {
-  "date": "2026-11-18",
+  "date": "2026-11-19",
   "horizonDays": 7,
-  "generatedAt": "2026-11-18T19:42+09:00",
+  "generatedAt": "2026-11-19T07:33+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
-    {
-      "date": "2026-11-18",
-      "venue": "東京都 MORE STAR YouTube",
-      "venueKey": "morestaryoutube",
-      "eventIds": [
-        "5ac626cef6421594"
-      ],
-      "areaCode": "130010",
-      "areaName": "東京地方",
-      "precision": "area",
-      "label": "晴れ 夜のはじめ頃 くもり",
-      "max": null,
-      "min": null,
-      "pop": "10",
-      "popLabel": "当日最大",
-      "issuedAt": "2026-11-18T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
     {
       "date": "2026-11-19",
       "venue": "石川県 本多の森北電ホール",
@@ -37,20 +17,17 @@
         "1c5ecb0518b883f3",
         "0fb464260791e1c0",
         "3c8de7c838bb83ac",
-        "4921fa8e120fadab",
-        "86b08500885a073b",
-        "cde8a2920f62d533",
-        "ac1228324b5a2910"
+        "4921fa8e120fadab"
       ],
       "areaCode": "170010",
       "areaName": "加賀",
       "precision": "mesh5km",
       "label": "雨",
-      "max": 12.0,
-      "min": 9.0,
+      "max": 14.0,
+      "min": 12.0,
       "pop": "90",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-11-18T17:00:00+09:00",
+      "issuedAt": "2026-11-19T05:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "5〜9℃",
       "coordinates": {
@@ -58,12 +35,6 @@
         "lon": 136.665359
       },
       "meshTimeline": [
-        {
-          "time": "06:00",
-          "label": "雨",
-          "validAt": "2026-11-19T06:00+09:00",
-          "temp": 10
-        },
         {
           "time": "09:00",
           "label": "雨",
@@ -74,7 +45,7 @@
           "time": "12:00",
           "label": "雨",
           "validAt": "2026-11-19T12:00+09:00",
-          "temp": 10
+          "temp": 11
         },
         {
           "time": "15:00",
@@ -86,7 +57,7 @@
           "time": "18:00",
           "label": "雨",
           "validAt": "2026-11-19T18:00+09:00",
-          "temp": 8
+          "temp": 9
         },
         {
           "time": "21:00",
@@ -99,6 +70,23 @@
           "label": "雨",
           "validAt": "2026-11-20T00:00+09:00",
           "temp": 8
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "18:00",
+          "rain": true,
+          "validAt": "2026-11-19T18:00+09:00"
+        },
+        {
+          "time": "19:00",
+          "rain": true,
+          "validAt": "2026-11-19T19:00+09:00"
+        },
+        {
+          "time": "20:00",
+          "rain": true,
+          "validAt": "2026-11-19T20:00+09:00"
         }
       ]
     },
@@ -215,9 +203,7 @@
       "eventIds": [
         "f641c49b15d0f20a",
         "de97c75c56f09ae2",
-        "b72656c03f66558a",
-        "cde8a2920f62d533",
-        "ac1228324b5a2910"
+        "b72656c03f66558a"
       ],
       "areaCode": "390010",
       "areaName": "高知県",
@@ -255,14 +241,14 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 36,
-    "uniqueVenueDates": 15,
-    "weatherEntries": 9,
+    "occurrencesInRange": 39,
+    "uniqueVenueDates": 17,
+    "weatherEntries": 8,
     "meshEntries": 1,
-    "failures": 6,
+    "failures": 9,
     "meshTimelineEntries": 1,
-    "meshExactTempSlots": 7,
-    "hourlyRainEntries": 0
+    "meshExactTempSlots": 6,
+    "hourlyRainEntries": 1
   },
   "failures": [
     {
@@ -294,6 +280,21 @@
       "date": "2026-11-24",
       "venue": "MBS本社(大阪・梅田)",
       "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-11-26",
+      "venue": "SGC HALL ARIAKE",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-11-26",
+      "venue": "東京都 SGCホール有明",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-11-26",
+      "venue": "香川県 レクザムホール大ホール（香川県県民ホール）",
+      "reason": "開催日の予報がまだありません"
     }
   ]
 }
