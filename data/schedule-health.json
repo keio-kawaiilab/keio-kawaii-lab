@@ -1,7 +1,7 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-19T11:05:27.736842+09:00",
-  "candidateUpdatedAt": "2026-11-19T11:05:27+09:00",
+  "generatedAt": "2026-11-19T12:56:57.418741+09:00",
+  "candidateUpdatedAt": "2026-11-19T12:56:57+09:00",
   "previousEventCount": 260,
   "candidateEventCount": 259,
   "protectedPreviousCount": 249,
@@ -48,7 +48,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia row contains FC/upgrade-only sale: MORE STAR / MORE STAR 単独ライブ 7th STAR / KAWAII LAB. FC先行",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: MORE STAR / MORE STAR 単独ライブ 7th STAR / KAWAII LAB. FC先行"
   ],
-  "candidateSha256": "5bf187b5dfbaab3d6181504c6ef0bdac013725da31aa1b9e6ef6eac93051b3a0",
+  "candidateSha256": "c66f9100bf3d2ee7f148dd34222dea2f3b88cc6f04a091514d62300cfc7225cb",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -455,7 +455,7 @@
     "deadline moved earlier for id:91b967cce7ebf1ff: 2026-11-19T23:59 -> 2026-11-19T23:59 (manual review required)"
   ],
   "rowFailuresCanBlockRelease": false,
-  "quarantineCount": 39,
+  "quarantineCount": 36,
   "quarantineActions": [
     {
       "error": "active Pia row has no sale-detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
@@ -493,7 +493,7 @@
       "restoredPreviousRows": 2
     },
     {
-      "error": "duplicate Pia lot pia:30327: KAWAII LAB.合同 / 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード2次抽選受付のお知らせ / アップグレード抽選",
+      "error": "duplicate Pia lot pia:30327: KAWAII LAB.合同 / KAWAII LAB. Christmas SESSION 2026 / 現在受付なし",
       "action": "restored previous Pia lot rows",
       "restoredPreviousRows": 5
     },
@@ -508,16 +508,6 @@
       "restoredPreviousRows": 5
     },
     {
-      "error": "Pia deadline claims verified without detail-page evidence: KAWAII LAB.合同 / 「KAWAII LAB. Christmas SESSION 2026」@有明アリーナ アップグレード2次抽選受付のお知らせ / アップグレード抽選",
-      "action": "restored previous row",
-      "restoredPreviousRows": 2
-    },
-    {
-      "error": "duplicate Pia lot pia:30327: KAWAII LAB.合同 / KAWAII LAB. Christmas SESSION 2026 @有明アリーナ / 現在受付なし",
-      "action": "restored previous Pia lot rows",
-      "restoredPreviousRows": 5
-    },
-    {
       "error": "active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE 福山梨乃 生誕祭 2026 / 一般発売",
       "action": "restored previous row",
       "restoredPreviousRows": 1
@@ -528,18 +518,13 @@
       "restoredPreviousRows": 1
     },
     {
-      "error": "active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / 「FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - Secret Code」公演 リセールサービスのお知らせ / リセール",
-      "action": "restored previous rows for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
-      "restoredPreviousRows": 3
-    },
-    {
       "error": "future performance dates disappeared for pia:event:2629434:001: 2026-11-26",
       "action": "restored previous rows for pia:event:2629434:001",
       "restoredPreviousRows": 1
     },
     {
-      "error": "deadline moved earlier for id:0fe2835f4c0c0028: 2026-11-26T23:59 -> 2026-09-26T10:00 (manual review required)",
-      "action": "restored previous rows for id:0fe2835f4c0c0028",
+      "error": "deadline moved earlier for pia:event:2632906:001: 2026-11-26T23:59 -> 2026-09-26T10:00 (manual review required)",
+      "action": "restored previous rows for pia:event:2632906:001",
       "restoredPreviousRows": 1
     },
     {
@@ -563,7 +548,7 @@
       "restoredPreviousRows": 1
     },
     {
-      "error": "deadline moved earlier for pia:30327: 2026-11-19T23:59 -> None (manual review required)",
+      "error": "deadline moved earlier for pia:30327: 2026-11-19T23:59 -> 2026-11-19 (manual review required)",
       "action": "restored previous rows for pia:30327",
       "restoredPreviousRows": 5
     },
@@ -598,7 +583,7 @@
       "restoredPreviousRows": 3
     },
     {
-      "error": "future performance dates disappeared for url:https://morestar.asobisystem.com/news/detail/96004 [KAWAII LAB.合同]: 2026-12-13",
+      "error": "future performance dates disappeared for url:https://morestar.asobisystem.com/news/detail/96004 [MORE STAR]: 2026-12-12, 2026-12-13",
       "action": "restored previous rows for url:https://morestar.asobisystem.com/news/detail/96004",
       "restoredPreviousRows": 6
     },
