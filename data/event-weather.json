@@ -1,7 +1,7 @@
 {
   "date": "2026-11-19",
   "horizonDays": 7,
-  "generatedAt": "2026-11-19T07:33+09:00",
+  "generatedAt": "2026-11-19T10:58+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -27,7 +27,7 @@
       "min": 12.0,
       "pop": "90",
       "popLabel": "18〜00時",
-      "issuedAt": "2026-11-19T05:00:00+09:00",
+      "issuedAt": "2026-11-19T11:00:00+09:00",
       "meshTime": "18:00",
       "meshTempBand": "5〜9℃",
       "coordinates": {
@@ -99,14 +99,14 @@
         "26d0069375101fa4"
       ],
       "areaCode": "160010",
-      "areaName": "富山県",
+      "areaName": "東部",
       "precision": "area",
-      "label": "くもり",
-      "max": 7.0,
-      "min": 5.0,
-      "pop": "80",
-      "popLabel": "1日",
-      "issuedAt": "2026-11-18T17:00:00+09:00",
+      "label": "くもり 時々 雨か雪",
+      "max": null,
+      "min": null,
+      "pop": null,
+      "popLabel": "",
+      "issuedAt": "2026-11-19T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -124,9 +124,9 @@
       "label": "晴れ時々くもり",
       "max": 14.0,
       "min": 5.0,
-      "pop": "10",
+      "pop": "20",
       "popLabel": "1日",
-      "issuedAt": "2026-11-18T17:00:00+09:00",
+      "issuedAt": "2026-11-19T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -149,7 +149,7 @@
       "min": 6.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-11-18T17:00:00+09:00",
+      "issuedAt": "2026-11-19T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -169,7 +169,7 @@
       "min": 6.0,
       "pop": "40",
       "popLabel": "1日",
-      "issuedAt": "2026-11-18T17:00:00+09:00",
+      "issuedAt": "2026-11-19T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -186,12 +186,12 @@
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
-      "label": "くもり",
-      "max": 16.0,
+      "label": "くもり一時雨",
+      "max": 17.0,
       "min": 8.0,
-      "pop": "40",
+      "pop": "60",
       "popLabel": "1日",
-      "issuedAt": "2026-11-18T17:00:00+09:00",
+      "issuedAt": "2026-11-19T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -209,11 +209,11 @@
       "areaName": "高知県",
       "precision": "area",
       "label": "くもり時々雨",
-      "max": 17.0,
-      "min": 9.0,
+      "max": 16.0,
+      "min": 7.0,
       "pop": "60",
       "popLabel": "1日",
-      "issuedAt": "2026-11-18T17:00:00+09:00",
+      "issuedAt": "2026-11-19T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -224,17 +224,83 @@
       "venueKey": "ヒューリックホール東京",
       "eventIds": [
         "fac90e0751523a07",
-        "10bd0d3fce2bfda7"
+        "10bd0d3fce2bfda7--26a9e1b900"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
       "precision": "area",
       "label": "くもり時々晴れ",
-      "max": 16.0,
-      "min": 9.0,
+      "max": 15.0,
+      "min": 8.0,
       "pop": "30",
       "popLabel": "1日",
-      "issuedAt": "2026-11-18T17:00:00+09:00",
+      "issuedAt": "2026-11-19T11:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-11-26",
+      "venue": "SGC HALL ARIAKE",
+      "venueKey": "sgchallariake",
+      "eventIds": [
+        "f252890aae3f1ee0"
+      ],
+      "areaCode": "130010",
+      "areaName": "東京地方",
+      "precision": "area",
+      "label": "晴れ時々くもり",
+      "max": 15.0,
+      "min": 6.0,
+      "pop": "20",
+      "popLabel": "1日",
+      "issuedAt": "2026-11-19T11:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-11-26",
+      "venue": "東京都 SGCホール有明",
+      "venueKey": "sgcホール有明",
+      "eventIds": [
+        "0682808f6820420f",
+        "a32f16b9ec9c9756",
+        "a536cc1b2de853db",
+        "known-cutie-sano-upgrade-20261126"
+      ],
+      "areaCode": "130010",
+      "areaName": "東京地方",
+      "precision": "area",
+      "label": "晴れ時々くもり",
+      "max": 15.0,
+      "min": 6.0,
+      "pop": "20",
+      "popLabel": "1日",
+      "issuedAt": "2026-11-19T11:00:00+09:00",
+      "meshTime": null,
+      "meshTempBand": null,
+      "coordinates": null
+    },
+    {
+      "date": "2026-11-26",
+      "venue": "香川県 レクザムホール大ホール（香川県県民ホール）",
+      "venueKey": "レクザムホール香川県県民ホール",
+      "eventIds": [
+        "f641c49b15d0f20a",
+        "de97c75c56f09ae2",
+        "b72656c03f66558a",
+        "9d24b90755d6d0cf"
+      ],
+      "areaCode": "370000",
+      "areaName": "香川県",
+      "precision": "area",
+      "label": "晴れ時々くもり",
+      "max": 15.0,
+      "min": 6.0,
+      "pop": "20",
+      "popLabel": "1日",
+      "issuedAt": "2026-11-19T11:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -243,9 +309,9 @@
   "stats": {
     "occurrencesInRange": 39,
     "uniqueVenueDates": 17,
-    "weatherEntries": 8,
+    "weatherEntries": 11,
     "meshEntries": 1,
-    "failures": 9,
+    "failures": 6,
     "meshTimelineEntries": 1,
     "meshExactTempSlots": 6,
     "hourlyRainEntries": 1
@@ -280,21 +346,6 @@
       "date": "2026-11-24",
       "venue": "MBS本社(大阪・梅田)",
       "reason": "都道府県を解決できません"
-    },
-    {
-      "date": "2026-11-26",
-      "venue": "SGC HALL ARIAKE",
-      "reason": "開催日の予報がまだありません"
-    },
-    {
-      "date": "2026-11-26",
-      "venue": "東京都 SGCホール有明",
-      "reason": "開催日の予報がまだありません"
-    },
-    {
-      "date": "2026-11-26",
-      "venue": "香川県 レクザムホール大ホール（香川県県民ホール）",
-      "reason": "開催日の予報がまだありません"
     }
   ]
 }
