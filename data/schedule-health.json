@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-20T07:33:37.822064+09:00",
-  "candidateUpdatedAt": "2026-11-20T07:33:37+09:00",
-  "previousEventCount": 254,
-  "candidateEventCount": 254,
-  "protectedPreviousCount": 243,
+  "generatedAt": "2026-11-20T08:23:33.126753+09:00",
+  "candidateUpdatedAt": "2026-11-20T08:23:32+09:00",
+  "previousEventCount": 255,
+  "candidateEventCount": 255,
+  "protectedPreviousCount": 244,
   "errorCount": 0,
   "warningCount": 37,
   "errors": [],
@@ -47,7 +47,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia row contains FC/upgrade-only sale: MORE STAR / MORE STAR 単独ライブ 7th STAR / KAWAII LAB. FC先行",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: MORE STAR / MORE STAR 単独ライブ 7th STAR / KAWAII LAB. FC先行"
   ],
-  "candidateSha256": "729916f580c1178a1fa5f4c538722251f8cca844084537ed60543a41bf568c78",
+  "candidateSha256": "34e871907087b91ee57cdf931e721a2f0e8151d4654b0b63471778d1eee02bf7",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -454,7 +454,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 27,
+  "quarantineCount": 26,
   "quarantineActions": [
     {
       "error": "active Pia row has no sale-detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
@@ -505,11 +505,6 @@
       "error": "future performance dates disappeared for pia:event:2644526:001: 2026-11-29",
       "action": "restored previous rows for pia:event:2644526:001",
       "restoredPreviousRows": 2
-    },
-    {
-      "error": "active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / 「FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - Secret Code」公演 リセールサービスのお知らせ / リセール",
-      "action": "restored previous rows for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
-      "restoredPreviousRows": 3
     },
     {
       "error": "deadline moved earlier for id:5583e267722ce9de: 2026-11-26T23:59 -> 2026-09-26T10:00 (manual review required)",
