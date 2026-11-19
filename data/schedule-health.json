@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-20T01:57:06.811259+09:00",
-  "candidateUpdatedAt": "2026-11-20T01:57:06+09:00",
+  "generatedAt": "2026-11-20T02:03:53.403576+09:00",
+  "candidateUpdatedAt": "2026-11-20T02:03:53+09:00",
   "previousEventCount": 252,
-  "candidateEventCount": 251,
+  "candidateEventCount": 253,
   "protectedPreviousCount": 241,
   "errorCount": 0,
   "warningCount": 36,
@@ -46,11 +46,12 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia row contains FC/upgrade-only sale: MORE STAR / MORE STAR 単独ライブ 7th STAR / KAWAII LAB. FC先行",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: MORE STAR / MORE STAR 単独ライブ 7th STAR / KAWAII LAB. FC先行"
   ],
-  "candidateSha256": "12c7df17ff7ae4fd0b03b973a8588d087b16bf905987aa51a34b20070a670f9c",
+  "candidateSha256": "b6069ee8e1a3d5fd2e05c0411036d902a644c443e57c40e1eb25fc7564575776",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
     "url:https://candytune.asobisystem.com/live_information/detail/40740",
+    "url:https://candytune.asobisystem.com/live_information/detail/40743",
     "url:https://candytune.asobisystem.com/live_information/detail/44993",
     "url:https://candytune.asobisystem.com/news/detail/88212",
     "url:https://candytune.asobisystem.com/news/detail/93735",
@@ -167,6 +168,7 @@
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
     "url:https://candytune.asobisystem.com/live_information/detail/40740",
+    "url:https://candytune.asobisystem.com/live_information/detail/40743",
     "url:https://candytune.asobisystem.com/live_information/detail/44993",
     "url:https://candytune.asobisystem.com/news/detail/88212",
     "url:https://candytune.asobisystem.com/news/detail/93735",
@@ -447,7 +449,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 27,
+  "quarantineCount": 23,
   "quarantineActions": [
     {
       "error": "active Pia row has no sale-detail URL: CUTIE STREET / CUTIE STREET JAPAN ARENA TOUR 2026 -AUTUMN- 福岡公演 当日引換券 / 当日引換券",
@@ -495,33 +497,13 @@
       "restoredPreviousRows": 1
     },
     {
-      "error": "active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / 「FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - Secret Code」公演 リセールサービスのお知らせ / リセール",
-      "action": "restored previous rows for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
-      "restoredPreviousRows": 3
-    },
-    {
       "error": "deadline moved earlier for id:5583e267722ce9de: 2026-11-26T23:59 -> 2026-09-26T10:00 (manual review required)",
       "action": "restored previous rows for id:5583e267722ce9de",
       "restoredPreviousRows": 1
     },
     {
-      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / 「CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS 」公演 リセールサービスのお知らせ / リセール",
-      "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
-      "restoredPreviousRows": 5
-    },
-    {
       "error": "future performance dates disappeared for url:https://red-hot.ne.jp/play/detail.php?pid=py28329: 2026-12-09",
       "action": "restored previous rows for url:https://red-hot.ne.jp/play/detail.php?pid=py28329",
-      "restoredPreviousRows": 1
-    },
-    {
-      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / 「CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS 」公演 リセールサービスのお知らせ / リセール",
-      "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
-      "restoredPreviousRows": 5
-    },
-    {
-      "error": "deadline moved earlier for id:47365286c9595afe: 2026-12-03T23:59 -> 2026-10-24T10:00 (manual review required)",
-      "action": "restored previous rows for id:47365286c9595afe",
       "restoredPreviousRows": 1
     },
     {
@@ -552,7 +534,7 @@
     {
       "error": "future performance dates disappeared for url:https://morestar.asobisystem.com/live_information/detail/45679 [MORE STAR]: 2026-12-12",
       "action": "restored previous rows for url:https://morestar.asobisystem.com/live_information/detail/45679",
-      "restoredPreviousRows": 2
+      "restoredPreviousRows": 3
     },
     {
       "error": "future performance dates disappeared for url:https://morestar.asobisystem.com/live_information/detail/46457 [MORE STAR]: 2027-04-03",
@@ -589,18 +571,11 @@
   "officialIndexReconciledAfterQuarantine": {
     "projectedJointParticipantCount": 0,
     "reassignedCount": 0,
-    "hydratedCount": 1,
+    "hydratedCount": 0,
     "ambiguousCount": 0,
     "unresolvedCount": 0,
     "reassigned": [],
-    "hydrated": [
-      {
-        "group": "MORE STAR",
-        "date": "2026-12-12",
-        "url": "https://morestar.asobisystem.com/live_information/detail/45679",
-        "eventId": "928bb89b100ed2b0"
-      }
-    ],
+    "hydrated": [],
     "ambiguous": [],
     "unresolved": [],
     "duplicateOfficialResaleWindowsRemoved": 0
