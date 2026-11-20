@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-20T21:50:11.424540+09:00",
-  "candidateUpdatedAt": "2026-11-20T21:50:11+09:00",
-  "previousEventCount": 260,
-  "candidateEventCount": 258,
-  "protectedPreviousCount": 251,
+  "generatedAt": "2026-11-20T21:56:11.534105+09:00",
+  "candidateUpdatedAt": "2026-11-20T21:56:11+09:00",
+  "previousEventCount": 259,
+  "candidateEventCount": 259,
+  "protectedPreviousCount": 250,
   "errorCount": 0,
   "warningCount": 26,
   "errors": [],
@@ -36,7 +36,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:30327: KAWAII LAB.合同 / KAWAII LAB. Christmas SESSION 2026 @有明アリーナ / 現在受付なし"
   ],
-  "candidateSha256": "50f424792ae0db02e2afaa902d6af8dbc49296d8458594a9a520c45a7f6577dc",
+  "candidateSha256": "0ec12fc50ba4aca8bf876f8e60ed9f8243369d611528230e14503fb2fd985a95",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -385,7 +385,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 23,
+  "quarantineCount": 22,
   "quarantineActions": [
     {
       "error": "Pia row contains FC/upgrade-only sale: MORE STAR / MORE STAR 単独ライブ 7th STAR / KAWAII LAB. FC先行",
@@ -433,13 +433,8 @@
       "restoredPreviousRows": 1
     },
     {
-      "error": "active deadline disappeared for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn: FRUITS ZIPPER / 「FRUITS ZIPPER JAPAN TOUR 2026 - AUTUMN - Secret Code」公演 リセールサービスのお知らせ / リセール",
-      "action": "restored previous rows for url:https://fruitszipper.asobisystem.com/feature/2026tour_autumn",
-      "restoredPreviousRows": 3
-    },
-    {
-      "error": "deadline moved earlier for id:0fe2835f4c0c0028: 2026-11-26T23:59 -> 2026-09-26T10:00 (manual review required)",
-      "action": "restored previous rows for id:0fe2835f4c0c0028",
+      "error": "deadline moved earlier for pia:event:2632906:001: 2026-11-26T23:59 -> 2026-09-26T10:00 (manual review required)",
+      "action": "restored previous rows for pia:event:2632906:001",
       "restoredPreviousRows": 1
     },
     {
