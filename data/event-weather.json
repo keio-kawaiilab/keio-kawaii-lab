@@ -1,7 +1,7 @@
 {
-  "date": "2026-11-20",
+  "date": "2026-11-21",
   "horizonDays": 7,
-  "generatedAt": "2026-11-20T19:25+09:00",
+  "generatedAt": "2026-11-21T07:13+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -18,12 +18,12 @@
       "areaCode": "160010",
       "areaName": "東部",
       "precision": "mesh5km",
-      "label": "雨",
-      "max": 9.0,
-      "min": 4.0,
+      "label": "雨または雪",
+      "max": 8.0,
+      "min": 8.0,
       "pop": "90",
       "popLabel": "12〜18時",
-      "issuedAt": "2026-11-20T17:00:00+09:00",
+      "issuedAt": "2026-11-21T05:00:00+09:00",
       "meshTime": "15:00",
       "meshTempBand": "5〜9℃",
       "coordinates": {
@@ -32,46 +32,52 @@
       },
       "meshTimeline": [
         {
-          "time": "06:00",
-          "label": "雨",
-          "validAt": "2026-11-21T06:00+09:00",
-          "temp": 6
-        },
-        {
           "time": "09:00",
-          "label": "雨",
+          "label": "雨または雪",
           "validAt": "2026-11-21T09:00+09:00",
           "temp": 6
         },
         {
           "time": "12:00",
-          "label": "雨",
+          "label": "雨または雪",
           "validAt": "2026-11-21T12:00+09:00",
           "temp": 8
         },
         {
           "time": "15:00",
-          "label": "雨",
+          "label": "雨または雪",
           "validAt": "2026-11-21T15:00+09:00",
           "temp": 8
         },
         {
           "time": "18:00",
-          "label": "雨",
+          "label": "雨または雪",
           "validAt": "2026-11-21T18:00+09:00",
-          "temp": 7
+          "temp": 6
         },
         {
           "time": "21:00",
-          "label": "雨",
+          "label": "雨または雪",
           "validAt": "2026-11-21T21:00+09:00",
-          "temp": 5
+          "temp": 6
         },
         {
           "time": "24:00",
-          "label": "雨",
+          "label": "雨または雪",
           "validAt": "2026-11-22T00:00+09:00",
-          "temp": 6
+          "temp": 5
+        }
+      ],
+      "hourlyRain": [
+        {
+          "time": "14:00",
+          "rain": true,
+          "validAt": "2026-11-21T14:00+09:00"
+        },
+        {
+          "time": "15:00",
+          "rain": true,
+          "validAt": "2026-11-21T15:00+09:00"
         }
       ]
     },
@@ -86,11 +92,11 @@
       "areaName": "東京地方",
       "precision": "area",
       "label": "晴れ",
-      "max": null,
-      "min": null,
-      "pop": null,
-      "popLabel": "",
-      "issuedAt": "2026-11-20T17:00:00+09:00",
+      "max": 15.0,
+      "min": 5.0,
+      "pop": "0",
+      "popLabel": "06〜12時",
+      "issuedAt": "2026-11-21T05:00:00+09:00",
       "meshTime": null,
       "meshTempBand": null,
       "coordinates": null
@@ -290,14 +296,14 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 32,
-    "uniqueVenueDates": 16,
+    "occurrencesInRange": 36,
+    "uniqueVenueDates": 18,
     "weatherEntries": 11,
     "meshEntries": 1,
-    "failures": 5,
+    "failures": 7,
     "meshTimelineEntries": 1,
-    "meshExactTempSlots": 7,
-    "hourlyRainEntries": 0
+    "meshExactTempSlots": 6,
+    "hourlyRainEntries": 1
   },
   "failures": [
     {
@@ -324,6 +330,16 @@
       "date": "2026-11-24",
       "venue": "MBS本社(大阪・梅田)",
       "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-11-28",
+      "venue": "愛知県 IGアリーナ",
+      "reason": "開催日の予報がまだありません"
+    },
+    {
+      "date": "2026-11-28",
+      "venue": "複数会場（SGCホール有明・TOYOTA ARENA TOKYO）",
+      "reason": "開催日の予報がまだありません"
     }
   ]
 }
