@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-22T06:55:12+09:00",
+  "checkedAt": "2026-11-22T08:23:09+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-11-21T09:11:42+09:00",
     "scannedPages": {
@@ -1757,6 +1757,44 @@
       "eventTitle": "MORE STAR 単独ライブ 7th STAR",
       "displayTitle": "MORE STAR 単独ライブ 7th STAR",
       "eventCategory": "solo-live",
+      "ticketType": "一般発売",
+      "ticketProvider": "pia",
+      "applyStart": "2026-11-18T18:00",
+      "applyEnd": null,
+      "resultDate": null,
+      "paymentEnd": null,
+      "applicationStatus": "observed",
+      "applicationDisplayMode": "offers",
+      "applicationWindowVerified": true,
+      "applicationWindowSource": "https://red-hot.ne.jp/play/detail.php?pid=py28808",
+      "eventDate": "2026-11-25",
+      "venue": "東京都 ヒューリックホール東京",
+      "openTime": "17:00",
+      "startTime": "18:00",
+      "url": "https://red-hot.ne.jp/play/detail.php?pid=py28808",
+      "urls": [
+        "https://red-hot.ne.jp/play/detail.php?pid=py28808",
+        "https://t.pia.jp/pia/event/event.do?eventCd=2639141"
+      ],
+      "sourceType": "ticket-history-guard",
+      "sourceChannel": "promoter-general-sale",
+      "primarySource": "promoter",
+      "sourceCandidates": [
+        "promoter",
+        "pia"
+      ],
+      "eventScope": "kawaii-lab",
+      "historyPreserved": true,
+      "soldOutObserved": false,
+      "sourceObservedAt": "2026-11-22T08:23:03+09:00"
+    },
+    {
+      "id": "10bd0d3fce2bfda7--26a9e1b900",
+      "group": "MORE STAR",
+      "title": "MORE STAR 単独ライブ 7th STAR",
+      "eventTitle": "MORE STAR 単独ライブ 7th STAR",
+      "displayTitle": "MORE STAR 単独ライブ 7th STAR",
+      "eventCategory": "solo-live",
       "ticketType": "KAWAII LAB. FC先行",
       "ticketProvider": "pia",
       "applyStart": "2026-10-17T18:00",
@@ -1802,7 +1840,8 @@
           "startTime": "18:00"
         }
       ],
-      "officialScheduleUrl": "https://morestar.asobisystem.com/live_information/detail/45677"
+      "officialScheduleUrl": "https://morestar.asobisystem.com/live_information/detail/45677",
+      "idCollisionRepairedFrom": "10bd0d3fce2bfda7"
     },
     {
       "id": "f03e6f9b32abb002",
@@ -1998,19 +2037,19 @@
       "eventScope": "kawaii-lab"
     },
     {
-      "id": "7bf6cd119ab3be91",
+      "id": "f252890aae3f1ee0",
       "group": "CUTIE STREET",
       "title": "CUTIE STREET 佐野愛花 生誕祭 2026",
       "eventTitle": "CUTIE STREET 佐野愛花 生誕祭 2026",
       "displayTitle": "CUTIE STREET 佐野愛花 生誕祭 2026",
       "eventCategory": "solo-live",
-      "ticketType": "現在受付なし",
+      "ticketType": "一般発売",
       "ticketProvider": "pia",
-      "applyStart": null,
+      "applyStart": "2026-11-09T20:00",
       "applyEnd": null,
       "resultDate": null,
       "paymentEnd": null,
-      "applicationStatus": "none",
+      "applicationStatus": "sold_out",
       "applicationDisplayMode": "offers",
       "applicationWindowVerified": true,
       "applicationWindowSource": "https://red-hot.ne.jp/play/detail.php?pid=py28690",
@@ -2021,22 +2060,19 @@
       "url": "https://red-hot.ne.jp/play/detail.php?pid=py28690",
       "urls": [
         "https://red-hot.ne.jp/play/detail.php?pid=py28690",
-        "https://t.pia.jp/pia/event/event.do?eventCd=2635654",
-        "https://ticket-account.pia.jp/pia/digipoke/list.do",
-        "https://cutiestreet.asobisystem.com/news/detail/93573",
-        "https://cutiestreet.asobisystem.com/live_information/detail/46341"
+        "https://t.pia.jp/pia/event/event.do?eventCd=2635654"
       ],
-      "sourceType": "derived",
+      "sourceType": "ticket-history-guard",
       "sourceChannel": "promoter-general-sale",
-      "primarySource": "pia",
+      "primarySource": "promoter",
       "sourceCandidates": [
-        "official",
+        "promoter",
         "pia"
       ],
       "eventScope": "kawaii-lab",
       "historyPreserved": true,
       "soldOutObserved": true,
-      "sourceObservedAt": "2026-11-21T09:00:33+09:00"
+      "sourceObservedAt": "2026-11-22T08:23:02+09:00"
     },
     {
       "id": "a7b325c43cc6c33e",
@@ -11610,21 +11646,21 @@
     "lawson/SWEET STEADY: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=18)"
   ],
   "promoterGeneralSaleDiagnostics": {
-    "checkedAt": "2026-11-22T06:53:41+09:00",
+    "checkedAt": "2026-11-22T08:23:08+09:00",
     "knownPerformancesChecked": 63,
     "generalSalesObserved": 7,
-    "generalSalesAdded": 5,
-    "generalSalesEnriched": 2,
+    "generalSalesAdded": 2,
+    "generalSalesEnriched": 0,
     "mismatchedPromoterRowsRemoved": 1,
     "failures": []
   },
   "publicEventModelReport": {
-    "rawEventCount": 258,
+    "rawEventCount": 259,
     "passthroughEventCount": 74,
     "performanceEntityCount": 65,
-    "sourceOccurrenceCount": 269,
-    "mergedSourceOccurrences": 204,
-    "offerCount": 99,
+    "sourceOccurrenceCount": 270,
+    "mergedSourceOccurrences": 205,
+    "offerCount": 101,
     "outOfScopeSoloEventCount": 2
   },
   "publicEventModelVersion": 1,
@@ -11803,7 +11839,7 @@
   },
   "renderWarnings": [
     {
-      "checkedAt": "2026-11-22T06:55:12+09:00",
+      "checkedAt": "2026-11-22T08:23:09+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one CANDY TUNE tour performance for 2026-10-04 OPEN 16:30 / START 17:30, found 0"
     }
@@ -25338,7 +25374,7 @@
       }
     ]
   },
-  "updatedAt": "2026-11-22T06:55:12+09:00",
+  "updatedAt": "2026-11-22T08:23:09+09:00",
   "publicEvents": [
     {
       "id": "fa421e6fd8955232",
@@ -30060,7 +30096,7 @@
         "a32f16b9ec9c9756",
         "a536cc1b2de853db",
         "known-cutie-sano-upgrade-20261126",
-        "7bf6cd119ab3be91"
+        "f252890aae3f1ee0"
       ],
       "offers": [
         {
@@ -30100,6 +30136,26 @@
           "sourceChannel": "known-official-correction",
           "primarySource": "official",
           "sourcePublishedAt": "2026-10-26"
+        },
+        {
+          "sourceRowId": "f252890aae3f1ee0",
+          "provider": "pia",
+          "url": "https://red-hot.ne.jp/play/detail.php?pid=py28690",
+          "urls": [
+            "https://red-hot.ne.jp/play/detail.php?pid=py28690",
+            "https://t.pia.jp/pia/event/event.do?eventCd=2635654"
+          ],
+          "ticketType": "一般発売",
+          "ticketProvider": "pia",
+          "applyStart": "2026-11-09T20:00",
+          "applicationStatus": "sold_out",
+          "applicationWindowVerified": true,
+          "applicationDisplayMode": "offers",
+          "applicationWindowSource": "https://red-hot.ne.jp/play/detail.php?pid=py28690",
+          "sourceType": "ticket-history-guard",
+          "sourceChannel": "promoter-general-sale",
+          "primarySource": "promoter",
+          "sourceObservedAt": "2026-11-22T08:23:02+09:00"
         }
       ],
       "eventEndDate": "2026-11-26",
@@ -33361,9 +33417,9 @@
       "urls": [
         "https://morestar.asobisystem.com/news/detail/92107",
         "https://morestar.asobisystem.com/live_information/detail/45677",
-        "https://kawaiilab.asobisystem.com/news/detail/93036",
         "https://red-hot.ne.jp/play/detail.php?pid=py28808",
-        "https://t.pia.jp/pia/event/event.do?eventCd=2639141"
+        "https://t.pia.jp/pia/event/event.do?eventCd=2639141",
+        "https://kawaiilab.asobisystem.com/news/detail/93036"
       ],
       "sourceType": "official-schedule",
       "sourcePublishedAt": "2026-10-07",
@@ -33395,7 +33451,8 @@
       "performanceKey": "MORE STAR|2026-11-25|time|18:00|ヒューリックホール東京",
       "sourceRowIds": [
         "fac90e0751523a07",
-        "10bd0d3fce2bfda7"
+        "10bd0d3fce2bfda7",
+        "10bd0d3fce2bfda7--26a9e1b900"
       ],
       "offers": [
         {
@@ -33418,6 +33475,26 @@
         },
         {
           "sourceRowId": "10bd0d3fce2bfda7",
+          "provider": "pia",
+          "url": "https://red-hot.ne.jp/play/detail.php?pid=py28808",
+          "urls": [
+            "https://red-hot.ne.jp/play/detail.php?pid=py28808",
+            "https://t.pia.jp/pia/event/event.do?eventCd=2639141"
+          ],
+          "ticketType": "一般発売",
+          "ticketProvider": "pia",
+          "applyStart": "2026-11-18T18:00",
+          "applicationStatus": "observed",
+          "applicationWindowVerified": true,
+          "applicationDisplayMode": "offers",
+          "applicationWindowSource": "https://red-hot.ne.jp/play/detail.php?pid=py28808",
+          "sourceType": "ticket-history-guard",
+          "sourceChannel": "promoter-general-sale",
+          "primarySource": "promoter",
+          "sourceObservedAt": "2026-11-22T08:23:03+09:00"
+        },
+        {
+          "sourceRowId": "10bd0d3fce2bfda7--26a9e1b900",
           "provider": "pia",
           "url": "https://kawaiilab.asobisystem.com/news/detail/93036",
           "urls": [
@@ -34750,10 +34827,20 @@
     "onlineSaleRowsCollapsed": 0,
     "alreadyCanonicalRows": 3,
     "internalScheduleRowsCollapsed": 0,
-    "duplicateEventIdCollisions": 0,
+    "duplicateEventIdCollisions": 1,
     "duplicateEventRowsCollapsed": 0,
-    "duplicateEventIdsDisambiguated": 0,
-    "duplicateEventIdRepairs": [],
+    "duplicateEventIdsDisambiguated": 1,
+    "duplicateEventIdRepairs": [
+      {
+        "originalId": "10bd0d3fce2bfda7",
+        "sourceRows": 2,
+        "logicalRows": 2,
+        "assignedIds": [
+          "10bd0d3fce2bfda7",
+          "10bd0d3fce2bfda7--26a9e1b900"
+        ]
+      }
+    ],
     "onlinePlaceholderOccurrencesMerged": 0,
     "publicEvents": {
       "sourceSpecialRows": 3,
@@ -34765,10 +34852,20 @@
       "onlineSaleRowsCollapsed": 0,
       "alreadyCanonicalRows": 3,
       "internalScheduleRowsCollapsed": 0,
-      "duplicateEventIdCollisions": 0,
+      "duplicateEventIdCollisions": 1,
       "duplicateEventRowsCollapsed": 0,
-      "duplicateEventIdsDisambiguated": 0,
-      "duplicateEventIdRepairs": [],
+      "duplicateEventIdsDisambiguated": 1,
+      "duplicateEventIdRepairs": [
+        {
+          "originalId": "performance-external-disaster-relief-concert-2027-2027-01-19-18-00",
+          "sourceRows": 2,
+          "logicalRows": 2,
+          "assignedIds": [
+            "performance-external-disaster-relief-concert-2027-2027-01-19-18-00",
+            "performance-external-disaster-relief-concert-2027-2027-01-19-18-00--04f737599e"
+          ]
+        }
+      ],
       "onlinePlaceholderOccurrencesMerged": 0
     }
   }
