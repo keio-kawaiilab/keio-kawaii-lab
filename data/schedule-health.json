@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-21T18:02:11.102792+09:00",
-  "candidateUpdatedAt": "2026-11-21T18:02:10+09:00",
-  "previousEventCount": 259,
-  "candidateEventCount": 257,
-  "protectedPreviousCount": 251,
+  "generatedAt": "2026-11-21T19:15:31.381851+09:00",
+  "candidateUpdatedAt": "2026-11-21T19:15:31+09:00",
+  "previousEventCount": 258,
+  "candidateEventCount": 259,
+  "protectedPreviousCount": 249,
   "errorCount": 0,
   "warningCount": 26,
   "errors": [],
@@ -36,9 +36,10 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: duplicate Pia lot pia:30327: KAWAII LAB.合同 / KAWAII LAB. Christmas SESSION 2026 / 現在受付なし"
   ],
-  "candidateSha256": "916e2967601c2661737daf794e9c6d40697c23da0144fb91cfcfe4658b20da1e",
+  "candidateSha256": "51720fb8e08904971d91fe2cc0eb50dad916dbe3a7196d4c3e330c393d9ff186",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
+    "url:https://candytune.asobisystem.com/live_information/detail/40733",
     "url:https://candytune.asobisystem.com/live_information/detail/40740",
     "url:https://candytune.asobisystem.com/live_information/detail/44994",
     "url:https://candytune.asobisystem.com/live_information/detail/45890",
@@ -159,6 +160,7 @@
   ],
   "officialXSharedSourceKeysReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
+    "url:https://candytune.asobisystem.com/live_information/detail/40733",
     "url:https://candytune.asobisystem.com/live_information/detail/40740",
     "url:https://candytune.asobisystem.com/live_information/detail/44994",
     "url:https://candytune.asobisystem.com/live_information/detail/45890",
@@ -394,7 +396,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 25,
+  "quarantineCount": 27,
   "quarantineActions": [
     {
       "error": "Pia row contains FC/upgrade-only sale: MORE STAR / MORE STAR 単独ライブ 7th STAR / KAWAII LAB. FC先行",
@@ -437,8 +439,18 @@
       "restoredPreviousRows": 3
     },
     {
+      "error": "deadline moved earlier for pia:event:2629434:003: 2026-11-23T23:59 -> 2026-10-24T10:00 (manual review required)",
+      "action": "restored previous rows for pia:event:2629434:003",
+      "restoredPreviousRows": 1
+    },
+    {
       "error": "future performance dates disappeared for pia:event:2642817:001: 2026-11-29",
       "action": "restored previous rows for pia:event:2642817:001",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "deadline moved earlier for pia:event:2642817:002: 2026-11-28T23:59 -> 2026-11-20T10:00 (manual review required)",
+      "action": "restored previous rows for pia:event:2642817:002",
       "restoredPreviousRows": 1
     },
     {
