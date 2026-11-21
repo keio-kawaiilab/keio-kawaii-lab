@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-21T08:28:13+09:00",
+  "checkedAt": "2026-11-21T09:00:41+09:00",
   "deepDiagnostics": {
     "updatedAt": "2026-11-20T09:55:24+09:00",
     "scannedPages": {
@@ -1859,6 +1859,44 @@
       "eventTitle": "MORE STAR 単独ライブ 7th STAR",
       "displayTitle": "MORE STAR 単独ライブ 7th STAR",
       "eventCategory": "solo-live",
+      "ticketType": "一般発売",
+      "ticketProvider": "pia",
+      "applyStart": "2026-11-18T18:00",
+      "applyEnd": null,
+      "resultDate": null,
+      "paymentEnd": null,
+      "applicationStatus": "observed",
+      "applicationDisplayMode": "offers",
+      "applicationWindowVerified": true,
+      "applicationWindowSource": "https://red-hot.ne.jp/play/detail.php?pid=py28808",
+      "eventDate": "2026-11-25",
+      "venue": "東京都 ヒューリックホール東京",
+      "openTime": "17:00",
+      "startTime": "18:00",
+      "url": "https://red-hot.ne.jp/play/detail.php?pid=py28808",
+      "urls": [
+        "https://red-hot.ne.jp/play/detail.php?pid=py28808",
+        "https://t.pia.jp/pia/event/event.do?eventCd=2639141"
+      ],
+      "sourceType": "ticket-history-guard",
+      "sourceChannel": "promoter-general-sale",
+      "primarySource": "promoter",
+      "sourceCandidates": [
+        "promoter",
+        "pia"
+      ],
+      "eventScope": "kawaii-lab",
+      "historyPreserved": true,
+      "soldOutObserved": false,
+      "sourceObservedAt": "2026-11-21T09:00:35+09:00"
+    },
+    {
+      "id": "10bd0d3fce2bfda7--26a9e1b900",
+      "group": "MORE STAR",
+      "title": "MORE STAR 単独ライブ 7th STAR",
+      "eventTitle": "MORE STAR 単独ライブ 7th STAR",
+      "displayTitle": "MORE STAR 単独ライブ 7th STAR",
+      "eventCategory": "solo-live",
       "ticketType": "KAWAII LAB. FC先行",
       "ticketProvider": "pia",
       "applyStart": "2026-10-17T18:00",
@@ -1904,7 +1942,8 @@
           "startTime": "18:00"
         }
       ],
-      "officialScheduleUrl": "https://morestar.asobisystem.com/live_information/detail/45677"
+      "officialScheduleUrl": "https://morestar.asobisystem.com/live_information/detail/45677",
+      "idCollisionRepairedFrom": "10bd0d3fce2bfda7"
     },
     {
       "id": "0682808f6820420f",
@@ -2060,19 +2099,19 @@
       "eventScope": "kawaii-lab"
     },
     {
-      "id": "7bf6cd119ab3be91",
+      "id": "f252890aae3f1ee0",
       "group": "CUTIE STREET",
       "title": "CUTIE STREET 佐野愛花 生誕祭 2026",
       "eventTitle": "CUTIE STREET 佐野愛花 生誕祭 2026",
       "displayTitle": "CUTIE STREET 佐野愛花 生誕祭 2026",
       "eventCategory": "solo-live",
-      "ticketType": "現在受付なし",
+      "ticketType": "一般発売",
       "ticketProvider": "pia",
-      "applyStart": null,
+      "applyStart": "2026-11-09T20:00",
       "applyEnd": null,
       "resultDate": null,
       "paymentEnd": null,
-      "applicationStatus": "none",
+      "applicationStatus": "sold_out",
       "applicationDisplayMode": "offers",
       "applicationWindowVerified": true,
       "applicationWindowSource": "https://red-hot.ne.jp/play/detail.php?pid=py28690",
@@ -2083,22 +2122,19 @@
       "url": "https://red-hot.ne.jp/play/detail.php?pid=py28690",
       "urls": [
         "https://red-hot.ne.jp/play/detail.php?pid=py28690",
-        "https://t.pia.jp/pia/event/event.do?eventCd=2635654",
-        "https://ticket-account.pia.jp/pia/digipoke/list.do",
-        "https://cutiestreet.asobisystem.com/news/detail/93573",
-        "https://cutiestreet.asobisystem.com/live_information/detail/46341"
+        "https://t.pia.jp/pia/event/event.do?eventCd=2635654"
       ],
-      "sourceType": "derived",
+      "sourceType": "ticket-history-guard",
       "sourceChannel": "promoter-general-sale",
-      "primarySource": "pia",
+      "primarySource": "promoter",
       "sourceCandidates": [
-        "official",
+        "promoter",
         "pia"
       ],
       "eventScope": "kawaii-lab",
       "historyPreserved": true,
       "soldOutObserved": true,
-      "sourceObservedAt": "2026-11-19T09:26:36+09:00"
+      "sourceObservedAt": "2026-11-21T09:00:33+09:00"
     },
     {
       "id": "a7b325c43cc6c33e",
@@ -11495,21 +11531,21 @@
     "lawson/SWEET STEADY: ReadTimeout: HTTPSConnectionPool(host='l-tike.com', port=443): Read timed out. (read timeout=18)"
   ],
   "promoterGeneralSaleDiagnostics": {
-    "checkedAt": "2026-11-21T08:27:41+09:00",
+    "checkedAt": "2026-11-21T09:00:40+09:00",
     "knownPerformancesChecked": 63,
     "generalSalesObserved": 7,
-    "generalSalesAdded": 5,
-    "generalSalesEnriched": 2,
+    "generalSalesAdded": 2,
+    "generalSalesEnriched": 0,
     "mismatchedPromoterRowsRemoved": 1,
     "failures": []
   },
   "publicEventModelReport": {
-    "rawEventCount": 260,
+    "rawEventCount": 261,
     "passthroughEventCount": 75,
     "performanceEntityCount": 65,
-    "sourceOccurrenceCount": 271,
-    "mergedSourceOccurrences": 206,
-    "offerCount": 97,
+    "sourceOccurrenceCount": 272,
+    "mergedSourceOccurrences": 207,
+    "offerCount": 99,
     "outOfScopeSoloEventCount": 2
   },
   "publicEventModelVersion": 1,
@@ -11657,7 +11693,7 @@
   },
   "renderWarnings": [
     {
-      "checkedAt": "2026-11-21T08:28:13+09:00",
+      "checkedAt": "2026-11-21T09:00:41+09:00",
       "scope": "CANDY TUNE tour render verification",
       "message": "expected one CANDY TUNE tour performance for 2026-10-04 OPEN 16:30 / START 17:30, found 0"
     }
@@ -24816,7 +24852,7 @@
       }
     ]
   },
-  "updatedAt": "2026-11-21T08:28:13+09:00",
+  "updatedAt": "2026-11-21T09:00:41+09:00",
   "publicEvents": [
     {
       "id": "fa421e6fd8955232",
@@ -24970,10 +25006,10 @@
       "startTime": "14:00",
       "url": "https://tgc.girlswalker.com/toyama/2026/ticket/",
       "urls": [
-        "https://tgc.girlswalker.com/toyama/2026/ticket/",
         "https://candytune.asobisystem.com/live_information/detail/44995",
         "https://sweetsteady.asobisystem.com/live_information/detail/44463",
-        "https://morestar.asobisystem.com/live_information/detail/45675"
+        "https://morestar.asobisystem.com/live_information/detail/45675",
+        "https://tgc.girlswalker.com/toyama/2026/ticket/"
       ],
       "sourceType": "official-schedule",
       "primarySource": "official",
@@ -25020,12 +25056,16 @@
           "sourceChannel": "known-official-correction"
         }
       ],
+      "ticketType": "追加販売（先着）",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers",
       "sourceRowIds": [
         "ecdd86be6e667177",
         "26d0069375101fa4"
       ],
       "mergedPublicEventIds": [
-        "performance-external-tgc-toyama-2026-2026-11-21-14-00-ykkaparena"
+        "ecdd86be6e667177",
+        "26d0069375101fa4"
       ],
       "displayTitle": "TGC TOYAMA 2026 by TOKYO GIRLS COLLECTION",
       "participants": [
@@ -25033,10 +25073,7 @@
         "SWEET STEADY",
         "MORE STAR"
       ],
-      "performanceKey": "external|tgc-toyama-2026|2026-11-21|14:00|ykkaparena",
-      "ticketType": "追加販売（先着）",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "performanceKey": "external|tgc-toyama-2026|2026-11-21|14:00|ykkaparena"
     },
     {
       "id": "593ec53a5d74ac13",
@@ -25377,6 +25414,9 @@
           "sourceObservedAt": "2026-11-21T08:23:52+09:00"
         }
       ],
+      "ticketType": "複数受付",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers",
       "sourceRowIds": [
         "cfbbfe7a4e136b4a",
         "2c117f3728ce3c02",
@@ -25385,13 +25425,14 @@
         "baac3381c93d98a3"
       ],
       "mergedPublicEventIds": [
-        "performance-external-chikappa-2026-2026-11-23-11-00-b"
+        "cfbbfe7a4e136b4a",
+        "2c117f3728ce3c02",
+        "4919495adeca9a4c",
+        "8a40af447079424c",
+        "baac3381c93d98a3"
       ],
       "displayTitle": "ちかっぱ祭2026",
-      "performanceKey": "external|chikappa-2026|2026-11-23|11:00|福岡マリンメッセ福岡b館",
-      "ticketType": "複数受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "performanceKey": "external|chikappa-2026|2026-11-23|11:00|福岡マリンメッセ福岡b館"
     },
     {
       "id": "2e56f358fc90388c",
@@ -25497,9 +25538,9 @@
       "venue": "東京都 SGCホール有明",
       "url": "https://www.gift-idol.jp/outline.html",
       "urls": [
-        "https://www.gift-idol.jp/outline.html",
         "https://fruitszipper.asobisystem.com/live_information/detail/44009",
-        "https://cutiestreet.asobisystem.com/live_information/detail/43800"
+        "https://cutiestreet.asobisystem.com/live_information/detail/43800",
+        "https://www.gift-idol.jp/outline.html"
       ],
       "sourceType": "official-schedule",
       "primarySource": "official",
@@ -25530,17 +25571,17 @@
         }
       ],
       "offers": [],
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none",
       "sourceRowIds": [
         "a7b325c43cc6c33e"
       ],
       "mergedPublicEventIds": [
-        "performance-external-gift-idol-2026-2026-11-27-18-00-sgc"
+        "a7b325c43cc6c33e"
       ],
       "displayTitle": "GIFT ～Girls Idol Festival Tokyo～ supported by ABEMA",
-      "performanceKey": "external|gift-idol-2026|2026-11-27|18:00|sgcホール有明",
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
+      "performanceKey": "external|gift-idol-2026|2026-11-27|18:00|sgcホール有明"
     },
     {
       "id": "performance-external-gift-idol-2026-2026-11-28-13-00-sgc-toyotaarenatokyo",
@@ -25571,10 +25612,10 @@
       ],
       "url": "https://www.gift-idol.jp/outline.html",
       "urls": [
-        "https://www.gift-idol.jp/outline.html",
         "https://www.gift-idol.jp/",
         "https://candytune.asobisystem.com/live_information/detail/45190",
-        "https://morestar.asobisystem.com/live_information/detail/47367"
+        "https://morestar.asobisystem.com/live_information/detail/47367",
+        "https://www.gift-idol.jp/outline.html"
       ],
       "officialScheduleUrl": "https://candytune.asobisystem.com/live_information/detail/45190",
       "sourceType": "official-organizer",
@@ -25596,17 +25637,18 @@
       "entityType": "performance",
       "performanceEntityVersion": 1,
       "offers": [],
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none",
       "sourceRowIds": [
         "known-gift-more-star-20261128",
         "c0a088d3e52c2c19"
       ],
       "mergedPublicEventIds": [
-        "performance-external-gift-idol-2026-2026-11-28-13-00-sgc-toyotaarenatokyo"
+        "known-gift-more-star-20261128",
+        "c0a088d3e52c2c19"
       ],
-      "performanceKey": "external|gift-idol-2026|2026-11-28|13:00|複数会場sgcホール有明toyotaarenatokyo",
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
+      "performanceKey": "external|gift-idol-2026|2026-11-28|13:00|複数会場sgcホール有明toyotaarenatokyo"
     },
     {
       "id": "performance-external-gift-idol-2026-2026-11-29-13-00-sgc-toyotaarenatokyo",
@@ -25618,10 +25660,10 @@
       "startTime": "13:00",
       "url": "https://www.gift-idol.jp/outline.html",
       "urls": [
-        "https://www.gift-idol.jp/outline.html",
         "https://fruitszipper.asobisystem.com/live_information/detail/44010",
         "https://sweetsteady.asobisystem.com/live_information/detail/44466",
-        "https://www.gift-idol.jp/"
+        "https://www.gift-idol.jp/",
+        "https://www.gift-idol.jp/outline.html"
       ],
       "sourceType": "official-schedule",
       "primarySource": "official",
@@ -25656,22 +25698,23 @@
       "performanceEntityVersion": 1,
       "openTime": "11:30",
       "offers": [],
+      "ticketType": "現在受付なし",
+      "applicationDisplayMode": "schedule-only",
+      "applicationStatus": "none",
       "sourceRowIds": [
         "6ee46d3223139c1c",
         "10ef61196272f561"
       ],
       "mergedPublicEventIds": [
-        "performance-external-gift-idol-2026-2026-11-29-13-00-sgc-toyotaarenatokyo"
+        "6ee46d3223139c1c",
+        "10ef61196272f561"
       ],
       "displayTitle": "GIFT ～Girls Idol Festival Tokyo～ supported by ABEMA",
       "participants": [
         "FRUITS ZIPPER",
         "SWEET STEADY"
       ],
-      "performanceKey": "external|gift-idol-2026|2026-11-29|13:00|複数会場sgcホール有明toyotaarenatokyo",
-      "ticketType": "現在受付なし",
-      "applicationDisplayMode": "schedule-only",
-      "applicationStatus": "none"
+      "performanceKey": "external|gift-idol-2026|2026-11-29|13:00|複数会場sgcホール有明toyotaarenatokyo"
     },
     {
       "id": "198b1371e4c6edcc",
@@ -26808,9 +26851,9 @@
         "official"
       ],
       "urls": [
-        "https://ticketdive.com/event/1210_ssuggoi_8th_lovez",
         "https://kawaiilab.asobisystem.com/live_information/detail/47375",
-        "https://morestar.asobisystem.com/live_information/detail/47350"
+        "https://morestar.asobisystem.com/live_information/detail/47350",
+        "https://ticketdive.com/event/1210_ssuggoi_8th_lovez"
       ],
       "officialScheduleUrl": "https://kawaiilab.asobisystem.com/live_information/detail/47375",
       "discoverySource": "kawaii-lab-official-schedule",
@@ -26853,18 +26896,19 @@
           "sourcePublishedAt": "2026-12-10"
         }
       ],
+      "ticketType": "チケット受付",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers",
       "sourceRowIds": [
         "2262486ffd2bf72fb94111",
         "5d9deb04397064c2"
       ],
       "mergedPublicEventIds": [
-        "performance-external-ssuggoi-8th-2026-2026-12-10-12-15-lovez"
+        "2262486ffd2bf72fb94111",
+        "5d9deb04397064c2"
       ],
       "displayTitle": "ッスッゴイライブ -8th Anniversary SP-",
-      "performanceKey": "external|ssuggoi-8th-2026|2026-12-10|12:15|渋谷lovez",
-      "ticketType": "チケット受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "performanceKey": "external|ssuggoi-8th-2026|2026-12-10|12:15|渋谷lovez"
     },
     {
       "id": "ffa1ae2080852600",
@@ -27202,7 +27246,6 @@
       "startTime": "18:00",
       "url": "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2671791",
       "urls": [
-        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2671791",
         "https://w.pia.jp/t/charityconcert2027/",
         "https://fruitszipper.asobisystem.com/live_information/detail/46305",
         "https://candytune.asobisystem.com/live_information/detail/46043",
@@ -27212,7 +27255,7 @@
         "https://sweetsteady.asobisystem.com/live_information/detail/47118",
         "https://eplus.jp/sf/detail/4639060001-P0030001P021001?P1=0175",
         "https://eplus.jp/sf/detail/4639060001-P0030001P021001",
-        "https://eplus.jp/sf/detail/4639060001-P0030001P021002"
+        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2671791"
       ],
       "sourceType": "auto",
       "sourcePublishedAt": "2026-10-19",
@@ -27277,7 +27320,63 @@
           "sourceType": "auto",
           "primarySource": "official",
           "sourcePublishedAt": "2026-10-19"
-        },
+        }
+      ],
+      "ticketType": "チケット受付",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers",
+      "sourceRowIds": [
+        "fcc5896f4bf2d09b"
+      ],
+      "mergedPublicEventIds": [
+        "fcc5896f4bf2d09b"
+      ],
+      "eventTitle": "災害支援基金コンサート",
+      "displayTitle": "災害支援基金コンサート",
+      "performanceKey": "external|disaster-relief-concert-2027|2027-01-19|18:00|日本武道館"
+    },
+    {
+      "id": "performance-external-disaster-relief-concert-2027-2027-01-19-18-00",
+      "group": "KAWAII LAB.合同",
+      "title": "災害支援基金コンサート",
+      "eventDate": "2027-01-19",
+      "venue": "東京都 日本武道館",
+      "openTime": "17:00",
+      "startTime": "18:00",
+      "url": "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2671791",
+      "urls": [
+        "https://eplus.jp/sf/detail/4639060001-P0030001P021002",
+        "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2671791"
+      ],
+      "sourceType": "eplus",
+      "primarySource": "eplus",
+      "sourceCandidates": [
+        "eplus"
+      ],
+      "sourceObservedAt": "2026-11-21T08:23:52+09:00",
+      "sourceStale": false,
+      "eventScope": "external",
+      "eventScopeCorrectionId": "P2-external-disaster-relief-concert-2027",
+      "eventScopeSource": "verified-organizer",
+      "eventScopeSourceUrl": "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2671791",
+      "organizer": "災害支援基金 実行委員会",
+      "externalEventFamily": "disaster-relief-concert-2027",
+      "entityType": "performance",
+      "performanceEntityVersion": 1,
+      "eventEndDate": "2027-01-19",
+      "eventDates": [
+        "2027-01-19"
+      ],
+      "eventCount": 1,
+      "schedule": [
+        {
+          "date": "2027-01-19",
+          "venue": "東京都 日本武道館",
+          "openTime": "17:00",
+          "startTime": "18:00"
+        }
+      ],
+      "offers": [
         {
           "sourceRowId": "44d5f040907965b9",
           "provider": "eplus",
@@ -27300,21 +27399,27 @@
           "sourceObservedAt": "2026-11-21T08:23:52+09:00"
         }
       ],
+      "ticketType": "先着 ★<1/20公演>一般発売",
+      "applicationDisplayMode": "offers",
+      "applicationStatus": "offers",
       "sourceRowIds": [
-        "fcc5896f4bf2d09b",
         "44d5f040907965b9",
         "3b5a2754ba4ab750",
         "c98c19e2807f6614"
       ],
       "mergedPublicEventIds": [
-        "performance-external-disaster-relief-concert-2027-2027-01-19-18-00"
+        "44d5f040907965b9",
+        "3b5a2754ba4ab750",
+        "c98c19e2807f6614"
       ],
       "eventTitle": "災害支援基金コンサート",
       "displayTitle": "災害支援基金コンサート",
-      "performanceKey": "external|disaster-relief-concert-2027|2027-01-19|18:00|日本武道館",
-      "ticketType": "複数受付",
-      "applicationDisplayMode": "offers",
-      "applicationStatus": "offers"
+      "participants": [
+        "FRUITS ZIPPER",
+        "CANDY TUNE",
+        "SWEET STEADY"
+      ],
+      "performanceKey": "external|disaster-relief-concert-2027|2027-01-19|18:00|日本武道館"
     },
     {
       "id": "64e109f5224038c6",
@@ -29475,7 +29580,7 @@
         "a32f16b9ec9c9756",
         "a536cc1b2de853db",
         "known-cutie-sano-upgrade-20261126",
-        "7bf6cd119ab3be91"
+        "f252890aae3f1ee0"
       ],
       "offers": [
         {
@@ -29515,6 +29620,26 @@
           "sourceChannel": "known-official-correction",
           "primarySource": "official",
           "sourcePublishedAt": "2026-10-26"
+        },
+        {
+          "sourceRowId": "f252890aae3f1ee0",
+          "provider": "pia",
+          "url": "https://red-hot.ne.jp/play/detail.php?pid=py28690",
+          "urls": [
+            "https://red-hot.ne.jp/play/detail.php?pid=py28690",
+            "https://t.pia.jp/pia/event/event.do?eventCd=2635654"
+          ],
+          "ticketType": "一般発売",
+          "ticketProvider": "pia",
+          "applyStart": "2026-11-09T20:00",
+          "applicationStatus": "sold_out",
+          "applicationWindowVerified": true,
+          "applicationDisplayMode": "offers",
+          "applicationWindowSource": "https://red-hot.ne.jp/play/detail.php?pid=py28690",
+          "sourceType": "ticket-history-guard",
+          "sourceChannel": "promoter-general-sale",
+          "primarySource": "promoter",
+          "sourceObservedAt": "2026-11-21T09:00:33+09:00"
         }
       ],
       "eventEndDate": "2026-11-26",
@@ -32748,9 +32873,9 @@
       "urls": [
         "https://morestar.asobisystem.com/news/detail/92107",
         "https://morestar.asobisystem.com/live_information/detail/45677",
-        "https://kawaiilab.asobisystem.com/news/detail/93036",
         "https://red-hot.ne.jp/play/detail.php?pid=py28808",
-        "https://t.pia.jp/pia/event/event.do?eventCd=2639141"
+        "https://t.pia.jp/pia/event/event.do?eventCd=2639141",
+        "https://kawaiilab.asobisystem.com/news/detail/93036"
       ],
       "sourceType": "official-schedule",
       "sourcePublishedAt": "2026-10-07",
@@ -32782,7 +32907,8 @@
       "performanceKey": "MORE STAR|2026-11-25|time|18:00|ヒューリックホール東京",
       "sourceRowIds": [
         "fac90e0751523a07",
-        "10bd0d3fce2bfda7"
+        "10bd0d3fce2bfda7",
+        "10bd0d3fce2bfda7--26a9e1b900"
       ],
       "offers": [
         {
@@ -32805,6 +32931,26 @@
         },
         {
           "sourceRowId": "10bd0d3fce2bfda7",
+          "provider": "pia",
+          "url": "https://red-hot.ne.jp/play/detail.php?pid=py28808",
+          "urls": [
+            "https://red-hot.ne.jp/play/detail.php?pid=py28808",
+            "https://t.pia.jp/pia/event/event.do?eventCd=2639141"
+          ],
+          "ticketType": "一般発売",
+          "ticketProvider": "pia",
+          "applyStart": "2026-11-18T18:00",
+          "applicationStatus": "observed",
+          "applicationWindowVerified": true,
+          "applicationDisplayMode": "offers",
+          "applicationWindowSource": "https://red-hot.ne.jp/play/detail.php?pid=py28808",
+          "sourceType": "ticket-history-guard",
+          "sourceChannel": "promoter-general-sale",
+          "primarySource": "promoter",
+          "sourceObservedAt": "2026-11-21T09:00:35+09:00"
+        },
+        {
+          "sourceRowId": "10bd0d3fce2bfda7--26a9e1b900",
           "provider": "pia",
           "url": "https://kawaiilab.asobisystem.com/news/detail/93036",
           "urls": [
@@ -34142,10 +34288,20 @@
     "onlineSaleRowsCollapsed": 0,
     "alreadyCanonicalRows": 3,
     "internalScheduleRowsCollapsed": 0,
-    "duplicateEventIdCollisions": 0,
+    "duplicateEventIdCollisions": 1,
     "duplicateEventRowsCollapsed": 0,
-    "duplicateEventIdsDisambiguated": 0,
-    "duplicateEventIdRepairs": [],
+    "duplicateEventIdsDisambiguated": 1,
+    "duplicateEventIdRepairs": [
+      {
+        "originalId": "10bd0d3fce2bfda7",
+        "sourceRows": 2,
+        "logicalRows": 2,
+        "assignedIds": [
+          "10bd0d3fce2bfda7",
+          "10bd0d3fce2bfda7--26a9e1b900"
+        ]
+      }
+    ],
     "onlinePlaceholderOccurrencesMerged": 0,
     "publicEvents": {
       "sourceSpecialRows": 3,
