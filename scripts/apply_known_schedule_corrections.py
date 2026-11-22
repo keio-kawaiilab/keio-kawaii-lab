@@ -1530,6 +1530,35 @@ def _upsert_disaster_relief_general_sales(events: list[dict]) -> tuple[list[dict
             and event.get("ticketProvider") == provider
             and "一般発売" in str(event.get("ticketType") or "")
         ]
+        equivalent_discovered = [
+            event for event in matches
+            if event.get("id") != expected["id"]
+            and event.get("applyStart") == expected["applyStart"]
+            and event.get("applyEnd") == expected["applyEnd"]
+        ]
+        if equivalent_discovered:
+            # The known row is only a fallback for a temporarily missed
+            # playguide result.  Once the collector has the same provider and
+            # window, keep one richer collected row and remove both a fallback
+            # persisted by a previous generation and repeated collector rows.
+            winner = max(
+                equivalent_discovered,
+                key=lambda event: (len(_urls(event)), bool(event.get("sourceObservedAt"))),
+            )
+            equivalent = [
+                event for event in matches
+                if event.get("applyStart") == expected["applyStart"]
+                and event.get("applyEnd") == expected["applyEnd"]
+            ]
+            winner["urls"] = list(dict.fromkeys(
+                url for event in equivalent for url in _urls(event)
+            ))
+            duplicate_ids = {
+                event.get("id") for event in equivalent
+                if event is not winner
+            }
+            out = [event for event in out if event.get("id") not in duplicate_ids]
+            continue
         if matches:
             continue
         out.append(expected)

@@ -24,6 +24,7 @@ from apply_known_schedule_corrections import (
     SWEET_IDOL_HALLOWEEN_OFFICIAL,
     SWEET_IDOL_HALLOWEEN_SCHEDULE,
     SWEET_IDOL_HALLOWEEN_TICKET,
+    _disaster_relief_general_sales,
     apply_known_corrections,
 )
 
@@ -1167,6 +1168,50 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
         self.assertEqual({"pia", "eplus"}, {row["ticketProvider"] for row in general})
         self.assertEqual(4, report["disasterReliefConcertWrongDayRowsRemoved"])
         self.assertEqual(2, report["disasterReliefConcertGeneralSalesAdded"])
+
+    def test_disaster_relief_general_sale_fallback_yields_to_collected_reception(self):
+        base = {
+            "id": "charity", "group": "FRUITS ZIPPER", "title": "災害支援基金コンサート",
+            "eventDate": "2027-01-19", "url": DISASTER_RELIEF_NEWS,
+        }
+        collected_eplus = {
+            "id": "collected-eplus", "group": "KAWAII LAB.合同",
+            "title": "災害支援基金コンサート", "eventDate": "2027-01-19",
+            "ticketType": "先着 ★<1/19公演>一般発売", "ticketProvider": "eplus",
+            "applyStart": "2026-11-21T10:00", "applyEnd": "2027-01-15T18:00",
+            "url": "https://eplus.jp/sf/detail/4639060001-P0030001P021001?P1=0175",
+        }
+        repeated_eplus = {
+            **collected_eplus,
+            "id": "collected-eplus-repeat",
+            "url": "https://eplus.jp/sf/detail/4639060001-P0030001P021001",
+        }
+        persisted_fallback = next(
+            row for row in _disaster_relief_general_sales()
+            if row["ticketProvider"] == "eplus"
+        )
+
+        corrected, report = apply_known_corrections([
+            base, collected_eplus, repeated_eplus, persisted_fallback,
+        ])
+        eplus_general = [
+            row for row in corrected
+            if row.get("ticketProvider") == "eplus"
+            and "一般発売" in row.get("ticketType", "")
+        ]
+        self.assertEqual(["collected-eplus"], [row["id"] for row in eplus_general])
+        self.assertEqual(1, report["disasterReliefConcertGeneralSalesAdded"])
+
+        again, report = apply_known_corrections(corrected)
+        self.assertEqual(
+            ["collected-eplus"],
+            [
+                row["id"] for row in again
+                if row.get("ticketProvider") == "eplus"
+                and "一般発売" in row.get("ticketType", "")
+            ],
+        )
+        self.assertEqual(0, report["disasterReliefConcertGeneralSalesAdded"])
 
     def test_removes_birthday_row_whose_event_year_contradicts_title(self):
         impossible = {
