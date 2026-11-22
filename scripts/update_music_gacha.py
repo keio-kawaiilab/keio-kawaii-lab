@@ -36,7 +36,7 @@ EXCLUDE = re.compile(
     r"dance\s*(?:practice|video|performance)|performance\s*video|"
     r"lyric\s*video|live\s*(?:ver\.?|video|performance)|"
     r"instrumental|karaoke|cover\s*(?:ver\.?|song|video)|"
-    r"short\s*ver\.?|(?:korean|english|special)\s*ver\.?|reaction|"
+    r"short\s*ver\.?|(?:korean|english|special|acoustic|dance|remix)\s*ver\.?|reaction|remix|"
     r"メイキング|舞台裏|ティザー|予告|ダンスプラクティス|ダンプラ|"
     r"踊ってみた|ライブ映像|歌ってみた|歌詞動画|振付動画|切り抜き|"
     r"ショート版|ダイジェスト|韓国語版|日本語版|英語版|別バージョン)"
