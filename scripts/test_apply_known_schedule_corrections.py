@@ -70,6 +70,21 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
         self.assertIn(legitimate, corrected)
         self.assertEqual(0, report["pollutedFruitsTicketSummaryRemoved"])
 
+    def test_rolling_ticket_summary_christmas_session_shadow_is_removed(self):
+        shadow = {
+            "id": "christmas-session-shadow",
+            "group": "FRUITS ZIPPER",
+            "title": "★FRUITS ZIPPER チケット先行情報★",
+            "eventDate": "2026-12-13",
+            "venue": "有明アリーナ",
+            "openTime": "14:00",
+            "startTime": "16:00",
+            "url": FRUITS_ROLLING_TICKET_SUMMARY,
+        }
+        corrected, report = apply_known_corrections([shadow])
+        self.assertEqual([], corrected)
+        self.assertEqual(1, report["pollutedFruitsTicketSummaryRemoved"])
+
     def test_rolling_ticket_summary_cannot_bundle_unrelated_performances(self):
         polluted = {
             "id": "polluted-multi-event-summary",

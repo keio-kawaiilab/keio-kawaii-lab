@@ -35,6 +35,12 @@ FRUITS_STADIUM_SCHEDULE_URLS = {
     "https://fruitszipper.asobisystem.com/live_information/detail/47571",
     "https://fruitszipper.asobisystem.com/live_information/detail/47572",
 }
+FRUITS_CHRISTMAS_SESSION_SHADOW = {
+    "eventDate": "2026-12-13",
+    "venue": "有明アリーナ",
+    "openTime": "14:00",
+    "startTime": "16:00",
+}
 DISASTER_RELIEF_NEWS = "https://fruitszipper.asobisystem.com/news/detail/93365"
 DISASTER_RELIEF_PIA = "https://w.pia.jp/t/charityconcert2027/"
 CANDY_ONLINE_20261020_DAY = "2026-10-20"
@@ -129,8 +135,11 @@ def _is_polluted_fruits_ticket_summary(event: dict) -> bool:
     SCHEDULE rows and, through an older KAWAII LAB. tour mapping, produced one
     synthetic 15-date FRUITS ZIPPER event.  The same source later also joined
     three unrelated birthday/arena performances into one multi-venue card.
-    A single dated offer from the summary is left alone; only a cross-event
-    aggregate, or the known stadium contamination, is rejected.  The four real
+    A single dated offer from the summary is normally left alone.  The exception
+    is the known 2026-12-13 shadow row whose date, venue and times exactly match
+    KAWAII LAB. Christmas SESSION 2026 but has no event title or occurrence
+    source.  Cross-event aggregates and the known stadium contamination are also
+    rejected.  The four real
     stadium occurrences remain represented by SCHEDULE 47569-47572; ticket
     details are explicitly still unannounced in NEWS 96457.
     """
@@ -148,7 +157,11 @@ def _is_polluted_fruits_ticket_summary(event: dict) -> bool:
     stadium_contamination = bool(urls.intersection(FRUITS_STADIUM_SCHEDULE_URLS)) and bool(
         days.intersection({"2027-06-12", "2027-06-13", "2027-07-10", "2027-07-11"})
     )
-    return multi_event_aggregate or stadium_contamination
+    christmas_session_shadow = (
+        not str(event.get("eventTitle") or "").strip()
+        and all(str(event.get(key) or "").strip() == value for key, value in FRUITS_CHRISTMAS_SESSION_SHADOW.items())
+    )
+    return multi_event_aggregate or stadium_contamination or christmas_session_shadow
 
 
 def _repair_more_star_dreamy_online_title(event: dict) -> dict:
