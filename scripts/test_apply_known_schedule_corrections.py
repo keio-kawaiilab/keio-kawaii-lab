@@ -4,6 +4,7 @@ import unittest
 from apply_known_schedule_corrections import (
     CANDY_AICHI_SAME_DAY_NEWS,
     CANDY_AICHI_SCHEDULE,
+    CANDY_KYUSHU_LAWSON_SALES,
     CUTIE_PACIFICO_SCHEDULE,
     CUTIE_FUKUOKA_DAYS,
     CUTIE_FUKUOKA_PIA,
@@ -28,6 +29,87 @@ from apply_known_schedule_corrections import (
 
 
 class KnownScheduleCorrectionsTest(unittest.TestCase):
+    def test_kawacolle_shizuoka_is_one_joint_performance_with_verified_rounds(self):
+        rows = [
+            {
+                "id": "joint-news", "group": "KAWAII LAB.合同",
+                "participants": ["FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR"],
+                "title": "KAWAII LAB. COLLECTION SHIZUOKA 2027 produced by TGC",
+                "eventDate": "2027-01-10", "venue": "ツインメッセ静岡 北館大展示場",
+                "openTime": "12:00", "startTime": "14:00",
+                "url": "https://kawaiilab.asobisystem.com/news/detail/95751",
+            },
+            {
+                "id": "cutie-wrong-time", "group": "CUTIE STREET",
+                "title": "KAWAII LAB. COLLECTION SHIZUOKA 2027 produced by TGC",
+                "eventDate": "2027-01-10", "venue": "静岡県 ツインメッセ静岡 北館大展示場",
+                "openTime": "12:00", "startTime": "12:00",
+                "url": "https://cutiestreet.asobisystem.com/live_information/detail/47607",
+                "sourceType": "official-schedule",
+            },
+            {
+                "id": "fruits-wrong-year", "group": "FRUITS ZIPPER",
+                "title": "カワコレTGC静岡@ツインメッセ静岡 北館大展示場",
+                "eventDate": "2027-01-10", "venue": "静岡県 ツインメッセ静岡 北館大展示場",
+                "openTime": "12:00", "startTime": "14:00",
+                "applyStart": "2027-11-17T18:00", "applyEnd": "2027-11-22T23:59",
+                "url": "https://fruitszipper.asobisystem.com/live_information/detail/47619",
+            },
+        ]
+        corrected, report = apply_known_corrections(rows)
+        shizuoka = [event for event in corrected if event.get("eventDate") == "2027-01-10"]
+        self.assertEqual(1, len(shizuoka))
+        event = shizuoka[0]
+        self.assertEqual("KAWAII LAB.合同", event["group"])
+        self.assertEqual("12:00", event["openTime"])
+        self.assertEqual("14:00", event["startTime"])
+        self.assertEqual(7, len(event["participants"]))
+        self.assertEqual(8, len(event["offers"]))
+        self.assertEqual("現在受付なし", event["ticketType"])
+        self.assertEqual("none", event["applicationStatus"])
+        self.assertEqual("2026-11-17T18:00", event["offers"][0]["applyStart"])
+        self.assertEqual("2026-12-06T23:59", event["offers"][-1]["applyEnd"])
+        self.assertEqual(2, report["kawacolleShizuokaRowsCollapsed"])
+
+        again, second_report = apply_known_corrections(corrected)
+        self.assertEqual(
+            [event for event in corrected if event.get("eventDate") == "2027-01-10"],
+            [event for event in again if event.get("eventDate") == "2027-01-10"],
+        )
+        self.assertEqual(0, second_report["kawacolleShizuokaRowsCollapsed"])
+
+    def test_candy_kyushu_lawson_sales_are_backfilled_per_performance(self):
+        performances = [
+            {
+                "id": f"candy-{day}", "group": "CANDY TUNE",
+                "title": "CANDY TUNE JAPAN TOUR 2026 -AUTUMN- CANDY CIRCUS",
+                "eventDate": day, "venue": details["venue"],
+                "openTime": details["openTime"], "startTime": details["startTime"],
+                "url": f"https://candytune.asobisystem.com/live_information/detail/{day}",
+            }
+            for day, details in CANDY_KYUSHU_LAWSON_SALES.items()
+        ]
+        corrected, report = apply_known_corrections(performances)
+        lawson = [event for event in corrected if event.get("sourceType") == "lawson"]
+        self.assertEqual(2, len(lawson))
+        self.assertEqual(2, report["candyKyushuLawsonSalesUpserted"])
+        self.assertEqual(
+            ["2026-11-30", "2026-12-01"],
+            sorted(event["eventDate"] for event in lawson),
+        )
+        self.assertEqual(
+            {"sold_out", "observed"},
+            {event["applicationStatus"] for event in lawson},
+        )
+        self.assertTrue(all(event["applyEnd"] == "2026-11-23T22:00" for event in lawson))
+
+        again, second_report = apply_known_corrections(corrected)
+        self.assertEqual(
+            {event["url"] for event in lawson},
+            {event["url"] for event in again if event.get("sourceType") == "lawson"},
+        )
+        self.assertEqual(0, second_report["candyKyushuLawsonSalesUpserted"])
+
     def test_polluted_fruits_ticket_summary_is_removed_without_removing_stadium_schedule(self):
         polluted = {
             "id": "polluted-summary",

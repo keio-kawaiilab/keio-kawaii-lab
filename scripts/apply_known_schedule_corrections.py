@@ -61,6 +61,28 @@ FRUITS_SYNERGY_GOODS = {
 CHRISTMAS_SESSION_OFFICIAL = "https://kawaiilab.asobisystem.com/news/detail/84218"
 CHRISTMAS_SESSION_PIA = "https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30327"
 CHRISTMAS_SESSION_DAYS = {"2026-12-12", "2026-12-13"}
+KAWACOLLE_SHIZUOKA_DAY = "2027-01-10"
+KAWACOLLE_SHIZUOKA_NEWS = "https://kawaiilab.asobisystem.com/news/detail/95751"
+KAWACOLLE_SHIZUOKA_ORGANIZER = "https://tgc.girlswalker.com/kawacolle/"
+KAWACOLLE_SHIZUOKA_SCHEDULES = {
+    "https://kawaiilab.asobisystem.com/live_information/detail/47618",
+    "https://cutiestreet.asobisystem.com/live_information/detail/47607",
+    "https://fruitszipper.asobisystem.com/live_information/detail/47619",
+}
+CANDY_KYUSHU_LAWSON_SALES = {
+    "2026-11-30": {
+        "venue": "福岡県 福岡サンパレス",
+        "openTime": "17:30", "startTime": "18:30",
+        "url": "https://cdn.l-tike.com/order/?gBaseVenueCd=84423&gCarrierCd=01&gEntryMthd=02&gLcode=81986&gPfKey=20260814000002271718&gPfName=%EF%BC%A3%EF%BC%A1%EF%BC%AE%EF%BC%A4%EF%BC%B9%E3%80%80%EF%BC%B4%EF%BC%B5%EF%BC%AE%EF%BC%A5&gScheduleNo=1",
+        "applicationStatus": "sold_out",
+    },
+    "2026-12-01": {
+        "venue": "大分県 大分iichikoグランシアタ",
+        "openTime": "17:30", "startTime": "18:30",
+        "url": "https://l-tike.com/order/?gBaseVenueCd=88097&gCarrierCd=08&gEntryMthd=02&gLcode=81987&gPfKey=20260814000002271719&gPfName=%EF%BC%A3%EF%BC%A1%EF%BC%AE%EF%BC%A4%EF%BC%B9%E3%80%80%EF%BC%B4%EF%BC%B5%EF%BC%AE%EF%BC%A5&gScheduleNo=1",
+        "applicationStatus": "observed",
+    },
+}
 SWEET_IDOL_HALLOWEEN_DAY = "2026-10-30"
 SWEET_IDOL_HALLOWEEN_SCHEDULE = "https://sweetsteady.asobisystem.com/live_information/detail/46633"
 SWEET_IDOL_HALLOWEEN_OFFICIAL = "https://idolhalloweenjapan.com/"
@@ -125,6 +147,207 @@ def _urls(event: dict) -> list[str]:
 
 def _day(event: dict) -> str:
     return str(event.get("eventDate") or "")[:10]
+
+
+def _is_kawacolle_shizuoka(event: dict) -> bool:
+    """Identify only the verified 2027-01-10 joint Shizuoka performance."""
+    if _day(event) != KAWACOLLE_SHIZUOKA_DAY:
+        return False
+    title = str(event.get("eventTitle") or event.get("title") or "")
+    urls = set(_urls(event))
+    return (
+        "ツインメッセ静岡" in str(event.get("venue") or "")
+        and (
+            "COLLECTION SHIZUOKA 2027" in title
+            or "カワコレTGC静岡" in title
+            or KAWACOLLE_SHIZUOKA_NEWS in urls
+            or bool(urls.intersection(KAWACOLLE_SHIZUOKA_SCHEDULES))
+        )
+    )
+
+
+def _kawacolle_shizuoka_offers() -> list[dict]:
+    """Return the organizer-verified ticket rounds without guessing payment dates."""
+    rows = [
+        ("KAWAII LAB.合同", "KAWAII LAB. OFFICIAL FANCLUB先行", "2026-11-17T18:00", "2026-11-22T23:59", "2026-11-26T18:00"),
+        ("FRUITS ZIPPER", "FRUITS ZIPPER FC先行", "2026-11-26T10:00", "2026-11-29T23:59", "2026-12-03T18:00"),
+        ("CANDY TUNE", "CANDY TUNE FC先行", "2026-11-26T10:00", "2026-11-29T23:59", "2026-12-03T18:00"),
+        ("SWEET STEADY", "SWEET STEADY FC先行", "2026-11-26T10:00", "2026-11-29T23:59", "2026-12-03T18:00"),
+        ("CUTIE STREET", "CUTIE STREET FC先行", "2026-11-26T10:00", "2026-11-29T23:59", "2026-12-03T18:00"),
+        ("MORE STAR", "MORE STAR FC先行", "2026-11-26T10:00", "2026-11-29T23:59", "2026-12-03T18:00"),
+        ("TGC Premium", "TGC Premium会員先行", "2026-11-26T10:00", "2026-11-29T23:59", "2026-12-03T18:00"),
+        ("TGC公式LINE", "TGC公式LINE先行", "2026-12-03T10:00", "2026-12-06T23:59", "2026-12-09T18:00"),
+    ]
+    offers = []
+    for source_group, ticket_type, apply_start, apply_end, result_date in rows:
+        slug = re.sub(r"[^a-z0-9]+", "-", source_group.casefold()).strip("-") or "joint"
+        offers.append({
+            "sourceRowId": f"known-kawacolle-shizuoka-20270110-{slug}",
+            "sourceGroup": source_group,
+            "provider": "official",
+            "ticketType": ticket_type,
+            "url": KAWACOLLE_SHIZUOKA_ORGANIZER,
+            "urls": [KAWACOLLE_SHIZUOKA_ORGANIZER, KAWACOLLE_SHIZUOKA_NEWS],
+            "applyStart": apply_start,
+            "applyEnd": apply_end,
+            "resultDate": result_date,
+            "applicationWindowVerified": True,
+            "applicationWindowSource": KAWACOLLE_SHIZUOKA_ORGANIZER,
+            "deadlineVerified": True,
+            "deadlineSource": KAWACOLLE_SHIZUOKA_ORGANIZER,
+            "resultDateSource": KAWACOLLE_SHIZUOKA_ORGANIZER,
+            "sourceType": "official-organizer",
+            "primarySource": "official",
+            "sourceChannel": "known-official-correction",
+            "sourcePublishedAt": "2026-11-17",
+        })
+    return offers
+
+
+def _collapse_kawacolle_shizuoka(events: list[dict]) -> tuple[list[dict], int]:
+    """Publish one joint performance for the one physical Shizuoka event.
+
+    The central NEWS collector emitted one row per participant, while group
+    schedule collectors emitted additional rows with a missing time and, for
+    CUTIE STREET, mistook OPEN 12:00 for START 12:00. The organizer page proves
+    these are one performance: OPEN 12:00 / START 14:00.
+    """
+    matches = [event for event in events if _is_kawacolle_shizuoka(event)]
+    if not matches:
+        return events, 0
+
+    all_urls: list[str] = []
+    for value in [KAWACOLLE_SHIZUOKA_NEWS, KAWACOLLE_SHIZUOKA_ORGANIZER, *sorted(KAWACOLLE_SHIZUOKA_SCHEDULES)]:
+        if value not in all_urls:
+            all_urls.append(value)
+    for event in matches:
+        for value in _urls(event):
+            if value not in all_urls:
+                all_urls.append(value)
+
+    canonical = {
+        "id": "known-kawacolle-shizuoka-20270110",
+        "group": "KAWAII LAB.合同",
+        "participants": [
+            "FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY", "CUTIE STREET", "MORE STAR",
+            "KAWAII LAB. MATES", "KAWAII LAB. SOUTH",
+        ],
+        "title": "KAWAII LAB. COLLECTION SHIZUOKA 2027 produced by TGC",
+        "eventTitle": "KAWAII LAB. COLLECTION SHIZUOKA 2027 produced by TGC",
+        "eventDate": KAWACOLLE_SHIZUOKA_DAY,
+        "eventEndDate": KAWACOLLE_SHIZUOKA_DAY,
+        "eventDates": [KAWACOLLE_SHIZUOKA_DAY],
+        "eventCount": 1,
+        "venue": "静岡県 ツインメッセ静岡 北館大展示場",
+        "openTime": "12:00",
+        "startTime": "14:00",
+        "schedule": [{
+            "date": KAWACOLLE_SHIZUOKA_DAY,
+            "venue": "静岡県 ツインメッセ静岡 北館大展示場",
+            "openTime": "12:00",
+            "startTime": "14:00",
+        }],
+        "url": KAWACOLLE_SHIZUOKA_NEWS,
+        "urls": all_urls,
+        "offers": _kawacolle_shizuoka_offers(),
+        # This row is the performance parent; the nested rows are the actual
+        # application offers.  Otherwise the performance builder invents a
+        # ninth non-actionable "複数受付" offer from the parent itself.
+        "ticketType": "現在受付なし",
+        "applicationStatus": "none",
+        "applicationDisplayMode": "offers",
+        "sourceType": "official",
+        "primarySource": "official",
+        "sourceChannel": "known-official-correction",
+        "sourcePublishedAt": "2026-11-17",
+        "eventScope": "kawaii-lab",
+        "performanceFactSources": [KAWACOLLE_SHIZUOKA_ORGANIZER],
+        "officialScheduleUrl": "https://kawaiilab.asobisystem.com/live_information/detail/47618",
+    }
+    result: list[dict] = []
+    inserted = False
+    for event in events:
+        if _is_kawacolle_shizuoka(event):
+            if not inserted:
+                result.append(canonical)
+                inserted = True
+            continue
+        result.append(event)
+    return result, max(0, len(matches) - 1)
+
+
+def _add_candy_kyushu_lawson_sales(events: list[dict]) -> tuple[list[dict], int]:
+    """Backfill exact Lawson general sales while the artist endpoint times out."""
+    result = [deepcopy(event) for event in events]
+    changed = 0
+    for day, details in CANDY_KYUSHU_LAWSON_SALES.items():
+        existing = next((event for event in result if details["url"] in _urls(event)), None)
+        if existing is not None:
+            before = deepcopy(existing)
+            existing.update({
+                "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN",
+                "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN",
+                "venue": details["venue"],
+                "openTime": details["openTime"],
+                "startTime": details["startTime"],
+                "schedule": [{
+                    "date": day, "venue": details["venue"],
+                    "openTime": details["openTime"], "startTime": details["startTime"],
+                }],
+                "applicationStatus": details["applicationStatus"],
+            })
+            changed += int(existing != before)
+            continue
+        represented = any(
+            event.get("group") == "CANDY TUNE"
+            and _day(event) == day
+            and (
+                str(event.get("startTime") or "") == details["startTime"]
+                or any(
+                    isinstance(row, dict)
+                    and str(row.get("date") or "")[:10] == day
+                    and str(row.get("startTime") or "") == details["startTime"]
+                    for row in (event.get("schedule") or [])
+                )
+            )
+            for event in result
+        )
+        if not represented:
+            continue
+        result.append({
+            "id": f"known-candy-lawson-general-{day.replace('-', '')}",
+            "group": "CANDY TUNE",
+            "title": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN",
+            "eventTitle": "CANDY TUNE JAPAN TOUR 2026 - AUTUMN",
+            "eventDate": day,
+            "eventEndDate": day,
+            "eventDates": [day],
+            "eventCount": 1,
+            "venue": details["venue"],
+            "openTime": details["openTime"],
+            "startTime": details["startTime"],
+            "schedule": [{
+                "date": day, "venue": details["venue"],
+                "openTime": details["openTime"], "startTime": details["startTime"],
+            }],
+            "ticketType": "一般発売",
+            "ticketProvider": "lawson",
+            "applyStart": "2026-09-26T10:00",
+            "applyEnd": "2026-11-23T22:00",
+            "applicationStatus": details["applicationStatus"],
+            "applicationWindowVerified": True,
+            "applicationWindowSource": details["url"],
+            "deadlineVerified": True,
+            "deadlineSource": details["url"],
+            "url": details["url"],
+            "urls": [details["url"]],
+            "sourceType": "lawson",
+            "primarySource": "lawson",
+            "sourceChannel": "known-official-correction",
+            "eventScope": "kawaii-lab",
+        })
+        changed += 1
+    return result, changed
 
 
 def _is_polluted_fruits_ticket_summary(event: dict) -> bool:
@@ -1610,6 +1833,8 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "moreStarSeventhFixed": 0,
         "moreStarDreamyOnlineTitleFixed": 0,
         "pollutedFruitsTicketSummaryRemoved": 0,
+        "kawacolleShizuokaRowsCollapsed": 0,
+        "candyKyushuLawsonSalesUpserted": 0,
         "moreStarSeventhFcOfferAdded": 0,
         "disasterReliefConcertFixed": 0,
         "disasterReliefConcertRowsCollapsed": 0,
@@ -2565,6 +2790,12 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
 
     out, pacifico_removed = _collapse_cutie_more_pacifico(out)
     report["cutieMorePacificoRowsCollapsed"] = pacifico_removed
+
+    out, shizuoka_removed = _collapse_kawacolle_shizuoka(out)
+    report["kawacolleShizuokaRowsCollapsed"] = shizuoka_removed
+
+    out, candy_lawson_upserted = _add_candy_kyushu_lawson_sales(out)
+    report["candyKyushuLawsonSalesUpserted"] = candy_lawson_upserted
 
     out, removed, removed_ids = _dedupe_ticket_rows(out)
     report["semanticTicketDuplicatesRemoved"] = removed
