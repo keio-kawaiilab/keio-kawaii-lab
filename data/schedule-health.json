@@ -1,15 +1,14 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-23T00:33:29.960247+09:00",
-  "candidateUpdatedAt": "2026-11-23T00:33:29+09:00",
-  "previousEventCount": 256,
-  "candidateEventCount": 251,
-  "protectedPreviousCount": 246,
+  "generatedAt": "2026-11-23T00:47:22.717348+09:00",
+  "candidateUpdatedAt": "2026-11-23T00:47:22+09:00",
+  "previousEventCount": 251,
+  "candidateEventCount": 252,
+  "protectedPreviousCount": 242,
   "errorCount": 0,
-  "warningCount": 26,
+  "warningCount": 25,
   "errors": [],
   "warnings": [
-    "residual row-scoped audit failure isolated after best-effort quarantine; unrelated updates remain publishable: protected future/active official FC offer disappeared: SWEET STEADY / 2026.10.26 「KAWAII LAB. 5th ANNIVERSARY TOUR」開催決定！FC先行開始！ / FC先行",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ2次",
@@ -36,7 +35,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ2次",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / 一般発売"
   ],
-  "candidateSha256": "04af55a34a2f0e6093502c3bdc8ed0f7ceda92ba5523d7fec5cabe40136b6da1",
+  "candidateSha256": "a0d086dfb0b0213d55ec246c8cd9c9464aa9f946fc8198ff4fad416fe366edab",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -231,7 +230,7 @@
     "url:https://sweetsteady.asobisystem.com/news/detail/93737",
     "url:https://sweetsteady.asobisystem.com/news/detail/96001"
   ],
-  "reconciledBaseDateMessageCount": 7,
+  "reconciledBaseDateMessageCount": 0,
   "downgradedFalsePositiveCount": 0,
   "legacyProtectedErrorCount": 25,
   "legacyProtectedErrors": [
@@ -361,36 +360,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "residualLocalIsolationCount": 1,
-  "residualLocalIsolations": [
-    "protected future/active official FC offer disappeared: SWEET STEADY / 2026.10.26 「KAWAII LAB. 5th ANNIVERSARY TOUR」開催決定！FC先行開始！ / FC先行"
-  ],
-  "rowFailuresCanBlockRelease": false,
-  "quarantineCount": 1,
-  "quarantineActions": [
-    {
-      "error": "protected future/active official FC offer disappeared: SWEET STEADY / 2026.10.26 「KAWAII LAB. 5th ANNIVERSARY TOUR」開催決定！FC先行開始！ / FC先行",
-      "action": "restored previous row",
-      "restoredPreviousRows": 9
-    }
-  ],
-  "officialIndexReconciledAfterQuarantine": {
-    "projectedJointParticipantCount": 0,
-    "reassignedCount": 0,
-    "hydratedCount": 0,
-    "ambiguousCount": 0,
-    "unresolvedCount": 1,
-    "reassigned": [],
-    "hydrated": [],
-    "ambiguous": [],
-    "unresolved": [
-      {
-        "group": "FRUITS ZIPPER",
-        "date": "2026-11-24",
-        "url": "https://fruitszipper.asobisystem.com/live_information/detail/45704",
-        "representedBy": "b523016188f2b9a1"
-      }
-    ],
-    "duplicateOfficialResaleWindowsRemoved": 0
-  }
+  "quarantineCount": 0,
+  "quarantineActions": [],
+  "rowFailuresCanBlockRelease": false
 }
