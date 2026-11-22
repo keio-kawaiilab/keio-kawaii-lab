@@ -17,6 +17,12 @@ CUTIE_IG_DAYS = ("2026-11-28", "2026-11-29")
 CUTIE_IG_1128 = "https://cutiestreet.asobisystem.com/live_information/detail/40368"
 CUTIE_IG_1129 = "https://cutiestreet.asobisystem.com/live_information/detail/40369"
 SWEET_FC_SECOND_ARTICLE = "https://sweetsteady.asobisystem.com/news/detail/89498"
+SWEETEST_STORY_DECEMBER_NEWS = "https://sweetsteady.asobisystem.com/news/detail/96557"
+SWEETEST_STORY_DECEMBER_SCHEDULE = "https://sweetsteady.asobisystem.com/live_information/detail/47682"
+SWEETEST_STORY_DECEMBER_PARTS = {
+    "15:30": {"part": 1, "openTime": "14:30", "feature": "c096a1bd2a9d62d9f69bffa83187e511"},
+    "18:30": {"part": 2, "openTime": "17:30", "feature": "c5e90b25a00125a27f203ce0ea10ffa3"},
+}
 FM_AICHI_OFFICIAL = "https://fma.co.jp/f/event/?id=6g2EwJVP"
 GIFT_OFFICIAL = "https://www.gift-idol.jp/"
 GIFT_MULTI_VENUE = "複数会場（SGCホール有明・TOYOTA ARENA TOKYO）"
@@ -1820,6 +1826,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "candyNiigataVenueFixed": 0,
         "candyTokyoPresaleAdded": 0,
         "sweetestStoryPerformancesAdded": 0,
+        "sweetestStoryDecemberOffersFixed": 0,
         "fruitsJoyFanclubLiveAdded": 0,
         "fruitsJoyFcOfferAdded": 0,
         "kawaiilabFcFreeLiveAdded": 0,
@@ -2144,6 +2151,98 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         if schedule_event is not None:
             out.append(_build_cutie_fukuoka_door_exchange_sale(schedule_event, day))
             report["cutieFukuokaDoorExchangeOffersAdded"] += 1
+
+    # Official NEWS 96557 (rechecked 2026-11-23) publishes two distinct
+    # December 26 recordings and one verified FC window for both.  The group
+    # SCHEDULE supplies the first performance while the NEWS collector can
+    # arrive as the second, so enforce both identities after every source
+    # merge instead of allowing the common date/title to hide one reception.
+    december_day = "2026-12-26"
+    december_venue = "お台場特設会場(フジテレビ湾岸スタジオ)"
+    has_december_story_source = any(
+        row.get("group") == "SWEET STEADY"
+        and (
+            SWEETEST_STORY_DECEMBER_NEWS in _urls(row)
+            or SWEETEST_STORY_DECEMBER_SCHEDULE in _urls(row)
+        )
+        for row in out
+    )
+    for start, details in (SWEETEST_STORY_DECEMBER_PARTS.items() if has_december_story_source else ()):
+        feature_url = (
+            "https://sweetsteady.asobisystem.com/feature/"
+            + details["feature"] + "?_normalbrowse_=1"
+        )
+        event = next((
+            row for row in out
+            if row.get("group") == "SWEET STEADY"
+            and _day(row) == december_day
+            and row.get("startTime") == start
+            and "SWEETEST STORY" in str(row.get("eventTitle") or row.get("title") or "").upper()
+        ), None)
+        if event is None:
+            event = {
+                "id": f"known-sweetest-story-20261226-part{details['part']}",
+                "group": "SWEET STEADY",
+                "eventDate": december_day,
+                "eventEndDate": december_day,
+                "eventDates": [december_day],
+                "eventCount": 1,
+                "venue": december_venue,
+                "sourceType": "official",
+                "primarySource": "official",
+                "sourceChannel": "known-official-correction",
+                "sourcePublishedAt": "2026-11-20",
+                "eventScope": "kawaii-lab",
+            }
+            out.append(event)
+
+        title = f"SWEET STEADYのSWEETEST STORY 第{details['part']}部"
+        before = deepcopy(event)
+        # A schedule-only row can carry a stale ``applicationStatus: none``.
+        # Once the verified NEWS window is attached it must be reclassified as
+        # an offer by the performance-entity builder.
+        event.pop("applicationStatus", None)
+        event.pop("applicationDisplayMode", None)
+        urls = list(dict.fromkeys([
+            SWEETEST_STORY_DECEMBER_NEWS,
+            SWEETEST_STORY_DECEMBER_SCHEDULE,
+            feature_url,
+            *_urls(event),
+        ]))
+        event.update({
+            "title": title,
+            "eventTitle": title,
+            "eventDate": december_day,
+            "eventEndDate": december_day,
+            "eventDates": [december_day],
+            "eventCount": 1,
+            "venue": december_venue,
+            "openTime": details["openTime"],
+            "startTime": start,
+            "schedule": [{
+                "date": december_day,
+                "venue": december_venue,
+                "openTime": details["openTime"],
+                "startTime": start,
+            }],
+            "url": SWEETEST_STORY_DECEMBER_NEWS,
+            "urls": urls,
+            "officialScheduleUrl": SWEETEST_STORY_DECEMBER_SCHEDULE,
+            "sourceType": "auto",
+            "sourceChannel": "official-continuous",
+            "primarySource": "official",
+            "sourcePublishedAt": "2026-11-20",
+            "eventScope": "kawaii-lab",
+            "ticketType": "SWEET STEADY FC先行",
+            "applyStart": "2026-11-20T07:30",
+            "applyEnd": "2026-11-23T23:59",
+            "applicationWindowVerified": True,
+            "deadlineVerified": True,
+            "applicationWindowSource": SWEETEST_STORY_DECEMBER_NEWS,
+            "deadlineSource": SWEETEST_STORY_DECEMBER_NEWS,
+        })
+        if event != before:
+            report["sweetestStoryDecemberOffersFixed"] += 1
 
     # Official NEWS 92529 (rechecked 2026-10-20): the FC reception ended
     # October 18, not the November 15 performances. Preserve the two starts

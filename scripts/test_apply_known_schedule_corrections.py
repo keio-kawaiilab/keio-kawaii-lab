@@ -699,6 +699,48 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
         self.assertEqual(report["sweetestStoryPerformancesAdded"], 1)
         self.assertEqual(len(corrected), 3)
 
+    def test_sweetest_story_december_keeps_two_parts_and_fc_offer(self):
+        rows = [
+            {
+                "id": "schedule-first", "group": "SWEET STEADY",
+                "title": "有料公開収録『SWEET STEADYのSWEETEST STORY』",
+                "eventDate": "2026-12-26", "openTime": "14:30", "startTime": "15:30",
+                "venue": "東京都 お台場特設会場(フジテレビ湾岸スタジオ)",
+                "url": "https://sweetsteady.asobisystem.com/live_information/detail/47682",
+                "ticketType": "現在受付なし", "applicationStatus": "none",
+            },
+            {
+                "id": "news-second", "group": "SWEET STEADY",
+                "title": "2026年12月26日「SWEET STEADYのSWEETEST STORY」開催決定!",
+                "eventDate": "2026-12-26", "openTime": "17:30", "startTime": "18:30",
+                "venue": "お台場特設会場(フジテレビ湾岸スタジオ)",
+                "url": "https://sweetsteady.asobisystem.com/news/detail/96557",
+                "ticketType": "SWEET STEADY FC先行",
+                "applyStart": "2026-11-20T07:30", "applyEnd": "2026-11-23T23:59",
+            },
+        ]
+        corrected, report = apply_known_corrections(rows)
+        parts = [row for row in corrected if row.get("eventDate") == "2026-12-26"]
+        self.assertEqual(2, report["sweetestStoryDecemberOffersFixed"])
+        self.assertEqual({"15:30", "18:30"}, {row["startTime"] for row in parts})
+        self.assertEqual({"第1部", "第2部"}, {row["title"].split()[-1] for row in parts})
+        self.assertTrue(all(row["ticketType"] == "SWEET STEADY FC先行" for row in parts))
+        self.assertTrue(all(row["applyStart"] == "2026-11-20T07:30" for row in parts))
+        self.assertTrue(all(row["applyEnd"] == "2026-11-23T23:59" for row in parts))
+        self.assertTrue(all(row["applicationWindowVerified"] for row in parts))
+        self.assertTrue(all(row.get("applicationStatus") != "none" for row in parts))
+        self.assertTrue(all(row["eventScope"] == "kawaii-lab" for row in parts))
+        self.assertEqual(
+            {
+                "https://sweetsteady.asobisystem.com/feature/c096a1bd2a9d62d9f69bffa83187e511?_normalbrowse_=1",
+                "https://sweetsteady.asobisystem.com/feature/c5e90b25a00125a27f203ce0ea10ffa3?_normalbrowse_=1",
+            },
+            {next(url for url in row["urls"] if "/feature/" in url) for row in parts},
+        )
+        again, second_report = apply_known_corrections(corrected)
+        self.assertEqual(corrected, again)
+        self.assertEqual(0, second_report["sweetestStoryDecemberOffersFixed"])
+
     def test_candy_birthdays_fill_missing_facts_and_merge_without_losing_sales(self):
         from performance_entities import build_public_events
         for day, person, news, central in (("2026-12-03", "村川緋杏", "92278", "92965"), ("2026-12-16", "福山梨乃", "91454", "92964")):
