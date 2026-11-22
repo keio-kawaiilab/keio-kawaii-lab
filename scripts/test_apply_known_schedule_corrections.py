@@ -19,6 +19,7 @@ from apply_known_schedule_corrections import (
     MORE_STAR_PACIFICO_NEWS,
     MORE_STAR_PACIFICO_SCHEDULE,
     MORE_STAR_PACIFICO_SECOND_HMV,
+    FRUITS_ROLLING_TICKET_SUMMARY,
     SWEET_IDOL_HALLOWEEN_OFFICIAL,
     SWEET_IDOL_HALLOWEEN_SCHEDULE,
     SWEET_IDOL_HALLOWEEN_TICKET,
@@ -27,6 +28,62 @@ from apply_known_schedule_corrections import (
 
 
 class KnownScheduleCorrectionsTest(unittest.TestCase):
+    def test_polluted_fruits_ticket_summary_is_removed_without_removing_stadium_schedule(self):
+        polluted = {
+            "id": "polluted-summary",
+            "group": "FRUITS ZIPPER",
+            "title": "★FRUITS ZIPPER チケット先行情報★",
+            "eventDate": "2027-01-30",
+            "eventDates": ["2027-01-30", "2027-06-12", "2027-07-10"],
+            "url": FRUITS_ROLLING_TICKET_SUMMARY,
+            "urls": [
+                FRUITS_ROLLING_TICKET_SUMMARY,
+                "https://fruitszipper.asobisystem.com/live_information/detail/47569",
+            ],
+        }
+        stadium = {
+            "id": "stadium-kobe",
+            "group": "FRUITS ZIPPER",
+            "title": "5周年スタジアムツアー@ノエビアスタジアム神戸",
+            "eventDate": "2027-06-12",
+            "eventDates": ["2027-06-12", "2027-06-13"],
+            "url": "https://fruitszipper.asobisystem.com/live_information/detail/47569",
+        }
+        corrected, report = apply_known_corrections([polluted, stadium])
+        self.assertNotIn("polluted-summary", {event.get("id") for event in corrected})
+        self.assertIn(stadium, corrected)
+        self.assertEqual(1, report["pollutedFruitsTicketSummaryRemoved"])
+
+        again, report = apply_known_corrections(corrected)
+        self.assertEqual(corrected, again)
+        self.assertEqual(0, report["pollutedFruitsTicketSummaryRemoved"])
+
+    def test_rolling_ticket_summary_without_stadium_join_is_not_removed(self):
+        legitimate = {
+            "id": "older-summary-row",
+            "group": "FRUITS ZIPPER",
+            "title": "★FRUITS ZIPPER チケット先行情報★",
+            "eventDate": "2026-11-21",
+            "url": FRUITS_ROLLING_TICKET_SUMMARY,
+        }
+        corrected, report = apply_known_corrections([legitimate])
+        self.assertIn(legitimate, corrected)
+        self.assertEqual(0, report["pollutedFruitsTicketSummaryRemoved"])
+
+    def test_rolling_ticket_summary_cannot_bundle_unrelated_performances(self):
+        polluted = {
+            "id": "polluted-multi-event-summary",
+            "group": "FRUITS ZIPPER",
+            "title": "★FRUITS ZIPPER チケット先行情報★",
+            "eventTitle": "FRUITS ZIPPERのオールナイトニッポンX in 横浜アリーナ",
+            "eventDate": "2026-11-24",
+            "eventDates": ["2026-11-24", "2026-12-17", "2027-01-23"],
+            "url": FRUITS_ROLLING_TICKET_SUMMARY,
+        }
+        corrected, report = apply_known_corrections([polluted])
+        self.assertEqual([], corrected)
+        self.assertEqual(1, report["pollutedFruitsTicketSummaryRemoved"])
+
     def test_more_star_dreamy_online_clipped_retailer_title_is_repaired(self):
         stale = {
             "id": "special-c87bd8d1f175d457",

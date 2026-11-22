@@ -28,6 +28,13 @@ MORE_STAR_7TH_FC = "https://kawaiilab.asobisystem.com/news/detail/93036"
 MORE_STAR_DREAMY_ONLINE_DAY = "2026-11-16"
 MORE_STAR_DREAMY_ONLINE_SCHEDULE = "https://morestar.asobisystem.com/live_information/detail/47369"
 MORE_STAR_DREAMY_ONLINE_TITLE = "☀️Dreamy衣装💫 オンライン特典会"
+FRUITS_ROLLING_TICKET_SUMMARY = "https://fruitszipper.asobisystem.com/news/detail/43696"
+FRUITS_STADIUM_SCHEDULE_URLS = {
+    "https://fruitszipper.asobisystem.com/live_information/detail/47569",
+    "https://fruitszipper.asobisystem.com/live_information/detail/47570",
+    "https://fruitszipper.asobisystem.com/live_information/detail/47571",
+    "https://fruitszipper.asobisystem.com/live_information/detail/47572",
+}
 DISASTER_RELIEF_NEWS = "https://fruitszipper.asobisystem.com/news/detail/93365"
 DISASTER_RELIEF_PIA = "https://w.pia.jp/t/charityconcert2027/"
 CANDY_ONLINE_20261020_DAY = "2026-10-20"
@@ -112,6 +119,36 @@ def _urls(event: dict) -> list[str]:
 
 def _day(event: dict) -> str:
     return str(event.get("eventDate") or "")[:10]
+
+
+def _is_polluted_fruits_ticket_summary(event: dict) -> bool:
+    """Drop rolling ticket-summary rows that absorb unrelated performances.
+
+    NEWS 43696 is a long-lived ticket-summary page, not an occurrence source.
+    On 2026-11-16 its rolling body was joined to the newly published stadium
+    SCHEDULE rows and, through an older KAWAII LAB. tour mapping, produced one
+    synthetic 15-date FRUITS ZIPPER event.  The same source later also joined
+    three unrelated birthday/arena performances into one multi-venue card.
+    A single dated offer from the summary is left alone; only a cross-event
+    aggregate, or the known stadium contamination, is rejected.  The four real
+    stadium occurrences remain represented by SCHEDULE 47569-47572; ticket
+    details are explicitly still unannounced in NEWS 96457.
+    """
+    if event.get("group") != "FRUITS ZIPPER":
+        return False
+    urls = set(_urls(event))
+    if FRUITS_ROLLING_TICKET_SUMMARY not in urls:
+        return False
+    days = {
+        str(value or "")[:10]
+        for value in [event.get("eventDate"), *(event.get("eventDates") or [])]
+        if value
+    }
+    multi_event_aggregate = len(days) > 1
+    stadium_contamination = bool(urls.intersection(FRUITS_STADIUM_SCHEDULE_URLS)) and bool(
+        days.intersection({"2027-06-12", "2027-06-13", "2027-07-10", "2027-07-11"})
+    )
+    return multi_event_aggregate or stadium_contamination
 
 
 def _repair_more_star_dreamy_online_title(event: dict) -> dict:
@@ -1559,6 +1596,7 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "giftMoreStarAdded": 0,
         "moreStarSeventhFixed": 0,
         "moreStarDreamyOnlineTitleFixed": 0,
+        "pollutedFruitsTicketSummaryRemoved": 0,
         "moreStarSeventhFcOfferAdded": 0,
         "disasterReliefConcertFixed": 0,
         "disasterReliefConcertRowsCollapsed": 0,
@@ -1580,6 +1618,9 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
     }
 
     for event in source:
+        if _is_polluted_fruits_ticket_summary(event):
+            report["pollutedFruitsTicketSummaryRemoved"] += 1
+            continue
         if _has_impossible_birthday_year(event):
             report["impossibleBirthdayYearRowsRemoved"] += 1
             continue
