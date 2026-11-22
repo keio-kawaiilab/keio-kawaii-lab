@@ -1,0 +1,57 @@
+name: カワラボ楽曲ガチャ MV週次自動更新
+
+on:
+  # GitHub cron is UTC. Sunday 03:17 UTC = Sunday 12:17 JST.
+  schedule:
+    - cron: "17 3 * * 0"
+  # Verify on first deployment / whenever the updater itself changes.
+  push:
+    paths:
+      - ".github/workflows/music-gacha-weekly.yml"
+      - "scripts/update_music_gacha.py"
+      - "tests/test_update_music_gacha.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: music-gacha-weekly-sync
+  cancel-in-progress: false
+
+jobs:
+  sync-official-mvs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Check out the published site
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install YouTube metadata reader
+        run: python -m pip install --disable-pip-version-check --upgrade yt-dlp
+      - name: Test MV recognition and deduplication
+        run: python -m unittest discover -s tests -p "test_update_music_gacha.py" -v
+      - name: Discover new official MVs
+        run: python scripts/update_music_gacha.py
+      - name: Publish catalog only when changed
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- data/music-gacha.json; then
+            echo "No new official MV; no commit needed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/music-gacha.json
+          git commit -m "chore: add newly released official KAWAII LAB. MVs"
+          # Preserve other commits added to the site during this scan.
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
