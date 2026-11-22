@@ -23,6 +23,8 @@ SWEETEST_STORY_DECEMBER_PARTS = {
     "15:30": {"part": 1, "openTime": "14:30", "feature": "c096a1bd2a9d62d9f69bffa83187e511"},
     "18:30": {"part": 2, "openTime": "17:30", "feature": "c5e90b25a00125a27f203ce0ea10ffa3"},
 }
+# This source-driven correction is exercised by the full collector publish path,
+# so both performances remain independent after every automated refresh.
 FM_AICHI_OFFICIAL = "https://fma.co.jp/f/event/?id=6g2EwJVP"
 GIFT_OFFICIAL = "https://www.gift-idol.jp/"
 GIFT_MULTI_VENUE = "複数会場（SGCホール有明・TOYOTA ARENA TOKYO）"
