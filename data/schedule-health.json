@@ -1,7 +1,7 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-23T06:28:07.095662+09:00",
-  "candidateUpdatedAt": "2026-11-23T06:28:06+09:00",
+  "generatedAt": "2026-11-23T06:43:12.511457+09:00",
+  "candidateUpdatedAt": "2026-11-23T06:43:12+09:00",
   "previousEventCount": 239,
   "candidateEventCount": 237,
   "protectedPreviousCount": 230,
@@ -37,7 +37,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: KAWAII LAB.合同 / 災害支援基金コンサート / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売"
   ],
-  "candidateSha256": "1df3352c94e6f1175fe7656f3dae679549f2cb8302402b69fbebe5810799baac",
+  "candidateSha256": "d0617099c3a3fcb168fb549c768fdec0adf2ef816c6ba1c8b78ae75e2a9eab5a",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -376,7 +376,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 26,
+  "quarantineCount": 27,
   "quarantineActions": [
     {
       "error": "Pia row contains FC/upgrade-only sale: MORE STAR / MORE STAR 単独ライブ 7th STAR / KAWAII LAB. FC先行",
@@ -424,13 +424,18 @@
       "restoredPreviousRows": 1
     },
     {
-      "error": "deadline moved earlier for pia:event:2629434:004: 2026-11-25T23:59 -> 2026-10-24T10:00 (manual review required)",
-      "action": "restored previous rows for pia:event:2629434:004",
+      "error": "deadline moved earlier for id:74f4f202fe97d427: 2026-11-23T23:59 -> 2026-10-24T10:00 (manual review required)",
+      "action": "restored previous rows for id:74f4f202fe97d427",
       "restoredPreviousRows": 1
     },
     {
       "error": "future performance dates disappeared for pia:event:2642817:001: 2026-11-29",
       "action": "restored previous rows for pia:event:2642817:001",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "deadline moved earlier for pia:event:2632906:001: 2026-11-26T23:59 -> 2026-09-26T10:00 (manual review required)",
+      "action": "restored previous rows for pia:event:2632906:001",
       "restoredPreviousRows": 1
     },
     {
