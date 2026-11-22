@@ -1138,11 +1138,35 @@ class KnownScheduleCorrectionsTest(unittest.TestCase):
                      "sourceType": "official-schedule",
                      "url": "https://sweetsteady.asobisystem.com/live_information/detail/47118"}
         corrected, report = apply_known_corrections([row, duplicate])
-        self.assertEqual(1, len(corrected))
+        self.assertEqual(3, len(corrected))
         self.assertEqual(1, report["disasterReliefConcertRowsCollapsed"])
-        self.assertEqual("KAWAII LAB.合同", corrected[0]["group"])
-        self.assertEqual(("17:00", "18:00"), (corrected[0]["openTime"], corrected[0]["startTime"]))
-        self.assertIn("https://sweetsteady.asobisystem.com/live_information/detail/47118", corrected[0]["urls"])
+        legacy = next(event for event in corrected if event.get("applyEnd") == "2026-11-01T23:59")
+        self.assertEqual("KAWAII LAB.合同", legacy["group"])
+        self.assertEqual(("17:00", "18:00"), (legacy["openTime"], legacy["startTime"]))
+        self.assertIn("https://sweetsteady.asobisystem.com/live_information/detail/47118", legacy["urls"])
+
+    def test_disaster_relief_general_sales_stay_on_day1_and_day2_pollution_is_removed(self):
+        base = {
+            "id": "charity", "group": "FRUITS ZIPPER", "title": "災害支援基金コンサート",
+            "eventDate": "2027-01-19", "url": DISASTER_RELIEF_NEWS,
+        }
+        polluted = [
+            {
+                "id": f"bad-{group}", "group": group, "title": "災害支援基金コンサート",
+                "ticketType": "先着 ★<1/20公演>一般発売", "ticketProvider": "eplus",
+                "applyStart": "2026-11-21T10:00", "applyEnd": "2027-01-15T18:00",
+                "eventDate": "2027-01-20", "url": "https://eplus.jp/sf/detail/4639060001-P0030001P021002",
+            }
+            for group in ("FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY", "KAWAII LAB.合同")
+        ]
+        corrected, report = apply_known_corrections([base, *polluted])
+        disaster = [row for row in corrected if "災害支援基金コンサート" in row.get("title", "")]
+        self.assertTrue(disaster)
+        self.assertTrue(all(row["eventDate"] == "2027-01-19" for row in disaster))
+        general = [row for row in disaster if row.get("ticketType") == "一般発売"]
+        self.assertEqual({"pia", "eplus"}, {row["ticketProvider"] for row in general})
+        self.assertEqual(4, report["disasterReliefConcertWrongDayRowsRemoved"])
+        self.assertEqual(2, report["disasterReliefConcertGeneralSalesAdded"])
 
     def test_removes_birthday_row_whose_event_year_contradicts_title(self):
         impossible = {

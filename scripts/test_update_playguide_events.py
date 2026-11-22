@@ -29,6 +29,22 @@ class PlayguideEventTests(unittest.TestCase):
         self.assertEqual("18:30", rows[0]["startTime"])
         self.assertIn("iichiko", rows[0]["venue"])
 
+    def test_eplus_root_does_not_add_a_sibling_day_missing_from_artist_page(self):
+        artist_html = '''
+        <a class="ticket-item--kouen" href="/sf/detail/4639060001-P0030001P021001">
+          <span>2027/1/19(火)</span><span class="ticket-item__venue">日本武道館</span>
+        </a>'''
+        root_html = '''
+        <script type="application/ld+json">[{"@type":"Event","url":"https://eplus.jp/sf/detail/4639060001-P0030001P021001","startDate":"2027-01-19T18:00"},{"@type":"Event","url":"https://eplus.jp/sf/detail/4639060001-P0030001P021002","startDate":"2027-01-20T18:00"}]</script>'''
+
+        class Session:
+            def get(self, *_args, **_kwargs):
+                return SimpleNamespace(text=root_html, raise_for_status=lambda: None)
+
+        rows = playguides.eplus_performance_links(Session(), artist_html)
+        self.assertEqual(["2027-01-19"], sorted({row["day"] for row in rows}))
+        self.assertTrue(all("P021002" not in row["url"] for row in rows))
+
     def test_iso_window_accepts_japanese_weekday(self):
         start, end = playguides.iso_window(
             "受付期間:2026/8/21(金)12:00～2026/8/31(月)23:59"

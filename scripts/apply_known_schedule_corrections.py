@@ -51,6 +51,9 @@ FRUITS_CHRISTMAS_SESSION_SHADOW = {
 }
 DISASTER_RELIEF_NEWS = "https://fruitszipper.asobisystem.com/news/detail/93365"
 DISASTER_RELIEF_PIA = "https://w.pia.jp/t/charityconcert2027/"
+DISASTER_RELIEF_ORGANIZER = "https://hearts-as-one.jp/"
+DISASTER_RELIEF_PIA_GENERAL = "https://t.pia.jp/pia/event/event.do?eventBundleCd=b2671791"
+DISASTER_RELIEF_EPLUS_GENERAL = "https://eplus.jp/sf/detail/4639060001-P0030001P021001"
 CANDY_ONLINE_20261020_DAY = "2026-10-20"
 CANDY_ONLINE_20261020_OFFICIAL = "https://candytune.asobisystem.com/live_information/detail/46277"
 CANDY_ONLINE_20261020_GOODS = {
@@ -1417,21 +1420,28 @@ def _repair_disaster_relief_concert(event: dict) -> dict:
         "venue": "東京都 日本武道館",
         "openTime": "17:00",
         "startTime": "18:00",
-        "ticketType": "チケット受付",
-        "applyStart": "2026-10-19T20:00",
-        "applyEnd": "2026-11-01T23:59",
-        "applicationWindowVerified": True,
-        "url": DISASTER_RELIEF_PIA,
-        "applicationWindowSource": DISASTER_RELIEF_NEWS,
-        "deadlineVerified": True,
-        "deadlineSource": DISASTER_RELIEF_NEWS,
-        "sourceType": "auto",
-        "primarySource": "official",
-        "ticketProvider": "pia",
-        "sourceCandidates": ["official", "pia"],
     })
+    is_general_sale = (
+        str(out.get("applyStart") or "") >= "2026-11-21"
+        or "一般発売" in str(out.get("ticketType") or "")
+    )
+    if not is_general_sale:
+        out.update({
+            "ticketType": "チケット受付",
+            "applyStart": "2026-10-19T20:00",
+            "applyEnd": "2026-11-01T23:59",
+            "applicationWindowVerified": True,
+            "url": DISASTER_RELIEF_PIA,
+            "applicationWindowSource": DISASTER_RELIEF_NEWS,
+            "deadlineVerified": True,
+            "deadlineSource": DISASTER_RELIEF_NEWS,
+            "sourceType": "auto",
+            "primarySource": "official",
+            "ticketProvider": "pia",
+            "sourceCandidates": ["official", "pia"],
+        })
     values = list(dict.fromkeys([*original_urls, *_urls(out)]))
-    for value in (DISASTER_RELIEF_PIA, DISASTER_RELIEF_NEWS):
+    for value in (DISASTER_RELIEF_ORGANIZER, DISASTER_RELIEF_PIA, DISASTER_RELIEF_NEWS):
         if value not in values:
             values.append(value)
     out["urls"] = values
@@ -1439,7 +1449,12 @@ def _repair_disaster_relief_concert(event: dict) -> dict:
 
 
 def _collapse_disaster_relief_concert(events: list[dict]) -> tuple[list[dict], int]:
-    matches = [event for event in events if _is_disaster_relief_concert(event)]
+    matches = [
+        event for event in events
+        if _is_disaster_relief_concert(event)
+        and str(event.get("applyStart") or "") < "2026-11-21"
+        and "一般発売" not in str(event.get("ticketType") or "")
+    ]
     if len(matches) < 2:
         return events, 0
     winner = max(matches, key=lambda event: (bool(event.get("sourcePublishedAt")), len(_urls(event))))
@@ -1448,6 +1463,78 @@ def _collapse_disaster_relief_concert(events: list[dict]) -> tuple[list[dict], i
     result = [event for event in events if event not in matches]
     result.append(winner)
     return result, len(matches) - 1
+
+
+def _is_invalid_disaster_relief_day2_target_row(event: dict) -> bool:
+    title_key = re.sub(r"[\s　『』「」]", "", str(event.get("title") or event.get("eventTitle") or ""))
+    return (
+        _day(event) == "2027-01-20"
+        and "災害支援基金コンサート" in title_key
+        and str(event.get("group") or "") in {
+            "FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY", "KAWAII LAB.合同"
+        }
+    )
+
+
+def _disaster_relief_general_sales() -> list[dict]:
+    common = {
+        "group": "KAWAII LAB.合同",
+        "title": "災害支援基金コンサート",
+        "participants": ["FRUITS ZIPPER", "CANDY TUNE", "SWEET STEADY"],
+        "ticketType": "一般発売",
+        "applyStart": "2026-11-21T10:00",
+        "resultDate": None,
+        "paymentEnd": None,
+        "eventDate": "2027-01-19",
+        "venue": "東京都 日本武道館",
+        "openTime": "17:00",
+        "startTime": "18:00",
+        "applicationStatus": "open",
+        "applicationWindowVerified": True,
+        "deadlineVerified": True,
+        "applicationDisplayMode": "band",
+        "eventScope": "external",
+        "sourceChannel": "known-official-correction",
+    }
+    rows = []
+    for provider, url, apply_end in (
+        ("pia", DISASTER_RELIEF_PIA_GENERAL, "2027-01-07T23:59"),
+        ("eplus", DISASTER_RELIEF_EPLUS_GENERAL, "2027-01-15T18:00"),
+    ):
+        rows.append({
+            **common,
+            "id": f"known-disaster-relief-20270119-{provider}-general",
+            "ticketProvider": provider,
+            "applyEnd": apply_end,
+            "url": url,
+            "urls": [url, DISASTER_RELIEF_ORGANIZER, DISASTER_RELIEF_NEWS],
+            "sourceType": provider,
+            "primarySource": provider,
+            "sourceCandidates": ["official", provider],
+            "applicationWindowSource": url,
+            "deadlineSource": url,
+        })
+    return rows
+
+
+def _upsert_disaster_relief_general_sales(events: list[dict]) -> tuple[list[dict], int]:
+    if not any(_is_disaster_relief_concert(event) for event in events):
+        return events, 0
+    out = list(events)
+    added = 0
+    for expected in _disaster_relief_general_sales():
+        provider = expected["ticketProvider"]
+        matches = [
+            event for event in out
+            if _is_disaster_relief_concert(event)
+            and event.get("ticketProvider") == provider
+            and "一般発売" in str(event.get("ticketType") or "")
+        ]
+        if matches:
+            continue
+        out.append(expected)
+        added += 1
+    return out, added
 
 
 def _is_candy_online_20261020(event: dict) -> bool:
@@ -1847,6 +1934,8 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
         "moreStarSeventhFcOfferAdded": 0,
         "disasterReliefConcertFixed": 0,
         "disasterReliefConcertRowsCollapsed": 0,
+        "disasterReliefConcertWrongDayRowsRemoved": 0,
+        "disasterReliefConcertGeneralSalesAdded": 0,
         "impossibleBirthdayYearRowsRemoved": 0,
         "candyOnline20261020RowsCollapsed": 0,
         "sweetOnline20261023RowsCollapsed": 0,
@@ -1865,6 +1954,9 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
     }
 
     for event in source:
+        if _is_invalid_disaster_relief_day2_target_row(event):
+            report["disasterReliefConcertWrongDayRowsRemoved"] += 1
+            continue
         if _is_polluted_fruits_ticket_summary(event):
             report["pollutedFruitsTicketSummaryRemoved"] += 1
             continue
@@ -2882,6 +2974,8 @@ def apply_known_corrections(events: Iterable[dict]) -> tuple[list[dict], dict]:
 
     out, disaster_relief_removed = _collapse_disaster_relief_concert(out)
     report["disasterReliefConcertRowsCollapsed"] = disaster_relief_removed
+    out, disaster_relief_sales_added = _upsert_disaster_relief_general_sales(out)
+    report["disasterReliefConcertGeneralSalesAdded"] = disaster_relief_sales_added
 
     out, sweet_online_removed = _collapse_sweet_online_20261023(out)
     report["sweetOnline20261023RowsCollapsed"] = sweet_online_removed

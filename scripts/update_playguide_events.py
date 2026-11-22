@@ -188,7 +188,20 @@ def eplus_performance_links(session: requests.Session, artist_html: str) -> list
     for root_url in sorted(roots):
         response = session.get(root_url, timeout=20)
         response.raise_for_status()
+        # A single eplus event root can contain performances with different
+        # line-ups.  The artist page is the authority for which dates belong
+        # to this artist; expanding every JSON-LD sibling can otherwise attach
+        # a different day's performance to the artist (for example the two-day
+        # disaster-relief concert at Budokan).
+        visible_days = {
+            str(row.get("day"))
+            for row in found.values()
+            if row.get("day") and EPLUS_ROOT_RE.search(str(row.get("url") or ""))
+            and ("https://eplus.jp" + EPLUS_ROOT_RE.search(str(row.get("url") or "")).group(2)) == root_url
+        }
         for row in jsonld_performances(response.text):
+            if visible_days and row.get("day") not in visible_days:
+                continue
             found.setdefault(row["url"], row)
     return list(found.values())
 
