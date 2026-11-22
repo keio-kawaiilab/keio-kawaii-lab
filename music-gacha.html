@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fffaf6">
+  <meta name="description" content="KAWAII LAB.同好会による、カワラボ公式MVのランダムガチャ。ボタンひとつで今日の一曲に出会おう。">
+  <title>カワラボ楽曲ガチャ | KAWAII LAB.同好会</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800;900&family=Zen+Maru+Gothic:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./music-gacha.css">
+  <script src="./music-gacha.js" defer></script>
+</head>
+<body>
+  <div class="page-shell">
+    <div class="decoration decoration--yellow-left" aria-hidden="true"></div>
+    <div class="decoration decoration--blue-right" aria-hidden="true"></div>
+    <div class="decoration decoration--yellow-right" aria-hidden="true"></div>
+
+    <header class="sitebar">
+      <a href="https://keio-kawaiilab.github.io/keio-kawaii-lab/" class="sitebar__brand" aria-label="KAWAII LAB.同好会 トップページへ">
+        <span class="sitebar__brand-mark" aria-hidden="true">K</span>
+        <span class="sitebar__brand-name">KAWAII LAB.<small>同好会</small></span>
+      </a>
+      <a href="https://keio-kawaiilab.github.io/keio-kawaii-lab/" class="sitebar__home">同好会サイトへ <span aria-hidden="true">↗</span></a>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="gacha-title">
+        <div class="banner-shadow">
+          <div class="banner">
+            <h1 id="gacha-title">カワラボ楽曲ガチャ</h1>
+          </div>
+        </div>
+
+        <div class="draw-area">
+          <div class="draw-button-depth">
+            <button type="button" class="draw-button" id="draw-button" disabled>
+              <svg class="draw-button__icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="m18 14 4 4-4 4"/><path d="m18 2 4 4-4 4"/><path d="M2 18h2.5a5 5 0 0 0 4-2l7-9a5 5 0 0 1 4-2H22"/><path d="M2 6h2.5a5 5 0 0 1 4 2l1.5 2"/><path d="m14 14 1.5 2a5 5 0 0 0 4 2H22"/></svg>
+              <span id="draw-label">ガチャを引く！</span>
+              <svg class="draw-button__arrow" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></svg>
+            </button>
+          </div>
+          <p id="load-error" class="load-error" role="alert" hidden></p>
+        </div>
+      </section>
+
+      <section class="result-section" aria-label="抽選結果" id="result-section" hidden>
+        <div class="result-ribbon" aria-hidden="true">RESULT</div>
+        <div class="ticket-shadow">
+          <div class="ticket">
+            <svg class="ticket__paper" viewBox="0 0 1080 345" preserveAspectRatio="none" aria-hidden="true"><path d="M35 4 L1039 4 L1054 19 L1052 34 Q1030 39 1052 57 L1053 91 Q1030 105 1052 117 L1053 151 Q1030 165 1052 177 L1053 212 Q1030 226 1052 238 L1054 274 Q1030 287 1053 300 L1052 322 L1033 340 L38 339 Q20 330 23 313 L9 296 L22 279 L21 63 L7 51 L23 34 Q20 12 35 4 Z" fill="white" stroke="#ffd7e8" stroke-width="2.5" vector-effect="non-scaling-stroke"/></svg>
+            <div class="ticket__inner" id="result" role="status" aria-live="polite" data-state="waiting">
+              <div class="ticket__picture">
+                <div class="thumbnail" id="thumbnail">
+                  <div class="thumbnail__placeholder" id="thumbnail-placeholder" aria-hidden="true"><span class="record-record"><span class="record-center">♪</span></span></div>
+                  <img id="result-thumb" alt="" loading="lazy" hidden>
+                </div>
+              </div>
+              <div class="ticket__info">
+                <div class="group-label" id="result-group"></div>
+                <h2 id="result-title" class="ticket__title"></h2>
+                <a id="result-link" class="youtube-link" href="#" target="_blank" rel="noopener noreferrer" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1.5" y="4" width="21" height="16" rx="5" fill="currentColor"/><path d="m10 8 6 4-6 4Z" fill="white"/></svg><span>YouTubeで見る</span><span class="youtube-link__external" aria-hidden="true">↗</span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="reroll-button" id="reroll-button" type="button" hidden>
+          <span aria-hidden="true">↻</span> もう一度引く
+        </button>
+      </section>
+    </main>
+    <footer class="footer"><span>KAWAII LAB.同好会による非公式ファン企画</span></footer>
+  </div>
+</body>
+</html>
