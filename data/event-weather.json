@@ -1,32 +1,12 @@
 {
-  "date": "2026-11-22",
+  "date": "2026-11-23",
   "horizonDays": 7,
-  "generatedAt": "2026-11-22T19:13+09:00",
+  "generatedAt": "2026-11-23T00:12+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
   },
   "entries": [
-    {
-      "date": "2026-11-22",
-      "venue": "東京都 ステラボール",
-      "venueKey": "ステラボール",
-      "eventIds": [
-        "593ec53a5d74ac13"
-      ],
-      "areaCode": "130010",
-      "areaName": "東京地方",
-      "precision": "area",
-      "label": "くもり 夜 晴れ",
-      "max": null,
-      "min": null,
-      "pop": "0",
-      "popLabel": "18〜00時",
-      "issuedAt": "2026-11-22T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
-    },
     {
       "date": "2026-11-23",
       "venue": "マリンメッセ福岡B館",
@@ -95,6 +75,23 @@
           "validAt": "2026-11-24T00:00+09:00",
           "temp": 14
         }
+      ],
+      "hourlyRain": [
+        {
+          "time": "10:00",
+          "rain": false,
+          "validAt": "2026-11-23T10:00+09:00"
+        },
+        {
+          "time": "11:00",
+          "rain": false,
+          "validAt": "2026-11-23T11:00+09:00"
+        },
+        {
+          "time": "12:00",
+          "rain": false,
+          "validAt": "2026-11-23T12:00+09:00"
+        }
       ]
     },
     {
@@ -104,43 +101,50 @@
       "eventIds": [
         "817aadbdcb8e0bb6",
         "8e8294559bf5f503",
-        "ae89a23867c4da97",
         "ad5a7ce9bdf2fa65"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
-      "precision": "area",
-      "label": "くもり 後 一時 雨",
+      "precision": "mesh5km",
+      "label": "くもり",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
       "issuedAt": "2026-11-22T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "meshTime": "00:00",
+      "meshTempBand": "10〜14℃",
+      "coordinates": {
+        "lat": 35.630138,
+        "lon": 139.787827
+      }
     },
     {
       "date": "2026-11-24",
       "venue": "高知県 新来島高知重工ホール オレンジホール（高知県立県民文化ホール）",
       "venueKey": "新来島高知重工ホールオレンジホール高知県立県民文化ホール",
       "eventIds": [
+        "9dfde12963eddb40",
+        "cde8a2920f62d533",
         "f641c49b15d0f20a",
         "de97c75c56f09ae2",
         "74f4f202fe97d427"
       ],
       "areaCode": "390010",
       "areaName": "中部",
-      "precision": "area",
-      "label": "雨 後 くもり",
+      "precision": "mesh5km",
+      "label": "くもり",
       "max": null,
       "min": null,
       "pop": null,
       "popLabel": "",
       "issuedAt": "2026-11-22T17:00:00+09:00",
-      "meshTime": null,
-      "meshTempBand": null,
-      "coordinates": null
+      "meshTime": "00:00",
+      "meshTempBand": "10〜14℃",
+      "coordinates": {
+        "lat": 33.556816,
+        "lon": 133.532745
+      }
     },
     {
       "date": "2026-11-25",
@@ -211,6 +215,8 @@
       "venue": "香川県 レクザムホール大ホール（香川県県民ホール）",
       "venueKey": "レクザムホール香川県県民ホール",
       "eventIds": [
+        "9dfde12963eddb40",
+        "cde8a2920f62d533",
         "f641c49b15d0f20a",
         "de97c75c56f09ae2",
         "fa496dc89f3d4965"
@@ -296,6 +302,7 @@
       "venueKey": "igアリーナ",
       "eventIds": [
         "d5e541dce82463d1",
+        "577553463945ceaf",
         "7c216c4f92affebc"
       ],
       "areaCode": "230010",
@@ -353,21 +360,16 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 37,
-    "uniqueVenueDates": 19,
-    "weatherEntries": 14,
-    "meshEntries": 1,
+    "occurrencesInRange": 48,
+    "uniqueVenueDates": 18,
+    "weatherEntries": 13,
+    "meshEntries": 3,
     "failures": 5,
     "meshTimelineEntries": 1,
     "meshExactTempSlots": 7,
-    "hourlyRainEntries": 0
+    "hourlyRainEntries": 1
   },
   "failures": [
-    {
-      "date": "2026-11-22",
-      "venue": "沖縄県 沖縄コンベンションセンター 劇場棟",
-      "reason": "都道府県を解決できません"
-    },
     {
       "date": "2026-11-23",
       "venue": "北海道",
@@ -387,6 +389,11 @@
       "date": "2026-11-24",
       "venue": "オンライン（SUKISUKI）",
       "reason": "都道府県を解決できません"
+    },
+    {
+      "date": "2026-11-30",
+      "venue": "福岡県 福岡サンパレス",
+      "reason": "開催日の予報がまだありません"
     }
   ]
 }
