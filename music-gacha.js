@@ -84,9 +84,29 @@
         data = JSON.parse(embedded.textContent);
       } else {
         try {
-          const response = await fetch('./data/music-gacha.json', { cache: 'no-cache' });
-          if (!response.ok) throw Error(`HTTP ${response.status}`);
-          data = await response.json();
+          // GitHub Actions commits with GITHUB_TOKEN do not trigger a Pages build.
+          // Read the canonical main-branch JSON directly; use the Pages copy
+          // if GitHub's raw endpoint is temporarily unavailable.
+          const candidates = [
+            'https://raw.githubusercontent.com/keio-kawaiilab/keio-kawaii-lab/main/data/music-gacha.json',
+            './data/music-gacha.json',
+          ];
+          let lastError;
+          for (const source of candidates) {
+            try {
+              const response = await fetch(source, { cache: 'no-store' });
+              if (!response.ok) throw Error(`HTTP ${response.status}`);
+              const candidate = await response.json();
+              if (!Array.isArray(candidate.songs) || !candidate.songs.length) {
+                throw Error('Invalid catalog');
+              }
+              data = candidate;
+              break;
+            } catch (error) {
+              lastError = error;
+            }
+          }
+          if (!data) throw lastError || Error('Catalog unavailable');
         } catch (error) {
           if (!embedded) throw error;
           data = JSON.parse(embedded.textContent);
