@@ -35,7 +35,9 @@ OFFICIAL_HOSTS = {
 ANNUAL_SALE_PATTERNS = (
     re.compile(r"年会費コース\s*(?:会員)?\s*(?:限定)?\s*(?:チケット)?\s*(?:最速)?\s*先行", re.I),
     re.compile(r"年会費コース\s*(?:会員)?\s*(?:限定)?\s*(?:先行)?\s*(?:受付|申込|販売)(?:開始|期間)?", re.I),
-    re.compile(r"(?:先行|受付|申込|販売).{0,18}年会費コース\s*(?:会員)?", re.I | re.S),
+    # Do not join an ordinary FC-sale sentence to a following upgrade sentence.
+    # The annual-fee wording must stay in the same sentence as the sale wording.
+    re.compile(r"(?:先行|受付|申込|販売)[^。！？\n]{0,18}年会費コース\s*(?:会員)?", re.I),
 )
 UPGRADE_RE = re.compile(r"アップグレード|upgrade", re.I)
 GENERAL_RE = re.compile(r"一般(?:発売|販売)")
