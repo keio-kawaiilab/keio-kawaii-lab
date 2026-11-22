@@ -143,6 +143,34 @@ def _group_represented(expected, entity, offer):
             and expected_url in source_urls)
 
 
+def _same_window(expected, entity, offer):
+    """Compare exact windows, accepting a source-backed end-of-day expansion.
+
+    The official parser may retain a deadline as ``YYYY-MM-DD`` while the
+    canonical offer stores the explicit ``23:59`` printed in the same article.
+    Treat those as the same window only when the exact official article remains
+    attached.  Different dates, start times and non-end-of-day times remain
+    distinct receptions.
+    """
+    if offer.get("applyStart") != expected.get("applyStart"):
+        return False
+    expected_end = str(expected.get("applyEnd") or "")
+    offered_end = str(offer.get("applyEnd") or "")
+    if expected_end == offered_end:
+        return True
+    if len(expected_end) != 10 or offered_end != f"{expected_end}T23:59":
+        return False
+    expected_url = str(expected.get("url") or "")
+    source_urls = {
+        str(value) for value in (
+            entity.get("url"), *(entity.get("urls") or []),
+            offer.get("url"), *(offer.get("urls") or []),
+            offer.get("applicationWindowSource"), offer.get("deadlineSource"),
+        ) if value
+    }
+    return "/news/detail/" in expected_url and expected_url in source_urls
+
+
 def audit(state, payload, history=None, *, today: date | None = None):
     """Compare collected offers with the public model for one publication day.
 
@@ -180,7 +208,7 @@ def audit(state, payload, history=None, *, today: date | None = None):
                 for offer in entity.get("offers", [entity]):
                     if (_group_represented(expected, entity, offer)
                             and _same_ticket_kind(expected, offer, entity)
-                            and all(offer.get(key) == expected.get(key) for key in ("applyStart", "applyEnd"))):
+                            and _same_window(expected, entity, offer)):
                         found = True
                         break
                 if found:

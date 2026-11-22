@@ -11,6 +11,23 @@ from resolve_source_priority import resolve
 
 
 class ContinuousDiscoveryTests(unittest.TestCase):
+    def test_rolling_ticket_summary_is_inventory_only(self):
+        candidate = discovery.parser.Candidate(
+            "FRUITS ZIPPER", "★FRUITS ZIPPER チケット先行情報★",
+            discovery.FRUITS_ROLLING_TICKET_SUMMARY,
+        )
+        html = """<div class='section--detail'><h1>★FRUITS ZIPPER チケット先行情報★</h1>
+        <p>2027年6月12日 ノエビアスタジアム神戸</p>
+        <p>FC先行 2026年9月14日25:00まで</p></div>"""
+        response = unittest.mock.Mock()
+        response.text = html
+        response.raise_for_status.return_value = None
+        with patch.object(discovery.requests.Session, "get", return_value=response):
+            rows, review, status = discovery.read_candidate(candidate, {"events": []}, {})
+        self.assertEqual([], rows)
+        self.assertIsNone(review)
+        self.assertEqual("index-only", status)
+
     def test_publication_audit_accepts_verified_halloween_window_correction(self):
         expected = {
             "group": "SWEET STEADY", "eventDate": "2026-10-30", "ticketType": "チケット受付",

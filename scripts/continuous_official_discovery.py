@@ -22,6 +22,7 @@ import update_live_events_v2 as retention
 WORKERS = 24
 SALE_RE = re.compile(r"一般(?:発売|販売)|当日券|リセール")
 RETRACTED_SOURCES_PATH = "data/retracted-ticket-sources.json"
+FRUITS_ROLLING_TICKET_SUMMARY = "https://fruitszipper.asobisystem.com/news/detail/43696"
 
 
 def retracted_source_urls():
@@ -901,6 +902,14 @@ def read_candidate(candidate, existing, headers):
     # (e.g. 2026年11⽉6⽇); normalize before date/window extraction.
     title = unicodedata.normalize("NFKC", title)
     text = unicodedata.normalize("NFKC", soup.get_text("\n", strip=True))
+    # This URL is a rolling directory of links to separate ticket articles,
+    # not a reception notice for every performance listed on the page.  Its
+    # lone historical FC deadline was previously paired with all later shows
+    # (including the 2027 stadium dates whose ticket details remain
+    # unannounced).  Keep the directory in the inspected inventory, but never
+    # emit offers from it; the linked detail articles are collected directly.
+    if candidate.url == FRUITS_ROLLING_TICKET_SUMMARY:
+        return [], None, "index-only"
     non_sale_title_hints = (
         *parser.IGNORE_TITLE_HINTS,
         "払い戻し", "連動企画", "デジタル整理券", "AUDITION", "ご注意とお願い",

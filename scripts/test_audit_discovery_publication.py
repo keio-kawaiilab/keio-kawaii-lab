@@ -37,6 +37,33 @@ class DiscoveryPublicationTest(unittest.TestCase):
         self.assertEqual("ok", report["status"])
         self.assertEqual(1, report["representedOffers"])
 
+    def test_source_backed_date_only_deadline_matches_explicit_end_of_day(self):
+        source = "https://morestar.asobisystem.com/news/detail/96004"
+        expected = {
+            "group": "MORE STAR", "eventDate": "2099-12-13", "startTime": "16:00",
+            "ticketType": "アップグレード抽選", "applyStart": "2099-11-12T18:00",
+            "applyEnd": "2099-11-19", "url": source,
+        }
+        entity = {
+            "group": "KAWAII LAB.合同", "participants": ["MORE STAR"],
+            "eventDate": "2099-12-13", "startTime": "16:00", "urls": [source],
+            "offers": [{
+                "ticketType": "アップグレード抽選", "applyStart": "2099-11-12T18:00",
+                "applyEnd": "2099-11-19T23:59", "url": source,
+            }],
+        }
+        state = {"observations": [{"expectedOffers": [expected]}]}
+        self.assertEqual([], audit(state, {"publicEvents": [entity]})["missingOffers"])
+
+        wrong_time = copy.deepcopy(entity)
+        wrong_time["offers"][0]["applyEnd"] = "2099-11-19T20:00"
+        self.assertEqual(1, len(audit(state, {"publicEvents": [wrong_time]})["missingOffers"]))
+
+        wrong_source = copy.deepcopy(entity)
+        wrong_source["urls"] = []
+        wrong_source["offers"][0]["url"] = "https://example.com/other"
+        self.assertEqual(1, len(audit(state, {"publicEvents": [wrong_source]})["missingOffers"]))
+
     def test_joint_nonparticipant_date_still_represents_group_fc_sales_route(self):
         source = "https://sweetsteady.asobisystem.com/news/detail/93737"
         expected = {
