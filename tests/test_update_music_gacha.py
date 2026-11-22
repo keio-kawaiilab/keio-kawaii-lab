@@ -25,6 +25,7 @@ class ParseMVTitle(unittest.TestCase):
             ("【MV】CUTIE STREET『新曲』Teaser", "CUTIE STREET"),
             ("【MV】CUTIE STREET『新曲』Live ver.", "CUTIE STREET"),
             ("【MV】CUTIE STREET『新曲』Korean ver.", "CUTIE STREET"),
+            ("【MV】CUTIE STREET『新曲』Acoustic ver.", "CUTIE STREET"),
             ("CUTIE STREET 新曲のみ公開", "CUTIE STREET"),
             ("【MV】FRUITS ZIPPER『新曲』", "CUTIE STREET"),
             ("【MV】『新曲』", "KAWAII LAB."),
