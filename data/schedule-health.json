@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-24T07:35:48.065485+09:00",
-  "candidateUpdatedAt": "2026-11-24T07:35:47+09:00",
-  "previousEventCount": 225,
-  "candidateEventCount": 223,
-  "protectedPreviousCount": 215,
+  "generatedAt": "2026-11-24T07:44:43.042040+09:00",
+  "candidateUpdatedAt": "2026-11-24T07:44:42+09:00",
+  "previousEventCount": 224,
+  "candidateEventCount": 225,
+  "protectedPreviousCount": 214,
   "errorCount": 0,
   "warningCount": 28,
   "errors": [],
@@ -38,7 +38,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: KAWAII LAB.合同 / 災害支援基金コンサート / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売"
   ],
-  "candidateSha256": "8f97ab2800af632023ae87521a9b340f385441f9268fa41bd45c819da94aac9f",
+  "candidateSha256": "6df1e2f259c552066da5b8fd0c10b0f948eb46d663658135b3f691e0d70f90b0",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -431,18 +431,18 @@
       "restoredPreviousRows": 1
     },
     {
+      "error": "deadline moved earlier for id:f03e6f9b32abb002: 2026-11-25T23:59 -> 2026-10-24T10:00 (manual review required)",
+      "action": "restored previous rows for id:f03e6f9b32abb002",
+      "restoredPreviousRows": 1
+    },
+    {
       "error": "future performance dates disappeared for pia:event:2642817:001: 2026-11-29",
       "action": "restored previous rows for pia:event:2642817:001",
       "restoredPreviousRows": 1
     },
     {
-      "error": "deadline moved earlier for pia:event:2642817:002: 2026-11-28T23:59 -> 2026-11-20T10:00 (manual review required)",
-      "action": "restored previous rows for pia:event:2642817:002",
-      "restoredPreviousRows": 1
-    },
-    {
-      "error": "deadline moved earlier for pia:event:2632906:001: 2026-11-26T23:59 -> 2026-09-26T10:00 (manual review required)",
-      "action": "restored previous rows for pia:event:2632906:001",
+      "error": "deadline moved earlier for id:0fe2835f4c0c0028: 2026-11-26T23:59 -> 2026-09-26T10:00 (manual review required)",
+      "action": "restored previous rows for id:0fe2835f4c0c0028",
       "restoredPreviousRows": 1
     },
     {
@@ -521,7 +521,7 @@
     "projectedJointParticipantCount": 0,
     "reassignedCount": 1,
     "hydratedCount": 0,
-    "ambiguousCount": 1,
+    "ambiguousCount": 0,
     "unresolvedCount": 0,
     "reassigned": [
       {
@@ -533,18 +533,7 @@
       }
     ],
     "hydrated": [],
-    "ambiguous": [
-      {
-        "group": "CUTIE STREET",
-        "date": "2026-11-29",
-        "url": "https://cutiestreet.asobisystem.com/live_information/detail/40369",
-        "candidateIds": [
-          "779b880f2ca573d5",
-          "577553463945ceaf",
-          "7c216c4f92affebc"
-        ]
-      }
-    ],
+    "ambiguous": [],
     "unresolved": [],
     "duplicateOfficialResaleWindowsRemoved": 0
   }
