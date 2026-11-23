@@ -535,36 +535,65 @@ def canonical_key(items: list[dict], schedule: list[dict]) -> str:
     return "|".join((group, cat, title, day, venue))
 
 
+def is_region_only_venue(value: object) -> bool:
+    return bool(re.fullmatch(r"(?:北海道|東京都|京都府|大阪府|.{2,3}県)", text(value)))
+
+
 def dedupe_schedule_occurrences(rows: list[dict]) -> list[dict]:
     """Collapse formatting variants of the same physical occurrence.
 
-    Official schedule placeholders sometimes prefix a venue with the event
-    type while the later detail article uses the bare venue.  ``merge_schedules``
-    quite correctly preserves distinct raw dictionaries, but those two labels
-    must still render as one occurrence.  Merge missing fields into the richer
-    row and prefer the cleaner bare venue label.
+    Official schedule placeholders sometimes use only a prefecture while the
+    detail article names the real venue.  On the same date and compatible start
+    time, collapse that alias only when it has exactly one specific-venue
+    candidate.  This keeps multiple same-day venues independent.
     """
     output: list[dict] = []
     positions: dict[tuple[str, str], int] = {}
-    for raw in rows:
-        row = copy.deepcopy(raw)
-        key = (str(row.get("date") or "")[:10], venue_key(row.get("venue")))
-        if key not in positions:
-            positions[key] = len(output)
-            output.append(row)
-            continue
-        index = positions[key]
-        current = output[index]
-        current_prefixed = bool(re.match(r"^[【\[]", text(current.get("venue"))))
-        row_prefixed = bool(re.match(r"^[【\[]", text(row.get("venue"))))
-        current_score = (not current_prefixed, sum(value not in (None, "", [], {}) for value in current.values()))
-        row_score = (not row_prefixed, sum(value not in (None, "", [], {}) for value in row.values()))
-        preferred, supplement = (row, current) if row_score > current_score else (current, row)
+
+    def merge_rows(current: dict, row: dict) -> dict:
+        def score(value: dict) -> tuple[bool, bool, int]:
+            prefixed = bool(re.match(r"^[【\[]", text(value.get("venue"))))
+            return (
+                not is_region_only_venue(value.get("venue")),
+                not prefixed,
+                sum(item not in (None, "", [], {}) for item in value.values()),
+            )
+
+        preferred, supplement = (row, current) if score(row) > score(current) else (current, row)
         merged = copy.deepcopy(preferred)
         for field, value in supplement.items():
             if merged.get(field) in (None, "", [], {}) and value not in (None, "", [], {}):
                 merged[field] = copy.deepcopy(value)
-        output[index] = merged
+        return merged
+
+    for raw in rows:
+        row = copy.deepcopy(raw)
+        day = str(row.get("date") or "")[:10]
+        key = (day, venue_key(row.get("venue")))
+        index = positions.get(key)
+        if index is None:
+            row_start = text(row.get("startTime"))
+            candidates = [
+                candidate_index
+                for candidate_index, candidate in enumerate(output)
+                if str(candidate.get("date") or "")[:10] == day
+                and (
+                    not row_start
+                    or not text(candidate.get("startTime"))
+                    or text(candidate.get("startTime")) == row_start
+                )
+                and is_region_only_venue(candidate.get("venue")) != is_region_only_venue(row.get("venue"))
+            ]
+            if len(candidates) == 1:
+                index = candidates[0]
+        if index is None:
+            positions[key] = len(output)
+            output.append(row)
+            continue
+        output[index] = merge_rows(output[index], row)
+        positions[key] = index
+        merged_key = (day, venue_key(output[index].get("venue")))
+        positions[merged_key] = index
     return output
 
 

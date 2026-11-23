@@ -809,6 +809,34 @@ class SpecialEventEntityTests(unittest.TestCase):
         normalized, _ = normalize_payload(payload)
         self.assertEqual("MORE STAR", normalized["events"][0]["offers"][0]["sourceGroup"])
 
+    def test_region_only_venue_alias_collapses_into_specific_official_venue(self):
+        payload = {"events": [{
+            "id": "hokkaido-large-benefit",
+            "entityType": "special-event",
+            "group": "CUTIE STREET",
+            "eventCategory": "large-benefit",
+            "displayTitle": "CUTIE STREET 大特典会 in 北海道",
+            "eventDate": "2026-11-23",
+            "venue": "複数会場（全2公演）",
+            "eventCount": 2,
+            "eventDates": ["2026-11-23"],
+            "venues": ["アクセスサッポロ", "北海道"],
+            "schedule": [
+                {"date": "2026-11-23", "venue": "アクセスサッポロ", "startTime": "10:00"},
+                {"date": "2026-11-23", "venue": "北海道", "startTime": "10:00"},
+            ],
+            "ticketType": "現在受付なし",
+            "url": "https://cutiestreet.asobisystem.com/live_information/detail/47104",
+        }]}
+        normalized, _ = normalize_payload(payload)
+        event = normalized["events"][0]
+        self.assertEqual(1, event["eventCount"])
+        self.assertEqual(["アクセスサッポロ"], event["venues"])
+        self.assertEqual(
+            [{"date": "2026-11-23", "venue": "アクセスサッポロ", "startTime": "10:00"}],
+            event["schedule"],
+        )
+
     def test_hmv_offer_prefers_event_page_over_account_and_help_links(self):
         official = "https://morestar.asobisystem.com/news/detail/94386"
         landing = "https://img.hmv.co.jp/cont/online/morestar17354910/"
