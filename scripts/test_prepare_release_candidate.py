@@ -241,6 +241,24 @@ class PrepareReleaseCandidateTests(unittest.TestCase):
         self.assertEqual(report["retainedPreviousRows"], 1)
         self.assertTrue(prepared["events"][0]["sourceStale"])
 
+    def test_verified_out_of_scope_source_is_not_restored_by_retention(self):
+        url = "https://kawaiilab.asobisystem.com/live_information/detail/47302"
+        old = {
+            "id": "mates-only-neutral",
+            "group": "KAWAII LAB.",
+            "title": "らぶちゃんと!vol.4@浅草花劇場",
+            "eventDate": "2026-12-06",
+            "url": url,
+            "urls": [url],
+        }
+        candidate = {"events": [], "outOfScopeScheduleUrls": [url]}
+
+        prepared, report = prep.prepare({"events": [old]}, candidate, self.NOW)
+
+        self.assertEqual(prepared["events"], [])
+        self.assertEqual(report["outOfScopePreviousRowsExcluded"], 1)
+        self.assertEqual(report["outOfScopePreviousRowIds"], ["mates-only-neutral"])
+
     def test_old_retailer_special_card_is_not_retained_when_offer_is_rediscovered(self):
         goods = "https://sukisuki-shop.com/goods/6500000005609"
         old = {

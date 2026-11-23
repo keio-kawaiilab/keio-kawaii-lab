@@ -34,6 +34,15 @@ TIMEOUT = 20
 EXTRA_GROUPS = ("KAWAII LAB. MATES", "KAWAII LAB. SOUTH")
 ALL_NAMED_GROUPS = (*ticket.GROUPS.keys(), *EXTRA_GROUPS)
 
+# The umbrella schedule can publish appearances by the training units without
+# naming them in the list/detail HTML.  Such rows otherwise fall through to a
+# neutral "KAWAII LAB." event and evade the normal exact-group scope filter.
+# Keep verified out-of-scope schedule pages here so both previously published
+# rows and future rediscovery of the same page are removed at collection time.
+OUT_OF_SCOPE_SCHEDULE_URLS = {
+    "https://kawaiilab.asobisystem.com/live_information/detail/47302",
+}
+
 
 def normalize(value: object) -> str:
     return re.sub(r"\s+", " ", str(value or "")).strip()
@@ -151,6 +160,22 @@ def event_groups(event: dict) -> list[str]:
     return values
 
 
+def event_urls(event: dict) -> set[str]:
+    return {
+        normalize(value)
+        for value in (
+            event.get("url"),
+            event.get("officialScheduleUrl"),
+            *(event.get("urls") or []),
+        )
+        if normalize(value)
+    }
+
+
+def is_out_of_scope_schedule_url(url: object) -> bool:
+    return normalize(url) in OUT_OF_SCOPE_SCHEDULE_URLS
+
+
 def find_existing(events: list[dict], day: str, title: str, url: str, groups: list[str]) -> dict | None:
     # URL identity is strongest and does not depend on display titles.
     for event in events:
@@ -211,13 +236,19 @@ def collect_schedule(s: requests.Session, today) -> tuple[list[tuple[official.Of
 
 
 def augment_schedule(payload: dict, rows: list[tuple[official.OfficialRow, str]]) -> tuple[dict, dict]:
-    events = [dict(event) for event in payload.get("events", []) if isinstance(event, dict)]
+    source_events = [dict(event) for event in payload.get("events", []) if isinstance(event, dict)]
+    excluded_existing = [event for event in source_events if event_urls(event) & OUT_OF_SCOPE_SCHEDULE_URLS]
+    events = [event for event in source_events if not event_urls(event) & OUT_OF_SCOPE_SCHEDULE_URLS]
     added = 0
     enriched = 0
     neutral = 0
+    excluded = len(excluded_existing)
     represented: list[dict] = []
 
     for source_row, html in rows:
+        if is_out_of_scope_schedule_url(source_row.url):
+            excluded += 1
+            continue
         detail = official.parse_detail(html) if html else {}
         detail_text = normalize(BeautifulSoup(html, "html.parser").get_text(" ", strip=True)) if html else ""
         groups = infer_target_groups(f"{source_row.title} {detail_text}")
@@ -271,9 +302,11 @@ def augment_schedule(payload: dict, rows: list[tuple[official.OfficialRow, str]]
 
     out = dict(payload)
     out["events"] = events
+    out["outOfScopeScheduleUrls"] = sorted(OUT_OF_SCOPE_SCHEDULE_URLS)
     diagnostics = {
         "scheduleEventsAdded": added,
         "scheduleEventsEnriched": enriched,
+        "scheduleEventsExcluded": excluded,
         "neutralUmbrellaRows": neutral,
         "representedScheduleRows": represented,
     }
@@ -306,9 +339,9 @@ def main() -> int:
     today = datetime.now(ticket.JST).date()
     schedule_rows, schedule_failures, schedule_collect_diag = collect_schedule(s, today)
     failures.extend(schedule_failures)
-    schedule_diag: dict = {}
-    if schedule_rows:
-        payload, schedule_diag = augment_schedule(payload, schedule_rows)
+    # Run even when the current fetch is empty so a verified out-of-scope row
+    # already present in the canonical data cannot survive a transient outage.
+    payload, schedule_diag = augment_schedule(payload, schedule_rows)
 
     payload["kawaiiLabOfficialDiscovery"] = {
         "status": "ok" if (expanded_articles or schedule_rows) else "degraded",

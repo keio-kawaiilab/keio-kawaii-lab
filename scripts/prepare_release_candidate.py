@@ -611,7 +611,19 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
     # into the public data model.
     previous, previous_expand = expand_payload(previous)
     candidate, candidate_expand = expand_payload(candidate)
-    events = [dict(event) for event in candidate.get("events", []) if isinstance(event, dict)]
+    excluded_source_urls = {
+        text(value) for value in candidate.get("outOfScopeScheduleUrls", []) if text(value)
+    }
+    source_events = [dict(event) for event in candidate.get("events", []) if isinstance(event, dict)]
+    excluded_candidate = [
+        str(event.get("id") or "")
+        for event in source_events
+        if excluded_source_urls.intersection(urls(event))
+    ]
+    events = [
+        event for event in source_events
+        if not excluded_source_urls.intersection(urls(event))
+    ]
 
     normalized = 0
     normalized_events = []
@@ -626,10 +638,14 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
     candidate_semantic = {semantic_key(event) for event in events}
 
     retained = []
+    excluded_previous = []
     superseded_legacy_release_series = []
     today = now.astimezone(JST).date()
     for old in previous.get("events", []):
         if not isinstance(old, dict) or not should_retain_previous(old, today):
+            continue
+        if excluded_source_urls.intersection(urls(old)):
+            excluded_previous.append(str(old.get("id") or ""))
             continue
         if stale_joint_replaced_by_participant_rows(old, events):
             continue
@@ -680,6 +696,10 @@ def prepare(previous: dict, candidate: dict, now: datetime) -> tuple[dict, dict]
         "duplicateOfficialResaleWindowsRemoved": duplicate_resale_windows_removed,
         "retainedPreviousRows": len(retained),
         "retained": retained,
+        "outOfScopeCandidateRowsExcluded": len(excluded_candidate),
+        "outOfScopeCandidateRowIds": excluded_candidate,
+        "outOfScopePreviousRowsExcluded": len(excluded_previous),
+        "outOfScopePreviousRowIds": excluded_previous,
         "expandedPreviousSpecialEntities": previous_expand.get("expandedSpecialEntities", 0),
         "expandedCandidateSpecialEntities": candidate_expand.get("expandedSpecialEntities", 0),
         "supersededStaleJointRowsRemoved": len(superseded_joint_rows),

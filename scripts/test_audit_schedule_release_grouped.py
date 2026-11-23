@@ -201,6 +201,23 @@ class GroupedReleaseAuditTests(unittest.TestCase):
         self.assertGreaterEqual(len(actions), 1)
         self.assertEqual("ok", report["status"])
 
+    def test_release_repair_does_not_restore_intentionally_excluded_scope(self):
+        url = "https://kawaiilab.asobisystem.com/live_information/detail/47302"
+        old = event("mates-only", "2026-12-06", "らぶちゃんと!vol.4", "KAWAII LAB.")
+        old["url"] = url
+        old["urls"] = [url]
+        candidate = payload([])
+        candidate["outOfScopeScheduleUrls"] = [url]
+
+        repaired, errors, _, report, actions = repair_local_errors(
+            payload([old]), candidate, NOW
+        )
+
+        self.assertEqual([], repaired["events"])
+        self.assertEqual([], errors)
+        self.assertEqual([], actions)
+        self.assertEqual("ok", report["status"])
+
     def test_release_repair_withholds_bad_brand_new_row_only(self):
         stable = event("stable", "2026-09-24", "既存公演")
         bad = event("bad-new", "2026-10-01", "新規だが壊れた公演")

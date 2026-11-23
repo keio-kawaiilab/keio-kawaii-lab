@@ -52,6 +52,23 @@ def is_global_integrity_error(error: str) -> bool:
     return error.startswith(GLOBAL_INTEGRITY_ERROR_PREFIXES)
 
 
+def previous_without_intentional_scope_exclusions(previous: dict, candidate: dict) -> dict:
+    """Do not restore rows the collector explicitly verified as out of scope."""
+    excluded = {
+        f"url:{str(value).strip()}"
+        for value in candidate.get("outOfScopeScheduleUrls", [])
+        if str(value).strip()
+    }
+    if not excluded:
+        return previous
+    filtered = copy.deepcopy(previous)
+    filtered["events"] = [
+        event for event in _events(previous)
+        if excluded.isdisjoint(stable_keys(event))
+    ]
+    return filtered
+
+
 def source_date_sets(payload: dict, today: date) -> dict[str, dict[str, set[str]]]:
     grouped: dict[str, dict[str, set[str]]] = defaultdict(lambda: defaultdict(set))
     for event in payload.get("events", []):
@@ -632,6 +649,7 @@ def repair_local_errors(previous: dict, candidate: dict, now: datetime, max_roun
     rolled back to the previous known-good rows, or withheld when a brand-new row
     cannot be matched safely, and then the entire repaired candidate is re-audited.
     """
+    previous = previous_without_intentional_scope_exclusions(previous, candidate)
     repaired = copy.deepcopy(candidate)
     quarantine_actions: list[dict] = []
     seen_states: set[str] = set()

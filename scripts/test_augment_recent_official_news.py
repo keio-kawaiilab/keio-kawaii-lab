@@ -5,7 +5,8 @@ import unittest
 from unittest.mock import patch
 
 from augment_recent_official_news import augment_ticket, merge_discovered_ticket_event
-from augment_kawaiilab_official import infer_target_groups
+from augment_kawaiilab_official import augment_schedule, infer_target_groups
+from update_official_schedule import OfficialRow
 
 
 class RecentOfficialBodyMergeTests(unittest.TestCase):
@@ -104,6 +105,34 @@ class KawaiiLabUmbrellaDiscoveryTests(unittest.TestCase):
 
     def test_does_not_invent_group_for_generic_umbrella_text(self):
         self.assertEqual(infer_target_groups("KAWAII LAB.からのお知らせ"), [])
+
+    def test_excludes_verified_mates_only_schedule_page_and_existing_neutral_row(self):
+        url = "https://kawaiilab.asobisystem.com/live_information/detail/47302"
+        payload = {
+            "events": [{
+                "id": "wrong-neutral-row",
+                "group": "KAWAII LAB.",
+                "eventTitle": "らぶちゃんと!vol.4@浅草花劇場",
+                "eventDate": "2026-12-06",
+                "url": url,
+                "urls": [url],
+            }]
+        }
+        row = OfficialRow(
+            group="KAWAII LAB.",
+            day="2026-12-06",
+            category="LIVE/EVENT",
+            title="らぶちゃんと!vol.4@浅草花劇場",
+            url=url,
+            event_scope="external",
+        )
+
+        result, diagnostics = augment_schedule(payload, [(row, "<html></html>")])
+
+        self.assertEqual(result["events"], [])
+        self.assertEqual(result["outOfScopeScheduleUrls"], [url])
+        self.assertEqual(diagnostics["scheduleEventsExcluded"], 2)
+        self.assertEqual(diagnostics["scheduleEventsAdded"], 0)
 
 
 if __name__ == "__main__":
