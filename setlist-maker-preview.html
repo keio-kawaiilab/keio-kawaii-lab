@@ -2638,7 +2638,7 @@ window.SETLIST_CATALOG = {
   function drawLine(ctx,x1,y1,x2,y2,color=RULE,width=1){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke()}
   function drawTape(ctx,x,y,w,h,fill,angle=0){ctx.save();ctx.translate(x+w/2,y+h/2);ctx.rotate(angle);ctx.globalAlpha=.72;ctx.fillStyle=fill;ctx.beginPath();ctx.moveTo(-w/2+4,-h/2);ctx.lineTo(w/2-8,-h/2+2);ctx.lineTo(w/2,h/2-4);ctx.lineTo(-w/2+7,h/2);ctx.closePath();ctx.fill();ctx.restore();}
   function paperBackground(ctx,h){
-    ctx.fillStyle='#f1e8d9';ctx.fillRect(0,0,W,h);
+    ctx.fillStyle='#fffdfa';ctx.fillRect(0,0,W,h);
     // The same photographic-grain artwork is used by live preview AND PNG export.
     // Repeat without stretching the grain when a long setlist spans multiple pages.
     if(PAPER_ART?.complete && PAPER_ART.naturalWidth){
@@ -2654,19 +2654,25 @@ window.SETLIST_CATALOG = {
       }
       ctx.globalAlpha=1;
     }
+    // Bright warm-white paper with fine fibers retained.
+    // Apply before painting the Yokohama harbour illustration to keep its detail.
+    ctx.save();
+    ctx.fillStyle='rgba(255,254,251,.77)';
+    ctx.fillRect(0,0,W,h);
+    ctx.restore();
     // Printed sheet: soft deckle edges, fold wear and shaded corners.
     ctx.save();
     const left=ctx.createLinearGradient(0,0,48,0);
-    left.addColorStop(0,'rgba(110,93,72,.25)');left.addColorStop(.34,'rgba(134,116,91,.10)');left.addColorStop(1,'rgba(255,255,255,0)');
+    left.addColorStop(0,'rgba(110,93,72,.12)');left.addColorStop(.34,'rgba(134,116,91,.04)');left.addColorStop(1,'rgba(255,255,255,0)');
     ctx.fillStyle=left;ctx.fillRect(0,0,48,h);
     const right=ctx.createLinearGradient(W-48,0,W,0);
-    right.addColorStop(0,'rgba(255,255,255,0)');right.addColorStop(.8,'rgba(134,116,91,.10)');right.addColorStop(1,'rgba(110,93,72,.25)');
+    right.addColorStop(0,'rgba(255,255,255,0)');right.addColorStop(.8,'rgba(134,116,91,.04)');right.addColorStop(1,'rgba(110,93,72,.12)');
     ctx.fillStyle=right;ctx.fillRect(W-48,0,48,h);
-    const top=ctx.createLinearGradient(0,0,0,38);top.addColorStop(0,'rgba(121,102,78,.19)');top.addColorStop(1,'rgba(255,255,255,0)');
+    const top=ctx.createLinearGradient(0,0,0,38);top.addColorStop(0,'rgba(121,102,78,.08)');top.addColorStop(1,'rgba(255,255,255,0)');
     ctx.fillStyle=top;ctx.fillRect(0,0,W,38);
-    const bottom=ctx.createLinearGradient(0,h-40,0,h);bottom.addColorStop(0,'rgba(255,255,255,0)');bottom.addColorStop(1,'rgba(121,102,78,.20)');
+    const bottom=ctx.createLinearGradient(0,h-40,0,h);bottom.addColorStop(0,'rgba(255,255,255,0)');bottom.addColorStop(1,'rgba(121,102,78,.09)');
     ctx.fillStyle=bottom;ctx.fillRect(0,h-40,W,40);
-    ctx.strokeStyle='rgba(118,98,78,.32)';ctx.lineWidth=2;
+    ctx.strokeStyle='rgba(118,98,78,.18)';ctx.lineWidth=2;
     ctx.beginPath();ctx.moveTo(10,6);
     for(let x=10;x<W-8;x+=18)ctx.lineTo(x,7+2.3*Math.sin(x*.43)+1.5*Math.sin(x*.12));
     ctx.lineTo(W-9,h-8);
@@ -2674,7 +2680,7 @@ window.SETLIST_CATALOG = {
     ctx.closePath();ctx.stroke();
     // Subtle creases in stock paper, avoiding the rows' contrast area.
     ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,92);ctx.bezierCurveTo(160,111,320,74,470,93);ctx.stroke();
-    ctx.strokeStyle='rgba(108,92,78,.055)';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,95);ctx.bezierCurveTo(160,115,320,79,470,97);ctx.stroke();
+    ctx.strokeStyle='rgba(108,92,78,.04)';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,95);ctx.bezierCurveTo(160,115,320,79,470,97);ctx.stroke();
     ctx.restore();
     // A recognizable, detailed Yokohama harbour engraving: red-brick warehouses,
     // InterContinental sail, Cosmo Clock Ferris wheel and Hikawa Maru.
