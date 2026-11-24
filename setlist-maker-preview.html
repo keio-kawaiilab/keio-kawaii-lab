@@ -92,16 +92,41 @@ window.SETLIST_CATALOG = {
   "metadata": {
     "prototype": true,
     "complete": false,
-    "source": "Existing MV-only music-gacha.json, copied as initial test catalog on 2026-11-24",
-    "verification": "Existing list is not a verified complete discography; missing MV-less original tracks and official cover releases",
-    "total": 73,
+    "source": "Japanese Wikipedia artist song/record tables compared with official Asobisystem group discographies, 2026-11-24",
+    "verification": "Officially published tracks included; pending unreleased works and unverified covers excluded. Completeness beyond listed releases not guaranteed.",
+    "total": 168,
     "countsByGroup": {
-      "CUTIE STREET": 15,
-      "FRUITS ZIPPER": 22,
-      "CANDY TUNE": 16,
-      "SWEET STEADY": 13,
-      "MORE STAR": 4,
+      "CUTIE STREET": 30,
+      "FRUITS ZIPPER": 55,
+      "CANDY TUNE": 42,
+      "SWEET STEADY": 27,
+      "MORE STAR": 11,
       "TEAM KAWAII LAB.": 3
+    },
+    "lastReviewedJST": "2026-11-24",
+    "wikiPages": {
+      "FRUITS ZIPPER": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "CANDY TUNE": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "SWEET STEADY": "https://ja.wikipedia.org/wiki/SWEET_STEADY",
+      "CUTIE STREET": "https://ja.wikipedia.org/wiki/CUTIE_STREET",
+      "MORE STAR": "https://ja.wikipedia.org/wiki/MORE_STAR"
+    },
+    "officialCatalogs": {
+      "FRUITS ZIPPER": "https://fruitszipper.asobisystem.com/discography/",
+      "CANDY TUNE": "https://candytune.asobisystem.com/discography/",
+      "SWEET STEADY": "https://sweetsteady.asobisystem.com/discography/",
+      "CUTIE STREET": "https://cutiestreet.asobisystem.com/discography/",
+      "MORE STAR": "https://morestar.asobisystem.com/discography/"
+    },
+    "unreleasedExcluded": {
+      "MORE STAR": [
+        "ANKI WITH ME (2026-11-25 release)"
+      ],
+      "CUTIE STREET": [
+        "PARTY TIME (2026-12-02 album)",
+        "TREASURES (2026-12-02 album)",
+        "Overture -Welcome to CUTIE LAND- (2026-12-02 album)"
+      ]
     }
   },
   "songs": [
@@ -114,6 +139,10 @@ window.SETLIST_CATALOG = {
         {
           "id": "original",
           "label": "通常版"
+        },
+        {
+          "id": "korean",
+          "label": "韓国語版"
         }
       ]
     },
@@ -138,6 +167,10 @@ window.SETLIST_CATALOG = {
         {
           "id": "original",
           "label": "通常版"
+        },
+        {
+          "id": "steve-aoki",
+          "label": "Steve Aoki Remix"
         }
       ]
     },
@@ -150,6 +183,10 @@ window.SETLIST_CATALOG = {
         {
           "id": "original",
           "label": "通常版"
+        },
+        {
+          "id": "tv-size",
+          "label": "TV size"
         }
       ]
     },
@@ -274,6 +311,10 @@ window.SETLIST_CATALOG = {
         {
           "id": "ko",
           "label": "韓国語版"
+        },
+        {
+          "id": "tv-size",
+          "label": "TV size"
         }
       ]
     },
@@ -334,6 +375,10 @@ window.SETLIST_CATALOG = {
         {
           "id": "original",
           "label": "通常版"
+        },
+        {
+          "id": "korean",
+          "label": "韓国語版"
         }
       ]
     },
@@ -502,6 +547,10 @@ window.SETLIST_CATALOG = {
         {
           "id": "original",
           "label": "通常版"
+        },
+        {
+          "id": "tune-quest-band",
+          "label": "TUNE QUEST バンドver."
         }
       ]
     },
@@ -514,6 +563,10 @@ window.SETLIST_CATALOG = {
         {
           "id": "original",
           "label": "通常版"
+        },
+        {
+          "id": "tune-quest-band",
+          "label": "TUNE QUEST バンドver."
         }
       ]
     },
@@ -538,6 +591,10 @@ window.SETLIST_CATALOG = {
         {
           "id": "original",
           "label": "通常版"
+        },
+        {
+          "id": "tune-quest-band",
+          "label": "TUNE QUEST バンドver."
         }
       ]
     },
@@ -562,6 +619,10 @@ window.SETLIST_CATALOG = {
         {
           "id": "original",
           "label": "通常版"
+        },
+        {
+          "id": "tune-quest-band",
+          "label": "TUNE QUEST バンドver."
         }
       ]
     },
@@ -574,6 +635,10 @@ window.SETLIST_CATALOG = {
         {
           "id": "original",
           "label": "通常版"
+        },
+        {
+          "id": "tune-quest-band",
+          "label": "TUNE QUEST バンドver."
         }
       ]
     },
@@ -658,6 +723,10 @@ window.SETLIST_CATALOG = {
         {
           "id": "original",
           "label": "通常版"
+        },
+        {
+          "id": "tune-quest-band",
+          "label": "TUNE QUEST バンドver."
         }
       ]
     },
@@ -850,6 +919,10 @@ window.SETLIST_CATALOG = {
         {
           "id": "original",
           "label": "通常版"
+        },
+        {
+          "id": "tune-quest-band",
+          "label": "TUNE QUEST バンドver."
         }
       ]
     },
@@ -886,6 +959,10 @@ window.SETLIST_CATALOG = {
         {
           "id": "original",
           "label": "通常版"
+        },
+        {
+          "id": "tune-quest-band",
+          "label": "TUNE QUEST バンドver."
         }
       ]
     },
@@ -984,10 +1061,1351 @@ window.SETLIST_CATALOG = {
           "label": "通常版"
         }
       ]
+    },
+    {
+      "id": "wiki-1001",
+      "group": "FRUITS ZIPPER",
+      "title": "君の明るい未来を追いかけて",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1002",
+      "group": "FRUITS ZIPPER",
+      "title": "完璧主義で☆",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1003",
+      "group": "FRUITS ZIPPER",
+      "title": "skyfeelan",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1004",
+      "group": "FRUITS ZIPPER",
+      "title": "ふれふるサマー！",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1005",
+      "group": "FRUITS ZIPPER",
+      "title": "We are Frontier",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1006",
+      "group": "FRUITS ZIPPER",
+      "title": "Re→TRY & FLY",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1007",
+      "group": "FRUITS ZIPPER",
+      "title": "CO-個性",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1008",
+      "group": "FRUITS ZIPPER",
+      "title": "Sugarless GiRL",
+      "type": "cover",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1009",
+      "group": "FRUITS ZIPPER",
+      "title": "ふるっぱーりー！",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1010",
+      "group": "FRUITS ZIPPER",
+      "title": "成長期なので。",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1011",
+      "group": "FRUITS ZIPPER",
+      "title": "ぶちかませよ！",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1012",
+      "group": "FRUITS ZIPPER",
+      "title": "じょい！×３",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1013",
+      "group": "FRUITS ZIPPER",
+      "title": "ファミリー・サマー・バケーション",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1014",
+      "group": "FRUITS ZIPPER",
+      "title": "ウタウタイ",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1015",
+      "group": "FRUITS ZIPPER",
+      "title": "青い珊瑚礁",
+      "type": "cover",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1016",
+      "group": "FRUITS ZIPPER",
+      "title": "ずっと、ずっと、ずっと！",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1017",
+      "group": "FRUITS ZIPPER",
+      "title": "スターライト・ヴァルキリー",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1018",
+      "group": "FRUITS ZIPPER",
+      "title": "虹",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1019",
+      "group": "FRUITS ZIPPER",
+      "title": "ぱーすとめいみー",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1020",
+      "group": "FRUITS ZIPPER",
+      "title": "天真爛漫",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1021",
+      "group": "FRUITS ZIPPER",
+      "title": "Chill out",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1022",
+      "group": "FRUITS ZIPPER",
+      "title": "Bye-Bye",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1023",
+      "group": "FRUITS ZIPPER",
+      "title": "月の音",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1024",
+      "group": "FRUITS ZIPPER",
+      "title": "ぴんきーれっど！",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1025",
+      "group": "FRUITS ZIPPER",
+      "title": "すーぱーかれんたいむ",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1026",
+      "group": "FRUITS ZIPPER",
+      "title": "末っ子パラドックス",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1027",
+      "group": "FRUITS ZIPPER",
+      "title": "Spotlight",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1028",
+      "group": "FRUITS ZIPPER",
+      "title": "マナカマナカマナ",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1029",
+      "group": "FRUITS ZIPPER",
+      "title": "うぇるかむとぅ〜ざ♡ふるっぱー！",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1030",
+      "group": "FRUITS ZIPPER",
+      "title": "Going!",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1031",
+      "group": "FRUITS ZIPPER",
+      "title": "ハートのローラーコースター",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1032",
+      "group": "FRUITS ZIPPER",
+      "title": "BABY I LOVED",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1033",
+      "group": "FRUITS ZIPPER",
+      "title": "Overture 〜NEW KAWAII〜",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/FRUITS_ZIPPER",
+      "officialDiscographyUrl": "https://fruitszipper.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1034",
+      "group": "CANDY TUNE",
+      "title": "ナナイロプロローグ",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1035",
+      "group": "CANDY TUNE",
+      "title": "未完な青春",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1036",
+      "group": "CANDY TUNE",
+      "title": "TUNE MY WAY",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1037",
+      "group": "CANDY TUNE",
+      "title": "CATCH YOU",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1038",
+      "group": "CANDY TUNE",
+      "title": "きゅきゅきゅキュート",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        },
+        {
+          "id": "tune-quest-band",
+          "label": "TUNE QUEST バンドver."
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1039",
+      "group": "CANDY TUNE",
+      "title": "WAO！アオハル！",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1040",
+      "group": "CANDY TUNE",
+      "title": "Twilight Dilemma",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1041",
+      "group": "CANDY TUNE",
+      "title": "レイドバックジャーニー",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1042",
+      "group": "CANDY TUNE",
+      "title": "絶対きゃんちゅー宣言っ！",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        },
+        {
+          "id": "tune-quest-band",
+          "label": "TUNE QUEST バンドver."
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1043",
+      "group": "CANDY TUNE",
+      "title": "LASTING TUNE",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1044",
+      "group": "CANDY TUNE",
+      "title": "夏しかサマーー！♡",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1045",
+      "group": "CANDY TUNE",
+      "title": "永遠Twilight",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        },
+        {
+          "id": "tune-quest-band",
+          "label": "TUNE QUEST バンドver."
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1046",
+      "group": "CANDY TUNE",
+      "title": "シャットダウン！",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1047",
+      "group": "CANDY TUNE",
+      "title": "HTAG",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1048",
+      "group": "CANDY TUNE",
+      "title": "大正解 Everyday",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1049",
+      "group": "CANDY TUNE",
+      "title": "Princess Girls♡",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1050",
+      "group": "CANDY TUNE",
+      "title": "びびなつFEVER!",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1051",
+      "group": "CANDY TUNE",
+      "title": "アンインストールちゅー",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1052",
+      "group": "CANDY TUNE",
+      "title": "SKY GIRL",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1053",
+      "group": "CANDY TUNE",
+      "title": "ましゅまろL♡VE",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1054",
+      "group": "CANDY TUNE",
+      "title": "Quantum Love",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1055",
+      "group": "CANDY TUNE",
+      "title": "100パーセントめたもるふぉ～ぜ！",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1056",
+      "group": "CANDY TUNE",
+      "title": "Dear Rose",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1057",
+      "group": "CANDY TUNE",
+      "title": "アメジスタの不完全神話",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1058",
+      "group": "CANDY TUNE",
+      "title": "BLACK KITTY",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1059",
+      "group": "CANDY TUNE",
+      "title": "Overture -first tune-",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CANDY_TUNE",
+      "officialDiscographyUrl": "https://candytune.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1060",
+      "group": "SWEET STEADY",
+      "title": "ハートの魔法",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/SWEET_STEADY",
+      "officialDiscographyUrl": "https://sweetsteady.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1061",
+      "group": "SWEET STEADY",
+      "title": "ミチシルベ",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/SWEET_STEADY",
+      "officialDiscographyUrl": "https://sweetsteady.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1062",
+      "group": "SWEET STEADY",
+      "title": "Call me, Tell me",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/SWEET_STEADY",
+      "officialDiscographyUrl": "https://sweetsteady.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1063",
+      "group": "SWEET STEADY",
+      "title": "Sweet Cafe",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/SWEET_STEADY",
+      "officialDiscographyUrl": "https://sweetsteady.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1064",
+      "group": "SWEET STEADY",
+      "title": "おねがいペンタス",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/SWEET_STEADY",
+      "officialDiscographyUrl": "https://sweetsteady.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1065",
+      "group": "SWEET STEADY",
+      "title": "SWEET BLOOM",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/SWEET_STEADY",
+      "officialDiscographyUrl": "https://sweetsteady.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1066",
+      "group": "SWEET STEADY",
+      "title": "ファンファーレ",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/SWEET_STEADY",
+      "officialDiscographyUrl": "https://sweetsteady.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1067",
+      "group": "SWEET STEADY",
+      "title": "すいすてたいむ",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/SWEET_STEADY",
+      "officialDiscographyUrl": "https://sweetsteady.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1068",
+      "group": "SWEET STEADY",
+      "title": "ガーベラの花のように",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/SWEET_STEADY",
+      "officialDiscographyUrl": "https://sweetsteady.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1069",
+      "group": "SWEET STEADY",
+      "title": "DASH!!!",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/SWEET_STEADY",
+      "officialDiscographyUrl": "https://sweetsteady.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1070",
+      "group": "SWEET STEADY",
+      "title": "ハートレスキューミー",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/SWEET_STEADY",
+      "officialDiscographyUrl": "https://sweetsteady.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1071",
+      "group": "SWEET STEADY",
+      "title": "Snow Sparkle",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/SWEET_STEADY",
+      "officialDiscographyUrl": "https://sweetsteady.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1072",
+      "group": "SWEET STEADY",
+      "title": "ワガママ",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/SWEET_STEADY",
+      "officialDiscographyUrl": "https://sweetsteady.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1073",
+      "group": "SWEET STEADY",
+      "title": "なりたい私",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/SWEET_STEADY",
+      "officialDiscographyUrl": "https://sweetsteady.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1074",
+      "group": "CUTIE STREET",
+      "title": "ハロハロミライ",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CUTIE_STREET",
+      "officialDiscographyUrl": "https://cutiestreet.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1075",
+      "group": "CUTIE STREET",
+      "title": "解",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CUTIE_STREET",
+      "officialDiscographyUrl": "https://cutiestreet.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1076",
+      "group": "CUTIE STREET",
+      "title": "daylight",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CUTIE_STREET",
+      "officialDiscographyUrl": "https://cutiestreet.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1077",
+      "group": "CUTIE STREET",
+      "title": "ハッピー世界！",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CUTIE_STREET",
+      "officialDiscographyUrl": "https://cutiestreet.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1078",
+      "group": "CUTIE STREET",
+      "title": "ハルフレーク",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CUTIE_STREET",
+      "officialDiscographyUrl": "https://cutiestreet.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1079",
+      "group": "CUTIE STREET",
+      "title": "チョットヒトサジ",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CUTIE_STREET",
+      "officialDiscographyUrl": "https://cutiestreet.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1080",
+      "group": "CUTIE STREET",
+      "title": "モアベリサマー",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CUTIE_STREET",
+      "officialDiscographyUrl": "https://cutiestreet.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1081",
+      "group": "CUTIE STREET",
+      "title": "きゅーすとのうた",
+      "type": "original",
+      "versions": [
+        {
+          "id": "korean",
+          "label": "韓国語版（公式配信）"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CUTIE_STREET",
+      "officialDiscographyUrl": "https://cutiestreet.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1082",
+      "group": "CUTIE STREET",
+      "title": "多元幸福論",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CUTIE_STREET",
+      "officialDiscographyUrl": "https://cutiestreet.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1083",
+      "group": "CUTIE STREET",
+      "title": "Shooting Star",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CUTIE_STREET",
+      "officialDiscographyUrl": "https://cutiestreet.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1084",
+      "group": "CUTIE STREET",
+      "title": "ホメマクリズム",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CUTIE_STREET",
+      "officialDiscographyUrl": "https://cutiestreet.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1085",
+      "group": "CUTIE STREET",
+      "title": "Top of the top",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CUTIE_STREET",
+      "officialDiscographyUrl": "https://cutiestreet.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1086",
+      "group": "CUTIE STREET",
+      "title": "どんどんどん！",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CUTIE_STREET",
+      "officialDiscographyUrl": "https://cutiestreet.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1087",
+      "group": "CUTIE STREET",
+      "title": "君なんだ",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CUTIE_STREET",
+      "officialDiscographyUrl": "https://cutiestreet.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1088",
+      "group": "CUTIE STREET",
+      "title": "おやすみサイレンナイト",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/CUTIE_STREET",
+      "officialDiscographyUrl": "https://cutiestreet.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1089",
+      "group": "MORE STAR",
+      "title": "大人未満",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/MORE_STAR",
+      "officialDiscographyUrl": "https://morestar.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1090",
+      "group": "MORE STAR",
+      "title": "タイムライド",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/MORE_STAR",
+      "officialDiscographyUrl": "https://morestar.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1091",
+      "group": "MORE STAR",
+      "title": "ぴたぴたきゅん",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/MORE_STAR",
+      "officialDiscographyUrl": "https://morestar.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1092",
+      "group": "MORE STAR",
+      "title": "相ラブユー",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/MORE_STAR",
+      "officialDiscographyUrl": "https://morestar.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1093",
+      "group": "MORE STAR",
+      "title": "あしたの準備ができたなら",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/MORE_STAR",
+      "officialDiscographyUrl": "https://morestar.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1094",
+      "group": "MORE STAR",
+      "title": "サマーゴー！！",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/MORE_STAR",
+      "officialDiscographyUrl": "https://morestar.asobisystem.com/discography/"
+    },
+    {
+      "id": "wiki-1095",
+      "group": "MORE STAR",
+      "title": "アフターオール",
+      "type": "original",
+      "versions": [
+        {
+          "id": "original",
+          "label": "通常版"
+        }
+      ],
+      "wikipediaUrl": "https://ja.wikipedia.org/wiki/MORE_STAR",
+      "officialDiscographyUrl": "https://morestar.asobisystem.com/discography/"
     }
   ]
 };
-
 </script>
 <script>
 'use strict';
@@ -1091,7 +2509,7 @@ window.SETLIST_CATALOG = {
     const candidates=CATALOG.filter(c=>c.group===item.group&&c.id!==item.songId&&!occupied.has(c.id)&&!occupied.has(`${c.group}::${normalize(c.title)}`));
     if(!candidates.length){showToast('同じグループに再抽選できる別の曲がありません');return;}
     const next=candidates[randomIndex(candidates.length)];
-    commit(s=>{const x=s.items.find(i=>i.uid===uidValue);Object.assign(x,{songId:next.id,title:next.title,version:'original',variantLabel:'通常版'})});
+    commit(s=>{const x=s.items.find(i=>i.uid===uidValue);Object.assign(x,{songId:next.id,title:next.title,version:next.versions[0].id,variantLabel:next.versions[0].label})});
   }
   function randomIndex(n){if(n<=0)throw Error('Invalid pool');if(globalThis.crypto?.getRandomValues){const max=0x100000000,limit=Math.floor(max/n)*n,arr=new Uint32Array(1);do{crypto.getRandomValues(arr)}while(arr[0]>=limit);return arr[0]%n}return Math.floor(Math.random()*n)}
   function randomShuffle(items){const a=[...items];for(let i=a.length-1;i>0;i--){const j=randomIndex(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
@@ -1116,7 +2534,7 @@ window.SETLIST_CATALOG = {
       if(!eligible.length)return fail(`候補曲が足りません。残り${need-i}曲を追加できません。対象グループや曲数を変更してください。`);
       const min=Math.min(...eligible.map(g=>counts[g]));const tied=eligible.filter(g=>counts[g]===min);const group=tied[randomIndex(tied.length)];
       const j=randomIndex(pool[group].length);const song=pool[group].splice(j,1)[0];counts[group]++;
-      chosen.push({uid:uid(),kind:'song',source:'random',songId:song.id,title:song.title,group:song.group,version:'original',variantLabel:'通常版'});
+      chosen.push({uid:uid(),kind:'song',source:'random',songId:song.id,title:song.title,group:song.group,version:song.versions[0].id,variantLabel:song.versions[0].label});
     }
     const additions=order==='grouped'?[...chosen].sort((a,b)=>selected.indexOf(a.group)-selected.indexOf(b.group)):randomShuffle(chosen);
     commit(s=>{
