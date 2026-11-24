@@ -2637,80 +2637,75 @@ window.SETLIST_CATALOG = {
   }
   function drawLine(ctx,x1,y1,x2,y2,color=RULE,width=1){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke()}
   function drawTape(ctx,x,y,w,h,fill,angle=0){ctx.save();ctx.translate(x+w/2,y+h/2);ctx.rotate(angle);ctx.globalAlpha=.72;ctx.fillStyle=fill;ctx.beginPath();ctx.moveTo(-w/2+4,-h/2);ctx.lineTo(w/2-8,-h/2+2);ctx.lineTo(w/2,h/2-4);ctx.lineTo(-w/2+7,h/2);ctx.closePath();ctx.fill();ctx.restore();}
+  function softMist(ctx,cx,cy,rx,ry,rgba){
+    ctx.save();ctx.translate(cx,cy);ctx.scale(rx,ry);
+    const g=ctx.createRadialGradient(0,0,0,0,0,1);
+    g.addColorStop(0,rgba);g.addColorStop(.48,rgba.replace(/\.[0-9]+\)$/,'.13)'));g.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.fillStyle=g;ctx.fillRect(-1,-1,2,2);ctx.restore();
+  }
   function paperBackground(ctx,h){
-    ctx.fillStyle='#fffdfa';ctx.fillRect(0,0,W,h);
-    // The same photographic-grain artwork is used by live preview AND PNG export.
-    // Repeat without stretching the grain when a long setlist spans multiple pages.
+    // Bright, breathable paper with a faint fiber pattern, not aged parchment.
+    ctx.fillStyle='#fcfeff';ctx.fillRect(0,0,W,h);
     if(PAPER_ART?.complete && PAPER_ART.naturalWidth){
-      const pattern=ctx.createPattern(PAPER_ART,'repeat');
-      if(pattern){ctx.fillStyle=pattern;ctx.fillRect(0,0,W,h);}
-    }else{
-      // Offline fallback while the print artwork is still loading.
-      let seed=3177;const rand=()=>{seed=(1664525*seed+1013904223)>>>0;return seed/4294967296};
-      for(let i=0;i<15500;i++){
-        const x=rand()*W,y=rand()*h;
-        ctx.fillStyle=rand()>.48?'#e6d9c6':'#ffffff';ctx.globalAlpha=.09+rand()*.2;
-        ctx.fillRect(x,y,1+rand()*5,1+rand()*2);
-      }
-      ctx.globalAlpha=1;
+      const texture=ctx.createPattern(PAPER_ART,'repeat');
+      if(texture){ctx.save();ctx.globalAlpha=.17;ctx.fillStyle=texture;ctx.fillRect(0,0,W,h);ctx.restore();}
     }
-    // Bright warm-white paper with fine fibers retained.
-    // Apply before painting the Yokohama harbour illustration to keep its detail.
-    ctx.save();
-    ctx.fillStyle='rgba(255,254,251,.77)';
-    ctx.fillRect(0,0,W,h);
-    ctx.restore();
-    // Printed sheet: soft deckle edges, fold wear and shaded corners.
-    ctx.save();
-    const left=ctx.createLinearGradient(0,0,48,0);
-    left.addColorStop(0,'rgba(110,93,72,.12)');left.addColorStop(.34,'rgba(134,116,91,.04)');left.addColorStop(1,'rgba(255,255,255,0)');
-    ctx.fillStyle=left;ctx.fillRect(0,0,48,h);
-    const right=ctx.createLinearGradient(W-48,0,W,0);
-    right.addColorStop(0,'rgba(255,255,255,0)');right.addColorStop(.8,'rgba(134,116,91,.04)');right.addColorStop(1,'rgba(110,93,72,.12)');
-    ctx.fillStyle=right;ctx.fillRect(W-48,0,48,h);
-    const top=ctx.createLinearGradient(0,0,0,38);top.addColorStop(0,'rgba(121,102,78,.08)');top.addColorStop(1,'rgba(255,255,255,0)');
-    ctx.fillStyle=top;ctx.fillRect(0,0,W,38);
-    const bottom=ctx.createLinearGradient(0,h-40,0,h);bottom.addColorStop(0,'rgba(255,255,255,0)');bottom.addColorStop(1,'rgba(121,102,78,.09)');
-    ctx.fillStyle=bottom;ctx.fillRect(0,h-40,W,40);
-    ctx.strokeStyle='rgba(118,98,78,.18)';ctx.lineWidth=2;
-    ctx.beginPath();ctx.moveTo(10,6);
-    for(let x=10;x<W-8;x+=18)ctx.lineTo(x,7+2.3*Math.sin(x*.43)+1.5*Math.sin(x*.12));
-    ctx.lineTo(W-9,h-8);
-    for(let x=W-9;x>10;x-=18)ctx.lineTo(x,h-8+2*Math.sin(x*.3));
-    ctx.closePath();ctx.stroke();
-    // Subtle creases in stock paper, avoiding the rows' contrast area.
-    ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,92);ctx.bezierCurveTo(160,111,320,74,470,93);ctx.stroke();
-    ctx.strokeStyle='rgba(108,92,78,.04)';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,95);ctx.bezierCurveTo(160,115,320,79,470,97);ctx.stroke();
-    ctx.restore();
-    // A recognizable, detailed Yokohama harbour engraving: red-brick warehouses,
-    // InterContinental sail, Cosmo Clock Ferris wheel and Hikawa Maru.
-    // Place in a dedicated lower print area so titles never compete with scenery.
+    const base=ctx.createLinearGradient(0,0,W,h);
+    base.addColorStop(0,'rgba(255,255,255,.83)');
+    base.addColorStop(.45,'rgba(255,255,255,.68)');
+    base.addColorStop(1,'rgba(255,255,255,.77)');
+    ctx.fillStyle=base;ctx.fillRect(0,0,W,h);
+
+    // The softly blurred blue sky, lavender clouds and pink air are the visual identity.
+    softMist(ctx,75,130,550,365,'rgba(154,220,250,.53)');
+    softMist(ctx,930,205,470,370,'rgba(216,189,248,.52)');
+    softMist(ctx,480,370,610,270,'rgba(255,198,221,.28)');
+    softMist(ctx,980,h*.61,390,620,'rgba(197,223,255,.22)');
+    softMist(ctx,-90,h*.46,385,595,'rgba(212,234,252,.24)');
+    softMist(ctx,190,h-380,530,480,'rgba(185,229,250,.48)');
+    softMist(ctx,900,h-350,490,390,'rgba(245,198,235,.35)');
+    const sea=ctx.createLinearGradient(0,h-535,0,h-60);
+    sea.addColorStop(0,'rgba(231,250,255,0)');sea.addColorStop(.52,'rgba(211,240,251,.17)');sea.addColorStop(1,'rgba(229,244,252,.34)');
+    ctx.fillStyle=sea;ctx.fillRect(0,h-535,W,510);
+
+    // Print a recognizable Yokohama waterfront, clearly visible over the pastel sea.
     if(YOKOHAMA_ART?.complete && YOKOHAMA_ART.naturalWidth){
-      ctx.save();ctx.globalAlpha=.88;
-      ctx.drawImage(YOKOHAMA_ART,0,h-490,W,350);ctx.restore();
+      ctx.save();ctx.globalAlpha=.85;
+      ctx.drawImage(YOKOHAMA_ART,0,h-488,W,350);
+      ctx.restore();
     }
-    drawTape(ctx,-27,29,160,42,'#eaa1c6',-.46);
-    drawTape(ctx,W-118,h-68,153,35,'#eaa1c6',-.49);
+    // Quiet page edge: avoid old-paper shadows and fake adhesive tape.
+    ctx.strokeStyle='rgba(123,185,211,.17)';ctx.lineWidth=2;
+    ctx.strokeRect(12,12,W-24,h-24);
   }
   function drawChip(ctx,group,x,y,w=207,h=33){const [bg,fg]=EXPORT_CHIP[group]||['#d9e8ed','#2b4a5e'];ctx.save();rounded(ctx,x,y,w,h,16);ctx.fillStyle=bg;ctx.fill();ctx.fillStyle=fg;let size=17;ctxFont(ctx,800,size);while(ctx.measureText(group).width>w-20&&size>11){size--;ctxFont(ctx,800,size)}ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(group,x+w/2,y+h/2+1);ctx.restore();}
   function drawHeader(ctx,s,layout,pageIndex){
-    ctx.save();ctx.textAlign='left';ctx.fillStyle=INK;
-    ctxFont(ctx,900,67);ctx.fillText('KAWAII LAB.',MARGIN+23,106);
-    drawLine(ctx,MARGIN+35,117,505,117,PINK,5);
-    ctxFont(ctx,900,28);ctx.fillStyle='#30323b';ctx.fillText('S E T L I S T   M A K E R',MARGIN+80,157);
-    ctx.strokeStyle=INK;ctx.lineWidth=2;ctx.strokeRect(W-337,53,273,98);
-    ctxFont(ctx,800,17);ctx.fillText('KAWAII LAB. 同好会',W-317,90);
-    ctxFont(ctx,600,18);ctx.fillText('SETLIST MAKER',W-317,122);
-    ctx.fillStyle='#e3cbf0';ctx.globalAlpha=.68;const nameY=192;const bandH=layout.titleLines.length*60+25;
-    // Pastel title strip, styled as a piece of paper masking tape.
-    drawTape(ctx,MARGIN+94,nameY,W-2*MARGIN-95,bandH,'#d9c0ee',-.014);
-    ctx.globalAlpha=1;ctx.fillStyle='#2b3038';ctxFont(ctx,900,48);
-    layout.titleLines.forEach((line,i)=>ctx.fillText(line,MARGIN+125,nameY+55+i*60));
+    ctx.save();ctx.textAlign='left';
+    ctx.fillStyle='#215a80';ctxFont(ctx,800,25);
+    ctx.fillText('KAWAII LAB. 同好会',MARGIN+12,72);
+    ctx.fillStyle='#447c9a';ctxFont(ctx,700,18);ctx.textAlign='right';
+    ctx.fillText('YOKOHAMA  /  SETLIST MAKER',W-MARGIN-8,73);
+    ctx.textAlign='left';
+    ctxFont(ctx,900,77);ctx.fillStyle='#1a537a';
+    ctx.fillText('SETLIST',MARGIN+7,166);
+    ctxFont(ctx,700,31);ctx.fillStyle='#4c8eae';
+    ctx.fillText('MAKER',MARGIN+394,166);
+
+    const nameY=192, bandH=layout.titleLines.length*60+25;
+    const band=ctx.createLinearGradient(MARGIN,nameY,W-MARGIN,nameY+bandH);
+    band.addColorStop(0,'rgba(208,237,252,.88)');band.addColorStop(.52,'rgba(231,225,254,.85)');band.addColorStop(1,'rgba(252,218,235,.83)');
+    ctx.save();ctx.shadowColor='rgba(94,168,204,.16)';ctx.shadowBlur=25;ctx.shadowOffsetY=6;
+    rounded(ctx,MARGIN,nameY,W-2*MARGIN,bandH,18);ctx.fillStyle=band;ctx.fill();ctx.restore();
+    ctx.fillStyle='#1c415f';ctxFont(ctx,900,47);
+    layout.titleLines.forEach((line,i)=>ctx.fillText(line,MARGIN+25,nameY+55+i*60));
+
     let top=nameY+bandH+35;
-    if(layout.metaLines.length){ctxFont(ctx,600,22);ctx.fillStyle='#3a4750';layout.metaLines.forEach(line=>{ctx.fillText(line,MARGIN+14,top);top+=35;});}
-    drawLine(ctx,MARGIN,top,W-MARGIN,top,'#373a40',2);
-    const infoY=top+14;ctx.fillStyle=INK;ctx.fillRect(MARGIN,infoY,76,32);ctxFont(ctx,900,18);ctx.fillStyle='#fff';ctx.textAlign='center';ctx.fillText('LIVE',MARGIN+38,infoY+23);
-    ctx.textAlign='left';ctxFont(ctx,800,20);ctx.fillStyle=INK;ctx.fillText('KAWAII LAB. SETLIST',MARGIN+92,infoY+23);
+    if(layout.metaLines.length){ctxFont(ctx,600,21);ctx.fillStyle='#345f7b';layout.metaLines.forEach(line=>{ctx.fillText(line,MARGIN+12,top);top+=35;});}
+    drawLine(ctx,MARGIN,top,W-MARGIN,top,'rgba(67,149,192,.48)',1.5);
+    const infoY=top+14;
+    ctx.fillStyle='#307da9';rounded(ctx,MARGIN,infoY,76,32,7);ctx.fill();
+    ctxFont(ctx,850,17);ctx.fillStyle='#fff';ctx.textAlign='center';ctx.fillText('LIVE',MARGIN+38,infoY+23);
+    ctx.textAlign='left';ctxFont(ctx,800,20);ctx.fillStyle='#275978';ctx.fillText('KAWAII LAB. SETLIST',MARGIN+94,infoY+23);
     if(layout.showGroups){
       for(let i=0;i<layout.actualGroups.length;i++){
         const row=Math.floor(i/3),col=i%3;
@@ -2718,40 +2713,45 @@ window.SETLIST_CATALOG = {
       }
     }
     const bottom=infoY+48+(layout.showGroups?Math.ceil(layout.actualGroups.length/3)*37:0);
-    drawLine(ctx,MARGIN,bottom,W-MARGIN,bottom,'#373a40',2);
-    if(layout.pages.length>1){ctxFont(ctx,600,18);ctx.fillStyle='#4d5a63';ctx.textAlign='right';ctx.fillText(`PAGE ${pageIndex+1} / ${layout.pages.length}`,W-MARGIN,176)}
+    drawLine(ctx,MARGIN,bottom,W-MARGIN,bottom,'rgba(67,149,192,.38)',1.4);
+    if(layout.pages.length>1){ctxFont(ctx,650,18);ctx.fillStyle='#3b7695';ctx.textAlign='right';ctx.fillText(`PAGE ${pageIndex+1} / ${layout.pages.length}`,W-MARGIN,160)}
     ctx.restore();
   }
-  function drawSection(ctx,section,y,continued){const text=section==='encore'?'ENCORE':'MAIN SET';
-    ctx.save();ctx.fillStyle=section==='encore'?'#d76a9b':'#263b50';
-    const x=MARGIN-8;ctx.beginPath();ctx.moveTo(x+12,y+4);ctx.lineTo(x+248,y);ctx.lineTo(x+256,y+45);ctx.lineTo(x+10,y+52);ctx.lineTo(x,y+34);ctx.closePath();ctx.fill();
-    ctx.fillStyle='#fff';ctxFont(ctx,900,28);ctx.fillText(text,x+35,y+37);
-    if(continued){ctxFont(ctx,600,18);ctx.fillStyle='#3b4b59';ctx.fillText('CONTINUED',x+275,y+37)}ctx.restore();
+  function drawSection(ctx,section,y,continued){
+    const text=section==='encore'?'ENCORE':'MAIN SET';
+    const bg=ctx.createLinearGradient(MARGIN,y,MARGIN+252,y+44);
+    if(section==='encore'){bg.addColorStop(0,'#edb1d3');bg.addColorStop(1,'#f8d6e9')}
+    else{bg.addColorStop(0,'#a6d6f2');bg.addColorStop(1,'#d7effa')}
+    ctx.save();rounded(ctx,MARGIN,y+5,238,45,17);ctx.fillStyle=bg;ctx.fill();
+    ctx.fillStyle=section==='encore'?'#753f67':'#1f5777';ctxFont(ctx,900,25);
+    ctx.fillText(text,MARGIN+25,y+36);
+    if(continued){ctxFont(ctx,600,18);ctx.fillStyle='#416e87';ctx.fillText('CONTINUED',MARGIN+257,y+35)}
+    ctx.restore();
   }
   function renderCanvasPage(s,layout,page,pageIndex){
     const canvas=document.createElement('canvas');canvas.width=W;canvas.height=Math.ceil(page.height);canvas.className='paper-canvas';canvas.setAttribute('aria-label',`セトリ画像 ${pageIndex+1}/${layout.pages.length}ページ`);
     const ctx=canvas.getContext('2d');paperBackground(ctx,canvas.height);drawHeader(ctx,s,layout,pageIndex);
     let y=layout.headerHeight;const globalNums=new Map();getNumbering(s.items).forEach((num,i)=>globalNums.set(s.items[i].uid,num));
-    // Rows form one ruled sheet. Section dividers are stacked above each respective table.
     for(let ri=0;ri<page.rows.length;ri++){
       const row=page.rows[ri],it=row.item;
       if(row.type==='section'){drawSection(ctx,row.section,y,row.continued);y+=row.height;continue;}
-      const x=MARGIN, top=y, h=row.height, right=W-MARGIN, split=x+98;
-      ctx.fillStyle=ri%2===0?'#ffffff6c':'#ffffff45';ctx.fillRect(x,top,right-x,h);
-      ctx.strokeStyle='#545e63';ctx.lineWidth=1.25;ctx.strokeRect(x,top,right-x,h);drawLine(ctx,split,top,split,top+h,'#909ba1',1.25);
-      if(layout.showGroups)drawLine(ctx,right-241,top,right-241,top+h,'#aab4b8',1);
+      const x=MARGIN,top=y,h=row.height,right=W-MARGIN,split=x+98;
+      ctx.fillStyle=ri%2===0?'rgba(255,255,255,.78)':'rgba(246,252,255,.76)';
+      ctx.fillRect(x,top,right-x,h);
+      drawLine(ctx,x,top+h,right,top+h,'rgba(82,150,184,.28)',1.2);
+      drawLine(ctx,split,top+9,split,top+h-9,'rgba(104,177,214,.28)',1);
       if(row.type==='event'){
-        ctxFont(ctx,800,26);ctx.fillStyle='#3f5161';ctx.fillText(eventDisplay(it,s.items),split+23,top+35);
+        ctxFont(ctx,800,25);ctx.fillStyle='#4f7287';ctx.fillText(eventDisplay(it,s.items),split+23,top+36);
       }else{
-        ctx.textAlign='center';ctxFont(ctx,900,25);ctx.fillStyle=NAVY;ctx.fillText(globalNums.get(it.uid)||'',x+49,top+35);ctx.textAlign='left';
-        ctxFont(ctx,700,29);ctx.fillStyle=INK;row.lines.forEach((line,j)=>ctx.fillText(line,split+23,top+37+j*41));
+        ctx.textAlign='center';ctxFont(ctx,900,25);ctx.fillStyle='#327ca5';ctx.fillText(globalNums.get(it.uid)||'',x+49,top+35);ctx.textAlign='left';
+        ctxFont(ctx,700,29);ctx.fillStyle='#203a4e';row.lines.forEach((line,j)=>ctx.fillText(line,split+23,top+37+j*41));
         if(layout.showGroups)drawChip(ctx,it.group,right-221,top+(h-33)/2,200,33);
       }
       y+=h;
     }
-    // One copyright/attribution footer. Do not add URL, QR or branding duplicates.
-    const fy=canvas.height-114;drawLine(ctx,MARGIN,fy,W-MARGIN,fy,'#68767d',2);
-    ctxFont(ctx,800,20);ctx.fillStyle='#364958';ctx.textAlign='center';ctx.fillText('慶應義塾大学登録学生団体横浜KAWAII LAB.同好会作成',W/2,fy+49);
+    const fy=canvas.height-114;
+    drawLine(ctx,MARGIN,fy,W-MARGIN,fy,'rgba(74,148,188,.48)',1.5);
+    ctxFont(ctx,800,20);ctx.fillStyle='#285a78';ctx.textAlign='center';ctx.fillText('慶應義塾大学登録学生団体横浜KAWAII LAB.同好会作成',W/2,fy+49);
     ctx.textAlign='left';return canvas;
   }
   function renderPreview(){const s=current();if(!s)return;const layout=layoutPages(s);previewCache=layout.pages.map((page,i)=>renderCanvasPage(s,layout,page,i));for(const target of ['previewDesktop','previewMobile']){const box=$(target);box.replaceChildren();previewCache.forEach((c,i)=>{const wrapper=document.createElement('div');wrapper.className='preview-page-wrapper';const duplicate=document.createElement('canvas');duplicate.width=c.width;duplicate.height=c.height;duplicate.className='paper-canvas';duplicate.getContext('2d').drawImage(c,0,0);wrapper.appendChild(duplicate);if(target==='previewMobile'){const b=document.createElement('button');b.className='small-primary';b.textContent=previewCache.length>1?`画像 ${i+1}/${previewCache.length} を保存`:'この画像を保存';b.style.marginTop='10px';b.addEventListener('click',()=>saveImage(i));wrapper.appendChild(b);}box.appendChild(wrapper);});} }
