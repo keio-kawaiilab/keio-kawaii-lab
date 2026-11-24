@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-24T11:39:06.424173+09:00",
-  "candidateUpdatedAt": "2026-11-24T11:39:06+09:00",
-  "previousEventCount": 223,
-  "candidateEventCount": 223,
-  "protectedPreviousCount": 214,
+  "generatedAt": "2026-11-24T12:06:18.199491+09:00",
+  "candidateUpdatedAt": "2026-11-24T12:06:17+09:00",
+  "previousEventCount": 224,
+  "candidateEventCount": 222,
+  "protectedPreviousCount": 215,
   "errorCount": 0,
   "warningCount": 28,
   "errors": [],
@@ -38,7 +38,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: KAWAII LAB.合同 / 災害支援基金コンサート / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売"
   ],
-  "candidateSha256": "764efd7663b3590bb4e3e7723d88ec19b4532824ff16f1504f98ee797565621f",
+  "candidateSha256": "7aaaa3981010cfdcd0b864afb4f49af2c4b4e087969d0e9771a1b6a9e6bd2d1a",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -383,7 +383,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 26,
+  "quarantineCount": 20,
   "quarantineActions": [
     {
       "error": "Pia row contains FC/upgrade-only sale: MORE STAR / MORE STAR 単独ライブ 7th STAR / KAWAII LAB. FC先行",
@@ -403,6 +403,11 @@
     {
       "error": "active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE 村川緋杏 生誕祭 2026 / 一般発売",
       "action": "restored previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売",
+      "action": "withheld new/ambiguous row",
       "restoredPreviousRows": 1
     },
     {
@@ -431,16 +436,6 @@
       "restoredPreviousRows": 1
     },
     {
-      "error": "deadline moved earlier for id:f03e6f9b32abb002: 2026-11-25T23:59 -> 2026-10-24T10:00 (manual review required)",
-      "action": "restored previous rows for id:f03e6f9b32abb002",
-      "restoredPreviousRows": 1
-    },
-    {
-      "error": "future performance dates disappeared for pia:event:2642817:001: 2026-11-29",
-      "action": "restored previous rows for pia:event:2642817:001",
-      "restoredPreviousRows": 1
-    },
-    {
       "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / 「CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS 」公演 リセールサービスのお知らせ / リセール",
       "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
       "restoredPreviousRows": 6
@@ -456,11 +451,6 @@
       "restoredPreviousRows": 6
     },
     {
-      "error": "deadline moved earlier for id:47365286c9595afe: 2026-12-03T23:59 -> 2026-10-24T10:00 (manual review required)",
-      "action": "restored previous rows for id:47365286c9595afe",
-      "restoredPreviousRows": 1
-    },
-    {
       "error": "future performance dates disappeared for url:https://w.pia.jp/v/kls-xmas26upg6/?_normalbrowse_=1: 2026-12-13",
       "action": "restored previous rows for url:https://w.pia.jp/v/kls-xmas26upg6/?_normalbrowse_=1",
       "restoredPreviousRows": 15
@@ -469,16 +459,6 @@
       "error": "protected future/active item disappeared: SWEET STEADY / 2026.10.16 2027年3月4日(木)「SWEET STEADY 3rd ANNIVERSARY LIVE」@日本武道館 開催決定！FC先行スタート！ / FC先行",
       "action": "restored disappeared previous row",
       "restoredPreviousRows": 1
-    },
-    {
-      "error": "future performance dates disappeared for url:https://cutiestreet.asobisystem.com/live_information/detail/40368 [CUTIE STREET]: 2026-11-29",
-      "action": "restored previous rows for url:https://cutiestreet.asobisystem.com/live_information/detail/40368",
-      "restoredPreviousRows": 2
-    },
-    {
-      "error": "future performance dates disappeared for url:https://cutiestreet.asobisystem.com/live_information/detail/40369 [CUTIE STREET]: 2026-11-28",
-      "action": "restored previous rows for url:https://cutiestreet.asobisystem.com/live_information/detail/40369",
-      "restoredPreviousRows": 3
     },
     {
       "error": "future performance dates disappeared for url:https://kawaiilab.asobisystem.com/news/detail/87775 [MORE STAR]: 2026-12-12, 2026-12-13",
@@ -499,16 +479,6 @@
       "error": "future performance dates disappeared for url:https://morestar.asobisystem.com/news/detail/96004 [MORE STAR]: 2026-12-12",
       "action": "restored previous rows for url:https://morestar.asobisystem.com/news/detail/96004",
       "restoredPreviousRows": 4
-    },
-    {
-      "error": "protected future/active official FC offer disappeared: FRUITS ZIPPER / FRUITS ZIPPER 鎮西寿々歌 生誕祭 2026 / FC先行",
-      "action": "withheld new/ambiguous row",
-      "restoredPreviousRows": 1
-    },
-    {
-      "error": "protected future/active official FC offer disappeared: FRUITS ZIPPER / FRUITS ZIPPER 鎮西寿々歌 生誕祭 2026 / FC先行",
-      "action": "last-chance restored implicated previous row",
-      "restoredPreviousRows": 1
     },
     {
       "error": "protected future/active official FC offer disappeared: SWEET STEADY / SWEET STEADY 白石まゆみ BIRTHDAY LIVE 2026 / FC先行",
