@@ -1,7 +1,7 @@
 {
   "date": "2026-11-24",
   "horizonDays": 7,
-  "generatedAt": "2026-11-24T11:08+09:00",
+  "generatedAt": "2026-11-24T13:56+09:00",
   "source": {
     "name": "気象庁",
     "url": "https://www.jma.go.jp/bosai/forecast/"
@@ -13,8 +13,8 @@
       "venueKey": "sgcホール有明",
       "eventIds": [
         "817aadbdcb8e0bb6",
-        "ad5a7ce9bdf2fa65",
-        "b523016188f2b9a1"
+        "b523016188f2b9a1",
+        "ad5a7ce9bdf2fa65"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
@@ -58,16 +58,6 @@
         }
       ],
       "hourlyRain": [
-        {
-          "time": "18:00",
-          "rain": true,
-          "validAt": "2026-11-24T18:00+09:00"
-        },
-        {
-          "time": "19:00",
-          "rain": true,
-          "validAt": "2026-11-24T19:00+09:00"
-        },
         {
           "time": "20:00",
           "rain": false,
@@ -123,23 +113,6 @@
           "validAt": "2026-11-25T00:00+09:00",
           "temp": 8
         }
-      ],
-      "hourlyRain": [
-        {
-          "time": "18:00",
-          "rain": false,
-          "validAt": "2026-11-24T18:00+09:00"
-        },
-        {
-          "time": "19:00",
-          "rain": false,
-          "validAt": "2026-11-24T19:00+09:00"
-        },
-        {
-          "time": "20:00",
-          "rain": false,
-          "validAt": "2026-11-24T20:00+09:00"
-        }
       ]
     },
     {
@@ -148,7 +121,8 @@
       "venueKey": "ヒューリックホール東京",
       "eventIds": [
         "fac90e0751523a07",
-        "10bd0d3fce2bfda7"
+        "10bd0d3fce2bfda7",
+        "10bd0d3fce2bfda7--26a9e1b900"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
@@ -215,7 +189,7 @@
       "venue": "SGC HALL ARIAKE",
       "venueKey": "sgchallariake",
       "eventIds": [
-        "7bf6cd119ab3be91"
+        "f252890aae3f1ee0"
       ],
       "areaCode": "130010",
       "areaName": "東京地方",
@@ -301,7 +275,8 @@
       "venueKey": "igアリーナ",
       "eventIds": [
         "644a68f1d59b3670",
-        "779b880f2ca573d5"
+        "779b880f2ca573d5",
+        "21bdd20510f4eb45"
       ],
       "areaCode": "230010",
       "areaName": "愛知県",
@@ -344,7 +319,8 @@
       "eventIds": [
         "779b880f2ca573d5",
         "577553463945ceaf",
-        "7c216c4f92affebc"
+        "7c216c4f92affebc",
+        "21bdd20510f4eb45"
       ],
       "areaCode": "230010",
       "areaName": "愛知県",
@@ -410,7 +386,8 @@
         "504fdf94991b8530",
         "850f9d39ec4fd5e8",
         "87ecbf19d8bdb1c8",
-        "cca8ae0528d6d9d4"
+        "cca8ae0528d6d9d4",
+        "fbfa9a0ab6aea9e3"
       ],
       "areaCode": "400010",
       "areaName": "福岡県",
@@ -434,11 +411,12 @@
         "de97c75c56f09ae2",
         "1353f7af2e1ef2df",
         "850f9d39ec4fd5e8",
-        "0fe2835f4c0c0028",
         "2d07beca08d41a77",
         "2ee823ecc449ca17",
         "3f2663fcd062b478",
-        "4bdb9c1f84f03d62"
+        "4bdb9c1f84f03d62",
+        "5583e267722ce9de",
+        "fbfa9a0ab6aea9e3"
       ],
       "areaCode": "440010",
       "areaName": "大分県",
@@ -455,14 +433,14 @@
     }
   ],
   "stats": {
-    "occurrencesInRange": 42,
+    "occurrencesInRange": 47,
     "uniqueVenueDates": 15,
     "weatherEntries": 14,
     "meshEntries": 3,
     "failures": 1,
     "meshTimelineEntries": 3,
     "meshExactTempSlots": 15,
-    "hourlyRainEntries": 2
+    "hourlyRainEntries": 1
   },
   "failures": [
     {
