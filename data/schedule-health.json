@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-26T05:28:11.342994+09:00",
-  "candidateUpdatedAt": "2026-11-26T05:28:11+09:00",
-  "previousEventCount": 220,
-  "candidateEventCount": 219,
-  "protectedPreviousCount": 211,
+  "generatedAt": "2026-11-26T05:44:35.202580+09:00",
+  "candidateUpdatedAt": "2026-11-26T05:44:34+09:00",
+  "previousEventCount": 221,
+  "candidateEventCount": 218,
+  "protectedPreviousCount": 212,
   "errorCount": 0,
   "warningCount": 27,
   "errors": [],
@@ -37,7 +37,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: KAWAII LAB.合同 / 災害支援基金コンサート / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売"
   ],
-  "candidateSha256": "d657c0a259b89c052e8dd8027cbc7d03e28a80b422bbc9d49aac74d9ae572b0a",
+  "candidateSha256": "434ae4c0ac2a7352f548617665e6451e05cf67973ea5e6cc535556e73f2d9c71",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -372,7 +372,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 27,
+  "quarantineCount": 24,
   "quarantineActions": [
     {
       "error": "Pia row contains FC/upgrade-only sale: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / FC先行",
@@ -400,6 +400,11 @@
       "restoredPreviousRows": 1
     },
     {
+      "error": "active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売",
+      "action": "withheld new/ambiguous row",
+      "restoredPreviousRows": 1
+    },
+    {
       "error": "active Pia row has no sale-detail URL: SWEET STEADY / SWEET STEADY 白石まゆみ BIRTHDAY LIVE 2026 ～ The Girl I Dreamed Of ～ / 一般発売",
       "action": "restored previous row",
       "restoredPreviousRows": 1
@@ -417,16 +422,6 @@
     {
       "error": "active Pia row has no sale-detail URL: KAWAII LAB.合同 / 災害支援基金コンサート / 一般発売",
       "action": "restored previous row",
-      "restoredPreviousRows": 1
-    },
-    {
-      "error": "future performance dates disappeared for pia:event:2642817:001: 2026-11-29",
-      "action": "restored previous rows for pia:event:2642817:001",
-      "restoredPreviousRows": 1
-    },
-    {
-      "error": "deadline moved earlier for pia:event:2632906:001: 2026-11-26T23:59 -> 2026-09-26T10:00 (manual review required)",
-      "action": "restored previous rows for pia:event:2632906:001",
       "restoredPreviousRows": 1
     },
     {
@@ -453,16 +448,6 @@
       "error": "protected future/active item disappeared: SWEET STEADY / 2026.10.16 2027年3月4日(木)「SWEET STEADY 3rd ANNIVERSARY LIVE」@日本武道館 開催決定！FC先行スタート！ / FC先行",
       "action": "restored disappeared previous row",
       "restoredPreviousRows": 1
-    },
-    {
-      "error": "future performance dates disappeared for url:https://cutiestreet.asobisystem.com/live_information/detail/40368 [CUTIE STREET]: 2026-11-29",
-      "action": "restored previous rows for url:https://cutiestreet.asobisystem.com/live_information/detail/40368",
-      "restoredPreviousRows": 2
-    },
-    {
-      "error": "future performance dates disappeared for url:https://cutiestreet.asobisystem.com/live_information/detail/40369 [CUTIE STREET]: 2026-11-28",
-      "action": "restored previous rows for url:https://cutiestreet.asobisystem.com/live_information/detail/40369",
-      "restoredPreviousRows": 3
     },
     {
       "error": "future performance dates disappeared for url:https://kawaiilab.asobisystem.com/news/detail/87775 [MORE STAR]: 2026-12-12, 2026-12-13",
@@ -515,22 +500,11 @@
     "projectedJointParticipantCount": 0,
     "reassignedCount": 0,
     "hydratedCount": 0,
-    "ambiguousCount": 1,
+    "ambiguousCount": 0,
     "unresolvedCount": 0,
     "reassigned": [],
     "hydrated": [],
-    "ambiguous": [
-      {
-        "group": "CUTIE STREET",
-        "date": "2026-11-29",
-        "url": "https://cutiestreet.asobisystem.com/live_information/detail/40369",
-        "candidateIds": [
-          "779b880f2ca573d5",
-          "577553463945ceaf",
-          "7c216c4f92affebc"
-        ]
-      }
-    ],
+    "ambiguous": [],
     "unresolved": [],
     "duplicateOfficialResaleWindowsRemoved": 0
   }
