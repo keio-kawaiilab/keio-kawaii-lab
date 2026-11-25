@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-26T02:41:35.890008+09:00",
-  "candidateUpdatedAt": "2026-11-26T02:41:35+09:00",
+  "generatedAt": "2026-11-26T03:55:48.993419+09:00",
+  "candidateUpdatedAt": "2026-11-26T03:55:48+09:00",
   "previousEventCount": 223,
   "candidateEventCount": 218,
-  "protectedPreviousCount": 212,
+  "protectedPreviousCount": 214,
   "errorCount": 0,
-  "warningCount": 27,
+  "warningCount": 29,
   "errors": [],
   "warnings": [
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
@@ -35,9 +35,11 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: KAWAII LAB.合同 / 災害支援基金コンサート / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: KAWAII LAB.合同 / 災害支援基金コンサート / 一般発売",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売"
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売",
+    "performance dates added for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827: 2026-11-10, 2026-11-12, 2026-11-17, 2026-11-19, 2026-11-24, 2026-11-26, 2026-11-30, 2026-12-01",
+    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827: 2026-12-08, 2026-12-09"
   ],
-  "candidateSha256": "a7f99118c11f497c2dce92d2720b4026a191c3d0a21fb7ae6ff6204b6e613357",
+  "candidateSha256": "4de6a11481c66ab1ef178921fbf52ed408fc4d7f5adc85d7ad55d25d6c652534",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -130,9 +132,9 @@
     "url:https://t.pia.jp/",
     "url:https://t.pia.jp/guide/resale-guide.jsp",
     "url:https://t.pia.jp/help/index.jsp",
-    "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
     "url:https://t.pia.jp/pia/ticketInformation.do?eventCd=2642817&rlsCd=002",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29056",
     "url:https://w.pia.jp/t/charityconcert2027/",
     "url:https://w.pia.jp/t/sweetsteady-winter2026/",
     "url:https://w.pia.jp/v/kls-xmas26-2upg1/?_normalbrowse_=1",
@@ -233,7 +235,7 @@
     "url:https://sweetsteady.asobisystem.com/news/detail/96833"
   ],
   "reconciledBaseDateMessageCount": 0,
-  "downgradedFalsePositiveCount": 0,
+  "downgradedFalsePositiveCount": 1,
   "legacyProtectedErrorCount": 27,
   "legacyProtectedErrors": [
     {
