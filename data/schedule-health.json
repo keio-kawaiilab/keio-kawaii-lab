@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-27T06:49:21.572808+09:00",
-  "candidateUpdatedAt": "2026-11-27T06:49:21+09:00",
+  "generatedAt": "2026-11-27T06:55:16.199299+09:00",
+  "candidateUpdatedAt": "2026-11-27T06:55:15+09:00",
   "previousEventCount": 215,
-  "candidateEventCount": 214,
+  "candidateEventCount": 215,
   "protectedPreviousCount": 205,
   "errorCount": 0,
   "warningCount": 23,
@@ -33,7 +33,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: KAWAII LAB.合同 / 災害支援基金コンサート / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売"
   ],
-  "candidateSha256": "d968afce707b78e7b1b84ea1b6082744318d433cedb4f1c23d2d4ca3a79a7ee9",
+  "candidateSha256": "4418ccea5584faf77f7f97055b8e4909c394038a39207378f770d0aedd6f117c",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -350,16 +350,11 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 22,
+  "quarantineCount": 25,
   "quarantineActions": [
     {
       "error": "active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE 村川緋杏 生誕祭 2026 / 一般発売",
       "action": "restored previous row",
-      "restoredPreviousRows": 1
-    },
-    {
-      "error": "active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売",
-      "action": "withheld new/ambiguous row",
       "restoredPreviousRows": 1
     },
     {
@@ -380,6 +375,16 @@
     {
       "error": "active Pia row has no sale-detail URL: KAWAII LAB.合同 / 災害支援基金コンサート / 一般発売",
       "action": "restored previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "future performance dates disappeared for pia:event:2642817:001: 2026-11-29",
+      "action": "restored previous rows for pia:event:2642817:001",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "deadline moved earlier for id:7c216c4f92affebc: 2026-11-28T23:59 -> 2026-11-20T10:00 (manual review required)",
+      "action": "restored previous rows for id:7c216c4f92affebc",
       "restoredPreviousRows": 1
     },
     {
@@ -406,6 +411,16 @@
       "error": "protected future/active item disappeared: SWEET STEADY / 2026.10.16 2027年3月4日(木)「SWEET STEADY 3rd ANNIVERSARY LIVE」@日本武道館 開催決定！FC先行スタート！ / FC先行",
       "action": "restored disappeared previous row",
       "restoredPreviousRows": 1
+    },
+    {
+      "error": "future performance dates disappeared for url:https://cutiestreet.asobisystem.com/live_information/detail/40368 [CUTIE STREET]: 2026-11-29",
+      "action": "restored previous rows for url:https://cutiestreet.asobisystem.com/live_information/detail/40368",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "future performance dates disappeared for url:https://cutiestreet.asobisystem.com/live_information/detail/40369 [CUTIE STREET]: 2026-11-28",
+      "action": "restored previous rows for url:https://cutiestreet.asobisystem.com/live_information/detail/40369",
+      "restoredPreviousRows": 3
     },
     {
       "error": "future performance dates disappeared for url:https://kawaiilab.asobisystem.com/news/detail/87775 [MORE STAR]: 2026-12-12, 2026-12-13",
