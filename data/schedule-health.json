@@ -1,12 +1,12 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-26T19:04:16.130839+09:00",
-  "candidateUpdatedAt": "2026-11-26T19:04:15+09:00",
-  "previousEventCount": 221,
+  "generatedAt": "2026-11-26T21:00:32.311977+09:00",
+  "candidateUpdatedAt": "2026-11-26T21:00:32+09:00",
+  "previousEventCount": 227,
   "candidateEventCount": 221,
-  "protectedPreviousCount": 212,
+  "protectedPreviousCount": 218,
   "errorCount": 0,
-  "warningCount": 27,
+  "warningCount": 28,
   "errors": [],
   "warnings": [
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
@@ -35,9 +35,10 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: KAWAII LAB.合同 / 災害支援基金コンサート / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: KAWAII LAB.合同 / 災害支援基金コンサート / 一般発売",
-    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売"
+    "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売",
+    "Pia shared bundle performance rows were rebucketed; official schedule coverage remains authoritative: future performance dates disappeared for url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827: 2026-12-08, 2026-12-09"
   ],
-  "candidateSha256": "bafa71fe1a6dfb2e1529ce6a6299c1e0ecbfca0f1ccb886e08bc3ad0f4699ee7",
+  "candidateSha256": "0b548f8ae91e720b26e9f2884e2fadab2ec2c7c4626a004e0f2c09be6ba77691",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -132,9 +133,12 @@
     "url:https://t.pia.jp/",
     "url:https://t.pia.jp/guide/resale-guide.jsp",
     "url:https://t.pia.jp/help/index.jsp",
-    "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
     "url:https://t.pia.jp/pia/ticketInformation.do?eventCd=2642817&rlsCd=002",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=21416",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=29682",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30338",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=62959",
     "url:https://w.pia.jp/t/charityconcert2027/",
     "url:https://w.pia.jp/t/sweetsteady-winter2026/",
     "url:https://w.pia.jp/v/kls-xmas26-2upg1/?_normalbrowse_=1",
@@ -237,7 +241,7 @@
     "url:https://sweetsteady.asobisystem.com/news/detail/96833"
   ],
   "reconciledBaseDateMessageCount": 0,
-  "downgradedFalsePositiveCount": 0,
+  "downgradedFalsePositiveCount": 1,
   "legacyProtectedErrorCount": 27,
   "legacyProtectedErrors": [
     {
@@ -376,7 +380,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 31,
+  "quarantineCount": 30,
   "quarantineActions": [
     {
       "error": "Pia row contains FC/upgrade-only sale: CUTIE STREET / CUTIE STREET 佐野愛花 生誕祭 2026 / FC先行",
@@ -426,11 +430,6 @@
     {
       "error": "future performance dates disappeared for pia:event:2642817:001: 2026-11-29",
       "action": "restored previous rows for pia:event:2642817:001",
-      "restoredPreviousRows": 1
-    },
-    {
-      "error": "deadline moved earlier for id:5583e267722ce9de: 2026-11-26T23:59 -> 2026-09-26T10:00 (manual review required)",
-      "action": "restored previous rows for id:5583e267722ce9de",
       "restoredPreviousRows": 1
     },
     {
@@ -539,22 +538,11 @@
     "projectedJointParticipantCount": 0,
     "reassignedCount": 0,
     "hydratedCount": 0,
-    "ambiguousCount": 1,
+    "ambiguousCount": 0,
     "unresolvedCount": 0,
     "reassigned": [],
     "hydrated": [],
-    "ambiguous": [
-      {
-        "group": "CUTIE STREET",
-        "date": "2026-11-29",
-        "url": "https://cutiestreet.asobisystem.com/live_information/detail/40369",
-        "candidateIds": [
-          "779b880f2ca573d5",
-          "577553463945ceaf",
-          "7c216c4f92affebc"
-        ]
-      }
-    ],
+    "ambiguous": [],
     "unresolved": [],
     "duplicateOfficialResaleWindowsRemoved": 0
   }
