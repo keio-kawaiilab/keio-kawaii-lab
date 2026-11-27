@@ -1,16 +1,14 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-28T08:29:33.569605+09:00",
-  "candidateUpdatedAt": "2026-11-28T08:29:33+09:00",
-  "previousEventCount": 196,
-  "candidateEventCount": 188,
-  "protectedPreviousCount": 186,
+  "generatedAt": "2026-11-28T08:49:41.521812+09:00",
+  "candidateUpdatedAt": "2026-11-28T08:49:41+09:00",
+  "previousEventCount": 189,
+  "candidateEventCount": 189,
+  "protectedPreviousCount": 180,
   "errorCount": 0,
-  "warningCount": 25,
+  "warningCount": 23,
   "errors": [],
   "warnings": [
-    "residual row-scoped audit failure isolated after best-effort quarantine; unrelated updates remain publishable: protected future/active official FC offer disappeared: CANDY TUNE / CANDY TUNE 福山梨乃 生誕祭 2026 / FC先行",
-    "residual row-scoped audit failure isolated after best-effort quarantine; unrelated updates remain publishable: protected future/active official FC offer disappeared: FRUITS ZIPPER / FRUITS ZIPPER 早瀬ノエル 生誕祭 2026 / FC先行",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / プレリザーブ2次",
@@ -35,7 +33,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: KAWAII LAB.合同 / 災害支援基金コンサート / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売"
   ],
-  "candidateSha256": "74376d4333feb8d98feb40219481c274e0a289132d02f4788ac8cc56977afdf4",
+  "candidateSha256": "db8a11dc8a43e491387b643ddd147f40097a82916f7c45cc95911da08cc5c730",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -43,7 +41,6 @@
     "url:https://candytune.asobisystem.com/live_information/detail/44994",
     "url:https://candytune.asobisystem.com/news/detail/88212",
     "url:https://candytune.asobisystem.com/news/detail/92278",
-    "url:https://candytune.asobisystem.com/news/detail/92279",
     "url:https://candytune.asobisystem.com/news/detail/93735",
     "url:https://candytune.asobisystem.com/news/detail/95730",
     "url:https://candytune.asobisystem.com/news/detail/96000",
@@ -74,7 +71,6 @@
     "url:https://fruitszipper.asobisystem.com/live_information/detail/46303",
     "url:https://fruitszipper.asobisystem.com/live_information/detail/46304",
     "url:https://fruitszipper.asobisystem.com/news/detail/93365",
-    "url:https://fruitszipper.asobisystem.com/news/detail/93430",
     "url:https://fruitszipper.asobisystem.com/news/detail/95999",
     "url:https://fruitszipper.asobisystem.com/news/detail/96781",
     "url:https://hearts-as-one.jp/",
@@ -146,7 +142,6 @@
     "url:https://candytune.asobisystem.com/live_information/detail/44994",
     "url:https://candytune.asobisystem.com/news/detail/88212",
     "url:https://candytune.asobisystem.com/news/detail/92278",
-    "url:https://candytune.asobisystem.com/news/detail/92279",
     "url:https://candytune.asobisystem.com/news/detail/93735",
     "url:https://candytune.asobisystem.com/news/detail/95730",
     "url:https://candytune.asobisystem.com/news/detail/96000",
@@ -177,7 +172,6 @@
     "url:https://fruitszipper.asobisystem.com/live_information/detail/46303",
     "url:https://fruitszipper.asobisystem.com/live_information/detail/46304",
     "url:https://fruitszipper.asobisystem.com/news/detail/93365",
-    "url:https://fruitszipper.asobisystem.com/news/detail/93430",
     "url:https://fruitszipper.asobisystem.com/news/detail/95999",
     "url:https://fruitszipper.asobisystem.com/news/detail/96781",
     "url:https://kawaiilab.asobisystem.com/news/detail/87775",
@@ -224,7 +218,7 @@
     "url:https://sweetsteady.asobisystem.com/news/detail/96557",
     "url:https://sweetsteady.asobisystem.com/news/detail/96833"
   ],
-  "reconciledBaseDateMessageCount": 6,
+  "reconciledBaseDateMessageCount": 0,
   "downgradedFalsePositiveCount": 0,
   "legacyProtectedErrorCount": 23,
   "legacyProtectedErrors": [
@@ -344,13 +338,7 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "residualLocalIsolationCount": 2,
-  "residualLocalIsolations": [
-    "protected future/active official FC offer disappeared: CANDY TUNE / CANDY TUNE 福山梨乃 生誕祭 2026 / FC先行",
-    "protected future/active official FC offer disappeared: FRUITS ZIPPER / FRUITS ZIPPER 早瀬ノエル 生誕祭 2026 / FC先行"
-  ],
-  "rowFailuresCanBlockRelease": false,
-  "quarantineCount": 34,
+  "quarantineCount": 27,
   "quarantineActions": [
     {
       "error": "active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE 村川緋杏 生誕祭 2026 / 一般発売",
@@ -375,11 +363,6 @@
     {
       "error": "active Pia row has no sale-detail URL: KAWAII LAB.合同 / 災害支援基金コンサート / 一般発売",
       "action": "restored previous row",
-      "restoredPreviousRows": 1
-    },
-    {
-      "error": "deadline moved earlier for id:7c216c4f92affebc: 2026-11-28T23:59 -> 2026-11-20T10:00 (manual review required)",
-      "action": "restored previous rows for id:7c216c4f92affebc",
       "restoredPreviousRows": 1
     },
     {
@@ -483,26 +466,6 @@
       "restoredPreviousRows": 2
     },
     {
-      "error": "protected future/active official FC offer disappeared: CANDY TUNE / CANDY TUNE 福山梨乃 生誕祭 2026 / FC先行",
-      "action": "restored previous row",
-      "restoredPreviousRows": 1
-    },
-    {
-      "error": "protected future/active official FC offer disappeared: FRUITS ZIPPER / FRUITS ZIPPER 早瀬ノエル 生誕祭 2026 / FC先行",
-      "action": "restored previous row",
-      "restoredPreviousRows": 1
-    },
-    {
-      "error": "protected future/active official FC offer disappeared: CANDY TUNE / CANDY TUNE 福山梨乃 生誕祭 2026 / FC先行",
-      "action": "restored previous row",
-      "restoredPreviousRows": 1
-    },
-    {
-      "error": "protected future/active official FC offer disappeared: FRUITS ZIPPER / FRUITS ZIPPER 早瀬ノエル 生誕祭 2026 / FC先行",
-      "action": "restored previous row",
-      "restoredPreviousRows": 1
-    },
-    {
       "error": "protected future/active official FC offer disappeared: SWEET STEADY / SWEET STEADY 白石まゆみ BIRTHDAY LIVE 2026 / FC先行",
       "action": "last-chance restored implicated previous row",
       "restoredPreviousRows": 1
@@ -511,18 +474,9 @@
       "error": "protected future/active official FC offer disappeared: MORE STAR / 2026.11.20 2026年12月14日(月)MORE STAR 1st ANNIVERSARY LIVE開催決定！FC先行受付開始！ / FC先行",
       "action": "last-chance restored implicated previous row",
       "restoredPreviousRows": 1
-    },
-    {
-      "error": "protected future/active official FC offer disappeared: CANDY TUNE / CANDY TUNE 福山梨乃 生誕祭 2026 / FC先行",
-      "action": "last-chance restored previous row",
-      "restoredPreviousRows": 1
-    },
-    {
-      "error": "protected future/active official FC offer disappeared: FRUITS ZIPPER / FRUITS ZIPPER 早瀬ノエル 生誕祭 2026 / FC先行",
-      "action": "last-chance restored previous row",
-      "restoredPreviousRows": 1
     }
   ],
+  "rowFailuresCanBlockRelease": false,
   "officialIndexReconciledAfterQuarantine": {
     "projectedJointParticipantCount": 0,
     "reassignedCount": 0,
@@ -645,6 +599,28 @@
       },
       {
         "group": "MORE STAR",
+        "date": "2027-02-13",
+        "url": "https://morestar.asobisystem.com/live_information/detail/46450",
+        "candidateIds": [
+          "05b3904f04e6024a",
+          "dbcea9922e302256",
+          "9e351319f433d796",
+          "195723a4768e6c21"
+        ]
+      },
+      {
+        "group": "MORE STAR",
+        "date": "2027-02-14",
+        "url": "https://morestar.asobisystem.com/live_information/detail/46459",
+        "candidateIds": [
+          "05b3904f04e6024a",
+          "b6b3a5154da3dcaa",
+          "9e351319f433d796",
+          "195723a4768e6c21"
+        ]
+      },
+      {
+        "group": "MORE STAR",
         "date": "2027-03-20",
         "url": "https://morestar.asobisystem.com/live_information/detail/46455",
         "candidateIds": [
@@ -683,28 +659,6 @@
           "1e49008a611607c5",
           "9e351319f433d796",
           "fcccbce1c6a50240",
-          "195723a4768e6c21"
-        ]
-      },
-      {
-        "group": "MORE STAR",
-        "date": "2027-02-13",
-        "url": "https://morestar.asobisystem.com/live_information/detail/46450",
-        "candidateIds": [
-          "05b3904f04e6024a",
-          "dbcea9922e302256",
-          "9e351319f433d796",
-          "195723a4768e6c21"
-        ]
-      },
-      {
-        "group": "MORE STAR",
-        "date": "2027-02-14",
-        "url": "https://morestar.asobisystem.com/live_information/detail/46459",
-        "candidateIds": [
-          "05b3904f04e6024a",
-          "b6b3a5154da3dcaa",
-          "9e351319f433d796",
           "195723a4768e6c21"
         ]
       }
