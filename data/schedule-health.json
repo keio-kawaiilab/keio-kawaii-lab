@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-28T18:34:48.944672+09:00",
-  "candidateUpdatedAt": "2026-11-28T18:34:48+09:00",
-  "previousEventCount": 188,
+  "generatedAt": "2026-11-28T21:24:22.320140+09:00",
+  "candidateUpdatedAt": "2026-11-28T21:24:22+09:00",
+  "previousEventCount": 195,
   "candidateEventCount": 189,
-  "protectedPreviousCount": 180,
+  "protectedPreviousCount": 186,
   "errorCount": 0,
   "warningCount": 23,
   "errors": [],
@@ -33,9 +33,10 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE 福山梨乃 生誕祭 2026 / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / 一般発売"
   ],
-  "candidateSha256": "efec61074575784bd897b4ca1f8239c08c535ed9b0837eac1e32225e9f0274a7",
+  "candidateSha256": "cc1902e67279531fe7b490f75da53ca296f0daadabd102f7f089745858610bbc",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
+    "url:https://candytune.asobisystem.com/live_information/detail/40733",
     "url:https://candytune.asobisystem.com/live_information/detail/40743",
     "url:https://candytune.asobisystem.com/live_information/detail/44994",
     "url:https://candytune.asobisystem.com/news/detail/88212",
@@ -92,7 +93,6 @@
     "url:https://morestar.asobisystem.com/live_information/detail/46459",
     "url:https://morestar.asobisystem.com/news/detail/93746",
     "url:https://morestar.asobisystem.com/news/detail/96004",
-    "url:https://red-hot.ne.jp/play/detail.php?pid=py28330",
     "url:https://sweetsteady.asobisystem.com/feature/c096a1bd2a9d62d9f69bffa83187e511?_normalbrowse_=1",
     "url:https://sweetsteady.asobisystem.com/feature/sweetsteady_japanhalltour2026",
     "url:https://sweetsteady.asobisystem.com/live_information/detail/43907",
@@ -119,8 +119,10 @@
     "url:https://t.pia.jp/",
     "url:https://t.pia.jp/guide/resale-guide.jsp",
     "url:https://t.pia.jp/help/index.jsp",
+    "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
     "url:https://t.pia.jp/pia/ticketInformation.do?eventCd=2642817&rlsCd=002",
+    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30338",
     "url:https://w.pia.jp/t/charityconcert2027/",
     "url:https://w.pia.jp/t/sweetsteady-winter2026/",
     "url:https://w.pia.jp/v/kls-xmas26-2upg1/?_normalbrowse_=1",
@@ -133,6 +135,7 @@
   ],
   "officialXSharedSourceKeysReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
+    "url:https://candytune.asobisystem.com/live_information/detail/40733",
     "url:https://candytune.asobisystem.com/live_information/detail/40743",
     "url:https://candytune.asobisystem.com/live_information/detail/44994",
     "url:https://candytune.asobisystem.com/news/detail/88212",
@@ -332,16 +335,11 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 17,
+  "quarantineCount": 16,
   "quarantineActions": [
     {
       "error": "active Pia row has no sale-detail URL: KAWAII LAB.合同 / 災害支援基金コンサート / 一般発売",
       "action": "restored previous row",
-      "restoredPreviousRows": 1
-    },
-    {
-      "error": "deadline moved earlier for id:7c216c4f92affebc: 2026-11-28T23:59 -> 2026-11-20T10:00 (manual review required)",
-      "action": "restored previous rows for id:7c216c4f92affebc",
       "restoredPreviousRows": 1
     },
     {
