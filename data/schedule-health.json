@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-28T08:49:41.521812+09:00",
-  "candidateUpdatedAt": "2026-11-28T08:49:41+09:00",
-  "previousEventCount": 189,
-  "candidateEventCount": 189,
-  "protectedPreviousCount": 180,
+  "generatedAt": "2026-11-28T10:34:16.279280+09:00",
+  "candidateUpdatedAt": "2026-11-28T10:34:16+09:00",
+  "previousEventCount": 190,
+  "candidateEventCount": 188,
+  "protectedPreviousCount": 181,
   "errorCount": 0,
   "warningCount": 23,
   "errors": [],
@@ -33,7 +33,7 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: Pia deadline claims verified without detail-page evidence: KAWAII LAB.合同 / 災害支援基金コンサート / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売"
   ],
-  "candidateSha256": "db8a11dc8a43e491387b643ddd147f40097a82916f7c45cc95911da08cc5c730",
+  "candidateSha256": "3fd2ada806e64026f9aa71300a918574fc2c31ec35db5971a1fd2ef0ae37dd4c",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
@@ -338,11 +338,16 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 27,
+  "quarantineCount": 28,
   "quarantineActions": [
     {
       "error": "active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE 村川緋杏 生誕祭 2026 / 一般発売",
       "action": "restored previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売",
+      "action": "withheld new/ambiguous row",
       "restoredPreviousRows": 1
     },
     {
@@ -621,6 +626,27 @@
       },
       {
         "group": "MORE STAR",
+        "date": "2027-04-03",
+        "url": "https://morestar.asobisystem.com/live_information/detail/46457",
+        "candidateIds": [
+          "1e49008a611607c5",
+          "d78732d0b6e08ef7",
+          "195723a4768e6c21"
+        ]
+      },
+      {
+        "group": "MORE STAR",
+        "date": "2027-04-04",
+        "url": "https://morestar.asobisystem.com/live_information/detail/46458",
+        "candidateIds": [
+          "1e49008a611607c5",
+          "9e351319f433d796",
+          "fcccbce1c6a50240",
+          "195723a4768e6c21"
+        ]
+      },
+      {
+        "group": "MORE STAR",
         "date": "2027-03-20",
         "url": "https://morestar.asobisystem.com/live_information/detail/46455",
         "candidateIds": [
@@ -638,27 +664,6 @@
           "94372a50739a53ce",
           "dd842b49fc534031",
           "9e351319f433d796",
-          "195723a4768e6c21"
-        ]
-      },
-      {
-        "group": "MORE STAR",
-        "date": "2027-04-03",
-        "url": "https://morestar.asobisystem.com/live_information/detail/46457",
-        "candidateIds": [
-          "1e49008a611607c5",
-          "d78732d0b6e08ef7",
-          "195723a4768e6c21"
-        ]
-      },
-      {
-        "group": "MORE STAR",
-        "date": "2027-04-04",
-        "url": "https://morestar.asobisystem.com/live_information/detail/46458",
-        "candidateIds": [
-          "1e49008a611607c5",
-          "9e351319f433d796",
-          "fcccbce1c6a50240",
           "195723a4768e6c21"
         ]
       }
