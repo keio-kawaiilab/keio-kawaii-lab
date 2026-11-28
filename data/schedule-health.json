@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "generatedAt": "2026-11-28T21:24:22.320140+09:00",
-  "candidateUpdatedAt": "2026-11-28T21:24:22+09:00",
-  "previousEventCount": 195,
-  "candidateEventCount": 189,
-  "protectedPreviousCount": 186,
+  "generatedAt": "2026-11-28T21:39:41.340826+09:00",
+  "candidateUpdatedAt": "2026-11-28T21:39:41+09:00",
+  "previousEventCount": 190,
+  "candidateEventCount": 191,
+  "protectedPreviousCount": 181,
   "errorCount": 0,
   "warningCount": 23,
   "errors": [],
@@ -33,10 +33,11 @@
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: CANDY TUNE / CANDY TUNE 福山梨乃 生誕祭 2026 / 一般発売",
     "protected unchanged last-good row still fails newer completeness checks; retained without blocking unrelated updates: active Pia row has no sale-detail URL: SWEET STEADY / SWEET STEADY JAPAN TOUR 2026 -WINTER- Snow Sparkle / 一般発売"
   ],
-  "candidateSha256": "cc1902e67279531fe7b490f75da53ca296f0daadabd102f7f089745858610bbc",
+  "candidateSha256": "cfbbbbec978048844ced20559f6ff44873331f75ef77d1385945668878298512",
   "sharedSourceDateSetsReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
+    "url:https://candytune.asobisystem.com/live_information/detail/40740",
     "url:https://candytune.asobisystem.com/live_information/detail/40743",
     "url:https://candytune.asobisystem.com/live_information/detail/44994",
     "url:https://candytune.asobisystem.com/news/detail/88212",
@@ -122,7 +123,6 @@
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669827",
     "url:https://t.pia.jp/pia/event/event.do?eventBundleCd=b2669981",
     "url:https://t.pia.jp/pia/ticketInformation.do?eventCd=2642817&rlsCd=002",
-    "url:https://t.pia.jp/pia/ticketInformation.do?lotRlsCd=30338",
     "url:https://w.pia.jp/t/charityconcert2027/",
     "url:https://w.pia.jp/t/sweetsteady-winter2026/",
     "url:https://w.pia.jp/v/kls-xmas26-2upg1/?_normalbrowse_=1",
@@ -136,6 +136,7 @@
   "officialXSharedSourceKeysReconciled": [
     "url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
     "url:https://candytune.asobisystem.com/live_information/detail/40733",
+    "url:https://candytune.asobisystem.com/live_information/detail/40740",
     "url:https://candytune.asobisystem.com/live_information/detail/40743",
     "url:https://candytune.asobisystem.com/live_information/detail/44994",
     "url:https://candytune.asobisystem.com/news/detail/88212",
@@ -335,11 +336,21 @@
       "action": "retained unchanged previous row; validator regression downgraded to warning"
     }
   ],
-  "quarantineCount": 16,
+  "quarantineCount": 19,
   "quarantineActions": [
     {
       "error": "active Pia row has no sale-detail URL: KAWAII LAB.合同 / 災害支援基金コンサート / 一般発売",
       "action": "restored previous row",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "future performance dates disappeared for pia:event:2642817:001: 2026-11-28",
+      "action": "restored previous rows for pia:event:2642817:001",
+      "restoredPreviousRows": 1
+    },
+    {
+      "error": "deadline moved earlier for id:52a59e0ba3f1fbd5: 2026-11-29T23:59 -> 2026-09-26T10:00 (manual review required)",
+      "action": "restored previous rows for id:52a59e0ba3f1fbd5",
       "restoredPreviousRows": 1
     },
     {
@@ -348,9 +359,9 @@
       "restoredPreviousRows": 1
     },
     {
-      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / 「CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS 」公演 リセールサービスのお知らせ / リセール",
-      "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
-      "restoredPreviousRows": 5
+      "error": "deadline moved earlier for pia:event:2628180:006: 2026-12-03T23:59 -> 2026-10-24T10:00 (manual review required)",
+      "action": "restored previous rows for pia:event:2628180:006",
+      "restoredPreviousRows": 1
     },
     {
       "error": "protected future/active item disappeared: CANDY TUNE / CANDY TUNE JAPAN TOUR 2026 - AUTUMN - / 一般発売",
@@ -361,11 +372,6 @@
       "error": "protected future/active item disappeared: SWEET STEADY / SWEET STEADY 白石まゆみ BIRTHDAY LIVE 2026 ～ The Girl I Dreamed Of ～ / 一般発売",
       "action": "restored disappeared previous row",
       "restoredPreviousRows": 1
-    },
-    {
-      "error": "active deadline disappeared for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026: CANDY TUNE / 「CANDY TUNE JAPAN TOUR 2026 - AUTUMN - CANDY CIRCUS 」公演 リセールサービスのお知らせ / リセール",
-      "action": "restored previous rows for url:https://candytune.asobisystem.com/feature/candytune_nationwide_tour2026",
-      "restoredPreviousRows": 5
     },
     {
       "error": "future performance dates disappeared for url:https://w.pia.jp/v/kls-xmas26upg6/?_normalbrowse_=1: 2026-12-13",
@@ -386,6 +392,16 @@
       "error": "protected future/active item disappeared: SWEET STEADY / 2026.10.16 2027年3月4日(木)「SWEET STEADY 3rd ANNIVERSARY LIVE」@日本武道館 開催決定！FC先行スタート！ / FC先行",
       "action": "restored disappeared previous row",
       "restoredPreviousRows": 1
+    },
+    {
+      "error": "future performance dates disappeared for url:https://cutiestreet.asobisystem.com/live_information/detail/40368 [CUTIE STREET]: 2026-11-29",
+      "action": "restored previous rows for url:https://cutiestreet.asobisystem.com/live_information/detail/40368",
+      "restoredPreviousRows": 2
+    },
+    {
+      "error": "future performance dates disappeared for url:https://cutiestreet.asobisystem.com/live_information/detail/40369 [CUTIE STREET]: 2026-11-28",
+      "action": "restored previous rows for url:https://cutiestreet.asobisystem.com/live_information/detail/40369",
+      "restoredPreviousRows": 3
     },
     {
       "error": "future performance dates disappeared for url:https://kawaiilab.asobisystem.com/news/detail/87775 [MORE STAR]: 2026-12-12, 2026-12-13",
